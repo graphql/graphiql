@@ -3,6 +3,7 @@ GraphiQL
 
 */ˈɡrafək(ə)l/* An interactive in-browser GraphQL IDE.
 
+![](resources/graphiql.png)
 
 ### Getting started
 
