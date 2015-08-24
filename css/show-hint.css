@@ -1,0 +1,67 @@
+.CodeMirror-hints {
+  background: white;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  font-family: 'Consolas';
+  font-size: 13px;
+  list-style: none;
+  margin: 0;
+  margin-left: -6px;
+  max-height: 14.5em;
+  overflow-y: auto;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  z-index: 10;
+}
+
+.CodeMirror-hints-wrapper {
+  background: white;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+     -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  margin-left: -6px;
+  position: absolute;
+  z-index: 10;
+}
+
+.CodeMirror-hints-wrapper .CodeMirror-hints {
+  -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+        box-shadow: none;
+  position: relative;
+  margin-left: 0;
+  z-index: 0;
+}
+
+.CodeMirror-hint {
+  border-top: solid 1px #f7f7f7;
+  color: #141823;
+  cursor: pointer;
+  margin: 0;
+  max-width: 300px;
+  overflow: hidden;
+  padding: 2px 6px;
+  white-space: pre;
+}
+
+li.CodeMirror-hint-active {
+  background-color: #08f;
+  border-top-color: white;
+  color: white;
+}
+
+.CodeMirror-hint-information {
+  border-top: solid 1px #c0c0c0;
+  max-width: 300px;
+  padding: 4px 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.CodeMirror-hint-information:first-child {
+  border-bottom: solid 1px #c0c0c0;
+  border-top: none;
+  margin-bottom: -1px;
+}

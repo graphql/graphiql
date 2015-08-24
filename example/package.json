@@ -1,0 +1,18 @@
+{
+  "description": "An example using GraphiQL",
+  "scripts": {
+    "start": "node dist/server.js",
+    "prestart": "npm run build",
+    "build": ". build.sh"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.20",
+    "express": "^4.12.4",
+    "express-graphql": "^0.3.0",
+    "graphiql": "../",
+    "graphql": "^0.4.2"
+  },
+  "devDependencies": {
+    "babel": "^5.8.21"
+  }
+}
