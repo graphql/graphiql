@@ -17,6 +17,27 @@
   <body>
     Loading...
     <script>
+      // Parse the search string to get query variables.
+      var search = window.location.search;
+      var query = {};
+      search.substr(1).split('&').forEach(function (entry) {
+        var eq = entry.indexOf('=');
+        if (eq >= 0) {
+          query[unescape(entry.slice(0, eq))] = unescape(entry.slice(eq + 1));
+        }
+      });
+
+      // if variables was provided, try to format it.
+      if (query.variables) {
+        try {
+          query.variables =
+            JSON.stringify(JSON.parse(query.variables), null, 2);
+        } catch (e) {
+          // Do nothing
+        }
+      }
+
+      // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
         return fetch(window.location.origin + '/graphql', {
           method: 'post',
@@ -28,7 +49,11 @@
       }
 
       React.render(
-        React.createElement(GraphiQL, { fetcher: graphQLFetcher }),
+        React.createElement(GraphiQL, {
+          query: query.query,
+          variables: query.variables,
+          fetcher: graphQLFetcher
+        }),
         document.body
       );
     </script>
