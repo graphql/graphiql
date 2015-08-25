@@ -55,11 +55,11 @@
   "dependencies": {
     "babel-runtime": "^5.8.20",
     "codemirror": "^5.6.0",
-    "marked": "^0.3.5",
-    "react": "^0.13.3"
+    "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.4.2"
+    "graphql": "^0.4.2",
+    "react": "~0.13.x || ~0.14.x"
   },
   "devDependencies": {
     "babel": "5.8.21",
@@ -75,6 +75,7 @@
     "graphql": "0.4.2",
     "jsdom": "3.0.0",
     "mocha": "2.2.5",
+    "react": "0.13.3",
     "uglify-js": "^2.4.24",
     "uglifyify": "^3.0.1"
   }
