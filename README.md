@@ -1,7 +1,7 @@
 GraphiQL
 ========
 
-*/ˈɡrafək(ə)l/* An interactive in-browser GraphQL IDE.
+*/ˈɡrafək(ə)l/* An interactive in-browser GraphQL IDE. [Try the live demo](http://graphql-swapi.parseapp.com/graphiql/).
 
 ![](resources/graphiql.png)
 
