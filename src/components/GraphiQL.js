@@ -190,10 +190,6 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _onUpdate() {
-    this.forceUpdate();
-  }
-
   _onEditQuery(value) {
     window.localStorage.setItem('query', value);
     this.setState({ query: value });
