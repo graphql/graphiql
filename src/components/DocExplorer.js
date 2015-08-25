@@ -91,6 +91,26 @@ export class DocExplorer extends React.Component {
     );
   }
 
+  _renderTypes(type) {
+    function renderPossibleType(type) {
+      return (
+        <div>
+          <a href="javascript:void(0)">{type.name}</a>
+        </div>
+      );
+    }
+
+    var types = type.getPossibleTypes();
+    var typesJSX = [];
+    for (var type of types) {
+      typesJSX.push(renderPossibleType(type));
+    }
+
+    return (
+      {typesJSX}
+    );
+  }
+
   // TODO: This part could be optionalized
   _generateStartPage(schema) {
     var queryType = schema.getQueryType();
@@ -149,7 +169,6 @@ export class DocExplorer extends React.Component {
       if (typeName.startsWith('[') && typeName.endsWith(']')) {
         typeName = typeName.slice(1, typeName.length - 1);
       }
-      this.currentlyInspectedType = this.props.schema.getTypeMap()[typeName];
 
       this.setState({
         width: this.EXPLORER_WIDTH,
@@ -162,6 +181,19 @@ export class DocExplorer extends React.Component {
   _generateTypePage(type) {
     var fieldsDef = '';
     var valuesDef = '';
+    var typesDef = '';
+
+    if (type.getPossibleTypes) {
+      typesDef = (
+        <div className="doc-call-def">
+          <div className="doc-category-title">
+            Union Types
+          </div>
+          {this._renderTypes(type)}
+        </div>
+      );
+    }
+
     if (type.getFields) {
       fieldsDef = (
         <div className="doc-type-fields">
@@ -191,6 +223,7 @@ export class DocExplorer extends React.Component {
         <div className="doc-type-description">
           {type.description || 'Type description not found.'}
         </div>
+        {typesDef}
         {fieldsDef}
         {valuesDef}
       </div>
@@ -208,6 +241,16 @@ export class DocExplorer extends React.Component {
     this.setState({
       currentlyInspectedType: null
     });
+  }
+
+  _onDefClick(event) {
+    var target = event.target;
+    if (target && target.tagName === 'A') {
+      var typeName = target.innerHTML;
+      this.setState({
+        currentlyInspectedType: this.props.schema.getTypeMap()[typeName]
+      });
+    }
   }
 
   render() {
@@ -238,7 +281,9 @@ export class DocExplorer extends React.Component {
             Documentation Explorer
           </div>
         </div>
-        <div className="doc-explorer-contents">
+        <div className="doc-explorer-contents"
+          onClick={this._onDefClick.bind(this)}
+        >
           {this.content}
         </div>
       </div>

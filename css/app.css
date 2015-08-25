@@ -162,7 +162,6 @@ html, body {
           transform: translate(0, -50%);
 }
 
-
 #graphiql-container .doc-explorer-contents {
   position: relative;
   height: 100%;
