@@ -61,6 +61,38 @@ import { fillLeafs } from '../utility/fillLeafs';
  *
  */
 export class GraphiQL extends React.Component {
+
+  /**
+   * Inspect the query, automatically filling in selection sets for non-leaf
+   * fields which do not yet have them.
+   *
+   * @public
+   */
+  autoCompleteLeafs() {
+    var { insertions, result } = fillLeafs(
+      this.state.schema,
+      this.state.query,
+      this.props.getDefaultFieldNames
+    );
+    if (insertions) {
+      var editor = this.refs.queryEditor.getCodeMirror();
+      editor.setValue(result);
+      var added = 0;
+      var markers = insertions.map(({ index, string }) => editor.markText(
+        editor.posFromIndex(index + added),
+        editor.posFromIndex(index + (added += string.length)),
+        {
+          className: 'autoInsertedLeaf',
+          clearOnEnter: true,
+          title: 'Automatically added leaf fields'
+        }
+      ));
+      setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+    }
+  }
+
+  // Lifecycle
+
   constructor(props) {
     super();
 
@@ -94,7 +126,7 @@ export class GraphiQL extends React.Component {
     };
 
     // Ensure only the last executed editor query is rendered.
-    this.editorQueryID = 0;
+    this._editorQueryID = 0;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -112,52 +144,6 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   */
-  autoCompleteLeafs() {
-    var { insertions, result } = fillLeafs(
-      this.state.schema,
-      this.state.query,
-      this.props.getDefaultFieldNames
-    );
-    if (insertions) {
-      var editor = this.refs.queryEditor.getCodeMirror();
-      editor.setValue(result);
-      var added = 0;
-      var markers = insertions.map(({ index, string }) => editor.markText(
-        editor.posFromIndex(index + added),
-        editor.posFromIndex(index + (added += string.length)),
-        {
-          className: 'autoInsertedLeaf',
-          clearOnEnter: true,
-          title: 'Automatically added leaf fields'
-        }
-      ));
-      setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-    }
-  }
-
-  _fetchQuery(query, variables, cb) {
-    this.props.fetcher({ query, variables }).then(cb).catch(error => {
-      this.setState({ response: JSON.stringify(error, null, 2) });
-    });
-  }
-
-  _runEditorQuery() {
-    this.editorQueryID++;
-    var queryID = this.editorQueryID;
-
-    this.autoCompleteLeafs();
-
-    this._fetchQuery(this.state.query, this.state.variables, result => {
-      if (queryID === this.editorQueryID) {
-        this.setState({ response: JSON.stringify(result, null, 2) });
-      }
-    });
-  }
-
   componentDidMount() {
     if (!this.state.schema) {
       this._fetchQuery(introspectionQuery, null, result => {
@@ -168,38 +154,6 @@ export class GraphiQL extends React.Component {
         }
       });
     }
-  }
-
-  _onHintInformationRender(elem) {
-    var onClickHintInformation = this._onClickHintInformation.bind(this);
-    elem.addEventListener('click', onClickHintInformation);
-
-    var onRemoveFn;
-    elem.addEventListener('DOMNodeRemoved', onRemoveFn = () => {
-      elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
-      elem.removeEventListener('click', onClickHintInformation);
-    });
-  }
-
-  _onClickHintInformation(event) {
-    if (event.target.className === 'infoType') {
-      var typeName = event.target.innerHTML;
-      this.setState({
-        typeToExplore: typeName
-      });
-    }
-  }
-
-  _onEditQuery(value) {
-    window.localStorage.setItem('query', value);
-    this.setState({ query: value });
-    this.props.onEditQuery && this.props.onEditQuery(value);
-  }
-
-  _onEditVariables(value) {
-    window.localStorage.setItem('variables', value);
-    this.setState({ variables: value });
-    this.props.onEditVariables && this.props.onEditVariables(value);
   }
 
   render() {
@@ -227,7 +181,7 @@ export class GraphiQL extends React.Component {
         <div
           ref="editorBar"
           className="editorBar"
-          onMouseDown={this.onResizeStart.bind(this)}
+          onMouseDown={this._onResizeStart.bind(this)}
         >
           <div className="queryWrap" style={{ flex: this.state.editorFlex }}>
             <QueryEditor
@@ -241,7 +195,7 @@ export class GraphiQL extends React.Component {
               <div
                 className="variable-editor-title"
                 style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                onMouseDown={this.onVariableResizeStart.bind(this)}
+                onMouseDown={this._onVariableResizeStart.bind(this)}
               >
                 Query Variables
               </div>
@@ -268,42 +222,95 @@ export class GraphiQL extends React.Component {
     );
   }
 
-  onResizeStart(downEvent) {
-    if (this.mouseMoveListener || !this.didClickDragBar(downEvent)) {
+  // Private methods
+
+  _fetchQuery(query, variables, cb) {
+    this.props.fetcher({ query, variables }).then(cb).catch(error => {
+      this.setState({ response: JSON.stringify(error, null, 2) });
+    });
+  }
+
+  _runEditorQuery() {
+    this._editorQueryID++;
+    var queryID = this._editorQueryID;
+
+    this.autoCompleteLeafs();
+
+    this._fetchQuery(this.state.query, this.state.variables, result => {
+      if (queryID === this._editorQueryID) {
+        this.setState({ response: JSON.stringify(result, null, 2) });
+      }
+    });
+  }
+
+  _onEditQuery(value) {
+    window.localStorage.setItem('query', value);
+    this.setState({ query: value });
+    this.props.onEditQuery && this.props.onEditQuery(value);
+  }
+
+  _onEditVariables(value) {
+    window.localStorage.setItem('variables', value);
+    this.setState({ variables: value });
+    this.props.onEditVariables && this.props.onEditVariables(value);
+  }
+
+  _onHintInformationRender(elem) {
+    var onClickHintInformation = this._onClickHintInformation.bind(this);
+    elem.addEventListener('click', onClickHintInformation);
+
+    var onRemoveFn;
+    elem.addEventListener('DOMNodeRemoved', onRemoveFn = () => {
+      elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
+      elem.removeEventListener('click', onClickHintInformation);
+    });
+  }
+
+  _onClickHintInformation(event) {
+    if (event.target.className === 'infoType') {
+      var typeName = event.target.innerHTML;
+      this.setState({
+        typeToExplore: typeName
+      });
+    }
+  }
+
+  _onResizeStart(downEvent) {
+    if (this._mouseMoveListener || !this._didClickDragBar(downEvent)) {
       return;
     }
     this.mouseOffset = downEvent.clientX - getLeft(downEvent.target);
     downEvent.preventDefault();
-    this.mouseMoveListener = moveEvent => {
+    this._mouseMoveListener = moveEvent => {
       if (moveEvent.buttons === 0) {
-        this.onResizeEnd();
+        this._onResizeEnd();
       } else {
-        this.onResize(moveEvent);
+        this._onResize(moveEvent);
       }
     };
-    this.mouseUpListener = () => {
-      this.onResizeEnd();
+    this._mouseUpListener = () => {
+      this._onResizeEnd();
     };
-    document.addEventListener('mousemove', this.mouseMoveListener);
-    document.addEventListener('mouseup', this.mouseUpListener);
+    document.addEventListener('mousemove', this._mouseMoveListener);
+    document.addEventListener('mouseup', this._mouseUpListener);
   }
 
-  onResizeEnd() {
+  _onResizeEnd() {
     window.localStorage.setItem('editorFlex', this.state.editorFlex);
-    document.removeEventListener('mousemove', this.mouseMoveListener);
-    document.removeEventListener('mouseup', this.mouseUpListener);
-    this.mouseMoveListener = null;
-    this.mouseUpListener = null;
+    document.removeEventListener('mousemove', this._mouseMoveListener);
+    document.removeEventListener('mouseup', this._mouseUpListener);
+    this._mouseMoveListener = null;
+    this._mouseUpListener = null;
   }
 
-  onResize(event) {
+  _onResize(event) {
     var editorBar = React.findDOMNode(this.refs.editorBar);
     var leftSize = event.clientX - getLeft(editorBar) - this.mouseOffset;
     var rightSize = editorBar.clientWidth - leftSize;
     this.setState({ editorFlex: leftSize / rightSize });
   }
 
-  didClickDragBar(event) {
+  _didClickDragBar(event) {
     // Only for primary unmodified clicks
     if (event.button !== 0 || event.ctrlKey) {
       return false;
@@ -324,7 +331,7 @@ export class GraphiQL extends React.Component {
     return false;
   }
 
-  onVariableResizeStart(downEvent) {
+  _onVariableResizeStart(downEvent) {
     var wasOpen = this.state.variableEditorOpen;
     var hadHeight = this.state.variableEditorHeight;
     if (!wasOpen) {
@@ -336,15 +343,15 @@ export class GraphiQL extends React.Component {
     this.mouseOffset = downEvent.clientY - getTop(downEvent.target);
     downEvent.preventDefault();
     var didMove = false;
-    this.mouseMoveListener = moveEvent => {
+    this._mouseMoveListener = moveEvent => {
       didMove = true;
       if (moveEvent.buttons === 0) {
-        this.onVariableResizeEnd();
+        this._onVariableResizeEnd();
       } else {
-        this.onVariableResize(moveEvent);
+        this._onVariableResize(moveEvent);
       }
     };
-    this.mouseUpListener = upEvent => {
+    this._mouseUpListener = upEvent => {
       upEvent.preventDefault();
       if (!didMove) {
         var isOpen = !wasOpen;
@@ -357,14 +364,14 @@ export class GraphiQL extends React.Component {
         // properly rendered.
         window.dispatchEvent(new Event('resize'));
       } else {
-        this.onVariableResizeEnd();
+        this._onVariableResizeEnd();
       }
     };
-    document.addEventListener('mousemove', this.mouseMoveListener);
-    document.addEventListener('mouseup', this.mouseUpListener);
+    document.addEventListener('mousemove', this._mouseMoveListener);
+    document.addEventListener('mouseup', this._mouseUpListener);
   }
 
-  onVariableResizeEnd() {
+  _onVariableResizeEnd() {
     if (this.state.variableEditorHeight === 30) {
       window.localStorage.setItem('variableEditorHeight', 200);
       this.setState({ variableEditorOpen: false, variableEditorHeight: 200 });
@@ -374,13 +381,13 @@ export class GraphiQL extends React.Component {
         this.state.variableEditorHeight
       );
     }
-    document.removeEventListener('mousemove', this.mouseMoveListener);
-    document.removeEventListener('mouseup', this.mouseUpListener);
-    this.mouseMoveListener = null;
-    this.mouseUpListener = null;
+    document.removeEventListener('mousemove', this._mouseMoveListener);
+    document.removeEventListener('mouseup', this._mouseUpListener);
+    this._mouseMoveListener = null;
+    this._mouseUpListener = null;
   }
 
-  onVariableResize(event) {
+  _onVariableResize(event) {
     var editorBar = React.findDOMNode(this.refs.editorBar);
     var topSize = event.clientY - getTop(editorBar) - this.mouseOffset;
     var bottomSize = editorBar.clientHeight - topSize;
