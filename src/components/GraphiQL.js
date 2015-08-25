@@ -30,6 +30,9 @@ import { fillLeafs } from '../utility/fillLeafs';
  *   - schema: an optional GraphQLSchema instance. If one is not provided,
  *     GraphiQL will fetch one using introspection.
  *
+ *   - query: an optional GraphQL string to use as the initial displayed query,
+ *     if not provided, the local storage or defaultQuery will be used.
+ *
  *   - defaultQuery: an optional GraphQL string to use instead of a
  *     blank screen when a query was not found in the local cache.
  *
@@ -58,9 +61,17 @@ export class GraphiQL extends React.Component {
 
     var storage = window.localStorage;
 
+    // Determine the initial query to display.
+    var query =
+      props.query ||
+      storage.getItem('query') ||
+      props.defaultQuery ||
+      defaultQuery;
+
     // Initialize state
     this.state = {
       schema: props.schema,
+      query,
       response: null,
       editorFlex: storage.getItem('editorFlex') || 1,
       variableEditorOpen:
@@ -69,15 +80,16 @@ export class GraphiQL extends React.Component {
       typeToExplore: null,
     };
 
-    // This is kept outside of state because it is just a cached value.
-    this.queryString = storage.getItem('query') ||
-      props.defaultQuery ||
-      defaultQuery;
-
     this.variablesString = storage.getItem('variables');
 
     // Ensure only the last executed editor query is rendered.
     this.editorQueryID = 0;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.query && nextProps.query !== this.state.query) {
+      this.setState({ query: nextProps.query });
+    }
   }
 
   /**
@@ -87,7 +99,7 @@ export class GraphiQL extends React.Component {
   autoCompleteLeafs() {
     var { insertions, result } = fillLeafs(
       this.state.schema,
-      this.queryString,
+      this.state.query,
       this.props.getDefaultFieldNames
     );
     if (insertions) {
@@ -119,7 +131,7 @@ export class GraphiQL extends React.Component {
 
     this.autoCompleteLeafs();
 
-    this._fetchQuery(this.queryString, this.variablesString, result => {
+    this._fetchQuery(this.state.query, this.variablesString, result => {
       if (queryID === this.editorQueryID) {
         this.setState({ response: JSON.stringify(result, null, 2) });
       }
@@ -162,8 +174,8 @@ export class GraphiQL extends React.Component {
     this.forceUpdate();
   }
 
-  _onEdit(value) {
-    this.queryString = value;
+  _onEditQuery(value) {
+    this.setState({ query: value });
     window.localStorage.setItem('query', value);
   }
 
@@ -203,8 +215,8 @@ export class GraphiQL extends React.Component {
             <QueryEditor
               ref="queryEditor"
               schema={this.state.schema}
-              value={this.queryString}
-              onEdit={this._onEdit.bind(this)}
+              value={this.state.query}
+              onEdit={this._onEditQuery.bind(this)}
               onHintInformationRender={this._onHintInformationRender.bind(this)}
             />
             <div className="variable-editor" style={{ height: variableHeight }}>
