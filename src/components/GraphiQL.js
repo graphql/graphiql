@@ -39,6 +39,13 @@ import { fillLeafs } from '../utility/fillLeafs';
  *   - variables: an optional GraphQL string to use as the initial displayed
  *     query variables, if not provided, the local storage will be used.
  *
+ *   - onEditQuery: an optional function which will be called when the Query
+ *     editor changes. The argument to the function will be the query string.
+ *
+ *   - onEditVariables: an optional function which will be called when the Query
+ *     varible editor changes. The argument to the function will be the
+ *     variables string.
+ *
  *   - getDefaultFieldNames: an optional function used to provide default fields
  *     to non-leaf fields which invalidly lack a selection set.
  *     Accepts a GraphQLType instance and returns an array of field names.
@@ -188,13 +195,15 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditQuery(value) {
-    this.setState({ query: value });
     window.localStorage.setItem('query', value);
+    this.setState({ query: value });
+    this.props.onEditQuery && this.props.onEditQuery(value);
   }
 
   _onEditVariables(value) {
-    this.setState({ variables: value });
     window.localStorage.setItem('variables', value);
+    this.setState({ variables: value });
+    this.props.onEditVariables && this.props.onEditVariables(value);
   }
 
   render() {

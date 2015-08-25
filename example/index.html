@@ -23,7 +23,8 @@
       search.substr(1).split('&').forEach(function (entry) {
         var eq = entry.indexOf('=');
         if (eq >= 0) {
-          query[unescape(entry.slice(0, eq))] = unescape(entry.slice(eq + 1));
+          query[decodeURIComponent(entry.slice(0, eq))] =
+            decodeURIComponent(entry.slice(eq + 1));
         }
       });
 
@@ -35,6 +36,24 @@
         } catch (e) {
           // Do nothing
         }
+      }
+
+      // When the query and variables string is edited, update the URL bar so
+      // that it can be easily shared
+      function onEditQuery(newQuery) {
+        query.query = newQuery;
+        history.replaceState(null, null, buildSearch(query));
+      }
+
+      function onEditVariables(newVariables) {
+        query.variables = newVariables;
+        history.replaceState(null, null, buildSearch(query));
+      }
+
+      function buildSearch(obj) {
+        return '?' + Object.keys(obj).map(function (key) {
+          return encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]);
+        }).join('&');
       }
 
       // Defines a GraphQL fetcher using the fetch API.
@@ -50,9 +69,11 @@
 
       React.render(
         React.createElement(GraphiQL, {
+          fetcher: graphQLFetcher,
           query: query.query,
           variables: query.variables,
-          fetcher: graphQLFetcher
+          onEditQuery: onEditQuery,
+          onEditVariables: onEditVariables
         }),
         document.body
       );
