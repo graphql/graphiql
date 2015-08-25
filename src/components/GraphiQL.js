@@ -36,6 +36,9 @@ import { fillLeafs } from '../utility/fillLeafs';
  *   - defaultQuery: an optional GraphQL string to use instead of a
  *     blank screen when a query was not found in the local cache.
  *
+ *   - variables: an optional GraphQL string to use as the initial displayed
+ *     query variables, if not provided, the local storage will be used.
+ *
  *   - getDefaultFieldNames: an optional function used to provide default fields
  *     to non-leaf fields which invalidly lack a selection set.
  *     Accepts a GraphQLType instance and returns an array of field names.
@@ -68,28 +71,38 @@ export class GraphiQL extends React.Component {
       props.defaultQuery ||
       defaultQuery;
 
+    // Determine the initial variables to display.
+    var variables = props.variables || storage.getItem('variables');
+
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
+      variables,
       response: null,
       editorFlex: storage.getItem('editorFlex') || 1,
-      variableEditorOpen:
-        storage.getItem('variableEditorOpen') === 'true' || false,
+      variableEditorOpen: Boolean(variables),
       variableEditorHeight: storage.getItem('variableEditorHeight') || 200,
       typeToExplore: null,
     };
-
-    this.variablesString = storage.getItem('variables');
 
     // Ensure only the last executed editor query is rendered.
     this.editorQueryID = 0;
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.query && nextProps.query !== this.state.query) {
-      this.setState({ query: nextProps.query });
+    var nextQuery = this.state.query;
+    var nextVariables = this.state.variables;
+    if (nextProps.query && nextProps.query !== nextQuery) {
+      nextQuery = nextProps.query;
     }
+    if (nextProps.variables && nextProps.variables !== nextVariables) {
+      nextVariables = nextProps.variables;
+    }
+    this.setState({
+      query: nextQuery,
+      variables: nextVariables
+    });
   }
 
   /**
@@ -131,7 +144,7 @@ export class GraphiQL extends React.Component {
 
     this.autoCompleteLeafs();
 
-    this._fetchQuery(this.state.query, this.variablesString, result => {
+    this._fetchQuery(this.state.query, this.state.variables, result => {
       if (queryID === this.editorQueryID) {
         this.setState({ response: JSON.stringify(result, null, 2) });
       }
@@ -179,8 +192,8 @@ export class GraphiQL extends React.Component {
     window.localStorage.setItem('query', value);
   }
 
-  _onVariablesEdit(value) {
-    this.variablesString = value;
+  _onEditVariables(value) {
+    this.setState({ variables: value });
     window.localStorage.setItem('variables', value);
   }
 
@@ -228,8 +241,8 @@ export class GraphiQL extends React.Component {
                 Query Variables
               </div>
               <VariableEditor
-                value={this.variablesString}
-                onEdit={this._onVariablesEdit.bind(this)}
+                value={this.state.variables}
+                onEdit={this._onEditVariables.bind(this)}
               />
             </div>
           </div>
@@ -330,7 +343,6 @@ export class GraphiQL extends React.Component {
       upEvent.preventDefault();
       if (!didMove) {
         var isOpen = !wasOpen;
-        window.localStorage.setItem('variableEditorOpen', isOpen);
         this.setState({
           variableEditorOpen: isOpen,
           variableEditorHeight: hadHeight,
