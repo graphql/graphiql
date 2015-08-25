@@ -138,12 +138,16 @@ html, body {
 }
 
 #graphiql-container .doc-explorer-title {
-  padding: 10px 0;
+  padding: 10px 0 10px 10px;
   font-size: 14px;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
 }
 
-#graphiql-container .doc-explorer-toggle-button {
+#graphiql-container .doc-explorer-toggle-button,
+#graphiql-container .doc-back-to-main-button {
   position: relative;
   float: left;
   padding: 1px 8px;
@@ -158,6 +162,7 @@ html, body {
           transform: translate(0, -50%);
 }
 
+
 #graphiql-container .doc-explorer-contents {
   position: relative;
   height: 100%;
@@ -170,17 +175,32 @@ html, body {
   font-size: 12px;
 }
 
+#graphiql-container .doc-type-title {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 0;
+}
+
 #graphiql-container .doc-call-def {
   margin-bottom: 20px;
 }
 
-#graphiql-container .doc-type-title {
+#graphiql-container .doc-category-title {
   border-bottom: 1px solid #e0e0e0;
-  display: block;
   padding: 10px 0;
   margin-bottom: 10px;
   font-size: 14px;
   font-weight: bold;
+}
+
+#graphiql-container .doc-type-fields {
+  padding: 10px 0;
+  margin-bottom: 10px;
+}
+
+#graphiql-container .doc-type-values {
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 
 #graphiql-container .footer {

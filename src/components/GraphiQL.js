@@ -11,7 +11,7 @@ import { ExecuteButton } from './ExecuteButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
-// import { DocExplorer } from './DocExplorer';
+import { DocExplorer } from './DocExplorer';
 import { GraphQLSchema } from 'graphql';
 import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
 import find from 'graphql/jsutils/find';
@@ -247,12 +247,11 @@ export class GraphiQL extends React.Component {
           </div>
         </div>
         <div className="docExplorerWrap">
-          {// Temporarily disabled.
-          /* <DocExplorer
+          <DocExplorer
             ref="docExplorer"
             schema={this.state.schema}
             typeName={this.state.typeToExplore}
-          /> */}
+          />
         </div>
       </div>
     );
