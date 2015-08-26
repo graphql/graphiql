@@ -268,13 +268,17 @@ export class GraphiQL extends React.Component {
   _onEditQuery(value) {
     window.localStorage.setItem('query', value);
     this.setState({ query: value });
-    this.props.onEditQuery && this.props.onEditQuery(value);
+    if (this.props.onEditQuery) {
+      return this.props.onEditQuery(value);
+    }
   }
 
   _onEditVariables(value) {
     window.localStorage.setItem('variables', value);
     this.setState({ variables: value });
-    this.props.onEditVariables && this.props.onEditVariables(value);
+    if (this.props.onEditVariables) {
+      this.props.onEditVariables(value);
+    }
   }
 
   _onHintInformationRender(elem) {
