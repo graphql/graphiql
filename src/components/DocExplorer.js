@@ -18,9 +18,16 @@ import {
 /**
  * DocExplorer
  *
+ * Shows documentations for GraphQL definitions from the schema.
  *
  * Props:
  *
+ *   - schema: A required GraphQLSchema instance that provides GraphQL document
+ *     definitions.
+ *
+ *   - typeName: An optional prop provided when a type is clicked from
+ *     QueryEditor hint object. The click triggers the document explorer to
+ *     show a definition of the type clicked.
  *
  */
 export class DocExplorer extends React.Component {
@@ -32,7 +39,7 @@ export class DocExplorer extends React.Component {
   constructor() {
     super();
 
-    this.EXPLORER_WIDTH = 350;
+    this.EXPLORER_WIDTH = 450;
     this.state = {
       width: 'initial',
       expanded: false,
@@ -43,8 +50,10 @@ export class DocExplorer extends React.Component {
     this.startPage = '';
     this.content = '';
 
+    // Navigation stack to remember the definitions visited.
     this.navStack = [];
 
+    // A static `Main Page` button that does not have to change.
     this.backToMainButton = (
       <button className="doc-back-to-main-button"
         style={{ marginLeft: "6px" }}
@@ -56,24 +65,26 @@ export class DocExplorer extends React.Component {
   }
 
   _getTypeLink(type) {
-    return type.ofType ? (
+    return type.ofType ?
       <span>
         [
-        <a className="doc-type">{type.ofType.name}</a>
+          <a className="doc-type">{type.ofType.name}</a>
         ]
-      </span>
-    ) : <a className="doc-type">{type.name}</a>;
+      </span> :
+      <span>
+        <a className="doc-type">{type.name}</a>
+      </span>;
   }
 
   _renderTypeFields(type) {
     var _getTypeLink = this._getTypeLink;
     function renderField(field, from) {
+      // Provide the type parenting this field as a data attribute
+      // so that later when the field is clicked, a correct type can be
+      // looked up and referenced to.
       return (
         <div className="doc-category-item">
-          <a className="doc-call-sign"
-            data-from-type-name={from.name}
-            href="javascript:void(0)"
-          >
+          <a className="doc-call-sign" data-from-type-name={from.name}>
             {field.name}
           </a>
           <span> : </span>
@@ -118,8 +129,8 @@ export class DocExplorer extends React.Component {
   _renderTypes(types) {
     function renderType(type) {
       return (
-        <div className="doc-type-def">
-          <a className="doc-type" href="javascript:void(0)">{type.name}</a>
+        <div className="doc-category-item">
+          <a className="doc-type">{type.name}</a>
         </div>
       );
     }
@@ -134,25 +145,17 @@ export class DocExplorer extends React.Component {
     );
   }
 
-  _generateStartPage(schema) {
-    var queryType = schema.getQueryType();
-    var mutationType = schema.getMutationType();
-
-    var typesJSX = this._renderTypes([queryType, mutationType]);
-
-    return (
-      <div className="doc-main-page">
-        {typesJSX}
-      </div>
-    );
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.schema && nextProps.schema !== this.props.schema) {
       this.startPage = this._generateStartPage(nextProps.schema);
     }
 
-    if (nextProps.typeName !== this.props.typeName) {
+    // When a new typeName is received from parent component,
+    // update the doc page only if the type name is different from
+    // one currently being inspected.
+    if (nextProps.typeName !== this.props.typeName ||
+        (this.state.inspectedType &&
+         nextProps.typeName !== this.state.inspectedType.name)) {
       var typeName = nextProps.typeName;
       if (typeName.endsWith('!')) {
         typeName = typeName.slice(0, typeName.length - 1);
@@ -161,51 +164,61 @@ export class DocExplorer extends React.Component {
         typeName = typeName.slice(1, typeName.length - 1);
       }
 
+      var type = this.props.schema.getType(typeName);
+
       this.setState({
         width: this.EXPLORER_WIDTH,
         expanded: true,
-        inspectedType: this.props.schema.getTypeMap()[typeName]
+        inspectedType: type,
+        inspectedCall: null
+      });
+
+      this.navStack.push({
+        id: 'type',
+        elem: type
       });
     }
+  }
+
+  _generateStartPage(schema) {
+    var queryType = schema.getQueryType();
+    var mutationType = schema.getMutationType();
+
+    var typesJSX = this._renderTypes([queryType, mutationType]);
+
+    return (
+      <div className="doc-category">
+        {typesJSX}
+      </div>
+    );
   }
 
   _generateTypePage(type) {
     var fieldsDef = '';
     var valuesDef = '';
-    var typesDef = '';
+
+    var types;
+    var typesDefTitle = '';
 
     if (type instanceof GraphQLUnionType) {
-      typesDef = (
-        <div className="doc-call-def">
-          <div className="doc-category-title">
-            possible types
-          </div>
-          {this._renderTypes(type.getPossibleTypes())}
-        </div>
-      );
+      types = this._renderTypes(type.getPossibleTypes());
+      typesDefTitle = 'possible types';
+    } else if (type instanceof GraphQLInterfaceType) {
+      types = this._renderTypes(type.getPossibleTypes());
+      typesDefTitle = 'implemented by';
+    } else if (type.getInterfaces && type.getInterfaces().length > 0) {
+      types = this._renderTypes(type.getInterfaces());
+      typesDefTitle = 'interfaces';
     }
 
-    if (type instanceof GraphQLInterfaceType) {
-      typesDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            implemented by
-          </div>
-          {this._renderTypes(type.getPossibleTypes())}
+    var typesDef = types ? (
+      <div className="doc-category">
+        <div className="doc-category-title">
+          {typesDefTitle}
         </div>
-      );
-    }
-
-    if (type.getInterfaces && type.getInterfaces().length > 0) {
-      typesDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            interfaces
-          </div>
-          {this._renderTypes(type.getInterfaces())}
-        </div>
-      );
-    }
+        {types}
+      </div>
+    ) : '';
 
     if (type.getFields) {
       fieldsDef = (
@@ -257,13 +270,13 @@ export class DocExplorer extends React.Component {
               <span className="doc-arg-name">{arg.name}</span>
             </div>
             <div className="doc-arg-description">
-              {arg.description}
+              {arg.description || 'Self descriptive.'}
             </div>
           </div>
         );
       }
       argsDef = (
-        <div className="doc-arguments">
+        <div className="doc-category">
           <div className="doc-category-title">
             arguments
           </div>
@@ -277,10 +290,10 @@ export class DocExplorer extends React.Component {
         <div className="doc-type-title">
           {call.name}
           <span> : </span>
-          <a className="doc-type" href="javascript:void(0)">{call.type.name}</a>
+          {this._getTypeLink(call.type)}
         </div>
         <div className="doc-type-description">
-          {call.description}
+          {call.description || 'Self descriptive.'}
         </div>
         {argsDef}
       </div>
@@ -293,9 +306,7 @@ export class DocExplorer extends React.Component {
       "Main Page";
     return (
       <div className="doc-nav-back-link">
-        <a href="javascript:void(0)"
-          onClick={this._onNavBackLinkClick.bind(this)}
-        >
+        <a onClick={this._onNavBackLinkClick.bind(this)}>
           Back To {name}
         </a>
       </div>
@@ -395,9 +406,7 @@ export class DocExplorer extends React.Component {
     }
 
     return (
-      <div className="doc-explorer"
-        style={{ width: this.state.width }}
-      >
+      <div className="doc-explorer" style={{ width: this.state.width }}>
         <div className="doc-explorer-title-bar">
           <button
             className="doc-explorer-toggle-button"

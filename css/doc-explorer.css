@@ -73,14 +73,6 @@
   padding-bottom: 10px;
 }
 
-#graphiql-container .doc-main-page {
-  padding-top: 12px;
-}
-
-#graphiql-container .doc-type-def {
-  padding-bottom: 8px;
-}
-
 #graphiql-container .doc-type-title {
   font-size: 14px;
   font-weight: bold;
@@ -92,7 +84,7 @@
 }
 
 #graphiql-container .doc-arg-description {
-  padding: 4px 0 8px;
+  padding: 4px 0 8px 12px;
 }
 
 #graphiql-container .doc-category {
