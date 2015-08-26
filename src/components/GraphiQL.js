@@ -154,8 +154,6 @@ export class GraphiQL extends React.Component {
         }
       });
     }
-
-    this._updateQueryWrapFlex();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -165,8 +163,6 @@ export class GraphiQL extends React.Component {
         this.state.variableEditorHeight !== prevState.variableEditorHeight) {
       window.dispatchEvent(new Event('resize'));
     }
-
-    this._updateQueryWrapFlex();
   }
 
   render() {
@@ -184,6 +180,11 @@ export class GraphiQL extends React.Component {
     var variableOpen = this.state.variableEditorOpen;
     var variableHeight = variableOpen ? this.state.variableEditorHeight : null;
 
+    var queryWrapStyle = {
+      WebkitFlex: this.state.editorFlex,
+      flex: this.state.editorFlex,
+    };
+
     return (
       <div id="graphiql-container">
         <div className="topBar">
@@ -196,7 +197,7 @@ export class GraphiQL extends React.Component {
           className="editorBar"
           onMouseDown={this._onResizeStart.bind(this)}
         >
-          <div className="queryWrap" ref="queryWrap">
+          <div className="queryWrap" style={queryWrapStyle}>
             <QueryEditor
               ref="queryEditor"
               schema={this.state.schema}
@@ -236,15 +237,6 @@ export class GraphiQL extends React.Component {
   }
 
   // Private methods
-
-  _updateQueryWrapFlex() {
-    // Note: this really should belong in the render function, but React
-    // does not properly apply webkitFlex.
-    // https://github.com/facebook/react/issues/4714
-    var queryWrap = React.findDOMNode(this.refs.queryWrap);
-    queryWrap.style.webkitFlex = this.state.editorFlex;
-    queryWrap.style.flex = this.state.editorFlex;
-  }
 
   _fetchQuery(query, variables, cb) {
     this.props.fetcher({ query, variables }).then(cb).catch(error => {
