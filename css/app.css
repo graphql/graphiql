@@ -168,20 +168,49 @@ html, body {
   background-color: #ffffff;
   border-left: 1px solid #d6d6d6;
   border-top: 1px solid #d6d6d6;
-  padding: 14px 14px;
+  padding: 14px 15px;
   overflow: hidden;
   font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
   font-size: 12px;
 }
 
+#graphiql-container .doc-explorer-contents a {
+  text-decoration: none;
+  color: #7f93bc;
+}
+
+#graphiql-container .doc-explorer-contents a:hover {
+  text-decoration: underline;
+}
+
+#graphiql-container .doc-nav-back-link {
+  padding-bottom: 10px;
+}
+
+#graphiql-container .doc-main-page {
+  padding-top: 12px;
+}
+
+#graphiql-container .doc-type-def {
+  padding-bottom: 8px;
+}
+
 #graphiql-container .doc-type-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   padding: 10px 0;
 }
 
-#graphiql-container .doc-call-def {
+#graphiql-container .doc-root-call-def {
   margin-bottom: 20px;
+}
+
+#graphiql-container .doc-arg-type {
+  color: #999999;
+}
+
+#graphiql-container .doc-arg-description {
+  padding: 4px 0 8px;
 }
 
 #graphiql-container .doc-category-title {
@@ -189,7 +218,9 @@ html, body {
   padding: 10px 0;
   margin-bottom: 10px;
   font-size: 14px;
+  font-variant: small-caps;
   font-weight: bold;
+  letter-spacing: 1px;
 }
 
 #graphiql-container .doc-type-fields {
