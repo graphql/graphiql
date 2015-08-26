@@ -60,6 +60,7 @@
 }
 
 #graphiql-container .doc-explorer-contents a {
+  cursor: pointer;
   text-decoration: none;
   color: #7f93bc;
 }
@@ -86,16 +87,17 @@
   padding: 10px 0;
 }
 
-#graphiql-container .doc-root-call-def {
-  margin-bottom: 20px;
-}
-
 #graphiql-container .doc-arg-type {
   color: #999999;
 }
 
 #graphiql-container .doc-arg-description {
   padding: 4px 0 8px;
+}
+
+#graphiql-container .doc-category {
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 
 #graphiql-container .doc-category-title {
@@ -108,13 +110,6 @@
   letter-spacing: 1px;
 }
 
-#graphiql-container .doc-type-fields {
-  padding: 10px 0;
-  margin-bottom: 10px;
+#graphiql-container .doc-category-item {
+  padding: 4px 0 8px;
 }
-
-#graphiql-container .doc-type-values {
-  padding: 10px 0;
-  margin-bottom: 10px;
-}
-
