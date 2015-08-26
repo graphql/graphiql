@@ -183,6 +183,8 @@ function readString() {
         default:
           throw syntaxError('Bad character escape sequence.');
       }
+    } else if (end === strLen) {
+      throw syntaxError('Unterminated string.');
     }
   }
 
