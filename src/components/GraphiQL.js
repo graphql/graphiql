@@ -154,6 +154,19 @@ export class GraphiQL extends React.Component {
         }
       });
     }
+
+    this._updateQueryWrapFlex();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // When UI-altering state changes, simulate a window resize event so all
+    // CodeMirror instances become properly rendered.
+    if (this.state.variableEditorOpen !== prevState.variableEditorOpen ||
+        this.state.variableEditorHeight !== prevState.variableEditorHeight) {
+      window.dispatchEvent(new Event('resize'));
+    }
+
+    this._updateQueryWrapFlex();
   }
 
   render() {
@@ -183,7 +196,7 @@ export class GraphiQL extends React.Component {
           className="editorBar"
           onMouseDown={this._onResizeStart.bind(this)}
         >
-          <div className="queryWrap" style={{ flex: this.state.editorFlex }}>
+          <div className="queryWrap" ref="queryWrap">
             <QueryEditor
               ref="queryEditor"
               schema={this.state.schema}
@@ -223,6 +236,15 @@ export class GraphiQL extends React.Component {
   }
 
   // Private methods
+
+  _updateQueryWrapFlex() {
+    // Note: this really should belong in the render function, but React
+    // does not properly apply webkitFlex.
+    // https://github.com/facebook/react/issues/4714
+    var queryWrap = React.findDOMNode(this.refs.queryWrap);
+    queryWrap.style.webkitFlex = this.state.editorFlex;
+    queryWrap.style.flex = this.state.editorFlex;
+  }
 
   _fetchQuery(query, variables, cb) {
     this.props.fetcher({ query, variables }).then(cb).catch(error => {
@@ -276,38 +298,36 @@ export class GraphiQL extends React.Component {
   }
 
   _onResizeStart(downEvent) {
-    if (this._mouseMoveListener || !this._didClickDragBar(downEvent)) {
+    if (!this._didClickDragBar(downEvent)) {
       return;
     }
-    this.mouseOffset = downEvent.clientX - getLeft(downEvent.target);
+
     downEvent.preventDefault();
-    this._mouseMoveListener = moveEvent => {
+
+    var offset = downEvent.clientX - getLeft(downEvent.target);
+
+    var onMouseMove = moveEvent => {
       if (moveEvent.buttons === 0) {
-        this._onResizeEnd();
-      } else {
-        this._onResize(moveEvent);
+        return onMouseUp();
       }
-    };
-    this._mouseUpListener = () => {
-      this._onResizeEnd();
-    };
-    document.addEventListener('mousemove', this._mouseMoveListener);
-    document.addEventListener('mouseup', this._mouseUpListener);
-  }
 
-  _onResizeEnd() {
-    window.localStorage.setItem('editorFlex', this.state.editorFlex);
-    document.removeEventListener('mousemove', this._mouseMoveListener);
-    document.removeEventListener('mouseup', this._mouseUpListener);
-    this._mouseMoveListener = null;
-    this._mouseUpListener = null;
-  }
+      var editorBar = React.findDOMNode(this.refs.editorBar);
+      var leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
+      var rightSize = editorBar.clientWidth - leftSize;
+      this.setState({ editorFlex: leftSize / rightSize });
+    };
 
-  _onResize(event) {
-    var editorBar = React.findDOMNode(this.refs.editorBar);
-    var leftSize = event.clientX - getLeft(editorBar) - this.mouseOffset;
-    var rightSize = editorBar.clientWidth - leftSize;
-    this.setState({ editorFlex: leftSize / rightSize });
+    var onMouseUp = () => {
+      window.localStorage.setItem('editorFlex', this.state.editorFlex);
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 
   _didClickDragBar(event) {
@@ -332,73 +352,54 @@ export class GraphiQL extends React.Component {
   }
 
   _onVariableResizeStart(downEvent) {
+    downEvent.preventDefault();
+
+    var didMove = false;
     var wasOpen = this.state.variableEditorOpen;
     var hadHeight = this.state.variableEditorHeight;
-    if (!wasOpen) {
-      this.setState({
-        variableEditorOpen: true,
-        variableEditorHeight: 30,
-      });
-    }
-    this.mouseOffset = downEvent.clientY - getTop(downEvent.target);
-    downEvent.preventDefault();
-    var didMove = false;
-    this._mouseMoveListener = moveEvent => {
-      didMove = true;
+    var offset = downEvent.clientY - getTop(downEvent.target);
+
+    var onMouseMove = moveEvent => {
       if (moveEvent.buttons === 0) {
-        this._onVariableResizeEnd();
-      } else {
-        this._onVariableResize(moveEvent);
+        return onMouseUp();
       }
-    };
-    this._mouseUpListener = upEvent => {
-      upEvent.preventDefault();
-      if (!didMove) {
-        var isOpen = !wasOpen;
+
+      didMove = true;
+
+      var editorBar = React.findDOMNode(this.refs.editorBar);
+      var topSize = moveEvent.clientY - getTop(editorBar) - offset;
+      var bottomSize = editorBar.clientHeight - topSize;
+      if (bottomSize < 60) {
         this.setState({
-          variableEditorOpen: isOpen,
-          variableEditorHeight: hadHeight,
+          variableEditorOpen: false,
+          variableEditorHeight: hadHeight
         });
-
-        // Simulate a window resize event so any CodeMirror instances become
-        // properly rendered.
-        window.dispatchEvent(new Event('resize'));
       } else {
-        this._onVariableResizeEnd();
+        this.setState({
+          variableEditorOpen: true,
+          variableEditorHeight: bottomSize
+        });
       }
     };
-    document.addEventListener('mousemove', this._mouseMoveListener);
-    document.addEventListener('mouseup', this._mouseUpListener);
-  }
 
-  _onVariableResizeEnd() {
-    if (this.state.variableEditorHeight === 30) {
-      window.localStorage.setItem('variableEditorHeight', 200);
-      this.setState({ variableEditorOpen: false, variableEditorHeight: 200 });
-    } else {
-      window.localStorage.setItem(
-        'variableEditorHeight',
-        this.state.variableEditorHeight
-      );
-    }
-    document.removeEventListener('mousemove', this._mouseMoveListener);
-    document.removeEventListener('mouseup', this._mouseUpListener);
-    this._mouseMoveListener = null;
-    this._mouseUpListener = null;
-  }
+    var onMouseUp = () => {
+      if (didMove) {
+        window.localStorage.setItem(
+          'variableEditorHeight',
+          this.state.variableEditorHeight
+        );
+      } else {
+        this.setState({ variableEditorOpen: !wasOpen });
+      }
 
-  _onVariableResize(event) {
-    var editorBar = React.findDOMNode(this.refs.editorBar);
-    var topSize = event.clientY - getTop(editorBar) - this.mouseOffset;
-    var bottomSize = editorBar.clientHeight - topSize;
-    if (bottomSize < 60) {
-      bottomSize = 30;
-    }
-    this.setState({ variableEditorHeight: bottomSize });
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
 
-    // Simulate a window resize event so any CodeMirror instances become
-    // properly rendered.
-    window.dispatchEvent(new Event('resize'));
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 }
 

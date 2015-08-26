@@ -78,8 +78,7 @@ html, body {
 }
 
 #graphiql-container .variable-editor {
-  -webkit-flex: 0;
-          flex: 0;
+  height: 30px;
   display: -webkit-flex;
   display:         flex;
   -webkit-flex-direction: column;
