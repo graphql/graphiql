@@ -79,11 +79,7 @@
   padding: 10px 0;
 }
 
-#graphiql-container .doc-arg-type {
-  color: #999999;
-}
-
-#graphiql-container .doc-arg-description {
+#graphiql-container .doc-value-description {
   padding: 4px 0 8px 12px;
 }
 

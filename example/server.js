@@ -123,18 +123,22 @@ var TestType = new GraphQLObjectType({
   fields: () => ({
     test: {
       type: TestType,
+      description: 'test field from Test type.',
       resolve: () => ({})
     },
     union: {
       type: TestUnion,
+      description: 'union field from Test type.',
       resolve: () => ({})
     },
     id: {
       type: GraphQLInt,
+      description: 'id field from Test type.',
       resolve: () => ({})
     },
     isTest: {
       type: GraphQLBoolean,
+      description: 'Is this a test schema? Sure it is.',
       resolve: () => {
         return true;
       }

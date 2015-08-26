@@ -10,8 +10,7 @@ import React, { PropTypes } from 'react';
 import {
   GraphQLSchema,
   GraphQLUnionType,
-  GraphQLInterfaceType,
-  isLeafType
+  GraphQLInterfaceType
 } from 'graphql/type';
 
 
@@ -56,7 +55,7 @@ export class DocExplorer extends React.Component {
     // A static `Main Page` button that does not have to change.
     this.backToMainButton = (
       <button className="doc-back-to-main-button"
-        style={{ marginLeft: "6px" }}
+        style={{ marginLeft: '6px' }}
         onClick={this._onBackToMainBtnClick.bind(this)}
       >
         Main Page
@@ -110,7 +109,12 @@ export class DocExplorer extends React.Component {
     function renderValue(value) {
       return (
         <div className="doc-category-item">
-          <span className="doc-value-name">{value.name}</span>
+          <div className="doc-value-name">
+            {value.name} = {value.value}
+          </div>
+          <div className="doc-value-description">
+            {value.description || 'Self descriptive.'}
+          </div>
         </div>
       );
     }
@@ -184,7 +188,7 @@ export class DocExplorer extends React.Component {
     var queryType = schema.getQueryType();
     var mutationType = schema.getMutationType();
 
-    var typesJSX = this._renderTypes([queryType, mutationType]);
+    var typesJSX = this._renderTypes([ queryType, mutationType ]);
 
     return (
       <div className="doc-category">
@@ -257,19 +261,18 @@ export class DocExplorer extends React.Component {
   }
 
   _generateCallPage(call) {
-    var callSignature = '';
     var argsJSX = [];
     var argsDef = '';
     if (call.args && call.args.length > 0) {
       for (var arg of call.args) {
         argsJSX.push(
           <div>
-            <div className="doc-arg-title">
+            <div className="doc-value-title">
               {this._getTypeLink(arg.type)}
               {" "}
-              <span className="doc-arg-name">{arg.name}</span>
+              <span className="doc-value-name">{arg.name}</span>
             </div>
-            <div className="doc-arg-description">
+            <div className="doc-value-description">
               {arg.description || 'Self descriptive.'}
             </div>
           </div>
@@ -303,7 +306,7 @@ export class DocExplorer extends React.Component {
   _generateNavBackLink() {
     var name = this.navStack.length > 1 ?
       this.navStack[this.navStack.length - 2].elem.name :
-      "Main Page";
+      'Main Page';
     return (
       <div className="doc-nav-back-link">
         <a onClick={this._onNavBackLinkClick.bind(this)}>
@@ -320,7 +323,7 @@ export class DocExplorer extends React.Component {
     });
   }
 
-  _onNavBackLinkClick(event) {
+  _onNavBackLinkClick() {
     var newState = {
       inspectedCall: null,
       inspectedType: null
@@ -352,10 +355,11 @@ export class DocExplorer extends React.Component {
 
   _onDefClick(event) {
     var target = event.target;
+    var typeName;
     if (target && target.tagName === 'A') {
       switch (target.className) {
         case 'doc-call-sign':
-          var typeName = target.getAttribute('data-from-type-name');
+          typeName = target.getAttribute('data-from-type-name');
           var fields = this.props.schema.getType(typeName).getFields();
           var callName = target.innerHTML;
           this.setState({
@@ -368,7 +372,7 @@ export class DocExplorer extends React.Component {
           });
           break;
         case 'doc-type':
-          var typeName = target.innerHTML;
+          typeName = target.innerHTML;
           var type = this.props.schema.getType(typeName);
           this.setState({
             inspectedType: type,
