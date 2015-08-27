@@ -123,12 +123,12 @@ var TestType = new GraphQLObjectType({
   fields: () => ({
     test: {
       type: TestType,
-      description: 'test field from Test type.',
+      description: '`test` field from `Test` type.',
       resolve: () => ({})
     },
     union: {
       type: TestUnion,
-      description: 'union field from Test type.',
+      description: '> union field from Test type, block-quoted.',
       resolve: () => ({})
     },
     id: {
