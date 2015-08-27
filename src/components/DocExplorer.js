@@ -173,7 +173,7 @@ export class DocExplorer extends React.Component {
     if (nextProps.typeName !== this.props.typeName ||
         (this.state.inspectedType &&
          nextProps.typeName !== this.state.inspectedType.name)) {
-      var typeName = nextProps.typeName;
+      var typeName = nextProps.typeName || this.state.inspectedType.name;
       if (typeName.endsWith('!')) {
         typeName = typeName.slice(0, typeName.length - 1);
       }
@@ -184,8 +184,9 @@ export class DocExplorer extends React.Component {
       var type = this.props.schema.getType(typeName);
 
       this.setState({
-        width: this.EXPLORER_WIDTH,
-        expanded: true,
+        width: this.state.inspectedType ?
+          this.state.width : this.EXPLORER_WIDTH,
+        expanded: this.state.inspectedType ? this.state.expanded : true,
         inspectedType: type,
         inspectedCall: null
       });
