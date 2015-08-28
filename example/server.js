@@ -27,8 +27,8 @@ app.use(express.static(__dirname));
 app.use('/graphql', graphqlHTTP(() => ({
   schema: TestSchema
 })));
-app.listen(8080);
-console.log('Started on http://localhost:8080/');
+app.listen(8081);
+console.log('Started on http://localhost:8081/');
 
 // Schema defined here
 
