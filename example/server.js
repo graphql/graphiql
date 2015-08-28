@@ -24,11 +24,24 @@ import {
 
 var app = express();
 app.use(express.static(__dirname));
-app.use('/graphql', graphqlHTTP(() => ({
-  schema: TestSchema
-})));
-app.listen(8080);
-console.log('Started on http://localhost:8080/');
+app.listen(8080, () => {
+  app.use('/graphql', graphqlHTTP(() => ({
+    schema: TestSchema
+  })));
+  console.log('Started with test schema on http://localhost:8080/');
+})
+.on('error', (e) => {
+  // If 8080 is in use, assume we are using realy-starter-kit
+  // and start on 8081.
+  if (e.code == 'EADDRINUSE') {
+    app.listen(8081, () => {
+      console.log('http://localhost:8080 is in use.');
+      console.log('Assuming relay-starter-kit is running.');
+      console.log('Free up port 8080 if not using relay-starter-kit.');
+      console.log('Started with no schema on http://localhost:8081/');
+    });
+  }
+})
 
 // Schema defined here
 
