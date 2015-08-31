@@ -71,7 +71,7 @@
 
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch(window.location.origin + '/graphql', {
+        return fetch('http://localhost:8080/graphql', {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(graphQLParams),
