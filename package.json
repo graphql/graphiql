@@ -14,7 +14,7 @@
     "type": "git",
     "url": "http://github.com/graphql/graphiql.git"
   },
-  "license": "See LICENSE",
+  "license": "SEE LICENSE IN LICENSE",
   "main": "dist/index.js",
   "files": [
     "dist",
