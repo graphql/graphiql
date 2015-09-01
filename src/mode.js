@@ -154,21 +154,29 @@ function indent(state, textAfter) {
   return level * this.config.indentUnit;
 }
 
+function assign(to, from) {
+  var keys = Object.keys(from);
+  for (var i = 0; i < keys.length; i++) {
+    to[keys[i]] = from[keys[i]];
+  }
+  return to;
+}
+
 var stateCache = {};
 
 // Save the current state in the cache.
 function saveState(state) {
-  Object.assign(stateCache, state);
+  assign(stateCache, state);
 }
 
 // Restore from the state cache.
 function restoreState(state) {
-  Object.assign(state, stateCache);
+  assign(state, stateCache);
 }
 
 // Push a new rule onto the state.
 function pushRule(state, ruleKind) {
-  state.prevState = Object.assign({}, state);
+  state.prevState = assign({}, state);
   state.kind = ruleKind;
   state.name = null;
   state.type = null;
