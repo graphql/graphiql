@@ -1,0 +1,66 @@
+{
+  "name": "codemirror-graphql",
+  "version": "0.0.0",
+  "description": "GraphQL mode and helpers for CodeMirror.",
+  "contributors": [
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "homepage": "https://github.com/graphql/codemirror-graphql",
+  "bugs": {
+    "url": "https://github.com/graphql/codemirror-graphql/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/codemirror-graphql.git"
+  },
+  "license": "BSD-3-Clause",
+  "files": [
+    "hint.js",
+    "mode.js",
+    "lint.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "babel": {
+    "loose": [
+      "es6.classes",
+      "es6.destructuring",
+      "es6.modules",
+      "es6.properties.computed",
+      "es6.spread",
+      "es6.templateLiterals"
+    ]
+  },
+  "options": {
+    "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
+  },
+  "scripts": {
+    "test": "npm run lint && npm run testonly",
+    "testonly": "mocha $npm_package_options_mocha",
+    "lint": "eslint src",
+    "check": "flow check",
+    "build": "babel src --ignore __tests__ --out-dir .",
+    "watch": "babel --optional runtime resources/watch.js | node",
+    "preversion": ". ./resources/checkgit.sh && npm test",
+    "prepublish": "npm run build"
+  },
+  "peerDependencies": {
+    "graphql": "^0.4.2",
+    "codemirror": "^5.6.0"
+  },
+  "devDependencies": {
+    "babel": "5.8.23",
+    "babel-core": "5.8.23",
+    "babel-eslint": "4.0.10",
+    "chai": "3.2.0",
+    "chai-subset": "1.0.1",
+    "codemirror": "5.6.0",
+    "eslint": "1.2.1",
+    "flow-bin": "0.14.0",
+    "graphql": "0.4.2",
+    "jsdom": "3.0.0",
+    "mocha": "2.2.5",
+    "sane": "1.2.0"
+  }
+}

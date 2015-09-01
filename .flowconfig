@@ -1,0 +1,10 @@
+[ignore]
+.*/coverage/.*
+.*/resources/.*
+.*/node_modules/.*
+
+[include]
+
+[libs]
+
+[options]
