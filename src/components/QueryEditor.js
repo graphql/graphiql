@@ -17,9 +17,9 @@ import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/lint/lint';
 import 'codemirror/keymap/sublime';
-import '../codemirror/hint/graphql-hint';
-import '../codemirror/lint/graphql-lint';
-import '../codemirror/mode/graphql-mode';
+import 'codemirror-graphql/hint';
+import 'codemirror-graphql/lint';
+import 'codemirror-graphql/mode';
 
 
 /**
@@ -53,7 +53,6 @@ export class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
-    var onHintInformationRender = this.props.onHintInformationRender;
     this.editor = CodeMirror(React.findDOMNode(this), {
       value: this.props.value || '',
       lineNumbers: true,
@@ -74,23 +73,6 @@ export class QueryEditor extends React.Component {
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
-        displayInfo: true,
-        renderInfo(elem, ctx) {
-          var description = marked(
-            ctx.description || 'Self descriptive.',
-            { smartypants: true }
-          );
-          var type = ctx.type ?
-            '<span class="infoType">' + String(ctx.type) + '</span>' :
-            '';
-          elem.innerHTML = '<div class="content">' +
-            (description.slice(0, 3) === '<p>' ?
-              '<p>' + type + description.slice(3) :
-              type + description) + '</div>';
-          if (onHintInformationRender) {
-            onHintInformationRender(elem);
-          }
-        }
       },
       gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
       extraKeys: {
@@ -107,6 +89,7 @@ export class QueryEditor extends React.Component {
 
     this.editor.on('change', this._onEdit.bind(this));
     this.editor.on('keyup', this._onKeyUp.bind(this));
+    this.editor.on('hasCompletion', this._onHasCompletion.bind(this));
   }
 
   componentWillUnmount() {
@@ -151,6 +134,94 @@ export class QueryEditor extends React.Component {
         this.props.onEdit(this.cachedValue);
       }
     }
+  }
+
+  /**
+   * Render a custom UI for CodeMirror's hint which includes additional info
+   * about the type and description for the selected context.
+   */
+  _onHasCompletion(cm, data) {
+    var wrapper;
+    var information;
+
+    // When a hint result is selected, we touch the UI.
+    CodeMirror.on(data, 'select', (ctx, el) => {
+      // Only the first time (usually when the hint UI is first displayed)
+      // do we create the wrapping node.
+      if (!wrapper) {
+        // Wrap the existing hint UI, so we have a place to put information.
+        var hintsUl = el.parentNode;
+        var container = hintsUl.parentNode;
+        wrapper = document.createElement('div');
+        container.appendChild(wrapper);
+
+        // CodeMirror vertically inverts the hint UI if there is not enough
+        // space below the cursor. Since this modified UI appends to the bottom
+        // of CodeMirror's existing UI, it could cover the cursor. This adjusts
+        // the positioning of the hint UI to accomodate.
+        var top = hintsUl.style.top;
+        var bottom = '';
+        var cursorTop = cm.cursorCoords().top;
+        if (parseInt(top, 10) < cursorTop) {
+          top = '';
+          bottom = (window.innerHeight - cursorTop + 3) + 'px';
+        }
+
+        // Style the wrapper, remove positioning from hints. Note that usage
+        // of this option will need to specify CSS to remove some styles from
+        // the existing hint UI.
+        wrapper.className = 'CodeMirror-hints-wrapper';
+        wrapper.style.left = hintsUl.style.left;
+        wrapper.style.top = top;
+        wrapper.style.bottom = bottom;
+        hintsUl.style.left = '';
+        hintsUl.style.top = '';
+
+        // This "information" node will contain the additional info about the
+        // highlighted typeahead option.
+        information = document.createElement('div');
+        information.className = 'CodeMirror-hint-information';
+        if (bottom) {
+          wrapper.appendChild(information);
+          wrapper.appendChild(hintsUl);
+        } else {
+          wrapper.appendChild(hintsUl);
+          wrapper.appendChild(information);
+        }
+
+        // When CodeMirror attempts to remove the hint UI, we detect that it was
+        // removed from our wrapper and in turn remove the wrapper from the
+        // original container.
+        var onRemoveFn;
+        wrapper.addEventListener('DOMNodeRemoved', onRemoveFn = event => {
+          if (event.target === hintsUl) {
+            wrapper.removeEventListener('DOMNodeRemoved', onRemoveFn);
+            wrapper.parentNode.removeChild(wrapper);
+            wrapper = null;
+            information = null;
+            onRemoveFn = null;
+          }
+        });
+      }
+
+      // Now that the UI has been set up, add info to information.
+      var description = ctx.description ?
+        marked(ctx.description, { smartypants: true }) :
+        'Self descriptive.';
+      var type = ctx.type ?
+        '<span class="infoType">' + String(ctx.type) + '</span>' :
+        '';
+      information.innerHTML = '<div class="content">' +
+        (description.slice(0, 3) === '<p>' ?
+          '<p>' + type + description.slice(3) :
+          type + description) + '</div>';
+
+      // Additional rendering?
+      var onHintInformationRender = this.props.onHintInformationRender;
+      if (onHintInformationRender) {
+        onHintInformationRender(information);
+      }
+    });
   }
 
   render() {
