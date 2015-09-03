@@ -99,8 +99,11 @@ function buildSelectionSet(type, getDefaultFieldNames) {
     return;
   }
 
+  // Unwrap any non-null or list types.
+  var namedType = getNamedType(type);
+
   // Get an array of field names to use.
-  var fieldNames = getDefaultFieldNames(type);
+  var fieldNames = getDefaultFieldNames(namedType);
 
   // If there are no field names to use, return no selection set.
   if (!Array.isArray(fieldNames) || fieldNames.length === 0) {
@@ -111,8 +114,8 @@ function buildSelectionSet(type, getDefaultFieldNames) {
   return {
     kind: 'SelectionSet',
     selections: fieldNames.map(fieldName => {
-      var fieldDef = type.getFields()[fieldName];
-      var fieldType = fieldDef ? getNamedType(fieldDef.type) : null;
+      var fieldDef = namedType.getFields()[fieldName];
+      var fieldType = fieldDef ? fieldDef.type : null;
       return {
         kind: 'Field',
         name: {
