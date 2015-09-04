@@ -15,6 +15,7 @@ import {
   GraphQLList,
   GraphQLNonNull
 } from 'graphql/type';
+import { getLeft, getTop } from '../utility/elementPosition';
 
 
 /**
@@ -41,7 +42,9 @@ export class DocExplorer extends React.Component {
   constructor() {
     super();
 
-    this.EXPLORER_WIDTH = 450;
+    this.MIN_EXPLORER_WIDTH = 75;
+    this.MAX_EXPLORER_WIDTH = 450;
+    this.INITIAL_EXPLORER_WIDTH = 350;
     this.state = {
       width: 'initial',
       expanded: false,
@@ -175,6 +178,12 @@ export class DocExplorer extends React.Component {
     );
   }
 
+  _getComponentWidth() {
+    var savedWidth = window.localStorage.getItem('docExplorerWidth');
+    return savedWidth !== 'undefined' ?
+      savedWidth : this.INITIAL_EXPLORER_WIDTH;
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.schema && nextProps.schema !== this.props.schema) {
       this.startPage = this._generateStartPage(nextProps.schema);
@@ -198,7 +207,7 @@ export class DocExplorer extends React.Component {
 
       this.setState({
         width: this.state.inspectedType ?
-          this.state.width : this.EXPLORER_WIDTH,
+          this.state.width : this._getComponentWidth(),
         expanded: this.state.inspectedType ? this.state.expanded : true,
         inspectedType: type,
         inspectedCall: null
@@ -345,7 +354,7 @@ export class DocExplorer extends React.Component {
 
   _onToggleBtnClick() {
     this.setState({
-      width: this.state.expanded ? 'initial' : this.EXPLORER_WIDTH,
+      width: this.state.expanded ? 'initial' : this._getComponentWidth(),
       expanded: !this.state.expanded
     });
   }
@@ -416,6 +425,52 @@ export class DocExplorer extends React.Component {
     }
   }
 
+  _onResizeStart(downEvent) {
+    downEvent.preventDefault();
+
+    var didMove = false;
+    var hadWidth = this.state.width;
+    var offset = downEvent.clientX - getLeft(downEvent.target);
+
+    var onMouseMove = moveEvent => {
+      didMove = true;
+
+      var docExplorerBar = React.findDOMNode(this);
+      var leftSize = moveEvent.clientX - getLeft(docExplorerBar) - offset;
+      var rightSize = docExplorerBar.clientWidth - leftSize;
+
+      if (rightSize < this.MIN_EXPLORER_WIDTH) {
+        this.setState({
+          expanded: false,
+          width: 'initial'
+        });
+      } else {
+        this.setState({
+          expanded: true,
+          width: rightSize < this.MAX_EXPLORER_WIDTH ?
+            rightSize : this.MAX_EXPLORER_WIDTH
+        });
+      }
+    };
+
+    var onMouseUp = () => {
+      if (didMove && this.state.width !== 'initial') {
+        window.localStorage.setItem(
+          'docExplorerWidth',
+          this.state.width
+        );
+      }
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }
+
   render() {
     var type = this.state.inspectedType;
     var call = this.state.inspectedCall;
@@ -452,6 +507,10 @@ export class DocExplorer extends React.Component {
             Documentation Explorer
           </div>
         </div>
+        <div className="doc-explorer-resize-bar"
+          style={{ display: this.state.expanded ? 'block' : 'none' }}
+          onMouseDown={this._onResizeStart.bind(this)}
+        />
         <div className="doc-explorer-contents"
           onClick={this._onDefClick.bind(this)}
         >
