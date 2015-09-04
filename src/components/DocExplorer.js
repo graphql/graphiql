@@ -11,7 +11,9 @@ import Marked from 'marked';
 import {
   GraphQLSchema,
   GraphQLUnionType,
-  GraphQLInterfaceType
+  GraphQLInterfaceType,
+  GraphQLList,
+  GraphQLNonNull
 } from 'graphql/type';
 
 
@@ -75,15 +77,27 @@ export class DocExplorer extends React.Component {
   }
 
   _getTypeLink(type) {
-    return type.ofType ?
-      <span>
-        [
-          <a className="doc-type">{type.ofType.name}</a>
-        ]
-      </span> :
-      <span>
-        <a className="doc-type">{type.name}</a>
-      </span>;
+    function introspectOfTypes(type) {
+      var typeName = '';
+      if (type instanceof GraphQLNonNull) {
+        typeName = <span>
+          {introspectOfTypes(type.ofType)}
+          !
+        </span>;
+      } else if (type instanceof GraphQLList) {
+        typeName = <span>
+          [
+          {introspectOfTypes(type.ofType)}
+          ]
+        </span>;
+      } else {
+        typeName = <a className="doc-type">{type.name}</a>;
+      }
+
+      return typeName;
+    }
+
+    return introspectOfTypes(type);
   }
 
   _renderTypeFields(type) {
