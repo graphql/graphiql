@@ -72,7 +72,6 @@ export class DocExplorer extends React.Component {
         {__html: this.marked(text)}
       }
     />;
-    return this.marked(text);
   }
 
   _getTypeLink(type) {
@@ -118,7 +117,7 @@ export class DocExplorer extends React.Component {
   }
 
   _renderTypeValues(type) {
-    var _renderMarkdown = this._renderMarkdown;
+    var _renderMarkdown = this._renderMarkdown.bind(this);
     function renderValue(value) {
       return (
         <div className="doc-category-item">
