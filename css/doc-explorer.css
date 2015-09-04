@@ -4,6 +4,7 @@
   right: 0;
   height: 100%;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
   z-index: 2;
 }
 
@@ -54,7 +55,6 @@
   border-left: 1px solid #d6d6d6;
   border-top: 1px solid #d6d6d6;
   padding: 14px 15px;
-  overflow: hidden;
   font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
   font-size: 12px;
 }
