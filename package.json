@@ -26,7 +26,8 @@
   ],
   "babel": {
     "optional": [
-      "runtime"
+      "runtime",
+      "es7.classProperties"
     ],
     "loose": [
       "es6.classes",

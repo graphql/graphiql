@@ -6,7 +6,7 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 
 /**
@@ -15,6 +15,10 @@ import React from 'react';
  * What a nice round shiny button. Cmd/Ctrl-Enter is the shortcut.
  */
 export class ExecuteButton extends React.Component {
+  static propTypes = {
+    onClick: PropTypes.func
+  }
+
   render() {
     return (
       <button

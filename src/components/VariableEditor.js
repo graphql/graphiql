@@ -6,7 +6,7 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
@@ -28,6 +28,11 @@ import '../codemirror/lint/json-lint';
  *
  */
 export class VariableEditor extends React.Component {
+  static propTypes = {
+    value: PropTypes.string,
+    onEdit: PropTypes.func
+  }
+
   constructor(props) {
     super();
 

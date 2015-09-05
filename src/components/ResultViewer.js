@@ -6,7 +6,7 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
@@ -25,6 +25,10 @@ import 'codemirror/mode/javascript/javascript';
  *
  */
 export class ResultViewer extends React.Component {
+  static propTypes = {
+    value: PropTypes.string
+  }
+
   componentDidMount() {
     this.viewer = CodeMirror(React.findDOMNode(this), {
       value: this.props.value || '',
