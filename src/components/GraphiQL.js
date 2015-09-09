@@ -33,6 +33,9 @@ import { fillLeafs } from '../utility/fillLeafs';
  *   - query: an optional GraphQL string to use as the initial displayed query,
  *     if not provided, the local storage or defaultQuery will be used.
  *
+ *   - storageKeyPrefix: an optional prefix to add to keys stored in
+ *     localStorage (default is 'graphiql:').
+ *
  *   - defaultQuery: an optional GraphQL string to use instead of a
  *     blank screen when a query was not found in the local cache.
  *
@@ -101,17 +104,20 @@ export class GraphiQL extends React.Component {
       throw new TypeError('GraphiQL requires a fetcher function.');
     }
 
-    var storage = window.localStorage;
+    this.storage = makeStorage(
+      window.localStorage,
+      props.storageKeyPrefix || 'graphiql'
+    );
 
     // Determine the initial query to display.
     var query =
       props.query ||
-      storage.getItem('query') ||
+      this.storage.getItem('query') ||
       props.defaultQuery ||
       defaultQuery;
 
     // Determine the initial variables to display.
-    var variables = props.variables || storage.getItem('variables');
+    var variables = props.variables || this.storage.getItem('variables');
 
     // Initialize state
     this.state = {
@@ -119,9 +125,9 @@ export class GraphiQL extends React.Component {
       query,
       variables,
       response: null,
-      editorFlex: storage.getItem('editorFlex') || 1,
+      editorFlex: this.storage.getItem('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
-      variableEditorHeight: storage.getItem('variableEditorHeight') || 200,
+      variableEditorHeight: this.storage.getItem('variableEditorHeight') || 200,
       typeToExplore: null,
     };
 
@@ -258,7 +264,7 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditQuery(value) {
-    window.localStorage.setItem('query', value);
+    this.storage.setItem('query', value);
     this.setState({ query: value });
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
@@ -266,7 +272,7 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditVariables(value) {
-    window.localStorage.setItem('variables', value);
+    this.storage.setItem('variables', value);
     this.setState({ variables: value });
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
@@ -314,7 +320,7 @@ export class GraphiQL extends React.Component {
     };
 
     var onMouseUp = () => {
-      window.localStorage.setItem('editorFlex', this.state.editorFlex);
+      this.storage.setItem('editorFlex', this.state.editorFlex);
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -380,7 +386,7 @@ export class GraphiQL extends React.Component {
 
     var onMouseUp = () => {
       if (didMove) {
-        window.localStorage.setItem(
+        this.storage.setItem(
           'variableEditorHeight',
           this.state.variableEditorHeight
         );
@@ -448,6 +454,13 @@ const defaultQuery =
 # will appear in the pane to the right.
 
 `;
+
+function makeStorage(storageEngine, storageKey) {
+  return {
+    getItem: (key) => storageEngine.getItem(`${storageKey}:${key}`),
+    setItem: (key, val) => storageEngine.setItem(`${storageKey}:${key}`, val)
+  };
+}
 
 function getLeft(initialElem) {
   var pt = 0;
