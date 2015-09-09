@@ -31,16 +31,17 @@ import { fillLeafs } from '../utility/fillLeafs';
  *     GraphiQL will fetch one using introspection.
  *
  *   - query: an optional GraphQL string to use as the initial displayed query,
- *     if not provided, the local storage or defaultQuery will be used.
+ *     if not provided, the stored query or defaultQuery will be used.
  *
- *   - storageKeyPrefix: an optional prefix to add to keys stored in
- *     localStorage (default is 'graphiql:').
+ *   - storage: an instance of [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
+ *     GraphiQL will use to persist state. Only `getItem` and `setTime` are
+ *     called. Default: window.localStorage
  *
  *   - defaultQuery: an optional GraphQL string to use instead of a
  *     blank screen when a query was not found in the local cache.
  *
  *   - variables: an optional GraphQL string to use as the initial displayed
- *     query variables, if not provided, the local storage will be used.
+ *     query variables, if not provided, the stored variables will be used.
  *
  *   - onEditQuery: an optional function which will be called when the Query
  *     editor changes. The argument to the function will be the query string.
@@ -104,20 +105,18 @@ export class GraphiQL extends React.Component {
       throw new TypeError('GraphiQL requires a fetcher function.');
     }
 
-    this.storage = makeStorage(
-      window.localStorage,
-      props.storageKeyPrefix || 'graphiql'
-    );
+    // Cache the storage instance
+    this._storage = this.props.storage || window.localStorage;
 
     // Determine the initial query to display.
     var query =
       props.query ||
-      this.storage.getItem('query') ||
+      this.storageGet('query') ||
       props.defaultQuery ||
       defaultQuery;
 
     // Determine the initial variables to display.
-    var variables = props.variables || this.storage.getItem('variables');
+    var variables = props.variables || this.storageGet('variables');
 
     // Initialize state
     this.state = {
@@ -125,9 +124,9 @@ export class GraphiQL extends React.Component {
       query,
       variables,
       response: null,
-      editorFlex: this.storage.getItem('editorFlex') || 1,
+      editorFlex: this.storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
-      variableEditorHeight: this.storage.getItem('variableEditorHeight') || 200,
+      variableEditorHeight: this.storageGet('variableEditorHeight') || 200,
       typeToExplore: null,
     };
 
@@ -244,6 +243,14 @@ export class GraphiQL extends React.Component {
 
   // Private methods
 
+  _storageGet(storage, name) {
+    return this._storage.getItem('graphiql:' + name);
+  }
+
+  _storageSet(storage, name, value) {
+    this._storage.setItem('graphiql:' + name, value);
+  }
+
   _fetchQuery(query, variables, cb) {
     this.props.fetcher({ query, variables }).then(cb).catch(error => {
       this.setState({ response: JSON.stringify(error, null, 2) });
@@ -264,7 +271,7 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditQuery(value) {
-    this.storage.setItem('query', value);
+    this._storageSet('query', value);
     this.setState({ query: value });
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
@@ -272,7 +279,7 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditVariables(value) {
-    this.storage.setItem('variables', value);
+    this._storageSet('variables', value);
     this.setState({ variables: value });
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
@@ -320,7 +327,7 @@ export class GraphiQL extends React.Component {
     };
 
     var onMouseUp = () => {
-      this.storage.setItem('editorFlex', this.state.editorFlex);
+      this._storageSet('editorFlex', this.state.editorFlex);
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
@@ -386,7 +393,7 @@ export class GraphiQL extends React.Component {
 
     var onMouseUp = () => {
       if (didMove) {
-        this.storage.setItem(
+        this._storageSet(
           'variableEditorHeight',
           this.state.variableEditorHeight
         );
@@ -454,13 +461,6 @@ const defaultQuery =
 # will appear in the pane to the right.
 
 `;
-
-function makeStorage(storageEngine, storageKey) {
-  return {
-    getItem: (key) => storageEngine.getItem(`${storageKey}:${key}`),
-    setItem: (key, val) => storageEngine.setItem(`${storageKey}:${key}`, val)
-  };
-}
 
 function getLeft(initialElem) {
   var pt = 0;
