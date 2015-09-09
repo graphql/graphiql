@@ -75,7 +75,7 @@
     "eslint-plugin-react": "3.2.3",
     "flow-bin": "0.14.0",
     "graphql": "0.4.2",
-    "jsdom": "3.0.0",
+    "jsdom": "6.2.0",
     "mocha": "2.2.5",
     "react": "0.13.3",
     "uglify-js": "^2.4.24",
