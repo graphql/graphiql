@@ -34,9 +34,8 @@ import { fillLeafs } from '../utility/fillLeafs';
  *   - query: an optional GraphQL string to use as the initial displayed query,
  *     if not provided, the stored query or defaultQuery will be used.
  *
- *   - storage: an instance of [Storage](https://developer.mozilla.org/en-US/docs/Web/API/Storage)
- *     GraphiQL will use to persist state. Only `getItem` and `setTime` are
- *     called. Default: window.localStorage
+ *   - storage: an instance of [Storage][] GraphiQL will use to persist state.
+ *     Only `getItem` and `setItem` are called. Default: window.localStorage
  *
  *   - defaultQuery: an optional GraphQL string to use instead of a
  *     blank screen when a query was not found in the local cache.
@@ -64,6 +63,8 @@ import { fillLeafs } from '../utility/fillLeafs';
  *
  *   - <GraphiQL.Footer> Add a custom footer below GraphiQL Results.
  *
+ *
+ * [Storage]: https://developer.mozilla.org/en-US/docs/Web/API/Storage
  */
 export class GraphiQL extends React.Component {
 
@@ -71,6 +72,10 @@ export class GraphiQL extends React.Component {
     fetcher: PropTypes.func.isRequired,
     schema: PropTypes.instanceOf(GraphQLSchema),
     query: PropTypes.string,
+    storage: PropTypes.shape({
+      getItem: PropTypes.func,
+      setItem: PropTypes.func
+    }),
     defaultQuery: PropTypes.string,
     variables: PropTypes.string,
     onEditQuery: PropTypes.func,
