@@ -6,7 +6,8 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
+import { GraphQLSchema } from 'graphql';
 
 
 /**
@@ -18,6 +19,11 @@ import React from 'react';
  *
  */
 export class DocExplorer extends React.Component {
+  static propTypes = {
+    schema: PropTypes.instanceOf(GraphQLSchema),
+    typeName: PropTypes.string
+  }
+
   constructor() {
     super();
 

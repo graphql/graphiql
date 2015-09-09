@@ -6,9 +6,10 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import marked from 'marked';
 import CodeMirror from 'codemirror';
+import { GraphQLSchema } from 'graphql';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/edit/matchbrackets';
@@ -35,6 +36,12 @@ import 'codemirror-graphql/mode';
  *
  */
 export class QueryEditor extends React.Component {
+  static propTypes = {
+    schema: PropTypes.instanceOf(GraphQLSchema),
+    value: PropTypes.string,
+    onEdit: PropTypes.func
+  }
+
   constructor(props) {
     super();
 

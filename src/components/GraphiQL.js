@@ -6,12 +6,13 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { ExecuteButton } from './ExecuteButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 // import { DocExplorer } from './DocExplorer';
+import { GraphQLSchema } from 'graphql';
 import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
 import find from 'graphql/jsutils/find';
 import { fillLeafs } from '../utility/fillLeafs';
@@ -65,6 +66,17 @@ import { fillLeafs } from '../utility/fillLeafs';
  *
  */
 export class GraphiQL extends React.Component {
+
+  static propTypes = {
+    fetcher: PropTypes.func.isRequired,
+    schema: PropTypes.instanceOf(GraphQLSchema),
+    query: PropTypes.string,
+    defaultQuery: PropTypes.string,
+    variables: PropTypes.string,
+    onEditQuery: PropTypes.func,
+    onEditVariables: PropTypes.func,
+    getDefaultFieldNames: PropTypes.func
+  }
 
   /**
    * Inspect the query, automatically filling in selection sets for non-leaf
