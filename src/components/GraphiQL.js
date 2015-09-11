@@ -123,17 +123,17 @@ export class GraphiQL extends React.Component {
     }
 
     // Cache the storage instance
-    this._storage = this.props.storage || window.localStorage;
+    this._storage = props.storage || window.localStorage;
 
     // Determine the initial query to display.
     var query =
       props.query ||
-      this.storageGet('query') ||
+      this._storageGet('query') ||
       props.defaultQuery ||
       defaultQuery;
 
     // Determine the initial variables to display.
-    var variables = props.variables || this.storageGet('variables');
+    var variables = props.variables || this._storageGet('variables');
 
     // Initialize state
     this.state = {
@@ -141,9 +141,9 @@ export class GraphiQL extends React.Component {
       query,
       variables,
       response: null,
-      editorFlex: this.storageGet('editorFlex') || 1,
+      editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
-      variableEditorHeight: this.storageGet('variableEditorHeight') || 200,
+      variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
       typeToExplore: null,
     };
 
