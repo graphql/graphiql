@@ -15,9 +15,8 @@
 #graphiql-container .doc-explorer-title-bar {
   position: relative;
   height: 34px;
-  letter-spacing: 1px;
   line-height: 14px;
-  padding: 7px 14px 6px;
+  padding: 7px 8px 6px;
   -webkit-user-select: none;
           user-select: none;
 }
@@ -25,16 +24,25 @@
 #graphiql-container .doc-explorer-title {
   padding: 10px 0 10px 10px;
   font-size: 14px;
-  text-align: right;
+  text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
 }
 
+#graphiql-container .doc-back-to-main-button {
+  float: left;
+
+}
+
+#graphiql-container .doc-explorer-toggle-button {
+  float: right;
+}
+
 #graphiql-container .doc-explorer-toggle-button,
 #graphiql-container .doc-back-to-main-button {
+  margin: 0 8px;
   position: relative;
-  float: left;
   padding: 1px 8px;
   line-height: 22px;
   background-color: #f6f7f8;

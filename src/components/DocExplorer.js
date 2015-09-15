@@ -55,20 +55,9 @@ export class DocExplorer extends React.Component {
     };
 
     this.startPage = '';
-    this.content = '';
 
     // Navigation stack to remember the definitions visited.
     this.navStack = [];
-
-    // A static `Main Page` button that does not have to change.
-    this.backToMainButton = (
-      <button className="doc-back-to-main-button"
-        style={{ marginLeft: '6px' }}
-        onClick={this._onBackToMainBtnClick.bind(this)}
-      >
-        Main Page
-      </button>
-    );
 
     this.marked = Marked;
   }
@@ -181,10 +170,6 @@ export class DocExplorer extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.schema && nextProps.schema !== this.props.schema) {
-      this.startPage = this._generateStartPage(nextProps.schema);
-    }
-
     // When a new typeName is received from parent component,
     // update the doc page only if the type name is different from
     // one currently being inspected.
@@ -212,19 +197,6 @@ export class DocExplorer extends React.Component {
         elem: type
       });
     }
-  }
-
-  _generateStartPage(schema) {
-    var queryType = schema.getQueryType();
-    var mutationType = schema.getMutationType();
-
-    var typesJSX = this._renderTypes([ queryType, mutationType ]);
-
-    return (
-      <div className="doc-category">
-        {typesJSX}
-      </div>
-    );
   }
 
   _generateTypePage(type) {
@@ -455,52 +427,73 @@ export class DocExplorer extends React.Component {
   }
 
   render() {
-    var type = this.state.inspectedType;
-    var call = this.state.inspectedCall;
-    var navBackLinkJSX = '';
-    if (this.state.expanded) {
-      if (type) {
-        this.content = this._generateTypePage(type);
-      } else if (call) {
-        this.content = this._generateCallPage(call);
-      } else {
-        this.content = this.startPage;
-      }
-
-      if (this.navStack.length > 0) {
-        navBackLinkJSX = this._generateNavBackLink();
-      }
-    } else {
-      this.content = '';
+    if (!this.state.expanded) {
+      return (
+        <div className="doc-explorer" style={{ width: CLOSED_WIDTH }}>
+          <div className="doc-explorer-title-bar">
+            <button
+              className="doc-explorer-toggle-button"
+              onClick={this._onToggleBtnClick.bind(this)}>
+              Docs
+            </button>
+          </div>
+          <div className="doc-explorer-contents" />
+        </div>
+      );
     }
 
-    var width = this.state.expanded ? this.state.width : CLOSED_WIDTH;
+    var schema = this.props.schema;
+    var type = this.state.inspectedType;
+    var call = this.state.inspectedCall;
+
+    var navBackLinkJSX = '';
+    if (this.navStack.length > 0) {
+      navBackLinkJSX = this._generateNavBackLink();
+    }
+
+    var content;
+    if (type) {
+      content = this._generateTypePage(type);
+    } else if (call) {
+      content = this._generateCallPage(call);
+    } else if (schema) {
+      var queryType = schema.getQueryType();
+      var mutationType = schema.getMutationType();
+      var typesJSX = this._renderTypes([ queryType, mutationType ]);
+
+      content = (
+        <div className="doc-category">
+          {typesJSX}
+        </div>
+      );
+    }
 
     return (
-      <div className="doc-explorer" style={{ width }}>
+      <div className="doc-explorer" style={{ width: this.state.width }}>
         <div className="doc-explorer-title-bar">
+          {(type || call) &&
+            <button
+              className="doc-back-to-main-button"
+              onClick={this._onBackToMainBtnClick.bind(this)}>
+              Main Page
+            </button>
+          }
           <button
             className="doc-explorer-toggle-button"
-            onClick={this._onToggleBtnClick.bind(this)}
-          >
-            {this.state.expanded ? 'Hide' : 'Docs'}
+            onClick={this._onToggleBtnClick.bind(this)}>
+            &times;
           </button>
-          {(this.state.expanded && (type || call)) && this.backToMainButton}
-          <div className="doc-explorer-title"
-            style={{ display: this.state.expanded ? 'block' : 'none' }}
-          >
+          <div className="doc-explorer-title">
             Documentation Explorer
           </div>
         </div>
         <div className="doc-explorer-resize-bar"
-          style={{ display: this.state.expanded ? 'block' : 'none' }}
           onMouseDown={this._onResizeStart.bind(this)}
         />
         <div className="doc-explorer-contents"
-          onClick={this._onDefClick.bind(this)}
-        >
+          onClick={this._onDefClick.bind(this)}>
           {navBackLinkJSX}
-          {this.content}
+          {content}
         </div>
       </div>
     );
