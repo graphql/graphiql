@@ -18,6 +18,11 @@ import {
 import { getLeft, getTop } from '../utility/elementPosition';
 
 
+const CLOSED_WIDTH = 75;
+const MIN_WIDTH = 200;
+const DEFAULT_WIDTH = 350;
+const MAX_WIDTH = 650;
+
 /**
  * DocExplorer
  *
@@ -42,11 +47,8 @@ export class DocExplorer extends React.Component {
   constructor() {
     super();
 
-    this.MIN_EXPLORER_WIDTH = 75;
-    this.MAX_EXPLORER_WIDTH = 450;
-    this.INITIAL_EXPLORER_WIDTH = 350;
     this.state = {
-      width: 'initial',
+      width: window.localStorage.getItem('docExplorerWidth') || DEFAULT_WIDTH,
       expanded: false,
       inspectedType: null,
       inspectedCall: null
@@ -178,12 +180,6 @@ export class DocExplorer extends React.Component {
     );
   }
 
-  _getComponentWidth() {
-    var savedWidth = window.localStorage.getItem('docExplorerWidth');
-    return savedWidth !== 'undefined' ?
-      savedWidth : this.INITIAL_EXPLORER_WIDTH;
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.schema && nextProps.schema !== this.props.schema) {
       this.startPage = this._generateStartPage(nextProps.schema);
@@ -206,8 +202,6 @@ export class DocExplorer extends React.Component {
       var type = this.props.schema.getType(typeName);
 
       this.setState({
-        width: this.state.inspectedType ?
-          this.state.width : this._getComponentWidth(),
         expanded: this.state.inspectedType ? this.state.expanded : true,
         inspectedType: type,
         inspectedCall: null
@@ -353,10 +347,7 @@ export class DocExplorer extends React.Component {
   }
 
   _onToggleBtnClick() {
-    this.setState({
-      width: this.state.expanded ? 'initial' : this._getComponentWidth(),
-      expanded: !this.state.expanded
-    });
+    this.setState({ expanded: !this.state.expanded });
   }
 
   _onNavBackLinkClick() {
@@ -428,37 +419,29 @@ export class DocExplorer extends React.Component {
   _onResizeStart(downEvent) {
     downEvent.preventDefault();
 
-    var didMove = false;
     var hadWidth = this.state.width;
     var offset = downEvent.clientX - getLeft(downEvent.target);
 
     var onMouseMove = moveEvent => {
-      didMove = true;
-
       var docExplorerBar = React.findDOMNode(this);
       var leftSize = moveEvent.clientX - getLeft(docExplorerBar) - offset;
       var rightSize = docExplorerBar.clientWidth - leftSize;
 
-      if (rightSize < this.MIN_EXPLORER_WIDTH) {
-        this.setState({
-          expanded: false,
-          width: 'initial'
-        });
+      if (rightSize < MIN_WIDTH) {
+        this.setState({ expanded: false });
       } else {
         this.setState({
           expanded: true,
-          width: rightSize < this.MAX_EXPLORER_WIDTH ?
-            rightSize : this.MAX_EXPLORER_WIDTH
+          width: Math.min(rightSize, MAX_WIDTH)
         });
       }
     };
 
     var onMouseUp = () => {
-      if (didMove && this.state.width !== 'initial') {
-        window.localStorage.setItem(
-          'docExplorerWidth',
-          this.state.width
-        );
+      if (this.state.expanded) {
+        window.localStorage.setItem('docExplorerWidth', this.state.width);
+      } else {
+        this.setState({ width: hadWidth });
       }
 
       document.removeEventListener('mousemove', onMouseMove);
@@ -491,8 +474,10 @@ export class DocExplorer extends React.Component {
       this.content = '';
     }
 
+    var width = this.state.expanded ? this.state.width : CLOSED_WIDTH;
+
     return (
-      <div className="doc-explorer" style={{ width: this.state.width }}>
+      <div className="doc-explorer" style={{ width }}>
         <div className="doc-explorer-title-bar">
           <button
             className="doc-explorer-toggle-button"

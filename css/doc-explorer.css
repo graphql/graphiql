@@ -9,6 +9,7 @@
 
 #graphiql-container .doc-explorer {
   height: 100%;
+  background: white;
 }
 
 #graphiql-container .doc-explorer-title-bar {
@@ -52,19 +53,18 @@
   background-color: #ffffff;
   border-top: 1px solid #d6d6d6;
   padding: 14px 15px;
-  font-family: 'lucida grande', tahoma, verdana, arial, sans-serif;
-  font-size: 12px;
   overflow-y: auto;
+  min-width: 300px;
 }
 
 #graphiql-container .doc-explorer-resize-bar {
-  float: left;
-  width: 10px;
-  height: 100%;
-  background-color: #eeeeee;
-  border-right: 1px solid #d6d6d6;
-  border-top: 1px solid #d6d6d6;
   cursor: col-resize;
+  height: 100%;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  width: 10px;
+  z-index: 10;
 }
 
 #graphiql-container .doc-explorer-contents a {
