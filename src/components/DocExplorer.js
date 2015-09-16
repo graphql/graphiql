@@ -10,6 +10,7 @@ import React, { PropTypes } from 'react';
 import Marked from 'marked';
 import {
   GraphQLSchema,
+  isType,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
@@ -52,103 +53,43 @@ export class DocExplorer extends React.Component {
     this.state = {
       width: window.localStorage.getItem('docExplorerWidth') || DEFAULT_WIDTH,
       expanded: false,
-      inspectedType: null,
-      inspectedCall: null
+      navStack: []
     };
-
-    // Navigation stack to remember the definitions visited.
-    this.navStack = [];
   }
 
   componentWillReceiveProps(nextProps) {
     // When a new typeName is received from parent component,
     // update the doc page only if the type name is different from
     // one currently being inspected.
-    if (nextProps.typeName &&
-        (!this.state.inspectedType ||
-          nextProps.typeName !== this.state.inspectedType.name)) {
-      var type = this.props.schema.getType(nextProps.typeName);
-      if (type) {
+    if (nextProps.schema && nextProps.typeName) {
+      var type = nextProps.schema.getType(nextProps.typeName);
+      var navStack = this.state.navStack;
+      var isCurrentlyShown =
+        navStack.length > 0 && navStack[navStack.length - 1] === type;
+      if (!isCurrentlyShown) {
         this.setState({
           expanded: true,
-          inspectedType: type,
-          inspectedCall: null
-        });
-        this.navStack.push({
-          id: 'type',
-          elem: type
+          navStack: this.state.navStack.concat([ type ])
         });
       }
     }
-  }
-
-  _generateNavBackLink() {
-    var name = this.navStack.length > 1 ?
-      this.navStack[this.navStack.length - 2].elem.name :
-      'Main Page';
-    return (
-      <div className="doc-nav-back-link">
-        <a onClick={this._onNavBackLinkClick.bind(this)}>
-          Back To {name}
-        </a>
-      </div>
-    );
   }
 
   _onToggleBtnClick() {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  _onNavBackLinkClick() {
-    var newState = {
-      inspectedCall: null,
-      inspectedType: null
-    };
+  _onNavBackClick() {
+    this.setState({ navStack: this.state.navStack.slice(0, -1) });
+  }
 
-    this.navStack.pop();
-    if (this.navStack.length !== 0) {
-      var entry = this.navStack[this.navStack.length - 1];
-      switch (entry.id) {
-        case 'call':
-          newState.inspectedCall = entry.elem;
-          break;
-        case 'type':
-          newState.inspectedType = entry.elem;
-          break;
-      }
+  _onClickTypeOrField(typeOrField) {
+    var navStack = this.state.navStack;
+    var isCurrentlyShown =
+      navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
+    if (!isCurrentlyShown) {
+      this.setState({ navStack: navStack.concat([ typeOrField ]) });
     }
-
-    this.setState(newState);
-  }
-
-  _onBackToMainBtnClick() {
-    this.navStack = [];
-    this.setState({
-      inspectedType: null,
-      inspectedCall: null
-    });
-  }
-
-  _onClickType(type) {
-    this.setState({
-      inspectedType: type,
-      inspectedCall: null
-    });
-    this.navStack.push({
-      id: 'type',
-      elem: type
-    });
-  }
-
-  _onClickField(field) {
-    this.setState({
-      inspectedType: null,
-      inspectedCall: field
-    });
-    this.navStack.push({
-      id: 'call',
-      elem: field
-    });
   }
 
   _onResizeStart(downEvent) {
@@ -206,46 +147,50 @@ export class DocExplorer extends React.Component {
     }
 
     var schema = this.props.schema;
-    var type = this.state.inspectedType;
-    var call = this.state.inspectedCall;
+    var navStack = this.state.navStack;
 
-    var navBackLinkJSX;
-    if (this.navStack.length > 0) {
-      navBackLinkJSX = this._generateNavBackLink();
+    var typeOrField;
+    if (navStack.length > 0) {
+      typeOrField = navStack[navStack.length - 1];
     }
 
     var content;
-    if (type) {
-      content =
+    if (typeOrField) {
+      content = isType(typeOrField) ?
         <TypeDoc
-          key={type.name}
-          type={type}
-          onClickType={this._onClickType.bind(this)}
-          onClickField={this._onClickField.bind(this)}
-        />;
-    } else if (call) {
-      content =
+          key={typeOrField.name}
+          type={typeOrField}
+          onClickType={this._onClickTypeOrField.bind(this)}
+          onClickField={this._onClickTypeOrField.bind(this)}
+        /> :
         <FieldDoc
-          key={call.name}
-          field={call}
-          onClickType={this._onClickType.bind(this)}
+          key={typeOrField.name}
+          field={typeOrField}
+          onClickType={this._onClickTypeOrField.bind(this)}
         />;
     } else if (schema) {
       content =
         <SchemaDoc
           schema={schema}
-          onClickType={this._onClickType.bind(this)}
+          onClickType={this._onClickTypeOrField.bind(this)}
         />;
+    }
+
+    var prevName;
+    if (navStack.length === 1) {
+      prevName = 'Schema';
+    } else if (navStack.length > 1) {
+      prevName = navStack[navStack.length - 2].name;
     }
 
     return (
       <div className="doc-explorer" style={{ width: this.state.width }}>
         <div className="doc-explorer-title-bar">
-          {(type || call) &&
+          {prevName &&
             <button
               className="doc-back-to-main-button"
-              onClick={this._onBackToMainBtnClick.bind(this)}>
-              Main Page
+              onClick={this._onNavBackClick.bind(this)}>
+              {prevName}
             </button>
           }
           <button
@@ -261,7 +206,6 @@ export class DocExplorer extends React.Component {
           onMouseDown={this._onResizeStart.bind(this)}
         />
         <div className="doc-explorer-contents">
-          {navBackLinkJSX}
           {content}
         </div>
       </div>
