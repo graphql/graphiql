@@ -12,7 +12,7 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema } from 'graphql/type';
 import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
 import find from 'graphql/jsutils/find';
 import { fillLeafs } from '../utility/fillLeafs';
@@ -315,11 +315,9 @@ export class GraphiQL extends React.Component {
   }
 
   _onClickHintInformation(event) {
-    if (event.target.className === 'infoType') {
+    if (event.target.className === 'typeName') {
       var typeName = event.target.innerHTML;
-      this.setState({
-        typeToExplore: typeName
-      });
+      this.setState({ typeToExplore: typeName });
     }
   }
 

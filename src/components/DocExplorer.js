@@ -64,29 +64,21 @@ export class DocExplorer extends React.Component {
     // When a new typeName is received from parent component,
     // update the doc page only if the type name is different from
     // one currently being inspected.
-    if (nextProps.typeName !== this.props.typeName ||
-        (this.state.inspectedType &&
-         nextProps.typeName !== this.state.inspectedType.name)) {
-      var typeName = nextProps.typeName || this.state.inspectedType.name;
-      if (typeName.endsWith('!')) {
-        typeName = typeName.slice(0, typeName.length - 1);
+    if (nextProps.typeName &&
+        (!this.state.inspectedType ||
+          nextProps.typeName !== this.state.inspectedType.name)) {
+      var type = this.props.schema.getType(nextProps.typeName);
+      if (type) {
+        this.setState({
+          expanded: true,
+          inspectedType: type,
+          inspectedCall: null
+        });
+        this.navStack.push({
+          id: 'type',
+          elem: type
+        });
       }
-      if (typeName.startsWith('[') && typeName.endsWith(']')) {
-        typeName = typeName.slice(1, typeName.length - 1);
-      }
-
-      var type = this.props.schema.getType(typeName);
-
-      this.setState({
-        expanded: this.state.inspectedType ? this.state.expanded : true,
-        inspectedType: type,
-        inspectedCall: null
-      });
-
-      this.navStack.push({
-        id: 'type',
-        elem: type
-      });
     }
   }
 
@@ -356,9 +348,7 @@ class TypeDoc extends React.Component {
             // so that later when the field is clicked, a correct type can be
             // looked up and referenced to.
             <div key={field.name} className="doc-category-item">
-              <a
-                className="doc-call-sign"
-                onClick={event => this.props.onClickField(field, type, event)}>
+              <a onClick={event => this.props.onClickField(field, type, event)}>
                 {field.name}
               </a>
               {': '}
@@ -476,11 +466,7 @@ function renderType(type, onClick) {
   if (type instanceof GraphQLList) {
     return <span>[{renderType(type.ofType, onClick)}]</span>;
   }
-  return (
-    <a className="doc-type" onClick={event => onClick(type, event)}>
-      {type.name}
-    </a>
-  );
+  return <a onClick={event => onClick(type, event)}>{type.name}</a>;
 }
 
 // Renders a description

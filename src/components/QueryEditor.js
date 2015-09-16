@@ -9,7 +9,7 @@
 import React, { PropTypes } from 'react';
 import marked from 'marked';
 import CodeMirror from 'codemirror';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, GraphQLNonNull, GraphQLList } from 'graphql/type';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/edit/matchbrackets';
@@ -216,8 +216,20 @@ export class QueryEditor extends React.Component {
         marked(ctx.description, { smartypants: true }) :
         'Self descriptive.';
       var type = ctx.type ?
-        '<span class="infoType">' + String(ctx.type) + '</span>' :
+        '<span class="infoType">' + renderType(ctx.type) + '</span>' :
         '';
+
+      function renderType(type) {
+        if (type instanceof GraphQLNonNull) {
+          return `${renderType(type.ofType)}!`;
+        }
+        if (type instanceof GraphQLList) {
+          return `[${renderType(type.ofType)}]`;
+        }
+        return `<a class="typeName">${type.name}</a>`;
+      }
+
+
       information.innerHTML = '<div class="content">' +
         (description.slice(0, 3) === '<p>' ?
           '<p>' + type + description.slice(3) :
