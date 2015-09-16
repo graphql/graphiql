@@ -78,9 +78,9 @@
 #graphiql-container .doc-explorer-resize-bar {
   cursor: col-resize;
   height: 100%;
-  left: 0px;
+  left: -5px;
   position: absolute;
-  top: 0px;
+  top: 0;
   width: 10px;
   z-index: 10;
 }
