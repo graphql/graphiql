@@ -36,15 +36,10 @@ const MAX_WIDTH = 650;
  *   - schema: A required GraphQLSchema instance that provides GraphQL document
  *     definitions.
  *
- *   - typeName: An optional prop provided when a type is clicked from
- *     QueryEditor hint object. The click triggers the document explorer to
- *     show a definition of the type clicked.
- *
  */
 export class DocExplorer extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
-    typeName: PropTypes.string
   }
 
   constructor() {
@@ -57,22 +52,15 @@ export class DocExplorer extends React.Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    // When a new typeName is received from parent component,
-    // update the doc page only if the type name is different from
-    // one currently being inspected.
-    if (nextProps.schema && nextProps.typeName) {
-      var type = nextProps.schema.getType(nextProps.typeName);
-      var navStack = this.state.navStack;
-      var isCurrentlyShown =
-        navStack.length > 0 && navStack[navStack.length - 1] === type;
-      if (!isCurrentlyShown) {
-        this.setState({
-          expanded: true,
-          navStack: this.state.navStack.concat([ type ])
-        });
-      }
+  // Public API
+  showDoc(typeOrField) {
+    var navStack = this.state.navStack;
+    var isCurrentlyShown =
+      navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
+    if (!isCurrentlyShown) {
+      navStack = navStack.concat([ typeOrField ]);
     }
+    this.setState({ expanded: true, navStack });
   }
 
   _onToggleBtnClick = () => {
@@ -84,12 +72,7 @@ export class DocExplorer extends React.Component {
   }
 
   _onClickTypeOrField = typeOrField => {
-    var navStack = this.state.navStack;
-    var isCurrentlyShown =
-      navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
-    if (!isCurrentlyShown) {
-      this.setState({ navStack: navStack.concat([ typeOrField ]) });
-    }
+    this.showDoc(typeOrField);
   }
 
   _onResizeStart = downEvent => {

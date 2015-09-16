@@ -145,7 +145,6 @@ export class GraphiQL extends React.Component {
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
-      typeToExplore: null,
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -250,11 +249,7 @@ export class GraphiQL extends React.Component {
           </div>
         </div>
         <div className="docExplorerWrap">
-          <DocExplorer
-            ref="docExplorer"
-            schema={this.state.schema}
-            typeName={this.state.typeToExplore}
-          />
+          <DocExplorer ref="docExplorer" schema={this.state.schema} />
         </div>
       </div>
     );
@@ -319,7 +314,13 @@ export class GraphiQL extends React.Component {
   _onClickHintInformation(event) {
     if (event.target.className === 'typeName') {
       var typeName = event.target.innerHTML;
-      this.setState({ typeToExplore: typeName });
+      var schema = this.state.schema;
+      if (schema) {
+        var type = schema.getType(typeName);
+        if (type) {
+          this.refs.docExplorer.showDoc(type);
+        }
+      }
     }
   }
 
