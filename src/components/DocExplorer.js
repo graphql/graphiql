@@ -136,7 +136,7 @@ export class DocExplorer extends React.Component {
         <div className="doc-explorer" style={{ width: CLOSED_WIDTH }}>
           <div className="doc-explorer-title-bar">
             <button
-              className="doc-explorer-toggle-button"
+              className="doc-explorer-button"
               onClick={this._onToggleBtnClick}>
               Docs
             </button>
@@ -154,8 +154,10 @@ export class DocExplorer extends React.Component {
       typeOrField = navStack[navStack.length - 1];
     }
 
+    var title;
     var content;
     if (typeOrField) {
+      title = typeOrField.name;
       content = isType(typeOrField) ?
         <TypeDoc
           key={typeOrField.name}
@@ -169,6 +171,7 @@ export class DocExplorer extends React.Component {
           onClickType={this._onClickTypeOrField}
         />;
     } else if (schema) {
+      title = 'Documentation Explorer';
       content =
         <SchemaDoc
           schema={schema}
@@ -187,19 +190,15 @@ export class DocExplorer extends React.Component {
       <div className="doc-explorer" style={{ width: this.state.width }}>
         <div className="doc-explorer-title-bar">
           {prevName &&
-            <button
-              className="doc-back-to-main-button"
-              onClick={this._onNavBackClick}>
+            <div className="doc-explorer-back" onClick={this._onNavBackClick}>
               {prevName}
-            </button>
+            </div>
           }
-          <button
-            className="doc-explorer-toggle-button"
-            onClick={this._onToggleBtnClick}>
-            &times;
-          </button>
+          <div className="doc-explorer-hide" onClick={this._onToggleBtnClick}>
+            &#x2715;
+          </div>
           <div className="doc-explorer-title">
-            Documentation Explorer
+            {title}
           </div>
         </div>
         <div className="doc-explorer-resize-bar"
@@ -226,16 +225,21 @@ class SchemaDoc extends React.Component {
 
     return (
       <div>
-        <div className="doc-category-item">
-          {'query: '}
-          <TypeLink type={queryType} onClick={this.props.onClickType} />
-        </div>
-        {mutationType &&
-          <div className="doc-category-item">
-            {'mutation: '}
-            <TypeLink type={mutationType} onClick={this.props.onClickType} />
+        <div className="doc-category">
+          <div className="doc-category-title">
+            root types
           </div>
-        }
+          <div className="doc-category-item">
+            {'query: '}
+            <TypeLink type={queryType} onClick={this.props.onClickType} />
+          </div>
+          {mutationType &&
+            <div className="doc-category-item">
+              {'mutation: '}
+              <TypeLink type={mutationType} onClick={this.props.onClickType} />
+            </div>
+          }
+        </div>
       </div>
     );
   }
@@ -329,12 +333,9 @@ class TypeDoc extends React.Component {
 
     return (
       <div>
-        <div className="doc-type-title">
-          {type.name}
-        </div>
         <Description
           className="doc-type-description"
-          markdown={type.description}
+          markdown={type.description || 'No Description'}
         />
         {(type instanceof GraphQLObjectType) && typesDef}
         {fieldsDef}
@@ -380,15 +381,16 @@ class FieldDoc extends React.Component {
 
     return (
       <div>
-        <div className="doc-type-title">
-          {field.name}
-          {': '}
-          <TypeLink type={field.type} onClick={this.props.onClickType} />
-        </div>
         <Description
           className="doc-type-description"
-          markdown={field.description}
+          markdown={field.description || 'No Description'}
         />
+        <div className="doc-category">
+          <div className="doc-category-title">
+            type
+          </div>
+          <TypeLink type={field.type} onClick={this.props.onClickType} />
+        </div>
         {argsDef}
       </div>
     );

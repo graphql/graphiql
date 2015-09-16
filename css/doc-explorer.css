@@ -23,26 +23,15 @@
 
 #graphiql-container .doc-explorer-title {
   padding: 10px 0 10px 10px;
-  font-size: 14px;
+  font-weight: bold;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
 }
 
-#graphiql-container .doc-back-to-main-button {
-  float: left;
-
-}
-
-#graphiql-container .doc-explorer-toggle-button {
-  float: right;
-}
-
-#graphiql-container .doc-explorer-toggle-button,
-#graphiql-container .doc-back-to-main-button {
-  margin: 0 8px;
-  position: relative;
+#graphiql-container .doc-explorer-button {
+  margin: 3px 8px;
   padding: 1px 8px;
   line-height: 22px;
   background-color: #f6f7f8;
@@ -50,9 +39,35 @@
   border: 1px solid;
   border-color: #cccccc #c5c6c8 #b6b7b9;
   font-weight: bold;
-  top: 50%;
-  -webkit-transform: translate(0, -50%);
-          transform: translate(0, -50%);
+}
+
+#graphiql-container .doc-explorer-hide {
+  cursor: pointer;
+  float: right;
+  font-size: 18px;
+  margin: -7px -8px -6px 0;
+  padding: 18px 16px 15px 12px;
+}
+
+#graphiql-container .doc-explorer-back {
+  cursor: pointer;
+  float: left;
+  color: #3B5998;
+  margin: -7px 0 -6px -8px;
+  padding: 17px 12px 16px 16px;
+}
+
+#graphiql-container .doc-explorer-back:before {
+  border-left: 2px solid #3B5998;
+  border-top: 2px solid #3B5998;
+  content: '';
+  display: inline-block;
+  height: 9px;
+  margin: 0 3px -1px 0;
+  position: relative;
+  width: 9px;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 
 #graphiql-container .doc-explorer-contents {
@@ -60,9 +75,14 @@
   height: 100%;
   background-color: #ffffff;
   border-top: 1px solid #d6d6d6;
-  padding: 14px 15px;
+  padding: 20px 15px;
   overflow-y: auto;
   min-width: 300px;
+}
+
+#graphiql-container .doc-type-description p:first-child ,
+#graphiql-container .doc-type-description blockquote:first-child {
+  margin-top: 0;
 }
 
 #graphiql-container .doc-explorer-resize-bar {
@@ -83,16 +103,6 @@
 
 #graphiql-container .doc-explorer-contents a:hover {
   text-decoration: underline;
-}
-
-#graphiql-container .doc-nav-back-link {
-  padding-bottom: 10px;
-}
-
-#graphiql-container .doc-type-title {
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0 0;
 }
 
 #graphiql-container .doc-value-description {
