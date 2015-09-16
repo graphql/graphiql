@@ -336,9 +336,10 @@ class TypeDoc extends React.Component {
           className="doc-type-description"
           markdown={type.description}
         />
-        {typesDef}
+        {(type instanceof GraphQLObjectType) && typesDef}
         {fieldsDef}
         {valuesDef}
+        {!(type instanceof GraphQLObjectType) && typesDef}
       </div>
     );
   }
