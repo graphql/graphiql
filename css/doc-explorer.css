@@ -1,14 +1,4 @@
-#graphiql-container .docExplorerWrap {
-  position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-}
-
 #graphiql-container .doc-explorer {
-  height: 100%;
   background: white;
 }
 

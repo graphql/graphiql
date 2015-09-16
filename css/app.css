@@ -10,11 +10,27 @@ html, body {
   width: 100%;
   display: -webkit-flex;
   display:         flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  -webkit-flex-direction: row;
+          flex-direction: row;
   height: 100%;
   font-family: helvetica, arial, sans-serif;
   font-size: 14px;
+}
+
+#graphiql-container .editorWrap {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-direction: column;
+          flex-direction: column;
+  -webkit-flex: 1;
+          flex: 1;
+}
+
+#graphiql-container .docExplorerWrap {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+  position: relative;
+  background: white;
 }
 
 #graphiql-container .title {

@@ -210,41 +210,43 @@ export class GraphiQL extends React.Component {
 
     return (
       <div id="graphiql-container">
-        <div className="topBar">
-          {logo}
-          <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
-          {toolbar}
-        </div>
-        <div
-          ref="editorBar"
-          className="editorBar"
-          onMouseDown={this._onResizeStart.bind(this)}
-        >
-          <div className="queryWrap" style={queryWrapStyle}>
-            <QueryEditor
-              ref="queryEditor"
-              schema={this.state.schema}
-              value={this.state.query}
-              onEdit={this._onEditQuery.bind(this)}
-              onHintInformationRender={this._onHintInformationRender.bind(this)}
-            />
-            <div className="variable-editor" style={{ height: variableHeight }}>
-              <div
-                className="variable-editor-title"
-                style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                onMouseDown={this._onVariableResizeStart.bind(this)}
-              >
-                Query Variables
-              </div>
-              <VariableEditor
-                value={this.state.variables}
-                onEdit={this._onEditVariables.bind(this)}
-              />
-            </div>
+        <div className="editorWrap">
+          <div className="topBar">
+            {logo}
+            <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
+            {toolbar}
           </div>
-          <div className="resultWrap">
-            <ResultViewer ref="result" value={this.state.response} />
-            {footer}
+          <div
+            ref="editorBar"
+            className="editorBar"
+            onMouseDown={this._onResizeStart.bind(this)}
+          >
+            <div className="queryWrap" style={queryWrapStyle}>
+              <QueryEditor
+                ref="queryEditor"
+                schema={this.state.schema}
+                value={this.state.query}
+                onEdit={this._onEditQuery.bind(this)}
+                onHintInformationRender={this._onHintInformationRender.bind(this)}
+              />
+              <div className="variable-editor" style={{ height: variableHeight }}>
+                <div
+                  className="variable-editor-title"
+                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                  onMouseDown={this._onVariableResizeStart.bind(this)}
+                >
+                  Query Variables
+                </div>
+                <VariableEditor
+                  value={this.state.variables}
+                  onEdit={this._onEditVariables.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="resultWrap">
+              <ResultViewer ref="result" value={this.state.response} />
+              {footer}
+            </div>
           </div>
         </div>
         <div className="docExplorerWrap">
