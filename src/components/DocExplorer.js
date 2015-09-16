@@ -137,40 +137,26 @@ export class DocExplorer extends React.Component {
     });
   }
 
-  _onDefClick(event) {
-    var target = event.target;
-    var typeName;
-    if (target && target.tagName === 'A') {
-      switch (target.className) {
-        case 'doc-call-sign':
-          typeName = target.getAttribute('data-from-type-name');
-          var fields = this.props.schema.getType(typeName).getFields();
-          var callName = target.innerHTML;
-          this.setState({
-            inspectedType: null,
-            inspectedCall: fields[callName]
-          });
-          this.navStack.push({
-            id: 'call',
-            elem: fields[callName]
-          });
-          break;
-        case 'doc-type':
-          typeName = target.innerHTML;
-          var type = this.props.schema.getType(typeName);
-          this.setState({
-            inspectedType: type,
-            inspectedCall: null
-          });
-          this.navStack.push({
-            id: 'type',
-            elem: type
-          });
-          break;
-        default:
-          break;
-      }
-    }
+  _onClickType(type) {
+    this.setState({
+      inspectedType: type,
+      inspectedCall: null
+    });
+    this.navStack.push({
+      id: 'type',
+      elem: type
+    });
+  }
+
+  _onClickField(field) {
+    this.setState({
+      inspectedType: null,
+      inspectedCall: field
+    });
+    this.navStack.push({
+      id: 'call',
+      elem: field
+    });
   }
 
   _onResizeStart(downEvent) {
@@ -238,11 +224,26 @@ export class DocExplorer extends React.Component {
 
     var content;
     if (type) {
-      content = <TypeDoc type={type} key={type.name} />;
+      content =
+        <TypeDoc
+          key={type.name}
+          type={type}
+          onClickType={this._onClickType.bind(this)}
+          onClickField={this._onClickField.bind(this)}
+        />;
     } else if (call) {
-      content = <FieldDoc field={call} key={call.name} />;
+      content =
+        <FieldDoc
+          key={call.name}
+          field={call}
+          onClickType={this._onClickType.bind(this)}
+        />;
     } else if (schema) {
-      content = <SchemaDoc schema={schema} />;
+      content =
+        <SchemaDoc
+          schema={schema}
+          onClickType={this._onClickType.bind(this)}
+        />;
     }
 
     return (
@@ -267,8 +268,7 @@ export class DocExplorer extends React.Component {
         <div className="doc-explorer-resize-bar"
           onMouseDown={this._onResizeStart.bind(this)}
         />
-        <div className="doc-explorer-contents"
-          onClick={this._onDefClick.bind(this)}>
+        <div className="doc-explorer-contents">
           {navBackLinkJSX}
           {content}
         </div>
@@ -291,11 +291,11 @@ class SchemaDoc extends React.Component {
     return (
       <div>
         <div className="doc-category-item">
-          query: <TypeLink type={queryType} />
+          query: <TypeLink type={queryType} onClick={this.props.onClickType} />
         </div>
         {mutationType &&
           <div className="doc-category-item">
-            mutation: <TypeLink type={mutationType} />
+            mutation: <TypeLink type={mutationType} onClick={this.props.onClickType} />
           </div>
         }
       </div>
@@ -334,7 +334,7 @@ class TypeDoc extends React.Component {
           </div>
           {types.map(subtype =>
             <div key={subtype.name} className="doc-category-item">
-              <TypeLink type={subtype} />
+              <TypeLink type={subtype} onClick={this.props.onClickType} />
             </div>
           )}
         </div>
@@ -356,11 +356,13 @@ class TypeDoc extends React.Component {
             // so that later when the field is clicked, a correct type can be
             // looked up and referenced to.
             <div key={field.name} className="doc-category-item">
-              <a className="doc-call-sign" data-from-type-name={type.name}>
+              <a
+                className="doc-call-sign"
+                onClick={event => this.props.onClickField(field, type, event)}>
                 {field.name}
               </a>
               {': '}
-              <TypeLink type={field.type} />
+              <TypeLink type={field.type} onClick={this.props.onClickType} />
             </div>
           )}
         </div>
@@ -427,7 +429,7 @@ class FieldDoc extends React.Component {
               <div className="doc-value-title">
                 <span className="doc-value-name">{arg.name}</span>
                 {': '}
-                <TypeLink type={arg.type} />
+                <TypeLink type={arg.type} onClick={this.props.onClickType} />
               </div>
               <Description
                 className="doc-value-description"
@@ -444,7 +446,7 @@ class FieldDoc extends React.Component {
         <div className="doc-type-title">
           {field.name}
           {': '}
-          <TypeLink type={field.type} />
+          <TypeLink type={field.type} onClick={this.props.onClickType} />
         </div>
         <Description
           className="doc-type-description"
@@ -463,18 +465,22 @@ class TypeLink extends React.Component {
   }
 
   render() {
-    return renderType(this.props.type);
+    return renderType(this.props.type, this.props.onClick);
   }
 }
 
-function renderType(type) {
+function renderType(type, onClick) {
   if (type instanceof GraphQLNonNull) {
-    return <span>{renderType(type.ofType)}!</span>;
+    return <span>{renderType(type.ofType, onClick)}!</span>;
   }
   if (type instanceof GraphQLList) {
-    return <span>[{renderType(type.ofType)}]</span>;
+    return <span>[{renderType(type.ofType, onClick)}]</span>;
   }
-  return <a className="doc-type">{type.name}</a>;
+  return (
+    <a className="doc-type" onClick={event => onClick(type, event)}>
+      {type.name}
+    </a>
+  );
 }
 
 // Renders a description
