@@ -10,12 +10,14 @@ import React, { PropTypes } from 'react';
 import Marked from 'marked';
 import {
   GraphQLSchema,
-  GraphQLUnionType,
+  GraphQLObjectType,
   GraphQLInterfaceType,
+  GraphQLUnionType,
+  GraphQLEnumType,
   GraphQLList,
   GraphQLNonNull
 } from 'graphql/type';
-import { getLeft, getTop } from '../utility/elementPosition';
+import { getLeft } from '../utility/elementPosition';
 
 
 const CLOSED_WIDTH = 75;
@@ -54,119 +56,8 @@ export class DocExplorer extends React.Component {
       inspectedCall: null
     };
 
-    this.startPage = '';
-
     // Navigation stack to remember the definitions visited.
     this.navStack = [];
-
-    this.marked = Marked;
-  }
-
-  _renderMarkdown(text) {
-    return <span
-      dangerouslySetInnerHTML={
-        {__html: this.marked(text)}
-      }
-    />;
-  }
-
-  _getTypeLink(type) {
-    function introspectOfTypes(type) {
-      var typeName = '';
-      if (type instanceof GraphQLNonNull) {
-        typeName = <span>
-          {introspectOfTypes(type.ofType)}
-          !
-        </span>;
-      } else if (type instanceof GraphQLList) {
-        typeName = <span>
-          [
-          {introspectOfTypes(type.ofType)}
-          ]
-        </span>;
-      } else {
-        typeName = <a className="doc-type">{type.name}</a>;
-      }
-
-      return typeName;
-    }
-
-    return introspectOfTypes(type);
-  }
-
-  _renderTypeFields(type) {
-    var _getTypeLink = this._getTypeLink;
-    function renderField(field, from) {
-      // Provide the type parenting this field as a data attribute
-      // so that later when the field is clicked, a correct type can be
-      // looked up and referenced to.
-      return (
-        <div className="doc-category-item">
-          <a className="doc-call-sign" data-from-type-name={from.name}>
-            {field.name}
-          </a>
-          <span> : </span>
-          {_getTypeLink(field.type)}
-        </div>
-      );
-    }
-
-    var fields = type.getFields();
-    var fieldsJSX = [];
-    Object.keys(fields).forEach(fieldName => {
-      fieldsJSX.push(
-        renderField(fields[fieldName], type)
-      );
-    });
-
-    return (
-      {fieldsJSX}
-    );
-  }
-
-  _renderTypeValues(type) {
-    var _renderMarkdown = this._renderMarkdown.bind(this);
-    function renderValue(value) {
-      return (
-        <div className="doc-category-item">
-          <div className="doc-value-name">
-            {value.name} = {value.value}
-          </div>
-          <div className="doc-value-description">
-            {_renderMarkdown(value.description || 'Self descriptive.')}
-          </div>
-        </div>
-      );
-    }
-
-    var values = type.getValues();
-    var valuesJSX = [];
-    for (var value of values) {
-      valuesJSX.push(renderValue(value));
-    }
-
-    return (
-      {valuesJSX}
-    );
-  }
-
-  _renderTypes(types) {
-    function renderType(type) {
-      return (
-        <div className="doc-category-item">
-          <a className="doc-type">{type.name}</a>
-        </div>
-      );
-    }
-
-    var typesJSX = [];
-    for (var type of types) {
-      typesJSX.push(renderType(type));
-    }
-
-    return (
-      {typesJSX}
-    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -197,112 +88,6 @@ export class DocExplorer extends React.Component {
         elem: type
       });
     }
-  }
-
-  _generateTypePage(type) {
-    var fieldsDef = '';
-    var valuesDef = '';
-
-    var types;
-    var typesDefTitle = '';
-
-    if (type instanceof GraphQLUnionType) {
-      types = this._renderTypes(type.getPossibleTypes());
-      typesDefTitle = 'possible types';
-    } else if (type instanceof GraphQLInterfaceType) {
-      types = this._renderTypes(type.getPossibleTypes());
-      typesDefTitle = 'implemented by';
-    } else if (type.getInterfaces && type.getInterfaces().length > 0) {
-      types = this._renderTypes(type.getInterfaces());
-      typesDefTitle = 'interfaces';
-    }
-
-    var typesDef = types ? (
-      <div className="doc-category">
-        <div className="doc-category-title">
-          {typesDefTitle}
-        </div>
-        {types}
-      </div>
-    ) : '';
-
-    if (type.getFields) {
-      fieldsDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            fields
-          </div>
-          {this._renderTypeFields(type)}
-        </div>
-      );
-    }
-    if (type.getValues) {
-      valuesDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            values
-          </div>
-          {this._renderTypeValues(type)}
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <div className="doc-type-title">
-          {type.name}
-        </div>
-        <div className="doc-type-description">
-          {this._renderMarkdown(type.description || 'Self descriptive.')}
-        </div>
-        {typesDef}
-        {fieldsDef}
-        {valuesDef}
-      </div>
-    );
-  }
-
-  _generateCallPage(call) {
-    var argsJSX = [];
-    var argsDef = '';
-    if (call.args && call.args.length > 0) {
-      for (var arg of call.args) {
-        argsJSX.push(
-          <div>
-            <div className="doc-value-title">
-              {this._getTypeLink(arg.type)}
-              {" "}
-              <span className="doc-value-name">{arg.name}</span>
-            </div>
-            <div className="doc-value-description">
-              {this._renderMarkdown(arg.description || 'Self descriptive.')}
-            </div>
-          </div>
-        );
-      }
-      argsDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            arguments
-          </div>
-          {argsJSX}
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <div className="doc-type-title">
-          {call.name}
-          <span> : </span>
-          {this._getTypeLink(call.type)}
-        </div>
-        <div className="doc-type-description">
-          {this._renderMarkdown(call.description || 'Self descriptive.')}
-        </div>
-        {argsDef}
-      </div>
-    );
   }
 
   _generateNavBackLink() {
@@ -446,26 +231,18 @@ export class DocExplorer extends React.Component {
     var type = this.state.inspectedType;
     var call = this.state.inspectedCall;
 
-    var navBackLinkJSX = '';
+    var navBackLinkJSX;
     if (this.navStack.length > 0) {
       navBackLinkJSX = this._generateNavBackLink();
     }
 
     var content;
     if (type) {
-      content = this._generateTypePage(type);
+      content = <TypeDoc type={type} key={type.name} />;
     } else if (call) {
-      content = this._generateCallPage(call);
+      content = <FieldDoc field={call} key={call.name} />;
     } else if (schema) {
-      var queryType = schema.getQueryType();
-      var mutationType = schema.getMutationType();
-      var typesJSX = this._renderTypes([ queryType, mutationType ]);
-
-      content = (
-        <div className="doc-category">
-          {typesJSX}
-        </div>
-      );
+      content = <SchemaDoc schema={schema} />;
     }
 
     return (
@@ -497,5 +274,225 @@ export class DocExplorer extends React.Component {
         </div>
       </div>
     );
+  }
+}
+
+// Render the top level Schema
+class SchemaDoc extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.schema !== nextProps.schema;
+  }
+
+  render() {
+    var schema = this.props.schema;
+    var queryType = schema.getQueryType();
+    var mutationType = schema.getMutationType();
+
+    return (
+      <div>
+        <div className="doc-category-item">
+          query: <TypeLink type={queryType} />
+        </div>
+        {mutationType &&
+          <div className="doc-category-item">
+            mutation: <TypeLink type={mutationType} />
+          </div>
+        }
+      </div>
+    );
+  }
+}
+
+// Documentation for a Type
+class TypeDoc extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.type !== nextProps.type;
+  }
+
+  render() {
+    var type = this.props.type;
+
+    var typesTitle;
+    var types;
+    if (type instanceof GraphQLUnionType) {
+      typesTitle = 'possible types';
+      types = type.getPossibleTypes();
+    } else if (type instanceof GraphQLInterfaceType) {
+      typesTitle = 'implementations';
+      types = type.getPossibleTypes();
+    } else if (type instanceof GraphQLObjectType) {
+      typesTitle = 'implements';
+      types = type.getInterfaces();
+    }
+
+    var typesDef;
+    if (types && types.length > 0) {
+      typesDef = (
+        <div className="doc-category">
+          <div className="doc-category-title">
+            {typesTitle}
+          </div>
+          {types.map(subtype =>
+            <div key={subtype.name} className="doc-category-item">
+              <TypeLink type={subtype} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // InputObject and Object
+    var fieldsDef;
+    if (type.getFields) {
+      var fieldMap = type.getFields();
+      var fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+      fieldsDef = (
+        <div className="doc-category">
+          <div className="doc-category-title">
+            fields
+          </div>
+          {fields.map(field =>
+            // Provide the type parenting this field as a data attribute
+            // so that later when the field is clicked, a correct type can be
+            // looked up and referenced to.
+            <div key={field.name} className="doc-category-item">
+              <a className="doc-call-sign" data-from-type-name={type.name}>
+                {field.name}
+              </a>
+              {': '}
+              <TypeLink type={field.type} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    var valuesDef;
+    if (type instanceof GraphQLEnumType) {
+      valuesDef = (
+        <div className="doc-category">
+          <div className="doc-category-title">
+            values
+          </div>
+          {type.getValues().map(value =>
+            <div key={value.name} className="doc-category-item">
+              <div className="doc-value-name">
+                {value.name}
+              </div>
+              <Description
+                className="doc-value-description"
+                markdown={type.description}
+              />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div className="doc-type-title">
+          {type.name}
+        </div>
+        <Description
+          className="doc-type-description"
+          markdown={type.description}
+        />
+        {typesDef}
+        {fieldsDef}
+        {valuesDef}
+      </div>
+    );
+  }
+}
+
+// Documentation for a field
+class FieldDoc extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.field !== nextProps.field;
+  }
+
+  render() {
+    var field = this.props.field;
+
+    var argsDef;
+    if (field.args && field.args.length > 0) {
+      argsDef = (
+        <div className="doc-category">
+          <div className="doc-category-title">
+            arguments
+          </div>
+          {field.args.map(arg =>
+            <div key={arg.name}>
+              <div className="doc-value-title">
+                <span className="doc-value-name">{arg.name}</span>
+                {': '}
+                <TypeLink type={arg.type} />
+              </div>
+              <Description
+                className="doc-value-description"
+                markdown={arg.description}
+              />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div className="doc-type-title">
+          {field.name}
+          {': '}
+          <TypeLink type={field.type} />
+        </div>
+        <Description
+          className="doc-type-description"
+          markdown={field.description}
+        />
+        {argsDef}
+      </div>
+    );
+  }
+}
+
+// Renders a type link
+class TypeLink extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.type !== nextProps.type;
+  }
+
+  render() {
+    return renderType(this.props.type);
+  }
+}
+
+function renderType(type) {
+  if (type instanceof GraphQLNonNull) {
+    return <span>{renderType(type.ofType)}!</span>;
+  }
+  if (type instanceof GraphQLList) {
+    return <span>[{renderType(type.ofType)}]</span>;
+  }
+  return <a className="doc-type">{type.name}</a>;
+}
+
+// Renders a description
+class Description extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.markdown !== nextProps.markdown;
+  }
+
+  render() {
+    var markdown = this.props.markdown;
+    if (!markdown) {
+      return <div />;
+    }
+
+    var html = Marked(markdown);
+    return <div
+      className={this.props.className}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />;
   }
 }
