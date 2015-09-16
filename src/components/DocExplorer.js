@@ -75,15 +75,15 @@ export class DocExplorer extends React.Component {
     }
   }
 
-  _onToggleBtnClick() {
+  _onToggleBtnClick = () => {
     this.setState({ expanded: !this.state.expanded });
   }
 
-  _onNavBackClick() {
+  _onNavBackClick = () => {
     this.setState({ navStack: this.state.navStack.slice(0, -1) });
   }
 
-  _onClickTypeOrField(typeOrField) {
+  _onClickTypeOrField = typeOrField => {
     var navStack = this.state.navStack;
     var isCurrentlyShown =
       navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
@@ -92,7 +92,7 @@ export class DocExplorer extends React.Component {
     }
   }
 
-  _onResizeStart(downEvent) {
+  _onResizeStart = downEvent => {
     downEvent.preventDefault();
 
     var hadWidth = this.state.width;
@@ -137,7 +137,7 @@ export class DocExplorer extends React.Component {
           <div className="doc-explorer-title-bar">
             <button
               className="doc-explorer-toggle-button"
-              onClick={this._onToggleBtnClick.bind(this)}>
+              onClick={this._onToggleBtnClick}>
               Docs
             </button>
           </div>
@@ -160,19 +160,19 @@ export class DocExplorer extends React.Component {
         <TypeDoc
           key={typeOrField.name}
           type={typeOrField}
-          onClickType={this._onClickTypeOrField.bind(this)}
-          onClickField={this._onClickTypeOrField.bind(this)}
+          onClickType={this._onClickTypeOrField}
+          onClickField={this._onClickTypeOrField}
         /> :
         <FieldDoc
           key={typeOrField.name}
           field={typeOrField}
-          onClickType={this._onClickTypeOrField.bind(this)}
+          onClickType={this._onClickTypeOrField}
         />;
     } else if (schema) {
       content =
         <SchemaDoc
           schema={schema}
-          onClickType={this._onClickTypeOrField.bind(this)}
+          onClickType={this._onClickTypeOrField}
         />;
     }
 
@@ -189,13 +189,13 @@ export class DocExplorer extends React.Component {
           {prevName &&
             <button
               className="doc-back-to-main-button"
-              onClick={this._onNavBackClick.bind(this)}>
+              onClick={this._onNavBackClick}>
               {prevName}
             </button>
           }
           <button
             className="doc-explorer-toggle-button"
-            onClick={this._onToggleBtnClick.bind(this)}>
+            onClick={this._onToggleBtnClick}>
             &times;
           </button>
           <div className="doc-explorer-title">
@@ -203,7 +203,7 @@ export class DocExplorer extends React.Component {
           </div>
         </div>
         <div className="doc-explorer-resize-bar"
-          onMouseDown={this._onResizeStart.bind(this)}
+          onMouseDown={this._onResizeStart}
         />
         <div className="doc-explorer-contents">
           {content}
@@ -227,11 +227,13 @@ class SchemaDoc extends React.Component {
     return (
       <div>
         <div className="doc-category-item">
-          query: <TypeLink type={queryType} onClick={this.props.onClickType} />
+          {'query: '}
+          <TypeLink type={queryType} onClick={this.props.onClickType} />
         </div>
         {mutationType &&
           <div className="doc-category-item">
-            mutation: <TypeLink type={mutationType} onClick={this.props.onClickType} />
+            {'mutation: '}
+            <TypeLink type={mutationType} onClick={this.props.onClickType} />
           </div>
         }
       </div>

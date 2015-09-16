@@ -219,17 +219,6 @@ export class QueryEditor extends React.Component {
         '<span class="infoType">' + renderType(ctx.type) + '</span>' :
         '';
 
-      function renderType(type) {
-        if (type instanceof GraphQLNonNull) {
-          return `${renderType(type.ofType)}!`;
-        }
-        if (type instanceof GraphQLList) {
-          return `[${renderType(type.ofType)}]`;
-        }
-        return `<a class="typeName">${type.name}</a>`;
-      }
-
-
       information.innerHTML = '<div class="content">' +
         (description.slice(0, 3) === '<p>' ?
           '<p>' + type + description.slice(3) :
@@ -246,4 +235,14 @@ export class QueryEditor extends React.Component {
   render() {
     return <div className="query-editor" />;
   }
+}
+
+function renderType(type) {
+  if (type instanceof GraphQLNonNull) {
+    return `${renderType(type.ofType)}!`;
+  }
+  if (type instanceof GraphQLList) {
+    return `[${renderType(type.ofType)}]`;
+  }
+  return `<a class="typeName">${type.name}</a>`;
 }
