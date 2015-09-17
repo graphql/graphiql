@@ -281,11 +281,11 @@ export class GraphiQL extends React.Component {
 
   // Private methods
 
-  _storageGet(storage, name) {
+  _storageGet(name) {
     return this._storage.getItem('graphiql:' + name);
   }
 
-  _storageSet(storage, name, value) {
+  _storageSet(name, value) {
     this._storage.setItem('graphiql:' + name, value);
   }
 
