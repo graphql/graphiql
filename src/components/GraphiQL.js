@@ -96,20 +96,32 @@ export class GraphiQL extends React.Component {
       this.state.query,
       this.props.getDefaultFieldNames
     );
-    if (insertions) {
+    if (insertions.length > 0) {
       var editor = this.refs.queryEditor.getCodeMirror();
-      editor.setValue(result);
-      var added = 0;
-      var markers = insertions.map(({ index, string }) => editor.markText(
-        editor.posFromIndex(index + added),
-        editor.posFromIndex(index + (added += string.length)),
-        {
-          className: 'autoInsertedLeaf',
-          clearOnEnter: true,
-          title: 'Automatically added leaf fields'
-        }
-      ));
-      setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+      editor.operation(() => {
+        var cursor = editor.getCursor();
+        var cursorIndex = editor.indexFromPos(cursor);
+        editor.setValue(result);
+        var added = 0;
+        var markers = insertions.map(({ index, string }) => editor.markText(
+          editor.posFromIndex(index + added),
+          editor.posFromIndex(index + (added += string.length)),
+          {
+            className: 'autoInsertedLeaf',
+            clearOnEnter: true,
+            title: 'Automatically added leaf fields'
+          }
+        ));
+        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        var newCursorIndex = cursorIndex;
+        insertions.forEach(({ index, string }) => {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        });
+        var newCursor = editor.posFromIndex(newCursorIndex);
+        editor.setCursor(newCursor);
+      });
     }
   }
 
@@ -291,7 +303,7 @@ export class GraphiQL extends React.Component {
 
   _fetchQuery(query, variables, cb) {
     this.props.fetcher({ query, variables }).then(cb).catch(error => {
-      this.setState({ response: JSON.stringify(error, null, 2) });
+      this.setState({ response: error && error.stack || error });
     });
   }
 
