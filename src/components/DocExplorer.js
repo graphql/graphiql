@@ -71,6 +71,13 @@ export class DocExplorer extends React.Component {
     this.showDoc(typeOrField);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      this.props.schema !== nextProps.schema ||
+      this.state.navStack !== nextState.navStack
+    );
+  }
+
   render() {
     var schema = this.props.schema;
     var navStack = this.state.navStack;
@@ -148,17 +155,25 @@ class SchemaDoc extends React.Component {
 
     return (
       <div>
+        <Description
+          className="doc-type-description"
+          markdown={
+            'A GraphQL schema provides a root type for each kind of operation.'
+          }
+        />
         <div className="doc-category">
           <div className="doc-category-title">
             root types
           </div>
           <div className="doc-category-item">
-            {'query: '}
+            <span className="keyword">query</span>
+            {': '}
             <TypeLink type={queryType} onClick={this.props.onClickType} />
           </div>
           {mutationType &&
             <div className="doc-category-item">
-              {'mutation: '}
+              <span className="keyword">mutation</span>
+              {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
             </div>
           }
@@ -176,6 +191,8 @@ class TypeDoc extends React.Component {
 
   render() {
     var type = this.props.type;
+    var onClickType = this.props.onClickType || () => {};
+    var onClickField = this.props.onClickField || () => {};
 
     var typesTitle;
     var types;
@@ -199,7 +216,7 @@ class TypeDoc extends React.Component {
           </div>
           {types.map(subtype =>
             <div key={subtype.name} className="doc-category-item">
-              <TypeLink type={subtype} onClick={this.props.onClickType} />
+              <TypeLink type={subtype} onClick={onClickType} />
             </div>
           )}
         </div>
@@ -216,18 +233,33 @@ class TypeDoc extends React.Component {
           <div className="doc-category-title">
             fields
           </div>
-          {fields.map(field =>
-            // Provide the type parenting this field as a data attribute
-            // so that later when the field is clicked, a correct type can be
-            // looked up and referenced to.
-            <div key={field.name} className="doc-category-item">
-              <a onClick={event => this.props.onClickField(field, type, event)}>
-                {field.name}
-              </a>
-              {': '}
-              <TypeLink type={field.type} onClick={this.props.onClickType} />
-            </div>
-          )}
+          {fields.map(field => {
+
+            // Field arguments
+            var argsDef;
+            if (field.args && field.args.length > 0) {
+              argsDef = field.args.map(arg =>
+                <span className="arg" key={arg.name}>
+                  <span className="arg-name">{arg.name}</span>
+                  {': '}
+                  <TypeLink type={arg.type} onClick={onClickType} />
+                </span>
+              );
+            }
+
+            return (
+              <div key={field.name} className="doc-category-item">
+                <a
+                  className="field-name"
+                  onClick={event => onClickField(field, type, event)}>
+                  {field.name}
+                </a>
+                {argsDef && ['(', <span>{argsDef}</span>, ')']}
+                {': '}
+                <TypeLink type={field.type} onClick={onClickType} />
+              </div>
+            )
+          })}
         </div>
       );
     }
@@ -241,7 +273,7 @@ class TypeDoc extends React.Component {
           </div>
           {type.getValues().map(value =>
             <div key={value.name} className="doc-category-item">
-              <div className="doc-value-name">
+              <div className="enum-value">
                 {value.name}
               </div>
               <Description
@@ -286,9 +318,9 @@ class FieldDoc extends React.Component {
             arguments
           </div>
           {field.args.map(arg =>
-            <div key={arg.name}>
-              <div className="doc-value-title">
-                <span className="doc-value-name">{arg.name}</span>
+            <div key={arg.name} className="doc-category-item">
+              <div>
+                <span className="arg-name">{arg.name}</span>
                 {': '}
                 <TypeLink type={arg.type} onClick={this.props.onClickType} />
               </div>
@@ -338,7 +370,11 @@ function renderType(type, onClick) {
   if (type instanceof GraphQLList) {
     return <span>[{renderType(type.ofType, onClick)}]</span>;
   }
-  return <a onClick={event => onClick(type, event)}>{type.name}</a>;
+  return (
+    <a className="type-name" onClick={event => onClick(type, event)}>
+      {type.name}
+    </a>
+  );
 }
 
 // Renders a description

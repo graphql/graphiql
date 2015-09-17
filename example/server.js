@@ -39,16 +39,19 @@ console.log('Started on http://localhost:8080/');
 var TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
   values: {
-    RED: {},
-    GREEN: {},
-    BLUE: {},
+    RED: { description: 'A rosy color' },
+    GREEN: { description: 'The color of martians and slime' },
+    BLUE: { description: 'A feeling you might have if you can\'t use GraphQL' },
   }
 });
 
 var TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
-    string: { type: GraphQLString },
+    string: {
+      type: GraphQLString,
+      description: 'Repeats back this string'
+    },
     int: { type: GraphQLInt },
     float: { type: GraphQLFloat },
     boolean: { type: GraphQLBoolean },
