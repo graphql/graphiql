@@ -145,6 +145,8 @@ export class GraphiQL extends React.Component {
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
+      docsOpen: false,
+      docsWidth: this._storageGet('docExplorerWidth') || 350,
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -207,13 +209,25 @@ export class GraphiQL extends React.Component {
       flex: this.state.editorFlex,
     };
 
+    var docWrapStyle = {
+      display: this.state.docsOpen ? 'block' : 'none',
+      width: this.state.docsWidth,
+    };
+
     return (
       <div id="graphiql-container">
         <div className="editorWrap">
-          <div className="topBar">
-            {logo}
-            <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
-            {toolbar}
+          <div className="topBarWrap">
+            <div className="topBar">
+              {logo}
+              <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
+              {toolbar}
+            </div>
+            {!this.state.docsOpen &&
+              <button className="docExplorerShow" onClick={this._onToggleDocs}>
+                Docs
+              </button>
+            }
           </div>
           <div
             ref="editorBar"
@@ -248,8 +262,16 @@ export class GraphiQL extends React.Component {
             </div>
           </div>
         </div>
-        <div className="docExplorerWrap">
-          <DocExplorer ref="docExplorer" schema={this.state.schema} />
+        <div className="docExplorerWrap" style={docWrapStyle}>
+          <div
+            className="docExplorerResizer"
+            onMouseDown={this._onDocsResizeStart}
+          />
+          <DocExplorer ref="docExplorer" schema={this.state.schema}>
+            <div className="docExplorerHide" onClick={this._onToggleDocs}>
+              &#x2715;
+            </div>
+          </DocExplorer>
         </div>
       </div>
     );
@@ -318,10 +340,16 @@ export class GraphiQL extends React.Component {
       if (schema) {
         var type = schema.getType(typeName);
         if (type) {
-          this.refs.docExplorer.showDoc(type);
+          this.setState({ docsOpen: true }, () => {
+            this.refs.docExplorer.showDoc(type);
+          });
         }
       }
     }
+  }
+
+  _onToggleDocs = () => {
+    this.setState({ docsOpen: !this.state.docsOpen });
   }
 
   _onResizeStart(downEvent) {
@@ -378,8 +406,46 @@ export class GraphiQL extends React.Component {
     return false;
   }
 
-  _onDocExplorerResizeStart(downEvent) {
+  _onDocsResizeStart = downEvent => {
     downEvent.preventDefault();
+
+    var hadWidth = this.state.docsWidth;
+    var offset = downEvent.clientX - getLeft(downEvent.target);
+
+    var onMouseMove = moveEvent => {
+      if (moveEvent.buttons === 0) {
+        return onMouseUp();
+      }
+
+      var app = React.findDOMNode(this);
+      var cursorPos = moveEvent.clientX - getLeft(app) - offset;
+      var docsSize = app.clientWidth - cursorPos;
+
+      if (docsSize < 100) {
+        this.setState({ docsOpen: false });
+      } else {
+        this.setState({
+          docsOpen: true,
+          docsWidth: Math.min(docsSize, 650)
+        });
+      }
+    };
+
+    var onMouseUp = () => {
+      if (this.state.docsOpen) {
+        this._storageSet('docExplorerWidth', this.state.docsWidth);
+      } else {
+        this.setState({ docsWidth: hadWidth });
+      }
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 
   _onVariableResizeStart(downEvent) {

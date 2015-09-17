@@ -6,9 +6,11 @@
   position: relative;
   height: 34px;
   line-height: 14px;
-  padding: 7px 8px 6px;
+  padding: 8px 8px 5px;
   -webkit-user-select: none;
           user-select: none;
+  display: -webkit-flex;
+  display: flex;
 }
 
 #graphiql-container .doc-explorer-title {
@@ -18,33 +20,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
+  -webkit-flex: 1;
+          flex: 1;
 }
 
-#graphiql-container .doc-explorer-button {
-  margin: 3px 8px;
-  padding: 1px 8px;
-  line-height: 22px;
-  background-color: #f6f7f8;
-  border-radius: 2px;
-  border: 1px solid;
-  border-color: #cccccc #c5c6c8 #b6b7b9;
-  font-weight: bold;
-}
-
-#graphiql-container .doc-explorer-hide {
-  cursor: pointer;
-  float: right;
-  font-size: 18px;
-  margin: -7px -8px -6px 0;
-  padding: 18px 16px 15px 12px;
+#graphiql-container .doc-explorer-rhs {
+  position: relative;
 }
 
 #graphiql-container .doc-explorer-back {
-  cursor: pointer;
-  float: left;
   color: #3B5998;
+  cursor: pointer;
   margin: -7px 0 -6px -8px;
+  overflow-x: hidden;
   padding: 17px 12px 16px 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 #graphiql-container .doc-explorer-back:before {
@@ -73,16 +64,6 @@
 #graphiql-container .doc-type-description p:first-child ,
 #graphiql-container .doc-type-description blockquote:first-child {
   margin-top: 0;
-}
-
-#graphiql-container .doc-explorer-resize-bar {
-  cursor: col-resize;
-  height: 100%;
-  left: -5px;
-  position: absolute;
-  top: 0;
-  width: 10px;
-  z-index: 10;
 }
 
 #graphiql-container .doc-explorer-contents a {

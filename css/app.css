@@ -26,13 +26,6 @@ html, body {
           flex: 1;
 }
 
-#graphiql-container .docExplorerWrap {
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-  position: relative;
-  background: white;
-}
-
 #graphiql-container .title {
   font-size: 18px;
 }
@@ -40,6 +33,13 @@ html, body {
 #graphiql-container .title em {
   font-family: georgia;
   font-size: 19px;
+}
+
+#graphiql-container .topBarWrap {
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-direction: row;
+          flex-direction: row;
 }
 
 #graphiql-container .topBar {
@@ -55,8 +55,36 @@ html, body {
   display:         flex;
   -webkit-flex-direction: row;
           flex-direction: row;
+  -webkit-flex: 1;
+          flex: 1;
   -webkit-align-items: center;
           align-items: center;
+}
+
+#graphiql-container .docExplorerShow {
+  background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
+  background:         linear-gradient(#f7f7f7, #e2e2e2);
+  border: none;
+  border-bottom: solid 1px #d0d0d0;
+  border-left: solid 1px rgba(0, 0, 0, 0.2);
+  color: #3B5998;
+  cursor: pointer;
+  font-size: 14px;
+  outline: 0;
+  padding: 2px 20px 0 18px;
+}
+
+#graphiql-container .docExplorerShow:before {
+  border-left: 2px solid #3B5998;
+  border-top: 2px solid #3B5998;
+  content: '';
+  display: inline-block;
+  height: 9px;
+  margin: 0 3px -1px 0;
+  position: relative;
+  width: 9px;
+  -webkit-transform: rotate(-45deg);
+          transform: rotate(-45deg);
 }
 
 #graphiql-container .editorBar {
@@ -85,6 +113,30 @@ html, body {
   -webkit-flex: 1;
           flex: 1;
   border-left: solid 1px #e0e0e0;
+}
+
+#graphiql-container .docExplorerWrap {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 3;
+  position: relative;
+  background: white;
+}
+
+#graphiql-container .docExplorerResizer {
+  cursor: col-resize;
+  height: 100%;
+  left: -5px;
+  position: absolute;
+  top: 0;
+  width: 10px;
+  z-index: 10;
+}
+
+#graphiql-container .docExplorerHide {
+  cursor: pointer;
+  font-size: 18px;
+  margin: -7px -8px -6px 0;
+  padding: 18px 16px 15px 12px;
 }
 
 #graphiql-container .query-editor {
@@ -171,7 +223,6 @@ html, body {
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
   fill: #444;
-  float: left;
   height: 34px;
   margin: 0 14px 0 28px;
   padding: 0;

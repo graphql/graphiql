@@ -18,13 +18,7 @@ import {
   GraphQLList,
   GraphQLNonNull
 } from 'graphql/type';
-import { getLeft } from '../utility/elementPosition';
 
-
-const CLOSED_WIDTH = 75;
-const MIN_WIDTH = 200;
-const DEFAULT_WIDTH = 350;
-const MAX_WIDTH = 650;
 
 /**
  * DocExplorer
@@ -36,20 +30,16 @@ const MAX_WIDTH = 650;
  *   - schema: A required GraphQLSchema instance that provides GraphQL document
  *     definitions.
  *
+ * Children:
+ *
+ *   - Any provided children will be positioned in the right-hand-side of the
+ *     top bar. Typically this will be a "close" button for temporary explorer.
+ *
  */
 export class DocExplorer extends React.Component {
+
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
-  }
-
-  constructor() {
-    super();
-
-    this.state = {
-      width: window.localStorage.getItem('docExplorerWidth') || DEFAULT_WIDTH,
-      expanded: false,
-      navStack: []
-    };
   }
 
   // Public API
@@ -60,7 +50,13 @@ export class DocExplorer extends React.Component {
     if (!isCurrentlyShown) {
       navStack = navStack.concat([ typeOrField ]);
     }
-    this.setState({ expanded: true, navStack });
+    this.setState({ navStack });
+  }
+
+  constructor() {
+    super();
+
+    this.state = { navStack: [] };
   }
 
   _onToggleBtnClick = () => {
@@ -75,60 +71,7 @@ export class DocExplorer extends React.Component {
     this.showDoc(typeOrField);
   }
 
-  _onResizeStart = downEvent => {
-    downEvent.preventDefault();
-
-    var hadWidth = this.state.width;
-    var offset = downEvent.clientX - getLeft(downEvent.target);
-
-    var onMouseMove = moveEvent => {
-      var docExplorerBar = React.findDOMNode(this);
-      var leftSize = moveEvent.clientX - getLeft(docExplorerBar) - offset;
-      var rightSize = docExplorerBar.clientWidth - leftSize;
-
-      if (rightSize < MIN_WIDTH) {
-        this.setState({ expanded: false });
-      } else {
-        this.setState({
-          expanded: true,
-          width: Math.min(rightSize, MAX_WIDTH)
-        });
-      }
-    };
-
-    var onMouseUp = () => {
-      if (this.state.expanded) {
-        window.localStorage.setItem('docExplorerWidth', this.state.width);
-      } else {
-        this.setState({ width: hadWidth });
-      }
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  }
-
   render() {
-    if (!this.state.expanded) {
-      return (
-        <div className="doc-explorer" style={{ width: CLOSED_WIDTH }}>
-          <div className="doc-explorer-title-bar">
-            <button
-              className="doc-explorer-button"
-              onClick={this._onToggleBtnClick}>
-              Docs
-            </button>
-          </div>
-          <div className="doc-explorer-contents" />
-        </div>
-      );
-    }
-
     var schema = this.props.schema;
     var navStack = this.state.navStack;
 
@@ -170,23 +113,20 @@ export class DocExplorer extends React.Component {
     }
 
     return (
-      <div className="doc-explorer" style={{ width: this.state.width }}>
+      <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
           {prevName &&
             <div className="doc-explorer-back" onClick={this._onNavBackClick}>
               {prevName}
             </div>
           }
-          <div className="doc-explorer-hide" onClick={this._onToggleBtnClick}>
-            &#x2715;
-          </div>
           <div className="doc-explorer-title">
             {title}
           </div>
+          <div className="doc-explorer-rhs">
+            {this.props.children}
+          </div>
         </div>
-        <div className="doc-explorer-resize-bar"
-          onMouseDown={this._onResizeStart}
-        />
         <div className="doc-explorer-contents">
           {content}
         </div>
