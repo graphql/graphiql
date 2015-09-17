@@ -94,12 +94,15 @@ export class QueryEditor extends React.Component {
       }
     });
 
-    this.editor.on('change', this._onEdit.bind(this));
-    this.editor.on('keyup', this._onKeyUp.bind(this));
-    this.editor.on('hasCompletion', this._onHasCompletion.bind(this));
+    this.editor.on('change', this._onEdit);
+    this.editor.on('keyup', this._onKeyUp);
+    this.editor.on('hasCompletion', this._onHasCompletion);
   }
 
   componentWillUnmount() {
+    this.editor.off('change', this._onEdit);
+    this.editor.off('keyup', this._onKeyUp);
+    this.editor.off('hasCompletion', this._onHasCompletion);
     this.editor = null;
   }
 
@@ -121,7 +124,7 @@ export class QueryEditor extends React.Component {
     this.ignoreChangeEvent = false;
   }
 
-  _onKeyUp(cm, event) {
+  _onKeyUp = (cm, event) => {
     var code = event.keyCode;
     if (
       (code >= 65 && code <= 90) || // letters
@@ -134,7 +137,7 @@ export class QueryEditor extends React.Component {
     }
   }
 
-  _onEdit() {
+  _onEdit = () => {
     if (!this.ignoreChangeEvent) {
       this.cachedValue = this.editor.getValue();
       if (this.props.onEdit) {
@@ -147,7 +150,7 @@ export class QueryEditor extends React.Component {
    * Render a custom UI for CodeMirror's hint which includes additional info
    * about the type and description for the selected context.
    */
-  _onHasCompletion(cm, data) {
+  _onHasCompletion = (cm, data) => {
     var wrapper;
     var information;
 

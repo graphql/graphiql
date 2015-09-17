@@ -69,10 +69,11 @@ export class VariableEditor extends React.Component {
       }
     });
 
-    this.editor.on('change', this._onEdit.bind(this));
+    this.editor.on('change', this._onEdit);
   }
 
   componentWillUnmount() {
+    this.editor.off('change', this._onEdit);
     this.editor = null;
   }
 
@@ -89,7 +90,7 @@ export class VariableEditor extends React.Component {
     this.ignoreChangeEvent = false;
   }
 
-  _onEdit() {
+  _onEdit = () => {
     if (!this.ignoreChangeEvent) {
       this.cachedValue = this.editor.getValue();
       if (this.props.onEdit) {
