@@ -201,9 +201,6 @@ export class GraphiQL extends React.Component {
     var toolbar = find(children, child => child.type === GraphiQL.Toolbar);
     var footer = find(children, child => child.type === GraphiQL.Footer);
 
-    var variableOpen = this.state.variableEditorOpen;
-    var variableHeight = variableOpen ? this.state.variableEditorHeight : null;
-
     var queryWrapStyle = {
       WebkitFlex: this.state.editorFlex,
       flex: this.state.editorFlex,
@@ -214,13 +211,18 @@ export class GraphiQL extends React.Component {
       width: this.state.docsWidth,
     };
 
+    var variableOpen = this.state.variableEditorOpen;
+    var variableStyle = {
+      height: variableOpen ? this.state.variableEditorHeight : null
+    };
+
     return (
       <div id="graphiql-container">
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">
               {logo}
-              <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
+              <ExecuteButton onClick={this._runEditorQuery} />
               {toolbar}
             </div>
             {!this.state.docsOpen &&
@@ -232,27 +234,27 @@ export class GraphiQL extends React.Component {
           <div
             ref="editorBar"
             className="editorBar"
-            onMouseDown={this._onResizeStart.bind(this)}
+            onMouseDown={this._onResizeStart}
           >
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
                 ref="queryEditor"
                 schema={this.state.schema}
                 value={this.state.query}
-                onEdit={this._onEditQuery.bind(this)}
-                onHintInformationRender={this._onHintInformationRender.bind(this)}
+                onEdit={this._onEditQuery}
+                onHintInformationRender={this._onHintInformationRender}
               />
-              <div className="variable-editor" style={{ height: variableHeight }}>
+              <div className="variable-editor" style={variableStyle}>
                 <div
                   className="variable-editor-title"
                   style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                  onMouseDown={this._onVariableResizeStart.bind(this)}
+                  onMouseDown={this._onVariableResizeStart}
                 >
                   Query Variables
                 </div>
                 <VariableEditor
                   value={this.state.variables}
-                  onEdit={this._onEditVariables.bind(this)}
+                  onEdit={this._onEditVariables}
                 />
               </div>
             </div>
@@ -293,7 +295,7 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  _runEditorQuery() {
+  _runEditorQuery = () => {
     this._editorQueryID++;
     var queryID = this._editorQueryID;
 
@@ -306,7 +308,7 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  _onEditQuery(value) {
+  _onEditQuery = value => {
     this._storageSet('query', value);
     this.setState({ query: value });
     if (this.props.onEditQuery) {
@@ -314,7 +316,7 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _onEditVariables(value) {
+  _onEditVariables = value => {
     this._storageSet('variables', value);
     this.setState({ variables: value });
     if (this.props.onEditVariables) {
@@ -322,18 +324,17 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _onHintInformationRender(elem) {
-    var onClickHintInformation = this._onClickHintInformation.bind(this);
-    elem.addEventListener('click', onClickHintInformation);
+  _onHintInformationRender = elem => {
+    elem.addEventListener('click', this._onClickHintInformation);
 
     var onRemoveFn;
     elem.addEventListener('DOMNodeRemoved', onRemoveFn = () => {
       elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
-      elem.removeEventListener('click', onClickHintInformation);
+      elem.removeEventListener('click', this._onClickHintInformation);
     });
   }
 
-  _onClickHintInformation(event) {
+  _onClickHintInformation = event => {
     if (event.target.className === 'typeName') {
       var typeName = event.target.innerHTML;
       var schema = this.state.schema;
@@ -352,7 +353,7 @@ export class GraphiQL extends React.Component {
     this.setState({ docsOpen: !this.state.docsOpen });
   }
 
-  _onResizeStart(downEvent) {
+  _onResizeStart = downEvent => {
     if (!this._didClickDragBar(downEvent)) {
       return;
     }
@@ -448,7 +449,7 @@ export class GraphiQL extends React.Component {
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  _onVariableResizeStart(downEvent) {
+  _onVariableResizeStart = downEvent => {
     downEvent.preventDefault();
 
     var didMove = false;
