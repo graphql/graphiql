@@ -11,11 +11,12 @@ import { ExecuteButton } from './ExecuteButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
-// import { DocExplorer } from './DocExplorer';
-import { GraphQLSchema } from 'graphql';
+import { DocExplorer } from './DocExplorer';
+import { GraphQLSchema } from 'graphql/type';
 import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
 import find from 'graphql/jsutils/find';
 import { fillLeafs } from '../utility/fillLeafs';
+import { getLeft, getTop } from '../utility/elementPosition';
 
 
 /**
@@ -144,7 +145,8 @@ export class GraphiQL extends React.Component {
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
-      typeToExplore: null,
+      docsOpen: false,
+      docsWidth: this._storageGet('docExplorerWidth') || 350,
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -207,52 +209,69 @@ export class GraphiQL extends React.Component {
       flex: this.state.editorFlex,
     };
 
+    var docWrapStyle = {
+      display: this.state.docsOpen ? 'block' : 'none',
+      width: this.state.docsWidth,
+    };
+
     return (
       <div id="graphiql-container">
-        <div className="topBar">
-          {logo}
-          <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
-          {toolbar}
-        </div>
-        <div
-          ref="editorBar"
-          className="editorBar"
-          onMouseDown={this._onResizeStart.bind(this)}
-        >
-          <div className="queryWrap" style={queryWrapStyle}>
-            <QueryEditor
-              ref="queryEditor"
-              schema={this.state.schema}
-              value={this.state.query}
-              onEdit={this._onEditQuery.bind(this)}
-              onHintInformationRender={this._onHintInformationRender.bind(this)}
-            />
-            <div className="variable-editor" style={{ height: variableHeight }}>
-              <div
-                className="variable-editor-title"
-                style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                onMouseDown={this._onVariableResizeStart.bind(this)}
-              >
-                Query Variables
-              </div>
-              <VariableEditor
-                value={this.state.variables}
-                onEdit={this._onEditVariables.bind(this)}
+        <div className="editorWrap">
+          <div className="topBarWrap">
+            <div className="topBar">
+              {logo}
+              <ExecuteButton onClick={this._runEditorQuery.bind(this)} />
+              {toolbar}
+            </div>
+            {!this.state.docsOpen &&
+              <button className="docExplorerShow" onClick={this._onToggleDocs}>
+                Docs
+              </button>
+            }
+          </div>
+          <div
+            ref="editorBar"
+            className="editorBar"
+            onMouseDown={this._onResizeStart.bind(this)}
+          >
+            <div className="queryWrap" style={queryWrapStyle}>
+              <QueryEditor
+                ref="queryEditor"
+                schema={this.state.schema}
+                value={this.state.query}
+                onEdit={this._onEditQuery.bind(this)}
+                onHintInformationRender={this._onHintInformationRender.bind(this)}
               />
+              <div className="variable-editor" style={{ height: variableHeight }}>
+                <div
+                  className="variable-editor-title"
+                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                  onMouseDown={this._onVariableResizeStart.bind(this)}
+                >
+                  Query Variables
+                </div>
+                <VariableEditor
+                  value={this.state.variables}
+                  onEdit={this._onEditVariables.bind(this)}
+                />
+              </div>
+            </div>
+            <div className="resultWrap">
+              <ResultViewer ref="result" value={this.state.response} />
+              {footer}
             </div>
           </div>
-          <div className="resultWrap">
-            <ResultViewer ref="result" value={this.state.response} />
-            {footer}
-          </div>
         </div>
-        <div className="docExplorerWrap">
-          {// Temporarily disabled.
-          /* <DocExplorer
-            ref="docExplorer"
-            schema={this.state.schema}
-            typeName={this.state.typeToExplore}
-          /> */}
+        <div className="docExplorerWrap" style={docWrapStyle}>
+          <div
+            className="docExplorerResizer"
+            onMouseDown={this._onDocsResizeStart}
+          />
+          <DocExplorer ref="docExplorer" schema={this.state.schema}>
+            <div className="docExplorerHide" onClick={this._onToggleDocs}>
+              &#x2715;
+            </div>
+          </DocExplorer>
         </div>
       </div>
     );
@@ -315,12 +334,22 @@ export class GraphiQL extends React.Component {
   }
 
   _onClickHintInformation(event) {
-    if (event.target.className === 'infoType') {
+    if (event.target.className === 'typeName') {
       var typeName = event.target.innerHTML;
-      this.setState({
-        typeToExplore: typeName
-      });
+      var schema = this.state.schema;
+      if (schema) {
+        var type = schema.getType(typeName);
+        if (type) {
+          this.setState({ docsOpen: true }, () => {
+            this.refs.docExplorer.showDoc(type);
+          });
+        }
+      }
     }
+  }
+
+  _onToggleDocs = () => {
+    this.setState({ docsOpen: !this.state.docsOpen });
   }
 
   _onResizeStart(downEvent) {
@@ -375,6 +404,48 @@ export class GraphiQL extends React.Component {
       target = target.parentNode;
     }
     return false;
+  }
+
+  _onDocsResizeStart = downEvent => {
+    downEvent.preventDefault();
+
+    var hadWidth = this.state.docsWidth;
+    var offset = downEvent.clientX - getLeft(downEvent.target);
+
+    var onMouseMove = moveEvent => {
+      if (moveEvent.buttons === 0) {
+        return onMouseUp();
+      }
+
+      var app = React.findDOMNode(this);
+      var cursorPos = moveEvent.clientX - getLeft(app) - offset;
+      var docsSize = app.clientWidth - cursorPos;
+
+      if (docsSize < 100) {
+        this.setState({ docsOpen: false });
+      } else {
+        this.setState({
+          docsOpen: true,
+          docsWidth: Math.min(docsSize, 650)
+        });
+      }
+    };
+
+    var onMouseUp = () => {
+      if (this.state.docsOpen) {
+        this._storageSet('docExplorerWidth', this.state.docsWidth);
+      } else {
+        this.setState({ docsWidth: hadWidth });
+      }
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 
   _onVariableResizeStart(downEvent) {
@@ -478,23 +549,3 @@ const defaultQuery =
 # will appear in the pane to the right.
 
 `;
-
-function getLeft(initialElem) {
-  var pt = 0;
-  var elem = initialElem;
-  while (elem.offsetParent) {
-    pt += elem.offsetLeft;
-    elem = elem.offsetParent;
-  }
-  return pt;
-}
-
-function getTop(initialElem) {
-  var pt = 0;
-  var elem = initialElem;
-  while (elem.offsetParent) {
-    pt += elem.offsetTop;
-    elem = elem.offsetParent;
-  }
-  return pt;
-}

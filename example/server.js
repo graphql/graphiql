@@ -14,6 +14,7 @@ import {
   GraphQLUnionType,
   GraphQLEnumType,
   GraphQLInputObjectType,
+  GraphQLInterfaceType,
   GraphQLBoolean,
   GraphQLInt,
   GraphQLFloat,
@@ -38,16 +39,19 @@ console.log('Started on http://localhost:8080/');
 var TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
   values: {
-    RED: {},
-    GREEN: {},
-    BLUE: {},
+    RED: { description: 'A rosy color' },
+    GREEN: { description: 'The color of martians and slime' },
+    BLUE: { description: 'A feeling you might have if you can\'t use GraphQL' },
   }
 });
 
 var TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
-    string: { type: GraphQLString },
+    string: {
+      type: GraphQLString,
+      description: 'Repeats back this string'
+    },
     int: { type: GraphQLInt },
     float: { type: GraphQLFloat },
     boolean: { type: GraphQLBoolean },
@@ -65,24 +69,48 @@ var TestInputObject = new GraphQLInputObjectType({
   })
 });
 
+var TestInterface = new GraphQLInterfaceType({
+  name: 'TestInterface',
+  description: 'Test interface.',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Common name string.'
+    }
+  }),
+  resolveType: check => {
+    return check ? UnionFirst : UnionSecond;
+  }
+});
+
 var UnionFirst = new GraphQLObjectType({
   name: 'First',
   fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Common name string for UnionFirst.'
+    },
     first: {
-      type: TestType,
-      resolve: () => ({})
+      type: new GraphQLList(TestInterface),
+      resolve: () => { return true; }
     }
-  })
+  }),
+  interfaces: [ TestInterface ]
 });
 
 var UnionSecond = new GraphQLObjectType({
   name: 'Second',
   fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Common name string for UnionFirst.'
+    },
     second: {
-      type: TestType,
-      resolve: () => ({})
+      type: TestInterface,
+      resolve: () => { return false; }
     }
-  })
+  }),
+  interfaces: [ TestInterface ]
 });
 
 var TestUnion = new GraphQLUnionType({
@@ -98,18 +126,22 @@ var TestType = new GraphQLObjectType({
   fields: () => ({
     test: {
       type: TestType,
+      description: '`test` field from `Test` type.',
       resolve: () => ({})
     },
     union: {
       type: TestUnion,
+      description: '> union field from Test type, block-quoted.',
       resolve: () => ({})
     },
     id: {
       type: GraphQLInt,
+      description: 'id field from Test type.',
       resolve: () => ({})
     },
     isTest: {
       type: GraphQLBoolean,
+      description: 'Is this a test schema? Sure it is.',
       resolve: () => {
         return true;
       }
