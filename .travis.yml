@@ -19,9 +19,9 @@ deploy:
     api_key:
       secure: "HzZELTrnObaY3L/Qf+sgxtzwZM8KpNNB3CzxHjkihIkl8bt2ibUgvPrArsUisyGI5WXiW6KMzyjDEmODjyT61InCUzXwdqtH7cpcYL1hLrCXUK1MH2yobesMlqcZiu1BdXgYPfhxA9BzA8aQmSmcnIj1+8nVh2ZRYcPE4Lct3eExzLKUr4hvDoGhfStEknLcuSaiICQXqVRQbnVclR/D5fZ77Nt/XdX6yTPd5+BqtEaLXM8rO1zCmD23QNrgHl9lOzIlc7hJ87TQ2t58f1l3nqxaDQieNGctM8ahrPHfYxKX2MZsuKgNEtBmsm+ldnaI2yKoFZNiBY4nEy35beqLROHihisxMo5+kw5L6f7aQ4YpI8lrmeWXUjHBIv9lpnuo8DVO2sBwhvywNhcHqLMX5wt6akh8HSdERpUxcA9cIPVY3vi3tGIJTxidxZUqFHM83Bvh54pss5Afi9HWodTIP+0/HtB7WdKBXH0F4CefuLDhy4aVb5tMo+bi1ENhjpdjl3o+VshkEYXOP2Ge8DAoatFqgXjrc/OQS+Ca7n/75dGwZVBGsX0Gg2Bp+zaWIp5xgqImclsBuk+879/tHUitxt4ZjkWH8E07voiU7WIrmw/BX/kQR3l5T1ROjjtJg1dGuRTSryjCzg+qx3ssXmf4szsaSgOTTPdMgI6HY5cJxEQ="
     file:
-      - "graphql.js"
-      - "graphql.min.js"
-      - "graphql.css"
+      - "graphiql.js"
+      - "graphiql.min.js"
+      - "graphiql.css"
     on:
       tags: true
       branch: master
