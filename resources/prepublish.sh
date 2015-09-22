@@ -16,9 +16,4 @@ if [ "$CI" != true ]; then
   exit 1;
 fi;
 
-# When Travis CI publishes to NPM, the published files are available in the root
-# directory, which allows for a clean include or require of sub-modules.
-#
-#    var language = require('graphql/language');
-#
-babel src --ignore __tests__ --out-dir ./;
+npm run build;

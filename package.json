@@ -48,7 +48,7 @@
     "testonly": "mocha $npm_package_options_mocha",
     "lint": "eslint src",
     "check": "flow check",
-    "build": ". resources/build.sh",
+    "build": ". ./resources/build.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "prepublish": ". ./resources/prepublish.sh"
   },
