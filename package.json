@@ -44,13 +44,13 @@
     "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
   },
   "scripts": {
-    "test": "npm run lint && npm run testonly",
+    "test": "npm run lint && npm run check && npm run testonly",
     "testonly": "mocha $npm_package_options_mocha",
     "lint": "eslint src",
     "check": "flow check",
     "build": ". resources/build.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "prepublish": "npm run build"
+    "prepublish": ". ./resources/prepublish.sh"
   },
   "dependencies": {
     "codemirror": "^5.6.0",
@@ -58,7 +58,7 @@
     "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.4.2",
+    "graphql": "^0.4.0",
     "react": "^0.13 || ^0.14.0-beta"
   },
   "devDependencies": {
@@ -71,9 +71,9 @@
     "chai-subset": "1.0.1",
     "eslint": "1.2.1",
     "eslint-plugin-react": "3.2.3",
-    "flow-bin": "0.14.0",
-    "graphql": "0.4.2",
-    "jsdom": "3.0.0",
+    "flow-bin": "0.16.0",
+    "graphql": "0.4.4",
+    "jsdom": "6.5.1",
     "mocha": "2.2.5",
     "react": "0.13.3",
     "uglify-js": "^2.4.24",

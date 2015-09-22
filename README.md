@@ -3,6 +3,8 @@ GraphiQL
 
 */ˈɡrafək(ə)l/* An interactive in-browser GraphQL IDE. [Try the live demo](http://graphql-swapi.parseapp.com/graphiql/).
 
+[![Build Status](https://travis-ci.org/graphql/graphiql.svg)](https://travis-ci.org/graphql/graphiql)
+
 ![](resources/graphiql.png)
 
 ### Getting started

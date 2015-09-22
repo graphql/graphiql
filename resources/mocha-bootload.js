@@ -9,7 +9,7 @@
  */
 
 require('babel/register')({
-  optional: [ 'runtime', 'es7.asyncFunctions' ]
+  optional: [ 'es7.asyncFunctions' ]
 });
 
 var jsdom = require('jsdom');
