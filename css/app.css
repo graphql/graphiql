@@ -120,6 +120,7 @@ html, body {
   z-index: 3;
   position: relative;
   background: white;
+  overflow:auto;
 }
 
 #graphiql-container .docExplorerResizer {
