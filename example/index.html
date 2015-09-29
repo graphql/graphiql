@@ -42,7 +42,7 @@
       if (parameters.variables) {
         try {
           parameters.variables =
-            JSON.stringify(JSON.parse(query.variables), null, 2);
+            JSON.stringify(JSON.parse(parameters.variables), null, 2);
         } catch (e) {
           // Do nothing, we want to display the invalid JSON as a string, rather
           // than present an error.
