@@ -53,13 +53,14 @@
 }
 
 #graphiql-container .doc-explorer-contents {
-  position: relative;
-  height: 100%;
   background-color: #ffffff;
   border-top: 1px solid #d6d6d6;
-  padding: 20px 15px;
-  overflow-y: auto;
+  bottom: 0;
   min-width: 300px;
+  overflow-y: auto;
+  padding: 20px 15px;
+  position: absolute;
+  top: 47px;
 }
 
 #graphiql-container .doc-type-description p:first-child ,
