@@ -35,6 +35,10 @@ import { getLeft, getTop } from '../utility/elementPosition';
  *   - query: an optional GraphQL string to use as the initial displayed query,
  *     if not provided, the stored query or defaultQuery will be used.
  *
+ *   - response: an optional JSON string to use as the initial displayed
+ *     response. If not provided, no response will be initialy shown. You might
+ *     provide this if illustrating the result of the initial query.
+ *
  *   - storage: an instance of [Storage][] GraphiQL will use to persist state.
  *     Only `getItem` and `setItem` are called. Default: window.localStorage
  *
@@ -73,6 +77,7 @@ export class GraphiQL extends React.Component {
     fetcher: PropTypes.func.isRequired,
     schema: PropTypes.instanceOf(GraphQLSchema),
     query: PropTypes.string,
+    response: PropTypes.string,
     storage: PropTypes.shape({
       getItem: PropTypes.func,
       setItem: PropTypes.func
@@ -153,7 +158,7 @@ export class GraphiQL extends React.Component {
       schema: props.schema,
       query,
       variables,
-      response: null,
+      response: props.response,
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
@@ -168,15 +173,20 @@ export class GraphiQL extends React.Component {
   componentWillReceiveProps(nextProps) {
     var nextQuery = this.state.query;
     var nextVariables = this.state.variables;
+    var nextResult = this.state.result;
     if (nextProps.query && nextProps.query !== nextQuery) {
       nextQuery = nextProps.query;
     }
     if (nextProps.variables && nextProps.variables !== nextVariables) {
       nextVariables = nextProps.variables;
     }
+    if (nextProps.result && nextProps.result !== nextResult) {
+      nextResult = nextProps.result;
+    }
     this.setState({
       query: nextQuery,
-      variables: nextVariables
+      variables: nextVariables,
+      result: nextResult,
     });
   }
 
