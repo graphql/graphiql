@@ -72,6 +72,13 @@ and children.
 - `query`: an optional GraphQL string to use as the initial displayed query,
   if not provided, the local storage or defaultQuery will be used.
 
+- `response`: an optional JSON string to use as the initial displayed
+  response. If not provided, no response will be initialy shown. You might
+  provide this if illustrating the result of the initial query.
+
+- `storage`: an instance of [Storage][] GraphiQL will use to persist state.
+  Only `getItem` and `setItem` are called. Default: window.localStorage
+
 - `defaultQuery`: an optional GraphQL string to use instead of a
   blank screen when a query was not found in the local cache.
 
