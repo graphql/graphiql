@@ -6,7 +6,7 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import React, { PropTypes } from 'react';
+import React, ReactDOM, { PropTypes } from 'react';
 import marked from 'marked';
 import CodeMirror from 'codemirror';
 import { GraphQLSchema, GraphQLNonNull, GraphQLList } from 'graphql/type';
@@ -60,7 +60,7 @@ export class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
-    this.editor = CodeMirror(React.findDOMNode(this), {
+    this.editor = CodeMirror(ReactDOM.findDOMNode(this), {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
