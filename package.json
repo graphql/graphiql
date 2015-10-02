@@ -54,16 +54,16 @@
   },
   "dependencies": {
     "codemirror": "^5.6.0",
-    "codemirror-graphql": "^0.1.1",
+    "codemirror-graphql": "^0.2.0",
     "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.4.0",
+    "graphql": "^0.4.7",
     "react": "^0.13 || ^0.14.0-beta"
   },
   "devDependencies": {
-    "babel": "5.8.21",
-    "babel-core": "5.8.22",
+    "babel": "5.8.23",
+    "babel-core": "5.8.25",
     "babel-eslint": "4.0.10",
     "browserify": "11.0.1",
     "browserify-shim": "3.8.10",
@@ -72,7 +72,7 @@
     "eslint": "1.2.1",
     "eslint-plugin-react": "3.2.3",
     "flow-bin": "0.16.0",
-    "graphql": "0.4.4",
+    "graphql": "0.4.7",
     "jsdom": "6.5.1",
     "mocha": "2.2.5",
     "react": "0.13.3",
