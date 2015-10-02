@@ -24,6 +24,12 @@ query queryName($foo: TestInput, $site: TestEnum = RED) {
     }
   }
   ...frag
+  ... @skip(if: false) {
+    id
+  }
+  ... {
+    id
+  }
 }
 
 mutation mutationName {

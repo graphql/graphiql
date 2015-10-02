@@ -60,4 +60,19 @@ describe('graphql-mode', () => {
       expect(token).to.not.equal('invalidchar');
     });
   });
+
+  it('parses anonymous operations without invalidchar', () => {
+    CodeMirror.runMode(`{ id }`, 'graphql', token => {
+      expect(token).to.not.equal('invalidchar');
+    });
+
+    CodeMirror.runMode(`
+      mutation {
+        setString(value: "newString")
+      }
+    `, 'graphql', token => {
+      expect(token).to.not.equal('invalidchar');
+    });
+  });
+
 });

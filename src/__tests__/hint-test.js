@@ -15,6 +15,7 @@ import '../hint';
 import { TestSchema } from './testSchema';
 import { graphql } from 'graphql';
 import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
+import { isOutputType, isLeafType } from 'graphql/type';
 
 /* eslint-disable max-len */
 
@@ -48,11 +49,9 @@ async function getHintSuggestions(queryString, cursor) {
   });
 }
 
-async function getClientSchema() {
-  return await graphql(TestSchema, introspectionQuery)
-    .then((response) => {
-      return buildClientSchema(response.data);
-    });
+function getClientSchema() {
+  return graphql(TestSchema, introspectionQuery)
+    .then(response => buildClientSchema(response.data));
 }
 
 function checkSuggestions(source, suggestions) {
@@ -110,6 +109,17 @@ describe('graphql-hint', () => {
     var typeConditionNames =
       TestSchema.getQueryType().getFields().union.type
         .getPossibleTypes().map(type => type.name);
+    checkSuggestions(typeConditionNames, suggestions.list);
+  });
+
+  it('provides correct typeCondition suggestions on fragment', async () => {
+    var suggestions = await getHintSuggestions(
+      'fragment Foo on ', { line: 0, ch: 16 });
+    var typeMap = TestSchema.getTypeMap();
+    var typeConditionNames = Object.keys(typeMap).filter(typeName => {
+      var type = typeMap[typeName];
+      return isOutputType(type) && !isLeafType(type);
+    });
     checkSuggestions(typeConditionNames, suggestions.list);
   });
 

@@ -143,11 +143,8 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
   }
 
   // Fragment type conditions
-  if (kind === 'FragmentDefinition' && step === 3 ||
-      kind === 'InlineFragment' && step === 2 ||
-      kind === 'NamedType' && (
-        state.prevState.kind === 'FragmentDefinition' ||
-        state.prevState.kind === 'InlineFragment')) {
+  if (kind === 'TypeCondition' && step === 1 ||
+      kind === 'NamedType' && state.prevState.kind === 'TypeCondition') {
     var possibleTypes;
     if (typeInfo.parentType) {
       possibleTypes = isAbstractType(typeInfo.parentType) ?

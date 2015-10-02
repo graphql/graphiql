@@ -285,13 +285,13 @@ function name(style) {
   };
 }
 
-// A Name Token which will decorate the state with a `type`
+// A Name Token which will decorate the previous state with a `type`
 function type(style) {
   return {
     style,
     match: token => token.kind === 'Name',
     update(state, token) {
-      state.type = token.value;
+      state.prevState.type = token.value;
     }
   };
 }
@@ -331,7 +331,7 @@ var ParseRules = {
   // Note: instead of "Operation", these rules have been separated out.
   Query: [
     word('query'),
-    name('def'),
+    opt(name('def')),
     opt('VariableDefinitions'),
     list('Directive'),
     'SelectionSet'
@@ -339,7 +339,7 @@ var ParseRules = {
   ShortQuery: [ 'SelectionSet' ],
   Mutation: [
     word('mutation'),
-    name('def'),
+    opt(name('def')),
     opt('VariableDefinitions'),
     list('Directive'),
     'SelectionSet'
@@ -365,18 +365,20 @@ var ParseRules = {
   FragmentSpread: [ p('...'), name('def'), list('Directive') ],
   InlineFragment: [
     p('...'),
-    word('on'),
-    type('atom'),
+    opt('TypeCondition'),
     list('Directive'),
     'SelectionSet'
   ],
   FragmentDefinition: [
     word('fragment'),
     name('def'),
-    word('on'),
-    type('atom'),
+    'TypeCondition',
     list('Directive'),
     'SelectionSet'
+  ],
+  TypeCondition: [
+    word('on'),
+    type('atom'),
   ],
   // Variables could be parsed in cases where only Const is expected by spec.
   Value(token) {
