@@ -13,7 +13,7 @@ html, body {
   -webkit-flex-direction: row;
           flex-direction: row;
   height: 100%;
-  font-family: helvetica, arial, sans-serif;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
   font-size: 14px;
 }
 
@@ -265,7 +265,7 @@ html, body {
   -webkit-box-orient: vertical;
   color: #141823;
   display: -webkit-box;
-  font-family: helvetica, arial, sans-serif;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
   font-size: 13px;
   -webkit-line-clamp: 3;
   line-height: 16px;
@@ -346,7 +346,7 @@ div.CodeMirror-lint-tooltip {
   -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-  font-family: helvetica, arial, sans-serif;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
   font-size: 13px;
   line-height: 16px;
   padding: 6px 10px;
