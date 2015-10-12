@@ -7,6 +7,7 @@
  */
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
@@ -43,7 +44,7 @@ export class VariableEditor extends React.Component {
   }
 
   componentDidMount() {
-    this.editor = CodeMirror(React.findDOMNode(this), {
+    this.editor = CodeMirror(ReactDOM.findDOMNode(this), {
       value: this.props.value || '',
       lineNumbers: true,
       theme: 'graphiql',
