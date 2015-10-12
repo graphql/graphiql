@@ -7,6 +7,7 @@
  */
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { ExecuteButton } from './ExecuteButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
@@ -101,7 +102,7 @@ export class GraphiQL extends React.Component {
       this.state.query,
       this.props.getDefaultFieldNames
     );
-    if (insertions.length > 0) {
+    if (insertions || insertions.length > 0) {
       var editor = this.refs.queryEditor.getCodeMirror();
       editor.operation(() => {
         var cursor = editor.getCursor();
@@ -389,7 +390,7 @@ export class GraphiQL extends React.Component {
         return onMouseUp();
       }
 
-      var editorBar = React.findDOMNode(this.refs.editorBar);
+      var editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
       var leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       var rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
@@ -419,7 +420,7 @@ export class GraphiQL extends React.Component {
       return false;
     }
     // Specifically the result window's drag bar.
-    var resultWindow = React.findDOMNode(this.refs.result);
+    var resultWindow = ReactDOM.findDOMNode(this.refs.result);
     while (target) {
       if (target === resultWindow) {
         return true;
@@ -440,7 +441,7 @@ export class GraphiQL extends React.Component {
         return onMouseUp();
       }
 
-      var app = React.findDOMNode(this);
+      var app = ReactDOM.findDOMNode(this);
       var cursorPos = moveEvent.clientX - getLeft(app) - offset;
       var docsSize = app.clientWidth - cursorPos;
 
@@ -486,7 +487,7 @@ export class GraphiQL extends React.Component {
 
       didMove = true;
 
-      var editorBar = React.findDOMNode(this.refs.editorBar);
+      var editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
       var topSize = moveEvent.clientY - getTop(editorBar) - offset;
       var bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {

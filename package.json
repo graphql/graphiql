@@ -38,7 +38,8 @@
     ]
   },
   "browserify-shim": {
-    "react": "global:React"
+    "react": "global:React",
+    "react-dom": "global:ReactDOM"
   },
   "options": {
     "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
@@ -59,7 +60,8 @@
   },
   "peerDependencies": {
     "graphql": "^0.4.7",
-    "react": "^0.13 || ^0.14.0-beta"
+    "react": "0.14.0",
+    "react-dom": "0.14.0"
   },
   "devDependencies": {
     "babel": "5.8.23",
@@ -75,7 +77,8 @@
     "graphql": "0.4.7",
     "jsdom": "6.5.1",
     "mocha": "2.2.5",
-    "react": "0.13.3",
+    "react": "0.14.0",
+    "react-dom": "0.14.0",
     "uglify-js": "^2.4.24",
     "uglifyify": "^3.0.1"
   }
