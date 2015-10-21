@@ -58,7 +58,7 @@
     "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.4.7",
+    "graphql": "^0.4.8",
     "react": "^0.13 || ^0.14.0-beta"
   },
   "devDependencies": {
@@ -72,7 +72,7 @@
     "eslint": "1.2.1",
     "eslint-plugin-react": "3.2.3",
     "flow-bin": "0.16.0",
-    "graphql": "0.4.7",
+    "graphql": "0.4.8",
     "jsdom": "6.5.1",
     "mocha": "2.2.5",
     "react": "0.13.3",
