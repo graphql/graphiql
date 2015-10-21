@@ -73,6 +73,16 @@ describe('graphql-mode', () => {
     `, 'graphql', token => {
       expect(token).to.not.equal('invalidchar');
     });
+
+    CodeMirror.runMode(`
+      subscription {
+        subscribeToTest(id: "anId") {
+          id
+        }
+      }
+    `, 'graphql', token => {
+      expect(token).to.not.equal('invalidchar');
+    });
   });
 
 });

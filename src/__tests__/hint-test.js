@@ -71,7 +71,7 @@ describe('graphql-hint', () => {
 
   it('provides correct initial keywords', async () => {
     var suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
-    var initialKeywords = [ 'query', 'mutation', 'fragment', '{' ];
+    var initialKeywords = [ 'query', 'mutation', 'subscription', 'fragment', '{' ];
     checkSuggestions(initialKeywords, suggestions.list);
   });
 
