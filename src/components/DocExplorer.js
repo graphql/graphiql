@@ -5,6 +5,7 @@
  *  This source code is licensed under the license found in the
  *  LICENSE-examples file in the root directory of this source tree.
  */
+/* eslint max-len:0 */
 
 import React, { PropTypes } from 'react';
 import Marked from 'marked';
@@ -152,6 +153,7 @@ class SchemaDoc extends React.Component {
     var schema = this.props.schema;
     var queryType = schema.getQueryType();
     var mutationType = schema.getMutationType();
+    var subscriptionType = schema.getSubscriptionType();
 
     return (
       <div>
@@ -175,7 +177,13 @@ class SchemaDoc extends React.Component {
               <span className="keyword">mutation</span>
               {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
-            </div>
+            </div>}
+          {subscriptionType &&
+            <div className="doc-category-item">
+              <span className="keyword">subscription</span>
+              {': '}
+              <TypeLink type={subscriptionType} onClick={this.props.onClickType} />
+            </div>}
           }
         </div>
       </div>
