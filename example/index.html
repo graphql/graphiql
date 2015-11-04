@@ -10,7 +10,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="./graphiql.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/0.9.0/fetch.min.js"></script>
     <script src="./graphiql.js"></script>
   </head>
@@ -81,7 +82,7 @@
       }
 
       // Render <GraphiQL /> into the body.
-      React.render(
+      ReactDOM.render(
         React.createElement(GraphiQL, {
           fetcher: graphQLFetcher,
           query: parameters.query,

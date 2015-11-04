@@ -19,6 +19,7 @@ the [fetch](https://fetch.spec.whatwg.org/) standard API.
 
 ```js
 import React from 'react';
+import ReactDOM from 'react-dom';
 import GraphiQL from 'graphiql';
 import fetch from 'isomorphic-fetch';
 
@@ -30,7 +31,7 @@ function graphQLFetcher(graphQLParams) {
   }).then(response => response.json());
 }
 
-React.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
+ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 ```
 
 Build for the web with [webpack](http://webpack.github.io/) or

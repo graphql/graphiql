@@ -11,7 +11,8 @@
     "express-graphql": "^0.3.0",
     "graphiql": "../",
     "graphql": "^0.4.2",
-    "react": "0.13.3"
+    "react": "0.14.0",
+    "react-dom": "0.14.0"
   },
   "devDependencies": {
     "babel": "^5.8.21"

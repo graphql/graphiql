@@ -7,6 +7,7 @@
  */
 
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
@@ -30,7 +31,7 @@ export class ResultViewer extends React.Component {
   }
 
   componentDidMount() {
-    this.viewer = CodeMirror(React.findDOMNode(this), {
+    this.viewer = CodeMirror(ReactDOM.findDOMNode(this), {
       value: this.props.value || '',
       readOnly: true,
       theme: 'graphiql',
