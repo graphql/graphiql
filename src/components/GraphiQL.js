@@ -174,20 +174,20 @@ export class GraphiQL extends React.Component {
   componentWillReceiveProps(nextProps) {
     var nextQuery = this.state.query;
     var nextVariables = this.state.variables;
-    var nextResult = this.state.result;
+    var nextResponse = this.state.response;
     if (nextProps.query && nextProps.query !== nextQuery) {
       nextQuery = nextProps.query;
     }
     if (nextProps.variables && nextProps.variables !== nextVariables) {
       nextVariables = nextProps.variables;
     }
-    if (nextProps.result && nextProps.result !== nextResult) {
-      nextResult = nextProps.result;
+    if (nextProps.response && nextProps.response !== nextResponse) {
+      nextResponse = nextProps.response;
     }
     this.setState({
       query: nextQuery,
       variables: nextVariables,
-      result: nextResult,
+      response: nextResponse,
     });
   }
 
