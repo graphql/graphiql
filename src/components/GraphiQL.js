@@ -102,7 +102,7 @@ export class GraphiQL extends React.Component {
       this.state.query,
       this.props.getDefaultFieldNames
     );
-    if (insertions || insertions.length > 0) {
+    if (insertions && insertions.length > 0) {
       var editor = this.refs.queryEditor.getCodeMirror();
       editor.operation(() => {
         var cursor = editor.getCursor();
@@ -129,6 +129,8 @@ export class GraphiQL extends React.Component {
         editor.setCursor(newCursor);
       });
     }
+
+    return result;
   }
 
   // Lifecycle
@@ -322,9 +324,12 @@ export class GraphiQL extends React.Component {
     this._editorQueryID++;
     var queryID = this._editorQueryID;
 
-    this.autoCompleteLeafs();
+    // Use the edited query after autoCompleteLeafs() runs or,
+    // in case autoCompletion fails (the function returns undefined),
+    // the current query from the editor.
+    let editedQuery = this.autoCompleteLeafs() || this.state.query;
 
-    this._fetchQuery(this.state.query, this.state.variables, result => {
+    this._fetchQuery(editedQuery, this.state.variables, result => {
       if (queryID === this._editorQueryID) {
         this.setState({ response: JSON.stringify(result, null, 2) });
       }
