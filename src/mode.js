@@ -347,7 +347,7 @@ var ParseRules = {
   ],
   Subscription: [
     word('subscription'),
-    name('def'),
+    opt(name('def')),
     opt('VariableDefinitions'),
     list('Directive'),
     'SelectionSet'
