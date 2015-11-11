@@ -22,16 +22,19 @@ import { isLeafType, getNamedType } from 'graphql/type';
  * utility represents a "best effort" which may be useful within IDE tools.
  */
 export function fillLeafs(schema, docString, getDefaultFieldNames) {
-  var ast;
+  let insertions = [];
+  let ast;
   try {
     ast = parse(docString);
   } catch (error) {
-    return docString;
+    return { insertions, result: docString };
   }
 
-  var fieldNameFn = getDefaultFieldNames || defaultGetDefaultFieldNames;
-  var insertions = [];
+  if (!schema) {
+    return { insertions, result: docString };
+  }
 
+  let fieldNameFn = getDefaultFieldNames || defaultGetDefaultFieldNames;
   let typeInfo = new TypeInfo(schema);
   visit(ast, {
     leave(node) {
@@ -40,10 +43,10 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
     enter(node) {
       typeInfo.enter(node);
       if (node.kind === 'Field' && !node.selectionSet) {
-        var fieldType = typeInfo.getType();
-        var selectionSet = buildSelectionSet(fieldType, fieldNameFn);
+        let fieldType = typeInfo.getType();
+        let selectionSet = buildSelectionSet(fieldType, fieldNameFn);
         if (selectionSet) {
-          var indent = getIndentation(docString, node.loc.start);
+          let indent = getIndentation(docString, node.loc.start);
           insertions.push({
             index: node.loc.end,
             string: ' ' + print(selectionSet).replace(/\n/g, '\n' + indent)
