@@ -186,7 +186,6 @@ class SchemaDoc extends React.Component {
                 onClick={this.props.onClickType}
               />
             </div>}
-          }
         </div>
       </div>
     );
