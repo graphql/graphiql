@@ -186,7 +186,22 @@ var TestMutationType = new GraphQLObjectType({
   }
 });
 
+var TestSubscriptionType = new GraphQLObjectType({
+  name: 'SubscriptionType',
+  description: 'This is a simple subscription type',
+  fields: {
+    subscribeToTest: {
+      type: TestType,
+      description: 'Subscribe to the test type',
+      args: {
+        id: { type: GraphQLString }
+      }
+    }
+  }
+});
+
 const TestSchema = new GraphQLSchema({
   query: TestType,
-  mutation: TestMutationType
+  mutation: TestMutationType,
+  subscription: TestSubscriptionType
 });
