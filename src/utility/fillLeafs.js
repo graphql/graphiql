@@ -98,13 +98,13 @@ function defaultGetDefaultFieldNames(type) {
 // Given a GraphQL type, and a function which produces field names, recursively
 // generate a SelectionSet which includes default fields.
 function buildSelectionSet(type, getDefaultFieldNames) {
+  // Unwrap any non-null or list types.
+  var namedType = getNamedType(type);
+
   // Unknown types and leaf types do not have selection sets.
   if (!type || isLeafType(type)) {
     return;
   }
-
-  // Unwrap any non-null or list types.
-  var namedType = getNamedType(type);
 
   // Get an array of field names to use.
   var fieldNames = getDefaultFieldNames(namedType);
