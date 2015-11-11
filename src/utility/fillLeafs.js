@@ -23,14 +23,15 @@ import { isLeafType, getNamedType } from 'graphql/type';
  */
 export function fillLeafs(schema, docString, getDefaultFieldNames) {
   let insertions = [];
+
+  if (!schema) {
+    return { insertions, result: docString };
+  }
+
   let ast;
   try {
     ast = parse(docString);
   } catch (error) {
-    return { insertions, result: docString };
-  }
-
-  if (!schema) {
     return { insertions, result: docString };
   }
 
