@@ -9,6 +9,9 @@ GraphiQL
 
 ### Getting started
 
+Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)!
+It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up.
+
 ```
 npm install --save graphiql
 ```
