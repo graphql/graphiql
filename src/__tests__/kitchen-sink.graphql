@@ -36,6 +36,14 @@ mutation mutationName {
   setString(value: "newString")
 }
 
+subscription subscriptionName {
+  subscribeToTest(id: "anId") {
+    ... on Test {
+      id
+    }
+  }
+}
+
 fragment frag on Test {
   test @include(if: true) {
     union {

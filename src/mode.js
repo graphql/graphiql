@@ -324,6 +324,7 @@ var ParseRules = {
     switch (token.value) {
       case 'query': return 'Query';
       case 'mutation': return 'Mutation';
+      case 'subscription': return 'Subscription';
       case 'fragment': return 'FragmentDefinition';
       case '{': return 'ShortQuery';
     }
@@ -340,6 +341,13 @@ var ParseRules = {
   Mutation: [
     word('mutation'),
     opt(name('def')),
+    opt('VariableDefinitions'),
+    list('Directive'),
+    'SelectionSet'
+  ],
+  Subscription: [
+    word('subscription'),
+    name('def'),
     opt('VariableDefinitions'),
     list('Directive'),
     'SelectionSet'

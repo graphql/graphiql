@@ -66,6 +66,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     return hintList(editor, options, cur, token, [
       { text: 'query' },
       { text: 'mutation' },
+      { text: 'subscription' },
       { text: 'fragment' },
       { text: '{' },
     ]);
@@ -188,7 +189,8 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
          state.prevState.kind === 'FragmentSpread')) ||
       (directive.onOperation &&
         (state.prevState.kind === 'Query' ||
-         state.prevState.kind === 'Mutation'))
+         state.prevState.kind === 'Mutation' ||
+         state.prevState.kind === 'Subscription' ))
     );
     return hintList(editor, options, cur, token, directives.map(directive => ({
       text: directive.name,
@@ -219,6 +221,9 @@ function getTypeInfo(schema, tokenState) {
         break;
       case 'Mutation':
         info.type = schema.getMutationType();
+        break;
+      case 'Subscription':
+        info.type = schema.getSubscriptionType();
         break;
       case 'InlineFragment':
       case 'FragmentDefinition':
