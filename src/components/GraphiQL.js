@@ -8,16 +8,20 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { GraphQLSchema } from 'graphql/type';
+import { buildClientSchema } from 'graphql/utilities';
+import find from 'graphql/jsutils/find';
 import { ExecuteButton } from './ExecuteButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import { GraphQLSchema } from 'graphql/type';
-import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
-import find from 'graphql/jsutils/find';
 import { fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
+import {
+  introspectionQuery,
+  introspectionQuerySansSubscriptions,
+} from '../utility/introspectionQueries';
 
 
 /**
@@ -195,13 +199,22 @@ export class GraphiQL extends React.Component {
 
   componentDidMount() {
     if (!this.state.schema) {
-      this._fetchQuery(introspectionQuery, null, result => {
-        if (!result.data) {
-          this.setState({ response: JSON.stringify(result, null, 2) });
-        } else {
-          this.setState({ schema: buildClientSchema(result.data) });
-        }
-      });
+      var fetcher = this.props.fetcher;
+
+      // Try the stock introspection query first, falling back on the
+      // sans-subscriptions query for services which do not yet support it.
+      fetcher({ query: introspectionQuery })
+        .catch(() => fetcher({ query: introspectionQuerySansSubscriptions }))
+        .then(result => {
+          if (!result.data) {
+            this.setState({ response: JSON.stringify(result, null, 2) });
+          } else {
+            this.setState({ schema: buildClientSchema(result.data) });
+          }
+        })
+        .catch(error => {
+          this.setState({ response: error && error.stack || error });
+        });
     }
   }
 
