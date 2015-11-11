@@ -10,7 +10,7 @@
     "express": "^4.12.4",
     "express-graphql": "^0.3.0",
     "graphiql": "../",
-    "graphql": "^0.4.2",
+    "graphql": "^0.4.8",
     "react": "0.14.0",
     "react-dom": "0.14.0"
   },
