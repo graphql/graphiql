@@ -106,6 +106,7 @@ html, body {
 }
 
 #graphiql-container .resultWrap {
+  position: relative;
   display: -webkit-flex;
   display:         flex;
   -webkit-flex-direction: column;
