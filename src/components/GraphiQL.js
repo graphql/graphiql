@@ -8,10 +8,13 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import { print } from 'graphql/language/printer';
+import { parse } from 'graphql/language/parser';
 import { GraphQLSchema } from 'graphql/type';
 import { buildClientSchema } from 'graphql/utilities';
 import find from 'graphql/jsutils/find';
 import { ExecuteButton } from './ExecuteButton';
+import { PrettifyButton } from './PrettifyButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -261,6 +264,7 @@ export class GraphiQL extends React.Component {
             <div className="topBar">
               {logo}
               <ExecuteButton onClick={this._runEditorQuery} />
+              <PrettifyButton onClick={this._prettifyQuery} />
               {toolbar}
             </div>
             {!this.state.docsOpen &&
@@ -347,6 +351,12 @@ export class GraphiQL extends React.Component {
         this.setState({ response: JSON.stringify(result, null, 2) });
       }
     });
+  }
+
+  _prettifyQuery = () => {
+    const query = print(parse(this.state.query));
+    const editor = this.refs.queryEditor.getCodeMirror();
+    editor.setValue(query);
   }
 
   _onEditQuery = value => {

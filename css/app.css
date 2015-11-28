@@ -215,6 +215,21 @@ html, body {
   padding-left: 3px;
 }
 
+#graphiql-container .tool-button {
+  cursor: pointer;
+  text-decoration: none;
+  font-family: sans-serif;
+  color: #333;
+  padding: 2px 4px;
+  margin: 0 4px;
+}
+#graphiql-container .tool-button:active {
+  color: #999;
+}
+#graphiql-container .tool-button.error {
+  color: #c00;
+}
+
 #graphiql-container .execute-button {
   background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
   background:         linear-gradient(#fdfdfd, #d2d3d6);
