@@ -179,9 +179,13 @@ export class GraphiQL extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    var nextSchema = this.state.schema;
     var nextQuery = this.state.query;
     var nextVariables = this.state.variables;
     var nextResponse = this.state.response;
+    if (nextProps.schema && nextProps.schema !== nextSchema) {
+      nextSchema = nextProps.schema;
+    }
     if (nextProps.query && nextProps.query !== nextQuery) {
       nextQuery = nextProps.query;
     }
@@ -192,6 +196,7 @@ export class GraphiQL extends React.Component {
       nextResponse = nextProps.response;
     }
     this.setState({
+      schema: nextSchema,
       query: nextQuery,
       variables: nextVariables,
       response: nextResponse,
