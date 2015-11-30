@@ -68,6 +68,11 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
 // This function first looks for some common patterns, and falls back to
 // including all leaf-type fields.
 function defaultGetDefaultFieldNames(type) {
+  // If this type cannot access fields, then return an empty set.
+  if (!type.getFields) {
+    return [];
+  }
+
   var fields = type.getFields();
 
   // Is there an `id` field?
