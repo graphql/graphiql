@@ -171,6 +171,7 @@ export class GraphiQL extends React.Component {
       variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
       docsOpen: false,
       docsWidth: this._storageGet('docExplorerWidth') || 350,
+      isWaitingForResponse: false,
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -297,6 +298,11 @@ export class GraphiQL extends React.Component {
               </div>
             </div>
             <div className="resultWrap">
+              {this.state.isWaitingForResponse &&
+                <div className="spinner-container">
+                  <div className="spinner" />
+                </div>
+              }
               <ResultViewer ref="result" value={this.state.response} />
               {footer}
             </div>
@@ -329,11 +335,19 @@ export class GraphiQL extends React.Component {
 
   _fetchQuery(query, variables, cb) {
     this.props.fetcher({ query, variables }).then(cb).catch(error => {
-      this.setState({ response: error && error.stack || error });
+      this.setState({
+        isWaitingForResponse: false,
+        response: error && error.stack || error
+      });
     });
   }
 
   _runEditorQuery = () => {
+    this.setState({
+      isWaitingForResponse: true,
+      response: null,
+    });
+
     this._editorQueryID++;
     var queryID = this._editorQueryID;
 
@@ -344,7 +358,10 @@ export class GraphiQL extends React.Component {
 
     this._fetchQuery(editedQuery, this.state.variables, result => {
       if (queryID === this._editorQueryID) {
-        this.setState({ response: JSON.stringify(result, null, 2) });
+        this.setState({
+          isWaitingForResponse: false,
+          response: JSON.stringify(result, null, 2),
+        });
       }
     });
   }

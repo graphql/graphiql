@@ -119,6 +119,12 @@ export class DocExplorer extends React.Component {
       prevName = navStack[navStack.length - 2].name;
     }
 
+    var spinnerDiv = (
+      <div className="spinner-container">
+        <div className="spinner" />
+      </div>
+    );
+
     return (
       <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
@@ -135,7 +141,7 @@ export class DocExplorer extends React.Component {
           </div>
         </div>
         <div className="doc-explorer-contents">
-          {content}
+          {this.props.schema ? content : spinnerDiv}
         </div>
       </div>
     );
