@@ -185,6 +185,10 @@ export class GraphiQL extends React.Component {
     var nextResponse = this.state.response;
     if (nextProps.schema && nextProps.schema !== nextSchema) {
       nextSchema = nextProps.schema;
+    } else if (!nextProps.schema && nextProps.fetcher !== this.props.fetcher) {
+      // If a new fetcher is provided, but no schema is provided, remove any
+      // existing schema.
+      nextSchema = null;
     }
     if (nextProps.query && nextProps.query !== nextQuery) {
       nextQuery = nextProps.query;
@@ -204,27 +208,19 @@ export class GraphiQL extends React.Component {
   }
 
   componentDidMount() {
+    // If there is no schema provided via props, fetch one using introspection.
     if (!this.state.schema) {
-      var fetcher = this.props.fetcher;
-
-      // Try the stock introspection query first, falling back on the
-      // sans-subscriptions query for services which do not yet support it.
-      fetcher({ query: introspectionQuery })
-        .catch(() => fetcher({ query: introspectionQuerySansSubscriptions }))
-        .then(result => {
-          if (!result.data) {
-            this.setState({ response: JSON.stringify(result, null, 2) });
-          } else {
-            this.setState({ schema: buildClientSchema(result.data) });
-          }
-        })
-        .catch(error => {
-          this.setState({ response: error && (error.stack || String(error)) });
-        });
+      this._fetchSchema();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    // If there is no schema provided via props, and a new fetcher is provided,
+    // fetch one using introspection.
+    if (!this.state.schema && this.props.fetcher !== prevProps.fetcher) {
+      this._fetchSchema();
+    }
+
     // When UI-altering state changes, simulate a window resize event so all
     // CodeMirror instances become properly rendered.
     if (this.state.variableEditorOpen !== prevState.variableEditorOpen ||
@@ -336,6 +332,25 @@ export class GraphiQL extends React.Component {
 
   _storageSet(name, value) {
     this._storage.setItem('graphiql:' + name, value);
+  }
+
+  _fetchSchema() {
+    var fetcher = this.props.fetcher;
+
+    // Try the stock introspection query first, falling back on the
+    // sans-subscriptions query for services which do not yet support it.
+    fetcher({ query: introspectionQuery })
+      .catch(() => fetcher({ query: introspectionQuerySansSubscriptions }))
+      .then(result => {
+        if (!result.data) {
+          this.setState({ response: JSON.stringify(result, null, 2) });
+        } else {
+          this.setState({ schema: buildClientSchema(result.data) });
+        }
+      })
+      .catch(error => {
+        this.setState({ response: error && (error.stack || String(error)) });
+      });
   }
 
   _fetchQuery(query, variables, cb) {
