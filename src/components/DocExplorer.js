@@ -151,8 +151,9 @@ class SchemaDoc extends React.Component {
   render() {
     var schema = this.props.schema;
     var queryType = schema.getQueryType();
-    var mutationType = schema.getMutationType();
-    var subscriptionType = schema.getSubscriptionType();
+    var mutationType = schema.getMutationType && schema.getMutationType();
+    var subscriptionType =
+      schema.getSubscriptionType && schema.getSubscriptionType();
 
     return (
       <div>
