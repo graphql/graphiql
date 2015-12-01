@@ -67,14 +67,20 @@ and children.
 
 **Props:**
 
-- `fetcher`: a required function which accepts GraphQL-HTTP parameters and
-  returns a Promise which resolves to the GraphQL parsed JSON response.
+- `fetcher`: a function which accepts GraphQL-HTTP parameters and returns
+  a Promise which resolves to the GraphQL parsed JSON response.
 
-- `schema`: an optional GraphQLSchema instance. If one is not provided,
-  GraphiQL will fetch one using introspection.
+- `schema`: a GraphQLSchema instance or `null` if one is not to be used.
+  If `undefined` is provided, GraphiQL will send an introspection query
+  using the fetcher to produce a schema.
 
 - `query`: an optional GraphQL string to use as the initial displayed query,
-  if not provided, the local storage or defaultQuery will be used.
+  if `undefined` is provided, the stored query or defaultQuery will
+  be used.
+
+- `variables`: an optional GraphQL string to use as the initial displayed
+  query variables, if `undefined` is provided, the stored variables will
+  be used.
 
 - `response`: an optional JSON string to use as the initial displayed
   response. If not provided, no response will be initialy shown. You might
@@ -83,11 +89,9 @@ and children.
 - `storage`: an instance of [Storage][] GraphiQL will use to persist state.
   Only `getItem` and `setItem` are called. Default: window.localStorage
 
-- `defaultQuery`: an optional GraphQL string to use instead of a
-  blank screen when a query was not found in the local cache.
-
-- `variables`: an optional GraphQL string to use as the initial displayed
-  query variables, if not provided, the local storage will be used.
+- `defaultQuery`: an optional GraphQL string to use when no query is provided
+  and no stored query exists from a previous session. If `undefined` is
+  provided, GraphiQL will use its own default query.
 
 - `onEditQuery`: an optional function which will be called when the Query
   editor changes. The argument to the function will be the query string.
