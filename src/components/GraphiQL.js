@@ -313,6 +313,8 @@ export class GraphiQL extends React.Component {
                   Query Variables
                 </div>
                 <VariableEditor
+                  schema={this.state.schema}
+                  query={this.state.query}
                   value={this.state.variables}
                   onEdit={this._onEditVariables}
                 />
