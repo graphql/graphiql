@@ -294,7 +294,7 @@ class TypeDoc extends React.Component {
               </div>
               <Description
                 className="doc-value-description"
-                markdown={type.description}
+                markdown={value.description}
               />
             </div>
           )}
