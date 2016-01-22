@@ -56,7 +56,10 @@ export class DocExplorer extends React.Component {
   constructor() {
     super();
 
-    this.state = { navStack: [] };
+    this.state = {
+      navStack: [],
+      searchValue: null
+    };
   }
 
   _onToggleBtnClick = () => {
@@ -64,17 +67,25 @@ export class DocExplorer extends React.Component {
   }
 
   _onNavBackClick = () => {
-    this.setState({ navStack: this.state.navStack.slice(0, -1) });
+    this.setState({
+      navStack: this.state.navStack.slice(0, -1),
+      searchValue: null
+    });
   }
 
   _onClickTypeOrField = typeOrField => {
     this.showDoc(typeOrField);
   }
 
+  _onSearch = event => {
+    this.setState({ searchValue: event.target.value });
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.schema !== nextProps.schema ||
-      this.state.navStack !== nextState.navStack
+      this.state.navStack !== nextState.navStack ||
+      this.state.searchValue !== nextState.searchValue
     );
   }
 
@@ -103,12 +114,22 @@ export class DocExplorer extends React.Component {
           field={typeOrField}
           onClickType={this._onClickTypeOrField}
         />;
+    } else if (this.state.searchValue) {
+      title = 'Search Results';
+      content =
+        <SearchDoc
+          searchValue={this.state.searchValue}
+          schema={schema}
+          onClickType={this._onClickTypeOrField}
+          onClickField={this._onClickTypeOrField}
+        />;
     } else if (schema) {
       title = 'Documentation Explorer';
       content =
         <SchemaDoc
           schema={schema}
           onClickType={this._onClickTypeOrField}
+          onSearch={this._onSearch}
         />;
     }
 
@@ -141,7 +162,118 @@ export class DocExplorer extends React.Component {
           </div>
         </div>
         <div className="doc-explorer-contents">
+          {!typeOrField &&
+            <label className="search-box-outer">
+              <input className="search-box-input"
+                onKeyUp={event => this._onSearch(event)}
+                type="text"
+                placeholder="Search the schema ..." />
+            </label>
+          }
           {this.props.schema ? content : spinnerDiv}
+        </div>
+      </div>
+    );
+  }
+}
+
+// Render Search Results
+class SearchDoc extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return this.props.schema !== nextProps.schema ||
+      this.props.searchValue !== nextProps.searchValue;
+  }
+
+  render() {
+    const searchValue = this.props.searchValue;
+    const schema = this.props.schema;
+    const onClickType = this.props.onClickType;
+    const onClickField = this.props.onClickField;
+
+    const typeMap = schema.getTypeMap();
+
+    let matchedTypes = [];
+    let matchedFields = [];
+
+    Object.keys(typeMap).forEach(typeName => {
+      const type = typeMap[typeName];
+      let matchedOn = [];
+      if (typeName.indexOf(searchValue) !== -1) {
+        matchedOn.push('Type Name');
+      }
+
+      if (matchedOn.length) {
+        matchedTypes.push(
+          <div className="doc-category-item">
+            <TypeLink type={type} onClick={onClickType} />
+          </div>
+        );
+      }
+
+      if (type.getFields) {
+        const fields = type.getFields();
+        Object.keys(fields).forEach(fieldName => {
+          const field = fields[fieldName];
+          if (fieldName.indexOf(searchValue) !== -1) {
+            matchedFields.push(
+              <div className="doc-category-item">
+                <a className="field-name"
+                  onClick={event => onClickField(field, type, event)}>
+                  {field.name}
+                </a>
+                {' on '}
+                <TypeLink type={type} onClick={onClickType} />
+              </div>
+            );
+          } else if (field.args && field.args.length) {
+            const matches =
+              field.args.filter(arg => arg.name.indexOf(searchValue) !== -1);
+            if (matches.length > 0) {
+              matchedFields.push(
+                <div className="doc-category-item">
+                  <a className="field-name"
+                    onClick={event => onClickField(field, type, event)}>
+                    {field.name}
+                  </a>
+                  {'('}
+                  <span>
+                    {matches.map(arg =>
+                      <span className="arg" key={arg.name}>
+                        <span className="arg-name">{arg.name}</span>
+                        {': '}
+                        <TypeLink type={arg.type} onClick={onClickType} />
+                      </span>
+                    )}
+                  </span>
+                  {')'}
+                  {' on '}
+                  <TypeLink type={type} onClick={onClickType} />
+                </div>
+              );
+            }
+          }
+        });
+      }
+    });
+
+    if (matchedTypes.length === 0 && matchedFields.length === 0) {
+      return (
+        <span className="doc-alert-text">
+          No results found.
+        </span>
+      );
+    }
+
+    return (
+      <div>
+        <div className="doc-category">
+          {(matchedTypes.length > 0 || matchedFields.length > 0) &&
+            <div className="doc-category-title">
+              search results
+            </div>
+          }
+          {matchedTypes}
+          {matchedFields}
         </div>
       </div>
     );

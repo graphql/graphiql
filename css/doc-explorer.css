@@ -133,3 +133,30 @@
 #graphiql-container .arg:last-child:after {
   content: '';
 }
+
+#graphiql-container .doc-alert-text {
+  color: #F00F00;
+  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
+  font-size: 13px;
+}
+
+#graphiql-container .search-box-outer {
+  border: 1px solid #d3d6db;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 12px;
+  height: 24px;
+  margin-bottom: 12px;
+  padding: 3px 8px 5px;
+  vertical-align: middle;
+  width: 100%;
+}
+
+#graphiql-container .search-box-input {
+  border: 0;
+  font-size: 12px;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  width: 100%;
+}
