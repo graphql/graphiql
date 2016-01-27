@@ -537,7 +537,7 @@ class Description extends React.Component {
       return <div />;
     }
 
-    var html = Marked(markdown);
+    var html = Marked(markdown, { sanitize: true });
     return <div
       className={this.props.className}
       dangerouslySetInnerHTML={{ __html: html }}
