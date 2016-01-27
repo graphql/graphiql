@@ -86,6 +86,8 @@ export class QueryEditor extends React.Component {
       extraKeys: {
         'Cmd-Space': () => this.editor.showHint({ completeSingle: true }),
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),
+        'Alt-Space': () => this.editor.showHint({ completeSingle: true }),
+        'Shift-Space': () => this.editor.showHint({ completeSingle: true }),
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
