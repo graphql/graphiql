@@ -1,11 +1,8 @@
-html, body {
+#graphiql-container {
   height: 100%;
   margin: 0;
-  overflow: hidden;
   width: 100%;
-}
-
-#graphiql-container {
+  overflow: hidden;
   color: #141823;
   width: 100%;
   display: -webkit-flex;
