@@ -24,19 +24,6 @@
     "README.md",
     "LICENSE"
   ],
-  "babel": {
-    "optional": [
-      "es7.classProperties"
-    ],
-    "loose": [
-      "es6.classes",
-      "es6.destructuring",
-      "es6.modules",
-      "es6.properties.computed",
-      "es6.spread",
-      "es6.templateLiterals"
-    ]
-  },
   "browserify-shim": {
     "react": "global:React",
     "react-dom": "global:ReactDOM"
@@ -64,9 +51,26 @@
     "react-dom": "^0.14.0"
   },
   "devDependencies": {
-    "babel": "5.8.23",
-    "babel-core": "5.8.25",
-    "babel-eslint": "4.0.10",
+    "babel": "^6.1.18",
+    "babel-cli": "^6.2.0",
+    "babel-core": "^6.2.1",
+    "babel-eslint": "^4.1.6",
+    "babel-plugin-syntax-async-functions": "^6.1.18",
+    "babel-plugin-transform-class-properties": "^6.2.2",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.1.18",
+    "babel-plugin-transform-es2015-block-scoping": "^6.1.18",
+    "babel-plugin-transform-es2015-classes": "^6.2.2",
+    "babel-plugin-transform-es2015-computed-properties": "^6.1.18",
+    "babel-plugin-transform-es2015-destructuring": "^6.1.18",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.2.0",
+    "babel-plugin-transform-es2015-parameters": "^6.1.18",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.1.18",
+    "babel-plugin-transform-es2015-spread": "^6.1.18",
+    "babel-plugin-transform-es2015-template-literals": "^6.1.18",
+    "babel-plugin-transform-regenerator": "^6.2.0",
+    "babel-polyfill": "^6.2.0",
+    "babel-preset-react": "^6.1.18",
+    "babel-register": "^6.2.0",
     "browserify": "11.0.1",
     "browserify-shim": "3.8.10",
     "chai": "3.2.0",

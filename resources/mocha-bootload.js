@@ -8,9 +8,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-require('babel/register')({
-  optional: [ 'es7.asyncFunctions' ]
-});
+require("babel-polyfill");
+require('babel-register');
 
 var jsdom = require('jsdom');
 
