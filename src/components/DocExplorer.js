@@ -50,16 +50,27 @@ export class DocExplorer extends React.Component {
     if (!isCurrentlyShown) {
       navStack = navStack.concat([ typeOrField ]);
     }
+
+    this.setState({ navStack });
+  }
+
+  // Public API
+  showSearch(searchItem) {
+    let navStack = this.state.navStack;
+    let lastEntry = navStack.length > 0 && navStack[navStack.length - 1];
+    if (!lastEntry) {
+      navStack = navStack.concat([ searchItem ]);
+    } else if (lastEntry.searchValue !== searchItem.searchValue) {
+      navStack = navStack.slice(0, -1).concat([ searchItem ]);
+    }
+
     this.setState({ navStack });
   }
 
   constructor() {
     super();
 
-    this.state = {
-      navStack: [],
-      searchValue: null
-    };
+    this.state = { navStack: [] };
   }
 
   _onToggleBtnClick = () => {
@@ -67,10 +78,7 @@ export class DocExplorer extends React.Component {
   }
 
   _onNavBackClick = () => {
-    this.setState({
-      navStack: this.state.navStack.slice(0, -1),
-      searchValue: null
-    });
+    this.setState({ navStack: this.state.navStack.slice(0, -1) });
   }
 
   _onClickTypeOrField = typeOrField => {
@@ -78,7 +86,10 @@ export class DocExplorer extends React.Component {
   }
 
   _onSearch = event => {
-    this.setState({ searchValue: event.target.value });
+    this.showSearch({
+      name: 'Search Results',
+      searchValue: event.target.value
+    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -93,36 +104,38 @@ export class DocExplorer extends React.Component {
     var schema = this.props.schema;
     var navStack = this.state.navStack;
 
-    var typeOrField;
+    var navItem;
     if (navStack.length > 0) {
-      typeOrField = navStack[navStack.length - 1];
+      navItem = navStack[navStack.length - 1];
     }
 
     var title;
     var content;
-    if (typeOrField) {
-      title = typeOrField.name;
-      content = isType(typeOrField) ?
-        <TypeDoc
-          key={typeOrField.name}
-          type={typeOrField}
-          onClickType={this._onClickTypeOrField}
-          onClickField={this._onClickTypeOrField}
-        /> :
-        <FieldDoc
-          key={typeOrField.name}
-          field={typeOrField}
-          onClickType={this._onClickTypeOrField}
-        />;
-    } else if (this.state.searchValue) {
-      title = 'Search Results';
-      content =
-        <SearchDoc
-          searchValue={this.state.searchValue}
-          schema={schema}
-          onClickType={this._onClickTypeOrField}
-          onClickField={this._onClickTypeOrField}
-        />;
+    if (navItem) {
+      if (navItem.name === 'Search Results') {
+        title = navItem.name;
+        content =
+          <SearchDoc
+            searchValue={navItem.searchValue}
+            schema={schema}
+            onClickType={this._onClickTypeOrField}
+            onClickField={this._onClickTypeOrField}
+          />;
+      } else {
+        title = navItem.name;
+        content = isType(navItem) ?
+          <TypeDoc
+            key={navItem.name}
+            type={navItem}
+            onClickType={this._onClickTypeOrField}
+            onClickField={this._onClickTypeOrField}
+          /> :
+          <FieldDoc
+            key={navItem.name}
+            field={navItem}
+            onClickType={this._onClickTypeOrField}
+          />;
+      }
     } else if (schema) {
       title = 'Documentation Explorer';
       content =
@@ -146,6 +159,10 @@ export class DocExplorer extends React.Component {
       </div>
     );
 
+    const shouldSearchBoxAppear = content && (
+      content.type === SearchDoc || content.type === SchemaDoc
+    );
+
     return (
       <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
@@ -162,16 +179,36 @@ export class DocExplorer extends React.Component {
           </div>
         </div>
         <div className="doc-explorer-contents">
-          {!typeOrField &&
-            <label className="search-box-outer">
-              <input className="search-box-input"
-                onKeyUp={event => this._onSearch(event)}
-                type="text"
-                placeholder="Search the schema ..." />
-            </label>
-          }
+          <SearchBox
+            isShown={shouldSearchBoxAppear}
+            onSearch={this._onSearch}
+            searchValue={navItem ? navItem.searchValue : ''}
+          />
           {this.props.schema ? content : spinnerDiv}
         </div>
+      </div>
+    );
+  }
+}
+
+class SearchBox extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return nextProps.isShown !== this.props.isShown ||
+      nextProps.searchValue !== this.props.searchValue;
+  }
+
+  render() {
+    return (
+      <div>
+        {this.props.isShown &&
+          <label className="search-box-outer">
+            <input className="search-box-input"
+              onChange={event => this.props.onSearch(event)}
+              type="text"
+              value={this.props.searchValue}
+              placeholder="Search the schema ..." />
+          </label>
+        }
       </div>
     );
   }
