@@ -36,6 +36,20 @@ describe('graphql-mode', () => {
     ]);
   });
 
+  it('parses inline fragments with optional syntax correctly', () => {
+    CodeMirror.runMode('{ ... on OptionalType { name } }', 'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar')
+    );
+
+    CodeMirror.runMode('{ ... { name } }', 'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar')
+    );
+
+    CodeMirror.runMode('{ ... @optionalDirective { name } }', 'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar')
+    );
+  });
+
   it('returns "invalidchar" message when there is no matching token', () => {
     CodeMirror.runMode('qauery name', 'graphql', (token, style) => {
       if (token.trim()) {
