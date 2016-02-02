@@ -9,7 +9,7 @@ typeahead hinter powered by your GraphQL Schema.
 ### Getting Started
 
 ```
-npm install --save codemirror-graphiql
+npm install --save codemirror-graphql
 ```
 
 CodeMirror helpers install themselves to the global CodeMirror when they
