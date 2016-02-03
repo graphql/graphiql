@@ -165,4 +165,22 @@ describe('graphql-hint', () => {
     );
     checkSuggestions([ 'Bar', 'Baz', 'Qux' ], suggestions.list);
   });
+
+  it('provides correct field name suggestion inside inline fragment', async () => {
+    var suggestions = await getHintSuggestions(
+      'fragment Foo on TestUnion { ... on First { ',
+      { line: 0, ch: 43 }
+    );
+    var fieldNames = Object.keys(TestSchema.getType('First').getFields());
+    checkSuggestions(fieldNames, suggestions.list);
+  });
+
+  it('provides correct field name suggestion inside typeless inline fragment', async () => {
+    var suggestions = await getHintSuggestions(
+      'fragment Foo on First { ... { ',
+      { line: 0, ch: 30 }
+    );
+    var fieldNames = Object.keys(TestSchema.getType('First').getFields());
+    checkSuggestions(fieldNames, suggestions.list);
+  });
 });

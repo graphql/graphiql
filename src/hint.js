@@ -259,7 +259,9 @@ function getTypeInfo(schema, tokenState) {
         break;
       case 'InlineFragment':
       case 'FragmentDefinition':
-        info.type = state.type && schema.getType(state.type);
+        if (state.type) {
+          info.type = schema.getType(state.type);
+        }
         break;
       case 'Field':
         info.fieldDef = info.type && state.name ?
