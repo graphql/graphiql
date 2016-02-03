@@ -243,6 +243,15 @@ function lex(stream) {
   }
 }
 
+// An constraint described as `but not` in the GraphQL spec.
+function butNot(rule, exclusions) {
+  var ruleMatch = rule.match;
+  rule.match =
+    token => ruleMatch(token) &&
+    exclusions.every(exclusion => !exclusion.match(token));
+  return rule;
+}
+
 // An optional rule.
 function opt(ofRule) {
   return { ofRule };
@@ -379,7 +388,7 @@ var ParseRules = {
   ],
   FragmentDefinition: [
     word('fragment'),
-    name('def'),
+    opt(butNot(name('def'), [ word('on') ])),
     'TypeCondition',
     list('Directive'),
     'SelectionSet'

@@ -36,6 +36,12 @@ describe('graphql-mode', () => {
     ]);
   });
 
+  it('parses Relay-style anonymous FragmentDefinitions', () => {
+    CodeMirror.runMode('fragment on Test { id }', 'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar')
+    );
+  });
+
   it('parses inline fragments with optional syntax correctly', () => {
     CodeMirror.runMode('{ ... on OptionalType { name } }', 'graphql',
       (token, style) => expect(style).to.not.equal('invalidchar')
