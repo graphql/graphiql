@@ -8,8 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { parse } from 'graphql/language';
-import { validate } from 'graphql/validation';
+import { parse, validate } from 'graphql';
 
 
 /**

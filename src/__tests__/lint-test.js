@@ -67,7 +67,7 @@ describe('graphql-lint', () => {
     expect(
       (await printLintErrors(`query queryName { title }`))[0].message
     ).to.contain(
-`Cannot query field "title" on "Test".`
+`Cannot query field "title" on type "Test".`
     );
   });
 

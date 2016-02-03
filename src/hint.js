@@ -18,7 +18,7 @@ import {
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLBoolean,
-} from 'graphql/type';
+} from 'graphql';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
