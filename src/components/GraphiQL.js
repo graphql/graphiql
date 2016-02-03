@@ -14,15 +14,16 @@ import {
   parse,
   print,
 } from 'graphql';
-import find from 'graphql/jsutils/find';
+
 import { ExecuteButton } from './ExecuteButton';
 import { PrettifyButton } from './PrettifyButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import { fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
+import { fillLeafs } from '../utility/fillLeafs';
+import find from '../utility/find';
 import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
