@@ -137,4 +137,32 @@ describe('graphql-hint', () => {
     var testInputNames = Object.keys(TestSchema.getType('TestInput').getFields());
     checkSuggestions(testInputNames, suggestions.list);
   });
+
+  it('provides fragment name suggestion', async () => {
+    var suggestions = await getHintSuggestions(
+      'fragment Foo on Test { id }  query { ...',
+      { line: 0, ch: 40 }
+    );
+    checkSuggestions([ 'Foo' ], suggestions.list);
+  });
+
+  it('provides fragment names for fragments defined lower', async () => {
+    var suggestions = await getHintSuggestions(
+      'query { ... } fragment Foo on Test { id }',
+      { line: 0, ch: 11 }
+    );
+    checkSuggestions([ 'Foo' ], suggestions.list);
+  });
+
+  it('provides only appropriate fragment names', async () => {
+    var suggestions = await getHintSuggestions(
+      'fragment Foo on TestUnion { ... } ' +
+      'fragment Bar on First { name } ' +
+      'fragment Baz on Second { name } ' +
+      'fragment Qux on TestUnion { name } ' +
+      'fragment Nrf on Test { id }',
+      { line: 0, ch: 31 }
+    );
+    checkSuggestions([ 'Bar', 'Baz', 'Qux' ], suggestions.list);
+  });
 });
