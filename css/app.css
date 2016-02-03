@@ -213,19 +213,34 @@
   padding-left: 3px;
 }
 
-#graphiql-container .tool-button {
+#graphiql-container .toolbar-button {
+  background: #fdfdfd;
+  background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
+  background:         linear-gradient(#fbfbfb, #f8f8f8);
+  border: solid 0.5px;
+  border-color: #d3d3d3 #d0d0d0 #bababa;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
+  color: #444;
   cursor: pointer;
-  text-decoration: none;
-  font-family: sans-serif;
-  color: #333;
-  padding: 2px 4px;
-  margin: 0 4px;
+  margin: 0 5px 0;
+  padding: 2px 8px 4px;
 }
-#graphiql-container .tool-button:active {
-  color: #999;
+
+#graphiql-container .toolbar-button:active {
+  background: -webkit-linear-gradient(#ececec, #d8d8d8);
+  background:         linear-gradient(#ececec, #d8d8d8);
+  border-color: #cacaca #c9c9c9 #b0b0b0;
+  box-shadow:
+    0 1px 0 #fff,
+    inset 0 1px rgba(255, 255, 255, 0.2),
+    inset 0 1px 1px rgba(0, 0, 0, 0.08);
 }
-#graphiql-container .tool-button.error {
-  color: #c00;
+
+#graphiql-container .toolbar-button.error {
+  background: -webkit-linear-gradient(#fdf3f3, #e6d6d7);
+  background:         linear-gradient(#fdf3f3, #e6d6d7);
+  color: #b00;
 }
 
 #graphiql-container .execute-button {

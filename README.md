@@ -111,4 +111,6 @@ and children.
 
 * `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL.
 
+* `<GraphiQL.ToolbarButton>`: Add a button to the toolbar above GraphiQL.
+
 * `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.

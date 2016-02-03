@@ -10,20 +10,20 @@ import React, { PropTypes } from 'react';
 
 
 /**
- * PrettifyButton
+ * ToolbarButton
  *
- * A {} button that allows to unminify a graphql query
+ * A button to use within the Toolbar.
  */
-export class PrettifyButton extends React.Component {
+export class ToolbarButton extends React.Component {
   static propTypes = {
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    title: PropTypes.string,
+    label: PropTypes.string,
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      error: null
-    };
+    this.state = { error: null };
   }
 
   onClick = e => {
@@ -40,10 +40,10 @@ export class PrettifyButton extends React.Component {
     const { error } = this.state;
     return (
       <a
-        className={'tool-button' + (error ? ' error' : '')}
+        className={'toolbar-button' + (error ? ' error' : '')}
         onClick={this.onClick}
-        title={error ? error.message : 'Prettify Query'}>
-        {'{ }'}
+        title={error ? error.message : this.props.title}>
+        {this.props.label}
       </a>
     );
   }

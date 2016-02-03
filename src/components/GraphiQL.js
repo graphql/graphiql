@@ -16,7 +16,7 @@ import {
 } from 'graphql';
 
 import { ExecuteButton } from './ExecuteButton';
-import { PrettifyButton } from './PrettifyButton';
+import { ToolbarButton } from './ToolbarButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -80,6 +80,8 @@ import {
  *   - <GraphiQL.Logo> Replace the GraphiQL logo with your own.
  *
  *   - <GraphiQL.Toolbar> Add a custom toolbar above GraphiQL.
+ *
+ *   - <GraphiQL.ToolbarButton> Add a button to the toolbar above GraphiQL.
  *
  *   - <GraphiQL.Footer> Add a custom footer below GraphiQL Results.
  *
@@ -264,7 +266,15 @@ export class GraphiQL extends React.Component {
     var logo = find(children, child => child.type === GraphiQL.Logo) ||
       <GraphiQL.Logo />;
 
-    var toolbar = find(children, child => child.type === GraphiQL.Toolbar);
+    var toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
+      <GraphiQL.Toolbar>
+        <GraphiQL.ToolbarButton
+          onClick={this._prettifyQuery}
+          title="Prettify Query"
+          label="Prettify"
+        />
+      </GraphiQL.Toolbar>;
+
     var footer = find(children, child => child.type === GraphiQL.Footer);
 
     var queryWrapStyle = {
@@ -289,7 +299,6 @@ export class GraphiQL extends React.Component {
             <div className="topBar">
               {logo}
               <ExecuteButton onClick={this._runEditorQuery} />
-              <PrettifyButton onClick={this._prettifyQuery} />
               {toolbar}
             </div>
             {!this.state.docsOpen &&
@@ -614,6 +623,9 @@ GraphiQL.Toolbar = class GraphiQLToolbar extends React.Component {
     );
   }
 };
+
+// Add a buttom to the Toolbar.
+GraphiQL.ToolbarButton = ToolbarButton;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = class GraphiQLFooter extends React.Component {
