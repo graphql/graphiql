@@ -58,6 +58,10 @@
           align-items: center;
 }
 
+#graphiql-container .toolbar {
+  overflow-x: scroll;
+}
+
 #graphiql-container .docExplorerShow {
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
