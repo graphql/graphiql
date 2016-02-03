@@ -10,7 +10,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import marked from 'marked';
 import CodeMirror from 'codemirror';
-import { GraphQLSchema, GraphQLNonNull, GraphQLList } from 'graphql/type';
+import { GraphQLSchema, GraphQLNonNull, GraphQLList } from 'graphql';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/edit/matchbrackets';

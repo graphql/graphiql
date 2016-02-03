@@ -17,7 +17,7 @@ import {
   GraphQLEnumType,
   GraphQLList,
   GraphQLNonNull
-} from 'graphql/type';
+} from 'graphql';
 
 
 /**

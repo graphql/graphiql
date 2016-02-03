@@ -8,10 +8,12 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { print } from 'graphql/language/printer';
-import { parse } from 'graphql/language/parser';
-import { GraphQLSchema } from 'graphql/type';
-import { buildClientSchema } from 'graphql/utilities';
+import {
+  buildClientSchema,
+  GraphQLSchema,
+  parse,
+  print,
+} from 'graphql';
 import find from 'graphql/jsutils/find';
 import { ExecuteButton } from './ExecuteButton';
 import { PrettifyButton } from './PrettifyButton';

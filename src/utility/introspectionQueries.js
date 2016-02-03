@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-export { introspectionQuery } from 'graphql/utilities';
+export { introspectionQuery } from 'graphql';
 
 // Some GraphQL services do not support subscriptions and fail an introspection
 // query which includes the `subscriptionType` field as the stock introspection

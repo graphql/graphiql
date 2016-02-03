@@ -6,9 +6,14 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import { TypeInfo } from 'graphql/utilities';
-import { parse, visit, print } from 'graphql/language';
-import { isLeafType, getNamedType } from 'graphql/type';
+import {
+  getNamedType,
+  isLeafType,
+  parse,
+  print,
+  TypeInfo,
+  visit,
+} from 'graphql';
 
 
 /**
