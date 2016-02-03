@@ -89,7 +89,13 @@
           body: JSON.stringify(graphQLParams),
           credentials: 'include',
         }).then(function (response) {
-          return response.json();
+          return response.text();
+        }).then(function (responseBody) {
+          try {
+            return JSON.parse(responseBody);
+          } catch (error) {
+            return responseBody;
+          }
         });
       }
 
