@@ -368,8 +368,8 @@ var ParseRules = {
   SelectionSet: [ p('{'), list('Selection'), p('}') ],
   Selection(token, stream) {
     return token.value === '...' ?
-      stream.match(/[\s\u00a0,]*(?!on\b)[_A-Za-z]/, false) ?
-        'FragmentSpread' : 'InlineFragment' :
+      stream.match(/[\s\u00a0,]*(on\b|@|{)/, false) ?
+        'InlineFragment' : 'FragmentSpread' :
       stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.

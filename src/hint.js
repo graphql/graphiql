@@ -18,12 +18,14 @@ import {
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLBoolean,
+  doTypesOverlap,
 } from 'graphql';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
+import './mode';
 
 
 /**
@@ -152,7 +154,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
         typeInfo.parentType.getPossibleTypes() :
         [ typeInfo.parentType ];
     } else {
-      var typeMap = schema.getTypeMap();
+      const typeMap = schema.getTypeMap();
       possibleTypes = Object.keys(typeMap)
         .map(typeName => typeMap[typeName])
         .filter(isCompositeType);
@@ -160,6 +162,35 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     return hintList(editor, options, cur, token, possibleTypes.map(type => ({
       text: type.name,
       description: type.description
+    })));
+  }
+
+  // Fragment spread names
+  if (kind === 'FragmentSpread' && step === 1) {
+    const typeMap = schema.getTypeMap();
+    const defState = getDefinitionState(token.state);
+    const fragments = getFragmentDefinitions(editor);
+
+    // Filter down to only the fragments which may exist here.
+    const relevantFrags = fragments.filter(frag =>
+      // Only include fragments with known types.
+      typeMap[frag.typeCondition.name.value] &&
+      // Only include fragments which are not cyclic.
+      !(defState &&
+        defState.kind === 'FragmentDefinition' &&
+        defState.name === frag.name.value) &&
+      // Only include fragments which could possibly be spread here.
+      doTypesOverlap(
+        typeInfo.parentType,
+        typeMap[frag.typeCondition.name.value]
+      )
+    );
+
+    return hintList(editor, options, cur, token, relevantFrags.map(frag => ({
+      text: frag.name.value,
+      type: typeMap[frag.typeCondition.name.value],
+      description:
+        `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`
     })));
   }
 
@@ -216,7 +247,8 @@ function getTypeInfo(schema, tokenState) {
 
   forEachState(tokenState, state => {
     switch (state.kind) {
-      case 'Query': case 'ShortQuery':
+      case 'Query':
+      case 'ShortQuery':
         info.type = schema.getQueryType();
         break;
       case 'Mutation':
@@ -285,6 +317,26 @@ function getTypeInfo(schema, tokenState) {
   return info;
 }
 
+// Utility for returning the state representing the Definition this token state
+// is within, if any.
+function getDefinitionState(tokenState) {
+  let definitionState;
+
+  forEachState(tokenState, state => {
+    switch (state.kind) {
+      case 'Query':
+      case 'ShortQuery':
+      case 'Mutation':
+      case 'Subscription':
+      case 'FragmentDefinition':
+        definitionState = state;
+        break;
+    }
+  });
+
+  return definitionState;
+}
+
 // Utility for iterating through a state stack bottom-up.
 function forEachState(stack, fn) {
   var reverseStateStack = [];
@@ -296,6 +348,45 @@ function forEachState(stack, fn) {
   for (var i = reverseStateStack.length - 1; i >= 0; i--) {
     fn(reverseStateStack[i]);
   }
+}
+
+// Finds all fragment definition ASTs in a source.
+function getFragmentDefinitions(editor) {
+  const fragmentDefs = [];
+  runMode(editor, 'graphql', state => {
+    if (state.kind === 'FragmentDefinition' && state.name && state.type) {
+      fragmentDefs.push({
+        kind: 'FragmentDefinition',
+        name: {
+          kind: 'Name',
+          value: state.name,
+        },
+        typeCondition: {
+          kind: 'NamedType',
+          name: {
+            kind: 'Name',
+            value: state.type,
+          }
+        }
+      });
+    }
+  });
+  return fragmentDefs;
+}
+
+// Utility for efficiently running a codemirror mode over an editor's current
+// state, calling an iterFn function on each token.
+function runMode(editor, modeSpec, iterFn) {
+  const mode = CodeMirror.getMode(CodeMirror.defaults, modeSpec);
+  const state = CodeMirror.startState(mode);
+  editor.eachLine(line => {
+    const stream = new CodeMirror.StringStream(line.text);
+    while (!stream.eol()) {
+      const style = mode.token(stream, state);
+      iterFn(state, style, stream);
+      stream.start = stream.pos;
+    }
+  });
 }
 
 // Gets the field definition given a type and field name
