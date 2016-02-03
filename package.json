@@ -43,7 +43,7 @@
     "build": "babel src --ignore __tests__ --out-dir .",
     "watch": "babel --optional runtime resources/watch.js | node",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "prepublish": "npm run build"
+    "prepublish": ". ./resources/prepublish.sh"
   },
   "peerDependencies": {
     "graphql": "^0.4.16",

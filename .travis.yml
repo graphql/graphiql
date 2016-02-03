@@ -1,0 +1,16 @@
+language: node_js
+
+node_js: stable
+
+before_install:
+  - npm config set spin false --global
+
+deploy:
+  provider: npm
+  email: lee@leebyron.com
+  api_key:
+    secure: meiJ6mjfE2vaKMEseN48mFiUwoeDHZnCJ9WJc3WrUBCFTXytkaSlaQxsQ2K9f6skDHeETKYvv792jL6K+8G4AndEVGxpQBasye6t+tqnJy5v8S14c1EwvyL6qNyWjQGwBDqs42W+ErEPYiAV+kx4huvsS5NooO4x6t2GQxU73mVFDPzfTmWyrvMZ6R05Dr/hkFSqI8pUhCGio1E9Xqd0CKjag0F2m1q2E71LEgcYxfL0F8SkEZpgYZHjAqs5StTI4DXZED4wfvY05wEYfqlJla6cDJBaCBP2/oKiuhZHiR5ngcvDLRlqvulcIShlqMcFT38QCs6Zso3/yPpEaKGgWfpSRystakgUHbEVA+NJ4LxgHygOyEj3CcRx9nj6cBZf9oVoQ+rW+nmXISNnboIKZ1euCMrF4O4WDmp7Zdg3pIQ4EmImxsQCLIvKQal1g1soJtroNFlGe1u5ssTw7aLVAvbr6LhT7Ee+uFQjkN0nQYZ28/yP/3jZMUVNa/+PJuadZfxo3ryPGREtsL9vn+c1UUWpjcD3Xis0qRzFomioCxngz+UuRyn4H2ELFhU2C0ixeWzgE2Wbiw+CgXX4hZa/U/uXPw3fhVKnJmdLPdnZiN0rF8ms87oq0GDebCOO7YwW8aDz7b2Z0olRLgh/pRvA2uV9WKehHgyoaykS3OPATUI=
+  on:
+    tags: true
+    branch: master
+    repo: graphql/codemirror-graphql
