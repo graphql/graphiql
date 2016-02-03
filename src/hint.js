@@ -321,9 +321,9 @@ function hintList(editor, options, cursor, token, list) {
     return;
   }
 
-  var tokenStart = token.type === null ? token.end :
-    /\w/.test(token.string[0]) ? token.start :
-    token.start + 1;
+  var tokenStart = token.type !== null && /\w/.test(token.string[0]) ?
+    token.start :
+    token.end;
 
   var results = {
     list: hints,
