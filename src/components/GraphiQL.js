@@ -240,7 +240,10 @@ export class GraphiQL extends React.Component {
         if (result.data) {
           this.setState({ schema: buildClientSchema(result.data) });
         } else {
-          this.setState({ response: JSON.stringify(result, null, 2) });
+          let responseString = typeof result === 'string' ?
+            result :
+            JSON.stringify(result, null, 2);
+          this.setState({ response: responseString });
         }
       })
       .catch(error => {
