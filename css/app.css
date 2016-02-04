@@ -1,17 +1,27 @@
 #graphiql-container {
+  color: #141823;
+  display:         flex;
+  display: -webkit-flex;
+          flex-direction: row;
+  -webkit-flex-direction: row;
+  font-family:
+    system,
+    -apple-system,
+    'San Francisco',
+    '.SFNSDisplay-Regular',
+    'Segoe UI',
+    Segoe,
+    'Segoe WP',
+    'Helvetica Neue',
+    helvetica,
+    'Lucida Grande',
+    arial,
+    sans-serif;
+  font-size: 14px;
   height: 100%;
   margin: 0;
-  width: 100%;
   overflow: hidden;
-  color: #141823;
   width: 100%;
-  display: -webkit-flex;
-  display:         flex;
-  -webkit-flex-direction: row;
-          flex-direction: row;
-  height: 100%;
-  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
-  font-size: 14px;
 }
 
 #graphiql-container .editorWrap {
@@ -40,22 +50,22 @@
 }
 
 #graphiql-container .topBar {
+  -webkit-align-items: center;
+          align-items: center;
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: solid 1px #d0d0d0;
   cursor: default;
-  height: 34px;
-  padding: 7px 14px 6px;
-  -webkit-user-select: none;
-          user-select: none;
   display: -webkit-flex;
   display:         flex;
-  -webkit-flex-direction: row;
-          flex-direction: row;
+  height: 34px;
+  padding: 7px 14px 6px;
   -webkit-flex: 1;
           flex: 1;
-  -webkit-align-items: center;
-          align-items: center;
+  -webkit-flex-direction: row;
+          flex-direction: row;
+  -webkit-user-select: none;
+          user-select: none;
 }
 
 #graphiql-container .toolbar {
@@ -65,9 +75,9 @@
 #graphiql-container .docExplorerShow {
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
-  border: none;
   border-bottom: solid 1px #d0d0d0;
   border-left: solid 1px rgba(0, 0, 0, 0.2);
+  border: none;
   color: #3B5998;
   cursor: pointer;
   font-size: 14px;
@@ -83,45 +93,45 @@
   height: 9px;
   margin: 0 3px -1px 0;
   position: relative;
-  width: 9px;
   -webkit-transform: rotate(-45deg);
           transform: rotate(-45deg);
+  width: 9px;
 }
 
 #graphiql-container .editorBar {
   display: -webkit-flex;
   display:         flex;
-  -webkit-flex-direction: row;
-          flex-direction: row;
   -webkit-flex: 1;
           flex: 1;
+  -webkit-flex-direction: row;
+          flex-direction: row;
 }
 
 #graphiql-container .queryWrap {
   display: -webkit-flex;
   display:         flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
   -webkit-flex: 1;
           flex: 1;
+  -webkit-flex-direction: column;
+          flex-direction: column;
 }
 
 #graphiql-container .resultWrap {
-  position: relative;
+  border-left: solid 1px #e0e0e0;
   display: -webkit-flex;
   display:         flex;
-  -webkit-flex-direction: column;
-          flex-direction: column;
+  position: relative;
   -webkit-flex: 1;
           flex: 1;
-  border-left: solid 1px #e0e0e0;
+  -webkit-flex-direction: column;
+          flex-direction: column;
 }
 
 #graphiql-container .docExplorerWrap {
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  z-index: 3;
-  position: relative;
   background: white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 3;
 }
 
 #graphiql-container .docExplorerResizer {
@@ -148,9 +158,9 @@
 }
 
 #graphiql-container .variable-editor {
-  height: 30px;
   display: -webkit-flex;
   display:         flex;
+  height: 30px;
   -webkit-flex-direction: column;
           flex-direction: column;
   position: relative;
@@ -280,14 +290,19 @@
 }
 
 #graphiql-container .CodeMirror {
+  color: #141823;
+  font-family:
+    'Consolas',
+    'Inconsolata',
+    'Droid Sans Mono',
+    'Monaco',
+    monospace;
+  font-size: 13px;
+  height: 100%;
+  left: 0;
   position: absolute;
   top: 0;
-  left: 0;
-  height: 100%;
   width: 100%;
-  font-size: 13px;
-  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-  color: #141823;
 }
 
 #graphiql-container .CodeMirror-lines {
@@ -296,11 +311,13 @@
 
 .CodeMirror-hint-information .content {
   -webkit-box-orient: vertical;
+          box-orient: vertical;
   color: #141823;
   display: -webkit-box;
   font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
   font-size: 13px;
   -webkit-line-clamp: 3;
+          line-clamp: 3;
   line-height: 16px;
   max-height: 48px;
   overflow: hidden;
@@ -317,22 +334,22 @@
 
 .CodeMirror-hint-information .infoType {
   color: #30a;
-  margin-right: 0.5em;
-  display: inline;
   cursor: pointer;
+  display: inline;
+  margin-right: 0.5em;
 }
 
 .autoInsertedLeaf.cm-property {
-  padding: 2px 4px 1px;
-  margin: -2px -4px -1px;
-  border-radius: 2px;
-  border-bottom: solid 2px rgba(255, 255, 255, 0);
   -webkit-animation-duration: 6s;
      -moz-animation-duration: 6s;
           animation-duration: 6s;
   -webkit-animation-name: insertionFade;
      -moz-animation-name: insertionFade;
           animation-name: insertionFade;
+  border-bottom: solid 2px rgba(255, 255, 255, 0);
+  border-radius: 2px;
+  margin: -2px -4px -1px;
+  padding: 2px 4px 1px;
 }
 
 @-moz-keyframes insertionFade {
@@ -373,22 +390,32 @@
 
 div.CodeMirror-lint-tooltip {
   background-color: white;
-  color: #141823;
   border: 0;
   border-radius: 2px;
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-   -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+  color: #141823;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+  font-family:
+    system,
+    -apple-system,
+    'San Francisco',
+    '.SFNSDisplay-Regular',
+    'Segoe UI',
+    Segoe,
+    'Segoe WP',
+    'Helvetica Neue',
+    helvetica,
+    'Lucida Grande',
+    arial,
+    sans-serif;
   font-size: 13px;
   line-height: 16px;
-  padding: 6px 10px;
   opacity: 0;
-  transition: opacity 0.15s;
-  -moz-transition: opacity 0.15s;
+  padding: 6px 10px;
   -webkit-transition: opacity 0.15s;
-  -o-transition: opacity 0.15s;
-  -ms-transition: opacity 0.15s;
+     -moz-transition: opacity 0.15s;
+      -ms-transition: opacity 0.15s;
+       -o-transition: opacity 0.15s;
+          transition: opacity 0.15s;
 }
 
 div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
@@ -402,16 +429,15 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
   background: #08f;
   background: -webkit-linear-gradient(#43A8FF, #0F83E8);
   background:         linear-gradient(#43A8FF, #0F83E8);
-
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   color: white;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   font-family: arial;
-  line-height: 0;
-  padding: 0px 4px 1px;
   font-size: 12px;
+  line-height: 0;
   margin: 0 3px;
+  padding: 0px 4px 1px;
   text-shadow: 0 -1px rgba(0, 0, 0, 0.1);
 }
 
