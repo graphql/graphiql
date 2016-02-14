@@ -69,7 +69,7 @@
 }
 
 #graphiql-container .toolbar {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 #graphiql-container .docExplorerShow {
