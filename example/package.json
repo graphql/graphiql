@@ -3,7 +3,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "prestart": "npm run build",
-    "build": ". build.sh"
+    "build": "./build.sh"
   },
   "dependencies": {
     "babel-runtime": "^5.8.20",
