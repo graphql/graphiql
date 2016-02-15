@@ -40,7 +40,8 @@ export class QueryEditor extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
     value: PropTypes.string,
-    onEdit: PropTypes.func
+    onEdit: PropTypes.func,
+    editorOptions: PropTypes.object
   }
 
   constructor(props) {
@@ -94,7 +95,8 @@ export class QueryEditor extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
+      ...this.props.editorOptions
     });
 
     this.editor.on('change', this._onEdit);
