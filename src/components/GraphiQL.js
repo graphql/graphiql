@@ -436,8 +436,8 @@ export class GraphiQL extends React.Component {
     if (json) {
       try {
         editorOptions = JSON.parse(json);
-      }
-      catch(e) {
+      } catch (e) {
+        this._storageSet('editorOptions', '{}');
       }
     }
     return editorOptions;
