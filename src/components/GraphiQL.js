@@ -270,13 +270,7 @@ export class GraphiQL extends React.Component {
       <GraphiQL.Logo />;
 
     var toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
-      <GraphiQL.Toolbar>
-        <GraphiQL.ToolbarButton
-          onClick={this._prettifyQuery}
-          title="Prettify Query"
-          label="Prettify"
-        />
-      </GraphiQL.Toolbar>;
+      <GraphiQL.Toolbar />;
 
     var footer = find(children, child => child.type === GraphiQL.Footer);
 
@@ -302,6 +296,11 @@ export class GraphiQL extends React.Component {
             <div className="topBar">
               {logo}
               <ExecuteButton onClick={this._runEditorQuery} />
+              <GraphiQL.ToolbarButton
+                onClick={this._prettifyQuery}
+                title="Prettify Query"
+                label="Prettify"
+              />
               {toolbar}
             </div>
             {!this.state.docsOpen &&
@@ -627,7 +626,7 @@ GraphiQL.Toolbar = class GraphiQLToolbar extends React.Component {
   }
 };
 
-// Add a buttom to the Toolbar.
+// Add a button to the Toolbar.
 GraphiQL.ToolbarButton = ToolbarButton;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
