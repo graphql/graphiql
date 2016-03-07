@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
@@ -11,27 +12,25 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
+import { isOutputType, isLeafType } from 'graphql';
+
 import '../hint';
 import { TestSchema } from './testSchema';
-import { graphql } from 'graphql';
-import { introspectionQuery, buildClientSchema } from 'graphql/utilities';
-import { isOutputType, isLeafType } from 'graphql/type';
 
-/* eslint-disable max-len */
 
-async function createEditorWithHint() {
+function createEditorWithHint() {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql',
     hintOptions: {
-      schema: await getClientSchema(),
+      schema: TestSchema,
       closeOnUnfocus: false,
       completeSingle: false
     }
   });
 }
 
-async function getHintSuggestions(queryString, cursor) {
-  var editor = await createEditorWithHint();
+function getHintSuggestions(queryString, cursor) {
+  var editor = createEditorWithHint();
   return new Promise(resolve => {
     var graphqlHint = CodeMirror.hint.graphql;
     CodeMirror.hint.graphql = (cm, options) => {
@@ -49,15 +48,8 @@ async function getHintSuggestions(queryString, cursor) {
   });
 }
 
-function getClientSchema() {
-  return graphql(TestSchema, introspectionQuery)
-    .then(response => buildClientSchema(response.data));
-}
-
 function checkSuggestions(source, suggestions) {
-  var titles = suggestions
-    .map(suggestion => suggestion.text)
-    .filter(title => title !== '__schema' && title !== '__type');
+  var titles = suggestions.map(suggestion => suggestion.text);
   expect(titles).to.deep.equal(source);
 }
 
@@ -78,7 +70,7 @@ describe('graphql-hint', () => {
   it('provides correct field name suggestions', async () => {
     var suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     var fieldConfig = TestSchema.getQueryType().getFields();
-    var fieldNames = Object.keys(fieldConfig);
+    var fieldNames = Object.keys(fieldConfig).concat([ '__schema', '__type' ]);
     checkSuggestions(fieldNames, suggestions.list);
   });
 
