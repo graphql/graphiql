@@ -23,7 +23,7 @@ import { parse, validate } from 'graphql';
  *   - schema: GraphQLSchema provides the linter with positionally relevant info
  *
  */
-CodeMirror.registerHelper('lint', 'graphql', function (text, options, editor) {
+CodeMirror.registerHelper('lint', 'graphql', (text, options, editor) => {
   var schema = options.schema;
   try {
     var ast = parse(text);

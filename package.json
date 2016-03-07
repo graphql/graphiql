@@ -19,6 +19,8 @@
     "hint.js",
     "mode.js",
     "lint.js",
+    "utils",
+    "variables",
     "README.md",
     "LICENSE"
   ],
@@ -33,7 +35,7 @@
     ]
   },
   "options": {
-    "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
+    "mocha": "--full-trace --require resources/mocha-bootload src/**/__tests__/**/*-test.js"
   },
   "scripts": {
     "test": "npm run lint && npm run testonly",
