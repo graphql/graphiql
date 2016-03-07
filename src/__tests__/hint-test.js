@@ -32,13 +32,11 @@ function createEditorWithHint() {
 function getHintSuggestions(queryString, cursor) {
   var editor = createEditorWithHint();
   return new Promise(resolve => {
-    var graphqlHint = CodeMirror.hint.graphql;
+    const graphqlHint = CodeMirror.hint.graphql;
     CodeMirror.hint.graphql = (cm, options) => {
       var result = graphqlHint(cm, options);
-      if (result) {
-        resolve(result);
-      }
-
+      resolve(result);
+      CodeMirror.hint.graphql = graphqlHint;
       return result;
     };
 
