@@ -7,3 +7,5 @@ npm-debug.log
 node_modules/
 coverage/
 /*.js
+/utils
+/variables
