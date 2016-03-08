@@ -76,22 +76,22 @@ describe('graphql-mode', () => {
   );
 
   it('parses kitchen-sink query without invalidchar', () => {
-    CodeMirror.runMode(kitchenSink, 'graphql', token => {
-      expect(token).to.not.equal('invalidchar');
+    CodeMirror.runMode(kitchenSink, 'graphql', (token, style) => {
+      expect(style).to.not.equal('invalidchar');
     });
   });
 
   it('parses anonymous operations without invalidchar', () => {
-    CodeMirror.runMode(`{ id }`, 'graphql', token => {
-      expect(token).to.not.equal('invalidchar');
+    CodeMirror.runMode(`{ id }`, 'graphql', (token, style) => {
+      expect(style).to.not.equal('invalidchar');
     });
 
     CodeMirror.runMode(`
       mutation {
         setString(value: "newString")
       }
-    `, 'graphql', token => {
-      expect(token).to.not.equal('invalidchar');
+    `, 'graphql', (token, style) => {
+      expect(style).to.not.equal('invalidchar');
     });
 
     CodeMirror.runMode(`
@@ -100,8 +100,8 @@ describe('graphql-mode', () => {
           id
         }
       }
-    `, 'graphql', token => {
-      expect(token).to.not.equal('invalidchar');
+    `, 'graphql', (token, style) => {
+      expect(style).to.not.equal('invalidchar');
     });
   });
 
