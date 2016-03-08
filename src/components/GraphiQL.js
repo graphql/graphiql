@@ -83,6 +83,8 @@ import {
  *
  *   - <GraphiQL.ToolbarButton> Add a button to the toolbar above GraphiQL.
  *
+ *   - <GraphiQL.ExecuteButton> Add a custom ExecuteButton look and feel.
+ *
  *   - <GraphiQL.Footer> Add a custom footer below GraphiQL Results.
  *
  *
@@ -272,6 +274,10 @@ export class GraphiQL extends React.Component {
     var toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
       <GraphiQL.Toolbar />;
 
+    const customExecuteButton = find(
+      children, child => child.type === GraphiQL.ExecuteButton
+    );
+
     var footer = find(children, child => child.type === GraphiQL.Footer);
 
     var queryWrapStyle = {
@@ -295,7 +301,10 @@ export class GraphiQL extends React.Component {
           <div className="topBarWrap">
             <div className="topBar">
               {logo}
-              <ExecuteButton onClick={this._runEditorQuery} />
+              <ExecuteButton
+                onClick={this._runEditorQuery}
+                customExecuteButton={customExecuteButton}
+              />
               <GraphiQL.ToolbarButton
                 onClick={this._prettifyQuery}
                 title="Prettify Query"
@@ -628,6 +637,17 @@ GraphiQL.Toolbar = class GraphiQLToolbar extends React.Component {
 
 // Add a button to the Toolbar.
 GraphiQL.ToolbarButton = ToolbarButton;
+
+// Add a custom ExecuteButton.
+GraphiQL.ExecuteButton = class GraphiQLExecuteButton extends React.Component {
+  render() {
+    return (
+      <div className="execute-button">
+        {this.props.children}
+      </div>
+    );
+  }
+}
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = class GraphiQLFooter extends React.Component {
