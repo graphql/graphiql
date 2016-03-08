@@ -23,7 +23,7 @@ describe('graphql-variables-mode', () => {
     const tokens = [];
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
-      if (style) {
+      if (style && style !== 'ws') {
         tokens.push([ token, style ]);
       }
     });
@@ -57,7 +57,7 @@ describe('graphql-variables-mode', () => {
     const tokens = [];
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
-      if (style) {
+      if (style && style !== 'ws') {
         tokens.push([ token, style ]);
       }
     });

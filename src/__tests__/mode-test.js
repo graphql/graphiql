@@ -22,7 +22,7 @@ describe('graphql-mode', () => {
     var styles = [];
 
     CodeMirror.runMode(queryStr, 'graphql', (token, style) => {
-      if (style) {
+      if (style && style !== 'ws') {
         tokens.push(token);
         styles.push(style);
       }

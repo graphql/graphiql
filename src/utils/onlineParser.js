@@ -82,7 +82,7 @@ function getToken(eatWhitespace, LexRules, ParseRules, editor, stream, state) {
 
   // Consume spaces and ignored characters
   if (eatWhitespace(stream)) {
-    return null;
+    return 'ws';
   }
 
   // Tokenize line comment
