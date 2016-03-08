@@ -40,6 +40,14 @@
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9sJFhQXEbhTg7YAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAMklEQVQI12NkgIIvJ3QXMjAwdDN+OaEbysDA4MPAwNDNwMCwiOHLCd1zX07o6kBVGQEAKBANtobskNMAAAAASUVORK5CYII=");
 }
 
+/* Do not highlight any leading or trailing whitespace on a line */
+.CodeMirror-lint-mark-error.cm-ws:first-child,
+.CodeMirror-lint-mark-warning.cm-ws:first-child,
+.CodeMirror-lint-mark-error.cm-ws:last-child,
+.CodeMirror-lint-mark-warning.cm-ws:last-child {
+  background-image: none;
+}
+
 .CodeMirror-lint-marker-error, .CodeMirror-lint-marker-warning {
   background-position: center center;
   background-repeat: no-repeat;
