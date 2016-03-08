@@ -8,9 +8,8 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import marked from 'marked';
 import CodeMirror from 'codemirror';
-import { GraphQLSchema, GraphQLNonNull, GraphQLList } from 'graphql';
+import { GraphQLSchema } from 'graphql';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/comment/comment';
 import 'codemirror/addon/edit/matchbrackets';
@@ -22,6 +21,8 @@ import 'codemirror/keymap/sublime';
 import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
+
+import onHasCompletion from '../utility/onHasCompletion';
 
 
 /**
@@ -154,101 +155,10 @@ export class QueryEditor extends React.Component {
    * about the type and description for the selected context.
    */
   _onHasCompletion = (cm, data) => {
-    var wrapper;
-    var information;
-
-    // When a hint result is selected, we touch the UI.
-    CodeMirror.on(data, 'select', (ctx, el) => {
-      // Only the first time (usually when the hint UI is first displayed)
-      // do we create the wrapping node.
-      if (!wrapper) {
-        // Wrap the existing hint UI, so we have a place to put information.
-        var hintsUl = el.parentNode;
-        var container = hintsUl.parentNode;
-        wrapper = document.createElement('div');
-        container.appendChild(wrapper);
-
-        // CodeMirror vertically inverts the hint UI if there is not enough
-        // space below the cursor. Since this modified UI appends to the bottom
-        // of CodeMirror's existing UI, it could cover the cursor. This adjusts
-        // the positioning of the hint UI to accomodate.
-        var top = hintsUl.style.top;
-        var bottom = '';
-        var cursorTop = cm.cursorCoords().top;
-        if (parseInt(top, 10) < cursorTop) {
-          top = '';
-          bottom = (window.innerHeight - cursorTop + 3) + 'px';
-        }
-
-        // Style the wrapper, remove positioning from hints. Note that usage
-        // of this option will need to specify CSS to remove some styles from
-        // the existing hint UI.
-        wrapper.className = 'CodeMirror-hints-wrapper';
-        wrapper.style.left = hintsUl.style.left;
-        wrapper.style.top = top;
-        wrapper.style.bottom = bottom;
-        hintsUl.style.left = '';
-        hintsUl.style.top = '';
-
-        // This "information" node will contain the additional info about the
-        // highlighted typeahead option.
-        information = document.createElement('div');
-        information.className = 'CodeMirror-hint-information';
-        if (bottom) {
-          wrapper.appendChild(information);
-          wrapper.appendChild(hintsUl);
-        } else {
-          wrapper.appendChild(hintsUl);
-          wrapper.appendChild(information);
-        }
-
-        // When CodeMirror attempts to remove the hint UI, we detect that it was
-        // removed from our wrapper and in turn remove the wrapper from the
-        // original container.
-        var onRemoveFn;
-        wrapper.addEventListener('DOMNodeRemoved', onRemoveFn = event => {
-          if (event.target === hintsUl) {
-            wrapper.removeEventListener('DOMNodeRemoved', onRemoveFn);
-            wrapper.parentNode.removeChild(wrapper);
-            wrapper = null;
-            information = null;
-            onRemoveFn = null;
-          }
-        });
-      }
-
-      // Now that the UI has been set up, add info to information.
-      var description = ctx.description ?
-        marked(ctx.description, { smartypants: true }) :
-        'Self descriptive.';
-      var type = ctx.type ?
-        '<span class="infoType">' + renderType(ctx.type) + '</span>' :
-        '';
-
-      information.innerHTML = '<div class="content">' +
-        (description.slice(0, 3) === '<p>' ?
-          '<p>' + type + description.slice(3) :
-          type + description) + '</div>';
-
-      // Additional rendering?
-      var onHintInformationRender = this.props.onHintInformationRender;
-      if (onHintInformationRender) {
-        onHintInformationRender(information);
-      }
-    });
+    onHasCompletion(cm, data, this.props.onHintInformationRender);
   }
 
   render() {
     return <div className="query-editor" />;
   }
-}
-
-function renderType(type) {
-  if (type instanceof GraphQLNonNull) {
-    return `${renderType(type.ofType)}!`;
-  }
-  if (type instanceof GraphQLList) {
-    return `[${renderType(type.ofType)}]`;
-  }
-  return `<a class="typeName">${type.name}</a>`;
 }

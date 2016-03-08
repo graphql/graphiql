@@ -21,9 +21,11 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import { getLeft, getTop } from '../utility/elementPosition';
-import { fillLeafs } from '../utility/fillLeafs';
+import collectVariables from '../utility/collectVariables';
+import debounce from '../utility/debounce';
 import find from '../utility/find';
+import { fillLeafs } from '../utility/fillLeafs';
+import { getLeft, getTop } from '../utility/elementPosition';
 import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
@@ -174,11 +176,15 @@ export class GraphiQL extends React.Component {
       props.variables !== undefined ? props.variables :
       this._storageGet('variables');
 
+    // Get the initial valid variables.
+    let variableToType = getVariableToType(props.schema, query);
+
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
+      variableToType,
       response: props.response,
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
@@ -196,6 +202,7 @@ export class GraphiQL extends React.Component {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
+    let nextVariableToType = this.state.variableToType;
     let nextResponse = this.state.response;
     if (nextProps.schema !== undefined) {
       nextSchema = nextProps.schema;
@@ -206,6 +213,13 @@ export class GraphiQL extends React.Component {
     if (nextProps.variables !== undefined) {
       nextVariables = nextProps.variables;
     }
+    if (nextSchema && nextQuery &&
+        (nextSchema !== this.state.schema || nextQuery !== this.state.query)) {
+      const newVariableToType = getVariableToType(nextSchema, nextQuery);
+      if (newVariableToType) {
+        nextVariableToType = newVariableToType;
+      }
+    }
     if (nextProps.response !== undefined) {
       nextResponse = nextProps.response;
     }
@@ -213,6 +227,7 @@ export class GraphiQL extends React.Component {
       schema: nextSchema,
       query: nextQuery,
       variables: nextVariables,
+      variableToType: nextVariableToType,
       response: nextResponse,
     });
   }
@@ -238,7 +253,12 @@ export class GraphiQL extends React.Component {
         }
 
         if (result.data) {
-          this.setState({ schema: buildClientSchema(result.data) });
+          const schema = buildClientSchema(result.data);
+          const newVariableToType = getVariableToType(schema, this.state.query);
+          this.setState({
+            schema,
+            variableToType: newVariableToType || this.state.variableToType
+          });
         } else {
           let responseString = typeof result === 'string' ?
             result :
@@ -332,7 +352,9 @@ export class GraphiQL extends React.Component {
                 </div>
                 <VariableEditor
                   value={this.state.variables}
+                  variableToType={this.state.variableToType}
                   onEdit={this._onEditVariables}
+                  onHintInformationRender={this._onHintInformationRender}
                 />
               </div>
             </div>
@@ -412,12 +434,22 @@ export class GraphiQL extends React.Component {
   }
 
   _onEditQuery = value => {
+    if (this.state.schema) {
+      this._updateVariableToType(value);
+    }
     this._storageSet('query', value);
     this.setState({ query: value });
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
     }
   }
+
+  _updateVariableToType = debounce(500, value => {
+    const newVariableToType = getVariableToType(this.state.schema, value);
+    if (newVariableToType) {
+      this.setState({ variableToType: newVariableToType });
+    }
+  })
 
   _onEditVariables = value => {
     this._storageSet('variables', value);
@@ -656,3 +688,14 @@ const defaultQuery =
 # will appear in the pane to the right.
 
 `;
+
+// Returns a `variableToType` mapping, or null not possible.
+function getVariableToType(schema, query) {
+  if (schema && query) {
+    try {
+      return collectVariables(schema, parse(query));
+    } catch (e) {
+      // No op.
+    }
+  }
+}
