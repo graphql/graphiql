@@ -16,19 +16,24 @@ import React, { PropTypes } from 'react';
  */
 export class ExecuteButton extends React.Component {
   static propTypes = {
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    customExecuteButton: React.Component
   }
 
   render() {
     return (
-      <button
-        className="execute-button"
+      <div
+        className="execute-button-container"
         onClick={this.props.onClick}
         title="Execute Query (Ctrl-Enter)">
-        <svg width="34" height="34">
-          <path d="M 11 9 L 24 16 L 11 23 z" />
-        </svg>
-      </button>
+        {this.props.customExecuteButton ||
+          <button className="execute-button">
+            <svg width="34" height="34">
+              <path d="M 11 9 L 24 16 L 11 23 z" />
+            </svg>
+          </button>
+        }
+      </div>
     );
   }
 

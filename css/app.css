@@ -258,6 +258,10 @@
   color: #b00;
 }
 
+#graphiql-container .execute-button-container {
+  margin: auto 14px auto 28px;
+}
+
 #graphiql-container .execute-button {
   background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
   background:         linear-gradient(#fdfdfd, #d2d3d6);
@@ -267,7 +271,6 @@
   cursor: pointer;
   fill: #444;
   height: 34px;
-  margin: 0 14px 0 28px;
   padding: 0;
   width: 34px;
 }
