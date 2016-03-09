@@ -68,7 +68,7 @@ and children.
 **Props:**
 
 - `fetcher`: a function which accepts GraphQL-HTTP parameters and returns
-  a Promise which resolves to the GraphQL parsed JSON response.
+  a Promise or Observable which resolves to the GraphQL parsed JSON response.
 
 - `schema`: a GraphQLSchema instance or `null` if one is not to be used.
   If `undefined` is provided, GraphiQL will send an introspection query
