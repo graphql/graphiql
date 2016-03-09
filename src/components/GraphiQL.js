@@ -31,7 +31,6 @@ import {
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
-
 /**
  * GraphiQL
  *
@@ -259,41 +258,49 @@ export class GraphiQL extends React.Component {
 
     const fetcher = this.props.fetcher;
 
-    // Try the stock introspection query first, falling back on the
-    // sans-subscriptions query for services which do not yet support it.
     const fetch = fetcher({ query: introspectionQuery });
     if (!isPromise(fetch)) {
       console.error('Fetcher did not return a Promise for introspection.');
       return;
     }
 
-    fetch
-      .catch(() => fetcher({ query: introspectionQuerySansSubscriptions }))
-      .then(result => {
-        // If a schema was provided while this fetch was underway, then
-        // satisfy the race condition by respecting the already
-        // provided schema.
-        if (this.state.schema !== undefined) {
-          return;
-        }
+    fetch.then(result => {
+      if (result.data) {
+        return result;
+      }
 
-        if (result.data) {
-          const schema = buildClientSchema(result.data);
-          const newVariableToType = getVariableToType(schema, this.state.query);
-          this.setState({
-            schema,
-            variableToType: newVariableToType || this.state.variableToType
-          });
-        } else {
-          let responseString = typeof result === 'string' ?
-            result :
-            JSON.stringify(result, null, 2);
-          this.setState({ response: responseString });
-        }
-      })
-      .catch(error => {
-        this.setState({ response: error && (error.stack || String(error)) });
-      });
+      // Try the stock introspection query first, falling back on the
+      // sans-subscriptions query for services which do not yet support it.
+      const fetch2 = fetcher({ query: introspectionQuerySansSubscriptions });
+      if (!isPromise(fetch)) {
+        console.error('Fetcher did not return a Promise for introspection.');
+        return;
+      }
+      return fetch2;
+    }).then(result => {
+      // If a schema was provided while this fetch was underway, then
+      // satisfy the race condition by respecting the already
+      // provided schema.
+      if (this.state.schema !== undefined) {
+        return;
+      }
+
+      if (result.data) {
+        const schema = buildClientSchema(result.data);
+        const newVariableToType = getVariableToType(schema, this.state.query);
+        this.setState({
+          schema,
+          variableToType: newVariableToType || this.state.variableToType
+        });
+      } else {
+        let responseString = typeof result === 'string' ?
+          result :
+          JSON.stringify(result, null, 2);
+        this.setState({ response: responseString });
+      }
+    }).catch(error => {
+      this.setState({ response: error && (error.stack || String(error)) });
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
