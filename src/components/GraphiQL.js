@@ -40,7 +40,8 @@ import {
  * Props:
  *
  *   - fetcher: a function which accepts GraphQL-HTTP parameters and returns
- *     a Promise which resolves to the GraphQL parsed JSON response.
+ *     a Promise or Observable which resolves to the GraphQL parsed
+ *     JSON response.
  *
  *   - schema: a GraphQLSchema instance or `null` if one is not to be used.
  *     If `undefined` is provided, GraphiQL will send an introspection query
@@ -192,6 +193,7 @@ export class GraphiQL extends React.Component {
       docsOpen: false,
       docsWidth: this._storageGet('docExplorerWidth') || 350,
       isWaitingForResponse: false,
+      subscription: null,
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -242,7 +244,13 @@ export class GraphiQL extends React.Component {
 
     // Try the stock introspection query first, falling back on the
     // sans-subscriptions query for services which do not yet support it.
-    fetcher({ query: introspectionQuery })
+    const fetch = fetcher({ query: introspectionQuery });
+    if (!isPromise(fetch)) {
+      console.error('Fetcher did not return a Promise for introspection.');
+      return;
+    }
+
+    fetch
       .catch(() => fetcher({ query: introspectionQuerySansSubscriptions }))
       .then(result => {
         // If a schema was provided while this fetch was underway, then
@@ -315,7 +323,10 @@ export class GraphiQL extends React.Component {
           <div className="topBarWrap">
             <div className="topBar">
               {logo}
-              <ExecuteButton onClick={this._runEditorQuery} />
+              <ExecuteButton
+                isRunning={Boolean(this.state.subscription)}
+                onClick={this._runOrStopEditorQuery}
+              />
               <GraphiQL.ToolbarButton
                 onClick={this._prettifyQuery}
                 title="Prettify Query"
@@ -395,35 +406,82 @@ export class GraphiQL extends React.Component {
   }
 
   _fetchQuery(query, variables, cb) {
-    this.props.fetcher({ query, variables }).then(cb).catch(error => {
+    const fetcher = this.props.fetcher;
+    const fetch = fetcher({ query, variables });
+
+    if (isPromise(fetch)) {
+      // If fetcher returned a Promise, then call the callback when the promise
+      // resolves, otherwise handle the error.
+      fetch.then(cb).catch(error => {
+        this.setState({
+          isWaitingForResponse: false,
+          response: error && (error.stack || String(error))
+        });
+      });
+    } else if (isObservable(fetch)) {
+      // If the fetcher returned an Observable, then subscribe to it, calling
+      // the callback on each next value, and handling both errors and the
+      // completion of the Observable. Returns a Subscription object.
+      const subscription = fetch.subscribe({
+        next: cb,
+        error: error => {
+          this.setState({
+            isWaitingForResponse: false,
+            response: error && (error.stack || String(error)),
+            subscription: null
+          });
+        },
+        complete: () => {
+          this.setState({
+            isWaitingForResponse: false,
+            subscription: null
+          });
+        }
+      });
+
+      return subscription;
+    } else {
       this.setState({
         isWaitingForResponse: false,
-        response: error && (error.stack || String(error))
+        response: 'Fetcher did not return Promise or Observable.'
       });
-    });
+    }
   }
 
-  _runEditorQuery = () => {
-    this.setState({
-      isWaitingForResponse: true,
-      response: null,
-    });
+  _runOrStopEditorQuery = () => {
+    // If there is a current subscription, unsubscribe from it.
+    if (this.state.subscription) {
+      this.setState({
+        isWaitingForResponse: false,
+        subscription: null
+      });
+      this.state.subscription.unsubscribe();
+      return;
+    }
 
     this._editorQueryID++;
-    var queryID = this._editorQueryID;
+    const queryID = this._editorQueryID;
 
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    let editedQuery = this.autoCompleteLeafs() || this.state.query;
+    const editedQuery = this.autoCompleteLeafs() || this.state.query;
+    const variables = this.state.variables;
 
-    this._fetchQuery(editedQuery, this.state.variables, result => {
+    // _fetchQuery may return a subscription.
+    const subscription = this._fetchQuery(editedQuery, variables, result => {
       if (queryID === this._editorQueryID) {
         this.setState({
           isWaitingForResponse: false,
           response: JSON.stringify(result, null, 2),
         });
       }
+    });
+
+    this.setState({
+      isWaitingForResponse: true,
+      response: null,
+      subscription
     });
   }
 
@@ -698,4 +756,14 @@ function getVariableToType(schema, query) {
       // No op.
     }
   }
+}
+
+// Duck-type promise detection.
+function isPromise(value) {
+  return typeof value === 'object' && typeof value.then === 'function';
+}
+
+// Duck-type observable detection.
+function isObservable(value) {
+  return typeof value === 'object' && typeof value.subscribe === 'function';
 }
