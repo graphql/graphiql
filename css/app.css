@@ -54,7 +54,7 @@
           align-items: center;
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
-  border-bottom: solid 1px #d0d0d0;
+  border-bottom: 1px solid #d0d0d0;
   cursor: default;
   display: -webkit-flex;
   display:         flex;
@@ -75,13 +75,15 @@
 #graphiql-container .docExplorerShow {
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
-  border-bottom: solid 1px #d0d0d0;
-  border-left: solid 1px rgba(0, 0, 0, 0.2);
-  border: none;
+  border-bottom: 1px solid #d0d0d0;
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+  border-right: none;
+  border-top: none;
   color: #3B5998;
   cursor: pointer;
   font-size: 14px;
   outline: 0;
+  margin: 0;
   padding: 2px 20px 0 18px;
 }
 
@@ -168,8 +170,8 @@
 
 #graphiql-container .variable-editor-title {
   background: #eeeeee;
-  border-bottom: solid 1px #d6d6d6;
-  border-top: solid 1px #e0e0e0;
+  border-bottom: 1px solid #d6d6d6;
+  border-top: 1px solid #e0e0e0;
   color: #777;
   font-variant: small-caps;
   font-weight: bold;
@@ -195,8 +197,8 @@
 
 #graphiql-container .footer {
   background: #f6f7f8;
-  border-left: solid 1px #e0e0e0;
-  border-top: solid 1px #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
   margin-left: 12px;
   position: relative;
 }
@@ -231,7 +233,8 @@
   background: #fdfdfd;
   background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
   background:         linear-gradient(#fbfbfb, #f8f8f8);
-  border: solid 0.5px;
+  border-width: 0.5px;
+  border-style: solid;
   border-color: #d3d3d3 #d0d0d0 #bababa;
   border-radius: 4px;
   box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
@@ -261,7 +264,7 @@
 #graphiql-container .execute-button {
   background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
   background:         linear-gradient(#fdfdfd, #d2d3d6);
-  border: solid 1px rgba(0,0,0,0.25);
+  border: 1px solid rgba(0,0,0,0.25);
   border-radius: 17px;
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
@@ -346,7 +349,7 @@
   -webkit-animation-name: insertionFade;
      -moz-animation-name: insertionFade;
           animation-name: insertionFade;
-  border-bottom: solid 2px rgba(255, 255, 255, 0);
+  border-bottom: 2px solid rgba(255, 255, 255, 0);
   border-radius: 2px;
   margin: -2px -4px -1px;
   padding: 2px 4px 1px;
