@@ -221,6 +221,14 @@ class SearchDoc extends React.Component {
       this.props.searchValue !== nextProps.searchValue;
   }
 
+  _isMatch(sourceText, searchValue) {
+    try {
+      return sourceText.search(new RegExp(searchValue, 'i')) !== -1;
+    } catch (e) {
+      return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
+    }
+  }
+
   render() {
     const searchValue = this.props.searchValue;
     const schema = this.props.schema;
@@ -235,7 +243,7 @@ class SearchDoc extends React.Component {
     Object.keys(typeMap).forEach(typeName => {
       const type = typeMap[typeName];
       let matchedOn = [];
-      if (typeName.indexOf(searchValue) !== -1) {
+      if (this._isMatch(typeName, searchValue)) {
         matchedOn.push('Type Name');
       }
 
@@ -251,7 +259,7 @@ class SearchDoc extends React.Component {
         const fields = type.getFields();
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];
-          if (fieldName.indexOf(searchValue) !== -1) {
+          if (this._isMatch(fieldName, searchValue)) {
             matchedFields.push(
               <div className="doc-category-item">
                 <a className="field-name"
@@ -264,7 +272,7 @@ class SearchDoc extends React.Component {
             );
           } else if (field.args && field.args.length) {
             const matches =
-              field.args.filter(arg => arg.name.indexOf(searchValue) !== -1);
+              field.args.filter(arg => this._isMatch(arg.name, searchValue));
             if (matches.length > 0) {
               matchedFields.push(
                 <div className="doc-category-item">
