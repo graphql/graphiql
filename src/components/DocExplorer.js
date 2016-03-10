@@ -223,7 +223,8 @@ class SearchDoc extends React.Component {
 
   _isMatch(sourceText, searchValue) {
     try {
-      return sourceText.search(new RegExp(searchValue, 'i')) !== -1;
+      const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
+      return sourceText.search(new RegExp(escaped, 'i')) !== -1;
     } catch (e) {
       return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
     }
