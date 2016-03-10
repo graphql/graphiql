@@ -261,6 +261,12 @@
   color: #b00;
 }
 
+#graphiql-container .execute-button-wrap {
+  position: relative;
+  margin: 0 14px 0 28px;
+  height: 34px;
+}
+
 #graphiql-container .execute-button {
   background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
   background:         linear-gradient(#fdfdfd, #d2d3d6);
@@ -270,9 +276,13 @@
   cursor: pointer;
   fill: #444;
   height: 34px;
-  margin: 0 14px 0 28px;
+  margin: 0;
   padding: 0;
   width: 34px;
+}
+
+#graphiql-container .execute-button svg {
+  pointer-events: none;
 }
 
 #graphiql-container .execute-button:active {
@@ -286,6 +296,31 @@
 
 #graphiql-container .execute-button:focus {
   outline: 0;
+}
+
+#graphiql-container .execute-options {
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.1),
+    0 2px 4px rgba(0,0,0,0.25);
+  left: -1px;
+  margin: 0;
+  padding: 8px 0;
+  position: absolute;
+  top: 37px;
+  z-index: 100;
+}
+
+#graphiql-container .execute-options li {
+  padding: 2px 30px 4px 10px;
+  list-style: none;
+  min-width: 100px;
+  cursor: pointer;
+}
+
+#graphiql-container .execute-options li.selected {
+  background: #e10098;
+  color: white;
 }
 
 #graphiql-container .CodeMirror-scroll {
