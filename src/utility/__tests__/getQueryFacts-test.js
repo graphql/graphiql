@@ -19,7 +19,7 @@ import {
   parse,
 } from 'graphql';
 
-import collectVariables from '../collectVariables';
+import { collectVariables } from '../getQueryFacts';
 
 
 describe('collectVariables', () => {

@@ -21,7 +21,7 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import collectVariables from '../utility/collectVariables';
+import getQueryFacts from '../utility/getQueryFacts';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { fillLeafs } from '../utility/fillLeafs';
@@ -176,15 +176,14 @@ export class GraphiQL extends React.Component {
       props.variables !== undefined ? props.variables :
       this._storageGet('variables');
 
-    // Get the initial valid variables.
-    let variableToType = getVariableToType(props.schema, query);
+    // Get the initial query facts.
+    const queryFacts = getQueryFacts({}, props.schema, query);
 
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
-      variableToType,
       response: props.response,
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
@@ -193,6 +192,7 @@ export class GraphiQL extends React.Component {
       docExplorerWidth: this._storageGet('docExplorerWidth') || 350,
       isWaitingForResponse: false,
       subscription: null,
+      ...queryFacts
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -214,14 +214,16 @@ export class GraphiQL extends React.Component {
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
+
+    document.removeEventListener('keydown', this._keyHandler, true);
   }
 
   componentWillReceiveProps(nextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
-    let nextVariableToType = this.state.variableToType;
     let nextResponse = this.state.response;
+    let queryFacts;
     if (nextProps.schema !== undefined) {
       nextSchema = nextProps.schema;
     }
@@ -231,22 +233,19 @@ export class GraphiQL extends React.Component {
     if (nextProps.variables !== undefined) {
       nextVariables = nextProps.variables;
     }
-    if (nextSchema && nextQuery &&
-        (nextSchema !== this.state.schema || nextQuery !== this.state.query)) {
-      const newVariableToType = getVariableToType(nextSchema, nextQuery);
-      if (newVariableToType) {
-        nextVariableToType = newVariableToType;
-      }
-    }
     if (nextProps.response !== undefined) {
       nextResponse = nextProps.response;
+    }
+    if (nextSchema && nextQuery &&
+        (nextSchema !== this.state.schema || nextQuery !== this.state.query)) {
+      queryFacts = getQueryFacts(this.state, nextSchema, nextQuery);
     }
     this.setState({
       schema: nextSchema,
       query: nextQuery,
       variables: nextVariables,
-      variableToType: nextVariableToType,
       response: nextResponse,
+      ...queryFacts
     });
   }
 
@@ -287,11 +286,8 @@ export class GraphiQL extends React.Component {
 
       if (result.data) {
         const schema = buildClientSchema(result.data);
-        const newVariableToType = getVariableToType(schema, this.state.query);
-        this.setState({
-          schema,
-          variableToType: newVariableToType || this.state.variableToType
-        });
+        const queryFacts = getQueryFacts(this.state, schema, this.state.query);
+        this.setState({ schema, ...queryFacts });
       } else {
         let responseString = typeof result === 'string' ?
           result :
@@ -301,6 +297,9 @@ export class GraphiQL extends React.Component {
     }).catch(error => {
       this.setState({ response: error && (error.stack || String(error)) });
     });
+
+    // Add shortcut for running a query.
+    document.addEventListener('keydown', this._keyHandler, true);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -349,7 +348,9 @@ export class GraphiQL extends React.Component {
               {logo}
               <ExecuteButton
                 isRunning={Boolean(this.state.subscription)}
-                onClick={this._runOrStopEditorQuery}
+                onRun={this._runQuery}
+                onStop={this._stopQuery}
+                operations={this.state.operations}
               />
               <GraphiQL.ToolbarButton
                 onClick={this._prettifyQuery}
@@ -429,9 +430,9 @@ export class GraphiQL extends React.Component {
     this._storage.setItem('graphiql:' + name, value);
   }
 
-  _fetchQuery(query, variables, cb) {
+  _fetchQuery(query, variables, operationName, cb) {
     const fetcher = this.props.fetcher;
-    const fetch = fetcher({ query, variables });
+    const fetch = fetcher({ query, variables, operationName });
 
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
@@ -472,17 +473,7 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _runOrStopEditorQuery = () => {
-    // If there is a current subscription, unsubscribe from it.
-    if (this.state.subscription) {
-      this.setState({
-        isWaitingForResponse: false,
-        subscription: null
-      });
-      this.state.subscription.unsubscribe();
-      return;
-    }
-
+  _runQuery = selectedOperation => {
     this._editorQueryID++;
     const queryID = this._editorQueryID;
 
@@ -491,22 +482,76 @@ export class GraphiQL extends React.Component {
     // the current query from the editor.
     const editedQuery = this.autoCompleteLeafs() || this.state.query;
     const variables = this.state.variables;
+    const operationName = selectedOperation || this.state.selectedOperation;
 
     // _fetchQuery may return a subscription.
-    const subscription = this._fetchQuery(editedQuery, variables, result => {
-      if (queryID === this._editorQueryID) {
-        this.setState({
-          isWaitingForResponse: false,
-          response: JSON.stringify(result, null, 2),
-        });
+    const subscription = this._fetchQuery(
+      editedQuery,
+      variables,
+      operationName,
+      result => {
+        if (queryID === this._editorQueryID) {
+          this.setState({
+            isWaitingForResponse: false,
+            response: JSON.stringify(result, null, 2),
+          });
+        }
       }
-    });
+    );
 
     this.setState({
       isWaitingForResponse: true,
       response: null,
-      subscription
+      subscription,
+      selectedOperation: operationName,
     });
+  }
+
+  _stopQuery = () => {
+    const subscription = this.state.subscription;
+    this.setState({
+      isWaitingForResponse: false,
+      subscription: null
+    });
+    if (subscription) {
+      subscription.unsubscribe();
+    }
+    return;
+  }
+
+  _keyHandler = event => {
+    // "Run Query" event.
+    if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+      event.preventDefault();
+      this._runQueryAtCursor();
+    }
+  }
+
+  _runQueryAtCursor() {
+    if (this.state.subscription) {
+      this._stopQuery();
+      return;
+    }
+
+    let operationName;
+    const operations = this.state.operations;
+    if (operations) {
+      const editor = this.refs.queryEditor.getCodeMirror();
+      const cursor = editor.getCursor();
+      const cursorIndex = editor.indexFromPos(cursor);
+
+      // Loop through all operations to see if one contains the cursor.
+      for (let i = 0; i < operations.length; i++) {
+        const operation = operations[i];
+        if (operation.loc.start <= cursorIndex &&
+            operation.loc.end >= cursorIndex) {
+          operationName = operation.name && operation.name.value;
+          break;
+        }
+      }
+    }
+
+    this._runQuery(operationName);
   }
 
   _prettifyQuery = () => {
@@ -517,7 +562,7 @@ export class GraphiQL extends React.Component {
 
   _onEditQuery = value => {
     if (this.state.schema) {
-      this._updateVariableToType(value);
+      this._updateQueryFacts(value);
     }
     this.setState({ query: value });
     if (this.props.onEditQuery) {
@@ -525,10 +570,10 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _updateVariableToType = debounce(500, value => {
-    const newVariableToType = getVariableToType(this.state.schema, value);
-    if (newVariableToType) {
-      this.setState({ variableToType: newVariableToType });
+  _updateQueryFacts = debounce(500, value => {
+    const queryFacts = getQueryFacts(this.state, this.state.schema, value);
+    if (queryFacts) {
+      this.setState(queryFacts);
     }
   })
 
@@ -759,17 +804,6 @@ const defaultQuery =
 # will appear in the pane to the right.
 
 `;
-
-// Returns a `variableToType` mapping, or null not possible.
-function getVariableToType(schema, query) {
-  if (schema && query) {
-    try {
-      return collectVariables(schema, parse(query));
-    } catch (e) {
-      // No op.
-    }
-  }
-}
 
 // Duck-type promise detection.
 function isPromise(value) {
