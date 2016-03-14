@@ -82,6 +82,9 @@ and children.
   query variables, if `undefined` is provided, the stored variables will
   be used.
 
+- `operationName`: an optional name of which GraphQL operation should be
+  executed.
+
 - `response`: an optional JSON string to use as the initial displayed
   response. If not provided, no response will be initialy shown. You might
   provide this if illustrating the result of the initial query.
@@ -99,6 +102,9 @@ and children.
 - `onEditVariables`: an optional function which will be called when the Query
   varible editor changes. The argument to the function will be the
   variables string.
+
+- `onEditOperationName`: an optional function which will be called when the
+  operation name to be executed changes.
 
 - `getDefaultFieldNames`: an optional function used to provide default fields
   to non-leaf fields which invalidly lack a selection set.
