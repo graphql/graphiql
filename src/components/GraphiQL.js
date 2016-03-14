@@ -250,53 +250,9 @@ export class GraphiQL extends React.Component {
   }
 
   componentDidMount() {
-    // If there is no schema provided via props, fetch one using introspection.
-    if (this.state.schema !== undefined) {
-      return;
-    }
-
-    const fetcher = this.props.fetcher;
-
-    const fetch = fetcher({ query: introspectionQuery });
-    if (!isPromise(fetch)) {
-      console.error('Fetcher did not return a Promise for introspection.');
-      return;
-    }
-
-    fetch.then(result => {
-      if (result.data) {
-        return result;
-      }
-
-      // Try the stock introspection query first, falling back on the
-      // sans-subscriptions query for services which do not yet support it.
-      const fetch2 = fetcher({ query: introspectionQuerySansSubscriptions });
-      if (!isPromise(fetch)) {
-        console.error('Fetcher did not return a Promise for introspection.');
-        return;
-      }
-      return fetch2;
-    }).then(result => {
-      // If a schema was provided while this fetch was underway, then
-      // satisfy the race condition by respecting the already
-      // provided schema.
-      if (this.state.schema !== undefined) {
-        return;
-      }
-
-      if (result.data) {
-        const schema = buildClientSchema(result.data);
-        const queryFacts = getQueryFacts(this.state, schema, this.state.query);
-        this.setState({ schema, ...queryFacts });
-      } else {
-        let responseString = typeof result === 'string' ?
-          result :
-          JSON.stringify(result, null, 2);
-        this.setState({ response: responseString });
-      }
-    }).catch(error => {
-      this.setState({ response: error && (error.stack || String(error)) });
-    });
+    // Ensure a form of a schema exists (including `null`) and
+    // if not, fetch one using an introspection query.
+    this._ensureOfSchema();
 
     // Add shortcut for running a query.
     document.addEventListener('keydown', this._keyHandler, true);
@@ -421,6 +377,56 @@ export class GraphiQL extends React.Component {
   }
 
   // Private methods
+
+  _ensureOfSchema() {
+    // Only perform introspection if a schema is not provided (undefined)
+    if (this.state.schema !== undefined) {
+      return;
+    }
+
+    const fetcher = this.props.fetcher;
+
+    const fetch = fetcher({ query: introspectionQuery });
+    if (!isPromise(fetch)) {
+      console.error('Fetcher did not return a Promise for introspection.');
+      return;
+    }
+
+    fetch.then(result => {
+      if (result.data) {
+        return result;
+      }
+
+      // Try the stock introspection query first, falling back on the
+      // sans-subscriptions query for services which do not yet support it.
+      const fetch2 = fetcher({ query: introspectionQuerySansSubscriptions });
+      if (!isPromise(fetch)) {
+        console.error('Fetcher did not return a Promise for introspection.');
+        return;
+      }
+      return fetch2;
+    }).then(result => {
+      // If a schema was provided while this fetch was underway, then
+      // satisfy the race condition by respecting the already
+      // provided schema.
+      if (this.state.schema !== undefined) {
+        return;
+      }
+
+      if (result.data) {
+        const schema = buildClientSchema(result.data);
+        const queryFacts = getQueryFacts(this.state, schema, this.state.query);
+        this.setState({ schema, ...queryFacts });
+      } else {
+        let responseString = typeof result === 'string' ?
+          result :
+          JSON.stringify(result, null, 2);
+        this.setState({ response: responseString });
+      }
+    }).catch(error => {
+      this.setState({ response: error && (error.stack || String(error)) });
+    });
+  }
 
   _storageGet(name) {
     return this._storage.getItem('graphiql:' + name);
