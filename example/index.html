@@ -70,8 +70,15 @@
         updateURL();
       }
 
+      function onEditOperationName(newOperationName) {
+        parameters.operationName = newOperationName;
+        updateURL();
+      }
+
       function updateURL() {
-        var newSearch = '?' + Object.keys(parameters).map(function (key) {
+        var newSearch = '?' + Object.keys(parameters).filter(function (key) {
+          return Boolean(parameters[key]);
+        }).map(function (key) {
           return encodeURIComponent(key) + '=' +
             encodeURIComponent(parameters[key]);
         }).join('&');
@@ -105,8 +112,10 @@
           fetcher: graphQLFetcher,
           query: parameters.query,
           variables: parameters.variables,
+          operationName: parameters.operationName,
           onEditQuery: onEditQuery,
-          onEditVariables: onEditVariables
+          onEditVariables: onEditVariables,
+          onEditOperationName: onEditOperationName
         }),
         document.body
       );

@@ -22,6 +22,7 @@ import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import getQueryFacts from '../utility/getQueryFacts';
+import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { fillLeafs } from '../utility/fillLeafs';
@@ -54,6 +55,9 @@ import {
  *     query variables, if `undefined` is provided, the stored variables will
  *     be used.
  *
+ *   - operationName: an optional name of which GraphQL operation should be
+ *     executed.
+ *
  *   - response: an optional JSON string to use as the initial displayed
  *     response. If not provided, no response will be initialy shown. You might
  *     provide this if illustrating the result of the initial query.
@@ -71,6 +75,9 @@ import {
  *   - onEditVariables: an optional function which will be called when the Query
  *     varible editor changes. The argument to the function will be the
  *     variables string.
+ *
+ *   - onEditOperationName: an optional function which will be called when the
+ *     operation name to be executed changes.
  *
  *   - getDefaultFieldNames: an optional function used to provide default fields
  *     to non-leaf fields which invalidly lack a selection set.
@@ -96,15 +103,17 @@ export class GraphiQL extends React.Component {
     fetcher: PropTypes.func.isRequired,
     schema: PropTypes.instanceOf(GraphQLSchema),
     query: PropTypes.string,
+    variables: PropTypes.string,
+    operationName: PropTypes.string,
     response: PropTypes.string,
     storage: PropTypes.shape({
       getItem: PropTypes.func,
       setItem: PropTypes.func
     }),
     defaultQuery: PropTypes.string,
-    variables: PropTypes.string,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
+    onEditOperationName: PropTypes.func,
     getDefaultFieldNames: PropTypes.func
   }
 
@@ -171,19 +180,29 @@ export class GraphiQL extends React.Component {
       props.defaultQuery !== undefined ? props.defaultQuery :
       defaultQuery;
 
+    // Get the initial query facts.
+    const queryFacts = getQueryFacts(props.schema, query);
+
     // Determine the initial variables to display.
     const variables =
       props.variables !== undefined ? props.variables :
       this._storageGet('variables');
 
-    // Get the initial query facts.
-    const queryFacts = getQueryFacts({}, props.schema, query);
+    // Determine the initial operationName to use.
+    const operationName =
+      props.operationName !== undefined ? props.operationName :
+      getSelectedOperationName(
+        null,
+        this._storageGet('operationName'),
+        queryFacts.operations
+      );
 
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
+      operationName,
       response: props.response,
       editorFlex: this._storageGet('editorFlex') || 1,
       variableEditorOpen: Boolean(variables),
@@ -211,6 +230,7 @@ export class GraphiQL extends React.Component {
   componentWillUnmount() {
     this._storageSet('query', this.state.query);
     this._storageSet('variables', this.state.variables);
+    this._storageSet('operationName', this.state.operationName);
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
@@ -222,8 +242,9 @@ export class GraphiQL extends React.Component {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
+    let nextOperationName = this.state.operationName;
     let nextResponse = this.state.response;
-    let queryFacts;
+
     if (nextProps.schema !== undefined) {
       nextSchema = nextProps.schema;
     }
@@ -233,19 +254,24 @@ export class GraphiQL extends React.Component {
     if (nextProps.variables !== undefined) {
       nextVariables = nextProps.variables;
     }
+    if (nextProps.operationName !== undefined) {
+      nextOperationName = nextProps.operationName;
+    }
     if (nextProps.response !== undefined) {
       nextResponse = nextProps.response;
     }
-    if (nextSchema && nextQuery &&
-        (nextSchema !== this.state.schema || nextQuery !== this.state.query)) {
-      queryFacts = getQueryFacts(this.state, nextSchema, nextQuery);
+    if (nextSchema !== this.state.schema ||
+        nextQuery !== this.state.query ||
+        nextOperationName !== this.state.operationName) {
+      this._updateQueryFacts();
     }
+
     this.setState({
       schema: nextSchema,
       query: nextQuery,
       variables: nextVariables,
+      operationName: nextOperationName,
       response: nextResponse,
-      ...queryFacts
     });
   }
 
@@ -415,7 +441,7 @@ export class GraphiQL extends React.Component {
 
       if (result.data) {
         const schema = buildClientSchema(result.data);
-        const queryFacts = getQueryFacts(this.state, schema, this.state.query);
+        const queryFacts = getQueryFacts(schema, this.state.query);
         this.setState({ schema, ...queryFacts });
       } else {
         let responseString = typeof result === 'string' ?
@@ -479,7 +505,7 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _runQuery = selectedOperation => {
+  _runQuery = selectedOperationName => {
     this._editorQueryID++;
     const queryID = this._editorQueryID;
 
@@ -488,7 +514,17 @@ export class GraphiQL extends React.Component {
     // the current query from the editor.
     const editedQuery = this.autoCompleteLeafs() || this.state.query;
     const variables = this.state.variables;
-    const operationName = selectedOperation || this.state.selectedOperation;
+    let operationName = this.state.operationName;
+
+    // If an operation was explicitly provided, different from the current
+    // operation name, then report that it changed.
+    if (selectedOperationName && selectedOperationName !== operationName) {
+      operationName = selectedOperationName;
+      const onEditOperationName = this.props.onEditOperationName;
+      if (onEditOperationName) {
+        onEditOperationName(operationName);
+      }
+    }
 
     // _fetchQuery may return a subscription.
     const subscription = this._fetchQuery(
@@ -509,7 +545,7 @@ export class GraphiQL extends React.Component {
       isWaitingForResponse: true,
       response: null,
       subscription,
-      selectedOperation: operationName,
+      operationName,
     });
   }
 
@@ -543,16 +579,18 @@ export class GraphiQL extends React.Component {
     const operations = this.state.operations;
     if (operations) {
       const editor = this.refs.queryEditor.getCodeMirror();
-      const cursor = editor.getCursor();
-      const cursorIndex = editor.indexFromPos(cursor);
+      if (editor.hasFocus()) {
+        const cursor = editor.getCursor();
+        const cursorIndex = editor.indexFromPos(cursor);
 
-      // Loop through all operations to see if one contains the cursor.
-      for (let i = 0; i < operations.length; i++) {
-        const operation = operations[i];
-        if (operation.loc.start <= cursorIndex &&
-            operation.loc.end >= cursorIndex) {
-          operationName = operation.name && operation.name.value;
-          break;
+        // Loop through all operations to see if one contains the cursor.
+        for (let i = 0; i < operations.length; i++) {
+          const operation = operations[i];
+          if (operation.loc.start <= cursorIndex &&
+              operation.loc.end >= cursorIndex) {
+            operationName = operation.name && operation.name.value;
+            break;
+          }
         }
       }
     }
@@ -576,10 +614,26 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _updateQueryFacts = debounce(500, value => {
-    const queryFacts = getQueryFacts(this.state, this.state.schema, value);
+  _updateQueryFacts = debounce(500, query => {
+    const queryFacts = getQueryFacts(this.state.schema, query);
     if (queryFacts) {
-      this.setState(queryFacts);
+      // Update operation name should any query names change.
+      const operationName = getSelectedOperationName(
+        this.state.operations,
+        this.state.operationName,
+        queryFacts.operations
+      );
+
+      // Report changing of operationName if it changed.
+      const onEditOperationName = this.props.onEditOperationName;
+      if (onEditOperationName && operationName !== this.state.operationName) {
+        onEditOperationName(operationName);
+      }
+
+      this.setState({
+        operationName,
+        ...queryFacts
+      });
     }
   })
 
