@@ -105,7 +105,8 @@ export class GraphiQL extends React.Component {
     variables: PropTypes.string,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
-    getDefaultFieldNames: PropTypes.func
+    getDefaultFieldNames: PropTypes.func,
+    editorOptions: PropTypes.object
   }
 
   /**
@@ -333,6 +334,7 @@ export class GraphiQL extends React.Component {
                 value={this.state.query}
                 onEdit={this._onEditQuery}
                 onHintInformationRender={this._onHintInformationRender}
+                editorOptions={this._getEditorOptions()}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -588,6 +590,19 @@ export class GraphiQL extends React.Component {
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
+  }
+
+  _getEditorOptions = () => {
+    let editorOptions = {};
+    const json = this._storageGet('editorOptions');
+    if (json) {
+      try {
+        editorOptions = JSON.parse(json);
+      } catch (e) {
+        this._storageSet('editorOptions', '{}');
+      }
+    }
+    return editorOptions;
   }
 
   _onHintInformationRender = elem => {
