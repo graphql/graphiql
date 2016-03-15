@@ -44,8 +44,8 @@ export class DocExplorer extends React.Component {
 
   // Public API
   showDoc(typeOrField) {
-    var navStack = this.state.navStack;
-    var isCurrentlyShown =
+    let navStack = this.state.navStack;
+    const isCurrentlyShown =
       navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
     if (!isCurrentlyShown) {
       navStack = navStack.concat([ typeOrField ]);
@@ -101,16 +101,16 @@ export class DocExplorer extends React.Component {
   }
 
   render() {
-    var schema = this.props.schema;
-    var navStack = this.state.navStack;
+    const schema = this.props.schema;
+    const navStack = this.state.navStack;
 
-    var navItem;
+    let navItem;
     if (navStack.length > 0) {
       navItem = navStack[navStack.length - 1];
     }
 
-    var title;
-    var content;
+    let title;
+    let content;
     if (navItem) {
       if (navItem.name === 'Search Results') {
         title = navItem.name;
@@ -146,14 +146,14 @@ export class DocExplorer extends React.Component {
         />;
     }
 
-    var prevName;
+    let prevName;
     if (navStack.length === 1) {
       prevName = 'Schema';
     } else if (navStack.length > 1) {
       prevName = navStack[navStack.length - 2].name;
     }
 
-    var spinnerDiv = (
+    const spinnerDiv = (
       <div className="spinner-container">
         <div className="spinner" />
       </div>
@@ -333,10 +333,10 @@ class SchemaDoc extends React.Component {
   }
 
   render() {
-    var schema = this.props.schema;
-    var queryType = schema.getQueryType();
-    var mutationType = schema.getMutationType && schema.getMutationType();
-    var subscriptionType =
+    const schema = this.props.schema;
+    const queryType = schema.getQueryType();
+    const mutationType = schema.getMutationType && schema.getMutationType();
+    const subscriptionType =
       schema.getSubscriptionType && schema.getSubscriptionType();
 
     return (
@@ -384,12 +384,12 @@ class TypeDoc extends React.Component {
   }
 
   render() {
-    var type = this.props.type;
-    var onClickType = this.props.onClickType || () => {};
-    var onClickField = this.props.onClickField || () => {};
+    const type = this.props.type;
+    const onClickType = this.props.onClickType || () => {};
+    const onClickField = this.props.onClickField || () => {};
 
-    var typesTitle;
-    var types;
+    let typesTitle;
+    let types;
     if (type instanceof GraphQLUnionType) {
       typesTitle = 'possible types';
       types = type.getPossibleTypes();
@@ -401,7 +401,7 @@ class TypeDoc extends React.Component {
       types = type.getInterfaces();
     }
 
-    var typesDef;
+    let typesDef;
     if (types && types.length > 0) {
       typesDef = (
         <div className="doc-category">
@@ -418,10 +418,10 @@ class TypeDoc extends React.Component {
     }
 
     // InputObject and Object
-    var fieldsDef;
+    let fieldsDef;
     if (type.getFields) {
-      var fieldMap = type.getFields();
-      var fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+      const fieldMap = type.getFields();
+      const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
       fieldsDef = (
         <div className="doc-category">
           <div className="doc-category-title">
@@ -430,7 +430,7 @@ class TypeDoc extends React.Component {
           {fields.map(field => {
 
             // Field arguments
-            var argsDef;
+            let argsDef;
             if (field.args && field.args.length > 0) {
               argsDef = field.args.map(arg =>
                 <span className="arg" key={arg.name}>
@@ -458,7 +458,7 @@ class TypeDoc extends React.Component {
       );
     }
 
-    var valuesDef;
+    let valuesDef;
     if (type instanceof GraphQLEnumType) {
       valuesDef = (
         <div className="doc-category">
@@ -502,9 +502,9 @@ class FieldDoc extends React.Component {
   }
 
   render() {
-    var field = this.props.field;
+    const field = this.props.field;
 
-    var argsDef;
+    let argsDef;
     if (field.args && field.args.length > 0) {
       argsDef = (
         <div className="doc-category">
@@ -578,12 +578,12 @@ class Description extends React.Component {
   }
 
   render() {
-    var markdown = this.props.markdown;
+    const markdown = this.props.markdown;
     if (!markdown) {
       return <div />;
     }
 
-    var html = Marked(markdown, { sanitize: true });
+    const html = Marked(markdown, { sanitize: true });
     return <div
       className={this.props.className}
       dangerouslySetInnerHTML={{ __html: html }}

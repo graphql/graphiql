@@ -118,7 +118,7 @@ export class VariableEditor extends React.Component {
   }
 
   _onKeyUp = (cm, event) => {
-    var code = event.keyCode;
+    const code = event.keyCode;
     if (
       (code >= 65 && code <= 90) || // letters
       (!event.shiftKey && code >= 48 && code <= 57) || // numbers

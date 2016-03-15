@@ -124,19 +124,19 @@ export class GraphiQL extends React.Component {
    * @public
    */
   autoCompleteLeafs() {
-    var { insertions, result } = fillLeafs(
+    const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
       this.props.getDefaultFieldNames
     );
     if (insertions && insertions.length > 0) {
-      var editor = this.refs.queryEditor.getCodeMirror();
+      const editor = this.refs.queryEditor.getCodeMirror();
       editor.operation(() => {
-        var cursor = editor.getCursor();
-        var cursorIndex = editor.indexFromPos(cursor);
+        const cursor = editor.getCursor();
+        const cursorIndex = editor.indexFromPos(cursor);
         editor.setValue(result);
-        var added = 0;
-        var markers = insertions.map(({ index, string }) => editor.markText(
+        let added = 0;
+        const markers = insertions.map(({ index, string }) => editor.markText(
           editor.posFromIndex(index + added),
           editor.posFromIndex(index + (added += string.length)),
           {
@@ -146,14 +146,13 @@ export class GraphiQL extends React.Component {
           }
         ));
         setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-        var newCursorIndex = cursorIndex;
+        let newCursorIndex = cursorIndex;
         insertions.forEach(({ index, string }) => {
           if (index < cursorIndex) {
             newCursorIndex += string.length;
           }
         });
-        var newCursor = editor.posFromIndex(newCursorIndex);
-        editor.setCursor(newCursor);
+        editor.setCursor(editor.posFromIndex(newCursorIndex));
       });
     }
 
@@ -295,31 +294,28 @@ export class GraphiQL extends React.Component {
   }
 
   render() {
-    var children = [];
-    React.Children.forEach(this.props.children, child => {
-      children.push(child);
-    });
+    const children = React.Children.toArray(this.props.children);
 
-    var logo = find(children, child => child.type === GraphiQL.Logo) ||
+    const logo = find(children, child => child.type === GraphiQL.Logo) ||
       <GraphiQL.Logo />;
 
-    var toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
+    const toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
       <GraphiQL.Toolbar />;
 
-    var footer = find(children, child => child.type === GraphiQL.Footer);
+    const footer = find(children, child => child.type === GraphiQL.Footer);
 
-    var queryWrapStyle = {
+    const queryWrapStyle = {
       WebkitFlex: this.state.editorFlex,
       flex: this.state.editorFlex,
     };
 
-    var docWrapStyle = {
+    const docWrapStyle = {
       display: this.state.docExplorerOpen ? 'block' : 'none',
       width: this.state.docExplorerWidth,
     };
 
-    var variableOpen = this.state.variableEditorOpen;
-    var variableStyle = {
+    const variableOpen = this.state.variableEditorOpen;
+    const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : null
     };
 
@@ -649,7 +645,7 @@ export class GraphiQL extends React.Component {
   _onHintInformationRender = elem => {
     elem.addEventListener('click', this._onClickHintInformation);
 
-    var onRemoveFn;
+    let onRemoveFn;
     elem.addEventListener('DOMNodeRemoved', onRemoveFn = () => {
       elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
       elem.removeEventListener('click', this._onClickHintInformation);
@@ -658,10 +654,10 @@ export class GraphiQL extends React.Component {
 
   _onClickHintInformation = event => {
     if (event.target.className === 'typeName') {
-      var typeName = event.target.innerHTML;
-      var schema = this.state.schema;
+      const typeName = event.target.innerHTML;
+      const schema = this.state.schema;
       if (schema) {
-        var type = schema.getType(typeName);
+        const type = schema.getType(typeName);
         if (type) {
           this.setState({ docExplorerOpen: true }, () => {
             this.refs.docExplorer.showDoc(type);
@@ -682,20 +678,20 @@ export class GraphiQL extends React.Component {
 
     downEvent.preventDefault();
 
-    var offset = downEvent.clientX - getLeft(downEvent.target);
+    const offset = downEvent.clientX - getLeft(downEvent.target);
 
-    var onMouseMove = moveEvent => {
+    let onMouseMove = moveEvent => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }
 
-      var editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
-      var leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
-      var rightSize = editorBar.clientWidth - leftSize;
+      const editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
+      const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
+      const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
     };
 
-    var onMouseUp = () => {
+    let onMouseUp = () => {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       onMouseMove = null;
@@ -711,13 +707,13 @@ export class GraphiQL extends React.Component {
     if (event.button !== 0 || event.ctrlKey) {
       return false;
     }
-    var target = event.target;
+    let target = event.target;
     // We use codemirror's gutter as the drag bar.
     if (target.className.indexOf('CodeMirror-gutter') !== 0) {
       return false;
     }
     // Specifically the result window's drag bar.
-    var resultWindow = ReactDOM.findDOMNode(this.refs.result);
+    const resultWindow = ReactDOM.findDOMNode(this.refs.result);
     while (target) {
       if (target === resultWindow) {
         return true;
@@ -730,17 +726,17 @@ export class GraphiQL extends React.Component {
   _onDocsResizeStart = downEvent => {
     downEvent.preventDefault();
 
-    var hadWidth = this.state.docExplorerWidth;
-    var offset = downEvent.clientX - getLeft(downEvent.target);
+    const hadWidth = this.state.docExplorerWidth;
+    const offset = downEvent.clientX - getLeft(downEvent.target);
 
-    var onMouseMove = moveEvent => {
+    let onMouseMove = moveEvent => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }
 
-      var app = ReactDOM.findDOMNode(this);
-      var cursorPos = moveEvent.clientX - getLeft(app) - offset;
-      var docsSize = app.clientWidth - cursorPos;
+      const app = ReactDOM.findDOMNode(this);
+      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
+      const docsSize = app.clientWidth - cursorPos;
 
       if (docsSize < 100) {
         this.setState({ docExplorerOpen: false });
@@ -752,7 +748,7 @@ export class GraphiQL extends React.Component {
       }
     };
 
-    var onMouseUp = () => {
+    let onMouseUp = () => {
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerWidth: hadWidth });
       }
@@ -770,21 +766,21 @@ export class GraphiQL extends React.Component {
   _onVariableResizeStart = downEvent => {
     downEvent.preventDefault();
 
-    var didMove = false;
-    var wasOpen = this.state.variableEditorOpen;
-    var hadHeight = this.state.variableEditorHeight;
-    var offset = downEvent.clientY - getTop(downEvent.target);
+    let didMove = false;
+    const wasOpen = this.state.variableEditorOpen;
+    const hadHeight = this.state.variableEditorHeight;
+    const offset = downEvent.clientY - getTop(downEvent.target);
 
-    var onMouseMove = moveEvent => {
+    let onMouseMove = moveEvent => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }
 
       didMove = true;
 
-      var editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
-      var topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      var bottomSize = editorBar.clientHeight - topSize;
+      const editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
+      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
+      const bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {
         this.setState({
           variableEditorOpen: false,
@@ -798,7 +794,7 @@ export class GraphiQL extends React.Component {
       }
     };
 
-    var onMouseUp = () => {
+    let onMouseUp = () => {
       if (!didMove) {
         this.setState({ variableEditorOpen: !wasOpen });
       }
