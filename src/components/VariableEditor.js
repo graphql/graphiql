@@ -39,7 +39,8 @@ export class VariableEditor extends React.Component {
   static propTypes = {
     variableToType: PropTypes.object,
     value: PropTypes.string,
-    onEdit: PropTypes.func
+    onEdit: PropTypes.func,
+    onHintInformationRender: PropTypes.func,
   }
 
   constructor(props) {
@@ -91,13 +92,6 @@ export class VariableEditor extends React.Component {
     this.editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentWillUnmount() {
-    this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
-    this.editor.off('hasCompletion', this._onHasCompletion);
-    this.editor = null;
-  }
-
   componentDidUpdate(prevProps) {
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
@@ -115,6 +109,17 @@ export class VariableEditor extends React.Component {
       this.editor.setValue(this.props.value);
     }
     this.ignoreChangeEvent = false;
+  }
+
+  componentWillUnmount() {
+    this.editor.off('change', this._onEdit);
+    this.editor.off('keyup', this._onKeyUp);
+    this.editor.off('hasCompletion', this._onHasCompletion);
+    this.editor = null;
+  }
+
+  render() {
+    return <div className="codemirrorWrap" />;
   }
 
   _onKeyUp = (cm, event) => {
@@ -140,9 +145,5 @@ export class VariableEditor extends React.Component {
 
   _onHasCompletion = (cm, data) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
-  }
-
-  render() {
-    return <div className="codemirrorWrap" ref="codemirror" />;
   }
 }

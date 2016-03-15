@@ -26,7 +26,19 @@ export class ToolbarButton extends React.Component {
     this.state = { error: null };
   }
 
-  onClick = e => {
+  render() {
+    const { error } = this.state;
+    return (
+      <a
+        className={'toolbar-button' + (error ? ' error' : '')}
+        onClick={this.handleClick}
+        title={error ? error.message : this.props.title}>
+        {this.props.label}
+      </a>
+    );
+  }
+
+  handleClick = e => {
     e.preventDefault();
     try {
       this.props.onClick();
@@ -35,16 +47,4 @@ export class ToolbarButton extends React.Component {
       this.setState({ error });
     }
   };
-
-  render() {
-    const { error } = this.state;
-    return (
-      <a
-        className={'toolbar-button' + (error ? ' error' : '')}
-        onClick={this.onClick}
-        title={error ? error.message : this.props.title}>
-        {this.props.label}
-      </a>
-    );
-  }
 }

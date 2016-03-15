@@ -27,7 +27,7 @@ import {
  * utility represents a "best effort" which may be useful within IDE tools.
  */
 export function fillLeafs(schema, docString, getDefaultFieldNames) {
-  let insertions = [];
+  const insertions = [];
 
   if (!schema) {
     return { insertions, result: docString };
@@ -40,8 +40,8 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
     return { insertions, result: docString };
   }
 
-  let fieldNameFn = getDefaultFieldNames || defaultGetDefaultFieldNames;
-  let typeInfo = new TypeInfo(schema);
+  const fieldNameFn = getDefaultFieldNames || defaultGetDefaultFieldNames;
+  const typeInfo = new TypeInfo(schema);
   visit(ast, {
     leave(node) {
       typeInfo.leave(node);
@@ -49,10 +49,10 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
     enter(node) {
       typeInfo.enter(node);
       if (node.kind === 'Field' && !node.selectionSet) {
-        let fieldType = typeInfo.getType();
-        let selectionSet = buildSelectionSet(fieldType, fieldNameFn);
+        const fieldType = typeInfo.getType();
+        const selectionSet = buildSelectionSet(fieldType, fieldNameFn);
         if (selectionSet) {
-          let indent = getIndentation(docString, node.loc.start);
+          const indent = getIndentation(docString, node.loc.start);
           insertions.push({
             index: node.loc.end,
             string: ' ' + print(selectionSet).replace(/\n/g, '\n' + indent)
