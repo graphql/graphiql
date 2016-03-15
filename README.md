@@ -41,6 +41,14 @@ Build for the web with [webpack](http://webpack.github.io/) or
 [browserify](http://browserify.org/), or use the pre-bundled graphiql.js file.
 See the example in the git repository to see how to use the pre-bundled file.
 
+Don't forget to include the CSS file on the page! If you're using npm, you can
+find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
+[releases page](/graphql/graphiql/releases).
+
+For an example of setting up a GraphiQL, check out the [example](./example) in
+this repository which also includes a few useful features highlighting
+GraphiQL's API.
+
 
 ### Features
 
@@ -48,7 +56,7 @@ See the example in the git repository to see how to use the pre-bundled file.
 * Intelligent type ahead of fields, arguments, types, and more.
 * Real-time error highlighting and reporting.
 * Automatic query completion.
-* Run and inspect query results
+* Run and inspect query results.
 
 
 ### Usage
