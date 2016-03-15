@@ -54,16 +54,16 @@ export class ResultViewer extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    this.viewer = null;
-  }
-
   shouldComponentUpdate(nextProps) {
     return this.props.value !== nextProps.value;
   }
 
   componentDidUpdate() {
     this.viewer.setValue(this.props.value || '');
+  }
+
+  componentWillUnmount() {
+    this.viewer = null;
   }
 
   render() {

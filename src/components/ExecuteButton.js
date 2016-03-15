@@ -17,7 +17,8 @@ import React, { PropTypes } from 'react';
  */
 export class ExecuteButton extends React.Component {
   static propTypes = {
-    onClick: PropTypes.func,
+    onRun: PropTypes.func,
+    onStop: PropTypes.func,
     isRunning: PropTypes.bool,
     operations: PropTypes.array,
   }
@@ -76,10 +77,9 @@ export class ExecuteButton extends React.Component {
           onClick={onClick}
           title="Execute Query (Ctrl-Enter)">
           <svg width="34" height="34">
-            { this.props.isRunning ?
+            {this.props.isRunning ?
               <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" /> :
-              <path d="M 11 9 L 24 16 L 11 23 z" />
-            }
+              <path d="M 11 9 L 24 16 L 11 23 z" />}
           </svg>
         </button>
         {options}

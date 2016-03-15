@@ -40,7 +40,7 @@ describe('collectVariables', () => {
   });
 
   it('returns an empty object if no variables exist', () => {
-    const variableToType = collectVariables(TestSchema, parse(`{ id }`));
+    const variableToType = collectVariables(TestSchema, parse('{ id }'));
     expect(variableToType).to.deep.equal({});
   });
 

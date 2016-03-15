@@ -42,54 +42,10 @@ export class DocExplorer extends React.Component {
     schema: PropTypes.instanceOf(GraphQLSchema),
   }
 
-  // Public API
-  showDoc(typeOrField) {
-    let navStack = this.state.navStack;
-    const isCurrentlyShown =
-      navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
-    if (!isCurrentlyShown) {
-      navStack = navStack.concat([ typeOrField ]);
-    }
-
-    this.setState({ navStack });
-  }
-
-  // Public API
-  showSearch(searchItem) {
-    let navStack = this.state.navStack;
-    let lastEntry = navStack.length > 0 && navStack[navStack.length - 1];
-    if (!lastEntry) {
-      navStack = navStack.concat([ searchItem ]);
-    } else if (lastEntry.searchValue !== searchItem.searchValue) {
-      navStack = navStack.slice(0, -1).concat([ searchItem ]);
-    }
-
-    this.setState({ navStack });
-  }
-
   constructor() {
     super();
 
     this.state = { navStack: [] };
-  }
-
-  _onToggleBtnClick = () => {
-    this.setState({ expanded: !this.state.expanded });
-  }
-
-  _onNavBackClick = () => {
-    this.setState({ navStack: this.state.navStack.slice(0, -1) });
-  }
-
-  _onClickTypeOrField = typeOrField => {
-    this.showDoc(typeOrField);
-  }
-
-  _onSearch = event => {
-    this.showSearch({
-      name: 'Search Results',
-      searchValue: event.target.value
-    });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,8 +74,8 @@ export class DocExplorer extends React.Component {
           <SearchDoc
             searchValue={navItem.searchValue}
             schema={schema}
-            onClickType={this._onClickTypeOrField}
-            onClickField={this._onClickTypeOrField}
+            onClickType={this.handleClickTypeOrField}
+            onClickField={this.handleClickTypeOrField}
           />;
       } else {
         title = navItem.name;
@@ -127,13 +83,13 @@ export class DocExplorer extends React.Component {
           <TypeDoc
             key={navItem.name}
             type={navItem}
-            onClickType={this._onClickTypeOrField}
-            onClickField={this._onClickTypeOrField}
+            onClickType={this.handleClickTypeOrField}
+            onClickField={this.handleClickTypeOrField}
           /> :
           <FieldDoc
             key={navItem.name}
             field={navItem}
-            onClickType={this._onClickTypeOrField}
+            onClickType={this.handleClickTypeOrField}
           />;
       }
     } else if (schema) {
@@ -141,8 +97,8 @@ export class DocExplorer extends React.Component {
       content =
         <SchemaDoc
           schema={schema}
-          onClickType={this._onClickTypeOrField}
-          onSearch={this._onSearch}
+          onClickType={this.handleClickTypeOrField}
+          onSearch={this.handleSearch}
         />;
     }
 
@@ -167,7 +123,9 @@ export class DocExplorer extends React.Component {
       <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
           {prevName &&
-            <div className="doc-explorer-back" onClick={this._onNavBackClick}>
+            <div
+              className="doc-explorer-back"
+              onClick={this.handleNavBackClick}>
               {prevName}
             </div>
           }
@@ -181,7 +139,7 @@ export class DocExplorer extends React.Component {
         <div className="doc-explorer-contents">
           <SearchBox
             isShown={shouldSearchBoxAppear}
-            onSearch={this._onSearch}
+            onSearch={this.handleSearch}
             searchValue={navItem ? navItem.searchValue : ''}
           />
           {this.props.schema ? content : spinnerDiv}
@@ -189,9 +147,56 @@ export class DocExplorer extends React.Component {
       </div>
     );
   }
+
+  // Public API
+  showDoc(typeOrField) {
+    let navStack = this.state.navStack;
+    const isCurrentlyShown =
+      navStack.length > 0 && navStack[navStack.length - 1] === typeOrField;
+    if (!isCurrentlyShown) {
+      navStack = navStack.concat([ typeOrField ]);
+    }
+
+    this.setState({ navStack });
+  }
+
+  // Public API
+  showSearch(searchItem) {
+    let navStack = this.state.navStack;
+    const lastEntry = navStack.length > 0 && navStack[navStack.length - 1];
+    if (!lastEntry) {
+      navStack = navStack.concat([ searchItem ]);
+    } else if (lastEntry.searchValue !== searchItem.searchValue) {
+      navStack = navStack.slice(0, -1).concat([ searchItem ]);
+    }
+
+    this.setState({ navStack });
+  }
+
+  handleNavBackClick = () => {
+    this.setState({ navStack: this.state.navStack.slice(0, -1) });
+  }
+
+  handleClickTypeOrField = typeOrField => {
+    this.showDoc(typeOrField);
+  }
+
+  handleSearch = event => {
+    this.showSearch({
+      name: 'Search Results',
+      searchValue: event.target.value
+    });
+  }
 }
 
 class SearchBox extends React.Component {
+
+  static propTypes = {
+    isShown: PropTypes.bool,
+    searchValue: PropTypes.string,
+    onSearch: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return nextProps.isShown !== this.props.isShown ||
       nextProps.searchValue !== this.props.searchValue;
@@ -206,7 +211,8 @@ class SearchBox extends React.Component {
               onChange={event => this.props.onSearch(event)}
               type="text"
               value={this.props.searchValue}
-              placeholder="Search the schema ..." />
+              placeholder="Search the schema ..."
+            />
           </label>
         }
       </div>
@@ -216,18 +222,17 @@ class SearchBox extends React.Component {
 
 // Render Search Results
 class SearchDoc extends React.Component {
+
+  static propTypes = {
+    schema: PropTypes.object,
+    searchValue: PropTypes.string,
+    onClickType: PropTypes.func,
+    onClickField: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.schema !== nextProps.schema ||
       this.props.searchValue !== nextProps.searchValue;
-  }
-
-  _isMatch(sourceText, searchValue) {
-    try {
-      const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
-      return sourceText.search(new RegExp(escaped, 'i')) !== -1;
-    } catch (e) {
-      return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
-    }
   }
 
   render() {
@@ -238,12 +243,12 @@ class SearchDoc extends React.Component {
 
     const typeMap = schema.getTypeMap();
 
-    let matchedTypes = [];
-    let matchedFields = [];
+    const matchedTypes = [];
+    const matchedFields = [];
 
     Object.keys(typeMap).forEach(typeName => {
       const type = typeMap[typeName];
-      let matchedOn = [];
+      const matchedOn = [];
       if (this._isMatch(typeName, searchValue)) {
         matchedOn.push('Type Name');
       }
@@ -305,7 +310,7 @@ class SearchDoc extends React.Component {
     if (matchedTypes.length === 0 && matchedFields.length === 0) {
       return (
         <span className="doc-alert-text">
-          No results found.
+          {'No results found.'}
         </span>
       );
     }
@@ -315,7 +320,7 @@ class SearchDoc extends React.Component {
         <div className="doc-category">
           {(matchedTypes.length > 0 || matchedFields.length > 0) &&
             <div className="doc-category-title">
-              search results
+              {'search results'}
             </div>
           }
           {matchedTypes}
@@ -324,10 +329,25 @@ class SearchDoc extends React.Component {
       </div>
     );
   }
+
+  _isMatch(sourceText, searchValue) {
+    try {
+      const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
+      return sourceText.search(new RegExp(escaped, 'i')) !== -1;
+    } catch (e) {
+      return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
+    }
+  }
 }
 
 // Render the top level Schema
 class SchemaDoc extends React.Component {
+
+  static propTypes = {
+    schema: PropTypes.object,
+    onClickType: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.schema !== nextProps.schema;
   }
@@ -349,22 +369,22 @@ class SchemaDoc extends React.Component {
         />
         <div className="doc-category">
           <div className="doc-category-title">
-            root types
+            {'root types'}
           </div>
           <div className="doc-category-item">
-            <span className="keyword">query</span>
+            <span className="keyword">{'query'}</span>
             {': '}
             <TypeLink type={queryType} onClick={this.props.onClickType} />
           </div>
           {mutationType &&
             <div className="doc-category-item">
-              <span className="keyword">mutation</span>
+              <span className="keyword">{'mutation'}</span>
               {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
             </div>}
           {subscriptionType &&
             <div className="doc-category-item">
-              <span className="keyword">subscription</span>
+              <span className="keyword">{'subscription'}</span>
               {': '}
               <TypeLink
                 type={subscriptionType}
@@ -379,6 +399,13 @@ class SchemaDoc extends React.Component {
 
 // Documentation for a Type
 class TypeDoc extends React.Component {
+
+  static propTypes = {
+    type: PropTypes.object,
+    onClickType: PropTypes.func,
+    onClickField: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.type !== nextProps.type;
   }
@@ -425,7 +452,7 @@ class TypeDoc extends React.Component {
       fieldsDef = (
         <div className="doc-category">
           <div className="doc-category-title">
-            fields
+            {'fields'}
           </div>
           {fields.map(field => {
 
@@ -463,7 +490,7 @@ class TypeDoc extends React.Component {
       valuesDef = (
         <div className="doc-category">
           <div className="doc-category-title">
-            values
+            {'values'}
           </div>
           {type.getValues().map(value =>
             <div key={value.name} className="doc-category-item">
@@ -497,6 +524,12 @@ class TypeDoc extends React.Component {
 
 // Documentation for a field
 class FieldDoc extends React.Component {
+
+  static propTypes = {
+    field: PropTypes.object,
+    onClickType: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.field !== nextProps.field;
   }
@@ -509,7 +542,7 @@ class FieldDoc extends React.Component {
       argsDef = (
         <div className="doc-category">
           <div className="doc-category-title">
-            arguments
+            {'arguments'}
           </div>
           {field.args.map(arg =>
             <div key={arg.name} className="doc-category-item">
@@ -536,7 +569,7 @@ class FieldDoc extends React.Component {
         />
         <div className="doc-category">
           <div className="doc-category-title">
-            type
+            {'type'}
           </div>
           <TypeLink type={field.type} onClick={this.props.onClickType} />
         </div>
@@ -548,6 +581,12 @@ class FieldDoc extends React.Component {
 
 // Renders a type link
 class TypeLink extends React.Component {
+
+  static propTypes = {
+    type: PropTypes.object,
+    onClick: PropTypes.func,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.type !== nextProps.type;
   }
@@ -559,10 +598,10 @@ class TypeLink extends React.Component {
 
 function renderType(type, onClick) {
   if (type instanceof GraphQLNonNull) {
-    return <span>{renderType(type.ofType, onClick)}!</span>;
+    return <span>{renderType(type.ofType, onClick)}{'!'}</span>;
   }
   if (type instanceof GraphQLList) {
-    return <span>[{renderType(type.ofType, onClick)}]</span>;
+    return <span>{'['}{renderType(type.ofType, onClick)}{']'}</span>;
   }
   return (
     <a className="type-name" onClick={event => onClick(type, event)}>
@@ -573,6 +612,12 @@ function renderType(type, onClick) {
 
 // Renders a description
 class Description extends React.Component {
+
+  static propTypes = {
+    markdown: PropTypes.string,
+    className: PropTypes.string,
+  }
+
   shouldComponentUpdate(nextProps) {
     return this.props.markdown !== nextProps.markdown;
   }
@@ -584,9 +629,11 @@ class Description extends React.Component {
     }
 
     const html = Marked(markdown, { sanitize: true });
-    return <div
-      className={this.props.className}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />;
+    return (
+      <div
+        className={this.props.className}
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
   }
 }

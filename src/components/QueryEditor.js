@@ -41,7 +41,8 @@ export class QueryEditor extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
     value: PropTypes.string,
-    onEdit: PropTypes.func
+    onEdit: PropTypes.func,
+    onHintInformationRender: PropTypes.func,
   }
 
   constructor(props) {
@@ -51,14 +52,6 @@ export class QueryEditor extends React.Component {
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
-  }
-
-  /**
-   * Public API for retrieving the CodeMirror instance from this
-   * React component.
-   */
-  getCodeMirror() {
-    return this.editor;
   }
 
   componentDidMount() {
@@ -103,13 +96,6 @@ export class QueryEditor extends React.Component {
     this.editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentWillUnmount() {
-    this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
-    this.editor.off('hasCompletion', this._onHasCompletion);
-    this.editor = null;
-  }
-
   componentDidUpdate(prevProps) {
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
@@ -126,6 +112,25 @@ export class QueryEditor extends React.Component {
       this.editor.setValue(this.props.value);
     }
     this.ignoreChangeEvent = false;
+  }
+
+  componentWillUnmount() {
+    this.editor.off('change', this._onEdit);
+    this.editor.off('keyup', this._onKeyUp);
+    this.editor.off('hasCompletion', this._onHasCompletion);
+    this.editor = null;
+  }
+
+  render() {
+    return <div className="query-editor" />;
+  }
+
+  /**
+   * Public API for retrieving the CodeMirror instance from this
+   * React component.
+   */
+  getCodeMirror() {
+    return this.editor;
   }
 
   _onKeyUp = (cm, event) => {
@@ -156,9 +161,5 @@ export class QueryEditor extends React.Component {
    */
   _onHasCompletion = (cm, data) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
-  }
-
-  render() {
-    return <div className="query-editor" />;
   }
 }

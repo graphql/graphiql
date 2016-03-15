@@ -117,50 +117,6 @@ export class GraphiQL extends React.Component {
     getDefaultFieldNames: PropTypes.func
   }
 
-  /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   *
-   * @public
-   */
-  autoCompleteLeafs() {
-    const { insertions, result } = fillLeafs(
-      this.state.schema,
-      this.state.query,
-      this.props.getDefaultFieldNames
-    );
-    if (insertions && insertions.length > 0) {
-      const editor = this.refs.queryEditor.getCodeMirror();
-      editor.operation(() => {
-        const cursor = editor.getCursor();
-        const cursorIndex = editor.indexFromPos(cursor);
-        editor.setValue(result);
-        let added = 0;
-        const markers = insertions.map(({ index, string }) => editor.markText(
-          editor.posFromIndex(index + added),
-          editor.posFromIndex(index + (added += string.length)),
-          {
-            className: 'autoInsertedLeaf',
-            clearOnEnter: true,
-            title: 'Automatically added leaf fields'
-          }
-        ));
-        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-        let newCursorIndex = cursorIndex;
-        insertions.forEach(({ index, string }) => {
-          if (index < cursorIndex) {
-            newCursorIndex += string.length;
-          }
-        });
-        editor.setCursor(editor.posFromIndex(newCursorIndex));
-      });
-    }
-
-    return result;
-  }
-
-  // Lifecycle
-
   constructor(props) {
     super(props);
 
@@ -225,17 +181,13 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  // When the component is about to unmount, store any persistable state, such
-  // that when the component is remounted, it will use the last used values.
-  componentWillUnmount() {
-    this._storageSet('query', this.state.query);
-    this._storageSet('variables', this.state.variables);
-    this._storageSet('operationName', this.state.operationName);
-    this._storageSet('editorFlex', this.state.editorFlex);
-    this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
-    this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
+  componentDidMount() {
+    // Ensure a form of a schema exists (including `null`) and
+    // if not, fetch one using an introspection query.
+    this._ensureOfSchema();
 
-    document.removeEventListener('keydown', this._keyHandler, true);
+    // Add shortcut for running a query.
+    document.addEventListener('keydown', this._keyHandler, true);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -275,15 +227,6 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  componentDidMount() {
-    // Ensure a form of a schema exists (including `null`) and
-    // if not, fetch one using an introspection query.
-    this._ensureOfSchema();
-
-    // Add shortcut for running a query.
-    document.addEventListener('keydown', this._keyHandler, true);
-  }
-
   componentDidUpdate(prevProps, prevState) {
     // When UI-altering state changes, simulate a window resize event so all
     // CodeMirror instances become properly rendered.
@@ -291,6 +234,19 @@ export class GraphiQL extends React.Component {
         this.state.variableEditorHeight !== prevState.variableEditorHeight) {
       window.dispatchEvent(new Event('resize'));
     }
+  }
+
+  // When the component is about to unmount, store any persistable state, such
+  // that when the component is remounted, it will use the last used values.
+  componentWillUnmount() {
+    this._storageSet('query', this.state.query);
+    this._storageSet('variables', this.state.variables);
+    this._storageSet('operationName', this.state.operationName);
+    this._storageSet('editorFlex', this.state.editorFlex);
+    this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
+    this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
+
+    document.removeEventListener('keydown', this._keyHandler, true);
   }
 
   render() {
@@ -327,49 +283,49 @@ export class GraphiQL extends React.Component {
               {logo}
               <ExecuteButton
                 isRunning={Boolean(this.state.subscription)}
-                onRun={this._runQuery}
-                onStop={this._stopQuery}
+                onRun={this.handleRunQuery}
+                onStop={this.handleStopQuery}
                 operations={this.state.operations}
               />
               <GraphiQL.ToolbarButton
-                onClick={this._prettifyQuery}
+                onClick={this.handlePrettifyQuery}
                 title="Prettify Query"
                 label="Prettify"
               />
               {toolbar}
             </div>
             {!this.state.docExplorerOpen &&
-              <button className="docExplorerShow" onClick={this._onToggleDocs}>
-                Docs
+              <button
+                className="docExplorerShow"
+                onClick={this.handleToggleDocs}>
+                {'Docs'}
               </button>
             }
           </div>
           <div
-            ref="editorBar"
+            ref={n => { this.editorBarComponent = n; }}
             className="editorBar"
-            onMouseDown={this._onResizeStart}
-          >
+            onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                ref="queryEditor"
+                ref={n => { this.queryEditorComponent = n; }}
                 schema={this.state.schema}
                 value={this.state.query}
-                onEdit={this._onEditQuery}
-                onHintInformationRender={this._onHintInformationRender}
+                onEdit={this.handleEditQuery}
+                onHintInformationRender={this.handleHintInformationRender}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
                   className="variable-editor-title"
                   style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                  onMouseDown={this._onVariableResizeStart}
-                >
-                  Query Variables
+                  onMouseDown={this.handleVariableResizeStart}>
+                  {'Query Variables'}
                 </div>
                 <VariableEditor
                   value={this.state.variables}
                   variableToType={this.state.variableToType}
-                  onEdit={this._onEditVariables}
-                  onHintInformationRender={this._onHintInformationRender}
+                  onEdit={this.handleEditVariables}
+                  onHintInformationRender={this.handleHintInformationRender}
                 />
               </div>
             </div>
@@ -379,7 +335,10 @@ export class GraphiQL extends React.Component {
                   <div className="spinner" />
                 </div>
               }
-              <ResultViewer ref="result" value={this.state.response} />
+              <ResultViewer
+                ref={c => { this.resultComponent = c; }}
+                value={this.state.response}
+              />
               {footer}
             </div>
           </div>
@@ -387,16 +346,60 @@ export class GraphiQL extends React.Component {
         <div className="docExplorerWrap" style={docWrapStyle}>
           <div
             className="docExplorerResizer"
-            onMouseDown={this._onDocsResizeStart}
+            onMouseDown={this.handleDocsResizeStart}
           />
-          <DocExplorer ref="docExplorer" schema={this.state.schema}>
-            <div className="docExplorerHide" onClick={this._onToggleDocs}>
-              &#x2715;
+          <DocExplorer
+            ref={c => { this.docExplorerComponent = c; }}
+            schema={this.state.schema}>
+            <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+              {'\u2715'}
             </div>
           </DocExplorer>
         </div>
       </div>
     );
+  }
+
+  /**
+   * Inspect the query, automatically filling in selection sets for non-leaf
+   * fields which do not yet have them.
+   *
+   * @public
+   */
+  autoCompleteLeafs() {
+    const { insertions, result } = fillLeafs(
+      this.state.schema,
+      this.state.query,
+      this.props.getDefaultFieldNames
+    );
+    if (insertions && insertions.length > 0) {
+      const editor = this.queryEditorComponent.getCodeMirror();
+      editor.operation(() => {
+        const cursor = editor.getCursor();
+        const cursorIndex = editor.indexFromPos(cursor);
+        editor.setValue(result);
+        let added = 0;
+        const markers = insertions.map(({ index, string }) => editor.markText(
+          editor.posFromIndex(index + added),
+          editor.posFromIndex(index + (added += string.length)),
+          {
+            className: 'autoInsertedLeaf',
+            clearOnEnter: true,
+            title: 'Automatically added leaf fields'
+          }
+        ));
+        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        let newCursorIndex = cursorIndex;
+        insertions.forEach(({ index, string }) => {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        });
+        editor.setCursor(editor.posFromIndex(newCursorIndex));
+      });
+    }
+
+    return result;
   }
 
   // Private methods
@@ -442,7 +445,7 @@ export class GraphiQL extends React.Component {
         const queryFacts = getQueryFacts(schema, this.state.query);
         this.setState({ schema, ...queryFacts });
       } else {
-        let responseString = typeof result === 'string' ?
+        const responseString = typeof result === 'string' ?
           result :
           JSON.stringify(result, null, 2);
         this.setState({ response: responseString });
@@ -503,7 +506,7 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _runQuery = selectedOperationName => {
+  handleRunQuery = selectedOperationName => {
     this._editorQueryID++;
     const queryID = this._editorQueryID;
 
@@ -547,7 +550,7 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  _stopQuery = () => {
+  handleStopQuery = () => {
     const subscription = this.state.subscription;
     this.setState({
       isWaitingForResponse: false,
@@ -569,14 +572,14 @@ export class GraphiQL extends React.Component {
 
   _runQueryAtCursor() {
     if (this.state.subscription) {
-      this._stopQuery();
+      this.handleStopQuery();
       return;
     }
 
     let operationName;
     const operations = this.state.operations;
     if (operations) {
-      const editor = this.refs.queryEditor.getCodeMirror();
+      const editor = this.queryEditorComponent.getCodeMirror();
       if (editor.hasFocus()) {
         const cursor = editor.getCursor();
         const cursorIndex = editor.indexFromPos(cursor);
@@ -593,16 +596,16 @@ export class GraphiQL extends React.Component {
       }
     }
 
-    this._runQuery(operationName);
+    this.handleRunQuery(operationName);
   }
 
-  _prettifyQuery = () => {
+  handlePrettifyQuery = () => {
     const query = print(parse(this.state.query));
-    const editor = this.refs.queryEditor.getCodeMirror();
+    const editor = this.queryEditorComponent.getCodeMirror();
     editor.setValue(query);
   }
 
-  _onEditQuery = value => {
+  handleEditQuery = value => {
     if (this.state.schema) {
       this._updateQueryFacts(value);
     }
@@ -635,14 +638,14 @@ export class GraphiQL extends React.Component {
     }
   })
 
-  _onEditVariables = value => {
+  handleEditVariables = value => {
     this.setState({ variables: value });
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
   }
 
-  _onHintInformationRender = elem => {
+  handleHintInformationRender = elem => {
     elem.addEventListener('click', this._onClickHintInformation);
 
     let onRemoveFn;
@@ -660,18 +663,18 @@ export class GraphiQL extends React.Component {
         const type = schema.getType(typeName);
         if (type) {
           this.setState({ docExplorerOpen: true }, () => {
-            this.refs.docExplorer.showDoc(type);
+            this.docExplorerComponent.showDoc(type);
           });
         }
       }
     }
   }
 
-  _onToggleDocs = () => {
+  handleToggleDocs = () => {
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   }
 
-  _onResizeStart = downEvent => {
+  handleResizeStart = downEvent => {
     if (!this._didClickDragBar(downEvent)) {
       return;
     }
@@ -685,7 +688,7 @@ export class GraphiQL extends React.Component {
         return onMouseUp();
       }
 
-      const editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
+      const editorBar = ReactDOM.findDOMNode(this.editorBarComponent);
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
@@ -713,7 +716,7 @@ export class GraphiQL extends React.Component {
       return false;
     }
     // Specifically the result window's drag bar.
-    const resultWindow = ReactDOM.findDOMNode(this.refs.result);
+    const resultWindow = ReactDOM.findDOMNode(this.resultComponent);
     while (target) {
       if (target === resultWindow) {
         return true;
@@ -723,7 +726,7 @@ export class GraphiQL extends React.Component {
     return false;
   }
 
-  _onDocsResizeStart = downEvent => {
+  handleDocsResizeStart = downEvent => {
     downEvent.preventDefault();
 
     const hadWidth = this.state.docExplorerWidth;
@@ -763,7 +766,7 @@ export class GraphiQL extends React.Component {
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  _onVariableResizeStart = downEvent => {
+  handleVariableResizeStart = downEvent => {
     downEvent.preventDefault();
 
     let didMove = false;
@@ -778,7 +781,7 @@ export class GraphiQL extends React.Component {
 
       didMove = true;
 
-      const editorBar = ReactDOM.findDOMNode(this.refs.editorBar);
+      const editorBar = ReactDOM.findDOMNode(this.editorBarComponent);
       const topSize = moveEvent.clientY - getTop(editorBar) - offset;
       const bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {
@@ -811,39 +814,33 @@ export class GraphiQL extends React.Component {
 }
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Logo = class GraphiQLLogo extends React.Component {
-  render() {
-    return (
-      <div className="title">
-        {this.props.children || <span>Graph<em>i</em>QL</span>}
-      </div>
-    );
-  }
+GraphiQL.Logo = function GraphiQLLogo(props) {
+  return (
+    <div className="title">
+      {props.children || <span>{'Graph'}<em>{'i'}</em>{'QL'}</span>}
+    </div>
+  );
 };
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Toolbar = class GraphiQLToolbar extends React.Component {
-  render() {
-    return (
-      <div className="toolbar">
-        {this.props.children}
-      </div>
-    );
-  }
+GraphiQL.Toolbar = function GraphiQLToolbar(props) {
+  return (
+    <div className="toolbar">
+      {props.children}
+    </div>
+  );
 };
 
 // Add a button to the Toolbar.
 GraphiQL.ToolbarButton = ToolbarButton;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Footer = class GraphiQLFooter extends React.Component {
-  render() {
-    return (
-      <div className="footer">
-        {this.props.children}
-      </div>
-    );
-  }
+GraphiQL.Footer = function GraphiQLFooter(props) {
+  return (
+    <div className="footer">
+      {props.children}
+    </div>
+  );
 };
 
 const defaultQuery =
