@@ -69,4 +69,12 @@ export class ResultViewer extends React.Component {
   render() {
     return <div className="result-window" />;
   }
+
+  /**
+   * Public API for retrieving the CodeMirror instance from this
+   * React component.
+   */
+  getCodeMirror() {
+    return this.viewer;
+  }
 }

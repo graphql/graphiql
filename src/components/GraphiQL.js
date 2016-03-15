@@ -21,6 +21,7 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
+import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import getQueryFacts from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
@@ -186,6 +187,9 @@ export class GraphiQL extends React.Component {
     // if not, fetch one using an introspection query.
     this._ensureOfSchema();
 
+    // Utility for keeping CodeMirror correctly sized.
+    this.codeMirrorSizer = new CodeMirrorSizer();
+
     // Add shortcut for running a query.
     document.addEventListener('keydown', this._keyHandler, true);
   }
@@ -227,13 +231,14 @@ export class GraphiQL extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // When UI-altering state changes, simulate a window resize event so all
-    // CodeMirror instances become properly rendered.
-    if (this.state.variableEditorOpen !== prevState.variableEditorOpen ||
-        this.state.variableEditorHeight !== prevState.variableEditorHeight) {
-      window.dispatchEvent(new Event('resize'));
-    }
+  componentDidUpdate() {
+    // If this update caused DOM nodes to have changed sizes, update the
+    // corresponding CodeMirror instance sizes to match.
+    this.codeMirrorSizer.updateSizes([
+      this.queryEditorComponent,
+      this.variableEditorComponent,
+      this.resultComponent,
+    ]);
   }
 
   // When the component is about to unmount, store any persistable state, such
@@ -322,6 +327,7 @@ export class GraphiQL extends React.Component {
                   {'Query Variables'}
                 </div>
                 <VariableEditor
+                  ref={n => { this.variableEditorComponent = n; }}
                   value={this.state.variables}
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}

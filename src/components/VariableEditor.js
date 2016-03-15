@@ -122,6 +122,14 @@ export class VariableEditor extends React.Component {
     return <div className="codemirrorWrap" />;
   }
 
+  /**
+   * Public API for retrieving the CodeMirror instance from this
+   * React component.
+   */
+  getCodeMirror() {
+    return this.editor;
+  }
+
   _onKeyUp = (cm, event) => {
     const code = event.keyCode;
     if (
