@@ -11,8 +11,8 @@
  */
 
 export function getLeft(initialElem) {
-  var pt = 0;
-  var elem = initialElem;
+  let pt = 0;
+  let elem = initialElem;
   while (elem.offsetParent) {
     pt += elem.offsetLeft;
     elem = elem.offsetParent;
@@ -21,8 +21,8 @@ export function getLeft(initialElem) {
 }
 
 export function getTop(initialElem) {
-  var pt = 0;
-  var elem = initialElem;
+  let pt = 0;
+  let elem = initialElem;
   while (elem.offsetParent) {
     pt += elem.offsetTop;
     elem = elem.offsetParent;

@@ -78,7 +78,7 @@ function defaultGetDefaultFieldNames(type) {
     return [];
   }
 
-  var fields = type.getFields();
+  const fields = type.getFields();
 
   // Is there an `id` field?
   if (fields['id']) {
@@ -96,7 +96,7 @@ function defaultGetDefaultFieldNames(type) {
   }
 
   // Include all leaf-type fields.
-  var leafFieldNames = [];
+  const leafFieldNames = [];
   Object.keys(fields).forEach(fieldName => {
     if (isLeafType(fields[fieldName].type)) {
       leafFieldNames.push(fieldName);
@@ -109,7 +109,7 @@ function defaultGetDefaultFieldNames(type) {
 // generate a SelectionSet which includes default fields.
 function buildSelectionSet(type, getDefaultFieldNames) {
   // Unwrap any non-null or list types.
-  var namedType = getNamedType(type);
+  const namedType = getNamedType(type);
 
   // Unknown types and leaf types do not have selection sets.
   if (!type || isLeafType(type)) {
@@ -117,7 +117,7 @@ function buildSelectionSet(type, getDefaultFieldNames) {
   }
 
   // Get an array of field names to use.
-  var fieldNames = getDefaultFieldNames(namedType);
+  const fieldNames = getDefaultFieldNames(namedType);
 
   // If there are no field names to use, return no selection set.
   if (!Array.isArray(fieldNames) || fieldNames.length === 0) {
@@ -128,8 +128,8 @@ function buildSelectionSet(type, getDefaultFieldNames) {
   return {
     kind: 'SelectionSet',
     selections: fieldNames.map(fieldName => {
-      var fieldDef = namedType.getFields()[fieldName];
-      var fieldType = fieldDef ? fieldDef.type : null;
+      const fieldDef = namedType.getFields()[fieldName];
+      const fieldType = fieldDef ? fieldDef.type : null;
       return {
         kind: 'Field',
         name: {
@@ -148,8 +148,8 @@ function withInsertions(initial, insertions) {
   if (insertions.length === 0) {
     return initial;
   }
-  var edited = '';
-  var prevIndex = 0;
+  let edited = '';
+  let prevIndex = 0;
   insertions.forEach(({ index, string }) => {
     edited += initial.slice(prevIndex, index) + string;
     prevIndex = index;
@@ -161,10 +161,10 @@ function withInsertions(initial, insertions) {
 // Given a string and an index, look backwards to find the string of whitespace
 // following the next previous line break.
 function getIndentation(str, index) {
-  var indentStart = index;
-  var indentEnd = index;
+  let indentStart = index;
+  let indentEnd = index;
   while (indentStart) {
-    var c = str.charCodeAt(indentStart - 1);
+    const c = str.charCodeAt(indentStart - 1);
     // line break
     if (c === 10 || c === 13 || c === 0x2028 || c === 0x2029) {
       break;
