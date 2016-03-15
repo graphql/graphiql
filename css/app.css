@@ -243,6 +243,7 @@
   display: inline-block;
   margin: 0 5px 0;
   padding: 2px 8px 4px;
+  text-decoration: none;
 }
 
 #graphiql-container .toolbar-button:active {
