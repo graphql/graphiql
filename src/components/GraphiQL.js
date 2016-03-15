@@ -614,7 +614,7 @@ export class GraphiQL extends React.Component {
     }
   }
 
-  _updateQueryFacts = debounce(500, query => {
+  _updateQueryFacts = debounce(150, query => {
     const queryFacts = getQueryFacts(this.state.schema, query);
     if (queryFacts) {
       // Update operation name should any query names change.
