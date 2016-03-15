@@ -385,8 +385,8 @@ class TypeDoc extends React.Component {
 
   render() {
     const type = this.props.type;
-    const onClickType = this.props.onClickType || () => {};
-    const onClickField = this.props.onClickField || () => {};
+    const onClickType = this.props.onClickType;
+    const onClickField = this.props.onClickField;
 
     let typesTitle;
     let types;
