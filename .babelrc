@@ -1,0 +1,11 @@
+{
+  "presets": [
+    "es2015",
+    "react"
+  ],
+  "plugins": [
+    "syntax-async-functions",
+    "transform-class-properties",
+    "transform-object-rest-spread"
+  ]
+}
