@@ -448,7 +448,7 @@ class TypeDoc extends React.Component {
                   onClick={event => onClickField(field, type, event)}>
                   {field.name}
                 </a>
-                {argsDef && [ '(', <span>{argsDef}</span>, ')' ]}
+                {argsDef && [ '(', <span key="args">{argsDef}</span>, ')' ]}
                 {': '}
                 <TypeLink type={field.type} onClick={onClickType} />
               </div>

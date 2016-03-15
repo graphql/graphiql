@@ -204,11 +204,12 @@ export class GraphiQL extends React.Component {
       variables,
       operationName,
       response: props.response,
-      editorFlex: this._storageGet('editorFlex') || 1,
+      editorFlex: Number(this._storageGet('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
-      variableEditorHeight: this._storageGet('variableEditorHeight') || 200,
+      variableEditorHeight:
+        Number(this._storageGet('variableEditorHeight')) || 200,
       docExplorerOpen: false,
-      docExplorerWidth: this._storageGet('docExplorerWidth') || 350,
+      docExplorerWidth: Number(this._storageGet('docExplorerWidth')) || 350,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts

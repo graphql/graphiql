@@ -10,11 +10,14 @@
 <html>
   <head>
     <style>
-      html, body {
+      body {
         height: 100%;
         margin: 0;
         width: 100%;
         overflow: hidden;
+      }
+      #graphiql {
+        height: 100vh;
       }
     </style>
     <link rel="stylesheet" href="./graphiql.css" />
@@ -24,7 +27,7 @@
     <script src="./graphiql.js"></script>
   </head>
   <body>
-    Loading...
+    <div id="graphiql">Loading...</div>
     <script>
 
       /**
@@ -117,7 +120,7 @@
           onEditVariables: onEditVariables,
           onEditOperationName: onEditOperationName
         }),
-        document.body
+        document.getElementById('graphiql')
       );
     </script>
   </body>
