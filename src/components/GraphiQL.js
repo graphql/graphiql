@@ -414,7 +414,9 @@ export class GraphiQL extends React.Component {
 
     const fetch = fetcher({ query: introspectionQuery });
     if (!isPromise(fetch)) {
-      console.error('Fetcher did not return a Promise for introspection.');
+      this.setState({
+        response: 'Fetcher did not return a Promise for introspection.'
+      });
       return;
     }
 
@@ -427,8 +429,7 @@ export class GraphiQL extends React.Component {
       // sans-subscriptions query for services which do not yet support it.
       const fetch2 = fetcher({ query: introspectionQuerySansSubscriptions });
       if (!isPromise(fetch)) {
-        console.error('Fetcher did not return a Promise for introspection.');
-        return;
+        throw new Error('Fetcher did not return a Promise for introspection.');
       }
       return fetch2;
     }).then(result => {
@@ -439,7 +440,7 @@ export class GraphiQL extends React.Component {
         return;
       }
 
-      if (result.data) {
+      if (result && result.data) {
         const schema = buildClientSchema(result.data);
         const queryFacts = getQueryFacts(schema, this.state.query);
         this.setState({ schema, ...queryFacts });
