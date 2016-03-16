@@ -6,30 +6,10 @@ import TestUtils from 'react-addons-test-utils';
 
 import { GraphiQL } from '../GraphiQL';
 
-const render = (props = {}) => {
-  if (props.storage === undefined) {
-    props.storage = createStorage();
-  }
-  return () => {
-    return TestUtils.renderIntoDocument(React.createElement(GraphiQL, props));
-  };
-};
+const render = props =>
+  () => TestUtils.renderIntoDocument(React.createElement(GraphiQL, props));
 
-const createStorage = () => {
-  const backing = {};
-  return {
-    getItem(key) {
-      return backing[key];
-    },
-    setItem(key, value) {
-      backing[key] = value;
-    }
-  };
-};
-
-const createFetcher = () => {
-  return () => {};
-};
+const createFetcher = () => () => {};
 
 describe('GraphiQL', () => {
   it('should throw error without fetcher', () => {

@@ -150,7 +150,7 @@ export class GraphiQL extends React.Component {
       getSelectedOperationName(
         null,
         this._storageGet('operationName'),
-        (queryFacts !== undefined ? queryFacts.operations : undefined)
+        queryFacts && queryFacts.operations
       );
 
     // Initialize state
@@ -462,11 +462,13 @@ export class GraphiQL extends React.Component {
   }
 
   _storageGet(name) {
-    return this._storage.getItem('graphiql:' + name);
+    return this._storage && this._storage.getItem('graphiql:' + name);
   }
 
   _storageSet(name, value) {
-    this._storage.setItem('graphiql:' + name, value);
+    if (this._storage) {
+      this._storage.setItem('graphiql:' + name, value);
+    }
   }
 
   _fetchQuery(query, variables, operationName, cb) {
