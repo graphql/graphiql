@@ -19,6 +19,7 @@ import {
   GraphQLNonNull
 } from 'graphql';
 
+import debounce from '../utility/debounce';
 
 /**
  * DocExplorer
@@ -95,11 +96,7 @@ export class DocExplorer extends React.Component {
     } else if (schema) {
       title = 'Documentation Explorer';
       content =
-        <SchemaDoc
-          schema={schema}
-          onClickType={this.handleClickTypeOrField}
-          onSearch={this.handleSearch}
-        />;
+        <SchemaDoc schema={schema} onClickType={this.handleClickTypeOrField} />;
     }
 
     let prevName;
@@ -140,7 +137,6 @@ export class DocExplorer extends React.Component {
           <SearchBox
             isShown={shouldSearchBoxAppear}
             onSearch={this.handleSearch}
-            searchValue={navItem ? navItem.searchValue : ''}
           />
           {this.props.schema ? content : spinnerDiv}
         </div>
@@ -181,25 +177,33 @@ export class DocExplorer extends React.Component {
     this.showDoc(typeOrField);
   }
 
-  handleSearch = event => {
+  handleSearch = value => {
     this.showSearch({
       name: 'Search Results',
-      searchValue: event.target.value
+      searchValue: value
     });
   }
 }
 
 class SearchBox extends React.Component {
-
   static propTypes = {
     isShown: PropTypes.bool,
-    searchValue: PropTypes.string,
     onSearch: PropTypes.func,
   }
 
-  shouldComponentUpdate(nextProps) {
+  constructor(props) {
+    super(props);
+
+    this.state = { value: null };
+
+    this._debouncedOnSearch = debounce(200, () => {
+      this.props.onSearch(this.state.value);
+    });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
     return nextProps.isShown !== this.props.isShown ||
-      nextProps.searchValue !== this.props.searchValue;
+           nextState.value !== this.state.value;
   }
 
   render() {
@@ -208,15 +212,20 @@ class SearchBox extends React.Component {
         {this.props.isShown &&
           <label className="search-box-outer">
             <input className="search-box-input"
-              onChange={event => this.props.onSearch(event)}
+              onChange={this.handleChange}
               type="text"
-              value={this.props.searchValue}
+              value={this.state.value}
               placeholder="Search the schema ..."
             />
           </label>
         }
       </div>
     );
+  }
+
+  handleChange = event => {
+    this.setState({ value: event.target.value });
+    this._debouncedOnSearch();
   }
 }
 
@@ -246,7 +255,12 @@ class SearchDoc extends React.Component {
     const matchedTypes = [];
     const matchedFields = [];
 
-    Object.keys(typeMap).forEach(typeName => {
+    const typeNames = Object.keys(typeMap);
+    for (const typeName of typeNames) {
+      if (matchedTypes.length + matchedFields.length >= 100) {
+        break;
+      }
+
       const type = typeMap[typeName];
       const matchedOn = [];
       if (this._isMatch(typeName, searchValue)) {
@@ -305,7 +319,7 @@ class SearchDoc extends React.Component {
           }
         });
       }
-    });
+    }
 
     if (matchedTypes.length === 0 && matchedFields.length === 0) {
       return (
