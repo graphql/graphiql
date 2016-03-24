@@ -208,12 +208,12 @@ function lex() {
 
 function readString() {
   ch();
-  while (code !== 34) {
+  while (code !== 34 && code > 31) {
     ch();
     if (code === 92) { // \
       ch();
       switch (code) {
-        case 34: // '
+        case 34: // "
         case 47: // /
         case 92: // \
         case 98: // b
