@@ -28,6 +28,7 @@ import {
 
 import forEachState from './utils/forEachState';
 import hintList from './utils/hintList';
+import objectValues from './utils/objectValues';
 import './mode';
 
 
@@ -83,7 +84,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
       var fields;
       if (typeInfo.parentType.getFields) {
         var fieldObj = typeInfo.parentType.getFields();
-        fields = Object.keys(fieldObj).map(fieldName => fieldObj[fieldName]);
+        fields = objectValues(fieldObj);
       } else {
         fields = [];
       }
@@ -116,8 +117,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
   // Input Object fields
   if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
     if (typeInfo.objectFieldDefs) {
-      var objectFields = Object.keys(typeInfo.objectFieldDefs)
-        .map(fieldName => typeInfo.objectFieldDefs[fieldName]);
+      var objectFields = objectValues(typeInfo.objectFieldDefs);
       return hintList(editor, options, cur, token, objectFields.map(field => ({
         text: field.name,
         type: field.type,
@@ -134,7 +134,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     var namedInputType = getNamedType(typeInfo.inputType);
     if (namedInputType instanceof GraphQLEnumType) {
       var valueMap = namedInputType.getValues();
-      var values = Object.keys(valueMap).map(valueName => valueMap[valueName]);
+      var values = objectValues(valueMap);
       return hintList(editor, options, cur, token, values.map(value => ({
         text: value.name,
         type: namedInputType,
@@ -153,14 +153,25 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
       kind === 'NamedType' && state.prevState.kind === 'TypeCondition') {
     var possibleTypes;
     if (typeInfo.parentType) {
-      possibleTypes = isAbstractType(typeInfo.parentType) ?
-        schema.getPossibleTypes(typeInfo.parentType) :
-        [ typeInfo.parentType ];
+      if (isAbstractType(typeInfo.parentType)) {
+        // Collect both the possible Object types as well as the interfaces
+        // they implement.
+        const possibleObjTypes = schema.getPossibleTypes(typeInfo.parentType);
+        const possibleIfaceMap = Object.create(null);
+        possibleObjTypes.forEach(type => {
+          type.getInterfaces().forEach(iface => {
+            possibleIfaceMap[iface.name] = iface;
+          });
+        });
+        possibleTypes = possibleObjTypes.concat(objectValues(possibleIfaceMap));
+      } else {
+        // The parent type is a non-abstract Object type, so the only possible
+        // type that can be used is that same type.
+        possibleTypes = [ typeInfo.parentType ];
+      }
     } else {
       const typeMap = schema.getTypeMap();
-      possibleTypes = Object.keys(typeMap)
-        .map(typeName => typeMap[typeName])
-        .filter(isCompositeType);
+      possibleTypes = objectValues(typeMap).filter(isCompositeType);
     }
     return hintList(editor, options, cur, token, possibleTypes.map(type => ({
       text: type.name,
@@ -205,9 +216,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
         state.prevState.kind === 'VariableDefinition' ||
         state.prevState.kind === 'ListType')) {
     var inputTypeMap = schema.getTypeMap();
-    var inputTypes = Object.keys(inputTypeMap)
-      .map(typeName => inputTypeMap[typeName])
-      .filter(isInputType);
+    var inputTypes = objectValues(inputTypeMap).filter(isInputType);
     return hintList(editor, options, cur, token, inputTypes.map(type => ({
       text: type.name,
       description: type.description
