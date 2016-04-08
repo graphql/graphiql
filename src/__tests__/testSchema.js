@@ -11,6 +11,7 @@ import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLUnionType,
+  GraphQLInterfaceType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLBoolean,
@@ -53,9 +54,25 @@ var TestInputObject = new GraphQLInputObjectType({
   })
 });
 
+var TestInterface = new GraphQLInterfaceType({
+  name: 'TestInterface',
+  resolveType: () => UnionFirst,
+  fields: {
+    scalar: {
+      type: GraphQLString,
+      resolve: () => ({})
+    }
+  }
+});
+
 var UnionFirst = new GraphQLObjectType({
   name: 'First',
+  interfaces: [ TestInterface ],
   fields: () => ({
+    scalar: {
+      type: GraphQLString,
+      resolve: () => ({})
+    },
     first: {
       type: TestType,
       resolve: () => ({})

@@ -98,7 +98,8 @@ describe('graphql-hint', () => {
       '{ union { ... on ', { line: 0, ch: 17 });
     var unionType = TestSchema.getQueryType().getFields().union.type;
     var typeConditionNames =
-      TestSchema.getPossibleTypes(unionType).map(type => type.name);
+      TestSchema.getPossibleTypes(unionType).map(type => type.name)
+        .concat([ 'TestInterface' ]);
     checkSuggestions(typeConditionNames, suggestions.list);
   });
 
