@@ -96,9 +96,9 @@ describe('graphql-hint', () => {
   it('provides correct typeCondition suggestions', async () => {
     var suggestions = await getHintSuggestions(
       '{ union { ... on ', { line: 0, ch: 17 });
+    var unionType = TestSchema.getQueryType().getFields().union.type;
     var typeConditionNames =
-      TestSchema.getQueryType().getFields().union.type
-        .getPossibleTypes().map(type => type.name);
+      TestSchema.getPossibleTypes(unionType).map(type => type.name);
     checkSuggestions(typeConditionNames, suggestions.list);
   });
 

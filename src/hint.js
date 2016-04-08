@@ -154,7 +154,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     var possibleTypes;
     if (typeInfo.parentType) {
       possibleTypes = isAbstractType(typeInfo.parentType) ?
-        typeInfo.parentType.getPossibleTypes() :
+        schema.getPossibleTypes(typeInfo.parentType) :
         [ typeInfo.parentType ];
     } else {
       const typeMap = schema.getTypeMap();
@@ -184,6 +184,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
         defState.name === frag.name.value) &&
       // Only include fragments which could possibly be spread here.
       doTypesOverlap(
+        schema,
         typeInfo.parentType,
         typeMap[frag.typeCondition.name.value]
       )
@@ -215,16 +216,8 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
 
   // Directive names
   if (kind === 'Directive') {
-    var directives = schema.getDirectives().filter(directive =>
-      (directive.onField && state.prevState.kind === 'Field') ||
-      (directive.onFragment &&
-        (state.prevState.kind === 'FragmentDefinition' ||
-         state.prevState.kind === 'InlineFragment' ||
-         state.prevState.kind === 'FragmentSpread')) ||
-      (directive.onOperation &&
-        (state.prevState.kind === 'Query' ||
-         state.prevState.kind === 'Mutation' ||
-         state.prevState.kind === 'Subscription' ))
+    const directives = schema.getDirectives().filter(
+      directive => canUseDirective(state.prevState.kind, directive)
     );
     return hintList(editor, options, cur, token, directives.map(directive => ({
       text: directive.name,
@@ -233,6 +226,26 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
   }
 });
 
+function canUseDirective(kind, directive) {
+  const locations = directive.locations;
+  switch (kind) {
+    case 'Query':
+      return locations.indexOf('QUERY') !== -1;
+    case 'Mutation':
+      return locations.indexOf('MUTATION') !== -1;
+    case 'Subscription':
+      return locations.indexOf('SUBSCRIPTION') !== -1;
+    case 'Field':
+      return locations.indexOf('FIELD') !== -1;
+    case 'FragmentDefinition':
+      return locations.indexOf('FRAGMENT_DEFINITION') !== -1;
+    case 'FragmentSpread':
+      return locations.indexOf('FRAGMENT_SPREAD') !== -1;
+    case 'InlineFragment':
+      return locations.indexOf('INLINE_FRAGMENT') !== -1;
+  }
+  return false;
+}
 
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
