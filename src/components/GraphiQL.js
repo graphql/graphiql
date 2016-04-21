@@ -219,7 +219,7 @@ export class GraphiQL extends React.Component {
     if (nextSchema !== this.state.schema ||
         nextQuery !== this.state.query ||
         nextOperationName !== this.state.operationName) {
-      this._updateQueryFacts();
+      this._updateQueryFacts(nextQuery);
     }
 
     this.setState({
