@@ -32,6 +32,7 @@ export class ResultViewer extends React.Component {
 
   componentDidMount() {
     this.viewer = CodeMirror(ReactDOM.findDOMNode(this), {
+      lineWrapping: true,
       value: this.props.value || '',
       readOnly: true,
       theme: 'graphiql',
