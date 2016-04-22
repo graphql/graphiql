@@ -83,6 +83,7 @@ export class DocExplorer extends React.Component {
         content = isType(navItem) ?
           <TypeDoc
             key={navItem.name}
+            schema={schema}
             type={navItem}
             onClickType={this.handleClickTypeOrField}
             onClickField={this.handleClickTypeOrField}
@@ -415,6 +416,7 @@ class SchemaDoc extends React.Component {
 class TypeDoc extends React.Component {
 
   static propTypes = {
+    schema: PropTypes.instanceOf(GraphQLSchema),
     type: PropTypes.object,
     onClickType: PropTypes.func,
     onClickField: PropTypes.func,
@@ -425,6 +427,7 @@ class TypeDoc extends React.Component {
   }
 
   render() {
+    const schema = this.props.schema;
     const type = this.props.type;
     const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
@@ -433,10 +436,10 @@ class TypeDoc extends React.Component {
     let types;
     if (type instanceof GraphQLUnionType) {
       typesTitle = 'possible types';
-      types = type.getPossibleTypes();
+      types = schema.getPossibleTypes(type);
     } else if (type instanceof GraphQLInterfaceType) {
       typesTitle = 'implementations';
-      types = type.getPossibleTypes();
+      types = schema.getPossibleTypes(type);
     } else if (type instanceof GraphQLObjectType) {
       typesTitle = 'implements';
       types = type.getInterfaces();
