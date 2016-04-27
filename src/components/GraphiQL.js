@@ -132,7 +132,7 @@ export class GraphiQL extends React.Component {
     // Determine the initial query to display.
     const query =
       props.query !== undefined ? props.query :
-      this._storageGet('query') !== undefined ? this._storageGet('query') :
+      this._storageGet('query') !== null ? this._storageGet('query') :
       props.defaultQuery !== undefined ? props.defaultQuery :
       defaultQuery;
 
