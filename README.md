@@ -5,7 +5,7 @@ GraphiQL
 
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
 
-![](resources/graphiql.png)
+[![](resources/graphiql.png)](http://graphql-swapi.parseapp.com/)
 
 ### Getting started
 
