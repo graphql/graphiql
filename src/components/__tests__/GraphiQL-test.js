@@ -13,6 +13,24 @@ import { renderIntoDocument } from 'react-addons-test-utils';
 
 import { GraphiQL } from '../GraphiQL';
 
+const mockStorage = (function () {
+  let store = {};
+  return {
+    getItem(key) {
+      return store.hasOwnProperty(key) ? store[key] : null;
+    },
+    setItem(key, value) {
+      store[key] = value.toString();
+    },
+    clear() {
+      store = {};
+    }
+  };
+}());
+
+Object.defineProperty(window, 'localStorage', {
+  value: mockStorage,
+});
 
 describe('GraphiQL', () => {
   const noOpFetcher = () => {};
@@ -35,5 +53,21 @@ describe('GraphiQL', () => {
     expect(() => renderIntoDocument(
       <GraphiQL fetcher={noOpFetcher} query="{}" />
     )).to.not.throw();
+  });
+
+  it('defaults to the built-in default query', () => {
+    const graphiQL = renderIntoDocument(<GraphiQL fetcher={noOpFetcher} />);
+    expect(graphiQL.state.query).to.include('# Welcome to GraphiQL');
+  });
+
+  it('accepts a custom default query', () => {
+    const graphiQL = renderIntoDocument(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        defaultQuery='GraphQL Party!!'
+      />
+    );
+
+    expect(graphiQL.state.query).to.equal('GraphQL Party!!');
   });
 });
