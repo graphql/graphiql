@@ -684,7 +684,7 @@ export class GraphiQL extends React.Component {
   }
 
   handleToggleDocs = () => {
-    this.props.onToggleDocs(!this.state.docExplorerOpen)
+    this.props.onToggleDocs(!this.state.docExplorerOpen);
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   }
 
