@@ -19,7 +19,6 @@ import {
 
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
-import './mode';
 
 
 /**
@@ -42,13 +41,25 @@ import './mode';
 CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
   const cur = editor.getCursor();
   const token = editor.getTokenAt(cur);
+
+  const results = getVariablesHint(cur, token, options);
+  if (results.list && results.list.length > 0) {
+    results.from = CodeMirror.Pos(results.from.line, results.from.column);
+    results.to = CodeMirror.Pos(results.to.line, results.to.column);
+    CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
+  }
+
+  return results;
+});
+
+function getVariablesHint(cur, token, options) {
   const state = token.state;
   const kind = state.kind;
   const step = state.step;
 
   // Variables can only be an object literal.
   if (kind === 'Document' && step === 0) {
-    return hintList(editor, options, cur, token, [
+    return hintList(cur, token, [
       { text: '{' },
     ]);
   }
@@ -63,7 +74,7 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
   // Top level should typeahead possible variables.
   if (kind === 'Document' || kind === 'Variable' && step === 0) {
     const variableNames = Object.keys(variableToType);
-    return hintList(editor, options, cur, token, variableNames.map(name => ({
+    return hintList(cur, token, variableNames.map(name => ({
       text: `"${name}": `,
       type: variableToType[name]
     })));
@@ -74,7 +85,7 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
     if (typeInfo.fields) {
       const inputFields = Object.keys(typeInfo.fields)
         .map(fieldName => typeInfo.fields[fieldName]);
-      return hintList(editor, options, cur, token, inputFields.map(field => ({
+      return hintList(cur, token, inputFields.map(field => ({
         text: `"${field.name}": `,
         type: field.type,
         description: field.description
@@ -94,26 +105,25 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
   ) {
     const namedInputType = getNamedType(typeInfo.type);
     if (namedInputType instanceof GraphQLInputObjectType) {
-      return hintList(editor, options, cur, token, [
+      return hintList(cur, token, [
         { text: '{' },
       ]);
     } else if (namedInputType instanceof GraphQLEnumType) {
       const valueMap = namedInputType.getValues();
       const values = Object.keys(valueMap).map(name => valueMap[name]);
-      return hintList(editor, options, cur, token, values.map(value => ({
+      return hintList(cur, token, values.map(value => ({
         text: `"${value.name}"`,
         type: namedInputType,
         description: value.description
       })));
     } else if (namedInputType === GraphQLBoolean) {
-      return hintList(editor, options, cur, token, [
+      return hintList(cur, token, [
         { text: 'true', type: GraphQLBoolean, description: 'Not false.' },
         { text: 'false', type: GraphQLBoolean, description: 'Not true.' },
       ]);
     }
   }
-});
-
+}
 
 // Utility for collecting rich type information given any token's state
 // from the graphql-variables-mode parser.
