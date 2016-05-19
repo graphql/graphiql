@@ -209,7 +209,6 @@ function lex() {
 function readString() {
   ch();
   while (code !== 34 && code > 31) {
-    ch();
     if (code === 92) { // \
       ch();
       switch (code) {
@@ -235,6 +234,8 @@ function readString() {
       }
     } else if (end === strLen) {
       throw syntaxError('Unterminated string.');
+    } else {
+      ch();
     }
   }
 
