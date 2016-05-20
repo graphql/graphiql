@@ -46,6 +46,7 @@ import { LexRules, ParseRules, isIgnored } from './Rules';
  *     state at the end of the token.
  *
  */
+
 export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   var typeInfo = getTypeInfo(schema, token.state);
   var state = token.state;

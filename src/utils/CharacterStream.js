@@ -20,8 +20,17 @@
 
 export default class CharacterStream {
   constructor(sourceText: string): void {
+    this._start = 0;
     this._pos = 0;
     this._sourceText = sourceText;
+  }
+
+  getStartOfToken(): Number {
+    return this._start;
+  }
+
+  getCurrentPosition(): Number {
+    return this._pos;
   }
 
   _testNextCharacter(pattern: mixed) {
@@ -44,7 +53,7 @@ export default class CharacterStream {
   }
 
   peek(): string | void {
-    return this._sourceText.charAt(this._pos) !== '\n' ?
+    return Boolean(this._sourceText.charAt(this._pos)) ?
       this._sourceText.charAt(this._pos) : null;
   }
 
@@ -57,15 +66,22 @@ export default class CharacterStream {
   eat(pattern: mixed): string | void {
     const isMatched = this._testNextCharacter(pattern);
     if (isMatched) {
+      this._start = this._pos;
       this._pos ++;
-      return isMatched;
+      return this._sourceText.charAt(this._pos - 1);
     }
     return undefined;
   }
 
   eatWhile(match: mixed): boolean {
     let isMatched = this._testNextCharacter(match);
-    let didEat = isMatched;
+    let didEat = false;
+
+    // If a match, treat the total upcoming matches as one token
+    if (isMatched) {
+      didEat = isMatched;
+      this._start = this._pos;
+    }
 
     while (isMatched) {
       this._pos ++;
@@ -109,8 +125,14 @@ export default class CharacterStream {
         break;
     }
 
-    if (match && match.index === 0) {
+    if (
+      match && (
+        typeof pattern === 'string' ||
+        match.index === 0
+      )
+    ) {
       if (consume) {
+        this._start = this._pos;
         this._pos += token.length;
       }
       return match;
@@ -148,6 +170,6 @@ export default class CharacterStream {
   }
 
   current(): string {
-    return this._sourceText.slice(0, this._pos);
+    return this._sourceText.slice(this._start, this._pos);
   }
 }
