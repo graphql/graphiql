@@ -13,62 +13,35 @@
  *
  * Options:
  *
+ *     eatWhitespace: (
+ *       stream: Stream | CodeMirror.StringStream | CharacterStream
+ *     ) => boolean
+ *       Use CodeMirror API.
+ *
  *     LexRules: { [name: string]: RegExp }, Includes `Punctuation`.
  *
  *     ParseRules: { [name: string]: Array<Rule> }, Includes `Document`.
  *
- *     eatWhitespace: (stream: CodeMirrorStream) => boolean, Use CodeMirror API.
+ *     editorConfig: { [name: string]: mixed }, Provides an editor-specific
+ *       configurations set.
  *
  */
+
 export default function onlineParser(options) {
-  const { eatWhitespace, LexRules, ParseRules } = options;
   return {
     startState() {
       var initialState = { level: 0 };
-      pushRule(ParseRules, initialState, 'Document');
+      pushRule(options.ParseRules, initialState, 'Document');
       return initialState;
     },
-    getToken(stream, state) {
-      return getToken(eatWhitespace, LexRules, ParseRules, this, stream, state);
+    token(stream, state) {
+      return getToken(stream, state, options);
     }
   };
 }
 
-// These functions help build matching rules for ParseRules.
-
-// An optional rule.
-export function opt(ofRule) {
-  return { ofRule };
-}
-
-// A list of another rule.
-export function list(ofRule, separator) {
-  return { ofRule, isList: true, separator };
-}
-
-// An constraint described as `but not` in the GraphQL spec.
-export function butNot(rule, exclusions) {
-  var ruleMatch = rule.match;
-  rule.match =
-    token => ruleMatch(token) &&
-    exclusions.every(exclusion => !exclusion.match(token));
-  return rule;
-}
-
-// Token of a kind
-export function t(kind, style) {
-  return { style, match: token => token.kind === kind };
-}
-
-// Punctuator
-export function p(value, style) {
-  return {
-    style: style || 'punctuation',
-    match: token => token.kind === 'Punctuation' && token.value === value
-  };
-}
-
-function getToken(eatWhitespace, LexRules, ParseRules, editor, stream, state) {
+function getToken(stream, state, options) {
+  const { LexRules, ParseRules, eatWhitespace, editorConfig } = options;
   if (state.needsAdvance) {
     state.needsAdvance = false;
     advanceRule(state, true);
@@ -76,8 +49,9 @@ function getToken(eatWhitespace, LexRules, ParseRules, editor, stream, state) {
 
   // Remember initial indentation
   if (stream.sol()) {
+    const tabSize = editorConfig && editorConfig.tabSize || 2;
     state.indentLevel =
-      Math.floor(stream.indentation() / editor.config.tabSize);
+      Math.floor(stream.indentation() / tabSize);
   }
 
   // Consume spaces and ignored characters
@@ -85,13 +59,13 @@ function getToken(eatWhitespace, LexRules, ParseRules, editor, stream, state) {
     return 'ws';
   }
 
-  // Tokenize line comment
-  if (editor.lineComment && stream.match(editor.lineComment)) {
+  // Peek a character forward and skip the entire line if it's a comment line
+  if (stream.peek() === '#') {
     stream.skipToEnd();
     return 'comment';
   }
 
-  // Lex a token from the stream
+  // Get a matched token from the stream, using lex
   var token = lex(LexRules, stream);
 
   // If there's no matching token, skip ahead.

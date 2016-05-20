@@ -9,8 +9,8 @@
 
 import CodeMirror from 'codemirror';
 
-import onlineParser, { list, t, p } from '../utils/onlineParser';
-
+import onlineParser from '../utils/onlineParser';
+import { list, t, p } from '../utils/RuleHelpers';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -20,13 +20,14 @@ CodeMirror.defineMode('graphql-variables', config => {
   const parser = onlineParser({
     eatWhitespace: stream => stream.eatSpace(),
     LexRules,
-    ParseRules
+    ParseRules,
+    editorConfig: { tabSize: config.tabSize }
   });
 
   return {
     config,
     startState: parser.startState,
-    token: parser.getToken,
+    token: parser.token,
     indent,
     electricInput: /^\s*[}\]]/,
     fold: 'brace',
