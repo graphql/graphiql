@@ -7,11 +7,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
-
-
 // Create the expected hint response given a possible list and a token
-export default function hintList(editor, options, cursor, token, list) {
+export default function hintList(cursor, token, list) {
   const hints = filterAndSortList(list, normalizeText(token.string));
   if (!hints) {
     return;
@@ -23,11 +20,9 @@ export default function hintList(editor, options, cursor, token, list) {
 
   const results = {
     list: hints,
-    from: CodeMirror.Pos(cursor.line, tokenStart),
-    to: CodeMirror.Pos(cursor.line, token.end),
+    from: { line: cursor.line, column: tokenStart },
+    to: { line: cursor.line, column: token.end },
   };
-
-  CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
 
   return results;
 }
