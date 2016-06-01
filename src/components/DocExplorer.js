@@ -16,7 +16,8 @@ import {
   GraphQLUnionType,
   GraphQLEnumType,
   GraphQLList,
-  GraphQLNonNull
+  GraphQLNonNull,
+  printSchema,
 } from 'graphql';
 
 import debounce from '../utility/debounce';
@@ -117,6 +118,14 @@ export class DocExplorer extends React.Component {
       content.type === SearchDoc || content.type === SchemaDoc
     );
 
+    const printSchemaButton = (
+      <div>
+        <button onClick={this.handlePrintSchema} className='toolbar-button'>
+          {'Print full schema to console'}
+        </button>
+      </div>
+    );
+
     return (
       <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
@@ -140,6 +149,7 @@ export class DocExplorer extends React.Component {
             onSearch={this.handleSearch}
           />
           {this.props.schema ? content : spinnerDiv}
+          {this.props.schema ? printSchemaButton : null}
         </div>
       </div>
     );
@@ -183,6 +193,11 @@ export class DocExplorer extends React.Component {
       name: 'Search Results',
       searchValue: value
     });
+  }
+
+  handlePrintSchema = () => {
+    // eslint-disable-next-line no-console
+    console.log(printSchema(this.props.schema));
   }
 }
 
