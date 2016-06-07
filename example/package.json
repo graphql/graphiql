@@ -13,10 +13,13 @@
   "dependencies": {
     "express": "^4.13.3",
     "express-graphql": "^0.5.1",
-    "graphiql": "../"
+    "graphiql": "../",
+    "graphql": "^0.6.0",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.1"
   },
   "peerDependencies": {
-    "graphql": "^0.5.0",
+    "graphql": "^0.6.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1"
   },

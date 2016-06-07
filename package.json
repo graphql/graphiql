@@ -41,18 +41,18 @@
     "prepublish": ". ./resources/prepublish.sh"
   },
   "dependencies": {
-    "codemirror": "^5.13.2",
-    "codemirror-graphql": "^0.5.0",
+    "codemirror": "^5.15.2",
+    "codemirror-graphql": "^0.5.1",
     "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.5.0",
+    "graphql": "^0.6.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1"
   },
   "devDependencies": {
     "babel-cli": "6.6.5",
-    "babel-eslint": "6.0.2",
+    "babel-eslint": "6.0.4",
     "babel-plugin-syntax-async-functions": "6.5.0",
     "babel-plugin-transform-class-properties": "^6.6.0",
     "babel-plugin-transform-object-rest-spread": "6.6.5",
@@ -66,7 +66,7 @@
     "eslint-plugin-babel": "3.2.0",
     "eslint-plugin-react": "4.3.0",
     "flow-bin": "0.22.1",
-    "graphql": "0.5.0",
+    "graphql": "0.6.0",
     "jsdom": "8.3.0",
     "mocha": "2.4.5",
     "react": "15.0.1",
