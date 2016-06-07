@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-undef */
 /**
  *  Copyright (c) 2015, Facebook, Inc.
  *  All rights reserved.
