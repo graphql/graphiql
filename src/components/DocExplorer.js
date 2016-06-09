@@ -195,7 +195,7 @@ class SearchBox extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { value: null };
+    this.state = { value: '' };
 
     this._debouncedOnSearch = debounce(200, () => {
       this.props.onSearch(this.state.value);
