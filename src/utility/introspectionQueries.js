@@ -23,12 +23,10 @@ export const introspectionQuerySansSubscriptions = `
       directives {
         name
         description
+        locations
         args {
           ...InputValue
         }
-        onOperation
-        onFragment
-        onField
       }
     }
   }
@@ -85,6 +83,22 @@ export const introspectionQuerySansSubscriptions = `
         ofType {
           kind
           name
+          ofType {
+            kind
+            name
+            ofType {
+              kind
+              name
+              ofType {
+                kind
+                name
+                ofType {
+                  kind
+                  name
+                }
+              }
+            }
+          }
         }
       }
     }
