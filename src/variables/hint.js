@@ -43,7 +43,7 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
   const token = editor.getTokenAt(cur);
 
   const results = getVariablesHint(cur, token, options);
-  if (results.list && results.list.length > 0) {
+  if (results && results.list && results.list.length > 0) {
     results.from = CodeMirror.Pos(results.from.line, results.from.column);
     results.to = CodeMirror.Pos(results.to.line, results.to.column);
     CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
