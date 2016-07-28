@@ -123,6 +123,10 @@ and children.
   Accepts a GraphQLType instance and returns an array of field names.
   If not provided, a default behavior will be used.
 
+- `isKeyHandlerDisabled`: an optional boolean that disables key press event
+  listeners.
+ 
+
 **Children:**
 
 * `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.

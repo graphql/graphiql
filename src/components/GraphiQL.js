@@ -89,6 +89,9 @@ import {
  *     Accepts a GraphQLType instance and returns an array of field names.
  *     If not provided, a default behavior will be used.
  *
+ *   - isKeyHandlerDisabled: an optional boolean that disables key press event
+ *     listeners.
+ *
  * Children:
  *
  *   - <GraphiQL.Logo> Replace the GraphiQL logo with your own.
@@ -120,7 +123,8 @@ export class GraphiQL extends React.Component {
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
     onToggleDocs: PropTypes.func,
-    getDefaultFieldNames: PropTypes.func
+    getDefaultFieldNames: PropTypes.func,
+    isKeyHandlerDisabled: PropTypes.bool
   }
 
   constructor(props) {
@@ -195,8 +199,9 @@ export class GraphiQL extends React.Component {
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
 
-    // Add shortcut for running a query.
-    document.addEventListener('keydown', this._keyHandler, true);
+    if (!this.props.isKeyHandlerDisabled) {
+      this._addKeyPressEventListeners();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -225,6 +230,16 @@ export class GraphiQL extends React.Component {
         nextQuery !== this.state.query ||
         nextOperationName !== this.state.operationName) {
       this._updateQueryFacts(nextQuery);
+    }
+
+    if (
+      !this.props.isKeyHandlerDisabled && nextProps.isKeyHandlerDisabled
+    ) {
+      this._removeKeyPressEventListeners();
+    } else if (
+      this.props.isKeyHandlerDisabled && !nextProps.isKeyHandlerDisabled
+    ) {
+      this._addKeyPressEventListeners();
     }
 
     this.setState({
@@ -256,7 +271,9 @@ export class GraphiQL extends React.Component {
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
 
-    document.removeEventListener('keydown', this._keyHandler, true);
+    if (!this.props.isKeyHandlerDisabled) {
+      this._removeKeyPressEventListeners();
+    }
   }
 
   render() {
@@ -575,15 +592,30 @@ export class GraphiQL extends React.Component {
     return;
   }
 
+  _addKeyPressEventListeners = () => {
+    // Add shortcut for running a query.
+    document.addEventListener('keydown', this._keyHandler, true);
+  }
+
+  _removeKeyPressEventListeners = () => {
+    document.removeEventListener('keydown', this._keyHandler, true);
+  }
+
   _keyHandler = event => {
     // "Run Query" event.
     if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
       event.preventDefault();
-      this._runQueryAtCursor();
+      this.runQueryAtCursor();
     }
   }
 
-  _runQueryAtCursor() {
+  /**
+   * Runs query at a cursor and adds the `operationName`
+   * to a request if the operation defines one.
+   *
+   * @public
+   */
+  runQueryAtCursor() {
     if (this.state.subscription) {
       this.handleStopQuery();
       return;
