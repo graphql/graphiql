@@ -286,7 +286,7 @@ export class GraphiQL extends React.Component {
     };
 
     return (
-      <div id="graphiql-container">
+      <div className="graphiql-container">
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">

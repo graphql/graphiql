@@ -1,4 +1,4 @@
-#graphiql-container .spinner-container {
+.graphiql-container .spinner-container {
   position: absolute;
   top: 50%;
   height: 36px;
@@ -8,7 +8,7 @@
   z-index: 10;
 }
 
-#graphiql-container .spinner {
+.graphiql-container .spinner {
   vertical-align: middle;
   display: inline-block;
   height: 24px;

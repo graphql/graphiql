@@ -1,4 +1,4 @@
-#graphiql-container {
+.graphiql-container {
   color: #141823;
   display:         flex;
   display: -webkit-flex;
@@ -24,7 +24,7 @@
   width: 100%;
 }
 
-#graphiql-container .editorWrap {
+.graphiql-container .editorWrap {
   display: -webkit-flex;
   display:         flex;
   -webkit-flex-direction: column;
@@ -33,23 +33,23 @@
           flex: 1;
 }
 
-#graphiql-container .title {
+.graphiql-container .title {
   font-size: 18px;
 }
 
-#graphiql-container .title em {
+.graphiql-container .title em {
   font-family: georgia;
   font-size: 19px;
 }
 
-#graphiql-container .topBarWrap {
+.graphiql-container .topBarWrap {
   display: -webkit-flex;
   display:         flex;
   -webkit-flex-direction: row;
           flex-direction: row;
 }
 
-#graphiql-container .topBar {
+.graphiql-container .topBar {
   -webkit-align-items: center;
           align-items: center;
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
@@ -68,11 +68,11 @@
           user-select: none;
 }
 
-#graphiql-container .toolbar {
+.graphiql-container .toolbar {
   overflow-x: auto;
 }
 
-#graphiql-container .docExplorerShow {
+.graphiql-container .docExplorerShow {
   background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
   background:         linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: 1px solid #d0d0d0;
@@ -87,7 +87,7 @@
   padding: 2px 20px 0 18px;
 }
 
-#graphiql-container .docExplorerShow:before {
+.graphiql-container .docExplorerShow:before {
   border-left: 2px solid #3B5998;
   border-top: 2px solid #3B5998;
   content: '';
@@ -100,7 +100,7 @@
   width: 9px;
 }
 
-#graphiql-container .editorBar {
+.graphiql-container .editorBar {
   display: -webkit-flex;
   display:         flex;
   -webkit-flex: 1;
@@ -109,7 +109,7 @@
           flex-direction: row;
 }
 
-#graphiql-container .queryWrap {
+.graphiql-container .queryWrap {
   display: -webkit-flex;
   display:         flex;
   -webkit-flex: 1;
@@ -118,7 +118,7 @@
           flex-direction: column;
 }
 
-#graphiql-container .resultWrap {
+.graphiql-container .resultWrap {
   border-left: solid 1px #e0e0e0;
   display: -webkit-flex;
   display:         flex;
@@ -129,14 +129,14 @@
           flex-direction: column;
 }
 
-#graphiql-container .docExplorerWrap {
+.graphiql-container .docExplorerWrap {
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 3;
 }
 
-#graphiql-container .docExplorerResizer {
+.graphiql-container .docExplorerResizer {
   cursor: col-resize;
   height: 100%;
   left: -5px;
@@ -146,20 +146,20 @@
   z-index: 10;
 }
 
-#graphiql-container .docExplorerHide {
+.graphiql-container .docExplorerHide {
   cursor: pointer;
   font-size: 18px;
   margin: -7px -8px -6px 0;
   padding: 18px 16px 15px 12px;
 }
 
-#graphiql-container .query-editor {
+.graphiql-container .query-editor {
   -webkit-flex: 1;
           flex: 1;
   position: relative;
 }
 
-#graphiql-container .variable-editor {
+.graphiql-container .variable-editor {
   display: -webkit-flex;
   display:         flex;
   height: 29px;
@@ -168,7 +168,7 @@
   position: relative;
 }
 
-#graphiql-container .variable-editor-title {
+.graphiql-container .variable-editor-title {
   background: #eeeeee;
   border-bottom: 1px solid #d6d6d6;
   border-top: 1px solid #e0e0e0;
@@ -183,19 +183,19 @@
           user-select: none;
 }
 
-#graphiql-container .codemirrorWrap {
+.graphiql-container .codemirrorWrap {
   -webkit-flex: 1;
           flex: 1;
   position: relative;
 }
 
-#graphiql-container .result-window {
+.graphiql-container .result-window {
   -webkit-flex: 1;
           flex: 1;
   position: relative;
 }
 
-#graphiql-container .footer {
+.graphiql-container .footer {
   background: #f6f7f8;
   border-left: 1px solid #e0e0e0;
   border-top: 1px solid #e0e0e0;
@@ -203,7 +203,7 @@
   position: relative;
 }
 
-#graphiql-container .footer:before {
+.graphiql-container .footer:before {
   background: #eeeeee;
   bottom: 0;
   content: " ";
@@ -213,23 +213,23 @@
   width: 12px;
 }
 
-#graphiql-container .result-window .CodeMirror {
+.graphiql-container .result-window .CodeMirror {
   background: #f6f7f8;
 }
 
-#graphiql-container .result-window .CodeMirror-gutters {
+.graphiql-container .result-window .CodeMirror-gutters {
   background-color: #eeeeee;
   border-color: #e0e0e0;
   cursor: col-resize;
 }
 
-#graphiql-container .result-window .CodeMirror-foldgutter,
-#graphiql-container .result-window .CodeMirror-foldgutter-open:after,
-#graphiql-container .result-window .CodeMirror-foldgutter-folded:after {
+.graphiql-container .result-window .CodeMirror-foldgutter,
+.graphiql-container .result-window .CodeMirror-foldgutter-open:after,
+.graphiql-container .result-window .CodeMirror-foldgutter-folded:after {
   padding-left: 3px;
 }
 
-#graphiql-container .toolbar-button {
+.graphiql-container .toolbar-button {
   background: #fdfdfd;
   background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
   background:         linear-gradient(#fbfbfb, #f8f8f8);
@@ -246,7 +246,7 @@
   text-decoration: none;
 }
 
-#graphiql-container .toolbar-button:active {
+.graphiql-container .toolbar-button:active {
   background: -webkit-linear-gradient(#ececec, #d8d8d8);
   background:         linear-gradient(#ececec, #d8d8d8);
   border-color: #cacaca #c9c9c9 #b0b0b0;
@@ -256,19 +256,19 @@
     inset 0 1px 1px rgba(0, 0, 0, 0.08);
 }
 
-#graphiql-container .toolbar-button.error {
+.graphiql-container .toolbar-button.error {
   background: -webkit-linear-gradient(#fdf3f3, #e6d6d7);
   background:         linear-gradient(#fdf3f3, #e6d6d7);
   color: #b00;
 }
 
-#graphiql-container .execute-button-wrap {
+.graphiql-container .execute-button-wrap {
   position: relative;
   margin: 0 14px 0 28px;
   height: 34px;
 }
 
-#graphiql-container .execute-button {
+.graphiql-container .execute-button {
   background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
   background:         linear-gradient(#fdfdfd, #d2d3d6);
   border: 1px solid rgba(0,0,0,0.25);
@@ -282,11 +282,11 @@
   width: 34px;
 }
 
-#graphiql-container .execute-button svg {
+.graphiql-container .execute-button svg {
   pointer-events: none;
 }
 
-#graphiql-container .execute-button:active {
+.graphiql-container .execute-button:active {
   background: -webkit-linear-gradient(#e6e6e6, #c0c0c0);
   background:         linear-gradient(#e6e6e6, #c0c0c0);
   box-shadow:
@@ -295,11 +295,11 @@
     inset 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
-#graphiql-container .execute-button:focus {
+.graphiql-container .execute-button:focus {
   outline: 0;
 }
 
-#graphiql-container .execute-options {
+.graphiql-container .execute-options {
   background: #fff;
   box-shadow:
     0 0 0 1px rgba(0,0,0,0.1),
@@ -312,23 +312,23 @@
   z-index: 100;
 }
 
-#graphiql-container .execute-options li {
+.graphiql-container .execute-options li {
   padding: 2px 30px 4px 10px;
   list-style: none;
   min-width: 100px;
   cursor: pointer;
 }
 
-#graphiql-container .execute-options li.selected {
+.graphiql-container .execute-options li.selected {
   background: #e10098;
   color: white;
 }
 
-#graphiql-container .CodeMirror-scroll {
+.graphiql-container .CodeMirror-scroll {
   -webkit-overflow-scrolling: touch;
 }
 
-#graphiql-container .CodeMirror {
+.graphiql-container .CodeMirror {
   color: #141823;
   font-family:
     'Consolas',
@@ -344,7 +344,7 @@
   width: 100%;
 }
 
-#graphiql-container .CodeMirror-lines {
+.graphiql-container .CodeMirror-lines {
   padding: 20px 0;
 }
 
@@ -463,7 +463,7 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
 
 /* COLORS */
 
-#graphiql-container .CodeMirror-foldmarker {
+.graphiql-container .CodeMirror-foldmarker {
   border-radius: 4px;
   background: #08f;
   background: -webkit-linear-gradient(#43A8FF, #0F83E8);
@@ -480,12 +480,12 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
   text-shadow: 0 -1px rgba(0, 0, 0, 0.1);
 }
 
-#graphiql-container div.CodeMirror span.CodeMirror-matchingbracket {
+.graphiql-container div.CodeMirror span.CodeMirror-matchingbracket {
   color: #555;
   text-decoration: underline;
 }
 
-#graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket {
+.graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket {
   color: #f00;
 }
 
