@@ -111,7 +111,13 @@ export class ExecuteButton extends React.Component {
       } else {
         document.removeEventListener('mouseup', onMouseUp);
         onMouseUp = null;
-        this.setState({ optionsOpen: false });
+        const isOptionsMenuClicked = (
+          downTarget.parentNode.compareDocumentPosition(upEvent.target) &
+          Node.DOCUMENT_POSITION_CONTAINED_BY
+        );
+        if (!isOptionsMenuClicked) { // menu calls setState if it was clicked
+          this.setState({ optionsOpen: false });
+        }
       }
     };
 
