@@ -13,6 +13,17 @@ import { renderIntoDocument } from 'react-addons-test-utils';
 
 import { GraphiQL } from '../GraphiQL';
 
+document.createRange = () => ({
+  setEnd() {},
+  setStart() {},
+  getBoundingClientRect() {
+    return { right: 0 };
+  },
+  getClientRects() {
+    return { right: 0 };
+  }
+});
+
 const mockStorage = (function () {
   let store = {};
   return {
