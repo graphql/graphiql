@@ -376,7 +376,7 @@ class SchemaDoc extends React.Component {
 
     return (
       <div>
-        <Description
+        <MarkdownContent
           className="doc-type-description"
           markdown={
             'A GraphQL schema provides a root type for each kind of operation.'
@@ -495,6 +495,10 @@ class TypeDoc extends React.Component {
                 {argsDef && [ '(', <span key="args">{argsDef}</span>, ')' ]}
                 {': '}
                 <TypeLink type={field.type} onClick={onClickType} />
+                {
+                  field.isDeprecated &&
+                    <span className="doc-alert-text">{' (DEPRECATED)'}</span>
+                }
               </div>
             );
           })}
@@ -513,11 +517,22 @@ class TypeDoc extends React.Component {
             <div key={value.name} className="doc-category-item">
               <div className="enum-value">
                 {value.name}
+                {
+                  value.isDeprecated &&
+                    <span className="doc-alert-text">{' (DEPRECATED)'}</span>
+                }
               </div>
-              <Description
+              <MarkdownContent
                 className="doc-value-description"
                 markdown={value.description}
               />
+              {
+                value.deprecationReason &&
+                  <MarkdownContent
+                    className="doc-alert-text"
+                    markdown={value.deprecationReason}
+                  />
+              }
             </div>
           )}
         </div>
@@ -526,7 +541,7 @@ class TypeDoc extends React.Component {
 
     return (
       <div>
-        <Description
+        <MarkdownContent
           className="doc-type-description"
           markdown={type.description || 'No Description'}
         />
@@ -568,7 +583,7 @@ class FieldDoc extends React.Component {
                 {': '}
                 <TypeLink type={arg.type} onClick={this.props.onClickType} />
               </div>
-              <Description
+              <MarkdownContent
                 className="doc-value-description"
                 markdown={arg.description}
               />
@@ -580,10 +595,17 @@ class FieldDoc extends React.Component {
 
     return (
       <div>
-        <Description
+        <MarkdownContent
           className="doc-type-description"
           markdown={field.description || 'No Description'}
         />
+        {
+          field.deprecationReason &&
+            <MarkdownContent
+              className="doc-alert-text"
+              markdown={field.deprecationReason}
+            />
+        }
         <div className="doc-category">
           <div className="doc-category-title">
             {'type'}
@@ -627,8 +649,8 @@ function renderType(type, onClick) {
   );
 }
 
-// Renders a description
-class Description extends React.Component {
+// Renders arbitrary markdown content
+class MarkdownContent extends React.Component {
 
   static propTypes = {
     markdown: PropTypes.string,
