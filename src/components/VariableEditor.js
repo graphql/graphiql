@@ -41,6 +41,7 @@ export class VariableEditor extends React.Component {
     value: PropTypes.string,
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
+    onRunQuery: PropTypes.func,
   }
 
   constructor(props) {
@@ -78,6 +79,17 @@ export class VariableEditor extends React.Component {
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: false }),
         'Alt-Space': () => this.editor.showHint({ completeSingle: false }),
         'Shift-Space': () => this.editor.showHint({ completeSingle: false }),
+
+        'Cmd-Enter': () => {
+          if (this.props.onRunQuery) {
+            this.props.onRunQuery();
+          }
+        },
+        'Ctrl-Enter': () => {
+          if (this.props.onRunQuery) {
+            this.props.onRunQuery();
+          }
+        },
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
