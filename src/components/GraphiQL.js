@@ -194,9 +194,6 @@ export class GraphiQL extends React.Component {
 
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
-
-    // Add shortcut for running a query.
-    document.addEventListener('keydown', this._keyHandler, true);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -255,8 +252,6 @@ export class GraphiQL extends React.Component {
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
-
-    document.removeEventListener('keydown', this._keyHandler, true);
   }
 
   render() {
@@ -323,6 +318,7 @@ export class GraphiQL extends React.Component {
                 value={this.state.query}
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
+                onRunQuery={this.handleEditorRunQuery}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -337,6 +333,7 @@ export class GraphiQL extends React.Component {
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
+                  onRunQuery={this.handleEditorRunQuery}
                 />
               </div>
             </div>
@@ -575,14 +572,6 @@ export class GraphiQL extends React.Component {
     return;
   }
 
-  _keyHandler = event => {
-    // "Run Query" event.
-    if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
-      event.preventDefault();
-      this._runQueryAtCursor();
-    }
-  }
-
   _runQueryAtCursor() {
     if (this.state.subscription) {
       this.handleStopQuery();
@@ -666,6 +655,10 @@ export class GraphiQL extends React.Component {
       elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
       elem.removeEventListener('click', this._onClickHintInformation);
     });
+  }
+
+  handleEditorRunQuery = () => {
+    this._runQueryAtCursor();
   }
 
   _onClickHintInformation = event => {

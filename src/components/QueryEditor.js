@@ -43,6 +43,7 @@ export class QueryEditor extends React.Component {
     value: PropTypes.string,
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
+    onRunQuery: PropTypes.func,
   }
 
   constructor(props) {
@@ -82,6 +83,17 @@ export class QueryEditor extends React.Component {
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),
         'Alt-Space': () => this.editor.showHint({ completeSingle: true }),
         'Shift-Space': () => this.editor.showHint({ completeSingle: true }),
+
+        'Cmd-Enter': () => {
+          if (this.props.onRunQuery) {
+            this.props.onRunQuery();
+          }
+        },
+        'Ctrl-Enter': () => {
+          if (this.props.onRunQuery) {
+            this.props.onRunQuery();
+          }
+        },
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
