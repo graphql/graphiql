@@ -8,11 +8,6 @@
 
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import CodeMirror from 'codemirror';
-import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/brace-fold';
-import 'codemirror/keymap/sublime';
-import 'codemirror/mode/javascript/javascript';
 
 
 /**
@@ -31,6 +26,14 @@ export class ResultViewer extends React.Component {
   }
 
   componentDidMount() {
+    // Lazily require to ensure requiring GraphiQL outside of a Browser context
+    // does not produce an error.
+    const CodeMirror = require('codemirror');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/brace-fold');
+    require('codemirror/keymap/sublime');
+    require('codemirror/mode/javascript/javascript');
+
     this.viewer = CodeMirror(ReactDOM.findDOMNode(this), {
       lineWrapping: true,
       value: this.props.value || '',

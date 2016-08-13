@@ -7,7 +7,6 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
 import { GraphQLNonNull, GraphQLList } from 'graphql';
 import marked from 'marked';
 
@@ -17,6 +16,8 @@ import marked from 'marked';
  * about the type and description for the selected context.
  */
 export default function onHasCompletion(cm, data, onHintInformationRender) {
+  const CodeMirror = require('codemirror');
+
   let wrapper;
   let information;
 
