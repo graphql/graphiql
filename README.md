@@ -43,7 +43,7 @@ See the example in the git repository to see how to use the pre-bundled file.
 
 Don't forget to include the CSS file on the page! If you're using npm, you can
 find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
-[releases page](/graphql/graphiql/releases).
+[releases page](https://github.com/graphql/graphiql/releases).
 
 For an example of setting up a GraphiQL, check out the [example](./example) in
 this repository which also includes a few useful features highlighting
