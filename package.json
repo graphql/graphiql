@@ -42,11 +42,11 @@
   },
   "dependencies": {
     "codemirror": "^5.15.2",
-    "codemirror-graphql": "^0.5.2",
+    "codemirror-graphql": "^0.5.4",
     "marked": "^0.3.5"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0",
+    "graphql": "^0.6.0 || ^0.7.0",
     "react": ">=0.14.8",
     "react-dom": ">=0.14.8"
   },
@@ -66,7 +66,7 @@
     "eslint-plugin-babel": "3.2.0",
     "eslint-plugin-react": "4.3.0",
     "flow-bin": "0.22.1",
-    "graphql": "0.6.0",
+    "graphql": "0.7.0",
     "jsdom": "8.3.0",
     "mocha": "2.4.5",
     "react": "15.3.0",
