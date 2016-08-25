@@ -167,6 +167,9 @@ function restoreState(state) {
 
 // Push a new rule onto the state.
 function pushRule(ParseRules, state, ruleKind) {
+  if (!ParseRules[ruleKind]) {
+    throw new TypeError('Unknown rule: ' + ruleKind);
+  }
   state.prevState = assign({}, state);
   state.kind = ruleKind;
   state.name = null;

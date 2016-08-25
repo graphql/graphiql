@@ -28,7 +28,7 @@ export const LexRules = {
   Name: /^[_A-Za-z][_0-9A-Za-z]*/,
 
   // All Punctuation used in GraphQL
-  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|\]|\{|\})/,
+  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|\]|\{|\||\})/,
 
   // Combines the IntValue and FloatValue tokens.
   Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,
@@ -46,14 +46,24 @@ export const ParseRules = {
   Document: [ list('Definition') ],
   Definition(token) {
     switch (token.value) {
+      case '{': return 'ShortQuery';
       case 'query': return 'Query';
       case 'mutation': return 'Mutation';
       case 'subscription': return 'Subscription';
       case 'fragment': return 'FragmentDefinition';
-      case '{': return 'ShortQuery';
+      case 'schema': return 'SchemaDef';
+      case 'scalar': return 'ScalarDef';
+      case 'type': return 'ObjectTypeDef';
+      case 'interface': return 'InterfaceDef';
+      case 'union': return 'UnionDef';
+      case 'enum': return 'EnumDef';
+      case 'input': return 'InputDef';
+      case 'extend': return 'ExtendDef';
+      case 'directive': return 'DirectiveDef';
     }
   },
   // Note: instead of "Operation", these rules have been separated out.
+  ShortQuery: [ 'SelectionSet' ],
   Query: [
     word('query'),
     opt(name('def')),
@@ -61,7 +71,6 @@ export const ParseRules = {
     list('Directive'),
     'SelectionSet'
   ],
-  ShortQuery: [ 'SelectionSet' ],
   Mutation: [
     word('mutation'),
     opt(name('def')),
@@ -142,9 +151,89 @@ export const ParseRules = {
     return token.value === '[' ? 'ListType' : 'NamedType';
   },
   // NonNullType has been merged into ListType and NamedType to simplify.
-  ListType: [ p('['), 'NamedType', p(']'), opt(p('!')) ],
+  ListType: [ p('['), 'Type', p(']'), opt(p('!')) ],
   NamedType: [ name('atom'), opt(p('!')) ],
   Directive: [ p('@', 'meta'), name('meta'), opt('Arguments') ],
+  // GraphQL schema language
+  SchemaDef: [
+    word('schema'),
+    list('Directive'),
+    p('{'),
+    list('OperationTypeDef'),
+    p('}')
+  ],
+  OperationTypeDef: [ name('keyword'), p(':'), name('atom') ],
+  ScalarDef: [ word('scalar'), name('atom'), list('Directive') ],
+  ObjectTypeDef: [
+    word('type'),
+    name('atom'),
+    opt('Implements'),
+    list('Directive'),
+    p('{'),
+    list('FieldDef'),
+    p('}'),
+  ],
+  Implements: [ word('implements'), list(name('atom')) ],
+  FieldDef: [
+    name('property'),
+    opt('ArgumentsDef'),
+    p(':'),
+    'Type',
+    list('Directive')
+  ],
+  ArgumentsDef: [ p('('), list('InputValueDef'), p(')') ],
+  InputValueDef: [
+    name('attribute'),
+    p(':'),
+    'Type',
+    opt('DefaultValue'),
+    list('Directive')
+  ],
+  InterfaceDef: [
+    word('interface'),
+    name('atom'),
+    list('Directive'),
+    p('{'),
+    list('FieldDef'),
+    p('}'),
+  ],
+  UnionDef: [
+    word('union'),
+    name('atom'),
+    list('Directive'),
+    p('='),
+    name('atom'),
+    list('UnionMember')
+  ],
+  UnionMember: [ p('|'), name('atom') ],
+  EnumDef: [
+    word('enum'),
+    name('atom'),
+    list('Directive'),
+    p('{'),
+    list('EnumValueDef'),
+    p('}'),
+  ],
+  EnumValueDef: [ name('string-2'), list('Directive') ],
+  InputDef: [
+    word('input'),
+    name('atom'),
+    list('Directive'),
+    p('{'),
+    list('InputValueDef'),
+    p('}'),
+  ],
+  ExtendDef: [ word('extend'), 'ObjectTypeDef' ],
+  DirectiveDef: [
+    word('directive'),
+    p('@', 'meta'),
+    name('meta'),
+    opt('ArgumentsDef'),
+    word('on'),
+    name('string-2'),
+    list('DirectiveLocation')
+  ],
+  DirectiveLocation: [ p('|'), name('string-2') ]
 };
 
 // A keyword Token.
