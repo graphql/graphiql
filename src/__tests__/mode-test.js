@@ -70,13 +70,24 @@ describe('graphql-mode', () => {
     });
   });
 
-  var kitchenSink = readFileSync(
-    join(__dirname, '/kitchen-sink.graphql'),
-    { encoding: 'utf8' }
-  );
-
   it('parses kitchen-sink query without invalidchar', () => {
+    var kitchenSink = readFileSync(
+      join(__dirname, '/kitchen-sink.graphql'),
+      { encoding: 'utf8' }
+    );
+
     CodeMirror.runMode(kitchenSink, 'graphql', (token, style) => {
+      expect(style).to.not.equal('invalidchar');
+    });
+  });
+
+  it('parses schema-kitchen-sink query without invalidchar', () => {
+    var schemaKitchenSink = readFileSync(
+      join(__dirname, '/schema-kitchen-sink.graphql'),
+      { encoding: 'utf8' }
+    );
+
+    CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {
       expect(style).to.not.equal('invalidchar');
     });
   });

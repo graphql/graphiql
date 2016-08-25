@@ -16,6 +16,7 @@ import runParser from '../runParser';
 import { LexRules, ParseRules, isIgnored } from '../Rules';
 
 describe('onlineParser', () => {
+
   it('parses kitchen-sink without invalidchar', () => {
     const kitchenSink = readFileSync(
       join(__dirname, '../../__tests__/kitchen-sink.graphql'),
@@ -30,4 +31,24 @@ describe('onlineParser', () => {
       expect(style).to.not.equal('invalidchar');
     });
   });
+
+  it('parses schema-kitchen-sink without invalidchar', () => {
+    const schemaKitchenSink = readFileSync(
+      join(__dirname, '../../__tests__/schema-kitchen-sink.graphql'),
+      { encoding: 'utf8' }
+    );
+
+    runParser(schemaKitchenSink, {
+      eatWhitespace: stream => stream.eatWhile(isIgnored),
+      LexRules,
+      ParseRules
+    }, (stream, state, style) => {
+      if (style === 'invalidchar') {
+        console.error(state);
+        console.error(stream);
+      }
+      expect(style).to.not.equal('invalidchar');
+    });
+  });
+
 });
