@@ -32,17 +32,14 @@ export class ResultViewer extends React.Component {
     require('codemirror/addon/fold/foldgutter');
     require('codemirror/addon/fold/brace-fold');
     require('codemirror/keymap/sublime');
-    require('codemirror/mode/javascript/javascript');
+    require('codemirror-graphql/results/mode');
 
     this.viewer = CodeMirror(ReactDOM.findDOMNode(this), {
       lineWrapping: true,
       value: this.props.value || '',
       readOnly: true,
       theme: 'graphiql',
-      mode: {
-        name: 'javascript',
-        json: true
-      },
+      mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {
         minFoldSize: 4

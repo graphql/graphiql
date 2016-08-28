@@ -459,7 +459,7 @@ export class GraphiQL extends React.Component {
         this.setState({ response: responseString });
       }
     }).catch(error => {
-      this.setState({ response: error && (error.stack || String(error)) });
+      this.setState({ response: error && String(error.stack || error) });
     });
   }
 
@@ -483,7 +483,7 @@ export class GraphiQL extends React.Component {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error && (error.stack || String(error))
+          response: error && String(error.stack || error)
         });
       });
     } else if (isObservable(fetch)) {
@@ -495,7 +495,7 @@ export class GraphiQL extends React.Component {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error && (error.stack || String(error)),
+            response: error && String(error.stack || error),
             subscription: null
           });
         },
