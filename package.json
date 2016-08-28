@@ -21,6 +21,7 @@
     "lint.js",
     "utils",
     "variables",
+    "results",
     "README.md",
     "LICENSE"
   ],
