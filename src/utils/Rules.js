@@ -97,7 +97,9 @@ export const ParseRules = {
       stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.
-  AliasedField: [ name('qualifier'), p(':'), 'Field' ],
+  AliasedField: [
+    name('property'), p(':'), name('qualifier'), opt('Arguments'), list('Directive'), opt('SelectionSet')
+  ],
   Field: [
     name('property'), opt('Arguments'), list('Directive'), opt('SelectionSet')
   ],
