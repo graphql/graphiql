@@ -94,5 +94,5 @@ const ParseRules = {
   NullValue: [ t('Keyword', 'keyword') ],
   ListValue: [ p('['), list('Value', p(',')), p(']') ],
   ObjectValue: [ p('{'), list('ObjectField', p(',')), p('}') ],
-  ObjectField: [ t('String', 'attribute'), p(':'), 'Value' ],
+  ObjectField: [ t('String', 'property'), p(':'), 'Value' ],
 };
