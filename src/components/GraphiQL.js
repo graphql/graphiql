@@ -247,7 +247,7 @@ export class GraphiQL extends React.Component {
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
     this._storageSet('query', this.state.query);
-    this._storageSet('variables', this.state.variables);
+    this._storageSet('variables', this.state.variables || '');
     this._storageSet('operationName', this.state.operationName);
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
