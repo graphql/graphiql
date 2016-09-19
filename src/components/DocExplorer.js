@@ -496,7 +496,7 @@ class TypeDoc extends React.Component {
                 {': '}
                 <TypeLink type={field.type} onClick={onClickType} />
                 {
-                  field.isDeprecated &&
+                  (field.isDeprecated || field.deprecationReason) &&
                     <span className="doc-alert-text">{' (DEPRECATED)'}</span>
                 }
               </div>
@@ -518,7 +518,7 @@ class TypeDoc extends React.Component {
               <div className="enum-value">
                 {value.name}
                 {
-                  value.isDeprecated &&
+                  (value.isDeprecated || value.deprecationReason) &&
                     <span className="doc-alert-text">{' (DEPRECATED)'}</span>
                 }
               </div>
