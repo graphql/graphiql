@@ -475,7 +475,19 @@ export class GraphiQL extends React.Component {
 
   _fetchQuery(query, variables, operationName, cb) {
     const fetcher = this.props.fetcher;
-    const fetch = fetcher({ query, variables, operationName });
+    let jsonVariables = null;
+
+    try {
+      jsonVariables = JSON.parse(variables);
+    } catch (error) {
+      jsonVariables = null;
+    }
+
+    const fetch = fetcher({
+      query,
+      variables: jsonVariables,
+      operationName
+    });
 
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
