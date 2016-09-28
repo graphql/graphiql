@@ -478,9 +478,14 @@ export class GraphiQL extends React.Component {
     let jsonVariables = null;
 
     try {
-      jsonVariables = JSON.parse(variables);
+      jsonVariables =
+        variables && variables.trim() !== '' ? JSON.parse(variables) : null;
     } catch (error) {
-      jsonVariables = null;
+      throw new Error(`Variables are invalid JSON: ${error.message}.`);
+    }
+
+    if (typeof jsonVariables !== 'object') {
+      throw new Error('Variables are not a JSON object.');
     }
 
     const fetch = fetcher({
@@ -521,10 +526,7 @@ export class GraphiQL extends React.Component {
 
       return subscription;
     } else {
-      this.setState({
-        isWaitingForResponse: false,
-        response: 'Fetcher did not return Promise or Observable.'
-      });
+      throw new Error('Fetcher did not return Promise or Observable.');
     }
   }
 
@@ -549,27 +551,34 @@ export class GraphiQL extends React.Component {
       }
     }
 
-    // _fetchQuery may return a subscription.
-    const subscription = this._fetchQuery(
-      editedQuery,
-      variables,
-      operationName,
-      result => {
-        if (queryID === this._editorQueryID) {
-          this.setState({
-            isWaitingForResponse: false,
-            response: JSON.stringify(result, null, 2),
-          });
+    try {
+      // _fetchQuery may return a subscription.
+      const subscription = this._fetchQuery(
+        editedQuery,
+        variables,
+        operationName,
+        result => {
+          if (queryID === this._editorQueryID) {
+            this.setState({
+              isWaitingForResponse: false,
+              response: JSON.stringify(result, null, 2),
+            });
+          }
         }
-      }
-    );
+      );
 
-    this.setState({
-      isWaitingForResponse: true,
-      response: null,
-      subscription,
-      operationName,
-    });
+      this.setState({
+        isWaitingForResponse: true,
+        response: null,
+        subscription,
+        operationName,
+      });
+    } catch (error) {
+      this.setState({
+        isWaitingForResponse: false,
+        response: error.message
+      });
+    }
   }
 
   handleStopQuery = () => {
