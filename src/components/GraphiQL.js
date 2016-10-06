@@ -897,21 +897,19 @@ function isPromise(value) {
   return typeof value === 'object' && typeof value.then === 'function';
 }
 
+// Duck-type Observable.take(1).toPromise()
 function observableToPromise(observable) {
-  if ( isPromise(observable) ) {
-    return observable;
-  }
   if ( !isObservable(observable) ) {
     return observable;
   }
   return new Promise((resolve, reject) => {
-    let lastValue;
-    observable.subscribe(v => {
-      lastValue = v;
+    const subscription = observable.subscribe(v => {
+      resolve(v);
+      subscription.unsubscribe();
     }, e => {
       reject(e);
     }, () => {
-      resolve(lastValue);
+      reject(new Error('no value resolved'));
     });
   });
 }
