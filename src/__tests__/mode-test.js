@@ -93,7 +93,7 @@ describe('graphql-mode', () => {
   });
 
   it('parses anonymous operations without invalidchar', () => {
-    CodeMirror.runMode(`{ id }`, 'graphql', (token, style) => {
+    CodeMirror.runMode('{ id }', 'graphql', (token, style) => {
       expect(style).to.not.equal('invalidchar');
     });
 

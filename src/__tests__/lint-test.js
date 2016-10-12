@@ -57,18 +57,14 @@ describe('graphql-lint', () => {
 
   it('catches syntax errors', async () => {
     expect(
-      (await printLintErrors(`qeury`))[0].message
-    ).to.contain(
-`Unexpected Name "qeury"`
-    );
+      (await printLintErrors('qeury'))[0].message
+    ).to.contain('Unexpected Name "qeury"');
   });
 
   it('catches field validation errors', async () => {
     expect(
-      (await printLintErrors(`query queryName { title }`))[0].message
-    ).to.contain(
-`Cannot query field "title" on type "Test".`
-    );
+      (await printLintErrors('query queryName { title }'))[0].message
+    ).to.contain('Cannot query field "title" on type "Test".');
   });
 
   var kitchenSink = readFileSync(

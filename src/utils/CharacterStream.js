@@ -53,7 +53,7 @@ export default class CharacterStream {
   }
 
   peek(): string | void {
-    return Boolean(this._sourceText.charAt(this._pos)) ?
+    return this._sourceText.charAt(this._pos) ?
       this._sourceText.charAt(this._pos) : null;
   }
 

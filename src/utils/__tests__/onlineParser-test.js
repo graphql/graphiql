@@ -43,10 +43,6 @@ describe('onlineParser', () => {
       LexRules,
       ParseRules
     }, (stream, state, style) => {
-      if (style === 'invalidchar') {
-        console.error(state);
-        console.error(stream);
-      }
       expect(style).to.not.equal('invalidchar');
     });
   });
