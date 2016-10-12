@@ -8,10 +8,6 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-require('babel/register')({
-  optional: [ 'es7.asyncFunctions' ]
-});
-
 var jsdom = require('jsdom');
 
 // setup the simplest document possible
@@ -29,6 +25,9 @@ global.document.createRange = function () {
   return {
     setEnd: function () {},
     setStart: function () {},
+    getClientRects: function () {
+      return { top: 0, bottom: 0, left: 0, right: 0 };
+    },
     getBoundingClientRect: function () {
       return { right: 0 };
     }
