@@ -88,11 +88,11 @@ export class DocExplorer extends React.Component {
             onClickType={this.handleClickTypeOrField}
             onClickField={this.handleClickTypeOrField}
           /> :
-          <FieldDoc
-            key={navItem.name}
-            field={navItem}
-            onClickType={this.handleClickTypeOrField}
-          />;
+            <FieldDoc
+              key={navItem.name}
+              field={navItem}
+              onClickType={this.handleClickTypeOrField}
+            />;
       }
     } else if (schema) {
       title = 'Documentation Explorer';
