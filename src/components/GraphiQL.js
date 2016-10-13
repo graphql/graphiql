@@ -420,7 +420,7 @@ export class GraphiQL extends React.Component {
 
     const fetcher = this.props.fetcher;
 
-    const fetch = fetcher({ query: introspectionQuery });
+    const fetch = observableToPromise(fetcher({ query: introspectionQuery }));
     if (!isPromise(fetch)) {
       this.setState({
         response: 'Fetcher did not return a Promise for introspection.'
@@ -435,7 +435,9 @@ export class GraphiQL extends React.Component {
 
       // Try the stock introspection query first, falling back on the
       // sans-subscriptions query for services which do not yet support it.
-      const fetch2 = fetcher({ query: introspectionQuerySansSubscriptions });
+      const fetch2 = observableToPromise(fetcher({
+        query: introspectionQuerySansSubscriptions
+      }));
       if (!isPromise(fetch)) {
         throw new Error('Fetcher did not return a Promise for introspection.');
       }
@@ -893,6 +895,23 @@ const defaultQuery =
 // Duck-type promise detection.
 function isPromise(value) {
   return typeof value === 'object' && typeof value.then === 'function';
+}
+
+// Duck-type Observable.take(1).toPromise()
+function observableToPromise(observable) {
+  if ( !isObservable(observable) ) {
+    return observable;
+  }
+  return new Promise((resolve, reject) => {
+    const subscription = observable.subscribe(v => {
+      resolve(v);
+      subscription.unsubscribe();
+    }, e => {
+      reject(e);
+    }, () => {
+      reject(new Error('no value resolved'));
+    });
+  });
 }
 
 // Duck-type observable detection.
