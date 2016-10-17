@@ -69,7 +69,7 @@
     "chai": "3.5.0",
     "chai-subset": "1.3.0",
     "codemirror": "5.19.0",
-    "eslint": "3.7.1",
+    "eslint": "3.8.0",
     "flow-bin": "0.33.0",
     "graphql": "0.7.2",
     "jsdom": "9.6.0",
