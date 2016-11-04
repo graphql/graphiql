@@ -23,20 +23,19 @@ import {
   GraphQLList,
 } from 'graphql';
 
-var app = express();
+const app = express();
 app.use(express.static(__dirname));
-app.use('/graphql', graphqlHTTP(() => ({
+app.use('/', graphqlHTTP(() => ({
   schema: TestSchema
 })));
-app.listen(8080);
-console.log('Started on http://localhost:8080/');
+app.listen(8080, () => console.log('Started on http://localhost:8080/'));
 
 // Schema defined here
 
 
 // Test Schema
 
-var TestEnum = new GraphQLEnumType({
+const TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
   values: {
     RED: { description: 'A rosy color' },
@@ -45,7 +44,7 @@ var TestEnum = new GraphQLEnumType({
   }
 });
 
-var TestInputObject = new GraphQLInputObjectType({
+const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
     string: {
@@ -69,7 +68,7 @@ var TestInputObject = new GraphQLInputObjectType({
   })
 });
 
-var TestInterface = new GraphQLInterfaceType({
+const TestInterface = new GraphQLInterfaceType({
   name: 'TestInterface',
   description: 'Test interface.',
   fields: () => ({
@@ -83,7 +82,7 @@ var TestInterface = new GraphQLInterfaceType({
   }
 });
 
-var UnionFirst = new GraphQLObjectType({
+const UnionFirst = new GraphQLObjectType({
   name: 'First',
   fields: () => ({
     name: {
@@ -98,7 +97,7 @@ var UnionFirst = new GraphQLObjectType({
   interfaces: [ TestInterface ]
 });
 
-var UnionSecond = new GraphQLObjectType({
+const UnionSecond = new GraphQLObjectType({
   name: 'Second',
   fields: () => ({
     name: {
@@ -113,7 +112,7 @@ var UnionSecond = new GraphQLObjectType({
   interfaces: [ TestInterface ]
 });
 
-var TestUnion = new GraphQLUnionType({
+const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [ UnionFirst, UnionSecond ],
   resolveType() {
@@ -121,7 +120,7 @@ var TestUnion = new GraphQLUnionType({
   }
 });
 
-var TestType = new GraphQLObjectType({
+const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
     test: {
@@ -172,7 +171,7 @@ var TestType = new GraphQLObjectType({
   })
 });
 
-var TestMutationType = new GraphQLObjectType({
+const TestMutationType = new GraphQLObjectType({
   name: 'MutationType',
   description: 'This is a simple mutation type',
   fields: {
@@ -186,7 +185,7 @@ var TestMutationType = new GraphQLObjectType({
   }
 });
 
-var TestSubscriptionType = new GraphQLObjectType({
+const TestSubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   description: 'This is a simple subscription type',
   fields: {
