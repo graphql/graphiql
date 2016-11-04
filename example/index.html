@@ -93,7 +93,7 @@
 
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch(window.location.origin + window.location.pathname, {
+        return fetch(window.location.origin + window.location.pathname + 'graphql', {
           method: 'post',
           headers: {
             'Accept': 'application/json',
