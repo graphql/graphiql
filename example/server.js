@@ -25,7 +25,7 @@ import {
 
 const app = express();
 app.use(express.static(__dirname));
-app.use('/', graphqlHTTP(() => ({
+app.use('/graphql', graphqlHTTP(() => ({
   schema: TestSchema
 })));
 app.listen(8080, () => console.log('Started on http://localhost:8080/'));
