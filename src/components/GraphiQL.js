@@ -556,6 +556,12 @@ export class GraphiQL extends React.Component {
     }
 
     try {
+      this.setState({
+        isWaitingForResponse: true,
+        response: null,
+        operationName,
+      });
+
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
         editedQuery,
@@ -571,12 +577,7 @@ export class GraphiQL extends React.Component {
         }
       );
 
-      this.setState({
-        isWaitingForResponse: true,
-        response: null,
-        subscription,
-        operationName,
-      });
+      this.setState({ subscription });
     } catch (error) {
       this.setState({
         isWaitingForResponse: false,
