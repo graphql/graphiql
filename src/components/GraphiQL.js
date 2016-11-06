@@ -557,7 +557,6 @@ export class GraphiQL extends React.Component {
       this.setState({
         isWaitingForResponse: true,
         response: null,
-        subscription,
         operationName,
       });
 
@@ -575,6 +574,8 @@ export class GraphiQL extends React.Component {
           }
         }
       );
+
+      this.setState({ subscription });
     } catch (error) {
       this.setState({
         isWaitingForResponse: false,
