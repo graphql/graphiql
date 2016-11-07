@@ -169,7 +169,8 @@ export class GraphiQL extends React.Component {
       variableEditorOpen: Boolean(variables),
       variableEditorHeight:
         Number(this._storageGet('variableEditorHeight')) || 200,
-      docExplorerOpen: false,
+      docExplorerOpen:
+        (this._storageGet('docExplorerOpen') === 'true') || false,
       docExplorerWidth: Number(this._storageGet('docExplorerWidth')) || 350,
       isWaitingForResponse: false,
       subscription: null,
@@ -252,6 +253,7 @@ export class GraphiQL extends React.Component {
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
+    this._storageSet('docExplorerOpen', this.state.docExplorerOpen);
   }
 
   render() {
@@ -554,6 +556,12 @@ export class GraphiQL extends React.Component {
     }
 
     try {
+      this.setState({
+        isWaitingForResponse: true,
+        response: null,
+        operationName,
+      });
+
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
         editedQuery,
@@ -569,12 +577,7 @@ export class GraphiQL extends React.Component {
         }
       );
 
-      this.setState({
-        isWaitingForResponse: true,
-        response: null,
-        subscription,
-        operationName,
-      });
+      this.setState({ subscription });
     } catch (error) {
       this.setState({
         isWaitingForResponse: false,
