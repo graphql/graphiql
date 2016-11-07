@@ -5,6 +5,12 @@
     "react"
   ],
 
+  "settings": {
+    "react": {
+      "version": "0.14.0"
+    }
+  },
+
   "env": {
     "browser": true,
     "es6": true,
@@ -45,7 +51,7 @@
     "array-bracket-spacing": 0,
     "generator-star-spacing": 0,
 
-    "react/no-deprecated": [2, {"react": "0.14.0"}],
+    "react/no-deprecated": 2,
     "react/no-did-mount-set-state": 2,
     "react/no-did-update-set-state": 2,
     "react/no-direct-mutation-state": 2,

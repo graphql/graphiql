@@ -31,6 +31,8 @@ export class ResultViewer extends React.Component {
     const CodeMirror = require('codemirror');
     require('codemirror/addon/fold/foldgutter');
     require('codemirror/addon/fold/brace-fold');
+    require('codemirror/addon/dialog/dialog');
+    require('codemirror/addon/search/search');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
 
