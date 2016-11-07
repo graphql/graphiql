@@ -259,10 +259,12 @@ export class GraphiQL extends React.Component {
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const logo = find(children, child => child.type === GraphiQL.Logo) ||
+    const logo =
+      find(children, child => child.type === GraphiQL.Logo) ||
       <GraphiQL.Logo />;
 
-    const toolbar = find(children, child => child.type === GraphiQL.Toolbar) ||
+    const toolbar =
+      find(children, child => child.type === GraphiQL.Toolbar) ||
       <GraphiQL.Toolbar />;
 
     const footer = find(children, child => child.type === GraphiQL.Footer);
@@ -301,7 +303,8 @@ export class GraphiQL extends React.Component {
               />
               {toolbar}
             </div>
-            {!this.state.docExplorerOpen &&
+            {
+              !this.state.docExplorerOpen &&
               <button
                 className="docExplorerShow"
                 onClick={this.handleToggleDocs}>
@@ -340,7 +343,8 @@ export class GraphiQL extends React.Component {
               </div>
             </div>
             <div className="resultWrap">
-              {this.state.isWaitingForResponse &&
+              {
+                this.state.isWaitingForResponse &&
                 <div className="spinner-container">
                   <div className="spinner" />
                 </div>
