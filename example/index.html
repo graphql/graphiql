@@ -95,7 +95,20 @@
 
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch(window.location.origin + window.location.pathname + 'graphql', {
+        var origin = window.location.origin;
+
+        // IE 10 :(
+        if (!origin) {
+          window.location.origin =
+            window.location.protocol + "//" +
+            window.location.hostname + (
+              window.location.port ?
+              ':' + window.location.port:
+              ''
+            );
+        }
+
+        return fetch(origin + window.location.pathname + 'graphql', {
           method: 'post',
           headers: {
             'Accept': 'application/json',
