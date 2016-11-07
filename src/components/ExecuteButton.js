@@ -79,7 +79,7 @@ export class ExecuteButton extends React.Component {
           <svg width="34" height="34">
             {this.props.isRunning ?
               <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" /> :
-                <path d="M 11 9 L 24 16 L 11 23 z" />}
+              <path d="M 11 9 L 24 16 L 11 23 z" />}
           </svg>
         </button>
         {options}
