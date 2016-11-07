@@ -80,19 +80,23 @@ export class DocExplorer extends React.Component {
           />;
       } else {
         title = navItem.name;
-        content = isType(navItem) ?
-          <TypeDoc
-            key={navItem.name}
-            schema={schema}
-            type={navItem}
-            onClickType={this.handleClickTypeOrField}
-            onClickField={this.handleClickTypeOrField}
-          /> :
-          <FieldDoc
-            key={navItem.name}
-            field={navItem}
-            onClickType={this.handleClickTypeOrField}
-          />;
+        if (isType(navItem)) {
+          content =
+            <TypeDoc
+              key={navItem.name}
+              schema={schema}
+              type={navItem}
+              onClickType={this.handleClickTypeOrField}
+              onClickField={this.handleClickTypeOrField}
+            />;
+        } else {
+          content =
+            <FieldDoc
+              key={navItem.name}
+              field={navItem}
+              onClickType={this.handleClickTypeOrField}
+            />;
+        }
       }
     } else if (schema) {
       title = 'Documentation Explorer';
@@ -120,7 +124,8 @@ export class DocExplorer extends React.Component {
     return (
       <div className="doc-explorer">
         <div className="doc-explorer-title-bar">
-          {prevName &&
+          {
+            prevName &&
             <div
               className="doc-explorer-back"
               onClick={this.handleNavBackClick}>
@@ -210,7 +215,8 @@ class SearchBox extends React.Component {
   render() {
     return (
       <div>
-        {this.props.isShown &&
+        {
+          this.props.isShown &&
           <label className="search-box-outer">
             <input className="search-box-input"
               onChange={this.handleChange}
@@ -333,7 +339,8 @@ class SearchDoc extends React.Component {
     return (
       <div>
         <div className="doc-category">
-          {(matchedTypes.length > 0 || matchedFields.length > 0) &&
+          {
+            (matchedTypes.length > 0 || matchedFields.length > 0) &&
             <div className="doc-category-title">
               {'search results'}
             </div>
@@ -391,13 +398,16 @@ class SchemaDoc extends React.Component {
             {': '}
             <TypeLink type={queryType} onClick={this.props.onClickType} />
           </div>
-          {mutationType &&
+          {
+            mutationType &&
             <div className="doc-category-item">
               <span className="keyword">{'mutation'}</span>
               {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
-            </div>}
-          {subscriptionType &&
+            </div>
+          }
+          {
+            subscriptionType &&
             <div className="doc-category-item">
               <span className="keyword">{'subscription'}</span>
               {': '}
@@ -405,7 +415,8 @@ class SchemaDoc extends React.Component {
                 type={subscriptionType}
                 onClick={this.props.onClickType}
               />
-            </div>}
+            </div>
+          }
         </div>
       </div>
     );
@@ -497,7 +508,7 @@ class TypeDoc extends React.Component {
                 <TypeLink type={field.type} onClick={onClickType} />
                 {
                   (field.isDeprecated || field.deprecationReason) &&
-                    <span className="doc-alert-text">{' (DEPRECATED)'}</span>
+                  <span className="doc-alert-text">{' (DEPRECATED)'}</span>
                 }
               </div>
             );
@@ -519,7 +530,7 @@ class TypeDoc extends React.Component {
                 {value.name}
                 {
                   (value.isDeprecated || value.deprecationReason) &&
-                    <span className="doc-alert-text">{' (DEPRECATED)'}</span>
+                  <span className="doc-alert-text">{' (DEPRECATED)'}</span>
                 }
               </div>
               <MarkdownContent
@@ -528,10 +539,10 @@ class TypeDoc extends React.Component {
               />
               {
                 value.deprecationReason &&
-                  <MarkdownContent
-                    className="doc-alert-text"
-                    markdown={value.deprecationReason}
-                  />
+                <MarkdownContent
+                  className="doc-alert-text"
+                  markdown={value.deprecationReason}
+                />
               }
             </div>
           )}
@@ -601,10 +612,10 @@ class FieldDoc extends React.Component {
         />
         {
           field.deprecationReason &&
-            <MarkdownContent
-              className="doc-alert-text"
-              markdown={field.deprecationReason}
-            />
+          <MarkdownContent
+            className="doc-alert-text"
+            markdown={field.deprecationReason}
+          />
         }
         <div className="doc-category">
           <div className="doc-category-title">
