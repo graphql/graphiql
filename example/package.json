@@ -13,7 +13,6 @@
   "dependencies": {
     "express": "^4.13.3",
     "express-graphql": "^0.5.1",
-    "graphiql": "../",
     "graphql": "^0.7.0",
     "react": "^15.0.1",
     "react-dom": "^15.0.1"
