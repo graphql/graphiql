@@ -6,9 +6,10 @@
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-import express from 'express';
-import graphqlHTTP from 'express-graphql';
-import {
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const path = require('path');
+const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLUnionType,
@@ -21,10 +22,12 @@ import {
   GraphQLString,
   GraphQLID,
   GraphQLList,
-} from 'graphql';
+} = require('graphql');
 
 const app = express();
+
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '..')));
 app.use('/graphql', graphqlHTTP(() => ({
   schema: TestSchema
 })));
