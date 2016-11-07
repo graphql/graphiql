@@ -21,6 +21,8 @@
       }
     </style>
     <link rel="stylesheet" href="./graphiql.css" />
+    <script src="//cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
+    <script>window.Promise || document.write('<script src="vendor/es6-promise.auto.min.js">\x3C/script>')</script>
     <script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
     <script>window.fetch || document.write('<script src="vendor/fetch.min.js">\x3C/script>')</script>
     <script src="//cdn.jsdelivr.net/react/15.0.1/react.min.js"></script>
@@ -93,7 +95,20 @@
 
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch(window.location.origin + window.location.pathname + 'graphql', {
+        var origin = window.location.origin;
+
+        // IE 10 :(
+        if (!origin) {
+          window.location.origin =
+            window.location.protocol + "//" +
+            window.location.hostname + (
+              window.location.port ?
+              ':' + window.location.port:
+              ''
+            );
+        }
+
+        return fetch(origin + window.location.pathname + 'graphql', {
           method: 'post',
           headers: {
             'Accept': 'application/json',
