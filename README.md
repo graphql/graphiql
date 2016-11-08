@@ -45,6 +45,9 @@ Don't forget to include the CSS file on the page! If you're using npm, you can
 find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
 [releases page](https://github.com/graphql/graphiql/releases).
 
+If you're using a custom theme for your implementation, make sure you load that theme's css as well.
+A list of themes and their css can be found [at  CodeMirror.](https://codemirror.net/demo/theme.html)
+
 For an example of setting up a GraphiQL, check out the [example](./example) in
 this repository which also includes a few useful features highlighting
 GraphiQL's API.
@@ -52,12 +55,12 @@ GraphiQL's API.
 
 ### Features
 
-* Syntax highlighting
+* Syntax highlighting.
 * Intelligent type ahead of fields, arguments, types, and more.
 * Real-time error highlighting and reporting.
 * Automatic query completion.
 * Run and inspect query results.
-
+* Custom themes.
 
 ### Usage
 
@@ -114,7 +117,7 @@ and children.
 - `onEditOperationName`: an optional function which will be called when the
   operation name to be executed changes.
 
-- onToggleDocs: an optional function which will be called when the
+- `onToggleDocs`: an optional function which will be called when the
   docs will be toggled. The argument to the function will be a boolean
   whether the docs are now open or closed.
 
@@ -122,6 +125,12 @@ and children.
   to non-leaf fields which invalidly lack a selection set.
   Accepts a GraphQLType instance and returns an array of field names.
   If not provided, a default behavior will be used.
+
+- `theme`: an optional string of the theme you'd like to use for the query-editor,
+  result-viewer, and variable-editor. Simply load the css for the theme you'd like
+  use and set this property to that theme. For example, you can load `tomorrow-night-eighties`
+  by adding a `<link rel="stylesheet" href="https://codemirror.net/theme/tomorrow-night-eighties.css" />`
+  to your page, and then set the `theme` prop to `tomorrow-night-eighties`.
 
 **Children:**
 
@@ -143,30 +152,32 @@ class CustomGraphiQL extends React.Component {
       // REQUIRED:
       // `fetcher` must be provided in order for GraphiQL to operate
       fetcher: this.props.fetcher,
-      
+
       // OPTIONAL PARAMETERS
       // GraphQL artifacts
       query: '',
       variables: '',
       response: '',
-      
+
+      // OPTIONAL THEME
+      theme: 'tomorrow-night-eighties',
+
       // GraphQL Schema
       // If `undefined` is provided, an introspection query is executed
       // using the fetcher.
       schema: undefined,
-      
-      
+
       // Useful to determine which operation to run
       // when there are multiple of them.
       operationName: null,
       storage: null,
       defaultQuery: null,
-      
+
       // Custom Event Handlers
       onEditQuery: null,
       onEditVariables: null,
       onEditOperationName: null,
-      
+
       // GraphiQL automatically fills in leaf nodes when the query
       // does not provide them. Change this if your GraphQL Definitions
       // should behave differently than what's defined here:
@@ -174,11 +185,11 @@ class CustomGraphiQL extends React.Component {
       getDefaultFieldNames: null
     };
   }
-  
+
   _onClickToolbarButton(event) {
     alert('Clicked toolbar button!');
   }
-  
+
   render() {
     return (
       <GraphiQL ...this.state>

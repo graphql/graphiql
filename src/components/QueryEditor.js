@@ -23,6 +23,7 @@ import onHasCompletion from '../utility/onHasCompletion';
  *   - schema: A GraphQLSchema instance enabling editor linting and hinting.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - theme: A CodeMirror theme for the panel.
  *
  */
 export class QueryEditor extends React.Component {
@@ -32,6 +33,7 @@ export class QueryEditor extends React.Component {
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
     onRunQuery: PropTypes.func,
+    theme: PropTypes.theme,
   }
 
   constructor(props) {
@@ -64,7 +66,7 @@ export class QueryEditor extends React.Component {
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql',
-      theme: 'graphiql',
+      theme: this.props.theme,
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,

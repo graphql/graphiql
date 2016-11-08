@@ -22,6 +22,7 @@ import onHasCompletion from '../utility/onHasCompletion';
  *   - variableToType: A mapping of variable name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - theme: The CodeMirror theme to use for the editor.
  *
  */
 export class VariableEditor extends React.Component {
@@ -31,6 +32,7 @@ export class VariableEditor extends React.Component {
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
     onRunQuery: PropTypes.func,
+    theme: PropTypes.theme,
   }
 
   constructor(props) {
@@ -62,7 +64,7 @@ export class VariableEditor extends React.Component {
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql-variables',
-      theme: 'graphiql',
+      theme: this.props.theme,
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,

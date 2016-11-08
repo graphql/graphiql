@@ -89,6 +89,10 @@ import {
  *     Accepts a GraphQLType instance and returns an array of field names.
  *     If not provided, a default behavior will be used.
  *
+ *   - theme: an optional code-mirror theme to use for the QueryEditor,
+ *     Result Viewer, and Variable Editor. A list of available themes can
+ *     be found here: https://codemirror.net/theme/. Defaults to `graphiql`
+ *
  * Children:
  *
  *   - <GraphiQL.Logo> Replace the GraphiQL logo with your own.
@@ -120,7 +124,8 @@ export class GraphiQL extends React.Component {
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
     onToggleDocs: PropTypes.func,
-    getDefaultFieldNames: PropTypes.func
+    getDefaultFieldNames: PropTypes.func,
+    theme: PropTypes.string
   }
 
   constructor(props) {
@@ -158,12 +163,17 @@ export class GraphiQL extends React.Component {
         queryFacts && queryFacts.operations
       );
 
+    // Determine the theme to use
+    const theme = props.theme !== undefined ? props.theme :
+      'graphiql';
+
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
       operationName,
+      theme,
       response: props.response,
       editorFlex: Number(this._storageGet('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
@@ -324,6 +334,7 @@ export class GraphiQL extends React.Component {
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
                 onRunQuery={this.handleEditorRunQuery}
+                theme={this.state.theme}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -339,6 +350,7 @@ export class GraphiQL extends React.Component {
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
                   onRunQuery={this.handleEditorRunQuery}
+                  theme={this.state.theme}
                 />
               </div>
             </div>
@@ -352,6 +364,7 @@ export class GraphiQL extends React.Component {
               <ResultViewer
                 ref={c => { this.resultComponent = c; }}
                 value={this.state.response}
+                theme={this.state.theme}
               />
               {footer}
             </div>
