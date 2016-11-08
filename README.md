@@ -123,6 +123,9 @@ and children.
   Accepts a GraphQLType instance and returns an array of field names.
   If not provided, a default behavior will be used.
 
+- `theme`: an optional string of the theme you'd like to use for GraphiQL. Currently only `dark`
+  is available.
+
 **Children:**
 
 * `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
@@ -143,30 +146,32 @@ class CustomGraphiQL extends React.Component {
       // REQUIRED:
       // `fetcher` must be provided in order for GraphiQL to operate
       fetcher: this.props.fetcher,
-      
+
       // OPTIONAL PARAMETERS
       // GraphQL artifacts
       query: '',
       variables: '',
       response: '',
-      
+
+      // Use the dark theme:
+      theme: 'dark',
+
       // GraphQL Schema
       // If `undefined` is provided, an introspection query is executed
       // using the fetcher.
       schema: undefined,
-      
-      
+
       // Useful to determine which operation to run
       // when there are multiple of them.
       operationName: null,
       storage: null,
       defaultQuery: null,
-      
+
       // Custom Event Handlers
       onEditQuery: null,
       onEditVariables: null,
       onEditOperationName: null,
-      
+
       // GraphiQL automatically fills in leaf nodes when the query
       // does not provide them. Change this if your GraphQL Definitions
       // should behave differently than what's defined here:
@@ -174,11 +179,11 @@ class CustomGraphiQL extends React.Component {
       getDefaultFieldNames: null
     };
   }
-  
+
   _onClickToolbarButton(event) {
     alert('Clicked toolbar button!');
   }
-  
+
   render() {
     return (
       <GraphiQL ...this.state>

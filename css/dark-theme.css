@@ -1,0 +1,9 @@
+.graphiql-container.dark .topBar,
+.graphiql-container.dark .docExplorerShow,
+.graphiql-container .execute-button {
+  background: linear-gradient(#e2e2e2, #f7f7f7);
+}
+.graphiql-container.dark,
+.CodeMirror-hints-wrapper {
+  filter: invert(90%);
+}
