@@ -153,7 +153,7 @@ class CustomGraphiQL extends React.Component {
       variables: '',
       response: '',
 
-      // Use the dark theme:
+      // OPTIONAL DARK THEME
       theme: 'dark',
 
       // GraphQL Schema
