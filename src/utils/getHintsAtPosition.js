@@ -296,6 +296,9 @@ function getTypeInfo(schema, tokenState) {
             info.fieldDef && info.fieldDef.args :
           state.prevState.kind === 'Directive' ?
             info.directiveDef && info.directiveDef.args :
+          state.prevState.kind === 'AliasedField' ?
+            state.prevState.name &&
+            getFieldDef(schema, info.parentType, state.prevState.name).args :
             null;
         break;
       case 'Argument':

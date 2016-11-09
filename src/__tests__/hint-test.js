@@ -86,9 +86,24 @@ describe('graphql-hint', () => {
     checkSuggestions(argumentNames, suggestions.list);
   });
 
+  it.only('provides correct argument suggestions when using aliases', async () => {
+    var suggestions = await getHintSuggestions(
+      '{ aliasTest: hasArgs ( ', { line: 0, ch: 23 });
+    var argumentNames =
+      TestSchema.getQueryType().getFields().hasArgs.args.map(arg => arg.name);
+    checkSuggestions(argumentNames, suggestions.list);
+  });
+
   it('provides correct directive suggestions', async () => {
     var suggestions = await getHintSuggestions(
       '{ test (@', { line: 0, ch: 9 });
+    var directiveNames = [ 'include', 'skip' ];
+    checkSuggestions(directiveNames, suggestions.list);
+  });
+
+  it('provides correct directive suggestions when using aliases', async () => {
+    var suggestions = await getHintSuggestions(
+      '{ aliasTest: test (@', { line: 0, ch: 20 });
     var directiveNames = [ 'include', 'skip' ];
     checkSuggestions(directiveNames, suggestions.list);
   });
