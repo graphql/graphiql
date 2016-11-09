@@ -86,7 +86,7 @@ describe('graphql-hint', () => {
     checkSuggestions(argumentNames, suggestions.list);
   });
 
-  it.only('provides correct argument suggestions when using aliases', async () => {
+  it('provides correct argument suggestions when using aliases', async () => {
     var suggestions = await getHintSuggestions(
       '{ aliasTest: hasArgs ( ', { line: 0, ch: 23 });
     var argumentNames =

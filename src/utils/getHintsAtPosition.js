@@ -235,6 +235,7 @@ function canUseDirective(kind, directive) {
     case 'Subscription':
       return locations.indexOf('SUBSCRIPTION') !== -1;
     case 'Field':
+    case 'AliasedField':
       return locations.indexOf('FIELD') !== -1;
     case 'FragmentDefinition':
       return locations.indexOf('FRAGMENT_DEFINITION') !== -1;
