@@ -235,6 +235,7 @@ function canUseDirective(kind, directive) {
     case 'Subscription':
       return locations.indexOf('SUBSCRIPTION') !== -1;
     case 'Field':
+    case 'AliasedField':
       return locations.indexOf('FIELD') !== -1;
     case 'FragmentDefinition':
       return locations.indexOf('FRAGMENT_DEFINITION') !== -1;
@@ -296,6 +297,9 @@ function getTypeInfo(schema, tokenState) {
             info.fieldDef && info.fieldDef.args :
           state.prevState.kind === 'Directive' ?
             info.directiveDef && info.directiveDef.args :
+          state.prevState.kind === 'AliasedField' ?
+            state.prevState.name &&
+            getFieldDef(schema, info.parentType, state.prevState.name).args :
             null;
         break;
       case 'Argument':
