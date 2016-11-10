@@ -14,7 +14,7 @@ fi
 rm -rf example/dist && mkdir -p example/dist
 
 # Boot the server
-node example/server.js &
+babel-node example/server.js &
 
 # Watch JS source files and recompile
 watchify\
