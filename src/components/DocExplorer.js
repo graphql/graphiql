@@ -434,7 +434,10 @@ class TypeDoc extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.props.type !== nextProps.type;
+    return (
+      this.props.type !== nextProps.type ||
+      this.props.schema !== nextProps.schema
+    );
   }
 
   render() {
