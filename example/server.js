@@ -8,6 +8,7 @@
  */
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
+import path from 'path';
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -24,7 +25,9 @@ import {
 } from 'graphql';
 
 const app = express();
+
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, '..')));
 app.use('/graphql', graphqlHTTP(() => ({
   schema: TestSchema
 })));
