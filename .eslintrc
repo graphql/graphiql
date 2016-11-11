@@ -1,5 +1,6 @@
 {
   "parser": "babel-eslint",
+
   "plugins": [
     "babel",
     "react"
@@ -7,7 +8,7 @@
 
   "settings": {
     "react": {
-      "version": "0.14.0"
+      "version": "0.15.0"
     }
   },
 
@@ -45,11 +46,7 @@
   },
 
   "rules": {
-    "babel/arrow-parens": [2, "as-needed"],
-    "babel/array-bracket-spacing": [2, "always"],
-    "babel/generator-star-spacing": [2, {"before": true, "after": false}],
-    "array-bracket-spacing": 0,
-    "generator-star-spacing": 0,
+    "babel/no-await-in-loop": 2,
 
     "react/no-deprecated": 2,
     "react/no-did-mount-set-state": 2,
@@ -84,6 +81,8 @@
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
 
+    "array-bracket-spacing": [2, "always"],
+    "arrow-parens": [2, "as-needed"],
     "arrow-spacing": 2,
     "block-scoped-var": 0,
     "brace-style": [2, "1tbs", {"allowSingleLine": true}],
@@ -104,6 +103,7 @@
     "eqeqeq": 2,
     "func-names": 0,
     "func-style": 0,
+    "generator-star-spacing": [2, {"before": true, "after": false}],
     "guard-for-in": 2,
     "handle-callback-err": [2, "error"],
     "id-length": 0,
@@ -216,6 +216,8 @@
     "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
     "no-use-before-define": 0,
     "no-useless-call": 2,
+    "no-useless-escape": 2,
+    "no-useless-return": 2,
     "no-var": 2,
     "no-void": 2,
     "no-warning-comments": 0,
@@ -229,7 +231,7 @@
     "prefer-const": 2,
     "prefer-reflect": 0,
     "prefer-spread": 0,
-    "quote-props": [2, "as-needed"],
+    "quote-props": [2, "as-needed", {"numbers": true}],
     "quotes": [2, "single"],
     "radix": 2,
     "require-yield": 2,

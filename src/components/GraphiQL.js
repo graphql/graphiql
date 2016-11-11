@@ -599,7 +599,6 @@ export class GraphiQL extends React.Component {
     if (subscription) {
       subscription.unsubscribe();
     }
-    return;
   }
 
   _runQueryAtCursor() {
