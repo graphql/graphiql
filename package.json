@@ -41,7 +41,7 @@
     "prepublish": ". ./resources/prepublish.sh"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0",
+    "graphql": "^0.8.0",
     "codemirror": "^5.6.0"
   },
   "devDependencies": {
