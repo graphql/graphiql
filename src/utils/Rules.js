@@ -28,7 +28,7 @@ export const LexRules = {
   Name: /^[_A-Za-z][_0-9A-Za-z]*/,
 
   // All Punctuation used in GraphQL
-  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|\]|\{|\||\})/,
+  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|]|\{|\||\})/,
 
   // Combines the IntValue and FloatValue tokens.
   Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,

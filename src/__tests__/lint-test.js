@@ -26,30 +26,26 @@ function createEditorWithLint(lintConfig) {
 }
 
 function printLintErrors(queryString) {
-  var editor = createEditorWithLint({
+  const editor = createEditorWithLint({
     schema: TestSchema
   });
 
-  return new Promise((resolve, reject) => {
-    editor.state.lint.options.onUpdateLinting = (errors) => {
+  return new Promise(resolve => {
+    editor.state.lint.options.onUpdateLinting = errors => {
       if (errors && errors[0]) {
         if (!errors[0].message.match('Unexpected EOF')) {
           resolve(errors);
         }
       }
-      reject();
+      resolve([]);
     };
     editor.doc.setValue(queryString);
-  }).then((errors) => {
-    return errors;
-  }).catch(() => {
-    return [];
   });
 }
 
 describe('graphql-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
-    var editor = createEditorWithLint();
+    const editor = createEditorWithLint();
     expect(
       editor.getHelpers(editor.getCursor(), 'lint')
     ).to.not.have.lengthOf(0);
@@ -67,13 +63,13 @@ describe('graphql-lint', () => {
     ).to.contain('Cannot query field "title" on type "Test".');
   });
 
-  var kitchenSink = readFileSync(
+  const kitchenSink = readFileSync(
     join(__dirname, '/kitchen-sink.graphql'),
     { encoding: 'utf8' }
   );
 
   it('returns no syntactic/validation errors after parsing kitchen-sink query', async () => {
-    var errors = await printLintErrors(kitchenSink);
+    const errors = await printLintErrors(kitchenSink);
     expect(errors).to.have.lengthOf(0);
   });
 });

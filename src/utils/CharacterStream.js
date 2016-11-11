@@ -34,14 +34,10 @@ export default class CharacterStream {
   }
 
   _testNextCharacter(pattern: mixed) {
-    let character = this._sourceText.charAt(this._pos);
-    let isMatched = false;
-    if (typeof pattern === 'string') {
-      isMatched = character === pattern;
-    } else {
-      isMatched = pattern.test ? pattern.test(character) : pattern(character);
-    }
-    return isMatched;
+    const character = this._sourceText.charAt(this._pos);
+    return typeof pattern === 'string' ? character === pattern :
+      pattern.test ? pattern.test(character) :
+      pattern(character);
   }
 
   eol(): boolean {

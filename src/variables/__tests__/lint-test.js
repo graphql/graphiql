@@ -31,26 +31,22 @@ function printLintErrors(query, variables) {
     variableToType: query && collectVariables(TestSchema, parse(query)),
   });
 
-  return new Promise((resolve, reject) => {
-    editor.state.lint.options.onUpdateLinting = (errors) => {
+  return new Promise(resolve => {
+    editor.state.lint.options.onUpdateLinting = errors => {
       if (errors && errors[0]) {
         if (!errors[0].message.match('Unexpected EOF')) {
           resolve(errors);
         }
       }
-      reject();
+      resolve([]);
     };
     editor.doc.setValue(variables);
-  }).then((errors) => {
-    return errors;
-  }).catch(() => {
-    return [];
   });
 }
 
 describe('graphql-variables-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
-    var editor = createEditorWithLint();
+    const editor = createEditorWithLint();
     expect(
       editor.getHelpers(editor.getCursor(), 'lint')
     ).to.not.have.lengthOf(0);

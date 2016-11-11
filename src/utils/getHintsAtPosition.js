@@ -48,10 +48,10 @@ import { LexRules, ParseRules, isIgnored } from './Rules';
  */
 
 export default function getHintsAtPosition(schema, sourceText, cursor, token) {
-  var typeInfo = getTypeInfo(schema, token.state);
-  var state = token.state;
-  var kind = state.kind;
-  var step = state.step;
+  const typeInfo = getTypeInfo(schema, token.state);
+  const state = token.state;
+  const kind = state.kind;
+  const step = state.step;
 
   if (token.type === 'comment') {
     return;
@@ -71,13 +71,9 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   // Field names
   if (kind === 'SelectionSet' || kind === 'Field' || kind === 'AliasedField') {
     if (typeInfo.parentType) {
-      var fields;
-      if (typeInfo.parentType.getFields) {
-        var fieldObj = typeInfo.parentType.getFields();
-        fields = objectValues(fieldObj);
-      } else {
-        fields = [];
-      }
+      const fields = typeInfo.parentType.getFields ?
+        objectValues(typeInfo.parentType.getFields()) :
+        [];
       if (isAbstractType(typeInfo.parentType)) {
         fields.push(TypeNameMetaFieldDef);
       }
@@ -94,7 +90,7 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
 
   // Argument names
   if (kind === 'Arguments' || kind === 'Argument' && step === 0) {
-    var argDefs = typeInfo.argDefs;
+    const argDefs = typeInfo.argDefs;
     if (argDefs) {
       return hintList(cursor, token, argDefs.map(argDef => ({
         text: argDef.name,
@@ -107,7 +103,7 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   // Input Object fields
   if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
     if (typeInfo.objectFieldDefs) {
-      var objectFields = objectValues(typeInfo.objectFieldDefs);
+      const objectFields = objectValues(typeInfo.objectFieldDefs);
       return hintList(cursor, token, objectFields.map(field => ({
         text: field.name,
         type: field.type,
@@ -121,10 +117,10 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
       kind === 'ListValue' && step === 1 ||
       kind === 'ObjectField' && step === 2 ||
       kind === 'Argument' && step === 2) {
-    var namedInputType = getNamedType(typeInfo.inputType);
+    const namedInputType = getNamedType(typeInfo.inputType);
     if (namedInputType instanceof GraphQLEnumType) {
-      var valueMap = namedInputType.getValues();
-      var values = objectValues(valueMap);
+      const valueMap = namedInputType.getValues();
+      const values = objectValues(valueMap);
       return hintList(cursor, token, values.map(value => ({
         text: value.name,
         type: namedInputType,
@@ -141,7 +137,7 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   // Fragment type conditions
   if (kind === 'TypeCondition' && step === 1 ||
       kind === 'NamedType' && state.prevState.kind === 'TypeCondition') {
-    var possibleTypes;
+    let possibleTypes;
     if (typeInfo.parentType) {
       if (isAbstractType(typeInfo.parentType)) {
         // Collect both the possible Object types as well as the interfaces
@@ -205,8 +201,8 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
       kind === 'NamedType' && (
         state.prevState.kind === 'VariableDefinition' ||
         state.prevState.kind === 'ListType')) {
-    var inputTypeMap = schema.getTypeMap();
-    var inputTypes = objectValues(inputTypeMap).filter(isInputType);
+    const inputTypeMap = schema.getTypeMap();
+    const inputTypes = objectValues(inputTypeMap).filter(isInputType);
     return hintList(cursor, token, inputTypes.map(type => ({
       text: type.name,
       description: type.description
@@ -250,7 +246,7 @@ function canUseDirective(kind, directive) {
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
 function getTypeInfo(schema, tokenState) {
-  var info = {
+  const info = {
     type: null,
     parentType: null,
     inputType: null,
@@ -305,7 +301,7 @@ function getTypeInfo(schema, tokenState) {
       case 'Argument':
         info.argDef = null;
         if (info.argDefs) {
-          for (var i = 0; i < info.argDefs.length; i++) {
+          for (let i = 0; i < info.argDefs.length; i++) {
             if (info.argDefs[i].name === state.name) {
               info.argDef = info.argDefs[i];
               break;
@@ -315,19 +311,19 @@ function getTypeInfo(schema, tokenState) {
         info.inputType = info.argDef && info.argDef.type;
         break;
       case 'ListValue':
-        var nullableType = getNullableType(info.inputType);
+        const nullableType = getNullableType(info.inputType);
         info.inputType = nullableType instanceof GraphQLList ?
           nullableType.ofType :
           null;
         break;
       case 'ObjectValue':
-        var objectType = getNamedType(info.inputType);
+        const objectType = getNamedType(info.inputType);
         info.objectFieldDefs = objectType instanceof GraphQLInputObjectType ?
           objectType.getFields() :
           null;
         break;
       case 'ObjectField':
-        var objectField = state.name && info.objectFieldDefs ?
+        const objectField = state.name && info.objectFieldDefs ?
           info.objectFieldDefs[state.name] :
           null;
         info.inputType = objectField && objectField.type;

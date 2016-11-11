@@ -52,7 +52,7 @@ function indent(state, textAfter) {
  */
 const LexRules = {
   // All Punctuation used in JSON.
-  Punctuation: /^\[|\]|\{|\}|\:|\,/,
+  Punctuation: /^\[|]|\{|\}|:|,/,
 
   // JSON Number.
   Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,

@@ -41,7 +41,7 @@
     "prepublish": ". ./resources/prepublish.sh"
   },
   "peerDependencies": {
-    "graphql": "^0.8.0",
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b",
     "codemirror": "^5.6.0"
   },
   "devDependencies": {
@@ -71,9 +71,11 @@
     "chai": "3.5.0",
     "chai-subset": "1.3.0",
     "codemirror": "5.20.2",
-    "eslint": "3.9.1",
+    "eslint": "3.10.0",
+    "eslint-plugin-babel": "3.3.0",
+    "eslint-plugin-flowtype": "2.25.0",
     "flow-bin": "0.35.0",
-    "graphql": "0.7.2",
+    "graphql": "0.8.0",
     "jsdom": "9.8.3",
     "mocha": "3.1.2",
     "sane": "1.4.1"

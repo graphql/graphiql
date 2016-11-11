@@ -86,10 +86,10 @@ function validateValue(type, valueAST) {
   // Validate non-nullable values.
   if (type instanceof GraphQLNonNull) {
     if (valueAST.kind === 'Null') {
-      return [[
+      return [ [
         valueAST,
         `Type "${type}" is non-nullable and cannot be null.`
-      ]];
+      ] ];
     }
     return validateValue(type.ofType, valueAST);
   }
@@ -110,7 +110,7 @@ function validateValue(type, valueAST) {
   // Validate input objects.
   if (type instanceof GraphQLInputObjectType) {
     if (valueAST.kind !== 'Object') {
-      return [[ valueAST, `Type "${type}" must be an Object.` ]];
+      return [ [ valueAST, `Type "${type}" must be an Object.` ] ];
     }
 
     // Validate each field in the input object.
@@ -120,10 +120,10 @@ function validateValue(type, valueAST) {
       providedFields[fieldName] = true;
       const inputField = type.getFields()[fieldName];
       if (!inputField) {
-        return [[
+        return [ [
           member.key,
           `Type "${type}" does not have a field "${fieldName}".`
-        ]];
+        ] ];
       }
       const fieldType = inputField ? inputField.type : undefined;
       return validateValue(fieldType, member.value);
@@ -155,7 +155,7 @@ function validateValue(type, valueAST) {
     type.name === 'Int' &&
       (valueAST.kind !== 'Number' || (valueAST.value | 0) !== valueAST.value)
   ) {
-    return [[ valueAST, `Expected value of type "${type}".` ]];
+    return [ [ valueAST, `Expected value of type "${type}".` ] ];
   }
 
   // Validate enums and custom scalars.
@@ -167,7 +167,7 @@ function validateValue(type, valueAST) {
        valueAST.kind !== 'Null') ||
       isNullish(type.parseValue(valueAST.value))
     ) {
-      return [[ valueAST, `Expected value of type "${type}".` ]];
+      return [ [ valueAST, `Expected value of type "${type}".` ] ];
     }
   }
 

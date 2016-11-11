@@ -1,6 +1,11 @@
 {
   "parser": "babel-eslint",
 
+  "plugins": [
+    "babel",
+    "flowtype"
+  ],
+
   "env": {
     "browser": true,
     "es6": true,
@@ -35,8 +40,19 @@
   },
 
   "rules": {
-    "array-bracket-spacing": [2, "always", {"arraysInArrays": false}],
-    "arrow-parens": [0, "as-needed"],
+    "babel/no-await-in-loop": 2,
+
+    "flowtype/space-after-type-colon": [2, "always"],
+    "flowtype/space-before-type-colon": [2, "never"],
+    "flowtype/space-before-generic-bracket": [2, "never"],
+    "flowtype/union-intersection-spacing": [2, "always"],
+    "flowtype/no-weak-types": [2, {"any": false}],
+    "flowtype/define-flow-type": 2,
+    "flowtype/use-flow-type": 2,
+    "flowtype/semi": 2,
+
+    "array-bracket-spacing": [2, "always"],
+    "arrow-parens": [2, "as-needed"],
     "arrow-spacing": 2,
     "block-scoped-var": 0,
     "brace-style": [2, "1tbs", {"allowSingleLine": true}],
@@ -57,7 +73,7 @@
     "eqeqeq": 2,
     "func-names": 0,
     "func-style": 0,
-    "generator-star-spacing": [0, {"before": true, "after": false}],
+    "generator-star-spacing": [2, {"before": true, "after": false}],
     "guard-for-in": 2,
     "handle-callback-err": [2, "error"],
     "id-length": 0,
@@ -117,7 +133,7 @@
     "no-irregular-whitespace": 2,
     "no-iterator": 2,
     "no-label-var": 2,
-    "no-labels": 2,
+    "no-labels": [2, {"allowLoop": true}],
     "no-lone-blocks": 2,
     "no-lonely-if": 2,
     "no-loop-func": 0,
@@ -149,7 +165,7 @@
     "no-return-assign": 2,
     "no-script-url": 2,
     "no-self-compare": 0,
-    "no-sequences": 2,
+    "no-sequences": 0,
     "no-shadow": 2,
     "no-shadow-restricted-names": 2,
     "no-spaced-func": 2,
@@ -170,7 +186,9 @@
     "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
     "no-use-before-define": 0,
     "no-useless-call": 2,
-    "no-var": 0,
+    "no-useless-escape": 2,
+    "no-useless-return": 2,
+    "no-var": 2,
     "no-void": 2,
     "no-warning-comments": 0,
     "no-with": 2,
@@ -180,10 +198,10 @@
     "operator-assignment": [2, "always"],
     "operator-linebreak": [2, "after"],
     "padded-blocks": 0,
-    "prefer-const": 0,
+    "prefer-const": 2,
     "prefer-reflect": 0,
     "prefer-spread": 0,
-    "quote-props": [2, "as-needed"],
+    "quote-props": [2, "as-needed", {"numbers": true}],
     "quotes": [2, "single"],
     "radix": 2,
     "require-yield": 2,

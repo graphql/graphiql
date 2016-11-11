@@ -20,7 +20,7 @@ export function list(ofRule, separator) {
 
 // An constraint described as `but not` in the GraphQL spec.
 export function butNot(rule, exclusions) {
-  var ruleMatch = rule.match;
+  const ruleMatch = rule.match;
   rule.match =
     token => ruleMatch(token) &&
     exclusions.every(exclusion => !exclusion.match(token));

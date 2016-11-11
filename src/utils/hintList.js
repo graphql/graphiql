@@ -82,7 +82,7 @@ function getProximity(suggestion, text) {
 function lexicalDistance(a, b) {
   let i;
   let j;
-  let d = [];
+  const d = [];
   const aLength = a.length;
   const bLength = b.length;
 

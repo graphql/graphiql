@@ -7,11 +7,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-type ContextToken = {
+type ContextToken<TState> = {
   start: Number,
   end: Number,
-  state: Object,
   string: string,
+  state: TState,
   type: string
 };
 
@@ -27,9 +27,9 @@ type ContextToken = {
   *     onlineParser.
   */
 
-export default function getTokenAtPosition(
+export default function getTokenAtPosition<TState>(
   stream, // : CharacterStream
-  state: Object,
+  state: TState,
   style: string
 ): ContextToken {
   return {

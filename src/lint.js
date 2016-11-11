@@ -24,13 +24,15 @@ import { parse, validate } from 'graphql';
  *
  */
 CodeMirror.registerHelper('lint', 'graphql', (text, options, editor) => {
-  var schema = options.schema;
+  const schema = options.schema;
   try {
-    var ast = parse(text);
+    const ast = parse(text);
+    const errors = schema ? validate(schema, ast) : [];
+    return mapCat(errors, error => errorAnnotations(editor, error));
   } catch (error) {
-    var location = error.locations[0];
-    var pos = CodeMirror.Pos(location.line - 1, location.column);
-    var token = editor.getTokenAt(pos);
+    const location = error.locations[0];
+    const pos = CodeMirror.Pos(location.line - 1, location.column);
+    const token = editor.getTokenAt(pos);
     return [ {
       message: error.message,
       severity: 'error',
@@ -39,13 +41,11 @@ CodeMirror.registerHelper('lint', 'graphql', (text, options, editor) => {
       to: CodeMirror.Pos(location.line - 1, token.end),
     } ];
   }
-  var errors = schema ? validate(schema, ast) : [];
-  return mapCat(errors, error => errorAnnotations(editor, error));
 });
 
 function errorAnnotations(editor, error) {
   return error.nodes.map(node => {
-    var highlightNode =
+    const highlightNode =
       node.kind !== 'Variable' && node.name ? node.name :
       node.variable ? node.variable :
       node;

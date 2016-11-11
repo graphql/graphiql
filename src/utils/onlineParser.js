@@ -30,7 +30,7 @@
 export default function onlineParser(options) {
   return {
     startState() {
-      var initialState = { level: 0 };
+      const initialState = { level: 0 };
       pushRule(options.ParseRules, initialState, 'Document');
       return initialState;
     },
@@ -66,7 +66,7 @@ function getToken(stream, state, options) {
   }
 
   // Get a matched token from the stream, using lex
-  var token = lex(LexRules, stream);
+  const token = lex(LexRules, stream);
 
   // If there's no matching token, skip ahead.
   if (!token) {
@@ -86,7 +86,7 @@ function getToken(stream, state, options) {
       // Pop from the stack of levels.
       // If the top of the stack is lower than the current level, lower the
       // current level to match.
-      var levels = state.levels = (state.levels || []).slice(0, -1);
+      const levels = state.levels = (state.levels || []).slice(0, -1);
       if (levels.length > 0 && levels[levels.length - 1] < state.indentLevel) {
         state.indentLevel = levels[levels.length - 1];
       }
@@ -96,7 +96,7 @@ function getToken(stream, state, options) {
   while (state.rule) {
     // If this is a forking rule, determine what rule to use based on
     // the current token, otherwise expect based on the current step.
-    var expected =
+    let expected =
       typeof state.rule === 'function' ?
         state.step === 0 ? state.rule(token, stream) : null :
         state.rule[state.step];
@@ -146,14 +146,14 @@ function getToken(stream, state, options) {
 }
 
 function assign(to, from) {
-  var keys = Object.keys(from);
-  for (var i = 0; i < keys.length; i++) {
+  const keys = Object.keys(from);
+  for (let i = 0; i < keys.length; i++) {
     to[keys[i]] = from[keys[i]];
   }
   return to;
 }
 
-var stateCache = {};
+const stateCache = {};
 
 // Save the current state in the cache.
 function saveState(state) {
@@ -258,9 +258,9 @@ function unsuccessful(state) {
 
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(LexRules, stream) {
-  var kinds = Object.keys(LexRules);
-  for (var i = 0; i < kinds.length; i++) {
-    var match = stream.match(LexRules[kinds[i]]);
+  const kinds = Object.keys(LexRules);
+  for (let i = 0; i < kinds.length; i++) {
+    const match = stream.match(LexRules[kinds[i]]);
     if (match) {
       return { kind: kinds[i], value: match[0] };
     }

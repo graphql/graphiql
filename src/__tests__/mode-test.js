@@ -17,9 +17,9 @@ import { join } from 'path';
 
 describe('graphql-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
-    var queryStr = 'query name { }';
-    var tokens = [];
-    var styles = [];
+    const queryStr = 'query name { }';
+    const tokens = [];
+    const styles = [];
 
     CodeMirror.runMode(queryStr, 'graphql', (token, style) => {
       if (style && style !== 'ws') {
@@ -71,7 +71,7 @@ describe('graphql-mode', () => {
   });
 
   it('parses kitchen-sink query without invalidchar', () => {
-    var kitchenSink = readFileSync(
+    const kitchenSink = readFileSync(
       join(__dirname, '/kitchen-sink.graphql'),
       { encoding: 'utf8' }
     );
@@ -82,7 +82,7 @@ describe('graphql-mode', () => {
   });
 
   it('parses schema-kitchen-sink query without invalidchar', () => {
-    var schemaKitchenSink = readFileSync(
+    const schemaKitchenSink = readFileSync(
       join(__dirname, '/schema-kitchen-sink.graphql'),
       { encoding: 'utf8' }
     );

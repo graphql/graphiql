@@ -24,7 +24,7 @@ import {
 
 // Test Schema
 
-var TestEnum = new GraphQLEnumType({
+const TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
   values: {
     RED: {},
@@ -33,7 +33,7 @@ var TestEnum = new GraphQLEnumType({
   }
 });
 
-var TestInputObject = new GraphQLInputObjectType({
+const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
     string: { type: GraphQLString },
@@ -54,7 +54,7 @@ var TestInputObject = new GraphQLInputObjectType({
   })
 });
 
-var TestInterface = new GraphQLInterfaceType({
+const TestInterface = new GraphQLInterfaceType({
   name: 'TestInterface',
   resolveType: () => UnionFirst,
   fields: {
@@ -65,7 +65,7 @@ var TestInterface = new GraphQLInterfaceType({
   }
 });
 
-var UnionFirst = new GraphQLObjectType({
+const UnionFirst = new GraphQLObjectType({
   name: 'First',
   interfaces: [ TestInterface ],
   fields: () => ({
@@ -80,7 +80,7 @@ var UnionFirst = new GraphQLObjectType({
   })
 });
 
-var UnionSecond = new GraphQLObjectType({
+const UnionSecond = new GraphQLObjectType({
   name: 'Second',
   fields: () => ({
     second: {
@@ -90,7 +90,7 @@ var UnionSecond = new GraphQLObjectType({
   })
 });
 
-var TestUnion = new GraphQLUnionType({
+const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [ UnionFirst, UnionSecond ],
   resolveType() {
@@ -98,7 +98,7 @@ var TestUnion = new GraphQLUnionType({
   }
 });
 
-var TestType = new GraphQLObjectType({
+const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
     test: {
@@ -145,7 +145,7 @@ var TestType = new GraphQLObjectType({
   })
 });
 
-var TestMutationType = new GraphQLObjectType({
+const TestMutationType = new GraphQLObjectType({
   name: 'MutationType',
   description: 'This is a simple mutation type',
   fields: {
@@ -159,7 +159,7 @@ var TestMutationType = new GraphQLObjectType({
   }
 });
 
-var TestSubscriptionType = new GraphQLObjectType({
+const TestSubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   description: 'This is a simple subscription type',
   fields: {
@@ -173,7 +173,7 @@ var TestSubscriptionType = new GraphQLObjectType({
   }
 });
 
-export var TestSchema = new GraphQLSchema({
+export const TestSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType
