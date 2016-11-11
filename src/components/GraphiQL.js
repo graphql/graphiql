@@ -909,14 +909,16 @@ function observableToPromise(observable) {
     return observable;
   }
   return new Promise((resolve, reject) => {
-    const subscription = observable.subscribe(v => {
-      resolve(v);
-      subscription.unsubscribe();
-    }, e => {
-      reject(e);
-    }, () => {
-      reject(new Error('no value resolved'));
-    });
+    const subscription = observable.subscribe(
+      v => {
+        resolve(v);
+        subscription.unsubscribe();
+      },
+      reject,
+      () => {
+        reject(new Error('no value resolved'));
+      }
+    );
   });
 }
 
