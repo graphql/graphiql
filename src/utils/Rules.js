@@ -144,12 +144,16 @@ export const ParseRules = {
         switch (token.value) {
           case 'true': case 'false': return 'BooleanValue';
         }
+        if (token.value === 'null') {
+          return 'NullValue';
+        }
         return 'EnumValue';
     }
   },
   NumberValue: [ t('Number', 'number') ],
   StringValue: [ t('String', 'string') ],
   BooleanValue: [ t('Name', 'builtin') ],
+  NullValue: [ t('Name', 'keyword') ],
   EnumValue: [ name('string-2') ],
   ListValue: [ p('['), list('Value'), p(']') ],
   ObjectValue: [ p('{'), list('ObjectField'), p('}') ],
