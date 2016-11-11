@@ -1,7 +1,7 @@
 #!/bin/sh
 
 rm -rf dist/ && mkdir -p dist/ &&
-babel server.js -o dist/server.js &&
+babel *.js --out-dir dist/ &&
 cp ../graphiql.js dist/graphiql.js &&
 cp ../graphiql.css dist/graphiql.css &&
 cp -r vendor/ dist/vendor/ &&

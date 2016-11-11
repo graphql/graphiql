@@ -9,14 +9,15 @@
 
  /* eslint no-console: ["error", { allow: ["log"] }] */
 import express from 'express';
-import proxy from 'express-http-proxy';
 import path from 'path';
 import fs from 'fs';
-
 import browserify from 'browserify';
 import browserifyShim from 'browserify-shim';
 import watchify from 'watchify';
 import babelify from 'babelify';
+import graphqlHTTP from 'express-graphql';
+
+import { schema } from '../example/schema';
 
 const app = express();
 const PORT = 8080;
@@ -41,5 +42,6 @@ bundle();
 // Server
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, '..')));
-app.use('/swapi', proxy('http://graphql-swapi.parseapp.com'));
+app.use('/graphql', graphqlHTTP({ schema }));
+
 app.listen(PORT, () => console.log(`Started on http://localhost:${PORT}/`));
