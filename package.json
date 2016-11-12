@@ -68,7 +68,7 @@
     "eslint-plugin-babel": "3.3.0",
     "eslint-plugin-react": "6.6.0",
     "express": "4.14.0",
-    "express-graphql": "0.6.0",
+    "express-graphql": "0.6.1",
     "flow-bin": "0.35.0",
     "graphql": "0.8.1",
     "jsdom": "9.8.3",
