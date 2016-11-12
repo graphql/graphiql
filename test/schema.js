@@ -115,7 +115,7 @@ const TestType = new GraphQLObjectType({
     id: {
       type: GraphQLID,
       description: 'id field from Test type.',
-      resolve: () => 'abc123',
+      resolve: () => 'abc123'
     },
     isTest: {
       type: GraphQLBoolean,
