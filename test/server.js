@@ -17,7 +17,7 @@ import watchify from 'watchify';
 import babelify from 'babelify';
 import graphqlHTTP from 'express-graphql';
 
-import { schema } from './schema';
+import schema from './schema';
 
 const app = express();
 
