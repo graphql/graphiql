@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
- /* eslint no-console: ["error", { allow: ["log"] }] */
+ /* eslint-disable no-console */
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
@@ -21,11 +21,15 @@ import { schema } from '../example/schema';
 
 const app = express();
 const PORT = 8080;
-const bundle = () => b.bundle().pipe(fs.createWriteStream('graphiql.js'));
 
-// Bundle
+// Server
+app.use('/graphql', graphqlHTTP({ schema }));
+
+// Client
+let bundleBuffer;
+
 const b = browserify({
-  entries: [ 'src/index.js' ],
+  entries: [ path.join(__dirname, '../src/index.js') ],
   cache: {},
   packageCache: {},
   transform: [ babelify, browserifyShim ],
@@ -34,14 +38,29 @@ const b = browserify({
   globalTransform: 'browserify-shim'
 });
 
-b.on('update', bundle);
+b.on('update', makeBundle);
 b.on('log', msg => console.log(`graphiql.js: ${msg}`));
 
-bundle();
+function makeBundle(then) {
+  b.bundle((err, buffer) => {
+    if (err) {
+      console.error('Error building graphiql.js');
+      console.error(err);
+      return;
+    }
+    bundleBuffer = buffer;
+    then && then();
+  });
+}
 
-// Server
+app.use('/graphiql.js', (req, res) => {
+  res.end(bundleBuffer);
+});
+
+app.use('/css', express.static(path.join(__dirname, '../css')));
 app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, '..')));
-app.use('/graphql', graphqlHTTP({ schema }));
 
-app.listen(PORT, () => console.log(`Started on http://localhost:${PORT}/`));
+console.log('Initial build...');
+makeBundle(() => {
+  app.listen(PORT, () => console.log(`Started on http://localhost:${PORT}/`));
+});
