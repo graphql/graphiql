@@ -21,6 +21,12 @@
       }
     </style>
 
+    <!-- Included here to allow for testing offline -->
+    <script src="./vendor/es6-promise.auto.min.js"></script>
+    <script src="./vendor/fetch.min.js"></script>
+    <script src="./vendor/react-15.0.1.min.js"></script>
+    <script src="./vendor/react-dom-15.0.1.min.js"></script>
+
     <!-- Load each file individually for better debugging  -->
     <!-- Note that in practice, a compiled graphiql.css is included -->
     <link rel="stylesheet" href="css/app.css" />
@@ -31,11 +37,7 @@
     <link rel="stylesheet" href="css/loading.css" />
     <link rel="stylesheet" href="css/show-hint.css" />
 
-    <script src="//cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
-    <script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
-    <script src="//cdn.jsdelivr.net/react/15.0.1/react.min.js"></script>
-    <script src="//cdn.jsdelivr.net/react/15.0.1/react-dom.min.js"></script>
-
+    <!-- Note: this resource is not a file, it is bundled live by the test server -->
     <script src="./graphiql.js"></script>
   </head>
   <body>

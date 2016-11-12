@@ -7,11 +7,10 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-/* eslint no-console: ["error", { allow: ["log"] }] */
-import express from 'express';
-import graphqlHTTP from 'express-graphql';
+const express = require('express');
+const graphqlHTTP = require('express-graphql').default;
 
-import { schema } from './schema';
+const schema = require('./schema');
 
 const app = express();
 app.use(express.static(__dirname));

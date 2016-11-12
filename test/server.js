@@ -20,7 +20,6 @@ import graphqlHTTP from 'express-graphql';
 import { schema } from './schema';
 
 const app = express();
-const PORT = 8080;
 
 // Server
 app.use('/graphql', graphqlHTTP({ schema }));
@@ -62,5 +61,5 @@ app.use(express.static(__dirname));
 
 console.log('Initial build...');
 makeBundle(() => {
-  app.listen(PORT, () => console.log(`Started on http://localhost:${PORT}/`));
+  app.listen(8080, () => console.log('Started on http://localhost:8080/'));
 });
