@@ -48,7 +48,7 @@ function makeBundle(then) {
       return;
     }
     bundleBuffer = buffer;
-    then && then();
+    (typeof then === 'function') && then();
   });
 }
 
