@@ -74,7 +74,7 @@
     "jsdom": "9.8.3",
     "mocha": "3.1.2",
     "react": "15.3.2",
-    "react-addons-test-utils": "15.3.2",
+    "react-addons-test-utils": "15.4.0",
     "react-dom": "15.3.2",
     "uglify-js": "2.7.4",
     "uglifyify": "3.0.4",
