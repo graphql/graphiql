@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "express": "^4.13.3",
-    "express-graphql": "^0.6.0",
+    "express-graphql": "^0.6.1",
     "graphiql": "../",
     "graphql": "^0.8.0"
   },

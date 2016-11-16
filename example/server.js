@@ -8,7 +8,7 @@
  */
 
 const express = require('express');
-const graphqlHTTP = require('express-graphql').default;
+const graphqlHTTP = require('express-graphql');
 
 const schema = require('./schema');
 
