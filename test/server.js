@@ -37,10 +37,10 @@ const b = browserify({
   globalTransform: 'browserify-shim'
 });
 
-b.on('update', makeBundle);
+b.on('update', () => makeBundle());
 b.on('log', msg => console.log(`graphiql.js: ${msg}`));
 
-function makeBundle(then) {
+function makeBundle(callback) {
   b.bundle((err, buffer) => {
     if (err) {
       console.error('Error building graphiql.js');
@@ -48,7 +48,7 @@ function makeBundle(then) {
       return;
     }
     bundleBuffer = buffer;
-    then && then();
+    callback && callback();
   });
 }
 
