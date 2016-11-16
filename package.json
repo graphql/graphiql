@@ -70,7 +70,7 @@
     "express": "4.14.0",
     "express-graphql": "0.6.0",
     "flow-bin": "0.35.0",
-    "graphql": "0.8.1",
+    "graphql": "0.8.2",
     "jsdom": "9.8.3",
     "mocha": "3.1.2",
     "react": "15.3.2",
