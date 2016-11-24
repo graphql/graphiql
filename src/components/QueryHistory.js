@@ -41,12 +41,16 @@ export class QueryHistory extends React.Component {
 
   render() {
     const pastQueries = this.state.queries.slice().reverse().map((query, i) => {
-      return <p onClick={() => this.loadQuery(query)} key={i}>{cleanQuery(query.query)}</p>;
+      return <li onClick={() => this.loadQuery(query)} key={i}>{cleanQuery(query.query)}</li>;
     });
     return (
       <div className="history">
-        <h2>History</h2>
-        {pastQueries}
+        <div className="history-list">
+          <h2>History</h2>
+          <ul>
+            {pastQueries}
+          </ul>
+        </div>
       </div>
     )
   }

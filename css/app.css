@@ -590,13 +590,34 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
 }
 
 .history {
-  position: fixed;
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  height: 150px;
-  bottom: 0;
-  width: 100%;
-  z-index: 100;
+  flex: 1;
+  display: flex;
+  position: relative;
+  z-index: 1000;
+  max-width: 200px;
+}
+
+.history h2 {
+  font-size: 14px;
+  margin: 0;
+  border-bottom: 1px solid #d6d6d6;
   padding: 10px;
-  overflow: scroll;
+}
+
+.history-list {
+  width: 100%;
+}
+
+.history ul {
+  margin: 0;
+  list-style: none;
+  padding-left: 0;
+}
+
+.history li {
+  margin: 0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 6px;
 }
