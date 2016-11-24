@@ -588,3 +588,15 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
 .cm-atom {
   color: #CA9800;
 }
+
+.history {
+  position: fixed;
+  background: white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  height: 150px;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 10px;
+  overflow: scroll;
+}

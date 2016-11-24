@@ -32,6 +32,7 @@ import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import {QueryHistory} from './QueryHistory';
 
 /**
  * GraphiQL
@@ -254,6 +255,19 @@ export class GraphiQL extends React.Component {
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
     this._storageSet('docExplorerOpen', this.state.docExplorerOpen);
+    this.queryStore.push({
+      query: this.state.query,
+      variables: this.state.variables || '',
+      operationName: this.state.operationName,
+    });
+  }
+
+  loadQuery(query) {
+    this.setState({
+      query: query.query,
+      variables: query.variables,
+      operationName: query.operationName
+    });
   }
 
   render() {
@@ -312,6 +326,7 @@ export class GraphiQL extends React.Component {
               </button>
             }
           </div>
+          <QueryHistory loadQuery={this.loadQuery.bind(this)} editorQueryID={this._editorQueryID} query={this.state.query} variables={this.state.variables} operationName={this.state.operationName} />
           <div
             ref={n => { this.editorBarComponent = n; }}
             className="editorBar"
@@ -370,6 +385,7 @@ export class GraphiQL extends React.Component {
             </div>
           </DocExplorer>
         </div>
+
       </div>
     );
   }
