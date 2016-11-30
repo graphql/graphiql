@@ -76,7 +76,7 @@
     "react": "15.3.2",
     "react-addons-test-utils": "15.3.2",
     "react-dom": "15.3.2",
-    "uglify-js": "2.7.4",
+    "uglify-js": "2.7.5",
     "uglifyify": "3.0.4",
     "watchify": "3.7.0"
   }
