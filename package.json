@@ -73,7 +73,7 @@
     "codemirror": "5.20.2",
     "eslint": "3.10.1",
     "eslint-plugin-babel": "3.3.0",
-    "eslint-plugin-flowtype": "2.25.0",
+    "eslint-plugin-flowtype": "2.29.1",
     "flow-bin": "0.35.0",
     "graphql": "0.8.1",
     "jsdom": "9.8.3",
