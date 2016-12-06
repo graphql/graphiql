@@ -65,18 +65,26 @@
   display: flex;
 }
 
-.graphiql-container .docExplorerShow {
+.graphiql-container .docExplorerShow,
+.graphiql-container .historyShow {
   background: linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: 1px solid #d0d0d0;
-  border-left: 1px solid rgba(0, 0, 0, 0.2);
   border-right: none;
   border-top: none;
   color: #3B5998;
   cursor: pointer;
   font-size: 14px;
   margin: 0;
-  outline: 0;
   padding: 2px 20px 0 18px;
+}
+
+.graphiql-container .docExplorerShow {
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.graphiql-container .historyShow {
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+  border-left: 0;
 }
 
 .graphiql-container .docExplorerShow:before {
@@ -111,7 +119,8 @@
   position: relative;
 }
 
-.graphiql-container .docExplorerWrap {
+.graphiql-container .docExplorerWrap,
+.graphiql-container .historyPaneWrap {
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
@@ -164,13 +173,12 @@
 .graphiql-container .codemirrorWrap {
   flex: 1;
   height: 100%;
-  position: relative;
 }
 
 .graphiql-container .result-window {
   flex: 1;
-  height: 100%;
   position: relative;
+  height: 100%;
 }
 
 .graphiql-container .footer {
@@ -270,7 +278,6 @@
 .graphiql-container .execute-button {
   background: linear-gradient(#fdfdfd, #d2d3d6);
   border-radius: 17px;
-  border: 1px solid rgba(0,0,0,0.25);
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
   fill: #444;
@@ -457,7 +464,6 @@
 div.CodeMirror-lint-tooltip {
   background-color: white;
   border-radius: 2px;
-  border: 0;
   color: #141823;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   font-family:

@@ -24,6 +24,7 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
+import QueryHistory from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import getQueryFacts from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
@@ -37,7 +38,7 @@ import {
 } from '../utility/introspectionQueries';
 
 /**
- * The top-level React component for GraphiQL, intended to encompass the entire
+ * This React component is responsible for rendering the GraphiQL editor.
  * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
@@ -63,6 +64,7 @@ export class GraphiQL extends React.Component {
     onToggleDocs: PropTypes.func,
     getDefaultFieldNames: PropTypes.func,
     editorTheme: PropTypes.string,
+    onToggleHistory: PropTypes.func,
   }
 
   constructor(props) {
@@ -113,6 +115,8 @@ export class GraphiQL extends React.Component {
         Number(this._storageGet('variableEditorHeight')) || 200,
       docExplorerOpen:
         (this._storageGet('docExplorerOpen') === 'true') || false,
+      historyPaneOpen:
+          (this._storageGet('historyPaneOpen') === 'true') || false,
       docExplorerWidth: Number(this._storageGet('docExplorerWidth')) || 350,
       isWaitingForResponse: false,
       subscription: null,
@@ -255,16 +259,34 @@ export class GraphiQL extends React.Component {
     };
     const docExplorerWrapClasses = 'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
+    
+    const historyPaneStyle = {
+      display: this.state.historyPaneOpen ? 'none': 'block',
+      width: '230px',
+      zIndex: '7'
+    };
 
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : null
     };
 
+    const historyPaneOpen = this.state.historyPaneOpen;
+
     return (
       <div className="graphiql-container">
+      <div className="historyPaneWrap" style={historyPaneStyle}>
+        <QueryHistory
+          operationName={this.state.operationName}
+          query={this.state.query}
+          variables={this.state.variables}
+          setQuery={this.setQuery.bind(this)}
+          queryID={this._editorQueryID}
+        />
+      </div>
         <div className="editorWrap">
           <div className="topBarWrap">
+            <button className="historyShow" onClick={this.handleToggleHistory}>History</button>
             <div className="topBar">
               {logo}
               <ExecuteButton
@@ -740,6 +762,13 @@ export class GraphiQL extends React.Component {
       this.props.onToggleDocs(!this.state.docExplorerOpen);
     }
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
+  }
+
+  handleToggleHistory = () => {
+    if (typeof this.props.onToggleHistory === 'function') {
+      this.props.onToggleHistory(!this.state.historyPaneOpen);
+    }
+    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   }
 
   handleResizeStart = downEvent => {
