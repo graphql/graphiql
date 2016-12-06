@@ -26,7 +26,7 @@ export default class Store {
   }
 
   shift() {
-    this.array.shift();
+    this.items.shift();
     this.save();
   }
 

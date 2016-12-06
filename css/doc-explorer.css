@@ -72,15 +72,6 @@
   min-width: 300px;
 }
 
-.graphiql-container .history-contents {
-  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-}
-
-.graphiql-container .history-contents p {
-  margin: 0;
-  padding-bottom: 8px;
-}
-
 .graphiql-container .doc-type-description p:first-child ,
 .graphiql-container .doc-type-description blockquote:first-child {
   margin-top: 0;

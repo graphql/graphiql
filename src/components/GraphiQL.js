@@ -227,6 +227,7 @@ export class GraphiQL extends React.Component {
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
     this._storageSet('docExplorerOpen', this.state.docExplorerOpen);
+    this._storageSet('historyPaneOpen', this.state.historyPaneOpen);
   }
 
   render() {
@@ -261,7 +262,7 @@ export class GraphiQL extends React.Component {
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
     
     const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'none': 'block',
+      display: this.state.historyPaneOpen ? 'block': 'none',
       width: '230px',
       zIndex: '7'
     };
@@ -286,7 +287,6 @@ export class GraphiQL extends React.Component {
       </div>
         <div className="editorWrap">
           <div className="topBarWrap">
-            <button className="historyShow" onClick={this.handleToggleHistory}>History</button>
             <div className="topBar">
               {logo}
               <ExecuteButton
@@ -305,6 +305,11 @@ export class GraphiQL extends React.Component {
                 {'Docs'}
               </button>
             }
+             <GraphiQL.ToolbarButton
+               onClick={this.handleToggleHistory}
+               title="Show History"
+               label="History"
+             />
           </div>
           <div
             ref={n => { this.editorBarComponent = n; }}

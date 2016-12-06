@@ -1,33 +1,9 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Store from './Store';
+import HistoryQuery from './HistoryQuery';
 
-class HistoryQuery extends React.Component {
-  static propTypes = {
-    query: PropTypes.string,
-    variables: PropTypes.string,
-    operationName: PropTypes.string,
-  }
-
-  get displayName() {
-    if (this.props.operationName) {
-      return this.props.operationName;
-    }
-    return this.props.query.split('\n').filter((line) => line.indexOf('#') !== 0).join('').replace('\s', '');
-  }
-
-  setQuery() {
-    this.props.setQuery(this.props.query, this.props.variables,  this.props.operationName)
-  }
-
-  render() {
-    return (
-      <p onClick={this.setQuery.bind(this)}>{this.displayName}</p>
-    )
-  }
-}
-
-function shouldSaveQuery(nextProps, current, last) {
+const shouldSaveQuery = (nextProps, current, last) => {
   if (nextProps.queryID === current.queryID) {
     return false
   }
@@ -39,6 +15,8 @@ function shouldSaveQuery(nextProps, current, last) {
   }
   return true;
 }
+
+const MAX_HISTORY_LENGTH = 20;
 
 export default class QueryHistory extends React.Component {
  static propTypes = {
@@ -59,11 +37,14 @@ export default class QueryHistory extends React.Component {
 
  componentWillReceiveProps(nextProps) {
    if (shouldSaveQuery(nextProps, this.props, this.store.fetchRecent())) {
-     const queries = this.store.push({
+     this.store.push({
        query: nextProps.query,
-       variables: nextProps.variables,
-       operationName: nextProps.operationName,
+       variables: nextProps.variables || '',
+       operationName: nextProps.operationName || '',
      });
+     if (this.store.length > MAX_HISTORY_LENGTH) {
+       this.store.shift();
+     }
      this.setState({
        queries: this.store.items,
      });
@@ -71,7 +52,8 @@ export default class QueryHistory extends React.Component {
  }
 
  render() {
-   const queries = this.state.queries.map((query, i) => {
+   const queries = this.state.queries.slice().reverse();
+   const queryNodes = queries.map((query, i) => {
      return (
       <HistoryQuery key={i} {...query} setQuery={this.props.setQuery} />
      )
@@ -82,7 +64,7 @@ export default class QueryHistory extends React.Component {
       <div className="history-title">History</div>
      </div>
       <div className="history-contents">
-        {queries}
+        {queryNodes}
       </div>
     </div>
    )
