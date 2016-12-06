@@ -239,7 +239,7 @@ const schema = new GraphQLSchema({
         args: { newNumber: { type: GraphQLInt } },
         resolve: (function (obj, { newNumber }) {
           return obj.immediatelyChangeTheNumber(newNumber);
-        }:any)
+        })
       }
     },
     name: 'Mutation',
