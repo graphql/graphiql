@@ -1,20 +1,28 @@
 import React, { PropTypes } from 'react';
 
-const HistoryQuery = (props) => {
-  const setQuery = () => {
-    props.setQuery(props.query, props.variables,  props.operationName)
-  }
+const HistoryQuery = ({query, variables, operationName, onSelect}) => {
+  const onClick = () => {
+    onSelect(query, variables, operationName);
+  };
 
   let displayName;
-  if (props.operationName) {
-    displayName = props.operationName;
+  if (operationName) {
+    displayName = operationName;
   } else {
-    displayName =  props.query.split('\n').filter((line) => line.indexOf('#') !== 0).join('');
+    displayName = query.split('\n')
+      .filter(line => line.indexOf('#') !== 0).join('');
   }
 
   return (
-    <p onClick={setQuery}>{displayName}</p>
-  )
-}
+    <p onClick={onClick}>{displayName}</p>
+  );
+};
+
+HistoryQuery.propTypes = {
+  query: PropTypes.string,
+  variables: PropTypes.string,
+  operationName: PropTypes.string,
+  onSelect: PropTypes.func,
+};
 
 export default HistoryQuery;

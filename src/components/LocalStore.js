@@ -1,4 +1,4 @@
-export default class Store {
+export default class LocalStore {
   constructor(key) {
     this.key = key;
     this.items = this.fetchAll();
@@ -31,6 +31,7 @@ export default class Store {
   }
 
   save() {
-    localStorage.setItem(`graphiql:${this.key}`, JSON.stringify({[this.key]: this.items}));
+    const payload = JSON.stringify({[this.key]: this.items});
+    localStorage.setItem(`graphiql:${this.key}`, payload);
   }
 }

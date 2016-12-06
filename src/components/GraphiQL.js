@@ -262,7 +262,7 @@ export class GraphiQL extends React.Component {
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
     
     const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'block': 'none',
+      display: this.state.historyPaneOpen ? 'block' : 'none',
       width: '230px',
       zIndex: '7'
     };
@@ -272,23 +272,20 @@ export class GraphiQL extends React.Component {
       height: variableOpen ? this.state.variableEditorHeight : null
     };
 
-    const historyPaneOpen = this.state.historyPaneOpen;
-
     return (
       <div className="graphiql-container">
-      <div className="historyPaneWrap" style={historyPaneStyle}>
-        <QueryHistory
-          operationName={this.state.operationName}
-          query={this.state.query}
-          variables={this.state.variables}
-          setQuery={this.setQuery.bind(this)}
-          queryID={this._editorQueryID}
-        >
-          <div className="docExplorerHide" onClick={this.handleToggleHistory}>
-            {'\u2715'}
-          </div>
-        </QueryHistory>
-      </div>
+        <div className="historyPaneWrap" style={historyPaneStyle}>
+          <QueryHistory
+            operationName={this.state.operationName}
+            query={this.state.query}
+            variables={this.state.variables}
+            onSelectQuery={this.replaceQuery.bind(this)}
+            queryID={this._editorQueryID}>
+            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+              {'\u2715'}
+            </div>
+          </QueryHistory>
+        </div>
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">
@@ -298,6 +295,11 @@ export class GraphiQL extends React.Component {
                 onRun={this.handleRunQuery}
                 onStop={this.handleStopQuery}
                 operations={this.state.operations}
+              />
+             <GraphiQL.ToolbarButton
+                onClick={this.handleToggleHistory}
+                title="Show History"
+                label="History"
               />
               {toolbar}
             </div>
@@ -450,6 +452,14 @@ export class GraphiQL extends React.Component {
     }
 
     return result;
+  }
+
+  replaceQuery(query, variables, operationName) {
+    this.setState({
+      query,
+      variables,
+      operationName,
+    });
   }
 
   // Private methods
