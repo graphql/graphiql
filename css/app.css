@@ -134,6 +134,11 @@
   z-index: 3;
 }
 
+.graphiql-container .historyPaneWrap {
+  min-width: 230px;
+  z-index: 5;
+}
+
 .graphiql-container .docExplorerResizer {
   cursor: col-resize;
   height: 100%;

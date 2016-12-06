@@ -62,6 +62,9 @@ export default class QueryHistory extends React.Component {
      <div>
      <div className="history-title-bar">
       <div className="history-title">History</div>
+      <div className="doc-explorer-rhs">
+        {this.props.children}
+      </div>
      </div>
       <div className="history-contents">
         {queryNodes}

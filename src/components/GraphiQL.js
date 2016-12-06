@@ -283,7 +283,11 @@ export class GraphiQL extends React.Component {
           variables={this.state.variables}
           setQuery={this.setQuery.bind(this)}
           queryID={this._editorQueryID}
-        />
+        >
+          <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+            {'\u2715'}
+          </div>
+        </QueryHistory>
       </div>
         <div className="editorWrap">
           <div className="topBarWrap">
