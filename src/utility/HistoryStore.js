@@ -1,6 +1,7 @@
-export default class LocalStore {
-  constructor(key) {
+export default class HistoryStore {
+  constructor(key, storage) {
     this.key = key;
+    this.storage = storage;
     this.items = this.fetchAll();
   }
 
@@ -13,7 +14,7 @@ export default class LocalStore {
   }
 
   fetchAll() {
-    const raw = localStorage.getItem(`graphiql:${this.key}`);
+    const raw = this.storage.get(this.key);
     if (raw) {
       return JSON.parse(raw)[this.key];
     }
@@ -32,6 +33,6 @@ export default class LocalStore {
 
   save() {
     const payload = JSON.stringify({[this.key]: this.items});
-    localStorage.setItem(`graphiql:${this.key}`, payload);
+    this.storage.set(this.key, payload);
   }
 }

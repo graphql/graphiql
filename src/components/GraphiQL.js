@@ -24,8 +24,9 @@ import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
-import QueryHistory from './QueryHistory';
+import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
+import StorageAPI from '../utility/StorageAPI';
 import getQueryFacts from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
@@ -76,12 +77,12 @@ export class GraphiQL extends React.Component {
     }
 
     // Cache the storage instance
-    this._storage = props.storage || window.localStorage;
+    this._storage = new StorageAPI(props.storage);
 
     // Determine the initial query to display.
     const query =
       props.query !== undefined ? props.query :
-      this._storageGet('query') !== null ? this._storageGet('query') :
+      this._storage.get('query') !== null ? this._storageGet('query') :
       props.defaultQuery !== undefined ? props.defaultQuery :
       defaultQuery;
 
@@ -91,14 +92,14 @@ export class GraphiQL extends React.Component {
     // Determine the initial variables to display.
     const variables =
       props.variables !== undefined ? props.variables :
-      this._storageGet('variables');
+      this._storage.get('variables');
 
     // Determine the initial operationName to use.
     const operationName =
       props.operationName !== undefined ? props.operationName :
       getSelectedOperationName(
         null,
-        this._storageGet('operationName'),
+        this._storage.get('operationName'),
         queryFacts && queryFacts.operations
       );
 
@@ -109,15 +110,15 @@ export class GraphiQL extends React.Component {
       variables,
       operationName,
       response: props.response,
-      editorFlex: Number(this._storageGet('editorFlex')) || 1,
+      editorFlex: Number(this._storage.get('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight:
-        Number(this._storageGet('variableEditorHeight')) || 200,
+        Number(this._storage.get('variableEditorHeight')) || 200,
       docExplorerOpen:
-        (this._storageGet('docExplorerOpen') === 'true') || false,
+        (this._storage.get('docExplorerOpen') === 'true') || false,
       historyPaneOpen:
-          (this._storageGet('historyPaneOpen') === 'true') || false,
-      docExplorerWidth: Number(this._storageGet('docExplorerWidth')) || 350,
+          (this._storage.get('historyPaneOpen') === 'true') || false,
+      docExplorerWidth: Number(this._storage.get('docExplorerWidth')) || 350,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts
@@ -245,6 +246,12 @@ export class GraphiQL extends React.Component {
           title="Prettify Query"
           label="Prettify"
         />
+        <ToolbarButton
+          onClick={this.handleToggleHistory}
+          title="Show History"
+          label="History"
+         />
+
       </GraphiQL.Toolbar>;
 
     const footer = find(children, child => child.type === GraphiQL.Footer);
@@ -280,6 +287,7 @@ export class GraphiQL extends React.Component {
             query={this.state.query}
             variables={this.state.variables}
             onSelectQuery={this.replaceQuery.bind(this)}
+            storage={this._storage}
             queryID={this._editorQueryID}>
             <div className="docExplorerHide" onClick={this.handleToggleHistory}>
               {'\u2715'}
@@ -295,11 +303,6 @@ export class GraphiQL extends React.Component {
                 onRun={this.handleRunQuery}
                 onStop={this.handleStopQuery}
                 operations={this.state.operations}
-              />
-             <GraphiQL.ToolbarButton
-                onClick={this.handleToggleHistory}
-                title="Show History"
-                label="History"
               />
               {toolbar}
             </div>

@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
-import LocalStore from './LocalStore';
+import HistoryStore from '../utility/HistoryStore';
 import HistoryQuery from './HistoryQuery';
 
-const shouldSaveQuery = (nextProps, current, last) => {
+const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
     return false;
   }
-  if (!last) {
+  if (!lastQuerySaved) {
     return true;
   }
-  if ((nextProps.query === last.query) &&
-      (nextProps.variables === last.variables)) {
+  if ((nextProps.query === lastQuerySaved.query) &&
+      (nextProps.variables === lastQuerySaved.variables)) {
     return false;
   }
   return true;
@@ -18,18 +18,19 @@ const shouldSaveQuery = (nextProps, current, last) => {
 
 const MAX_HISTORY_LENGTH = 20;
 
-export default class QueryHistory extends React.Component {
+export class QueryHistory extends React.Component {
   static propTypes = {
     query: PropTypes.string,
     variables: PropTypes.string,
     operationName: PropTypes.string,
     queryID: PropTypes.number,
     onSelectQuery: PropTypes.func,
+    storage: PropTypes.object,
   }
 
   constructor(props) {
     super(props);
-    this.store = new LocalStore('queries');
+    this.store = new HistoryStore('queries', props.storage);
     this.state = {
       queries: this.store.fetchAll()
     };
