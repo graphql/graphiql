@@ -18,11 +18,13 @@ import ReactDOM from 'react-dom';
  * Props:
  *
  *   - value: The text of the editor.
+ *   - theme: The CodeMirror theme to use for the editor.
  *
  */
 export class ResultViewer extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value: PropTypes.string,
+    theme: PropTypes.string,
   }
 
   componentDidMount() {
@@ -40,7 +42,7 @@ export class ResultViewer extends React.Component {
       lineWrapping: true,
       value: this.props.value || '',
       readOnly: true,
-      theme: 'graphiql',
+      theme: this.props.theme,
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {

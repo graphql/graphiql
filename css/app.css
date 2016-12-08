@@ -237,7 +237,7 @@
   width: 12px;
 }
 
-.graphiql-container .result-window .CodeMirror {
+.graphiql-container .result-window {
   background: #f6f7f8;
 }
 
