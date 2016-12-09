@@ -17,6 +17,7 @@ import {
   GraphQLEnumType,
 } from 'graphql';
 
+import MarkdownContent from './DocExplorer/MarkdownContent';
 import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeLink from './DocExplorer/TypeLink';
@@ -457,34 +458,6 @@ class FieldDoc extends React.Component {
         </div>
         {argsDef}
       </div>
-    );
-  }
-}
-
-// Renders arbitrary markdown content
-class MarkdownContent extends React.Component {
-
-  static propTypes = {
-    markdown: PropTypes.string,
-    className: PropTypes.string,
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.markdown !== nextProps.markdown;
-  }
-
-  render() {
-    const markdown = this.props.markdown;
-    if (!markdown) {
-      return <div />;
-    }
-
-    const html = Marked(markdown, { sanitize: true });
-    return (
-      <div
-        className={this.props.className}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
     );
   }
 }
