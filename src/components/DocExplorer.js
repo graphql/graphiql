@@ -15,11 +15,10 @@ import {
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
-  GraphQLList,
-  GraphQLNonNull
 } from 'graphql';
 
 import debounce from '../utility/debounce';
+import TypeLink from './DocExplorer/TypeLink';
 
 /**
  * DocExplorer
@@ -630,37 +629,6 @@ class FieldDoc extends React.Component {
       </div>
     );
   }
-}
-
-// Renders a type link
-class TypeLink extends React.Component {
-
-  static propTypes = {
-    type: PropTypes.object,
-    onClick: PropTypes.func,
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.type !== nextProps.type;
-  }
-
-  render() {
-    return renderType(this.props.type, this.props.onClick);
-  }
-}
-
-function renderType(type, onClick) {
-  if (type instanceof GraphQLNonNull) {
-    return <span>{renderType(type.ofType, onClick)}{'!'}</span>;
-  }
-  if (type instanceof GraphQLList) {
-    return <span>{'['}{renderType(type.ofType, onClick)}{']'}</span>;
-  }
-  return (
-    <a className="type-name" onClick={event => onClick(type, event)}>
-      {type.name}
-    </a>
-  );
 }
 
 // Renders arbitrary markdown content
