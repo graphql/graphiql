@@ -7,8 +7,6 @@
  */
 
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-
 
 /**
  * ResultViewer
@@ -36,7 +34,7 @@ export class ResultViewer extends React.Component {
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
 
-    this.viewer = CodeMirror(ReactDOM.findDOMNode(this), {
+    this.viewer = CodeMirror(this._node, {
       lineWrapping: true,
       value: this.props.value || '',
       readOnly: true,
@@ -70,7 +68,12 @@ export class ResultViewer extends React.Component {
   }
 
   render() {
-    return <div className="result-window" />;
+    return (
+      <div
+        className="result-window"
+        ref={node => { this._node = node; }}
+      />
+    );
   }
 
   /**
@@ -79,5 +82,12 @@ export class ResultViewer extends React.Component {
    */
   getCodeMirror() {
     return this.viewer;
+  }
+
+  /**
+   * Public API for retrieving the DOM client height for this component.
+   */
+  getClientHeight() {
+    return this._node && this._node.clientHeight;
   }
 }

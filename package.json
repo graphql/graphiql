@@ -74,8 +74,8 @@
     "jsdom": "9.8.3",
     "mocha": "3.2.0",
     "react": "15.4.1",
-    "react-addons-test-utils": "15.4.0",
-    "react-dom": "15.3.2",
+    "react-dom": "15.4.1",
+    "react-test-renderer": "15.4.1",
     "uglify-js": "2.7.5",
     "uglifyify": "3.0.4",
     "watchify": "3.7.0"

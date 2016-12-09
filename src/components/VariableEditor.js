@@ -7,7 +7,6 @@
  */
 
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 
 import onHasCompletion from '../utility/onHasCompletion';
 
@@ -57,7 +56,7 @@ export class VariableEditor extends React.Component {
     require('codemirror-graphql/variables/lint');
     require('codemirror-graphql/variables/mode');
 
-    this.editor = CodeMirror(ReactDOM.findDOMNode(this), {
+    this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -136,7 +135,12 @@ export class VariableEditor extends React.Component {
   }
 
   render() {
-    return <div className="codemirrorWrap" />;
+    return (
+      <div
+        className="codemirrorWrap"
+        ref={node => { this._node = node; }}
+      />
+    );
   }
 
   /**
@@ -145,6 +149,13 @@ export class VariableEditor extends React.Component {
    */
   getCodeMirror() {
     return this.editor;
+  }
+
+  /**
+   * Public API for retrieving the DOM client height for this component.
+   */
+  getClientHeight() {
+    return this._node && this._node.clientHeight;
   }
 
   _onKeyUp = (cm, event) => {
