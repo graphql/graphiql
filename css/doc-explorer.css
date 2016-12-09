@@ -27,6 +27,10 @@
           flex: 1;
 }
 
+.graphiql-container .doc-explorer-root-link {
+  cursor: pointer;
+}
+
 .graphiql-container .doc-explorer-back {
   color: #3B5998;
   cursor: pointer;

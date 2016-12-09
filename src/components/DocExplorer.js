@@ -133,7 +133,11 @@ export class DocExplorer extends React.Component {
             </div>
           }
           <div className="doc-explorer-title">
-            {title}
+            <span
+              className="doc-explorer-root-link"
+              onClick={this.handleTitleClick}>
+              {title}
+            </span>
           </div>
           <div className="doc-explorer-rhs">
             {this.props.children}
@@ -188,6 +192,10 @@ export class DocExplorer extends React.Component {
       name: 'Search Results',
       searchValue: value
     });
+  }
+
+  handleTitleClick = () => {
+    this.setState({ navStack: [] });
   }
 }
 
