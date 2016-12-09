@@ -9,7 +9,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import React from 'react';
-import { renderIntoDocument } from 'react-addons-test-utils';
+import ReactTestRenderer from 'react-test-renderer';
 
 import { GraphiQL } from '../GraphiQL';
 
@@ -47,7 +47,7 @@ describe('GraphiQL', () => {
   const noOpFetcher = () => {};
 
   it('should throw error without fetcher', () => {
-    expect(() => renderIntoDocument(
+    expect(() => ReactTestRenderer.create(
       <GraphiQL />
     )).to.throw(
       'GraphiQL requires a fetcher function'
@@ -55,30 +55,32 @@ describe('GraphiQL', () => {
   });
 
   it('should construct correctly with fetcher', () => {
-    expect(() => renderIntoDocument(
+    expect(() => ReactTestRenderer.create(
       <GraphiQL fetcher={noOpFetcher} />
     )).to.not.throw();
   });
 
   it('should not throw error if schema missing and query provided', () => {
-    expect(() => renderIntoDocument(
+    expect(() => ReactTestRenderer.create(
       <GraphiQL fetcher={noOpFetcher} query="{}" />
     )).to.not.throw();
   });
 
   it('defaults to the built-in default query', () => {
-    const graphiQL = renderIntoDocument(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state.query).to.include('# Welcome to GraphiQL');
+    const graphiQL = ReactTestRenderer.create(
+      <GraphiQL fetcher={noOpFetcher} />
+    );
+    expect(graphiQL.getInstance().state.query)
+      .to.include('# Welcome to GraphiQL');
   });
 
   it('accepts a custom default query', () => {
-    const graphiQL = renderIntoDocument(
+    const graphiQL = ReactTestRenderer.create(
       <GraphiQL
         fetcher={noOpFetcher}
         defaultQuery='GraphQL Party!!'
       />
     );
-
-    expect(graphiQL.state.query).to.equal('GraphQL Party!!');
+    expect(graphiQL.getInstance().state.query).to.equal('GraphQL Party!!');
   });
 });

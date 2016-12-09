@@ -6,9 +6,6 @@
  *  LICENSE-examples file in the root directory of this source tree.
  */
 
-import ReactDOM from 'react-dom';
-
-
 /**
  * When a containing DOM node's height has been altered, trigger a resize of
  * the related CodeMirror instance so that it is always correctly sized.
@@ -20,7 +17,7 @@ export default class CodeMirrorSizer {
 
   updateSizes(components) {
     components.forEach((component, i) => {
-      const size = ReactDOM.findDOMNode(component).clientHeight;
+      const size = component.getClientHeight();
       if (i <= this.sizes.length && size !== this.sizes[i]) {
         component.getCodeMirror().setSize();
       }

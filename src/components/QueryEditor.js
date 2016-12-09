@@ -7,7 +7,6 @@
  */
 
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { GraphQLSchema } from 'graphql';
 
 import onHasCompletion from '../utility/onHasCompletion';
@@ -59,7 +58,7 @@ export class QueryEditor extends React.Component {
     require('codemirror-graphql/lint');
     require('codemirror-graphql/mode');
 
-    this.editor = CodeMirror(ReactDOM.findDOMNode(this), {
+    this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -139,7 +138,12 @@ export class QueryEditor extends React.Component {
   }
 
   render() {
-    return <div className="query-editor" />;
+    return (
+      <div
+        className="query-editor"
+        ref={node => { this._node = node; }}
+      />
+    );
   }
 
   /**
@@ -148,6 +152,13 @@ export class QueryEditor extends React.Component {
    */
   getCodeMirror() {
     return this.editor;
+  }
+
+  /**
+   * Public API for retrieving the DOM client height for this component.
+   */
+  getClientHeight() {
+    return this._node && this._node.clientHeight;
   }
 
   _onKeyUp = (cm, event) => {
