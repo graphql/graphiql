@@ -12,12 +12,11 @@ import {
   isType,
 } from 'graphql';
 
-import MarkdownContent from './DocExplorer/MarkdownContent';
+import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
 import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
-import TypeLink from './DocExplorer/TypeLink';
 
 /**
  * DocExplorer
@@ -36,7 +35,6 @@ import TypeLink from './DocExplorer/TypeLink';
  *
  */
 export class DocExplorer extends React.Component {
-
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
   }
@@ -186,69 +184,5 @@ export class DocExplorer extends React.Component {
       name: 'Search Results',
       searchValue: value
     });
-  }
-}
-
-// Documentation for a field
-class FieldDoc extends React.Component {
-
-  static propTypes = {
-    field: PropTypes.object,
-    onClickType: PropTypes.func,
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.field !== nextProps.field;
-  }
-
-  render() {
-    const field = this.props.field;
-
-    let argsDef;
-    if (field.args && field.args.length > 0) {
-      argsDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">
-            {'arguments'}
-          </div>
-          {field.args.map(arg =>
-            <div key={arg.name} className="doc-category-item">
-              <div>
-                <span className="arg-name">{arg.name}</span>
-                {': '}
-                <TypeLink type={arg.type} onClick={this.props.onClickType} />
-              </div>
-              <MarkdownContent
-                className="doc-value-description"
-                markdown={arg.description}
-              />
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <MarkdownContent
-          className="doc-type-description"
-          markdown={field.description || 'No Description'}
-        />
-        {
-          field.deprecationReason &&
-          <MarkdownContent
-            className="doc-alert-text"
-            markdown={field.deprecationReason}
-          />
-        }
-        <div className="doc-category">
-          <div className="doc-category-title">
-            {'type'}
-          </div>
-          <TypeLink type={field.type} onClick={this.props.onClickType} />
-        </div>
-        {argsDef}
-      </div>
-    );
   }
 }
