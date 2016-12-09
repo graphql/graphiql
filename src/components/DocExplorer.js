@@ -17,7 +17,7 @@ import {
   GraphQLEnumType,
 } from 'graphql';
 
-import debounce from '../utility/debounce';
+import SearchBox from './DocExplorer/SearchBox';
 import TypeLink from './DocExplorer/TypeLink';
 
 /**
@@ -187,51 +187,6 @@ export class DocExplorer extends React.Component {
       name: 'Search Results',
       searchValue: value
     });
-  }
-}
-
-class SearchBox extends React.Component {
-  static propTypes = {
-    isShown: PropTypes.bool,
-    onSearch: PropTypes.func,
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = { value: '' };
-
-    this._debouncedOnSearch = debounce(200, () => {
-      this.props.onSearch(this.state.value);
-    });
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.isShown !== this.props.isShown ||
-           nextState.value !== this.state.value;
-  }
-
-  render() {
-    return (
-      <div>
-        {
-          this.props.isShown &&
-          <label className="search-box-outer">
-            <input className="search-box-input"
-              onChange={this.handleChange}
-              type="text"
-              value={this.state.value}
-              placeholder="Search the schema ..."
-            />
-          </label>
-        }
-      </div>
-    );
-  }
-
-  handleChange = event => {
-    this.setState({ value: event.target.value });
-    this._debouncedOnSearch();
   }
 }
 
