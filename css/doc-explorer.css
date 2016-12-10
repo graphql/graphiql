@@ -37,6 +37,10 @@
   white-space: nowrap;
 }
 
+.doc-explorer-narrow .doc-explorer-back {
+  width: 0;
+}
+
 .graphiql-container .doc-explorer-back:before {
   border-left: 2px solid #3B5998;
   border-top: 2px solid #3B5998;

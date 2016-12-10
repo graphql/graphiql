@@ -278,6 +278,10 @@ export class GraphiQL extends React.Component {
       display: this.state.docExplorerOpen ? 'block' : 'none',
       width: this.state.docExplorerWidth,
     };
+    const docExplorerWrapClasses = [
+      'docExplorerWrap',
+      this.state.docExplorerWidth < 200 ? 'doc-explorer-narrow' : '',
+    ].join(' ');
 
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
@@ -357,7 +361,7 @@ export class GraphiQL extends React.Component {
             </div>
           </div>
         </div>
-        <div className="docExplorerWrap" style={docWrapStyle}>
+        <div className={docExplorerWrapClasses} style={docWrapStyle}>
           <div
             className="docExplorerResizer"
             onMouseDown={this.handleDocsResizeStart}
