@@ -92,7 +92,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
 
-- onToggleDocs: an optional function which will be called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.
+- `onToggleDocs`: an optional function which will be called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.
 
 - `getDefaultFieldNames`: an optional function used to provide default fields to non-leaf fields which invalidly lack a selection set. Accepts a GraphQLType instance and returns an array of field names. If not provided, a default behavior will be used.
 
