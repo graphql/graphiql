@@ -11,9 +11,16 @@ GraphiQL
 
 Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)!
 It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up.
+With `npm`:
 
 ```
 npm install --save graphiql
+```
+
+Alternatively, if you are using [`yarn`](https://yarnpkg.com/):
+
+```
+yarn add graphiql
 ```
 
 GraphiQL provides a React component responsible for rendering the UI, which
@@ -41,8 +48,8 @@ Build for the web with [webpack](http://webpack.github.io/) or
 [browserify](http://browserify.org/), or use the pre-bundled graphiql.js file.
 See the example in the git repository to see how to use the pre-bundled file.
 
-Don't forget to include the CSS file on the page! If you're using npm, you can
-find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
+Don't forget to include the CSS file on the page! If you're using npm or yarn, you
+can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
 [releases page](https://github.com/graphql/graphiql/releases).
 
 For an example of setting up a GraphiQL, check out the [example](./example) in
