@@ -9,9 +9,7 @@ GraphiQL
 
 ### Getting started
 
-Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)!
-It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up.
-With `npm`:
+Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)! It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up. With `npm`:
 
 ```
 npm install --save graphiql
@@ -23,9 +21,7 @@ Alternatively, if you are using [`yarn`](https://yarnpkg.com/):
 yarn add graphiql
 ```
 
-GraphiQL provides a React component responsible for rendering the UI, which
-should be provided with a function for fetching from GraphQL, we recommend using
-the [fetch](https://fetch.spec.whatwg.org/) standard API.
+GraphiQL provides a React component responsible for rendering the UI, which should be provided with a function for fetching from GraphQL, we recommend using the [fetch](https://fetch.spec.whatwg.org/) standard API.
 
 ```js
 import React from 'react';
@@ -44,17 +40,11 @@ function graphQLFetcher(graphQLParams) {
 ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 ```
 
-Build for the web with [webpack](http://webpack.github.io/) or
-[browserify](http://browserify.org/), or use the pre-bundled graphiql.js file.
-See the example in the git repository to see how to use the pre-bundled file.
+Build for the web with [webpack](http://webpack.github.io/) or [browserify](http://browserify.org/), or use the pre-bundled graphiql.js file. See the example in the git repository to see how to use the pre-bundled file.
 
-Don't forget to include the CSS file on the page! If you're using npm or yarn, you
-can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the
-[releases page](https://github.com/graphql/graphiql/releases).
+Don't forget to include the CSS file on the page! If you're using npm or yarn, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
 
-For an example of setting up a GraphiQL, check out the [example](./example) in
-this repository which also includes a few useful features highlighting
-GraphiQL's API.
+For an example of setting up a GraphiQL, check out the [example](./example) in this repository which also includes a few useful features highlighting GraphiQL's API.
 
 
 ### Features
@@ -68,8 +58,7 @@ GraphiQL's API.
 
 ### Usage
 
-GraphiQL exports a single React component which is intended to encompass the
-entire browser viewport. This React component renders the GraphiQL editor.
+GraphiQL exports a single React component which is intended to encompass the entire browser viewport. This React component renders the GraphiQL editor.
 
 ```js
 import GraphiQL from 'graphiql';
@@ -77,58 +66,35 @@ import GraphiQL from 'graphiql';
 <GraphiQL />
 ```
 
-GraphiQL supports customization in UI and behavior by accepting React props
-and children.
+GraphiQL supports customization in UI and behavior by accepting React props and children.
 
 **Props:**
 
-- `fetcher`: a function which accepts GraphQL-HTTP parameters and returns
-  a Promise or Observable which resolves to the GraphQL parsed JSON response.
+- `fetcher`: a function which accepts GraphQL-HTTP parameters and returns a Promise or Observable which resolves to the GraphQL parsed JSON response.
 
-- `schema`: a GraphQLSchema instance or `null` if one is not to be used.
-  If `undefined` is provided, GraphiQL will send an introspection query
-  using the fetcher to produce a schema.
+- `schema`: a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.
 
-- `query`: an optional GraphQL string to use as the initial displayed query,
-  if `undefined` is provided, the stored query or defaultQuery will
-  be used.
+- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or defaultQuery will be used.
 
-- `variables`: an optional GraphQL string to use as the initial displayed
-  query variables, if `undefined` is provided, the stored variables will
-  be used.
+- `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
 
-- `operationName`: an optional name of which GraphQL operation should be
-  executed.
+- `operationName`: an optional name of which GraphQL operation should be executed.
 
-- `response`: an optional JSON string to use as the initial displayed
-  response. If not provided, no response will be initialy shown. You might
-  provide this if illustrating the result of the initial query.
+- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initialy shown. You might provide this if illustrating the result of the initial query.
 
-- `storage`: an instance of [Storage][] GraphiQL will use to persist state.
-  Only `getItem` and `setItem` are called. Default: window.localStorage
+- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: window.localStorage
 
-- `defaultQuery`: an optional GraphQL string to use when no query is provided
-  and no stored query exists from a previous session. If `undefined` is
-  provided, GraphiQL will use its own default query.
+- `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
-- `onEditQuery`: an optional function which will be called when the Query
-  editor changes. The argument to the function will be the query string.
+- `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
 
-- `onEditVariables`: an optional function which will be called when the Query
-  varible editor changes. The argument to the function will be the
-  variables string.
+- `onEditVariables`: an optional function which will be called when the Query varible editor changes. The argument to the function will be the variables string.
 
-- `onEditOperationName`: an optional function which will be called when the
-  operation name to be executed changes.
+- `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
 
-- onToggleDocs: an optional function which will be called when the
-  docs will be toggled. The argument to the function will be a boolean
-  whether the docs are now open or closed.
+- onToggleDocs: an optional function which will be called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.
 
-- `getDefaultFieldNames`: an optional function used to provide default fields
-  to non-leaf fields which invalidly lack a selection set.
-  Accepts a GraphQLType instance and returns an array of field names.
-  If not provided, a default behavior will be used.
+- `getDefaultFieldNames`: an optional function used to provide default fields to non-leaf fields which invalidly lack a selection set. Accepts a GraphQLType instance and returns an array of field names. If not provided, a default behavior will be used.
 
 **Children:**
 
@@ -263,8 +229,7 @@ mutation TestMutation {
 ```
 Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/mutations-test.js).
 
-[Relay](https://facebook.github.io/relay) has another good example using a common pattern for composing mutations:
-Given the following GraphQL Type Definitions,
+[Relay](https://facebook.github.io/relay) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
 ```
 input IntroduceShipInput {
   factionId: ID!
@@ -304,8 +269,7 @@ Read more from [Relay Mutation Documentation](https://facebook.github.io/relay/d
 
 **Fragment**
 
-Fragments allow for the reuse of common repeated selections of fields, reducing duplicated text in the document. Inline Fragments can be used directly within a selection to condition upon a type condition when querying against an interface or union.
-Therefore, instead of the following query:
+Fragments allow for the reuse of common repeated selections of fields, reducing duplicated text in the document. Inline Fragments can be used directly within a selection to condition upon a type condition when querying against an interface or union. Therefore, instead of the following query:
 ```
 {
   luke: human(id: "1000") {
