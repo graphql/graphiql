@@ -352,30 +352,6 @@
   padding: 2px 4px 1px;
 }
 
-@-moz-keyframes insertionFade {
-  from, to {
-    background: rgba(255, 255, 255, 0);
-    border-color: rgba(255, 255, 255, 0);
-  }
-
-  15%, 85% {
-    background: #fbffc9;
-    border-color: #f0f3c0;
-  }
-}
-
-@-webkit-keyframes insertionFade {
-  from, to {
-    background: rgba(255, 255, 255, 0);
-    border-color: rgba(255, 255, 255, 0);
-  }
-
-  15%, 85% {
-    background: #fbffc9;
-    border-color: #f0f3c0;
-  }
-}
-
 @keyframes insertionFade {
   from, to {
     background: rgba(255, 255, 255, 0);
