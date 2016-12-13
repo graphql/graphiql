@@ -4,8 +4,8 @@
   font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
   font-size: 13px;
   list-style: none;
-  margin: 0;
   margin-left: -6px;
+  margin: 0;
   max-height: 14.5em;
   overflow-y: auto;
   overflow: hidden;
@@ -24,8 +24,8 @@
 
 .CodeMirror-hints-wrapper .CodeMirror-hints {
   box-shadow: none;
-  position: relative;
   margin-left: 0;
+  position: relative;
   z-index: 0;
 }
 

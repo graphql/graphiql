@@ -48,10 +48,10 @@
   border-bottom: 1px solid #d0d0d0;
   cursor: default;
   display: flex;
+  flex-direction: row;
+  flex: 1;
   height: 34px;
   padding: 7px 14px 6px;
-  flex: 1;
-  flex-direction: row;
   user-select: none;
 }
 
@@ -68,8 +68,8 @@
   color: #3B5998;
   cursor: pointer;
   font-size: 14px;
-  outline: 0;
   margin: 0;
+  outline: 0;
   padding: 2px 20px 0 18px;
 }
 
@@ -87,22 +87,22 @@
 
 .graphiql-container .editorBar {
   display: flex;
-  flex: 1;
   flex-direction: row;
+  flex: 1;
 }
 
 .graphiql-container .queryWrap {
   display: flex;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
 }
 
 .graphiql-container .resultWrap {
   border-left: solid 1px #e0e0e0;
   display: flex;
-  position: relative;
-  flex: 1;
   flex-direction: column;
+  flex: 1;
+  position: relative;
 }
 
 .graphiql-container .docExplorerWrap {
@@ -157,14 +157,14 @@
 
 .graphiql-container .codemirrorWrap {
   flex: 1;
-  position: relative;
   height: 100%;
+  position: relative;
 }
 
 .graphiql-container .result-window {
   flex: 1;
-  position: relative;
   height: 100%;
+  position: relative;
 }
 
 .graphiql-container .footer {
@@ -204,10 +204,10 @@
 .graphiql-container .toolbar-button {
   background: #fdfdfd;
   background: linear-gradient(#fbfbfb, #f8f8f8);
-  border-width: 0.5px;
-  border-style: solid;
   border-color: #d3d3d3 #d0d0d0 #bababa;
   border-radius: 4px;
+  border-style: solid;
+  border-width: 0.5px;
   box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
   color: #444;
   cursor: pointer;
@@ -232,15 +232,15 @@
 }
 
 .graphiql-container .execute-button-wrap {
-  position: relative;
-  margin: 0 14px 0 28px;
   height: 34px;
+  margin: 0 14px 0 28px;
+  position: relative;
 }
 
 .graphiql-container .execute-button {
   background: linear-gradient(#fdfdfd, #d2d3d6);
-  border: 1px solid rgba(0,0,0,0.25);
   border-radius: 17px;
+  border: 1px solid rgba(0,0,0,0.25);
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
   fill: #444;
@@ -280,10 +280,10 @@
 }
 
 .graphiql-container .execute-options li {
-  padding: 2px 30px 4px 10px;
+  cursor: pointer;
   list-style: none;
   min-width: 100px;
-  cursor: pointer;
+  padding: 2px 30px 4px 10px;
 }
 
 .graphiql-container .execute-options li.selected {
@@ -366,8 +366,8 @@
 
 div.CodeMirror-lint-tooltip {
   background-color: white;
-  border: 0;
   border-radius: 2px;
+  border: 0;
   color: #141823;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   font-family:

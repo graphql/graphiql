@@ -13,13 +13,13 @@
 }
 
 .graphiql-container .doc-explorer-title {
-  padding: 10px 0 10px 10px;
+  flex: 1;
   font-weight: bold;
+  overflow-x: hidden;
+  padding: 10px 0 10px 10px;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
-  overflow-x: hidden;
-  flex: 1;
 }
 
 .graphiql-container .doc-explorer-back {
@@ -44,8 +44,8 @@
   height: 9px;
   margin: 0 3px -1px 0;
   position: relative;
-  width: 9px;
   transform: rotate(-45deg);
+  width: 9px;
 }
 
 .graphiql-container .doc-explorer-rhs {
