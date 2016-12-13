@@ -4,15 +4,12 @@
 
 .graphiql-container .doc-explorer-title-bar {
   cursor: default;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
   height: 34px;
   line-height: 14px;
   padding: 8px 8px 5px;
   position: relative;
-  -webkit-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .graphiql-container .doc-explorer-title {
@@ -22,9 +19,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  flex: 1;
 }
 
 .graphiql-container .doc-explorer-back {
@@ -50,9 +45,7 @@
   margin: 0 3px -1px 0;
   position: relative;
   width: 9px;
-  -webkit-transform: rotate(-45deg);
-      -ms-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
 }
 
 .graphiql-container .doc-explorer-rhs {
@@ -104,9 +97,7 @@
   letter-spacing: 1px;
   margin: 0 -15px 10px 0;
   padding: 10px 0;
-  -webkit-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .graphiql-container .doc-category-item {

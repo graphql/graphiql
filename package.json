@@ -52,6 +52,7 @@
     "react-dom": ">=0.14.8"
   },
   "devDependencies": {
+    "autoprefixer": "^6.5.4",
     "babel-cli": "6.18.0",
     "babel-eslint": "7.1.1",
     "babel-plugin-syntax-async-functions": "6.13.0",
@@ -73,6 +74,7 @@
     "graphql": "0.8.2",
     "jsdom": "9.8.3",
     "mocha": "3.2.0",
+    "postcss-cli": "^2.6.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",
     "react-test-renderer": "15.4.1",
