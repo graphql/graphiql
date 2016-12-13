@@ -89,6 +89,8 @@ import {
  *     Accepts a GraphQLType instance and returns an array of field names.
  *     If not provided, a default behavior will be used.
  *
+ *   - theme: A theme to use for overall UI, currently only dark is available.
+ *
  * Children:
  *
  *   - <GraphiQL.Logo> Replace the GraphiQL logo with your own.
@@ -120,7 +122,9 @@ export class GraphiQL extends React.Component {
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
     onToggleDocs: PropTypes.func,
-    getDefaultFieldNames: PropTypes.func
+    getDefaultFieldNames: PropTypes.func,
+    theme: PropTypes.oneOf([ 'dark' ]),
+    syntaxTheme: PropTypes.string
   }
 
   constructor(props) {
@@ -158,12 +162,16 @@ export class GraphiQL extends React.Component {
         queryFacts && queryFacts.operations
       );
 
+    // Determine the UI theme (dark or light)
+    const theme = props.theme !== undefined ? props.theme : '';
+
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
       operationName,
+      theme,
       response: props.response,
       editorFlex: Number(this._storageGet('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
@@ -287,7 +295,7 @@ export class GraphiQL extends React.Component {
     };
 
     return (
-      <div className="graphiql-container">
+      <div className={`graphiql-container ${this.state.theme}`}>
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">
