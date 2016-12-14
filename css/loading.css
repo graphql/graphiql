@@ -1,43 +1,25 @@
 .graphiql-container .spinner-container {
+  height: 36px;
+  left: 50%;
   position: absolute;
   top: 50%;
-  height: 36px;
-  width: 36px;
-  left: 50%;
   transform: translate(-50%, -50%);
+  width: 36px;
   z-index: 10;
 }
 
 .graphiql-container .spinner {
-  vertical-align: middle;
+  animation: rotation .6s infinite linear;
+  border-bottom: 6px solid rgba(150, 150, 150, .15);
+  border-left: 6px solid rgba(150, 150, 150, .15);
+  border-radius: 100%;
+  border-right: 6px solid rgba(150, 150, 150, .15);
+  border-top: 6px solid rgba(150, 150, 150, .8);
   display: inline-block;
   height: 24px;
-  width: 24px;
   position: absolute;
-  -webkit-animation: rotation .6s infinite linear;
-  -moz-animation: rotation .6s infinite linear;
-  -o-animation: rotation .6s infinite linear;
-  animation: rotation .6s infinite linear;
-  border-left: 6px solid rgba(150, 150, 150, .15);
-  border-right: 6px solid rgba(150, 150, 150, .15);
-  border-bottom: 6px solid rgba(150, 150, 150, .15);
-  border-top: 6px solid rgba(150, 150, 150, .8);
-  border-radius: 100%;
-}
-
-@-webkit-keyframes rotation {
-  from { -webkit-transform: rotate(0deg); }
-  to { -webkit-transform: rotate(359deg); }
-}
-
-@-moz-keyframes rotation {
-  from { -moz-transform: rotate(0deg); }
-  to { -moz-transform: rotate(359deg); }
-}
-
-@-o-keyframes rotation {
-  from { -o-transform: rotate(0deg); }
-  to { -o-transform: rotate(359deg); }
+  vertical-align: middle;
+  width: 24px;
 }
 
 @keyframes rotation {

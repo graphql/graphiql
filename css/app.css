@@ -1,11 +1,7 @@
 .graphiql-container {
   color: #141823;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
   font-family:
     system,
     -apple-system,
@@ -27,15 +23,9 @@
 }
 
 .graphiql-container .editorWrap {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  flex-direction: column;
+  flex: 1;
 }
 
 .graphiql-container .title {
@@ -48,36 +38,21 @@
 }
 
 .graphiql-container .topBarWrap {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
 }
 
 .graphiql-container .topBar {
-  -webkit-align-items: center;
-      -ms-align-items: center;
-          align-items: center;
-  background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
-  background:         linear-gradient(#f7f7f7, #e2e2e2);
+  align-items: center;
+  background: linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: 1px solid #d0d0d0;
   cursor: default;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
+  flex-direction: row;
+  flex: 1;
   height: 34px;
   padding: 7px 14px 6px;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .graphiql-container .toolbar {
@@ -85,8 +60,7 @@
 }
 
 .graphiql-container .docExplorerShow {
-  background: -webkit-linear-gradient(#f7f7f7, #e2e2e2);
-  background:         linear-gradient(#f7f7f7, #e2e2e2);
+  background: linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: 1px solid #d0d0d0;
   border-left: 1px solid rgba(0, 0, 0, 0.2);
   border-right: none;
@@ -94,8 +68,8 @@
   color: #3B5998;
   cursor: pointer;
   font-size: 14px;
-  outline: 0;
   margin: 0;
+  outline: 0;
   padding: 2px 20px 0 18px;
 }
 
@@ -107,48 +81,28 @@
   height: 9px;
   margin: 0 3px -1px 0;
   position: relative;
-  -webkit-transform: rotate(-45deg);
-      -ms-transform: rotate(-45deg);
-          transform: rotate(-45deg);
+  transform: rotate(-45deg);
   width: 9px;
 }
 
 .graphiql-container .editorBar {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  flex-direction: row;
+  flex: 1;
 }
 
 .graphiql-container .queryWrap {
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
+  flex: 1;
 }
 
 .graphiql-container .resultWrap {
   border-left: solid 1px #e0e0e0;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
+  flex-direction: column;
+  flex: 1;
   position: relative;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
 }
 
 .graphiql-container .docExplorerWrap {
@@ -176,20 +130,14 @@
 }
 
 .graphiql-container .query-editor {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
+  flex: 1;
   position: relative;
 }
 
 .graphiql-container .variable-editor {
-  display: -webkit-flex;
-  display:     -ms-flex;
-  display:         flex;
+  display: flex;
+  flex-direction: column;
   height: 29px;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
   position: relative;
 }
 
@@ -204,25 +152,19 @@
   line-height: 14px;
   padding: 6px 0 8px 43px;
   text-transform: lowercase;
-  -webkit-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  user-select: none;
 }
 
 .graphiql-container .codemirrorWrap {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  position: relative;
+  flex: 1;
   height: 100%;
+  position: relative;
 }
 
 .graphiql-container .result-window {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  position: relative;
+  flex: 1;
   height: 100%;
+  position: relative;
 }
 
 .graphiql-container .footer {
@@ -261,12 +203,11 @@
 
 .graphiql-container .toolbar-button {
   background: #fdfdfd;
-  background: -webkit-linear-gradient(#fbfbfb, #f8f8f8);
-  background:         linear-gradient(#fbfbfb, #f8f8f8);
-  border-width: 0.5px;
-  border-style: solid;
+  background: linear-gradient(#fbfbfb, #f8f8f8);
   border-color: #d3d3d3 #d0d0d0 #bababa;
   border-radius: 4px;
+  border-style: solid;
+  border-width: 0.5px;
   box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
   color: #444;
   cursor: pointer;
@@ -277,8 +218,7 @@
 }
 
 .graphiql-container .toolbar-button:active {
-  background: -webkit-linear-gradient(#ececec, #d8d8d8);
-  background:         linear-gradient(#ececec, #d8d8d8);
+  background: linear-gradient(#ececec, #d8d8d8);
   border-color: #cacaca #c9c9c9 #b0b0b0;
   box-shadow:
     0 1px 0 #fff,
@@ -287,22 +227,20 @@
 }
 
 .graphiql-container .toolbar-button.error {
-  background: -webkit-linear-gradient(#fdf3f3, #e6d6d7);
-  background:         linear-gradient(#fdf3f3, #e6d6d7);
+  background: linear-gradient(#fdf3f3, #e6d6d7);
   color: #b00;
 }
 
 .graphiql-container .execute-button-wrap {
-  position: relative;
-  margin: 0 14px 0 28px;
   height: 34px;
+  margin: 0 14px 0 28px;
+  position: relative;
 }
 
 .graphiql-container .execute-button {
-  background: -webkit-linear-gradient(#fdfdfd, #d2d3d6);
-  background:         linear-gradient(#fdfdfd, #d2d3d6);
-  border: 1px solid rgba(0,0,0,0.25);
+  background: linear-gradient(#fdfdfd, #d2d3d6);
   border-radius: 17px;
+  border: 1px solid rgba(0,0,0,0.25);
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
   fill: #444;
@@ -317,8 +255,7 @@
 }
 
 .graphiql-container .execute-button:active {
-  background: -webkit-linear-gradient(#e6e6e6, #c0c0c0);
-  background:         linear-gradient(#e6e6e6, #c0c0c0);
+  background: linear-gradient(#e6e6e6, #c0c0c0);
   box-shadow:
     0 1px 0 #fff,
     inset 0 0 2px rgba(0, 0, 0, 0.3),
@@ -343,10 +280,10 @@
 }
 
 .graphiql-container .execute-options li {
-  padding: 2px 30px 4px 10px;
+  cursor: pointer;
   list-style: none;
   min-width: 100px;
-  cursor: pointer;
+  padding: 2px 30px 4px 10px;
 }
 
 .graphiql-container .execute-options li.selected {
@@ -355,8 +292,7 @@
 }
 
 .graphiql-container .CodeMirror-scroll {
-  -webkit-overflow-scrolling: touch;
-      -ms-overflow-scrolling: touch;
+  overflow-scrolling: touch;
 }
 
 .graphiql-container .CodeMirror {
@@ -380,15 +316,12 @@
 }
 
 .CodeMirror-hint-information .content {
-  -webkit-box-orient: vertical;
-      -ms-box-orient: vertical;
-          box-orient: vertical;
+  box-orient: vertical;
   color: #141823;
-  display: -webkit-box;
+  display: flex;
   font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
   font-size: 13px;
-  -webkit-line-clamp: 3;
-          line-clamp: 3;
+  line-clamp: 3;
   line-height: 16px;
   max-height: 48px;
   overflow: hidden;
@@ -411,42 +344,12 @@
 }
 
 .autoInsertedLeaf.cm-property {
-  -webkit-animation-duration: 6s;
-     -moz-animation-duration: 6s;
-      -ms-animation-duration: 6s;
-          animation-duration: 6s;
-  -webkit-animation-name: insertionFade;
-     -moz-animation-name: insertionFade;
-      -ms-animation-name: insertionFade;
-          animation-name: insertionFade;
+  animation-duration: 6s;
+  animation-name: insertionFade;
   border-bottom: 2px solid rgba(255, 255, 255, 0);
   border-radius: 2px;
   margin: -2px -4px -1px;
   padding: 2px 4px 1px;
-}
-
-@-moz-keyframes insertionFade {
-  from, to {
-    background: rgba(255, 255, 255, 0);
-    border-color: rgba(255, 255, 255, 0);
-  }
-
-  15%, 85% {
-    background: #fbffc9;
-    border-color: #f0f3c0;
-  }
-}
-
-@-webkit-keyframes insertionFade {
-  from, to {
-    background: rgba(255, 255, 255, 0);
-    border-color: rgba(255, 255, 255, 0);
-  }
-
-  15%, 85% {
-    background: #fbffc9;
-    border-color: #f0f3c0;
-  }
 }
 
 @keyframes insertionFade {
@@ -463,8 +366,8 @@
 
 div.CodeMirror-lint-tooltip {
   background-color: white;
-  border: 0;
   border-radius: 2px;
+  border: 0;
   color: #141823;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
   font-family:
@@ -484,11 +387,7 @@ div.CodeMirror-lint-tooltip {
   line-height: 16px;
   opacity: 0;
   padding: 6px 10px;
-  -webkit-transition: opacity 0.15s;
-     -moz-transition: opacity 0.15s;
-      -ms-transition: opacity 0.15s;
-       -o-transition: opacity 0.15s;
-          transition: opacity 0.15s;
+  transition: opacity 0.15s;
 }
 
 div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
@@ -500,10 +399,7 @@ div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
 .graphiql-container .CodeMirror-foldmarker {
   border-radius: 4px;
   background: #08f;
-  background: -webkit-linear-gradient(#43A8FF, #0F83E8);
-  background:    -moz-linear-gradient(#43A8FF, #0F83E8);
-  background:     -ms-linear-gradient(#43A8FF, #0F83E8);
-  background:         linear-gradient(#43A8FF, #0F83E8);
+  background: linear-gradient(#43A8FF, #0F83E8);
   box-shadow:
     0 1px 1px rgba(0, 0, 0, 0.2),
     inset 0 0 0 1px rgba(0, 0, 0, 0.1);

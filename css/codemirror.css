@@ -2,9 +2,9 @@
 
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
+  color: black;
   font-family: monospace;
   height: 300px;
-  color: black;
 }
 
 /* PADDING */
@@ -29,10 +29,10 @@
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
-  padding: 0 3px 0 5px;
-  min-width: 20px;
-  text-align: right;
   color: #999;
+  min-width: 20px;
+  padding: 0 3px 0 5px;
+  text-align: right;
   white-space: nowrap;
 }
 
@@ -49,31 +49,18 @@
   border-left: 1px solid silver;
 }
 .CodeMirror.cm-fat-cursor div.CodeMirror-cursor {
-  width: auto;
-  border: 0;
   background: #7e7;
+  border: 0;
+  width: auto;
 }
 .CodeMirror.cm-fat-cursor div.CodeMirror-cursors {
   z-index: 1;
 }
 
 .cm-animate-fat-cursor {
-  width: auto;
-  border: 0;
-  -webkit-animation: blink 1.06s steps(1) infinite;
-  -moz-animation: blink 1.06s steps(1) infinite;
-  -ms-animation: blink 1.06s steps(1) infinite;
   animation: blink 1.06s steps(1) infinite;
-}
-@-moz-keyframes blink {
-  0% { background: #7e7; }
-  50% { background: none; }
-  100% { background: #7e7; }
-}
-@-webkit-keyframes blink {
-  0% { background: #7e7; }
-  50% { background: none; }
-  100% { background: #7e7; }
+  border: 0;
+  width: auto;
 }
 @keyframes blink {
   0% { background: #7e7; }
@@ -142,43 +129,43 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
    the editor. You probably shouldn't touch them. */
 
 .CodeMirror {
-  position: relative;
-  overflow: hidden;
   background: white;
+  overflow: hidden;
+  position: relative;
 }
 
 .CodeMirror-scroll {
-  overflow: scroll !important; /* Things will break if this is overridden */
+  height: 100%;
   /* 30px is the magic margin used to hide the element's real scrollbars */
   /* See overflow: hidden in .CodeMirror */
   margin-bottom: -30px; margin-right: -30px;
-  padding-bottom: 30px;
-  height: 100%;
   outline: none; /* Prevent dragging from highlighting the element */
+  overflow: scroll !important; /* Things will break if this is overridden */
+  padding-bottom: 30px;
   position: relative;
 }
 .CodeMirror-sizer {
-  position: relative;
   border-right: 30px solid transparent;
+  position: relative;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling
    before actual scrolling happens, thus preventing shaking and
    flickering artifacts. */
 .CodeMirror-vscrollbar, .CodeMirror-hscrollbar, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  display: none;
   position: absolute;
   z-index: 6;
-  display: none;
 }
 .CodeMirror-vscrollbar {
-  right: 0; top: 0;
   overflow-x: hidden;
   overflow-y: scroll;
+  right: 0; top: 0;
 }
 .CodeMirror-hscrollbar {
   bottom: 0; left: 0;
-  overflow-y: hidden;
   overflow-x: scroll;
+  overflow-y: hidden;
 }
 .CodeMirror-scrollbar-filler {
   right: 0; bottom: 0;
@@ -188,25 +175,25 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 
 .CodeMirror-gutters {
-  position: absolute; left: 0; top: 0;
   min-height: 100%;
+  position: absolute; left: 0; top: 0;
   z-index: 3;
 }
 .CodeMirror-gutter {
-  white-space: normal;
-  height: 100%;
   display: inline-block;
-  vertical-align: top;
+  height: 100%;
   margin-bottom: -30px;
+  vertical-align: top;
+  white-space: normal;
   /* Hack to make IE7 behave */
   *zoom:1;
   *display:inline;
 }
 .CodeMirror-gutter-wrapper {
-  position: absolute;
-  z-index: 4;
   background: none !important;
   border: none !important;
+  position: absolute;
+  z-index: 4;
 }
 .CodeMirror-gutter-background {
   position: absolute;
@@ -214,14 +201,11 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   z-index: 4;
 }
 .CodeMirror-gutter-elt {
-  position: absolute;
   cursor: default;
+  position: absolute;
   z-index: 4;
 }
 .CodeMirror-gutter-wrapper {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -230,23 +214,22 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   min-height: 1px; /* prevents collapsing before first draw */
 }
 .CodeMirror pre {
+  -webkit-tap-highlight-color: transparent;
   /* Reset some styles that the rest of the page might have set */
-  -moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
-  border-width: 0;
   background: transparent;
+  border-radius: 0;
+  border-width: 0;
+  color: inherit;
   font-family: inherit;
   font-size: inherit;
+  font-variant-ligatures: none;
+  line-height: inherit;
   margin: 0;
+  overflow: visible;
+  position: relative;
   white-space: pre;
   word-wrap: normal;
-  line-height: inherit;
-  color: inherit;
   z-index: 2;
-  position: relative;
-  overflow: visible;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-font-variant-ligatures: none;
-  font-variant-ligatures: none;
 }
 .CodeMirror-wrap pre {
   word-wrap: break-word;
@@ -261,9 +244,9 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 }
 
 .CodeMirror-linewidget {
+  overflow: auto;
   position: relative;
   z-index: 2;
-  overflow: auto;
 }
 
 .CodeMirror-widget {}
@@ -278,24 +261,23 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror-gutter,
 .CodeMirror-gutters,
 .CodeMirror-linenumber {
-  -moz-box-sizing: content-box;
   box-sizing: content-box;
 }
 
 .CodeMirror-measure {
-  position: absolute;
-  width: 100%;
   height: 0;
   overflow: hidden;
+  position: absolute;
   visibility: hidden;
+  width: 100%;
 }
 
 .CodeMirror-cursor { position: absolute; }
 .CodeMirror-measure pre { position: static; }
 
 div.CodeMirror-cursors {
-  visibility: hidden;
   position: relative;
+  visibility: hidden;
   z-index: 3;
 }
 div.CodeMirror-dragcursors {
@@ -337,13 +319,13 @@ div.CodeMirror-dragcursors {
 span.CodeMirror-selectedtext { background: none; }
 
 .CodeMirror-dialog {
-  position: absolute;
-  left: 0; right: 0;
   background: inherit;
-  z-index: 15;
-  padding: .1em .8em;
-  overflow: hidden;
   color: inherit;
+  left: 0; right: 0;
+  overflow: hidden;
+  padding: .1em .8em;
+  position: absolute;
+  z-index: 15;
 }
 
 .CodeMirror-dialog-top {
@@ -357,12 +339,12 @@ span.CodeMirror-selectedtext { background: none; }
 }
 
 .CodeMirror-dialog input {
-  border: 1px solid #d3d6db;
-  outline: none;
   background: transparent;
-  width: 20em;
+  border: 1px solid #d3d6db;
   color: inherit;
   font-family: monospace;
+  outline: none;
+  width: 20em;
 }
 
 .CodeMirror-dialog button {
