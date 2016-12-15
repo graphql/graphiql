@@ -35,7 +35,7 @@ import {
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
- * browres viewport.
+ * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
  */
