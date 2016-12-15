@@ -34,73 +34,10 @@ import {
 } from '../utility/introspectionQueries';
 
 /**
- * GraphiQL
+ * The top-level React component for GraphiQL, intended to encompass the entire
+ * browres viewport.
  *
- * This React component is responsible for rendering the GraphiQL editor.
- *
- * Props:
- *
- *   - fetcher: a function which accepts GraphQL-HTTP parameters and returns
- *     a Promise or Observable which resolves to the GraphQL parsed
- *     JSON response.
- *
- *   - schema: a GraphQLSchema instance or `null` if one is not to be used.
- *     If `undefined` is provided, GraphiQL will send an introspection query
- *     using the fetcher to produce a schema.
- *
- *   - query: an optional GraphQL string to use as the initial displayed query,
- *     if `undefined` is provided, the stored query or defaultQuery will
- *     be used.
- *
- *   - variables: an optional GraphQL string to use as the initial displayed
- *     query variables, if `undefined` is provided, the stored variables will
- *     be used.
- *
- *   - operationName: an optional name of which GraphQL operation should be
- *     executed.
- *
- *   - response: an optional JSON string to use as the initial displayed
- *     response. If not provided, no response will be initialy shown. You might
- *     provide this if illustrating the result of the initial query.
- *
- *   - storage: an instance of [Storage][] GraphiQL will use to persist state.
- *     Only `getItem` and `setItem` are called. Default: window.localStorage
- *
- *   - defaultQuery: an optional GraphQL string to use when no query is provided
- *     and no stored query exists from a previous session. If `undefined` is
- *     provided, GraphiQL will use its own default query.
- *
- *   - onEditQuery: an optional function which will be called when the Query
- *     editor changes. The argument to the function will be the query string.
- *
- *   - onEditVariables: an optional function which will be called when the Query
- *     varible editor changes. The argument to the function will be the
- *     variables string.
- *
- *   - onEditOperationName: an optional function which will be called when the
- *     operation name to be executed changes.
- *
- *   - onToggleDocs: an optional function which will be called when the
- *     docs will be toggled. The argument to the function will be a boolean
- *     whether the docs are now open or closed.
- *
- *   - getDefaultFieldNames: an optional function used to provide default fields
- *     to non-leaf fields which invalidly lack a selection set.
- *     Accepts a GraphQLType instance and returns an array of field names.
- *     If not provided, a default behavior will be used.
- *
- * Children:
- *
- *   - <GraphiQL.Logo> Replace the GraphiQL logo with your own.
- *
- *   - <GraphiQL.Toolbar> Add a custom toolbar above GraphiQL.
- *
- *   - <GraphiQL.ToolbarButton> Add a button to the toolbar above GraphiQL.
- *
- *   - <GraphiQL.Footer> Add a custom footer below GraphiQL Results.
- *
- *
- * [Storage]: https://developer.mozilla.org/en-US/docs/Web/API/Storage
+ * @see https://github.com/graphql/graphiql#usage
  */
 export class GraphiQL extends React.Component {
 
