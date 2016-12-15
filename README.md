@@ -128,7 +128,6 @@ class CustomGraphiQL extends React.Component {
       // using the fetcher.
       schema: undefined,
 
-
       // Useful to determine which operation to run
       // when there are multiple of them.
       operationName: null,
