@@ -80,7 +80,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `operationName`: an optional name of which GraphQL operation should be executed.
 
-- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initialy shown. You might provide this if illustrating the result of the initial query.
+- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
 
 - `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: window.localStorage
 
@@ -88,7 +88,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
 
-- `onEditVariables`: an optional function which will be called when the Query varible editor changes. The argument to the function will be the variables string.
+- `onEditVariables`: an optional function which will be called when the Query variable editor changes. The argument to the function will be the variables string.
 
 - `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
 
