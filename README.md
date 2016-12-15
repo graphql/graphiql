@@ -74,7 +74,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `schema`: a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.
 
-- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or defaultQuery will be used.
+- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used.
 
 - `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
 
@@ -82,7 +82,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
 
-- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: window.localStorage
+- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: `window.localStorage`
 
 - `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
