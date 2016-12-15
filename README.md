@@ -74,21 +74,21 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `schema`: a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.
 
-- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or defaultQuery will be used.
+- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used.
 
 - `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
 
 - `operationName`: an optional name of which GraphQL operation should be executed.
 
-- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initialy shown. You might provide this if illustrating the result of the initial query.
+- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
 
-- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: window.localStorage
+- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: `window.localStorage`
 
 - `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
 - `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
 
-- `onEditVariables`: an optional function which will be called when the Query varible editor changes. The argument to the function will be the variables string.
+- `onEditVariables`: an optional function which will be called when the Query variable editor changes. The argument to the function will be the variables string.
 
 - `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
 
@@ -116,30 +116,29 @@ class CustomGraphiQL extends React.Component {
       // REQUIRED:
       // `fetcher` must be provided in order for GraphiQL to operate
       fetcher: this.props.fetcher,
-      
+
       // OPTIONAL PARAMETERS
       // GraphQL artifacts
       query: '',
       variables: '',
       response: '',
-      
+
       // GraphQL Schema
       // If `undefined` is provided, an introspection query is executed
       // using the fetcher.
       schema: undefined,
-      
-      
+
       // Useful to determine which operation to run
       // when there are multiple of them.
       operationName: null,
       storage: null,
       defaultQuery: null,
-      
+
       // Custom Event Handlers
       onEditQuery: null,
       onEditVariables: null,
       onEditOperationName: null,
-      
+
       // GraphiQL automatically fills in leaf nodes when the query
       // does not provide them. Change this if your GraphQL Definitions
       // should behave differently than what's defined here:
@@ -147,11 +146,11 @@ class CustomGraphiQL extends React.Component {
       getDefaultFieldNames: null
     };
   }
-  
+
   _onClickToolbarButton(event) {
     alert('Clicked toolbar button!');
   }
-  
+
   render() {
     return (
       <GraphiQL ...this.state>
