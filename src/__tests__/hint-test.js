@@ -72,6 +72,13 @@ describe('graphql-hint', () => {
     checkSuggestions(fieldNames, suggestions.list);
   });
 
+  it('provides correct field name suggestions when using aliases', async () => {
+    const suggestions = await getHintSuggestions(
+      '{ aliasTest: first { ', { line: 0, ch: 21 });
+    const fieldConfig = TestSchema.getType('First').getFields();
+    checkSuggestions(Object.keys(fieldConfig), suggestions.list);
+  });
+
   it('provides correct field name suggestion indentation', async () => {
     const suggestions = await getHintSuggestions('{\n  ', { line: 1, ch: 2 });
     expect(suggestions.from).to.deep.equal({ line: 1, ch: 2 });

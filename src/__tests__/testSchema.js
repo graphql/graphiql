@@ -109,6 +109,10 @@ const TestType = new GraphQLObjectType({
       type: TestUnion,
       resolve: () => ({})
     },
+    first: {
+      type: UnionFirst,
+      resolve: () => ({})
+    },
     id: {
       type: GraphQLInt,
       resolve: () => ({})

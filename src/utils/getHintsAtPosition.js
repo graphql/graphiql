@@ -276,6 +276,7 @@ function getTypeInfo(schema, tokenState) {
         }
         break;
       case 'Field':
+      case 'AliasedField':
         info.fieldDef = info.type && state.name ?
           getFieldDef(schema, info.parentType, state.name) :
           null;
