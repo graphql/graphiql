@@ -59,8 +59,9 @@ export default class SearchResults extends React.Component {
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];
           if (this._isMatch(fieldName, searchValue)) {
+            const key = typeName + '.' + fieldName;
             matchedFields.push(
-              <div className="doc-category-item" key={typeName + '.' + fieldName}>
+              <div className="doc-category-item" key={key}>
                 <a className="field-name"
                   onClick={event => onClickField(field, type, event)}>
                   {field.name}
@@ -73,8 +74,9 @@ export default class SearchResults extends React.Component {
             const matches =
               field.args.filter(arg => this._isMatch(arg.name, searchValue));
             if (matches.length > 0) {
+              const key = typeName + '.' + fieldName;
               matchedFields.push(
-                <div className="doc-category-item" key={typeName + '.' + fieldName}>
+                <div className="doc-category-item" key={key}>
                   <a className="field-name"
                     onClick={event => onClickField(field, type, event)}>
                     {field.name}
