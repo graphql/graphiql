@@ -48,7 +48,7 @@ export default class SearchResults extends React.Component {
 
       if (matchedOn.length) {
         matchedTypes.push(
-          <div className="doc-category-item">
+          <div className="doc-category-item" key={typeName}>
             <TypeLink type={type} onClick={onClickType} />
           </div>
         );
@@ -60,7 +60,7 @@ export default class SearchResults extends React.Component {
           const field = fields[fieldName];
           if (this._isMatch(fieldName, searchValue)) {
             matchedFields.push(
-              <div className="doc-category-item">
+              <div className="doc-category-item" key={typeName + '.' + fieldName}>
                 <a className="field-name"
                   onClick={event => onClickField(field, type, event)}>
                   {field.name}
@@ -74,7 +74,7 @@ export default class SearchResults extends React.Component {
               field.args.filter(arg => this._isMatch(arg.name, searchValue));
             if (matches.length > 0) {
               matchedFields.push(
-                <div className="doc-category-item">
+                <div className="doc-category-item" key={typeName + '.' + fieldName}>
                   <a className="field-name"
                     onClick={event => onClickField(field, type, event)}>
                     {field.name}
