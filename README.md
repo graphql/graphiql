@@ -82,7 +82,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
 
-- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Only `getItem` and `setItem` are called. Default: `window.localStorage`
+- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Default: `window.localStorage`.
 
 - `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
