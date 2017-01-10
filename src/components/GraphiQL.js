@@ -403,10 +403,17 @@ export class GraphiQL extends React.Component {
         const responseString = typeof result === 'string' ?
           result :
           JSON.stringify(result, null, 2);
-        this.setState({ response: responseString });
+        this.setState({
+          // Set schema to `null` to explicitly indicate that no schema exists.
+          schema: null,
+          response: responseString
+        });
       }
     }).catch(error => {
-      this.setState({ response: error && String(error.stack || error) });
+      this.setState({
+        schema: null,
+        response: error && String(error.stack || error)
+      });
     });
   }
 

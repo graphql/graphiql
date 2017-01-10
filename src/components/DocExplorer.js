@@ -62,9 +62,22 @@ export class DocExplorer extends React.Component {
       navItem = navStack[navStack.length - 1];
     }
 
-    let title;
+    let title = 'Documentation Explorer';
     let content;
-    if (navItem) {
+    if (schema === undefined) {
+      // Schema is undefined when it is being loaded via introspection.
+      content =
+        <div className="spinner-container">
+          <div className="spinner" />
+        </div>;
+    } else if (schema === null) {
+      // Schema is null when it explicitly does not exist, typically due to
+      // an error during introspection.
+      content =
+        <div className="error-container">
+          {'No Schema Available'}
+        </div>;
+    } else if (navItem) {
       if (navItem.name === 'Search Results') {
         title = navItem.name;
         content =
@@ -95,7 +108,6 @@ export class DocExplorer extends React.Component {
         }
       }
     } else if (schema) {
-      title = 'Documentation Explorer';
       content =
         <SchemaDoc schema={schema} onClickType={this.handleClickTypeOrField} />;
     }
@@ -106,12 +118,6 @@ export class DocExplorer extends React.Component {
     } else if (navStack.length > 1) {
       prevName = navStack[navStack.length - 2].name;
     }
-
-    const spinnerDiv = (
-      <div className="spinner-container">
-        <div className="spinner" />
-      </div>
-    );
 
     const shouldSearchBoxAppear = content && (
       content.type === SearchResults || content.type === SchemaDoc
@@ -140,7 +146,7 @@ export class DocExplorer extends React.Component {
             isShown={shouldSearchBoxAppear}
             onSearch={this.handleSearch}
           />
-          {this.props.schema ? content : spinnerDiv}
+          {content}
         </div>
       </div>
     );
