@@ -132,6 +132,8 @@ export class GraphiQL extends React.Component {
 
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
+
+    global.g = this;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -185,7 +187,7 @@ export class GraphiQL extends React.Component {
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
     this._storageSet('query', this.state.query);
-    this._storageSet('variables', this.state.variables || '');
+    this._storageSet('variables', this.state.variables);
     this._storageSet('operationName', this.state.operationName);
     this._storageSet('editorFlex', this.state.editorFlex);
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
@@ -418,12 +420,24 @@ export class GraphiQL extends React.Component {
   }
 
   _storageGet(name) {
-    return this._storage && this._storage.getItem('graphiql:' + name);
+    if (this._storage) {
+      const value = this._storage.getItem('graphiql:' + name);
+      // Clean up any inadvertently saved null/undefined values.
+      if (value === 'null' || value === 'undefined') {
+        this._storage.removeItem('graphiql:' + name);
+      } else {
+        return value;
+      }
+    }
   }
 
   _storageSet(name, value) {
     if (this._storage) {
-      this._storage.setItem('graphiql:' + name, value);
+      if (value) {
+        this._storage.setItem('graphiql:' + name, value);
+      } else {
+        this._storage.removeItem('graphiql:' + name);
+      }
     }
   }
 
