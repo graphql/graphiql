@@ -53,7 +53,11 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
 });
 
 function getVariablesHint(cur, token, options) {
-  const state = token.state;
+  // If currently parsing an invalid state, attempt to hint to the prior state.
+  const state = token.state.kind === 'Invalid' ?
+    token.state.prevState :
+    token.state;
+
   const kind = state.kind;
   const step = state.step;
 

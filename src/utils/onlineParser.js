@@ -18,7 +18,7 @@
  *     ) => boolean
  *       Use CodeMirror API.
  *
- *     LexRules: { [name: string]: RegExp }, Includes `Punctuation`.
+ *     LexRules: { [name: string]: RegExp }, Includes `Punctuation`, `Comment`.
  *
  *     ParseRules: { [name: string]: Array<Rule> }, Includes `Document`.
  *
@@ -42,7 +42,11 @@ export default function onlineParser(options) {
 
 function getToken(stream, state, options) {
   const { LexRules, ParseRules, eatWhitespace, editorConfig } = options;
-  if (state.needsAdvance) {
+
+  // Restore state after an empty-rule.
+  if (state.rule.length === 0) {
+    popRule(state);
+  } else if (state.needsAdvance) {
     state.needsAdvance = false;
     advanceRule(state, true);
   }
@@ -59,23 +63,24 @@ function getToken(stream, state, options) {
     return 'ws';
   }
 
-  // Peek a character forward and skip the entire line if it's a comment line
-  if (stream.peek() === '#') {
-    stream.skipToEnd();
-    return 'comment';
-  }
-
   // Get a matched token from the stream, using lex
   const token = lex(LexRules, stream);
 
   // If there's no matching token, skip ahead.
   if (!token) {
     stream.match(/\S+/);
+    pushRule(SpecialParseRules, state, 'Invalid');
     return 'invalidchar';
   }
 
+  // If the next token is a Comment, insert a Comment parsing rule.
+  if (token.kind === 'Comment') {
+    pushRule(SpecialParseRules, state, 'Comment');
+    return 'comment';
+  }
+
   // Save state before continuing.
-  saveState(state);
+  const backupState = assign({}, state);
 
   // Handle changes in expected indentation level
   if (token.kind === 'Punctuation') {
@@ -141,9 +146,16 @@ function getToken(stream, state, options) {
   }
 
   // The parser does not know how to interpret this token, do not affect state.
-  restoreState(state);
+  assign(state, backupState);
+  pushRule(SpecialParseRules, state, 'Invalid');
   return 'invalidchar';
 }
+
+// A special rule set for parsing comment tokens.
+const SpecialParseRules = {
+  Invalid: [],
+  Comment: [],
+};
 
 function assign(to, from) {
   const keys = Object.keys(from);
@@ -151,18 +163,6 @@ function assign(to, from) {
     to[keys[i]] = from[keys[i]];
   }
   return to;
-}
-
-const stateCache = {};
-
-// Save the current state in the cache.
-function saveState(state) {
-  assign(stateCache, state);
-}
-
-// Restore from the state cache.
-function restoreState(state) {
-  assign(state, stateCache);
 }
 
 // Push a new rule onto the state.

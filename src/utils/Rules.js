@@ -35,6 +35,9 @@ export const LexRules = {
 
   // Note the closing quote is made optional as an IDE experience improvment.
   String: /^"(?:[^"\\]|\\(?:"|\/|\\|b|f|n|r|t|u[0-9a-fA-F]{4}))*"?/,
+
+  // Comments consume entire lines.
+  Comment: /^#.*/,
 };
 
 /**
