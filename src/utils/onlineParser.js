@@ -195,11 +195,11 @@ function advanceRule(state, successful) {
   // If this is advancing successfully and the current state is a list, give
   // it an opportunity to repeat itself.
   if (isList(state)) {
-    if (state.rule[state.step].separator) {
+    const separator = state.rule[state.step].separator;
+    if (separator) {
       state.needsSeperator = !state.needsSeperator;
-      // If the next list iteration might accept a non-separator, then give it
-      // an opportunity to repeat.
-      if (!state.needsSeperator) {
+      // If the separator was optional, then give it an opportunity to repeat.
+      if (!state.needsSeperator && separator.ofRule) {
         return;
       }
     }

@@ -216,10 +216,9 @@ export const ParseRules = {
     name('atom'),
     list('Directive'),
     p('='),
-    name('atom'),
-    list('UnionMember')
+    list('UnionMember', p('|'))
   ],
-  UnionMember: [ p('|'), name('atom') ],
+  UnionMember: [ name('atom') ],
   EnumDef: [
     word('enum'),
     name('atom'),
@@ -244,10 +243,9 @@ export const ParseRules = {
     name('meta'),
     opt('ArgumentsDef'),
     word('on'),
-    name('string-2'),
-    list('DirectiveLocation')
+    list('DirectiveLocation', p('|'))
   ],
-  DirectiveLocation: [ p('|'), name('string-2') ]
+  DirectiveLocation: [ name('string-2') ]
 };
 
 // A keyword Token.

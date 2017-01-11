@@ -10,7 +10,7 @@
 import CodeMirror from 'codemirror';
 
 import onlineParser from '../utils/onlineParser';
-import { list, t, p } from '../utils/RuleHelpers';
+import { list, opt, t, p } from '../utils/RuleHelpers';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -68,7 +68,7 @@ const LexRules = {
  * The parser rules for JSON.
  */
 const ParseRules = {
-  Document: [ p('{'), list('Variable', p(',')), p('}') ],
+  Document: [ p('{'), list('Variable', opt(p(','))), p('}') ],
   Variable: [ namedKey('variable'), p(':'), 'Value' ],
   Value(token) {
     switch (token.kind) {
@@ -92,8 +92,8 @@ const ParseRules = {
   StringValue: [ t('String', 'string') ],
   BooleanValue: [ t('Keyword', 'builtin') ],
   NullValue: [ t('Keyword', 'keyword') ],
-  ListValue: [ p('['), list('Value', p(',')), p(']') ],
-  ObjectValue: [ p('{'), list('ObjectField', p(',')), p('}') ],
+  ListValue: [ p('['), list('Value', opt(p(','))), p(']') ],
+  ObjectValue: [ p('{'), list('ObjectField', opt(p(','))), p('}') ],
   ObjectField: [ namedKey('attribute'), p(':'), 'Value' ],
 };
 
