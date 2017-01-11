@@ -11,11 +11,8 @@ import {
   isInputType,
   isCompositeType,
   isAbstractType,
-  getNullableType,
   getNamedType,
   GraphQLEnumType,
-  GraphQLInputObjectType,
-  GraphQLList,
   GraphQLBoolean,
   doTypesOverlap,
 } from 'graphql';
@@ -26,6 +23,7 @@ import {
 } from 'graphql/type/introspection';
 
 import forEachState from './forEachState';
+import getTypeInfo from './getTypeInfo';
 import hintList from './hintList';
 import objectValues from './objectValues';
 
@@ -243,97 +241,6 @@ function canUseDirective(kind, directive) {
   return false;
 }
 
-// Utility for collecting rich type information given any token's state
-// from the graphql-mode parser.
-function getTypeInfo(schema, tokenState) {
-  const info = {
-    type: null,
-    parentType: null,
-    inputType: null,
-    directiveDef: null,
-    fieldDef: null,
-    argDef: null,
-    argDefs: null,
-    objectFieldDefs: null,
-  };
-
-  forEachState(tokenState, state => {
-    switch (state.kind) {
-      case 'Query':
-      case 'ShortQuery':
-        info.type = schema.getQueryType();
-        break;
-      case 'Mutation':
-        info.type = schema.getMutationType();
-        break;
-      case 'Subscription':
-        info.type = schema.getSubscriptionType();
-        break;
-      case 'InlineFragment':
-      case 'FragmentDefinition':
-        if (state.type) {
-          info.type = schema.getType(state.type);
-        }
-        break;
-      case 'Field':
-      case 'AliasedField':
-        info.fieldDef = info.type && state.name ?
-          getFieldDef(schema, info.parentType, state.name) :
-          null;
-        info.type = info.fieldDef && info.fieldDef.type;
-        break;
-      case 'SelectionSet':
-        info.parentType = getNamedType(info.type);
-        break;
-      case 'Directive':
-        info.directiveDef = state.name && schema.getDirective(state.name);
-        break;
-      case 'Arguments':
-        info.argDefs =
-          state.prevState.kind === 'Field' ?
-            info.fieldDef && info.fieldDef.args :
-          state.prevState.kind === 'Directive' ?
-            info.directiveDef && info.directiveDef.args :
-          state.prevState.kind === 'AliasedField' ?
-            state.prevState.name &&
-            getFieldDef(schema, info.parentType, state.prevState.name).args :
-            null;
-        break;
-      case 'Argument':
-        info.argDef = null;
-        if (info.argDefs) {
-          for (let i = 0; i < info.argDefs.length; i++) {
-            if (info.argDefs[i].name === state.name) {
-              info.argDef = info.argDefs[i];
-              break;
-            }
-          }
-        }
-        info.inputType = info.argDef && info.argDef.type;
-        break;
-      case 'ListValue':
-        const nullableType = getNullableType(info.inputType);
-        info.inputType = nullableType instanceof GraphQLList ?
-          nullableType.ofType :
-          null;
-        break;
-      case 'ObjectValue':
-        const objectType = getNamedType(info.inputType);
-        info.objectFieldDefs = objectType instanceof GraphQLInputObjectType ?
-          objectType.getFields() :
-          null;
-        break;
-      case 'ObjectField':
-        const objectField = state.name && info.objectFieldDefs ?
-          info.objectFieldDefs[state.name] :
-          null;
-        info.inputType = objectField && objectField.type;
-        break;
-    }
-  });
-
-  return info;
-}
 
 // Finds all fragment definition ASTs in a source.
 function getFragmentDefinitions(sourceText) {
@@ -382,20 +289,4 @@ function getDefinitionState(tokenState) {
   });
 
   return definitionState;
-}
-
-// Gets the field definition given a type and field name
-function getFieldDef(schema, type, fieldName) {
-  if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
-    return SchemaMetaFieldDef;
-  }
-  if (fieldName === TypeMetaFieldDef.name && schema.getQueryType() === type) {
-    return TypeMetaFieldDef;
-  }
-  if (fieldName === TypeNameMetaFieldDef.name && isCompositeType(type)) {
-    return TypeNameMetaFieldDef;
-  }
-  if (type.getFields) {
-    return type.getFields()[fieldName];
-  }
 }
