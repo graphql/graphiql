@@ -17,6 +17,7 @@ import {
 
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
+import Argument from './Argument';
 
 export default class TypeDoc extends React.Component {
   static propTypes = {
@@ -84,11 +85,7 @@ export default class TypeDoc extends React.Component {
             let argsDef;
             if (field.args && field.args.length > 0) {
               argsDef = field.args.map(arg =>
-                <span className="arg" key={arg.name}>
-                  <span className="arg-name">{arg.name}</span>
-                  {': '}
-                  <TypeLink type={arg.type} onClick={onClickType} />
-                </span>
+                <Argument key={arg.name} arg={arg} onClickType={onClickType} />
               );
             }
 
