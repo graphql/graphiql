@@ -8,9 +8,9 @@
 
 import React, { PropTypes } from 'react';
 
+import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import Argument from './Argument';
 
 export default class FieldDoc extends React.Component {
   static propTypes = {

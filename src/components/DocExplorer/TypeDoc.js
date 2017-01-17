@@ -15,9 +15,9 @@ import {
   GraphQLEnumType,
 } from 'graphql';
 
+import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import Argument from './Argument';
 
 export default class TypeDoc extends React.Component {
   static propTypes = {

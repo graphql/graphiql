@@ -8,8 +8,8 @@
 
 import React, { PropTypes } from 'react';
 
-import TypeLink from './TypeLink';
 import Argument from './Argument';
+import TypeLink from './TypeLink';
 
 export default class SearchResults extends React.Component {
   static propTypes = {
