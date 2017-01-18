@@ -24,15 +24,21 @@ const {
 // Test Schema
 const TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
+  description: 'An enum of super cool colors.',
   values: {
     RED: { description: 'A rosy color' },
     GREEN: { description: 'The color of martians and slime' },
     BLUE: { description: 'A feeling you might have if you can\'t use GraphQL' },
+    GRAY: {
+      description: 'A really dull color',
+      deprecationReason: 'Colors are available now.'
+    },
   }
 });
 
 const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
+  description: 'Test all sorts of inputs in this input object type.',
   fields: () => ({
     string: {
       type: GraphQLString,
@@ -131,6 +137,11 @@ const TestType = new GraphQLObjectType({
       resolve: () => {
         return true;
       }
+    },
+    deprecatedField: {
+      type: TestType,
+      description: 'This field is an example of a deprecated field',
+      deprecationReason: 'No longer in use, try `test` instead.',
     },
     hasArgs: {
       type: GraphQLString,

@@ -165,6 +165,19 @@ export class DocExplorer extends React.Component {
   }
 
   // Public API
+  showDocForReference(reference) {
+    if (reference.kind === 'Type') {
+      this.showDoc(reference.type);
+    } else if (reference.kind === 'Field') {
+      this.showDoc(reference.field);
+    } else if (reference.kind === 'Argument' && reference.field) {
+      this.showDoc(reference.field);
+    } else if (reference.kind === 'EnumValue' && reference.type) {
+      this.showDoc(reference.type);
+    }
+  }
+
+  // Public API
   showSearch(searchItem) {
     let navStack = this.state.navStack;
     const lastEntry = navStack.length > 0 && navStack[navStack.length - 1];
