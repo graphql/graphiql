@@ -46,14 +46,15 @@ import { LexRules, ParseRules, isIgnored } from './Rules';
  */
 
 export default function getHintsAtPosition(schema, sourceText, cursor, token) {
-  const typeInfo = getTypeInfo(schema, token.state);
-  const state = token.state;
+  // Get the current state, however if the current state is an invalid token,
+  // then use the previous state to determine which hints to generate.
+  const state = token.state.kind === 'Invalid' ?
+    token.state.prevState :
+    token.state;
+
   const kind = state.kind;
   const step = state.step;
-
-  if (token.type === 'comment') {
-    return;
-  }
+  const typeInfo = getTypeInfo(schema, state);
 
   // Definition kinds
   if (kind === 'Document') {
