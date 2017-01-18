@@ -129,7 +129,7 @@ export const ParseRules = {
   ],
   TypeCondition: [
     word('on'),
-    type('atom'),
+    'NamedType',
   ],
   // Variables could be parsed in cases where only Const is expected by spec.
   Value(token) {
@@ -162,11 +162,12 @@ export const ParseRules = {
   ObjectValue: [ p('{'), list('ObjectField'), p('}') ],
   ObjectField: [ name('attribute'), p(':'), 'Value' ],
   Type(token) {
-    return token.value === '[' ? 'ListType' : 'NamedType';
+    return token.value === '[' ? 'ListType' : 'NonNullType';
   },
-  // NonNullType has been merged into ListType and NamedType to simplify.
+  // NonNullType has been merged into ListType to simplify.
   ListType: [ p('['), 'Type', p(']'), opt(p('!')) ],
-  NamedType: [ name('atom'), opt(p('!')) ],
+  NonNullType: [ 'NamedType', opt(p('!')) ],
+  NamedType: [ type('atom') ],
   Directive: [ p('@', 'meta'), name('meta'), opt('Arguments') ],
   // GraphQL schema language
   SchemaDef: [
@@ -187,7 +188,7 @@ export const ParseRules = {
     list('FieldDef'),
     p('}'),
   ],
-  Implements: [ word('implements'), list(name('atom')) ],
+  Implements: [ word('implements'), list('NamedType') ],
   FieldDef: [
     name('property'),
     opt('ArgumentsDef'),
@@ -218,7 +219,7 @@ export const ParseRules = {
     p('='),
     list('UnionMember', p('|'))
   ],
-  UnionMember: [ name('atom') ],
+  UnionMember: [ 'NamedType' ],
   EnumDef: [
     word('enum'),
     name('atom'),
@@ -273,7 +274,8 @@ function type(style) {
     style,
     match: token => token.kind === 'Name',
     update(state, token) {
-      state.prevState.type = token.value;
+      state.name = token.value;
+      state.prevState.prevState.type = token.value;
     }
   };
 }
