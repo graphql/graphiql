@@ -81,7 +81,9 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
       return hintList(cursor, token, fields.map(field => ({
         text: field.name,
         type: field.type,
-        description: field.description
+        description: field.description,
+        isDeprecated: value.isDeprecated,
+        deprecationReason: value.deprecationReason,
       })));
     }
   }
@@ -124,7 +126,7 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
         type: namedInputType,
         description: value.description,
         isDeprecated: value.isDeprecated,
-        deprecationReason: value.deprecationReason
+        deprecationReason: value.deprecationReason,
       })));
     } else if (namedInputType === GraphQLBoolean) {
       return hintList(cursor, token, [
