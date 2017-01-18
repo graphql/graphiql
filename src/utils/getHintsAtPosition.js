@@ -82,8 +82,8 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
         text: field.name,
         type: field.type,
         description: field.description,
-        isDeprecated: value.isDeprecated,
-        deprecationReason: value.deprecationReason,
+        isDeprecated: field.isDeprecated,
+        deprecationReason: field.deprecationReason,
       })));
     }
   }
