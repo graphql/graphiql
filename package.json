@@ -72,7 +72,7 @@
     "chai-subset": "1.4.0",
     "codemirror": "5.22.0",
     "eslint": "3.13.1",
-    "eslint-plugin-babel": "4.0.0",
+    "eslint-plugin-babel": "4.0.1",
     "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.38.0",
     "graphql": "0.8.1",
