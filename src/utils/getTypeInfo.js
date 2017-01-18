@@ -28,6 +28,7 @@ import forEachState from './forEachState';
  */
 export default function getTypeInfo(schema, tokenState) {
   const info = {
+    schema,
     type: null,
     parentType: null,
     inputType: null,
@@ -110,6 +111,9 @@ export default function getTypeInfo(schema, tokenState) {
           info.objectFieldDefs[state.name] :
           null;
         info.inputType = objectField && objectField.type;
+        break;
+      case 'NamedType':
+        info.type = schema.getType(state.name);
         break;
     }
   });
