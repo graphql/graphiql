@@ -28,22 +28,34 @@ export default function hintList(cursor, token, list) {
 // Given a list of hint entries and currently typed text, sort and filter to
 // provide a concise list.
 function filterAndSortList(list, text) {
-  const sorted = !text ? list : list.map(
-    entry => ({
-      proximity: getProximity(normalizeText(entry.text), text),
-      entry
-    })
-  ).filter(
-    pair => pair.proximity <= 2
-  ).sort(
-    (a, b) =>
-      (a.proximity - b.proximity) ||
-      (a.entry.text.length - b.entry.text.length)
-  ).map(
-    pair => pair.entry
+  if (!text) {
+    return filterNonEmpty(list, entry => !entry.isDeprecated);
+  }
+
+  const byProximity = list.map(entry => ({
+    proximity: getProximity(normalizeText(entry.text), text),
+    entry
+  }));
+
+  const conciseMatches = filterNonEmpty(
+    filterNonEmpty(byProximity, pair => pair.proximity <= 2),
+    pair => !pair.entry.isDeprecated
   );
 
-  return sorted.length > 0 ? sorted : list;
+  const sortedMatches = conciseMatches.sort((a, b) =>
+    ((a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0)) ||
+    (a.proximity - b.proximity) ||
+    (a.entry.text.length - b.entry.text.length)
+  );
+
+  return sortedMatches.map(pair => pair.entry);
+}
+
+// Filters the array by the predicate, unless it results in an empty array,
+// in which case return the original array.
+function filterNonEmpty(array, predicate) {
+  const filtered = array.filter(predicate);
+  return filtered.length === 0 ? array : filtered;
 }
 
 function normalizeText(text) {
