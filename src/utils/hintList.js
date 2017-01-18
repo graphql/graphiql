@@ -18,13 +18,11 @@ export default function hintList(cursor, token, list) {
     token.start :
     token.end;
 
-  const results = {
+  return {
     list: hints,
     from: { line: cursor.line, column: tokenStart },
     to: { line: cursor.line, column: token.end },
   };
-
-  return results;
 }
 
 // Given a list of hint entries and currently typed text, sort and filter to
