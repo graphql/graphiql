@@ -127,7 +127,7 @@
 
 .graphiql-container .arg {
   display: block;
-  margin-left: 2ch;
+  margin-left: 1em;
 }
 
 .graphiql-container .arg:first-child:last-child,
