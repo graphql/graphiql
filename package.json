@@ -17,8 +17,10 @@
   "license": "BSD-3-Clause",
   "files": [
     "hint.js",
-    "mode.js",
+    "info.js",
+    "jump.js",
     "lint.js",
+    "mode.js",
     "utils",
     "variables",
     "results",
