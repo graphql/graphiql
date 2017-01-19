@@ -19,6 +19,7 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
 
   let wrapper;
   let information;
+  let deprecation;
 
   // When a hint result is selected, we touch the UI.
   CodeMirror.on(data, 'select', (ctx, el) => {
@@ -57,12 +58,19 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
       // highlighted typeahead option.
       information = document.createElement('div');
       information.className = 'CodeMirror-hint-information';
+
+      // This "deprecation" node will contain info about deprecated usage.
+      deprecation = document.createElement('div');
+      deprecation.className = 'CodeMirror-hint-deprecation';
+
       if (bottom) {
+        wrapper.appendChild(deprecation);
         wrapper.appendChild(information);
         wrapper.appendChild(hintsUl);
       } else {
         wrapper.appendChild(hintsUl);
         wrapper.appendChild(information);
+        wrapper.appendChild(deprecation);
       }
 
       // When CodeMirror attempts to remove the hint UI, we detect that it was
@@ -82,7 +90,7 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
 
     // Now that the UI has been set up, add info to information.
     const description = ctx.description ?
-      marked(ctx.description, { smartypants: true }) :
+      marked(ctx.description, { sanitize: true }) :
       'Self descriptive.';
     const type = ctx.type ?
       '<span class="infoType">' + renderType(ctx.type) + '</span>' :
@@ -92,6 +100,18 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
       (description.slice(0, 3) === '<p>' ?
         '<p>' + type + description.slice(3) :
         type + description) + '</div>';
+
+    if (ctx.isDeprecated) {
+      const reason = ctx.deprecationReason ?
+        marked(ctx.deprecationReason, { sanitize: true }) :
+        '';
+      deprecation.innerHTML =
+        '<span class="deprecation-label">Deprecated</span>' +
+        reason;
+      deprecation.style.display = 'block';
+    } else {
+      deprecation.style.display = 'none';
+    }
 
     // Additional rendering?
     if (onHintInformationRender) {
