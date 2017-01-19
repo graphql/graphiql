@@ -203,32 +203,55 @@
 
 .graphiql-container .toolbar-button {
   background: #fdfdfd;
-  background: linear-gradient(#fbfbfb, #f8f8f8);
-  border-color: #d3d3d3 #d0d0d0 #bababa;
-  border-radius: 4px;
-  border-style: solid;
-  border-width: 0.5px;
-  box-shadow: 0 1px 1px -1px rgba(0, 0, 0, 0.13), inset 0 1px #fff;
-  color: #444;
+  background: linear-gradient(#f9f9f9, #ececec);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.20),
+    0 1px 0 rgba(255,255,255, 0.7),
+    inset 0 1px #fff;
+  color: #555;
   cursor: pointer;
   display: inline-block;
-  margin: 0 5px 0;
-  padding: 2px 8px 4px;
+  margin: 0 5px;
+  padding: 3px 11px 5px;
   text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
 }
 
 .graphiql-container .toolbar-button:active {
-  background: linear-gradient(#ececec, #d8d8d8);
-  border-color: #cacaca #c9c9c9 #b0b0b0;
+  background: linear-gradient(#ececec, #d5d5d5);
   box-shadow:
-    0 1px 0 #fff,
-    inset 0 1px rgba(255, 255, 255, 0.2),
-    inset 0 1px 1px rgba(0, 0, 0, 0.08);
+    0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(0,0,0,0.10),
+    inset 0 1px 1px 1px rgba(0, 0, 0, 0.12),
+    inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .graphiql-container .toolbar-button.error {
   background: linear-gradient(#fdf3f3, #e6d6d7);
   color: #b00;
+}
+
+.graphiql-container .toolbar-button-group {
+  margin: 0 5px;
+  white-space: nowrap;
+}
+
+.graphiql-container .toolbar-button-group > * {
+  margin: 0;
+}
+
+.graphiql-container .toolbar-button-group > *:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.graphiql-container .toolbar-button-group > *:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
 }
 
 .graphiql-container .execute-button-wrap {
@@ -255,40 +278,97 @@
 }
 
 .graphiql-container .execute-button:active {
-  background: linear-gradient(#e6e6e6, #c0c0c0);
+  background: linear-gradient(#e6e6e6, #c3c3c3);
   box-shadow:
     0 1px 0 #fff,
-    inset 0 0 2px rgba(0, 0, 0, 0.3),
-    inset 0 0 6px rgba(0, 0, 0, 0.2);
+    inset 0 0 2px rgba(0, 0, 0, 0.2),
+    inset 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
 .graphiql-container .execute-button:focus {
   outline: 0;
 }
 
-.graphiql-container .execute-options {
+.graphiql-container .toolbar-menu,
+.graphiql-container .toolbar-select {
+  position: relative;
+}
+
+.graphiql-container .execute-options,
+.graphiql-container .toolbar-menu-items,
+.graphiql-container .toolbar-select-options {
   background: #fff;
   box-shadow:
     0 0 0 1px rgba(0,0,0,0.1),
     0 2px 4px rgba(0,0,0,0.25);
-  left: -1px;
   margin: 0;
-  padding: 8px 0;
+  padding: 6px 0;
   position: absolute;
-  top: 37px;
   z-index: 100;
 }
 
-.graphiql-container .execute-options li {
-  cursor: pointer;
-  list-style: none;
+.graphiql-container .execute-options {
   min-width: 100px;
-  padding: 2px 30px 4px 10px;
+  top: 37px;
+  left: -1px;
 }
 
-.graphiql-container .execute-options li.selected {
+.graphiql-container .toolbar-menu-items {
+  left: 1px;
+  margin-top: -1px;
+  min-width: 110%;
+  top: 100%;
+  visibility: hidden;
+}
+
+.graphiql-container .toolbar-select-options {
+  left: 0;
+  min-width: 100%;
+  top: -5px;
+  visibility: hidden;
+}
+
+.graphiql-container .toolbar-menu:active .toolbar-menu-items,
+.graphiql-container .toolbar-select:active .toolbar-select-options {
+  visibility: visible;
+}
+
+.graphiql-container .execute-options > li,
+.graphiql-container .toolbar-menu-items > li,
+.graphiql-container .toolbar-select-options > li {
+  cursor: pointer;
+  display: block;
+  margin: none;
+  max-width: 300px;
+  overflow: hidden;
+  padding: 2px 20px 4px 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphiql-container .execute-options > li.selected,
+.graphiql-container .toolbar-menu-items > li.hover,
+.graphiql-container .toolbar-menu-items > li:active,
+.graphiql-container .toolbar-menu-items > li:hover,
+.graphiql-container .toolbar-select-options > li.hover,
+.graphiql-container .toolbar-select-options > li:active,
+.graphiql-container .toolbar-select-options > li:hover {
   background: #e10098;
-  color: white;
+  color: #fff;
+}
+
+.graphiql-container .toolbar-select-options > li > svg {
+  display: inline;
+  fill: #666;
+  margin: 0 -6px 0 6px;
+  pointer-events: none;
+  vertical-align: middle;
+}
+
+.graphiql-container .toolbar-select-options > li.hover > svg,
+.graphiql-container .toolbar-select-options > li:active > svg,
+.graphiql-container .toolbar-select-options > li:hover > svg {
+  fill: #fff;
 }
 
 .graphiql-container .CodeMirror-scroll {
