@@ -10,30 +10,25 @@ import React, { PropTypes } from 'react';
 import { astFromValue, print } from 'graphql';
 import TypeLink from './TypeLink';
 
-export default class Argument extends React.Component {
-  static propTypes = {
-    arg: PropTypes.object.isRequired,
-    onClickType: PropTypes.func.isRequired,
-  }
-
-  render() {
-    const arg = this.props.arg;
-
-    return (
-      <span className="arg">
-        <span className="arg-name">{arg.name}</span>
-        {': '}
-        <TypeLink type={arg.type} onClick={this.props.onClickType} />
-        {
-          arg.defaultValue !== undefined &&
-          <span>
-            {' = '}
-            <span className="arg-default-value">
-              {print(astFromValue(arg.defaultValue, arg.type))}
-            </span>
+export default function Argument({ arg, onClickType }) {
+  return (
+    <span className="arg">
+      <span className="arg-name">{arg.name}</span>
+      {': '}
+      <TypeLink type={arg.type} onClick={onClickType} />
+      {arg.defaultValue !== undefined &&
+        <span>
+          {' = '}
+          <span className="arg-default-value">
+            {print(astFromValue(arg.defaultValue, arg.type))}
           </span>
-        }
-      </span>
-    );
-  }
+        </span>
+      }
+    </span>
+  );
 }
+
+Argument.propTypes = {
+  arg: PropTypes.object.isRequired,
+  onClickType: PropTypes.func.isRequired,
+};
