@@ -425,9 +425,11 @@ export class GraphiQL extends React.Component {
         });
       }
     }).catch(error => {
+      // Report both the error message, and the returned result.
+      const errorMessage = error && String(error.stack || error);
       this.setState({
         schema: null,
-        response: error && String(error.stack || error)
+        response: [errorMessage, result].filter(x => x).join('\n\n')
       });
     });
   }
