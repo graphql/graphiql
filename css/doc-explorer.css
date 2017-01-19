@@ -125,12 +125,20 @@
   color: #8B2BB9;
 }
 
-.graphiql-container .arg:after {
-  content: ', ';
+.graphiql-container .arg {
+  display: block;
+  margin-left: 2ch;
 }
 
-.graphiql-container .arg:last-child:after {
-  content: '';
+.graphiql-container .arg:first-child:last-child,
+.graphiql-container .arg:first-child:nth-last-child(2),
+.graphiql-container .arg:first-child:nth-last-child(2) ~ .arg {
+  display: inherit;
+  margin: inherit;
+}
+
+.graphiql-container .arg:first-child:nth-last-child(2):after {
+  content: ', ';
 }
 
 .graphiql-container .arg-default-value {

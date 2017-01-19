@@ -79,33 +79,34 @@ export default class TypeDoc extends React.Component {
           <div className="doc-category-title">
             {'fields'}
           </div>
-          {fields.map(field => {
-
-            // Field arguments
-            let argsDef;
-            if (field.args && field.args.length > 0) {
-              argsDef = field.args.map(arg =>
-                <Argument key={arg.name} arg={arg} onClickType={onClickType} />
-              );
-            }
-
-            return (
-              <div key={field.name} className="doc-category-item">
-                <a
-                  className="field-name"
-                  onClick={event => onClickField(field, type, event)}>
-                  {field.name}
-                </a>
-                {argsDef && [ '(', <span key="args">{argsDef}</span>, ')' ]}
-                {': '}
-                <TypeLink type={field.type} onClick={onClickType} />
-                {
-                  (field.isDeprecated || field.deprecationReason) &&
-                  <span className="doc-alert-text">{' (DEPRECATED)'}</span>
-                }
-              </div>
-            );
-          })}
+          {fields.map(field =>
+            <div key={field.name} className="doc-category-item">
+              <a
+                className="field-name"
+                onClick={event => onClickField(field, type, event)}>
+                {field.name}
+              </a>
+              {field.args && field.args.length > 0 && [
+                '(',
+                <span key="args">
+                  {field.args.map(arg =>
+                    <Argument
+                      key={arg.name}
+                      arg={arg}
+                      onClickType={onClickType}
+                    />
+                  )}
+                </span>,
+                ')'
+              ]}
+              {': '}
+              <TypeLink type={field.type} onClick={onClickType} />
+              {
+                (field.isDeprecated || field.deprecationReason) &&
+                <span className="doc-alert-text">{' (DEPRECATED)'}</span>
+              }
+            </div>
+          )}
         </div>
       );
     }
