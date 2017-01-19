@@ -7,6 +7,7 @@
  */
 
 import React, { PropTypes } from 'react';
+import { astFromValue, print } from 'graphql';
 import TypeLink from './TypeLink';
 
 export default class Argument extends React.Component {
@@ -28,7 +29,7 @@ export default class Argument extends React.Component {
           <span>
             {' = '}
             <span className="arg-default-value">
-              { arg.defaultValue === '' ? '""' : arg.defaultValue }
+              {print(astFromValue(arg.defaultValue, arg.type))}
             </span>
           </span>
         }
