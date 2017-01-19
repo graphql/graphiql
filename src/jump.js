@@ -12,10 +12,11 @@ import CodeMirror from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
 import {
-  getFieldReference,
-  getDirectiveReference,
   getArgumentReference,
-  getTypeReference
+  getDirectiveReference,
+  getEnumValueReference,
+  getFieldReference,
+  getTypeReference,
 } from './utils/SchemaReference';
 import './utils/jump-addon';
 
@@ -51,7 +52,9 @@ CodeMirror.registerHelper('jump', 'graphql', (token, options) => {
     return getDirectiveReference(typeInfo);
   } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     return getArgumentReference(typeInfo);
-  } else if (kind === 'NamedType' && step === 0 && typeInfo.type) {
+  } else if (kind === 'EnumValue' && typeInfo.enumValue) {
+    return getEnumValueReference(typeInfo);
+  } else if (kind === 'NamedType' && typeInfo.type) {
     return getTypeReference(typeInfo);
   }
 });

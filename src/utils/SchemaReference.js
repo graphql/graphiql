@@ -8,9 +8,14 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+import {
+  getNamedType,
+} from 'graphql';
+
 import type {
   GraphQLArgument,
   GraphQLDirective,
+  GraphQLEnumValue,
   GraphQLField,
   GraphQLNamedType,
 } from 'graphql';
@@ -19,6 +24,7 @@ export type SchemaReference =
   | FieldReference
   | DirectiveReference
   | ArgumentReference
+  | EnumValueReference
   | TypeReference;
 
 export type FieldReference = {
@@ -38,6 +44,12 @@ export type ArgumentReference = {
   field?: GraphQLField,
   type?: ?GraphQLNamedType,
   directive?: GraphQLDirective,
+};
+
+export type EnumValueReference = {
+  kind: 'EnumValue',
+  value: GraphQLEnumValue,
+  type: GraphQLEnumType,
 };
 
 export type TypeReference = {
@@ -74,6 +86,14 @@ export function getArgumentReference(typeInfo: any): ArgumentReference {
     argument: typeInfo.argDef,
     field: typeInfo.fieldDef,
     type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType
+  };
+}
+
+export function getEnumValueReference(typeInfo: any): EnumValueReference {
+  return {
+    kind: 'EnumValue',
+    value: typeInfo.enumValue,
+    type: getNamedType(typeInfo.inputType)
   };
 }
 

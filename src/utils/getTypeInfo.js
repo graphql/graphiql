@@ -11,6 +11,7 @@ import {
   isCompositeType,
   getNullableType,
   getNamedType,
+  GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
 } from 'graphql';
@@ -94,6 +95,12 @@ export default function getTypeInfo(schema, tokenState) {
         }
         info.inputType = info.argDef && info.argDef.type;
         break;
+      case 'EnumValue':
+        const enumType = getNamedType(info.inputType);
+        info.enumValue = enumType instanceof GraphQLEnumType ?
+          find(enumType.getValues(), val => val.value === state.name) :
+          null;
+        break;
       case 'ListValue':
         const nullableType = getNullableType(info.inputType);
         info.inputType = nullableType instanceof GraphQLList ?
@@ -134,5 +141,14 @@ function getFieldDef(schema, type, fieldName) {
   }
   if (type.getFields) {
     return type.getFields()[fieldName];
+  }
+}
+
+// Returns the first item in the array which causes predicate to return truthy.
+function find(array, predicate) {
+  for (let i = 0; i < array.length; i++) {
+    if (predicate(array[i])) {
+      return array[i];
+    }
   }
 }

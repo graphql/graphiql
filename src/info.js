@@ -13,10 +13,11 @@ import CodeMirror from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
 import {
-  getFieldReference,
-  getDirectiveReference,
   getArgumentReference,
-  getTypeReference
+  getDirectiveReference,
+  getEnumValueReference,
+  getFieldReference,
+  getTypeReference,
 } from './utils/SchemaReference';
 import './utils/info-addon';
 
@@ -63,7 +64,13 @@ CodeMirror.registerHelper('info', 'graphql', (token, options) => {
     renderArg(into, typeInfo, options);
     renderDescription(into, options, typeInfo.argDef);
     return into;
-  } else if (kind === 'NamedType' && step === 0 &&
+  } else if (kind === 'EnumValue' &&
+             typeInfo.enumValue && typeInfo.enumValue.description) {
+    const into = document.createElement('div');
+    renderEnumValue(into, typeInfo, options);
+    renderDescription(into, options, typeInfo.enumValue);
+    return into;
+  } else if (kind === 'NamedType' &&
              typeInfo.type && typeInfo.type.description) {
     const into = document.createElement('div');
     renderType(into, typeInfo, options, typeInfo.type);
@@ -108,6 +115,13 @@ function renderArg(into, typeInfo, options) {
 function renderTypeAnnotation(into, typeInfo, options, t) {
   text(into, ': ');
   renderType(into, typeInfo, options, t);
+}
+
+function renderEnumValue(into, typeInfo, options) {
+  const name = typeInfo.enumValue.name;
+  renderType(into, typeInfo, options, typeInfo.inputType);
+  text(into, '.');
+  text(into, name, 'enum-value', options, getEnumValueReference(typeInfo));
 }
 
 function renderType(into, typeInfo, options, t) {
