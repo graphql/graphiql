@@ -8,6 +8,7 @@
 
 import React, { PropTypes } from 'react';
 
+import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 
@@ -34,9 +35,7 @@ export default class FieldDoc extends React.Component {
           {field.args.map(arg =>
             <div key={arg.name} className="doc-category-item">
               <div>
-                <span className="arg-name">{arg.name}</span>
-                {': '}
-                <TypeLink type={arg.type} onClick={this.props.onClickType} />
+                <Argument arg={arg} onClickType={this.props.onClickType} />
               </div>
               <MarkdownContent
                 className="doc-value-description"

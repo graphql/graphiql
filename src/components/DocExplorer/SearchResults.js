@@ -8,6 +8,7 @@
 
 import React, { PropTypes } from 'react';
 
+import Argument from './Argument';
 import TypeLink from './TypeLink';
 
 export default class SearchResults extends React.Component {
@@ -84,11 +85,11 @@ export default class SearchResults extends React.Component {
                   {'('}
                   <span>
                     {matches.map(arg =>
-                      <span className="arg" key={arg.name}>
-                        <span className="arg-name">{arg.name}</span>
-                        {': '}
-                        <TypeLink type={arg.type} onClick={onClickType} />
-                      </span>
+                      <Argument
+                        key={arg.name}
+                        arg={arg}
+                        onClickType={onClickType}
+                      />
                     )}
                   </span>
                   {')'}

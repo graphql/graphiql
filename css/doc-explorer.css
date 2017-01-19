@@ -133,6 +133,10 @@
   content: '';
 }
 
+.graphiql-container .arg-default-value {
+  color: #0B7FC7;
+}
+
 .graphiql-container .doc-alert-text {
   color: #F00F00;
   font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
