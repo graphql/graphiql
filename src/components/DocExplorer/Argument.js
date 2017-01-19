@@ -15,11 +15,6 @@ export default class Argument extends React.Component {
     onClickType: PropTypes.func.isRequired,
   }
 
-  shouldComponentUpdate(nextProps) {
-    return this.props.arg !== nextProps.arg ||
-      this.props.onClickType !== nextProps.onClickType;
-  }
-
   render() {
     const arg = this.props.arg;
 
