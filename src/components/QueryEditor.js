@@ -8,6 +8,7 @@
 
 import React, { PropTypes } from 'react';
 import { GraphQLSchema } from 'graphql';
+import marked from 'marked';
 
 import onHasCompletion from '../utility/onHasCompletion';
 
@@ -30,6 +31,7 @@ export class QueryEditor extends React.Component {
     value: PropTypes.string,
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
+    onClickReference: PropTypes.func,
     onRunQuery: PropTypes.func,
   }
 
@@ -56,6 +58,8 @@ export class QueryEditor extends React.Component {
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/hint');
     require('codemirror-graphql/lint');
+    require('codemirror-graphql/info');
+    require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
     this.editor = CodeMirror(this._node, {
@@ -78,6 +82,15 @@ export class QueryEditor extends React.Component {
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
+      },
+      info: {
+        schema: this.props.schema,
+        renderDescription: text => marked(text, { sanitize: true }),
+        onClick: reference => this.props.onClickReference(reference),
+      },
+      jump: {
+        schema: this.props.schema,
+        onClick: reference => this.props.onClickReference(reference),
       },
       gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
       extraKeys: {
@@ -120,6 +133,8 @@ export class QueryEditor extends React.Component {
     if (this.props.schema !== prevProps.schema) {
       this.editor.options.lint.schema = this.props.schema;
       this.editor.options.hintOptions.schema = this.props.schema;
+      this.editor.options.info.schema = this.props.schema;
+      this.editor.options.jump.schema = this.props.schema;
       CodeMirror.signal(this.editor, 'change', this.editor);
     }
     if (this.props.value !== prevProps.value &&

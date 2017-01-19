@@ -264,6 +264,7 @@ export class GraphiQL extends React.Component {
                 value={this.state.query}
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
+                onClickReference={this.handleClickReference}
                 onRunQuery={this.handleEditorRunQuery}
               />
               <div className="variable-editor" style={variableStyle}>
@@ -496,6 +497,12 @@ export class GraphiQL extends React.Component {
     } else {
       throw new Error('Fetcher did not return Promise or Observable.');
     }
+  }
+
+  handleClickReference = reference => {
+    this.setState({ docExplorerOpen: true }, () => {
+      this.docExplorerComponent.showDocForReference(reference);
+    });
   }
 
   handleRunQuery = selectedOperationName => {
