@@ -41,8 +41,8 @@
     "prepublish": ". ./resources/prepublish.sh"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.8.0",
-    "codemirror": "^5.6.0"
+    "codemirror": "^5.6.0",
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.8.0"
   },
   "devDependencies": {
     "babel-cli": "6.18.0",
@@ -70,12 +70,12 @@
     "babel-plugin-transform-regenerator": "6.21.0",
     "chai": "3.5.0",
     "chai-subset": "1.4.0",
-    "codemirror": "5.22.0",
+    "codemirror": "5.22.2",
     "eslint": "3.13.1",
     "eslint-plugin-babel": "4.0.1",
     "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.38.0",
-    "graphql": "0.8.1",
+    "graphql": "0.8.2",
     "jsdom": "9.9.1",
     "mocha": "3.2.0",
     "sane": "1.5.0"
