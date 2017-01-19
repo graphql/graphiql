@@ -16,9 +16,7 @@ export default class Argument extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.props.arg.name !== nextProps.arg.name ||
-      this.props.arg.type !== nextProps.arg.type ||
-      this.props.arg.defaultValue !== nextProps.arg.defaultValue ||
+    return this.props.arg !== nextProps.arg ||
       this.props.onClickType !== nextProps.onClickType;
   }
 
