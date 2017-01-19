@@ -17,6 +17,9 @@ import {
 
 import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
+import { ToolbarGroup } from './ToolbarGroup';
+import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
+import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -237,7 +240,7 @@ export class GraphiQL extends React.Component {
                 onStop={this.handleStopQuery}
                 operations={this.state.operations}
               />
-              <GraphiQL.ToolbarButton
+              <ToolbarButton
                 onClick={this.handlePrettifyQuery}
                 title="Prettify Query"
                 label="Prettify"
@@ -317,6 +320,15 @@ export class GraphiQL extends React.Component {
   }
 
   /**
+   * Get the query editor CodeMirror instance.
+   *
+   * @public
+   */
+  getQueryEditor() {
+    return this.queryEditorComponent.getCodeMirror();
+  }
+
+  /**
    * Inspect the query, automatically filling in selection sets for non-leaf
    * fields which do not yet have them.
    *
@@ -329,7 +341,7 @@ export class GraphiQL extends React.Component {
       this.props.getDefaultFieldNames
     );
     if (insertions && insertions.length > 0) {
-      const editor = this.queryEditorComponent.getCodeMirror();
+      const editor = this.getQueryEditor();
       editor.operation(() => {
         const cursor = editor.getCursor();
         const cursorIndex = editor.indexFromPos(cursor);
@@ -577,7 +589,7 @@ export class GraphiQL extends React.Component {
     let operationName;
     const operations = this.state.operations;
     if (operations) {
-      const editor = this.queryEditorComponent.getCodeMirror();
+      const editor = this.getQueryEditor();
       if (editor.hasFocus()) {
         const cursor = editor.getCursor();
         const cursorIndex = editor.indexFromPos(cursor);
@@ -598,9 +610,8 @@ export class GraphiQL extends React.Component {
   }
 
   handlePrettifyQuery = () => {
-    const query = print(parse(this.state.query));
-    const editor = this.queryEditorComponent.getCodeMirror();
-    editor.setValue(query);
+    const editor = this.getQueryEditor();
+    editor.setValue(print(parse(editor.getValue())));
   }
 
   handleEditQuery = value => {
@@ -837,7 +848,19 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
 };
 
 // Add a button to the Toolbar.
-GraphiQL.ToolbarButton = ToolbarButton;
+GraphiQL.Toolbar.Button = ToolbarButton;
+GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+
+// Add a group of buttons to the Toolbar
+GraphiQL.Toolbar.Group = ToolbarGroup;
+
+// Add a menu of items to the Toolbar.
+GraphiQL.Toolbar.Menu = ToolbarMenu;
+GraphiQL.Toolbar.MenuItem = ToolbarMenuItem;
+
+// Add a select-option input to the Toolbar.
+GraphiQL.Toolbar.Select = ToolbarSelect;
+GraphiQL.Toolbar.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = function GraphiQLFooter(props) {
