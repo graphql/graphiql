@@ -69,7 +69,7 @@
     "babel-plugin-transform-es2015-template-literals": "6.22.0",
     "babel-plugin-transform-flow-strip-types": "6.21.0",
     "babel-plugin-transform-object-rest-spread": "6.20.2",
-    "babel-plugin-transform-regenerator": "6.21.0",
+    "babel-plugin-transform-regenerator": "6.22.0",
     "chai": "3.5.0",
     "chai-subset": "1.4.0",
     "codemirror": "5.22.2",
