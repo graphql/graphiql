@@ -874,17 +874,30 @@ GraphiQL.Footer = function GraphiQLFooter(props) {
 const defaultQuery =
 `# Welcome to GraphiQL
 #
-# GraphiQL is an in-browser IDE for writing, validating, and
+# GraphiQL is an in-browser tool for writing, validating, and
 # testing GraphQL queries.
 #
-# Type queries into this side of the screen, and you will
-# see intelligent typeaheads aware of the current GraphQL type schema and
-# live syntax and validation errors highlighted within the text.
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
 #
-# To bring up the auto-complete at any point, just press Ctrl-Space.
+# GraphQL queries typically start with a "{" character. Lines that starts
+# with a # are ignored.
 #
-# Press the run button above, or Cmd-Enter to execute the query, and the result
-# will appear in the pane to the right.
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#       Run Query:  Ctrl-Enter (or press the play button above)
+#
+#   Auto Complete:  Ctrl-Space (or just start typing)
+#
 
 `;
 
