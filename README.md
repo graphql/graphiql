@@ -208,7 +208,7 @@ More examples available from: [GraphQL Queries](http://graphql.org/docs/queries/
 **Mutation**
 
 Given this schema,
-```
+```js
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     fields: {
