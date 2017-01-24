@@ -39,6 +39,21 @@ const mockStorage = (function () {
   };
 }());
 
+// The smallest possible introspection result that builds a schema.
+const simpleIntrospection = { data: { __schema: {
+  queryType: { name: 'Q' },
+  types: [ { kind: 'OBJECT', name: 'Q', interfaces: [], fields: [
+    { name: 'q', args: [], type: { name: 'Q' } }
+  ] } ]
+} } };
+
+// Spins the promise loop a few times before continuing.
+const wait = () =>
+  Promise.resolve()
+    .then(() => Promise.resolve())
+    .then(() => Promise.resolve())
+    .then(() => Promise.resolve());
+
 Object.defineProperty(window, 'localStorage', {
   value: mockStorage,
 });
@@ -58,6 +73,39 @@ describe('GraphiQL', () => {
     expect(() => ReactTestRenderer.create(
       <GraphiQL fetcher={noOpFetcher} />
     )).to.not.throw();
+  });
+
+  it('should refetch schema with new fetcher', async () => {
+    let firstCalled = false;
+    function firstFetcher() {
+      firstCalled = true;
+      return Promise.resolve(simpleIntrospection);
+    }
+
+    let secondCalled = false;
+    function secondFetcher() {
+      secondCalled = true;
+      return Promise.resolve(simpleIntrospection);
+    }
+
+    // Initial render calls fetcher
+    const instance = ReactTestRenderer.create(
+      <GraphiQL fetcher={firstFetcher} />
+    );
+    expect(firstCalled).to.equal(true);
+
+    await wait();
+
+    // Re-render does not call fetcher again
+    firstCalled = false;
+    instance.update(<GraphiQL fetcher={firstFetcher} />);
+    expect(firstCalled).to.equal(false);
+
+    await wait();
+
+    // Re-render with new fetcher is called.
+    instance.update(<GraphiQL fetcher={secondFetcher} />);
+    expect(secondCalled).to.equal(true);
   });
 
   it('should not throw error if schema missing and query provided', () => {
