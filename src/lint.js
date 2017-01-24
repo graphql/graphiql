@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { parse, validate } from 'graphql';
+import { parse, validate, findDeprecatedUsages } from 'graphql';
 
 
 /**
@@ -25,10 +25,23 @@ import { parse, validate } from 'graphql';
  */
 CodeMirror.registerHelper('lint', 'graphql', (text, options, editor) => {
   const schema = options.schema;
+  if (!schema) {
+    return [];
+  }
+
   try {
     const ast = parse(text);
-    const errors = schema ? validate(schema, ast) : [];
-    return mapCat(errors, error => errorAnnotations(editor, error));
+    const validationErrorAnnotations = mapCat(
+      validate(schema, ast),
+      error => annotations(editor, error, 'error', 'validation')
+    );
+    // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
+    // support older versions of graphql-js.
+    const deprecationWarningAnnotations = !findDeprecatedUsages ? [] : mapCat(
+      findDeprecatedUsages(schema, ast),
+      error => annotations(editor, error, 'warning', 'deprecation')
+    );
+    return validationErrorAnnotations.concat(deprecationWarningAnnotations);
   } catch (error) {
     const location = error.locations[0];
     const pos = CodeMirror.Pos(location.line - 1, location.column);
@@ -43,7 +56,7 @@ CodeMirror.registerHelper('lint', 'graphql', (text, options, editor) => {
   }
 });
 
-function errorAnnotations(editor, error) {
+function annotations(editor, error, severity, type) {
   return error.nodes.map(node => {
     const highlightNode =
       node.kind !== 'Variable' && node.name ? node.name :
@@ -51,8 +64,8 @@ function errorAnnotations(editor, error) {
       node;
     return {
       message: error.message,
-      severity: 'error',
-      type: 'validation',
+      severity,
+      type,
       from: editor.posFromIndex(highlightNode.loc.start),
       to: editor.posFromIndex(highlightNode.loc.end),
     };

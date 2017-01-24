@@ -68,7 +68,9 @@ describe('graphql-hint', () => {
   it('provides correct field name suggestions', async () => {
     const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     const fieldConfig = TestSchema.getQueryType().getFields();
-    const fieldNames = Object.keys(fieldConfig).concat([ '__schema', '__type' ]);
+    const fieldNames = Object.keys(fieldConfig)
+      .filter(name => !fieldConfig[name].isDeprecated)
+      .concat([ '__schema', '__type' ]);
     checkSuggestions(fieldNames, suggestions.list);
   });
 

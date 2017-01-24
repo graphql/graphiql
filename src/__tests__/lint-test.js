@@ -63,6 +63,14 @@ describe('graphql-lint', () => {
     ).to.contain('Cannot query field "title" on type "Test".');
   });
 
+  it('catches field deprecation errors', async () => {
+    expect(
+      (await printLintErrors('{ deprecatedTest { id } }'))[0].message
+    ).to.contain(
+      'The field Test.deprecatedTest is deprecated. Use test instead.'
+    );
+  });
+
   const kitchenSink = readFileSync(
     join(__dirname, '/kitchen-sink.graphql'),
     { encoding: 'utf8' }

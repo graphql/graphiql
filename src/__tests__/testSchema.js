@@ -105,6 +105,11 @@ const TestType = new GraphQLObjectType({
       type: TestType,
       resolve: () => ({})
     },
+    deprecatedTest: {
+      type: TestType,
+      deprecationReason: 'Use test instead.',
+      resolve: () => ({})
+    },
     union: {
       type: TestUnion,
       resolve: () => ({})
