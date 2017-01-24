@@ -129,9 +129,11 @@ export class GraphiQL extends React.Component {
   }
 
   componentDidMount() {
-    // Ensure a form of a schema exists (including `null`) and
-    // if not, fetch one using an introspection query.
-    this._ensureOfSchema();
+    // Only fetch schema via introspection if a schema has not been
+    // provided, including if `null` was provided.
+    if (this.state.schema === undefined) {
+      this._fetchSchema();
+    }
 
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
@@ -167,12 +169,23 @@ export class GraphiQL extends React.Component {
       this._updateQueryFacts(nextQuery);
     }
 
+    // If schema is not supplied via props and the fetcher changed, then
+    // remove the schema so fetchSchema() will be called with the new fetcher.
+    if (nextProps.schema === undefined &&
+        nextProps.fetcher !== this.props.fetcher) {
+      nextSchema = undefined;
+    }
+
     this.setState({
       schema: nextSchema,
       query: nextQuery,
       variables: nextVariables,
       operationName: nextOperationName,
       response: nextResponse,
+    }, () => {
+      if (this.state.schema === undefined) {
+        this._fetchSchema();
+      }
     });
   }
 
@@ -372,12 +385,7 @@ export class GraphiQL extends React.Component {
 
   // Private methods
 
-  _ensureOfSchema() {
-    // Only perform introspection if a schema is not provided (undefined)
-    if (this.state.schema !== undefined) {
-      return;
-    }
-
+  _fetchSchema() {
     const fetcher = this.props.fetcher;
 
     const fetch = observableToPromise(fetcher({ query: introspectionQuery }));
