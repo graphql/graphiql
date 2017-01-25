@@ -79,8 +79,12 @@
   text-decoration: underline;
 }
 
-.graphiql-container .doc-value-description {
-  padding: 4px 0 8px 12px;
+.graphiql-container .doc-value-description > :first-child {
+  margin-top: 4px;
+}
+
+.graphiql-container .doc-value-description > :last-child {
+  margin-bottom: 4px;
 }
 
 .graphiql-container .doc-category {
@@ -117,7 +121,7 @@
   color: #1F61A0;
 }
 
-.graphiql-container .value-name {
+.graphiql-container .enum-value {
   color: #0B7FC7;
 }
 
@@ -145,10 +149,52 @@
   color: #0B7FC7;
 }
 
-.graphiql-container .doc-alert-text {
-  color: #F00F00;
-  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-  font-size: 13px;
+.graphiql-container .doc-deprecation {
+  background: #fffae8;
+  box-shadow: inset 0 0 1px #bfb063;
+  color: #867F70;
+  line-height: 16px;
+  margin: 8px -8px;
+  max-height: 80px;
+  overflow: hidden;
+  padding: 8px;
+  border-radius: 3px;
+}
+
+.graphiql-container .doc-deprecation:before {
+  content: 'Deprecated:';
+  color: #c79b2e;
+  cursor: default;
+  display: block;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1;
+  padding-bottom: 5px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.graphiql-container .doc-deprecation > :first-child {
+  margin-top: 0;
+}
+
+.graphiql-container .doc-deprecation > :last-child {
+  margin-bottom: 0;
+}
+
+.graphiql-container .show-btn {
+  -webkit-appearance: initial;
+  display: block;
+  border-radius: 3px;
+  border: solid 1px #ccc;
+  text-align: center;
+  padding: 8px 12px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fbfcfc;
+  color: #555;
+  cursor: pointer;
 }
 
 .graphiql-container .search-box-outer {

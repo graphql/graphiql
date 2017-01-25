@@ -27,10 +27,16 @@ export default class TypeDoc extends React.Component {
     onClickField: PropTypes.func,
   }
 
-  shouldComponentUpdate(nextProps) {
+  constructor(props) {
+    super(props);
+    this.state = { showDeprecated: false };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
     return (
       this.props.type !== nextProps.type ||
-      this.props.schema !== nextProps.schema
+      this.props.schema !== nextProps.schema ||
+      this.state.showDeprecated !== nextState.showDeprecated
     );
   }
 
@@ -55,7 +61,7 @@ export default class TypeDoc extends React.Component {
 
     let typesDef;
     if (types && types.length > 0) {
-      typesDef = (
+      typesDef =
         <div className="doc-category">
           <div className="doc-category-title">
             {typesTitle}
@@ -65,83 +71,87 @@ export default class TypeDoc extends React.Component {
               <TypeLink type={subtype} onClick={onClickType} />
             </div>
           )}
-        </div>
-      );
+        </div>;
     }
 
     // InputObject and Object
     let fieldsDef;
+    let deprecatedFieldsDef;
     if (type.getFields) {
       const fieldMap = type.getFields();
       const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
-      fieldsDef = (
+      fieldsDef =
         <div className="doc-category">
           <div className="doc-category-title">
             {'fields'}
           </div>
-          {fields.map(field =>
-            <div key={field.name} className="doc-category-item">
-              <a
-                className="field-name"
-                onClick={event => onClickField(field, type, event)}>
-                {field.name}
-              </a>
-              {field.args && field.args.length > 0 && [
-                '(',
-                <span key="args">
-                  {field.args.map(arg =>
-                    <Argument
-                      key={arg.name}
-                      arg={arg}
-                      onClickType={onClickType}
-                    />
-                  )}
-                </span>,
-                ')'
-              ]}
-              {': '}
-              <TypeLink type={field.type} onClick={onClickType} />
-              {
-                (field.isDeprecated || field.deprecationReason) &&
-                <span className="doc-alert-text">{' (DEPRECATED)'}</span>
-              }
-            </div>
+          {fields.filter(field => !field.isDeprecated).map(field =>
+            <Field
+              key={field.name}
+              type={type}
+              field={field}
+              onClickType={onClickType}
+              onClickField={onClickField}
+            />
           )}
-        </div>
-      );
+        </div>;
+
+      const deprecatedFields = fields.filter(field => field.isDeprecated);
+      if (deprecatedFields.length > 0) {
+        deprecatedFieldsDef =
+          <div className="doc-category">
+            <div className="doc-category-title">
+              {'deprecated fields'}
+            </div>
+            {!this.state.showDeprecated ?
+              <button className="show-btn" onClick={this.handleShowDeprecated}>
+                {'Show deprecated fields...'}
+              </button> :
+              deprecatedFields.map(field =>
+                <Field
+                  key={field.name}
+                  type={type}
+                  field={field}
+                  onClickType={onClickType}
+                  onClickField={onClickField}
+                />
+              )
+            }
+          </div>;
+      }
     }
 
     let valuesDef;
+    let deprecatedValuesDef;
     if (type instanceof GraphQLEnumType) {
-      valuesDef = (
+      const values = type.getValues();
+      valuesDef =
         <div className="doc-category">
           <div className="doc-category-title">
             {'values'}
           </div>
-          {type.getValues().map(value =>
-            <div key={value.name} className="doc-category-item">
-              <div className="enum-value">
-                {value.name}
-                {
-                  (value.isDeprecated || value.deprecationReason) &&
-                  <span className="doc-alert-text">{' (DEPRECATED)'}</span>
-                }
-              </div>
-              <MarkdownContent
-                className="doc-value-description"
-                markdown={value.description}
-              />
-              {
-                value.deprecationReason &&
-                <MarkdownContent
-                  className="doc-alert-text"
-                  markdown={value.deprecationReason}
-                />
-              }
-            </div>
+          {values.filter(value => !value.isDeprecated).map(value =>
+            <EnumValue key={value.name} value={value} />
           )}
-        </div>
-      );
+        </div>;
+
+      const deprecatedValues = values.filter(value => value.isDeprecated);
+      if (deprecatedValues.length > 0) {
+        deprecatedValuesDef =
+          <div className="doc-category">
+            <div className="doc-category-title">
+              {'deprecated values'}
+            </div>
+            {!this.state.showDeprecated ?
+              <button className="show-btn" onClick={this.handleShowDeprecated}>
+                {'Show deprecated values...'}
+              </button> :
+              deprecatedValues.map(value =>
+                <EnumValue key={value.name} value={value} />
+              )
+            }
+          </div>;
+      }
     }
 
     return (
@@ -152,9 +162,79 @@ export default class TypeDoc extends React.Component {
         />
         {(type instanceof GraphQLObjectType) && typesDef}
         {fieldsDef}
+        {deprecatedFieldsDef}
         {valuesDef}
+        {deprecatedValuesDef}
         {!(type instanceof GraphQLObjectType) && typesDef}
       </div>
     );
   }
+
+  handleShowDeprecated = () => this.setState({ showDeprecated: true });
 }
+
+function Field({ type, field, onClickType, onClickField }) {
+  return (
+    <div className="doc-category-item">
+      <a
+        className="field-name"
+        onClick={event => onClickField(field, type, event)}>
+        {field.name}
+      </a>
+      {field.args && field.args.length > 0 && [
+        '(',
+        <span key="args">
+          {field.args.map(arg =>
+            <Argument
+              key={arg.name}
+              arg={arg}
+              onClickType={onClickType}
+            />
+          )}
+        </span>,
+        ')'
+      ]}
+      {': '}
+      <TypeLink type={field.type} onClick={onClickType} />
+      {
+        field.deprecationReason &&
+        <MarkdownContent
+          className="doc-deprecation"
+          markdown={field.deprecationReason}
+        />
+      }
+    </div>
+  );
+}
+
+Field.propTypes = {
+  type: PropTypes.object,
+  field: PropTypes.object,
+  onClickType: PropTypes.func,
+  onClickField: PropTypes.func,
+};
+
+function EnumValue({ value }) {
+  return (
+    <div className="doc-category-item">
+      <div className="enum-value">
+        {value.name}
+      </div>
+      <MarkdownContent
+        className="doc-value-description"
+        markdown={value.description}
+      />
+      {
+        value.deprecationReason &&
+        <MarkdownContent
+          className="doc-deprecation"
+          markdown={value.deprecationReason}
+        />
+      }
+    </div>
+  );
+}
+
+EnumValue.propTypes = {
+  value: PropTypes.object
+};
