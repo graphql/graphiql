@@ -220,7 +220,13 @@ export class GraphiQL extends React.Component {
 
     const toolbar =
       find(children, child => child.type === GraphiQL.Toolbar) ||
-      <GraphiQL.Toolbar />;
+      <GraphiQL.Toolbar>
+        <ToolbarButton
+          onClick={this.handlePrettifyQuery}
+          title="Prettify Query"
+          label="Prettify"
+        />
+      </GraphiQL.Toolbar>;
 
     const footer = find(children, child => child.type === GraphiQL.Footer);
 
@@ -252,11 +258,6 @@ export class GraphiQL extends React.Component {
                 onRun={this.handleRunQuery}
                 onStop={this.handleStopQuery}
                 operations={this.state.operations}
-              />
-              <ToolbarButton
-                onClick={this.handlePrettifyQuery}
-                title="Prettify Query"
-                label="Prettify"
               />
               {toolbar}
             </div>

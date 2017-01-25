@@ -100,7 +100,9 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 * `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
-* `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL.
+* `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL. If not provided, a
+  default toolbar may contain common operations. Pass the empty
+  `<GraphiQL.Toolbar />` if an empty toolbar is desired.
 
 * `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
 
@@ -159,9 +161,13 @@ class CustomGraphiQL extends React.Component {
     };
   }
 
-  _onClickToolbarButton(event) {
+  // Example of using the GraphiQL Component API via a toolbar button.
+  handleClickPrettifyButton(event) {
     const editor = this.graphiql.getQueryEditor();
-    alert('Clicked toolbar button! Current query: ' + editor.getValue());
+    const currentText = editor.getValue();
+    const { parse, print } = require('graphql');
+    const prettyText = print(parse(currentText));
+    editor.setValue(prettyText);
   }
 
   render() {
@@ -171,15 +177,21 @@ class CustomGraphiQL extends React.Component {
           Custom Logo
         </GraphiQL.Logo>
         <GraphiQL.Toolbar>
+
           // GraphiQL.Button usage
           <GraphiQL.Button
-            onClick={this._onClickToolbarButton}
-            title="ToolbarButton"
-            label="Click Me as well!"
+            onClick={this.handleClickPrettifyButton}
+            label="Prettify"
+            title="Prettify Query"
           />
+
           // Some other possible toolbar items
-          <button name="GraphiQLButton">Click Me</button>
+          <GraphiQL.Toolbar.Menu title="File">
+            <GraphiQL.Toolbar.MenuItem title="Save" onClick={...}>
+          <GraphiQL.Toolbar.Menu>
+
           <OtherReactComponent someProps="true" />
+
         </GraphiQL.Toolbar>
         <GraphiQL.Footer>
           // Footer works the same as Toolbar
