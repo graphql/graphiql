@@ -342,6 +342,26 @@ export class GraphiQL extends React.Component {
   }
 
   /**
+   * Get the variable editor CodeMirror instance.
+   *
+   * @public
+   */
+  getVariableEditor() {
+    return this.variableEditorComponent.getCodeMirror();
+  }
+
+  /**
+   * Refresh all CodeMirror instances.
+   *
+   * @public
+   */
+  refresh() {
+    this.queryEditorComponent.getCodeMirror().refresh();
+    this.variableEditorComponent.getCodeMirror().refresh();
+    this.resultComponent.getCodeMirror().refresh();
+  }
+
+  /**
    * Inspect the query, automatically filling in selection sets for non-leaf
    * fields which do not yet have them.
    *
