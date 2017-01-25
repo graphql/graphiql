@@ -856,19 +856,19 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
 };
 
 // Add a button to the Toolbar.
-GraphiQL.Toolbar.Button = ToolbarButton;
+GraphiQL.Button = ToolbarButton;
 GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
 
 // Add a group of buttons to the Toolbar
-GraphiQL.Toolbar.Group = ToolbarGroup;
+GraphiQL.Group = ToolbarGroup;
 
 // Add a menu of items to the Toolbar.
-GraphiQL.Toolbar.Menu = ToolbarMenu;
-GraphiQL.Toolbar.MenuItem = ToolbarMenuItem;
+GraphiQL.Menu = ToolbarMenu;
+GraphiQL.MenuItem = ToolbarMenuItem;
 
 // Add a select-option input to the Toolbar.
-GraphiQL.Toolbar.Select = ToolbarSelect;
-GraphiQL.Toolbar.SelectOption = ToolbarSelectOption;
+GraphiQL.Select = ToolbarSelect;
+GraphiQL.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = function GraphiQLFooter(props) {

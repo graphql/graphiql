@@ -102,18 +102,19 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 * `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL.
 
-* `<GraphiQL.Toolbar.Button>`: Add a button to the toolbar above GraphiQL.
+* `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
 
-* `<GraphiQL.Toolbar.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
+* `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
 
-  * `<GraphiQL.Toolbar.MenuItem>`: Items for a menu.
+  * `<GraphiQL.MenuItem>`: Items for a menu.
 
-* `<GraphiQL.Toolbar.Select>`: Add a select list to the toolbar above GraphiQL.
+* `<GraphiQL.Select>`: Add a select list to the toolbar above GraphiQL.
 
-  * `<GraphiQL.Toolbar.SelectOption>`: Options for a select list.
+  * `<GraphiQL.SelectOption>`: Options for a select list.
 
-* `<GraphiQL.Toolbar.Group>`: Add a group of associated controls to the
-  toolbar above GraphiQL. Expects `<GraphiQL.Toolbar.*>`, children.
+* `<GraphiQL.Group>`: Add a group of associated controls to the
+  toolbar above GraphiQL. Expects children to be `<GraphiQL.Button>`,
+  `<GraphiQL.Menu>`, or `<GraphiQL.Select>`.
 
 * `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
 
@@ -170,8 +171,8 @@ class CustomGraphiQL extends React.Component {
           Custom Logo
         </GraphiQL.Logo>
         <GraphiQL.Toolbar>
-          // GraphiQL.Toolbar.Button usage
-          <GraphiQL.Toolbar.Button
+          // GraphiQL.Button usage
+          <GraphiQL.Button
             onClick={this._onClickToolbarButton}
             title="ToolbarButton"
             label="Click Me as well!"
