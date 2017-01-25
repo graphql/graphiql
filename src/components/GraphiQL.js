@@ -622,7 +622,7 @@ export class GraphiQL extends React.Component {
     editor.setValue(print(parse(editor.getValue())));
   }
 
-  handleEditQuery = value => {
+  handleEditQuery = debounce(100, value => {
     if (this.state.schema) {
       this._updateQueryFacts(value);
     }
@@ -630,9 +630,9 @@ export class GraphiQL extends React.Component {
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
     }
-  }
+  })
 
-  _updateQueryFacts = debounce(150, query => {
+  _updateQueryFacts = query => {
     const queryFacts = getQueryFacts(this.state.schema, query);
     if (queryFacts) {
       // Update operation name should any query names change.
@@ -653,7 +653,7 @@ export class GraphiQL extends React.Component {
         ...queryFacts
       });
     }
-  })
+  }
 
   handleEditVariables = value => {
     this.setState({ variables: value });
