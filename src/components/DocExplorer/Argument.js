@@ -10,13 +10,13 @@ import React, { PropTypes } from 'react';
 import { astFromValue, print } from 'graphql';
 import TypeLink from './TypeLink';
 
-export default function Argument({ arg, onClickType }) {
+export default function Argument({ arg, onClickType, showDefaultValue }) {
   return (
     <span className="arg">
       <span className="arg-name">{arg.name}</span>
       {': '}
       <TypeLink type={arg.type} onClick={onClickType} />
-      {arg.defaultValue !== undefined &&
+      {arg.defaultValue !== undefined && showDefaultValue !== false &&
         <span>
           {' = '}
           <span className="arg-default-value">
@@ -31,4 +31,5 @@ export default function Argument({ arg, onClickType }) {
 Argument.propTypes = {
   arg: PropTypes.object.isRequired,
   onClickType: PropTypes.func.isRequired,
+  showDefaultValue: PropTypes.bool,
 };
