@@ -11,46 +11,44 @@ import React, { PropTypes } from 'react';
 import debounce from '../../utility/debounce';
 
 export default class SearchBox extends React.Component {
+
   static propTypes = {
-    isShown: PropTypes.bool,
+    value: PropTypes.string,
+    placeholder: PropTypes.string,
     onSearch: PropTypes.func,
   }
 
   constructor(props) {
     super(props);
-
-    this.state = { value: '' };
-
-    this._debouncedOnSearch = debounce(200, () => {
-      this.props.onSearch(this.state.value);
-    });
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.isShown !== this.props.isShown ||
-           nextState.value !== this.state.value;
+    this.state = { value: props.value || '' };
+    this.debouncedOnSearch = debounce(200, this.props.onSearch);
   }
 
   render() {
     return (
-      <div>
-        {
-          this.props.isShown &&
-          <label className="search-box-outer">
-            <input className="search-box-input"
-              onChange={this.handleChange}
-              type="text"
-              value={this.state.value}
-              placeholder="Search the schema ..."
-            />
-          </label>
-        }
-      </div>
+      <label className="search-box">
+        <input
+          value={this.state.value}
+          onChange={this.handleChange}
+          type="text"
+          placeholder={this.props.placeholder}
+        />
+        {this.state.value &&
+          <div className="search-box-clear" onClick={this.handleClear}>
+            {'\u2715'}
+          </div>}
+      </label>
     );
   }
 
   handleChange = event => {
-    this.setState({ value: event.target.value });
-    this._debouncedOnSearch();
+    const value = event.target.value;
+    this.setState({ value });
+    this.debouncedOnSearch(value);
+  }
+
+  handleClear = () => {
+    this.setState({ value: '' });
+    this.props.onSearch('');
   }
 }

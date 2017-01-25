@@ -197,24 +197,48 @@
   cursor: pointer;
 }
 
-.graphiql-container .search-box-outer {
-  border: 1px solid #d3d6db;
-  box-sizing: border-box;
-  display: inline-block;
-  font-size: 12px;
-  height: 24px;
-  margin-bottom: 12px;
-  padding: 3px 8px 5px;
-  vertical-align: middle;
-  width: 100%;
+.graphiql-container .search-box {
+  border-bottom: 1px solid #d3d6db;
+  display: block;
+  font-size: 14px;
+  margin: -15px -15px 12px 0;
+  position: relative;
 }
 
-.graphiql-container .search-box-input {
-  border: 0;
-  font-size: 12px;
-  margin: 0;
-  outline: 0;
-  padding: 0;
+.graphiql-container .search-box:before {
+  content: '\26b2';
+  cursor: pointer;
+  display: block;
+  font-size: 24px;
+  position: absolute;
+  top: -2px;
+  transform: rotate(-45deg);
+  user-select: none;
+}
+
+.graphiql-container .search-box .search-box-clear {
+  background-color: #d0d0d0;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 1px 5px 2px;
+  position: absolute;
+  right: 3px;
+  top: 8px;
+  user-select: none;
+}
+
+.graphiql-container .search-box .search-box-clear:hover {
+  background-color: #b9b9b9;
+}
+
+.graphiql-container .search-box > input {
+  border: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+  padding: 6px 24px 8px 20px;
   width: 100%;
 }
 

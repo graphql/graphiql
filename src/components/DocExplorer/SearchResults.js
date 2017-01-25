@@ -14,6 +14,7 @@ import TypeLink from './TypeLink';
 export default class SearchResults extends React.Component {
   static propTypes = {
     schema: PropTypes.object,
+    withinType: PropTypes.object,
     searchValue: PropTypes.string,
     onClickType: PropTypes.func,
     onClickField: PropTypes.func,
@@ -26,28 +27,33 @@ export default class SearchResults extends React.Component {
 
   render() {
     const searchValue = this.props.searchValue;
+    const withinType = this.props.withinType;
     const schema = this.props.schema;
     const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
 
-    const typeMap = schema.getTypeMap();
-
+    const matchedWithin = [];
     const matchedTypes = [];
     const matchedFields = [];
 
-    const typeNames = Object.keys(typeMap);
+    const typeMap = schema.getTypeMap();
+    let typeNames = Object.keys(typeMap);
+
+    // Move the within type name to be the first searched.
+    if (withinType) {
+      typeNames = typeNames.filter(n => n !== withinType.name);
+      typeNames.unshift(withinType.name);
+    }
+
     for (const typeName of typeNames) {
-      if (matchedTypes.length + matchedFields.length >= 100) {
+      if (matchedWithin.length +
+          matchedTypes.length +
+          matchedFields.length >= 100) {
         break;
       }
 
       const type = typeMap[typeName];
-      const matchedOn = [];
-      if (this._isMatch(typeName, searchValue)) {
-        matchedOn.push('Type Name');
-      }
-
-      if (matchedOn.length) {
+      if (withinType !== type && isMatch(typeName, searchValue)) {
         matchedTypes.push(
           <div className="doc-category-item" key={typeName}>
             <TypeLink type={type} onClick={onClickType} />
@@ -59,51 +65,58 @@ export default class SearchResults extends React.Component {
         const fields = type.getFields();
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];
-          if (this._isMatch(fieldName, searchValue)) {
-            const key = typeName + '.' + fieldName;
-            matchedFields.push(
-              <div className="doc-category-item" key={key}>
-                <a className="field-name"
-                  onClick={event => onClickField(field, type, event)}>
-                  {field.name}
-                </a>
-                {' on '}
-                <TypeLink type={type} onClick={onClickType} />
-              </div>
-            );
-          } else if (field.args && field.args.length) {
-            const matches =
-              field.args.filter(arg => this._isMatch(arg.name, searchValue));
-            if (matches.length > 0) {
-              const key = typeName + '.' + fieldName;
-              matchedFields.push(
-                <div className="doc-category-item" key={key}>
-                  <a className="field-name"
-                    onClick={event => onClickField(field, type, event)}>
-                    {field.name}
-                  </a>
-                  {'('}
-                  <span>
-                    {matches.map(arg =>
-                      <Argument
-                        key={arg.name}
-                        arg={arg}
-                        onClickType={onClickType}
-                      />
-                    )}
-                  </span>
-                  {')'}
-                  {' on '}
-                  <TypeLink type={type} onClick={onClickType} />
-                </div>
-              );
+          let matchingArgs;
+
+          if (!isMatch(fieldName, searchValue)) {
+            if (field.args && field.args.length) {
+              matchingArgs =
+                field.args.filter(arg => isMatch(arg.name, searchValue));
+              if (matchingArgs.length === 0) {
+                return;
+              }
+            } else {
+              return;
             }
+          }
+
+          const match =
+            <div className="doc-category-item" key={typeName + '.' + fieldName}>
+              {withinType !== type && [
+                <TypeLink key="type" type={type} onClick={onClickType} />,
+                '.'
+              ]}
+              <a className="field-name"
+                onClick={event => onClickField(field, type, event)}>
+                {field.name}
+              </a>
+              {matchingArgs && [
+                '(',
+                <span key="args">
+                  {matchingArgs.map(arg =>
+                    <Argument
+                      key={arg.name}
+                      arg={arg}
+                      onClickType={onClickType}
+                      showDefaultValue={false}
+                    />
+                  )}
+                </span>,
+                ')'
+              ]}
+            </div>;
+
+          if (withinType === type) {
+            matchedWithin.push(match);
+          } else {
+            matchedFields.push(match);
           }
         });
       }
     }
 
-    if (matchedTypes.length === 0 && matchedFields.length === 0) {
+    if (matchedWithin.length +
+        matchedTypes.length +
+        matchedFields.length === 0) {
       return (
         <span className="doc-alert-text">
           {'No results found.'}
@@ -111,28 +124,36 @@ export default class SearchResults extends React.Component {
       );
     }
 
+    if (withinType && matchedTypes.length + matchedFields.length > 0) {
+      return (
+        <div>
+          {matchedWithin}
+          <div className="doc-category">
+            <div className="doc-category-title">
+              {'other results'}
+            </div>
+            {matchedTypes}
+            {matchedFields}
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div>
-        <div className="doc-category">
-          {
-            (matchedTypes.length > 0 || matchedFields.length > 0) &&
-            <div className="doc-category-title">
-              {'search results'}
-            </div>
-          }
-          {matchedTypes}
-          {matchedFields}
-        </div>
+        {matchedWithin}
+        {matchedTypes}
+        {matchedFields}
       </div>
     );
   }
+}
 
-  _isMatch(sourceText, searchValue) {
-    try {
-      const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
-      return sourceText.search(new RegExp(escaped, 'i')) !== -1;
-    } catch (e) {
-      return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
-    }
+function isMatch(sourceText, searchValue) {
+  try {
+    const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
+    return sourceText.search(new RegExp(escaped, 'i')) !== -1;
+  } catch (e) {
+    return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
   }
 }
