@@ -1,7 +1,7 @@
-.graphiql-container {
+.graphiql-container,
+.graphiql-container button,
+.graphiql-container input {
   color: #141823;
-  display: flex;
-  flex-direction: row;
   font-family:
     system,
     -apple-system,
@@ -16,6 +16,11 @@
     arial,
     sans-serif;
   font-size: 14px;
+}
+
+.graphiql-container {
+  display: flex;
+  flex-direction: row;
   height: 100%;
   margin: 0;
   overflow: hidden;

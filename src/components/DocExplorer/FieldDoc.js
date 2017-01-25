@@ -56,7 +56,7 @@ export default class FieldDoc extends React.Component {
         {
           field.deprecationReason &&
           <MarkdownContent
-            className="doc-alert-text"
+            className="doc-deprecation"
             markdown={field.deprecationReason}
           />
         }

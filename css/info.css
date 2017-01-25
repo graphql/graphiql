@@ -94,7 +94,7 @@
   color: #1F61A0;
 }
 
-.CodeMirror-info .value-name {
+.CodeMirror-info .enum-value {
   color: #0B7FC7;
 }
 
@@ -104,8 +104,4 @@
 
 .CodeMirror-info .directive-name {
   color: #B33086;
-}
-
-.CodeMirror-info .enum-value {
-  color: #0B7FC7;
 }
