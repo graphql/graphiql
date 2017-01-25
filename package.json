@@ -81,6 +81,6 @@
     "react-test-renderer": "15.4.2",
     "uglify-js": "2.7.5",
     "uglifyify": "3.0.4",
-    "watchify": "3.8.0"
+    "watchify": "3.9.0"
   }
 }
