@@ -14,21 +14,6 @@
   z-index: 10;
 }
 
-.CodeMirror-hints-wrapper {
-  background: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-  margin-left: -6px;
-  position: absolute;
-  z-index: 10;
-}
-
-.CodeMirror-hints-wrapper .CodeMirror-hints {
-  box-shadow: none;
-  margin-left: 0;
-  position: relative;
-  z-index: 0;
-}
-
 .CodeMirror-hint {
   border-top: solid 1px #f7f7f7;
   color: #141823;
