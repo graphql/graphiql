@@ -17,7 +17,6 @@
   position: fixed;
   transition: opacity .4s;
   white-space: pre-wrap;
-  white-space: pre;
   z-index: 100;
 }
 

@@ -465,13 +465,19 @@ div.CodeMirror-lint-tooltip {
     sans-serif;
   font-size: 13px;
   line-height: 16px;
+  max-width: 430px;
   opacity: 0;
-  padding: 6px 10px;
+  padding: 8px 10px;
   transition: opacity 0.15s;
+  white-space: pre-wrap;
 }
 
-div.CodeMirror-lint-message-error, div.CodeMirror-lint-message-warning {
+div.CodeMirror-lint-tooltip > * {
   padding-left: 23px;
+}
+
+div.CodeMirror-lint-tooltip > * + * {
+  margin-top: 12px;
 }
 
 /* COLORS */
