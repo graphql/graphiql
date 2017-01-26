@@ -186,9 +186,9 @@ class CustomGraphiQL extends React.Component {
           />
 
           // Some other possible toolbar items
-          <GraphiQL.Toolbar.Menu title="File">
-            <GraphiQL.Toolbar.MenuItem title="Save" onClick={...}>
-          <GraphiQL.Toolbar.Menu>
+          <GraphiQL.Menu title="File">
+            <GraphiQL.MenuItem title="Save" onClick={...}>
+          </GraphiQL.Menu>
 
           <OtherReactComponent someProps="true" />
 
