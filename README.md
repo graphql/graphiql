@@ -2,7 +2,7 @@
 
 _This is currently in technical preview. We welcome your feedback and suggestions._
 
-GraphQL Language Service provides an interface for building GraphQL Language Service for IDEs. Currently supported features include:
+GraphQL Language Service provides an interface for building GraphQL language services for IDEs. Currently supported features include:
 - Diagnostics (GraphQL syntax linting/validations)
 - Autocomplete suggestions
 - Hyperlink to fragment definitions
@@ -13,7 +13,7 @@ GraphQL Language Service provides an interface for building GraphQL Language Ser
 
 ### Dependencies
 
-GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) service running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs.install.html) to install the service.
+GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs.install.html) to install the Watchman.
 
 ### Installation
 
@@ -25,11 +25,11 @@ npm install ../graphql-language-service
 
 After pulling the latest changes from this repo, be sure to run `npm run build` to transform the `src/` directory and generate the `dist/` directory.
 
-The library includes a node executable file in `./node_modules/.bin/graphql.js` after installation.
+The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
 
 ### GraphQL configuration file (`.graphqlrc`)
 
-GraphQL Language Service, to serve its full potential, will need to know some information about your GraphQL development environment. `.graphqlrc` is a GraphQL configuration file that contains this information.
+GraphQL Language Service, to provide its full feature set, will need to know some information about your GraphQL development environment. `.graphqlrc` is a GraphQL configuration file that contains this information.
 ```
 {
   "build-configs": {
@@ -49,16 +49,16 @@ GraphQL Language Service, to serve its full potential, will need to know some in
 
 The GraphQL configurations will be used to perform two things in a nutshell:
 
-1. Using `input-dirs` and `exclude-dirs`, cache all fragment definitions per each product. This information will be used to compute interdependencies between GraphQL queries and fragments.
+1. Using `input-dirs` and `exclude-dirs`, cache all fragment definitions per each product. This information will be used to compute dependencies between GraphQL queries and fragments.
 2. Using `schema-path`, build and cache `GraphQLSchema`s (per product). The schema will be used to perform query validations, autocomplete suggestions etc.
 
-Also, if GraphQL server receives a RPC message that contains the path of the file being performed of a language service feature, `input-dirs` and `exclude-dirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/src/config/GraphQLConfig.js#L80) for more information.
+Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `input-dirs` and `exclude-dirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/src/config/GraphQLConfig.js#L80) for more information.
 
 ### Using the command-line interface
 
 The node executable contains several commands: `server` and a command-line language service methods (`lint`, `autocomplete`, `outline`).
 
-WIP to improve this list.
+Improving this list is a work-in-progress.
 
 ```
 Usage: graphql <command>
@@ -108,7 +108,7 @@ The IDE server should launch a separate GraphQL server with its own child proces
 ```
 A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc` file, as illustrated in the directory structure above.
 
-The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL servers necessary, and gracefully exit the GraphQL server as the IDE closes. In case of errors/sudden halt the GraphQL server will close as the stream from the IDE closes.
+The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
 
 ### Server Interface
 
