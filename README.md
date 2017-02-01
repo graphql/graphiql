@@ -2,9 +2,9 @@
 
 _This is currently in technical preview. We welcome your feedback and suggestions._
 
-GraphQL Language Service provides an interface for building GraphQL language service for IDEs.
+GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
-A subset of supported features of GraphQL language service and GraphQL language server implementation are both specification-compliant to [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol), and will be developed to fully support the specification in the future.
+Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
 
 Currently supported features include:
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
@@ -78,7 +78,7 @@ Options:
   -h, --help        Show help                                          [boolean]
   -t, --text        Text buffer to perform GraphQL diagnostics on.
                     Will defer to --file option if omitted.
-                    This option is always honored over --file option.
+                    Overrides the --file option, if any.
                                                                         [string]
   -f, --file        File path to perform GraphQL diagnostics on.
                     Will be ignored if --text option is supplied.
@@ -91,9 +91,9 @@ Options:
                     autocomplete suggestions.
                     If omitted, the last column number will be used.
                                                                         [number]
-  -c, --configDir   A directory path where .graphqlrc configuration object is
+  -c, --configDir   Path to the .graphqlrc configuration file.
                     Walks up the directory tree from the provided config
-                    directory, or the current working directory, until
+                    directory, or the current working directory, until a
                     .graphqlrc is found or the root directory is found.
                                                                         [string]
   -s, --schemaPath  a path to schema DSL file
@@ -127,9 +127,9 @@ The IDE server should manage the lifecycle of the GraphQL server. Ideally, the I
 
 ### Server Interface
 
-GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers to perform language service features. The language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md) documentation.
+GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md) documentation.
 
-For each transports, there is a slight difference between both JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transports (will be updated as progresses are made):
+For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
 
 |                     | Stream                       | IPC                               |
 | -------------------:|------------------------------|-----------------------------------|

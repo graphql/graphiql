@@ -31,7 +31,7 @@ const {argv} = yargs
     alias: 'text',
     describe: 'Text buffer to perform GraphQL diagnostics on.\n' +
       'Will defer to --file option if omitted.\n' +
-      'This option is always honored over --file option.\n',
+      'Overrides the --file option, if any.\n',
     type: 'string',
   })
   .option('f', {
@@ -54,9 +54,9 @@ const {argv} = yargs
   })
   .option('c', {
     alias: 'configDir',
-    describe: 'A directory path where .graphqlrc configuration object is\n' +
+    describe: 'Path to the .graphqlrc configuration file.\n' +
       'Walks up the directory tree from the provided config directory, or ' +
-      'the current working directory, until .graphqlrc is found or ' +
+      'the current working directory, until a .graphqlrc is found or ' +
       'the root directory is found.\n',
     type: 'string',
   })
