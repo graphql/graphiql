@@ -24,9 +24,8 @@ const CUSTOM_VALIDATION_RULES_MODULE_PATH = 'custom-validation-rules';
  */
 export function findGraphQLConfigDir(dirPath: Uri): ?string {
   let currentPath = path.resolve(dirPath);
-  let filePath;
   while (true) {
-    filePath = path.join(currentPath, '.graphqlrc');
+    const filePath = path.join(currentPath, '.graphqlrc');
     if (fs.existsSync(filePath)) {
       break;
     }
