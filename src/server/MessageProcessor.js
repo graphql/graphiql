@@ -11,12 +11,9 @@
 import type {Diagnostic, Uri} from '../types/Types';
 
 import {getGraphQLCache} from './GraphQLCache';
-
 import {getOutline} from '../interfaces/getOutline';
 import {GraphQLLanguageService} from '../interfaces/GraphQLLanguageService';
-
 import {findGraphQLConfigDir} from '../config/GraphQLConfig';
-
 import {Position} from '../utils/Range';
 
 // Response message error codes
@@ -253,7 +250,7 @@ export async function processStreamMessage(
     return;
   }
   if (!graphQLCache) {
-    const graphQLConfigDir = await findGraphQLConfigDir(
+    const graphQLConfigDir = findGraphQLConfigDir(
       configDir ? configDir.trim() : process.cwd(),
     );
     if (!graphQLConfigDir) {
@@ -370,7 +367,7 @@ async function initialize(
     },
   };
 
-  const configDir = await findGraphQLConfigDir(rootPath);
+  const configDir = findGraphQLConfigDir(rootPath);
   if (!configDir) {
     return null;
   }
