@@ -28,7 +28,7 @@ export default async function startServer(configDir: ?string): Promise<void> {
       return;
     }
 
-    if (message.id !== undefined || message.id !== null) {
+    if (message.id != null) {
       processIPCRequestMessage(message, configDir);
     } else {
       processIPCNotificationMessage(message);
