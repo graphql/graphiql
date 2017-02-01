@@ -22,19 +22,22 @@ const CUSTOM_VALIDATION_RULES_MODULE_PATH = 'custom-validation-rules';
  * If the file isn't present in the provided directory path, walk up the
  * directory tree until the file is found or it reaches the root directory.
  */
-export async function findGraphQLConfigDir(dirPath: Uri): Promise<?string> {
+export function findGraphQLConfigDir(dirPath: Uri): ?string {
   let currentPath = path.resolve(dirPath);
   let filePath;
-  while (currentPath.length > 1) {
+  while (true) {
     filePath = path.join(currentPath, '.graphqlrc');
     if (fs.existsSync(filePath)) {
+      break;
+    }
+    if (isRootDir(currentPath)) {
       break;
     }
 
     currentPath = path.dirname(currentPath);
   }
 
-  return filePath ? currentPath : null;
+  return !isRootDir(currentPath) ? currentPath : null;
 }
 
 export async function getGraphQLConfig(configDir: Uri): Promise<GraphQLRC> {
@@ -180,4 +183,8 @@ export class GraphQLConfig {
 
     return resolvedPath;
   }
+}
+
+function isRootDir(dirPath: Uri): boolean {
+  return path.dirname(dirPath) === dirPath;
 }
