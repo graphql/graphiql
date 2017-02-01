@@ -22,7 +22,7 @@ const CUSTOM_VALIDATION_RULES_MODULE_PATH = 'custom-validation-rules';
  * If the file isn't present in the provided directory path, walk up the
  * directory tree until the file is found or it reaches the root directory.
  */
-export async function findGraphQLConfigDir(dirPath: Uri): Promise<?string> {
+export function findGraphQLConfigDir(dirPath: Uri): ?string {
   let currentPath = path.resolve(dirPath);
   let filePath;
   while (currentPath.length > 1) {
