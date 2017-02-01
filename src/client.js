@@ -15,7 +15,7 @@ import fs from 'fs';
 import {buildSchema, buildClientSchema} from 'graphql';
 import path from 'path';
 
-import {Point} from './utils/Range';
+import {Position} from './utils/Range';
 import {
   getAutocompleteSuggestions,
 } from './interfaces/getAutocompleteSuggestions';
@@ -54,7 +54,7 @@ export default function main(command: string, argv: Object): void {
       const lines = text.split('\n');
       const row = argv.row || lines.length - 1;
       const column = argv.column || lines[lines.length - 1].length;
-      const point = new Point(row, column);
+      const point = new Position(row, column);
       exitCode = _getAutocompleteSuggestions(text, point, schemaPath);
       break;
     case 'outline':
@@ -72,7 +72,7 @@ export default function main(command: string, argv: Object): void {
 
 function _getAutocompleteSuggestions(
   queryText: string,
-  point: Point,
+  point: Position,
   schemaPath: string,
 ): EXIT_CODE {
   invariant(
@@ -104,7 +104,7 @@ function _getDiagnostics(
     // `schema` is not strictly requied as GraphQL diagnostics may still notify
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
-    const resultArray = getDiagnostics(filePath, queryText, schema);
+    const resultArray = getDiagnostics(queryText, schema);
     const resultObject = resultArray.reduce((prev, cur, index) => {
       prev[index] = cur;
       return prev;

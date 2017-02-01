@@ -17,7 +17,7 @@ const {argv} = yargs
     'GraphQL Language Service Command-Line Interface.\n' +
     'Usage: $0 <command> <file>\n' +
     '    [-h | --help]\n' +
-    '    [-c | --config] {configPath}\n' +
+    '    [-c | --configDir] {configDir}\n' +
     '    [-t | --text] {textBuffer}\n' +
     '    [-f | --file] {filePath}\n' +
     '    [-s | --schema] {schemaPath}\n',
@@ -52,6 +52,14 @@ const {argv} = yargs
       'If omitted, the last column number will be used.\n',
     type: 'number',
   })
+  .option('c', {
+    alias: 'configDir',
+    describe: 'A directory path where .graphqlrc configuration object is\n' +
+      'Walks up the directory tree from the provided config directory, or ' +
+      'the current working directory, until .graphqlrc is found or ' +
+      'the root directory is found.\n',
+    type: 'string',
+  })
   .option('s', {
     alias: 'schemaPath',
     describe: 'a path to schema DSL file\n',
@@ -62,7 +70,7 @@ const command = argv._.pop();
 
 switch (command) {
   case 'server':
-    startServer(argv.config.trim());
+    startServer(argv.configDir);
     break;
   default:
     client(command, argv);

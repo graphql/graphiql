@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {AutocompleteSuggestionType} from '../../types/Types';
+import type {CompletionItem} from '../../types/Types';
 
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
@@ -17,7 +17,7 @@ import {getNamedType} from 'graphql/type';
 import {buildSchema} from 'graphql/utilities';
 import path from 'path';
 
-import {Point} from '../../utils/Range';
+import {Position} from '../../utils/Range';
 import {
   getAutocompleteSuggestions,
 } from '../getAutocompleteSuggestions';
@@ -35,16 +35,16 @@ describe('getAutocompleteSuggestions', () => {
   // Returns a soreted autocomplete suggestions in an increasing order.
   function testSuggestions(
     query: string,
-    point: Point,
-  ): Array<AutocompleteSuggestionType> {
+    point: Position,
+  ): Array<CompletionItem> {
     return getAutocompleteSuggestions(schema, query, point).filter(
-      field => !['__schema', '__type'].some(name => name === field.text),
+      field => !['__schema', '__type'].some(name => name === field.label),
     ).sort(
-      (a, b) => a.text.localeCompare(b.text),
+      (a, b) => a.label.localeCompare(b.label),
     ).map(suggestion => {
-      const response = {text: suggestion.text};
-      if (suggestion.type) {
-        Object.assign(response, {type: getNamedType(suggestion.type).name});
+      const response = {label: suggestion.label};
+      if (suggestion.detail) {
+        Object.assign(response, {detail: getNamedType(suggestion.detail).name});
       }
       return response;
     });
@@ -52,152 +52,152 @@ describe('getAutocompleteSuggestions', () => {
 
   it('provides correct initial keywords', () => {
     expect(
-      testSuggestions('', new Point(0, 0)),
+      testSuggestions('', new Position(0, 0)),
     ).to.deep.equal([
-      {text: '{'},
-      {text: 'fragment'},
-      {text: 'mutation'},
-      {text: 'query'},
-      {text: 'subscription'},
+      {label: '{'},
+      {label: 'fragment'},
+      {label: 'mutation'},
+      {label: 'query'},
+      {label: 'subscription'},
     ]);
 
     expect(
-      testSuggestions('q', new Point(0, 1)),
+      testSuggestions('q', new Position(0, 1)),
     ).to.deep.equal([
-      {text: '{'},
-      {text: 'query'},
+      {label: '{'},
+      {label: 'query'},
     ]);
   });
 
   it('provides correct suggestions at where the cursor is', () => {
     // Below should provide initial keywords
     expect(
-      testSuggestions(' {}', new Point(0, 0)),
+      testSuggestions(' {}', new Position(0, 0)),
     ).to.deep.equal([
-      {text: '{'},
-      {text: 'fragment'},
-      {text: 'mutation'},
-      {text: 'query'},
-      {text: 'subscription'},
+      {label: '{'},
+      {label: 'fragment'},
+      {label: 'mutation'},
+      {label: 'query'},
+      {label: 'subscription'},
     ]);
     // Below should provide root field names
     expect(
-      testSuggestions(' {}', new Point(0, 2)),
+      testSuggestions(' {}', new Position(0, 2)),
     ).to.deep.equal([
-      {text: 'droid', type: 'Droid'},
-      {text: 'hero', type: 'Character'},
-      {text: 'human', type: 'Human'},
-      {text: 'inputTypeTest', type: 'TestType'},
+      {label: 'droid', detail: 'Droid'},
+      {label: 'hero', detail: 'Character'},
+      {label: 'human', detail: 'Human'},
+      {label: 'inputTypeTest', detail: 'TestType'},
     ]);
   });
 
   it('provides correct field name suggestions', () => {
-    const result = testSuggestions('{ ', new Point(0, 2));
+    const result = testSuggestions('{ ', new Position(0, 2));
     expect(result).to.deep.equal([
-      {text: 'droid', type: 'Droid'},
-      {text: 'hero', type: 'Character'},
-      {text: 'human', type: 'Human'},
-      {text: 'inputTypeTest', type: 'TestType'},
+      {label: 'droid', detail: 'Droid'},
+      {label: 'hero', detail: 'Character'},
+      {label: 'human', detail: 'Human'},
+      {label: 'inputTypeTest', detail: 'TestType'},
     ]);
   });
 
   it('provides correct field name suggestions after filtered', () => {
-    const result = testSuggestions('{ h ', new Point(0, 3));
+    const result = testSuggestions('{ h ', new Position(0, 3));
     expect(result).to.deep.equal([
-      {text: 'hero', type: 'Character'},
-      {text: 'human', type: 'Human'},
+      {label: 'hero', detail: 'Character'},
+      {label: 'human', detail: 'Human'},
     ]);
   });
 
   it('provides correct field name suggestions with alias', () => {
     const result = testSuggestions(
       '{ alias: human(id: "1") { ',
-      new Point(0, 26),
+      new Position(0, 26),
     );
 
     expect(result).to.deep.equal([
-      {text: 'appearsIn', type: 'Episode'},
-      {text: 'friends', type: 'Character'},
-      {text: 'id', type: 'String'},
-      {text: 'name', type: 'String'},
-      {text: 'secretBackstory', type: 'String'},
+      {label: 'appearsIn', detail: 'Episode'},
+      {label: 'friends', detail: 'Character'},
+      {label: 'id', detail: 'String'},
+      {label: 'name', detail: 'String'},
+      {label: 'secretBackstory', detail: 'String'},
     ]);
   });
 
   it('provides correct field suggestions for fragments', () => {
     const result = testSuggestions(
       'fragment test on Human { ',
-      new Point(0, 25),
+      new Position(0, 25),
     );
     expect(result).to.deep.equal([
-      {text: 'appearsIn', type: 'Episode'},
-      {text: 'friends', type: 'Character'},
-      {text: 'id', type: 'String'},
-      {text: 'name', type: 'String'},
-      {text: 'secretBackstory', type: 'String'},
+      {label: 'appearsIn', detail: 'Episode'},
+      {label: 'friends', detail: 'Character'},
+      {label: 'id', detail: 'String'},
+      {label: 'name', detail: 'String'},
+      {label: 'secretBackstory', detail: 'String'},
     ]);
   });
 
   it('provides correct argument suggestions', () => {
-    const result = testSuggestions('{ human (', new Point(0, 9));
-    expect(result).to.deep.equal([{text: 'id', type: 'String'}]);
+    const result = testSuggestions('{ human (', new Position(0, 9));
+    expect(result).to.deep.equal([{label: 'id', detail: 'String'}]);
   });
 
   it('provides correct argument suggestions when using aliases', () => {
     const result = testSuggestions(
       '{ aliasTest: human( ',
-      new Point(0, 20),
+      new Position(0, 20),
     );
-    expect(result).to.deep.equal([{text: 'id', type: 'String'}]);
+    expect(result).to.deep.equal([{label: 'id', detail: 'String'}]);
   });
 
   it('provides correct typeCondition suggestions', () => {
-    const suggestionsOnQuery = testSuggestions('{ ... on ', new Point(0, 9));
+    const suggestionsOnQuery = testSuggestions('{ ... on ', new Position(0, 9));
     expect(
-      suggestionsOnQuery.filter(({text}) => !text.startsWith('__')),
-    ).to.deep.equal([{text: 'Query'}]);
+      suggestionsOnQuery.filter(({label}) => !label.startsWith('__')),
+    ).to.deep.equal([{label: 'Query'}]);
 
     const suggestionsOnCompositeType = testSuggestions(
-      '{ hero(episode: JEDI) { ... on } }', new Point(0, 31),
+      '{ hero(episode: JEDI) { ... on } }', new Position(0, 31),
     );
     expect(suggestionsOnCompositeType).to.deep.equal([
-      {text: 'Character'},
-      {text: 'Droid'},
-      {text: 'Human'},
+      {label: 'Character'},
+      {label: 'Droid'},
+      {label: 'Human'},
     ]);
 
     expect(testSuggestions(
       'fragment Foo on Character { ... on }',
-      new Point(0, 35),
+      new Position(0, 35),
     )).to.deep.equal([
-      {text: 'Character'},
-      {text: 'Droid'},
-      {text: 'Human'},
+      {label: 'Character'},
+      {label: 'Droid'},
+      {label: 'Human'},
     ]);
   });
 
   it('provides correct typeCondition suggestions on fragment', () => {
     const result = testSuggestions(
       'fragment Foo on {}',
-      new Point(0, 16),
+      new Position(0, 16),
     );
-    expect(result.filter(({text}) => !text.startsWith('__'))).to.deep.equal([
-      {text: 'Character'},
-      {text: 'Droid'},
-      {text: 'Human'},
-      {text: 'Query'},
-      {text: 'TestType'},
+    expect(result.filter(({label}) => !label.startsWith('__'))).to.deep.equal([
+      {label: 'Character'},
+      {label: 'Droid'},
+      {label: 'Human'},
+      {label: 'Query'},
+      {label: 'TestType'},
     ]);
   });
 
   it('provides correct ENUM suggestions', () => {
     const result = testSuggestions(
-      '{ hero(episode: ', new Point(0, 16),
+      '{ hero(episode: ', new Position(0, 16),
     );
     expect(result).to.deep.equal([
-      {text: 'EMPIRE', type: 'Episode'},
-      {text: 'JEDI', type: 'Episode'},
-      {text: 'NEWHOPE', type: 'Episode'},
+      {label: 'EMPIRE', detail: 'Episode'},
+      {label: 'JEDI', detail: 'Episode'},
+      {label: 'NEWHOPE', detail: 'Episode'},
     ]);
   });
 
@@ -207,81 +207,81 @@ describe('getAutocompleteSuggestions', () => {
     // Test on concrete types
     expect(testSuggestions(
       `${fragmentDef} query { human(id: "1") { ...`,
-      new Point(0, 57),
+      new Position(0, 57),
     )).to.deep.equal([
-      {text: 'Foo', type: 'Human'},
+      {label: 'Foo', detail: 'Human'},
     ]);
     expect(testSuggestions(
       `query { human(id: "1") { ... }} ${fragmentDef}`,
-      new Point(0, 28),
+      new Position(0, 28),
     )).to.deep.equal([
-      {text: 'Foo', type: 'Human'},
+      {label: 'Foo', detail: 'Human'},
     ]);
 
     // Test on abstract type
     expect(testSuggestions(
       `${fragmentDef} query { hero(episode: JEDI) { ...`,
-      new Point(0, 62),
+      new Position(0, 62),
     )).to.deep.equal([
-      {text: 'Foo', type: 'Human'},
+      {label: 'Foo', detail: 'Human'},
     ]);
   });
 
   it('provides correct directive suggestions', () => {
     expect(testSuggestions(
       '{ test @',
-      new Point(0, 8),
+      new Position(0, 8),
     )).to.deep.equal([
-      {text: 'include'},
-      {text: 'skip'},
-      {text: 'test'},
+      {label: 'include'},
+      {label: 'skip'},
+      {label: 'test'},
     ]);
     expect(testSuggestions(
       '{ aliasTest: test @ }',
-      new Point(0, 19),
+      new Position(0, 19),
     )).to.deep.equal([
-      {text: 'include'},
-      {text: 'skip'},
-      {text: 'test'},
+      {label: 'include'},
+      {label: 'skip'},
+      {label: 'test'},
     ]);
     expect(
-      testSuggestions('query @', new Point(0, 7)),
+      testSuggestions('query @', new Position(0, 7)),
     ).to.deep.equal([]);
   });
 
   it('provides correct testInput suggestions', () => {
     expect(testSuggestions(
       '{ inputTypeTest(args: {',
-      new Point(0, 23),
+      new Position(0, 23),
     )).to.deep.equal([
-      {text: 'key', type: 'String'},
-      {text: 'value', type: 'Int'},
+      {label: 'key', detail: 'String'},
+      {label: 'value', detail: 'Int'},
     ]);
   });
 
   it('provides correct field name suggestion inside inline fragment', () => {
     expect(testSuggestions(
       'fragment Foo on Character { ... on Human { }}',
-      new Point(0, 42),
+      new Position(0, 42),
     )).to.deep.equal([
-      {text: 'appearsIn', type: 'Episode'},
-      {text: 'friends', type: 'Character'},
-      {text: 'id', type: 'String'},
-      {text: 'name', type: 'String'},
-      {text: 'secretBackstory', type: 'String'},
+      {label: 'appearsIn', detail: 'Episode'},
+      {label: 'friends', detail: 'Character'},
+      {label: 'id', detail: 'String'},
+      {label: 'name', detail: 'String'},
+      {label: 'secretBackstory', detail: 'String'},
     ]);
 
     // Typeless inline fragment assumes the type automatically
     expect(testSuggestions(
       'fragment Foo on Droid { ... { ',
-      new Point(0, 30),
+      new Position(0, 30),
     )).to.deep.equal([
-      {text: 'appearsIn', type: 'Episode'},
-      {text: 'friends', type: 'Character'},
-      {text: 'id', type: 'String'},
-      {text: 'name', type: 'String'},
-      {text: 'primaryFunction', type: 'String'},
-      {text: 'secretBackstory', type: 'String'},
+      {label: 'appearsIn', detail: 'Episode'},
+      {label: 'friends', detail: 'Character'},
+      {label: 'id', detail: 'String'},
+      {label: 'name', detail: 'String'},
+      {label: 'primaryFunction', detail: 'String'},
+      {label: 'secretBackstory', detail: 'String'},
     ]);
   });
 });

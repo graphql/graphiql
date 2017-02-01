@@ -13,7 +13,7 @@ import type {Outline, TextToken, TokenKind} from '../types/Types';
 import {parse, visit} from 'graphql';
 import {INLINE_FRAGMENT} from 'graphql/language/kinds';
 
-import {offsetToPoint} from '../utils/Range';
+import {offsetToPosition} from '../utils/Range';
 
 const OUTLINEABLE_KINDS = {
   Field: true,
@@ -51,8 +51,8 @@ export function getOutline(queryText: string): ?Outline {
 function outlineTreeConverter(docText: string): OutlineTreeConverterType {
   const meta = node => ({
     representativeName: node.name,
-    startPosition: offsetToPoint(docText, node.loc.start),
-    endPosition: offsetToPoint(docText, node.loc.end),
+    startPosition: offsetToPosition(docText, node.loc.start),
+    endPosition: offsetToPosition(docText, node.loc.end),
     children: node.selectionSet || [],
   });
   return {

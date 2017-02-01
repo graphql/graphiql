@@ -14,11 +14,8 @@ import {describe, it} from 'mocha';
 import {getDiagnostics} from '../getDiagnostics';
 
 describe('getDiagnostics', () => {
-  const fakePath = require.resolve('../getDiagnostics');
-
   it('catches syntax errors', () => {
-    const error = getDiagnostics(fakePath, 'qeury')[0];
-    expect(error.text).to.contain('Unexpected Name "qeury"');
-    expect(error.filePath).to.equal(fakePath);
+    const error = getDiagnostics('qeury')[0];
+    expect(error.message).to.contain('Unexpected Name "qeury"');
   });
 });

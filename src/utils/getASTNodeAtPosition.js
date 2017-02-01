@@ -10,23 +10,23 @@
 
 import type {ASTNode} from 'graphql/language';
 
-import {Point} from './Range';
+import {Position} from './Range';
 import {visit} from 'graphql';
 
-export function getASTNodeAtPoint(
+export function getASTNodeAtPosition(
   query: string,
   ast: ASTNode,
-  point: Point,
+  point: Position,
 ): ?ASTNode {
   const offset = pointToOffset(query, point);
-  let nodeContainingPoint: ?ASTNode;
+  let nodeContainingPosition: ?ASTNode;
   visit(ast, {
     enter(node) {
       if (
         node.kind !== 'Name' && // We're usually interested in their parents
         node.loc.start <= offset && offset <= node.loc.end
       ) {
-        nodeContainingPoint = node;
+        nodeContainingPosition = node;
       } else {
         return false;
       }
@@ -37,12 +37,12 @@ export function getASTNodeAtPoint(
       }
     },
   });
-  return nodeContainingPoint;
+  return nodeContainingPosition;
 }
 
-export function pointToOffset(text: string, point: Point): number {
-  const linesUntilPoint = text.split('\n').slice(0, point.row);
-  return point.column + linesUntilPoint.map(line =>
+export function pointToOffset(text: string, point: Position): number {
+  const linesUntilPosition = text.split('\n').slice(0, point.line);
+  return point.character + linesUntilPosition.map(line =>
     line.length + 1, // count EOL
   ).reduce((a, b) => a + b, 0);
 }

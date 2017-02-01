@@ -32,8 +32,8 @@ describe('getDefinition', () => {
         [{file: 'someFile', content: fragment, definition: fragmentDefinition}],
       );
       expect(result.definitions.length).to.equal(1);
-      expect(result.definitions[0].position.row).to.equal(1);
-      expect(result.definitions[0].position.column).to.equal(15);
+      expect(result.definitions[0].position.line).to.equal(1);
+      expect(result.definitions[0].position.character).to.equal(15);
     });
   });
 });

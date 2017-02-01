@@ -2,9 +2,13 @@
 
 _This is currently in technical preview. We welcome your feedback and suggestions._
 
-GraphQL Language Service provides an interface for building GraphQL language services for IDEs. Currently supported features include:
-- Diagnostics (GraphQL syntax linting/validations)
-- Autocomplete suggestions
+GraphQL Language Service provides an interface for building GraphQL language service for IDEs.
+
+A subset of supported features of GraphQL language service and GraphQL language server implementation are both specification-compliant to [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol), and will be developed to fully support the specification in the future.
+
+Currently supported features include:
+- Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
+- Autocomplete suggestions (**spec-compliant**)
 - Hyperlink to fragment definitions
 - Outline view support for queries
 
@@ -61,31 +65,42 @@ The node executable contains several commands: `server` and a command-line langu
 Improving this list is a work-in-progress.
 
 ```
-Usage: graphql <command>
-
+GraphQL Language Service Command-Line Interface.
+Usage: bin/graphql.js <command> <file>
     [-h | --help]
-    [-c | --config] {configPath}
+    [-c | --configDir] {configDir}
     [-t | --text] {textBuffer}
     [-f | --file] {filePath}
     [-s | --schema] {schemaPath}
 
+
 Options:
-  -h, --help    Show help                                              [boolean]
-  -c, --config  GraphQL Config file path (.graphqlrc).
-                Will look for the nearest .graphqlrc file if omitted.
+  -h, --help        Show help                                          [boolean]
+  -t, --text        Text buffer to perform GraphQL diagnostics on.
+                    Will defer to --file option if omitted.
+                    This option is always honored over --file option.
                                                                         [string]
-  -t, --text    Text buffer to perform GraphQL lint on.
-                Will defer to --file option if omitted.
-                This option is always honored over --file option.
+  -f, --file        File path to perform GraphQL diagnostics on.
+                    Will be ignored if --text option is supplied.
                                                                         [string]
-  -f, --file    File path to perform GraphQL lint on.
-                Will be ignored if --text option is supplied.
+  --row             A row number from the cursor location for GraphQL
+                    autocomplete suggestions.
+                    If omitted, the last row number will be used.
+                                                                        [number]
+  --column          A column number from the cursor location for GraphQL
+                    autocomplete suggestions.
+                    If omitted, the last column number will be used.
+                                                                        [number]
+  -c, --configDir   A directory path where .graphqlrc configuration object is
+                    Walks up the directory tree from the provided config
+                    directory, or the current working directory, until
+                    .graphqlrc is found or the root directory is found.
                                                                         [string]
-  -s, --schema  a path to schema DSL file
+  -s, --schemaPath  a path to schema DSL file
                                                                         [string]
 
 At least one command is required.
-Commands: "server, lint, autocomplete, outline"
+Commands: "server, validate, autocomplete, outline"
 ```
 
 ## Architectural Overview
@@ -112,84 +127,14 @@ The IDE server should manage the lifecycle of the GraphQL server. Ideally, the I
 
 ### Server Interface
 
-The server sends/receives RPC messages to/from the IDE server to perform language service features. The details for the RPC message format are described below:
+GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers to perform language service features. The language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md) documentation.
 
-```
-/**
- * The JSON message sent from the IDE server should have the following structure:
- * {
- *    protocol: 'graphql-protocol',
- *    id: number,
- *    method: string, // one of the function names below, e.g. `getDiagnostics`
- *    args: {
- *      query?: string,
- *      position?: Point,
- *      filePath?: Uri,
- *    }
- * }
- */
-// Diagnostics (lint/validation)
-export type GraphQLDiagnosticMessage = {
-  name: string,
-  type: string,
-  text: string,
-  range: atom$Range,
-  filePath: string,
-};
+For each transports, there is a slight difference between both JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transports (will be updated as progresses are made):
 
-export function getDiagnostics(
-  query: string,
-  filePath: Uri,
-) : Promise<Array<GraphQLDiagnosticMessage>> {
-  throw new Error('RPC stub');
-}
-
-// Autocomplete  Suggestions (typeahead)
-export type GraphQLAutocompleteSuggestionType = {
-  text: string,
-  typeName: ?string,
-  description: ?string,
-};
-
-export function getAutocompleteSuggestions(
-  query: string,
-  position: atom$Point,
-  filePath: Uri,
-) : Promise<Array<GraphQLAutocompleteSuggestionType>> {
-  throw new Error('RPC stub');
-}
-
-// Definitions (hyperlink)
-export type Definition = {
-  path: Uri,
-  position: Point,
-  range?: Range,
-  id?: string,
-  name?: string,
-  language: string,
-  projectRoot?: Uri,
-};
-
-export type DefinitionQueryResult = {
-  queryRange: Array<Range>,
-  definitions: Array<Definition>,
-};
-
-export function getDefinition(
-  query: string,
-  position: atom$Point,
-  filePath: Uri,
-): Promise<DefinitionQueryResult> {
-  throw new Error('RPC stub');
-}
-
-// Outline view
-export function getOutline(query: string): Promise<Outline> {
-  throw new Error('RPC stub');
-}
-
-// Disconnect signal - gracefully terminate the connection on IDE exit
-export function disconnect(): void {
-  throw new Error('RPC stub');
-}
-```
+|                     | Stream                       | IPC                               |
+| -------------------:|------------------------------|-----------------------------------|
+| Diagnostics         | `getDiagnostics`             | `textDocument/publishDiagnostics` |
+| Autocompletion      | `getAutocompleteSuggestions` | `textDocument/completion`         |
+| Outline             | `getOutline`                 | Not supported yet                 |
+| Go-to definition    | `getDefinition`              | Not supported yet                 |
+| File Events         | Not supported yet            | `didOpen/didClose/didSave/didChange` events |

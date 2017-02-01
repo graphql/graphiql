@@ -12,12 +12,12 @@ import type {ASTNode} from 'graphql/language';
 import type {GraphQLCache} from '../server/GraphQLCache';
 import type {GraphQLRC, GraphQLConfig} from '../config/GraphQLConfig';
 import type {
-  AutocompleteSuggestionType,
+  CompletionItem,
   DefinitionQueryResult,
-  DiagnosticType,
+  Diagnostic,
   Uri,
 } from '../types/Types';
-import type {Point} from '../utils/Range';
+import type {Position} from '../utils/Range';
 
 import {
   FRAGMENT_SPREAD,
@@ -32,7 +32,7 @@ import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
-import {getASTNodeAtPoint} from '../utils/getASTNodeAtPoint';
+import {getASTNodeAtPosition} from '../utils/getASTNodeAtPosition';
 
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
@@ -45,10 +45,10 @@ export class GraphQLLanguageService {
 
   async getDiagnostics(
     query: string,
-    filePath: Uri,
-  ): Promise<Array<DiagnosticType>> {
+    uri: Uri,
+  ): Promise<Array<Diagnostic>> {
     let source = query;
-    const graphQLConfig = this._graphQLRC.getConfigByFilePath(filePath);
+    const graphQLConfig = this._graphQLRC.getConfigByFilePath(uri);
     // If there's a matching config, proceed to prepare to run validation
     let schema;
     let customRules;
@@ -80,14 +80,14 @@ export class GraphQLLanguageService {
       }
     }
 
-    return getDiagnosticsImpl(filePath, source, schema, customRules);
+    return getDiagnosticsImpl(source, schema, customRules);
   }
 
   async getAutocompleteSuggestions(
     query: string,
-    position: Point,
+    position: Position,
     filePath: Uri,
-  ): Promise<Array<AutocompleteSuggestionType>> {
+  ): Promise<Array<CompletionItem>> {
     const graphQLConfig = this._graphQLRC.getConfigByFilePath(filePath);
     let schema;
     if (graphQLConfig && graphQLConfig.getSchemaPath()) {
@@ -102,7 +102,7 @@ export class GraphQLLanguageService {
 
   async getDefinition(
     query: string,
-    position: Point,
+    position: Position,
     filePath: Uri,
   ): Promise<?DefinitionQueryResult> {
     const graphQLConfig = this._graphQLRC.getConfigByFilePath(filePath);
@@ -117,7 +117,7 @@ export class GraphQLLanguageService {
       return null;
     }
 
-    const node = getASTNodeAtPoint(query, ast, position);
+    const node = getASTNodeAtPosition(query, ast, position);
     switch (node ? node.kind : null) {
       case FRAGMENT_SPREAD:
         return this._getDefinitionForFragmentSpread(

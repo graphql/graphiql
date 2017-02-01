@@ -19,7 +19,7 @@ import type {
   Uri,
 } from '../types/Types';
 
-import {offsetToPoint, locToRange} from '../utils/Range';
+import {offsetToPosition, locToRange} from '../utils/Range';
 
 export const LANGUAGE = 'GraphQL';
 
@@ -64,7 +64,7 @@ function getDefinitionForFragmentDefinition(
 ): Definition {
   return {
     path,
-    position: offsetToPoint(text, definition.name.loc.start),
+    position: offsetToPosition(text, definition.name.loc.start),
     range: locToRange(text, definition.loc),
     name: definition.name.value,
     language: LANGUAGE,

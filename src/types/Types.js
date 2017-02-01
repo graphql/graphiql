@@ -17,7 +17,7 @@ import type {
   GraphQLType,
 } from 'graphql/type/definition';
 import type CharacterStream from '../parser/CharacterStream';
-import type {Point, Range} from '../utils/Range';
+import type {Position, Range} from '../utils/Range';
 
 // online-parser related
 export type ParseRule =
@@ -96,28 +96,30 @@ export type FragmentInfo = {
 
 export type CustomValidationRule = (context: ValidationContext) => Object;
 
-export type DiagnosticType = {
-  name: string,
-  type: string,
-  text: string,
+export type Diagnostic = {
   range: Range,
-  filePath: Uri,
+  severity?: number,
+  code?: number | string,
+  source?: string,
+  message: string,
 };
 
-export type AutocompleteSuggestionType = {
-  text: string,
-  type?: GraphQLType,
-  description?: ?string,
+export type CompletionItem = {
+  label: string,
+  kind?: number,
+  detail?: string,
+  documentation?: string,
+  // GraphQL Deprecation information
   isDeprecated?: ?string,
   deprecationReason?: ?string,
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
-//
+
 // Definitions/hyperlink
 export type Definition = {
   path: Uri,
-  position: Point,
+  position: Position,
   range?: Range,
   id?: string,
   name?: string,
@@ -151,8 +153,8 @@ export type OutlineTree = {
   tokenizedText?: TokenizedText,
   representativeName?: string,
 
-  startPosition: Point,
-  endPosition?: Point,
+  startPosition: Position,
+  endPosition?: Position,
   children: Array<OutlineTree>,
 };
 export type Outline = {

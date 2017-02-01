@@ -8,29 +8,34 @@
  *  @flow
  */
 
-import path from 'path';
+import {
+  processStreamMessage,
+  processIPCRequestMessage,
+  processIPCNotificationMessage,
+} from './MessageProcessor';
 
-import type {GraphQLCache} from './GraphQLCache';
-import {getGraphQLCache} from './GraphQLCache';
+export default async function startServer(configDir: ?string): Promise<void> {
+  // IPC protocol support
+  // The language server protocol specifies that the client starts sending
+  // messages when the server starts. Start listening from this point.
+  process.on('message', message => {
+    // TODO: support the header part of the language server protocol
+    // Recognize the Content-Length header
+    if (
+      typeof message === 'string' &&
+      message.indexOf('Content-Length') === 0
+    ) {
+      return;
+    }
 
-import {getOutline} from '../interfaces/getOutline';
-import {GraphQLLanguageService} from '../interfaces/GraphQLLanguageService';
+    if (message.id !== undefined || message.id !== null) {
+      processIPCRequestMessage(message, configDir);
+    } else {
+      processIPCNotificationMessage(message);
+    }
+  });
 
-import {Point} from '../utils/Range';
-
-// RPC message types
-const ERROR_RESPONSE_MESSAGE = 'error-response';
-const ERROR_MESSAGE = 'error';
-const RESPONSE_MESSAGE = 'response';
-const NEXT_MESSAGE = 'next';
-const COMPLETE_MESSAGE = 'complete';
-
-export default async function startServer(rawConfigDir: string): Promise<void> {
-  const configDir = path.resolve(rawConfigDir);
-
-  const graphQLCache = await getGraphQLCache(configDir || process.cwd());
-  const languageService = new GraphQLLanguageService(graphQLCache);
-
+  // Stream (stdio) protocol support
   // Depending on the size of the query, incomplete query strings
   // may be streamed in. The below code tries to detect the end of current
   // batch of streamed data, splits the batch into appropriate JSON string,
@@ -47,139 +52,12 @@ export default async function startServer(rawConfigDir: string): Promise<void> {
     data += chunk.toString();
 
     // Check if the current buffer contains newline character.
-    const flagPosition = data.indexOf('\n');
+    const flagPosition = data.indexOf('\r\n');
     if (flagPosition !== -1) {
       // There may be more than one message in the buffer.
-      const messages = data.split('\n');
+      const messages = data.split('\r\n');
       data = messages.pop().trim();
-      messages.forEach(message => processMessage(
-        message,
-        graphQLCache,
-        languageService,
-      ));
+      messages.forEach(message => processStreamMessage(message, configDir));
     }
   });
-}
-
-async function processMessage(
-  message: string,
-  graphQLCache: GraphQLCache,
-  languageService: GraphQLLanguageService,
-): Promise<void> {
-  if (message.length === 0) {
-    return;
-  }
-
-  let json;
-
-  try {
-    json = JSON.parse(message);
-  } catch (error) {
-    process.stdout.write(JSON.stringify(
-      convertToRpcMessage(
-        'error',
-        '-1',
-        'Request contains incorrect JSON format',
-      ),
-    ));
-    return;
-  }
-
-  const {query, position, filePath} = json.args;
-  const id = json.id;
-
-  try {
-    let result = null;
-    let responseMsg = null;
-    switch (json.method) {
-      case 'disconnect':
-        exitProcess(0);
-        break;
-      case 'getDiagnostics':
-        result = await languageService.getDiagnostics(query, filePath);
-        if (result && result.length > 0) {
-          const queryLines = query.split('\n');
-          const totalRows = queryLines.length;
-          const lastLineLength = queryLines[totalRows - 1].length;
-          const lastCharacterPoint = new Point(totalRows, lastLineLength);
-          result = result.filter(diagnostic =>
-            diagnostic.range.end.lessThanOrEqualTo(lastCharacterPoint),
-          );
-        }
-        responseMsg = convertToRpcMessage(
-          'response',
-          id,
-          result,
-        );
-        process.stdout.write(JSON.stringify(responseMsg) + '\n');
-        break;
-      case 'getDefinition':
-        result = await languageService.getDefinition(query, position, filePath);
-        responseMsg = convertToRpcMessage('response', id, result);
-        process.stdout.write(JSON.stringify(responseMsg) + '\n');
-        break;
-      case 'getAutocompleteSuggestions':
-        result = await languageService.getAutocompleteSuggestions(
-          query,
-          position,
-          filePath,
-        );
-
-        const formatted = result.map(
-          res => ({
-            text: res.text,
-            typeName: res.type ? String(res.type) : null,
-            description: res.description || null,
-          }),
-        );
-        responseMsg = convertToRpcMessage('response', id, formatted);
-        process.stdout.write(JSON.stringify(responseMsg) + '\n');
-        break;
-      case 'getOutline':
-        result = getOutline(query);
-        responseMsg = convertToRpcMessage('response', id, result);
-        process.stdout.write(JSON.stringify(responseMsg) + '\n');
-        break;
-      default:
-        break;
-    }
-  } catch (error) {
-    process.stdout.write(
-      JSON.stringify(convertToRpcMessage('error', id, error.message)),
-    );
-  }
-}
-
-function exitProcess(exitCode) {
-  process.exit(exitCode);
-}
-
-function convertToRpcMessage(
-  type: string,
-  id: string,
-  response: any,
-) {
-  let responseObj;
-  switch (type) {
-    case RESPONSE_MESSAGE:
-      responseObj = {result: response};
-      break;
-    case ERROR_MESSAGE:
-    case ERROR_RESPONSE_MESSAGE:
-      responseObj = {error: response};
-      break;
-    case NEXT_MESSAGE:
-      responseObj = {value: response};
-      break;
-    case COMPLETE_MESSAGE:
-      // Intentionally blank
-      responseObj = {};
-      break;
-  }
-  return {
-    protocol: 'graphql_language_service',
-    type,
-    id,
-    ...responseObj,
-  };
 }

@@ -10,26 +10,28 @@
 
 import type {GraphQLErrorLocation, GraphQLError} from 'graphql/error';
 import type {ASTNode} from 'graphql/language';
-import type {DiagnosticType, CustomValidationRule, Uri} from '../types/Types';
+import type {Diagnostic, CustomValidationRule} from '../types/Types';
 
 import invariant from 'assert';
 import {parse} from 'graphql';
 
 import CharacterStream from '../parser/CharacterStream';
 import onlineParser from '../parser/onlineParser';
-import {Point, Range} from '../utils/Range';
+import {Position, Range} from '../utils/Range';
 import {validateWithCustomRules} from '../utils/validateWithCustomRules';
 
+const SEVERITY = {
+  ERROR: 1,
+  WARNING: 2,
+  INFORMATION: 3,
+  HINT: 4,
+};
+
 export function getDiagnostics(
-  filePath: string,
   queryText: string,
   schema: ?string = null,
   customRules?: Array<CustomValidationRule>,
-): Array<DiagnosticType> {
-  if (filePath === null) {
-    return [];
-  }
-
+): Array<Diagnostic> {
   let ast = null;
   try {
     ast = parse(queryText);
@@ -40,17 +42,16 @@ export function getDiagnostics(
     );
 
     return [{
-      name: 'graphql: Syntax',
-      type: 'Error',
-      text: error.message,
+      severity: SEVERITY.ERROR,
+      message: error.message,
+      source: 'GraphQL: Syntax',
       range,
-      filePath,
     }];
   }
 
   const errors: Array<GraphQLError> = schema ?
     validateWithCustomRules(schema, ast, customRules) : [];
-  return mapCat(errors, error => errorAnnotations(error, filePath));
+  return mapCat(errors, error => errorAnnotations(error));
 }
 
 // General utility for map-cating (aka flat-mapping).
@@ -63,8 +64,7 @@ function mapCat<T>(
 
 function errorAnnotations(
   error: GraphQLError,
-  filePath: Uri,
-): Array<DiagnosticType> {
+): Array<Diagnostic> {
   if (!error.nodes) {
     return [];
   }
@@ -78,14 +78,13 @@ function errorAnnotations(
     const loc = error.locations[0];
     const end = loc.column + (highlightNode.loc.end - highlightNode.loc.start);
     return {
-      name: 'graphql: Validation',
-      text: error.message,
-      type: 'error',
+      source: 'GraphQL: Validation',
+      message: error.message,
+      severity: SEVERITY.ERROR,
       range: new Range(
-        new Point(loc.line - 1, loc.column),
-        new Point(loc.line - 1, end),
+        new Position(loc.line - 1, loc.column - 1),
+        new Position(loc.line - 1, end),
       ),
-      filePath,
     };
   });
 }
@@ -121,5 +120,5 @@ function getRange(location: GraphQLErrorLocation, queryText: string) {
   const start = stream.getStartOfToken();
   const end = stream.getCurrentPosition();
 
-  return new Range(new Point(line, start), new Point(line, end));
+  return new Range(new Position(line, start), new Position(line, end));
 }

@@ -11,34 +11,35 @@
 import type {Location} from 'graphql/language';
 
 export class Range {
-  start: Point;
-  end: Point;
-  constructor(start: Point, end: Point): void {
+  start: Position;
+  end: Position;
+  constructor(start: Position, end: Position): void {
     this.start = start;
     this.end = end;
   }
 
-  containsPoint(point: Point): boolean {
-    const withinRow =
-      this.start.row <= point.row && this.end.row >= point.row;
-    const withinColumn =
-      this.start.column <= point.column && this.end.column >= point.column;
-    return withinRow && withinColumn;
+  containsPosition(position: Position): boolean {
+    const withinLine =
+      this.start.line <= position.line && this.end.line >= position.line;
+    const withinCharacter =
+      this.start.character <= position.character &&
+      this.end.character >= position.character;
+    return withinLine && withinCharacter;
   }
 }
 
-export class Point {
-  row: number;
-  column: number;
-  constructor(row: number, column: number): void {
-    this.row = row;
-    this.column = column;
+export class Position {
+  line: number;
+  character: number;
+  constructor(line: number, character: number): void {
+    this.line = line;
+    this.character = character;
   }
 
-  lessThanOrEqualTo(point: Point): boolean {
+  lessThanOrEqualTo(position: Position): boolean {
     if (
-      this.row < point.row ||
-      (this.row === point.row && this.column <= point.column)
+      this.line < position.line ||
+      (this.line === position.line && this.character <= position.character)
     ) {
       return true;
     }
@@ -47,16 +48,16 @@ export class Point {
   }
 }
 
-export function offsetToPoint(text: string, loc: number): Point {
+export function offsetToPosition(text: string, loc: number): Position {
   const EOL = '\n';
   const buf = text.slice(0, loc);
-  const rows = buf.split(EOL).length - 1;
+  const lines = buf.split(EOL).length - 1;
   const lastLineIndex = buf.lastIndexOf(EOL);
-  return new Point(rows, loc - lastLineIndex - 1);
+  return new Position(lines, loc - lastLineIndex - 1);
 }
 
 export function locToRange(text: string, loc: Location): Range {
-  const start = offsetToPoint(text, loc.start);
-  const end = offsetToPoint(text, loc.end);
+  const start = offsetToPosition(text, loc.start);
+  const end = offsetToPosition(text, loc.end);
   return new Range(start, end);
 }

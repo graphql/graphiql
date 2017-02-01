@@ -14,12 +14,11 @@ import type {
   GraphQLType,
 } from 'graphql/type/definition';
 import type {
-  AutocompleteSuggestionType,
+  CompletionItem,
   ContextToken,
   State,
   TypeInfo,
 } from '../types/Types';
-import type {Point} from '../utils/Range';
 
 import {isCompositeType} from 'graphql';
 import {
@@ -98,25 +97,24 @@ export function objectValues(object: Object): Array<any> {
 
 // Create the expected hint response given a possible list and a token
 export function hintList(
-  cursor: Point,
   token: ContextToken,
-  list: Array<AutocompleteSuggestionType>,
-): Array<AutocompleteSuggestionType> {
+  list: Array<CompletionItem>,
+): Array<CompletionItem> {
   return filterAndSortList(list, normalizeText(token.string));
 }
 
 // Given a list of hint entries and currently typed text, sort and filter to
 // provide a concise list.
 function filterAndSortList(
-  list: Array<AutocompleteSuggestionType>,
+  list: Array<CompletionItem>,
   text: string,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   if (!text) {
     return filterNonEmpty(list, entry => !entry.isDeprecated);
   }
 
   const byProximity = list.map(entry => ({
-    proximity: getProximity(normalizeText(entry.text), text),
+    proximity: getProximity(normalizeText(entry.label), text),
     entry,
   }));
 
@@ -128,7 +126,7 @@ function filterAndSortList(
   const sortedMatches = conciseMatches.sort((a, b) =>
     ((a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0)) ||
     (a.proximity - b.proximity) ||
-    (a.entry.text.length - b.entry.text.length),
+    (a.entry.label.length - b.entry.label.length),
   );
 
   return sortedMatches.map(pair => pair.entry);

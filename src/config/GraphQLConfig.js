@@ -17,6 +17,26 @@ const CONFIG_LIST_NAME = 'build-configs';
 const SCHEMA_PATH = 'schema-file';
 const CUSTOM_VALIDATION_RULES_MODULE_PATH = 'custom-validation-rules';
 
+/**
+ * Finds a .graphqlrc configuration file, and returns null if not found.
+ * If the file isn't present in the provided directory path, walk up the
+ * directory tree until the file is found or it reaches the root directory.
+ */
+export async function findGraphQLConfigDir(dirPath: Uri): Promise<?string> {
+  let currentPath = path.resolve(dirPath);
+  let filePath;
+  while (currentPath.length > 1) {
+    filePath = path.join(currentPath, '.graphqlrc');
+    if (fs.existsSync(filePath)) {
+      break;
+    }
+
+    currentPath = path.dirname(currentPath);
+  }
+
+  return filePath ? currentPath : null;
+}
+
 export async function getGraphQLConfig(configDir: Uri): Promise<GraphQLRC> {
   const rawGraphQLConfig = await new Promise((resolve, reject) =>
     fs.readFile(

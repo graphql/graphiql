@@ -14,12 +14,12 @@ import type {
 } from 'graphql/type/definition';
 import type {ASTNode} from 'graphql/language';
 import type {
-  AutocompleteSuggestionType,
+  CompletionItem,
   ContextToken,
   State,
   TypeInfo,
 } from '../types/Types';
-import type {Point} from '../utils/Range';
+import type {Position} from '../utils/Range';
 
 import {
   isInputType,
@@ -56,8 +56,8 @@ import onlineParser from '../parser/onlineParser';
 export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
-  cursor: Point,
-): Array<AutocompleteSuggestionType> {
+  cursor: Position,
+): Array<CompletionItem> {
   const token = getTokenAtPosition(queryText, cursor);
 
   const state = token.state.kind === 'Invalid' ?
@@ -75,19 +75,18 @@ export function getAutocompleteSuggestions(
 
   // Definition kinds
   if (kind === 'Document') {
-    return hintList(cursor, token, [
-      {text: 'query'},
-      {text: 'mutation'},
-      {text: 'subscription'},
-      {text: 'fragment'},
-      {text: '{'},
+    return hintList(token, [
+      {label: 'query'},
+      {label: 'mutation'},
+      {label: 'subscription'},
+      {label: 'fragment'},
+      {label: '{'},
     ]);
   }
 
   // Field names
   if (kind === 'SelectionSet' || kind === 'Field' || kind === 'AliasedField') {
     return getSuggestionsForFieldNames(
-      cursor,
       token,
       typeInfo,
       schema,
@@ -98,10 +97,10 @@ export function getAutocompleteSuggestions(
   if (kind === 'Arguments' || kind === 'Argument' && step === 0) {
     const argDefs = typeInfo.argDefs;
     if (argDefs) {
-      return hintList(cursor, token, argDefs.map(argDef => ({
-        text: argDef.name,
-        type: argDef.type,
-        description: argDef.description,
+      return hintList(token, argDefs.map(argDef => ({
+        label: argDef.name,
+        detail: argDef.type,
+        documentation: argDef.description,
       })));
     }
   }
@@ -110,10 +109,10 @@ export function getAutocompleteSuggestions(
   if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
     if (typeInfo.objectFieldDefs) {
       const objectFields = objectValues(typeInfo.objectFieldDefs);
-      return hintList(cursor, token, objectFields.map(field => ({
-        text: field.name,
-        type: field.type,
-        description: field.description,
+      return hintList(token, objectFields.map(field => ({
+        label: field.name,
+        detail: field.type,
+        documentation: field.description,
       })));
     }
   }
@@ -125,7 +124,7 @@ export function getAutocompleteSuggestions(
     kind === 'ObjectField' && step === 2 ||
     kind === 'Argument' && step === 2
   ) {
-    return getSuggestionsForInputValues(cursor, token, typeInfo);
+    return getSuggestionsForInputValues(token, typeInfo);
   }
 
   // Fragment type conditions
@@ -135,7 +134,6 @@ export function getAutocompleteSuggestions(
     state.prevState.kind === 'TypeCondition'
   ) {
     return getSuggestionsForFragmentTypeConditions(
-      cursor,
       token,
       typeInfo,
       schema,
@@ -145,7 +143,6 @@ export function getAutocompleteSuggestions(
   // Fragment spread names
   if (kind === 'FragmentSpread' && step === 1) {
     return getSuggestionsForFragmentSpread(
-      cursor,
       token,
       typeInfo,
       schema,
@@ -162,12 +159,12 @@ export function getAutocompleteSuggestions(
       state.prevState.kind === 'ListType'
     )
   ) {
-    return getSuggestionsForVariableDefinition(cursor, token, schema);
+    return getSuggestionsForVariableDefinition(token, schema);
   }
 
   // Directive names
   if (kind === 'Directive') {
-    return getSuggestionsForDirective(cursor, token, state, schema);
+    return getSuggestionsForDirective(token, state, schema);
   }
 
   return [];
@@ -175,11 +172,10 @@ export function getAutocompleteSuggestions(
 
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForFieldNames(
-  cursor: Point,
   token: ContextToken,
   typeInfo: TypeInfo,
   schema: GraphQLSchema,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
     const fields = parentType.getFields ?
@@ -191,10 +187,10 @@ function getSuggestionsForFieldNames(
     if (parentType === schema.getQueryType()) {
       fields.push(SchemaMetaFieldDef, TypeMetaFieldDef);
     }
-    return hintList(cursor, token, fields.map(field => ({
-      text: field.name,
-      type: field.type,
-      description: field.description,
+    return hintList(token, fields.map(field => ({
+      label: field.name,
+      detail: field.type,
+      documentation: field.description,
       isDeprecated: field.isDeprecated,
       deprecationReason: field.deprecationReason,
     })));
@@ -203,25 +199,24 @@ function getSuggestionsForFieldNames(
 }
 
 function getSuggestionsForInputValues(
-  cursor: Point,
   token: ContextToken,
   typeInfo: TypeInfo,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType);
   if (namedInputType instanceof GraphQLEnumType) {
     const valueMap = namedInputType.getValues();
     const values = objectValues(valueMap);
-    return hintList(cursor, token, values.map(value => ({
-      text: value.name,
-      type: namedInputType,
-      description: value.description,
+    return hintList(token, values.map(value => ({
+      label: value.name,
+      detail: namedInputType,
+      documentation: value.description,
       isDeprecated: value.isDeprecated,
       deprecationReason: value.deprecationReason,
     })));
   } else if (namedInputType === GraphQLBoolean) {
-    return hintList(cursor, token, [
-      {text: 'true', type: GraphQLBoolean, description: 'Not false.'},
-      {text: 'false', type: GraphQLBoolean, description: 'Not true.'},
+    return hintList(token, [
+      {label: 'true', detail: GraphQLBoolean, documentation: 'Not false.'},
+      {label: 'false', detail: GraphQLBoolean, documentation: 'Not true.'},
     ]);
   }
 
@@ -229,11 +224,10 @@ function getSuggestionsForInputValues(
 }
 
 function getSuggestionsForFragmentTypeConditions(
-  cursor: Point,
   token: ContextToken,
   typeInfo: TypeInfo,
   schema: GraphQLSchema,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   let possibleTypes;
   if (typeInfo.parentType) {
     if (isAbstractType(typeInfo.parentType)) {
@@ -256,19 +250,18 @@ function getSuggestionsForFragmentTypeConditions(
     const typeMap = schema.getTypeMap();
     possibleTypes = objectValues(typeMap).filter(isCompositeType);
   }
-  return hintList(cursor, token, possibleTypes.map(type => ({
-    text: type.name,
-    description: type.description,
+  return hintList(token, possibleTypes.map(type => ({
+    label: type.name,
+    documentation: type.description,
   })));
 }
 
 function getSuggestionsForFragmentSpread(
-  cursor: Point,
   token: ContextToken,
   typeInfo: TypeInfo,
   schema: GraphQLSchema,
   queryText: string,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
   const fragments = getFragmentDefinitions(queryText);
@@ -289,10 +282,10 @@ function getSuggestionsForFragmentSpread(
     ),
   );
 
-  return hintList(cursor, token, relevantFrags.map(frag => ({
-    text: frag.name.value,
-    type: typeMap[frag.typeCondition.name.value],
-    description:
+  return hintList(token, relevantFrags.map(frag => ({
+    label: frag.name.value,
+    detail: typeMap[frag.typeCondition.name.value],
+    documentation:
       `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
   })));
 }
@@ -322,44 +315,42 @@ function getFragmentDefinitions(queryText: string): Array<ASTNode> {
 }
 
 function getSuggestionsForVariableDefinition(
-  cursor: Point,
   token: ContextToken,
   schema: GraphQLSchema,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   const inputTypeMap = schema.getTypeMap();
   const inputTypes = objectValues(inputTypeMap).filter(isInputType);
-  return hintList(cursor, token, inputTypes.map(type => ({
-    text: type.name,
-    description: type.description,
+  return hintList(token, inputTypes.map(type => ({
+    label: type.name,
+    documentation: type.description,
   })));
 }
 
 function getSuggestionsForDirective(
-  cursor: Point,
   token: ContextToken,
   state: State,
   schema: GraphQLSchema,
-): Array<AutocompleteSuggestionType> {
+): Array<CompletionItem> {
   if (state.prevState && state.prevState.kind) {
     const stateKind = state.prevState.kind;
     const directives = schema.getDirectives().filter(
       directive => canUseDirective(stateKind, directive),
     );
-    return hintList(cursor, token, directives.map(directive => ({
-      text: directive.name,
-      description: directive.description,
+    return hintList(token, directives.map(directive => ({
+      label: directive.name,
+      documentation: directive.description,
     })));
   }
   return [];
 }
 
-function getTokenAtPosition(queryText: string, cursor: Point): ContextToken {
+function getTokenAtPosition(queryText: string, cursor: Position): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (index === cursor.row) {
-      if (stream.getCurrentPosition() > cursor.column) {
+    if (index === cursor.line) {
+      if (stream.getCurrentPosition() > cursor.character) {
         return 'BREAK';
       }
       styleAtCursor = style;
