@@ -2,6 +2,8 @@
 
 _This is currently in technical preview. We welcome your feedback and suggestions._
 
+[![Build Status](https://travis-ci.org/graphql/graphql-language-service.svg?branch=master)](https://travis-ci.org/graphql/graphql-language-service)
+
 GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
 Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
