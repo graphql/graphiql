@@ -17,7 +17,7 @@ Currently supported features include:
 
 ### Dependencies
 
-GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs.install.html) to install the Watchman.
+GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs/install.html) to install the Watchman.
 
 ### Installation
 
