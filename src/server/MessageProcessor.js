@@ -71,43 +71,10 @@ const textDocumentCache: Map<string, Object> = new Map();
 export async function processIPCNotificationMessage(
   message: NotificationMessage,
 ): Promise<void> {
-  throw new Error('Not yet implemented.');
-}
-
-export async function processIPCRequestMessage(
-  message: RequestMessage,
-  configDir: ?string,
-): Promise<void> {
   const method = message.method;
   let response;
   let textDocument;
   switch (method) {
-    case 'initialize':
-      if (!message.params || !message.params.rootPath) {
-        // `rootPath` is required
-        return;
-      }
-      const serverCapabilities = await initialize(
-        configDir ? configDir.trim() : message.params.rootPath,
-      );
-
-      if (serverCapabilities === null) {
-        response = convertToRpcMessage({
-          id: '-1',
-          error: {
-            code: ERROR_CODES.SERVER_NOT_INITIALIZED,
-            message: '.graphqlrc not found',
-          },
-        });
-      } else {
-        response = convertToRpcMessage({
-          id: message.id,
-          result: serverCapabilities,
-        });
-      }
-      sendMessageIPC(response);
-
-      break;
     case 'textDocument/didOpen':
     case 'textDocument/didSave':
       if (!message.params || !message.params.textDocument) {
@@ -129,7 +96,6 @@ export async function processIPCRequestMessage(
 
       const diagnostics = await provideDiagnosticsMessage(text, uri);
       response = convertToRpcMessage({
-        id: message.id,
         method: 'textDocument/publishDiagnostics',
         params: {uri, diagnostics},
       });
@@ -186,6 +152,45 @@ export async function processIPCRequestMessage(
         textDocumentCache.delete(textDocument.uri);
       }
       break;
+    case 'exit':
+      process.exit(0);
+      break;
+  }
+}
+
+export async function processIPCRequestMessage(
+  message: RequestMessage,
+  configDir: ?string,
+): Promise<void> {
+  const method = message.method;
+  let response;
+  let textDocument;
+  switch (method) {
+    case 'initialize':
+      if (!message.params || !message.params.rootPath) {
+        // `rootPath` is required
+        return;
+      }
+      const serverCapabilities = await initialize(
+        configDir ? configDir.trim() : message.params.rootPath,
+      );
+
+      if (serverCapabilities === null) {
+        response = convertToRpcMessage({
+          id: '-1',
+          error: {
+            code: ERROR_CODES.SERVER_NOT_INITIALIZED,
+            message: '.graphqlrc not found',
+          },
+        });
+      } else {
+        response = convertToRpcMessage({
+          id: message.id,
+          result: serverCapabilities,
+        });
+      }
+      sendMessageIPC(response);
+      break;
     case 'textDocument/completion':
       // `textDocument/comletion` event takes advantage of the fact that
       // `textDocument/didChange` event always fires before, which would have
@@ -235,9 +240,6 @@ export async function processIPCRequestMessage(
       break;
     case 'shutdown':
       // prepare to shut down the server
-      break;
-    case 'exit':
-      process.exit(0);
       break;
   }
 }
