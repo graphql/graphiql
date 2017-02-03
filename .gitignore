@@ -2,7 +2,6 @@
 *~
 .*.haste_cache.*
 .DS_Store
-npm-debug.log
-
-node_modules/
 dist
+node_modules/
+npm-debug.log
