@@ -184,6 +184,7 @@ export class GraphiQL extends React.Component {
       response: nextResponse,
     }, () => {
       if (this.state.schema === undefined) {
+        this.docExplorerComponent.reset();
         this._fetchSchema();
       }
     });
