@@ -61,7 +61,7 @@
 }
 
 .graphiql-container .toolbar {
-  overflow-x: auto;
+  overflow-x: visible;
 }
 
 .graphiql-container .docExplorerShow {
