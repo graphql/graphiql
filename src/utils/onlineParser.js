@@ -44,7 +44,7 @@ function getToken(stream, state, options) {
   const { LexRules, ParseRules, eatWhitespace, editorConfig } = options;
 
   // Restore state after an empty-rule.
-  if (state.rule.length === 0) {
+  if (state.rule && state.rule.length === 0) {
     popRule(state);
   } else if (state.needsAdvance) {
     state.needsAdvance = false;
