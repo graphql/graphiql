@@ -76,6 +76,7 @@ export class ExecuteButton extends React.Component {
     return (
       <div className="execute-button-wrap">
         <button
+          type="button"
           className="execute-button"
           onMouseDown={onMouseDown}
           onClick={onClick}
