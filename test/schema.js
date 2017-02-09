@@ -121,6 +121,12 @@ const TestType = new GraphQLObjectType({
       description: '`test` field from `Test` type.',
       resolve: () => ({})
     },
+    longDescriptionType: {
+      type: TestType,
+      description: '`longDescriptionType` field from `Test` type, which ' +
+        'has a long, verbose, description to test inline field docs',
+      resolve: () => ({})
+    },
     union: {
       type: TestUnion,
       description: '> union field from Test type, block-quoted.',

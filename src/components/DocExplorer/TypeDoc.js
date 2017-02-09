@@ -197,6 +197,10 @@ function Field({ type, field, onClickType, onClickField }) {
       {': '}
       <TypeLink type={field.type} onClick={onClickType} />
       {
+        field.description &&
+        <p className="field-short-description">{field.description}</p>
+      }
+      {
         field.deprecationReason &&
         <MarkdownContent
           className="doc-deprecation"
