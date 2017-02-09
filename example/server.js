@@ -15,4 +15,7 @@ const app = express();
 app.use(express.static(__dirname));
 app.use('/graphql', graphqlHTTP(() => ({ schema })));
 
-app.listen(8080, () => console.log('Started on http://localhost:8080/'));
+app.listen(0, function() {
+  const port = this.address().port;
+  console.log(`Started on http://localhost:${port}/`);
+});

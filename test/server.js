@@ -60,5 +60,8 @@ app.use(express.static(__dirname));
 
 console.log('Initial build...');
 makeBundle(() => {
-  app.listen(8080, () => console.log('Started on http://localhost:8080/'));
+  app.listen(0, function() {
+    const port = this.address().port;
+    console.log(`Started on http://localhost:${port}/`);
+  });
 });
