@@ -30,6 +30,7 @@ export class VariableEditor extends React.Component {
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
     onRunQuery: PropTypes.func,
+    codeMirrorTheme: PropTypes.string,
   }
 
   constructor(props) {
@@ -61,7 +62,7 @@ export class VariableEditor extends React.Component {
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql-variables',
-      theme: 'graphiql',
+      theme: this.props.codeMirrorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,

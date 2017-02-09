@@ -20,7 +20,8 @@ import React, { PropTypes } from 'react';
  */
 export class ResultViewer extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value: PropTypes.string,
+    codeMirrorTheme: PropTypes.string,
   }
 
   componentDidMount() {
@@ -38,7 +39,7 @@ export class ResultViewer extends React.Component {
       lineWrapping: true,
       value: this.props.value || '',
       readOnly: true,
-      theme: 'graphiql',
+      theme: this.props.codeMirrorTheme || 'graphiql',
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {

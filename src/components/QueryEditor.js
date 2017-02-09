@@ -33,6 +33,7 @@ export class QueryEditor extends React.Component {
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
     onRunQuery: PropTypes.func,
+    codeMirrorTheme: PropTypes.string,
   }
 
   constructor(props) {
@@ -67,7 +68,7 @@ export class QueryEditor extends React.Component {
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql',
-      theme: 'graphiql',
+      theme: this.props.codeMirrorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,
