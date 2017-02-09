@@ -10,14 +10,14 @@ out("echo \"Running node ./resources/prepublish.js\"");
 
 if (process.env.npm_config_argv) {
   let npmConfigArgv = JSON.parse(process.env.npm_config_argv);
-  // # Because of a long-running npm issue (https://github.com/npm/npm/issues/3059)
-  // # prepublish runs after `npm install` and `npm pack`.
-  // # In order to only run prepublish before `npm publish`, we have to check argv.
+  // Because of a long-running npm issue (https://github.com/npm/npm/issues/3059)
+  // prepublish runs after `npm install` and `npm pack`.
+  // In order to only run prepublish before `npm publish`, we have to check argv.
   if (npmConfigArgv.original[0] === 'publish') {
-    // # Publishing to NPM is currently supported by Travis CI, which ensures that all
-    // # tests pass first and the deployed module contains the correct file structure.
-    // # In order to prevent inadvertently circumventing this, we ensure that a CI
-    // # environment exists before continuing.
+    // Publishing to NPM is currently supported by Travis CI, which ensures that all
+    // tests pass first and the deployed module contains the correct file structure.
+    // In order to prevent inadvertently circumventing this, we ensure that a CI
+    // environment exists before continuing.
     if (!process.env.CI) {
       if (isWindows) {
         out("echo Only Travis CI can publish to NPM.");
