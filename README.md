@@ -207,7 +207,7 @@ class CustomGraphiQL extends React.Component {
 
 ### Applying a CodeMirror Theme
 
-In order to theme the editor portions of the interface, you can supply a `codeMirrorTheme` prop. You'll also need to load the appropriate css for the theme (similar to loading the CSS for this project) in order for your theme to function properly. [See the themes available here](https://codemirror.net/demo/theme.html).
+In order to theme the editor portions of the interface, you can supply a `codeMirrorTheme` prop. You'll also need to load the appropriate CSS for the theme (similar to loading the CSS for this project) in order for your theme to function properly. [See the themes available here](https://codemirror.net/demo/theme.html).
 
 
 ```js
