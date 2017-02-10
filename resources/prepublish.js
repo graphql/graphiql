@@ -1,12 +1,10 @@
 var execSync = require('child_process').execSync;
 
-var isWindows = /^win/.test(process.platform);
-
 var out = function (command) {
   execSync(command, {stdio:'inherit'});
 };
 
-out("echo \"Running node ./resources/prepublish.js\"");
+console.log('"Running node ./resources/prepublish.js"');
 
 if (process.env.npm_config_argv) {
   let npmConfigArgv = JSON.parse(process.env.npm_config_argv);
@@ -19,20 +17,14 @@ if (process.env.npm_config_argv) {
     // In order to prevent inadvertently circumventing this, we ensure that a CI
     // environment exists before continuing.
     if (!process.env.CI) {
-      if (isWindows) {
-        out("echo Only Travis CI can publish to NPM.");
-        out("echo Ensure git is left is a good state by backing out any commits and deleting any tags.");
-        out("echo Then read CONTRIBUTING.md to learn how to publish to NPM.");
-      } else {
-        out("echo \"\n\n\n  \033[101;30m Only Travis CI can publish to NPM. \033[0m\" 1>&2;");
-        out("echo \"  Ensure git is left is a good state by backing out any commits and deleting any tags.\" 1>&2;");
-        out("echo \"  Then read CONTRIBUTING.md to learn how to publish to NPM.\n\n\n\" 1>&2;");
-      }
+      console.log('Only Travis CI can publish to NPM.');
+      console.log('Ensure git is left is a good state by backing out any commits and deleting any tags.');
+      console.log('Then read CONTRIBUTING.md to learn how to publish to NPM.');
       process.exit(1);
     } else {
-      out("npm run build;");
+      out('npm run build;');
     }
   } else {
-    out("echo But skipping ./resources/prepublish.js since this is non-publish.");
+    console.log('"But skipping ./resources/prepublish.js since this is non-publish."');
   }
 }
