@@ -33,9 +33,13 @@ if (isWindows) {
 console.log('"Bundling graphiql.css..."');
 out('postcss --use autoprefixer css/*.css -d dist/');
 
-if (isWindows) {
-  out('type dist\\*.css > graphiql.css');
-} else {
-  out('cat dist/*.css > graphiql.css');
+var cssFiles = fs.readdirSync('./dist').filter(function (x) {
+  return /\.css$/.test(x);
+});
+var cssContent = '';
+for (var i = 0; i < cssFiles.length; i++) {
+  cssContent += fs.readFileSync('./dist/' + cssFiles[i]);
 }
+fs.writeFileSync('./graphiql.css', cssContent);
+
 console.log('"Done"');
