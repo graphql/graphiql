@@ -6,4 +6,4 @@ and offers watching/compiling of the `src` folder. To utilize this, simply:
 
 1. Run `npm install`
 2. Run `npm run dev`
-3. Open your browser to [http://localhost:8080/]()
+3. Open your browser to the address listed in your console. e.g. `Started on http://localhost:49811/`
