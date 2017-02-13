@@ -60,7 +60,8 @@ export class GraphiQL extends React.Component {
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
     onToggleDocs: PropTypes.func,
-    getDefaultFieldNames: PropTypes.func
+    getDefaultFieldNames: PropTypes.func,
+    editorTheme: PropTypes.string,
   }
 
   constructor(props) {
@@ -283,6 +284,7 @@ export class GraphiQL extends React.Component {
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
                 onRunQuery={this.handleEditorRunQuery}
+                editorTheme={this.props.editorTheme}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -298,6 +300,7 @@ export class GraphiQL extends React.Component {
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
                   onRunQuery={this.handleEditorRunQuery}
+                  editorTheme={this.props.editorTheme}
                 />
               </div>
             </div>
@@ -311,6 +314,7 @@ export class GraphiQL extends React.Component {
               <ResultViewer
                 ref={c => { this.resultComponent = c; }}
                 value={this.state.response}
+                editorTheme={this.props.editorTheme}
               />
               {footer}
             </div>

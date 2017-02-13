@@ -9,7 +9,6 @@
  /* eslint-disable no-console */
 import express from 'express';
 import path from 'path';
-import fs from 'fs';
 import browserify from 'browserify';
 import browserifyShim from 'browserify-shim';
 import watchify from 'watchify';
