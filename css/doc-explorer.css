@@ -122,11 +122,11 @@
 }
 
 .graphiql-container .field-short-description {
-  margin-left: 5px;
   color: #999;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  margin-left: 5px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .graphiql-container .enum-value {
