@@ -242,7 +242,7 @@ export async function processIPCRequestMessage(
       result = await languageService.getDefinition(
         query,
         pos,
-        textDocument.uri
+        textDocument.uri,
       );
       const formatted = result ? result.definitions.map(res => ({
         uri: path.join('file://', res.path),
