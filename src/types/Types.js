@@ -17,9 +17,20 @@ import type {
   GraphQLType,
 } from 'graphql/type/definition';
 import type CharacterStream from '../parser/CharacterStream';
-import type {Position, Range} from '../utils/Range';
 
 // online-parser related
+export interface Position {
+  line: number,
+  character: number,
+  lessThanOrEqualTo: (position: Position) => boolean,
+}
+
+export interface Range {
+  start: Position,
+  end: Position,
+  containsPosition: (position: Position) => boolean,
+}
+
 export type ParseRule =
   ((token: Token, stream: CharacterStream) => ?string) |
   Array<Rule | string>;
