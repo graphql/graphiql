@@ -10,6 +10,8 @@
 
 import type {Diagnostic, Uri} from '../types/Types';
 
+import path from 'path';
+
 import {getGraphQLCache} from './GraphQLCache';
 import {getOutline} from '../interfaces/getOutline';
 import {GraphQLLanguageService} from '../interfaces/GraphQLLanguageService';
@@ -85,9 +87,14 @@ export async function processIPCNotificationMessage(
       const uri = textDocument.uri;
 
       let text = textDocument.text;
-      if (!text) {
-        if (textDocumentCache.has(textDocument.uri)) {
-          const cachedDocument = textDocumentCache.get(textDocument.uri);
+
+      // Create/modify the cached entry if text is provided.
+      // Otherwise, try searching the cache to perform diagnostics.
+      if (text) {
+        invalidateCache(textDocument, {text});
+      } else {
+        if (textDocumentCache.has(uri)) {
+          const cachedDocument = textDocumentCache.get(uri);
           if (cachedDocument) {
             text = cachedDocument.content.text;
           }
@@ -119,24 +126,9 @@ export async function processIPCNotificationMessage(
       textDocument = message.params.textDocument;
       const contentChanges = message.params.contentChanges;
 
-      if (textDocumentCache.has(textDocument.uri)) {
-        const cachedDocument = textDocumentCache.get(textDocument.uri);
-        if (cachedDocument && cachedDocument.version < textDocument.version) {
-          // Current server capabilities specify the full sync of the contents.
-          // Therefore always overwrite the entire content.
-          // Also, as `contentChanges` is an array and we just want the
-          // latest update to the text, grab the last entry from the array.
-          textDocumentCache.set(textDocument.uri, {
-            version: textDocument.version,
-            content: contentChanges[contentChanges.length - 1],
-          });
-        }
-      } else {
-        textDocumentCache.set(textDocument.uri, {
-          version: textDocument.version,
-          content: contentChanges[contentChanges.length - 1],
-        });
-      }
+      // As `contentChanges` is an array and we just want the
+      // latest update to the text, grab the last entry from the array.
+      invalidateCache(textDocument, contentChanges[contentChanges.length - 1]);
       break;
     case 'textDocument/didClose':
       // For every `textDocument/didClose` event, delete the cached entry.
@@ -165,6 +157,9 @@ export async function processIPCRequestMessage(
   const method = message.method;
   let response;
   let textDocument;
+  let cachedDocument;
+  let query;
+  let result;
   switch (method) {
     case 'initialize':
       if (!message.params || !message.params.rootPath) {
@@ -208,22 +203,55 @@ export async function processIPCRequestMessage(
       textDocument = message.params.textDocument;
       const position = message.params.position;
 
-      if (textDocumentCache.has(textDocument.uri)) {
-        const cachedDocument = textDocumentCache.get(textDocument.uri);
-        if (cachedDocument) {
-          const query = cachedDocument.content.text;
-          const result = await languageService.getAutocompleteSuggestions(
-            query,
-            position,
-            textDocument.uri,
-          );
-
-          sendMessageIPC(convertToRpcMessage({
-            id: message.id,
-            result,
-          }));
-        }
+      cachedDocument = getCachedDocument(textDocument.uri);
+      if (!cachedDocument) {
+        // `cachedDocument` is required.
+        return;
       }
+
+      query = cachedDocument.content.text;
+      result = await languageService.getAutocompleteSuggestions(
+        query,
+        position,
+        textDocument.uri,
+      );
+      sendMessageIPC(convertToRpcMessage({
+        id: message.id,
+        result,
+      }));
+      break;
+    case 'textDocument/definition':
+      if (
+        !message.params ||
+        !message.params.textDocument ||
+        !message.params.position
+      ) {
+        // `textDocument` is required.
+        return;
+      }
+      textDocument = message.params.textDocument;
+      const pos = message.params.position;
+
+      cachedDocument = getCachedDocument(textDocument.uri);
+      if (!cachedDocument) {
+        // `cachedDocument` is required.
+        return;
+      }
+
+      query = cachedDocument.content.text;
+      result = await languageService.getDefinition(
+        query,
+        pos,
+        textDocument.uri
+      );
+      const formatted = result ? result.definitions.map(res => ({
+        uri: path.join('file://', res.path),
+        range: res.range,
+      })) : [];
+      sendMessageIPC(convertToRpcMessage({
+        id: message.id,
+        result: formatted,
+      }));
       break;
     case '$/cancelRequest':
       if (!message.params || !message.params.id) {
@@ -365,6 +393,7 @@ async function initialize(
   const serverCapabilities = {
     capabilities: {
       completionProvider: {resolveProvider: true},
+      definitionProvider: true,
       textDocumentSync: 1,
     },
   };
@@ -415,4 +444,35 @@ function convertToRpcMessage(metaMessage: Object): ResponseMessage {
   };
 
   return message;
+}
+
+function invalidateCache(textDocument: Object, content: Object): void {
+  const uri = textDocument.uri;
+  if (textDocumentCache.has(uri)) {
+    const cachedDocument = textDocumentCache.get(uri);
+    if (cachedDocument && cachedDocument.version < textDocument.version) {
+      // Current server capabilities specify the full sync of the contents.
+      // Therefore always overwrite the entire content.
+      textDocumentCache.set(uri, {
+        version: textDocument.version,
+        content,
+      });
+    }
+  } else {
+    textDocumentCache.set(uri, {
+      version: textDocument.version,
+      content,
+    });
+  }
+}
+
+function getCachedDocument(uri: string): ?Object {
+  if (textDocumentCache.has(uri)) {
+    const cachedDocument = textDocumentCache.get(uri);
+    if (cachedDocument) {
+      return cachedDocument;
+    }
+  }
+
+  return null;
 }
