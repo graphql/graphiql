@@ -9,16 +9,20 @@
  */
 
 import type {Location} from 'graphql/language';
+import type {
+  Range as RangeInterface,
+  Position as PositionInterface,
+} from '../types/Types';
 
-export class Range {
-  start: Position;
-  end: Position;
-  constructor(start: Position, end: Position): void {
+export class Range implements RangeInterface {
+  start: PositionInterface;
+  end: PositionInterface;
+  constructor(start: PositionInterface, end: PositionInterface): void {
     this.start = start;
     this.end = end;
   }
 
-  containsPosition(position: Position): boolean {
+  containsPosition = (position: PositionInterface): boolean => {
     const withinLine =
       this.start.line <= position.line && this.end.line >= position.line;
     const withinCharacter =
@@ -28,7 +32,7 @@ export class Range {
   }
 }
 
-export class Position {
+export class Position implements PositionInterface {
   line: number;
   character: number;
   constructor(line: number, character: number): void {
@@ -36,16 +40,10 @@ export class Position {
     this.character = character;
   }
 
-  lessThanOrEqualTo(position: Position): boolean {
-    if (
-      this.line < position.line ||
-      (this.line === position.line && this.character <= position.character)
-    ) {
-      return true;
-    }
-
-    return false;
-  }
+  lessThanOrEqualTo = (position: PositionInterface): boolean => (
+    this.line < position.line ||
+    (this.line === position.line && this.character <= position.character)
+  );
 }
 
 export function offsetToPosition(text: string, loc: number): Position {
