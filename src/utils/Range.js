@@ -40,16 +40,10 @@ export class Position implements PositionInterface {
     this.character = character;
   }
 
-  lessThanOrEqualTo = (position: PositionInterface): boolean => {
-    if (
-      this.line < position.line ||
-      (this.line === position.line && this.character <= position.character)
-    ) {
-      return true;
-    }
-
-    return false;
-  }
+  lessThanOrEqualTo = (position: PositionInterface): boolean => (
+    this.line < position.line ||
+    (this.line === position.line && this.character <= position.character)
+  );
 }
 
 export function offsetToPosition(text: string, loc: number): Position {
