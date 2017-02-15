@@ -16,7 +16,34 @@ import type {
   GraphQLInputField,
   GraphQLType,
 } from 'graphql/type/definition';
-import type CharacterStream from '../parser/CharacterStream';
+
+export type TokenPattern =
+  string |
+  ((char: string) => boolean) |
+  RegExp;
+
+export interface CharacterStream {
+  getStartOfToken: () => number,
+  getCurrentPosition: () => number,
+  eol: () => boolean,
+  sol: () => boolean,
+  peek: () => string | null,
+  next: () => string,
+  eat: (pattern: TokenPattern) => string | void,
+  eatWhile: (match: TokenPattern) => boolean,
+  eatSpace: () => boolean,
+  skipToEnd: () => void,
+  skipTo: (position: number) => void,
+  match: (
+    pattern: TokenPattern,
+    consume: ?boolean,
+    caseFold: ?boolean
+  ) => Array<string> | boolean,
+  backUp: (num: number) => void,
+  column: () => number,
+  indentation: () => number,
+  current: () => string,
+}
 
 // online-parser related
 export interface Position {

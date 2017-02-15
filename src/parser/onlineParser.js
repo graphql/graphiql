@@ -28,7 +28,7 @@
  *
  */
 
-import type CharacterStream from './CharacterStream';
+import type {CharacterStream} from '../types/Types';
 import typeof {
   LexRules as LexRulesType,
   ParseRules as ParseRulesType,
