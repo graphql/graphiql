@@ -18,7 +18,8 @@
   "scripts": {
     "test": "npm run lint && npm run check",
     "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
-    "build": "babel src --out-dir dist/ && cp package.json dist/",
+    "build": "npm run build-js && npm run build-flow",
+    "build-js": "babel-node scripts/build-js.js",
     "build-flow": "babel-node scripts/build-flow.js",
     "check": "flow check"
   },
