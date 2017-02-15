@@ -18,6 +18,11 @@ import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 
+const initialNav = {
+  name: 'Schema',
+  title: 'Documentation Explorer',
+};
+
 /**
  * DocExplorer
  *
@@ -41,11 +46,6 @@ export class DocExplorer extends React.Component {
 
   constructor() {
     super();
-
-    const initialNav = {
-      name: 'Schema',
-      title: 'Documentation Explorer',
-    };
 
     this.state = { navStack: [ initialNav ] };
   }
@@ -175,6 +175,10 @@ export class DocExplorer extends React.Component {
     const topNav = navStack[navStack.length - 1];
     navStack[navStack.length - 1] = { ...topNav, search };
     this.setState({ navStack });
+  }
+
+  reset() {
+    this.setState({ navStack: [ initialNav ] });
   }
 
   handleNavBackClick = () => {
