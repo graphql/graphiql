@@ -331,12 +331,6 @@
   left: 0;
   min-width: 100%;
   top: -5px;
-  visibility: hidden;
-}
-
-.graphiql-container .toolbar-menu:active .toolbar-menu-items,
-.graphiql-container .toolbar-select:active .toolbar-select-options {
-  visibility: visible;
 }
 
 .graphiql-container .execute-options > li,

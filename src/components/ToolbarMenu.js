@@ -14,22 +14,54 @@ import React, { PropTypes } from 'react';
  *
  * A menu style button to use within the Toolbar.
  */
-export function ToolbarMenu({ title, label, children }) {
-  return (
-    <a
-      className="toolbar-menu toolbar-button"
-      onMouseDown={preventDefault}
-      title={title}>
-      {label}
-      <svg width="14" height="8">
-        <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
-      </svg>
-      <ul className="toolbar-menu-items">
-        {children}
-      </ul>
-    </a>
-  );
-}
+ export class ToolbarMenu extends React.Component {
+   static propTypes = {
+     title: PropTypes.string,
+     label: PropTypes.string,
+   }
+
+   constructor(props) {
+     super(props);
+     this.state = { visibility: 'hidden' };
+   }
+
+   render() {
+     const ulStyle = {
+       visibility: this.state.visibility
+     }
+     return (
+       <a
+         className="toolbar-menu toolbar-button"
+         onClick={this.handleOpen.bind(this)}
+         onMouseDown={preventDefault}
+         ref={() => {
+           document.addEventListener('click', this.handleClick.bind(this), false);
+         }}
+         title={this.props.title}>
+         {this.props.label}
+         <svg width="14" height="8">
+           <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
+         </svg>
+         <ul className="toolbar-menu-items" style={ulStyle}>
+           {this.props.children}
+         </ul>
+       </a>
+     );
+   }
+
+   handleClick(e) {
+     if (ReactDOM.findDOMNode(this) !== e.target) {
+       e.preventDefault();
+       this.setState({ visibility: 'hidden' });
+     }
+   }
+
+   handleOpen = e => {
+     e.preventDefault();
+     this.setState({ visibility: 'visible' });
+   };
+
+ }
 
 ToolbarMenu.propTypes = {
   title: PropTypes.string,
