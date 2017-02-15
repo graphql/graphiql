@@ -8,16 +8,13 @@
 
 'use strict';
 
-import {
-  createReadStream,
-  createWriteStream,
-  readdirSync,
-} from 'fs';
+import {readdirSync} from 'fs';
 import {join} from 'path';
+import {cp} from './util';
 
 // Non-recursively copy src/*.js to dist/*.js.flow:
 readdirSync('src').forEach(entry => {
-  const src = join('src', entry);
-  const dest = join('dist', `${entry}.flow`);
-  createReadStream(src).pipe(createWriteStream(dest));
+  const source = join('src', entry);
+  const destination = join('dist', `${entry}.flow`);
+  cp(source, destination);
 });
