@@ -10,6 +10,7 @@
 
 'use strict';
 
+import {execFileSync} from 'child_process';
 import {
   createReadStream,
   createWriteStream,
@@ -17,4 +18,12 @@ import {
 
 export function cp(source: string, destination: string): void {
   createReadStream(source).pipe(createWriteStream(destination));
+}
+
+export function exec(executable: string, ...args: string[]): void {
+  print(execFileSync(executable, args).toString());
+}
+
+export function print(string: string): void {
+  process.stdout.write(string);
 }
