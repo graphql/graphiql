@@ -65,14 +65,14 @@ export class ToolbarSelect extends React.Component {
 
   handleClick(e) {
     if (this._node !== e.target) {
-      preventDefault(e)
+      preventDefault(e);
       this.setState({ visible: false });
       document.removeEventListener('click', this.handleClick.bind(this));
     }
   }
 
   handleOpen = e => {
-    preventDefault(e)
+    preventDefault(e);
     this.setState({ visible: true });
     document.addEventListener('click', this.handleClick.bind(this));
   };
