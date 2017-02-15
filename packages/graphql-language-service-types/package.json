@@ -21,7 +21,8 @@
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node scripts/build-js.js",
     "build-flow": "babel-node scripts/build-flow.js",
-    "check": "flow check"
+    "check": "flow check",
+    "prepublish": "node scripts/prepublish.js"
   },
   "dependencies": {
     "graphql": "0.9.1"
