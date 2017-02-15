@@ -34,12 +34,7 @@ export class ToolbarMenu extends React.Component {
         className="toolbar-menu toolbar-button"
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
-        ref={() => {
-          document.addEventListener('click',
-            this.handleClick.bind(this),
-            false
-          );
-        }}
+        ref={node => {this._node = node;}}
         title={this.props.title}>
         {this.props.label}
         <svg width="14" height="8">
@@ -53,8 +48,7 @@ export class ToolbarMenu extends React.Component {
   }
 
   handleClick(e) {
-    // eslint-disable-next-line no-undef
-    if (ReactDOM.findDOMNode(this) !== e.target) {
+    if (this._node !== e.target) {
       e.preventDefault();
       this.setState({ visibility: 'hidden' });
     }
@@ -63,6 +57,7 @@ export class ToolbarMenu extends React.Component {
   handleOpen = e => {
     e.preventDefault();
     this.setState({ visibility: 'visible' });
+    document.addEventListener('click', this.handleClick.bind(this));
   };
 }
 

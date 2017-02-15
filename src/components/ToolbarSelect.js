@@ -51,11 +51,7 @@ export class ToolbarSelect extends React.Component {
         className="toolbar-select toolbar-button"
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
-        ref={() => {
-          document.addEventListener('click',
-          this.handleClick.bind(this),
-          false);
-        }}
+        ref={node => {this._node = node;}}
         title={this.props.title}>
         {selectedChild.props.label}
         <svg width="13" height="10">
@@ -70,8 +66,7 @@ export class ToolbarSelect extends React.Component {
   }
 
   handleClick(e) {
-    // eslint-disable-next-line no-undef
-    if (ReactDOM.findDOMNode(this) !== e.target) {
+    if (this._node !== e.target) {
       e.preventDefault();
       this.setState({ visibility: 'hidden' });
     }
@@ -80,6 +75,7 @@ export class ToolbarSelect extends React.Component {
   handleOpen = e => {
     e.preventDefault();
     this.setState({ visibility: 'visible' });
+    document.addEventListener('click', this.handleClick.bind(this));
   };
 
 }
