@@ -327,10 +327,19 @@
   visibility: hidden;
 }
 
+.graphiql-container .toolbar-menu-items.open {
+  visibility: visible;
+}
+
 .graphiql-container .toolbar-select-options {
   left: 0;
   min-width: 100%;
   top: -5px;
+  visibility: hidden;
+}
+
+.graphiql-container .toolbar-select-options.open {
+  visibility: visible;
 }
 
 .graphiql-container .execute-options > li,

@@ -22,13 +22,11 @@ export class ToolbarMenu extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { visibility: 'hidden' };
+    this.state = { visible: false };
   }
 
   render() {
-    const ulStyle = {
-      visibility: this.state.visibility
-    };
+    const visible = this.state.visible;
     return (
       <a
         className="toolbar-menu toolbar-button"
@@ -40,7 +38,7 @@ export class ToolbarMenu extends React.Component {
         <svg width="14" height="8">
           <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
         </svg>
-        <ul className="toolbar-menu-items" style={ulStyle}>
+        <ul className={'toolbar-menu-items' + (visible ? ' open' : '')}>
           {this.props.children}
         </ul>
       </a>
@@ -50,13 +48,14 @@ export class ToolbarMenu extends React.Component {
   handleClick(e) {
     if (this._node !== e.target) {
       e.preventDefault();
-      this.setState({ visibility: 'hidden' });
+      this.setState({ visible: false });
+      document.removeEventListener('click', this.handleClick.bind(this));
     }
   }
 
   handleOpen = e => {
     e.preventDefault();
-    this.setState({ visibility: 'visible' });
+    this.setState({ visible: true });
     document.addEventListener('click', this.handleClick.bind(this));
   };
 }

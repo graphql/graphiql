@@ -25,11 +25,12 @@ export class ToolbarSelect extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { visibility: 'hidden' };
+    this.state = { visible: false };
   }
 
   render() {
     let selectedChild;
+    const visible = this.state.visible;
     const optionChildren = React.Children.map(this.props.children,
     (child, i) => {
       if (!selectedChild || child.props.selected) {
@@ -37,15 +38,12 @@ export class ToolbarSelect extends React.Component {
       }
       const onChildSelect =
       child.props.onSelect ||
-      this.props.onSelect && this.props.onSelect.bind(null,
-        child.props.value,
-        i
+        this.props.onSelect && this.props.onSelect.bind(null,
+          child.props.value,
+          i
       );
       return <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />;
     });
-    const ulStyle = {
-      visibility: this.state.visibility
-    };
     return (
       <a
         className="toolbar-select toolbar-button"
@@ -58,7 +56,7 @@ export class ToolbarSelect extends React.Component {
           <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
           <path fill="#666" d="M 5 6 L 13 6 L 9 10 z" />
         </svg>
-        <ul className="toolbar-select-options" style={ulStyle}>
+        <ul className={'toolbar-select-options' + (visible ? ' open' : '')}>
           {optionChildren}
         </ul>
       </a>
@@ -68,13 +66,14 @@ export class ToolbarSelect extends React.Component {
   handleClick(e) {
     if (this._node !== e.target) {
       e.preventDefault();
-      this.setState({ visibility: 'hidden' });
+      this.setState({ visible: false });
+      document.removeEventListener('click', this.handleClick.bind(this));
     }
   }
 
   handleOpen = e => {
     e.preventDefault();
-    this.setState({ visibility: 'visible' });
+    this.setState({ visible: true });
     document.addEventListener('click', this.handleClick.bind(this));
   };
 
