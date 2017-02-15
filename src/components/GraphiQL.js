@@ -227,12 +227,6 @@ export class GraphiQL extends React.Component {
           title="Prettify Query"
           label="Prettify"
         />
-        <ToolbarSelect label='Select'>
-          <ToolbarSelectOption label='Option 1' />
-        </ToolbarSelect>
-        <ToolbarMenu label='Menu'>
-          <ToolbarMenuItem label='Item 1' />
-        </ToolbarMenu>
       </GraphiQL.Toolbar>;
 
     const footer = find(children, child => child.type === GraphiQL.Footer);
