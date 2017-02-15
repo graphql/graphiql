@@ -63,11 +63,6 @@ import React, { PropTypes } from 'react';
 
  }
 
-ToolbarMenu.propTypes = {
-  title: PropTypes.string,
-  label: PropTypes.string,
-};
-
 export function ToolbarMenuItem({ onSelect, title, label }) {
   return (
     <li
