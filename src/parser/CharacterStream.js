@@ -19,12 +19,12 @@
  *
  */
 
-type TokenPattern =
-  string |
-  ((char: string) => boolean) |
-  RegExp;
+import type {
+  TokenPattern,
+  CharacterStream as CharacterStreamInterface,
+} from '../types/Types';
 
-export default class CharacterStream {
+export default class CharacterStream implements CharacterStreamInterface {
   _start: number;
   _pos: number;
   _sourceText: string;
@@ -35,15 +35,11 @@ export default class CharacterStream {
     this._sourceText = sourceText;
   }
 
-  getStartOfToken(): number {
-    return this._start;
-  }
+  getStartOfToken = (): number => this._start;
 
-  getCurrentPosition(): number {
-    return this._pos;
-  }
+  getCurrentPosition = (): number => this._pos;
 
-  _testNextCharacter(pattern: TokenPattern) {
+  _testNextCharacter(pattern: TokenPattern): boolean {
     const character = this._sourceText.charAt(this._pos);
     let isMatched = false;
     if (typeof pattern === 'string') {
@@ -55,26 +51,22 @@ export default class CharacterStream {
     return isMatched;
   }
 
-  eol(): boolean {
-    return this._sourceText.length === this._pos;
-  }
+  eol = (): boolean => this._sourceText.length === this._pos;
 
-  sol(): boolean {
-    return this._pos === 0;
-  }
+  sol = (): boolean => this._pos === 0;
 
-  peek(): string | null {
+  peek = (): string | null => {
     return this._sourceText.charAt(this._pos) ?
       this._sourceText.charAt(this._pos) : null;
   }
 
-  next(): string {
+  next = (): string => {
     const char = this._sourceText.charAt(this._pos);
     this._pos ++;
     return char;
   }
 
-  eat(pattern: TokenPattern): string | void {
+  eat = (pattern: TokenPattern): string | void => {
     const isMatched = this._testNextCharacter(pattern);
     if (isMatched) {
       this._start = this._pos;
@@ -84,7 +76,7 @@ export default class CharacterStream {
     return undefined;
   }
 
-  eatWhile(match: TokenPattern): boolean {
+  eatWhile = (match: TokenPattern): boolean => {
     let isMatched = this._testNextCharacter(match);
     let didEat = false;
 
@@ -103,23 +95,21 @@ export default class CharacterStream {
     return didEat;
   }
 
-  eatSpace(): boolean {
-    return this.eatWhile(/[\s\u00a0]/);
-  }
+  eatSpace = (): boolean => this.eatWhile(/[\s\u00a0]/);
 
-  skipToEnd(): void {
+  skipToEnd = (): void => {
     this._pos = this._sourceText.length;
   }
 
-  skipTo(position: number): void {
+  skipTo = (position: number): void => {
     this._pos = position;
   }
 
-  match(
+  match = (
     pattern: TokenPattern,
     consume: ?boolean = true,
     caseFold: ?boolean = false,
-  ): Array<string> | boolean {
+  ): Array<string> | boolean => {
     let token = null;
     let match = null;
 
@@ -155,15 +145,13 @@ export default class CharacterStream {
     return false;
   }
 
-  backUp(num: number): void {
+  backUp = (num: number): void => {
     this._pos -= num;
   }
 
-  column(): number {
-    return this._pos;
-  }
+  column = (): number => this._pos;
 
-  indentation(): number {
+  indentation = (): number => {
     const match = this._sourceText.match(/\s*/);
     let indent = 0;
     if (match && match.length === 0) {
@@ -182,7 +170,5 @@ export default class CharacterStream {
     return indent;
   }
 
-  current(): string {
-    return this._sourceText.slice(this._start, this._pos);
-  }
+  current = (): string => this._sourceText.slice(this._start, this._pos);
 }

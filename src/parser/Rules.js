@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type CharacterStream from './CharacterStream';
+import type {CharacterStream} from '../types/Types';
 import type {State, Token, Rule, ParseRule} from '../types/Types';
 import {opt, list, butNot, t, p} from './RuleHelpers';
 
