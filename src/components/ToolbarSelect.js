@@ -20,6 +20,7 @@ export class ToolbarSelect extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     label: PropTypes.string,
+    onSelect: PropTypes.func
   }
 
   constructor(props) {
@@ -29,25 +30,31 @@ export class ToolbarSelect extends React.Component {
 
   render() {
     let selectedChild;
-    const optionChildren = React.Children.map(this.props.children, (child, i) => {
+    const optionChildren = React.Children.map(this.props.children,
+    (child, i) => {
       if (!selectedChild || child.props.selected) {
         selectedChild = child;
       }
       const onChildSelect =
       child.props.onSelect ||
-      this.props.onSelect && this.props.onSelect.bind(null, child.props.value, i);
+      this.props.onSelect && this.props.onSelect.bind(null,
+        child.props.value,
+        i
+      );
       return <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />;
     });
     const ulStyle = {
       visibility: this.state.visibility
-    }
+    };
     return (
       <a
         className="toolbar-select toolbar-button"
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
         ref={() => {
-          document.addEventListener('click', this.handleClick.bind(this), false);
+          document.addEventListener('click',
+          this.handleClick.bind(this),
+          false);
         }}
         title={this.props.title}>
         {selectedChild.props.label}
@@ -63,6 +70,7 @@ export class ToolbarSelect extends React.Component {
   }
 
   handleClick(e) {
+    // eslint-disable-next-line no-undef
     if (ReactDOM.findDOMNode(this) !== e.target) {
       e.preventDefault();
       this.setState({ visibility: 'hidden' });

@@ -14,54 +14,57 @@ import React, { PropTypes } from 'react';
  *
  * A menu style button to use within the Toolbar.
  */
- export class ToolbarMenu extends React.Component {
-   static propTypes = {
-     title: PropTypes.string,
-     label: PropTypes.string,
-   }
+export class ToolbarMenu extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    label: PropTypes.string,
+  }
 
-   constructor(props) {
-     super(props);
-     this.state = { visibility: 'hidden' };
-   }
+  constructor(props) {
+    super(props);
+    this.state = { visibility: 'hidden' };
+  }
 
-   render() {
-     const ulStyle = {
-       visibility: this.state.visibility
-     }
-     return (
-       <a
-         className="toolbar-menu toolbar-button"
-         onClick={this.handleOpen.bind(this)}
-         onMouseDown={preventDefault}
-         ref={() => {
-           document.addEventListener('click', this.handleClick.bind(this), false);
-         }}
-         title={this.props.title}>
-         {this.props.label}
-         <svg width="14" height="8">
-           <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
-         </svg>
-         <ul className="toolbar-menu-items" style={ulStyle}>
-           {this.props.children}
-         </ul>
-       </a>
-     );
-   }
+  render() {
+    const ulStyle = {
+      visibility: this.state.visibility
+    };
+    return (
+      <a
+        className="toolbar-menu toolbar-button"
+        onClick={this.handleOpen.bind(this)}
+        onMouseDown={preventDefault}
+        ref={() => {
+          document.addEventListener('click',
+            this.handleClick.bind(this),
+            false
+          );
+        }}
+        title={this.props.title}>
+        {this.props.label}
+        <svg width="14" height="8">
+          <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
+        </svg>
+        <ul className="toolbar-menu-items" style={ulStyle}>
+          {this.props.children}
+        </ul>
+      </a>
+    );
+  }
 
-   handleClick(e) {
-     if (ReactDOM.findDOMNode(this) !== e.target) {
-       e.preventDefault();
-       this.setState({ visibility: 'hidden' });
-     }
-   }
+  handleClick(e) {
+    // eslint-disable-next-line no-undef
+    if (ReactDOM.findDOMNode(this) !== e.target) {
+      e.preventDefault();
+      this.setState({ visibility: 'hidden' });
+    }
+  }
 
-   handleOpen = e => {
-     e.preventDefault();
-     this.setState({ visibility: 'visible' });
-   };
-
- }
+  handleOpen = e => {
+    e.preventDefault();
+    this.setState({ visibility: 'visible' });
+  };
+}
 
 export function ToolbarMenuItem({ onSelect, title, label }) {
   return (
