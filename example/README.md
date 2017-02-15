@@ -10,4 +10,4 @@ installing and starting the example.
 2. Navigate to this directory (example) in Terminal
 3. `npm install`
 4. `npm start`
-5. Open your browser to [http://localhost:8080/]()
+5. Open your browser to the address listed in your console. e.g. `Started on http://localhost:49811/`
