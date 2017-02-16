@@ -14,42 +14,88 @@ import React, { PropTypes } from 'react';
  *
  * A select-option style button to use within the Toolbar.
  *
- * Note that, like React's <select>, this component is stateless and expects you
- * to re-render with a new selected={} condition on the child options.
  */
-export function ToolbarSelect({ onSelect, title, children }) {
-  let selectedChild;
-  const optionChildren = React.Children.map(children, (child, i) => {
-    if (!selectedChild || child.props.selected) {
-      selectedChild = child;
-    }
-    const onChildSelect =
+
+export class ToolbarSelect extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    label: PropTypes.string,
+    onSelect: PropTypes.func
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { visible: false };
+  }
+
+  componentWillUnmount() {
+    this._release();
+  }
+
+  render() {
+    let selectedChild;
+    const visible = this.state.visible;
+    const optionChildren = React.Children.map(this.props.children,
+    (child, i) => {
+      if (!selectedChild || child.props.selected) {
+        selectedChild = child;
+      }
+      const onChildSelect =
       child.props.onSelect ||
-      onSelect && onSelect.bind(null, child.props.value, i);
-    return <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />;
-  });
+        this.props.onSelect && this.props.onSelect.bind(null,
+          child.props.value,
+          i
+      );
+      return <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />;
+    });
+    return (
+      <a
+        className="toolbar-select toolbar-button"
+        onClick={this.handleOpen.bind(this)}
+        onMouseDown={preventDefault}
+        ref={node => {this._node = node;}}
+        title={this.props.title}>
+        {selectedChild.props.label}
+        <svg width="13" height="10">
+          <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
+          <path fill="#666" d="M 5 6 L 13 6 L 9 10 z" />
+        </svg>
+        <ul className={'toolbar-select-options' + (visible ? ' open' : '')}>
+          {optionChildren}
+        </ul>
+      </a>
+    );
+  }
 
-  return (
-    <a
-      className="toolbar-select toolbar-button"
-      onMouseDown={preventDefault}
-      title={title}>
-      {selectedChild.props.label}
-      <svg width="13" height="10">
-        <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
-        <path fill="#666" d="M 5 6 L 13 6 L 9 10 z" />
-      </svg>
-      <ul className="toolbar-select-options">
-        {optionChildren}
-      </ul>
-    </a>
-  );
+  _subscribe() {
+    if (!this._listener) {
+      this._listener = this.handleClick.bind(this);
+      document.addEventListener('click', this._listener);
+    }
+  }
+
+  _release() {
+    if (this._listener) {
+      document.removeEventListener('click', this._listener);
+      this._listener = null;
+    }
+  }
+
+  handleClick(e) {
+    if (this._node !== e.target) {
+      preventDefault(e);
+      this.setState({ visible: false });
+      this._release();
+    }
+  }
+
+  handleOpen = e => {
+    preventDefault(e);
+    this.setState({ visible: true });
+    this._subscribe();
+  };
+
 }
-
-ToolbarSelect.propTypes = {
-  onSelect: PropTypes.func,
-  title: PropTypes.string,
-};
 
 export function ToolbarSelectOption({ onSelect, label, selected }) {
   return (

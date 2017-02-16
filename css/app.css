@@ -327,6 +327,10 @@
   visibility: hidden;
 }
 
+.graphiql-container .toolbar-menu-items.open {
+  visibility: visible;
+}
+
 .graphiql-container .toolbar-select-options {
   left: 0;
   min-width: 100%;
@@ -334,8 +338,7 @@
   visibility: hidden;
 }
 
-.graphiql-container .toolbar-menu:active .toolbar-menu-items,
-.graphiql-container .toolbar-select:active .toolbar-select-options {
+.graphiql-container .toolbar-select-options.open {
   visibility: visible;
 }
 
