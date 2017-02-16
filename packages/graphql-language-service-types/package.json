@@ -11,6 +11,9 @@
   "bugs": {
     "url": "https://github.com/graphql/graphql-language-service/issues"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "graphql"
   ],
