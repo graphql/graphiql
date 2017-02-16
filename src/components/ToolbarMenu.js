@@ -25,6 +25,10 @@ export class ToolbarMenu extends React.Component {
     this.state = { visible: false };
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick.bind(this));
+  }
+
   render() {
     const visible = this.state.visible;
     return (

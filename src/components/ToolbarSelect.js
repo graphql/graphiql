@@ -28,6 +28,10 @@ export class ToolbarSelect extends React.Component {
     this.state = { visible: false };
   }
 
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick.bind(this));
+  }
+
   render() {
     let selectedChild;
     const visible = this.state.visible;
