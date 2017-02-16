@@ -17,7 +17,7 @@
   "keywords": [
     "graphql"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "npm run lint && npm run check",
     "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
