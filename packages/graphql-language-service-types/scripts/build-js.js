@@ -9,7 +9,6 @@
 'use strict';
 
 import {join} from 'path';
-import {cp, exec} from './util';
+import {exec} from './util';
 
 exec('babel', 'src', '--out-dir', 'dist');
-cp('package.json', join('dist', 'package.json'));

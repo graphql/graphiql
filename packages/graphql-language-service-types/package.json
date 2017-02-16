@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-types",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -11,17 +11,21 @@
   "bugs": {
     "url": "https://github.com/graphql/graphql-language-service/issues"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "graphql"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "npm run lint && npm run check",
     "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node scripts/build-js.js",
     "build-flow": "babel-node scripts/build-flow.js",
-    "check": "flow check"
+    "check": "flow check",
+    "prepublish": "node scripts/prepublish.js"
   },
   "dependencies": {
     "graphql": "0.9.1"
