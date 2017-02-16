@@ -29,7 +29,7 @@ export class ToolbarSelect extends React.Component {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick.bind(this));
+    this._release();
   }
 
   render() {
@@ -67,18 +67,32 @@ export class ToolbarSelect extends React.Component {
     );
   }
 
+  _subscribe() {
+    if (!this._listener) {
+      this._listener = this.handleClick.bind(this);
+      document.addEventListener('click', this._listener);
+    }
+  }
+
+  _release() {
+    if (this._listener) {
+      document.removeEventListener('click', this._listener);
+      this._listener = null;
+    }
+  }
+
   handleClick(e) {
     if (this._node !== e.target) {
       preventDefault(e);
       this.setState({ visible: false });
-      document.removeEventListener('click', this.handleClick.bind(this));
+      this._release();
     }
   }
 
   handleOpen = e => {
     preventDefault(e);
     this.setState({ visible: true });
-    document.addEventListener('click', this.handleClick.bind(this));
+    this._subscribe();
   };
 
 }
