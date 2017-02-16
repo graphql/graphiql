@@ -10,7 +10,7 @@
 
 import type {GraphQLErrorLocation, GraphQLError} from 'graphql/error';
 import type {ASTNode} from 'graphql/language';
-import type {Diagnostic, CustomValidationRule} from '../types/Types';
+import type {Diagnostic, CustomValidationRule} from 'graphql-language-service-types';
 
 import invariant from 'assert';
 import {parse} from 'graphql';

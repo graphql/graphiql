@@ -10,8 +10,8 @@
 
 import type {ASTNode} from 'graphql/language';
 import type {ValidationContext} from 'graphql/validation';
+import type {CustomValidationRule} from 'graphql-language-service-types';
 import type {GraphQLConfig} from '../../config/GraphQLConfig';
-import type {CustomValidationRule} from '../../types/Types';
 
 import {GraphQLError} from 'graphql/error';
 

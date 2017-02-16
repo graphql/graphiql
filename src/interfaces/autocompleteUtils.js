@@ -13,19 +13,18 @@ import type {
   GraphQLSchema,
   GraphQLType,
 } from 'graphql/type/definition';
-import type {
-  CompletionItem,
-  ContextToken,
-  State,
-  TypeInfo,
-} from '../types/Types';
-
 import {isCompositeType} from 'graphql';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
+import type {
+  CompletionItem,
+  ContextToken,
+  State,
+  TypeInfo,
+} from 'graphql-language-service-types';
 
 // Utility for returning the state representing the Definition this token state
 // is within, if any.

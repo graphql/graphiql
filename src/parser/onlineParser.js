@@ -28,12 +28,15 @@
  *
  */
 
-import type {CharacterStream} from '../types/Types';
 import typeof {
   LexRules as LexRulesType,
   ParseRules as ParseRulesType,
 } from './Rules';
-import type {State, Token} from '../types/Types';
+import type {
+  CharacterStream,
+  State,
+  Token,
+} from 'graphql-language-service-types';
 
 import {LexRules, ParseRules, isIgnored} from './Rules';
 

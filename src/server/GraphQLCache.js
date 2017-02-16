@@ -14,7 +14,7 @@ import type {
   GraphQLFileInfo,
   FragmentInfo,
   Uri,
-} from '../types/Types';
+} from 'graphql-language-service-types';
 
 import fs from 'fs';
 import path from 'path';

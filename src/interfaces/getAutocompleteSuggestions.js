@@ -18,7 +18,7 @@ import type {
   ContextToken,
   State,
   TypeInfo,
-} from '../types/Types';
+} from 'graphql-language-service-types';
 import type {Position} from '../utils/Range';
 
 import {

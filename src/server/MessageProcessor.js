@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {Diagnostic, Uri} from '../types/Types';
+import type {Diagnostic, Uri} from 'graphql-language-service-types';
 
 import path from 'path';
 
