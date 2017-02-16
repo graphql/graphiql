@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {CompletionItem} from '../../types/Types';
+import type {CompletionItem} from 'graphql-language-service-types';
 
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';

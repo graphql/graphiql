@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {Uri} from '../types/Types';
+import type {Uri} from 'graphql-language-service-types';
 
 import path from 'path';
 import fs from 'fs';

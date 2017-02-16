@@ -17,7 +17,7 @@ import type {
   DefinitionQueryResult,
   FragmentInfo,
   Uri,
-} from '../types/Types';
+} from 'graphql-language-service-types';
 
 import {offsetToPosition, locToRange} from '../utils/Range';
 

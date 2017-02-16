@@ -34,6 +34,7 @@
   "dependencies": {
     "fb-watchman": "^1.9.0",
     "graphql": "0.9.1",
+    "graphql-language-service-types": "^0.0.6",
     "nullthrows": "^1.0.0",
     "yargs": "^6.5.0"
   },

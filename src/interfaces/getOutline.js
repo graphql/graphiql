@@ -8,7 +8,11 @@
  *  @flow
  */
 
-import type {Outline, TextToken, TokenKind} from '../types/Types';
+import type {
+  Outline,
+  TextToken,
+  TokenKind,
+} from 'graphql-language-service-types';
 
 import {parse, visit} from 'graphql';
 import {INLINE_FRAGMENT} from 'graphql/language/kinds';

@@ -11,7 +11,7 @@
 import type {ASTNode} from 'graphql/language';
 import type {GraphQLError} from 'graphql/error';
 import type {GraphQLSchema} from 'graphql/type';
-import type {CustomValidationRule} from '../types/Types';
+import type {CustomValidationRule} from 'graphql-language-service-types';
 
 import {specifiedRules, TypeInfo} from 'graphql';
 import {visitUsingRules} from 'graphql/validation/validate';

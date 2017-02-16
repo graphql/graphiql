@@ -22,7 +22,7 @@
 import type {
   TokenPattern,
   CharacterStream as CharacterStreamInterface,
-} from '../types/Types';
+} from 'graphql-language-service-types';
 
 export default class CharacterStream implements CharacterStreamInterface {
   _start: number;

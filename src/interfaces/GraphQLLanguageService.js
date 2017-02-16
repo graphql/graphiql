@@ -9,14 +9,14 @@
  */
 
 import type {ASTNode} from 'graphql/language';
-import type {GraphQLCache} from '../server/GraphQLCache';
-import type {GraphQLRC, GraphQLConfig} from '../config/GraphQLConfig';
 import type {
   CompletionItem,
   DefinitionQueryResult,
   Diagnostic,
   Uri,
-} from '../types/Types';
+} from 'graphql-language-service-types';
+import type {GraphQLCache} from '../server/GraphQLCache';
+import type {GraphQLRC, GraphQLConfig} from '../config/GraphQLConfig';
 import type {Position} from '../utils/Range';
 
 import {

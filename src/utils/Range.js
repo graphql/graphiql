@@ -12,7 +12,7 @@ import type {Location} from 'graphql/language';
 import type {
   Range as RangeInterface,
   Position as PositionInterface,
-} from '../types/Types';
+} from 'graphql-language-service-types';
 
 export class Range implements RangeInterface {
   start: PositionInterface;
