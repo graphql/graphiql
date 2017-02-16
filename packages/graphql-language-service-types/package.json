@@ -12,7 +12,8 @@
     "url": "https://github.com/graphql/graphql-language-service/issues"
   },
   "files": [
-    "dist"
+    "dist/*.js",
+    "dist/*.js.flow"
   ],
   "keywords": [
     "graphql"
