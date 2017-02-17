@@ -58,7 +58,7 @@ The GraphQL configurations will be used to perform two things in a nutshell:
 1. Using `input-dirs` and `exclude-dirs`, cache all fragment definitions per each product. This information will be used to compute dependencies between GraphQL queries and fragments.
 2. Using `schema-path`, build and cache `GraphQLSchema`s (per product). The schema will be used to perform query validations, autocomplete suggestions etc.
 
-Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `input-dirs` and `exclude-dirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/src/config/GraphQLConfig.js#L80) for more information.
+Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `input-dirs` and `exclude-dirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/packages/graphql-language-service-config/src/index.js) for more information.
 
 ### Using the command-line interface
 

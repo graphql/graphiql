@@ -32,7 +32,7 @@ import {
   getGraphQLConfig,
   GraphQLRC,
   GraphQLConfig,
-} from '../config/GraphQLConfig';
+} from 'graphql-language-service-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 
 // Maximum files to read when processing GraphQL files.
