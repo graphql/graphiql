@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {ASTNode} from 'graphql/language';
+import type {DocumentNode} from 'graphql/language';
 import type {GraphQLError} from 'graphql/error';
 import type {GraphQLSchema} from 'graphql/type';
 import type {CustomValidationRule} from 'graphql-language-service-types';
@@ -21,7 +21,7 @@ import {visitUsingRules} from 'graphql/validation/validate';
  */
 export function validateWithCustomRules(
   schema: GraphQLSchema,
-  ast: ASTNode,
+  ast: DocumentNode,
   customRules?: Array<CustomValidationRule>,
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
