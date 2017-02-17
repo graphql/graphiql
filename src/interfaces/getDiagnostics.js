@@ -14,10 +14,15 @@ import type {Diagnostic, CustomValidationRule} from 'graphql-language-service-ty
 
 import invariant from 'assert';
 import {parse} from 'graphql';
+import {
+  CharacterStream,
+  onlineParser,
+} from 'graphql-language-service-parser';
 
-import CharacterStream from '../parser/CharacterStream';
-import onlineParser from '../parser/onlineParser';
-import {Position, Range} from '../utils/Range';
+import {
+  Position,
+  Range,
+} from '../utils/Range';
 import {validateWithCustomRules} from '../utils/validateWithCustomRules';
 
 const SEVERITY = {

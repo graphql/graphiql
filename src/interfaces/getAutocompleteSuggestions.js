@@ -39,14 +39,16 @@ import {
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
 import {
+  CharacterStream,
+  onlineParser,
+} from 'graphql-language-service-parser';
+import {
   forEachState,
   getDefinitionState,
   getFieldDef,
   hintList,
   objectValues,
 } from './autocompleteUtils';
-import CharacterStream from '../parser/CharacterStream';
-import onlineParser from '../parser/onlineParser';
 
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
