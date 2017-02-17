@@ -8,6 +8,7 @@
  *  @flow
  */
 
+import type {GraphQLSchema} from 'graphql';
 import type {ASTNode, FragmentDefinitionNode} from 'graphql/language';
 import type {ValidationContext} from 'graphql/validation';
 import type {
@@ -43,6 +44,45 @@ export interface CharacterStream {
   column: () => number,
   indentation: () => number,
   current: () => string,
+}
+
+// Cache and config-related.
+export interface GraphQLRC {
+  getConfigDir: () => Uri,
+  getConfigNames: () => Array<string>,
+  getConfig: (name: string) => GraphQLConfig,
+  getConfigByFilePath: (filePath: Uri) => ?GraphQLConfig,
+}
+
+export interface GraphQLConfig {
+  getRootDir: () => Uri,
+  getName: () => string,
+  getConfig: () => Object,
+  getInputDirs: () => Array<string>,
+  getExcludeDirs: () => Array<string>,
+  isFileInInputDirs: (fileName: string) => boolean,
+  getSchemaPath: () => ?Uri,
+  getCustomValidationRulesModulePath: () => ?Uri,
+}
+
+export interface GraphQLCache {
+  getGraphQLRC: () => GraphQLRC,
+
+  getFragmentDependencies: (
+    query: string,
+    fragmentDefinitions: ?Map<string, FragmentInfo>,
+  ) => Promise<Array<FragmentInfo>>,
+
+  getFragmentDependenciesForAST: (
+    parsedQuery: ASTNode,
+    fragmentDefinitions: Map<string, FragmentInfo>,
+  ) => Promise<Array<FragmentInfo>>,
+
+  getFragmentDefinitions: (
+    graphQLConfig: GraphQLConfig,
+  ) => Promise<Map<string, FragmentInfo>>,
+
+  getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>
 }
 
 // online-parser related
