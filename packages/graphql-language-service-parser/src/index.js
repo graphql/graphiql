@@ -8,7 +8,7 @@
  *  @flow
  */
 
-export {CharacterStream} from './CharacterStream';
+export {default as CharacterStream} from './CharacterStream';
 
 export {
   LexRules,
@@ -24,4 +24,4 @@ export {
   t,
 } from './RuleHelpers';
 
-export {onlineParser} from './onlineParser';
+export {default as onlineParser} from './onlineParser';
