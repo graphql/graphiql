@@ -9,33 +9,39 @@
  */
 
 import {expect} from 'chai';
-import {parse} from 'graphql';
+import {readFileSync} from 'fs';
+import {
+  GraphQLError,
+  buildSchema,
+  parse,
+} from 'graphql';
 import {beforeEach, describe, it} from 'mocha';
+import {join} from 'path';
 
-import {getGraphQLCache} from '../../server/GraphQLCache';
 import {validateWithCustomRules} from '../validateWithCustomRules';
 
 describe('validateWithCustomRules', () => {
-  let cache;
-  let graphQLRC;
-  let config;
+  let schema;
 
-  beforeEach(async () => {
-    cache = await getGraphQLCache(__dirname);
-    graphQLRC = cache.getGraphQLRC();
-    config = graphQLRC.getConfig('test');
+  beforeEach(() => {
+    const schemaPath = join(__dirname, '__schema__', 'StarWarsSchema.graphql');
+    schema = buildSchema(readFileSync(schemaPath, 'utf8'));
   });
 
-  it('validates with custom rules defined', async () => {
+  it('validates with custom rules defined', () => {
     const invalidAST = parse('query { human(id: "a") { name } }');
-    // Flow catches require() parameter not being a literal string;
-    // resolve the pathname here to avoid that error.
-    const customRulesPath = require.resolve(
-      config.getCustomValidationRulesModulePath() || '',
-    );
-    const customRules = require(customRulesPath)(config);
-    const schema = await cache.getSchema(config.getSchemaPath());
-
+    const customRules = [
+      context => ({
+        Argument(node) {
+          if (!/^\d+$/.test(node.value.value)) {
+            context.reportError(new GraphQLError(
+              'Argument ID must be a number written in string type.',
+              [node],
+            ));
+          }
+        },
+      }),
+    ];
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
     expect(errors.length).to.equal(1);
     expect(errors[0].message).to.equal(
