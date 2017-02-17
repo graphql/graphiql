@@ -15,9 +15,9 @@ import {beforeEach, describe, it} from 'mocha';
 import fs from 'fs';
 import {getNamedType} from 'graphql/type';
 import {buildSchema} from 'graphql/utilities';
+import {Position} from 'graphql-language-service-utils';
 import path from 'path';
 
-import {Position} from '../../utils/Range';
 import {
   getAutocompleteSuggestions,
 } from '../getAutocompleteSuggestions';

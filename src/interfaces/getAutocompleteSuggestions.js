@@ -19,7 +19,7 @@ import type {
   State,
   TypeInfo,
 } from 'graphql-language-service-types';
-import type {Position} from '../utils/Range';
+import type {Position} from 'graphql-language-service-utils';
 
 import {
   isInputType,

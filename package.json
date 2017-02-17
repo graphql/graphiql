@@ -37,6 +37,7 @@
     "graphql-language-service-config": "^0.0.1",
     "graphql-language-service-parser": "^0.0.1",
     "graphql-language-service-types": "^0.0.6",
+    "graphql-language-service-utils": "^0.0.1",
     "nullthrows": "^1.0.0",
     "yargs": "^6.5.0"
   },

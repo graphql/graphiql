@@ -16,8 +16,7 @@ import type {
 
 import {parse, visit} from 'graphql';
 import {INLINE_FRAGMENT} from 'graphql/language/kinds';
-
-import {offsetToPosition} from '../utils/Range';
+import {offsetToPosition} from 'graphql-language-service-utils';
 
 const OUTLINEABLE_KINDS = {
   Field: true,

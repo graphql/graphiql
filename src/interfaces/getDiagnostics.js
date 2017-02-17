@@ -21,12 +21,11 @@ import {
   CharacterStream,
   onlineParser,
 } from 'graphql-language-service-parser';
-
 import {
   Position,
   Range,
-} from '../utils/Range';
-import {validateWithCustomRules} from '../utils/validateWithCustomRules';
+  validateWithCustomRules,
+} from 'graphql-language-service-utils';
 
 const SEVERITY = {
   ERROR: 1,
