@@ -13,9 +13,9 @@ import type {GraphQLSchema} from 'graphql';
 import invariant from 'assert';
 import fs from 'fs';
 import {buildSchema, buildClientSchema} from 'graphql';
+import {Position} from 'graphql-language-service-utils';
 import path from 'path';
 
-import {Position} from './utils/Range';
 import {
   getAutocompleteSuggestions,
 } from './interfaces/getAutocompleteSuggestions';

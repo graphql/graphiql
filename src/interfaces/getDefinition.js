@@ -18,8 +18,10 @@ import type {
   FragmentInfo,
   Uri,
 } from 'graphql-language-service-types';
-
-import {offsetToPosition, locToRange} from '../utils/Range';
+import {
+  locToRange,
+  offsetToPosition,
+} from 'graphql-language-service-utils';
 
 export const LANGUAGE = 'GraphQL';
 

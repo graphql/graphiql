@@ -19,8 +19,8 @@ import type {
   Diagnostic,
   Uri,
 } from 'graphql-language-service-types';
+import type {Position} from 'graphql-language-service-utils';
 import type {GraphQLCache} from '../server/GraphQLCache';
-import type {Position} from '../utils/Range';
 
 import {
   FRAGMENT_SPREAD,
@@ -35,7 +35,7 @@ import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
-import {getASTNodeAtPosition} from '../utils/getASTNodeAtPosition';
+import {getASTNodeAtPosition} from 'graphql-language-service-utils';
 
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
