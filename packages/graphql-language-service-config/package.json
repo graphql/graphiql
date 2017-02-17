@@ -28,7 +28,7 @@
     "prepublish": "node scripts/prepublish.js"
   },
   "dependencies": {
-    "graphql-language-service-types": "^0.0.6"
+    "graphql-language-service-types": "^0.0.7"
   },
   "devDependencies": {
     "babel-cli": "6.23.0",
