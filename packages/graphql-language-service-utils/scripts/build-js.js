@@ -11,4 +11,4 @@
 import {join} from 'path';
 import {exec} from './util';
 
-exec('babel', 'src', '--out-dir', 'dist');
+exec('babel', 'src', '--ignore', '**/__tests__/**', '--out-dir', 'dist');
