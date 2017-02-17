@@ -6,9 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-var chai = require('chai');
-
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', error => {
+  /* eslint-disable no-console */
   console.error('Unhandled Promise Rejection:');
   console.error(error && error.stack || error);
+  /* eslint-enable no-console */
 });
