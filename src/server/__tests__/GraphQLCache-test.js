@@ -9,7 +9,7 @@
  */
 
 import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import {beforeEach, describe, it} from 'mocha';
 import {join} from 'path';
 
 import {getGraphQLCache} from '../GraphQLCache';
