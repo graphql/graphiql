@@ -10,7 +10,6 @@
 
 import type {Uri} from 'graphql-language-service-types';
 import type {WatchmanCommandResponse} from '../GraphQLWatchman';
-import type {GraphQLWatchman} from '../GraphQLWatchman';
 
 class MockWatchmanClient {
   checkVersion(): Promise<void> {
