@@ -1,5 +1,0 @@
-query WithFragmentDependencies {
-  hero {
-    ...heroFragment
-  }
-}
