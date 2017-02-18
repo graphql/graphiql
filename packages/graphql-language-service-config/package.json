@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-config",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A tool-kit for accessing and using `.graphqlrc` configuration files",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",

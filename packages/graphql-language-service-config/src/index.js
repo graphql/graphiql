@@ -8,7 +8,11 @@
  *  @flow
  */
 
-import type {Uri} from 'graphql-language-service-types';
+import type {
+  GraphQLRC as GraphQLRCInterface,
+  GraphQLConfig as GraphQLConfigInterface,
+  Uri,
+} from 'graphql-language-service-types';
 
 import path from 'path';
 import fs from 'fs';
@@ -68,7 +72,7 @@ export async function getGraphQLConfig(configDir: Uri): Promise<GraphQLRC> {
   }
 }
 
-export class GraphQLRC {
+export class GraphQLRC implements GraphQLRCInterface {
   _graphqlrc: Object;
   _rootDir: Uri;
   _configs: {[name: string]: GraphQLConfig};
@@ -88,15 +92,15 @@ export class GraphQLRC {
     }
   }
 
-  getConfigDir() {
+  getConfigDir = (): Uri => {
     return this._rootDir;
   }
 
-  getConfigNames(): Array<string> {
+  getConfigNames = (): Array<string> => {
     return Object.keys(this._graphqlrc[CONFIG_LIST_NAME]);
   }
 
-  getConfig(name: string): GraphQLConfig {
+  getConfig = (name: string): GraphQLConfig => {
     const config = this._configs[name];
     if (config === undefined) {
       throw new Error(
@@ -107,7 +111,7 @@ export class GraphQLRC {
     return config;
   }
 
-  getConfigByFilePath(filePath: Uri): ?GraphQLConfig {
+  getConfigByFilePath = (filePath: Uri): ?GraphQLConfig => {
     const name = this.getConfigNames().find(configName =>
       this.getConfig(configName).isFileInInputDirs(filePath),
     );
@@ -116,7 +120,7 @@ export class GraphQLRC {
   }
 }
 
-export class GraphQLConfig {
+export class GraphQLConfig implements GraphQLConfigInterface {
   _config: Object;
   _name: string;
   _rootDir: Uri;
@@ -127,27 +131,27 @@ export class GraphQLConfig {
     this._config = config;
   }
 
-  getRootDir(): Uri {
+  getRootDir = (): Uri => {
     return this._rootDir;
   }
 
-  getName(): string {
+  getName = (): string => {
     return this._name;
   }
 
-  getConfig(): Object {
+  getConfig = (): Object => {
     return this._config;
   }
 
-  getInputDirs(): Array<string> {
+  getInputDirs = (): Array<string> => {
     return this._config['input-dirs'] ? this._config['input-dirs'] : [];
   }
 
-  getExcludeDirs(): Array<string> {
+  getExcludeDirs = (): Array<string> => {
     return this._config['exclude-dirs'] ? this._config['exclude-dirs'] : [];
   }
 
-  isFileInInputDirs(fileName: string): boolean {
+  isFileInInputDirs = (fileName: string): boolean => {
     if (!this.getInputDirs()) {
       return false;
     }
@@ -156,11 +160,11 @@ export class GraphQLConfig {
     );
   }
 
-  getSchemaPath(): ?Uri {
+  getSchemaPath = (): ?Uri => {
     return this._config[SCHEMA_PATH] || null;
   }
 
-  getCustomValidationRulesModulePath(): ?Uri {
+  getCustomValidationRulesModulePath = (): ?Uri => {
     const modulePath = this._config[CUSTOM_VALIDATION_RULES_MODULE_PATH];
     if (!modulePath) {
       return null;
