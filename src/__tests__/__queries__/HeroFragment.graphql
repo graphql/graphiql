@@ -1,7 +1,0 @@
-fragment HeroFragment on Human {
-  id
-  name
-  friends {
-    name
-  }
-}
