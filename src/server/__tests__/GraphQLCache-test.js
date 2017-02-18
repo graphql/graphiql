@@ -9,12 +9,14 @@
  */
 
 import {expect} from 'chai';
+import {GraphQLSchema} from 'graphql/type';
+import {parse} from 'graphql/language';
+import {getGraphQLConfig} from 'graphql-language-service-config';
 import {beforeEach, describe, it} from 'mocha';
 import {join} from 'path';
 
-import {getGraphQLCache} from '../GraphQLCache';
-import {GraphQLSchema} from 'graphql/type';
-import {parse} from 'graphql/language';
+import {GraphQLCache} from '../GraphQLCache';
+import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
 describe('GraphQLCache', () => {
   let cache;
@@ -22,8 +24,10 @@ describe('GraphQLCache', () => {
   let config;
 
   beforeEach(async () => {
-    cache = await getGraphQLCache(join(__dirname, '..', '..', '__tests__'));
-    graphQLRC = cache.getGraphQLRC();
+    const watchmanClient = new MockWatchmanClient();
+    const configDir = join(__dirname, '..', '..', '__tests__');
+    graphQLRC = await getGraphQLConfig(configDir);
+    cache = new GraphQLCache(configDir, graphQLRC, watchmanClient);
     config = graphQLRC.getConfig('test');
   });
 
