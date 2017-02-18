@@ -51,7 +51,9 @@ export class ToolbarSelect extends React.Component {
     return (
       <a
         className="toolbar-select toolbar-button"
+        onBlur={this.handleBlur.bind(this)}
         onClick={this.handleOpen.bind(this)}
+        onFocus={this.handleFocus.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {this._node = node;}}
         tabIndex="0"
@@ -82,12 +84,22 @@ export class ToolbarSelect extends React.Component {
     }
   }
 
+  handleBlur(e) {
+    preventDefault(e);
+    this.setState({ visible: false });
+  }
+
   handleClick(e) {
     if (this._node !== e.target) {
       preventDefault(e);
       this.setState({ visible: false });
       this._release();
     }
+  }
+
+  handleFocus(e) {
+    preventDefault(e);
+    this.setState({ visible: true });
   }
 
   handleOpen = e => {
