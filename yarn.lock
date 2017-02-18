@@ -1229,6 +1229,12 @@ graphql-language-service-types@^0.0.7:
   dependencies:
     graphql "0.9.1"
 
+graphql-language-service-types@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.9.tgz#af11f448b7638f4c51a30763e90cfb58a63c111a"
+  dependencies:
+    graphql "0.9.1"
+
 graphql-language-service-utils@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.2.tgz#6873d5b434ae54e4fbfa3a7e8d0eca152393c410"
