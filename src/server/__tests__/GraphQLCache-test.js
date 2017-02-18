@@ -10,21 +10,28 @@
 
 import {expect} from 'chai';
 import {describe, it} from 'mocha';
+import {join} from 'path';
 
 import {getGraphQLCache} from '../GraphQLCache';
 import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
 
-describe('GraphQLCache', async () => {
-  const cache = await getGraphQLCache(__dirname);
-  const graphQLRC = cache.getGraphQLRC();
-  const config = graphQLRC.getConfig('test');
+describe('GraphQLCache', () => {
+  let cache;
+  let graphQLRC;
+  let config;
+
+  beforeEach(async () => {
+    cache = await getGraphQLCache(join(__dirname, '..', '..', '__tests__'));
+    graphQLRC = cache.getGraphQLRC();
+    config = graphQLRC.getConfig('test');
+  });
 
   describe('getSchema', () => {
     it('generates the schema correctly', async () => {
       const schemaPath = config.getSchemaPath();
       const schema = await cache.getSchema(schemaPath);
-      expect(schema instanceof GraphQLSchema).toEqual(true);
+      expect(schema instanceof GraphQLSchema).to.equal(true);
     });
   });
 
@@ -59,7 +66,7 @@ describe('GraphQLCache', async () => {
         ast,
         fragmentDefinitions,
       );
-      expect(result.length).toEqual(1);
+      expect(result.length).to.equal(1);
     });
   });
 });
