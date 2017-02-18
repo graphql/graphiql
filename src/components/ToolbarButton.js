@@ -33,6 +33,7 @@ export class ToolbarButton extends React.Component {
         className={'toolbar-button' + (error ? ' error' : '')}
         onMouseDown={preventDefault}
         onClick={this.handleClick}
+        tabIndex="0"
         title={error ? error.message : this.props.title}>
         {this.props.label}
       </a>

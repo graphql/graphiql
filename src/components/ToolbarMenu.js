@@ -37,6 +37,7 @@ export class ToolbarMenu extends React.Component {
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {this._node = node;}}
+        tabIndex="0"
         title={this.props.title}>
         {this.props.label}
         <svg width="14" height="8">
@@ -85,6 +86,7 @@ export function ToolbarMenuItem({ onSelect, title, label }) {
       onMouseOut={e => { e.target.className = null; }}
       onMouseDown={preventDefault}
       onMouseUp={onSelect}
+      tabIndex="0"
       title={title}>
       {label}
     </li>

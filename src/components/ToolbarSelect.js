@@ -54,6 +54,7 @@ export class ToolbarSelect extends React.Component {
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {this._node = node;}}
+        tabIndex="0"
         title={this.props.title}>
         {selectedChild.props.label}
         <svg width="13" height="10">
@@ -103,7 +104,8 @@ export function ToolbarSelectOption({ onSelect, label, selected }) {
       onMouseOver={e => { e.target.className = 'hover'; }}
       onMouseOut={e => { e.target.className = null; }}
       onMouseDown={preventDefault}
-      onMouseUp={onSelect}>
+      onMouseUp={onSelect}
+      tabIndex="0">
       {label}
       {selected &&
         <svg width="13" height="13">
