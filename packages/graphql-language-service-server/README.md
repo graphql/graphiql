@@ -1,3 +1,3 @@
-# graphql-language-service-utils
+# graphql-language-service-server
 
-Utilities to support the [GraphQL Language Service](https://github.com/graphql/graphql-language-service).
+Server process backing the [GraphQL Language Service](https://github.com/graphql/graphql-language-service).
