@@ -8,5 +8,45 @@
  *  @flow
  */
 
-export default class MockWatchmanClient {
+import type {Uri} from 'graphql-language-service-types';
+import type {WatchmanCommandResponse} from '../GraphQLWatchman';
+import type {GraphQLWatchman} from '../GraphQLWatchman';
+
+class MockWatchmanClient {
+  checkVersion(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  listFiles(
+    entryPath: Uri,
+    options?: {[name: string]: any} = {},
+  ): Promise<Array<any>> {
+    return Promise.resolve([]);
+  }
+
+  runCommand(...args: Array<any>): Promise<any> {
+    return Promise.resolve();
+  }
+
+  watchProject(directoryPath: Uri): Promise<WatchmanCommandResponse> {
+    return Promise.resolve({
+      version: '',
+      relative_path: '',
+      watcher: '',
+      watch: '',
+    });
+  }
+
+  subscribe(
+    entryPath: Uri,
+    callback: (result: Object) => void,
+  ): Promise<void> {
+    return Promise.resolve();
+  }
+
+  dispose(): void {
+  }
 }
+
+export default (MockWatchmanClient: any);
+// export default (MockWatchmanClient: any);

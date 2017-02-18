@@ -12,7 +12,7 @@ import type {Uri} from 'graphql-language-service-types';
 
 import watchman from 'fb-watchman';
 
-type WatchmanCommandResponse = {
+export type WatchmanCommandResponse = {
   version: string,
   relative_path: Uri,
   watcher: string,
