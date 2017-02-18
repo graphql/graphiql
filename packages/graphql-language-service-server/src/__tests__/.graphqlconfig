@@ -1,0 +1,11 @@
+{
+  "inputDirs": ["__queries__"],
+  "excludeDirs": ["__excludedQueries__"],
+  "extensions": {
+    "testWithSchema": {
+      "schemaPath": "__schema__/StarWarsSchema.graphql"
+    },
+    "testWithoutSchema": {
+    }
+  }
+}
