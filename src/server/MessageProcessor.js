@@ -11,12 +11,14 @@
 import type {Diagnostic, Uri} from 'graphql-language-service-types';
 
 import {findGraphQLConfigDir} from 'graphql-language-service-config';
+import {
+  getOutline,
+  GraphQLLanguageService,
+} from 'graphql-language-service-interface';
 import {Position} from 'graphql-language-service-utils';
 import path from 'path';
 
 import {getGraphQLCache} from './GraphQLCache';
-import {getOutline} from '../interfaces/getOutline';
-import {GraphQLLanguageService} from '../interfaces/GraphQLLanguageService';
 
 // Response message error codes
 const ERROR_CODES = {

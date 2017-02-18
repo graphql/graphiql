@@ -9,22 +9,33 @@
  */
 
 import {expect} from 'chai';
-import {describe, it} from 'mocha';
-
-import {getGraphQLCache} from '../GraphQLCache';
 import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
+import {getGraphQLConfig} from 'graphql-language-service-config';
+import {beforeEach, describe, it} from 'mocha';
+import {join} from 'path';
 
-describe('GraphQLCache', async () => {
-  const cache = await getGraphQLCache(__dirname);
-  const graphQLRC = cache.getGraphQLRC();
-  const config = graphQLRC.getConfig('test');
+import {GraphQLCache} from '../GraphQLCache';
+import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
+
+describe('GraphQLCache', () => {
+  let cache;
+  let graphQLRC;
+  let config;
+
+  beforeEach(async () => {
+    const watchmanClient = new MockWatchmanClient();
+    const configDir = join(__dirname, '..', '..', '__tests__');
+    graphQLRC = await getGraphQLConfig(configDir);
+    cache = new GraphQLCache(configDir, graphQLRC, watchmanClient);
+    config = graphQLRC.getConfig('test');
+  });
 
   describe('getSchema', () => {
     it('generates the schema correctly', async () => {
       const schemaPath = config.getSchemaPath();
       const schema = await cache.getSchema(schemaPath);
-      expect(schema instanceof GraphQLSchema).toEqual(true);
+      expect(schema instanceof GraphQLSchema).to.equal(true);
     });
   });
 
@@ -59,7 +70,7 @@ describe('GraphQLCache', async () => {
         ast,
         fragmentDefinitions,
       );
-      expect(result.length).toEqual(1);
+      expect(result.length).to.equal(1);
     });
   });
 });

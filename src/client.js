@@ -13,14 +13,13 @@ import type {GraphQLSchema} from 'graphql';
 import invariant from 'assert';
 import fs from 'fs';
 import {buildSchema, buildClientSchema} from 'graphql';
-import {Position} from 'graphql-language-service-utils';
-import path from 'path';
-
 import {
   getAutocompleteSuggestions,
-} from './interfaces/getAutocompleteSuggestions';
-import {getDiagnostics} from './interfaces/getDiagnostics';
-import {getOutline} from './interfaces/getOutline';
+  getDiagnostics,
+  getOutline,
+} from 'graphql-language-service-interface';
+import {Position} from 'graphql-language-service-utils';
+import path from 'path';
 
 const GRAPHQL_SUCCESS_CODE = 0;
 const GRAPHQL_FAILURE_CODE = 1;
