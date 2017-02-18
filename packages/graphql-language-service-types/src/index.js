@@ -75,15 +75,15 @@ export type GraphQLConfigurationExtension = {
 };
 
 export interface GraphQLConfig {
-  getAppConfigNameByFilePath: (filePath: Uri) => ?string,
-  getRootDir: () => Uri,
-  getConfig(): () => GraphQLConfiguration,
-  getName: () => string,
-  getInputDirs: (appName: ?string) => Array<Uri>,
-  getExcludeDirs: (appName: ?string) => Array<Uri>,
-  isFileInInputDirs: (fileName: Uri, appName: ?string) => boolean,
-  getSchemaPath: (appName: ?string) => ?Uri,
-  getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
+  +getAppConfigNameByFilePath: (filePath: Uri) => ?string,
+  +getRootDir: () => Uri,
+  +getConfig: () => GraphQLConfiguration,
+  +getName: () => string,
+  +getInputDirs: (appName: ?string) => Array<Uri>,
+  +getExcludeDirs: (appName: ?string) => Array<Uri>,
+  +isFileInInputDirs: (fileName: Uri, appName: ?string) => boolean,
+  +getSchemaPath: (appName: ?string) => ?Uri,
+  +getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
 }
 
 export interface GraphQLCache {
