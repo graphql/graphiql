@@ -10,8 +10,10 @@
 
 import type {ASTNode} from 'graphql/language';
 import type {
+  GraphQLConfig,
   GraphQLFileMetadata,
   GraphQLFileInfo,
+  GraphQLRC,
   FragmentInfo,
   Uri,
 } from 'graphql-language-service-types';
@@ -28,11 +30,7 @@ import {
 import nullthrows from 'nullthrows';
 
 import {FRAGMENT_DEFINITION} from 'graphql/language/kinds';
-import {
-  getGraphQLConfig,
-  GraphQLRC,
-  GraphQLConfig,
-} from 'graphql-language-service-config';
+import {getGraphQLConfig} from 'graphql-language-service-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 
 // Maximum files to read when processing GraphQL files.
@@ -69,14 +67,12 @@ export class GraphQLCache {
     this._fragmentDefinitionsCache = new Map();
   }
 
-  getGraphQLRC(): GraphQLRC {
-    return this._graphQLRC;
-  }
+  getGraphQLRC = (): GraphQLRC => this._graphQLRC;
 
-  async getFragmentDependencies(
+  getFragmentDependencies = async (
     query: string,
     fragmentDefinitions: ?Map<string, FragmentInfo>,
-  ): Promise<Array<FragmentInfo>> {
+  ): Promise<Array<FragmentInfo>> => {
     // If there isn't context for fragment references,
     // return an empty array.
     if (!fragmentDefinitions) {
@@ -94,12 +90,12 @@ export class GraphQLCache {
       parsedQuery,
       fragmentDefinitions,
     );
-  }
+  };
 
-  async getFragmentDependenciesForAST(
+  getFragmentDependenciesForAST = async (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, FragmentInfo>,
-  ): Promise<Array<FragmentInfo>> {
+  ): Promise<Array<FragmentInfo>> => {
     if (!fragmentDefinitions) {
       return [];
     }
@@ -145,11 +141,11 @@ export class GraphQLCache {
     });
 
     return referencedFragments;
-  }
+  };
 
-  async getFragmentDefinitions(
+  getFragmentDefinitions = async (
     graphQLConfig: GraphQLConfig,
-  ): Promise<Map<string, FragmentInfo>> {
+  ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
     const rootDir = graphQLConfig.getRootDir();
@@ -182,7 +178,7 @@ export class GraphQLCache {
     this._subscribeToFileChanges(rootDir, inputDirs, excludeDirs);
 
     return fragmentDefinitions;
-  }
+  };
 
   /**
    * Subscribes to the file changes and update the cache accordingly.
@@ -323,7 +319,7 @@ export class GraphQLCache {
     return fragmentDefinitionCache;
   }
 
-  async getSchema(configSchemaPath: ?Uri): Promise<?GraphQLSchema> {
+  getSchema = async (configSchemaPath: ?Uri): Promise<?GraphQLSchema> => {
     if (!configSchemaPath) {
       return null;
     }

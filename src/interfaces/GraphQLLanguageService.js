@@ -10,17 +10,15 @@
 
 import type {ASTNode} from 'graphql/language';
 import type {
-  GraphQLRC,
-  GraphQLConfig,
-} from 'graphql-language-service-config';
-import type {
   CompletionItem,
   DefinitionQueryResult,
   Diagnostic,
+  GraphQLCache,
+  GraphQLConfig,
+  GraphQLRC,
   Uri,
 } from 'graphql-language-service-types';
 import type {Position} from 'graphql-language-service-utils';
-import type {GraphQLCache} from '../server/GraphQLCache';
 
 import {
   FRAGMENT_SPREAD,
