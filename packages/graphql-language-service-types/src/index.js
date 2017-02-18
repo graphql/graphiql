@@ -47,26 +47,47 @@ export interface CharacterStream {
 }
 
 // Cache and config-related.
-export interface GraphQLRC {
-  getConfigDir: () => Uri,
-  getConfigNames: () => Array<string>,
-  getConfig: (name: string) => GraphQLConfig,
-  getConfigByFilePath: (filePath: Uri) => ?GraphQLConfig,
-}
+export type GraphQLConfiguration = {
+  schemaPath?: string,  // may be .json or .graphql
+  schemaUrl?: string,
+  // If env is specified, use one of the app configs in here
+  env?: GraphQLConfigurationEnvs,
+
+  // For multiple applications with overlapping files,
+  // bottom configuration options may be helpful
+  inputDirs?: Array<string>,
+  excludeDirs?: Array<string>,
+
+  // If you have customized validation rules to run
+  customValidationRules?: string,
+
+  // If you'd like to specify any other configurations,
+  // we provide a reserved namespace for it
+  extensions?: GraphQLConfigurationExtension,
+};
+
+export type GraphQLConfigurationEnvs = {
+  [envVarName: string]: GraphQLConfiguration,
+};
+
+export type GraphQLConfigurationExtension = {
+  [toolName: string]: any,
+};
 
 export interface GraphQLConfig {
+  getAppConfigNameByFilePath: (filePath: Uri) => ?string,
   getRootDir: () => Uri,
+  getConfig(): () => GraphQLConfiguration,
   getName: () => string,
-  getConfig: () => Object,
-  getInputDirs: () => Array<string>,
-  getExcludeDirs: () => Array<string>,
-  isFileInInputDirs: (fileName: string) => boolean,
-  getSchemaPath: () => ?Uri,
-  getCustomValidationRulesModulePath: () => ?Uri,
+  getInputDirs: (appName: ?string) => Array<Uri>,
+  getExcludeDirs: (appName: ?string) => Array<Uri>,
+  isFileInInputDirs: (fileName: Uri, appName: ?string) => boolean,
+  getSchemaPath: (appName: ?string) => ?Uri,
+  getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
 }
 
 export interface GraphQLCache {
-  getGraphQLRC: () => GraphQLRC,
+  getGraphQLConfig: () => GraphQLConfig,
 
   getFragmentDependencies: (
     query: string,
