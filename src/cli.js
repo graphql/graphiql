@@ -10,7 +10,7 @@
 
 import yargs from 'yargs';
 import client from './client';
-import startServer from './server/startServer';
+import {startServer} from 'graphql-language-service-server';
 
 const {argv} = yargs
   .usage(
