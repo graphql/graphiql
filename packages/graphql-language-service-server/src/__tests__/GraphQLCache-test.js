@@ -11,31 +11,32 @@
 import {expect} from 'chai';
 import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
-import {getGraphQLConfig} from 'graphql-language-service-config';
 import {beforeEach, describe, it} from 'mocha';
-import {join} from 'path';
 
-import {GraphQLCache} from '../GraphQLCache';
+import {getGraphQLCache} from '../GraphQLCache';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
 describe('GraphQLCache', () => {
   let cache;
-  let graphQLRC;
   let config;
 
   beforeEach(async () => {
     const watchmanClient = new MockWatchmanClient();
-    const configDir = join(__dirname, '..', '__tests__');
-    graphQLRC = await getGraphQLConfig(configDir);
-    cache = new GraphQLCache(configDir, graphQLRC, watchmanClient);
-    config = graphQLRC.getConfig('test');
+    cache = await getGraphQLCache(__dirname);
+    config = cache.getGraphQLConfig();
   });
 
   describe('getSchema', () => {
-    it('generates the schema correctly', async () => {
-      const schemaPath = config.getSchemaPath();
+    it('generates the schema correctly for the test app config', async () => {
+      const schemaPath = config.getSchemaPath('testWithSchema');
       const schema = await cache.getSchema(schemaPath);
       expect(schema instanceof GraphQLSchema).to.equal(true);
+    });
+
+    it('does not generate a schema without a schema path', async () => {
+      const schemaPath = config.getSchemaPath('testWithoutSchema');
+      const schema = await cache.getSchema(schemaPath);
+      expect(schema instanceof GraphQLSchema).to.equal(false);
     });
   });
 

@@ -10,10 +10,8 @@
 
 import type {ASTNode} from 'graphql/language';
 import type {
-  GraphQLConfig,
   GraphQLFileMetadata,
   GraphQLFileInfo,
-  GraphQLRC,
   FragmentInfo,
   Uri,
 } from 'graphql-language-service-types';
@@ -30,25 +28,24 @@ import {
 import nullthrows from 'nullthrows';
 
 import {FRAGMENT_DEFINITION} from 'graphql/language/kinds';
-import {getGraphQLConfig} from 'graphql-language-service-config';
+import {getGraphQLConfig, GraphQLConfig} from 'graphql-language-service-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
 export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
-  const graphQLRC = await getGraphQLConfig(configDir);
+  const graphQLConfig = await getGraphQLConfig(configDir);
   const watchmanClient = new GraphQLWatchman();
   watchmanClient.checkVersion();
   watchmanClient.watchProject(configDir);
-  return new GraphQLCache(configDir, graphQLRC, watchmanClient);
+  return new GraphQLCache(configDir, graphQLConfig, watchmanClient);
 }
 
 export class GraphQLCache {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
-  _graphQLRC: GraphQLRC;
   _watchmanClient: GraphQLWatchman;
   _cachePromise: Promise<void>;
   _schemaMap: Map<Uri, GraphQLSchema>;
@@ -56,18 +53,18 @@ export class GraphQLCache {
 
   constructor(
     configDir: Uri,
-    graphQLRC: GraphQLRC,
+    graphQLConfig: GraphQLConfig,
     watchmanClient: GraphQLWatchman,
   ): void {
     this._configDir = configDir;
-    this._graphQLRC = graphQLRC;
+    this._graphQLConfig = graphQLConfig;
     this._watchmanClient = watchmanClient || new GraphQLWatchman();
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
     this._fragmentDefinitionsCache = new Map();
   }
 
-  getGraphQLRC = (): GraphQLRC => this._graphQLRC;
+  getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getFragmentDependencies = async (
     query: string,
@@ -145,6 +142,7 @@ export class GraphQLCache {
 
   getFragmentDefinitions = async (
     graphQLConfig: GraphQLConfig,
+    appName: ?string,
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
@@ -153,8 +151,8 @@ export class GraphQLCache {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const inputDirs = graphQLConfig.getInputDirs();
-    const excludeDirs = graphQLConfig.getExcludeDirs();
+    const inputDirs = graphQLConfig.getInputDirs(appName);
+    const excludeDirs = graphQLConfig.getExcludeDirs(appName);
     const filesFromInputDirs = await this._watchmanClient.listFiles(
       rootDir,
       {path: inputDirs},
@@ -442,7 +440,7 @@ function processGraphQLFiles(responses: Array<GraphQLFileInfo>): {
 function promiseToReadGraphQLFile(filePath: Uri): Promise<{
   filePath: Uri,
   content: string,
-  ast: ASTNode,
+  ast: ?ASTNode,
 }> {
   return new Promise((resolve, reject) =>
     fs.readFile(filePath, 'utf8', (error, content) => {
