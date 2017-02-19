@@ -15,7 +15,6 @@ import type {
   Diagnostic,
   GraphQLCache,
   GraphQLConfig,
-  GraphQLRC,
   Uri,
 } from 'graphql-language-service-types';
 import type {Position} from 'graphql-language-service-utils';
@@ -37,11 +36,11 @@ import {getASTNodeAtPosition} from 'graphql-language-service-utils';
 
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
-  _graphQLRC: GraphQLRC;
+  _graphQLConfig: GraphQLConfig;
 
   constructor(cache: GraphQLCache) {
     this._graphQLCache = cache;
-    this._graphQLRC = cache.getGraphQLRC();
+    this._graphQLConfig = cache.getGraphQLConfig();
   }
 
   async getDiagnostics(
@@ -49,16 +48,19 @@ export class GraphQLLanguageService {
     uri: Uri,
   ): Promise<Array<Diagnostic>> {
     let source = query;
-    const graphQLConfig = this._graphQLRC.getConfigByFilePath(uri);
+    const appName = this._graphQLConfig.getAppConfigNameByFilePath(uri);
     // If there's a matching config, proceed to prepare to run validation
     let schema;
     let customRules;
-    if (graphQLConfig && graphQLConfig.getSchemaPath()) {
+    if (this._graphQLConfig.getSchemaPath(appName)) {
       schema = await this._graphQLCache.getSchema(
-        graphQLConfig.getSchemaPath(),
+        this._graphQLConfig.getSchemaPath(),
       );
       const fragmentDefinitions =
-        await this._graphQLCache.getFragmentDefinitions(graphQLConfig);
+        await this._graphQLCache.getFragmentDefinitions(
+          this._graphQLConfig,
+          appName,
+        );
       const fragmentDependencies =
         await this._graphQLCache.getFragmentDependencies(
           query,
@@ -72,11 +74,11 @@ export class GraphQLLanguageService {
 
       // Check if there are custom validation rules to be used
       const customRulesModulePath =
-        graphQLConfig.getCustomValidationRulesModulePath();
+        this._graphQLConfig.getCustomValidationRulesModulePath(appName);
       if (customRulesModulePath) {
         const rulesPath = require.resolve(customRulesModulePath);
         if (rulesPath) {
-          customRules = require(rulesPath)(graphQLConfig);
+          customRules = require(rulesPath)(this._graphQLConfig);
         }
       }
     }
@@ -89,11 +91,11 @@ export class GraphQLLanguageService {
     position: Position,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
-    const graphQLConfig = this._graphQLRC.getConfigByFilePath(filePath);
+    const appName = this._graphQLConfig.getAppConfigNameByFilePath(filePath);
     let schema;
-    if (graphQLConfig && graphQLConfig.getSchemaPath()) {
+    if (this._graphQLConfig.getSchemaPath(appName)) {
       schema = await this._graphQLCache.getSchema(
-        graphQLConfig.getSchemaPath(),
+        this._graphQLConfig.getSchemaPath(appName),
       );
 
       return getAutocompleteSuggestions(schema, query, position) || [];
@@ -106,10 +108,7 @@ export class GraphQLLanguageService {
     position: Position,
     filePath: Uri,
   ): Promise<?DefinitionQueryResult> {
-    const graphQLConfig = this._graphQLRC.getConfigByFilePath(filePath);
-    if (!graphQLConfig) {
-      return null;
-    }
+    const appName = this._graphQLConfig.getAppConfigNameByFilePath(filePath);
 
     let ast;
     try {
@@ -126,7 +125,8 @@ export class GraphQLLanguageService {
           ast,
           node,
           filePath,
-          graphQLConfig,
+          this._graphQLConfig,
+          appName,
         );
       case FRAGMENT_DEFINITION:
       case OPERATION_DEFINITION:
@@ -146,9 +146,10 @@ export class GraphQLLanguageService {
     node: ASTNode,
     filePath: Uri,
     graphQLConfig: GraphQLConfig,
+    appName: ?string,
   ): Promise<?DefinitionQueryResult> {
     const fragmentDefinitions =
-      await this._graphQLCache.getFragmentDefinitions(graphQLConfig);
+      await this._graphQLCache.getFragmentDefinitions(graphQLConfig, appName);
 
     const dependencies = await this._graphQLCache.getFragmentDependenciesForAST(
       ast,

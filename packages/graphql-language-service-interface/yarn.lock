@@ -1152,6 +1152,12 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
+graphql-language-service-config@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.4.tgz#1b8d71dfd3b580509600eac7863df6e6ff137199"
+  dependencies:
+    graphql-language-service-types "^0.0.9"
+
 graphql-language-service-parser@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.2.tgz#57ac574494f66c37e48a0a4c331e6f68c841538f"
@@ -1161,6 +1167,12 @@ graphql-language-service-parser@^0.0.2:
 graphql-language-service-types@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.7.tgz#07c65f802971be737ea377d5e462bf9c5c7be288"
+  dependencies:
+    graphql "0.9.1"
+
+graphql-language-service-types@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.9.tgz#af11f448b7638f4c51a30763e90cfb58a63c111a"
   dependencies:
     graphql "0.9.1"
 

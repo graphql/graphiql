@@ -33,8 +33,9 @@
   },
   "dependencies": {
     "graphql": "^0.9.1",
+    "graphql-language-service-config": "^0.0.4",
     "graphql-language-service-parser": "^0.0.2",
-    "graphql-language-service-types": "^0.0.7",
+    "graphql-language-service-types": "^0.0.9",
     "graphql-language-service-utils": "^0.0.2"
   },
   "devDependencies": {
