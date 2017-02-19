@@ -14,7 +14,9 @@ import {cp} from './util';
 
 // Non-recursively copy src/*.js to dist/*.js.flow:
 readdirSync('src').forEach(entry => {
-  const source = join('src', entry);
-  const destination = join('dist', `${entry}.flow`);
-  cp(source, destination);
+  if (entry.endsWith('.js')) {
+    const source = join('src', entry);
+    const destination = join('dist', `${entry}.flow`);
+    cp(source, destination);
+  }
 });
