@@ -10,6 +10,7 @@
 
 import type {ASTNode} from 'graphql/language';
 import type {
+  GraphQLConfig as GraphQLConfigInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
@@ -64,7 +65,7 @@ export class GraphQLCache {
     this._fragmentDefinitionsCache = new Map();
   }
 
-  getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
+  getGraphQLConfig = (): GraphQLConfigInterface => this._graphQLConfig;
 
   getFragmentDependencies = async (
     query: string,
@@ -141,7 +142,7 @@ export class GraphQLCache {
   };
 
   getFragmentDefinitions = async (
-    graphQLConfig: GraphQLConfig,
+    graphQLConfig: GraphQLConfigInterface,
     appName: ?string,
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
