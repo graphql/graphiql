@@ -25,6 +25,7 @@
     <script src="./vendor/fetch.min.js"></script>
     <script src="./vendor/react-15.4.2.js"></script>
     <script src="./vendor/react-dom-15.4.2.js"></script>
+    <script src="./vendor/subscriptions-transport-ws-0.5.2.js"></script>
 
     <!-- Load each file individually for better debugging  -->
     <!-- Note that in practice, a compiled graphiql.css is included -->
@@ -103,26 +104,72 @@
         history.replaceState(null, null, newSearch);
       }
 
+      var subscriptionsClient;
+      var activeSubscriptionId = -1;
+
+      function initSubscriptions() {
+        var subscriptionsEndpoint = 'ws://' + window.location.hostname + (window.location.port ? ':' + window.location.port: '') + '/subscriptions';
+
+        if (window.SubscriptionsTransportWs && window.SubscriptionsTransportWs.SubscriptionClient) {
+          subscriptionsClient = new window.SubscriptionsTransportWs.SubscriptionClient(subscriptionsEndpoint, {
+            reconnect: true
+          });
+
+          subscriptionsClient.onConnect(function() {
+            console.log('Connected to GraphQL Subscriptions server...');
+          });
+        }
+      }
+
+      function graphQlSubscriptionFetcher(graphQLParams) {
+        return {
+          subscribe: function(observer) {
+            activeSubscriptionId = subscriptionsClient.subscribe({
+              query: graphQLParams.query,
+              variables: graphQLParams.variables
+            }, function(error, result) {
+              if (error) {
+                observer.error(error);
+              }
+              else {
+                observer.next(result);
+              }
+            });
+          }
+        }
+      }
+
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch('/graphql', {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(graphQLParams),
-          credentials: 'include',
-        }).then(function (response) {
-          return response.text();
-        }).then(function (responseBody) {
-          try {
-            return JSON.parse(responseBody);
-          } catch (error) {
-            return responseBody;
-          }
-        });
+        if (subscriptionsClient && activeSubscriptionId !== -1) {
+          subscriptionsClient.unsubscribe(activeSubscriptionId);
+        }
+
+        if (subscriptionsClient && graphQLParams.query.startsWith('subscription')) {
+          return graphQlSubscriptionFetcher(graphQLParams);
+        }
+        else {
+          return fetch('/graphql', {
+            method: 'post',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphQLParams),
+            credentials: 'include',
+          }).then(function (response) {
+            return response.text();
+          }).then(function (responseBody) {
+            try {
+              return JSON.parse(responseBody);
+            } catch (error) {
+              return responseBody;
+            }
+          });
+        }
       }
+
+      initSubscriptions();
 
       // Render <GraphiQL /> into the body.
       ReactDOM.render(
