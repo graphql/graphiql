@@ -14,14 +14,12 @@ import {parse} from 'graphql/language';
 import {beforeEach, describe, it} from 'mocha';
 
 import {getGraphQLCache} from '../GraphQLCache';
-import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
 describe('GraphQLCache', () => {
   let cache;
   let config;
 
   beforeEach(async () => {
-    const watchmanClient = new MockWatchmanClient();
     cache = await getGraphQLCache(__dirname);
     config = cache.getGraphQLConfig();
   });
