@@ -1194,9 +1194,9 @@ codemirror-graphql@^0.6.3:
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.3.tgz#01f8841dab54c69e9f182caed39bd376c5ba3cb4"
 
-codemirror@5.24.0:
-  version "5.24.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.24.0.tgz#6de108da4db9ab368f8ef7a9b822528a74513830"
+codemirror@5.24.2:
+  version "5.24.2"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.24.2.tgz#b55ca950fa009709c37df68eb133310ed89cf2fe"
 
 combine-source-map@~0.7.1:
   version "0.7.2"
