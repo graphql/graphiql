@@ -73,7 +73,7 @@
     "chai": "3.5.0",
     "chai-subset": "1.4.0",
     "codemirror": "5.22.2",
-    "eslint": "3.16.0",
+    "eslint": "3.16.1",
     "eslint-plugin-babel": "4.0.1",
     "eslint-plugin-flowtype": "2.30.0",
     "flow-bin": "0.38.0",
