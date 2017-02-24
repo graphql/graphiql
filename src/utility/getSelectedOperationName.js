@@ -31,7 +31,7 @@ export default function getSelectedOperationName(
   if (prevSelectedOperationName && prevOperations) {
     const prevNames = prevOperations.map(op => op.name && op.name.value);
     const prevIndex = prevNames.indexOf(prevSelectedOperationName);
-    if (prevIndex && prevIndex < names.length) {
+    if (prevIndex !== -1 && prevIndex < names.length) {
       return names[prevIndex];
     }
   }
