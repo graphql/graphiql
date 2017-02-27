@@ -660,28 +660,27 @@ export class GraphiQL extends React.Component {
   }
 
   handleEditQuery = debounce(100, value => {
-    if (this.state.schema) {
-      this.setState(
-        this._updateQueryFacts(
-          value,
-          this.state.operationName,
-          this.state.operations,
-          this.state.schema,
-        ),
-      );
-    }
-    this.setState({ query: value });
+    const queryFacts = this._updateQueryFacts(
+      value,
+      this.state.operationName,
+      this.state.operations,
+      this.state.schema,
+    );
+    this.setState({
+      query: value,
+      ...queryFacts
+    });
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
     }
   })
 
-  _updateQueryFacts = (query, operationName, operations, schema) => {
+  _updateQueryFacts = (query, operationName, prevOperations, schema) => {
     const queryFacts = getQueryFacts(schema, query);
     if (queryFacts) {
       // Update operation name should any query names change.
       const updatedOperationName = getSelectedOperationName(
-        operations,
+        prevOperations,
         operationName,
         queryFacts.operations
       );
