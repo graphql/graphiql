@@ -53,7 +53,8 @@ export class GraphiQL extends React.Component {
     response: PropTypes.string,
     storage: PropTypes.shape({
       getItem: PropTypes.func,
-      setItem: PropTypes.func
+      setItem: PropTypes.func,
+      removeItem: PropTypes.func
     }),
     defaultQuery: PropTypes.string,
     onEditQuery: PropTypes.func,
