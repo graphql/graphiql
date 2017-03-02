@@ -59,7 +59,7 @@
     "babel-plugin-transform-es2015-function-name": "6.9.0",
     "babel-plugin-transform-es2015-literals": "6.8.0",
     "babel-plugin-transform-es2015-modules-commonjs": "6.23.0",
-    "babel-plugin-transform-es2015-object-super": "6.8.0",
+    "babel-plugin-transform-es2015-object-super": "6.22.0",
     "babel-plugin-transform-es2015-parameters": "6.23.0",
     "babel-plugin-transform-es2015-shorthand-properties": "6.18.0",
     "babel-plugin-transform-es2015-spread": "6.8.0",
