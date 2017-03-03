@@ -41,7 +41,7 @@
     "graphql-language-service-types": "^0.0.9",
     "graphql-language-service-utils": "^0.0.3",
     "nullthrows": "^1.0.0",
-    "yargs": "^6.5.0"
+    "yargs": "^7.0.1"
   },
   "devDependencies": {
     "babel-cli": "6.23.0",
