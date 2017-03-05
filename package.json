@@ -71,7 +71,7 @@
     "eslint-plugin-react": "6.10.0",
     "express": "5.0.0-alpha.4",
     "express-graphql": "0.6.3",
-    "flow-bin": "0.40.0",
+    "flow-bin": "0.41.0",
     "graphql": "0.9.1",
     "jsdom": "9.11.0",
     "mocha": "3.2.0",
