@@ -31,6 +31,7 @@ export class VariableEditor extends React.Component {
     onHintInformationRender: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
+    editorOptions: PropTypes.object,
   }
 
   constructor(props) {
@@ -99,7 +100,8 @@ export class VariableEditor extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
+      ...this.props.editorOptions
     });
 
     this.editor.on('change', this._onEdit);

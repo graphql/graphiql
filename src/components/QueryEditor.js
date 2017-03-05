@@ -34,6 +34,7 @@ export class QueryEditor extends React.Component {
     onClickReference: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
+    editorOptions: PropTypes.object,
   }
 
   constructor(props) {
@@ -116,7 +117,8 @@ export class QueryEditor extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
+      ...this.props.editorOptions
     });
 
     this.editor.on('change', this._onEdit);

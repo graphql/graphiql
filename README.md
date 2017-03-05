@@ -96,7 +96,9 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `getDefaultFieldNames`: an optional function used to provide default fields to non-leaf fields which invalidly lack a selection set. Accepts a GraphQLType instance and returns an array of field names. If not provided, a default behavior will be used.
 
-- `editorTheme`: an optional string naming a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. Defaults to the `graphiql` theme. See below for full usage.
+- `editorTheme`: an optional string naming a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `VariableEditor` panes. Defaults to the `graphiql` theme. See below for full usage.
+
+- `editorOptions`: an optional object for overriding CodeMirror options to be qpplied to the `QueryEditor`, `ResultViewer`, and `VariableEditor` panes.
 
 **Children:**
 

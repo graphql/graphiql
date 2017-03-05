@@ -22,6 +22,7 @@ export class ResultViewer extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
+    editorOptions: PropTypes.object,
   }
 
   componentDidMount() {
@@ -52,7 +53,8 @@ export class ResultViewer extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
+      ...this.props.editorOptions
     });
   }
 
