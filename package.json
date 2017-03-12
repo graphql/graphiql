@@ -78,7 +78,7 @@
     "eslint-plugin-flowtype": "2.30.3",
     "flow-bin": "0.41.0",
     "graphql": "0.9.0",
-    "jsdom": "9.11.0",
+    "jsdom": "9.12.0",
     "mocha": "3.2.0",
     "sane": "1.6.0"
   }
