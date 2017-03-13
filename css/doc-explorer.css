@@ -121,6 +121,14 @@
   color: #1F61A0;
 }
 
+.graphiql-container .field-short-description {
+  color: #999;
+  margin-left: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .graphiql-container .enum-value {
   color: #0B7FC7;
 }
