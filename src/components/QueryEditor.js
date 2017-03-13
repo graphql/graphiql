@@ -120,7 +120,6 @@ export class QueryEditor extends React.Component {
     });
 
     this.editor.on('change', this._onEdit);
-    this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
   }
 
@@ -148,7 +147,6 @@ export class QueryEditor extends React.Component {
 
   componentWillUnmount() {
     this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
     this.editor.off('hasCompletion', this._onHasCompletion);
     this.editor = null;
   }
@@ -175,19 +173,6 @@ export class QueryEditor extends React.Component {
    */
   getClientHeight() {
     return this._node && this._node.clientHeight;
-  }
-
-  _onKeyUp = (cm, event) => {
-    const code = event.keyCode;
-    if (
-      (code >= 65 && code <= 90) || // letters
-      (!event.shiftKey && code >= 48 && code <= 57) || // numbers
-      (event.shiftKey && code === 189) || // underscore
-      (event.shiftKey && code === 50) || // @
-      (event.shiftKey && code === 57) // (
-    ) {
-      this.editor.execCommand('autocomplete');
-    }
   }
 
   _onEdit = () => {
