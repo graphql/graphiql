@@ -117,6 +117,20 @@ describe('graphql-hint', () => {
     checkSuggestions(directiveNames, suggestions.list);
   });
 
+  it('provides correct directive suggestions on definitions', async () => {
+    const suggestions = await getHintSuggestions(
+      'type Type @', { line: 0, ch: 11 });
+    const directiveNames = [ 'onAllDefs' ];
+    checkSuggestions(directiveNames, suggestions.list);
+  });
+
+  it('provides correct directive suggestions on args definitions', async () => {
+    const suggestions = await getHintSuggestions(
+      'type Type { field(arg: String @', { line: 0, ch: 31 });
+    const directiveNames = [ 'onArg', 'onAllDefs' ];
+    checkSuggestions(directiveNames, suggestions.list);
+  });
+
   it('provides correct typeCondition suggestions', async () => {
     const suggestions = await getHintSuggestions(
       '{ union { ... on ', { line: 0, ch: 17 });

@@ -215,7 +215,7 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   // Directive names
   if (kind === 'Directive') {
     const directives = schema.getDirectives().filter(
-      directive => canUseDirective(state.prevState.kind, directive)
+      directive => canUseDirective(state.prevState, directive)
     );
     return hintList(cursor, token, directives.map(directive => ({
       text: directive.name,
@@ -224,9 +224,11 @@ export default function getHintsAtPosition(schema, sourceText, cursor, token) {
   }
 }
 
-function canUseDirective(kind, directive) {
+function canUseDirective(state, directive) {
+  const kind = state.kind;
   const locations = directive.locations;
   switch (kind) {
+    // Operations
     case 'Query':
       return locations.indexOf('QUERY') !== -1;
     case 'Mutation':
@@ -242,6 +244,34 @@ function canUseDirective(kind, directive) {
       return locations.indexOf('FRAGMENT_SPREAD') !== -1;
     case 'InlineFragment':
       return locations.indexOf('INLINE_FRAGMENT') !== -1;
+
+    // Schema Definitions
+    case 'SchemaDef':
+      return locations.indexOf('SCHEMA') !== -1;
+    case 'ScalarDef':
+      return locations.indexOf('SCALAR') !== -1;
+    case 'ObjectTypeDef':
+      return locations.indexOf('OBJECT') !== -1;
+    case 'FieldDef':
+      return locations.indexOf('FIELD_DEFINITION') !== -1;
+    case 'InterfaceDef':
+      return locations.indexOf('INTERFACE') !== -1;
+    case 'UnionDef':
+      return locations.indexOf('UNION') !== -1;
+    case 'EnumDef':
+      return locations.indexOf('ENUM') !== -1;
+    case 'EnumValue':
+      return locations.indexOf('ENUM_VALUE') !== -1;
+    case 'InputDef':
+      return locations.indexOf('INPUT_OBJECT') !== -1;
+    case 'InputValueDef':
+      const prevStateKind = state.prevState && state.prevState.kind;
+      switch (prevStateKind) {
+        case 'ArgumentsDef':
+          return locations.indexOf('ARGUMENT_DEFINITION') !== -1;
+        case 'InputDef':
+          return locations.indexOf('INPUT_FIELD_DEFINITION') !== -1;
+      }
   }
   return false;
 }

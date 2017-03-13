@@ -20,6 +20,11 @@ import {
   GraphQLString,
   GraphQLID,
   GraphQLList,
+  GraphQLDirective,
+  GraphQLSkipDirective,
+  GraphQLIncludeDirective,
+  GraphQLDeprecatedDirective,
+  DirectiveLocation
 } from 'graphql';
 
 // Test Schema
@@ -182,8 +187,39 @@ const TestSubscriptionType = new GraphQLObjectType({
   }
 });
 
+const OnArgDirective = new GraphQLDirective({
+  name: 'onArg',
+  locations: [
+    DirectiveLocation.ARGUMENT_DEFINITION
+  ],
+});
+
+const OnAllDefsDirective = new GraphQLDirective({
+  name: 'onAllDefs',
+  locations: [
+    DirectiveLocation.SCHEMA,
+    DirectiveLocation.SCALAR,
+    DirectiveLocation.OBJECT,
+    DirectiveLocation.FIELD_DEFINITION,
+    DirectiveLocation.INTERFACE,
+    DirectiveLocation.UNION,
+    DirectiveLocation.ENUM,
+    DirectiveLocation.ENUM_VALUE,
+    DirectiveLocation.INPUT_OBJECT,
+    DirectiveLocation.ARGUMENT_DEFINITION,
+    DirectiveLocation.INPUT_FIELD_DEFINITION
+  ],
+});
+
 export const TestSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
-  subscription: TestSubscriptionType
+  subscription: TestSubscriptionType,
+  directives: [
+    GraphQLIncludeDirective,
+    GraphQLSkipDirective,
+    GraphQLDeprecatedDirective,
+    OnArgDirective,
+    OnAllDefsDirective
+  ]
 });
