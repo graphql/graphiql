@@ -12,6 +12,8 @@ import marked from 'marked';
 
 import onHasCompletion from '../utility/onHasCompletion';
 
+const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
+
 
 /**
  * QueryEditor
@@ -178,7 +180,7 @@ export class QueryEditor extends React.Component {
   }
 
   _onKeyUp = (cm, event) => {
-    if (event.key.length === 1 && event.key.match(/[a-zA-Z0-9_@(]/)) {
+    if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
       this.editor.execCommand('autocomplete');
     }
   }
