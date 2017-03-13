@@ -19,6 +19,7 @@
   padding: 10px 0 10px 10px;
   text-align: center;
   text-overflow: ellipsis;
+  user-select: initial;
   white-space: nowrap;
 }
 
