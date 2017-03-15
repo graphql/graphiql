@@ -35,6 +35,7 @@ import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import {QueryHistory} from './QueryHistory';
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -114,6 +115,7 @@ export class GraphiQL extends React.Component {
       docExplorerOpen:
         (this._storageGet('docExplorerOpen') === 'true') || false,
       docExplorerWidth: Number(this._storageGet('docExplorerWidth')) || 350,
+      historyOpen: false,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts
@@ -223,6 +225,19 @@ export class GraphiQL extends React.Component {
     this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
     this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
     this._storageSet('docExplorerOpen', this.state.docExplorerOpen);
+    this.queryStore.push({
+      query: this.state.query,
+      variables: this.state.variables || '',
+      operationName: this.state.operationName,
+    });
+  }
+
+  loadQuery(query) {
+    this.setState({
+      query: query.query,
+      variables: query.variables,
+      operationName: query.operationName
+    });
   }
 
   render() {
@@ -288,6 +303,7 @@ export class GraphiQL extends React.Component {
             ref={n => { this.editorBarComponent = n; }}
             className="editorBar"
             onMouseDown={this.handleResizeStart}>
+            <QueryHistory loadQuery={this.loadQuery.bind(this)} editorQueryID={this._editorQueryID} query={this.state.query} variables={this.state.variables} operationName={this.state.operationName} />
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
                 ref={n => { this.queryEditorComponent = n; }}
@@ -346,6 +362,7 @@ export class GraphiQL extends React.Component {
             </div>
           </DocExplorer>
         </div>
+
       </div>
     );
   }
