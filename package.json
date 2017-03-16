@@ -75,7 +75,7 @@
     "graphql": "0.9.1",
     "jsdom": "9.12.0",
     "mocha": "3.2.0",
-    "postcss-cli": "3.0.0-beta",
+    "postcss-cli": "3.0.0",
     "react": "15.4.2",
     "react-dom": "15.4.2",
     "react-test-renderer": "15.4.2",
