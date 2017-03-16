@@ -59,8 +59,9 @@ export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
+  contextToken?: ContextToken,
 ): Array<CompletionItem> {
-  const token = getTokenAtPosition(queryText, cursor);
+  const token = contextToken || getTokenAtPosition(queryText, cursor);
 
   const state = token.state.kind === 'Invalid' ?
     token.state.prevState :
@@ -334,9 +335,8 @@ function getSuggestionsForDirective(
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (state.prevState && state.prevState.kind) {
-    const stateKind = state.prevState.kind;
     const directives = schema.getDirectives().filter(
-      directive => canUseDirective(stateKind, directive),
+      directive => canUseDirective(state.prevState, directive),
     );
     return hintList(token, directives.map(directive => ({
       label: directive.name,
@@ -422,7 +422,14 @@ function runOnlineParser(
   };
 }
 
-function canUseDirective(kind: string, directive: GraphQLDirective): boolean {
+function canUseDirective(
+  state: $PropertyType<State, 'prevState'>,
+  directive: GraphQLDirective,
+): boolean {
+  if (!state || !state.kind) {
+    return false;
+  }
+  const kind = state.kind;
   const locations = directive.locations;
   switch (kind) {
     case 'Query':
@@ -440,6 +447,34 @@ function canUseDirective(kind: string, directive: GraphQLDirective): boolean {
       return locations.indexOf('FRAGMENT_SPREAD') !== -1;
     case 'InlineFragment':
       return locations.indexOf('INLINE_FRAGMENT') !== -1;
+
+    // Schema Definitions
+    case 'SchemaDef':
+      return locations.indexOf('SCHEMA') !== -1;
+    case 'ScalarDef':
+      return locations.indexOf('SCALAR') !== -1;
+    case 'ObjectTypeDef':
+      return locations.indexOf('OBJECT') !== -1;
+    case 'FieldDef':
+      return locations.indexOf('FIELD_DEFINITION') !== -1;
+    case 'InterfaceDef':
+      return locations.indexOf('INTERFACE') !== -1;
+    case 'UnionDef':
+      return locations.indexOf('UNION') !== -1;
+    case 'EnumDef':
+      return locations.indexOf('ENUM') !== -1;
+    case 'EnumValue':
+      return locations.indexOf('ENUM_VALUE') !== -1;
+    case 'InputDef':
+      return locations.indexOf('INPUT_OBJECT') !== -1;
+    case 'InputValueDef':
+      const prevStateKind = state.prevState && state.prevState.kind;
+      switch (prevStateKind) {
+        case 'ArgumentsDef':
+          return locations.indexOf('ARGUMENT_DEFINITION') !== -1;
+        case 'InputDef':
+          return locations.indexOf('INPUT_FIELD_DEFINITION') !== -1;
+      }
   }
   return false;
 }

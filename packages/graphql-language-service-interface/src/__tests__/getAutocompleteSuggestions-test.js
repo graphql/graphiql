@@ -284,4 +284,21 @@ describe('getAutocompleteSuggestions', () => {
       {label: 'secretBackstory', detail: 'String'},
     ]);
   });
+
+  it('provides correct directive suggestions on definitions', () =>
+    expect(testSuggestions(
+      'type Type @', new Position(0, 11),
+    )).to.deep.equal([
+      {label: 'onAllDefs'},
+    ]),
+  );
+
+  it('provides correct directive suggestions on args definitions', () =>
+    expect(testSuggestions(
+      'type Type { field(arg: String @', new Position(0, 31),
+    )).to.deep.equal([
+      {label: 'onAllDefs'},
+      {label: 'onArg'},
+    ]),
+  );
 });
