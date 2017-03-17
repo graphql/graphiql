@@ -51,26 +51,6 @@ describe('graphql-lint', () => {
     ).to.not.have.lengthOf(0);
   });
 
-  it('catches syntax errors', async () => {
-    expect(
-      (await printLintErrors('qeury'))[0].message
-    ).to.contain('Unexpected Name "qeury"');
-  });
-
-  it('catches field validation errors', async () => {
-    expect(
-      (await printLintErrors('query queryName { title }'))[0].message
-    ).to.contain('Cannot query field "title" on type "Test".');
-  });
-
-  it('catches field deprecation errors', async () => {
-    expect(
-      (await printLintErrors('{ deprecatedTest { id } }'))[0].message
-    ).to.contain(
-      'The field Test.deprecatedTest is deprecated. Use test instead.'
-    );
-  });
-
   const kitchenSink = readFileSync(
     join(__dirname, '/kitchen-sink.graphql'),
     { encoding: 'utf8' }
