@@ -8,8 +8,12 @@
  */
 
 import CodeMirror from 'codemirror';
-import onlineParser from './utils/onlineParser';
-import { LexRules, ParseRules, isIgnored } from './utils/Rules';
+import {
+  LexRules,
+  ParseRules,
+  isIgnored,
+  onlineParser,
+} from 'graphql-language-service-parser';
 
 
 /**
@@ -35,8 +39,8 @@ import { LexRules, ParseRules, isIgnored } from './utils/Rules';
 CodeMirror.defineMode('graphql', config => {
   const parser = onlineParser({
     eatWhitespace: stream => stream.eatWhile(isIgnored),
-    LexRules,
-    ParseRules,
+    lexRules: LexRules,
+    parseRules: ParseRules,
     editorConfig: { tabSize: config.tabSize }
   });
 
