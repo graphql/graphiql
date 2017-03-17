@@ -1,10 +1,10 @@
-Contributing to GraphiQL
+Contributing to GraphQL Language Service
 ========================
 
 We want to make contributing to this project as easy and transparent as
 possible. Hopefully this document makes the process for contributing clear and
 answers any questions you may have. If not, feel free to open an
-[Issue](https://github.com/facebook/graphql/issues).
+[Issue](https://github.com/graphql/graphql-language-service/issues).
 
 ## Issues
 
@@ -18,16 +18,16 @@ outlined on that page and do not file a public issue.
 
 ## Pull Requests
 
-All active development of GraphiQL happens on GitHub. We actively welcome
-your [pull requests](https://help.github.com/articles/creating-a-pull-request).
+All active development of GraphQL Language Service happens on GitHub. We actively
+welcome your [pull requests](https://help.github.com/articles/creating-a-pull-request).
 
 ### Considered Changes
 
-Since GraphiQL is used both internally at Facebook and by a broad group
-externally, changes which are of obvious benefit are prioritized and changes
-which are specific to only some usage of GraphiQL should first consider if they
-may use the existing customization hooks or if they should expose a new
-customization hook.
+Since GraphQL Language Service is used both internally at Facebook and by a broad
+group externally, changes which are of obvious benefit are prioritized and changes
+which are specific to only some usage of GraphQL Language Service should first
+consider if they may use the existing customization hooks or if they should expose
+a new customization hook.
 
 ### Contributor License Agreement ("CLA")
 
@@ -43,7 +43,7 @@ Complete your CLA here: <https://code.facebook.com/cla>
 2. Check out your fork
 
    ```sh
-   git clone git@github.com:yournamehere/graphiql.git
+   git clone git@github.com:yournamehere/graphql-langauge-service.git
    ```
 
 3. Install or Update all dependencies
@@ -71,7 +71,7 @@ have recently run `git pull` and that all tests pass with `npm test`.
 Use `npm version patch|minor|major` in order to increment the version in
 package.json and tag and commit a release. Then `git push --follow-tags`
 this change so Travis CI can deploy to NPM. *Do not run `npm publish` directly.*
-Once published, add [release notes](https://github.com/graphql/graphql-js/tags).
+Once published, add [release notes](https://github.com/graphql/graphql-language-service/tags).
 Use [semver](http://semver.org/) to determine which version part to increment.
 
 Example for a patch release:
@@ -83,5 +83,5 @@ git push --follow-tags
 
 ## License
 
-By contributing to GraphiQL, you agree that your contributions will be
-licensed under the LICENSE file in the project root directory.
+By contributing to GraphQL Language Service, you agree that your contributions
+will be licensed under the LICENSE file in the project root directory.
