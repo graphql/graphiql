@@ -532,7 +532,7 @@ babel-runtime@^6.0.0, babel-runtime@^6.18.0, babel-runtime@^6.20.0, babel-runtim
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
 
-babel-template@^6.14.0, babel-template@^6.15.0, babel-template@^6.16.0, babel-template@^6.8.0:
+babel-template@^6.14.0, babel-template@^6.15.0, babel-template@^6.8.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-template/-/babel-template-6.16.0.tgz#e149dd1a9f03a35f817ddbc4d0481988e7ebc8ca"
   dependencies:
@@ -542,17 +542,7 @@ babel-template@^6.14.0, babel-template@^6.15.0, babel-template@^6.16.0, babel-te
     babylon "^6.11.0"
     lodash "^4.2.0"
 
-babel-template@^6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-template/-/babel-template-6.22.0.tgz#403d110905a4626b317a2a1fcb8f3b73204b2edb"
-  dependencies:
-    babel-runtime "^6.22.0"
-    babel-traverse "^6.22.0"
-    babel-types "^6.22.0"
-    babylon "^6.11.0"
-    lodash "^4.2.0"
-
-babel-template@^6.23.0:
+babel-template@^6.16.0, babel-template@^6.22.0, babel-template@^6.23.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-template/-/babel-template-6.23.0.tgz#04d4f270adbb3aa704a8143ae26faa529238e638"
   dependencies:
@@ -613,18 +603,18 @@ babel-types@^6.15.0, babel-types@^6.18.0, babel-types@^6.21.0, babel-types@^6.8.
     lodash "^4.2.0"
     to-fast-properties "^1.0.1"
 
-babel-types@^6.16.0, babel-types@^6.19.0, babel-types@^6.22.0:
-  version "6.22.0"
-  resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.22.0.tgz#2a447e8d0ea25d2512409e4175479fd78cc8b1db"
+babel-types@^6.16.0, babel-types@^6.19.0, babel-types@^6.23.0:
+  version "6.23.0"
+  resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.23.0.tgz#bb17179d7538bad38cd0c9e115d340f77e7e9acf"
   dependencies:
     babel-runtime "^6.22.0"
     esutils "^2.0.2"
     lodash "^4.2.0"
     to-fast-properties "^1.0.1"
 
-babel-types@^6.23.0:
-  version "6.23.0"
-  resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.23.0.tgz#bb17179d7538bad38cd0c9e115d340f77e7e9acf"
+babel-types@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-types/-/babel-types-6.22.0.tgz#2a447e8d0ea25d2512409e4175479fd78cc8b1db"
   dependencies:
     babel-runtime "^6.22.0"
     esutils "^2.0.2"
@@ -1297,9 +1287,44 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql@0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.0.tgz#ff9748a86ae81d4ecd2f2ba27fe5ac7a77734b1d"
+graphql-language-service-config@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.4.tgz#1b8d71dfd3b580509600eac7863df6e6ff137199"
+  dependencies:
+    graphql-language-service-types "^0.0.9"
+
+graphql-language-service-interface@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.3.tgz#56d8580b1fdfecd954ec0351e4d074511ecfc22d"
+  dependencies:
+    graphql "^0.9.1"
+    graphql-language-service-config "^0.0.4"
+    graphql-language-service-parser "^0.0.3"
+    graphql-language-service-types "^0.0.9"
+    graphql-language-service-utils "^0.0.3"
+
+graphql-language-service-parser@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.3.tgz#0b124e8ed78446bc4031b3c7c693b2f670bdc875"
+  dependencies:
+    graphql-language-service-types "^0.0.9"
+
+graphql-language-service-types@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.9.tgz#af11f448b7638f4c51a30763e90cfb58a63c111a"
+  dependencies:
+    graphql "0.9.1"
+
+graphql-language-service-utils@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.3.tgz#9339d4b3894167b75fe9fc88b0fe0cf761b4c965"
+  dependencies:
+    graphql "^0.9.1"
+    graphql-language-service-types "^0.0.9"
+
+graphql@0.9.1, graphql@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.1.tgz#f4d154cbec054d4a5d3b1be95f23435c09aa86c8"
   dependencies:
     iterall "1.0.3"
 

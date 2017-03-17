@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import getHintsAtPosition from './utils/getHintsAtPosition';
+import { getAutocompleteSuggestions } from 'graphql-language-service-interface';
 
 /**
  * Registers a "hint" helper for CodeMirror.
@@ -35,12 +35,42 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
 
   const cur = editor.getCursor();
   const token = editor.getTokenAt(cur);
-  const results = getHintsAtPosition(
+  const rawResults = getAutocompleteSuggestions(
     schema,
     editor.getValue(),
     cur,
     token
   );
+  /**
+   * GraphQL language service responds to the autocompletion request with
+   * a different format:
+   * type CompletionItem = {
+   *   label: string,
+   *   kind?: number,
+   *   detail?: string,
+   *   documentation?: string,
+   *   // GraphQL Deprecation information
+   *   isDeprecated?: ?string,
+   *   deprecationReason?: ?string,
+   * };
+   *
+   * Switch to codemirror-compliant format before returning results.
+   */
+  const tokenStart = token.type !== null && /"|\w/.test(token.string[0]) ?
+    token.start :
+    token.end;
+  const results = {
+    list: rawResults.map(item => ({
+      text: item.label,
+      type: item.detail,
+      description: item.documentation,
+      isDeprecated: item.isDeprecated,
+      deprecationReason: item.deprecationReason,
+    })),
+    from: { line: cur.line, column: tokenStart },
+    to: { line: cur.line, column: token.end },
+  };
+
   if (results && results.list && results.list.length > 0) {
     results.from = CodeMirror.Pos(results.from.line, results.from.column);
     results.to = CodeMirror.Pos(results.to.line, results.to.column);
