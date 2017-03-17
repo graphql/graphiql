@@ -35,7 +35,7 @@
     "fb-watchman": "^1.9.0",
     "graphql": "^0.9.1",
     "graphql-language-service-config": "^0.0.4",
-    "graphql-language-service-interface": "^0.0.3",
+    "graphql-language-service-interface": "^0.0.4",
     "graphql-language-service-types": "^0.0.9",
     "graphql-language-service-utils": "^0.0.3",
     "nullthrows": "^1.0.0"
