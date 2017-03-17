@@ -16,7 +16,7 @@ import type {
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
-import {parse} from 'graphql';
+import {findDeprecatedUsages, parse} from 'graphql';
 import {
   CharacterStream,
   onlineParser,
@@ -27,7 +27,7 @@ import {
   validateWithCustomRules,
 } from 'graphql-language-service-utils';
 
-const SEVERITY = {
+export const SEVERITY = {
   ERROR: 1,
   WARNING: 2,
   INFORMATION: 3,
@@ -56,9 +56,22 @@ export function getDiagnostics(
     }];
   }
 
-  const errors: Array<GraphQLError> = schema ?
-    validateWithCustomRules(schema, ast, customRules) : [];
-  return mapCat(errors, error => errorAnnotations(error));
+  // We cannot validate the query unless a schema is provided.
+  if (!schema) {
+    return [];
+  }
+
+  const validationErrorAnnotations = mapCat(
+    validateWithCustomRules(schema, ast, customRules),
+    error => annotations(error, SEVERITY.ERROR, 'Validation'),
+  );
+  // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
+  // support older versions of graphql-js.
+  const deprecationWarningAnnotations = !findDeprecatedUsages ? [] : mapCat(
+    findDeprecatedUsages(schema, ast),
+    error => annotations(error, SEVERITY.WARNING, 'Deprecation'),
+  );
+  return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
 // General utility for map-cating (aka flat-mapping).
@@ -69,8 +82,10 @@ function mapCat<T>(
   return Array.prototype.concat.apply([], array.map(mapper));
 }
 
-function errorAnnotations(
+function annotations(
   error: GraphQLError,
+  severity: number,
+  type: string,
 ): Array<Diagnostic> {
   if (!error.nodes) {
     return [];
@@ -85,9 +100,9 @@ function errorAnnotations(
     const loc = error.locations[0];
     const end = loc.column + (highlightNode.loc.end - highlightNode.loc.start);
     return {
-      source: 'GraphQL: Validation',
+      source: `GraphQL: ${type}`,
       message: error.message,
-      severity: SEVERITY.ERROR,
+      severity,
       range: new Range(
         new Position(loc.line - 1, loc.column - 1),
         new Position(loc.line - 1, end),

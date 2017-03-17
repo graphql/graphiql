@@ -60,4 +60,5 @@ type Query {
   human(id: String!): Human
   droid(id: String!): Droid
   inputTypeTest(args: InputType = {key: "key"}): TestType
+  deprecatedField: TestType @deprecated(reason: "Use test instead.")
 }
