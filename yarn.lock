@@ -1208,9 +1208,9 @@ graphql-language-service-interface@^0.0.2:
     graphql-language-service-types "^0.0.9"
     graphql-language-service-utils "^0.0.3"
 
-graphql-language-service-interface@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.3.tgz#56d8580b1fdfecd954ec0351e4d074511ecfc22d"
+graphql-language-service-interface@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.4.tgz#6ae20481312d81f2085494fa9d9a257e926282ad"
   dependencies:
     graphql "^0.9.1"
     graphql-language-service-config "^0.0.4"
