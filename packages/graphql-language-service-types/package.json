@@ -29,16 +29,5 @@
   },
   "dependencies": {
     "graphql": "0.9.1"
-  },
-  "devDependencies": {
-    "babel-cli": "6.23.0",
-    "babel-eslint": "7.1.0",
-    "babel-plugin-transform-flow-strip-types": "6.18.0",
-    "babel-types": "6.22.0",
-    "eslint": "3.15.0",
-    "eslint-plugin-babel": "3.3.0",
-    "eslint-plugin-dependencies": "2.0.0",
-    "eslint-plugin-flowtype": "2.29.1",
-    "flow-bin": "0.39.0"
   }
 }
