@@ -78,7 +78,7 @@
     "eslint-plugin-flowtype": "2.30.4",
     "eslint-plugin-prefer-object-spread": "1.1.0",
     "flow-bin": "0.39.0",
-    "lerna": "^2.0.0-beta.38",
+    "lerna": "https://github.com/lerna/lerna.git#a58ea09ebf80f66ba3e56bcb248ac5ab241505c3",
     "mocha": "3.1.2",
     "prettier": "^0.22.0"
   }
