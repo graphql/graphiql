@@ -64,10 +64,12 @@ Object.keys(versions).forEach(pkg => {
     conflictCount++;
     print(`${BOLD}${YELLOW}Package versions for ${pkg} do not match:${RESET}`);
     versionRanges.forEach(range => {
-      versions[pkg][range].forEach(dependent => {
+      const dependents = versions[pkg][range];
+      dependents.forEach(dependent => {
         print(`    ${dependent}`);
       });
-      print(`  depend on ${pkg} version ${range}`);
+      const pluralSuffix = dependents.length === 1 ? 's' : '';
+      print(`  depend${pluralSuffix} on ${pkg} version ${range}`);
     });
     print('');
   }
