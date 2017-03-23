@@ -35,11 +35,25 @@ const versions = {};
   }
 });
 
-let problemCount = 0;
+let unhoistedCount = 0;
+otherPackages.forEach(pkg => {
+  if (pkg.devDependencies) {
+    unhoistedCount++;
+    const message = `Package ${pkg.name} has devDependencies which should be ` +
+      'hoisted into the top-level package.json:';
+    print(message);
+    Object.keys(pkg.devDependencies).forEach(devDependency => {
+      print(`  ${devDependency}`);
+    });
+    print('');
+  }
+});
+
+let conflictCount = 0;
 Object.keys(versions).forEach(pkg => {
   versionRanges = Object.keys(versions[pkg]);
   if (versionRanges.length > 1) {
-    problemCount++;
+    conflictCount++;
     print(`Package versions for ${pkg} do not match:`);
     versionRanges.forEach(range => {
       versions[pkg][range].forEach(dependent => {
@@ -47,10 +61,17 @@ Object.keys(versions).forEach(pkg => {
       });
       print(`  depend on ${pkg} version ${range}`);
     });
+    print('');
   }
 });
 
-if (problemCount) {
-  print(`\nPackages with version conflicts: ${problemCount}`);
+if (unhoistedCount) {
+  print(`Packages with unhoisted devDependencies: ${unhoistedCount}`);
+}
+if (conflictCount) {
+  print(`Packages with version conflicts: ${conflictCount}`);
+}
+
+if (conflictCount || unhoistedCount) {
   process.exit(1);
 }
