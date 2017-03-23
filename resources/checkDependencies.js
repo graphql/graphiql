@@ -10,12 +10,20 @@
 const {readdirSync} = require('fs');
 const {join} = require('path');
 
+const BOLD = '\x1b[1m';
+const RESET = '\x1b[0m';
+const YELLOW = '\x1b[33m';
+
 const mainPackage = require('../package.json');
 const otherPackages = readdirSync('packages').map(pkg =>
   require(join(process.cwd(), 'packages', pkg, 'package.json')));
 
 function print(msg) {
   process.stdout.write(msg + '\n');
+}
+
+function printHighlight(msg) {
+  print(`${BOLD}${YELLOW}${msg}${RESET}`);
 }
 
 const versions = {};
@@ -41,7 +49,7 @@ otherPackages.forEach(pkg => {
     unhoistedCount++;
     const message = `Package ${pkg.name} has devDependencies which should be ` +
       'hoisted into the top-level package.json:';
-    print(message);
+    printHighlight(message);
     Object.keys(pkg.devDependencies).forEach(devDependency => {
       print(`  ${devDependency}`);
     });
@@ -54,7 +62,7 @@ Object.keys(versions).forEach(pkg => {
   versionRanges = Object.keys(versions[pkg]);
   if (versionRanges.length > 1) {
     conflictCount++;
-    print(`Package versions for ${pkg} do not match:`);
+    print(`${BOLD}${YELLOW}Package versions for ${pkg} do not match:${RESET}`);
     versionRanges.forEach(range => {
       versions[pkg][range].forEach(dependent => {
         print(`    ${dependent}`);
@@ -66,10 +74,10 @@ Object.keys(versions).forEach(pkg => {
 });
 
 if (unhoistedCount) {
-  print(`Packages with unhoisted devDependencies: ${unhoistedCount}`);
+  printHighlight(`Packages with unhoisted devDependencies: ${unhoistedCount}`);
 }
 if (conflictCount) {
-  print(`Packages with version conflicts: ${conflictCount}`);
+  printHighlight(`Packages with version conflicts: ${conflictCount}`);
 }
 
 if (conflictCount || unhoistedCount) {
