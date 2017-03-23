@@ -26,6 +26,20 @@ function printHighlight(msg) {
   print(`${BOLD}${YELLOW}${msg}${RESET}`);
 }
 
+let unhoistedCount = 0;
+otherPackages.forEach(pkg => {
+  if (pkg.devDependencies) {
+    unhoistedCount++;
+    const message = `Package ${pkg.name} has devDependencies which should be ` +
+      'hoisted into the top-level package.json:';
+    printHighlight(message);
+    Object.keys(pkg.devDependencies).forEach(devDependency => {
+      print(`  ${devDependency}`);
+    });
+    print('');
+  }
+});
+
 const versions = {};
 [mainPackage, ...otherPackages].forEach(pkg => {
   const dependencies = pkg.dependencies;
@@ -40,20 +54,6 @@ const versions = {};
       }
       versions[name][version].push(pkg.name);
     });
-  }
-});
-
-let unhoistedCount = 0;
-otherPackages.forEach(pkg => {
-  if (pkg.devDependencies) {
-    unhoistedCount++;
-    const message = `Package ${pkg.name} has devDependencies which should be ` +
-      'hoisted into the top-level package.json:';
-    printHighlight(message);
-    Object.keys(pkg.devDependencies).forEach(devDependency => {
-      print(`  ${devDependency}`);
-    });
-    print('');
   }
 });
 
