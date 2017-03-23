@@ -78,7 +78,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     SelectionSet: node =>
       concatMap(
         node.selections,
-        child => child.kind === INLINE_FRAGMENT ? child.selectionSet : child
+        child => child.kind === INLINE_FRAGMENT ? child.selectionSet : child,
       ),
     Name: node => node.value,
     FragmentDefinition: node => ({

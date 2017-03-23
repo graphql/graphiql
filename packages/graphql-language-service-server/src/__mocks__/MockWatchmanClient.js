@@ -18,7 +18,7 @@ class MockWatchmanClient {
 
   listFiles(
     entryPath: Uri,
-    options?: {[name: string]: any} = {}
+    options?: {[name: string]: any} = {},
   ): Promise<Array<any>> {
     return Promise.resolve([]);
   }

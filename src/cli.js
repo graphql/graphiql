@@ -20,14 +20,14 @@ const {argv} = yargs
       '    [-c | --configDir] {configDir}\n' +
       '    [-t | --text] {textBuffer}\n' +
       '    [-f | --file] {filePath}\n' +
-      '    [-s | --schema] {schemaPath}\n'
+      '    [-s | --schema] {schemaPath}\n',
   )
   .help('h')
   .alias('h', 'help')
   .demand(
     1,
     'At least one command is required.\n' +
-      'Commands: "server, validate, autocomplete, outline"\n'
+      'Commands: "server, validate, autocomplete, outline"\n',
   )
   .option('t', {
     alias: 'text',

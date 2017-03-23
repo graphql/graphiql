@@ -53,7 +53,7 @@ export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
-  contextToken?: ContextToken
+  contextToken?: ContextToken,
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -96,7 +96,7 @@ export function getAutocompleteSuggestions(
           label: argDef.name,
           detail: argDef.type,
           documentation: argDef.description,
-        }))
+        })),
       );
     }
   }
@@ -111,7 +111,7 @@ export function getAutocompleteSuggestions(
           label: field.name,
           detail: field.type,
           documentation: field.description,
-        }))
+        })),
       );
     }
   }
@@ -165,7 +165,7 @@ export function getAutocompleteSuggestions(
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: TypeInfo,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
@@ -186,7 +186,7 @@ function getSuggestionsForFieldNames(
         documentation: field.description,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
-      }))
+      })),
     );
   }
   return [];
@@ -194,7 +194,7 @@ function getSuggestionsForFieldNames(
 
 function getSuggestionsForInputValues(
   token: ContextToken,
-  typeInfo: TypeInfo
+  typeInfo: TypeInfo,
 ): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType);
   if (namedInputType instanceof GraphQLEnumType) {
@@ -208,7 +208,7 @@ function getSuggestionsForInputValues(
         documentation: value.description,
         isDeprecated: value.isDeprecated,
         deprecationReason: value.deprecationReason,
-      }))
+      })),
     );
   } else if (namedInputType === GraphQLBoolean) {
     return hintList(token, [
@@ -223,7 +223,7 @@ function getSuggestionsForInputValues(
 function getSuggestionsForFragmentTypeConditions(
   token: ContextToken,
   typeInfo: TypeInfo,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   let possibleTypes;
   if (typeInfo.parentType) {
@@ -252,7 +252,7 @@ function getSuggestionsForFragmentTypeConditions(
     possibleTypes.map(type => ({
       label: type.name,
       documentation: type.description,
-    }))
+    })),
   );
 }
 
@@ -260,7 +260,7 @@ function getSuggestionsForFragmentSpread(
   token: ContextToken,
   typeInfo: TypeInfo,
   schema: GraphQLSchema,
-  queryText: string
+  queryText: string,
 ): Array<CompletionItem> {
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
@@ -279,8 +279,8 @@ function getSuggestionsForFragmentSpread(
       doTypesOverlap(
         schema,
         typeInfo.parentType,
-        typeMap[frag.typeCondition.name.value]
-      )
+        typeMap[frag.typeCondition.name.value],
+      ),
   );
 
   return hintList(
@@ -289,7 +289,7 @@ function getSuggestionsForFragmentSpread(
       label: frag.name.value,
       detail: typeMap[frag.typeCondition.name.value],
       documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
-    }))
+    })),
   );
 }
 
@@ -319,7 +319,7 @@ function getFragmentDefinitions(queryText: string): Array<ASTNode> {
 
 function getSuggestionsForVariableDefinition(
   token: ContextToken,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   const inputTypeMap = schema.getTypeMap();
   const inputTypes = objectValues(inputTypeMap).filter(isInputType);
@@ -328,14 +328,14 @@ function getSuggestionsForVariableDefinition(
     inputTypes.map(type => ({
       label: type.name,
       documentation: type.description,
-    }))
+    })),
   );
 }
 
 function getSuggestionsForDirective(
   token: ContextToken,
   state: State,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (state.prevState && state.prevState.kind) {
     const directives = schema
@@ -346,7 +346,7 @@ function getSuggestionsForDirective(
       directives.map(directive => ({
         label: directive.name,
         documentation: directive.description,
-      }))
+      })),
     );
   }
   return [];
@@ -389,12 +389,12 @@ type callbackFnType = (
   stream: CharacterStream,
   state: State,
   style: string,
-  index: number
+  index: number,
 ) => void | 'BREAK';
 
 function runOnlineParser(
   queryText: string,
-  callback: callbackFnType
+  callback: callbackFnType,
 ): ContextToken {
   const lines = queryText.split('\n');
   const parser = onlineParser();
@@ -430,7 +430,7 @@ function runOnlineParser(
 
 function canUseDirective(
   state: $PropertyType<State, 'prevState'>,
-  directive: GraphQLDirective
+  directive: GraphQLDirective,
 ): boolean {
   if (!state || !state.kind) {
     return false;

@@ -17,7 +17,7 @@ const YELLOW = '\x1b[33m';
 const options = [
   '--no-bracket-spacing',
   '--single-quote',
-  '--trailing-comma=es5',
+  '--trailing-comma=all',
 ];
 const glob = '{packages/*/{resources,src},resources,src}/**/*.js';
 const root = join(__dirname, '..');

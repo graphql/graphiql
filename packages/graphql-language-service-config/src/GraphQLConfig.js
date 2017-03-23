@@ -102,7 +102,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
         this._config[APP_EXTENSIONS_NAME][appName].inputDirs
       ) {
         return this._config[APP_EXTENSIONS_NAME][appName].inputDirs.some(
-          dirPath => fileName.indexOf(dirPath) !== -1
+          dirPath => fileName.indexOf(dirPath) !== -1,
         );
       }
     }
@@ -153,7 +153,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
   _getPropertyFromConfig<T: any>(
     key: string,
     appName: ?string,
-    defaultValue: T
+    defaultValue: T,
   ): T {
     if (
       appName &&

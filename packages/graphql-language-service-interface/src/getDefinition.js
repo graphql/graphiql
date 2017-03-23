@@ -25,11 +25,11 @@ export const LANGUAGE = 'GraphQL';
 export async function getDefinitionQueryResultForFragmentSpread(
   text: string,
   fragment: FragmentSpreadNode,
-  dependencies: Array<FragmentInfo>
+  dependencies: Array<FragmentInfo>,
 ): Promise<DefinitionQueryResult> {
   const name = fragment.name.value;
   const defNodes = dependencies.filter(
-    ({definition}) => definition.name.value === name
+    ({definition}) => definition.name.value === name,
   );
   if (defNodes === []) {
     process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
@@ -50,7 +50,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
 export function getDefinitionQueryResultForDefinitionNode(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode
+  definition: FragmentDefinitionNode,
 ): DefinitionQueryResult {
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
@@ -61,7 +61,7 @@ export function getDefinitionQueryResultForDefinitionNode(
 function getDefinitionForFragmentDefinition(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode
+  definition: FragmentDefinitionNode,
 ): Definition {
   return {
     path,

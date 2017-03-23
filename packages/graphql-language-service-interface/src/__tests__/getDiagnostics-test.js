@@ -21,20 +21,20 @@ describe('getDiagnostics', () => {
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
-      'utf8'
+      'utf8',
     );
     schema = buildSchema(schemaIDL);
   });
 
   it('catches syntax errors', () =>
     expect(getDiagnostics('qeury')[0].message).to.contain(
-      'Unexpected Name "qeury"'
+      'Unexpected Name "qeury"',
     ));
 
   it('catches field validation errors', () => {
     const error = getDiagnostics('query queryName { title }', schema)[0];
     expect(error.message).to.equal(
-      'Cannot query field "title" on type "Query".'
+      'Cannot query field "title" on type "Query".',
     );
     expect(error.severity).to.equal(SEVERITY.ERROR);
     expect(error.source).to.equal('GraphQL: Validation');
@@ -45,7 +45,7 @@ describe('getDiagnostics', () => {
       0
     ];
     expect(error.message).to.equal(
-      'The field Query.deprecatedField is deprecated. Use test instead.'
+      'The field Query.deprecatedField is deprecated. Use test instead.',
     );
     expect(error.severity).to.equal(SEVERITY.WARNING);
     expect(error.source).to.equal('GraphQL: Deprecation');
@@ -56,7 +56,7 @@ describe('getDiagnostics', () => {
   it('returns no errors after parsing kitchen-sink query', () => {
     const kitchenSink = fs.readFileSync(
       path.join(__dirname, '/kitchen-sink.graphql'),
-      'utf8'
+      'utf8',
     );
 
     const errors = getDiagnostics(kitchenSink);

@@ -86,16 +86,16 @@ export interface GraphQLCache {
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: ?Map<string, FragmentInfo>
+    fragmentDefinitions: ?Map<string, FragmentInfo>,
   ) => Promise<Array<FragmentInfo>>,
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, FragmentInfo>
+    fragmentDefinitions: Map<string, FragmentInfo>,
   ) => Promise<Array<FragmentInfo>>,
 
   getFragmentDefinitions: (
-    graphQLConfig: GraphQLConfig
+    graphQLConfig: GraphQLConfig,
   ) => Promise<Map<string, FragmentInfo>>,
 
   getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>,

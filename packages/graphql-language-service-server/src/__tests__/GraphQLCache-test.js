@@ -67,7 +67,7 @@ describe('GraphQLCache', () => {
 
       const result = await cache.getFragmentDependenciesForAST(
         ast,
-        fragmentDefinitions
+        fragmentDefinitions,
       );
       expect(result.length).to.equal(1);
     });

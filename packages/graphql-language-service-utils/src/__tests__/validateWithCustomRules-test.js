@@ -31,8 +31,8 @@ describe('validateWithCustomRules', () => {
             context.reportError(
               new GraphQLError(
                 'Argument ID must be a number written in string type.',
-                [node]
-              )
+                [node],
+              ),
             );
           }
         },
@@ -41,7 +41,7 @@ describe('validateWithCustomRules', () => {
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
     expect(errors.length).to.equal(1);
     expect(errors[0].message).to.equal(
-      'Argument ID must be a number written in string type.'
+      'Argument ID must be a number written in string type.',
     );
   });
 });

@@ -22,7 +22,7 @@ import {visitUsingRules} from 'graphql/validation/validate';
 export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
-  customRules?: Array<CustomValidationRule>
+  customRules?: Array<CustomValidationRule>,
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
   // be used anywhere in the codebase they're all technically "used" by clients
