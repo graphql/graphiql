@@ -55,7 +55,7 @@ export class GraphQLCache {
   constructor(
     configDir: Uri,
     graphQLConfig: GraphQLConfig,
-    watchmanClient: GraphQLWatchman,
+    watchmanClient: GraphQLWatchman
   ): void {
     this._configDir = configDir;
     this._graphQLConfig = graphQLConfig;
@@ -69,7 +69,7 @@ export class GraphQLCache {
 
   getFragmentDependencies = async (
     query: string,
-    fragmentDefinitions: ?Map<string, FragmentInfo>,
+    fragmentDefinitions: ?Map<string, FragmentInfo>
   ): Promise<Array<FragmentInfo>> => {
     // If there isn't context for fragment references,
     // return an empty array.
@@ -84,15 +84,12 @@ export class GraphQLCache {
     } catch (error) {
       return [];
     }
-    return this.getFragmentDependenciesForAST(
-      parsedQuery,
-      fragmentDefinitions,
-    );
+    return this.getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
   };
 
   getFragmentDependenciesForAST = async (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, FragmentInfo>,
+    fragmentDefinitions: Map<string, FragmentInfo>
   ): Promise<Array<FragmentInfo>> => {
     if (!fragmentDefinitions) {
       return [];
@@ -143,7 +140,7 @@ export class GraphQLCache {
 
   getFragmentDefinitions = async (
     graphQLConfig: GraphQLConfigInterface,
-    appName: ?string,
+    appName: ?string
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
@@ -154,22 +151,25 @@ export class GraphQLCache {
 
     const inputDirs = graphQLConfig.getInputDirs(appName);
     const excludeDirs = graphQLConfig.getExcludeDirs(appName);
-    const filesFromInputDirs = await this._watchmanClient.listFiles(
-      rootDir,
-      {path: inputDirs},
+    const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
+      path: inputDirs,
+    });
+
+    const list = filesFromInputDirs
+      .map(fileInfo => ({
+        filePath: path.join(rootDir, fileInfo.name),
+        size: fileInfo.size,
+        mtime: fileInfo.mtime,
+        // Filter any files with path starting with ExcludeDirs
+      }))
+      .filter(fileInfo =>
+        excludeDirs.every(
+          exclude => !fileInfo.filePath.startsWith(path.join(rootDir, exclude))
+        ));
+
+    const {fragmentDefinitions, graphQLFileMap} = await readAllGraphQLFiles(
+      list
     );
-
-    const list = filesFromInputDirs.map(fileInfo => ({
-      filePath: path.join(rootDir, fileInfo.name),
-      size: fileInfo.size,
-      mtime: fileInfo.mtime,
-    // Filter any files with path starting with ExcludeDirs
-    })).filter(fileInfo => excludeDirs.every(
-      exclude => !fileInfo.filePath.startsWith(path.join(rootDir, exclude)),
-    ));
-
-    const {fragmentDefinitions, graphQLFileMap} =
-      await readAllGraphQLFiles(list);
 
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
@@ -186,7 +186,7 @@ export class GraphQLCache {
   _subscribeToFileChanges(
     rootDir: Uri,
     inputDirs: Array<Uri>,
-    excludeDirs: Array<Uri>,
+    excludeDirs: Array<Uri>
   ): void {
     this._watchmanClient.subscribe(this._configDir, result => {
       if (result.files && result.files.length > 0) {
@@ -222,15 +222,14 @@ export class GraphQLCache {
               return;
             }
 
-            const fileAndContent =
-              await promiseToReadGraphQLFile(filePath);
+            const fileAndContent = await promiseToReadGraphQLFile(filePath);
             graphQLFileMap.set(filePath, {
               ...fileAndContent,
               size,
               mtime,
             });
-          // Otherwise, create/update the cache with the updated file and
-          // content, or delete the cache if (!exists)
+            // Otherwise, create/update the cache with the updated file and
+            // content, or delete the cache if (!exists)
           } else {
             if (graphQLFileMap) {
               this._graphQLFileListCache.set(
@@ -239,20 +238,21 @@ export class GraphQLCache {
                   graphQLFileMap,
                   {size, mtime},
                   filePath,
-                  exists,
-                ),
+                  exists
+                )
               );
             }
-            const fragmentDefinitionCache =
-              this._fragmentDefinitionsCache.get(rootDir);
+            const fragmentDefinitionCache = this._fragmentDefinitionsCache.get(
+              rootDir
+            );
             if (fragmentDefinitionCache) {
               this._fragmentDefinitionsCache.set(
                 rootDir,
                 await this._updateFragmentDefinitionCache(
                   fragmentDefinitionCache,
                   filePath,
-                  exists,
-                ),
+                  exists
+                )
               );
             }
           }
@@ -265,10 +265,11 @@ export class GraphQLCache {
     graphQLFileMap: Map<Uri, GraphQLFileInfo>,
     metrics: {size: number, mtime: number},
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ): Promise<Map<Uri, GraphQLFileInfo>> {
-    const fileAndContent = exists ?
-      await promiseToReadGraphQLFile(filePath) : null;
+    const fileAndContent = exists
+      ? await promiseToReadGraphQLFile(filePath)
+      : null;
     const graphQLFileInfo = {...fileAndContent, ...metrics};
 
     const existingFile = graphQLFileMap.get(filePath);
@@ -289,10 +290,11 @@ export class GraphQLCache {
   async _updateFragmentDefinitionCache(
     fragmentDefinitionCache: Map<Uri, FragmentInfo>,
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ): Promise<Map<Uri, FragmentInfo>> {
-    const fileAndContent = exists ?
-      await promiseToReadGraphQLFile(filePath) : null;
+    const fileAndContent = exists
+      ? await promiseToReadGraphQLFile(filePath)
+      : null;
     // In the case of fragment definitions, the cache could just map the
     // definition name to the parsed ast, whether or not it existed
     // previously.
@@ -304,13 +306,11 @@ export class GraphQLCache {
     } else if (fileAndContent && fileAndContent.ast) {
       fileAndContent.ast.definitions.forEach(definition => {
         if (definition.kind === FRAGMENT_DEFINITION) {
-          fragmentDefinitionCache.set(
-            definition.name.value, {
-              filePath: fileAndContent.filePath,
-              content: fileAndContent.content,
-              definition,
-            },
-          );
+          fragmentDefinitionCache.set(definition.name.value, {
+            filePath: fileAndContent.filePath,
+            content: fileAndContent.content,
+            definition,
+          });
         }
       });
     }
@@ -333,8 +333,7 @@ export class GraphQLCache {
           throw new Error(error);
         }
         resolve(content);
-      }),
-    );
+      }));
 
     const schemaFileExt = path.extname(schemaPath);
     let schema;
@@ -355,14 +354,16 @@ export class GraphQLCache {
 
     this._schemaMap.set(schemaPath, schema);
     return schema;
-  }
+  };
 }
 
 /**
  * Given a list of GraphQL file metadata, read all files collected from watchman
  * and create fragmentDefinitions and GraphQL files cache.
  */
-async function readAllGraphQLFiles(list: Array<GraphQLFileMetadata>): Promise<{
+async function readAllGraphQLFiles(
+  list: Array<GraphQLFileMetadata>
+): Promise<{
   fragmentDefinitions: Map<string, FragmentInfo>,
   graphQLFileMap: Map<string, GraphQLFileInfo>,
 }> {
@@ -371,25 +372,25 @@ async function readAllGraphQLFiles(list: Array<GraphQLFileMetadata>): Promise<{
   while (queue.length) {
     const chunk = queue.splice(0, MAX_READS);
     const promises = chunk.map(fileInfo =>
-      promiseToReadGraphQLFile(fileInfo.filePath).catch(error => {
-        /**
+      promiseToReadGraphQLFile(fileInfo.filePath)
+        .catch(error => {
+          /**
          * fs emits `EMFILE | ENFILE` error when there are too many open files -
          * this can cause some fragment files not to be processed.
          * Solve this case by implementing a queue to save files failed to be
          * processed because of `EMFILE` error, and await on Promises created
          * with the next batch from the queue.
          */
-        if (error.code === 'EMFILE' || error.code === 'ENFILE') {
-          queue.push(fileInfo);
-        }
-      }).then(
-        response => responses.push({
-          ...response,
-          mtime: fileInfo.mtime,
-          size: fileInfo.size,
-        }),
-      ),
-    );
+          if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+            queue.push(fileInfo);
+          }
+        })
+        .then(response =>
+          responses.push({
+            ...response,
+            mtime: fileInfo.mtime,
+            size: fileInfo.size,
+          })));
     await Promise.all(promises); // eslint-disable-line no-await-in-loop
   }
 
@@ -400,7 +401,9 @@ async function readAllGraphQLFiles(list: Array<GraphQLFileMetadata>): Promise<{
  * Takes an array of GraphQL File information and batch-processes into a
  * map of fragmentDefinitions and GraphQL file cache.
  */
-function processGraphQLFiles(responses: Array<GraphQLFileInfo>): {
+function processGraphQLFiles(
+  responses: Array<GraphQLFileInfo>
+): {
   fragmentDefinitions: Map<string, FragmentInfo>,
   graphQLFileMap: Map<string, GraphQLFileInfo>,
 } {
@@ -413,10 +416,11 @@ function processGraphQLFiles(responses: Array<GraphQLFileInfo>): {
     if (ast) {
       ast.definitions.forEach(definition => {
         if (definition.kind === FRAGMENT_DEFINITION) {
-          fragmentDefinitions.set(
-            definition.name.value,
-            {filePath, content, definition},
-          );
+          fragmentDefinitions.set(definition.name.value, {
+            filePath,
+            content,
+            definition,
+          });
         }
       });
     }
@@ -438,7 +442,9 @@ function processGraphQLFiles(responses: Array<GraphQLFileInfo>): {
  * Returns a Promise to read a GraphQL file and return a GraphQL metadata
  * including a parsed AST.
  */
-function promiseToReadGraphQLFile(filePath: Uri): Promise<{
+function promiseToReadGraphQLFile(
+  filePath: Uri
+): Promise<{
   filePath: Uri,
   content: string,
   ast: ?ASTNode,
@@ -462,6 +468,5 @@ function promiseToReadGraphQLFile(filePath: Uri): Promise<{
         }
       }
       resolve({filePath, content, ast});
-    }),
-  );
+    }));
 }

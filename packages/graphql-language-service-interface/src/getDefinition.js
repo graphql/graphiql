@@ -18,30 +18,29 @@ import type {
   FragmentInfo,
   Uri,
 } from 'graphql-language-service-types';
-import {
-  locToRange,
-  offsetToPosition,
-} from 'graphql-language-service-utils';
+import {locToRange, offsetToPosition} from 'graphql-language-service-utils';
 
 export const LANGUAGE = 'GraphQL';
 
 export async function getDefinitionQueryResultForFragmentSpread(
   text: string,
   fragment: FragmentSpreadNode,
-  dependencies: Array<FragmentInfo>,
+  dependencies: Array<FragmentInfo>
 ): Promise<DefinitionQueryResult> {
   const name = fragment.name.value;
   const defNodes = dependencies.filter(
-    ({definition}) => definition.name.value === name,
+    ({definition}) => definition.name.value === name
   );
   if (defNodes === []) {
     process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
     return {queryRange: [], definitions: []};
   }
-  const definitions: Array<Definition> = defNodes.map(
-    ({filePath, content, definition}) =>
-      getDefinitionForFragmentDefinition(filePath || '', content, definition),
-  );
+  const definitions: Array<Definition> = defNodes.map(({
+    filePath,
+    content,
+    definition,
+  }) =>
+    getDefinitionForFragmentDefinition(filePath || '', content, definition));
   return {
     definitions,
     queryRange: definitions.map(_ => locToRange(text, fragment.loc)),
@@ -51,7 +50,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
 export function getDefinitionQueryResultForDefinitionNode(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode,
+  definition: FragmentDefinitionNode
 ): DefinitionQueryResult {
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
@@ -62,7 +61,7 @@ export function getDefinitionQueryResultForDefinitionNode(
 function getDefinitionForFragmentDefinition(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode,
+  definition: FragmentDefinitionNode
 ): Definition {
   return {
     path,

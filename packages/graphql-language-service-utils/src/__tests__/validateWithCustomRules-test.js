@@ -8,11 +8,7 @@
 
 import {expect} from 'chai';
 import {readFileSync} from 'fs';
-import {
-  GraphQLError,
-  buildSchema,
-  parse,
-} from 'graphql';
+import {GraphQLError, buildSchema, parse} from 'graphql';
 import {beforeEach, describe, it} from 'mocha';
 import {join} from 'path';
 
@@ -32,10 +28,12 @@ describe('validateWithCustomRules', () => {
       context => ({
         Argument(node) {
           if (!/^\d+$/.test(node.value.value)) {
-            context.reportError(new GraphQLError(
-              'Argument ID must be a number written in string type.',
-              [node],
-            ));
+            context.reportError(
+              new GraphQLError(
+                'Argument ID must be a number written in string type.',
+                [node]
+              )
+            );
           }
         },
       }),
@@ -43,7 +41,7 @@ describe('validateWithCustomRules', () => {
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
     expect(errors.length).to.equal(1);
     expect(errors[0].message).to.equal(
-      'Argument ID must be a number written in string type.',
+      'Argument ID must be a number written in string type.'
     );
   });
 });

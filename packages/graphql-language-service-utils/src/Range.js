@@ -23,13 +23,12 @@ export class Range implements RangeInterface {
   }
 
   containsPosition = (position: PositionInterface): boolean => {
-    const withinLine =
-      this.start.line <= position.line && this.end.line >= position.line;
-    const withinCharacter =
-      this.start.character <= position.character &&
+    const withinLine = this.start.line <= position.line &&
+      this.end.line >= position.line;
+    const withinCharacter = this.start.character <= position.character &&
       this.end.character >= position.character;
     return withinLine && withinCharacter;
-  }
+  };
 }
 
 export class Position implements PositionInterface {
@@ -40,10 +39,9 @@ export class Position implements PositionInterface {
     this.character = character;
   }
 
-  lessThanOrEqualTo = (position: PositionInterface): boolean => (
+  lessThanOrEqualTo = (position: PositionInterface): boolean =>
     this.line < position.line ||
-    (this.line === position.line && this.character <= position.character)
-  );
+    (this.line === position.line && this.character <= position.character);
 }
 
 export function offsetToPosition(text: string, loc: number): Position {

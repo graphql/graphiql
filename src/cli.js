@@ -15,17 +15,19 @@ import {startServer} from 'graphql-language-service-server';
 const {argv} = yargs
   .usage(
     'GraphQL Language Service Command-Line Interface.\n' +
-    'Usage: $0 <command> <file>\n' +
-    '    [-h | --help]\n' +
-    '    [-c | --configDir] {configDir}\n' +
-    '    [-t | --text] {textBuffer}\n' +
-    '    [-f | --file] {filePath}\n' +
-    '    [-s | --schema] {schemaPath}\n',
+      'Usage: $0 <command> <file>\n' +
+      '    [-h | --help]\n' +
+      '    [-c | --configDir] {configDir}\n' +
+      '    [-t | --text] {textBuffer}\n' +
+      '    [-f | --file] {filePath}\n' +
+      '    [-s | --schema] {schemaPath}\n'
   )
   .help('h')
   .alias('h', 'help')
-  .demand(1, 'At least one command is required.\n' +
-    'Commands: "server, validate, autocomplete, outline"\n',
+  .demand(
+    1,
+    'At least one command is required.\n' +
+      'Commands: "server, validate, autocomplete, outline"\n'
   )
   .option('t', {
     alias: 'text',

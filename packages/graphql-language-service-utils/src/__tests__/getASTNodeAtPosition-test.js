@@ -70,10 +70,6 @@ describe('pointToOffset', () => {
 
   it('takes EOL into account', () => {
     const text = 'lorem\n';
-    expect(
-      pointToOffset(text, new Position(1, 0)),
-    ).to.equal(
-      text.length,
-    );
+    expect(pointToOffset(text, new Position(1, 0))).to.equal(text.length);
   });
 });

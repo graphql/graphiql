@@ -60,10 +60,9 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
   });
   return {
     Field: node => {
-      const tokenizedText = node.alias ? [
-        buildToken('plain', node.alias),
-        buildToken('plain', ': '),
-      ] : [];
+      const tokenizedText = node.alias
+        ? [buildToken('plain', node.alias), buildToken('plain', ': ')]
+        : [];
       tokenizedText.push(buildToken('plain', node.name));
       return {tokenizedText, ...meta(node)};
     },
@@ -76,10 +75,11 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       ...meta(node),
     }),
     Document: node => node.definitions,
-    SelectionSet: node => concatMap(
-      node.selections,
-      child => ((child.kind === INLINE_FRAGMENT) ? child.selectionSet : child),
-    ),
+    SelectionSet: node =>
+      concatMap(
+        node.selections,
+        child => child.kind === INLINE_FRAGMENT ? child.selectionSet : child
+      ),
     Name: node => node.value,
     FragmentDefinition: node => ({
       tokenizedText: [

@@ -23,13 +23,20 @@ describe('getDefinition', () => {
       fragment Duck on Duck {
         cuack
       }`;
-      const fragmentSpread =
-        parse(query).definitions[0].selectionSet.selections[0];
+      const fragmentSpread = parse(query).definitions[
+        0
+      ].selectionSet.selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
       const result = await getDefinitionQueryResultForFragmentSpread(
         query,
         fragmentSpread,
-        [{file: 'someFile', content: fragment, definition: fragmentDefinition}],
+        [
+          {
+            file: 'someFile',
+            content: fragment,
+            definition: fragmentDefinition,
+          },
+        ]
       );
       expect(result.definitions.length).to.equal(1);
       expect(result.definitions[0].position.line).to.equal(1);

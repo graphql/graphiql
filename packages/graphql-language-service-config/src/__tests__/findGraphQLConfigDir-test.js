@@ -19,8 +19,7 @@ const CONFIG_DIR = __dirname;
 describe('findGraphQLConfigDir', () => {
   it('finds GraphQLConfigDir correctly', () =>
     expect(findGraphQLConfigDir(CONFIG_DIR)).to.equal(CONFIG_DIR) &&
-    expect(
-      findGraphQLConfigDir(path.join(CONFIG_DIR, '__queries__')),
-    ).to.equal(CONFIG_DIR),
-  );
+    expect(findGraphQLConfigDir(path.join(CONFIG_DIR, '__queries__'))).to.equal(
+      CONFIG_DIR
+    ));
 });

@@ -73,7 +73,7 @@ let languageService;
 const textDocumentCache: Map<string, Object> = new Map();
 
 export async function processIPCNotificationMessage(
-  message: NotificationMessage,
+  message: NotificationMessage
 ): Promise<void> {
   const method = message.method;
   let response;
@@ -154,7 +154,7 @@ export async function processIPCNotificationMessage(
 
 export async function processIPCRequestMessage(
   message: RequestMessage,
-  configDir: ?string,
+  configDir: ?string
 ): Promise<void> {
   const method = message.method;
   let response;
@@ -169,7 +169,7 @@ export async function processIPCRequestMessage(
         return;
       }
       const serverCapabilities = await initialize(
-        configDir ? configDir.trim() : message.params.rootPath,
+        configDir ? configDir.trim() : message.params.rootPath
       );
 
       if (serverCapabilities === null) {
@@ -215,12 +215,14 @@ export async function processIPCRequestMessage(
       result = await languageService.getAutocompleteSuggestions(
         query,
         position,
-        textDocument.uri,
+        textDocument.uri
       );
-      sendMessageIPC(convertToRpcMessage({
-        id: message.id,
-        result,
-      }));
+      sendMessageIPC(
+        convertToRpcMessage({
+          id: message.id,
+          result,
+        })
+      );
       break;
     case 'textDocument/definition':
       if (
@@ -244,16 +246,20 @@ export async function processIPCRequestMessage(
       result = await languageService.getDefinition(
         query,
         pos,
-        textDocument.uri,
+        textDocument.uri
       );
-      const formatted = result ? result.definitions.map(res => ({
-        uri: path.join('file://', res.path),
-        range: res.range,
-      })) : [];
-      sendMessageIPC(convertToRpcMessage({
-        id: message.id,
-        result: formatted,
-      }));
+      const formatted = result
+        ? result.definitions.map(res => ({
+            uri: path.join('file://', res.path),
+            range: res.range,
+          }))
+        : [];
+      sendMessageIPC(
+        convertToRpcMessage({
+          id: message.id,
+          result: formatted,
+        })
+      );
       break;
     case '$/cancelRequest':
       if (!message.params || !message.params.id) {
@@ -276,25 +282,27 @@ export async function processIPCRequestMessage(
 
 export async function processStreamMessage(
   message: string,
-  configDir: ?string,
+  configDir: ?string
 ): Promise<void> {
   if (message.length === 0) {
     return;
   }
   if (!graphQLCache) {
     const graphQLConfigDir = findGraphQLConfigDir(
-      configDir ? configDir.trim() : process.cwd(),
+      configDir ? configDir.trim() : process.cwd()
     );
     if (!graphQLConfigDir) {
-      process.stdout.write(JSON.stringify(
-        convertToRpcMessage({
-          id: '-1',
-          error: {
-            code: ERROR_CODES.SERVER_NOT_INITIALIZED,
-            message: '.graphqlrc not found',
-          },
-        }),
-      ));
+      process.stdout.write(
+        JSON.stringify(
+          convertToRpcMessage({
+            id: '-1',
+            error: {
+              code: ERROR_CODES.SERVER_NOT_INITIALIZED,
+              message: '.graphqlrc not found',
+            },
+          })
+        )
+      );
       return;
     }
     graphQLCache = await getGraphQLCache(graphQLConfigDir);
@@ -308,15 +316,17 @@ export async function processStreamMessage(
   try {
     json = JSON.parse(message);
   } catch (error) {
-    process.stdout.write(JSON.stringify(
-      convertToRpcMessage({
-        id: '-1',
-        error: {
-          code: ERROR_CODES.PARSE_ERROR,
-          message: 'Request contains incorrect JSON format',
-        },
-      }),
-    ));
+    process.stdout.write(
+      JSON.stringify(
+        convertToRpcMessage({
+          id: '-1',
+          error: {
+            code: ERROR_CODES.PARSE_ERROR,
+            message: 'Request contains incorrect JSON format',
+          },
+        })
+      )
+    );
     return;
   }
 
@@ -354,16 +364,14 @@ export async function processStreamMessage(
       result = await languageService.getAutocompleteSuggestions(
         query,
         position,
-        filePath,
+        filePath
       );
 
-      const formatted = result.map(
-        res => ({
-          text: res.label,
-          typeName: res.detail ? String(res.detail) : null,
-          description: res.documentation || null,
-        }),
-      );
+      const formatted = result.map(res => ({
+        text: res.label,
+        typeName: res.detail ? String(res.detail) : null,
+        description: res.documentation || null,
+      }));
       responseMsg = convertToRpcMessage({
         type: 'response',
         id,
@@ -389,9 +397,7 @@ export async function processStreamMessage(
  * Helper functions to perform requested services from client/server.
  */
 
-async function initialize(
-  rootPath: Uri,
-): Promise<?ServerCapabilities> {
+async function initialize(rootPath: Uri): Promise<?ServerCapabilities> {
   const serverCapabilities = {
     capabilities: {
       completionProvider: {resolveProvider: true},
@@ -413,7 +419,7 @@ async function initialize(
 
 async function provideDiagnosticsMessage(
   query: string,
-  uri: Uri,
+  uri: Uri
 ): Promise<Array<Diagnostic>> {
   let results = await languageService.getDiagnostics(query, uri);
   if (results && results.length > 0) {
@@ -422,8 +428,7 @@ async function provideDiagnosticsMessage(
     const lastLineLength = queryLines[totalLines - 1].length;
     const lastCharacterPosition = new Position(totalLines, lastLineLength);
     results = results.filter(diagnostic =>
-      diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
-    );
+      diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
   }
 
   return results;

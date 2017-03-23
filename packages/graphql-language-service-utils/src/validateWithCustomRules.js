@@ -22,13 +22,14 @@ import {visitUsingRules} from 'graphql/validation/validate';
 export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<CustomValidationRule>
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
   // be used anywhere in the codebase they're all technically "used" by clients
   // of graphql-data. So we remove this rule from the validators.
-  const {NoUnusedFragments} =
-    require('graphql/validation/rules/NoUnusedFragments');
+  const {
+    NoUnusedFragments,
+  } = require('graphql/validation/rules/NoUnusedFragments');
   const rules = specifiedRules.filter(rule => rule !== NoUnusedFragments);
 
   const typeInfo = new TypeInfo(schema);

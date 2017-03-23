@@ -29,15 +29,14 @@ export async function getGraphQLConfig(configDir: Uri): Promise<GraphQLConfig> {
           // eslint-disable-next-line no-console
           console.error(
             '${GRAPHQL_CONFIG_NAME} file is not available in the provided ' +
-            `config directory: ${configDir}\nPlease check the config ` +
-            'directory path and try again.',
+              `config directory: ${configDir}\nPlease check the config ` +
+              'directory path and try again.'
           );
           reject();
         }
         resolve(response);
-      },
-    ),
-  );
+      }
+    ));
   try {
     return new GraphQLConfig(JSON.parse(rawGraphQLConfig), configDir);
   } catch (error) {
