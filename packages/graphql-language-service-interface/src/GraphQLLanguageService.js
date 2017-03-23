@@ -43,10 +43,7 @@ export class GraphQLLanguageService {
     this._graphQLConfig = cache.getGraphQLConfig();
   }
 
-  async getDiagnostics(
-    query: string,
-    uri: Uri,
-  ): Promise<Array<Diagnostic>> {
+  async getDiagnostics(query: string, uri: Uri): Promise<Array<Diagnostic>> {
     let source = query;
     const appName = this._graphQLConfig.getAppConfigNameByFilePath(uri);
     // If there's a matching config, proceed to prepare to run validation
@@ -56,25 +53,25 @@ export class GraphQLLanguageService {
       schema = await this._graphQLCache.getSchema(
         this._graphQLConfig.getSchemaPath(),
       );
-      const fragmentDefinitions =
-        await this._graphQLCache.getFragmentDefinitions(
-          this._graphQLConfig,
-          appName,
-        );
-      const fragmentDependencies =
-        await this._graphQLCache.getFragmentDependencies(
-          query,
-          fragmentDefinitions,
-        );
+      const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
+        this._graphQLConfig,
+        appName,
+      );
+      const fragmentDependencies = await this._graphQLCache.getFragmentDependencies(
+        query,
+        fragmentDefinitions,
+      );
       const dependenciesSource = fragmentDependencies.reduce(
-        (prev, cur) => `${prev} ${print(cur.definition)}`, '',
+        (prev, cur) => `${prev} ${print(cur.definition)}`,
+        '',
       );
 
       source = `${source} ${dependenciesSource}`;
 
       // Check if there are custom validation rules to be used
-      const customRulesModulePath =
-        this._graphQLConfig.getCustomValidationRulesModulePath(appName);
+      const customRulesModulePath = this._graphQLConfig.getCustomValidationRulesModulePath(
+        appName,
+      );
       if (customRulesModulePath) {
         const rulesPath = require.resolve(customRulesModulePath);
         if (rulesPath) {
@@ -130,11 +127,7 @@ export class GraphQLLanguageService {
         );
       case FRAGMENT_DEFINITION:
       case OPERATION_DEFINITION:
-        return getDefinitionQueryResultForDefinitionNode(
-          filePath,
-          query,
-          node,
-        );
+        return getDefinitionQueryResultForDefinitionNode(filePath, query, node);
       default:
         return null;
     }
@@ -148,21 +141,23 @@ export class GraphQLLanguageService {
     graphQLConfig: GraphQLConfig,
     appName: ?string,
   ): Promise<?DefinitionQueryResult> {
-    const fragmentDefinitions =
-      await this._graphQLCache.getFragmentDefinitions(graphQLConfig, appName);
+    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
+      graphQLConfig,
+      appName,
+    );
 
     const dependencies = await this._graphQLCache.getFragmentDependenciesForAST(
       ast,
       fragmentDefinitions,
     );
 
-    const localFragDefinitions = ast.definitions.filter(
-      definition => definition.kind === FRAGMENT_DEFINITION,
-    ).map(definition => ({
-      file: filePath,
-      content: query,
-      definition,
-    }));
+    const localFragDefinitions = ast.definitions
+      .filter(definition => definition.kind === FRAGMENT_DEFINITION)
+      .map(definition => ({
+        file: filePath,
+        content: query,
+        definition,
+      }));
 
     const result = await getDefinitionQueryResultForFragmentSpread(
       query,

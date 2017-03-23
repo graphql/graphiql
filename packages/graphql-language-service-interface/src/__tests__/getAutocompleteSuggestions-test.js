@@ -18,9 +18,7 @@ import {buildSchema} from 'graphql/utilities';
 import {Position} from 'graphql-language-service-utils';
 import path from 'path';
 
-import {
-  getAutocompleteSuggestions,
-} from '../getAutocompleteSuggestions';
+import {getAutocompleteSuggestions} from '../getAutocompleteSuggestions';
 
 describe('getAutocompleteSuggestions', () => {
   let schema;
@@ -37,23 +35,24 @@ describe('getAutocompleteSuggestions', () => {
     query: string,
     point: Position,
   ): Array<CompletionItem> {
-    return getAutocompleteSuggestions(schema, query, point).filter(
-      field => !['__schema', '__type'].some(name => name === field.label),
-    ).sort(
-      (a, b) => a.label.localeCompare(b.label),
-    ).map(suggestion => {
-      const response = {label: suggestion.label};
-      if (suggestion.detail) {
-        Object.assign(response, {detail: getNamedType(suggestion.detail).name});
-      }
-      return response;
-    });
+    return getAutocompleteSuggestions(schema, query, point)
+      .filter(
+        field => !['__schema', '__type'].some(name => name === field.label),
+      )
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .map(suggestion => {
+        const response = {label: suggestion.label};
+        if (suggestion.detail) {
+          Object.assign(response, {
+            detail: getNamedType(suggestion.detail).name,
+          });
+        }
+        return response;
+      });
   }
 
   it('provides correct initial keywords', () => {
-    expect(
-      testSuggestions('', new Position(0, 0)),
-    ).to.deep.equal([
+    expect(testSuggestions('', new Position(0, 0))).to.deep.equal([
       {label: '{'},
       {label: 'fragment'},
       {label: 'mutation'},
@@ -61,9 +60,7 @@ describe('getAutocompleteSuggestions', () => {
       {label: 'subscription'},
     ]);
 
-    expect(
-      testSuggestions('q', new Position(0, 1)),
-    ).to.deep.equal([
+    expect(testSuggestions('q', new Position(0, 1))).to.deep.equal([
       {label: '{'},
       {label: 'query'},
     ]);
@@ -71,9 +68,7 @@ describe('getAutocompleteSuggestions', () => {
 
   it('provides correct suggestions at where the cursor is', () => {
     // Below should provide initial keywords
-    expect(
-      testSuggestions(' {}', new Position(0, 0)),
-    ).to.deep.equal([
+    expect(testSuggestions(' {}', new Position(0, 0))).to.deep.equal([
       {label: '{'},
       {label: 'fragment'},
       {label: 'mutation'},
@@ -81,9 +76,7 @@ describe('getAutocompleteSuggestions', () => {
       {label: 'subscription'},
     ]);
     // Below should provide root field names
-    expect(
-      testSuggestions(' {}', new Position(0, 2)),
-    ).to.deep.equal([
+    expect(testSuggestions(' {}', new Position(0, 2))).to.deep.equal([
       {label: 'droid', detail: 'Droid'},
       {label: 'hero', detail: 'Character'},
       {label: 'human', detail: 'Human'},
@@ -144,10 +137,7 @@ describe('getAutocompleteSuggestions', () => {
   });
 
   it('provides correct argument suggestions when using aliases', () => {
-    const result = testSuggestions(
-      '{ aliasTest: human( ',
-      new Position(0, 20),
-    );
+    const result = testSuggestions('{ aliasTest: human( ', new Position(0, 20));
     expect(result).to.deep.equal([{label: 'id', detail: 'String'}]);
   });
 
@@ -158,7 +148,8 @@ describe('getAutocompleteSuggestions', () => {
     ).to.deep.equal([{label: 'Query'}]);
 
     const suggestionsOnCompositeType = testSuggestions(
-      '{ hero(episode: JEDI) { ... on } }', new Position(0, 31),
+      '{ hero(episode: JEDI) { ... on } }',
+      new Position(0, 31),
     );
     expect(suggestionsOnCompositeType).to.deep.equal([
       {label: 'Character'},
@@ -166,21 +157,16 @@ describe('getAutocompleteSuggestions', () => {
       {label: 'Human'},
     ]);
 
-    expect(testSuggestions(
-      'fragment Foo on Character { ... on }',
-      new Position(0, 35),
-    )).to.deep.equal([
-      {label: 'Character'},
-      {label: 'Droid'},
-      {label: 'Human'},
-    ]);
+    expect(
+      testSuggestions(
+        'fragment Foo on Character { ... on }',
+        new Position(0, 35),
+      ),
+    ).to.deep.equal([{label: 'Character'}, {label: 'Droid'}, {label: 'Human'}]);
   });
 
   it('provides correct typeCondition suggestions on fragment', () => {
-    const result = testSuggestions(
-      'fragment Foo on {}',
-      new Position(0, 16),
-    );
+    const result = testSuggestions('fragment Foo on {}', new Position(0, 16));
     expect(result.filter(({label}) => !label.startsWith('__'))).to.deep.equal([
       {label: 'Character'},
       {label: 'Droid'},
@@ -191,9 +177,7 @@ describe('getAutocompleteSuggestions', () => {
   });
 
   it('provides correct ENUM suggestions', () => {
-    const result = testSuggestions(
-      '{ hero(episode: ', new Position(0, 16),
-    );
+    const result = testSuggestions('{ hero(episode: ', new Position(0, 16));
     expect(result).to.deep.equal([
       {label: 'EMPIRE', detail: 'Episode'},
       {label: 'JEDI', detail: 'Episode'},
@@ -205,65 +189,56 @@ describe('getAutocompleteSuggestions', () => {
     const fragmentDef = 'fragment Foo on Human { id }';
 
     // Test on concrete types
-    expect(testSuggestions(
-      `${fragmentDef} query { human(id: "1") { ...`,
-      new Position(0, 57),
-    )).to.deep.equal([
-      {label: 'Foo', detail: 'Human'},
-    ]);
-    expect(testSuggestions(
-      `query { human(id: "1") { ... }} ${fragmentDef}`,
-      new Position(0, 28),
-    )).to.deep.equal([
-      {label: 'Foo', detail: 'Human'},
-    ]);
+    expect(
+      testSuggestions(
+        `${fragmentDef} query { human(id: "1") { ...`,
+        new Position(0, 57),
+      ),
+    ).to.deep.equal([{label: 'Foo', detail: 'Human'}]);
+    expect(
+      testSuggestions(
+        `query { human(id: "1") { ... }} ${fragmentDef}`,
+        new Position(0, 28),
+      ),
+    ).to.deep.equal([{label: 'Foo', detail: 'Human'}]);
 
     // Test on abstract type
-    expect(testSuggestions(
-      `${fragmentDef} query { hero(episode: JEDI) { ...`,
-      new Position(0, 62),
-    )).to.deep.equal([
-      {label: 'Foo', detail: 'Human'},
-    ]);
+    expect(
+      testSuggestions(
+        `${fragmentDef} query { hero(episode: JEDI) { ...`,
+        new Position(0, 62),
+      ),
+    ).to.deep.equal([{label: 'Foo', detail: 'Human'}]);
   });
 
   it('provides correct directive suggestions', () => {
-    expect(testSuggestions(
-      '{ test @',
-      new Position(0, 8),
-    )).to.deep.equal([
-      {label: 'include'},
-      {label: 'skip'},
-      {label: 'test'},
-    ]);
-    expect(testSuggestions(
-      '{ aliasTest: test @ }',
-      new Position(0, 19),
-    )).to.deep.equal([
+    expect(testSuggestions('{ test @', new Position(0, 8))).to.deep.equal([
       {label: 'include'},
       {label: 'skip'},
       {label: 'test'},
     ]);
     expect(
-      testSuggestions('query @', new Position(0, 7)),
-    ).to.deep.equal([]);
+      testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
+    ).to.deep.equal([{label: 'include'}, {label: 'skip'}, {label: 'test'}]);
+    expect(testSuggestions('query @', new Position(0, 7))).to.deep.equal([]);
   });
 
   it('provides correct testInput suggestions', () => {
-    expect(testSuggestions(
-      '{ inputTypeTest(args: {',
-      new Position(0, 23),
-    )).to.deep.equal([
+    expect(
+      testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
+    ).to.deep.equal([
       {label: 'key', detail: 'String'},
       {label: 'value', detail: 'Int'},
     ]);
   });
 
   it('provides correct field name suggestion inside inline fragment', () => {
-    expect(testSuggestions(
-      'fragment Foo on Character { ... on Human { }}',
-      new Position(0, 42),
-    )).to.deep.equal([
+    expect(
+      testSuggestions(
+        'fragment Foo on Character { ... on Human { }}',
+        new Position(0, 42),
+      ),
+    ).to.deep.equal([
       {label: 'appearsIn', detail: 'Episode'},
       {label: 'friends', detail: 'Character'},
       {label: 'id', detail: 'String'},
@@ -272,10 +247,9 @@ describe('getAutocompleteSuggestions', () => {
     ]);
 
     // Typeless inline fragment assumes the type automatically
-    expect(testSuggestions(
-      'fragment Foo on Droid { ... { ',
-      new Position(0, 30),
-    )).to.deep.equal([
+    expect(
+      testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
+    ).to.deep.equal([
       {label: 'appearsIn', detail: 'Episode'},
       {label: 'friends', detail: 'Character'},
       {label: 'id', detail: 'String'},
@@ -286,19 +260,12 @@ describe('getAutocompleteSuggestions', () => {
   });
 
   it('provides correct directive suggestions on definitions', () =>
-    expect(testSuggestions(
-      'type Type @', new Position(0, 11),
-    )).to.deep.equal([
+    expect(testSuggestions('type Type @', new Position(0, 11))).to.deep.equal([
       {label: 'onAllDefs'},
-    ]),
-  );
+    ]));
 
   it('provides correct directive suggestions on args definitions', () =>
-    expect(testSuggestions(
-      'type Type { field(arg: String @', new Position(0, 31),
-    )).to.deep.equal([
-      {label: 'onAllDefs'},
-      {label: 'onArg'},
-    ]),
-  );
+    expect(
+      testSuggestions('type Type { field(arg: String @', new Position(0, 31)),
+    ).to.deep.equal([{label: 'onAllDefs'}, {label: 'onArg'}]));
 });

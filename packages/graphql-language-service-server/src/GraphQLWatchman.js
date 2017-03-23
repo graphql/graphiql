@@ -27,18 +27,21 @@ export class GraphQLWatchman {
 
   checkVersion(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this._client.capabilityCheck({
-        optional: [],
-        required: ['relative_roots', 'cmd-watch-project'],
-      }, (error, response) => {
-        if (error) {
-          reject(error);
-        } else {
-          // From the Watchman docs, response is something like:
-          // {'version': '3.8.0', 'capabilities': {'relative_root': true}}.
-          resolve();
-        }
-      });
+      this._client.capabilityCheck(
+        {
+          optional: [],
+          required: ['relative_roots', 'cmd-watch-project'],
+        },
+        (error, response) => {
+          if (error) {
+            reject(error);
+          } else {
+            // From the Watchman docs, response is something like:
+            // {'version': '3.8.0', 'capabilities': {'relative_root': true}}.
+            resolve();
+          }
+        },
+      );
     });
   }
 
@@ -48,11 +51,7 @@ export class GraphQLWatchman {
   ): Promise<Array<any>> {
     const {watch, relative_path} = await this.watchProject(entryPath);
     const result = await this.runCommand('query', watch, {
-      expression: [
-        'allof',
-        ['match', '*.graphql'],
-        ['exists'],
-      ],
+      expression: ['allof', ['match', '*.graphql'], ['exists']],
       // Providing `path` will let watchman use path generator, and will perform
       // a tree walk with respect to the relative_root and path provided.
       // Path generator will do less work unless the root path of the repository
@@ -71,17 +70,13 @@ export class GraphQLWatchman {
           reject(error);
         }
         resolve(response);
-      }),
-    ).catch(error => {
+      })).catch(error => {
       throw new Error(error);
     });
   }
 
   async watchProject(directoryPath: Uri): Promise<WatchmanCommandResponse> {
-    const response = await this.runCommand(
-      'watch-project',
-      directoryPath,
-    );
+    const response = await this.runCommand('watch-project', directoryPath);
 
     return response;
   }
@@ -94,10 +89,7 @@ export class GraphQLWatchman {
 
     // Subscribe to the relative path
     await this.runCommand('subscribe', watch, relative_path, {
-      expression: [
-        'allof',
-        ['match', '*.graphql'],
-      ],
+      expression: ['allof', ['match', '*.graphql']],
       fields: ['name', 'exists', 'size', 'mtime'],
       relative_root: relative_path,
     });

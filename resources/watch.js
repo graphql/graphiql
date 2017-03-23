@@ -7,10 +7,9 @@
  */
 
 import sane from 'sane';
-import { resolve as resolvePath } from 'path';
-import { spawn } from 'child_process';
+import {resolve as resolvePath} from 'path';
+import {spawn} from 'child_process';
 import flowBinPath from 'flow-bin';
-
 
 process.env.PATH += ':./node_modules/.bin';
 
@@ -22,7 +21,7 @@ function exec(command, options) {
     var child = spawn(command, options, {
       cmd: cmd,
       env: process.env,
-      stdio: 'inherit'
+      stdio: 'inherit',
     });
     child.on('exit', code => {
       if (code === 0) {
@@ -36,10 +35,10 @@ function exec(command, options) {
 
 var flowServer = spawn(flowBinPath, ['server'], {
   cmd: cmd,
-  env: process.env
+  env: process.env,
 });
 
-var watcher = sane(srcDir, { glob: ['**/*.js', '**/*.graphql'] })
+var watcher = sane(srcDir, {glob: ['**/*.js', '**/*.graphql']})
   .on('ready', startWatch)
   .on('add', changeFile)
   .on('delete', deleteFile)
@@ -98,14 +97,15 @@ function checkFiles(filepaths) {
 
   return parseFiles(filepaths)
     .then(() => runTests(filepaths))
-    .then(testSuccess => lintFiles(filepaths)
-      .then(lintSuccess => typecheckStatus()
-        .then(typecheckSuccess =>
-          testSuccess && lintSuccess && typecheckSuccess)))
+    .then(testSuccess =>
+      lintFiles(filepaths).then(lintSuccess =>
+        typecheckStatus().then(
+          typecheckSuccess => testSuccess && lintSuccess && typecheckSuccess,
+        )))
     .catch(() => false)
     .then(success => {
       process.stdout.write(
-        '\n' + (success ? '' : '\x07') + green(invert('watching...'))
+        '\n' + (success ? '' : '\x07') + green(invert('watching...')),
       );
     });
 }
@@ -115,44 +115,55 @@ function checkFiles(filepaths) {
 function parseFiles(filepaths) {
   console.log('Checking Syntax');
 
-  return Promise.all(filepaths.map(filepath => {
-    if (isJS(filepath) && !isTest(filepath)) {
-      return exec('babel', [
-        '--optional', 'runtime',
-        '--out-file', '/dev/null',
-        srcPath(filepath)
-      ]);
-    }
-  }));
+  return Promise.all(
+    filepaths.map(filepath => {
+      if (isJS(filepath) && !isTest(filepath)) {
+        return exec('babel', [
+          '--optional',
+          'runtime',
+          '--out-file',
+          '/dev/null',
+          srcPath(filepath),
+        ]);
+      }
+    }),
+  );
 }
 
 function runTests(filepaths) {
   console.log('\nRunning Tests');
 
-  return exec('mocha', [
-    '--reporter', 'progress',
-    '--require', 'resources/mocha-bootload'
-  ].concat(
-    allTests(filepaths) ? filepaths.map(srcPath) : ['src/**/__tests__/**/*.js']
-  )).catch(() => false);
+  return exec(
+    'mocha',
+    ['--reporter', 'progress', '--require', 'resources/mocha-bootload'].concat(
+      allTests(filepaths)
+        ? filepaths.map(srcPath)
+        : ['src/**/__tests__/**/*.js'],
+    ),
+  ).catch(() => false);
 }
 
 function lintFiles(filepaths) {
   console.log('Linting Code\n');
 
-  return filepaths.reduce((prev, filepath) => prev.then(prevSuccess => {
-    if (isJS(filepath)) {
-      process.stdout.write('  ' + filepath + ' ...');
-      return exec('eslint', [srcPath(filepath)])
-        .catch(() => false)
-        .then(success => {
-          console.log(CLEARLINE + '  ' + (success ? CHECK : X)
-            + ' ' + filepath);
-          return prevSuccess && success;
-        });
-    }
-    return prevSuccess;
-  }), Promise.resolve(true));
+  return filepaths.reduce(
+    (prev, filepath) =>
+      prev.then(prevSuccess => {
+        if (isJS(filepath)) {
+          process.stdout.write('  ' + filepath + ' ...');
+          return exec('eslint', [srcPath(filepath)])
+            .catch(() => false)
+            .then(success => {
+              console.log(
+                CLEARLINE + '  ' + (success ? CHECK : X) + ' ' + filepath,
+              );
+              return prevSuccess && success;
+            });
+        }
+        return prevSuccess;
+      }),
+    Promise.resolve(true),
+  );
 }
 
 function typecheckStatus() {

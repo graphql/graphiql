@@ -22,6 +22,5 @@ describe('GraphQLConfig', () => {
   });
 
   it('returns a correct root dir', () =>
-    expect(config.getRootDir()).to.equal(CONFIG_DIR),
-  );
+    expect(config.getRootDir()).to.equal(CONFIG_DIR));
 });

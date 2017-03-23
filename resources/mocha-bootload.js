@@ -7,7 +7,7 @@
  */
 /* eslint-disable no-console, object-shorthand */
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', function(error) {
   console.error('Unhandled Promise Rejection:');
-  console.error(error && error.stack || error);
+  console.error((error && error.stack) || error);
 });

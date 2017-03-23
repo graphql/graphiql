@@ -18,10 +18,7 @@ import type {
   GraphQLType,
 } from 'graphql/type/definition';
 
-export type TokenPattern =
-  string |
-  ((char: string) => boolean) |
-  RegExp;
+export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
 export interface CharacterStream {
   getStartOfToken: () => number,
@@ -35,11 +32,9 @@ export interface CharacterStream {
   eatSpace: () => boolean,
   skipToEnd: () => void,
   skipTo: (position: number) => void,
-  match: (
-    pattern: TokenPattern,
-    consume: ?boolean,
-    caseFold: ?boolean
-  ) => Array<string> | boolean,
+  match: (pattern: TokenPattern, consume: ?boolean, caseFold: ?boolean) =>
+    | Array<string>
+    | boolean,
   backUp: (num: number) => void,
   column: () => number,
   indentation: () => number,
@@ -48,7 +43,7 @@ export interface CharacterStream {
 
 // Cache and config-related.
 export type GraphQLConfiguration = {
-  schemaPath?: string,  // may be .json or .graphql
+  schemaPath?: string, // may be .json or .graphql
   schemaUrl?: string,
   // If env is specified, use one of the app configs in here
   env?: GraphQLConfigurationEnvs,
@@ -103,7 +98,7 @@ export interface GraphQLCache {
     graphQLConfig: GraphQLConfig,
   ) => Promise<Map<string, FragmentInfo>>,
 
-  getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>
+  getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>,
 }
 
 // online-parser related
@@ -120,8 +115,8 @@ export interface Range {
 }
 
 export type ParseRule =
-  ((token: Token, stream: CharacterStream) => ?string) |
-  Array<Rule | string>;
+  | ((token: Token, stream: CharacterStream) => ?string)
+  | Array<Rule | string>;
 
 export type Token = {
   kind: string,
@@ -231,7 +226,8 @@ export type DefinitionQueryResult = {
 };
 
 // Outline view
-export type TokenKind = 'keyword'
+export type TokenKind =
+  | 'keyword'
   | 'class-name'
   | 'constructor'
   | 'method'
@@ -239,8 +235,7 @@ export type TokenKind = 'keyword'
   | 'string'
   | 'whitespace'
   | 'plain'
-  | 'type'
-  ;
+  | 'type';
 export type TextToken = {
   kind: TokenKind,
   value: string,

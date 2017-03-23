@@ -9,6 +9,6 @@
 process.on('unhandledRejection', error => {
   /* eslint-disable no-console */
   console.error('Unhandled Promise Rejection:');
-  console.error(error && error.stack || error);
+  console.error((error && error.stack) || error);
   /* eslint-enable no-console */
 });

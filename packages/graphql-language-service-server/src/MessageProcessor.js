@@ -217,10 +217,12 @@ export async function processIPCRequestMessage(
         position,
         textDocument.uri,
       );
-      sendMessageIPC(convertToRpcMessage({
-        id: message.id,
-        result,
-      }));
+      sendMessageIPC(
+        convertToRpcMessage({
+          id: message.id,
+          result,
+        }),
+      );
       break;
     case 'textDocument/definition':
       if (
@@ -246,14 +248,18 @@ export async function processIPCRequestMessage(
         pos,
         textDocument.uri,
       );
-      const formatted = result ? result.definitions.map(res => ({
-        uri: path.join('file://', res.path),
-        range: res.range,
-      })) : [];
-      sendMessageIPC(convertToRpcMessage({
-        id: message.id,
-        result: formatted,
-      }));
+      const formatted = result
+        ? result.definitions.map(res => ({
+            uri: path.join('file://', res.path),
+            range: res.range,
+          }))
+        : [];
+      sendMessageIPC(
+        convertToRpcMessage({
+          id: message.id,
+          result: formatted,
+        }),
+      );
       break;
     case '$/cancelRequest':
       if (!message.params || !message.params.id) {
@@ -286,15 +292,17 @@ export async function processStreamMessage(
       configDir ? configDir.trim() : process.cwd(),
     );
     if (!graphQLConfigDir) {
-      process.stdout.write(JSON.stringify(
-        convertToRpcMessage({
-          id: '-1',
-          error: {
-            code: ERROR_CODES.SERVER_NOT_INITIALIZED,
-            message: '.graphqlrc not found',
-          },
-        }),
-      ));
+      process.stdout.write(
+        JSON.stringify(
+          convertToRpcMessage({
+            id: '-1',
+            error: {
+              code: ERROR_CODES.SERVER_NOT_INITIALIZED,
+              message: '.graphqlrc not found',
+            },
+          }),
+        ),
+      );
       return;
     }
     graphQLCache = await getGraphQLCache(graphQLConfigDir);
@@ -308,15 +316,17 @@ export async function processStreamMessage(
   try {
     json = JSON.parse(message);
   } catch (error) {
-    process.stdout.write(JSON.stringify(
-      convertToRpcMessage({
-        id: '-1',
-        error: {
-          code: ERROR_CODES.PARSE_ERROR,
-          message: 'Request contains incorrect JSON format',
-        },
-      }),
-    ));
+    process.stdout.write(
+      JSON.stringify(
+        convertToRpcMessage({
+          id: '-1',
+          error: {
+            code: ERROR_CODES.PARSE_ERROR,
+            message: 'Request contains incorrect JSON format',
+          },
+        }),
+      ),
+    );
     return;
   }
 
@@ -357,13 +367,11 @@ export async function processStreamMessage(
         filePath,
       );
 
-      const formatted = result.map(
-        res => ({
-          text: res.label,
-          typeName: res.detail ? String(res.detail) : null,
-          description: res.documentation || null,
-        }),
-      );
+      const formatted = result.map(res => ({
+        text: res.label,
+        typeName: res.detail ? String(res.detail) : null,
+        description: res.documentation || null,
+      }));
       responseMsg = convertToRpcMessage({
         type: 'response',
         id,
@@ -389,9 +397,7 @@ export async function processStreamMessage(
  * Helper functions to perform requested services from client/server.
  */
 
-async function initialize(
-  rootPath: Uri,
-): Promise<?ServerCapabilities> {
+async function initialize(rootPath: Uri): Promise<?ServerCapabilities> {
   const serverCapabilities = {
     capabilities: {
       completionProvider: {resolveProvider: true},
@@ -422,8 +428,7 @@ async function provideDiagnosticsMessage(
     const lastLineLength = queryLines[totalLines - 1].length;
     const lastCharacterPosition = new Position(totalLines, lastLineLength);
     results = results.filter(diagnostic =>
-      diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
-    );
+      diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
   }
 
   return results;

@@ -27,10 +27,9 @@ describe('getDiagnostics', () => {
   });
 
   it('catches syntax errors', () =>
-    expect(
-      getDiagnostics('qeury')[0].message,
-    ).to.contain('Unexpected Name "qeury"'),
-  );
+    expect(getDiagnostics('qeury')[0].message).to.contain(
+      'Unexpected Name "qeury"',
+    ));
 
   it('catches field validation errors', () => {
     const error = getDiagnostics('query queryName { title }', schema)[0];
@@ -42,10 +41,9 @@ describe('getDiagnostics', () => {
   });
 
   it('catches field deprecation errors', () => {
-    const error = getDiagnostics(
-      '{ deprecatedField { testField } }',
-      schema,
-    )[0];
+    const error = getDiagnostics('{ deprecatedField { testField } }', schema)[
+      0
+    ];
     expect(error.message).to.equal(
       'The field Query.deprecatedField is deprecated. Use test instead.',
     );

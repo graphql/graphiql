@@ -36,15 +36,11 @@ class MockWatchmanClient {
     });
   }
 
-  subscribe(
-    entryPath: Uri,
-    callback: (result: Object) => void,
-  ): Promise<void> {
+  subscribe(entryPath: Uri, callback: (result: Object) => void): Promise<void> {
     return Promise.resolve();
   }
 
-  dispose(): void {
-  }
+  dispose(): void {}
 }
 
 export default (MockWatchmanClient: any);

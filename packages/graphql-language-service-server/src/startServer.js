@@ -14,7 +14,7 @@ import {
   processIPCNotificationMessage,
 } from './MessageProcessor';
 
-export default async function startServer(configDir: ?string): Promise<void> {
+export default (async function startServer(configDir: ?string): Promise<void> {
   // IPC protocol support
   // The language server protocol specifies that the client starts sending
   // messages when the server starts. Start listening from this point.
@@ -22,8 +22,7 @@ export default async function startServer(configDir: ?string): Promise<void> {
     // TODO: support the header part of the language server protocol
     // Recognize the Content-Length header
     if (
-      typeof message === 'string' &&
-      message.indexOf('Content-Length') === 0
+      typeof message === 'string' && message.indexOf('Content-Length') === 0
     ) {
       return;
     }
@@ -60,4 +59,4 @@ export default async function startServer(configDir: ?string): Promise<void> {
       messages.forEach(message => processStreamMessage(message, configDir));
     }
   });
-}
+});

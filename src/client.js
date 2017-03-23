@@ -82,10 +82,13 @@ function _getAutocompleteSuggestions(
   try {
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getAutocompleteSuggestions(schema, queryText, point);
-    const resultObject = resultArray.reduce((prev, cur, index) => {
-      prev[index] = cur;
-      return prev;
-    }, {});
+    const resultObject = resultArray.reduce(
+      (prev, cur, index) => {
+        prev[index] = cur;
+        return prev;
+      },
+      {},
+    );
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
@@ -104,10 +107,13 @@ function _getDiagnostics(
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getDiagnostics(queryText, schema);
-    const resultObject = resultArray.reduce((prev, cur, index) => {
-      prev[index] = cur;
-      return prev;
-    }, {});
+    const resultObject = resultArray.reduce(
+      (prev, cur, index) => {
+        prev[index] = cur;
+        return prev;
+      },
+      {},
+    );
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
@@ -116,9 +122,7 @@ function _getDiagnostics(
   }
 }
 
-function _getOutline(
-  queryText: string,
-): EXIT_CODE {
+function _getOutline(queryText: string): EXIT_CODE {
   try {
     const outline = getOutline(queryText);
     process.stdout.write(JSON.stringify(outline, null, 2));
@@ -129,10 +133,7 @@ function _getOutline(
   return GRAPHQL_SUCCESS_CODE;
 }
 
-function ensureText(
-  queryText: string,
-  filePath: string,
-): string {
+function ensureText(queryText: string, filePath: string): string {
   let text = queryText;
   // Always honor text argument over filePath.
   // If text isn't available, try reading from the filePath.

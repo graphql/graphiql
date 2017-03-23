@@ -8,7 +8,6 @@
  *  @flow
  */
 
-
 export {
   getDefinitionState,
   getFieldDef,

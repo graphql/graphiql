@@ -106,9 +106,9 @@ export class GraphQLConfig implements GraphQLConfigInterface {
         );
       }
     }
-    return this._config.inputDirs ? this._config.inputDirs.some(
-      dirPath => fileName.indexOf(dirPath) !== -1,
-    ) : false;
+    return this._config.inputDirs
+      ? this._config.inputDirs.some(dirPath => fileName.indexOf(dirPath) !== -1)
+      : false;
   }
 
   getCustomValidationRulesModulePath(appName: ?string): ?Uri {
@@ -133,13 +133,17 @@ export class GraphQLConfig implements GraphQLConfigInterface {
 
   _normalizePath(modulePath: Uri): Uri {
     let resolvedPath;
-    if (modulePath.startsWith('~')) { // home directory
-      const homeDirPath = (process.platform === 'win32') ?
-        process.env.USERPROFILE : process.env.HOME;
+    if (modulePath.startsWith('~')) {
+      // home directory
+      const homeDirPath = process.platform === 'win32'
+        ? process.env.USERPROFILE
+        : process.env.HOME;
       resolvedPath = path.join(homeDirPath || '', modulePath.slice(1));
-    } else if (modulePath.startsWith('./')) { // relative local directory
+    } else if (modulePath.startsWith('./')) {
+      // relative local directory
       resolvedPath = path.join(this._rootDir, modulePath);
-    } else { // `/` or an actual module name (node_modules)
+    } else {
+      // `/` or an actual module name (node_modules)
       resolvedPath = modulePath;
     }
 
