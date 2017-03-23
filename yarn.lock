@@ -296,15 +296,14 @@ babel-core@^6.0.14, babel-core@^6.22.0, babel-core@^6.22.1:
     slash "^1.0.0"
     source-map "^0.5.0"
 
-babel-eslint@7.2.0:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-7.2.0.tgz#8941514b9dead06f0df71b29d5d5b193a92ee0ae"
+babel-eslint@7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-7.2.1.tgz#079422eb73ba811e3ca0865ce87af29327f8c52f"
   dependencies:
     babel-code-frame "^6.22.0"
     babel-traverse "^6.23.1"
     babel-types "^6.23.0"
     babylon "^6.16.1"
-    lodash "^4.17.4"
 
 babel-generator@^6.22.0:
   version "6.22.0"
@@ -2786,7 +2785,7 @@ lodash.memoize@~3.0.3:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-3.0.4.tgz#2dcbd2c287cbc0a55cc42328bd0c736150d53e3f"
 
-lodash@^4.0.0, lodash@^4.1.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.1.0, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
@@ -4143,7 +4142,7 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
-uglify-js@2.8.15:
+uglify-js@2.8.15, uglify-js@2.x.x:
   version "2.8.15"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.15.tgz#835dd4cd5872554756e6874508d0d0561704d94d"
   dependencies:
@@ -4151,14 +4150,6 @@ uglify-js@2.8.15:
     yargs "~3.10.0"
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
-
-uglify-js@2.x.x:
-  version "2.8.14"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.14.tgz#25b15d1af39b21752ee33703adbf432e8bc8f77d"
-  dependencies:
-    source-map "~0.5.1"
-    uglify-to-browserify "~1.0.0"
-    yargs "~3.10.0"
 
 uglify-to-browserify@~1.0.0:
   version "1.0.2"
