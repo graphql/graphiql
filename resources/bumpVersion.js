@@ -131,7 +131,7 @@ function getDependents(dependencyName) {
 
 function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
   const {name} = bumpTarget.info;
-  const {published, version} = versions[name];
+  const {published, version} = bumpTarget;
   if (compareVersions(published, version) > 0) {
     const message = `Local version of ${name} (${version}) is ` +
       `already ahead of published version (${published}); no need to bump.`;
@@ -141,7 +141,6 @@ function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
     const message = `Bumping from published version of ${name} ` +
       `(${published}) to new ${bumpType} version (${bumpedVersion}).`;
     print(message);
-    versions[name].version = (versions[name].local = bumpedVersion);
 
     const pkg = allPackages[name];
     pkg.info.version = bumpedVersion;
@@ -165,8 +164,8 @@ process.on('unhandledRejection', err => {
   const [bumpType, bumpTargetName] = parseArguments();
   const publishedVersions = await genPublishedVersions(packageNames);
   packageNames.forEach((name, i) => {
-    versions[name].published = publishedVersions[i];
-    versions[name].local = allPackages[name].info.version;
+    allPackages[name].published = publishedVersions[i];
+    allPackages[name].version = versions[name].version;
   });
   bumpVersion(allPackages[bumpTargetName], bumpType);
 
