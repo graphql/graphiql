@@ -11,7 +11,8 @@ const {execFile} = require('child_process');
 const {readdirSync, writeFileSync} = require('fs');
 const {join} = require('path');
 
-const versions = require('../versions.json');
+const manifestPath = join(__dirname, '..', 'versions.json');
+const manifest = require(manifestPath);
 const mainPackage = {
   info: require('../package.json'),
   location: join(process.cwd(), '..', 'package.json'),
@@ -119,6 +120,10 @@ function compareVersions(a, b) {
   return 0;
 }
 
+function writeToJSON(location, stringifiable) {
+  writeFileSync(location, JSON.stringify(stringifiable, null, 2) + '\n');
+}
+
 /**
  * Get the direct dependents of `dependency`.
  */
@@ -144,7 +149,7 @@ function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
 
     const pkg = allPackages[name];
     pkg.info.version = bumpedVersion;
-    writeFileSync(pkg.location, JSON.stringify(pkg.info, null, 2) + '\n');
+    writeToJSON(pkg.location, pkg.info);
     bumped.add(pkg);
 
     getDependents(name).forEach(dependent => {
@@ -153,6 +158,15 @@ function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
       }
     });
   }
+}
+
+function writeVersionsManifest() {
+  const manifest = {};
+  Object.keys(allPackages).forEach(name => {
+    const {version} = allPackages[name].info;
+    manifest[name] = {version};
+  });
+  writeToJSON(manifestPath, manifest);
 }
 
 process.on('unhandledRejection', err => {
@@ -165,11 +179,10 @@ process.on('unhandledRejection', err => {
   const publishedVersions = await genPublishedVersions(packageNames);
   packageNames.forEach((name, i) => {
     allPackages[name].published = publishedVersions[i];
-    allPackages[name].version = versions[name].version;
+    allPackages[name].version = manifest[name].version;
   });
   bumpVersion(allPackages[bumpTargetName], bumpType);
 
   // TODO: warn if versions file and package.json gets out of sync
-  // TODO: write out clean copy of versions file:
-  console.log(versions);
+  writeVersionsManifest();
 })();
