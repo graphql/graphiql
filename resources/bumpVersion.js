@@ -15,7 +15,7 @@ const manifestPath = join(__dirname, '..', 'versions.json');
 const manifest = require(manifestPath);
 const mainPackage = {
   info: require('../package.json'),
-  location: join(process.cwd(), '..', 'package.json'),
+  location: join(__dirname, '..', 'package.json'),
 };
 const otherPackages = readdirSync('packages').map(pkg => {
   const location = join(process.cwd(), 'packages', pkg, 'package.json');
@@ -149,10 +149,10 @@ function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
 
     const pkg = allPackages[name];
     pkg.info.version = bumpedVersion;
-    writeToJSON(pkg.location, pkg.info);
     bumped.add(pkg);
 
     getDependents(name).forEach(dependent => {
+      dependent.info.dependencies[name] = bumpedVersion;
       if (!bumped.has(dependent)) {
         bumpVersion(dependent, bumpType, bumped);
       }
@@ -180,9 +180,22 @@ process.on('unhandledRejection', err => {
   packageNames.forEach((name, i) => {
     allPackages[name].published = publishedVersions[i];
     allPackages[name].version = manifest[name].version;
+    if (manifest[name].version !== allPackages[name].info.version) {
+      const message = `warning: versions.json manifest version for ` +
+        `${name} (${manifest[name].version}) does not match package.json ` +
+        `version (${allPackages[name].info.version}).`;
+      print(message);
+    }
   });
+
   bumpVersion(allPackages[bumpTargetName], bumpType);
 
-  // TODO: warn if versions file and package.json gets out of sync
+  // Write updated package.json files only for packages with changed
+  // dependencies.
+  Object.entries(allPackages).forEach(([name, pkg]) => {
+    if (pkg.info.version !== pkg.version) {
+      writeToJSON(pkg.location, pkg.info);
+    }
+  });
   writeVersionsManifest();
 })();
