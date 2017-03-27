@@ -22,13 +22,12 @@
     "mocha": "--full-trace --require src/__tests__/mocha-bootload src/**/__tests__/**/*-test.js"
   },
   "scripts": {
-    "test": "npm run lint && npm run check && npm run testonly",
+    "test": "npm run lint && npm run testonly",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
     "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node scripts/build-js.js",
     "build-flow": "babel-node scripts/build-flow.js",
-    "check": "flow check",
     "prepublish": "node scripts/prepublish.js"
   },
   "dependencies": {
@@ -37,40 +36,5 @@
     "graphql-language-service-parser": "^0.0.3",
     "graphql-language-service-types": "^0.0.9",
     "graphql-language-service-utils": "^0.0.3"
-  },
-  "devDependencies": {
-    "babel-cli": "6.23.0",
-    "babel-eslint": "7.1.0",
-    "babel-plugin-check-es2015-constants": "6.8.0",
-    "babel-plugin-syntax-async-functions": "6.13.0",
-    "babel-plugin-transform-class-properties": "6.23.0",
-    "babel-plugin-transform-es2015-arrow-functions": "6.8.0",
-    "babel-plugin-transform-es2015-block-scoped-functions": "6.8.0",
-    "babel-plugin-transform-es2015-block-scoping": "6.23.0",
-    "babel-plugin-transform-es2015-classes": "6.23.0",
-    "babel-plugin-transform-es2015-computed-properties": "6.8.0",
-    "babel-plugin-transform-es2015-destructuring": "6.22.0",
-    "babel-plugin-transform-es2015-duplicate-keys": "6.8.0",
-    "babel-plugin-transform-es2015-function-name": "6.9.0",
-    "babel-plugin-transform-es2015-literals": "6.8.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "6.23.0",
-    "babel-plugin-transform-es2015-object-super": "6.8.0",
-    "babel-plugin-transform-es2015-parameters": "6.23.0",
-    "babel-plugin-transform-es2015-shorthand-properties": "6.18.0",
-    "babel-plugin-transform-es2015-spread": "6.8.0",
-    "babel-plugin-transform-es2015-template-literals": "6.8.0",
-    "babel-plugin-transform-flow-strip-types": "6.18.0",
-    "babel-plugin-transform-object-rest-spread": "6.22.0",
-    "babel-plugin-transform-regenerator": "6.16.1",
-    "babel-polyfill": "^6.16.0",
-    "babel-types": "6.22.0",
-    "chai": "^3.5.0",
-    "eslint": "3.15.0",
-    "eslint-plugin-babel": "3.3.0",
-    "eslint-plugin-dependencies": "2.0.0",
-    "eslint-plugin-flowtype": "2.29.1",
-    "eslint-plugin-prefer-object-spread": "1.1.0",
-    "flow-bin": "0.39.0",
-    "mocha": "^3.2.0"
   }
 }
