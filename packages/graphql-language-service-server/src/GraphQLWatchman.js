@@ -76,9 +76,12 @@ export class GraphQLWatchman {
   }
 
   async watchProject(directoryPath: Uri): Promise<WatchmanCommandResponse> {
-    const response = await this.runCommand('watch-project', directoryPath);
-
-    return response;
+    try {
+      const response = await this.runCommand('watch-project', directoryPath);
+      return response;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async subscribe(
@@ -87,8 +90,7 @@ export class GraphQLWatchman {
   ): Promise<void> {
     const {watch, relative_path} = await this.watchProject(entryPath);
 
-    // Subscribe to the relative path
-    await this.runCommand('subscribe', watch, relative_path, {
+    await this.runCommand('subscribe', watch, relative_path || watch, {
       expression: ['allof', ['match', '*.graphql']],
       fields: ['name', 'exists', 'size', 'mtime'],
       relative_root: relative_path,

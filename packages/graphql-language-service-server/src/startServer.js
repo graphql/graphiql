@@ -8,16 +8,53 @@
  *  @flow
  */
 
+import net from 'net';
+
 import {
   processStreamMessage,
   processIPCRequestMessage,
   processIPCNotificationMessage,
 } from './MessageProcessor';
 
-export default (async function startServer(configDir: ?string): Promise<void> {
+import {
+  IPCMessageWriter,
+  SocketMessageReader,
+  SocketMessageWriter,
+} from 'vscode-jsonrpc';
+
+type ServerOptions = {
+  port?: number,
+};
+
+export default (async function startServer(
+  configDir: ?string,
+  options?: ServerOptions,
+): Promise<void> {
+  if (options && options.port) {
+    // Socket protocol support
+    const socket = net.connect(options.port);
+    socket.setEncoding('utf8');
+    const messageReader = new SocketMessageReader(socket);
+    const messageWriter = new SocketMessageWriter(socket);
+
+    messageReader.listen(message => {
+      try {
+        if (message.id != null) {
+          processIPCRequestMessage(message, configDir, messageWriter);
+        } else {
+          processIPCNotificationMessage(message, messageWriter);
+        }
+      } catch (error) {
+        // Return with error message
+        return;
+      }
+    });
+  }
+
   // IPC protocol support
   // The language server protocol specifies that the client starts sending
   // messages when the server starts. Start listening from this point.
+  const ipcWriter = new IPCMessageWriter(process);
   process.on('message', message => {
     // TODO: support the header part of the language server protocol
     // Recognize the Content-Length header
@@ -28,9 +65,9 @@ export default (async function startServer(configDir: ?string): Promise<void> {
     }
 
     if (message.id != null) {
-      processIPCRequestMessage(message, configDir);
+      processIPCRequestMessage(message, configDir, ipcWriter);
     } else {
-      processIPCNotificationMessage(message);
+      processIPCNotificationMessage(message, ipcWriter);
     }
   });
 

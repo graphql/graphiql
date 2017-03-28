@@ -74,6 +74,7 @@ const textDocumentCache: Map<string, Object> = new Map();
 
 export async function processIPCNotificationMessage(
   message: NotificationMessage,
+  writer: (message: string) => void,
 ): Promise<void> {
   const method = message.method;
   let response;
@@ -93,7 +94,7 @@ export async function processIPCNotificationMessage(
       // Create/modify the cached entry if text is provided.
       // Otherwise, try searching the cache to perform diagnostics.
       if (text) {
-        invalidateCache(textDocument, {text});
+        invalidateCache(textDocument, uri, {text});
       } else {
         if (textDocumentCache.has(uri)) {
           const cachedDocument = textDocumentCache.get(uri);
@@ -108,7 +109,7 @@ export async function processIPCNotificationMessage(
         method: 'textDocument/publishDiagnostics',
         params: {uri, diagnostics},
       });
-      sendMessageIPC(response);
+      sendMessageIPC(response, writer);
       break;
     case 'textDocument/didChange':
       // TODO: support onEdit diagnostics
@@ -130,7 +131,11 @@ export async function processIPCNotificationMessage(
 
       // As `contentChanges` is an array and we just want the
       // latest update to the text, grab the last entry from the array.
-      invalidateCache(textDocument, contentChanges[contentChanges.length - 1]);
+      invalidateCache(
+        textDocument,
+        textDocument.uri || message.params.uri,
+        contentChanges[contentChanges.length - 1],
+      );
       break;
     case 'textDocument/didClose':
       // For every `textDocument/didClose` event, delete the cached entry.
@@ -155,6 +160,7 @@ export async function processIPCNotificationMessage(
 export async function processIPCRequestMessage(
   message: RequestMessage,
   configDir: ?string,
+  writer: (message: string) => void,
 ): Promise<void> {
   const method = message.method;
   let response;
@@ -186,7 +192,7 @@ export async function processIPCRequestMessage(
           result: serverCapabilities,
         });
       }
-      sendMessageIPC(response);
+      sendMessageIPC(response, writer);
       break;
     case 'textDocument/completion':
       // `textDocument/comletion` event takes advantage of the fact that
@@ -222,6 +228,7 @@ export async function processIPCRequestMessage(
           id: message.id,
           result,
         }),
+        writer,
       );
       break;
     case 'textDocument/definition':
@@ -259,6 +266,7 @@ export async function processIPCRequestMessage(
           id: message.id,
           result: formatted,
         }),
+        writer,
       );
       break;
     case '$/cancelRequest':
@@ -271,7 +279,7 @@ export async function processIPCRequestMessage(
       if (index !== -1) {
         REQUEST_IDS_IN_PROGRESS.splice(index, 1);
         // A cancelled request still needs to send an empty response back
-        sendMessageIPC({id: requestIDToCancel});
+        sendMessageIPC({id: requestIDToCancel}, writer);
       }
       break;
     case 'shutdown':
@@ -434,10 +442,8 @@ async function provideDiagnosticsMessage(
   return results;
 }
 
-function sendMessageIPC(message: any): void {
-  if (process.send !== undefined) {
-    process.send(message);
-  }
+function sendMessageIPC(message: any, writer: (message: string) => void): void {
+  writer.write(message);
 }
 
 /**
@@ -453,8 +459,15 @@ function convertToRpcMessage(metaMessage: Object): ResponseMessage {
   return message;
 }
 
-function invalidateCache(textDocument: Object, content: Object): void {
-  const uri = textDocument.uri;
+function invalidateCache(
+  textDocument: Object,
+  uri: Uri,
+  content: Object,
+): void {
+  if (!uri) {
+    return;
+  }
+
   if (textDocumentCache.has(uri)) {
     const cachedDocument = textDocumentCache.get(uri);
     if (cachedDocument && cachedDocument.version < textDocument.version) {

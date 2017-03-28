@@ -1170,9 +1170,9 @@ graphql-language-service-config@^0.0.4:
   dependencies:
     graphql-language-service-types "^0.0.9"
 
-graphql-language-service-interface@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.3.tgz#56d8580b1fdfecd954ec0351e4d074511ecfc22d"
+graphql-language-service-interface@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.4.tgz#6ae20481312d81f2085494fa9d9a257e926282ad"
   dependencies:
     graphql "^0.9.1"
     graphql-language-service-config "^0.0.4"
@@ -2201,6 +2201,10 @@ verror@1.3.6:
   resolved "https://registry.yarnpkg.com/verror/-/verror-1.3.6.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
   dependencies:
     extsprintf "1.0.2"
+
+vscode-jsonrpc@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.2.0.tgz#c92b946ac385c8b41439b842b6bd07d517b64a7d"
 
 wide-align@^1.1.0:
   version "1.1.0"

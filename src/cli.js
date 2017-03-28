@@ -20,7 +20,8 @@ const {argv} = yargs
       '    [-c | --configDir] {configDir}\n' +
       '    [-t | --text] {textBuffer}\n' +
       '    [-f | --file] {filePath}\n' +
-      '    [-s | --schema] {schemaPath}\n',
+      '    [-s | --schema] {schemaPath}\n' +
+      '    [-p | --port] {port}\n',
   )
   .help('h')
   .alias('h', 'help')
@@ -62,6 +63,14 @@ const {argv} = yargs
       'the root directory is found.\n',
     type: 'string',
   })
+  .option('p', {
+    alias: 'port',
+    describe: 'Port number to communicate via socket.\n' +
+      'The port number of a service running inside the IDE that the language ' +
+      'service should connect to.\n' +
+      'Required if the client communicates via socket connection.\n',
+    type: 'number',
+  })
   .option('s', {
     alias: 'schemaPath',
     describe: 'a path to schema DSL file\n',
@@ -72,7 +81,11 @@ const command = argv._.pop();
 
 switch (command) {
   case 'server':
-    startServer(argv.configDir);
+    let options = {};
+    if (argv.port) {
+      options = {port: argv.port};
+    }
+    startServer(argv.configDir, options);
     break;
   default:
     client(command, argv);
