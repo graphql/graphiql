@@ -17,8 +17,8 @@
     "graphql"
   ],
   "options": {
-    "mocha": "--full-trace --require resources/mochaBootload src/**/__tests__/**/*-test.js",
-    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload src/**/__tests__/**/*-test.js"
+    "mocha": "--full-trace --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js src/**/__tests__/**/*-test.js",
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js src/**/__tests__/**/*-test.js"
   },
   "scripts": {
     "test": "npm run lint && npm run pretty-check && npm run check && npm run testonly",
