@@ -15,7 +15,9 @@
 // (2) We start off with a check to bail out when not invoked as part of
 //     "npm publish".
 
-var config = require('../package.json');
+var path = require('path');
+
+var config = require(path.join(process.cwd(), 'package.json'));
 if (config.scripts.prepublish.indexOf('node ') !== 0) {
   // Guard against somebody helpfully trying to make the package.json scripts
   // consistent by using "babel-node" instead of "node" (which would break
