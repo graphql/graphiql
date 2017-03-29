@@ -191,7 +191,7 @@ module.exports = {
     'id-blacklist': 0,
     'id-length': 0,
     'id-match': 0,
-    'indent': [1, 2, {SwitchCase: 1}],
+    'indent': 0,
     'jsx-quotes': [1, 'prefer-double'],
     'key-spacing': [1, {beforeColon: false, afterColon: true}],
     'keyword-spacing': 1,
