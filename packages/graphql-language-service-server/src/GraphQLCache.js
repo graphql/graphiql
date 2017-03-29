@@ -391,7 +391,7 @@ async function readAllGraphQLFiles(
             mtime: fileInfo.mtime,
             size: fileInfo.size,
           })));
-    await Promise.all(promises); // eslint-disable-line no-await-in-loop
+    await Promise.all(promises); // eslint-disable-line babel/no-await-in-loop
   }
 
   return processGraphQLFiles(responses);
