@@ -35,6 +35,4 @@ if (!isPublishing) {
 
 // Otherwise, perform a build.
 var execFileSync = require('child_process').execFileSync;
-process.stdout.write(
-  execFileSync('npm', ['run', 'build'])
-);
+process.stdout.write(execFileSync('npm', ['run', 'build']));

@@ -11,10 +11,7 @@
 'use strict';
 
 import {execFileSync} from 'child_process';
-import {
-  createReadStream,
-  createWriteStream,
-} from 'fs';
+import {createReadStream, createWriteStream} from 'fs';
 
 export function cp(source: string, destination: string): void {
   createReadStream(source).pipe(createWriteStream(destination));
