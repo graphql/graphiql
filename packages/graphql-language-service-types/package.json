@@ -22,9 +22,9 @@
     "test": "npm run lint",
     "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
     "build": "npm run build-js && npm run build-flow",
-    "build-js": "babel-node scripts/build-js.js",
-    "build-flow": "babel-node scripts/build-flow.js",
-    "prepublish": "node scripts/prepublish.js"
+    "build-js": "babel-node ../../resources/build-js.js",
+    "build-flow": "babel-node ../../resources/build-flow.js",
+    "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
     "graphql": "^0.9.1"
