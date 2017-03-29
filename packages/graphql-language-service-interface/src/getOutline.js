@@ -76,10 +76,9 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     }),
     Document: node => node.definitions,
     SelectionSet: node =>
-      concatMap(
-        node.selections,
-        child => child.kind === INLINE_FRAGMENT ? child.selectionSet : child,
-      ),
+      concatMap(node.selections, child => {
+        return child.kind === INLINE_FRAGMENT ? child.selectionSet : child;
+      }),
     Name: node => node.value,
     FragmentDefinition: node => ({
       tokenizedText: [

@@ -200,7 +200,7 @@ module.exports = {
     'lines-around-comment': 0,
     'lines-around-directive': 0,
     'max-depth': 0,
-    'max-len': [1, 80, {tabWidth: 2, ignoreUrls: true}],
+    'max-len': [1, 120, {tabWidth: 2, ignoreUrls: true}],
     'max-lines': 0,
     'max-nested-callbacks': 0,
     'max-params': 0,
