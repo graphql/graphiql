@@ -17,17 +17,17 @@
     "graphql"
   ],
   "options": {
-    "mocha": "--full-trace --require resources/mocha-bootload src/**/__tests__/**/*-test.js",
-    "mocha_tdd": "--full-trace --watch --require resources/mocha-bootload src/**/__tests__/**/*-test.js"
+    "mocha": "--full-trace --require resources/mochaBootload src/**/__tests__/**/*-test.js",
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload src/**/__tests__/**/*-test.js"
   },
   "scripts": {
     "test": "npm run lint && npm run pretty-check && npm run check && npm run testonly",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
-    "t": "babel-node ./node_modules/.bin/_mocha --require ./resources/mocha-bootload",
+    "t": "babel-node ./node_modules/.bin/_mocha --require ./resources/mochaBootload",
     "lint": "eslint src packages/**/src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
     "build": "npm run build-js && npm run build-flow",
-    "build-js": "babel-node resources/build-js.js",
-    "build-flow": "babel-node resources/build-flow.js",
+    "build-js": "babel-node resources/buildJs.js",
+    "build-flow": "babel-node resources/buildFlow.js",
     "check": "flow check",
     "check-dependencies": "node resources/checkDependencies.js",
     "prepublish": "node resources/prepublish.js",
