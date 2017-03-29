@@ -30,6 +30,7 @@
     "build-flow": "babel-node resources/build-flow.js",
     "check": "flow check",
     "check-dependencies": "node resources/checkDependencies.js",
+    "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check"
   },
