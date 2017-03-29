@@ -45,8 +45,7 @@ export default (async function startServer(
           processIPCNotificationMessage(message, messageWriter);
         }
       } catch (error) {
-        // Return with error message
-        return;
+        // Swallow error silently.
       }
     });
   }
