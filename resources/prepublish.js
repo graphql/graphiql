@@ -20,9 +20,7 @@ if (config.scripts.prepublish.indexOf('node ') !== 0) {
   // Guard against somebody helpfully trying to make the package.json scripts
   // consistent by using "babel-node" instead of "node" (which would break
   // the initial "npm install").
-  console.error(
-    'prepublish.js should be invoked with `node`, not `babel-node`'
-  );
+  console.error('invoke prepublish.js with `node`, not `babel-node`');
   process.exit(1);
 }
 
