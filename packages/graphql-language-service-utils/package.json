@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-utils",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -32,6 +32,6 @@
   },
   "dependencies": {
     "graphql": "^0.9.1",
-    "graphql-language-service-types": "^0.0.9"
+    "graphql-language-service-types": "0.0.10"
   }
 }
