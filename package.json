@@ -28,7 +28,7 @@
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node resources/buildJs.js",
     "build-flow": "babel-node resources/buildFlow.js",
-    "check": "flow check",
+    "check": "flow check --show-all-errors",
     "check-dependencies": "node resources/checkDependencies.js",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
