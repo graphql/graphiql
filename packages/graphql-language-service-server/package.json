@@ -18,9 +18,6 @@
     "graphql"
   ],
   "main": "dist/index.js",
-  "options": {
-    "mocha": "--full-trace --require src/__tests__/mochaBootload src/**/__tests__/**/*-test.js"
-  },
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
     "build": "npm run build-js && npm run build-flow",
