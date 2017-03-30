@@ -3,7 +3,6 @@
 .*/__tests__/.*
 .*/coverage/.*
 .*/dist/.*
-.*/node_modules/.* */
 .*/resources/.*
 
 [include]

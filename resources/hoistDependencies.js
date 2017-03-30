@@ -19,8 +19,13 @@ const mainPackage = require('../package.json');
 const otherPackages = readdirSync('packages').map(pkg =>
   require(join(process.cwd(), 'packages', pkg, 'package.json')));
 
+function writeToJSON(location, stringifiable) {
+  writeFileSync(location, JSON.stringify(stringifiable, null, 2) + '\n');
+}
+
 const dependencies = mainPackage.dependencies;
 otherPackages.forEach(pkg => {
+  // Hoist dependencies.
   if (pkg.dependencies) {
     Object.keys(pkg.dependencies).forEach(dependency => {
       if (dependency === mainPackage.name) {
@@ -36,8 +41,13 @@ otherPackages.forEach(pkg => {
       dependencies[dependency] = version;
     });
   }
+
+  // Enable Flow to work without a build.
+  if (pkg.main) {
+    pkg.main = pkg.main.replace(/dist\//, 'src/');
+    const outfile = join(process.cwd(), 'packages', pkg.name, 'package.json');
+    writeToJSON(outfile, pkg);
+  }
 });
 
-const outfile = join(process.cwd(), 'package.json');
-const contents = JSON.stringify(mainPackage, null, 2) + '\n';
-writeFileSync(outfile, contents);
+writeToJSON(join(process.cwd(), 'package.json'), mainPackage);
