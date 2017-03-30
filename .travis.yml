@@ -5,6 +5,7 @@ node_js: stable
 before_install:
   - npm config set spin false --global
   - node resources/hoistDependencies.js
+  - mkdir -p node_modules
   - (cd node_modules && ln -s ../packages/graphql-language-service-types)
   - (cd node_modules && ln -s ../packages/graphql-language-service-config)
   - (cd node_modules && ln -s ../packages/graphql-language-service-parser)
