@@ -4,10 +4,10 @@ node_js: stable
 
 before_install:
   - npm config set spin false --global
-  - cd packages/graphql-language-service-types && npm install
-  - cd packages/graphql-language-service-config && npm link ../graphql-language-service-types && npm install
-  - cd packages/graphql-language-service-parser && npm link ../graphql-language-service-types && npm install
-  - cd packages/graphql-language-service-utils && npm link ../graphql-language-service-types && npm install
-  - cd packages/graphql-language-service-interface && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-parser && npm link ../graphql-language-service-utils && npm install
-  - cd packages/graphql-language-service-server && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-interface && npm link ../graphql-language-service-interface && npm install
+  - (cd packages/graphql-language-service-types && npm install)
+  - (cd packages/graphql-language-service-config && npm link ../graphql-language-service-types && npm install)
+  - (cd packages/graphql-language-service-parser && npm link ../graphql-language-service-types && npm install)
+  - (cd packages/graphql-language-service-utils && npm link ../graphql-language-service-types && npm install)
+  - (cd packages/graphql-language-service-interface && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-parser && npm link ../graphql-language-service-utils && npm install)
+  - (cd packages/graphql-language-service-server && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-interface && npm link ../graphql-language-service-interface && npm install)
   - npm link && npm link packages/graphql-language-service-interface && npm link ../graphql-language-service-server && npm link ../graphql-language-service-utils
