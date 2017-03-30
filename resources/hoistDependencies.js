@@ -23,6 +23,9 @@ const dependencies = mainPackage.dependencies;
 otherPackages.forEach(pkg => {
   if (pkg.dependencies) {
     Object.keys(pkg.dependencies).forEach(dependency => {
+      if (dependency === mainPackage.name) {
+        return;
+      }
       const version = pkg.dependencies[dependency];
       if (dependencies[dependency] && dependencies[dependency] !== version) {
         const message = `Multiple versions ` +
