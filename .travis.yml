@@ -4,5 +4,3 @@ node_js: stable
 
 before_install:
   - npm config set spin false --global
-
-cache: yarn
