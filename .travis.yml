@@ -4,5 +4,11 @@ node_js: stable
 
 before_install:
   - npm config set spin false --global
-
-cache: yarn
+  - node resources/hoistDependencies.js
+  - mkdir -p node_modules
+  - (cd node_modules && ln -s ../packages/graphql-language-service-types)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-config)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-parser)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-interface)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-server)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-utils)

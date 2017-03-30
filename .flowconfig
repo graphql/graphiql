@@ -1,13 +1,12 @@
 [ignore]
+.*/__mocks__/.*
+.*/__tests__/.*
 .*/coverage/.*
+.*/dist/.*
 .*/resources/.*
 
 [include]
 
 [libs]
-./node_modules/graphql/language/index.js.flow
-./node_modules/graphql/type/index.js.flow
-./node_modules/graphql/type/definition.js.flow
-./node_modules/graphql/utilities/index.js.flow
 
 [options]

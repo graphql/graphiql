@@ -44,4 +44,3 @@ class MockWatchmanClient {
 }
 
 export default (MockWatchmanClient: any);
-// export default (MockWatchmanClient: any);

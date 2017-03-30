@@ -18,13 +18,8 @@
     "graphql"
   ],
   "main": "dist/index.js",
-  "options": {
-    "mocha": "--full-trace --require src/__tests__/mochaBootload src/**/__tests__/**/*-test.js"
-  },
   "scripts": {
-    "test": "npm run lint && npm run testonly",
-    "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
-    "lint": "eslint src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
+    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node ../../resources/buildJs.js",
     "build-flow": "babel-node ../../resources/buildFlow.js",
