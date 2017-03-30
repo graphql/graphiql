@@ -9,5 +9,5 @@ before_install:
   - (cd packages/graphql-language-service-parser && npm link ../graphql-language-service-types && npm install)
   - (cd packages/graphql-language-service-utils && npm link ../graphql-language-service-types && npm install)
   - (cd packages/graphql-language-service-interface && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-parser && npm link ../graphql-language-service-utils && npm install)
-  - (cd packages/graphql-language-service-server && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-interface && npm link ../graphql-language-service-interface && npm install)
+  - (cd packages/graphql-language-service-server && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-interface && npm link ../graphql-language-service-utils && npm install)
   - npm link && npm link packages/graphql-language-service-interface && npm link packages/graphql-language-service-server && npm link packages/graphql-language-service-utils
