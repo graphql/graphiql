@@ -10,6 +10,7 @@
 
 import type {GraphQLErrorLocation, GraphQLError} from 'graphql/error';
 import type {ASTNode} from 'graphql/language';
+import type {GraphQLSchema} from 'graphql/type';
 import type {
   Diagnostic,
   CustomValidationRule,
@@ -33,7 +34,7 @@ export const SEVERITY = {
 
 export function getDiagnostics(
   queryText: string,
-  schema: ?string = null,
+  schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,
 ): Array<Diagnostic> {
   let ast = null;
