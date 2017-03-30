@@ -4,10 +4,10 @@ node_js: stable
 
 before_install:
   - npm config set spin false --global
-  - (cd packages/graphql-language-service-types && npm install)
-  - (cd packages/graphql-language-service-config && npm link ../graphql-language-service-types && npm install)
-  - (cd packages/graphql-language-service-parser && npm link ../graphql-language-service-types && npm install)
-  - (cd packages/graphql-language-service-utils && npm link ../graphql-language-service-types && npm install)
-  - (cd packages/graphql-language-service-interface && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-parser && npm link ../graphql-language-service-utils && npm install)
-  - (cd packages/graphql-language-service-server && npm link ../graphql-language-service-types && npm link ../graphql-language-service-config && npm link ../graphql-language-service-interface && npm link ../graphql-language-service-utils && npm install)
-  - npm link && npm link packages/graphql-language-service-types && npm link packages/graphql-language-service-config && npm link packages/graphql-language-service-parser && npm link packages/graphql-language-service-interface && npm link packages/graphql-language-service-server && npm link packages/graphql-language-service-utils
+  - node resources/hoistDependencies.js
+  - (cd node_modules && ln -s ../packages/graphql-language-service-types)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-config)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-parser)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-interface)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-server)
+  - (cd node_modules && ln -s ../packages/graphql-language-service-utils)
