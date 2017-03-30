@@ -76,7 +76,7 @@
     "eslint-plugin-dependencies": "2.0.0",
     "eslint-plugin-flowtype": "2.30.4",
     "eslint-plugin-prefer-object-spread": "1.1.0",
-    "flow-bin": "0.39.0",
+    "flow-bin": "0.42.0",
     "mocha": "3.2.0",
     "prettier": "^0.22.0"
   }
