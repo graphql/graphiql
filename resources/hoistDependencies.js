@@ -35,7 +35,6 @@ otherPackages.forEach(pkg => {
   }
 });
 
-writeFileSync(
-  join(process.cwd(), 'package.json'),
-  JSON.stringify(mainPackage, null, 2) + '\n'
-);
+const outfile = join(process.cwd(), 'package.json');
+const contents = JSON.stringify(mainPackage, null, 2) + '\n';
+writeFileSync(outfile, contents);
