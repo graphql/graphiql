@@ -13,7 +13,6 @@ import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
 import {getGraphQLConfig} from 'graphql-language-service-config';
 import {beforeEach, describe, it} from 'mocha';
-import {join} from 'path';
 
 import {GraphQLCache} from '../GraphQLCache';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
