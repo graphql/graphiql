@@ -8,14 +8,17 @@
 
  /* eslint-disable no-console */
 import express from 'express';
+import http from 'http';
 import path from 'path';
 import browserify from 'browserify';
 import browserifyShim from 'browserify-shim';
 import watchify from 'watchify';
 import babelify from 'babelify';
 import graphqlHTTP from 'express-graphql';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { SubscriptionManager, PubSub } from 'graphql-subscriptions';
 
-import schema from './schema';
+import {schema, startTimeSubscriptionPublication} from './schema';
 
 const app = express();
 
@@ -58,9 +61,27 @@ app.use('/css', express.static(path.join(__dirname, '../css')));
 app.use(express.static(__dirname));
 
 console.log('Initial build...');
+
 makeBundle(() => {
-  app.listen(0, function() {
+  const server = http.createServer(app);
+
+  server.listen(0, function() {
     const port = this.address().port;
     console.log(`Started on http://localhost:${port}/`);
+
+    const pubsub = new PubSub();
+    const subscriptionManager = new SubscriptionManager({
+      schema: schema,
+      pubsub: pubsub,
+    });
+
+    new SubscriptionServer({
+      subscriptionManager: subscriptionManager,
+    }, {
+      server: server,
+      path: '/subscriptions',
+    });
+
+    startTimeSubscriptionPublication(pubsub);
   });
 });

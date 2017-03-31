@@ -189,24 +189,32 @@ const TestMutationType = new GraphQLObjectType({
   }
 });
 
-const TestSubscriptionType = new GraphQLObjectType({
-  name: 'SubscriptionType',
-  description: 'This is a simple subscription type',
+const TimeSubscriptionType = new GraphQLObjectType({
+  name: 'SubscriptionTime',
+  description: 'This is a simple subscription type of the current time',
   fields: {
-    subscribeToTest: {
-      type: TestType,
-      description: 'Subscribe to the test type',
-      args: {
-        id: { type: GraphQLString }
-      }
+    currentTime: {
+      type: GraphQLString,
+      description: 'Subscribe to the current time',
     }
   }
 });
 
+const startTimeSubscriptionPublication = (pubsub) => {
+  setInterval(() => {
+    pubsub.publish('currentTime', {
+      currentTime: Date.now().toString()
+    });
+  }, 1000);
+};
+
 const myTestSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
-  subscription: TestSubscriptionType
+  subscription: TimeSubscriptionType
 });
 
-module.exports = myTestSchema;
+module.exports = {
+  schema: myTestSchema,
+  startTimeSubscriptionPublication: startTimeSubscriptionPublication,
+};
