@@ -8,8 +8,7 @@
  *  @flow
  */
 
-import type {GraphQLDirective, GraphQLSchema} from 'graphql/type/definition';
-import type {ASTNode} from 'graphql/language';
+import type {ASTNode, GraphQLDirective, GraphQLSchema} from 'graphql';
 import type {
   CompletionItem,
   ContextToken,
@@ -19,22 +18,20 @@ import type {
 import type {Position} from 'graphql-language-service-utils';
 
 import {
-  isInputType,
-  isCompositeType,
-  isAbstractType,
-  getNullableType,
-  getNamedType,
+  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLBoolean,
-  doTypesOverlap,
-} from 'graphql';
-import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from 'graphql/type/introspection';
+  doTypesOverlap,
+  getNamedType,
+  getNullableType,
+  isAbstractType,
+  isCompositeType,
+  isInputType,
+} from 'graphql';
 import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
 import {
   forEachState,
