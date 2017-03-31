@@ -18,6 +18,7 @@ import type {
   Definition,
   DefinitionQueryResult,
   FragmentInfo,
+  Position,
   Range,
   Uri,
 } from 'graphql-language-service-types';
@@ -30,6 +31,12 @@ function getRange(text: string, node: ASTNode): Range {
   const location = node.loc;
   invariant(location, 'Expected ASTNode to have a location.');
   return locToRange(text, location);
+}
+
+function getPosition(text: string, node: ASTNode): Position {
+  const location = node.loc;
+  invariant(location, 'Expected ASTNode to have a location.');
+  return offsetToPosition(text, location.start);
 }
 
 export async function getDefinitionQueryResultForFragmentSpread(
@@ -75,7 +82,7 @@ function getDefinitionForFragmentDefinition(
 ): Definition {
   return {
     path,
-    position: offsetToPosition(text, definition.name.loc.start),
+    position: getPosition(text, definition.name),
     range: getRange(text, definition),
     name: definition.name.value,
     language: LANGUAGE,
