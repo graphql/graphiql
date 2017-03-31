@@ -117,22 +117,27 @@ export class GraphQLLanguageService {
     }
 
     const node = getASTNodeAtPosition(query, ast, position);
-    switch (node ? node.kind : null) {
-      case FRAGMENT_SPREAD:
-        return this._getDefinitionForFragmentSpread(
-          query,
-          ast,
-          node,
-          filePath,
-          this._graphQLConfig,
-          appName,
-        );
-      case FRAGMENT_DEFINITION:
-      case OPERATION_DEFINITION:
-        return getDefinitionQueryResultForDefinitionNode(filePath, query, node);
-      default:
-        return null;
+    if (node) {
+      switch (node.kind) {
+        case FRAGMENT_SPREAD:
+          return this._getDefinitionForFragmentSpread(
+            query,
+            ast,
+            node,
+            filePath,
+            this._graphQLConfig,
+            appName,
+          );
+        case FRAGMENT_DEFINITION:
+        case OPERATION_DEFINITION:
+          return getDefinitionQueryResultForDefinitionNode(
+            filePath,
+            query,
+            node,
+          );
+      }
     }
+    return null;
   }
 
   async _getDefinitionForFragmentSpread(
