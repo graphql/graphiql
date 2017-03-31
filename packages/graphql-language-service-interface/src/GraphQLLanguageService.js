@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {ASTNode} from 'graphql/language';
+import type {DocumentNode, FragmentSpreadNode} from 'graphql';
 import type {
   CompletionItem,
   DefinitionQueryResult,
@@ -142,8 +142,8 @@ export class GraphQLLanguageService {
 
   async _getDefinitionForFragmentSpread(
     query: string,
-    ast: ASTNode,
-    node: ASTNode,
+    ast: DocumentNode,
+    node: FragmentSpreadNode,
     filePath: Uri,
     graphQLConfig: GraphQLConfig,
     appName: ?string,

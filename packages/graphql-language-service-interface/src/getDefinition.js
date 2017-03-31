@@ -11,6 +11,7 @@
 import type {
   FragmentSpreadNode,
   FragmentDefinitionNode,
+  OperationDefinitionNode,
 } from 'graphql/language';
 import type {
   Definition,
@@ -50,7 +51,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
 export function getDefinitionQueryResultForDefinitionNode(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode,
+  definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): DefinitionQueryResult {
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
