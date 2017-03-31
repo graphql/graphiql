@@ -95,7 +95,9 @@ export class GraphQLLanguageService {
         this._graphQLConfig.getSchemaPath(appName),
       );
 
-      return getAutocompleteSuggestions(schema, query, position) || [];
+      if (schema) {
+        return getAutocompleteSuggestions(schema, query, position);
+      }
     }
     return [];
   }
