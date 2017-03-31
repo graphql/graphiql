@@ -8,9 +8,13 @@
  *  @flow
  */
 
-import type {GraphQLErrorLocation, GraphQLError} from 'graphql/error';
-import type {ASTNode} from 'graphql/language';
-import type {GraphQLSchema} from 'graphql/type';
+import type {
+  ASTNode,
+  GraphQLError,
+  GraphQLErrorLocation,
+  GraphQLSchema,
+  Location,
+} from 'graphql';
 import type {
   Diagnostic,
   CustomValidationRule,
@@ -94,7 +98,8 @@ function annotations(
 
     invariant(error.locations, 'GraphQL validation error requires locations.');
     const loc = error.locations[0];
-    const end = loc.column + (highlightNode.loc.end - highlightNode.loc.start);
+    const highlightLoc = getLocation(highlightNode);
+    const end = loc.column + (highlightLoc.end - highlightLoc.start);
     return {
       source: `GraphQL: ${type}`,
       message: error.message,
@@ -105,6 +110,19 @@ function annotations(
       ),
     };
   });
+}
+
+/**
+ * Get location info from a node in a type-safe way.
+ *
+ * The only way a node could not have a location is if we initialized the parser
+ * (and therefore the lexer) with the `noLocation` option, but we always
+ * call `parse` without options above.
+ */
+function getLocation(node: ASTNode): Location {
+  const location = node.loc;
+  invariant(location, 'Expected ASTNode to have a location.');
+  return location;
 }
 
 function getRange(location: GraphQLErrorLocation, queryText: string) {
