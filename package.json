@@ -47,7 +47,7 @@
     "marked": "0.3.6"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0",
+    "graphql": "^0.9.2",
     "react": ">=0.14.8",
     "react-dom": ">=0.14.8"
   },
