@@ -375,12 +375,13 @@ async function readAllGraphQLFiles(
       promiseToReadGraphQLFile(fileInfo.filePath)
         .catch(error => {
           /**
-         * fs emits `EMFILE | ENFILE` error when there are too many open files -
-         * this can cause some fragment files not to be processed.
-         * Solve this case by implementing a queue to save files failed to be
-         * processed because of `EMFILE` error, and await on Promises created
-         * with the next batch from the queue.
-         */
+           * fs emits `EMFILE | ENFILE` error when there are too many
+           * open files - this can cause some fragment files not to be
+           * processed.  Solve this case by implementing a queue to save
+           * files failed to be processed because of `EMFILE` error,
+           * and await on Promises created with the next batch from the
+           * queue.
+           */
           if (error.code === 'EMFILE' || error.code === 'ENFILE') {
             queue.push(fileInfo);
           }
