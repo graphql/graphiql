@@ -9,18 +9,35 @@
  */
 
 import type {
+  ASTNode,
   FragmentSpreadNode,
   FragmentDefinitionNode,
-} from 'graphql/language';
+  OperationDefinitionNode,
+} from 'graphql';
 import type {
   Definition,
   DefinitionQueryResult,
   FragmentInfo,
+  Position,
+  Range,
   Uri,
 } from 'graphql-language-service-types';
 import {locToRange, offsetToPosition} from 'graphql-language-service-utils';
+import invariant from 'assert';
 
 export const LANGUAGE = 'GraphQL';
+
+function getRange(text: string, node: ASTNode): Range {
+  const location = node.loc;
+  invariant(location, 'Expected ASTNode to have a location.');
+  return locToRange(text, location);
+}
+
+function getPosition(text: string, node: ASTNode): Position {
+  const location = node.loc;
+  invariant(location, 'Expected ASTNode to have a location.');
+  return offsetToPosition(text, location.start);
+}
 
 export async function getDefinitionQueryResultForFragmentSpread(
   text: string,
@@ -43,18 +60,18 @@ export async function getDefinitionQueryResultForFragmentSpread(
     getDefinitionForFragmentDefinition(filePath || '', content, definition));
   return {
     definitions,
-    queryRange: definitions.map(_ => locToRange(text, fragment.loc)),
+    queryRange: definitions.map(_ => getRange(text, fragment)),
   };
 }
 
 export function getDefinitionQueryResultForDefinitionNode(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode,
+  definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): DefinitionQueryResult {
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
-    queryRange: [locToRange(text, definition.name.loc)],
+    queryRange: [getRange(text, definition.name)],
   };
 }
 
@@ -65,8 +82,8 @@ function getDefinitionForFragmentDefinition(
 ): Definition {
   return {
     path,
-    position: offsetToPosition(text, definition.name.loc.start),
-    range: locToRange(text, definition.loc),
+    position: getPosition(text, definition.name),
+    range: getRange(text, definition),
     name: definition.name.value,
     language: LANGUAGE,
     // This is a file inside the project root, good enough for now

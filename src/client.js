@@ -81,7 +81,9 @@ function _getAutocompleteSuggestions(
 
   try {
     const schema = schemaPath ? generateSchema(schemaPath) : null;
-    const resultArray = getAutocompleteSuggestions(schema, queryText, point);
+    const resultArray = schema
+      ? getAutocompleteSuggestions(schema, queryText, point)
+      : [];
     const resultObject = resultArray.reduce(
       (prev, cur, index) => {
         prev[index] = cur;

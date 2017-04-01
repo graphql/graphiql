@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {ASTNode} from 'graphql/language';
+import type {DocumentNode, FragmentSpreadNode} from 'graphql';
 import type {
   CompletionItem,
   DefinitionQueryResult,
@@ -95,7 +95,9 @@ export class GraphQLLanguageService {
         this._graphQLConfig.getSchemaPath(appName),
       );
 
-      return getAutocompleteSuggestions(schema, query, position) || [];
+      if (schema) {
+        return getAutocompleteSuggestions(schema, query, position);
+      }
     }
     return [];
   }
@@ -115,28 +117,33 @@ export class GraphQLLanguageService {
     }
 
     const node = getASTNodeAtPosition(query, ast, position);
-    switch (node ? node.kind : null) {
-      case FRAGMENT_SPREAD:
-        return this._getDefinitionForFragmentSpread(
-          query,
-          ast,
-          node,
-          filePath,
-          this._graphQLConfig,
-          appName,
-        );
-      case FRAGMENT_DEFINITION:
-      case OPERATION_DEFINITION:
-        return getDefinitionQueryResultForDefinitionNode(filePath, query, node);
-      default:
-        return null;
+    if (node) {
+      switch (node.kind) {
+        case FRAGMENT_SPREAD:
+          return this._getDefinitionForFragmentSpread(
+            query,
+            ast,
+            node,
+            filePath,
+            this._graphQLConfig,
+            appName,
+          );
+        case FRAGMENT_DEFINITION:
+        case OPERATION_DEFINITION:
+          return getDefinitionQueryResultForDefinitionNode(
+            filePath,
+            query,
+            node,
+          );
+      }
     }
+    return null;
   }
 
   async _getDefinitionForFragmentSpread(
     query: string,
-    ast: ASTNode,
-    node: ASTNode,
+    ast: DocumentNode,
+    node: FragmentSpreadNode,
     filePath: Uri,
     graphQLConfig: GraphQLConfig,
     appName: ?string,

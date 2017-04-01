@@ -8,8 +8,11 @@
  *  @flow
  */
 
-import type {GraphQLDirective, GraphQLSchema} from 'graphql/type/definition';
-import type {ASTNode} from 'graphql/language';
+import type {
+  FragmentDefinitionNode,
+  GraphQLDirective,
+  GraphQLSchema,
+} from 'graphql';
 import type {
   CompletionItem,
   ContextToken,
@@ -19,22 +22,21 @@ import type {
 import type {Position} from 'graphql-language-service-utils';
 
 import {
-  isInputType,
-  isCompositeType,
-  isAbstractType,
-  getNullableType,
-  getNamedType,
+  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
-  GraphQLBoolean,
-  doTypesOverlap,
-} from 'graphql';
-import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from 'graphql/type/introspection';
+  assertAbstractType,
+  doTypesOverlap,
+  getNamedType,
+  getNullableType,
+  isAbstractType,
+  isCompositeType,
+  isInputType,
+} from 'graphql';
 import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
 import {
   forEachState,
@@ -228,9 +230,10 @@ function getSuggestionsForFragmentTypeConditions(
   let possibleTypes;
   if (typeInfo.parentType) {
     if (isAbstractType(typeInfo.parentType)) {
+      const abstractType = assertAbstractType(typeInfo.parentType);
       // Collect both the possible Object types as well as the interfaces
       // they implement.
-      const possibleObjTypes = schema.getPossibleTypes(typeInfo.parentType);
+      const possibleObjTypes = schema.getPossibleTypes(abstractType);
       const possibleIfaceMap = Object.create(null);
       possibleObjTypes.forEach(type => {
         type.getInterfaces().forEach(iface => {
@@ -293,7 +296,9 @@ function getSuggestionsForFragmentSpread(
   );
 }
 
-function getFragmentDefinitions(queryText: string): Array<ASTNode> {
+function getFragmentDefinitions(
+  queryText: string,
+): Array<FragmentDefinitionNode> {
   const fragmentDefs = [];
   runOnlineParser(queryText, (_, state) => {
     if (state.kind === 'FragmentDefinition' && state.name && state.type) {
@@ -302,6 +307,10 @@ function getFragmentDefinitions(queryText: string): Array<ASTNode> {
         name: {
           kind: 'Name',
           value: state.name,
+        },
+        selectionSet: {
+          kind: 'SelectionSet',
+          selections: [],
         },
         typeCondition: {
           kind: 'NamedType',
@@ -601,7 +610,9 @@ function getTypeInfo(schema: GraphQLSchema, tokenState: State): TypeInfo {
         info.inputType = objectField && objectField.type;
         break;
       case 'NamedType':
-        info.type = schema.getType(state.name);
+        if (state.name) {
+          info.type = schema.getType(state.name);
+        }
         break;
     }
   });

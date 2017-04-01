@@ -8,11 +8,7 @@
  *  @flow
  */
 
-import type {
-  GraphQLField,
-  GraphQLSchema,
-  GraphQLType,
-} from 'graphql/type/definition';
+import type {GraphQLField, GraphQLSchema, GraphQLType} from 'graphql';
 import {isCompositeType} from 'graphql';
 import {
   SchemaMetaFieldDef,

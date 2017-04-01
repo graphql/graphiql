@@ -10,3 +10,4 @@
 [libs]
 
 [options]
+module.name_mapper='\(graphql-language-service-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'

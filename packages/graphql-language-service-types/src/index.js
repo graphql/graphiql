@@ -9,7 +9,11 @@
  */
 
 import type {GraphQLSchema} from 'graphql';
-import type {ASTNode, FragmentDefinitionNode} from 'graphql/language';
+import type {
+  ASTNode,
+  DocumentNode,
+  FragmentDefinitionNode,
+} from 'graphql/language';
 import type {ValidationContext} from 'graphql/validation';
 import type {
   GraphQLArgument,
@@ -158,7 +162,7 @@ export type GraphQLFileMetadata = {
 export type GraphQLFileInfo = {
   filePath: Uri,
   content: string,
-  ast: ?ASTNode,
+  ast: ?DocumentNode,
   size: number,
   mtime: number,
 };
