@@ -598,7 +598,9 @@ function getTypeInfo(schema: GraphQLSchema, tokenState: State): TypeInfo {
         info.inputType = objectField && objectField.type;
         break;
       case 'NamedType':
-        info.type = schema.getType(state.name);
+        if (state.name) {
+          info.type = schema.getType(state.name);
+        }
         break;
     }
   });
