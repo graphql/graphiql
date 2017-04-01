@@ -8,7 +8,11 @@
  *  @flow
  */
 
-import type {ASTNode, GraphQLDirective, GraphQLSchema} from 'graphql';
+import type {
+  FragmentDefinitionNode,
+  GraphQLDirective,
+  GraphQLSchema,
+} from 'graphql';
 import type {
   CompletionItem,
   ContextToken,
@@ -292,7 +296,9 @@ function getSuggestionsForFragmentSpread(
   );
 }
 
-function getFragmentDefinitions(queryText: string): Array<ASTNode> {
+function getFragmentDefinitions(
+  queryText: string,
+): Array<FragmentDefinitionNode> {
   const fragmentDefs = [];
   runOnlineParser(queryText, (_, state) => {
     if (state.kind === 'FragmentDefinition' && state.name && state.type) {
@@ -301,6 +307,10 @@ function getFragmentDefinitions(queryText: string): Array<ASTNode> {
         name: {
           kind: 'Name',
           value: state.name,
+        },
+        selectionSet: {
+          kind: 'SelectionSet',
+          selections: [],
         },
         typeCondition: {
           kind: 'NamedType',
