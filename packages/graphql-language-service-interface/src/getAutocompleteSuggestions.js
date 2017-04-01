@@ -25,6 +25,7 @@ import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
+  assertAbstractType,
   doTypesOverlap,
   getNamedType,
   getNullableType,
@@ -225,9 +226,10 @@ function getSuggestionsForFragmentTypeConditions(
   let possibleTypes;
   if (typeInfo.parentType) {
     if (isAbstractType(typeInfo.parentType)) {
+      const abstractType = assertAbstractType(typeInfo.parentType);
       // Collect both the possible Object types as well as the interfaces
       // they implement.
-      const possibleObjTypes = schema.getPossibleTypes(typeInfo.parentType);
+      const possibleObjTypes = schema.getPossibleTypes(abstractType);
       const possibleIfaceMap = Object.create(null);
       possibleObjTypes.forEach(type => {
         type.getInterfaces().forEach(iface => {
