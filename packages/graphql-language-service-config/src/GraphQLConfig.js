@@ -16,7 +16,7 @@ import type {
 
 import path from 'path';
 
-const APP_EXTENSIONS_NAME = 'extensions';
+const PROJECTS_NAME = 'projects';
 const CUSTOM_VALIDATION_RULES_NAME = 'customValidationRules';
 
 export const GRAPHQL_CONFIG_NAME = '.graphqlconfig';
@@ -42,7 +42,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
   // This function searches for the additional app configurations and
   // returns the name of the app configuration if found.
   getAppConfigNameByFilePath(filePath: Uri): ?string {
-    const appConfigs = this._config[APP_EXTENSIONS_NAME];
+    const appConfigs = this._config[PROJECTS_NAME];
     if (!appConfigs) {
       return null;
     }
@@ -50,8 +50,8 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     const appConfigNames = Object.keys(appConfigs);
 
     const name = appConfigNames.find(appName => {
-      const appConfig = this._config[APP_EXTENSIONS_NAME] &&
-        this._config[APP_EXTENSIONS_NAME][appName];
+      const appConfig = this._config[PROJECTS_NAME] &&
+        this._config[PROJECTS_NAME][appName];
       if (appConfig) {
         return this.isFileInInputDirs(filePath, appName);
       }
@@ -97,11 +97,11 @@ export class GraphQLConfig implements GraphQLConfigInterface {
   isFileInInputDirs(fileName: Uri, appName: ?string): boolean {
     if (appName) {
       if (
-        this._config[APP_EXTENSIONS_NAME] &&
-        this._config[APP_EXTENSIONS_NAME][appName] &&
-        this._config[APP_EXTENSIONS_NAME][appName].inputDirs
+        this._config[PROJECTS_NAME] &&
+        this._config[PROJECTS_NAME][appName] &&
+        this._config[PROJECTS_NAME][appName].inputDirs
       ) {
-        return this._config[APP_EXTENSIONS_NAME][appName].inputDirs.some(
+        return this._config[PROJECTS_NAME][appName].inputDirs.some(
           dirPath => fileName.indexOf(dirPath) !== -1,
         );
       }
@@ -115,11 +115,11 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     let modulePath;
     if (appName) {
       if (
-        this._config[APP_EXTENSIONS_NAME] &&
-        this._config[APP_EXTENSIONS_NAME][appName] &&
-        this._config[APP_EXTENSIONS_NAME][appName][CUSTOM_VALIDATION_RULES_NAME]
+        this._config[PROJECTS_NAME] &&
+        this._config[PROJECTS_NAME][appName] &&
+        this._config[PROJECTS_NAME][appName][CUSTOM_VALIDATION_RULES_NAME]
       ) {
-        const appConfig = this._config[APP_EXTENSIONS_NAME][appName];
+        const appConfig = this._config[PROJECTS_NAME][appName];
         modulePath = appConfig[CUSTOM_VALIDATION_RULES_NAME];
       }
     } else {
@@ -157,11 +157,11 @@ export class GraphQLConfig implements GraphQLConfigInterface {
   ): T {
     if (
       appName &&
-      this._config[APP_EXTENSIONS_NAME] &&
-      this._config[APP_EXTENSIONS_NAME][appName] &&
-      this._config[APP_EXTENSIONS_NAME][appName][key]
+      this._config[PROJECTS_NAME] &&
+      this._config[PROJECTS_NAME][appName] &&
+      this._config[PROJECTS_NAME][appName][key]
     ) {
-      return this._config[APP_EXTENSIONS_NAME][appName][key];
+      return this._config[PROJECTS_NAME][appName][key];
     }
     return this._config[key] || defaultValue;
   }

@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-types",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -17,7 +17,7 @@
   "keywords": [
     "graphql"
   ],
-  "main": "dist/index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
     "build": "npm run build-js && npm run build-flow",

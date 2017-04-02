@@ -46,31 +46,28 @@ export interface CharacterStream {
 }
 
 // Cache and config-related.
-export type GraphQLConfiguration = {
-  schemaPath?: string, // may be .json or .graphql
-  schemaUrl?: string,
-  // If env is specified, use one of the app configs in here
-  env?: GraphQLConfigurationEnvs,
+export type GraphQLConfiguration = GraphQLProjectConfiguration & {
+  projects?: {
+    [projectName: string]: GraphQLProjectConfiguration,
+  },
+};
+
+export type GraphQLProjectConfiguration = {
+  schemaPath?: string, // a file with schema IDL
+  schemaUrl?: URL,
 
   // For multiple applications with overlapping files,
-  // bottom configuration options may be helpful
-  inputDirs?: Array<string>,
+  // these configuration options may be helpful
+  includeDirs?: Array<string>,
   excludeDirs?: Array<string>,
-
-  // If you have customized validation rules to run
-  customValidationRules?: string,
 
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
   extensions?: GraphQLConfigurationExtension,
 };
 
-export type GraphQLConfigurationEnvs = {
-  [envVarName: string]: GraphQLConfiguration,
-};
-
 export type GraphQLConfigurationExtension = {
-  [toolName: string]: any,
+  [name: string]: mixed,
 };
 
 export interface GraphQLConfig {
