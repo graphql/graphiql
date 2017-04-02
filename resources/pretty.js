@@ -20,7 +20,7 @@ const options = [
   '--single-quote',
   '--trailing-comma=all',
 ];
-const glob = '{packages/*/{example,resources,src,test},example,resources,src,test}/**/*.js';
+const glob = '{packages/*/{example,resources,src},example,resources,src}/**/*.js';
 const root = join(__dirname, '..');
 const executable = join(root, 'node_modules', '.bin', 'prettier');
 
