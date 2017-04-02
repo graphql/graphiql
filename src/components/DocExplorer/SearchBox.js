@@ -11,12 +11,11 @@ import React, { PropTypes } from 'react';
 import debounce from '../../utility/debounce';
 
 export default class SearchBox extends React.Component {
-
   static propTypes = {
     value: PropTypes.string,
     placeholder: PropTypes.string,
     onSearch: PropTypes.func,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -45,10 +44,10 @@ export default class SearchBox extends React.Component {
     const value = event.target.value;
     this.setState({ value });
     this.debouncedOnSearch(value);
-  }
+  };
 
   handleClear = () => {
     this.setState({ value: '' });
     this.props.onSearch('');
-  }
+  };
 }

@@ -18,7 +18,7 @@ export default class SearchResults extends React.Component {
     searchValue: PropTypes.string,
     onClickType: PropTypes.func,
     onClickField: PropTypes.func,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.schema !== nextProps.schema ||
@@ -46,9 +46,9 @@ export default class SearchResults extends React.Component {
     }
 
     for (const typeName of typeNames) {
-      if (matchedWithin.length +
-          matchedTypes.length +
-          matchedFields.length >= 100) {
+      if (
+        matchedWithin.length + matchedTypes.length + matchedFields.length >= 100
+      ) {
         break;
       }
 
@@ -57,7 +57,7 @@ export default class SearchResults extends React.Component {
         matchedTypes.push(
           <div className="doc-category-item" key={typeName}>
             <TypeLink type={type} onClick={onClickType} />
-          </div>
+          </div>,
         );
       }
 
@@ -69,8 +69,8 @@ export default class SearchResults extends React.Component {
 
           if (!isMatch(fieldName, searchValue)) {
             if (field.args && field.args.length) {
-              matchingArgs =
-                field.args.filter(arg => isMatch(arg.name, searchValue));
+              matchingArgs = field.args.filter(arg =>
+                isMatch(arg.name, searchValue));
               if (matchingArgs.length === 0) {
                 return;
               }
@@ -79,31 +79,33 @@ export default class SearchResults extends React.Component {
             }
           }
 
-          const match =
+          const match = (
             <div className="doc-category-item" key={typeName + '.' + fieldName}>
               {withinType !== type && [
                 <TypeLink key="type" type={type} onClick={onClickType} />,
-                '.'
+                '.',
               ]}
-              <a className="field-name"
+              <a
+                className="field-name"
                 onClick={event => onClickField(field, type, event)}>
                 {field.name}
               </a>
               {matchingArgs && [
                 '(',
                 <span key="args">
-                  {matchingArgs.map(arg =>
+                  {matchingArgs.map(arg => (
                     <Argument
                       key={arg.name}
                       arg={arg}
                       onClickType={onClickType}
                       showDefaultValue={false}
                     />
-                  )}
+                  ))}
                 </span>,
-                ')'
+                ')',
               ]}
-            </div>;
+            </div>
+          );
 
           if (withinType === type) {
             matchedWithin.push(match);
@@ -114,9 +116,9 @@ export default class SearchResults extends React.Component {
       }
     }
 
-    if (matchedWithin.length +
-        matchedTypes.length +
-        matchedFields.length === 0) {
+    if (
+      matchedWithin.length + matchedTypes.length + matchedFields.length === 0
+    ) {
       return (
         <span className="doc-alert-text">
           {'No results found.'}

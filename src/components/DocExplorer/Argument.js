@@ -16,14 +16,14 @@ export default function Argument({ arg, onClickType, showDefaultValue }) {
       <span className="arg-name">{arg.name}</span>
       {': '}
       <TypeLink type={arg.type} onClick={onClickType} />
-      {arg.defaultValue !== undefined && showDefaultValue !== false &&
+      {arg.defaultValue !== undefined &&
+        showDefaultValue !== false &&
         <span>
           {' = '}
           <span className="arg-default-value">
             {print(astFromValue(arg.defaultValue, arg.type))}
           </span>
-        </span>
-      }
+        </span>}
     </span>
   );
 }

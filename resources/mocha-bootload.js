@@ -20,13 +20,13 @@ var win = doc.defaultView;
 global.document = doc;
 global.window = win;
 
-global.document.createRange = function () {
+global.document.createRange = function() {
   return {
-    setEnd: function () {},
-    setStart: function () {},
-    getBoundingClientRect: function () {
+    setEnd: function() {},
+    setStart: function() {},
+    getBoundingClientRect: function() {
       return { right: 0 };
-    }
+    },
   };
 };
 
@@ -53,7 +53,7 @@ var chai = require('chai');
 var chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', function(error) {
   console.error('Unhandled Promise Rejection:');
-  console.error(error && error.stack || error);
+  console.error((error && error.stack) || error);
 });

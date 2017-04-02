@@ -7,10 +7,7 @@
  */
 
 import React, { PropTypes } from 'react';
-import {
-  GraphQLSchema,
-  isType,
-} from 'graphql';
+import { GraphQLSchema, isType } from 'graphql';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -42,19 +39,17 @@ const initialNav = {
 export class DocExplorer extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
-  }
+  };
 
   constructor() {
     super();
 
-    this.state = { navStack: [ initialNav ] };
+    this.state = { navStack: [initialNav] };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (
-      this.props.schema !== nextProps.schema ||
-      this.state.navStack !== nextState.navStack
-    );
+    return this.props.schema !== nextProps.schema ||
+      this.state.navStack !== nextState.navStack;
   }
 
   render() {
@@ -65,48 +60,53 @@ export class DocExplorer extends React.Component {
     let content;
     if (schema === undefined) {
       // Schema is undefined when it is being loaded via introspection.
-      content =
+      content = (
         <div className="spinner-container">
           <div className="spinner" />
-        </div>;
+        </div>
+      );
     } else if (!schema) {
       // Schema is null when it explicitly does not exist, typically due to
       // an error during introspection.
-      content =
+      content = (
         <div className="error-container">
           {'No Schema Available'}
-        </div>;
+        </div>
+      );
     } else if (navItem.search) {
-      content =
+      content = (
         <SearchResults
           searchValue={navItem.search}
           withinType={navItem.def}
           schema={schema}
           onClickType={this.handleClickTypeOrField}
           onClickField={this.handleClickTypeOrField}
-        />;
+        />
+      );
     } else if (navStack.length === 1) {
-      content =
-        <SchemaDoc schema={schema} onClickType={this.handleClickTypeOrField} />;
+      content = (
+        <SchemaDoc schema={schema} onClickType={this.handleClickTypeOrField} />
+      );
     } else if (isType(navItem.def)) {
-      content =
+      content = (
         <TypeDoc
           schema={schema}
           type={navItem.def}
           onClickType={this.handleClickTypeOrField}
           onClickField={this.handleClickTypeOrField}
-        />;
+        />
+      );
     } else {
-      content =
+      content = (
         <FieldDoc
           field={navItem.def}
           onClickType={this.handleClickTypeOrField}
-        />;
+        />
+      );
     }
 
-    const shouldSearchBoxAppear =
-      navStack.length === 1 ||
-      isType(navItem.def) && navItem.def.getFields;
+    const shouldSearchBoxAppear = navStack.length === 1 ||
+      (isType(navItem.def) && navItem.def.getFields);
 
     let prevName;
     if (navStack.length > 1) {
@@ -148,10 +148,12 @@ export class DocExplorer extends React.Component {
     const topNav = navStack[navStack.length - 1];
     if (topNav.def !== typeOrField) {
       this.setState({
-        navStack: navStack.concat([ {
-          name: typeOrField.name,
-          def: typeOrField,
-        } ])
+        navStack: navStack.concat([
+          {
+            name: typeOrField.name,
+            def: typeOrField,
+          },
+        ]),
       });
     }
   }
@@ -178,20 +180,20 @@ export class DocExplorer extends React.Component {
   }
 
   reset() {
-    this.setState({ navStack: [ initialNav ] });
+    this.setState({ navStack: [initialNav] });
   }
 
   handleNavBackClick = () => {
     if (this.state.navStack.length > 1) {
       this.setState({ navStack: this.state.navStack.slice(0, -1) });
     }
-  }
+  };
 
   handleClickTypeOrField = typeOrField => {
     this.showDoc(typeOrField);
-  }
+  };
 
   handleSearch = value => {
     this.showSearch(value);
-  }
+  };
 }

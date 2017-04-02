@@ -7,19 +7,20 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const {spawnSync} = require('child_process');
-const {join} = require('path');
+const { spawnSync } = require('child_process');
+const { join } = require('path');
 
 const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
 const options = [
-  '--no-bracket-spacing',
+  '--jsx-bracket-same-line',
+  '--bracket-spacing',
   '--single-quote',
   '--trailing-comma=all',
 ];
-const glob = '{packages/*/{example,resources,src,test},resources,src}/**/*.js';
+const glob = '{packages/*/{example,resources,src,test},example,resources,src,test}/**/*.js';
 const root = join(__dirname, '..');
 const executable = join(root, 'node_modules', '.bin', 'prettier');
 
@@ -28,7 +29,7 @@ const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 
 // eslint-disable-next-line
-const {stdout, stderr, status, error} = spawnSync(executable, [
+const { stdout, stderr, status, error } = spawnSync(executable, [
   ...options,
   mode,
   glob,
