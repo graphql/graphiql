@@ -37,8 +37,10 @@
     "dev": "babel-node test/server.js",
     "lint": "eslint src",
     "prepublish": ". ./resources/prepublish.sh",
+    "pretty": "node resources/pretty.js",
+    "pretty-check": "node resources/pretty.js --check",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "npm run lint && npm run check && npm run testonly",
+    "test": "npm run lint && npm run pretty-check && npm run check && npm run testonly",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
   },
   "dependencies": {
