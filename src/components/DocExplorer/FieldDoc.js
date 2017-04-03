@@ -16,7 +16,7 @@ export default class FieldDoc extends React.Component {
   static propTypes = {
     field: PropTypes.object,
     onClickType: PropTypes.func,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.field !== nextProps.field;
@@ -32,7 +32,7 @@ export default class FieldDoc extends React.Component {
           <div className="doc-category-title">
             {'arguments'}
           </div>
-          {field.args.map(arg =>
+          {field.args.map(arg => (
             <div key={arg.name} className="doc-category-item">
               <div>
                 <Argument arg={arg} onClickType={this.props.onClickType} />
@@ -42,7 +42,7 @@ export default class FieldDoc extends React.Component {
                 markdown={arg.description}
               />
             </div>
-          )}
+          ))}
         </div>
       );
     }
@@ -53,13 +53,11 @@ export default class FieldDoc extends React.Component {
           className="doc-type-description"
           markdown={field.description || 'No Description'}
         />
-        {
-          field.deprecationReason &&
+        {field.deprecationReason &&
           <MarkdownContent
             className="doc-deprecation"
             markdown={field.deprecationReason}
-          />
-        }
+          />}
         <div className="doc-category">
           <div className="doc-category-title">
             {'type'}

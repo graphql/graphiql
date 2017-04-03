@@ -8,7 +8,6 @@
 
 import React, { PropTypes } from 'react';
 
-
 /**
  * ToolbarButton
  *
@@ -19,7 +18,7 @@ export class ToolbarButton extends React.Component {
     onClick: PropTypes.func,
     title: PropTypes.string,
     label: PropTypes.string,
-  }
+  };
 
   constructor(props) {
     super(props);

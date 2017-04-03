@@ -22,7 +22,7 @@ export class ResultViewer extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
-  }
+  };
 
   componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
@@ -43,16 +43,16 @@ export class ResultViewer extends React.Component {
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {
-        minFoldSize: 4
+        minFoldSize: 4,
       },
-      gutters: [ 'CodeMirror-foldgutter' ],
+      gutters: ['CodeMirror-foldgutter'],
       extraKeys: {
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
     });
   }
 
@@ -72,7 +72,9 @@ export class ResultViewer extends React.Component {
     return (
       <div
         className="result-window"
-        ref={node => { this._node = node; }}
+        ref={node => {
+          this._node = node;
+        }}
       />
     );
   }

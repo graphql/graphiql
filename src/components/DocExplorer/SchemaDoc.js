@@ -16,7 +16,7 @@ export default class SchemaDoc extends React.Component {
   static propTypes = {
     schema: PropTypes.object,
     onClickType: PropTypes.func,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.schema !== nextProps.schema;
@@ -26,8 +26,8 @@ export default class SchemaDoc extends React.Component {
     const schema = this.props.schema;
     const queryType = schema.getQueryType();
     const mutationType = schema.getMutationType && schema.getMutationType();
-    const subscriptionType =
-      schema.getSubscriptionType && schema.getSubscriptionType();
+    const subscriptionType = schema.getSubscriptionType &&
+      schema.getSubscriptionType();
 
     return (
       <div>
@@ -46,16 +46,13 @@ export default class SchemaDoc extends React.Component {
             {': '}
             <TypeLink type={queryType} onClick={this.props.onClickType} />
           </div>
-          {
-            mutationType &&
+          {mutationType &&
             <div className="doc-category-item">
               <span className="keyword">{'mutation'}</span>
               {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
-            </div>
-          }
-          {
-            subscriptionType &&
+            </div>}
+          {subscriptionType &&
             <div className="doc-category-item">
               <span className="keyword">{'subscription'}</span>
               {': '}
@@ -63,8 +60,7 @@ export default class SchemaDoc extends React.Component {
                 type={subscriptionType}
                 onClick={this.props.onClickType}
               />
-            </div>
-          }
+            </div>}
         </div>
       </div>
     );
