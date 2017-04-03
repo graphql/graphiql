@@ -250,7 +250,7 @@ export class GraphiQL extends React.Component {
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
-         />
+        />
 
       </GraphiQL.Toolbar>;
 
@@ -267,7 +267,7 @@ export class GraphiQL extends React.Component {
     };
     const docExplorerWrapClasses = 'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-    
+
     const historyPaneStyle = {
       display: this.state.historyPaneOpen ? 'block' : 'none',
       width: '230px',
@@ -314,11 +314,6 @@ export class GraphiQL extends React.Component {
                 {'Docs'}
               </button>
             }
-             <GraphiQL.ToolbarButton
-               onClick={this.handleToggleHistory}
-               title="Show History"
-               label="History"
-             />
           </div>
           <div
             ref={n => { this.editorBarComponent = n; }}
