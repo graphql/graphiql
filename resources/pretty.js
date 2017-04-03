@@ -28,7 +28,7 @@ const check = process.argv.indexOf('--check') !== -1;
 const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-unused-vars
 const { stdout, stderr, status, error } = spawnSync(executable, [
   ...options,
   mode,
@@ -54,5 +54,5 @@ if (status) {
 if (error) {
   print('error', error);
 }
-// eslint-disable-next-line
+// eslint-disable-next-line eqeqeq
 process.exit(status != null ? status : 1);
