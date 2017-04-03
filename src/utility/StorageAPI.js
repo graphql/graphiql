@@ -4,12 +4,24 @@ export default class StorageAPI {
   }
 
   get(name) {
-    return this.storage && this.storage.getItem('graphiql:' + name);
+    if (this.storage) {
+      const value = this.storage.getItem('graphiql:' + name);
+      // Clean up any inadvertently saved null/undefined values.
+      if (value === 'null' || value === 'undefined') {
+        this.storage.removeItem('graphiql:' + name);
+      } else {
+        return value;
+      }
+    }
   }
 
   set(name, value) {
     if (this.storage) {
-      this.storage.setItem('graphiql:' + name, value);
+      if (value) {
+        this.storage.setItem('graphiql:' + name, value);
+      } else {
+        this.storage.removeItem('graphiql:' + name);
+      }
     }
   }
 }

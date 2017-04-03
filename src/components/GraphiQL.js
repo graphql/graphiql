@@ -82,7 +82,7 @@ export class GraphiQL extends React.Component {
     // Determine the initial query to display.
     const query =
       props.query !== undefined ? props.query :
-      this._storage.get('query') !== null ? this._storageGet('query') :
+      this._storage.get('query') !== null ? this._storage.get('query') :
       props.defaultQuery !== undefined ? props.defaultQuery :
       defaultQuery;
 
@@ -221,14 +221,14 @@ export class GraphiQL extends React.Component {
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
-    this._storageSet('query', this.state.query);
-    this._storageSet('variables', this.state.variables);
-    this._storageSet('operationName', this.state.operationName);
-    this._storageSet('editorFlex', this.state.editorFlex);
-    this._storageSet('variableEditorHeight', this.state.variableEditorHeight);
-    this._storageSet('docExplorerWidth', this.state.docExplorerWidth);
-    this._storageSet('docExplorerOpen', this.state.docExplorerOpen);
-    this._storageSet('historyPaneOpen', this.state.historyPaneOpen);
+    this._storage.set('query', this.state.query);
+    this._storage.set('variables', this.state.variables);
+    this._storage.set('operationName', this.state.operationName);
+    this._storage.set('editorFlex', this.state.editorFlex);
+    this._storage.set('variableEditorHeight', this.state.variableEditorHeight);
+    this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
+    this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
+    this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
   }
 
   render() {
@@ -515,28 +515,6 @@ export class GraphiQL extends React.Component {
         response: error && String(error.stack || error)
       });
     });
-  }
-
-  _storageGet(name) {
-    if (this._storage) {
-      const value = this._storage.getItem('graphiql:' + name);
-      // Clean up any inadvertently saved null/undefined values.
-      if (value === 'null' || value === 'undefined') {
-        this._storage.removeItem('graphiql:' + name);
-      } else {
-        return value;
-      }
-    }
-  }
-
-  _storageSet(name, value) {
-    if (this._storage) {
-      if (value) {
-        this._storage.setItem('graphiql:' + name, value);
-      } else {
-        this._storage.removeItem('graphiql:' + name);
-      }
-    }
   }
 
   _fetchQuery(query, variables, operationName, cb) {
