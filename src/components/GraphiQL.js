@@ -39,7 +39,7 @@ import {
 } from '../utility/introspectionQueries';
 
 /**
- * This React component is responsible for rendering the GraphiQL editor.
+ * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
