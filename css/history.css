@@ -1,0 +1,18 @@
+.graphiql-container .history-contents {
+  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
+  padding: 0;
+}
+
+.graphiql-container .history-contents p {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.graphiql-container .history-contents p:hover {
+  cursor: pointer;
+}

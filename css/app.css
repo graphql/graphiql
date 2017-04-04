@@ -65,10 +65,10 @@
   display: flex;
 }
 
-.graphiql-container .docExplorerShow {
+.graphiql-container .docExplorerShow,
+.graphiql-container .historyShow {
   background: linear-gradient(#f7f7f7, #e2e2e2);
   border-bottom: 1px solid #d0d0d0;
-  border-left: 1px solid rgba(0, 0, 0, 0.2);
   border-right: none;
   border-top: none;
   color: #3B5998;
@@ -77,6 +77,15 @@
   margin: 0;
   outline: 0;
   padding: 2px 20px 0 18px;
+}
+
+.graphiql-container .docExplorerShow {
+  border-left: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.graphiql-container .historyShow {
+  border-right: 1px solid rgba(0, 0, 0, 0.2);
+  border-left: 0;
 }
 
 .graphiql-container .docExplorerShow:before {
@@ -111,11 +120,17 @@
   position: relative;
 }
 
-.graphiql-container .docExplorerWrap {
+.graphiql-container .docExplorerWrap,
+.graphiql-container .historyPaneWrap {
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 3;
+}
+
+.graphiql-container .historyPaneWrap {
+  min-width: 230px;
+  z-index: 5;
 }
 
 .graphiql-container .docExplorerResizer {
@@ -362,7 +377,9 @@
 .graphiql-container .toolbar-menu-items > li:hover,
 .graphiql-container .toolbar-select-options > li.hover,
 .graphiql-container .toolbar-select-options > li:active,
-.graphiql-container .toolbar-select-options > li:hover {
+.graphiql-container .toolbar-select-options > li:hover,
+.graphiql-container .history-contents > p:hover,
+.graphiql-container .history-contents > p:active {
   background: #e10098;
   color: #fff;
 }
