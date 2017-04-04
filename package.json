@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -40,13 +40,13 @@
   "dependencies": {
     "babel-polyfill": "6.16.0",
     "graphql": "^0.9.2",
-    "graphql-language-service-interface": "0.0.6",
-    "graphql-language-service-server": "0.0.4",
-    "graphql-language-service-utils": "0.0.5",
+    "graphql-language-service-interface": "0.0.7",
+    "graphql-language-service-server": "0.0.5",
+    "graphql-language-service-utils": "0.0.6",
     "yargs": "^7.0.1",
-    "graphql-language-service-types": "0.0.11",
-    "graphql-language-service-config": "0.0.6",
-    "graphql-language-service-parser": "0.0.5",
+    "graphql-language-service-types": "0.0.12",
+    "graphql-language-service-config": "0.0.7",
+    "graphql-language-service-parser": "0.0.6",
     "fb-watchman": "^2.0.0",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^3.2.0"
