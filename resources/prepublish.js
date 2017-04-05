@@ -38,11 +38,15 @@ if (!isPublishing) {
 fs.readdirSync('packages').forEach(function(pkg) {
   var json = require(path.join(process.cwd(), 'packages', pkg, 'package.json'));
   if (json.main && json.main.match(/\bsrc\b/)) {
-    var message = 'The package.json file for ' + json.name + ' has "main" ' +
-      'set to "' + json.main + '" in "src" but it should refer to "dist". ' +
+    var message = 'The package.json file for ' +
+      json.name +
+      ' has "main" ' +
+      'set to "' +
+      json.main +
+      '" in "src" but it should refer to "dist". ' +
       'This is an error and likely due running hoistDependencies.js and ' +
       'committing or keeping the result. Please revert those changes and ' +
-      'try again.'
+      'try again.';
     throw new Error(message);
   }
 });
