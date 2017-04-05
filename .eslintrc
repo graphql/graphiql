@@ -46,8 +46,6 @@
   },
 
   "rules": {
-    "babel/no-await-in-loop": 2,
-
     "react/no-deprecated": 2,
     "react/no-did-mount-set-state": 2,
     "react/no-did-update-set-state": 2,
@@ -124,6 +122,7 @@
     "newline-after-var": 0,
     "no-alert": 2,
     "no-array-constructor": 2,
+    "no-await-in-loop": 2,
     "no-bitwise": 0,
     "no-caller": 2,
     "no-catch-shadow": 0,
