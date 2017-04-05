@@ -15,6 +15,7 @@
 // (2) We start off with a check to bail out when not invoked as part of
 //     "npm publish".
 
+var fs = require('fs');
 var path = require('path');
 
 var config = require(path.join(process.cwd(), 'package.json'));
@@ -32,6 +33,19 @@ var isPublishing = argv[0].indexOf('pu') === 0;
 if (!isPublishing) {
   process.exit(0);
 }
+
+// Complain loudly if the user has run hoistDependencies locally.
+fs.readdirSync('packages').forEach(function(pkg) {
+  var json = require(path.join(process.cwd(), 'packages', pkg, 'package.json'));
+  if (json.main && json.main.match(/\bsrc\b/)) {
+    var message = 'The package.json file for ' + json.name + ' has "main" ' +
+      'set to "' + json.main + '" in "src" but it should refer to "dist". ' +
+      'This is an error and likely due running hoistDependencies.js and ' +
+      'committing or keeping the result. Please revert those changes and ' +
+      'try again.'
+    throw new Error(message);
+  }
+});
 
 // Otherwise, perform a build.
 var execFileSync = require('child_process').execFileSync;
