@@ -35,8 +35,9 @@ if (!isPublishing) {
 }
 
 // Complain loudly if the user has run hoistDependencies locally.
-fs.readdirSync('packages').forEach(function(pkg) {
-  var json = require(path.join(process.cwd(), 'packages', pkg, 'package.json'));
+var packages = path.join(__dirname, '..', 'packages');
+fs.readdirSync(packages).forEach(function(pkg) {
+  var json = require(path.join(packages, pkg, 'package.json'));
   if (json.main && json.main.match(/\bsrc\b/)) {
     var message = 'The package.json file for ' +
       json.name +
