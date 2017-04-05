@@ -44,7 +44,7 @@ fs.readdirSync('packages').forEach(function(pkg) {
       'set to "' +
       json.main +
       '" in "src" but it should refer to "dist". ' +
-      'This is an error and likely due running hoistDependencies.js and ' +
+      'This is an error and likely due to running hoistDependencies.js and ' +
       'committing or keeping the result. Please revert those changes and ' +
       'try again.';
     throw new Error(message);
