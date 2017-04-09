@@ -78,7 +78,7 @@
     "postcss-cli": "3.1.1",
     "react": "15.4.2",
     "react-dom": "15.4.2",
-    "react-test-renderer": "15.4.2",
+    "react-test-renderer": "15.5.4",
     "uglify-js": "2.8.21",
     "uglifyify": "3.0.4",
     "watchify": "3.9.0"
