@@ -226,7 +226,7 @@ export async function processIPCRequestMessage(
       sendMessageIPC(
         convertToRpcMessage({
           id: message.id,
-          result,
+          result: {items: result, isCompleted: true},
         }),
         writer,
       );
