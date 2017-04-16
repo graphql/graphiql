@@ -1,3 +1,4 @@
+import { parse } from 'graphql';
 import React, { PropTypes } from 'react';
 import HistoryStore from '../utility/HistoryStore';
 import HistoryQuery from './HistoryQuery';
@@ -7,10 +8,27 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
     return false;
   }
   if (!lastQuerySaved) {
+    try {
+      parse(nextProps.query);
+    } catch (e) {
+      return false;
+    }
     return true;
   }
-  if ((nextProps.query === lastQuerySaved.query) &&
-      (nextProps.variables === lastQuerySaved.variables)) {
+  if (JSON.stringify(nextProps.query) ===
+    JSON.stringify(lastQuerySaved.query)) {
+    if (JSON.stringify(nextProps.variables) ===
+      JSON.stringify(lastQuerySaved.variables)) {
+      return false;
+    }
+    if (!nextProps.variables && !lastQuerySaved.variables) {
+      return false;
+    }
+  }
+  try {
+    parse(nextProps.query);
+    parse(lastQuerySaved.query);
+  } catch (e) {
     return false;
   }
   return true;
