@@ -7,12 +7,12 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
     return false;
   }
+  try {
+    parse(nextProps.query);
+  } catch (e) {
+    return false;
+  }
   if (!lastQuerySaved) {
-    try {
-      parse(nextProps.query);
-    } catch (e) {
-      return false;
-    }
     return true;
   }
   if (JSON.stringify(nextProps.query) ===
@@ -24,12 +24,6 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
     if (!nextProps.variables && !lastQuerySaved.variables) {
       return false;
     }
-  }
-  try {
-    parse(nextProps.query);
-    parse(lastQuerySaved.query);
-  } catch (e) {
-    return false;
   }
   return true;
 };
