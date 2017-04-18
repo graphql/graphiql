@@ -37,7 +37,9 @@ export default (async function startServer(
     const messageReader = new SocketMessageReader(socket);
     const messageWriter = new SocketMessageWriter(socket);
 
-    socket.on('close', () => process.exit(0));
+    socket.on('end', () => {
+      process.exit(0);
+    });
 
     messageReader.listen(message => {
       try {
