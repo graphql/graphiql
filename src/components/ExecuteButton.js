@@ -89,6 +89,22 @@ export class ExecuteButton extends React.Component {
     );
   }
 
+  componentDidMount() {
+    this._keyHandler = event => {
+      console.log(event);
+      if ((event.metaKey || event.ctrlKey) && event.keyCode === 13) {
+        event.preventDefault();
+        this._onClick();
+      }
+    };
+
+    document.addEventListener('keydown', this._keyHandler, true);
+  }
+
+  componentWillUnmount() {
+    document.addEventListener('keydown', this._keyHandler, true);
+  }
+
   _onClick = () => {
     if (this.props.isRunning) {
       this.props.onStop();
