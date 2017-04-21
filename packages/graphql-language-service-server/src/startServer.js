@@ -32,26 +32,30 @@ export default (async function startServer(
 ): Promise<void> {
   if (options && options.port) {
     // Socket protocol support
-    const socket = net.connect(options.port);
-    socket.setEncoding('utf8');
-    const messageReader = new SocketMessageReader(socket);
-    const messageWriter = new SocketMessageWriter(socket);
+    const socket = net.createServer(client => {
+      client.setEncoding('utf8');
+      const messageReader = new SocketMessageReader(client);
+      const messageWriter = new SocketMessageWriter(client);
 
-    socket.on('end', () => {
-      process.exit(0);
-    });
+      client.on('end', () => {
+        socket.close();
+        process.exit(0);
+      });
 
-    messageReader.listen(message => {
-      try {
-        if (message.id != null) {
-          processIPCRequestMessage(message, configDir, messageWriter);
-        } else {
-          processIPCNotificationMessage(message, messageWriter);
+      messageReader.listen(message => {
+        try {
+          if (message.id != null) {
+            processIPCRequestMessage(message, configDir, messageWriter);
+          } else {
+            processIPCNotificationMessage(message, messageWriter);
+          }
+        } catch (error) {
+          // Swallow error silently.
         }
-      } catch (error) {
-        // Swallow error silently.
-      }
+      });
     });
+
+    socket.listen(options.port);
   }
 
   // IPC protocol support
