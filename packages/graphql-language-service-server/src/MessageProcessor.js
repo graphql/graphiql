@@ -131,11 +131,22 @@ export async function processIPCNotificationMessage(
 
       // As `contentChanges` is an array and we just want the
       // latest update to the text, grab the last entry from the array.
+      const uri = textDocument.uri || message.params.uri;
       invalidateCache(
         textDocument,
         textDocument.uri || message.params.uri,
         contentChanges[contentChanges.length - 1],
       );
+
+      const text = textDocumentCache.get(uri);
+
+      // Send the diagnostics onChange as well
+      const diagnostics = await provideDiagnosticsMessage(text, uri);
+      response = convertToRpcMessage({
+        method: 'textDocument/publishDiagnostics',
+        params: {uri, diagnostics},
+      });
+      sendMessageIPC(response, writer);
       break;
     case 'textDocument/didClose':
       // For every `textDocument/didClose` event, delete the cached entry.
