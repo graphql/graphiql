@@ -21,6 +21,7 @@ const {argv} = yargs
       '    [-t | --text] {textBuffer}\n' +
       '    [-f | --file] {filePath}\n' +
       '    [-s | --schema] {schemaPath}\n' +
+      '    [-m | --method] {method}\n' +
       '    [-p | --port] {port}\n',
   )
   .help('h')
@@ -63,6 +64,13 @@ const {argv} = yargs
       'the root directory is found.\n',
     type: 'string',
   })
+  .option('m', {
+    alias: 'method',
+    describe: 'A IPC communication method between client and server.\n' +
+      'Can be one of: stream, node, socket.\n' +
+      'Will default to use a node IPC channel for communication.\n',
+    type: 'string',
+  })
   .option('p', {
     alias: 'port',
     describe: 'Port number to communicate via socket.\n' +
@@ -81,11 +89,17 @@ const command = argv._.pop();
 
 switch (command) {
   case 'server':
-    let options = {};
-    if (argv.port) {
-      options = {port: argv.port};
+    const options = {};
+    if (argv && argv.port) {
+      options.port = argv.port;
     }
-    startServer(argv.configDir, options);
+    if (argv && argv.method) {
+      options.method = argv.method;
+    }
+    if (argv && argv.configDir) {
+      options.configDir = argv.configDir;
+    }
+    startServer(options);
     break;
   default:
     client(command, argv);

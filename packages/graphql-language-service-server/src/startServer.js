@@ -17,67 +17,88 @@ import {
 } from './MessageProcessor';
 
 import {
+  IPCMessageReader,
   IPCMessageWriter,
   SocketMessageReader,
   SocketMessageWriter,
 } from 'vscode-jsonrpc';
 
-type ServerOptions = {
+type Options = {
   port?: number,
+  method?: string,
+  configDir?: string,
 };
 
-export default (async function startServer(
-  configDir: ?string,
-  options?: ServerOptions,
-): Promise<void> {
-  if (options && options.port) {
-    // Socket protocol support
-    const socket = net.createServer(client => {
-      client.setEncoding('utf8');
-      const messageReader = new SocketMessageReader(client);
-      const messageWriter = new SocketMessageWriter(client);
-
-      client.on('end', () => {
-        socket.close();
-        process.exit(0);
-      });
-
-      messageReader.listen(message => {
-        try {
-          if (message.id != null) {
-            processIPCRequestMessage(message, configDir, messageWriter);
-          } else {
-            processIPCNotificationMessage(message, messageWriter);
-          }
-        } catch (error) {
-          // Swallow error silently.
-        }
-      });
-    });
-
-    socket.listen(options.port);
+export default (async function startServer(options?: Options): Promise<void> {
+  if (!options || !options.configDir) {
+    process.stderr.write('--configDir is required!');
+    process.exit(1);
   }
 
+  const configDir = options.configDir;
+  if (options && options.method) {
+    switch (options.method) {
+      case 'stream':
+        connectWithStream(configDir);
+        break;
+      case 'socket':
+        connectWithSocket(configDir, options.port);
+        break;
+      case 'node':
+      default:
+        connectWithNodeIPC(configDir);
+        break;
+    }
+  }
+});
+
+function connectWithSocket(configDir: string, port: number): Promise<void> {
+  const socket = net.createServer(client => {
+    client.setEncoding('utf8');
+    const messageReader = new SocketMessageReader(client);
+    const messageWriter = new SocketMessageWriter(client);
+
+    client.on('end', () => {
+      socket.close();
+      process.exit(0);
+    });
+
+    messageReader.listen(message => {
+      try {
+        if (message.id != null) {
+          processIPCRequestMessage(message, configDir, messageWriter);
+        } else {
+          processIPCNotificationMessage(message, messageWriter);
+        }
+      } catch (error) {
+        // Swallow error silently.
+      }
+    });
+  });
+
+  socket.listen(port);
+}
+
+function connectWithNodeIPC(configDir: string): Promise<void> {
   // IPC protocol support
   // The language server protocol specifies that the client starts sending
   // messages when the server starts. Start listening from this point.
   const ipcWriter = new IPCMessageWriter(process);
-  process.on('message', message => {
-    // TODO: support the header part of the language server protocol
-    // Recognize the Content-Length header
-    if (
-      typeof message === 'string' && message.indexOf('Content-Length') === 0
-    ) {
-      return;
-    }
-
-    if (message.id != null) {
-      processIPCRequestMessage(message, configDir, ipcWriter);
-    } else {
-      processIPCNotificationMessage(message, ipcWriter);
+  const ipcReader = new IPCMessageReader(process);
+  ipcReader.listen(message => {
+    try {
+      if (message.id != null) {
+        processIPCRequestMessage(message, configDir, ipcWriter);
+      } else {
+        processIPCNotificationMessage(message, ipcWriter);
+      }
+    } catch (error) {
+      // Swallow error silently.
     }
   });
+}
 
+function connectWithStream(configDir: string): Promise<void> {
   // Stream (stdio) protocol support
   // Depending on the size of the query, incomplete query strings
   // may be streamed in. The below code tries to detect the end of current
@@ -103,4 +124,4 @@ export default (async function startServer(
       messages.forEach(message => processStreamMessage(message, configDir));
     }
   });
-});
+}
