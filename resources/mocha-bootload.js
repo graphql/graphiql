@@ -7,17 +7,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-var jsdom = require('jsdom');
+var JSDOM = require('jsdom').JSDOM;
 
 // setup the simplest document possible
-var doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
+var doc = new JSDOM('<!doctype html><html><body></body></html>');
 
 // get the window object out of the document
-var win = doc.defaultView;
+var win = doc.window;
 
 // set globals for mocha that make access to document and window feel
 // natural in the test environment
-global.document = doc;
+global.document = win.document;
 global.window = win;
 
 global.document.createRange = function () {
