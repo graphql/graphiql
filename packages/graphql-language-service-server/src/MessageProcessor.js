@@ -79,6 +79,7 @@ export async function processIPCNotificationMessage(
   const method = message.method;
   let response;
   let textDocument;
+  let diagnostics;
   switch (method) {
     case 'textDocument/didOpen':
     case 'textDocument/didSave':
@@ -104,7 +105,7 @@ export async function processIPCNotificationMessage(
         }
       }
 
-      const diagnostics = await provideDiagnosticsMessage(text, uri);
+      diagnostics = await provideDiagnosticsMessage(text, uri);
       response = convertToRpcMessage({
         method: 'textDocument/publishDiagnostics',
         params: {uri, diagnostics},
@@ -138,10 +139,12 @@ export async function processIPCNotificationMessage(
         contentChanges[contentChanges.length - 1],
       );
 
-      const text = textDocumentCache.get(documentUri);
 
       // Send the diagnostics onChange as well
-      const diagnostics = await provideDiagnosticsMessage(text, documentUri);
+      diagnostics = await provideDiagnosticsMessage(
+        textDocumentCache.get(documentUri),
+        documentUri,
+      );
       response = convertToRpcMessage({
         method: 'textDocument/publishDiagnostics',
         params: {documentUri, diagnostics},
