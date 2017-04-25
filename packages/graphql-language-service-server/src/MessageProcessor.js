@@ -139,7 +139,6 @@ export async function processIPCNotificationMessage(
         contentChanges[contentChanges.length - 1],
       );
 
-
       // Send the diagnostics onChange as well
       diagnostics = await provideDiagnosticsMessage(
         textDocumentCache.get(documentUri),
