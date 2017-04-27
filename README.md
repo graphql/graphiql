@@ -11,7 +11,7 @@ Partial support for [Microsoft's Language Server Protocol](https://github.com/Mi
 Currently supported features include:
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
-- Hyperlink to fragment definitions
+- Hyperlink to fragment definitions (**spec-compliant**)
 - Outline view support for queries
 
 

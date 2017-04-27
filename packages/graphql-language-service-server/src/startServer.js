@@ -11,17 +11,37 @@
 import net from 'net';
 
 import {
-  processStreamMessage,
-  processIPCRequestMessage,
-  processIPCNotificationMessage,
+  handleCompletionRequest,
+  handleDefinitionRequest,
+  handleDidChangeNotification,
+  handleDidCloseNotification,
+  handleDidOpenOrSaveNotification,
+  handleInitializeRequest,
 } from './MessageProcessor';
 
 import {
+  createMessageConnection,
   IPCMessageReader,
   IPCMessageWriter,
+  MessageConnection,
   SocketMessageReader,
   SocketMessageWriter,
+  StreamMessageReader,
+  StreamMessageWriter,
 } from 'vscode-jsonrpc';
+
+import {
+  CompletionRequest,
+  CompletionResolveRequest,
+  DefinitionRequest,
+  DidOpenTextDocumentNotification,
+  DidSaveTextDocumentNotification,
+  DidChangeTextDocumentNotification,
+  DidCloseTextDocumentNotification,
+  ExitNotification,
+  InitializeRequest,
+  PublishDiagnosticsNotification,
+} from 'vscode-languageserver';
 
 type Options = {
   port?: number,
@@ -30,98 +50,108 @@ type Options = {
 };
 
 export default (async function startServer(options?: Options): Promise<void> {
-  if (!options || !options.configDir) {
-    process.stderr.write('--configDir is required!');
+  if (!options) {
+    process.stderr.write('At least --configDir option is required.');
     process.exit(1);
+    return;
+  }
+  if (!options.configDir) {
+    process.stderr.write('--configDir is required.');
+    process.exit(1);
+    return;
   }
 
   const configDir = options.configDir;
   if (options && options.method) {
+    let reader;
+    let writer;
     switch (options.method) {
       case 'stream':
-        connectWithStream(configDir);
+        reader = new StreamMessageReader(process.stdin);
+        writer = new StreamMessageWriter(process.stdout);
         break;
       case 'socket':
-        connectWithSocket(configDir, options.port);
+        if (!options.port) {
+          process.stderr.write(
+            '--port is required to establish socket connection.',
+          );
+          process.exit(1);
+          return;
+        }
+
+        const port = options.port;
+        const socket = net
+          .createServer(client => {
+            client.setEncoding('utf8');
+            reader = new SocketMessageReader(client);
+            writer = new SocketMessageWriter(client);
+            client.on('end', () => {
+              socket.close();
+              process.exit(0);
+            });
+          })
+          .listen(port);
         break;
       case 'node':
       default:
-        connectWithNodeIPC(configDir);
+        reader = new IPCMessageReader(process);
+        writer = new IPCMessageWriter(process);
         break;
     }
+    const connection = createMessageConnection(reader, writer);
+    addHandlers(connection, configDir);
+    connection.listen();
   }
 });
 
-function connectWithSocket(configDir: string, port: number): Promise<void> {
-  const socket = net.createServer(client => {
-    client.setEncoding('utf8');
-    const messageReader = new SocketMessageReader(client);
-    const messageWriter = new SocketMessageWriter(client);
-
-    client.on('end', () => {
-      socket.close();
-      process.exit(0);
-    });
-
-    messageReader.listen(message => {
-      try {
-        if (message.id != null) {
-          processIPCRequestMessage(message, configDir, messageWriter);
-        } else {
-          processIPCNotificationMessage(message, messageWriter);
-        }
-      } catch (error) {
-        // Swallow error silently.
+function addHandlers(connection: MessageConnection, configDir?: string): void {
+  connection.onNotification(
+    DidOpenTextDocumentNotification.type,
+    async params => {
+      const diagnostics = await handleDidOpenOrSaveNotification(params);
+      if (diagnostics) {
+        connection.sendNotification(
+          PublishDiagnosticsNotification.type,
+          diagnostics,
+        );
       }
-    });
-  });
-
-  socket.listen(port);
-}
-
-function connectWithNodeIPC(configDir: string): Promise<void> {
-  // IPC protocol support
-  // The language server protocol specifies that the client starts sending
-  // messages when the server starts. Start listening from this point.
-  const ipcWriter = new IPCMessageWriter(process);
-  const ipcReader = new IPCMessageReader(process);
-  ipcReader.listen(message => {
-    try {
-      if (message.id != null) {
-        processIPCRequestMessage(message, configDir, ipcWriter);
-      } else {
-        processIPCNotificationMessage(message, ipcWriter);
+    },
+  );
+  connection.onNotification(
+    DidSaveTextDocumentNotification.type,
+    async params => {
+      const diagnostics = await handleDidOpenOrSaveNotification(params);
+      if (diagnostics) {
+        connection.sendNotification(
+          PublishDiagnosticsNotification.type,
+          diagnostics,
+        );
       }
-    } catch (error) {
-      // Swallow error silently.
-    }
-  });
-}
+    },
+  );
+  connection.onNotification(
+    DidChangeTextDocumentNotification.type,
+    async params => {
+      const diagnostics = await handleDidChangeNotification(params);
+      if (diagnostics) {
+        connection.sendNotification(
+          PublishDiagnosticsNotification.type,
+          diagnostics,
+        );
+      }
+    },
+  );
+  connection.onNotification(
+    DidCloseTextDocumentNotification.type,
+    handleDidCloseNotification,
+  );
+  connection.onNotification(ExitNotification.type, () => process.exit(0));
+  // Ignore cancel requests
+  connection.onNotification('$/cancelRequest', () => ({}));
 
-function connectWithStream(configDir: string): Promise<void> {
-  // Stream (stdio) protocol support
-  // Depending on the size of the query, incomplete query strings
-  // may be streamed in. The below code tries to detect the end of current
-  // batch of streamed data, splits the batch into appropriate JSON string,
-  // and calls the function to process those messages.
-  // This might get tricky since the query string needs to preserve the newline
-  // characters to ensure the correct Range/Point values gets computed by the
-  // language service interface methods. The current solution is to flow the
-  // stream until aggregated data ends with the unescaped newline character,
-  // pauses the stream and process the messages, and resumes back the stream
-  // for another batch.
-  let data = '';
-  process.stdin.setEncoding('utf8');
-  process.stdin.on('data', chunk => {
-    data += chunk.toString();
-
-    // Check if the current buffer contains newline character.
-    const flagPosition = data.indexOf('\r\n');
-    if (flagPosition !== -1) {
-      // There may be more than one message in the buffer.
-      const messages = data.split('\r\n');
-      data = messages.pop().trim();
-      messages.forEach(message => processStreamMessage(message, configDir));
-    }
-  });
+  connection.onRequest(InitializeRequest.type, (params, token) =>
+    handleInitializeRequest(params, token, configDir));
+  connection.onRequest(CompletionRequest.type, handleCompletionRequest);
+  connection.onRequest(CompletionResolveRequest.type, item => item);
+  connection.onRequest(DefinitionRequest.type, handleDefinitionRequest);
 }
