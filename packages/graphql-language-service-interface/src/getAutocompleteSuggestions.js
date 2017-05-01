@@ -11,7 +11,13 @@
 import type {
   FragmentDefinitionNode,
   GraphQLDirective,
+  GraphQLInputFieldMap,
   GraphQLSchema,
+  GraphQLType,
+  GraphQLArgument,
+  GraphQLInputField,
+  GraphQLField,
+  GraphQLEnumValue,
 } from 'graphql';
 import type {
   CompletionItem,
@@ -96,8 +102,8 @@ export function getAutocompleteSuggestions(
         token,
         argDefs.map(argDef => ({
           label: argDef.name,
-          detail: argDef.type,
-          documentation: argDef.description,
+          detail: argDef.type && getNamedType(argDef.type).name,
+          documentation: argDef.description || '',
         })),
       );
     }
@@ -106,12 +112,13 @@ export function getAutocompleteSuggestions(
   // Input Object fields
   if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
     if (typeInfo.objectFieldDefs) {
-      const objectFields = objectValues(typeInfo.objectFieldDefs);
+      const objectFields: GraphQLInputFieldMap =
+        objectValues(typeInfo.objectFieldDefs);
       return hintList(
         token,
         objectFields.map(field => ({
           label: field.name,
-          detail: field.type,
+          detail: field.type && getNamedType(field.type).name,
           documentation: field.description,
         })),
       );
@@ -171,7 +178,7 @@ function getSuggestionsForFieldNames(
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
-    const fields = parentType.getFields
+    const fields = parentType.getFields instanceof Function
       ? objectValues(parentType.getFields())
       : [];
     if (isAbstractType(parentType)) {
@@ -254,7 +261,7 @@ function getSuggestionsForFragmentTypeConditions(
     token,
     possibleTypes.map(type => ({
       label: type.name,
-      documentation: type.description,
+      documentation: type.description || '',
     })),
   );
 }

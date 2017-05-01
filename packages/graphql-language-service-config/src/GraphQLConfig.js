@@ -99,15 +99,15 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       if (
         this._config[PROJECTS_NAME] &&
         this._config[PROJECTS_NAME][appName] &&
-        this._config[PROJECTS_NAME][appName].inputDirs
+        this._config[PROJECTS_NAME][appName].includeDirs
       ) {
-        return this._config[PROJECTS_NAME][appName].inputDirs.some(
+        return this._config[PROJECTS_NAME][appName].includeDirs.some(
           dirPath => fileName.indexOf(dirPath) !== -1,
         );
       }
     }
-    return this._config.inputDirs
-      ? this._config.inputDirs.some(dirPath => fileName.indexOf(dirPath) !== -1)
+    return this._config.includeDirs
+      ? this._config.includeDirs.some(dirPath => fileName.indexOf(dirPath) !== -1)
       : false;
   }
 

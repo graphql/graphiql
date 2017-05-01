@@ -17,6 +17,7 @@ import type {
 import type {ValidationContext} from 'graphql/validation';
 import type {
   GraphQLArgument,
+  GraphQLEnumValue,
   GraphQLField,
   GraphQLInputField,
   GraphQLType,
@@ -64,6 +65,7 @@ export type GraphQLProjectConfiguration = {
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
   extensions?: GraphQLConfigurationExtension,
+  customValidationRules?: Uri,
 };
 
 export type GraphQLConfigurationExtension = {
@@ -173,14 +175,15 @@ export type ContextToken = {
 };
 
 export type TypeInfo = {
-  type: GraphQLType,
-  parentType: GraphQLType,
-  inputType: GraphQLType,
-  directiveDef: GraphQLType,
+  type: ?GraphQLType,
+  parentType: ?GraphQLType,
+  inputType: ?GraphQLType,
+  directiveDef: ?GraphQLType,
   fieldDef: ?GraphQLField<*, *>,
-  argDef: GraphQLArgument,
+  enumValue: ?GraphQLEnumValue,
+  argDef: ?GraphQLArgument,
   argDefs: ?Array<GraphQLArgument>,
-  objectFieldDefs: GraphQLInputField,
+  objectFieldDefs: ?GraphQLInputField,
 };
 
 export type FragmentInfo = {

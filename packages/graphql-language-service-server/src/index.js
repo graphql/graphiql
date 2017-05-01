@@ -13,9 +13,12 @@ export {GraphQLCache, getGraphQLCache} from './GraphQLCache';
 export {GraphQLWatchman} from './GraphQLWatchman';
 
 export {
-  processIPCNotificationMessage,
-  processIPCRequestMessage,
-  processStreamMessage,
+  handleCompletionRequest,
+  handleDefinitionRequest,
+  handleDidChangeNotification,
+  handleDidCloseNotification,
+  handleDidOpenOrSaveNotification,
+  handleInitializeRequest,
 } from './MessageProcessor';
 
 export {default as startServer} from './startServer';
