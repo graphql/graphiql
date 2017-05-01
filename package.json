@@ -74,7 +74,7 @@
     "express-graphql": "0.6.4",
     "flow-bin": "0.45.0",
     "graphql": "^0.9.2",
-    "jsdom": "10.0.0",
+    "jsdom": "10.1.0",
     "mocha": "3.3.0",
     "postcss-cli": "3.2.0",
     "prop-types": "15.5.8",
