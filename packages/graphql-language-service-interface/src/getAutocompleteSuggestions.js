@@ -112,8 +112,9 @@ export function getAutocompleteSuggestions(
   // Input Object fields
   if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
     if (typeInfo.objectFieldDefs) {
-      const objectFields: GraphQLInputFieldMap =
-        objectValues(typeInfo.objectFieldDefs);
+      const objectFields: GraphQLInputFieldMap = objectValues(
+        typeInfo.objectFieldDefs,
+      );
       return hintList(
         token,
         objectFields.map(field => ({

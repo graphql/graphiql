@@ -107,7 +107,9 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       }
     }
     return this._config.includeDirs
-      ? this._config.includeDirs.some(dirPath => fileName.indexOf(dirPath) !== -1)
+      ? this._config.includeDirs.some(
+          dirPath => fileName.indexOf(dirPath) !== -1,
+        )
       : false;
   }
 
