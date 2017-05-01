@@ -13,11 +13,6 @@ import type {
   GraphQLDirective,
   GraphQLInputFieldMap,
   GraphQLSchema,
-  GraphQLType,
-  GraphQLArgument,
-  GraphQLInputField,
-  GraphQLField,
-  GraphQLEnumValue,
 } from 'graphql';
 import type {
   CompletionItem,
