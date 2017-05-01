@@ -40,7 +40,7 @@
   "dependencies": {
     "babel-polyfill": "6.16.0",
     "fb-watchman": "^2.0.0",
-    "graphql": "^0.9.2",
+    "graphql": "^0.9.4",
     "graphql-language-service-config": "0.0.7",
     "graphql-language-service-interface": "0.0.7",
     "graphql-language-service-parser": "0.0.6",
