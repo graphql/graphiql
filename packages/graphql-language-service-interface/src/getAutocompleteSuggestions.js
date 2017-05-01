@@ -97,7 +97,7 @@ export function getAutocompleteSuggestions(
         token,
         argDefs.map(argDef => ({
           label: argDef.name,
-          detail: argDef.type && getNamedType(argDef.type).name,
+          detail: String(argDef.type),
           documentation: argDef.description || '',
         })),
       );
@@ -114,7 +114,7 @@ export function getAutocompleteSuggestions(
         token,
         objectFields.map(field => ({
           label: field.name,
-          detail: field.type && getNamedType(field.type).name,
+          detail: String(field.type),
           documentation: field.description,
         })),
       );
@@ -187,7 +187,7 @@ function getSuggestionsForFieldNames(
       token,
       fields.map(field => ({
         label: field.name,
-        detail: field.type,
+        detail: String(field.type),
         documentation: field.description,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
@@ -209,7 +209,7 @@ function getSuggestionsForInputValues(
       token,
       values.map(value => ({
         label: value.name,
-        detail: namedInputType,
+        detail: String(namedInputType),
         documentation: value.description,
         isDeprecated: value.isDeprecated,
         deprecationReason: value.deprecationReason,
@@ -256,8 +256,8 @@ function getSuggestionsForFragmentTypeConditions(
   return hintList(
     token,
     possibleTypes.map(type => ({
-      label: type.name,
-      documentation: type.description || '',
+      label: String(type),
+      documentation: getNamedType(type).description || '',
     })),
   );
 }
@@ -293,7 +293,7 @@ function getSuggestionsForFragmentSpread(
     token,
     relevantFrags.map(frag => ({
       label: frag.name.value,
-      detail: typeMap[frag.typeCondition.name.value],
+      detail: String(typeMap[frag.typeCondition.name.value]),
       documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
     })),
   );

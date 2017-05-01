@@ -13,8 +13,7 @@ import type {CompletionItem} from 'graphql-language-service-types';
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 import fs from 'fs';
-import {getNamedType} from 'graphql/type';
-import {buildSchema} from 'graphql/utilities';
+import {buildSchema} from 'graphql';
 import {Position} from 'graphql-language-service-utils';
 import path from 'path';
 
@@ -44,7 +43,7 @@ describe('getAutocompleteSuggestions', () => {
         const response = {label: suggestion.label};
         if (suggestion.detail) {
           Object.assign(response, {
-            detail: getNamedType(suggestion.detail).name,
+            detail: String(suggestion.detail),
           });
         }
         return response;
@@ -109,9 +108,9 @@ describe('getAutocompleteSuggestions', () => {
     );
 
     expect(result).to.deep.equal([
-      {label: 'appearsIn', detail: 'Episode'},
-      {label: 'friends', detail: 'Character'},
-      {label: 'id', detail: 'String'},
+      {label: 'appearsIn', detail: '[Episode]'},
+      {label: 'friends', detail: '[Character]'},
+      {label: 'id', detail: 'String!'},
       {label: 'name', detail: 'String'},
       {label: 'secretBackstory', detail: 'String'},
     ]);
@@ -123,9 +122,9 @@ describe('getAutocompleteSuggestions', () => {
       new Position(0, 25),
     );
     expect(result).to.deep.equal([
-      {label: 'appearsIn', detail: 'Episode'},
-      {label: 'friends', detail: 'Character'},
-      {label: 'id', detail: 'String'},
+      {label: 'appearsIn', detail: '[Episode]'},
+      {label: 'friends', detail: '[Character]'},
+      {label: 'id', detail: 'String!'},
       {label: 'name', detail: 'String'},
       {label: 'secretBackstory', detail: 'String'},
     ]);
@@ -133,12 +132,12 @@ describe('getAutocompleteSuggestions', () => {
 
   it('provides correct argument suggestions', () => {
     const result = testSuggestions('{ human (', new Position(0, 9));
-    expect(result).to.deep.equal([{label: 'id', detail: 'String'}]);
+    expect(result).to.deep.equal([{label: 'id', detail: 'String!'}]);
   });
 
   it('provides correct argument suggestions when using aliases', () => {
     const result = testSuggestions('{ aliasTest: human( ', new Position(0, 20));
-    expect(result).to.deep.equal([{label: 'id', detail: 'String'}]);
+    expect(result).to.deep.equal([{label: 'id', detail: 'String!'}]);
   });
 
   it('provides correct typeCondition suggestions', () => {
@@ -227,7 +226,7 @@ describe('getAutocompleteSuggestions', () => {
     expect(
       testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
     ).to.deep.equal([
-      {label: 'key', detail: 'String'},
+      {label: 'key', detail: 'String!'},
       {label: 'value', detail: 'Int'},
     ]);
   });
@@ -239,9 +238,9 @@ describe('getAutocompleteSuggestions', () => {
         new Position(0, 42),
       ),
     ).to.deep.equal([
-      {label: 'appearsIn', detail: 'Episode'},
-      {label: 'friends', detail: 'Character'},
-      {label: 'id', detail: 'String'},
+      {label: 'appearsIn', detail: '[Episode]'},
+      {label: 'friends', detail: '[Character]'},
+      {label: 'id', detail: 'String!'},
       {label: 'name', detail: 'String'},
       {label: 'secretBackstory', detail: 'String'},
     ]);
@@ -250,9 +249,9 @@ describe('getAutocompleteSuggestions', () => {
     expect(
       testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
     ).to.deep.equal([
-      {label: 'appearsIn', detail: 'Episode'},
-      {label: 'friends', detail: 'Character'},
-      {label: 'id', detail: 'String'},
+      {label: 'appearsIn', detail: '[Episode]'},
+      {label: 'friends', detail: '[Character]'},
+      {label: 'id', detail: 'String!'},
       {label: 'name', detail: 'String'},
       {label: 'primaryFunction', detail: 'String'},
       {label: 'secretBackstory', detail: 'String'},
