@@ -1202,52 +1202,46 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-language-service-config@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.4.tgz#1b8d71dfd3b580509600eac7863df6e6ff137199"
-  dependencies:
-    graphql-language-service-types "^0.0.9"
-
-graphql-language-service-interface@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.4.tgz#6ae20481312d81f2085494fa9d9a257e926282ad"
-  dependencies:
-    graphql "^0.9.1"
-    graphql-language-service-config "^0.0.4"
-    graphql-language-service-parser "^0.0.3"
-    graphql-language-service-types "^0.0.9"
-    graphql-language-service-utils "^0.0.3"
-
-graphql-language-service-parser@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.3.tgz#0b124e8ed78446bc4031b3c7c693b2f670bdc875"
-  dependencies:
-    graphql-language-service-types "^0.0.9"
-
-graphql-language-service-types@^0.0.9:
+graphql-language-service-config@0.0.9:
   version "0.0.9"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.9.tgz#af11f448b7638f4c51a30763e90cfb58a63c111a"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.9.tgz#f8d94e3b16877d7243b3a7f92f6b653218caa5a2"
   dependencies:
-    graphql "0.9.1"
+    graphql-language-service-types "0.0.14"
 
-graphql-language-service-utils@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.3.tgz#9339d4b3894167b75fe9fc88b0fe0cf761b4c965"
+graphql-language-service-interface@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.9.tgz#2bacb927d50a9fe1b20069656b391fb97851d2a1"
   dependencies:
-    graphql "^0.9.1"
-    graphql-language-service-types "^0.0.9"
+    graphql "^0.9.6"
+    graphql-language-service-config "0.0.9"
+    graphql-language-service-parser "0.0.8"
+    graphql-language-service-types "0.0.14"
+    graphql-language-service-utils "0.0.8"
 
-graphql@0.9.1:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.1.tgz#f4d154cbec054d4a5d3b1be95f23435c09aa86c8"
+graphql-language-service-parser@0.0.8, graphql-language-service-parser@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.8.tgz#34ee3ebebd91c3bb4a98c36ec5e72836130f0e3d"
   dependencies:
-    iterall "1.0.3"
+    graphql-language-service-types "0.0.14"
 
-graphql@^0.9.1:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.3.tgz#71fc0fa331bffb9c20678485861cfb370803118e"
+graphql-language-service-types@0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.14.tgz#17f47c798837e6e5dc62fc7d4f67ffa5259e1b1a"
   dependencies:
-    iterall "1.0.3"
+    graphql "^0.9.6"
+
+graphql-language-service-utils@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.8.tgz#17ccc50e34131b33324127a2b4f731dc9c5cc346"
+  dependencies:
+    graphql "^0.9.6"
+    graphql-language-service-types "0.0.14"
+
+graphql@^0.9.6:
+  version "0.9.6"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.6.tgz#514421e9d225c29dfc8fd305459abae58815ef2c"
+  dependencies:
+    iterall "^1.0.0"
 
 growl@1.9.2:
   version "1.9.2"
@@ -1484,9 +1478,9 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-iterall@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.0.3.tgz#e0b31958f835013c323ff0b10943829ac69aa4b7"
+iterall@^1.0.0:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.1.1.tgz#f7f0af11e9a04ec6426260f5019d9fcca4d50214"
 
 jodid25519@^1.0.0:
   version "1.0.2"
