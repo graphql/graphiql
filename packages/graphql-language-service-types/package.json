@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-types",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -26,6 +26,6 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
-    "graphql": "^0.9.4"
+    "graphql": "^0.9.6"
   }
 }
