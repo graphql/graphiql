@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-server",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -28,10 +28,10 @@
   "dependencies": {
     "fb-watchman": "^2.0.0",
     "graphql": "^0.9.6",
-    "graphql-language-service-config": "0.0.9",
-    "graphql-language-service-interface": "0.0.9",
-    "graphql-language-service-types": "0.0.14",
-    "graphql-language-service-utils": "0.0.8",
+    "graphql-language-service-config": "0.0.10",
+    "graphql-language-service-interface": "0.0.10",
+    "graphql-language-service-types": "0.0.15",
+    "graphql-language-service-utils": "0.0.9",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^3.2.0",
     "vscode-languageserver": "^3.2.0"
