@@ -71,20 +71,22 @@ export function getDefinitionQueryResultForDefinitionNode(
 ): DefinitionQueryResult {
   return {
     definitions: [getDefinitionForFragmentDefinition(path, text, definition)],
-    queryRange: [getRange(text, definition.name)],
+    queryRange: definition.name ? [getRange(text, definition.name)] : [],
   };
 }
 
 function getDefinitionForFragmentDefinition(
   path: Uri,
   text: string,
-  definition: FragmentDefinitionNode,
+  definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): Definition {
+  const name = definition.name;
+  invariant(name, 'Expected ASTNode to have a Name.');
   return {
     path,
-    position: getPosition(text, definition.name),
+    position: getPosition(text, name),
     range: getRange(text, definition),
-    name: definition.name.value,
+    name: name.value || '',
     language: LANGUAGE,
     // This is a file inside the project root, good enough for now
     projectRoot: path,

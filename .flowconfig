@@ -8,8 +8,6 @@
 [include]
 
 [libs]
-./node_modules/graphql/index.js.flow
-./node_modules/graphql/language/ast.js.flow
 
 [options]
 module.name_mapper='\(graphql-language-service-[^/]*\)' -> '<PROJECT_ROOT>/packages/\1/src/index.js'

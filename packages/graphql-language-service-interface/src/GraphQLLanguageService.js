@@ -8,7 +8,12 @@
  *  @flow
  */
 
-import type {DocumentNode, FragmentSpreadNode} from 'graphql';
+import type {
+  DocumentNode,
+  FragmentSpreadNode,
+  FragmentDefinitionNode,
+  OperationDefinitionNode,
+} from 'graphql';
 import type {
   CompletionItem,
   DefinitionQueryResult,
@@ -133,7 +138,7 @@ export class GraphQLLanguageService {
           return getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
-            node,
+            (node: FragmentDefinitionNode | OperationDefinitionNode),
           );
       }
     }
@@ -158,18 +163,24 @@ export class GraphQLLanguageService {
       fragmentDefinitions,
     );
 
-    const localFragDefinitions = ast.definitions
-      .filter(definition => definition.kind === FRAGMENT_DEFINITION)
-      .map(definition => ({
-        file: filePath,
+    const localFragDefinitions = ast.definitions.filter(
+      definition => definition.kind === FRAGMENT_DEFINITION,
+    );
+
+    const typeCastedDefs = ((localFragDefinitions: any): Array<FragmentDefinitionNode>);
+
+    const localFragInfos = typeCastedDefs.map(
+      (definition: FragmentDefinitionNode) => ({
+        filePath,
         content: query,
         definition,
-      }));
+      }),
+    );
 
     const result = await getDefinitionQueryResultForFragmentSpread(
       query,
       node,
-      dependencies.concat(localFragDefinitions),
+      dependencies.concat(localFragInfos),
     );
 
     return result;

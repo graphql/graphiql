@@ -47,7 +47,7 @@ export function getFieldDef(
   schema: GraphQLSchema,
   type: GraphQLType,
   fieldName: string,
-): ?GraphQLField {
+): ?GraphQLField<*, *> {
   if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
     return SchemaMetaFieldDef;
   }
@@ -57,8 +57,8 @@ export function getFieldDef(
   if (fieldName === TypeNameMetaFieldDef.name && isCompositeType(type)) {
     return TypeNameMetaFieldDef;
   }
-  if (type.getFields) {
-    return type.getFields()[fieldName];
+  if (type.getFields && typeof type.getFields === 'function') {
+    return (type.getFields()[fieldName]: any);
   }
 
   return null;

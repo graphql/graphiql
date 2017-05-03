@@ -92,7 +92,7 @@ function annotations(
     return [];
   }
   return error.nodes.map(node => {
-    const highlightNode: ASTNode = node.kind !== 'Variable' && node.name
+    const highlightNode = node.kind !== 'Variable' && node.name
       ? node.name
       : node.variable ? node.variable : node;
 
@@ -119,8 +119,9 @@ function annotations(
  * (and therefore the lexer) with the `noLocation` option, but we always
  * call `parse` without options above.
  */
-function getLocation(node: ASTNode): Location {
-  const location = node.loc;
+function getLocation(node: any): Location {
+  const typeCastedNode = (node: ASTNode);
+  const location = typeCastedNode.loc;
   invariant(location, 'Expected ASTNode to have a location.');
   return location;
 }

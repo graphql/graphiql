@@ -206,9 +206,9 @@ export type CompletionItem = {
   label: string,
   kind?: number,
   detail?: string,
-  documentation?: string,
+  documentation?: ?string,
   // GraphQL Deprecation information
-  isDeprecated?: ?string,
+  isDeprecated?: ?boolean,
   deprecationReason?: ?string,
 };
 
