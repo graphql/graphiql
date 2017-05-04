@@ -1202,40 +1202,40 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-language-service-config@0.0.9:
+graphql-language-service-config@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.10.tgz#356595fc424f9597a865ce2108c2ffb0565c02c2"
+  dependencies:
+    graphql-language-service-types "0.0.15"
+
+graphql-language-service-interface@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.10.tgz#925e8205fa45ffa0638639dd6978c278cad95e60"
+  dependencies:
+    graphql "^0.9.6"
+    graphql-language-service-config "0.0.10"
+    graphql-language-service-parser "0.0.9"
+    graphql-language-service-types "0.0.15"
+    graphql-language-service-utils "0.0.9"
+
+graphql-language-service-parser@0.0.9, graphql-language-service-parser@^0.0.9:
   version "0.0.9"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.9.tgz#f8d94e3b16877d7243b3a7f92f6b653218caa5a2"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.9.tgz#522b25554076b46fce8a3e71017b5c6cdb24a676"
   dependencies:
-    graphql-language-service-types "0.0.14"
+    graphql-language-service-types "0.0.15"
 
-graphql-language-service-interface@0.0.9:
+graphql-language-service-types@0.0.15:
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.15.tgz#3f1446beaa78146b78f49c7d7047293301a58393"
+  dependencies:
+    graphql "^0.9.6"
+
+graphql-language-service-utils@0.0.9:
   version "0.0.9"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.9.tgz#2bacb927d50a9fe1b20069656b391fb97851d2a1"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.9.tgz#de1b9fdadfa1d59a3c33a96b534b18efea84d0ad"
   dependencies:
     graphql "^0.9.6"
-    graphql-language-service-config "0.0.9"
-    graphql-language-service-parser "0.0.8"
-    graphql-language-service-types "0.0.14"
-    graphql-language-service-utils "0.0.8"
-
-graphql-language-service-parser@0.0.8, graphql-language-service-parser@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.8.tgz#34ee3ebebd91c3bb4a98c36ec5e72836130f0e3d"
-  dependencies:
-    graphql-language-service-types "0.0.14"
-
-graphql-language-service-types@0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.14.tgz#17f47c798837e6e5dc62fc7d4f67ffa5259e1b1a"
-  dependencies:
-    graphql "^0.9.6"
-
-graphql-language-service-utils@0.0.8:
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.8.tgz#17ccc50e34131b33324127a2b4f731dc9c5cc346"
-  dependencies:
-    graphql "^0.9.6"
-    graphql-language-service-types "0.0.14"
+    graphql-language-service-types "0.0.15"
 
 graphql@^0.9.6:
   version "0.9.6"
