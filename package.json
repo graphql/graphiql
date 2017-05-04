@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "codemirror": "5.25.2",
-    "codemirror-graphql": "^0.6.3",
+    "codemirror-graphql": "^0.6.4",
     "marked": "0.3.6"
   },
   "peerDependencies": {
