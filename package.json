@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "0.10.0",
+  "version": "0.10.2",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -42,19 +42,20 @@
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
   },
   "dependencies": {
-    "codemirror": "5.25.0",
-    "codemirror-graphql": "^0.6.3",
+    "codemirror": "^5.25.2",
+    "codemirror-graphql": "^0.6.4",
     "marked": "0.3.6"
   },
   "peerDependencies": {
     "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0",
-    "react": ">=15.5.4",
-    "react-dom": ">=15.5.4"
+    "prop-types": ">=15.5.8",
+    "react": "^0.14.9 || >=15.5.4",
+    "react-dom": "^0.14.9 || >=15.5.4"
   },
   "devDependencies": {
-    "autoprefixer": "^6.7.3",
+    "autoprefixer": "^7.0.0",
     "babel-cli": "6.24.1",
-    "babel-eslint": "7.2.2",
+    "babel-eslint": "7.2.3",
     "babel-plugin-syntax-async-functions": "6.13.0",
     "babel-plugin-transform-class-properties": "6.24.1",
     "babel-plugin-transform-object-rest-spread": "6.22.0",
@@ -68,18 +69,19 @@
     "chai-subset": "1.5.0",
     "eslint": "3.19.0",
     "eslint-plugin-babel": "4.1.1",
-    "eslint-plugin-react": "6.10.3",
+    "eslint-plugin-react": "7.0.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.4",
-    "flow-bin": "0.44.0",
+    "flow-bin": "0.45.0",
     "graphql": "^0.9.2",
-    "jsdom": "9.12.0",
-    "mocha": "3.2.0",
-    "postcss-cli": "3.1.1",
-    "react": "15.4.2",
-    "react-dom": "15.4.2",
+    "jsdom": "10.1.0",
+    "mocha": "3.3.0",
+    "postcss-cli": "3.2.0",
+    "prop-types": "15.5.8",
+    "react": "15.5.4",
+    "react-dom": "15.5.4",
     "react-test-renderer": "15.5.4",
-    "uglify-js": "2.8.22",
+    "uglify-js": "3.0.0",
     "uglifyify": "3.0.4",
     "watchify": "3.9.0"
   }

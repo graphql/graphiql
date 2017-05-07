@@ -1,5 +1,6 @@
 import { parse } from 'graphql';
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import HistoryStore from '../utility/HistoryStore';
 import HistoryQuery from './HistoryQuery';
 
@@ -7,12 +8,12 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
     return false;
   }
+  try {
+    parse(nextProps.query);
+  } catch (e) {
+    return false;
+  }
   if (!lastQuerySaved) {
-    try {
-      parse(nextProps.query);
-    } catch (e) {
-      return false;
-    }
     return true;
   }
   if (JSON.stringify(nextProps.query) ===
@@ -24,12 +25,6 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
     if (!nextProps.variables && !lastQuerySaved.variables) {
       return false;
     }
-  }
-  try {
-    parse(nextProps.query);
-    parse(lastQuerySaved.query);
-  } catch (e) {
-    return false;
   }
   return true;
 };
