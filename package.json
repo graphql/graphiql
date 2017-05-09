@@ -38,7 +38,7 @@
     "lint": "eslint src",
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "npm run lint && npm run check && npm run testonly",
+    "test": "npm run lint && npm run check && npm run testonly && npm run build",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
   },
   "dependencies": {
