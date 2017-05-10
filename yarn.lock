@@ -1899,9 +1899,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flow-bin@0.45.0:
-  version "0.45.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.45.0.tgz#009dd0f577a3f665c74ca8be827ae8c2dd8fd6b5"
+flow-bin@0.46.0:
+  version "0.46.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.46.0.tgz#06ad7fe19dddb1042264438064a2a32fee12b872"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -4134,9 +4134,9 @@ uglify-js@2.x.x:
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
 
-uglify-js@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.1.tgz#2eb426abb0c05db2e8770a644fff6393ff6f7a16"
+uglify-js@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.3.tgz#fff68ce4c5c9453c05747f080e61fd5d7fe7247e"
   dependencies:
     commander "~2.9.0"
     source-map "~0.5.1"
