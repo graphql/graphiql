@@ -4134,9 +4134,9 @@ uglify-js@2.x.x:
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
 
-uglify-js@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.3.tgz#fff68ce4c5c9453c05747f080e61fd5d7fe7247e"
+uglify-js@3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.0.4.tgz#13da18bc4ecec20d29861b4ab7b60cb9ef9a9cc0"
   dependencies:
     commander "~2.9.0"
     source-map "~0.5.1"
