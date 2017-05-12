@@ -99,6 +99,7 @@ export interface GraphQLCache {
 
   getFragmentDefinitions: (
     graphQLConfig: GraphQLConfig,
+    appName: ?string,
   ) => Promise<Map<string, FragmentInfo>>,
 
   getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>,
