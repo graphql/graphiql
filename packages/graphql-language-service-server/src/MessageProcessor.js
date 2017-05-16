@@ -82,11 +82,7 @@ export async function handleDidChangeNotification(
   // As `contentChanges` is an array and we just want the
   // latest update to the text, grab the last entry from the array.
   const uri = textDocument.uri || params.uri;
-  invalidateCache(
-    textDocument,
-    uri,
-    contentChanges[contentChanges.length - 1],
-  );
+  invalidateCache(textDocument, uri, contentChanges[contentChanges.length - 1]);
 
   const cachedDocument = textDocumentCache.get(uri);
   if (!cachedDocument) {
