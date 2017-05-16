@@ -191,7 +191,7 @@ export async function handleDefinitionRequest(
         // libraries.
         uri: res.path.indexOf('file://') === 0
           ? res.path
-          : path.join('file://', res.path),
+          : `file://${res.path}`,
         range: res.range,
       }))
     : [];

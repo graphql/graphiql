@@ -23,4 +23,10 @@ describe('GraphQLConfig', () => {
 
   it('returns a correct root dir', () =>
     expect(config.getRootDir()).to.equal(CONFIG_DIR));
+  it('returns a correct schema path', () => {
+    expect(config.getSchemaPath('testWithSchema')).to.equal(
+      '__schema__/StarWarsSchema.graphql',
+    );
+    expect(config.getSchemaPath('testWithoutSchema')).to.equal(null);
+  });
 });

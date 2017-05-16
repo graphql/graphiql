@@ -77,9 +77,9 @@ export interface GraphQLConfig {
   +getRootDir: () => Uri,
   +getConfig: () => GraphQLConfiguration,
   +getName: () => string,
-  +getInputDirs: (appName: ?string) => Array<Uri>,
+  +getIncludeDirs: (appName: ?string) => Array<Uri>,
   +getExcludeDirs: (appName: ?string) => Array<Uri>,
-  +isFileInInputDirs: (fileName: Uri, appName: ?string) => boolean,
+  +isFileInIncludeDirs: (fileName: Uri, appName: ?string) => boolean,
   +getSchemaPath: (appName: ?string) => ?Uri,
   +getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
 }

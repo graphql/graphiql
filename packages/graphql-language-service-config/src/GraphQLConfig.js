@@ -53,7 +53,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       const appConfig = this._config[PROJECTS_NAME] &&
         this._config[PROJECTS_NAME][appName];
       if (appConfig) {
-        return this.isFileInInputDirs(filePath, appName);
+        return this.isFileInIncludeDirs(filePath, appName);
       }
       return false;
     });
@@ -82,8 +82,8 @@ export class GraphQLConfig implements GraphQLConfigInterface {
    *    at the top level (the "root" configuration).
    */
 
-  getInputDirs(appName: ?string): Array<Uri> {
-    return this._getPropertyFromConfig('inputDirs', appName, []);
+  getIncludeDirs(appName: ?string): Array<Uri> {
+    return this._getPropertyFromConfig('includeDirs', appName, []);
   }
 
   getExcludeDirs(appName: ?string): Array<Uri> {
@@ -94,7 +94,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     return this._getPropertyFromConfig('schemaPath', appName, null);
   }
 
-  isFileInInputDirs(fileName: Uri, appName: ?string): boolean {
+  isFileInIncludeDirs(fileName: Uri, appName: ?string): boolean {
     if (appName) {
       if (
         this._config[PROJECTS_NAME] &&
