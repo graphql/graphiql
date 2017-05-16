@@ -20,7 +20,6 @@ import {
 import {findGraphQLConfigDir} from 'graphql-language-service-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
 import {Position} from 'graphql-language-service-utils';
-import path from 'path';
 import {
   CancellationToken,
   NotificationMessage,
