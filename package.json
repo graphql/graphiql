@@ -71,7 +71,7 @@
     "eslint-plugin-babel": "4.1.1",
     "eslint-plugin-react": "7.0.1",
     "express": "5.0.0-alpha.5",
-    "express-graphql": "0.6.4",
+    "express-graphql": "0.6.5",
     "flow-bin": "0.46.0",
     "graphql": "^0.9.2",
     "jsdom": "10.1.0",
