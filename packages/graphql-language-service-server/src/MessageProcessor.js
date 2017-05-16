@@ -81,14 +81,14 @@ export async function handleDidChangeNotification(
 
   // As `contentChanges` is an array and we just want the
   // latest update to the text, grab the last entry from the array.
-  const documentUri = textDocument.uri || params.uri;
+  const uri = textDocument.uri || params.uri;
   invalidateCache(
     textDocument,
-    documentUri,
+    uri,
     contentChanges[contentChanges.length - 1],
   );
 
-  const cachedDocument = textDocumentCache.get(documentUri);
+  const cachedDocument = textDocumentCache.get(uri);
   if (!cachedDocument) {
     return;
   }
@@ -96,10 +96,10 @@ export async function handleDidChangeNotification(
   // Send the diagnostics onChange as well
   const diagnostics = await provideDiagnosticsMessage(
     cachedDocument.content.text,
-    documentUri,
+    uri,
   );
 
-  return {documentUri, diagnostics};
+  return {uri, diagnostics};
 }
 
 export async function handleDidCloseNotification(
@@ -193,9 +193,9 @@ export async function handleDefinitionRequest(
         // https://tools.ietf.org/html/rfc3986
         // Remove the below hack once the usage of URI is sorted out in related
         // libraries.
-        uri: res.path.indexOf('file:') === 0
+        uri: res.path.indexOf('file://') === 0
           ? res.path
-          : path.join('file:', res.path),
+          : path.join('file://', res.path),
         range: res.range,
       }))
     : [];
