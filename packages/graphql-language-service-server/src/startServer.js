@@ -66,11 +66,10 @@ export default (async function startServer(options?: Options): Promise<void> {
     let reader;
     let writer;
     switch (options.method) {
-      case 'stream':
-        reader = new StreamMessageReader(process.stdin);
-        writer = new StreamMessageWriter(process.stdout);
-        break;
       case 'socket':
+        // For socket connection, the message connection needs to be
+        // established before the server socket starts listening.
+        // Do that, and return at the end of this block.
         if (!options.port) {
           process.stderr.write(
             '--port is required to establish socket connection.',
@@ -89,8 +88,15 @@ export default (async function startServer(options?: Options): Promise<void> {
               socket.close();
               process.exit(0);
             });
+            const connection = createMessageConnection(reader, writer);
+            addHandlers(connection, configDir);
+            connection.listen();
           })
           .listen(port);
+        return;
+      case 'stream':
+        reader = new StreamMessageReader(process.stdin);
+        writer = new StreamMessageWriter(process.stdout);
         break;
       case 'node':
       default:
