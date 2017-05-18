@@ -49,19 +49,7 @@ type Options = {
   configDir?: string,
 };
 
-export default (async function startServer(options?: Options): Promise<void> {
-  if (!options) {
-    process.stderr.write('At least --configDir option is required.');
-    process.exit(1);
-    return;
-  }
-  if (!options.configDir) {
-    process.stderr.write('--configDir is required.');
-    process.exit(1);
-    return;
-  }
-
-  const configDir = options.configDir;
+export default (async function startServer(options: Options): Promise<void> {
   if (options && options.method) {
     let reader;
     let writer;
@@ -89,7 +77,7 @@ export default (async function startServer(options?: Options): Promise<void> {
               process.exit(0);
             });
             const connection = createMessageConnection(reader, writer);
-            addHandlers(connection, configDir);
+            addHandlers(connection, options.configDir);
             connection.listen();
           })
           .listen(port);
@@ -105,7 +93,7 @@ export default (async function startServer(options?: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer);
-    addHandlers(connection, configDir);
+    addHandlers(connection, options.configDir);
     connection.listen();
   }
 });
