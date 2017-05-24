@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-server",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
