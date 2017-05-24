@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { GraphQLSchema } from 'graphql';
 import marked from 'marked';
-
+import normalizeWhitespace from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -125,6 +125,7 @@ export class QueryEditor extends React.Component {
     this.editor.on('change', this._onEdit);
     this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
+    this.editor.on('beforeChange', this._onBeforeChange);
   }
 
   componentDidUpdate(prevProps) {
@@ -202,4 +203,9 @@ export class QueryEditor extends React.Component {
   _onHasCompletion = (cm, data) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
   }
+
+  _onBeforeChange(instance, change) {
+    change.update(change.from, change.to, change.text.map(normalizeWhitespace));
+  }
+
 }
