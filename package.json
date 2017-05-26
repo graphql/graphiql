@@ -35,7 +35,7 @@
     "pretty-check": "node resources/pretty.js --check"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0"
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0"
   },
   "dependencies": {
     "babel-polyfill": "6.16.0",
@@ -83,7 +83,7 @@
     "eslint-plugin-dependencies": "2.3.0",
     "eslint-plugin-flowtype": "2.30.4",
     "eslint-plugin-prefer-object-spread": "1.2.1",
-    "flow-bin": "0.46.0",
+    "flow-bin": "0.47.0",
     "mocha": "3.2.0",
     "prettier": "^0.22.0"
   }

@@ -213,8 +213,16 @@ function getSuggestionsForInputValues(
     );
   } else if (namedInputType === GraphQLBoolean) {
     return hintList(token, [
-      {label: 'true', detail: GraphQLBoolean, documentation: 'Not false.'},
-      {label: 'false', detail: GraphQLBoolean, documentation: 'Not true.'},
+      {
+        label: 'true',
+        detail: String(GraphQLBoolean),
+        documentation: 'Not false.',
+      },
+      {
+        label: 'false',
+        detail: String(GraphQLBoolean),
+        documentation: 'Not true.',
+      },
     ]);
   }
 

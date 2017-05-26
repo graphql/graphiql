@@ -13,8 +13,7 @@ import type {GraphQLError} from 'graphql/error';
 import type {GraphQLSchema} from 'graphql/type';
 import type {CustomValidationRule} from 'graphql-language-service-types';
 
-import {specifiedRules, TypeInfo} from 'graphql';
-import {visitUsingRules} from 'graphql/validation/validate';
+import {specifiedRules, TypeInfo, validate} from 'graphql';
 
 /**
  * Validate a GraphQL Document optionally with custom validation rules.
@@ -37,7 +36,7 @@ export function validateWithCustomRules(
     Array.prototype.push.apply(rules, customRules);
   }
 
-  const errors = visitUsingRules(schema, typeInfo, ast, rules);
+  const errors = validate(schema, ast, rules, typeInfo);
 
   if (errors.length > 0) {
     return errors;
