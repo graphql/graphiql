@@ -205,11 +205,10 @@ export class QueryEditor extends React.Component {
   }
 
   _onBeforeChange(instance, change) {
-    // the update function is only present on the paste event
+    // The update function is only present on non-redo, non-undo events.
     if (change.origin === 'paste') {
       const text = change.text.map(normalizeWhitespace);
       change.update(change.from, change.to, text);
     }
   }
-
 }
