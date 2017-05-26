@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { GraphQLSchema } from 'graphql';
 import marked from 'marked';
-import normalizeWhitespace from '../utility/normalizeWhitespace';
+import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
