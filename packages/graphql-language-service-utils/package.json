@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-utils",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -26,7 +26,7 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
-    "graphql": "^0.9.6",
-    "graphql-language-service-types": "0.0.17"
+    "graphql": "^0.10.0",
+    "graphql-language-service-types": "0.0.18"
   }
 }
