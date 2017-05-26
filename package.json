@@ -77,7 +77,7 @@
     "babel-plugin-transform-object-rest-spread": "6.22.0",
     "babel-plugin-transform-regenerator": "6.22.0",
     "babel-types": "6.22.0",
-    "chai": "3.5.0",
+    "chai": "4.0.0",
     "eslint": "3.15.0",
     "eslint-plugin-babel": "4.1.0",
     "eslint-plugin-dependencies": "2.3.0",
