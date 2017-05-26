@@ -1,3 +1,10 @@
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 // unicode whitespace characters that break the interface
 export const invalidCharacters = Array.from({ length: 11 }, (x, i) => {
@@ -16,4 +23,3 @@ const sanitizeRegex = new RegExp(
 export function normalizeWhitespace(line) {
   return line.replace(sanitizeRegex, ' ');
 }
-
