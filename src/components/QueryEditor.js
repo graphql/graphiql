@@ -205,7 +205,11 @@ export class QueryEditor extends React.Component {
   }
 
   _onBeforeChange(instance, change) {
-    change.update(change.from, change.to, change.text.map(normalizeWhitespace));
+    // the update function is only present on the paste event
+    if (change.origin === 'paste') {
+      const text = change.text.map(normalizeWhitespace);
+      change.update(change.from, change.to, text);
+    }
   }
 
 }
