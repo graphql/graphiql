@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// unicode whitespace characters that break the interface
+// Unicode whitespace characters that break the interface.
 export const invalidCharacters = Array.from({ length: 11 }, (x, i) => {
   // \u2000 -> \u200a
   return String.fromCharCode(0x2000 + i);
@@ -17,8 +17,9 @@ export const invalidCharacters = Array.from({ length: 11 }, (x, i) => {
 ]);
 
 const sanitizeRegex = new RegExp(
-  '[' + invalidCharacters.join('|') + ']'
-, 'g');
+  '[' + invalidCharacters.join('|') + ']',
+  'g'
+);
 
 export function normalizeWhitespace(line) {
   return line.replace(sanitizeRegex, ' ');
