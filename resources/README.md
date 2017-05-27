@@ -16,9 +16,3 @@
 ## Scripts invoked automatically
 
 - `hoistDependencies.js`: Used by Travis CI (which only runs jobs at the top level) to hoist all dependencies up into the main `package.json`. Additionally, rewrites references from `dist` to `src` so that Flow can run locally and check types across all the packages in the repo. You shouldn't have to run this manually unless you want to do local Flow troubleshooting.
-
-## Other scripts
-
-- `checkgit.sh`: Currently unused, checks whether the repo is in a clean state suitable for publishing.
-- `hoist.sh`: Current unused, hoists development dependency executables up to the top level.
-- `watch.js`: Unmaintained watcher script.
