@@ -48,9 +48,9 @@
   },
   "peerDependencies": {
     "graphql": "^0.10.0",
-    "prop-types": ">=15.5.10",
-    "react": "^0.14.9 || >=15.5.4",
-    "react-dom": "^0.14.9 || >=15.5.4"
+    "prop-types": ">=15.5.0",
+    "react": "^0.14.9 || >=15.3.0",
+    "react-dom": "^0.14.9 || >=15.3.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.0.0",
