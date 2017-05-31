@@ -81,6 +81,23 @@ describe('getAutocompleteSuggestions', () => {
       {label: 'human', detail: 'Human'},
       {label: 'inputTypeTest', detail: 'TestType'},
     ]);
+
+    // Test for query text with empty lines
+    expect(
+      testSuggestions(
+        `
+query name {
+
+}
+    `,
+        new Position(2, 2),
+      ),
+    ).to.deep.equal([
+      {label: 'droid', detail: 'Droid'},
+      {label: 'hero', detail: 'Character'},
+      {label: 'human', detail: 'Human'},
+      {label: 'inputTypeTest', detail: 'TestType'},
+    ]);
   });
 
   it('provides correct field name suggestions', () => {

@@ -435,6 +435,13 @@ function runOnlineParser(
       }
     }
 
+    // Above while loop won't run if there is an empty line.
+    // Run the callback one more time to catch this.
+    const code = callback(stream, state, style, i);
+    if (code === 'BREAK') {
+      break;
+    }
+
     if (!state.kind) {
       state = parser.startState();
     }
