@@ -87,10 +87,10 @@ describe('getAutocompleteSuggestions', () => {
       testSuggestions(
         `
 query name {
-
+  ...testFragment
 }
     `,
-        new Position(2, 2),
+        new Position(2, 0),
       ),
     ).to.deep.equal([
       {label: 'droid', detail: 'Droid'},

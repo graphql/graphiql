@@ -50,7 +50,6 @@ import {
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
  */
-
 export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
@@ -379,12 +378,12 @@ function getTokenAtPosition(queryText: string, cursor: Position): ContextToken {
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (index === cursor.line) {
-      if (stream.getCurrentPosition() > cursor.character) {
+      if (stream.getCurrentPosition() >= cursor.character) {
+        styleAtCursor = style;
+        stateAtCursor = {...state};
+        stringAtCursor = stream.current();
         return 'BREAK';
       }
-      styleAtCursor = style;
-      stateAtCursor = {...state};
-      stringAtCursor = stream.current();
     }
   });
 
@@ -426,7 +425,6 @@ function runOnlineParser(
 
   for (let i = 0; i < lines.length; i++) {
     stream = new CharacterStream(lines[i]);
-    // Stop the parsing when the stream arrives at the current cursor position
     while (!stream.eol()) {
       style = parser.token(stream, state);
       const code = callback(stream, state, style, i);
@@ -437,10 +435,7 @@ function runOnlineParser(
 
     // Above while loop won't run if there is an empty line.
     // Run the callback one more time to catch this.
-    const code = callback(stream, state, style, i);
-    if (code === 'BREAK') {
-      break;
-    }
+    callback(stream, state, style, i);
 
     if (!state.kind) {
       state = parser.startState();
