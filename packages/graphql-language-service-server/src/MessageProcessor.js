@@ -9,6 +9,19 @@
  */
 
 import type {Diagnostic, Uri} from 'graphql-language-service-types';
+import {parse as babylonParse} from 'babylon';
+import traverse from 'babel-traverse';
+
+import {extname} from 'path';
+import {findGraphQLConfigDir} from 'graphql-language-service-config';
+import {GraphQLLanguageService} from 'graphql-language-service-interface';
+import {Position, Range} from 'graphql-language-service-utils';
+import {
+  CancellationToken,
+  NotificationMessage,
+  RequestMessage,
+  ServerCapabilities,
+} from 'vscode-jsonrpc';
 import {
   CompletionRequest,
   CompletionList,
@@ -17,21 +30,23 @@ import {
   PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 
-import {findGraphQLConfigDir} from 'graphql-language-service-config';
-import {GraphQLLanguageService} from 'graphql-language-service-interface';
-import {Position} from 'graphql-language-service-utils';
-import {
-  CancellationToken,
-  NotificationMessage,
-  RequestMessage,
-  ServerCapabilities,
-} from 'vscode-jsonrpc';
-
 import {getGraphQLCache} from './GraphQLCache';
 
 let graphQLCache;
 let languageService;
-const textDocumentCache: Map<string, Object> = new Map();
+
+// Map { uri => { query, range } }
+type Content = {
+  query: string,
+  range: ?Range,
+};
+
+type CachedDocumentType = {
+  version: number,
+  content: Content,
+};
+
+const textDocumentCache: Map<string, CachedDocumentType> = new Map();
 
 export async function handleDidOpenOrSaveNotification(
   params: NotificationMessage,
@@ -43,22 +58,26 @@ export async function handleDidOpenOrSaveNotification(
   const textDocument = params.textDocument;
   const uri = textDocument.uri;
 
-  let text = textDocument.text;
+  const content = getQueryAndRange(textDocument.text, textDocument.uri);
+  if (!content) {
+    // If the text doesn't include GraphQL queries, do not proceed.
+    return null;
+  }
+  let query = content.query;
+  const range = content.range;
 
   // Create/modify the cached entry if text is provided.
   // Otherwise, try searching the cache to perform diagnostics.
-  if (text) {
-    invalidateCache(textDocument, uri, {text});
+  if (query) {
+    invalidateCache(textDocument, uri, {query, range});
   } else {
-    if (textDocumentCache.has(uri)) {
-      const cachedDocument = textDocumentCache.get(uri);
-      if (cachedDocument) {
-        text = cachedDocument.content.text;
-      }
+    const cachedDocument = getCachedDocument(uri);
+    if (cachedDocument) {
+      query = cachedDocument.content.query;
     }
   }
 
-  const diagnostics = await provideDiagnosticsMessage(text, uri);
+  const diagnostics = await provideDiagnosticsMessage(query, uri, range);
   return {uri, diagnostics};
 }
 
@@ -77,22 +96,33 @@ export async function handleDidChangeNotification(
 
   const textDocument = params.textDocument;
   const contentChanges = params.contentChanges;
+  const contentChange = contentChanges[contentChanges.length - 1];
 
   // As `contentChanges` is an array and we just want the
   // latest update to the text, grab the last entry from the array.
   const uri = textDocument.uri || params.uri;
-  invalidateCache(textDocument, uri, contentChanges[contentChanges.length - 1]);
 
-  const cachedDocument = textDocumentCache.get(uri);
+  const content = getQueryAndRange(contentChange.text, contentChange.uri);
+  if (!content) {
+    // If it's a .js file, try parsing the contents to see if GraphQL queries
+    // exist. If not found, delete from the cache.
+    return null;
+  }
+  // If it's a .graphql file, proceed normally and invalidate the cache.
+  invalidateCache(textDocument, uri, {...content});
+
+  const cachedDocument = getCachedDocument(uri);
   if (!cachedDocument) {
-    return;
+    return null;
+  }
+
+  const {query, range} = cachedDocument.content;
+  if (!query || !range) {
+    return null;
   }
 
   // Send the diagnostics onChange as well
-  const diagnostics = await provideDiagnosticsMessage(
-    cachedDocument.content.text,
-    uri,
-  );
+  const diagnostics = await provideDiagnosticsMessage(query, uri, range);
 
   return {uri, diagnostics};
 }
@@ -150,7 +180,10 @@ export async function handleCompletionRequest(
     throw new Error(`${textDocument.uri} is not available.`);
   }
 
-  const query = cachedDocument.content.text;
+  const {query, range} = cachedDocument.content;
+  if (range) {
+    position.line -= range.start.line;
+  }
   const result = await languageService.getAutocompleteSuggestions(
     query,
     position,
@@ -174,27 +207,100 @@ export async function handleDefinitionRequest(
     throw new Error(`${textDocument.uri} is not available.`);
   }
 
-  const query = cachedDocument.content.text;
+  const {query, range} = cachedDocument.content;
+  if (range) {
+    pos.line -= range.start.line;
+  }
   const result = await languageService.getDefinition(
     query,
     pos,
     textDocument.uri,
   );
   const formatted = result
-    ? result.definitions.map(res => ({
-        // TODO: fix this hack!
-        // URI is being misused all over this library - there's a link that
-        // defines how an URI should be structured:
-        // https://tools.ietf.org/html/rfc3986
-        // Remove the below hack once the usage of URI is sorted out in related
-        // libraries.
-        uri: res.path.indexOf('file://') === 0
-          ? res.path
-          : `file://${res.path}`,
-        range: res.range,
-      }))
+    ? result.definitions.map(res => {
+        const defRange = res.range;
+        return {
+          // TODO: fix this hack!
+          // URI is being misused all over this library - there's a link that
+          // defines how an URI should be structured:
+          // https://tools.ietf.org/html/rfc3986
+          // Remove the below hack once the usage of URI is sorted out in related
+          // libraries.
+          uri: res.path.indexOf('file://') === 0
+            ? res.path
+            : `file://${res.path}`,
+          range: defRange,
+        };
+      })
     : [];
   return formatted;
+}
+
+// Check the uri to determine the file type (JavaScript/GraphQL).
+// If .js file, either return the parsed query/range or null if GraphQL queries
+// are not found.
+export function getQueryAndRange(text: string, uri: string): Content | null {
+  let query;
+  let range;
+  // Check if the text content includes a GraphQLV query.
+  // If the text doesn't include GraphQL queries, do not proceed.
+  if (extname(uri) === '.js') {
+    const parsed = parseGraphQLQueryFromText(text);
+    if (!parsed) {
+      return null;
+    }
+    query = parsed.query;
+    range = parsed.range;
+  } else {
+    query = text;
+    if (query) {
+      const lines = query.split('\n');
+      range = new Range(
+        new Position(0, 0),
+        new Position(lines.length - 1, lines[lines.length - 1].length - 1),
+      );
+    }
+  }
+
+  return {query, range};
+}
+
+function parseGraphQLQueryFromText(text: string): Content | null {
+  const ast = babylonParse(text, {
+    sourceType: 'module',
+    plugins: [
+      'jsx',
+      'flow',
+      'doExpressions',
+      'objectRestSpread',
+      'classProperties',
+      'exportExtensions',
+      'asyncGenerators',
+      'functionBind',
+      'functionSent',
+      'dynamicImport',
+    ],
+  });
+  let query;
+  let range;
+  traverse(ast, {
+    TaggedTemplateExpression(path) {
+      const node = path.node;
+      const quasi = node.quasi;
+      const tag = node.tag;
+      if (tag.name === 'graphql' || tag.name === 'graphql.experimental') {
+        const loc = path.node.loc;
+        query = quasi.quasis[0].value.raw;
+        range = new Range(
+          new Position(loc.start.line - 1, loc.start.character),
+          new Position(loc.end.line - 1, loc.end.character),
+        );
+        return;
+      }
+    },
+  });
+
+  return query ? {query, range} : null;
 }
 
 /**
@@ -224,6 +330,7 @@ async function initialize(rootPath: Uri): Promise<?ServerCapabilities> {
 async function provideDiagnosticsMessage(
   query: string,
   uri: Uri,
+  range: ?Range,
 ): Promise<Array<Diagnostic>> {
   let results = await languageService.getDiagnostics(query, uri);
   if (results && results.length > 0) {
@@ -233,6 +340,22 @@ async function provideDiagnosticsMessage(
     const lastCharacterPosition = new Position(totalLines, lastLineLength);
     results = results.filter(diagnostic =>
       diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
+
+    if (range) {
+      results = results.map(diagnostic => ({
+        ...diagnostic,
+        range: new Range(
+          new Position(
+            diagnostic.range.start.line + range.start.line,
+            diagnostic.range.start.character,
+          ),
+          new Position(
+            diagnostic.range.end.line + range.end.line,
+            diagnostic.range.end.character,
+          ),
+        ),
+      }));
+    }
   }
 
   return results;
@@ -241,7 +364,7 @@ async function provideDiagnosticsMessage(
 function invalidateCache(
   textDocument: Object,
   uri: Uri,
-  content: Object,
+  content: Content,
 ): void {
   if (!uri) {
     return;
@@ -265,7 +388,7 @@ function invalidateCache(
   }
 }
 
-function getCachedDocument(uri: string): ?Object {
+function getCachedDocument(uri: string): ?CachedDocumentType {
   if (textDocumentCache.has(uri)) {
     const cachedDocument = textDocumentCache.get(uri);
     if (cachedDocument) {

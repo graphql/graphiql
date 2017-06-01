@@ -51,7 +51,16 @@ export class GraphQLWatchman {
   ): Promise<Array<any>> {
     const {watch, relative_path} = await this.watchProject(entryPath);
     const result = await this.runCommand('query', watch, {
-      expression: ['allof', ['match', '*.graphql'], ['exists']],
+      expression: [
+        'allof',
+        ['anyof', ['match', '*.graphql'], ['match', '*.js']],
+        ['not', ['match', '**/__flow__/**', 'wholename']],
+        ['not', ['match', '**/__generated__/**', 'wholename']],
+        ['not', ['match', '**/__github__/**', 'wholename']],
+        ['not', ['match', '**/__mocks__/**', 'wholename']],
+        ['not', ['match', '**/node_modules/**', 'wholename']],
+        ['exists'],
+      ],
       // Providing `path` will let watchman use path generator, and will perform
       // a tree walk with respect to the relative_root and path provided.
       // Path generator will do less work unless the root path of the repository

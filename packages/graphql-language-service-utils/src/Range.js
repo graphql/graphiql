@@ -22,6 +22,14 @@ export class Range implements RangeInterface {
     this.end = end;
   }
 
+  setStart(line: number, character: number): void {
+    this.start = new Position(line, character);
+  }
+
+  setEnd(line: number, character: number): void {
+    this.end = new Position(line, character);
+  }
+
   containsPosition = (position: PositionInterface): boolean => {
     const withinLine = this.start.line <= position.line &&
       this.end.line >= position.line;
@@ -36,6 +44,14 @@ export class Position implements PositionInterface {
   character: number;
   constructor(line: number, character: number): void {
     this.line = line;
+    this.character = character;
+  }
+
+  setLine(line: number): void {
+    this.line = line;
+  }
+
+  setCharacter(character: number): void {
     this.character = character;
   }
 

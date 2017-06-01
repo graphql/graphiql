@@ -15,6 +15,7 @@ import {getGraphQLConfig} from 'graphql-language-service-config';
 import {beforeEach, describe, it} from 'mocha';
 
 import {GraphQLCache} from '../GraphQLCache';
+import {getQueryAndRange} from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
 describe('GraphQLCache', () => {
@@ -44,31 +45,48 @@ describe('GraphQLCache', () => {
   });
 
   describe('getFragmentDependencies', () => {
+    const duckContent = `fragment Duck on Duck {
+      cuack
+    }`;
+    const duckDefinition = parse(duckContent).definitions[0];
+
+    const catContent = `fragment Cat on Cat {
+      meow
+    }`;
+
+    const catDefinition = parse(catContent).definitions[0];
+
+    const fragmentDefinitions = new Map();
+    fragmentDefinitions.set('Duck', {
+      file: 'someFilePath',
+      content: duckContent,
+      definition: duckDefinition,
+    });
+    fragmentDefinitions.set('Cat', {
+      file: 'someOtherFilePath',
+      content: catContent,
+      definition: catDefinition,
+    });
+
+    it('finds fragments referenced in Relay queries', async () => {
+      const text = 'module.exports = Relay.createContainer(' +
+        'DispatchResumeCard, {\n' +
+        '  fragments: {\n' +
+        '    candidate: () => graphql`\n' +
+        '      query A { ...Duck ...Cat }\n' +
+        '    `,\n' +
+        '  },\n' +
+        '});';
+      const content = getQueryAndRange(text, 'test.js');
+      const result = await cache.getFragmentDependenciesForAST(
+        parse(content.query),
+        fragmentDefinitions,
+      );
+      expect(result.length).to.equal(2);
+    });
+
     it('finds fragments referenced from the query', async () => {
       const ast = parse('query A { ...Duck }');
-
-      const duckContent = `fragment Duck on Duck {
-        cuack
-      }`;
-      const duckDefinition = parse(duckContent).definitions[0];
-
-      const catContent = `fragment Cat on Cat {
-        meow
-      }`;
-
-      const catDefinition = parse(catContent).definitions[0];
-
-      const fragmentDefinitions = new Map();
-      fragmentDefinitions.set('Duck', {
-        file: 'someFilePath',
-        content: duckContent,
-        definition: duckDefinition,
-      });
-      fragmentDefinitions.set('Cat', {
-        file: 'someOtherFilePath',
-        content: catContent,
-        definition: catDefinition,
-      });
 
       const result = await cache.getFragmentDependenciesForAST(
         ast,

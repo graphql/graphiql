@@ -31,6 +31,7 @@ import nullthrows from 'nullthrows';
 import {FRAGMENT_DEFINITION} from 'graphql/language/kinds';
 import {getGraphQLConfig, GraphQLConfig} from 'graphql-language-service-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
+import {getQueryAndRange} from './MessageProcessor';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -149,10 +150,10 @@ export class GraphQLCache {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const inputDirs = graphQLConfig.getIncludeDirs(appName);
+    const includeDirs = graphQLConfig.getIncludeDirs(appName);
     const excludeDirs = graphQLConfig.getExcludeDirs(appName);
     const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
-      path: inputDirs,
+      path: includeDirs,
     });
 
     const list = filesFromInputDirs
@@ -174,7 +175,7 @@ export class GraphQLCache {
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 
-    this._subscribeToFileChanges(rootDir, inputDirs, excludeDirs);
+    this._subscribeToFileChanges(rootDir, includeDirs, excludeDirs);
 
     return fragmentDefinitions;
   };
@@ -185,7 +186,7 @@ export class GraphQLCache {
    */
   _subscribeToFileChanges(
     rootDir: Uri,
-    inputDirs: Array<Uri>,
+    includeDirs: Array<Uri>,
     excludeDirs: Array<Uri>,
   ): void {
     this._watchmanClient.subscribe(this._configDir, result => {
@@ -197,7 +198,7 @@ export class GraphQLCache {
         result.files.forEach(async ({name, exists, size, mtime}) => {
           // Prune the file using the input/excluded directories
           if (
-            !inputDirs.some(dir => name.startsWith(dir)) ||
+            !includeDirs.some(dir => name.startsWith(dir)) ||
             excludeDirs.some(dir => name.startsWith(dir))
           ) {
             return;
@@ -460,7 +461,15 @@ function promiseToReadGraphQLFile(
       let ast = null;
       if (content.trim().length !== 0) {
         try {
-          ast = parse(content);
+          const parsed = getQueryAndRange(content, filePath);
+          // getQueryAndRange only returns null if the file type is js
+          if (parsed === null) {
+            // still resolve with an empty ast
+            resolve({filePath, content, ast: null});
+            return;
+          }
+
+          ast = parsed.query ? parse(parsed.query) : null;
         } catch (_) {
           // If query has syntax errors, go ahead and still resolve
           // the filePath and the content, but leave ast with null.
