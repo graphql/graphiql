@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-server",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An interface for building GraphQL language services for IDEs",
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1"
@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/graphql/graphql-language-service#readme",
   "dependencies": {
-    "graphql-language-service": "0.0.22"
+    "graphql-language-service": "0.0.23"
   }
 }
