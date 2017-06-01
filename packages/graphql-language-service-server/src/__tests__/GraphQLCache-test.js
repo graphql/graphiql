@@ -77,9 +77,9 @@ describe('GraphQLCache', () => {
         '    `,\n' +
         '  },\n' +
         '});';
-      const content = getQueryAndRange(text, 'test.js');
+      const contents = getQueryAndRange(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
-        parse(content.query),
+        parse(contents[0].query),
         fragmentDefinitions,
       );
       expect(result.length).to.equal(2);

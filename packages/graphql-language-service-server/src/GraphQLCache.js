@@ -304,15 +304,17 @@ export class GraphQLCache {
     // cannot be parsed, maintain the previous cache (do nothing).
     if (!exists) {
       fragmentDefinitionCache.delete(filePath);
-    } else if (fileAndContent && fileAndContent.ast) {
-      fileAndContent.ast.definitions.forEach(definition => {
-        if (definition.kind === FRAGMENT_DEFINITION) {
-          fragmentDefinitionCache.set(definition.name.value, {
-            filePath: fileAndContent.filePath,
-            content: fileAndContent.content,
-            definition,
-          });
-        }
+    } else if (fileAndContent && fileAndContent.asts) {
+      fileAndContent.asts.forEach(ast => {
+        ast.definitions.forEach(definition => {
+          if (definition.kind === FRAGMENT_DEFINITION) {
+            fragmentDefinitionCache.set(definition.name.value, {
+              filePath: fileAndContent.filePath,
+              content: fileAndContent.content,
+              definition,
+            });
+          }
+        });
       });
     }
 
@@ -413,17 +415,19 @@ function processGraphQLFiles(
   const graphQLFileMap = new Map();
 
   responses.forEach(response => {
-    const {filePath, content, ast, mtime, size} = response;
+    const {filePath, content, asts, mtime, size} = response;
 
-    if (ast) {
-      ast.definitions.forEach(definition => {
-        if (definition.kind === FRAGMENT_DEFINITION) {
-          fragmentDefinitions.set(definition.name.value, {
-            filePath,
-            content,
-            definition,
-          });
-        }
+    if (asts) {
+      asts.forEach(ast => {
+        ast.definitions.forEach(definition => {
+          if (definition.kind === FRAGMENT_DEFINITION) {
+            fragmentDefinitions.set(definition.name.value, {
+              filePath,
+              content,
+              definition,
+            });
+          }
+        });
       });
     }
 
@@ -431,7 +435,7 @@ function processGraphQLFiles(
     graphQLFileMap.set(filePath, {
       filePath,
       content,
-      ast,
+      asts,
       mtime,
       size,
     });
@@ -449,7 +453,7 @@ function promiseToReadGraphQLFile(
 ): Promise<{
   filePath: Uri,
   content: string,
-  ast: ?DocumentNode,
+  asts: Array<DocumentNode>,
 }> {
   return new Promise((resolve, reject) =>
     fs.readFile(filePath, 'utf8', (error, content) => {
@@ -458,25 +462,25 @@ function promiseToReadGraphQLFile(
         return;
       }
 
-      let ast = null;
+      const asts = [];
       if (content.trim().length !== 0) {
         try {
-          const parsed = getQueryAndRange(content, filePath);
-          // getQueryAndRange only returns null if the file type is js
-          if (parsed === null) {
+          const queries = getQueryAndRange(content, filePath);
+          if (queries.length === 0) {
             // still resolve with an empty ast
-            resolve({filePath, content, ast: null});
+            resolve({filePath, content, asts: []});
             return;
           }
 
-          ast = parsed.query ? parse(parsed.query) : null;
+          queries.forEach(({query}) => asts.push(parse(query)));
+          // parsed.query ? parse(parsed.query) : null;
         } catch (_) {
           // If query has syntax errors, go ahead and still resolve
-          // the filePath and the content, but leave ast with null.
-          resolve({filePath, content, ast: null});
+          // the filePath and the content, but leave ast empty.
+          resolve({filePath, content, asts: []});
           return;
         }
       }
-      resolve({filePath, content, ast});
+      resolve({filePath, content, asts});
     }));
 }
