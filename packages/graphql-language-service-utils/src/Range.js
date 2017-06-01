@@ -31,11 +31,15 @@ export class Range implements RangeInterface {
   }
 
   containsPosition = (position: PositionInterface): boolean => {
-    const withinLine = this.start.line <= position.line &&
-      this.end.line >= position.line;
-    const withinCharacter = this.start.character <= position.character &&
-      this.end.character >= position.character;
-    return withinLine && withinCharacter;
+    if (this.start.line === position.line) {
+      return this.start.character <= position.character;
+    } else if (this.end.line === position.line) {
+      return this.end.character >= position.character;
+    } else if (this.start.line > position.line || this.end.line < position.line) {
+      return false;
+    } else {
+      return true;
+    }
   };
 }
 
