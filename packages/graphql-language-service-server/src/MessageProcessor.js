@@ -362,15 +362,16 @@ async function provideDiagnosticsMessage(
       diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
 
     if (range) {
+      const offset = range.start;
       results = results.map(diagnostic => ({
         ...diagnostic,
         range: new Range(
           new Position(
-            diagnostic.range.start.line + range.start.line,
+            diagnostic.range.start.line + offset.line,
             diagnostic.range.start.character,
           ),
           new Position(
-            diagnostic.range.end.line + range.start.line,
+            diagnostic.range.end.line + offset.line,
             diagnostic.range.end.character,
           ),
         ),
