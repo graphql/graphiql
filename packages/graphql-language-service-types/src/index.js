@@ -162,7 +162,7 @@ export type GraphQLFileMetadata = {
 export type GraphQLFileInfo = {
   filePath: Uri,
   content: string,
-  ast: ?DocumentNode,
+  asts: Array<DocumentNode>,
   size: number,
   mtime: number,
 };
