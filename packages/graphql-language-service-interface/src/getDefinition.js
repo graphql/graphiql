@@ -48,7 +48,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
   const defNodes = dependencies.filter(
     ({definition}) => definition.name.value === name,
   );
-  if (defNodes === []) {
+  if (defNodes.length === 0) {
     process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
     return {queryRange: [], definitions: []};
   }

@@ -30,7 +30,7 @@ export class GraphQLWatchman {
       this._client.capabilityCheck(
         {
           optional: [],
-          required: ['relative_roots', 'cmd-watch-project'],
+          required: ['cmd-watch-project'],
         },
         (error, response) => {
           if (error) {

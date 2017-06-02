@@ -1,5 +1,5 @@
 {
-  "inputDirs": ["__queries__"],
+  "includeDirs": ["__queries__"],
   "excludeDirs": ["__excludedQueries__"],
   "projects": {
     "testWithSchema": {

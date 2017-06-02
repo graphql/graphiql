@@ -35,12 +35,8 @@ export class Range implements RangeInterface {
       return this.start.character <= position.character;
     } else if (this.end.line === position.line) {
       return this.end.character >= position.character;
-    } else if (
-      this.start.line > position.line || this.end.line < position.line
-    ) {
-      return false;
     } else {
-      return true;
+      return this.start.line <= position.line && this.end.line >= position.line;
     }
   };
 }

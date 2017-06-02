@@ -36,10 +36,18 @@ import {getQueryAndRange} from './MessageProcessor';
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
-export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
+export async function getGraphQLCache(
+  configDir: Uri,
+  watchman?: GraphQLWatchman,
+): Promise<GraphQLCache> {
   const graphQLConfig = await getGraphQLConfig(configDir);
-  const watchmanClient = new GraphQLWatchman();
-  watchmanClient.checkVersion();
+
+  let watchmanClient = watchman;
+  if (!watchmanClient) {
+    watchmanClient = new GraphQLWatchman();
+    watchmanClient.checkVersion();
+  }
+
   watchmanClient.watchProject(configDir);
   return new GraphQLCache(configDir, graphQLConfig, watchmanClient);
 }
