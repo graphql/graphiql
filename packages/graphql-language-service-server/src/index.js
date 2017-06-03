@@ -12,13 +12,6 @@ export {GraphQLCache, getGraphQLCache} from './GraphQLCache';
 
 export {GraphQLWatchman} from './GraphQLWatchman';
 
-export {
-  handleCompletionRequest,
-  handleDefinitionRequest,
-  handleDidChangeNotification,
-  handleDidCloseNotification,
-  handleDidOpenOrSaveNotification,
-  handleInitializeRequest,
-} from './MessageProcessor';
+export {MessageProcessor} from './MessageProcessor';
 
 export {default as startServer} from './startServer';

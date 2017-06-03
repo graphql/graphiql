@@ -8,7 +8,12 @@
  *  @flow
  */
 
-import type {Diagnostic, Uri} from 'graphql-language-service-types';
+import type {
+  Diagnostic,
+  GraphQLCache,
+  Uri,
+} from 'graphql-language-service-types';
+
 import {parse as babylonParse} from 'babylon';
 import traverse from 'babel-traverse';
 
@@ -19,22 +24,19 @@ import {Position, Range} from 'graphql-language-service-utils';
 import {
   CancellationToken,
   NotificationMessage,
-  RequestMessage,
   ServerCapabilities,
 } from 'vscode-jsonrpc';
 import {
   CompletionRequest,
   CompletionList,
+  DefinitionRequest,
+  InitializeRequest,
   InitializeResult,
   Location,
   PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 
 import {getGraphQLCache} from './GraphQLCache';
-import {GraphQLWatchman} from './GraphQLWatchman';
-
-let graphQLCache;
-let languageService;
 
 // Map { uri => { query, range } }
 type Content = {
@@ -49,222 +51,300 @@ type CachedDocumentType = {
 
 const textDocumentCache: Map<string, CachedDocumentType> = new Map();
 
-export async function handleDidOpenOrSaveNotification(
-  params: NotificationMessage,
-): Promise<PublishDiagnosticsParams> {
-  if (!params || !params.textDocument) {
-    throw new Error('`textDocument` argument is required.');
+export class MessageProcessor {
+  _graphQLCache: GraphQLCache;
+  _languageService: GraphQLLanguageService;
+  _textDocumentCache: Map<string, CachedDocumentType>;
+
+  constructor(): void {
+    this._textDocumentCache = new Map();
   }
 
-  const textDocument = params.textDocument;
-  const uri = textDocument.uri;
+  async handleInitializeRequest(
+    params: InitializeRequest.type,
+    token: CancellationToken,
+    configDir?: string,
+  ): Promise<InitializeResult.type> {
+    if (!params) {
+      throw new Error('`params` argument is required to initialize.');
+    }
 
-  let contents = getQueryAndRange(textDocument.text, textDocument.uri);
+    const serverCapabilities: ServerCapabilities = {
+      capabilities: {
+        completionProvider: {resolveProvider: true},
+        definitionProvider: true,
+        textDocumentSync: 1,
+      },
+    };
 
-  const diagnostics = [];
+    const rootPath = findGraphQLConfigDir(
+      configDir ? configDir.trim() : params.rootPath,
+    );
+    if (!rootPath) {
+      throw new Error(
+        '`--configDir` option or `rootPath` argument is required.',
+      );
+    }
 
-  // Create/modify the cached entry if text is provided.
-  // Otherwise, try searching the cache to perform diagnostics.
-  if (textDocument.text || textDocument.text === '') {
-    invalidateCache(textDocument, uri, contents);
-  } else {
-    const cachedDocument = getCachedDocument(uri);
-    if (cachedDocument) {
-      contents = cachedDocument.contents;
+    this._graphQLCache = await getGraphQLCache(rootPath);
+    this._languageService = new GraphQLLanguageService(this._graphQLCache);
+
+    if (!serverCapabilities) {
+      throw new Error('GraphQL Language Server is not initialized.');
+    }
+    return serverCapabilities;
+  }
+
+  async handleDidOpenOrSaveNotification(
+    params: NotificationMessage,
+  ): Promise<PublishDiagnosticsParams> {
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` argument is required.');
+    }
+
+    const textDocument = params.textDocument;
+    const uri = textDocument.uri;
+
+    let contents = getQueryAndRange(textDocument.text, textDocument.uri);
+
+    const diagnostics = [];
+
+    // Create/modify the cached entry if text is provided.
+    // Otherwise, try searching the cache to perform diagnostics.
+    if (textDocument.text || textDocument.text === '') {
+      this._invalidateCache(textDocument, uri, contents);
+    } else {
+      const cachedDocument = this._getCachedDocument(uri);
+      if (cachedDocument) {
+        contents = cachedDocument.contents;
+      }
+    }
+
+    await Promise.all(
+      contents.map(async ({query, range}) => {
+        const results = await this._languageService.getDiagnostics(query, uri);
+        if (results && results.length > 0) {
+          diagnostics.push(...processDiagnosticsMessage(results, query, range));
+        }
+      }),
+    );
+    return {uri, diagnostics};
+  }
+
+  async handleDidChangeNotification(
+    params: NotificationMessage,
+  ): Promise<PublishDiagnosticsParams> {
+    // For every `textDocument/didChange` event, keep a cache of textDocuments
+    // with version information up-to-date, so that the textDocument contents
+    // may be used during performing language service features,
+    // e.g. autocompletions.
+    if (
+      !params ||
+      !params.textDocument ||
+      !params.contentChanges ||
+      !params.textDocument.uri
+    ) {
+      throw new Error(
+        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
+      );
+    }
+
+    const textDocument = params.textDocument;
+    const contentChanges = params.contentChanges;
+    const contentChange = contentChanges[contentChanges.length - 1];
+
+    // As `contentChanges` is an array and we just want the
+    // latest update to the text, grab the last entry from the array.
+    const uri = textDocument.uri || params.uri;
+
+    // If it's a .js file, try parsing the contents to see if GraphQL queries
+    // exist. If not found, delete from the cache.
+    const contents = getQueryAndRange(contentChange.text, uri);
+
+    // If it's a .graphql file, proceed normally and invalidate the cache.
+    this._invalidateCache(textDocument, uri, contents);
+
+    const cachedDocument = this._getCachedDocument(uri);
+    if (!cachedDocument) {
+      return null;
+    }
+
+    // Send the diagnostics onChange as well
+    const diagnostics = [];
+    await Promise.all(
+      contents.map(async ({query, range}) => {
+        const results = await this._languageService.getDiagnostics(query, uri);
+        if (results && results.length > 0) {
+          diagnostics.push(...processDiagnosticsMessage(results, query, range));
+        }
+      }),
+    );
+
+    return {uri, diagnostics};
+  }
+
+  handleDidCloseNotification(params: NotificationMessage): void {
+    // For every `textDocument/didClose` event, delete the cached entry.
+    // This is to keep a low memory usage && switch the source of truth to
+    // the file on disk.
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` is required.');
+    }
+    const textDocument = params.textDocument;
+
+    if (textDocumentCache.has(textDocument.uri)) {
+      textDocumentCache.delete(textDocument.uri);
     }
   }
 
-  await Promise.all(
-    contents.map(async ({query, range}) =>
-      diagnostics.push(
-        ...(await provideDiagnosticsMessage(query, uri, range)),
-      )),
-  );
-  return {uri, diagnostics};
-}
+  async handleCompletionRequest(
+    params: CompletionRequest.type,
+    token: CancellationToken,
+  ): Promise<CompletionList> {
+    // `textDocument/comletion` event takes advantage of the fact that
+    // `textDocument/didChange` event always fires before, which would have
+    // updated the cache with the query text from the editor.
+    // Treat the computed list always complete.
+    if (
+      !params ||
+      !params.textDocument ||
+      !params.textDocument.uri ||
+      !params.position
+    ) {
+      throw new Error(
+        '`textDocument`, `textDocument.uri`, and `position` arguments are required.',
+      );
+    }
 
-export async function handleDidChangeNotification(
-  params: NotificationMessage,
-): Promise<PublishDiagnosticsParams> {
-  // For every `textDocument/didChange` event, keep a cache of textDocuments
-  // with version information up-to-date, so that the textDocument contents
-  // may be used during performing language service features,
-  // e.g. autocompletions.
-  if (!params || !params.textDocument || !params.contentChanges) {
-    throw new Error(
-      '`textDocument` and `contentChanges` arguments are required.',
+    const textDocument = params.textDocument;
+    const position = params.position;
+
+    const cachedDocument = this._getCachedDocument(textDocument.uri);
+    if (!cachedDocument) {
+      throw new Error('A cached document cannot be found.');
+    }
+
+    const found = cachedDocument.contents.find(content => {
+      const currentRange = content.range;
+      if (currentRange && currentRange.containsPosition(position)) {
+        return true;
+      }
+    });
+
+    if (!found) {
+      throw new Error(
+        `${textDocument.uri} cannot be found from previously opened files.`,
+      );
+    }
+
+    const {query, range} = found;
+
+    if (range) {
+      position.line -= range.start.line;
+    }
+    const result = await this._languageService.getAutocompleteSuggestions(
+      query,
+      position,
+      textDocument.uri,
     );
+    return {items: result, isIncomplete: false};
   }
 
-  const textDocument = params.textDocument;
-  const contentChanges = params.contentChanges;
-  const contentChange = contentChanges[contentChanges.length - 1];
+  async handleDefinitionRequest(
+    params: DefinitionRequest.type,
+    token: CancellationToken,
+  ): Promise<Array<Location>> {
+    if (!params || !params.textDocument || !params.position) {
+      throw new Error('`textDocument` and `position` arguments are required.');
+    }
+    const textDocument = params.textDocument;
+    const position = params.position;
 
-  // As `contentChanges` is an array and we just want the
-  // latest update to the text, grab the last entry from the array.
-  const uri = textDocument.uri || params.uri;
+    const cachedDocument = this._getCachedDocument(textDocument.uri);
+    if (!cachedDocument) {
+      throw new Error(`${textDocument.uri} is not available.`);
+    }
 
-  // If it's a .js file, try parsing the contents to see if GraphQL queries
-  // exist. If not found, delete from the cache.
-  const contents = getQueryAndRange(contentChange.text, uri);
+    const found = cachedDocument.contents.find(content => {
+      const currentRange = content.range;
+      if (currentRange && currentRange.containsPosition(position)) {
+        return true;
+      }
+    });
 
-  // If it's a .graphql file, proceed normally and invalidate the cache.
-  invalidateCache(textDocument, uri, contents);
+    if (!found) {
+      throw new Error(
+        `${textDocument.uri} cannot be found from previously opened files.`,
+      );
+    }
 
-  const cachedDocument = getCachedDocument(uri);
-  if (!cachedDocument) {
+    const {query, range} = found;
+    if (range) {
+      position.line -= range.start.line;
+    }
+    const result = await this._languageService.getDefinition(
+      query,
+      position,
+      textDocument.uri,
+    );
+    const formatted = result
+      ? result.definitions.map(res => {
+          const defRange = res.range;
+          return {
+            // TODO: fix this hack!
+            // URI is being misused all over this library - there's a link that
+            // defines how an URI should be structured:
+            // https://tools.ietf.org/html/rfc3986
+            // Remove the below hack once the usage of URI is sorted out in related
+            // libraries.
+            uri: res.path.indexOf('file://') === 0
+              ? res.path
+              : `file://${res.path}`,
+            range: defRange,
+          };
+        })
+      : [];
+    return formatted;
+  }
+
+  _getCachedDocument(uri: string): ?CachedDocumentType {
+    if (this._textDocumentCache.has(uri)) {
+      const cachedDocument = this._textDocumentCache.get(uri);
+      if (cachedDocument) {
+        return cachedDocument;
+      }
+    }
+
     return null;
   }
 
-  // Send the diagnostics onChange as well
-  const diagnostics = [];
-  await Promise.all(
-    contents.map(async ({query, range}) =>
-      diagnostics.push(
-        ...(await provideDiagnosticsMessage(query, uri, range)),
-      )),
-  );
-
-  return {uri, diagnostics};
-}
-
-export async function handleDidCloseNotification(
-  params: NotificationMessage,
-): Promise<void> {
-  // For every `textDocument/didClose` event, delete the cached entry.
-  // This is to keep a low memory usage && switch the source of truth to
-  // the file on disk.
-  if (!params || !params.textDocument) {
-    throw new Error('`textDocument` is required.');
-  }
-  const textDocument = params.textDocument;
-
-  if (textDocumentCache.has(textDocument.uri)) {
-    textDocumentCache.delete(textDocument.uri);
-  }
-}
-
-export async function handleInitializeRequest(
-  params: RequestMessage,
-  token: CancellationToken,
-  configDir?: string,
-  watchmanClient?: GraphQLWatchman,
-): Promise<InitializeResult.type> {
-  if (!params || !params.rootPath) {
-    throw new Error('`rootPath` argument is required.');
-  }
-  const serverCapabilities = await initialize(
-    configDir ? configDir.trim() : params.rootPath,
-    watchmanClient,
-  );
-
-  if (!serverCapabilities) {
-    throw new Error('GraphQL Language Server is not initialized.');
-  }
-  return serverCapabilities;
-}
-
-export async function handleCompletionRequest(
-  params: CompletionRequest.type,
-  token: CancellationToken,
-): Promise<CompletionList> {
-  // `textDocument/comletion` event takes advantage of the fact that
-  // `textDocument/didChange` event always fires before, which would have
-  // updated the cache with the query text from the editor.
-  // Treat the computed list always complete.
-  if (!params || !params.textDocument || !params.position) {
-    throw new Error('`textDocument` argument is required.');
-  }
-  const textDocument = params.textDocument;
-  const position = params.position;
-
-  const cachedDocument = getCachedDocument(textDocument.uri);
-  if (!cachedDocument) {
-    throw new Error(`${textDocument.uri} is not available.`);
-  }
-
-  const found = cachedDocument.contents.find(content => {
-    const currentRange = content.range;
-    if (currentRange && currentRange.containsPosition(position)) {
-      return true;
+  _invalidateCache(
+    textDocument: Object,
+    uri: Uri,
+    contents: Array<Content>,
+  ): void {
+    if (this._textDocumentCache.has(uri)) {
+      const cachedDocument = this._textDocumentCache.get(uri);
+      if (cachedDocument && cachedDocument.version < textDocument.version) {
+        // Current server capabilities specify the full sync of the contents.
+        // Therefore always overwrite the entire content.
+        this._textDocumentCache.set(uri, {
+          version: textDocument.version,
+          contents,
+        });
+      }
+    } else {
+      this._textDocumentCache.set(uri, {
+        version: textDocument.version,
+        contents,
+      });
     }
-  });
-
-  if (!found) {
-    throw new Error(
-      `${textDocument.uri} cannot be found from previously opened files.`,
-    );
   }
-
-  const {query, range} = found;
-
-  if (range) {
-    position.line -= range.start.line;
-  }
-  const result = await languageService.getAutocompleteSuggestions(
-    query,
-    position,
-    textDocument.uri,
-  );
-  return {items: result, isIncomplete: false};
 }
 
-export async function handleDefinitionRequest(
-  params: CompletionRequest.type,
-  token: CancellationToken,
-): Promise<Array<Location>> {
-  if (!params || !params.textDocument || !params.position) {
-    throw new Error('`textDocument` and `position` arguments are required.');
-  }
-  const textDocument = params.textDocument;
-  const position = params.position;
-
-  const cachedDocument = getCachedDocument(textDocument.uri);
-  if (!cachedDocument) {
-    throw new Error(`${textDocument.uri} is not available.`);
-  }
-
-  const found = cachedDocument.contents.find(content => {
-    const currentRange = content.range;
-    if (currentRange && currentRange.containsPosition(position)) {
-      return true;
-    }
-  });
-
-  if (!found) {
-    throw new Error(
-      `${textDocument.uri} cannot be found from previously opened files.`,
-    );
-  }
-
-  const {query, range} = found;
-  if (range) {
-    position.line -= range.start.line;
-  }
-  const result = await languageService.getDefinition(
-    query,
-    position,
-    textDocument.uri,
-  );
-  const formatted = result
-    ? result.definitions.map(res => {
-        const defRange = res.range;
-        return {
-          // TODO: fix this hack!
-          // URI is being misused all over this library - there's a link that
-          // defines how an URI should be structured:
-          // https://tools.ietf.org/html/rfc3986
-          // Remove the below hack once the usage of URI is sorted out in related
-          // libraries.
-          uri: res.path.indexOf('file://') === 0
-            ? res.path
-            : `file://${res.path}`,
-          range: defRange,
-        };
-      })
-    : [];
-  return formatted;
-}
+/**
+ * Helper functions to perform requested services from client/server.
+ */
 
 // Check the uri to determine the file type (JavaScript/GraphQL).
 // If .js file, either return the parsed query/range or null if GraphQL queries
@@ -326,102 +406,34 @@ function parseGraphQLQueryFromText(text: string): Array<Content> {
   return contents;
 }
 
-/**
- * Helper functions to perform requested services from client/server.
- */
-
-async function initialize(
-  rootPath: Uri,
-  watchmanClient?: GraphQLWatchman,
-): Promise<?ServerCapabilities> {
-  const serverCapabilities = {
-    capabilities: {
-      completionProvider: {resolveProvider: true},
-      definitionProvider: true,
-      textDocumentSync: 1,
-    },
-  };
-
-  const configDir = findGraphQLConfigDir(rootPath);
-  if (!configDir) {
-    return null;
-  }
-
-  graphQLCache = await getGraphQLCache(configDir, watchmanClient);
-  languageService = new GraphQLLanguageService(graphQLCache);
-
-  return serverCapabilities;
-}
-
-async function provideDiagnosticsMessage(
+function processDiagnosticsMessage(
+  results: Array<Diagnostic>,
   query: string,
-  uri: Uri,
   range: ?Range,
-): Promise<Array<Diagnostic>> {
-  let results = await languageService.getDiagnostics(query, uri);
-  if (results && results.length > 0) {
-    const queryLines = query.split('\n');
-    const totalLines = queryLines.length;
-    const lastLineLength = queryLines[totalLines - 1].length;
-    const lastCharacterPosition = new Position(totalLines, lastLineLength);
-    results = results.filter(diagnostic =>
-      diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
+): Array<Diagnostic> {
+  const queryLines = query.split('\n');
+  const totalLines = queryLines.length;
+  const lastLineLength = queryLines[totalLines - 1].length;
+  const lastCharacterPosition = new Position(totalLines, lastLineLength);
+  const processedResults = results.filter(diagnostic =>
+    diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
 
-    if (range) {
-      const offset = range.start;
-      results = results.map(diagnostic => ({
-        ...diagnostic,
-        range: new Range(
-          new Position(
-            diagnostic.range.start.line + offset.line,
-            diagnostic.range.start.character,
-          ),
-          new Position(
-            diagnostic.range.end.line + offset.line,
-            diagnostic.range.end.character,
-          ),
+  if (range) {
+    const offset = range.start;
+    return processedResults.map(diagnostic => ({
+      ...diagnostic,
+      range: new Range(
+        new Position(
+          diagnostic.range.start.line + offset.line,
+          diagnostic.range.start.character,
         ),
-      }));
-    }
+        new Position(
+          diagnostic.range.end.line + offset.line,
+          diagnostic.range.end.character,
+        ),
+      ),
+    }));
   }
 
-  return results;
-}
-
-function invalidateCache(
-  textDocument: Object,
-  uri: Uri,
-  contents: Array<Content>,
-): void {
-  if (!uri) {
-    return;
-  }
-
-  if (textDocumentCache.has(uri)) {
-    const cachedDocument = textDocumentCache.get(uri);
-    if (cachedDocument && cachedDocument.version < textDocument.version) {
-      // Current server capabilities specify the full sync of the contents.
-      // Therefore always overwrite the entire content.
-      textDocumentCache.set(uri, {
-        version: textDocument.version,
-        contents,
-      });
-    }
-  } else {
-    textDocumentCache.set(uri, {
-      version: textDocument.version,
-      contents,
-    });
-  }
-}
-
-function getCachedDocument(uri: string): ?CachedDocumentType {
-  if (textDocumentCache.has(uri)) {
-    const cachedDocument = textDocumentCache.get(uri);
-    if (cachedDocument) {
-      return cachedDocument;
-    }
-  }
-
-  return null;
+  return processedResults;
 }

@@ -10,14 +10,7 @@
 
 import net from 'net';
 
-import {
-  handleCompletionRequest,
-  handleDefinitionRequest,
-  handleDidChangeNotification,
-  handleDidCloseNotification,
-  handleDidOpenOrSaveNotification,
-  handleInitializeRequest,
-} from './MessageProcessor';
+import {MessageProcessor} from './MessageProcessor';
 
 import {
   createMessageConnection,
@@ -99,10 +92,13 @@ export default (async function startServer(options: Options): Promise<void> {
 });
 
 function addHandlers(connection: MessageConnection, configDir?: string): void {
+  const messageProcessor = new MessageProcessor();
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
-      const diagnostics = await handleDidOpenOrSaveNotification(params);
+      const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
+        params,
+      );
       if (diagnostics) {
         connection.sendNotification(
           PublishDiagnosticsNotification.type,
@@ -114,7 +110,9 @@ function addHandlers(connection: MessageConnection, configDir?: string): void {
   connection.onNotification(
     DidSaveTextDocumentNotification.type,
     async params => {
-      const diagnostics = await handleDidOpenOrSaveNotification(params);
+      const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
+        params,
+      );
       if (diagnostics) {
         connection.sendNotification(
           PublishDiagnosticsNotification.type,
@@ -126,7 +124,9 @@ function addHandlers(connection: MessageConnection, configDir?: string): void {
   connection.onNotification(
     DidChangeTextDocumentNotification.type,
     async params => {
-      const diagnostics = await handleDidChangeNotification(params);
+      const diagnostics = await messageProcessor.handleDidChangeNotification(
+        params,
+      );
       if (diagnostics) {
         connection.sendNotification(
           PublishDiagnosticsNotification.type,
@@ -137,15 +137,21 @@ function addHandlers(connection: MessageConnection, configDir?: string): void {
   );
   connection.onNotification(
     DidCloseTextDocumentNotification.type,
-    handleDidCloseNotification,
+    messageProcessor.handleDidCloseNotification,
   );
   connection.onNotification(ExitNotification.type, () => process.exit(0));
   // Ignore cancel requests
   connection.onNotification('$/cancelRequest', () => ({}));
 
   connection.onRequest(InitializeRequest.type, (params, token) =>
-    handleInitializeRequest(params, token, configDir));
-  connection.onRequest(CompletionRequest.type, handleCompletionRequest);
+    messageProcessor.handleInitializeRequest(params, token, configDir));
+  connection.onRequest(
+    CompletionRequest.type,
+    messageProcessor.handleCompletionRequest,
+  );
   connection.onRequest(CompletionResolveRequest.type, item => item);
-  connection.onRequest(DefinitionRequest.type, handleDefinitionRequest);
+  connection.onRequest(
+    DefinitionRequest.type,
+    messageProcessor.handleDefinitionRequest,
+  );
 }
