@@ -65,7 +65,7 @@
     "babelify": "7.3.0",
     "browserify": "14.3.0",
     "browserify-shim": "3.8.14",
-    "chai": "3.5.0",
+    "chai": "4.0.2",
     "chai-subset": "1.5.0",
     "eslint": "3.19.0",
     "eslint-plugin-babel": "4.1.1",

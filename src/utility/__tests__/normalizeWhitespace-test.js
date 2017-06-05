@@ -14,6 +14,6 @@ import { invalidCharacters, normalizeWhitespace } from '../normalizeWhitespace';
 describe('QueryEditor', () => {
   it('removes unicode characters', () => {
     const result = normalizeWhitespace(invalidCharacters.join(''));
-    expect([ ...result ]).to.have.members([ ' ' ]);
+    expect(result).to.equal(' '.repeat(invalidCharacters.length));
   });
 });
