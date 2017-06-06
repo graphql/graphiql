@@ -37,7 +37,6 @@ const BABYLON_OPTIONS = {
 
 export function findGraphQLTags(
   text: string,
-  filePath: string,
 ): Array<{tag: string, template: string, range: Range}> {
   const result = [];
   const ast = parse(text, BABYLON_OPTIONS);

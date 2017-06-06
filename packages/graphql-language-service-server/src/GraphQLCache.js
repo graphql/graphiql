@@ -475,7 +475,6 @@ function promiseToReadGraphQLFile(
           }
 
           queries.forEach(({query}) => asts.push(parse(query)));
-          // parsed.query ? parse(parsed.query) : null;
         } catch (_) {
           // If query has syntax errors, go ahead and still resolve
           // the filePath and the content, but leave ast empty.
