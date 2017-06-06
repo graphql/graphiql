@@ -8,6 +8,8 @@
  *  @flow
  */
 
+import type {Logger} from 'vscode-jsonrpc';
+
 import net from 'net';
 
 import {MessageProcessor} from './MessageProcessor';
@@ -34,6 +36,7 @@ import {
   ExitNotification,
   InitializeRequest,
   PublishDiagnosticsNotification,
+  ShutdownRequest,
 } from 'vscode-languageserver';
 
 type Options = {
@@ -43,6 +46,16 @@ type Options = {
 };
 
 export default (async function startServer(options: Options): Promise<void> {
+  // Below logger is intentionally no-op.
+  // The plan is to grab the configuration options from when the server is
+  // initialized, and use that to instantiate the logger.
+  const logger: Logger = {
+    error(message: string): void {},
+    warn(message: string): void {},
+    info(message: string): void {},
+    log(message: string): void {},
+  };
+
   if (options && options.method) {
     let reader;
     let writer;
@@ -85,7 +98,7 @@ export default (async function startServer(options: Options): Promise<void> {
         writer = new IPCMessageWriter(process);
         break;
     }
-    const connection = createMessageConnection(reader, writer);
+    const connection = createMessageConnection(reader, writer, logger);
     addHandlers(connection, options.configDir);
     connection.listen();
   }
@@ -135,23 +148,22 @@ function addHandlers(connection: MessageConnection, configDir?: string): void {
       }
     },
   );
-  connection.onNotification(
-    DidCloseTextDocumentNotification.type,
-    messageProcessor.handleDidCloseNotification,
-  );
-  connection.onNotification(ExitNotification.type, () => process.exit(0));
+
+  connection.onNotification(DidCloseTextDocumentNotification.type, params =>
+    messageProcessor.handleDidCloseNotification(params));
+  connection.onRequest(ShutdownRequest.type, () =>
+    messageProcessor.handleShutdownRequest());
+  connection.onNotification(ExitNotification.type, () =>
+    messageProcessor.handleExitNotification());
+
   // Ignore cancel requests
   connection.onNotification('$/cancelRequest', () => ({}));
 
   connection.onRequest(InitializeRequest.type, (params, token) =>
     messageProcessor.handleInitializeRequest(params, token, configDir));
-  connection.onRequest(
-    CompletionRequest.type,
-    messageProcessor.handleCompletionRequest,
-  );
+  connection.onRequest(CompletionRequest.type, params =>
+    messageProcessor.handleCompletionRequest(params));
   connection.onRequest(CompletionResolveRequest.type, item => item);
-  connection.onRequest(
-    DefinitionRequest.type,
-    messageProcessor.handleDefinitionRequest,
-  );
+  connection.onRequest(DefinitionRequest.type, params =>
+    messageProcessor.handleDefinitionRequest(params));
 }
