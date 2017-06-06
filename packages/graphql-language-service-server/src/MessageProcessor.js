@@ -14,9 +14,6 @@ import type {
   Uri,
 } from 'graphql-language-service-types';
 
-import {parse as babylonParse} from 'babylon';
-import traverse from 'babel-traverse';
-
 import {extname} from 'path';
 import {findGraphQLConfigDir} from 'graphql-language-service-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
@@ -37,6 +34,7 @@ import {
 } from 'vscode-languageserver';
 
 import {getGraphQLCache} from './GraphQLCache';
+import {findGraphQLTags} from './findGraphQLTags';
 
 // Map { uri => { query, range } }
 type Content = {
@@ -49,15 +47,16 @@ type CachedDocumentType = {
   contents: Array<Content>,
 };
 
-const textDocumentCache: Map<string, CachedDocumentType> = new Map();
-
 export class MessageProcessor {
   _graphQLCache: GraphQLCache;
   _languageService: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
 
+  _willShutdown: boolean;
+
   constructor(): void {
     this._textDocumentCache = new Map();
+    this._willShutdown = false;
   }
 
   async handleInitializeRequest(
@@ -103,15 +102,18 @@ export class MessageProcessor {
     }
 
     const textDocument = params.textDocument;
-    const uri = textDocument.uri;
-
-    let contents = getQueryAndRange(textDocument.text, textDocument.uri);
+    const {text, uri} = textDocument;
 
     const diagnostics = [];
 
+    let contents = [];
+
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
-    if (textDocument.text || textDocument.text === '') {
+    if (text || text === '') {
+      // textDocument/didSave does not pass in the text content.
+      // Only run the below function if text is passed in.
+      contents = getQueryAndRange(text, uri);
       this._invalidateCache(textDocument, uri, contents);
     } else {
       const cachedDocument = this._getCachedDocument(uri);
@@ -192,9 +194,18 @@ export class MessageProcessor {
     }
     const textDocument = params.textDocument;
 
-    if (textDocumentCache.has(textDocument.uri)) {
-      textDocumentCache.delete(textDocument.uri);
+    if (this._textDocumentCache.has(textDocument.uri)) {
+      this._textDocumentCache.delete(textDocument.uri);
     }
+  }
+
+  handleShutdownRequest(): void {
+    this._willShutdown = true;
+    return;
+  }
+
+  handleExitNotification(): void {
+    process.exit(this._willShutdown ? 0 : 1);
   }
 
   async handleCompletionRequest(
@@ -353,7 +364,8 @@ export function getQueryAndRange(text: string, uri: string): Array<Content> {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
   if (extname(uri) === '.js') {
-    return parseGraphQLQueryFromText(text);
+    const templates = findGraphQLTags(text, uri);
+    return templates.map(({template, range}) => ({query: template, range}));
   } else {
     const query = text;
     if (!query && query !== '') {
@@ -366,44 +378,6 @@ export function getQueryAndRange(text: string, uri: string): Array<Content> {
     );
     return [{query, range}];
   }
-}
-
-function parseGraphQLQueryFromText(text: string): Array<Content> {
-  const ast = babylonParse(text, {
-    sourceType: 'module',
-    plugins: [
-      'jsx',
-      'flow',
-      'doExpressions',
-      'objectRestSpread',
-      'classProperties',
-      'exportExtensions',
-      'asyncGenerators',
-      'functionBind',
-      'functionSent',
-      'dynamicImport',
-    ],
-  });
-  const contents = [];
-  traverse(ast, {
-    TaggedTemplateExpression(path) {
-      const node = path.node;
-      const quasi = node.quasi;
-      const tag = node.tag;
-      if (tag.name === 'graphql' || tag.name === 'graphql.experimental') {
-        const loc = path.node.loc;
-        const query = quasi.quasis[0].value.raw;
-        const range = new Range(
-          new Position(loc.start.line - 1, loc.start.column),
-          new Position(loc.end.line - 1, loc.end.column),
-        );
-        contents.push({query, range});
-        return;
-      }
-    },
-  });
-
-  return contents;
 }
 
 function processDiagnosticsMessage(
