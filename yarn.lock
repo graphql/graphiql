@@ -1136,9 +1136,9 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror-graphql@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.5.tgz#94c0785353823370811a82bace81c02ce634d40c"
+codemirror-graphql@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/codemirror-graphql/-/codemirror-graphql-0.6.6.tgz#6fb696d419a2f5f54748b9b015a4bbb4ccfba22d"
   dependencies:
     graphql-language-service-interface "0.0.16"
     graphql-language-service-parser "^0.0.14"
