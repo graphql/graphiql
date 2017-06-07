@@ -69,9 +69,14 @@ describe('graphql-hint', () => {
     const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     const fieldConfig = TestSchema.getQueryType().getFields();
     const fieldNames = Object.keys(fieldConfig)
-      .filter(name => !fieldConfig[name].isDeprecated)
-      .concat([ '__schema', '__type' ]);
-    checkSuggestions(fieldNames, suggestions.list);
+      .filter(name => !fieldConfig[name].isDeprecated);
+    checkSuggestions(fieldNames.concat([ '__schema', '__type' ]), suggestions.list);
+
+    const fieldTypes = fieldNames.map(name => fieldConfig[name].type);
+    const expectedTypes = suggestions.list.filter(item =>
+      item.text !== '__schema' && item.text !== '__type',
+    ).map(item => item.type);
+    expect(fieldTypes).to.deep.equal(expectedTypes);
   });
 
   it('provides correct field name suggestions when using aliases', async () => {

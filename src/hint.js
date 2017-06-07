@@ -62,7 +62,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
   const results = {
     list: rawResults.map(item => ({
       text: item.label,
-      type: item.detail,
+      type: schema.getType(item.detail),
       description: item.documentation,
       isDeprecated: item.isDeprecated,
       deprecationReason: item.deprecationReason,
