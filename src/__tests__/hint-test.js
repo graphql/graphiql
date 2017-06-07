@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import { isOutputType, isLeafType } from 'graphql';
+import { isCompositeType } from 'graphql';
 
 import '../hint';
 import { TestSchema } from './testSchema';
@@ -147,7 +147,7 @@ describe('graphql-hint', () => {
     const typeMap = TestSchema.getTypeMap();
     const typeConditionNames = Object.keys(typeMap).filter(typeName => {
       const type = typeMap[typeName];
-      return isOutputType(type) && !isLeafType(type);
+      return isCompositeType(type);
     });
     checkSuggestions(typeConditionNames, suggestions.list);
   });
