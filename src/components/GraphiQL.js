@@ -287,7 +287,7 @@ export class GraphiQL extends React.Component {
             operationName={this.state.operationName}
             query={this.state.query}
             variables={this.state.variables}
-            onSelectQuery={this.replaceQuery.bind(this)}
+            onSelectQuery={this.handleSelectHistoryQuery}
             storage={this._storage}
             queryID={this._editorQueryID}>
             <div className="docExplorerHide" onClick={this.handleToggleHistory}>
@@ -453,14 +453,6 @@ export class GraphiQL extends React.Component {
     return result;
   }
 
-  replaceQuery(query, variables, operationName) {
-    this.setState({
-      query,
-      variables,
-      operationName,
-    });
-  }
-
   // Private methods
 
   _fetchSchema() {
@@ -596,10 +588,7 @@ export class GraphiQL extends React.Component {
     // operation name, then report that it changed.
     if (selectedOperationName && selectedOperationName !== operationName) {
       operationName = selectedOperationName;
-      const onEditOperationName = this.props.onEditOperationName;
-      if (onEditOperationName) {
-        onEditOperationName(operationName);
-      }
+      this.handleEditOperationName(operationName);
     }
 
     try {
@@ -724,6 +713,13 @@ export class GraphiQL extends React.Component {
     }
   }
 
+  handleEditOperationName = operationName => {
+    const onEditOperationName = this.props.onEditOperationName;
+    if (onEditOperationName) {
+      onEditOperationName(operationName);
+    }
+  }
+
   handleHintInformationRender = elem => {
     elem.addEventListener('click', this._onClickHintInformation);
 
@@ -765,6 +761,12 @@ export class GraphiQL extends React.Component {
       this.props.onToggleHistory(!this.state.historyPaneOpen);
     }
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+  }
+
+  handleSelectHistoryQuery = (query, variables, operationName) => {
+    this.handleEditQuery(query);
+    this.handleEditVariables(variables);
+    this.handleEditOperationName(operationName);
   }
 
   handleResizeStart = downEvent => {
