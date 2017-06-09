@@ -124,7 +124,7 @@ export class DocExplorer extends React.Component {
               {prevName}
             </div>}
           <div className="doc-explorer-title">
-            {navItem.title || navItem.name}
+            {navStack.length === 1 ? navItem.title || navItem.name : ''}
           </div>
           <div className="doc-explorer-rhs">
             {this.props.children}
@@ -132,11 +132,13 @@ export class DocExplorer extends React.Component {
         </div>
         <div className="doc-explorer-contents">
           {shouldSearchBoxAppear &&
-            <SearchBox
-              value={navItem.search}
-              placeholder={`Search ${navItem.name}...`}
-              onSearch={this.handleSearch}
-            />}
+            <div className="search-box-outer">
+              <SearchBox
+                value={navItem.search}
+                placeholder={`Search ${navItem.name}...`}
+                onSearch={this.handleSearch}
+              />
+            </div>}
           {content}
         </div>
       </div>

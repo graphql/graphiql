@@ -127,7 +127,11 @@ export default class SearchResults extends React.Component {
 
     if (withinType && matchedTypes.length + matchedFields.length > 0) {
       return (
-        <div>
+        <div className="doc-category">
+          {matchedWithin.length ?
+            <div className="doc-category-title">
+              {`Search results on ${withinType.name}`}
+            </div> : null}
           {matchedWithin}
           <div className="doc-category">
             <div className="doc-category-title">
@@ -141,7 +145,10 @@ export default class SearchResults extends React.Component {
     }
 
     return (
-      <div>
+      <div className="doc-category">
+        <div className="doc-category-title">
+          {'Search results'}
+        </div>
         {matchedWithin}
         {matchedTypes}
         {matchedFields}

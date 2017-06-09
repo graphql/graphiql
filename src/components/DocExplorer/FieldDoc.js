@@ -50,22 +50,20 @@ export default class FieldDoc extends React.Component {
 
     return (
       <div>
-        <MarkdownContent
-          className="doc-type-description"
-          markdown={field.description || 'No Description'}
-        />
-        {
-          field.deprecationReason &&
-          <MarkdownContent
-            className="doc-deprecation"
-            markdown={field.deprecationReason}
-          />
-        }
-        <div className="doc-category">
-          <div className="doc-category-title">
-            {'type'}
-          </div>
+        <div className="doc-field-header">
+          <h4 className="doc-field-name">{field.name}</h4>
           <TypeLink type={field.type} onClick={this.props.onClickType} />
+          <MarkdownContent
+            className="doc-type-description"
+            markdown={field.description || 'No Description'}
+          />
+          {
+            field.deprecationReason &&
+            <MarkdownContent
+              className="doc-deprecation"
+              markdown={field.deprecationReason}
+            />
+          }
         </div>
         {argsDef}
       </div>

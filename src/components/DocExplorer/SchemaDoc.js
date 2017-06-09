@@ -33,7 +33,7 @@ export default class SchemaDoc extends React.Component {
     return (
       <div>
         <MarkdownContent
-          className="doc-type-description"
+          className="doc-schema-description doc-type-description"
           markdown={
             'A GraphQL schema provides a root type for each kind of operation.'
           }

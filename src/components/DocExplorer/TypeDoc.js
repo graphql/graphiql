@@ -84,7 +84,7 @@ export default class TypeDoc extends React.Component {
       fieldsDef =
         <div className="doc-category">
           <div className="doc-category-title">
-            {'fields'}
+            {'Fields'}
           </div>
           {fields.filter(field => !field.isDeprecated).map(field =>
             <Field
@@ -102,7 +102,7 @@ export default class TypeDoc extends React.Component {
         deprecatedFieldsDef =
           <div className="doc-category">
             <div className="doc-category-title">
-              {'deprecated fields'}
+              {'Deprecated fields'}
             </div>
             {!this.state.showDeprecated ?
               <button className="show-btn" onClick={this.handleShowDeprecated}>
@@ -157,10 +157,13 @@ export default class TypeDoc extends React.Component {
 
     return (
       <div>
-        <MarkdownContent
-          className="doc-type-description"
-          markdown={type.description || 'No Description'}
-        />
+        <div className="doc-type-header">
+          <h4 className="doc-field-name">{type.name}</h4>
+          <MarkdownContent
+            className="doc-type-description"
+            markdown={type.description || 'No Description'}
+          />
+        </div>
         {(type instanceof GraphQLObjectType) && typesDef}
         {fieldsDef}
         {deprecatedFieldsDef}
