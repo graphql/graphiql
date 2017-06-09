@@ -78,10 +78,12 @@ export class GraphQLLanguageService {
         appName,
       );
       if (customRulesModulePath) {
-        const rulesPath = require.resolve(customRulesModulePath);
+        /* eslint-disable no-implicit-coercion */
+        const rulesPath = require.resolve('' + customRulesModulePath);
         if (rulesPath) {
-          customRules = require(rulesPath)(this._graphQLConfig);
+          customRules = require('' + rulesPath)(this._graphQLConfig);
         }
+        /* eslint-enable no-implicit-coercion */
       }
     }
 
