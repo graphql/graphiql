@@ -33,32 +33,32 @@ After pulling the latest changes from this repo, be sure to run `npm run build` 
 
 The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
 
-### GraphQL configuration file (`.graphqlrc`)
+### GraphQL configuration file (`.graphqlconfig`)
 
-GraphQL Language Service, to provide its full feature set, will need to know some information about your GraphQL development environment. `.graphqlrc` is a GraphQL configuration file that contains this information.
+GraphQL Language Service, to provide its full feature set, will need to know some information about your GraphQL development environment. `.graphqlconfig` is a GraphQL configuration file that contains this information.
 ```
 {
-  "build-configs": {
+  "projects": {
     "product-name": {
-      "input-dirs": [
+      "includeDirs": [
         "/dir/paths/to/your/graphql/files"
       ],
-      "exclude-dirs": [
+      "excludeDirs": [
         "/dir/paths/to/ignore/"
       ],
-      "schema-path": "/path/to/the/schema/" // supports `.graphql` IDL or `.json` file
+      "schemaPath": "/path/to/the/schema/" // supports `.graphql` IDL or `.json` file
     }
   }
 }
 ```
-`.graphqlrc` can define mutliple configurations for each GraphQL environment, should you have more than one.
+`.graphqlconfig` can define mutliple configurations for each GraphQL environment, should you have more than one.
 
 The GraphQL configurations will be used to perform two things in a nutshell:
 
-1. Using `input-dirs` and `exclude-dirs`, cache all fragment definitions per each product. This information will be used to compute dependencies between GraphQL queries and fragments.
-2. Using `schema-path`, build and cache `GraphQLSchema`s (per product). The schema will be used to perform query validations, autocomplete suggestions etc.
+1. Using `includeDirs` and `excludeDirs`, cache all fragment definitions per each product. This information will be used to compute dependencies between GraphQL queries and fragments.
+2. Using `schemaPath`, build and cache `GraphQLSchema`s (per product). The schema will be used to perform query validations, autocomplete suggestions etc.
 
-Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `input-dirs` and `exclude-dirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/packages/graphql-language-service-config/src/index.js) for more information.
+Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `includDirs` and `excludeDirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/packages/graphql-language-service-config/src/index.js) for more information.
 
 ### Using the command-line interface
 
@@ -109,21 +109,21 @@ Commands: "server, validate, autocomplete, outline"
 
 GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
 
-The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlrc` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
+The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlconfig` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
 ```
 ./application
 
   ./productA
-    .graphqlrc
+    .graphqlconfig
     ProductAQuery.graphql
     ProductASchema.graphql
 
   ./productB
-    .graphqlrc
+    .graphqlconfig
     ProductBQuery.graphql
     ProductBSchema.graphql
 ```
-A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc` file, as illustrated in the directory structure above.
+A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlconfig` file, as illustrated in the directory structure above.
 
 The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
 
