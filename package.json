@@ -45,6 +45,7 @@
   "lint-staged": {
     "*.js": [
       "prettier --jsx-bracket-same-line --single-quote --trailing-comma=all --write",
+      "npm run testonly",
       "git add"
     ]
   },
