@@ -23,12 +23,24 @@ import {
   GraphQLSchema,
   buildSchema,
   buildClientSchema,
+  extendSchema,
   parse,
   visit,
 } from 'graphql';
 import nullthrows from 'nullthrows';
 
-import {FRAGMENT_DEFINITION} from 'graphql/language/kinds';
+import {
+  DOCUMENT,
+  FRAGMENT_DEFINITION,
+  OBJECT_TYPE_DEFINITION,
+  INTERFACE_TYPE_DEFINITION,
+  ENUM_TYPE_DEFINITION,
+  UNION_TYPE_DEFINITION,
+  SCALAR_TYPE_DEFINITION,
+  INPUT_OBJECT_TYPE_DEFINITION,
+  TYPE_EXTENSION_DEFINITION,
+  DIRECTIVE_DEFINITION,
+} from 'graphql/language/kinds';
 import {getGraphQLConfig, GraphQLConfig} from 'graphql-language-service-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 import {getQueryAndRange} from './MessageProcessor';
@@ -302,8 +314,6 @@ export class GraphQLCache {
     // definition name to the parsed ast, whether or not it existed
     // previously.
     // For delete, remove the entry from the set.
-    // For cases where the modified content has syntax error and therefore
-    // cannot be parsed, maintain the previous cache (do nothing).
     if (!exists) {
       fragmentDefinitionCache.delete(filePath);
     } else if (fileAndContent && fileAndContent.asts) {
@@ -323,13 +333,44 @@ export class GraphQLCache {
     return fragmentDefinitionCache;
   }
 
+  _extendSchema(schema: GraphQLSchema): GraphQLSchema {
+    const graphQLFileMap = this._graphQLFileListCache.get(this._configDir);
+    const typeExtensions = [];
+    if (!graphQLFileMap) {
+      return schema;
+    }
+    graphQLFileMap.forEach(({asts}) => {
+      asts.forEach(ast => {
+        ast.definitions.forEach(definition => {
+          switch (definition.kind) {
+            case OBJECT_TYPE_DEFINITION:
+            case INTERFACE_TYPE_DEFINITION:
+            case ENUM_TYPE_DEFINITION:
+            case UNION_TYPE_DEFINITION:
+            case SCALAR_TYPE_DEFINITION:
+            case INPUT_OBJECT_TYPE_DEFINITION:
+            case TYPE_EXTENSION_DEFINITION:
+            case DIRECTIVE_DEFINITION:
+              typeExtensions.push(definition);
+              break;
+          }
+        });
+      });
+    });
+    return extendSchema(schema, {
+      kind: DOCUMENT,
+      definitions: typeExtensions,
+    });
+  }
+
   getSchema = async (configSchemaPath: ?Uri): Promise<?GraphQLSchema> => {
     if (!configSchemaPath) {
       return null;
     }
     const schemaPath = path.join(this._configDir, configSchemaPath);
     if (this._schemaMap.has(schemaPath)) {
-      return this._schemaMap.get(schemaPath);
+      const schema = this._schemaMap.get(schemaPath);
+      return schema ? this._extendSchema(schema) : schema;
     }
 
     const schemaDSL = await new Promise(resolve =>
@@ -355,6 +396,10 @@ export class GraphQLCache {
       }
     } catch (error) {
       throw new Error(error);
+    }
+
+    if (this._graphQLFileListCache.has(this._configDir)) {
+      schema = this._extendSchema(schema);
     }
 
     this._schemaMap.set(schemaPath, schema);
