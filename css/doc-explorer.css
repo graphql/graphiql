@@ -323,8 +323,8 @@
 
 .graphiql-container .doc-alert-text {
   border-top: 1px solid #ddd;
-  text-align: center;
-  padding: 15px;
   color: #666;
   display: block;
+  padding: 15px;
+  text-align: center;
 }

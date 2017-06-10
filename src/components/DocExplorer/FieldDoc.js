@@ -31,7 +31,7 @@ export default class FieldDoc extends React.Component {
       argsDef = (
         <div className="doc-category">
           <div className="doc-category-title">
-            {'arguments'}
+            {'Arguments'}
           </div>
           {field.args.map(arg =>
             <div key={arg.name} className="doc-category-item">
