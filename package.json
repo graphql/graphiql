@@ -79,7 +79,7 @@
     "eslint-plugin-react": "7.0.1",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.6",
-    "flow-bin": "0.47.0",
+    "flow-bin": "0.48.0",
     "graphql": "^0.10.1",
     "husky": "^0.13.4",
     "jsdom": "11.0.0",
