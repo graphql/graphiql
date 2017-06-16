@@ -71,14 +71,6 @@ ajv@^4.7.0, ajv@^4.9.1:
     co "^4.6.0"
     json-stable-stringify "^1.0.1"
 
-align-text@^0.1.1, align-text@^0.1.3:
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/align-text/-/align-text-0.1.4.tgz#0cd90a561093f35d0a99256c22b7069433fad117"
-  dependencies:
-    kind-of "^3.0.2"
-    longest "^1.0.1"
-    repeat-string "^1.5.2"
-
 amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
@@ -1019,10 +1011,6 @@ callsites@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-0.2.0.tgz#afab96262910a7f33c19a5775825c69f34e350ca"
 
-camelcase@^1.0.2:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-1.2.1.tgz#9bb5304d2e0b56698b2c758b08a3eaa9daa58a39"
-
 camelcase@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
@@ -1034,13 +1022,6 @@ caniuse-lite@^1.0.30000665:
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
-
-center-align@^0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/center-align/-/center-align-0.1.3.tgz#aa0d32629b6ee972200411cbd4461c907bc2b7ad"
-  dependencies:
-    align-text "^0.1.3"
-    lazy-cache "^1.0.3"
 
 chai-subset@1.5.0:
   version "1.5.0"
@@ -1130,14 +1111,6 @@ cli-truncate@^0.2.1:
 cli-width@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.1.0.tgz#b234ca209b29ef66fc518d9b98d5847b00edf00a"
-
-cliui@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/cliui/-/cliui-2.1.0.tgz#4b475760ff80264c762c3a1719032e91c7fea0d1"
-  dependencies:
-    center-align "^0.1.1"
-    right-align "^0.1.1"
-    wordwrap "0.0.2"
 
 cliui@^3.2.0:
   version "3.2.0"
@@ -1395,7 +1368,7 @@ debug@^2.1.1, debug@^2.2.0:
   dependencies:
     ms "0.7.3"
 
-decamelize@^1.0.0, decamelize@^1.1.1:
+decamelize@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
 
@@ -2740,10 +2713,6 @@ labeled-stream-splicer@^2.0.0:
     isarray "~0.0.1"
     stream-splicer "^2.0.0"
 
-lazy-cache@^1.0.3:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/lazy-cache/-/lazy-cache-1.0.4.tgz#a1d78fc3a50474cb80845d3b3b6e1da49a446e8e"
-
 lcid@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lcid/-/lcid-1.0.0.tgz#308accafa0bc483a3867b4b6f2b9506251d1b835"
@@ -2911,10 +2880,6 @@ log-update@^1.0.2:
   dependencies:
     ansi-escapes "^1.0.0"
     cli-cursor "^1.0.2"
-
-longest@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/longest/-/longest-1.0.1.tgz#30a0b2da38f73770e8294a0d22e6625ed77d0097"
 
 loose-envify@^1.0.0, loose-envify@^1.1.0:
   version "1.3.1"
@@ -3622,9 +3587,9 @@ react-dom@15.5.4:
     object-assign "^4.1.0"
     prop-types "~15.5.7"
 
-react-test-renderer@15.5.4:
-  version "15.5.4"
-  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-15.5.4.tgz#d4ebb23f613d685ea8f5390109c2d20fbf7c83bc"
+react-test-renderer@15.6.1:
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-15.6.1.tgz#026f4a5bb5552661fd2cc4bbcd0d4bc8a35ebf7e"
   dependencies:
     fbjs "^0.8.9"
     object-assign "^4.1.0"
@@ -3894,12 +3859,6 @@ restore-cursor@^2.0.0:
   dependencies:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
-
-right-align@^0.1.1:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/right-align/-/right-align-0.1.3.tgz#61339b722fe6a3515689210d24e14c96148613ef"
-  dependencies:
-    align-text "^0.1.1"
 
 rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
   version "2.6.1"
@@ -4379,14 +4338,12 @@ ua-parser-js@^0.7.9:
   version "0.7.12"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.12.tgz#04c81a99bdd5dc52263ea29d24c6bf8d4818a4bb"
 
-uglify-js@2.x.x:
-  version "2.8.23"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-2.8.23.tgz#8230dd9783371232d62a7821e2cf9a817270a8a0"
+uglify-es@^3.0.15:
+  version "3.0.17"
+  resolved "https://registry.yarnpkg.com/uglify-es/-/uglify-es-3.0.17.tgz#fafc1129d64d3900ae255672e64a4cf94d25796c"
   dependencies:
+    commander "~2.9.0"
     source-map "~0.5.1"
-    yargs "~3.10.0"
-  optionalDependencies:
-    uglify-to-browserify "~1.0.0"
 
 uglify-js@3.0.16:
   version "3.0.16"
@@ -4395,19 +4352,15 @@ uglify-js@3.0.16:
     commander "~2.9.0"
     source-map "~0.5.1"
 
-uglify-to-browserify@~1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
-
-uglifyify@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/uglifyify/-/uglifyify-3.0.4.tgz#487e080a5a7798880e68e90def9b06681fb13bd2"
+uglifyify@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/uglifyify/-/uglifyify-4.0.1.tgz#2450ce38be587264732bde4e1bda9e67a08baafe"
   dependencies:
     convert-source-map "~1.1.0"
     extend "^1.2.1"
     minimatch "^3.0.2"
     through "~2.3.4"
-    uglify-js "2.x.x"
+    uglify-es "^3.0.15"
 
 uid-number@^0.0.6:
   version "0.0.6"
@@ -4542,14 +4495,6 @@ wide-align@^1.1.0:
   dependencies:
     string-width "^1.0.2"
 
-window-size@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/window-size/-/window-size-0.1.0.tgz#5438cd2ea93b202efa3a19fe8887aee7c94f9c9d"
-
-wordwrap@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-0.0.2.tgz#b79669bb42ecb409f83d583cad52ca17eaa1643f"
-
 wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
@@ -4616,12 +4561,3 @@ yargs@^8.0.1:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^7.0.0"
-
-yargs@~3.10.0:
-  version "3.10.0"
-  resolved "https://registry.yarnpkg.com/yargs/-/yargs-3.10.0.tgz#f7ee7bd857dd7c1d2d38c0e74efbd681d1431fd1"
-  dependencies:
-    camelcase "^1.0.2"
-    cliui "^2.1.0"
-    decamelize "^1.0.0"
-    window-size "0.1.0"
