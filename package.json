@@ -76,7 +76,7 @@
     "chai-subset": "1.5.0",
     "eslint": "3.19.0",
     "eslint-plugin-babel": "4.1.1",
-    "eslint-plugin-react": "7.0.1",
+    "eslint-plugin-react": "7.1.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.6",
     "flow-bin": "0.48.0",
