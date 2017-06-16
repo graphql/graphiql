@@ -90,7 +90,7 @@
     "prop-types": "15.5.8",
     "react": "15.5.4",
     "react-dom": "15.5.4",
-    "react-test-renderer": "15.5.4",
+    "react-test-renderer": "15.6.1",
     "uglify-js": "3.0.16",
     "uglifyify": "3.0.4",
     "watchify": "3.9.0"
