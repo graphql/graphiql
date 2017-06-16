@@ -56,8 +56,8 @@
   "peerDependencies": {
     "graphql": "^0.10.0",
     "prop-types": ">=15.5.0",
-    "react": "^0.14.9 || >=15.3.0",
-    "react-dom": "^0.14.9 || >=15.3.0"
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.0.0",
@@ -76,7 +76,7 @@
     "chai-subset": "1.5.0",
     "eslint": "3.19.0",
     "eslint-plugin-babel": "4.1.1",
-    "eslint-plugin-react": "7.0.1",
+    "eslint-plugin-react": "7.1.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.6",
     "flow-bin": "0.48.0",
@@ -92,6 +92,9 @@
     "react-dom": "15.5.4",
     "react-test-renderer": "15.5.4",
     "uglify-js": "3.0.15",
+    "uglifyify": "4.0.1",
+    "react-test-renderer": "15.6.1",
+    "uglify-js": "3.0.16",
     "uglifyify": "4.0.1",
     "watchify": "3.9.0"
   }
