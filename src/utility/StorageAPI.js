@@ -17,17 +17,20 @@ export default class StorageAPI {
 
   set(name, value) {
     if (this.storage) {
+      const key = `graphiql:${name}`;
       if (value) {
-        return trySetItem('graphiql:' + name, value);
+        if (isStorageAvailable(this.storage, key, value)) {
+          this.storage.setItem(key, value);
+        }
+      } else {
+        // Clean up by removing the item if there's no value to set
+        this.storage.removeItem(key);
       }
-      // Clean up by removing the item if there's no value to set
-      this.storage.removeItem('graphiql:' + name);
     }
-    return true;
   }
 }
 
-function trySetItem(key, value, storage) {
+function isStorageAvailable(storage, key, value) {
   try {
     storage.setItem(key, value);
     return true;
@@ -46,3 +49,5 @@ function trySetItem(key, value, storage) {
       storage.length !== 0;
   }
 }
+
+

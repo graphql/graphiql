@@ -32,11 +32,6 @@ export default class HistoryStore {
   }
 
   save() {
-    const items = this.items;
-    let value = JSON.stringify({ [this.key]: items });
-    while (items.length > 10 && !this.storage.set(this.key, value)) {
-      items.shift();
-      value = JSON.stringify({ [this.key]: items });
-    }
+    this.storage.set(this.key, JSON.stringify({ [this.key]: this.items }));
   }
 }
