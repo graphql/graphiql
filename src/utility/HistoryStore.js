@@ -32,7 +32,11 @@ export default class HistoryStore {
   }
 
   save() {
-    const payload = JSON.stringify({[this.key]: this.items});
-    this.storage.set(this.key, payload);
+    const items = this.items;
+    let value = JSON.stringify({[this.key]: items});
+    while (items.length >= 0 && !this.storage.set(this.key, value)) {
+      items.shift();
+      value = JSON.stringify({[this.key]: items});
+    }
   }
 }

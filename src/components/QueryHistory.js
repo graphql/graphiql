@@ -29,7 +29,7 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   return true;
 };
 
-const MAX_HISTORY_LENGTH = 20;
+const MAX_HISTORY_LENGTH = 10;
 
 export class QueryHistory extends React.Component {
   static propTypes = {
