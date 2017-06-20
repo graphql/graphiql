@@ -1,29 +1,70 @@
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const HistoryQuery = ({query, variables, operationName, onSelect}) => {
-  const onClick = () => {
-    onSelect(query, variables, operationName);
+export default class HistoryQuery extends React.Component {
+  static propTypes = {
+    query: PropTypes.string,
+    variables: PropTypes.string,
+    operationName: PropTypes.string,
+    onSelect: PropTypes.func,
   };
 
-  let displayName;
-  if (operationName) {
-    displayName = operationName;
-  } else {
-    displayName = query.split('\n')
-      .filter(line => line.indexOf('#') !== 0).join('');
+  constructor(props) {
+    super(props);
+    this.state = { favorite: false };
   }
 
-  return (
-    <p onClick={onClick}>{displayName}</p>
-  );
-};
+  render() {
+    const starStyles = {
+      float: 'right',
+    };
+    const starIcon = this.state.favorite ? '\u2605' : '\u2606';
 
-HistoryQuery.propTypes = {
-  query: PropTypes.string,
-  variables: PropTypes.string,
-  operationName: PropTypes.string,
-  onSelect: PropTypes.func,
-};
+    let displayName;
+    if (this.props.operationName) {
+      displayName = this.props.operationName;
+    } else {
+      displayName = this.props.query
+        .split('\n')
+        .filter(line => line.indexOf('#') !== 0)
+        .join('');
+    }
+    return (
+      <div>
+        <p onClick={this.handleClick.bind(this)}>
+          <span>
+            {displayName}
+          </span>
+          <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
+            {starIcon}
+          </span>
+        </p>
+      </div>
+    );
+  }
 
-export default HistoryQuery;
+  handleClick() {
+    this.props.onSelect(
+      this.props.query,
+      this.props.variables,
+      this.props.operationName,
+    );
+  }
+
+  handleStarClick(e) {
+    e.stopPropagation();
+    if (this.state.favorite === true) {
+      this.setState({ favorite: false });
+    } else if (this.state.favorite === false) {
+      this.setState({ favorite: true });
+    }
+  }
+}
