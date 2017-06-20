@@ -1079,9 +1079,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flow-bin@0.47.0:
-  version "0.47.0"
-  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.47.0.tgz#a2a08ab3e0d1f1cb57d17e27b30b118b62fda367"
+flow-bin@0.48.0:
+  version "0.48.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.48.0.tgz#72d075143524358db8901525e3c784dc13a7c7ee"
 
 for-in@^1.0.1:
   version "1.0.2"
@@ -1257,12 +1257,6 @@ graphql@^0.10.1:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.10.1.tgz#75c93c2ce73aeb5bae2eefb555a8e9e39c36027d"
   dependencies:
     iterall "^1.1.0"
-
-graphql@^0.9.6:
-  version "0.9.6"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.9.6.tgz#514421e9d225c29dfc8fd305459abae58815ef2c"
-  dependencies:
-    iterall "^1.0.0"
 
 growl@1.9.2:
   version "1.9.2"
@@ -1499,7 +1493,7 @@ isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
 
-iterall@^1.0.0, iterall@^1.1.0:
+iterall@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/iterall/-/iterall-1.1.1.tgz#f7f0af11e9a04ec6426260f5019d9fcca4d50214"
 
