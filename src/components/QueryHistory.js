@@ -58,16 +58,24 @@ export class QueryHistory extends React.Component {
     if (
       shouldSaveQuery(nextProps, this.props, this.historyStore.fetchRecent())
     ) {
-      this.historyStore.push({
+      const item = {
         query: nextProps.query,
-        variables: nextProps.variables || '',
-        operationName: nextProps.operationName || '',
-      });
+        variables: nextProps.variables,
+        operationName: nextProps.operationName,
+      };
+      // if (this.favoriteStore && this.favoriteStore.contains(item)) {
+      //   item.favorite = true;
+      // }
+      this.historyStore.push(item);
       if (this.historyStore.length > MAX_HISTORY_LENGTH) {
         this.historyStore.shift();
       }
+      const historyQueries = this.historyStore.items;
+      const favoriteQueries = this.favoriteStore.items;
+      console.log('Favorites length: ' + favoriteQueries.length);
+      const queries = historyQueries.concat(favoriteQueries);
       this.setState({
-        queries: this.historyStore.items,
+        queries,
       });
     }
   }
@@ -79,8 +87,7 @@ export class QueryHistory extends React.Component {
         <HistoryQuery
           key={i}
           {...query}
-          favorites={this.favoriteStore}
-          onAddToFavorites={this.addToFavorites}
+          onToggleFavorites={this.toggleFavorites}
           onSelect={this.props.onSelectQuery}
         />
       );
@@ -100,15 +107,22 @@ export class QueryHistory extends React.Component {
     );
   }
 
-  addToFavorites(query, variables, operationName, favorites) {
+  toggleFavorites = (query, variables, operationName) => {
     const item = {
       query,
       variables,
       operationName,
-      favorite: true,
     };
-    if (favorites && !favorites.contains(item)) {
-      favorites.push(item);
+    if (!this.favoriteStore.contains(item)) {
+      item.favorite = true;
+      this.favoriteStore.push(item);
+    } else {
+      item.favorite = false;
+      this.favoriteStore.delete(item);
     }
-  }
+    const historyQueries = this.historyStore.items;
+    const favoriteQueries = this.favoriteStore.items;
+    const queries = historyQueries.concat(favoriteQueries);
+    this.setState({ queries });
+  };
 }

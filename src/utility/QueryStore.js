@@ -10,18 +10,12 @@ export default class QueryStore {
   }
 
   contains(item) {
-    if (
-      this.items.findIndex(
-        x =>
-          x.query === item.query &&
-          x.variables === item.variables &&
-          x.operationName === item.operationName,
-      ) === -1
-    ) {
-      return false;
-    } else {
-      return true;
-    }
+    return this.items.some(
+      x =>
+        x.query === item.query &&
+        x.variables === item.variables &&
+        x.operationName === item.operationName,
+    );
   }
 
   delete(item) {
@@ -33,6 +27,7 @@ export default class QueryStore {
     );
     if (index !== -1) {
       this.items.splice(index, 1);
+      this.save();
     }
   }
 

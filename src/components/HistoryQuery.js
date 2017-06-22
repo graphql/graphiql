@@ -15,8 +15,8 @@ export default class HistoryQuery extends React.Component {
     variables: PropTypes.string,
     operationName: PropTypes.string,
     favorite: PropTypes.bool,
-    favorites: PropTypes.object,
-    onAddToFavorites: PropTypes.func,
+    favoriteSize: PropTypes.number,
+    onToggleFavorites: PropTypes.func,
     onSelect: PropTypes.func,
   };
 
@@ -65,17 +65,15 @@ export default class HistoryQuery extends React.Component {
 
   handleStarClick(e) {
     e.stopPropagation();
-    console.log(this.props.favorites);
     if (this.state.favorite === true) {
       this.setState({ favorite: false });
     } else if (this.state.favorite === false) {
       this.setState({ favorite: true });
     }
-    this.props.onAddToFavorites(
+    this.props.onToggleFavorites(
       this.props.query,
       this.props.variables,
       this.props.operationName,
-      this.props.favorites,
     );
   }
 }
