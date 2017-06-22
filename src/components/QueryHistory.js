@@ -86,7 +86,7 @@ export class QueryHistory extends React.Component {
         <HistoryQuery
           key={i}
           {...query}
-          onToggleFavorites={this.toggleFavorites}
+          handleToggleFavorites={this.toggleFavorites}
           onSelect={this.props.onSelectQuery}
         />
       );
