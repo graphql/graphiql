@@ -16,7 +16,7 @@ export default class HistoryQuery extends React.Component {
     operationName: PropTypes.string,
     favorite: PropTypes.bool,
     favoriteSize: PropTypes.number,
-    onToggleFavorites: PropTypes.func,
+    handleToggleFavorite: PropTypes.func,
     onSelect: PropTypes.func,
   };
 
@@ -79,7 +79,7 @@ export default class HistoryQuery extends React.Component {
         starIcon: this.getStarIcon(true),
       });
     }
-    this.props.onToggleFavorites(
+    this.props.handleToggleFavorite(
       this.props.query,
       this.props.variables,
       this.props.operationName,
