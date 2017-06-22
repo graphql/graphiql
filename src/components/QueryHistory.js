@@ -72,7 +72,6 @@ export class QueryHistory extends React.Component {
       }
       const historyQueries = this.historyStore.items;
       const favoriteQueries = this.favoriteStore.items;
-      console.log('Favorites length: ' + favoriteQueries.length);
       const queries = historyQueries.concat(favoriteQueries);
       this.setState({
         queries,

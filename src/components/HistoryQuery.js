@@ -23,15 +23,14 @@ export default class HistoryQuery extends React.Component {
   constructor(props) {
     super(props);
     const favorite = this.props.favorite || false;
-    this.state = { favorite };
+    const starIcon = this.getStarIcon(favorite);
+    this.state = { favorite, starIcon };
   }
 
   render() {
     const starStyles = {
       float: 'right',
     };
-    const starIcon = this.state.favorite ? '\u2605' : '\u2606';
-
     let displayName;
     if (this.props.operationName) {
       displayName = this.props.operationName;
@@ -48,11 +47,15 @@ export default class HistoryQuery extends React.Component {
             {displayName}
           </span>
           <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
-            {starIcon}
+            {this.state.starIcon}
           </span>
         </p>
       </div>
     );
+  }
+
+  getStarIcon(isFavorite) {
+    return isFavorite ? '\u2605' : '\u2606';
   }
 
   handleClick() {
@@ -66,9 +69,15 @@ export default class HistoryQuery extends React.Component {
   handleStarClick(e) {
     e.stopPropagation();
     if (this.state.favorite === true) {
-      this.setState({ favorite: false });
+      this.setState({
+        favorite: false,
+        starIcon: this.getStarIcon(false),
+      });
     } else if (this.state.favorite === false) {
-      this.setState({ favorite: true });
+      this.setState({
+        favorite: true,
+        starIcon: this.getStarIcon(true),
+      });
     }
     this.props.onToggleFavorites(
       this.props.query,
