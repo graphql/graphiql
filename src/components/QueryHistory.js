@@ -63,9 +63,6 @@ export class QueryHistory extends React.Component {
         variables: nextProps.variables,
         operationName: nextProps.operationName,
       };
-      // if (this.favoriteStore && this.favoriteStore.contains(item)) {
-      //   item.favorite = true;
-      // }
       this.historyStore.push(item);
       if (this.historyStore.length > MAX_HISTORY_LENGTH) {
         this.historyStore.shift();
@@ -84,10 +81,10 @@ export class QueryHistory extends React.Component {
     const queryNodes = queries.map((query, i) => {
       return (
         <HistoryQuery
-          key={i}
-          {...query}
           handleToggleFavorite={this.toggleFavorite}
+          key={i}
           onSelect={this.props.onSelectQuery}
+          {...query}
         />
       );
     });

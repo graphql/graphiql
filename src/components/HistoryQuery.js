@@ -22,24 +22,19 @@ export default class HistoryQuery extends React.Component {
 
   constructor(props) {
     super(props);
-    const favorite = this.props.favorite || false;
-    const starIcon = this.getStarIcon(favorite);
-    this.state = { favorite, starIcon };
   }
 
   render() {
     const starStyles = {
       float: 'right',
     };
-    let displayName;
-    if (this.props.operationName) {
-      displayName = this.props.operationName;
-    } else {
-      displayName = this.props.query
+    const displayName =
+      this.props.operationName ||
+      this.props.query
         .split('\n')
         .filter(line => line.indexOf('#') !== 0)
         .join('');
-    }
+    const starIcon = this.props.favorite ? '\u2605' : '\u2606';
     return (
       <div>
         <p onClick={this.handleClick.bind(this)}>
@@ -47,15 +42,11 @@ export default class HistoryQuery extends React.Component {
             {displayName}
           </span>
           <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
-            {this.state.starIcon}
+            {starIcon}
           </span>
         </p>
       </div>
     );
-  }
-
-  getStarIcon(isFavorite) {
-    return isFavorite ? '\u2605' : '\u2606';
   }
 
   handleClick() {
@@ -68,17 +59,6 @@ export default class HistoryQuery extends React.Component {
 
   handleStarClick(e) {
     e.stopPropagation();
-    if (this.state.favorite === true) {
-      this.setState({
-        favorite: false,
-        starIcon: this.getStarIcon(false),
-      });
-    } else if (this.state.favorite === false) {
-      this.setState({
-        favorite: true,
-        starIcon: this.getStarIcon(true),
-      });
-    }
     this.props.handleToggleFavorite(
       this.props.query,
       this.props.variables,
