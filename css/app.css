@@ -150,7 +150,7 @@
   padding: 18px 16px 15px 12px;
 }
 
-.graphiql-container .query-editor {
+.graphiql-container div .query-editor {
   flex: 1;
   position: relative;
 }

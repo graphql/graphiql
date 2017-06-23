@@ -1,4 +1,4 @@
-export default class HistoryStore {
+export default class QueryStore {
   constructor(key, storage) {
     this.key = key;
     this.storage = storage;
@@ -7,6 +7,28 @@ export default class HistoryStore {
 
   get length() {
     return this.items.length;
+  }
+
+  contains(item) {
+    return this.items.some(
+      x =>
+        x.query === item.query &&
+        x.variables === item.variables &&
+        x.operationName === item.operationName,
+    );
+  }
+
+  delete(item) {
+    const index = this.items.findIndex(
+      x =>
+        x.query === item.query &&
+        x.variables === item.variables &&
+        x.operationName === item.operationName,
+    );
+    if (index !== -1) {
+      this.items.splice(index, 1);
+      this.save();
+    }
   }
 
   fetchRecent() {
