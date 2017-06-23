@@ -11,13 +11,13 @@ import PropTypes from 'prop-types';
 
 export default class HistoryQuery extends React.Component {
   static propTypes = {
-    query: PropTypes.string,
-    variables: PropTypes.string,
-    operationName: PropTypes.string,
     favorite: PropTypes.bool,
     favoriteSize: PropTypes.number,
     handleToggleFavorite: PropTypes.func,
+    operationName: PropTypes.string,
     onSelect: PropTypes.func,
+    query: PropTypes.string,
+    variables: PropTypes.string,
   };
 
   constructor(props) {
