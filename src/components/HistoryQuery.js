@@ -63,6 +63,7 @@ export default class HistoryQuery extends React.Component {
       this.props.query,
       this.props.variables,
       this.props.operationName,
+      this.props.favorite,
     );
   }
 }

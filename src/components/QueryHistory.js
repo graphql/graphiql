@@ -103,7 +103,7 @@ export class QueryHistory extends React.Component {
     );
   }
 
-  toggleFavorite = (query, variables, operationName) => {
+  toggleFavorite = (query, variables, operationName, favorite) => {
     const item = {
       query,
       variables,
@@ -112,7 +112,7 @@ export class QueryHistory extends React.Component {
     if (!this.favoriteStore.contains(item)) {
       item.favorite = true;
       this.favoriteStore.push(item);
-    } else {
+    } else if (favorite) {
       item.favorite = false;
       this.favoriteStore.delete(item);
     }
