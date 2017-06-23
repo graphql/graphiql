@@ -48,8 +48,8 @@
     "graphql-language-service-types": "0.0.20",
     "graphql-language-service-utils": "0.0.15",
     "nullthrows": "^1.0.0",
-    "vscode-jsonrpc": "^3.2.0",
-    "vscode-languageserver": "^3.2.1",
+    "vscode-jsonrpc": "^3.3.0",
+    "vscode-languageserver": "^3.3.0",
     "yargs": "^3.32.0 || ^7.0.0"
   },
   "devDependencies": {
