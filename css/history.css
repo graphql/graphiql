@@ -3,7 +3,7 @@
   padding: 0;
 }
 
-.graphiql-container .history-contents div p {
+.graphiql-container .history-contents p {
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -13,6 +13,6 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
-.graphiql-container .history-contents div:hover {
+.graphiql-container .history-contents p:hover {
   cursor: pointer;
 }

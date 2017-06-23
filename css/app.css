@@ -378,8 +378,8 @@
 .graphiql-container .toolbar-select-options > li.hover,
 .graphiql-container .toolbar-select-options > li:active,
 .graphiql-container .toolbar-select-options > li:hover,
-.graphiql-container .history-contents > div:hover,
-.graphiql-container .history-contents > div:active {
+.graphiql-container .history-contents > p:hover,
+.graphiql-container .history-contents > p:active {
   background: #e10098;
   color: #fff;
 }

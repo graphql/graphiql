@@ -22,11 +22,17 @@ export default class HistoryQuery extends React.Component {
 
   constructor(props) {
     super(props);
+    const starVisibility = this.props.favorite ? 'visible' : 'hidden';
+    this.state = { starVisibility };
   }
 
   render() {
+    if (this.props.favorite && this.state.starVisibility === 'hidden') {
+      this.setState({ starVisibility: 'visible' });
+    }
     const starStyles = {
       float: 'right',
+      visibility: this.state.starVisibility,
     };
     const displayName =
       this.props.operationName ||
@@ -36,17 +42,30 @@ export default class HistoryQuery extends React.Component {
         .join('');
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';
     return (
-      <div>
-        <p onClick={this.handleClick.bind(this)}>
-          <span>
-            {displayName}
-          </span>
-          <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
-            {starIcon}
-          </span>
-        </p>
-      </div>
+      <p
+        onClick={this.handleClick.bind(this)}
+        onMouseEnter={this.handleMouseEnter.bind(this)}
+        onMouseLeave={this.handleMouseLeave.bind(this)}>
+        <span>
+          {displayName}
+        </span>
+        <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
+          {starIcon}
+        </span>
+      </p>
     );
+  }
+
+  handleMouseEnter() {
+    if (!this.props.favorite) {
+      this.setState({ starVisibility: 'visible' });
+    }
+  }
+
+  handleMouseLeave() {
+    if (!this.props.favorite) {
+      this.setState({ starVisibility: 'hidden' });
+    }
   }
 
   handleClick() {
