@@ -53,7 +53,10 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       const appConfig = this._config[PROJECTS_NAME] &&
         this._config[PROJECTS_NAME][appName];
       if (appConfig) {
-        return this.isFileInIncludeDirs(filePath, appName);
+        // check if the file is included in includeDirs,
+        // and is not included in excludeDirs
+        return this.isFileInIncludeDirs(filePath, appName) &&
+          !this.isFileInExcludeDirs(filePath, appName);
       }
       return false;
     });
@@ -108,6 +111,25 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     }
     return this._config.includeDirs
       ? this._config.includeDirs.some(
+          dirPath => fileName.indexOf(dirPath) !== -1,
+        )
+      : false;
+  }
+
+  isFileInExcludeDirs(fileName: Uri, appName: ?string): boolean {
+    if (appName) {
+      if (
+        this._config[PROJECTS_NAME] &&
+        this._config[PROJECTS_NAME][appName] &&
+        this._config[PROJECTS_NAME][appName].excludeDirs
+      ) {
+        return this._config[PROJECTS_NAME][appName].excludeDirs.some(
+          dirPath => fileName.indexOf(dirPath) !== -1,
+        );
+      }
+    }
+    return this._config.excludeDirs
+      ? this._config.excludeDirs.some(
           dirPath => fileName.indexOf(dirPath) !== -1,
         )
       : false;

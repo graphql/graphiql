@@ -9,7 +9,7 @@
  */
 
 import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import {before, describe, it} from 'mocha';
 import {Range, Position, offsetToPosition, locToRange} from '../Range';
 
 const text = `query test {

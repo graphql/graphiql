@@ -182,9 +182,10 @@ export class GraphQLCache {
           exclude => !fileInfo.filePath.startsWith(path.join(rootDir, exclude)),
         ));
 
-    const {fragmentDefinitions, graphQLFileMap} = await readAllGraphQLFiles(
-      list,
-    );
+    const {
+      fragmentDefinitions,
+      graphQLFileMap,
+    } = await this.readAllGraphQLFiles(list);
 
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
@@ -237,7 +238,9 @@ export class GraphQLCache {
               return;
             }
 
-            const fileAndContent = await promiseToReadGraphQLFile(filePath);
+            const fileAndContent = await this.promiseToReadGraphQLFile(
+              filePath,
+            );
             graphQLFileMap.set(filePath, {
               ...fileAndContent,
               size,
@@ -283,7 +286,7 @@ export class GraphQLCache {
     exists: boolean,
   ): Promise<Map<Uri, GraphQLFileInfo>> {
     const fileAndContent = exists
-      ? await promiseToReadGraphQLFile(filePath)
+      ? await this.promiseToReadGraphQLFile(filePath)
       : null;
     const graphQLFileInfo = {...fileAndContent, ...metrics};
 
@@ -308,7 +311,7 @@ export class GraphQLCache {
     exists: boolean,
   ): Promise<Map<Uri, FragmentInfo>> {
     const fileAndContent = exists
-      ? await promiseToReadGraphQLFile(filePath)
+      ? await this.promiseToReadGraphQLFile(filePath)
       : null;
     // In the case of fragment definitions, the cache could just map the
     // definition name to the parsed ast, whether or not it existed
@@ -405,128 +408,128 @@ export class GraphQLCache {
     this._schemaMap.set(schemaPath, schema);
     return schema;
   };
-}
 
-/**
- * Given a list of GraphQL file metadata, read all files collected from watchman
- * and create fragmentDefinitions and GraphQL files cache.
- */
-async function readAllGraphQLFiles(
-  list: Array<GraphQLFileMetadata>,
-): Promise<{
-  fragmentDefinitions: Map<string, FragmentInfo>,
-  graphQLFileMap: Map<string, GraphQLFileInfo>,
-}> {
-  const queue = list.slice(); // copy
-  const responses = [];
-  while (queue.length) {
-    const chunk = queue.splice(0, MAX_READS);
-    const promises = chunk.map(fileInfo =>
-      promiseToReadGraphQLFile(fileInfo.filePath)
-        .catch(error => {
-          /**
-           * fs emits `EMFILE | ENFILE` error when there are too many
-           * open files - this can cause some fragment files not to be
-           * processed.  Solve this case by implementing a queue to save
-           * files failed to be processed because of `EMFILE` error,
-           * and await on Promises created with the next batch from the
-           * queue.
-           */
-          if (error.code === 'EMFILE' || error.code === 'ENFILE') {
-            queue.push(fileInfo);
-          }
-        })
-        .then(response =>
-          responses.push({
-            ...response,
-            mtime: fileInfo.mtime,
-            size: fileInfo.size,
-          })));
-    await Promise.all(promises); // eslint-disable-line babel/no-await-in-loop
-  }
-
-  return processGraphQLFiles(responses);
-}
-
-/**
- * Takes an array of GraphQL File information and batch-processes into a
- * map of fragmentDefinitions and GraphQL file cache.
- */
-function processGraphQLFiles(
-  responses: Array<GraphQLFileInfo>,
-): {
-  fragmentDefinitions: Map<string, FragmentInfo>,
-  graphQLFileMap: Map<string, GraphQLFileInfo>,
-} {
-  const fragmentDefinitions = new Map();
-  const graphQLFileMap = new Map();
-
-  responses.forEach(response => {
-    const {filePath, content, asts, mtime, size} = response;
-
-    if (asts) {
-      asts.forEach(ast => {
-        ast.definitions.forEach(definition => {
-          if (definition.kind === FRAGMENT_DEFINITION) {
-            fragmentDefinitions.set(definition.name.value, {
-              filePath,
-              content,
-              definition,
-            });
-          }
-        });
-      });
+  /**
+  * Given a list of GraphQL file metadata, read all files collected from watchman
+  * and create fragmentDefinitions and GraphQL files cache.
+  */
+  readAllGraphQLFiles = async (
+    list: Array<GraphQLFileMetadata>,
+  ): Promise<{
+    fragmentDefinitions: Map<string, FragmentInfo>,
+    graphQLFileMap: Map<string, GraphQLFileInfo>,
+  }> => {
+    const queue = list.slice(); // copy
+    const responses = [];
+    while (queue.length) {
+      const chunk = queue.splice(0, MAX_READS);
+      const promises = chunk.map(fileInfo =>
+        this.promiseToReadGraphQLFile(fileInfo.filePath)
+          .catch(error => {
+            /**
+            * fs emits `EMFILE | ENFILE` error when there are too many
+            * open files - this can cause some fragment files not to be
+            * processed.  Solve this case by implementing a queue to save
+            * files failed to be processed because of `EMFILE` error,
+            * and await on Promises created with the next batch from the
+            * queue.
+            */
+            if (error.code === 'EMFILE' || error.code === 'ENFILE') {
+              queue.push(fileInfo);
+            }
+          })
+          .then(response =>
+            responses.push({
+              ...response,
+              mtime: fileInfo.mtime,
+              size: fileInfo.size,
+            })));
+      await Promise.all(promises); // eslint-disable-line babel/no-await-in-loop
     }
 
-    // Relay the previous object whether or not ast exists.
-    graphQLFileMap.set(filePath, {
-      filePath,
-      content,
-      asts,
-      mtime,
-      size,
-    });
-  });
+    return this.processGraphQLFiles(responses);
+  };
 
-  return {fragmentDefinitions, graphQLFileMap};
-}
+  /**
+  * Takes an array of GraphQL File information and batch-processes into a
+  * map of fragmentDefinitions and GraphQL file cache.
+  */
+  processGraphQLFiles = (
+    responses: Array<GraphQLFileInfo>,
+  ): {
+    fragmentDefinitions: Map<string, FragmentInfo>,
+    graphQLFileMap: Map<string, GraphQLFileInfo>,
+  } => {
+    const fragmentDefinitions = new Map();
+    const graphQLFileMap = new Map();
 
-/**
- * Returns a Promise to read a GraphQL file and return a GraphQL metadata
- * including a parsed AST.
- */
-function promiseToReadGraphQLFile(
-  filePath: Uri,
-): Promise<{
-  filePath: Uri,
-  content: string,
-  asts: Array<DocumentNode>,
-}> {
-  return new Promise((resolve, reject) =>
-    fs.readFile(filePath, 'utf8', (error, content) => {
-      if (error) {
-        reject(error);
-        return;
+    responses.forEach(response => {
+      const {filePath, content, asts, mtime, size} = response;
+
+      if (asts) {
+        asts.forEach(ast => {
+          ast.definitions.forEach(definition => {
+            if (definition.kind === FRAGMENT_DEFINITION) {
+              fragmentDefinitions.set(definition.name.value, {
+                filePath,
+                content,
+                definition,
+              });
+            }
+          });
+        });
       }
 
-      const asts = [];
-      if (content.trim().length !== 0) {
-        try {
-          const queries = getQueryAndRange(content, filePath);
-          if (queries.length === 0) {
-            // still resolve with an empty ast
+      // Relay the previous object whether or not ast exists.
+      graphQLFileMap.set(filePath, {
+        filePath,
+        content,
+        asts,
+        mtime,
+        size,
+      });
+    });
+
+    return {fragmentDefinitions, graphQLFileMap};
+  };
+
+  /**
+  * Returns a Promise to read a GraphQL file and return a GraphQL metadata
+  * including a parsed AST.
+  */
+  promiseToReadGraphQLFile = (
+    filePath: Uri,
+  ): Promise<{
+    filePath: Uri,
+    content: string,
+    asts: Array<DocumentNode>,
+  }> => {
+    return new Promise((resolve, reject) =>
+      fs.readFile(filePath, 'utf8', (error, content) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+
+        const asts = [];
+        if (content.trim().length !== 0) {
+          try {
+            const queries = getQueryAndRange(content, filePath);
+            if (queries.length === 0) {
+              // still resolve with an empty ast
+              resolve({filePath, content, asts: []});
+              return;
+            }
+
+            queries.forEach(({query}) => asts.push(parse(query)));
+          } catch (_) {
+            // If query has syntax errors, go ahead and still resolve
+            // the filePath and the content, but leave ast empty.
             resolve({filePath, content, asts: []});
             return;
           }
-
-          queries.forEach(({query}) => asts.push(parse(query)));
-        } catch (_) {
-          // If query has syntax errors, go ahead and still resolve
-          // the filePath and the content, but leave ast empty.
-          resolve({filePath, content, asts: []});
-          return;
         }
-      }
-      resolve({filePath, content, asts});
-    }));
+        resolve({filePath, content, asts});
+      }));
+  };
 }
