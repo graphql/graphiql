@@ -99,8 +99,8 @@ describe('graphql-hint', () => {
 
   it('provides correct field name suggestion indentation', async () => {
     const suggestions = await getHintSuggestions('{\n  ', {line: 1, ch: 2});
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 2});
+    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 1, ch: 2, sticky: null});
   });
 
   it('provides correct argument suggestions', async () => {

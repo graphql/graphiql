@@ -32,8 +32,8 @@ const {stdout, stderr, status, error} = spawnSync(executable, [
   mode,
   glob,
 ]);
-const out = stdout.toString().trim();
-const err = stdout.toString().trim();
+const out = (stdout || '').toString().trim();
+const err = (stderr || '').toString().trim();
 
 function print(message) {
   if (message) {
