@@ -250,7 +250,7 @@ function readHex() {
   if (
     (code >= 48 && code <= 57) || // 0-9
     (code >= 65 && code <= 70) || // A-F
-    (code >= 97 && code <= 102)   // a-f
+    (code >= 97 && code <= 102) // a-f
   ) {
     return ch();
   }
