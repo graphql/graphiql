@@ -91,7 +91,7 @@
     "react": "15.5.4",
     "react-dom": "15.5.4",
     "react-test-renderer": "15.6.1",
-    "uglify-js": "3.0.19",
+    "uglify-js": "3.0.20",
     "uglifyify": "4.0.2",
     "watchify": "3.9.0"
   }
