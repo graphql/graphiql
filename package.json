@@ -74,7 +74,7 @@
     "browserify-shim": "3.8.14",
     "chai": "4.0.2",
     "chai-subset": "1.5.0",
-    "eslint": "3.19.0",
+    "eslint": "4.1.0",
     "eslint-plugin-babel": "4.1.1",
     "eslint-plugin-react": "7.1.0",
     "express": "5.0.0-alpha.5",
