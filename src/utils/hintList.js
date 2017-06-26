@@ -14,14 +14,14 @@ export default function hintList(cursor, token, list) {
     return;
   }
 
-  const tokenStart = token.type !== null && /"|\w/.test(token.string[0]) ?
-    token.start :
-    token.end;
+  const tokenStart = token.type !== null && /"|\w/.test(token.string[0])
+    ? token.start
+    : token.end;
 
   return {
     list: hints,
-    from: { line: cursor.line, column: tokenStart },
-    to: { line: cursor.line, column: token.end },
+    from: {line: cursor.line, column: tokenStart},
+    to: {line: cursor.line, column: token.end},
   };
 }
 
@@ -34,18 +34,19 @@ function filterAndSortList(list, text) {
 
   const byProximity = list.map(entry => ({
     proximity: getProximity(normalizeText(entry.text), text),
-    entry
+    entry,
   }));
 
   const conciseMatches = filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
-    pair => !pair.entry.isDeprecated
+    pair => !pair.entry.isDeprecated,
   );
 
-  const sortedMatches = conciseMatches.sort((a, b) =>
-    ((a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0)) ||
-    (a.proximity - b.proximity) ||
-    (a.entry.text.length - b.entry.text.length)
+  const sortedMatches = conciseMatches.sort(
+    (a, b) =>
+      (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
+      a.proximity - b.proximity ||
+      a.entry.text.length - b.entry.text.length,
   );
 
   return sortedMatches.map(pair => pair.entry);
@@ -97,7 +98,7 @@ function lexicalDistance(a, b) {
   const bLength = b.length;
 
   for (i = 0; i <= aLength; i++) {
-    d[i] = [ i ];
+    d[i] = [i];
   }
 
   for (j = 1; j <= bLength; j++) {
@@ -111,12 +112,10 @@ function lexicalDistance(a, b) {
       d[i][j] = Math.min(
         d[i - 1][j] + 1,
         d[i][j - 1] + 1,
-        d[i - 1][j - 1] + cost
+        d[i - 1][j - 1] + cost,
       );
 
-      if (i > 1 && j > 1 &&
-          a[i - 1] === b[j - 2] &&
-          a[i - 2] === b[j - 1]) {
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
         d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + cost);
       }
     }

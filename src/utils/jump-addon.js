@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-CodeMirror.defineOption('jump', false, function (cm, options, old) {
+CodeMirror.defineOption('jump', false, function(cm, options, old) {
   if (old && old !== CodeMirror.Init) {
     const oldOnMouseOver = cm.state.jump.onMouseOver;
     CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
@@ -20,12 +20,12 @@ CodeMirror.defineOption('jump', false, function (cm, options, old) {
   }
 
   if (options) {
-    const state = cm.state.jump = {
+    const state = (cm.state.jump = {
       options,
       onMouseOver: onMouseOver.bind(null, cm),
       onMouseOut: onMouseOut.bind(null, cm),
       onKeyDown: onKeyDown.bind(null, cm),
-    };
+    });
 
     CodeMirror.on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
     CodeMirror.on(cm.getWrapperElement(), 'mouseout', state.onMouseOut);
@@ -42,7 +42,7 @@ function onMouseOver(cm, event) {
   const box = target.getBoundingClientRect();
   const cursor = {
     left: (box.left + box.right) / 2,
-    top: (box.top + box.bottom) / 2
+    top: (box.top + box.bottom) / 2,
   };
 
   cm.state.jump.cursor = cursor;
@@ -129,9 +129,9 @@ function enableJumpMode(cm) {
     const destination = getDestination(token, options, cm);
     if (destination) {
       const marker = cm.markText(
-        { line: pos.line, ch: token.start },
-        { line: pos.line, ch: token.end },
-        { className: 'CodeMirror-jump-token' }
+        {line: pos.line, ch: token.start},
+        {line: pos.line, ch: token.end},
+        {className: 'CodeMirror-jump-token'},
       );
 
       cm.state.jump.marker = marker;

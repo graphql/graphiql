@@ -9,12 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-import {
-  list,
-  t,
-  onlineParser,
-  p,
-} from 'graphql-language-service-parser';
+import {list, t, onlineParser, p} from 'graphql-language-service-parser';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -25,7 +20,7 @@ CodeMirror.defineMode('graphql-results', config => {
     eatWhitespace: stream => stream.eatSpace(),
     lexRules: LexRules,
     parseRules: ParseRules,
-    editorConfig: { tabSize: config.tabSize }
+    editorConfig: {tabSize: config.tabSize},
   });
 
   return {
@@ -37,7 +32,7 @@ CodeMirror.defineMode('graphql-results', config => {
     fold: 'brace',
     closeBrackets: {
       pairs: '[]{}""',
-      explode: '[]{}'
+      explode: '[]{}',
     },
   };
 });
@@ -46,8 +41,9 @@ function indent(state, textAfter) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, pre-emptively dedenting for close braces.
-  const level = !levels || levels.length === 0 ? state.indentLevel :
-    levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
+  const level = !levels || levels.length === 0
+    ? state.indentLevel
+    : levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
   return level * this.config.indentUnit;
 }
 
@@ -72,31 +68,38 @@ const LexRules = {
  * The parser rules for JSON.
  */
 const ParseRules = {
-  Document: [ p('{'), list('Entry', p(',')), p('}') ],
-  Entry: [ t('String', 'def'), p(':'), 'Value' ],
+  Document: [p('{'), list('Entry', p(',')), p('}')],
+  Entry: [t('String', 'def'), p(':'), 'Value'],
   Value(token) {
     switch (token.kind) {
-      case 'Number': return 'NumberValue';
-      case 'String': return 'StringValue';
+      case 'Number':
+        return 'NumberValue';
+      case 'String':
+        return 'StringValue';
       case 'Punctuation':
         switch (token.value) {
-          case '[': return 'ListValue';
-          case '{': return 'ObjectValue';
+          case '[':
+            return 'ListValue';
+          case '{':
+            return 'ObjectValue';
         }
         return null;
       case 'Keyword':
         switch (token.value) {
-          case 'true': case 'false': return 'BooleanValue';
-          case 'null': return 'NullValue';
+          case 'true':
+          case 'false':
+            return 'BooleanValue';
+          case 'null':
+            return 'NullValue';
         }
         return null;
     }
   },
-  NumberValue: [ t('Number', 'number') ],
-  StringValue: [ t('String', 'string') ],
-  BooleanValue: [ t('Keyword', 'builtin') ],
-  NullValue: [ t('Keyword', 'keyword') ],
-  ListValue: [ p('['), list('Value', p(',')), p(']') ],
-  ObjectValue: [ p('{'), list('ObjectField', p(',')), p('}') ],
-  ObjectField: [ t('String', 'property'), p(':'), 'Value' ],
+  NumberValue: [t('Number', 'number')],
+  StringValue: [t('String', 'string')],
+  BooleanValue: [t('Keyword', 'builtin')],
+  NullValue: [t('Keyword', 'keyword')],
+  ListValue: [p('['), list('Value', p(',')), p(']')],
+  ObjectValue: [p('{'), list('ObjectField', p(',')), p('}')],
+  ObjectField: [t('String', 'property'), p(':'), 'Value'],
 };

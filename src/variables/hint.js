@@ -20,7 +20,6 @@ import {
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
 
-
 /**
  * Registers a "hint" helper for CodeMirror.
  *
@@ -54,18 +53,16 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
 
 function getVariablesHint(cur, token, options) {
   // If currently parsing an invalid state, attempt to hint to the prior state.
-  const state = token.state.kind === 'Invalid' ?
-    token.state.prevState :
-    token.state;
+  const state = token.state.kind === 'Invalid'
+    ? token.state.prevState
+    : token.state;
 
   const kind = state.kind;
   const step = state.step;
 
   // Variables can only be an object literal.
   if (kind === 'Document' && step === 0) {
-    return hintList(cur, token, [
-      { text: '{' },
-    ]);
+    return hintList(cur, token, [{text: '{'}]);
   }
 
   const variableToType = options.variableToType;
@@ -76,24 +73,33 @@ function getVariablesHint(cur, token, options) {
   const typeInfo = getTypeInfo(variableToType, token.state);
 
   // Top level should typeahead possible variables.
-  if (kind === 'Document' || kind === 'Variable' && step === 0) {
+  if (kind === 'Document' || (kind === 'Variable' && step === 0)) {
     const variableNames = Object.keys(variableToType);
-    return hintList(cur, token, variableNames.map(name => ({
-      text: `"${name}": `,
-      type: variableToType[name]
-    })));
+    return hintList(
+      cur,
+      token,
+      variableNames.map(name => ({
+        text: `"${name}": `,
+        type: variableToType[name],
+      })),
+    );
   }
 
   // Input Object fields
-  if (kind === 'ObjectValue' || kind === 'ObjectField' && step === 0) {
+  if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
     if (typeInfo.fields) {
-      const inputFields = Object.keys(typeInfo.fields)
-        .map(fieldName => typeInfo.fields[fieldName]);
-      return hintList(cur, token, inputFields.map(field => ({
-        text: `"${field.name}": `,
-        type: field.type,
-        description: field.description
-      })));
+      const inputFields = Object.keys(typeInfo.fields).map(
+        fieldName => typeInfo.fields[fieldName],
+      );
+      return hintList(
+        cur,
+        token,
+        inputFields.map(field => ({
+          text: `"${field.name}": `,
+          type: field.type,
+          description: field.description,
+        })),
+      );
     }
   }
 
@@ -103,27 +109,29 @@ function getVariablesHint(cur, token, options) {
     kind === 'NumberValue' ||
     kind === 'BooleanValue' ||
     kind === 'NullValue' ||
-    kind === 'ListValue' && step === 1 ||
-    kind === 'ObjectField' && step === 2 ||
-    kind === 'Variable' && step === 2
+    (kind === 'ListValue' && step === 1) ||
+    (kind === 'ObjectField' && step === 2) ||
+    (kind === 'Variable' && step === 2)
   ) {
     const namedInputType = getNamedType(typeInfo.type);
     if (namedInputType instanceof GraphQLInputObjectType) {
-      return hintList(cur, token, [
-        { text: '{' },
-      ]);
+      return hintList(cur, token, [{text: '{'}]);
     } else if (namedInputType instanceof GraphQLEnumType) {
       const valueMap = namedInputType.getValues();
       const values = Object.keys(valueMap).map(name => valueMap[name]);
-      return hintList(cur, token, values.map(value => ({
-        text: `"${value.name}"`,
-        type: namedInputType,
-        description: value.description
-      })));
+      return hintList(
+        cur,
+        token,
+        values.map(value => ({
+          text: `"${value.name}"`,
+          type: namedInputType,
+          description: value.description,
+        })),
+      );
     } else if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [
-        { text: 'true', type: GraphQLBoolean, description: 'Not false.' },
-        { text: 'false', type: GraphQLBoolean, description: 'Not true.' },
+        {text: 'true', type: GraphQLBoolean, description: 'Not false.'},
+        {text: 'false', type: GraphQLBoolean, description: 'Not true.'},
       ]);
     }
   }
@@ -142,18 +150,18 @@ function getTypeInfo(variableToType, tokenState) {
       info.type = variableToType[state.name];
     } else if (state.kind === 'ListValue') {
       const nullableType = getNullableType(info.type);
-      info.type = nullableType instanceof GraphQLList ?
-        nullableType.ofType :
-        null;
+      info.type = nullableType instanceof GraphQLList
+        ? nullableType.ofType
+        : null;
     } else if (state.kind === 'ObjectValue') {
       const objectType = getNamedType(info.type);
-      info.fields = objectType instanceof GraphQLInputObjectType ?
-        objectType.getFields() :
-        null;
+      info.fields = objectType instanceof GraphQLInputObjectType
+        ? objectType.getFields()
+        : null;
     } else if (state.kind === 'ObjectField') {
-      const objectField = state.name && info.fields ?
-        info.fields[state.name] :
-        null;
+      const objectField = state.name && info.fields
+        ? info.fields[state.name]
+        : null;
       info.type = objectField && objectField.type;
     }
   });

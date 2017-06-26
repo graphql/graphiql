@@ -24,7 +24,7 @@ import {
   GraphQLSkipDirective,
   GraphQLIncludeDirective,
   GraphQLDeprecatedDirective,
-  DirectiveLocation
+  DirectiveLocation,
 } from 'graphql';
 
 // Test Schema
@@ -35,28 +35,28 @@ const TestEnum = new GraphQLEnumType({
     RED: {},
     GREEN: {},
     BLUE: {},
-  }
+  },
 });
 
 const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
-    string: { type: GraphQLString },
-    int: { type: GraphQLInt },
-    float: { type: GraphQLFloat },
-    boolean: { type: GraphQLBoolean },
-    id: { type: GraphQLID },
-    enum: { type: TestEnum },
-    object: { type: TestInputObject },
+    string: {type: GraphQLString},
+    int: {type: GraphQLInt},
+    float: {type: GraphQLFloat},
+    boolean: {type: GraphQLBoolean},
+    id: {type: GraphQLID},
+    enum: {type: TestEnum},
+    object: {type: TestInputObject},
     // List
-    listString: { type: new GraphQLList(GraphQLString) },
-    listInt: { type: new GraphQLList(GraphQLInt) },
-    listFloat: { type: new GraphQLList(GraphQLFloat) },
-    listBoolean: { type: new GraphQLList(GraphQLBoolean) },
-    listID: { type: new GraphQLList(GraphQLID) },
-    listEnum: { type: new GraphQLList(TestEnum) },
-    listObject: { type: new GraphQLList(TestInputObject) },
-  })
+    listString: {type: new GraphQLList(GraphQLString)},
+    listInt: {type: new GraphQLList(GraphQLInt)},
+    listFloat: {type: new GraphQLList(GraphQLFloat)},
+    listBoolean: {type: new GraphQLList(GraphQLBoolean)},
+    listID: {type: new GraphQLList(GraphQLID)},
+    listEnum: {type: new GraphQLList(TestEnum)},
+    listObject: {type: new GraphQLList(TestInputObject)},
+  }),
 });
 
 const TestInterface = new GraphQLInterfaceType({
@@ -65,24 +65,24 @@ const TestInterface = new GraphQLInterfaceType({
   fields: {
     scalar: {
       type: GraphQLString,
-      resolve: () => ({})
-    }
-  }
+      resolve: () => ({}),
+    },
+  },
 });
 
 const UnionFirst = new GraphQLObjectType({
   name: 'First',
-  interfaces: [ TestInterface ],
+  interfaces: [TestInterface],
   fields: () => ({
     scalar: {
       type: GraphQLString,
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     first: {
       type: TestType,
-      resolve: () => ({})
-    }
-  })
+      resolve: () => ({}),
+    },
+  }),
 });
 
 const UnionSecond = new GraphQLObjectType({
@@ -90,17 +90,17 @@ const UnionSecond = new GraphQLObjectType({
   fields: () => ({
     second: {
       type: TestType,
-      resolve: () => ({})
-    }
-  })
+      resolve: () => ({}),
+    },
+  }),
 });
 
 const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
-  types: [ UnionFirst, UnionSecond ],
+  types: [UnionFirst, UnionSecond],
   resolveType() {
     return UnionFirst;
-  }
+  },
 });
 
 const TestType = new GraphQLObjectType({
@@ -108,30 +108,30 @@ const TestType = new GraphQLObjectType({
   fields: () => ({
     test: {
       type: TestType,
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     deprecatedTest: {
       type: TestType,
       deprecationReason: 'Use test instead.',
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     union: {
       type: TestUnion,
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     first: {
       type: UnionFirst,
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     id: {
       type: GraphQLInt,
-      resolve: () => ({})
+      resolve: () => ({}),
     },
     isTest: {
       type: GraphQLBoolean,
       resolve: () => {
         return true;
-      }
+      },
     },
     hasArgs: {
       type: GraphQLString,
@@ -139,24 +139,24 @@ const TestType = new GraphQLObjectType({
         return JSON.stringify(args);
       },
       args: {
-        string: { type: GraphQLString },
-        int: { type: GraphQLInt },
-        float: { type: GraphQLFloat },
-        boolean: { type: GraphQLBoolean },
-        id: { type: GraphQLID },
-        enum: { type: TestEnum },
-        object: { type: TestInputObject },
+        string: {type: GraphQLString},
+        int: {type: GraphQLInt},
+        float: {type: GraphQLFloat},
+        boolean: {type: GraphQLBoolean},
+        id: {type: GraphQLID},
+        enum: {type: TestEnum},
+        object: {type: TestInputObject},
         // List
-        listString: { type: new GraphQLList(GraphQLString) },
-        listInt: { type: new GraphQLList(GraphQLInt) },
-        listFloat: { type: new GraphQLList(GraphQLFloat) },
-        listBoolean: { type: new GraphQLList(GraphQLBoolean) },
-        listID: { type: new GraphQLList(GraphQLID) },
-        listEnum: { type: new GraphQLList(TestEnum) },
-        listObject: { type: new GraphQLList(TestInputObject) },
-      }
+        listString: {type: new GraphQLList(GraphQLString)},
+        listInt: {type: new GraphQLList(GraphQLInt)},
+        listFloat: {type: new GraphQLList(GraphQLFloat)},
+        listBoolean: {type: new GraphQLList(GraphQLBoolean)},
+        listID: {type: new GraphQLList(GraphQLID)},
+        listEnum: {type: new GraphQLList(TestEnum)},
+        listObject: {type: new GraphQLList(TestInputObject)},
+      },
     },
-  })
+  }),
 });
 
 const TestMutationType = new GraphQLObjectType({
@@ -167,10 +167,10 @@ const TestMutationType = new GraphQLObjectType({
       type: GraphQLString,
       description: 'Set the string field',
       args: {
-        value: { type: GraphQLString }
-      }
-    }
-  }
+        value: {type: GraphQLString},
+      },
+    },
+  },
 });
 
 const TestSubscriptionType = new GraphQLObjectType({
@@ -181,17 +181,15 @@ const TestSubscriptionType = new GraphQLObjectType({
       type: TestType,
       description: 'Subscribe to the test type',
       args: {
-        id: { type: GraphQLString }
-      }
-    }
-  }
+        id: {type: GraphQLString},
+      },
+    },
+  },
 });
 
 const OnArgDirective = new GraphQLDirective({
   name: 'onArg',
-  locations: [
-    DirectiveLocation.ARGUMENT_DEFINITION
-  ],
+  locations: [DirectiveLocation.ARGUMENT_DEFINITION],
 });
 
 const OnAllDefsDirective = new GraphQLDirective({
@@ -207,7 +205,7 @@ const OnAllDefsDirective = new GraphQLDirective({
     DirectiveLocation.ENUM_VALUE,
     DirectiveLocation.INPUT_OBJECT,
     DirectiveLocation.ARGUMENT_DEFINITION,
-    DirectiveLocation.INPUT_FIELD_DEFINITION
+    DirectiveLocation.INPUT_FIELD_DEFINITION,
   ],
 });
 
@@ -220,6 +218,6 @@ export const TestSchema = new GraphQLSchema({
     GraphQLSkipDirective,
     GraphQLDeprecatedDirective,
     OnArgDirective,
-    OnAllDefsDirective
-  ]
+    OnAllDefsDirective,
+  ],
 });

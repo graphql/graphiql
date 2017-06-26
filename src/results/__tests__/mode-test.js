@@ -7,16 +7,14 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import {expect} from 'chai';
+import {describe, it} from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
 
 import '../mode';
 
-
 describe('graphql-results-mode', () => {
-
   it('provides correct tokens and styles after parsing', () => {
     const queryStr =
       '{ "data": { "field": "value" }, "errors": [ { "message": "bork" } ] }';
@@ -24,31 +22,30 @@ describe('graphql-results-mode', () => {
 
     CodeMirror.runMode(queryStr, 'graphql-results', (token, style) => {
       if (style && style !== 'ws') {
-        tokens.push([ token, style ]);
+        tokens.push([token, style]);
       }
     });
 
     expect(tokens).to.deep.equal([
-      [ '{', 'punctuation' ],
-      [ '"data"', 'def' ],
-      [ ':', 'punctuation' ],
-      [ '{', 'punctuation' ],
-      [ '"field"', 'property' ],
-      [ ':', 'punctuation' ],
-      [ '"value"', 'string' ],
-      [ '}', 'punctuation' ],
-      [ ',', 'punctuation' ],
-      [ '"errors"', 'def' ],
-      [ ':', 'punctuation' ],
-      [ '[', 'punctuation' ],
-      [ '{', 'punctuation' ],
-      [ '"message"', 'property' ],
-      [ ':', 'punctuation' ],
-      [ '"bork"', 'string' ],
-      [ '}', 'punctuation' ],
-      [ ']', 'punctuation' ],
-      [ '}', 'punctuation' ]
+      ['{', 'punctuation'],
+      ['"data"', 'def'],
+      [':', 'punctuation'],
+      ['{', 'punctuation'],
+      ['"field"', 'property'],
+      [':', 'punctuation'],
+      ['"value"', 'string'],
+      ['}', 'punctuation'],
+      [',', 'punctuation'],
+      ['"errors"', 'def'],
+      [':', 'punctuation'],
+      ['[', 'punctuation'],
+      ['{', 'punctuation'],
+      ['"message"', 'property'],
+      [':', 'punctuation'],
+      ['"bork"', 'string'],
+      ['}', 'punctuation'],
+      [']', 'punctuation'],
+      ['}', 'punctuation'],
     ]);
   });
-
 });

@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-CodeMirror.defineOption('info', false, function (cm, options, old) {
+CodeMirror.defineOption('info', false, function(cm, options, old) {
   if (old && old !== CodeMirror.Init) {
     const oldOnMouseOver = cm.state.info.onMouseOver;
     CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
@@ -18,7 +18,7 @@ CodeMirror.defineOption('info', false, function (cm, options, old) {
   }
 
   if (options) {
-    const state = cm.state.info = createState(options);
+    const state = (cm.state.info = createState(options));
     state.onMouseOver = onMouseOver.bind(null, cm);
     CodeMirror.on(cm.getWrapperElement(), 'mouseover', state.onMouseOver);
   }
@@ -26,16 +26,15 @@ CodeMirror.defineOption('info', false, function (cm, options, old) {
 
 function createState(options) {
   return {
-    options:
-      options instanceof Function ? { render: options } :
-      options === true ? {} :
-      options
+    options: options instanceof Function
+      ? {render: options}
+      : options === true ? {} : options,
   };
 }
 
 function getHoverTime(cm) {
   const options = cm.state.info.options;
-  return options && options.hoverTime || 500;
+  return (options && options.hoverTime) || 500;
 }
 
 function onMouseOver(cm, e) {
@@ -51,19 +50,19 @@ function onMouseOver(cm, e) {
   const hoverTime = getHoverTime(cm);
   state.hoverTimeout = setTimeout(onHover, hoverTime);
 
-  const onMouseMove = function () {
+  const onMouseMove = function() {
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = setTimeout(onHover, hoverTime);
   };
 
-  const onMouseOut = function () {
+  const onMouseOut = function() {
     CodeMirror.off(document, 'mousemove', onMouseMove);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = undefined;
   };
 
-  const onHover = function () {
+  const onHover = function() {
     CodeMirror.off(document, 'mousemove', onMouseMove);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     state.hoverTimeout = undefined;
@@ -77,7 +76,7 @@ function onMouseOver(cm, e) {
 function onMouseHover(cm, box) {
   const pos = cm.coordsChar({
     left: (box.left + box.right) / 2,
-    top: (box.top + box.bottom) / 2
+    top: (box.top + box.bottom) / 2,
   });
 
   const state = cm.state.info;
@@ -103,17 +102,21 @@ function showPopup(cm, box, info) {
   const popupBox = popup.getBoundingClientRect();
   const popupStyle = popup.currentStyle || window.getComputedStyle(popup);
   const popupWidth =
-    popupBox.right - popupBox.left +
+    popupBox.right -
+    popupBox.left +
     parseFloat(popupStyle.marginLeft) +
     parseFloat(popupStyle.marginRight);
   const popupHeight =
-    popupBox.bottom - popupBox.top +
+    popupBox.bottom -
+    popupBox.top +
     parseFloat(popupStyle.marginTop) +
     parseFloat(popupStyle.marginBottom);
 
   let topPos = box.bottom;
-  if (popupHeight > window.innerHeight - box.bottom - 15 &&
-      box.top > window.innerHeight - box.bottom) {
+  if (
+    popupHeight > window.innerHeight - box.bottom - 15 &&
+    box.top > window.innerHeight - box.bottom
+  ) {
     topPos = box.top - popupHeight;
   }
 
@@ -132,23 +135,23 @@ function showPopup(cm, box, info) {
 
   let popupTimeout;
 
-  const onMouseOverPopup = function () {
+  const onMouseOverPopup = function() {
     clearTimeout(popupTimeout);
   };
 
-  const onMouseOut = function () {
+  const onMouseOut = function() {
     clearTimeout(popupTimeout);
     popupTimeout = setTimeout(hidePopup, 200);
   };
 
-  const hidePopup = function () {
+  const hidePopup = function() {
     CodeMirror.off(popup, 'mouseover', onMouseOverPopup);
     CodeMirror.off(popup, 'mouseout', onMouseOut);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
 
     if (popup.style.opacity) {
       popup.style.opacity = 0;
-      setTimeout(function () {
+      setTimeout(function() {
         if (popup.parentNode) {
           popup.parentNode.removeChild(popup);
         }

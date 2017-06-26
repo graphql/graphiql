@@ -21,16 +21,16 @@ var win = doc.window;
 global.document = win.document;
 global.window = win;
 
-global.document.createRange = function () {
+global.document.createRange = function() {
   return {
-    setEnd: function () {},
-    setStart: function () {},
-    getClientRects: function () {
-      return { top: 0, bottom: 0, left: 0, right: 0 };
+    setEnd: function() {},
+    setStart: function() {},
+    getClientRects: function() {
+      return {top: 0, bottom: 0, left: 0, right: 0};
     },
-    getBoundingClientRect: function () {
-      return { right: 0 };
-    }
+    getBoundingClientRect: function() {
+      return {right: 0};
+    },
   };
 };
 
@@ -57,7 +57,7 @@ var chai = require('chai');
 var chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 
-process.on('unhandledRejection', function (error) {
+process.on('unhandledRejection', function(error) {
   console.error('Unhandled Promise Rejection:');
-  console.error(error && error.stack || error);
+  console.error((error && error.stack) || error);
 });

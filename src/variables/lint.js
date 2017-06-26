@@ -19,7 +19,6 @@ import {
 
 import jsonParse from '../utils/jsonParse';
 
-
 /**
  * Registers a "lint" helper for CodeMirror.
  *
@@ -32,32 +31,36 @@ import jsonParse from '../utils/jsonParse';
  *   - variableToType: { [variable: string]: GraphQLInputType }
  *
  */
-CodeMirror.registerHelper('lint', 'graphql-variables', (text, options, editor) => {
-  // If there's no text, do nothing.
-  if (!text) {
-    return [];
-  }
-
-  // First, linter needs to determine if there are any parsing errors.
-  let ast;
-  try {
-    ast = jsonParse(text);
-  } catch (syntaxError) {
-    if (syntaxError.stack) {
-      throw syntaxError;
+CodeMirror.registerHelper(
+  'lint',
+  'graphql-variables',
+  (text, options, editor) => {
+    // If there's no text, do nothing.
+    if (!text) {
+      return [];
     }
-    return [ lintError(editor, syntaxError, syntaxError.message) ];
-  }
 
-  // If there are not yet known variables, do nothing.
-  const variableToType = options.variableToType;
-  if (!variableToType) {
-    return [];
-  }
+    // First, linter needs to determine if there are any parsing errors.
+    let ast;
+    try {
+      ast = jsonParse(text);
+    } catch (syntaxError) {
+      if (syntaxError.stack) {
+        throw syntaxError;
+      }
+      return [lintError(editor, syntaxError, syntaxError.message)];
+    }
 
-  // Then highlight any issues with the provided variables.
-  return validateVariables(editor, variableToType, ast);
-});
+    // If there are not yet known variables, do nothing.
+    const variableToType = options.variableToType;
+    if (!variableToType) {
+      return [];
+    }
+
+    // Then highlight any issues with the provided variables.
+    return validateVariables(editor, variableToType, ast);
+  },
+);
 
 // Given a variableToType object, a source text, and a JSON AST, produces a
 // list of CodeMirror annotations for any variable validation errors.
@@ -68,11 +71,15 @@ function validateVariables(editor, variableToType, variablesAST) {
     const variableName = member.key.value;
     const type = variableToType[variableName];
     if (!type) {
-      errors.push(lintError(editor, member.key,
-        `Variable "$${variableName}" does not appear in any GraphQL query.`
-      ));
+      errors.push(
+        lintError(
+          editor,
+          member.key,
+          `Variable "$${variableName}" does not appear in any GraphQL query.`,
+        ),
+      );
     } else {
-      validateValue(type, member.value).forEach(([ node, message ]) => {
+      validateValue(type, member.value).forEach(([node, message]) => {
         errors.push(lintError(editor, node, message));
       });
     }
@@ -86,10 +93,7 @@ function validateValue(type, valueAST) {
   // Validate non-nullable values.
   if (type instanceof GraphQLNonNull) {
     if (valueAST.kind === 'Null') {
-      return [ [
-        valueAST,
-        `Type "${type}" is non-nullable and cannot be null.`
-      ] ];
+      return [[valueAST, `Type "${type}" is non-nullable and cannot be null.`]];
     }
     return validateValue(type.ofType, valueAST);
   }
@@ -110,7 +114,7 @@ function validateValue(type, valueAST) {
   // Validate input objects.
   if (type instanceof GraphQLInputObjectType) {
     if (valueAST.kind !== 'Object') {
-      return [ [ valueAST, `Type "${type}" must be an Object.` ] ];
+      return [[valueAST, `Type "${type}" must be an Object.`]];
     }
 
     // Validate each field in the input object.
@@ -120,10 +124,9 @@ function validateValue(type, valueAST) {
       providedFields[fieldName] = true;
       const inputField = type.getFields()[fieldName];
       if (!inputField) {
-        return [ [
-          member.key,
-          `Type "${type}" does not have a field "${fieldName}".`
-        ] ];
+        return [
+          [member.key, `Type "${type}" does not have a field "${fieldName}".`],
+        ];
       }
       const fieldType = inputField ? inputField.type : undefined;
       return validateValue(fieldType, member.value);
@@ -136,7 +139,7 @@ function validateValue(type, valueAST) {
         if (fieldType instanceof GraphQLNonNull) {
           fieldErrors.push([
             valueAST,
-            `Object of type "${type}" is missing required field "${fieldName}".`
+            `Object of type "${type}" is missing required field "${fieldName}".`,
           ]);
         }
       }
@@ -147,27 +150,28 @@ function validateValue(type, valueAST) {
 
   // Validate common scalars.
   if (
-    type.name === 'Boolean' && valueAST.kind !== 'Boolean' ||
-    type.name === 'String' && valueAST.kind !== 'String' ||
-    type.name === 'ID' &&
-      valueAST.kind !== 'Number' && valueAST.kind !== 'String' ||
-    type.name === 'Float' && valueAST.kind !== 'Number' ||
-    type.name === 'Int' &&
-      (valueAST.kind !== 'Number' || (valueAST.value | 0) !== valueAST.value)
+    (type.name === 'Boolean' && valueAST.kind !== 'Boolean') ||
+    (type.name === 'String' && valueAST.kind !== 'String') ||
+    (type.name === 'ID' &&
+      valueAST.kind !== 'Number' &&
+      valueAST.kind !== 'String') ||
+    (type.name === 'Float' && valueAST.kind !== 'Number') ||
+    (type.name === 'Int' &&
+      (valueAST.kind !== 'Number' || (valueAST.value | 0) !== valueAST.value))
   ) {
-    return [ [ valueAST, `Expected value of type "${type}".` ] ];
+    return [[valueAST, `Expected value of type "${type}".`]];
   }
 
   // Validate enums and custom scalars.
   if (type instanceof GraphQLEnumType || type instanceof GraphQLScalarType) {
     if (
       (valueAST.kind !== 'String' &&
-       valueAST.kind !== 'Number' &&
-       valueAST.kind !== 'Boolean' &&
-       valueAST.kind !== 'Null') ||
+        valueAST.kind !== 'Number' &&
+        valueAST.kind !== 'Boolean' &&
+        valueAST.kind !== 'Null') ||
       isNullish(type.parseValue(valueAST.value))
     ) {
-      return [ [ valueAST, `Expected value of type "${type}".` ] ];
+      return [[valueAST, `Expected value of type "${type}".`]];
     }
   }
 
