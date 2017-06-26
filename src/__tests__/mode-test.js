@@ -7,13 +7,13 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import {expect} from 'chai';
+import {describe, it} from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
 import '../mode';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import {readFileSync} from 'fs';
+import {join} from 'path';
 
 describe('graphql-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
@@ -28,31 +28,36 @@ describe('graphql-mode', () => {
       }
     });
 
-    expect(tokens).to.deep.equal([
-      'query', 'name', '{', '}'
-    ]);
+    expect(tokens).to.deep.equal(['query', 'name', '{', '}']);
     expect(styles).to.deep.equal([
-      'keyword', 'def', 'punctuation', 'punctuation'
+      'keyword',
+      'def',
+      'punctuation',
+      'punctuation',
     ]);
   });
 
   it('parses Relay-style anonymous FragmentDefinitions', () => {
-    CodeMirror.runMode('fragment on Test { id }', 'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+    CodeMirror.runMode('fragment on Test { id }', 'graphql', (token, style) =>
+      expect(style).to.not.equal('invalidchar'),
     );
   });
 
   it('parses inline fragments with optional syntax correctly', () => {
-    CodeMirror.runMode('{ ... on OptionalType { name } }', 'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+    CodeMirror.runMode(
+      '{ ... on OptionalType { name } }',
+      'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar'),
     );
 
-    CodeMirror.runMode('{ ... { name } }', 'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+    CodeMirror.runMode('{ ... { name } }', 'graphql', (token, style) =>
+      expect(style).to.not.equal('invalidchar'),
     );
 
-    CodeMirror.runMode('{ ... @optionalDirective { name } }', 'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+    CodeMirror.runMode(
+      '{ ... @optionalDirective { name } }',
+      'graphql',
+      (token, style) => expect(style).to.not.equal('invalidchar'),
     );
   });
 
@@ -71,10 +76,9 @@ describe('graphql-mode', () => {
   });
 
   it('parses kitchen-sink query without invalidchar', () => {
-    const kitchenSink = readFileSync(
-      join(__dirname, '/kitchen-sink.graphql'),
-      { encoding: 'utf8' }
-    );
+    const kitchenSink = readFileSync(join(__dirname, '/kitchen-sink.graphql'), {
+      encoding: 'utf8',
+    });
 
     CodeMirror.runMode(kitchenSink, 'graphql', (token, style) => {
       expect(style).to.not.equal('invalidchar');
@@ -84,7 +88,7 @@ describe('graphql-mode', () => {
   it('parses schema-kitchen-sink query without invalidchar', () => {
     const schemaKitchenSink = readFileSync(
       join(__dirname, '/schema-kitchen-sink.graphql'),
-      { encoding: 'utf8' }
+      {encoding: 'utf8'},
     );
 
     CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {
@@ -97,23 +101,30 @@ describe('graphql-mode', () => {
       expect(style).to.not.equal('invalidchar');
     });
 
-    CodeMirror.runMode(`
+    CodeMirror.runMode(
+      `
       mutation {
         setString(value: "newString")
       }
-    `, 'graphql', (token, style) => {
-      expect(style).to.not.equal('invalidchar');
-    });
+    `,
+      'graphql',
+      (token, style) => {
+        expect(style).to.not.equal('invalidchar');
+      },
+    );
 
-    CodeMirror.runMode(`
+    CodeMirror.runMode(
+      `
       subscription {
         subscribeToTest(id: "anId") {
           id
         }
       }
-    `, 'graphql', (token, style) => {
-      expect(style).to.not.equal('invalidchar');
-    });
+    `,
+      'graphql',
+      (token, style) => {
+        expect(style).to.not.equal('invalidchar');
+      },
+    );
   });
-
 });

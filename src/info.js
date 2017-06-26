@@ -8,7 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { GraphQLList, GraphQLNonNull } from 'graphql';
+import {GraphQLList, GraphQLNonNull} from 'graphql';
 import CodeMirror from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
@@ -48,8 +48,10 @@ CodeMirror.registerHelper('info', 'graphql', (token, options) => {
   // Given a Schema and a Token, produce the contents of an info tooltip.
   // To do this, create a div element that we will render "into" and then pass
   // it to various rendering functions.
-  if (kind === 'Field' && step === 0 && typeInfo.fieldDef ||
-      kind === 'AliasedField' && step === 2 && typeInfo.fieldDef) {
+  if (
+    (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
+    (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
+  ) {
     const into = document.createElement('div');
     renderField(into, typeInfo, options);
     renderDescription(into, options, typeInfo.fieldDef);
@@ -64,14 +66,20 @@ CodeMirror.registerHelper('info', 'graphql', (token, options) => {
     renderArg(into, typeInfo, options);
     renderDescription(into, options, typeInfo.argDef);
     return into;
-  } else if (kind === 'EnumValue' &&
-             typeInfo.enumValue && typeInfo.enumValue.description) {
+  } else if (
+    kind === 'EnumValue' &&
+    typeInfo.enumValue &&
+    typeInfo.enumValue.description
+  ) {
     const into = document.createElement('div');
     renderEnumValue(into, typeInfo, options);
     renderDescription(into, options, typeInfo.enumValue);
     return into;
-  } else if (kind === 'NamedType' &&
-             typeInfo.type && typeInfo.type.description) {
+  } else if (
+    kind === 'NamedType' &&
+    typeInfo.type &&
+    typeInfo.type.description
+  ) {
     const into = document.createElement('div');
     renderType(into, typeInfo, options, typeInfo.type);
     renderDescription(into, options, typeInfo.type);
@@ -179,7 +187,7 @@ function text(into, content, className, options, ref) {
       // Providing a href forces proper a tag behavior, though we don't actually
       // want clicking the node to navigate anywhere.
       node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
-      node.addEventListener('click', function (e) {
+      node.addEventListener('click', function(e) {
         onClick(ref, e);
       });
     }

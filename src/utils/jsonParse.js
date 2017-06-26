@@ -52,7 +52,7 @@ function parseObj() {
     kind: 'Object',
     start: nodeStart,
     end: lastEnd,
-    members
+    members,
   };
 }
 
@@ -67,7 +67,7 @@ function parseMember() {
     start: nodeStart,
     end: lastEnd,
     key,
-    value
+    value,
   };
 }
 
@@ -85,7 +85,7 @@ function parseArr() {
     kind: 'Array',
     start: nodeStart,
     end: lastEnd,
-    values
+    values,
   };
 }
 
@@ -107,7 +107,7 @@ function parseVal() {
 }
 
 function curToken() {
-  return { kind, start, end, value: JSON.parse(string.slice(start, end)) };
+  return {kind, start, end, value: JSON.parse(string.slice(start, end))};
 }
 
 function expect(str) {
@@ -130,7 +130,7 @@ function expect(str) {
 }
 
 function syntaxError(message) {
-  return { message, start, end };
+  return {message, start, end};
 }
 
 function skip(k) {
@@ -168,8 +168,16 @@ function lex() {
       return readString();
     // -, 0-9
     case 45:
-    case 48: case 49: case 50: case 51: case 52:
-    case 53: case 54: case 55: case 56: case 57:
+    case 48:
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
       kind = 'Number';
       return readNumber();
     // f
@@ -177,7 +185,8 @@ function lex() {
       if (string.slice(start, start + 5) !== 'false') {
         break;
       }
-      end += 4; ch();
+      end += 4;
+      ch();
 
       kind = 'Boolean';
       return;
@@ -186,7 +195,8 @@ function lex() {
       if (string.slice(start, start + 4) !== 'null') {
         break;
       }
-      end += 3; ch();
+      end += 3;
+      ch();
 
       kind = 'Null';
       return;
@@ -195,7 +205,8 @@ function lex() {
       if (string.slice(start, start + 4) !== 'true') {
         break;
       }
-      end += 3; ch();
+      end += 3;
+      ch();
 
       kind = 'Boolean';
       return;
@@ -208,7 +219,8 @@ function lex() {
 function readString() {
   ch();
   while (code !== 34 && code > 31) {
-    if (code === 92) { // \
+    if (code === 92) {
+      // \
       ch();
       switch (code) {
         case 34: // "
@@ -258,24 +270,29 @@ function readHex() {
 }
 
 function readNumber() {
-  if (code === 45) { // -
+  if (code === 45) {
+    // -
     ch();
   }
 
-  if (code === 48) { // 0
+  if (code === 48) {
+    // 0
     ch();
   } else {
     readDigits();
   }
 
-  if (code === 46) { // .
+  if (code === 46) {
+    // .
     ch();
     readDigits();
   }
 
-  if (code === 69 || code === 101) { // E e
+  if (code === 69 || code === 101) {
+    // E e
     ch();
-    if (code === 43 || code === 45) { // + -
+    if (code === 43 || code === 45) {
+      // + -
       ch();
     }
     readDigits();
@@ -283,7 +300,8 @@ function readNumber() {
 }
 
 function readDigits() {
-  if (code < 48 || code > 57) { // 0 - 9
+  if (code < 48 || code > 57) {
+    // 0 - 9
     throw syntaxError('Expected decimal digit.');
   }
   do {

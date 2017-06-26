@@ -8,9 +8,9 @@
  */
 
 import CodeMirror from 'codemirror';
-import { getDiagnostics } from 'graphql-language-service-interface';
+import {getDiagnostics} from 'graphql-language-service-interface';
 
-const SEVERITY = [ 'ERROR', 'WARNING', 'INFORMATION', 'HINT' ];
+const SEVERITY = ['ERROR', 'WARNING', 'INFORMATION', 'HINT'];
 
 /**
  * Registers a "lint" helper for CodeMirror.

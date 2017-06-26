@@ -8,9 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {
-  getNamedType,
-} from 'graphql';
+import {getNamedType} from 'graphql';
 
 import type {
   GraphQLArgument,
@@ -62,7 +60,7 @@ export function getFieldReference(typeInfo: any): FieldReference {
     kind: 'Field',
     schema: typeInfo.schema,
     field: typeInfo.fieldDef,
-    type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType
+    type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType,
   };
 }
 
@@ -75,25 +73,27 @@ export function getDirectiveReference(typeInfo: any): DirectiveReference {
 }
 
 export function getArgumentReference(typeInfo: any): ArgumentReference {
-  return typeInfo.directiveDef ? {
-    kind: 'Argument',
-    schema: typeInfo.schema,
-    argument: typeInfo.argDef,
-    directive: typeInfo.directiveDef
-  } : {
-    kind: 'Argument',
-    schema: typeInfo.schema,
-    argument: typeInfo.argDef,
-    field: typeInfo.fieldDef,
-    type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType
-  };
+  return typeInfo.directiveDef
+    ? {
+        kind: 'Argument',
+        schema: typeInfo.schema,
+        argument: typeInfo.argDef,
+        directive: typeInfo.directiveDef,
+      }
+    : {
+        kind: 'Argument',
+        schema: typeInfo.schema,
+        argument: typeInfo.argDef,
+        field: typeInfo.fieldDef,
+        type: isMetaField(typeInfo.fieldDef) ? null : typeInfo.parentType,
+      };
 }
 
 export function getEnumValueReference(typeInfo: any): EnumValueReference {
   return {
     kind: 'EnumValue',
     value: typeInfo.enumValue,
-    type: getNamedType(typeInfo.inputType)
+    type: getNamedType(typeInfo.inputType),
   };
 }
 
@@ -101,12 +101,12 @@ export function getEnumValueReference(typeInfo: any): EnumValueReference {
 // though it defaults to the current type.
 export function getTypeReference(
   typeInfo: any,
-  type?: GraphQLNamedType
+  type?: GraphQLNamedType,
 ): TypeReference {
   return {
     kind: 'Type',
     schema: typeInfo.schema,
-    type: type || typeInfo.type
+    type: type || typeInfo.type,
   };
 }
 

@@ -9,13 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-import {
-  list,
-  t,
-  onlineParser,
-  opt,
-  p,
-} from 'graphql-language-service-parser';
+import {list, t, onlineParser, opt, p} from 'graphql-language-service-parser';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -26,7 +20,7 @@ CodeMirror.defineMode('graphql-variables', config => {
     eatWhitespace: stream => stream.eatSpace(),
     lexRules: LexRules,
     parseRules: ParseRules,
-    editorConfig: { tabSize: config.tabSize }
+    editorConfig: {tabSize: config.tabSize},
   });
 
   return {
@@ -38,7 +32,7 @@ CodeMirror.defineMode('graphql-variables', config => {
     fold: 'brace',
     closeBrackets: {
       pairs: '[]{}""',
-      explode: '[]{}'
+      explode: '[]{}',
     },
   };
 });
@@ -47,8 +41,9 @@ function indent(state, textAfter) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, pre-emptively dedenting for close braces.
-  const level = !levels || levels.length === 0 ? state.indentLevel :
-    levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
+  const level = !levels || levels.length === 0
+    ? state.indentLevel
+    : levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
   return level * this.config.indentUnit;
 }
 
@@ -73,33 +68,40 @@ const LexRules = {
  * The parser rules for JSON.
  */
 const ParseRules = {
-  Document: [ p('{'), list('Variable', opt(p(','))), p('}') ],
-  Variable: [ namedKey('variable'), p(':'), 'Value' ],
+  Document: [p('{'), list('Variable', opt(p(','))), p('}')],
+  Variable: [namedKey('variable'), p(':'), 'Value'],
   Value(token) {
     switch (token.kind) {
-      case 'Number': return 'NumberValue';
-      case 'String': return 'StringValue';
+      case 'Number':
+        return 'NumberValue';
+      case 'String':
+        return 'StringValue';
       case 'Punctuation':
         switch (token.value) {
-          case '[': return 'ListValue';
-          case '{': return 'ObjectValue';
+          case '[':
+            return 'ListValue';
+          case '{':
+            return 'ObjectValue';
         }
         return null;
       case 'Keyword':
         switch (token.value) {
-          case 'true': case 'false': return 'BooleanValue';
-          case 'null': return 'NullValue';
+          case 'true':
+          case 'false':
+            return 'BooleanValue';
+          case 'null':
+            return 'NullValue';
         }
         return null;
     }
   },
-  NumberValue: [ t('Number', 'number') ],
-  StringValue: [ t('String', 'string') ],
-  BooleanValue: [ t('Keyword', 'builtin') ],
-  NullValue: [ t('Keyword', 'keyword') ],
-  ListValue: [ p('['), list('Value', opt(p(','))), p(']') ],
-  ObjectValue: [ p('{'), list('ObjectField', opt(p(','))), p('}') ],
-  ObjectField: [ namedKey('attribute'), p(':'), 'Value' ],
+  NumberValue: [t('Number', 'number')],
+  StringValue: [t('String', 'string')],
+  BooleanValue: [t('Keyword', 'builtin')],
+  NullValue: [t('Keyword', 'keyword')],
+  ListValue: [p('['), list('Value', opt(p(','))), p(']')],
+  ObjectValue: [p('{'), list('ObjectField', opt(p(','))), p('}')],
+  ObjectField: [namedKey('attribute'), p(':'), 'Value'],
 };
 
 // A namedKey Token which will decorate the state with a `name`
@@ -109,6 +111,6 @@ function namedKey(style) {
     match: token => token.kind === 'String',
     update(state, token) {
       state.name = token.value.slice(1, -1); // Remove quotes.
-    }
+    },
   };
 }

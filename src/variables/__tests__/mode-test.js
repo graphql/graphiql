@@ -7,16 +7,14 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import {expect} from 'chai';
+import {describe, it} from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
 
 import '../mode';
 
-
 describe('graphql-variables-mode', () => {
-
   it('provides correct tokens and styles after parsing', () => {
     const queryStr =
       '{ "variable": { "field": "value" }, "list": [ 1, true, null ] }';
@@ -24,30 +22,30 @@ describe('graphql-variables-mode', () => {
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
       if (style && style !== 'ws') {
-        tokens.push([ token, style ]);
+        tokens.push([token, style]);
       }
     });
 
     expect(tokens).to.deep.equal([
-      [ '{', 'punctuation' ],
-      [ '"variable"', 'variable' ],
-      [ ':', 'punctuation' ],
-      [ '{', 'punctuation' ],
-      [ '"field"', 'attribute' ],
-      [ ':', 'punctuation' ],
-      [ '"value"', 'string' ],
-      [ '}', 'punctuation' ],
-      [ ',', 'punctuation' ],
-      [ '"list"', 'variable' ],
-      [ ':', 'punctuation' ],
-      [ '[', 'punctuation' ],
-      [ '1', 'number' ],
-      [ ',', 'punctuation' ],
-      [ 'true', 'builtin' ],
-      [ ',', 'punctuation' ],
-      [ 'null', 'keyword' ],
-      [ ']', 'punctuation' ],
-      [ '}', 'punctuation' ]
+      ['{', 'punctuation'],
+      ['"variable"', 'variable'],
+      [':', 'punctuation'],
+      ['{', 'punctuation'],
+      ['"field"', 'attribute'],
+      [':', 'punctuation'],
+      ['"value"', 'string'],
+      ['}', 'punctuation'],
+      [',', 'punctuation'],
+      ['"list"', 'variable'],
+      [':', 'punctuation'],
+      ['[', 'punctuation'],
+      ['1', 'number'],
+      [',', 'punctuation'],
+      ['true', 'builtin'],
+      [',', 'punctuation'],
+      ['null', 'keyword'],
+      [']', 'punctuation'],
+      ['}', 'punctuation'],
     ]);
   });
 
@@ -58,27 +56,27 @@ describe('graphql-variables-mode', () => {
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
       if (style && style !== 'ws') {
-        tokens.push([ token, style ]);
+        tokens.push([token, style]);
       }
     });
 
     expect(tokens).to.deep.equal([
-      [ '{', 'punctuation' ],
-      [ '"variable"', 'variable' ],
-      [ ':', 'punctuation' ],
-      [ '{', 'punctuation' ],
-      [ '"field"', 'attribute' ],
-      [ ':', 'punctuation' ],
-      [ '"value"', 'string' ],
-      [ '}', 'punctuation' ],
-      [ '"list"', 'variable' ],
-      [ ':', 'punctuation' ],
-      [ '[', 'punctuation' ],
-      [ '1', 'number' ],
-      [ 'true', 'builtin' ],
-      [ 'null', 'keyword' ],
-      [ ']', 'punctuation' ],
-      [ '}', 'punctuation' ]
+      ['{', 'punctuation'],
+      ['"variable"', 'variable'],
+      [':', 'punctuation'],
+      ['{', 'punctuation'],
+      ['"field"', 'attribute'],
+      [':', 'punctuation'],
+      ['"value"', 'string'],
+      ['}', 'punctuation'],
+      ['"list"', 'variable'],
+      [':', 'punctuation'],
+      ['[', 'punctuation'],
+      ['1', 'number'],
+      ['true', 'builtin'],
+      ['null', 'keyword'],
+      [']', 'punctuation'],
+      ['}', 'punctuation'],
     ]);
   });
 
@@ -95,5 +93,4 @@ describe('graphql-variables-mode', () => {
       }
     });
   });
-
 });

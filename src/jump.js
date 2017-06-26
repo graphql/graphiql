@@ -45,8 +45,10 @@ CodeMirror.registerHelper('jump', 'graphql', (token, options) => {
   const step = state.step;
   const typeInfo = getTypeInfo(options.schema, state);
 
-  if (kind === 'Field' && step === 0 && typeInfo.fieldDef ||
-      kind === 'AliasedField' && step === 2 && typeInfo.fieldDef) {
+  if (
+    (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
+    (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
+  ) {
     return getFieldReference(typeInfo);
   } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     return getDirectiveReference(typeInfo);

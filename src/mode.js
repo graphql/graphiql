@@ -15,7 +15,6 @@ import {
   onlineParser,
 } from 'graphql-language-service-parser';
 
-
 /**
  * The GraphQL mode is defined as a tokenizer along with a list of rules, each
  * of which is either a function or an array.
@@ -41,7 +40,7 @@ CodeMirror.defineMode('graphql', config => {
     eatWhitespace: stream => stream.eatWhile(isIgnored),
     lexRules: LexRules,
     parseRules: ParseRules,
-    editorConfig: { tabSize: config.tabSize }
+    editorConfig: {tabSize: config.tabSize},
   });
 
   return {
@@ -54,7 +53,7 @@ CodeMirror.defineMode('graphql', config => {
     lineComment: '#',
     closeBrackets: {
       pairs: '()[]{}""',
-      explode: '()[]{}'
+      explode: '()[]{}',
     },
   };
 });
@@ -63,7 +62,8 @@ function indent(state, textAfter) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, pre-emptively dedenting for close braces.
-  const level = !levels || levels.length === 0 ? state.indentLevel :
-    levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
+  const level = !levels || levels.length === 0
+    ? state.indentLevel
+    : levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
   return level * this.config.indentUnit;
 }
