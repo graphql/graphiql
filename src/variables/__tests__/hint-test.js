@@ -80,8 +80,8 @@ describe('graphql-variables-hint', () => {
       '{\n  ',
       {line: 1, ch: 2},
     );
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 2});
+    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 1, ch: 2, sticky: null});
   });
 
   it('provides correct variable completion', async () => {
@@ -91,8 +91,8 @@ describe('graphql-variables-hint', () => {
       {line: 1, ch: 4},
     );
     checkSuggestions(['"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 4});
+    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 1, ch: 4, sticky: null});
   });
 
   it('provides correct variable completion with open quote', async () => {
@@ -102,8 +102,8 @@ describe('graphql-variables-hint', () => {
       {line: 1, ch: 4},
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 3});
+    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 1, ch: 3, sticky: null});
   });
 
   it('provides correct Enum suggestions', async () => {
@@ -139,8 +139,8 @@ describe('graphql-variables-hint', () => {
       Object.keys(TestInput.getFields()).map(name => `"${name}": `),
       suggestions.list,
     );
-    expect(suggestions.from).to.deep.equal({line: 2, ch: 4});
-    expect(suggestions.to).to.deep.equal({line: 2, ch: 4});
+    expect(suggestions.from).to.deep.equal({line: 2, ch: 4, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 2, ch: 4, sticky: null});
   });
 
   it('provides correct Input Object field completion', async () => {
@@ -150,8 +150,8 @@ describe('graphql-variables-hint', () => {
       {line: 2, ch: 8},
     );
     checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 2, ch: 4});
-    expect(suggestions.to).to.deep.equal({line: 2, ch: 8});
+    expect(suggestions.from).to.deep.equal({line: 2, ch: 4, sticky: null});
+    expect(suggestions.to).to.deep.equal({line: 2, ch: 8, sticky: null});
   });
 
   it('provides correct Input Object field value completion', async () => {

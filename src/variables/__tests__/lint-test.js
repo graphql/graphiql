@@ -67,8 +67,8 @@ describe('graphql-variables-lint', () => {
       message: 'Expected value of type "Int".',
       severity: 'error',
       type: 'validation',
-      from: {line: 0, ch: 10},
-      to: {line: 0, ch: 15},
+      from: {line: 0, ch: 10, sticky: null},
+      to: {line: 0, ch: 15, sticky: null},
     });
   });
 
@@ -82,8 +82,8 @@ describe('graphql-variables-lint', () => {
       message: 'Variable "$food" does not appear in any GraphQL query.',
       severity: 'error',
       type: 'validation',
-      from: {line: 0, ch: 3},
-      to: {line: 0, ch: 9},
+      from: {line: 0, ch: 3, sticky: null},
+      to: {line: 0, ch: 9, sticky: null},
     });
   });
 
