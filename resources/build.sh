@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+set -o pipefail
 
 if [ ! -d "node_modules/.bin" ]; then
   echo "Be sure to run \`npm install\` before building GraphiQL."
