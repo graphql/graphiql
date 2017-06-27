@@ -32,7 +32,7 @@
     "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
   },
   "scripts": {
-    "build": ". ./resources/build.sh",
+    "build": "bash ./resources/build.sh",
     "check": "flow check",
     "dev": "babel-node test/server.js",
     "lint": "eslint src",
