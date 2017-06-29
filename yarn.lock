@@ -1168,7 +1168,7 @@ graphql-language-service-config@0.0.15:
   dependencies:
     graphql-language-service-types "0.0.20"
 
-graphql-language-service-interface@0.0.16:
+graphql-language-service-interface@^0.0.16:
   version "0.0.16"
   resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.16.tgz#36f3e0640dd58be1a5c0b5cded47870a065635ec"
   dependencies:
