@@ -1,6 +1,6 @@
 {
   "graphql-language-service": {
-    "version": "0.0.28"
+    "version": "0.0.31"
   },
   "graphql-language-server": {
     "version": "0.0.4"
@@ -15,7 +15,7 @@
     "version": "0.0.14"
   },
   "graphql-language-service-server": {
-    "version": "0.0.27"
+    "version": "0.0.30"
   },
   "graphql-language-service-types": {
     "version": "0.0.20"
