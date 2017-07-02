@@ -9,12 +9,15 @@
  */
 
 import type {
+  CachedContent,
   Diagnostic,
   GraphQLCache,
   Uri,
+  Range as RangeType,
 } from 'graphql-language-service-types';
 
 import {extname} from 'path';
+import {URL} from 'url';
 import {findGraphQLConfigDir} from 'graphql-language-service-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
 import {Position, Range} from 'graphql-language-service-utils';
@@ -37,14 +40,10 @@ import {getGraphQLCache} from './GraphQLCache';
 import {findGraphQLTags} from './findGraphQLTags';
 
 // Map { uri => { query, range } }
-type Content = {
-  query: string,
-  range: ?Range,
-};
 
 type CachedDocumentType = {
   version: number,
-  contents: Array<Content>,
+  contents: Array<CachedContent>,
 };
 
 export class MessageProcessor {
@@ -170,6 +169,8 @@ export class MessageProcessor {
     if (!cachedDocument) {
       return null;
     }
+
+    this._updateFragmentDefinition(uri, contents);
 
     // Send the diagnostics onChange as well
     const diagnostics = [];
@@ -318,6 +319,20 @@ export class MessageProcessor {
     return formatted;
   }
 
+  async _updateFragmentDefinition(
+    uri: Uri,
+    contents: Array<CachedContent>,
+  ): Promise<void> {
+    const graphQLConfig = this._graphQLCache.getGraphQLConfig();
+    const rootDir = graphQLConfig.getRootDir();
+
+    await this._graphQLCache.updateFragmentDefinition(
+      rootDir,
+      new URL(uri).pathname,
+      contents,
+    );
+  }
+
   _getCachedDocument(uri: string): ?CachedDocumentType {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
@@ -332,7 +347,7 @@ export class MessageProcessor {
   _invalidateCache(
     textDocument: Object,
     uri: Uri,
-    contents: Array<Content>,
+    contents: Array<CachedContent>,
   ): void {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
@@ -360,7 +375,10 @@ export class MessageProcessor {
 // Check the uri to determine the file type (JavaScript/GraphQL).
 // If .js file, either return the parsed query/range or null if GraphQL queries
 // are not found.
-export function getQueryAndRange(text: string, uri: string): Array<Content> {
+export function getQueryAndRange(
+  text: string,
+  uri: string,
+): Array<CachedContent> {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
   if (extname(uri) === '.js') {
@@ -383,7 +401,7 @@ export function getQueryAndRange(text: string, uri: string): Array<Content> {
 function processDiagnosticsMessage(
   results: Array<Diagnostic>,
   query: string,
-  range: ?Range,
+  range: ?RangeType,
 ): Array<Diagnostic> {
   const queryLines = query.split('\n');
   const totalLines = queryLines.length;

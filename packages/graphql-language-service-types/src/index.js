@@ -102,6 +102,12 @@ export interface GraphQLCache {
     appName: ?string,
   ) => Promise<Map<string, FragmentInfo>>,
 
+  +updateFragmentDefinition: (
+    rootDir: Uri,
+    filePath: Uri,
+    contents: Array<CachedContent>,
+  ) => Promise<void>,
+
   getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>,
 }
 
@@ -117,6 +123,11 @@ export interface Range {
   end: Position,
   containsPosition: (position: Position) => boolean,
 }
+
+export type CachedContent = {
+  query: string,
+  range: ?Range,
+};
 
 export type ParseRule =
   | ((token: Token, stream: CharacterStream) => ?string)

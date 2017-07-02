@@ -10,6 +10,7 @@
 
 import type {ASTNode, DocumentNode} from 'graphql/language';
 import type {
+  CachedContent,
   GraphQLConfig as GraphQLConfigInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
@@ -305,6 +306,43 @@ export class GraphQLCache {
     return graphQLFileMap;
   }
 
+  async updateFragmentDefinition(
+    rootDir: Uri,
+    filePath: Uri,
+    contents: Array<CachedContent>,
+  ): Promise<void> {
+    const cache = this._fragmentDefinitionsCache.get(rootDir);
+    const asts = contents.map(({query}) => {
+      try {
+        return {ast: parse(query), query};
+      } catch (error) {
+        return {ast: null, query};
+      }
+    });
+    if (cache) {
+      // first go through the fragment list to delete the ones from this file
+      cache.forEach((value, key) => {
+        if (value.filePath === filePath) {
+          cache.delete(key);
+        }
+      });
+      asts.forEach(({ast, query}) => {
+        if (!ast) {
+          return;
+        }
+        ast.definitions.forEach(definition => {
+          if (definition.kind === FRAGMENT_DEFINITION) {
+            cache.set(definition.name.value, {
+              filePath,
+              content: query,
+              definition,
+            });
+          }
+        });
+      });
+    }
+  }
+
   async _updateFragmentDefinitionCache(
     fragmentDefinitionCache: Map<Uri, FragmentInfo>,
     filePath: Uri,
@@ -336,14 +374,17 @@ export class GraphQLCache {
     return fragmentDefinitionCache;
   }
 
-  _extendSchema(schema: GraphQLSchema): GraphQLSchema {
+  _extendSchema(schema: GraphQLSchema, schemaPath: string): GraphQLSchema {
     const graphQLFileMap = this._graphQLFileListCache.get(this._configDir);
     const typeExtensions = [];
     if (!graphQLFileMap) {
       return schema;
     }
-    graphQLFileMap.forEach(({asts}) => {
+    graphQLFileMap.forEach(({filePath, asts}) => {
       asts.forEach(ast => {
+        if (filePath === schemaPath) {
+          return;
+        }
         ast.definitions.forEach(definition => {
           switch (definition.kind) {
             case OBJECT_TYPE_DEFINITION:
@@ -373,7 +414,7 @@ export class GraphQLCache {
     const schemaPath = path.join(this._configDir, configSchemaPath);
     if (this._schemaMap.has(schemaPath)) {
       const schema = this._schemaMap.get(schemaPath);
-      return schema ? this._extendSchema(schema) : schema;
+      return schema ? this._extendSchema(schema, schemaPath) : schema;
     }
 
     const schemaDSL = await new Promise(resolve =>
@@ -402,7 +443,7 @@ export class GraphQLCache {
     }
 
     if (this._graphQLFileListCache.has(this._configDir)) {
-      schema = this._extendSchema(schema);
+      schema = this._extendSchema(schema, schemaPath);
     }
 
     this._schemaMap.set(schemaPath, schema);
