@@ -1162,40 +1162,40 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-language-service-config@0.0.15:
+graphql-language-service-config@0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.17.tgz#36b5a9906c0bf0d356d31b7583058f9b85d1793e"
+  dependencies:
+    graphql-language-service-types "0.0.21"
+
+graphql-language-service-interface@0.0.19:
+  version "0.0.19"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.19.tgz#c58fa7bd95d2f30e33e04937a1a2c00a9740926e"
+  dependencies:
+    graphql "^0.10.1"
+    graphql-language-service-config "0.0.17"
+    graphql-language-service-parser "0.0.15"
+    graphql-language-service-types "0.0.21"
+    graphql-language-service-utils "0.0.17"
+
+graphql-language-service-parser@0.0.15:
   version "0.0.15"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-config/-/graphql-language-service-config-0.0.15.tgz#12b91d6adf45dfdbe45b54e9ad66eaa7a5b533a1"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.15.tgz#fd64afd8873624fa3c4a5831a08de9ccd6cc5182"
   dependencies:
-    graphql-language-service-types "0.0.20"
+    graphql-language-service-types "0.0.21"
 
-graphql-language-service-interface@^0.0.16:
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-0.0.16.tgz#36f3e0640dd58be1a5c0b5cded47870a065635ec"
-  dependencies:
-    graphql "^0.10.1"
-    graphql-language-service-config "0.0.15"
-    graphql-language-service-parser "0.0.14"
-    graphql-language-service-types "0.0.20"
-    graphql-language-service-utils "0.0.15"
-
-graphql-language-service-parser@0.0.14, graphql-language-service-parser@^0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-parser/-/graphql-language-service-parser-0.0.14.tgz#70353f776cfaf5d30e110c4edd70d3eb98a4d062"
-  dependencies:
-    graphql-language-service-types "0.0.20"
-
-graphql-language-service-types@0.0.20:
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.20.tgz#57514fd81ed580c7450ea582605eeedc6ee3fc55"
+graphql-language-service-types@0.0.21:
+  version "0.0.21"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.0.21.tgz#b9453366fc8985765034bf34056fe93603a24b82"
   dependencies:
     graphql "^0.10.1"
 
-graphql-language-service-utils@0.0.15:
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.15.tgz#3541dd467be9ba4f516c2fc68a4b13c74d4fe952"
+graphql-language-service-utils@0.0.17:
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-0.0.17.tgz#a8b91eca80c6aa5a0d461a0bbb63317986f9b989"
   dependencies:
     graphql "^0.10.1"
-    graphql-language-service-types "0.0.20"
+    graphql-language-service-types "0.0.21"
 
 graphql@^0.10.1:
   version "0.10.1"
@@ -1472,9 +1472,9 @@ jschardet@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/jschardet/-/jschardet-1.4.2.tgz#2aa107f142af4121d145659d44f50830961e699a"
 
-jsdom@11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-11.0.0.tgz#1ee507cb2c0b16c875002476b1a8557d951353e5"
+jsdom@11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/jsdom/-/jsdom-11.1.0.tgz#6c48d7a48ffc5c300283c312904d15da8360509b"
   dependencies:
     abab "^1.0.3"
     acorn "^4.0.4"
@@ -1485,7 +1485,7 @@ jsdom@11.0.0:
     cssstyle ">= 0.2.37 < 0.3.0"
     escodegen "^1.6.1"
     html-encoding-sniffer "^1.0.1"
-    nwmatcher ">= 1.3.9 < 2.0.0"
+    nwmatcher "^1.4.1"
     parse5 "^3.0.2"
     pn "^1.0.0"
     request "^2.79.0"
@@ -1495,7 +1495,7 @@ jsdom@11.0.0:
     tough-cookie "^2.3.2"
     webidl-conversions "^4.0.0"
     whatwg-encoding "^1.0.1"
-    whatwg-url "^4.3.0"
+    whatwg-url "^6.1.0"
     xml-name-validator "^2.0.1"
 
 jsesc@^1.3.0:
@@ -1600,6 +1600,10 @@ lodash.keys@^3.0.0:
     lodash._getnative "^3.0.0"
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
+
+lodash.sortby@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/lodash.sortby/-/lodash.sortby-4.7.0.tgz#edd14c824e2cc9c1e0b0a1b42bb5210516a42438"
 
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.15.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
@@ -1759,9 +1763,9 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-"nwmatcher@>= 1.3.9 < 2.0.0":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/nwmatcher/-/nwmatcher-1.3.9.tgz#8bab486ff7fa3dfd086656bbe8b17116d3692d2a"
+nwmatcher@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/nwmatcher/-/nwmatcher-1.4.1.tgz#7ae9b07b0ea804db7e25f05cb5fe4097d4e4949f"
 
 oauth-sign@~0.8.1:
   version "0.8.2"
@@ -2341,11 +2345,7 @@ watch@~0.10.0:
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/watch/-/watch-0.10.0.tgz#77798b2da0f9910d595f1ace5b0c2258521f21dc"
 
-webidl-conversions@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-3.0.1.tgz#24534275e2a7bc6be7bc86611cc16ae0a5654871"
-
-webidl-conversions@^4.0.0:
+webidl-conversions@^4.0.0, webidl-conversions@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.1.tgz#8015a17ab83e7e1b311638486ace81da6ce206a0"
 
@@ -2355,12 +2355,13 @@ whatwg-encoding@^1.0.1:
   dependencies:
     iconv-lite "0.4.13"
 
-whatwg-url@^4.3.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-4.7.0.tgz#202035ac1955b087cdd20fa8b58ded3ab1cd2af5"
+whatwg-url@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/whatwg-url/-/whatwg-url-6.1.0.tgz#5fc8279b93d75483b9ced8b26239854847a18578"
   dependencies:
+    lodash.sortby "^4.7.0"
     tr46 "~0.0.3"
-    webidl-conversions "^3.0.0"
+    webidl-conversions "^4.0.1"
 
 wide-align@^1.1.0:
   version "1.1.0"
