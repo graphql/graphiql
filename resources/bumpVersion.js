@@ -47,6 +47,15 @@ function print(message) {
   process.stdout.write(message + '\n');
 }
 
+const PACKAGE_NAMES = {
+  server: 'graphql-language-service-server',
+  interface: 'graphql-language-service-interface',
+  parser: 'graphql-language-service-parser',
+  config: 'graphql-language-service-config',
+  utils: 'graphql-language-service-utils',
+  types: 'graphql-language-service-types',
+};
+
 function parseArguments() {
   const args = [...process.argv];
   const startIndex = args.findIndex(arg => arg === __filename);
@@ -57,14 +66,15 @@ function parseArguments() {
   let bumpTargetName = null;
   for (let i = startIndex + 1; i < args.length; i++) {
     let typeMatch = args[i].match(/^--(major|minor|patch)$/i);
+    const packageName = PACKAGE_NAMES[args[i]] || args[i];
     if (typeMatch) {
       bumpType = typeMatch[1].toLowerCase();
-    } else if (packageNames.indexOf(args[i]) === -1) {
+    } else if (packageNames.indexOf(packageName) === -1) {
       throw new Error(`Unrecognized package name: ${args[i]}`);
     } else if (bumpTargetName) {
       throw new Error(`May only specify one package to bump`);
     } else {
-      bumpTargetName = args[i];
+      bumpTargetName = packageName;
     }
   }
   if (!bumpType) {
