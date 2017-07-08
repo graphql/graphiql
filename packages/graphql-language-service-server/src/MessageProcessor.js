@@ -382,6 +382,12 @@ export function getQueryAndRange(
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
   if (extname(uri) === '.js') {
+    if (
+      text.indexOf('graphql`') === -1 &&
+      text.indexOf('graphql.experimental`') === -1
+    ) {
+      return [];
+    }
     const templates = findGraphQLTags(text);
     return templates.map(({template, range}) => ({query: template, range}));
   } else {
