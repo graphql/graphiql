@@ -10,7 +10,12 @@
 import CodeMirror from 'codemirror';
 import {getDiagnostics} from 'graphql-language-service-interface';
 
-const SEVERITY = ['ERROR', 'WARNING', 'INFORMATION', 'HINT'];
+const SEVERITY = ['error', 'warning', 'information', 'hint'];
+const TYPE = {
+  'GraphQL: Validation': 'validation',
+  'GraphQL: Deprecation': 'deprecation',
+  'GraphQL: Syntax': 'syntax',
+};
 
 /**
  * Registers a "lint" helper for CodeMirror.
@@ -32,10 +37,10 @@ CodeMirror.registerHelper('lint', 'graphql', (text, options) => {
 
   const results = rawResults.map(error => ({
     message: error.message,
-    severity: SEVERITY[error.severity],
-    type: error.source,
-    from: error.range.start,
-    to: error.range.end,
+    severity: SEVERITY[error.severity - 1],
+    type: TYPE[error.source],
+    from: CodeMirror.Pos(error.range.start.line, error.range.start.character),
+    to: CodeMirror.Pos(error.range.end.line, error.range.end.character),
   }));
 
   return results;
