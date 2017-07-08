@@ -53,12 +53,19 @@ export class GraphQLWatchman {
     const result = await this.runCommand('query', watch, {
       expression: [
         'allof',
+        ['type', 'f'],
         ['anyof', ['match', '*.graphql'], ['match', '*.js']],
-        ['not', ['match', '**/__flow__/**', 'wholename']],
-        ['not', ['match', '**/__generated__/**', 'wholename']],
-        ['not', ['match', '**/__github__/**', 'wholename']],
-        ['not', ['match', '**/__mocks__/**', 'wholename']],
-        ['not', ['match', '**/node_modules/**', 'wholename']],
+        [
+          'not',
+          'anyof',
+          ['dirname', 'generated/relay'],
+          ['match', '**/__flow__/**', 'wholename'],
+          ['match', '**/__generated__/**', 'wholename'],
+          ['match', '**/__github__/**', 'wholename'],
+          ['match', '**/__mocks__/**', 'wholename'],
+          ['match', '**/node_modules/**', 'wholename'],
+          ['match', '**/__flowtests__/**', 'wholename'],
+        ],
         ['exists'],
       ],
       // Providing `path` will let watchman use path generator, and will perform
