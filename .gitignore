@@ -2,6 +2,8 @@
 *~
 .*.haste_cache.*
 .DS_Store
+packages/**/dist/.gitignore
+packages/**/dist/.npmignore
 dist
 node_modules/
 npm-debug.log
