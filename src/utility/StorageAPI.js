@@ -1,3 +1,11 @@
+/**
+ *  Copyright (c) Facebook, Inc.
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 export default class StorageAPI {
   constructor(storage) {
     this.storage = storage || window.localStorage;
@@ -35,19 +43,19 @@ function isStorageAvailable(storage, key, value) {
     storage.setItem(key, value);
     return true;
   } catch (e) {
-    return e instanceof DOMException && (
+    return (
+      e instanceof DOMException &&
       // everything except Firefox
-      e.code === 22 ||
-      // Firefox
-      e.code === 1014 ||
-      // test name field too, because code might not be present
-      // everything except Firefox
-      e.name === 'QuotaExceededError' ||
-      // Firefox
-      e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+      (e.code === 22 ||
+        // Firefox
+        e.code === 1014 ||
+        // test name field too, because code might not be present
+        // everything except Firefox
+        e.name === 'QuotaExceededError' ||
+        // Firefox
+        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
       // acknowledge QuotaExceededError only if there's something already stored
-      storage.length !== 0;
+      storage.length !== 0
+    );
   }
 }
-
-
