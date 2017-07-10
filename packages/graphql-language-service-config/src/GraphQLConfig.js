@@ -97,14 +97,14 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     return this._getPropertyFromConfig('schemaPath', appName, null);
   }
 
-  getCustomDirectives(appName: ?string): ?Array<string> {
+  getCustomDirectives(appName: ?string): Array<string> {
     const appConfig = this._getPropertyFromConfig(
       EXTENSIONS_NAME,
       appName,
       null,
     );
     if (appConfig && appConfig[CUSTOM_DIRECTIVES_NAME]) {
-      return appConfig[CUSTOM_DIRECTIVES_NAME];
+      return appConfig[CUSTOM_DIRECTIVES_NAME] || [];
     }
     // As a default fallback, search the top level extensions
     const fallbackExtension = this._getPropertyFromConfig(
@@ -113,7 +113,7 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       null,
     );
 
-    return fallbackExtension ? fallbackExtension[CUSTOM_DIRECTIVES_NAME] : null;
+    return fallbackExtension ? fallbackExtension[CUSTOM_DIRECTIVES_NAME] : [];
   }
 
   isFileInIncludeDirs(fileName: Uri, appName: ?string): boolean {
