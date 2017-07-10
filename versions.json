@@ -1,26 +1,26 @@
 {
   "graphql-language-service": {
-    "version": "0.0.34"
+    "version": "0.0.35"
   },
   "graphql-language-server": {
     "version": "0.0.4"
   },
   "graphql-language-service-config": {
-    "version": "0.0.17"
+    "version": "0.0.18"
   },
   "graphql-language-service-interface": {
-    "version": "0.0.19"
+    "version": "0.0.20"
   },
   "graphql-language-service-parser": {
-    "version": "0.0.15"
+    "version": "0.0.16"
   },
   "graphql-language-service-server": {
-    "version": "0.0.31"
+    "version": "0.0.32"
   },
   "graphql-language-service-types": {
-    "version": "0.0.21"
+    "version": "0.0.22"
   },
   "graphql-language-service-utils": {
-    "version": "0.0.17"
+    "version": "0.0.18"
   }
 }

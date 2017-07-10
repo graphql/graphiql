@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-interface",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Interface to the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -27,9 +27,9 @@
   },
   "dependencies": {
     "graphql": "^0.10.1",
-    "graphql-language-service-config": "0.0.17",
-    "graphql-language-service-parser": "0.0.15",
-    "graphql-language-service-types": "0.0.21",
-    "graphql-language-service-utils": "0.0.17"
+    "graphql-language-service-config": "0.0.18",
+    "graphql-language-service-parser": "0.0.16",
+    "graphql-language-service-types": "0.0.22",
+    "graphql-language-service-utils": "0.0.18"
   }
 }
