@@ -48,7 +48,11 @@ export class GraphQLLanguageService {
     this._graphQLConfig = cache.getGraphQLConfig();
   }
 
-  async getDiagnostics(query: string, uri: Uri): Promise<Array<Diagnostic>> {
+  async getDiagnostics(
+    query: string,
+    uri: Uri,
+    isRelayCompatMode?: boolean,
+  ): Promise<Array<Diagnostic>> {
     let source = query;
     const appName = this._graphQLConfig.getAppConfigNameByFilePath(uri);
     // If there's a matching config, proceed to prepare to run validation
@@ -88,7 +92,7 @@ export class GraphQLLanguageService {
       }
     }
 
-    return getDiagnosticsImpl(source, schema, customRules);
+    return getDiagnosticsImpl(source, schema, customRules, isRelayCompatMode);
   }
 
   async getAutocompleteSuggestions(

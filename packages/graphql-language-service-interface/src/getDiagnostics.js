@@ -40,6 +40,7 @@ export function getDiagnostics(
   queryText: string,
   schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,
+  isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   let ast = null;
   try {
@@ -63,7 +64,7 @@ export function getDiagnostics(
   }
 
   const validationErrorAnnotations = mapCat(
-    validateWithCustomRules(schema, ast, customRules),
+    validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
     error => annotations(error, SEVERITY.ERROR, 'Validation'),
   );
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to

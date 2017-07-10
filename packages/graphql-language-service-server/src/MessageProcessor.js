@@ -123,13 +123,22 @@ export class MessageProcessor {
 
     await Promise.all(
       contents.map(async ({query, range}) => {
-        const results = await this._languageService.getDiagnostics(query, uri);
+        const results = await this._languageService.getDiagnostics(
+          query,
+          uri,
+          this._isRelayCompatMode(query) ? false : true,
+        );
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
         }
       }),
     );
     return {uri, diagnostics};
+  }
+
+  _isRelayCompatMode(query: string): boolean {
+    return query.indexOf('RelayCompat') !== -1 ||
+      query.indexOf('react-relay/compat') !== -1;
   }
 
   async handleDidChangeNotification(

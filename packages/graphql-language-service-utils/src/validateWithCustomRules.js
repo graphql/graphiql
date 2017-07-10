@@ -22,6 +22,7 @@ export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
   customRules?: Array<CustomValidationRule>,
+  isRelayCompatMode?: boolean,
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
   // be used anywhere in the codebase they're all technically "used" by clients
@@ -29,7 +30,14 @@ export function validateWithCustomRules(
   const {
     NoUnusedFragments,
   } = require('graphql/validation/rules/NoUnusedFragments');
-  const rules = specifiedRules.filter(rule => rule !== NoUnusedFragments);
+  const rulesToSkip = [NoUnusedFragments];
+  if (isRelayCompatMode) {
+    const {
+      KnownFragmentNames,
+    } = require('graphql/validation/rules/KnownFragmentNames');
+    rulesToSkip.push(KnownFragmentNames);
+  }
+  const rules = specifiedRules.filter(rule => !rulesToSkip.some(r => r === rule));
 
   const typeInfo = new TypeInfo(schema);
   if (customRules) {
