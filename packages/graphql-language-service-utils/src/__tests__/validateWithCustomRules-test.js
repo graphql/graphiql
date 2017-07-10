@@ -47,13 +47,21 @@ describe('validateWithCustomRules', () => {
 
   it('validates properly when the query is in Relay compat mode', () => {
     const astWithUnknownFragment = parse('query { ...UnknownFragment }');
-    const noErrors = validateWithCustomRules(schema, astWithUnknownFragment, [], true);
+    const noErrors = validateWithCustomRules(
+      schema,
+      astWithUnknownFragment,
+      [],
+      true,
+    );
     expect(noErrors.length).to.equal(0);
 
-    const errors = validateWithCustomRules(schema, astWithUnknownFragment, [], false);
-    expect(errors.length).to.equal(1);
-    expect(errors[0].message).to.equal(
-      'Unknown fragment "UnknownFragment".',
+    const errors = validateWithCustomRules(
+      schema,
+      astWithUnknownFragment,
+      [],
+      false,
     );
+    expect(errors.length).to.equal(1);
+    expect(errors[0].message).to.equal('Unknown fragment "UnknownFragment".');
   });
 });

@@ -37,7 +37,9 @@ export function validateWithCustomRules(
     } = require('graphql/validation/rules/KnownFragmentNames');
     rulesToSkip.push(KnownFragmentNames);
   }
-  const rules = specifiedRules.filter(rule => !rulesToSkip.some(r => r === rule));
+  const rules = specifiedRules.filter(
+    rule => !rulesToSkip.some(r => r === rule),
+  );
 
   const typeInfo = new TypeInfo(schema);
   if (customRules) {
