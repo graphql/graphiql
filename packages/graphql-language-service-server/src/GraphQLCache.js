@@ -261,19 +261,8 @@ export class GraphQLCache {
                 ),
               );
             }
-            const fragmentDefinitionCache = this._fragmentDefinitionsCache.get(
-              rootDir,
-            );
-            if (fragmentDefinitionCache) {
-              this._fragmentDefinitionsCache.set(
-                rootDir,
-                await this._updateFragmentDefinitionCache(
-                  fragmentDefinitionCache,
-                  filePath,
-                  exists,
-                ),
-              );
-            }
+
+            this._updateFragmentDefinitionCache(rootDir, filePath, exists);
           }
         });
       }
@@ -344,10 +333,10 @@ export class GraphQLCache {
   }
 
   async _updateFragmentDefinitionCache(
-    fragmentDefinitionCache: Map<Uri, FragmentInfo>,
+    rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ): Promise<Map<Uri, FragmentInfo>> {
+  ): Promise<void> {
     const fileAndContent = exists
       ? await this.promiseToReadGraphQLFile(filePath)
       : null;
@@ -356,22 +345,13 @@ export class GraphQLCache {
     // previously.
     // For delete, remove the entry from the set.
     if (!exists) {
-      fragmentDefinitionCache.delete(filePath);
-    } else if (fileAndContent && fileAndContent.asts) {
-      fileAndContent.asts.forEach(ast => {
-        ast.definitions.forEach(definition => {
-          if (definition.kind === FRAGMENT_DEFINITION) {
-            fragmentDefinitionCache.set(definition.name.value, {
-              filePath: fileAndContent.filePath,
-              content: fileAndContent.content,
-              definition,
-            });
-          }
-        });
-      });
+      const cache = this._fragmentDefinitionsCache.get(rootDir);
+      if (cache) {
+        cache.delete(filePath);
+      }
+    } else if (fileAndContent && fileAndContent.queries) {
+      this.updateFragmentDefinition(rootDir, filePath, fileAndContent.queries);
     }
-
-    return fragmentDefinitionCache;
   }
 
   _extendSchema(schema: GraphQLSchema, schemaPath: string): GraphQLSchema {
@@ -544,6 +524,7 @@ export class GraphQLCache {
     filePath: Uri,
     content: string,
     asts: Array<DocumentNode>,
+    queries: Array<CachedContent>,
   }> => {
     return new Promise((resolve, reject) =>
       fs.readFile(filePath, 'utf8', (error, content) => {
@@ -558,7 +539,7 @@ export class GraphQLCache {
             const queries = getQueryAndRange(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
-              resolve({filePath, content, asts: []});
+              resolve({filePath, content, asts: [], queries: []});
               return;
             }
 
@@ -566,11 +547,11 @@ export class GraphQLCache {
           } catch (_) {
             // If query has syntax errors, go ahead and still resolve
             // the filePath and the content, but leave ast empty.
-            resolve({filePath, content, asts: []});
+            resolve({filePath, content, asts: [], queries: []});
             return;
           }
         }
-        resolve({filePath, content, asts});
+        resolve({filePath, content, asts, queries});
       }));
   };
 }
