@@ -42,6 +42,17 @@ describe('GraphQLCache', () => {
       const schema = await cache.getSchema(schemaPath);
       expect(schema instanceof GraphQLSchema).to.equal(false);
     });
+
+    it('extend the schema with appropriate custom directive', async () => {
+      const schemaPath = config.getSchemaPath('testWithCustomDirectives');
+      const schema = await cache.getSchema(schemaPath);
+      expect(schema.getDirective('customDirective')).to.deep.equal({
+        args: [],
+        description: '',
+        locations: ['FRAGMENT_SPREAD'],
+        name: 'customDirective',
+      });
+    });
   });
 
   describe('getFragmentDependencies', () => {

@@ -79,6 +79,7 @@ export interface GraphQLConfig {
   +getName: () => string,
   +getIncludeDirs: (appName: ?string) => Array<Uri>,
   +getExcludeDirs: (appName: ?string) => Array<Uri>,
+  +getCustomDirectives: (appName: ?string) => Array<string>,
   +isFileInIncludeDirs: (fileName: Uri, appName: ?string) => boolean,
   +getSchemaPath: (appName: ?string) => ?Uri,
   +getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
@@ -108,7 +109,10 @@ export interface GraphQLCache {
     contents: Array<CachedContent>,
   ) => Promise<void>,
 
-  getSchema: (configSchemaPath: ?Uri) => Promise<?GraphQLSchema>,
+  getSchema: (
+    configSchemaPath: ?Uri,
+    appName: ?string,
+  ) => Promise<?GraphQLSchema>,
 }
 
 // online-parser related

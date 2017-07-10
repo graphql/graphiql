@@ -57,6 +57,7 @@ export class GraphQLLanguageService {
     if (this._graphQLConfig.getSchemaPath(appName)) {
       schema = await this._graphQLCache.getSchema(
         this._graphQLConfig.getSchemaPath(appName),
+        appName,
       );
       const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
         this._graphQLConfig,
@@ -100,6 +101,7 @@ export class GraphQLLanguageService {
     if (this._graphQLConfig.getSchemaPath(appName)) {
       schema = await this._graphQLCache.getSchema(
         this._graphQLConfig.getSchemaPath(appName),
+        appName,
       );
 
       if (schema) {

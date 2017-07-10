@@ -387,7 +387,10 @@ export class GraphQLCache {
     });
   }
 
-  getSchema = async (configSchemaPath: ?Uri): Promise<?GraphQLSchema> => {
+  getSchema = async (
+    configSchemaPath: ?Uri,
+    appName: ?string,
+  ): Promise<?GraphQLSchema> => {
     if (!configSchemaPath) {
       return null;
     }
@@ -402,7 +405,11 @@ export class GraphQLCache {
         if (error) {
           throw new Error(error);
         }
-        resolve(content);
+        resolve(
+          content +
+            '\n' +
+            this._graphQLConfig.getCustomDirectives(appName).join('\n'),
+        );
       }));
 
     const schemaFileExt = path.extname(schemaPath);
