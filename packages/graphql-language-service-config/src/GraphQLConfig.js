@@ -17,6 +17,8 @@ import type {
 import path from 'path';
 
 const PROJECTS_NAME = 'projects';
+const EXTENSIONS_NAME = 'extensions';
+const CUSTOM_DIRECTIVES_NAME = 'customDirectives';
 const CUSTOM_VALIDATION_RULES_NAME = 'customValidationRules';
 
 export const GRAPHQL_CONFIG_NAME = '.graphqlconfig';
@@ -37,8 +39,6 @@ export class GraphQLConfig implements GraphQLConfigInterface {
     this._config = config;
   }
 
-  // GraphQL language server utilizes an `extensions` config option to customize
-  // for the situation with many apps with a shared code in one repository.
   // This function searches for the additional app configurations and
   // returns the name of the app configuration if found.
   getAppConfigNameByFilePath(filePath: Uri): ?string {
@@ -95,6 +95,25 @@ export class GraphQLConfig implements GraphQLConfigInterface {
 
   getSchemaPath(appName: ?string): ?Uri {
     return this._getPropertyFromConfig('schemaPath', appName, null);
+  }
+
+  getCustomDirectives(appName: ?string): ?Array<string> {
+    const appConfig = this._getPropertyFromConfig(
+      EXTENSIONS_NAME,
+      appName,
+      null,
+    );
+    if (appConfig && appConfig[CUSTOM_DIRECTIVES_NAME]) {
+      return appConfig[CUSTOM_DIRECTIVES_NAME];
+    }
+    // As a default fallback, search the top level extensions
+    const fallbackExtension = this._getPropertyFromConfig(
+      'extensions',
+      null,
+      null,
+    );
+
+    return fallbackExtension ? fallbackExtension[CUSTOM_DIRECTIVES_NAME] : null;
   }
 
   isFileInIncludeDirs(fileName: Uri, appName: ?string): boolean {

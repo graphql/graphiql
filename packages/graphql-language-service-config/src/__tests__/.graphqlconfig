@@ -6,6 +6,18 @@
       "schemaPath": "__schema__/StarWarsSchema.graphql"
     },
     "testWithoutSchema": {
+    },
+    "testWithCustomDirectives": {
+      "extensions": {
+        "customDirectives": [
+          "directive @customDirective on FIELD"
+        ]
+      }
     }
+  },
+  "extensions": {
+    "customDirectives": [
+      "directive @customDirective on FRAGMENT_SPREAD"
+    ]
   }
 }

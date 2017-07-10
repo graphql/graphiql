@@ -29,4 +29,13 @@ describe('GraphQLConfig', () => {
     );
     expect(config.getSchemaPath('testWithoutSchema')).to.equal(null);
   });
+
+  it('returns a correct array of custom directives', () => {
+    expect(
+      config.getCustomDirectives('testWithCustomDirectives'),
+    ).to.deep.equal(['directive @customDirective on FIELD']);
+    expect(config.getCustomDirectives('someWeirdProjectName')).to.deep.equal([
+      'directive @customDirective on FRAGMENT_SPREAD',
+    ]);
+  });
 });
