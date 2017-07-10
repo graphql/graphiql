@@ -534,9 +534,10 @@ export class GraphQLCache {
         }
 
         const asts = [];
+        let queries = [];
         if (content.trim().length !== 0) {
           try {
-            const queries = getQueryAndRange(content, filePath);
+            queries = getQueryAndRange(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({filePath, content, asts: [], queries: []});
