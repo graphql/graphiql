@@ -76,7 +76,7 @@
     "babel-plugin-transform-flow-strip-types": "6.21.0",
     "babel-plugin-transform-object-rest-spread": "6.20.2",
     "babel-plugin-transform-regenerator": "6.24.1",
-    "chai": "4.0.1",
+    "chai": "4.1.0",
     "chai-subset": "1.5.0",
     "codemirror": "5.27.4",
     "eslint": "4.2.0",
