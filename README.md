@@ -340,4 +340,20 @@ fragment HumanFragment on Human {
 }
 ```
 
+---
+
+To allow **Custom Headers** feature your `graphQLFetcher` might take an extra argument
+and supply it instead of headers:
+
+```js
+function graphQLFetcher(graphQLParams, myCustomHeaders) {
+  return fetch(window.location.origin + '/graphql', {
+    method: 'post',
+    headers: myCustomHeaders,
+    body: JSON.stringify(graphQLParams),
+  }).then(response => response.json());
+}
+```
+
+
 Read more from [GraphQL Fragment Specification](http://facebook.github.io/graphql/#sec-Language.Fragments).
