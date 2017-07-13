@@ -51,10 +51,13 @@ export class MessageProcessor {
   _languageService: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
 
+  _isInitialized: boolean;
+
   _willShutdown: boolean;
 
   constructor(): void {
     this._textDocumentCache = new Map();
+    this._isInitialized = false;
     this._willShutdown = false;
   }
 
@@ -90,12 +93,19 @@ export class MessageProcessor {
     if (!serverCapabilities) {
       throw new Error('GraphQL Language Server is not initialized.');
     }
+
+    this._isInitialized = true;
+
     return serverCapabilities;
   }
 
   async handleDidOpenOrSaveNotification(
     params: NotificationMessage,
   ): Promise<PublishDiagnosticsParams> {
+    if (!this._isInitialized) {
+      return null;
+    }
+
     if (!params || !params.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
@@ -136,14 +146,12 @@ export class MessageProcessor {
     return {uri, diagnostics};
   }
 
-  _isRelayCompatMode(query: string): boolean {
-    return query.indexOf('RelayCompat') !== -1 ||
-      query.indexOf('react-relay/compat') !== -1;
-  }
-
   async handleDidChangeNotification(
     params: NotificationMessage,
   ): Promise<PublishDiagnosticsParams> {
+    if (!this._isInitialized) {
+      return null;
+    }
     // For every `textDocument/didChange` event, keep a cache of textDocuments
     // with version information up-to-date, so that the textDocument contents
     // may be used during performing language service features,
@@ -196,6 +204,9 @@ export class MessageProcessor {
   }
 
   handleDidCloseNotification(params: NotificationMessage): void {
+    if (!this._isInitialized) {
+      return;
+    }
     // For every `textDocument/didClose` event, delete the cached entry.
     // This is to keep a low memory usage && switch the source of truth to
     // the file on disk.
@@ -222,6 +233,9 @@ export class MessageProcessor {
     params: CompletionRequest.type,
     token: CancellationToken,
   ): Promise<CompletionList> {
+    if (!this._isInitialized) {
+      return null;
+    }
     // `textDocument/comletion` event takes advantage of the fact that
     // `textDocument/didChange` event always fires before, which would have
     // updated the cache with the query text from the editor.
@@ -252,10 +266,9 @@ export class MessageProcessor {
       }
     });
 
+    // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      throw new Error(
-        `${textDocument.uri} cannot be found from previously opened files.`,
-      );
+      return null;
     }
 
     const {query, range} = found;
@@ -275,6 +288,10 @@ export class MessageProcessor {
     params: DefinitionRequest.type,
     token: CancellationToken,
   ): Promise<Array<Location>> {
+    if (!this._isInitialized) {
+      return [];
+    }
+
     if (!params || !params.textDocument || !params.position) {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
@@ -293,10 +310,10 @@ export class MessageProcessor {
       }
     });
 
+    // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      throw new Error(
-        `${textDocument.uri} cannot be found from previously opened files.`,
-      );
+      // TODO: LOG
+      return [];
     }
 
     const {query, range} = found;
@@ -326,6 +343,11 @@ export class MessageProcessor {
         })
       : [];
     return formatted;
+  }
+
+  _isRelayCompatMode(query: string): boolean {
+    return query.indexOf('RelayCompat') !== -1 ||
+      query.indexOf('react-relay/compat') !== -1;
   }
 
   async _updateFragmentDefinition(
