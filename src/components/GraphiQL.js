@@ -124,7 +124,10 @@ export class GraphiQL extends React.Component {
         Number(this._storage.get('customHeadersWidth')) || 500,
       isWaitingForResponse: false,
       subscription: null,
-      customHeaders: {},
+      customHeaders: this._storage.get('customHeaders') || {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       newHeaderKey: '',
       newHeaderValue: '',
       ...queryFacts,
@@ -244,6 +247,7 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
     this._storage.set('customHeadersOpen', this.state.customHeadersOpen);
+    this._storage.set('customheaders', this.state.customHeaders);
   }
 
   render() {
@@ -552,7 +556,15 @@ export class GraphiQL extends React.Component {
   _fetchSchema() {
     const fetcher = this.props.fetcher;
 
-    const fetch = observableToPromise(fetcher({ query: introspectionQuery }));
+    const fetch = observableToPromise(
+      fetcher(
+        {
+          query: introspectionQuery,
+        },
+        this.state.customHeaders,
+      ),
+    );
+
     if (!isPromise(fetch)) {
       this.setState({
         response: 'Fetcher did not return a Promise for introspection.',
@@ -569,9 +581,12 @@ export class GraphiQL extends React.Component {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = observableToPromise(
-          fetcher({
-            query: introspectionQuerySansSubscriptions,
-          }),
+          fetcher(
+            {
+              query: introspectionQuerySansSubscriptions,
+            },
+            this.state.customHeaders,
+          ),
         );
         if (!isPromise(fetch)) {
           throw new Error(
@@ -628,12 +643,14 @@ export class GraphiQL extends React.Component {
       throw new Error('Variables are not a JSON object.');
     }
 
-    const fetch = fetcher({
-      query,
-      variables: jsonVariables,
-      operationName,
-    });
-
+    const fetch = fetcher(
+      {
+        query,
+        variables: jsonVariables,
+        operationName,
+      },
+      this.state.customHeaders,
+    );
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
       // resolves, otherwise handle the error.
@@ -916,7 +933,7 @@ export class GraphiQL extends React.Component {
   };
 
   truncateLongString = str => {
-    return str.length > 7 ? str.substring(0, 7) + '...' : str;
+    return str.length > 10 ? str.substring(0, 10) + '...' : str;
   };
 
   handleSelectHistoryQuery = (query, variables, operationName) => {
