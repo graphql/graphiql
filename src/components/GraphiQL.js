@@ -120,6 +120,8 @@ export class GraphiQL extends React.Component {
       customHeadersOpen:
         this._storage.get('customHeadersOpen') === 'true' || false,
       docExplorerWidth: Number(this._storage.get('docExplorerWidth')) || 350,
+      customHeadersWidth:
+        Number(this._storage.get('customHeadersWidth')) || 500,
       isWaitingForResponse: false,
       subscription: null,
       customHeaders: {},
@@ -238,6 +240,7 @@ export class GraphiQL extends React.Component {
     this._storage.set('editorFlex', this.state.editorFlex);
     this._storage.set('variableEditorHeight', this.state.variableEditorHeight);
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
+    this._storage.set('customHeadersWidth', this.state.customHeadersWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
     this._storage.set('customHeadersOpen', this.state.customHeadersOpen);
@@ -293,8 +296,7 @@ export class GraphiQL extends React.Component {
 
     const customHeadersStyle = {
       display: this.state.customHeadersOpen ? 'block' : 'none',
-      width: '400px',
-      height: '200px',
+      width: this.state.customHeadersWidth,
       zIndex: '7',
     };
 
@@ -409,26 +411,46 @@ export class GraphiQL extends React.Component {
             </div>
           </DocExplorer>
         </div>
-        <div className="customHeadersPane" style={customHeadersStyle}>
-          {Object.keys(customHeaders).map((headerKey, i) => {
-            return (
-              <tr key={i}>
-                <td>
-                  {headerKey}
-                </td>
-                <td>
-                  {customHeaders[headerKey]}
-                </td>
-                <td>
-                  <a
-                    className="button"
-                    onClick={evt => this.removeCustomHeader(evt, headerKey)}>
-                    {'\u2715'}
-                  </a>
-                </td>
-              </tr>
-            );
-          })}
+        <div className="customHeadersWrapper" style={customHeadersStyle}>
+          <div
+            className="customHeadersResizer"
+            onMouseDown={this.handleCustomHeadersResizeStart}
+          />
+          <table className="customHeadersTable">
+            <thead>
+              <th>
+                {'Key'}
+              </th>
+              <th>
+                {'Value'}
+              </th>
+              <th>
+                {''}
+              </th>
+            </thead>
+            <tbody>
+              {Object.keys(customHeaders).map((headerKey, i) => {
+                return (
+                  <tr key={i}>
+                    <td className="mainHeaders">
+                      {this.truncateLongString(headerKey)}
+                    </td>
+                    <td className="mainHeaders">
+                      {this.truncateLongString(customHeaders[headerKey])}
+                    </td>
+                    <td className="lastButtonColumn">
+                      <div
+                        className="button button-delete"
+                        onClick={evt =>
+                          this.removeCustomHeader(evt, headerKey)}>
+                        {'\u2715'}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
           <input
             onChange={evt => this.updateHeaderKey(evt)}
             type="text"
@@ -442,9 +464,11 @@ export class GraphiQL extends React.Component {
             value={this.state.newHeaderValue}
           />
           <br />
-          <a onClick={this.handleAddCustomHeader} className="button">
+          <div
+            onClick={this.handleAddCustomHeader}
+            className="button button-add">
             {'+'} <span>{'Add Header'}</span>
-          </a>
+          </div>
         </div>
       </div>
     );
@@ -574,7 +598,8 @@ export class GraphiQL extends React.Component {
               ? result
               : JSON.stringify(result, null, 2);
           this.setState({
-            // Set schema to `null` to explicitly indicate that no schema exists.
+            // Set schema to `null` to explicitly
+            // indicate that no schema exists.
             schema: null,
             response: responseString,
           });
@@ -866,13 +891,20 @@ export class GraphiQL extends React.Component {
   };
 
   handleAddCustomHeader = () => {
-    const headers = this.state.customHeaders;
-    headers[this.state.newHeaderKey] = this.state.newHeaderValue;
-    this.setState({
-      customHeaders: headers,
-      newHeaderKey: '',
-      newHeaderValue: '',
-    });
+    if (
+      typeof this.state.newHeaderKey === 'string' &&
+      this.state.newHeaderKey !== '' &&
+      typeof this.state.newHeaderValue === 'string' &&
+      this.state.newHeaderValue !== ''
+    ) {
+      const headers = this.state.customHeaders;
+      headers[this.state.newHeaderKey] = this.state.newHeaderValue;
+      this.setState({
+        customHeaders: headers,
+        newHeaderKey: '',
+        newHeaderValue: '',
+      });
+    }
   };
 
   removeCustomHeader = (evt, headerKey) => {
@@ -881,6 +913,10 @@ export class GraphiQL extends React.Component {
     this.setState({
       customHeaders: headers,
     });
+  };
+
+  truncateLongString = str => {
+    return str.length > 7 ? str.substring(0, 7) + '...' : str;
   };
 
   handleSelectHistoryQuery = (query, variables, operationName) => {
@@ -969,6 +1005,46 @@ export class GraphiQL extends React.Component {
     let onMouseUp = () => {
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerWidth: hadWidth });
+      }
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
+  handleCustomHeadersResizeStart = downEvent => {
+    downEvent.preventDefault();
+
+    const hadWidth = this.state.customHeadersWidth;
+    const offset = downEvent.clientX - getLeft(downEvent.target);
+
+    let onMouseMove = moveEvent => {
+      if (moveEvent.buttons === 0) {
+        return onMouseUp();
+      }
+
+      const app = ReactDOM.findDOMNode(this);
+      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
+      const headersSize = app.clientWidth - cursorPos;
+
+      if (headersSize < 300) {
+        this.setState({ customHeadersOpen: false });
+      } else {
+        this.setState({
+          customHeadersOpen: true,
+          customHeadersWidth: Math.min(headersSize, 650),
+        });
+      }
+    };
+
+    let onMouseUp = () => {
+      if (!this.state.customHeadersOpen) {
+        this.setState({ customHeadersWidth: hadWidth });
       }
 
       document.removeEventListener('mousemove', onMouseMove);
