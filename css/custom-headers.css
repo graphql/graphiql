@@ -74,3 +74,10 @@
   border-bottom: 1px solid #444;
   color: #6b6b6b;
 }
+
+.customHeadersWrapper .customHeadersHide {
+  cursor: pointer;
+  font-size: 18px;
+  margin: -7px -8px -6px 0;
+  padding: 18px 16px 15px 12px;
+}

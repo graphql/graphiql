@@ -124,10 +124,12 @@ export class GraphiQL extends React.Component {
         Number(this._storage.get('customHeadersWidth')) || 500,
       isWaitingForResponse: false,
       subscription: null,
-      customHeaders: this._storage.get('customHeaders') || {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      customHeaders: this._storage.get('customHeaders')
+        ? JSON.parse(this._storage.get('customHeaders'))
+        : {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
       newHeaderKey: '',
       newHeaderValue: '',
       ...queryFacts,
@@ -247,7 +249,10 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
     this._storage.set('customHeadersOpen', this.state.customHeadersOpen);
-    this._storage.set('customheaders', this.state.customHeaders);
+    this._storage.set(
+      'customHeaders',
+      JSON.stringify(this.state.customHeaders),
+    );
   }
 
   render() {
@@ -429,7 +434,11 @@ export class GraphiQL extends React.Component {
                 {'Value'}
               </th>
               <th>
-                {''}
+                <div
+                  className="customHeadersHide"
+                  onClick={this.handleCustomHeaders}>
+                  {'\u2715'}
+                </div>
               </th>
             </thead>
             <tbody>
