@@ -1,0 +1,76 @@
+
+.customHeadersWrapper {
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+}
+
+.customHeadersWrapper .customHeadersResizer {
+  cursor: col-resize;
+  height: 100%;
+  left: -5px;
+  position: relative;
+  float: left;
+  top: 0;
+  width: 10px;
+  z-index: 10;
+}
+
+.customHeadersWrapper input[type="text"] {
+  width: 45%;
+  margin-top: 20px;
+  padding: 3px;
+}
+
+.customHeadersWrapper .button.button-add {
+  text-align: center;
+  width: 120px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #b1b1b1;
+  background-color: #f3f3f3;
+  color: #565656;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.customHeadersWrapper .button.button-add:hover {
+  background-color: #eaeaea;
+}
+
+.customHeadersTable {
+  width: 95%;
+  border-collapse: collapse;
+}
+
+.customHeadersWrapper .customHeadersTable td {
+  padding: 10px;
+  border-bottom: 1px solid #b3b3b3;
+  color: #3e3e3e;
+}
+
+.customHeadersWrapper .customHeadersTable tr:hover {
+  background-color: #f5f5f5;
+}
+
+.customHeadersWrapper .customHeadersTable td.mainHeaders {
+  width: 40%;
+}
+.customHeadersWrapper .customHeadersTable td.lastButtonColumn {
+  width: 20%;
+  text-align: center;
+}
+.customHeadersWrapper .button.button-delete {
+  width: 1em;
+  margin: 0 auto;
+  color: #ec4242;
+  cursor: pointer;
+}
+.customHeadersWrapper .button.button-delete:hover {
+  color: #da3737;
+}
+
+.customHeadersWrapper .customHeadersTable th {
+  padding: 15px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #444;
+  color: #6b6b6b;
+}
