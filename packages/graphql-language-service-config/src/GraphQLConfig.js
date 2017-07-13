@@ -11,6 +11,7 @@
 import type {
   GraphQLConfig as GraphQLConfigInterface,
   GraphQLConfiguration,
+  GraphQLProjectConfiguration,
   Uri,
 } from 'graphql-language-service-types';
 
@@ -61,15 +62,41 @@ export class GraphQLConfig implements GraphQLConfigInterface {
       return false;
     });
 
-    return name || null;
+    if (!name) {
+      return null;
+    }
+
+    return appConfigs[name].name || name || null;
+  }
+
+  getAppConfigByName(name: string): ?GraphQLProjectConfiguration {
+    if (this._config.name === name) {
+      return this._config;
+    }
+
+    const appConfigs = this._config[PROJECTS_NAME];
+    if (!appConfigs) {
+      return null;
+    }
+
+    if (appConfigs[name]) {
+      return appConfigs[name];
+    }
+
+    const appConfigNames = Object.keys(appConfigs);
+
+    const appConfigName = appConfigNames.find(
+      configName =>
+        appConfigs[configName] &&
+        appConfigs[configName].name &&
+        appConfigs[configName].name === name,
+    );
+
+    return appConfigName ? appConfigs[appConfigName] : null;
   }
 
   getRootDir(): Uri {
     return this._rootDir;
-  }
-
-  getName(): string {
-    return 'GraphQLConfig';
   }
 
   getConfig(): GraphQLConfiguration {

@@ -21,6 +21,14 @@ describe('GraphQLConfig', () => {
     config = await getGraphQLConfig(CONFIG_DIR);
   });
 
+  it('returns a correct name', () => {
+    const testWithNameConfig = config.getAppConfigByName('testWithName');
+    expect(testWithNameConfig.name).to.equal('testWithName');
+
+    const testWithSchemaConfig = config.getAppConfigByName('testWithSchema');
+    expect(testWithSchemaConfig).to.not.be.undefined;
+  });
+
   it('returns a correct root dir', () =>
     expect(config.getRootDir()).to.equal(CONFIG_DIR));
   it('returns a correct schema path', () => {

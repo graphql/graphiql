@@ -2,6 +2,9 @@
   "includeDirs": ["__queries__"],
   "excludeDirs": ["__excludedQueries__"],
   "projects": {
+    "testWithName": {
+      "name": "testWithName"
+    },
     "testWithSchema": {
       "schemaPath": "__schema__/StarWarsSchema.graphql"
     },

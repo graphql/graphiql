@@ -54,6 +54,9 @@ export type GraphQLConfiguration = GraphQLProjectConfiguration & {
 };
 
 export type GraphQLProjectConfiguration = {
+  // The name for this project configuration.
+  // If not supplied, the object key can be used for the project name.
+  name?: string,
   schemaPath?: string, // a file with schema IDL
   schemaUrl?: URL,
 
@@ -74,9 +77,9 @@ export type GraphQLConfigurationExtension = {
 
 export interface GraphQLConfig {
   +getAppConfigNameByFilePath: (filePath: Uri) => ?string,
+  +getAppConfigByName: (name: string) => ?GraphQLProjectConfiguration,
   +getRootDir: () => Uri,
   +getConfig: () => GraphQLConfiguration,
-  +getName: () => string,
   +getIncludeDirs: (appName: ?string) => Array<Uri>,
   +getExcludeDirs: (appName: ?string) => Array<Uri>,
   +getCustomDirectives: (appName: ?string) => Array<string>,
