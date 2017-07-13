@@ -77,28 +77,28 @@ export class GraphiQL extends React.Component {
 
     // Determine the initial query to display.
     const query =
-      props.query !== undefined
-        ? props.query
-        : this._storage.get('query') !== null
-          ? this._storage.get('query')
-          : props.defaultQuery !== undefined
-            ? props.defaultQuery
-            : defaultQuery;
+      props.query !== undefined ?
+        props.query :
+        this._storage.get('query') !== null ?
+          this._storage.get('query') :
+          props.defaultQuery !== undefined ?
+            props.defaultQuery :
+            defaultQuery;
 
     // Get the initial query facts.
     const queryFacts = getQueryFacts(props.schema, query);
 
     // Determine the initial variables to display.
     const variables =
-      props.variables !== undefined
-        ? props.variables
-        : this._storage.get('variables');
+      props.variables !== undefined ?
+        props.variables :
+        this._storage.get('variables');
 
     // Determine the initial operationName to use.
     const operationName =
-      props.operationName !== undefined
-        ? props.operationName
-        : getSelectedOperationName(
+      props.operationName !== undefined ?
+        props.operationName :
+        getSelectedOperationName(
             null,
             this._storage.get('operationName'),
             queryFacts && queryFacts.operations,
@@ -124,9 +124,9 @@ export class GraphiQL extends React.Component {
         Number(this._storage.get('customHeadersWidth')) || 500,
       isWaitingForResponse: false,
       subscription: null,
-      customHeaders: this._storage.get('customHeaders')
-        ? JSON.parse(this._storage.get('customHeaders'))
-        : {
+      customHeaders: this._storage.get('customHeaders') ?
+        JSON.parse(this._storage.get('customHeaders')) :
+        {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
@@ -620,9 +620,9 @@ export class GraphiQL extends React.Component {
           this.setState({ schema, ...queryFacts });
         } else {
           const responseString =
-            typeof result === 'string'
-              ? result
-              : JSON.stringify(result, null, 2);
+            typeof result === 'string' ?
+              result :
+              JSON.stringify(result, null, 2);
           this.setState({
             // Set schema to `null` to explicitly
             // indicate that no schema exists.
