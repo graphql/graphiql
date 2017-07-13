@@ -445,10 +445,12 @@ export class GraphiQL extends React.Component {
               {Object.keys(customHeaders).map((headerKey, i) => {
                 return (
                   <tr key={i}>
-                    <td className="mainHeaders">
+                    <td className="mainHeaders" title={headerKey}>
                       {this.truncateLongString(headerKey)}
                     </td>
-                    <td className="mainHeaders">
+                    <td
+                      className="mainHeaders"
+                      title={customHeaders[headerKey]}>
                       {this.truncateLongString(customHeaders[headerKey])}
                     </td>
                     <td className="lastButtonColumn">
