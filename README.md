@@ -340,6 +340,9 @@ fragment HumanFragment on Human {
 }
 ```
 
+Read more from [GraphQL Fragment Specification](http://facebook.github.io/graphql/#sec-Language.Fragments).
+
+
 ---
 
 To allow **Custom Headers** feature your `graphQLFetcher` might take an extra argument
@@ -354,6 +357,3 @@ function graphQLFetcher(graphQLParams, myCustomHeaders) {
   }).then(response => response.json());
 }
 ```
-
-
-Read more from [GraphQL Fragment Specification](http://facebook.github.io/graphql/#sec-Language.Fragments).
