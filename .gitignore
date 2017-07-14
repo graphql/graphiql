@@ -10,3 +10,6 @@ dist/
 /graphiql.js
 /graphiql.min.js
 /graphiql.css
+
+/graphiql-custom-headers.css
+/grapiql-custom-headers.min.js
