@@ -44,7 +44,8 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --jsx-bracket-same-line --single-quote --trailing-comma=all --write",
+      { "//": "TODO the line below makes the eslint src to fail, fix this please"},
+      { "//": "prettier --jsx-bracket-same-line --single-quote --trailing-comma=all --write" },
       "git add"
     ]
   },
