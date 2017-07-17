@@ -74,7 +74,7 @@ describe('validateWithCustomRules', () => {
     ).to.deep.equal([]);
 
     const astWithArgumentDefDirective = parse(
-      '{ human(id: "2") { name @argumentDefinition(arg: "foo") } }',
+      '{ human(id: "2") { name @argumentDefinitions(arg: "foo") } }',
     );
     expect(
       validateWithCustomRules(schema, astWithArgumentDefDirective),
