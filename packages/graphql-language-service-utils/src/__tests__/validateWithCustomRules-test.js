@@ -64,4 +64,20 @@ describe('validateWithCustomRules', () => {
     expect(errors.length).to.equal(1);
     expect(errors[0].message).to.equal('Unknown fragment "UnknownFragment".');
   });
+
+  it('does not validate for Relay @arguments and @argumentDefinition', () => {
+    const astWithArgumentsDirective = parse(
+      'query { human(id: "1") @arguments(foo: "bar") { name } }',
+    );
+    expect(
+      validateWithCustomRules(schema, astWithArgumentsDirective, []),
+    ).to.deep.equal([]);
+
+    const astWithArgumentDefDirective = parse(
+      '{ human(id: "2") { name @argumentDefinition(arg: "foo") } }',
+    );
+    expect(
+      validateWithCustomRules(schema, astWithArgumentDefDirective),
+    ).to.deep.equal([]);
+  });
 });

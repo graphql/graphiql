@@ -49,7 +49,15 @@ export function validateWithCustomRules(
   const errors = validate(schema, ast, rules, typeInfo);
 
   if (errors.length > 0) {
-    return errors;
+    return errors.filter(error => {
+      if (error.message.indexOf('Unknown directive') === -1) {
+        return true;
+      }
+      return !((error.nodes &&
+        error.nodes.length === 1 &&
+        error.nodes[0].name.value === 'arguments') ||
+        error.nodes[0].name.value === 'argumentDefinition');
+    });
   }
 
   return [];
