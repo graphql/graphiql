@@ -56,7 +56,7 @@ export function validateWithCustomRules(
       return !((error.nodes &&
         error.nodes.length === 1 &&
         error.nodes[0].name.value === 'arguments') ||
-        error.nodes[0].name.value === 'argumentDefinition');
+        error.nodes[0].name.value === 'argumentDefinitions');
     });
   }
 
