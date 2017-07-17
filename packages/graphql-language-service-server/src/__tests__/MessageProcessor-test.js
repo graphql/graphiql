@@ -33,7 +33,15 @@ describe('MessageProcessor', () => {
   };
 
   beforeEach(() => {
-    messageProcessor._graphQLCache = {};
+    messageProcessor._graphQLCache = {
+      getGraphQLConfig() {
+        return {
+          getAppConfigNameByFilePath() {
+            return null;
+          },
+        };
+      },
+    };
     messageProcessor._languageService = {
       getAutocompleteSuggestions: (query, position, uri) => {
         return [{label: `${query} at ${uri}`}];
@@ -43,6 +51,8 @@ describe('MessageProcessor', () => {
       },
     };
   });
+  messageProcessor._isInitialized = true;
+  messageProcessor._logger = {log() {}};
 
   it('initializes properly and opens a file', async () => {
     const {capabilities} = await messageProcessor.handleInitializeRequest({

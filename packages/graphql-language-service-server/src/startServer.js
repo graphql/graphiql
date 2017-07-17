@@ -8,8 +8,6 @@
  *  @flow
  */
 
-import type {Logger} from 'vscode-jsonrpc';
-
 import net from 'net';
 
 import {MessageProcessor} from './MessageProcessor';
@@ -39,6 +37,8 @@ import {
   ShutdownRequest,
 } from 'vscode-languageserver';
 
+import {Logger} from './Logger';
+
 type Options = {
   port?: number,
   method?: string,
@@ -46,15 +46,7 @@ type Options = {
 };
 
 export default (async function startServer(options: Options): Promise<void> {
-  // Below logger is intentionally no-op.
-  // The plan is to grab the configuration options from when the server is
-  // initialized, and use that to instantiate the logger.
-  const logger: Logger = {
-    error(message: string): void {},
-    warn(message: string): void {},
-    info(message: string): void {},
-    log(message: string): void {},
-  };
+  const logger = new Logger();
 
   if (options && options.method) {
     let reader;
@@ -82,8 +74,8 @@ export default (async function startServer(options: Options): Promise<void> {
               socket.close();
               process.exit(0);
             });
-            const connection = createMessageConnection(reader, writer);
-            addHandlers(connection, options.configDir);
+            const connection = createMessageConnection(reader, writer, logger);
+            addHandlers(connection, options.configDir, logger);
             connection.listen();
           })
           .listen(port);
@@ -99,13 +91,17 @@ export default (async function startServer(options: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(connection, options.configDir);
+    addHandlers(connection, options.configDir, logger);
     connection.listen();
   }
 });
 
-function addHandlers(connection: MessageConnection, configDir?: string): void {
-  const messageProcessor = new MessageProcessor();
+function addHandlers(
+  connection: MessageConnection,
+  configDir?: string,
+  logger: Logger,
+): void {
+  const messageProcessor = new MessageProcessor(logger);
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {

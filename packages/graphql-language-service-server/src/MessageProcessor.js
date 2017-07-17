@@ -38,6 +38,7 @@ import {
 
 import {getGraphQLCache} from './GraphQLCache';
 import {findGraphQLTags} from './findGraphQLTags';
+import {Logger} from './Logger';
 
 // Map { uri => { query, range } }
 
@@ -55,10 +56,14 @@ export class MessageProcessor {
 
   _willShutdown: boolean;
 
-  constructor(): void {
+  _logger: Logger;
+
+  constructor(logger: Logger): void {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
+
+    this._logger = logger;
   }
 
   async handleInitializeRequest(
@@ -95,6 +100,13 @@ export class MessageProcessor {
     }
 
     this._isInitialized = true;
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'initialize',
+      }),
+    );
 
     return serverCapabilities;
   }
@@ -143,6 +155,18 @@ export class MessageProcessor {
         }
       }),
     );
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/didOpen',
+        projectName: this._graphQLCache
+          .getGraphQLConfig()
+          .getAppConfigNameByFilePath(uri),
+        fileName: uri,
+      }),
+    );
+
     return {uri, diagnostics};
   }
 
@@ -200,6 +224,17 @@ export class MessageProcessor {
       }),
     );
 
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/didChange',
+        projectName: this._graphQLCache
+          .getGraphQLConfig()
+          .getAppConfigNameByFilePath(uri),
+        fileName: uri,
+      }),
+    );
+
     return {uri, diagnostics};
   }
 
@@ -214,10 +249,22 @@ export class MessageProcessor {
       throw new Error('`textDocument` is required.');
     }
     const textDocument = params.textDocument;
+    const uri = textDocument.uri;
 
-    if (this._textDocumentCache.has(textDocument.uri)) {
-      this._textDocumentCache.delete(textDocument.uri);
+    if (this._textDocumentCache.has(uri)) {
+      this._textDocumentCache.delete(uri);
     }
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/didClose',
+        projectName: this._graphQLCache
+          .getGraphQLConfig()
+          .getAppConfigNameByFilePath(uri),
+        fileName: uri,
+      }),
+    );
   }
 
   handleShutdownRequest(): void {
@@ -281,6 +328,18 @@ export class MessageProcessor {
       position,
       textDocument.uri,
     );
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/completion',
+        projectName: this._graphQLCache
+          .getGraphQLConfig()
+          .getAppConfigNameByFilePath(textDocument.uri),
+        fileName: textDocument.uri,
+      }),
+    );
+
     return {items: result, isIncomplete: false};
   }
 
@@ -312,7 +371,6 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      // TODO: LOG
       return [];
     }
 
@@ -342,6 +400,17 @@ export class MessageProcessor {
           };
         })
       : [];
+
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'textDocument/definition',
+        projectName: this._graphQLCache
+          .getGraphQLConfig()
+          .getAppConfigNameByFilePath(textDocument.uri),
+        fileName: textDocument.uri,
+      }),
+    );
     return formatted;
   }
 
