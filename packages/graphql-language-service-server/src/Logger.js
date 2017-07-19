@@ -12,8 +12,7 @@ import type {Logger as VSCodeLogger} from 'vscode-jsonrpc';
 
 import fs from 'fs';
 import os from 'os';
-import path from 'path';
-import {URL} from 'url';
+import {join} from 'path';
 
 const SEVERITY = {
   ERROR: 'ERROR',
@@ -23,11 +22,11 @@ const SEVERITY = {
 };
 
 export class Logger implements VSCodeLogger {
-  _logFilePath: URL;
+  _logFilePath: string;
   _stream: ?fs.WriteStream;
 
   constructor(): void {
-    const dir = path.join(os.tmpdir(), 'graphql-language-service-logs');
+    const dir = join(os.tmpdir(), 'graphql-language-service-logs');
     try {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
@@ -37,12 +36,9 @@ export class Logger implements VSCodeLogger {
       // the necessary setup cannot be completed for logger.
     }
 
-    this._logFilePath = new URL(
-      path.join(
-        dir,
-        `graphql-language-service-log-${os.userInfo().username}-${getDateString()}.log`,
-      ),
-      'file://',
+    this._logFilePath = join(
+      dir,
+      `graphql-language-service-log-${os.userInfo().username}-${getDateString()}.log`,
     );
 
     this._stream = null;
@@ -71,7 +67,7 @@ export class Logger implements VSCodeLogger {
 
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${message}\n\n`;
     // write to the file in tmpdir
-    fs.appendFile(this._logFilePath.pathname, logMessage, error => {});
+    fs.appendFile(this._logFilePath, logMessage, error => {});
   }
 }
 
