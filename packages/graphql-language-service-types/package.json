@@ -26,6 +26,6 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
-    "graphql": "^0.10.1"
+    "graphql": "^0.10.5"
   }
 }

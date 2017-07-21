@@ -18,6 +18,12 @@ import {GraphQLCache} from '../GraphQLCache';
 import {getQueryAndRange} from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
+function wihtoutASTNode(definition: object) {
+  const result = {...definition};
+  delete result.astNode;
+  return result;
+}
+
 describe('GraphQLCache', () => {
   let cache;
   let config;
@@ -46,7 +52,9 @@ describe('GraphQLCache', () => {
     it('extend the schema with appropriate custom directive', async () => {
       const schemaPath = config.getSchemaPath('testWithCustomDirectives');
       const schema = await cache.getSchema(schemaPath);
-      expect(schema.getDirective('customDirective')).to.deep.equal({
+      expect(
+        wihtoutASTNode(schema.getDirective('customDirective')),
+      ).to.deep.equal({
         args: [],
         description: '',
         locations: ['FRAGMENT_SPREAD'],
