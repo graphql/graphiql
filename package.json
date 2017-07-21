@@ -78,7 +78,7 @@
     "babel-plugin-transform-regenerator": "6.24.1",
     "chai": "4.1.0",
     "chai-subset": "1.5.0",
-    "codemirror": "5.27.4",
+    "codemirror": "5.28.0",
     "eslint": "4.2.0",
     "eslint-plugin-babel": "4.1.1",
     "eslint-plugin-flowtype": "2.35.0",
