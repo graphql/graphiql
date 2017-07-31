@@ -10,18 +10,19 @@
 
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
+import {join} from 'path';
 
-import {GraphQLConfig} from 'graphql-language-service-config';
+import {GraphQLConfig} from 'graphql-config';
 import {GraphQLLanguageService} from '../GraphQLLanguageService';
 
 const MOCK_CONFIG = {
-  inputDirs: ['./queries'],
+  includes: ['./queries/**'],
 };
 
 describe('GraphQLLanguageService', () => {
   const mockCache: any = {
     getGraphQLConfig() {
-      return new GraphQLConfig(MOCK_CONFIG, __dirname);
+      return new GraphQLConfig(MOCK_CONFIG, join(__dirname, '.graphqlconfig'));
     },
   };
 

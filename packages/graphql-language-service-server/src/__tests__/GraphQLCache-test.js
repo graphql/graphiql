@@ -11,7 +11,7 @@
 import {expect} from 'chai';
 import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
-import {getGraphQLConfig} from 'graphql-language-service-config';
+import {getGraphQLConfig} from 'graphql-config';
 import {beforeEach, describe, it} from 'mocha';
 
 import {GraphQLCache} from '../GraphQLCache';
@@ -26,37 +26,46 @@ function wihtoutASTNode(definition: object) {
 
 describe('GraphQLCache', () => {
   let cache;
-  let config;
 
   beforeEach(async () => {
     const watchmanClient = new MockWatchmanClient();
     const configDir = __dirname;
-    const graphQLRC = await getGraphQLConfig(configDir);
+    const graphQLRC = getGraphQLConfig(configDir);
     cache = new GraphQLCache(configDir, graphQLRC, watchmanClient);
-    config = cache.getGraphQLConfig();
   });
 
   describe('getSchema', () => {
     it('generates the schema correctly for the test app config', async () => {
-      const schemaPath = config.getSchemaPath('testWithSchema');
-      const schema = await cache.getSchema(schemaPath);
+      const schema = await cache.getSchema('testWithSchema');
       expect(schema instanceof GraphQLSchema).to.equal(true);
     });
 
     it('does not generate a schema without a schema path', async () => {
-      const schemaPath = config.getSchemaPath('testWithoutSchema');
-      const schema = await cache.getSchema(schemaPath);
+      const schema = await cache.getSchema('testWithoutSchema');
       expect(schema instanceof GraphQLSchema).to.equal(false);
     });
 
     it('extend the schema with appropriate custom directive', async () => {
-      const schemaPath = config.getSchemaPath('testWithCustomDirectives');
-      const schema = await cache.getSchema(schemaPath);
+      const schema = await cache.getSchema('testWithCustomDirectives');
       expect(
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
-        description: '',
+        description: undefined, // change to empty string when
+        // https://github.com/graphql/graphql-js/pull/961 is merged
+        locations: ['FIELD'],
+        name: 'customDirective',
+      });
+    });
+
+    it('extend the schema with appropriate custom directive 2', async () => {
+      const schema = await cache.getSchema('testWithSchema');
+      expect(
+        wihtoutASTNode(schema.getDirective('customDirective')),
+      ).to.deep.equal({
+        args: [],
+        description: undefined, // change to empty string when
+        // https://github.com/graphql/graphql-js/pull/961 is merged
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });

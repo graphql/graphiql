@@ -16,18 +16,12 @@ import type {
   GraphQLFileInfo,
   FragmentInfo,
   Uri,
+  GraphQLProjectConfig,
 } from 'graphql-language-service-types';
 
 import fs from 'fs';
 import path from 'path';
-import {
-  GraphQLSchema,
-  buildSchema,
-  buildClientSchema,
-  extendSchema,
-  parse,
-  visit,
-} from 'graphql';
+import {GraphQLSchema, extendSchema, parse, visit} from 'graphql';
 import nullthrows from 'nullthrows';
 
 import {
@@ -42,7 +36,7 @@ import {
   TYPE_EXTENSION_DEFINITION,
   DIRECTIVE_DEFINITION,
 } from 'graphql/language/kinds';
-import {getGraphQLConfig, GraphQLConfig} from 'graphql-language-service-config';
+import {getGraphQLConfig, GraphQLConfig} from 'graphql-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 import {getQueryAndRange} from './MessageProcessor';
 
@@ -155,20 +149,18 @@ export class GraphQLCache {
   };
 
   getFragmentDefinitions = async (
-    graphQLConfig: GraphQLConfigInterface,
-    appName: ?string,
+    projectConfig: GraphQLProjectConfig,
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
-    const rootDir = graphQLConfig.getRootDir();
+    const rootDir = projectConfig.configDir;
     if (this._fragmentDefinitionsCache.has(rootDir)) {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const includeDirs = graphQLConfig.getIncludeDirs(appName);
-    const excludeDirs = graphQLConfig.getExcludeDirs(appName);
+    const includes = projectConfig.includes;
     const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
-      path: includeDirs,
+      path: includes,
     });
 
     const list = filesFromInputDirs
@@ -176,12 +168,8 @@ export class GraphQLCache {
         filePath: path.join(rootDir, fileInfo.name),
         size: fileInfo.size,
         mtime: fileInfo.mtime,
-        // Filter any files with path starting with ExcludeDirs
       }))
-      .filter(fileInfo =>
-        excludeDirs.every(
-          exclude => !fileInfo.filePath.startsWith(path.join(rootDir, exclude)),
-        ));
+      .filter(fileInfo => projectConfig.includesFile(fileInfo.filePath));
 
     const {
       fragmentDefinitions,
@@ -191,7 +179,7 @@ export class GraphQLCache {
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 
-    this._subscribeToFileChanges(rootDir, includeDirs, excludeDirs);
+    this._subscribeToFileChanges(rootDir, projectConfig);
 
     return fragmentDefinitions;
   };
@@ -202,8 +190,7 @@ export class GraphQLCache {
    */
   _subscribeToFileChanges(
     rootDir: Uri,
-    includeDirs: Array<Uri>,
-    excludeDirs: Array<Uri>,
+    projectConfig: GraphQLProjectConfig,
   ): void {
     this._watchmanClient.subscribe(this._configDir, result => {
       if (result.files && result.files.length > 0) {
@@ -213,10 +200,7 @@ export class GraphQLCache {
         }
         result.files.forEach(async ({name, exists, size, mtime}) => {
           // Prune the file using the input/excluded directories
-          if (
-            !includeDirs.some(dir => name.startsWith(dir)) ||
-            excludeDirs.some(dir => name.startsWith(dir))
-          ) {
+          if (!projectConfig.includesFile(name)) {
             return;
           }
           const filePath = path.join(result.root, result.subscription, name);
@@ -387,53 +371,40 @@ export class GraphQLCache {
     });
   }
 
-  getSchema = async (
-    configSchemaPath: ?Uri,
-    appName: ?string,
-  ): Promise<?GraphQLSchema> => {
-    if (!configSchemaPath) {
+  getSchema = async (appName: ?string): Promise<?GraphQLSchema> => {
+    const projectConfig = this._graphQLConfig.getProjectConfig(appName);
+
+    if (!projectConfig) {
       return null;
     }
-    const schemaPath = path.join(this._configDir, configSchemaPath);
-    if (this._schemaMap.has(schemaPath)) {
-      const schema = this._schemaMap.get(schemaPath);
-      return schema ? this._extendSchema(schema, schemaPath) : schema;
+
+    if (this._schemaMap.has(projectConfig.schemaPath)) {
+      const schema = this._schemaMap.get(projectConfig.schemaPath);
+      return schema
+        ? this._extendSchema(schema, projectConfig.schemaPath)
+        : schema;
     }
 
-    const schemaDSL = await new Promise(resolve =>
-      fs.readFile(schemaPath, 'utf8', (error, content) => {
-        if (error) {
-          throw new Error(error);
-        }
-        resolve(
-          content +
-            '\n' +
-            this._graphQLConfig.getCustomDirectives(appName).join('\n'),
-        );
-      }));
-
-    const schemaFileExt = path.extname(schemaPath);
     let schema;
-    try {
-      switch (schemaFileExt) {
-        case '.graphql':
-          schema = buildSchema(schemaDSL);
-          break;
-        case '.json':
-          schema = buildClientSchema(JSON.parse(schemaDSL));
-          break;
-        default:
-          throw new Error('Unsupported schema file extention');
-      }
-    } catch (error) {
-      throw new Error(error);
+    if (projectConfig.schemaPath) {
+      schema = projectConfig.getSchema();
+    }
+
+    const customDirectives = projectConfig.extensions.customDirectives;
+    if (customDirectives && schema) {
+      const directivesSDL = customDirectives.join('\n\n');
+      schema = extendSchema(schema, parse(directivesSDL));
+    }
+
+    if (!schema) {
+      return null;
     }
 
     if (this._graphQLFileListCache.has(this._configDir)) {
-      schema = this._extendSchema(schema, schemaPath);
+      schema = this._extendSchema(schema, projectConfig.schemaPath);
     }
 
-    this._schemaMap.set(schemaPath, schema);
+    this._schemaMap.set(projectConfig.schemaPath, schema);
     return schema;
   };
 

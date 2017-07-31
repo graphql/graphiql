@@ -51,7 +51,6 @@ const PACKAGE_NAMES = {
   server: 'graphql-language-service-server',
   interface: 'graphql-language-service-interface',
   parser: 'graphql-language-service-parser',
-  config: 'graphql-language-service-config',
   utils: 'graphql-language-service-utils',
   types: 'graphql-language-service-types',
 };

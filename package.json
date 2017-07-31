@@ -41,7 +41,7 @@
     "babel-polyfill": "6.16.0",
     "fb-watchman": "^2.0.0",
     "graphql": "^0.10.5",
-    "graphql-language-service-config": "0.0.18",
+    "graphql-config": "~1.0.0",
     "graphql-language-service-interface": "0.0.22",
     "graphql-language-service-parser": "0.0.16",
     "graphql-language-service-server": "0.0.34",

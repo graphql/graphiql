@@ -36,11 +36,13 @@ describe('MessageProcessor', () => {
     messageProcessor._graphQLCache = {
       getGraphQLConfig() {
         return {
-          getAppConfigNameByFilePath() {
+          configDir: __dirname,
+          getProjectNameForFile() {
             return null;
           },
         };
       },
+      updateFragmentDefinition() {},
     };
     messageProcessor._languageService = {
       getAutocompleteSuggestions: (query, position, uri) => {
@@ -88,7 +90,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly changes the file cache with the didChange handler', async () => {
-    const uri = `${queryDir}test.graphql`;
+    const uri = `file://${queryDir}/test.graphql`;
     messageProcessor._textDocumentCache.set(uri, {
       contents: [
         {

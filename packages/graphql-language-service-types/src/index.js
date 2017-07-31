@@ -23,6 +23,9 @@ import type {
   GraphQLType,
 } from 'graphql/type/definition';
 
+export type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
+import type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
+
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
 export interface CharacterStream {
@@ -58,35 +61,20 @@ export type GraphQLProjectConfiguration = {
   // If not supplied, the object key can be used for the project name.
   name?: string,
   schemaPath?: string, // a file with schema IDL
-  schemaUrl?: URL,
 
   // For multiple applications with overlapping files,
   // these configuration options may be helpful
-  includeDirs?: Array<string>,
-  excludeDirs?: Array<string>,
+  includes?: Array<string>,
+  excludes?: Array<string>,
 
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
   extensions?: GraphQLConfigurationExtension,
-  customValidationRules?: Uri,
 };
 
 export type GraphQLConfigurationExtension = {
   [name: string]: mixed,
 };
-
-export interface GraphQLConfig {
-  +getAppConfigNameByFilePath: (filePath: Uri) => ?string,
-  +getAppConfigByName: (name: string) => ?GraphQLProjectConfiguration,
-  +getRootDir: () => Uri,
-  +getConfig: () => GraphQLConfiguration,
-  +getIncludeDirs: (appName: ?string) => Array<Uri>,
-  +getExcludeDirs: (appName: ?string) => Array<Uri>,
-  +getCustomDirectives: (appName: ?string) => Array<string>,
-  +isFileInIncludeDirs: (fileName: Uri, appName: ?string) => boolean,
-  +getSchemaPath: (appName: ?string) => ?Uri,
-  +getCustomValidationRulesModulePath: (appName: ?string) => ?Uri,
-}
 
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig,
@@ -102,8 +90,7 @@ export interface GraphQLCache {
   ) => Promise<Array<FragmentInfo>>,
 
   getFragmentDefinitions: (
-    graphQLConfig: GraphQLConfig,
-    appName: ?string,
+    graphQLConfig: GraphQLProjectConfig,
   ) => Promise<Map<string, FragmentInfo>>,
 
   +updateFragmentDefinition: (
@@ -112,10 +99,7 @@ export interface GraphQLCache {
     contents: Array<CachedContent>,
   ) => Promise<void>,
 
-  getSchema: (
-    configSchemaPath: ?Uri,
-    appName: ?string,
-  ) => Promise<?GraphQLSchema>,
+  getSchema: (appName: ?string) => Promise<?GraphQLSchema>,
 }
 
 // online-parser related

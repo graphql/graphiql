@@ -16,9 +16,9 @@ import type {
   Range as RangeType,
 } from 'graphql-language-service-types';
 
-import {extname} from 'path';
+import {extname, dirname} from 'path';
 import {URL} from 'url';
-import {findGraphQLConfigDir} from 'graphql-language-service-config';
+import {findGraphQLConfigFile} from 'graphql-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
 import {Position, Range} from 'graphql-language-service-utils';
 import {
@@ -83,8 +83,8 @@ export class MessageProcessor {
       },
     };
 
-    const rootPath = findGraphQLConfigDir(
-      configDir ? configDir.trim() : params.rootPath,
+    const rootPath = dirname(
+      findGraphQLConfigFile(configDir ? configDir.trim() : params.rootPath),
     );
     if (!rootPath) {
       throw new Error(
@@ -162,7 +162,7 @@ export class MessageProcessor {
         messageType: 'textDocument/didOpen',
         projectName: this._graphQLCache
           .getGraphQLConfig()
-          .getAppConfigNameByFilePath(uri),
+          .getProjectNameForFile(uri),
         fileName: uri,
       }),
     );
@@ -230,7 +230,7 @@ export class MessageProcessor {
         messageType: 'textDocument/didChange',
         projectName: this._graphQLCache
           .getGraphQLConfig()
-          .getAppConfigNameByFilePath(uri),
+          .getProjectNameForFile(uri),
         fileName: uri,
       }),
     );
@@ -261,7 +261,7 @@ export class MessageProcessor {
         messageType: 'textDocument/didClose',
         projectName: this._graphQLCache
           .getGraphQLConfig()
-          .getAppConfigNameByFilePath(uri),
+          .getProjectNameForFile(uri),
         fileName: uri,
       }),
     );
@@ -335,7 +335,7 @@ export class MessageProcessor {
         messageType: 'textDocument/completion',
         projectName: this._graphQLCache
           .getGraphQLConfig()
-          .getAppConfigNameByFilePath(textDocument.uri),
+          .getProjectNameForFile(textDocument.uri),
         fileName: textDocument.uri,
       }),
     );
@@ -407,7 +407,7 @@ export class MessageProcessor {
         messageType: 'textDocument/definition',
         projectName: this._graphQLCache
           .getGraphQLConfig()
-          .getAppConfigNameByFilePath(textDocument.uri),
+          .getProjectNameForFile(textDocument.uri),
         fileName: textDocument.uri,
       }),
     );
@@ -423,8 +423,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const graphQLConfig = this._graphQLCache.getGraphQLConfig();
-    const rootDir = graphQLConfig.getRootDir();
+    const rootDir = this._graphQLCache.getGraphQLConfig().rootDir;
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,

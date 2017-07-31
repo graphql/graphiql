@@ -35,30 +35,7 @@ The library includes a node executable file which you can find in `./node_module
 
 ### GraphQL configuration file (`.graphqlconfig`)
 
-GraphQL Language Service, to provide its full feature set, will need to know some information about your GraphQL development environment. `.graphqlconfig` is a GraphQL configuration file that contains this information.
-```
-{
-  "projects": {
-    "product-name": {
-      "includeDirs": [
-        "/dir/paths/to/your/graphql/files"
-      ],
-      "excludeDirs": [
-        "/dir/paths/to/ignore/"
-      ],
-      "schemaPath": "/path/to/the/schema/" // supports `.graphql` IDL or `.json` file
-    }
-  }
-}
-```
-`.graphqlconfig` can define mutliple configurations for each GraphQL environment, should you have more than one.
-
-The GraphQL configurations will be used to perform two things in a nutshell:
-
-1. Using `includeDirs` and `excludeDirs`, cache all fragment definitions per each product. This information will be used to compute dependencies between GraphQL queries and fragments.
-2. Using `schemaPath`, build and cache `GraphQLSchema`s (per product). The schema will be used to perform query validations, autocomplete suggestions etc.
-
-Also, if GraphQL Language Service receives an RPC message that contains the path of the file being operated on, `includDirs` and `excludeDirs` are used to determine which product configuration the file is associated with. Refer to [GraphQLConfig class](https://github.com/graphql/graphql-language-service/blob/master/packages/graphql-language-service-config/src/index.js) for more information.
+Check out [graphql-config](https://github.com/graphcool/graphql-config)
 
 ### Using the command-line interface
 
