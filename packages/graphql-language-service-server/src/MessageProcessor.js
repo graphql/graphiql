@@ -27,6 +27,7 @@ import {
   ServerCapabilities,
 } from 'vscode-jsonrpc';
 import {
+  CompletionItem,
   CompletionRequest,
   CompletionList,
   DefinitionRequest,
@@ -279,9 +280,9 @@ export class MessageProcessor {
   async handleCompletionRequest(
     params: CompletionRequest.type,
     token: CancellationToken,
-  ): Promise<CompletionList> {
+  ): Promise<CompletionList | Array<CompletionItem>> {
     if (!this._isInitialized) {
-      return null;
+      return [];
     }
     // `textDocument/comletion` event takes advantage of the fact that
     // `textDocument/didChange` event always fires before, which would have
@@ -315,7 +316,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return null;
+      return [];
     }
 
     const {query, range} = found;
