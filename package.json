@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.38",
+  "version": "0.0.41",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -44,7 +44,7 @@
     "graphql-config": "~1.0.0",
     "graphql-language-service-interface": "0.0.22",
     "graphql-language-service-parser": "0.0.16",
-    "graphql-language-service-server": "0.0.34",
+    "graphql-language-service-server": "0.0.36",
     "graphql-language-service-types": "0.0.22",
     "graphql-language-service-utils": "0.0.20",
     "nullthrows": "^1.0.0",
