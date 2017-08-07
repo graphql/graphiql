@@ -17,7 +17,7 @@
   "keywords": [
     "graphql"
   ],
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
     "build": "npm run build-js && npm run build-flow",
