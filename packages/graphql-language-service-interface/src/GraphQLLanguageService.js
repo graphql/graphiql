@@ -79,9 +79,9 @@ export class GraphQLLanguageService {
       const customRulesModulePath = projectConfig.extensions.customValidationRules;
       if (customRulesModulePath) {
         /* eslint-disable no-implicit-coercion */
-        const rulesPath = require.resolve('' + customRulesModulePath);
+        const rulesPath = require.resolve(`${customRulesModulePath}`);
         if (rulesPath) {
-          customRules = require('' + rulesPath)(this._graphQLConfig);
+          customRules = require(`${rulesPath}`)(this._graphQLConfig);
         }
         /* eslint-enable no-implicit-coercion */
       }
