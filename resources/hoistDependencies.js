@@ -15,7 +15,7 @@
 const {readdirSync, writeFileSync} = require('fs');
 const {join} = require('path');
 
-const mainPackage = require('../package.json');
+const mainPackage = require('../packages/graphql-language-service/package.json');
 const otherPackages = readdirSync('packages').map(pkg =>
   require(join(process.cwd(), 'packages', pkg, 'package.json')));
 
@@ -45,7 +45,12 @@ otherPackages.forEach(pkg => {
   // Enable Flow to work without a build.
   if (pkg.main) {
     pkg.main = pkg.main.replace(/dist\//, 'src/');
-    const outfile = join(process.cwd(), 'packages', pkg.name, 'package.json');
+    const outfile = join(
+      process.cwd(),
+      'packages',
+      pkg.name.split('graphql-language-service-')[1],
+      'package.json',
+    );
     writeToJSON(outfile, pkg);
   }
 });

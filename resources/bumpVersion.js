@@ -17,7 +17,7 @@ const mainPackage = {
   info: require('../package.json'),
   location: join(__dirname, '..', 'package.json'),
 };
-const otherPackages = readdirSync('packages').map(pkg => {
+const packages = readdirSync('packages').map(pkg => {
   const location = join(process.cwd(), 'packages', pkg, 'package.json');
   return {
     info: require(location),
@@ -25,7 +25,7 @@ const otherPackages = readdirSync('packages').map(pkg => {
   };
 });
 const allPackages = {};
-[mainPackage, ...otherPackages].forEach(pkg => {
+[...packages].forEach(pkg => {
   allPackages[pkg.info.name] = pkg;
 });
 const packageNames = Object.keys(allPackages);
@@ -48,11 +48,12 @@ function print(message) {
 }
 
 const PACKAGE_NAMES = {
-  server: 'graphql-language-service-server',
-  interface: 'graphql-language-service-interface',
-  parser: 'graphql-language-service-parser',
-  utils: 'graphql-language-service-utils',
-  types: 'graphql-language-service-types',
+  server: 'server',
+  interface: 'interface',
+  parser: 'parser',
+  utils: 'utils',
+  types: 'types',
+  cli: 'graphql-language-service',
 };
 
 function parseArguments() {

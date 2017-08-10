@@ -26,7 +26,7 @@ Prettifies the code base, or tests that it is already prettified. This scripted 
 
 ### `bumpVersion.js`
 
-Dependency-aware helper script for bumping a package version number. For example `resources/bumpVersion.js --patch graphql-language-service-types` will bump the "graphql-language-service-types" package from version "x.y.z" to "x.y.z+1", and also bump all the packages that depend on it (directly or transitively).
+Dependency-aware helper script for bumping a package version number. For example `resources/bumpVersion.js --patch types` will bump the "graphql-language-service-types" package from version "x.y.z" to "x.y.z+1", and also bump all the packages that depend on it (directly or transitively).
 
 ## Scripts invoked automatically
 

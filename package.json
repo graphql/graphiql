@@ -1,24 +1,11 @@
 {
-  "name": "graphql-language-service",
-  "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "0.0.42",
-  "description": "An interface for building GraphQL language services for IDEs",
-  "contributors": [
-    "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
-  ],
-  "bugs": {
-    "url": "https://github.com/graphql/graphql-language-service/issues"
-  },
-  "bin": {
-    "graphql": "./bin/graphql.js"
-  },
-  "keywords": [
-    "graphql"
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
   "options": {
-    "mocha": "--full-trace --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js src/**/__tests__/**/*-test.js",
-    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js src/**/__tests__/**/*-test.js"
+    "mocha": "--full-trace --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js",
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
   },
   "scripts": {
     "test": "npm run lint && npm run pretty-check && npm run testonly && npm run check-dependencies && npm run check",
@@ -33,24 +20,6 @@
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check"
-  },
-  "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0"
-  },
-  "dependencies": {
-    "babel-polyfill": "6.16.0",
-    "fb-watchman": "^2.0.0",
-    "graphql": "^0.10.5",
-    "graphql-config": "~1.0.0",
-    "graphql-language-service-interface": "0.0.23",
-    "graphql-language-service-parser": "0.0.17",
-    "graphql-language-service-server": "0.0.37",
-    "graphql-language-service-types": "0.0.23",
-    "graphql-language-service-utils": "0.0.21",
-    "nullthrows": "^1.0.0",
-    "vscode-jsonrpc": "^3.3.0",
-    "vscode-languageserver": "^3.3.0",
-    "yargs": "^3.32.0 || ^7.0.0"
   },
   "devDependencies": {
     "babel-cli": "6.23.0",
