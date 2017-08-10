@@ -13,6 +13,9 @@
   "bin": {
     "graphql": "./bin/graphql.js"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "graphql",
     "graphql-language-service"
