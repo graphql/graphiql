@@ -38,5 +38,8 @@
     "graphql-language-service-server": "^0.1.0-0",
     "graphql-language-service-utils": "^0.1.0-0",
     "yargs": "^3.32.0 || ^7.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.23.0"
   }
 }
