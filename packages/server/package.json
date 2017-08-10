@@ -26,6 +26,7 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
+    "babylon": "^6.17.4",
     "fb-watchman": "^2.0.0",
     "graphql": "^0.10.5",
     "graphql-config": "~1.0.0",
