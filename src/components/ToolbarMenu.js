@@ -35,9 +35,12 @@ export class ToolbarMenu extends React.Component {
     return (
       <a
         className="toolbar-menu toolbar-button"
+        onBlur={this.handleBlur.bind(this)}
         onClick={this.handleOpen.bind(this)}
+        onFocus={this.handleFocus.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {this._node = node;}}
+        tabIndex="0"
         title={this.props.title}>
         {this.props.label}
         <svg width="14" height="8">
@@ -64,6 +67,11 @@ export class ToolbarMenu extends React.Component {
     }
   }
 
+  handleBlur(e) {
+    preventDefault(e);
+    this.setState({ visible: false });
+  }
+
   handleClick(e) {
     if (this._node !== e.target) {
       preventDefault(e);
@@ -72,11 +80,17 @@ export class ToolbarMenu extends React.Component {
     }
   }
 
+  handleFocus(e) {
+    preventDefault(e);
+    this.setState({ visible: true });
+  }
+
   handleOpen = e => {
     preventDefault(e);
     this.setState({ visible: true });
     this._subscribe();
   };
+
 }
 
 export function ToolbarMenuItem({ onSelect, title, label }) {
@@ -86,6 +100,7 @@ export function ToolbarMenuItem({ onSelect, title, label }) {
       onMouseOut={e => { e.target.className = null; }}
       onMouseDown={preventDefault}
       onMouseUp={onSelect}
+      tabIndex="0"
       title={title}>
       {label}
     </li>

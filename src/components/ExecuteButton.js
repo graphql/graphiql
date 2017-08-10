@@ -75,12 +75,15 @@ export class ExecuteButton extends React.Component {
       <path d="M 11 9 L 24 16 L 11 23 z" />;
 
     return (
-      <div className="execute-button-wrap">
+      <div
+        className="execute-button-wrap"
+        tabIndex="-1">
         <button
           type="button"
           className="execute-button"
           onMouseDown={onMouseDown}
           onClick={onClick}
+          tabIndex="0"
           title="Execute Query (Ctrl-Enter)">
           <svg width="34" height="34">{pathJSX}</svg>
         </button>

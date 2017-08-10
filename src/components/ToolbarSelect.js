@@ -52,9 +52,12 @@ export class ToolbarSelect extends React.Component {
     return (
       <a
         className="toolbar-select toolbar-button"
+        onBlur={this.handleBlur.bind(this)}
         onClick={this.handleOpen.bind(this)}
+        onFocus={this.handleFocus.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {this._node = node;}}
+        tabIndex="0"
         title={this.props.title}>
         {selectedChild.props.label}
         <svg width="13" height="10">
@@ -82,12 +85,22 @@ export class ToolbarSelect extends React.Component {
     }
   }
 
+  handleBlur(e) {
+    preventDefault(e);
+    this.setState({ visible: false });
+  }
+
   handleClick(e) {
     if (this._node !== e.target) {
       preventDefault(e);
       this.setState({ visible: false });
       this._release();
     }
+  }
+
+  handleFocus(e) {
+    preventDefault(e);
+    this.setState({ visible: true });
   }
 
   handleOpen = e => {
@@ -104,7 +117,8 @@ export function ToolbarSelectOption({ onSelect, label, selected }) {
       onMouseOver={e => { e.target.className = 'hover'; }}
       onMouseOut={e => { e.target.className = null; }}
       onMouseDown={preventDefault}
-      onMouseUp={onSelect}>
+      onMouseUp={onSelect}
+      tabIndex="0">
       {label}
       {selected &&
         <svg width="13" height="13">
