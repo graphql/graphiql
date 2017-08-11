@@ -1,5 +1,7 @@
 # GraphQL Language Service
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/graphql/graphql-language-service.svg)](https://greenkeeper.io/)
+
 _This is currently in technical preview. We welcome your feedback and suggestions._
 
 [![Build Status](https://travis-ci.org/graphql/graphql-language-service.svg?branch=master)](https://travis-ci.org/graphql/graphql-language-service)
