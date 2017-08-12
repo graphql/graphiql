@@ -319,7 +319,8 @@ export class GraphiQL extends React.Component {
               this.editorBarComponent = n;
             }}
             className="editorBar"
-            onMouseDown={this.handleResizeStart}>
+            onMouseDown={this.handleResizeStart}
+            onDoubleClick={this.handleResetResize}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
                 ref={n => {
@@ -373,6 +374,7 @@ export class GraphiQL extends React.Component {
           <div
             className="docExplorerResizer"
             onMouseDown={this.handleDocsResizeStart}
+            onDoubleClick={this.handleDocsResetResize}
           />
           <DocExplorer
             ref={c => {
@@ -821,6 +823,10 @@ export class GraphiQL extends React.Component {
     document.addEventListener('mouseup', onMouseUp);
   };
 
+  handleResetResize = () => {
+    this.setState({ editorFlex: 1 });
+  };
+
   _didClickDragBar(event) {
     // Only for primary unmodified clicks
     if (event.button !== 0 || event.ctrlKey) {
@@ -880,6 +886,12 @@ export class GraphiQL extends React.Component {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  handleDocsResetResize = () => {
+    this.setState({
+      docExplorerWidth: 350,
+    });
   };
 
   handleVariableResizeStart = downEvent => {
