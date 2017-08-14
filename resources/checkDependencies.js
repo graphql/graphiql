@@ -16,7 +16,8 @@ const YELLOW = '\x1b[33m';
 
 const mainPackage = require('../package.json');
 const otherPackages = readdirSync('packages').map(pkg =>
-  require(join(process.cwd(), 'packages', pkg, 'package.json')));
+  require(join(process.cwd(), 'packages', pkg, 'package.json')),
+);
 
 function print(msg) {
   process.stdout.write(msg + '\n');
@@ -30,7 +31,8 @@ let unhoistedCount = 0;
 otherPackages.forEach(pkg => {
   if (pkg.devDependencies) {
     unhoistedCount++;
-    const message = `Package ${pkg.name} has devDependencies which should be ` +
+    const message =
+      `Package ${pkg.name} has devDependencies which should be ` +
       'hoisted into the top-level package.json:';
     printHighlight(message);
     Object.keys(pkg.devDependencies).forEach(devDependency => {

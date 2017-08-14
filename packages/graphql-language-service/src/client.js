@@ -84,13 +84,10 @@ function _getAutocompleteSuggestions(
     const resultArray = schema
       ? getAutocompleteSuggestions(schema, queryText, point)
       : [];
-    const resultObject = resultArray.reduce(
-      (prev, cur, index) => {
-        prev[index] = cur;
-        return prev;
-      },
-      {},
-    );
+    const resultObject = resultArray.reduce((prev, cur, index) => {
+      prev[index] = cur;
+      return prev;
+    }, {});
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
@@ -109,13 +106,10 @@ function _getDiagnostics(
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getDiagnostics(queryText, schema);
-    const resultObject = resultArray.reduce(
-      (prev, cur, index) => {
-        prev[index] = cur;
-        return prev;
-      },
-      {},
-    );
+    const resultObject = resultArray.reduce((prev, cur, index) => {
+      prev[index] = cur;
+      return prev;
+    }, {});
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {

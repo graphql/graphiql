@@ -442,7 +442,9 @@ export class GraphQLCache {
               ...response,
               mtime: fileInfo.mtime,
               size: fileInfo.size,
-            })));
+            }),
+          ),
+      );
       await Promise.all(promises); // eslint-disable-line babel/no-await-in-loop
     }
 
@@ -531,6 +533,7 @@ export class GraphQLCache {
           }
         }
         resolve({filePath, content, asts, queries});
-      }));
+      }),
+    );
   };
 }

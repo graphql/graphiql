@@ -72,7 +72,8 @@ export function getDiagnostics(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, SEVERITY.WARNING, 'Deprecation'));
+        annotations(error, SEVERITY.WARNING, 'Deprecation'),
+      );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
@@ -93,9 +94,10 @@ function annotations(
     return [];
   }
   return error.nodes.map(node => {
-    const highlightNode = node.kind !== 'Variable' && node.name
-      ? node.name
-      : node.variable ? node.variable : node;
+    const highlightNode =
+      node.kind !== 'Variable' && node.name
+        ? node.name
+        : node.variable ? node.variable : node;
 
     invariant(error.locations, 'GraphQL validation error requires locations.');
     const loc = error.locations[0];

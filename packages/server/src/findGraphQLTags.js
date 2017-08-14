@@ -45,13 +45,15 @@ export function findGraphQLTags(
     CallExpression: node => {
       const callee = node.callee;
       if (
-        !((callee.type === 'Identifier' &&
-          CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
+        !(
+          (callee.type === 'Identifier' &&
+            CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
           (callee.kind === 'MemberExpression' &&
             callee.object.type === 'Identifier' &&
             callee.object.value === 'Relay' &&
             callee.property.type === 'Identifier' &&
-            CREATE_CONTAINER_FUNCTIONS[callee.property.name]))
+            CREATE_CONTAINER_FUNCTIONS[callee.property.name])
+        )
       ) {
         traverse(node, visitors);
         return;

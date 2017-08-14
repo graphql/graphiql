@@ -40,9 +40,11 @@ export interface CharacterStream {
   eatSpace: () => boolean,
   skipToEnd: () => void,
   skipTo: (position: number) => void,
-  match: (pattern: TokenPattern, consume: ?boolean, caseFold: ?boolean) =>
-    | Array<string>
-    | boolean,
+  match: (
+    pattern: TokenPattern,
+    consume: ?boolean,
+    caseFold: ?boolean,
+  ) => Array<string> | boolean,
   backUp: (num: number) => void,
   column: () => number,
   indentation: () => number,

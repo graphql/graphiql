@@ -135,7 +135,8 @@ function getToken(
       const levels = (state.levels = (state.levels || []).slice(0, -1));
       if (state.indentLevel) {
         if (
-          levels.length > 0 && levels[levels.length - 1] < state.indentLevel
+          levels.length > 0 &&
+          levels[levels.length - 1] < state.indentLevel
         ) {
           state.indentLevel = levels[levels.length - 1];
         }
@@ -146,9 +147,10 @@ function getToken(
   while (state.rule) {
     // If this is a forking rule, determine what rule to use based on
     // the current token, otherwise expect based on the current step.
-    let expected: any = typeof state.rule === 'function'
-      ? state.step === 0 ? state.rule(token, stream) : null
-      : state.rule[state.step];
+    let expected: any =
+      typeof state.rule === 'function'
+        ? state.step === 0 ? state.rule(token, stream) : null
+        : state.rule[state.step];
 
     // Seperator between list elements if necessary.
     if (state.needsSeperator) {
@@ -264,7 +266,8 @@ function advanceRule(state: State, successful: boolean): void {
 
   // While the current rule is completed.
   while (
-    state.rule && !(Array.isArray(state.rule) && state.step < state.rule.length)
+    state.rule &&
+    !(Array.isArray(state.rule) && state.step < state.rule.length)
   ) {
     popRule(state);
 
@@ -283,9 +286,11 @@ function advanceRule(state: State, successful: boolean): void {
 }
 
 function isList(state: State): ?boolean {
-  return Array.isArray(state.rule) &&
+  return (
+    Array.isArray(state.rule) &&
     typeof state.rule[state.step] !== 'string' &&
-    state.rule[state.step].isList;
+    state.rule[state.step].isList
+  );
 }
 
 // Unwind the state after an unsuccessful match.
@@ -293,7 +298,8 @@ function unsuccessful(state: State): void {
   // Fall back to the parent rule until you get to an optional or list rule or
   // until the entire stack of rules is empty.
   while (
-    state.rule && !(Array.isArray(state.rule) && state.rule[state.step].ofRule)
+    state.rule &&
+    !(Array.isArray(state.rule) && state.rule[state.step].ofRule)
   ) {
     popRule(state);
   }

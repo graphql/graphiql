@@ -394,9 +394,10 @@ export class MessageProcessor {
             // https://tools.ietf.org/html/rfc3986
             // Remove the below hack once the usage of URI is sorted out in related
             // libraries.
-            uri: res.path.indexOf('file://') === 0
-              ? res.path
-              : `file://${res.path}`,
+            uri:
+              res.path.indexOf('file://') === 0
+                ? res.path
+                : `file://${res.path}`,
             range: defRange,
           };
         })
@@ -416,8 +417,10 @@ export class MessageProcessor {
   }
 
   _isRelayCompatMode(query: string): boolean {
-    return query.indexOf('RelayCompat') !== -1 ||
-      query.indexOf('react-relay/compat') !== -1;
+    return (
+      query.indexOf('RelayCompat') !== -1 ||
+      query.indexOf('react-relay/compat') !== -1
+    );
   }
 
   async _updateFragmentDefinition(
@@ -514,7 +517,8 @@ function processDiagnosticsMessage(
   const lastLineLength = queryLines[totalLines - 1].length;
   const lastCharacterPosition = new Position(totalLines, lastLineLength);
   const processedResults = results.filter(diagnostic =>
-    diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition));
+    diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
+  );
 
   if (range) {
     const offset = range.start;

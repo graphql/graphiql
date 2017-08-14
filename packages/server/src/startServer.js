@@ -146,20 +146,26 @@ function addHandlers(
   );
 
   connection.onNotification(DidCloseTextDocumentNotification.type, params =>
-    messageProcessor.handleDidCloseNotification(params));
+    messageProcessor.handleDidCloseNotification(params),
+  );
   connection.onRequest(ShutdownRequest.type, () =>
-    messageProcessor.handleShutdownRequest());
+    messageProcessor.handleShutdownRequest(),
+  );
   connection.onNotification(ExitNotification.type, () =>
-    messageProcessor.handleExitNotification());
+    messageProcessor.handleExitNotification(),
+  );
 
   // Ignore cancel requests
   connection.onNotification('$/cancelRequest', () => ({}));
 
   connection.onRequest(InitializeRequest.type, (params, token) =>
-    messageProcessor.handleInitializeRequest(params, token, configDir));
+    messageProcessor.handleInitializeRequest(params, token, configDir),
+  );
   connection.onRequest(CompletionRequest.type, params =>
-    messageProcessor.handleCompletionRequest(params));
+    messageProcessor.handleCompletionRequest(params),
+  );
   connection.onRequest(CompletionResolveRequest.type, item => item);
   connection.onRequest(DefinitionRequest.type, params =>
-    messageProcessor.handleDefinitionRequest(params));
+    messageProcessor.handleDefinitionRequest(params),
+  );
 }

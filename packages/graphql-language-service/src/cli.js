@@ -34,32 +34,37 @@ const {argv} = yargs
   )
   .option('t', {
     alias: 'text',
-    describe: 'Text buffer to perform GraphQL diagnostics on.\n' +
+    describe:
+      'Text buffer to perform GraphQL diagnostics on.\n' +
       'Will defer to --file option if omitted.\n' +
       'Overrides the --file option, if any.\n',
     type: 'string',
   })
   .option('f', {
     alias: 'file',
-    describe: 'File path to perform GraphQL diagnostics on.\n' +
+    describe:
+      'File path to perform GraphQL diagnostics on.\n' +
       'Will be ignored if --text option is supplied.\n',
     type: 'string',
   })
   .option('row', {
-    describe: 'A row number from the cursor location for ' +
+    describe:
+      'A row number from the cursor location for ' +
       'GraphQL autocomplete suggestions.\n' +
       'If omitted, the last row number will be used.\n',
     type: 'number',
   })
   .option('column', {
-    describe: 'A column number from the cursor location for ' +
+    describe:
+      'A column number from the cursor location for ' +
       'GraphQL autocomplete suggestions.\n' +
       'If omitted, the last column number will be used.\n',
     type: 'number',
   })
   .option('c', {
     alias: 'configDir',
-    describe: 'Path to the .graphqlrc configuration file.\n' +
+    describe:
+      'Path to the .graphqlrc configuration file.\n' +
       'Walks up the directory tree from the provided config directory, or ' +
       'the current working directory, until a .graphqlrc is found or ' +
       'the root directory is found.\n',
@@ -67,14 +72,16 @@ const {argv} = yargs
   })
   .option('m', {
     alias: 'method',
-    describe: 'A IPC communication method between client and server.\n' +
+    describe:
+      'A IPC communication method between client and server.\n' +
       'Can be one of: stream, node, socket.\n' +
       'Will default to use a node IPC channel for communication.\n',
     type: 'string',
   })
   .option('p', {
     alias: 'port',
-    describe: 'Port number to communicate via socket.\n' +
+    describe:
+      'Port number to communicate via socket.\n' +
       'The port number of a service running inside the IDE that the language ' +
       'service should connect to.\n' +
       'Required if the client communicates via socket connection.\n',

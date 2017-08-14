@@ -82,7 +82,8 @@ export class GraphQLWatchman {
           reject(error);
         }
         resolve(response);
-      })).catch(error => {
+      }),
+    ).catch(error => {
       throw new Error(error);
     });
   }

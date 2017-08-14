@@ -76,7 +76,8 @@ export class GraphQLLanguageService {
       source = `${source} ${dependenciesSource}`;
 
       // Check if there are custom validation rules to be used
-      const customRulesModulePath = projectConfig.extensions.customValidationRules;
+      const customRulesModulePath =
+        projectConfig.extensions.customValidationRules;
       if (customRulesModulePath) {
         /* eslint-disable no-implicit-coercion */
         const rulesPath = require.resolve(`${customRulesModulePath}`);
@@ -163,7 +164,9 @@ export class GraphQLLanguageService {
       definition => definition.kind === FRAGMENT_DEFINITION,
     );
 
-    const typeCastedDefs = ((localFragDefinitions: any): Array<FragmentDefinitionNode>);
+    const typeCastedDefs = ((localFragDefinitions: any): Array<
+      FragmentDefinitionNode,
+    >);
 
     const localFragInfos = typeCastedDefs.map(
       (definition: FragmentDefinitionNode) => ({

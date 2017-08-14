@@ -53,10 +53,12 @@ export function validateWithCustomRules(
       if (error.message.indexOf('Unknown directive') === -1) {
         return true;
       }
-      return !((error.nodes &&
-        error.nodes.length === 1 &&
-        error.nodes[0].name.value === 'arguments') ||
-        error.nodes[0].name.value === 'argumentDefinitions');
+      return !(
+        (error.nodes &&
+          error.nodes.length === 1 &&
+          error.nodes[0].name.value === 'arguments') ||
+        error.nodes[0].name.value === 'argumentDefinitions'
+      );
     });
   }
 

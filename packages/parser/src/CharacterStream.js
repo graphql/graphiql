@@ -45,9 +45,10 @@ export default class CharacterStream implements CharacterStreamInterface {
     if (typeof pattern === 'string') {
       isMatched = character === pattern;
     } else {
-      isMatched = pattern instanceof RegExp
-        ? pattern.test(character)
-        : pattern(character);
+      isMatched =
+        pattern instanceof RegExp
+          ? pattern.test(character)
+          : pattern(character);
     }
     return isMatched;
   }

@@ -58,9 +58,8 @@ export function getAutocompleteSuggestions(
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
-  const state = token.state.kind === 'Invalid'
-    ? token.state.prevState
-    : token.state;
+  const state =
+    token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
   // relieve flow errors by checking if `state` exists
   if (!state) {
@@ -170,9 +169,10 @@ function getSuggestionsForFieldNames(
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
-    const fields = parentType.getFields instanceof Function
-      ? objectValues(parentType.getFields())
-      : [];
+    const fields =
+      parentType.getFields instanceof Function
+        ? objectValues(parentType.getFields())
+        : [];
     if (isAbstractType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
@@ -281,12 +281,14 @@ function getSuggestionsForFragmentSpread(
   // Filter down to only the fragments which may exist here.
   const relevantFrags = fragments.filter(
     frag =>
-    // Only include fragments with known types.
+      // Only include fragments with known types.
       typeMap[frag.typeCondition.name.value] &&
       // Only include fragments which are not cyclic.
-      !(defState &&
+      !(
+        defState &&
         defState.kind === 'FragmentDefinition' &&
-        defState.name === frag.name.value) &&
+        defState.name === frag.name.value
+      ) &&
       // Only include fragments which could possibly be spread here.
       isCompositeType(typeInfo.parentType) &&
       isCompositeType(typeMap[frag.typeCondition.name.value]) &&
@@ -302,7 +304,8 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
+      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name
+        .value}`,
     })),
   );
 }
@@ -601,26 +604,26 @@ function getTypeInfo(schema: GraphQLSchema, tokenState: State): TypeInfo {
         break;
       case 'EnumValue':
         const enumType = getNamedType(inputType);
-        enumValue = enumType instanceof GraphQLEnumType
-          ? find(enumType.getValues(), val => val.value === state.name)
-          : null;
+        enumValue =
+          enumType instanceof GraphQLEnumType
+            ? find(enumType.getValues(), val => val.value === state.name)
+            : null;
         break;
       case 'ListValue':
         const nullableType = getNullableType(inputType);
-        inputType = nullableType instanceof GraphQLList
-          ? nullableType.ofType
-          : null;
+        inputType =
+          nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case 'ObjectValue':
         const objectType = getNamedType(inputType);
-        objectFieldDefs = objectType instanceof GraphQLInputObjectType
-          ? objectType.getFields()
-          : null;
+        objectFieldDefs =
+          objectType instanceof GraphQLInputObjectType
+            ? objectType.getFields()
+            : null;
         break;
       case 'ObjectField':
-        const objectField = state.name && objectFieldDefs
-          ? objectFieldDefs[state.name]
-          : null;
+        const objectField =
+          state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
         inputType = objectField && objectField.type;
         break;
       case 'NamedType':

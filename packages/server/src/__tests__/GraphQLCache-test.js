@@ -97,7 +97,8 @@ describe('GraphQLCache', () => {
     });
 
     it('finds fragments referenced in Relay queries', async () => {
-      const text = 'module.exports = Relay.createContainer(' +
+      const text =
+        'module.exports = Relay.createContainer(' +
         'DispatchResumeCard, {\n' +
         '  fragments: {\n' +
         '    candidate: () => graphql`\n' +

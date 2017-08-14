@@ -90,7 +90,8 @@ function parseArguments() {
 
 function genPublishedVersions(packageNames) {
   const results = packageNames.map(name =>
-    exec('npm', 'view', name, 'version'));
+    exec('npm', 'view', name, 'version'),
+  );
   return Promise.all(results);
 }
 
@@ -139,8 +140,10 @@ function writeToJSON(location, stringifiable) {
  */
 function getDependents(dependencyName) {
   return Object.values(allPackages).filter(({info: pkg}) => {
-    return pkg.dependencies &&
-      Object.keys(pkg.dependencies).indexOf(dependencyName) !== -1;
+    return (
+      pkg.dependencies &&
+      Object.keys(pkg.dependencies).indexOf(dependencyName) !== -1
+    );
   });
 }
 
@@ -148,12 +151,14 @@ function bumpVersion(bumpTarget, bumpType, bumped = new Set()) {
   const {name} = bumpTarget.info;
   const {published, version} = bumpTarget;
   if (compareVersions(published, version) > 0) {
-    const message = `Local version of ${name} (${version}) is ` +
+    const message =
+      `Local version of ${name} (${version}) is ` +
       `already ahead of published version (${published}); no need to bump.`;
     print(message);
   } else {
     const bumpedVersion = bumpVersionString(published, bumpType);
-    const message = `Bumping from published version of ${name} ` +
+    const message =
+      `Bumping from published version of ${name} ` +
       `(${published}) to new ${bumpType} version (${bumpedVersion}).`;
     print(message);
 
@@ -191,7 +196,8 @@ process.on('unhandledRejection', err => {
     allPackages[name].published = publishedVersions[i];
     allPackages[name].version = manifest[name].version;
     if (manifest[name].version !== allPackages[name].info.version) {
-      const message = `warning: versions.json manifest version for ` +
+      const message =
+        `warning: versions.json manifest version for ` +
         `${name} (${manifest[name].version}) does not match package.json ` +
         `version (${allPackages[name].info.version}).`;
       print(message);

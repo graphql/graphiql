@@ -40,6 +40,6 @@
     "yargs": "^3.32.0 || ^7.0.0"
   },
   "devDependencies": {
-    "babel-cli": "6.23.0"
+    "babel-cli": "6.24.1"
   }
 }

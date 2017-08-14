@@ -43,7 +43,12 @@ export function getASTNodeAtPosition(
 
 export function pointToOffset(text: string, point: Position): number {
   const linesUntilPosition = text.split('\n').slice(0, point.line);
-  return point.character + linesUntilPosition.map(
-      line => line.length + 1, // count EOL
-    ).reduce((a, b) => a + b, 0);
+  return (
+    point.character +
+    linesUntilPosition
+      .map(
+        line => line.length + 1, // count EOL
+      )
+      .reduce((a, b) => a + b, 0)
+  );
 }

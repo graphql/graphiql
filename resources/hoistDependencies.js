@@ -17,7 +17,8 @@ const {join} = require('path');
 
 const mainPackage = require('../packages/graphql-language-service/package.json');
 const otherPackages = readdirSync('packages').map(pkg =>
-  require(join(process.cwd(), 'packages', pkg, 'package.json')));
+  require(join(process.cwd(), 'packages', pkg, 'package.json')),
+);
 
 function writeToJSON(location, stringifiable) {
   writeFileSync(location, JSON.stringify(stringifiable, null, 2) + '\n');
@@ -33,7 +34,8 @@ otherPackages.forEach(pkg => {
       }
       const version = pkg.dependencies[dependency];
       if (dependencies[dependency] && dependencies[dependency] !== version) {
-        const message = `Multiple versions ` +
+        const message =
+          `Multiple versions ` +
           `(${version}, ${dependencies[dependency]}) present for package: ` +
           dependency;
         throw new Error(message);

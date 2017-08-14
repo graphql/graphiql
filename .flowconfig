@@ -4,6 +4,7 @@
 .*/coverage/.*
 .*/dist/.*
 .*/resources/.*
+.*/node_modules/conventional-changelog-core/*
 
 [include]
 

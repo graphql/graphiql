@@ -41,9 +41,10 @@ describe('getDiagnostics', () => {
   });
 
   it('catches field deprecation errors', () => {
-    const error = getDiagnostics('{ deprecatedField { testField } }', schema)[
-      0
-    ];
+    const error = getDiagnostics(
+      '{ deprecatedField { testField } }',
+      schema,
+    )[0];
     expect(error.message).to.equal(
       'The field Query.deprecatedField is deprecated. Use test instead.',
     );

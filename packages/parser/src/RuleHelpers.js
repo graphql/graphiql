@@ -30,8 +30,10 @@ export function butNot(rule: Rule, exclusions: Array<Rule>) {
     if (ruleMatch) {
       check = ruleMatch(token);
     }
-    return check &&
-      exclusions.every(exclusion => exclusion.match && !exclusion.match(token));
+    return (
+      check &&
+      exclusions.every(exclusion => exclusion.match && !exclusion.match(token))
+    );
   };
   return rule;
 }

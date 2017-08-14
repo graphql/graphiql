@@ -118,8 +118,8 @@ export const ParseRules: {[name: string]: ParseRule} = {
   Selection(token: Token, stream: CharacterStream) {
     return token.value === '...'
       ? stream.match(/[\s\u00a0,]*(on\b|@|{)/, false)
-          ? 'InlineFragment'
-          : 'FragmentSpread'
+        ? 'InlineFragment'
+        : 'FragmentSpread'
       : stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.

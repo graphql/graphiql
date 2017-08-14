@@ -39,7 +39,8 @@ var packages = path.join(__dirname, '..', 'packages');
 fs.readdirSync(packages).forEach(function(pkg) {
   var json = require(path.join(packages, pkg, 'package.json'));
   if (json.main && json.main.match(/\bsrc\b/)) {
-    var message = 'The package.json file for ' +
+    var message =
+      'The package.json file for ' +
       json.name +
       ' has "main" ' +
       'set to "' +
