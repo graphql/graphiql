@@ -31,5 +31,8 @@
     "graphql-language-service-parser": "^0.1.5",
     "graphql-language-service-types": "^0.1.5",
     "graphql-language-service-utils": "^0.1.5"
+  },
+  "devDependencies": {
+    "babel-cli": "6.24.1"
   }
 }
