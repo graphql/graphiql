@@ -52,7 +52,9 @@ export async function getDefinitionQueryResultForFragmentSpread(
     process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
     return {queryRange: [], definitions: []};
   }
-  const definitions: Array<Definition> = defNodes.map(({filePath, content, definition}) =>
+  const definitions: Array<
+    Definition,
+  > = defNodes.map(({filePath, content, definition}) =>
     getDefinitionForFragmentDefinition(filePath || '', content, definition),
   );
   return {
