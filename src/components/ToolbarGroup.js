@@ -8,7 +8,6 @@
 
 import React from 'react';
 
-
 /**
  * ToolbarGroup
  *

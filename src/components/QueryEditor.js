@@ -15,7 +15,6 @@ import onHasCompletion from '../utility/onHasCompletion';
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
-
 /**
  * QueryEditor
  *
@@ -37,7 +36,7 @@ export class QueryEditor extends React.Component {
     onClickReference: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
-  }
+  };
 
   constructor(props) {
     super();
@@ -77,7 +76,7 @@ export class QueryEditor extends React.Component {
       matchBrackets: true,
       showCursorWhenSelecting: true,
       foldGutter: {
-        minFoldSize: 4
+        minFoldSize: 4,
       },
       lint: {
         schema: this.props.schema,
@@ -96,7 +95,7 @@ export class QueryEditor extends React.Component {
         schema: this.props.schema,
         onClick: reference => this.props.onClickReference(reference),
       },
-      gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () => this.editor.showHint({ completeSingle: true }),
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),
@@ -119,7 +118,7 @@ export class QueryEditor extends React.Component {
         'Ctrl-Right': 'goSubwordRight',
         'Alt-Left': 'goGroupLeft',
         'Alt-Right': 'goGroupRight',
-      }
+      },
     });
 
     this.editor.on('change', this._onEdit);
@@ -142,8 +141,10 @@ export class QueryEditor extends React.Component {
       this.editor.options.jump.schema = this.props.schema;
       CodeMirror.signal(this.editor, 'change', this.editor);
     }
-    if (this.props.value !== prevProps.value &&
-        this.props.value !== this.cachedValue) {
+    if (
+      this.props.value !== prevProps.value &&
+      this.props.value !== this.cachedValue
+    ) {
       this.cachedValue = this.props.value;
       this.editor.setValue(this.props.value);
     }
@@ -161,7 +162,9 @@ export class QueryEditor extends React.Component {
     return (
       <div
         className="query-editor"
-        ref={node => { this._node = node; }}
+        ref={node => {
+          this._node = node;
+        }}
       />
     );
   }
@@ -185,7 +188,7 @@ export class QueryEditor extends React.Component {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
       this.editor.execCommand('autocomplete');
     }
-  }
+  };
 
   _onEdit = () => {
     if (!this.ignoreChangeEvent) {
@@ -194,7 +197,7 @@ export class QueryEditor extends React.Component {
         this.props.onEdit(this.cachedValue);
       }
     }
-  }
+  };
 
   /**
    * Render a custom UI for CodeMirror's hint which includes additional info
@@ -202,7 +205,7 @@ export class QueryEditor extends React.Component {
    */
   _onHasCompletion = (cm, data) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
-  }
+  };
 
   _onBeforeChange(instance, change) {
     // The update function is only present on non-redo, non-undo events.

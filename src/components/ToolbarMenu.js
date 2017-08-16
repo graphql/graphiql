@@ -9,7 +9,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
 /**
  * ToolbarMenu
  *
@@ -19,7 +18,7 @@ export class ToolbarMenu extends React.Component {
   static propTypes = {
     title: PropTypes.string,
     label: PropTypes.string,
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -37,7 +36,9 @@ export class ToolbarMenu extends React.Component {
         className="toolbar-menu toolbar-button"
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
-        ref={node => {this._node = node;}}
+        ref={node => {
+          this._node = node;
+        }}
         title={this.props.title}>
         {this.props.label}
         <svg width="14" height="8">
@@ -82,8 +83,12 @@ export class ToolbarMenu extends React.Component {
 export function ToolbarMenuItem({ onSelect, title, label }) {
   return (
     <li
-      onMouseOver={e => { e.target.className = 'hover'; }}
-      onMouseOut={e => { e.target.className = null; }}
+      onMouseOver={e => {
+        e.target.className = 'hover';
+      }}
+      onMouseOut={e => {
+        e.target.className = null;
+      }}
       onMouseDown={preventDefault}
       onMouseUp={onSelect}
       title={title}>
