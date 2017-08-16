@@ -85,6 +85,7 @@ module.exports = {
     'eqeqeq': [1, 'allow-null'],
     'guard-for-in': 0,
     'no-alert': 1,
+    'no-await-in-loop': 1,
     'no-caller': 1,
     'no-case-declarations': 0,
     'no-div-regex': 1,
@@ -291,8 +292,6 @@ module.exports = {
     'babel/new-cap': 0,
     'babel/no-invalid-this': 0,
     'babel/object-curly-spacing': 0,
-    // Babel (not in eslint)
-    'babel/no-await-in-loop': 1,
 
     // dependencies (https://github.com/zertosh/eslint-plugin-dependencies)
     'dependencies/case-sensitive': 1,
