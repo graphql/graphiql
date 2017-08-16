@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 /**
@@ -23,7 +24,12 @@ export class ResultViewer extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
+    ResultsTooltip: PropTypes.any,
   };
+  constructor() {
+    super();
+    this._tooltip = document.createElement('div');
+  }
 
   componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
@@ -36,6 +42,19 @@ export class ResultViewer extends React.Component {
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
 
+    if (this.props.ResultsTooltip) {
+      require('codemirror-graphql/utils/info-addon');
+      CodeMirror.registerHelper(
+        'info',
+        'graphql-results',
+        (token, options, cm, pos) => {
+          const Tooltip = this.props.ResultsTooltip;
+          ReactDOM.render(<Tooltip pos={pos} />, this._tooltip);
+          return this._tooltip;
+        },
+      );
+    }
+
     this.viewer = CodeMirror(this._node, {
       lineWrapping: true,
       value: this.props.value || '',
@@ -47,6 +66,7 @@ export class ResultViewer extends React.Component {
         minFoldSize: 4,
       },
       gutters: ['CodeMirror-foldgutter'],
+      info: Boolean(this.props.ResultsTooltip),
       extraKeys: {
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
