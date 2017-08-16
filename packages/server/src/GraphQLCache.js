@@ -445,7 +445,7 @@ export class GraphQLCache {
             }),
           ),
       );
-      await Promise.all(promises); // eslint-disable-line babel/no-await-in-loop
+      await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 
     return this.processGraphQLFiles(responses);
