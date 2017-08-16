@@ -61,7 +61,7 @@ const versions = {};
 
 let conflictCount = 0;
 Object.keys(versions).forEach(pkg => {
-  versionRanges = Object.keys(versions[pkg]);
+  const versionRanges = Object.keys(versions[pkg]);
   if (versionRanges.length > 1) {
     conflictCount++;
     print(`${BOLD}${YELLOW}Package versions for ${pkg} do not match:${RESET}`);
