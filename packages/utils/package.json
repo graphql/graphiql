@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "graphql": "^0.10.5",
-    "graphql-config": "~1.0.0",
+    "graphql-config": "1.0.4",
     "graphql-language-service-types": "^0.1.5"
   }
 }
