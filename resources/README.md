@@ -20,7 +20,7 @@ This script is invoked via `npm run prepublish`.
 
 ### `pretty.js`
 
-Prettifies the code base, or tests that it is already prettified. This scripted is invoked for these two purposes respectively via `npm run pretty` and `npm run pretty-check` (and also `npm test`).
+Prettifies the code base, or tests that it is already prettified. This script is invoked for these two purposes respectively via `npm run pretty` and `npm run pretty-check` (and also `npm test`).
 
 ## Scripts invoked directly
 
