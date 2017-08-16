@@ -98,7 +98,9 @@ export class GraphQLLanguageService {
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this._graphQLConfig.getConfigForFile(filePath);
     if (projectConfig.schemaPath) {
-      const schema = await this._graphQLCache.getSchema(projectConfig.projectName);
+      const schema = await this._graphQLCache.getSchema(
+        projectConfig.projectName,
+      );
 
       if (schema) {
         return getAutocompleteSuggestions(schema, query, position);
