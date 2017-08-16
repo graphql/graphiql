@@ -8,7 +8,6 @@
 
 import { parse, typeFromAST } from 'graphql';
 
-
 /**
  * Provided previous "queryFacts", a GraphQL schema, and a query document
  * string, return a set of facts about that query useful for GraphiQL features.

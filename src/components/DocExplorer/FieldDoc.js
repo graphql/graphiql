@@ -17,7 +17,7 @@ export default class FieldDoc extends React.Component {
   static propTypes = {
     field: PropTypes.object,
     onClickType: PropTypes.func,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.field !== nextProps.field;
@@ -42,7 +42,7 @@ export default class FieldDoc extends React.Component {
                 className="doc-value-description"
                 markdown={arg.description}
               />
-            </div>
+            </div>,
           )}
         </div>
       );
@@ -54,13 +54,11 @@ export default class FieldDoc extends React.Component {
           className="doc-type-description"
           markdown={field.description || 'No Description'}
         />
-        {
-          field.deprecationReason &&
+        {field.deprecationReason &&
           <MarkdownContent
             className="doc-deprecation"
             markdown={field.deprecationReason}
-          />
-        }
+          />}
         <div className="doc-category">
           <div className="doc-category-title">
             {'type'}

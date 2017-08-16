@@ -21,10 +21,10 @@ document.createRange = () => ({
   },
   getClientRects() {
     return { right: 0 };
-  }
+  },
 });
 
-const mockStorage = (function () {
+const mockStorage = (function() {
   let store = {};
   return {
     getItem(key) {
@@ -35,17 +35,26 @@ const mockStorage = (function () {
     },
     clear() {
       store = {};
-    }
+    },
   };
-}());
+})();
 
 // The smallest possible introspection result that builds a schema.
-const simpleIntrospection = { data: { __schema: {
-  queryType: { name: 'Q' },
-  types: [ { kind: 'OBJECT', name: 'Q', interfaces: [], fields: [
-    { name: 'q', args: [], type: { name: 'Q' } }
-  ] } ]
-} } };
+const simpleIntrospection = {
+  data: {
+    __schema: {
+      queryType: { name: 'Q' },
+      types: [
+        {
+          kind: 'OBJECT',
+          name: 'Q',
+          interfaces: [],
+          fields: [{ name: 'q', args: [], type: { name: 'Q' } }],
+        },
+      ],
+    },
+  },
+};
 
 // Spins the promise loop a few times before continuing.
 const wait = () =>
@@ -62,17 +71,15 @@ describe('GraphiQL', () => {
   const noOpFetcher = () => {};
 
   it('should throw error without fetcher', () => {
-    expect(() => ReactTestRenderer.create(
-      <GraphiQL />
-    )).to.throw(
-      'GraphiQL requires a fetcher function'
+    expect(() => ReactTestRenderer.create(<GraphiQL />)).to.throw(
+      'GraphiQL requires a fetcher function',
     );
   });
 
   it('should construct correctly with fetcher', () => {
-    expect(() => ReactTestRenderer.create(
-      <GraphiQL fetcher={noOpFetcher} />
-    )).to.not.throw();
+    expect(() =>
+      ReactTestRenderer.create(<GraphiQL fetcher={noOpFetcher} />),
+    ).to.not.throw();
   });
 
   it('should refetch schema with new fetcher', async () => {
@@ -90,7 +97,7 @@ describe('GraphiQL', () => {
 
     // Initial render calls fetcher
     const instance = ReactTestRenderer.create(
-      <GraphiQL fetcher={firstFetcher} />
+      <GraphiQL fetcher={firstFetcher} />,
     );
     expect(firstCalled).to.equal(true);
 
@@ -109,25 +116,23 @@ describe('GraphiQL', () => {
   });
 
   it('should not throw error if schema missing and query provided', () => {
-    expect(() => ReactTestRenderer.create(
-      <GraphiQL fetcher={noOpFetcher} query="{}" />
-    )).to.not.throw();
+    expect(() =>
+      ReactTestRenderer.create(<GraphiQL fetcher={noOpFetcher} query="{}" />),
+    ).to.not.throw();
   });
 
   it('defaults to the built-in default query', () => {
     const graphiQL = ReactTestRenderer.create(
-      <GraphiQL fetcher={noOpFetcher} />
+      <GraphiQL fetcher={noOpFetcher} />,
     );
-    expect(graphiQL.getInstance().state.query)
-      .to.include('# Welcome to GraphiQL');
+    expect(graphiQL.getInstance().state.query).to.include(
+      '# Welcome to GraphiQL',
+    );
   });
 
   it('accepts a custom default query', () => {
     const graphiQL = ReactTestRenderer.create(
-      <GraphiQL
-        fetcher={noOpFetcher}
-        defaultQuery='GraphQL Party!!'
-      />
+      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
     expect(graphiQL.getInstance().state.query).to.equal('GraphQL Party!!');
   });

@@ -14,7 +14,7 @@ export default class MarkdownContent extends React.Component {
   static propTypes = {
     markdown: PropTypes.string,
     className: PropTypes.string,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.markdown !== nextProps.markdown;

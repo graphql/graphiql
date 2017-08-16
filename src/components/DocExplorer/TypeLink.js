@@ -8,16 +8,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  GraphQLList,
-  GraphQLNonNull
-} from 'graphql';
+import { GraphQLList, GraphQLNonNull } from 'graphql';
 
 export default class TypeLink extends React.Component {
   static propTypes = {
     type: PropTypes.object,
     onClick: PropTypes.func,
-  }
+  };
 
   shouldComponentUpdate(nextProps) {
     return this.props.type !== nextProps.type;
