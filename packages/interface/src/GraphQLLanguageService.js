@@ -166,9 +166,7 @@ export class GraphQLLanguageService {
       definition => definition.kind === FRAGMENT_DEFINITION,
     );
 
-    const typeCastedDefs = ((localFragDefinitions: any): Array<
-      FragmentDefinitionNode,
-    >);
+    const typeCastedDefs = ((localFragDefinitions: any): Array<FragmentDefinitionNode>);
 
     const localFragInfos = typeCastedDefs.map(
       (definition: FragmentDefinitionNode) => ({
