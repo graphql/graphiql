@@ -11,7 +11,7 @@
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 import fs from 'fs';
-import {buildSchema} from 'graphql';
+import {buildSchema, parse} from 'graphql';
 import path from 'path';
 
 import {getDiagnostics, SEVERITY} from '../getDiagnostics';
@@ -26,13 +26,8 @@ describe('getDiagnostics', () => {
     schema = buildSchema(schemaIDL);
   });
 
-  it('catches syntax errors', () =>
-    expect(getDiagnostics('qeury')[0].message).to.contain(
-      'Unexpected Name "qeury"',
-    ));
-
   it('catches field validation errors', () => {
-    const error = getDiagnostics('query queryName { title }', schema)[0];
+    const error = getDiagnostics(parse('query queryName { title }'), schema)[0];
     expect(error.message).to.equal(
       'Cannot query field "title" on type "Query".',
     );
@@ -42,7 +37,7 @@ describe('getDiagnostics', () => {
 
   it('catches field deprecation errors', () => {
     const error = getDiagnostics(
-      '{ deprecatedField { testField } }',
+      parse('{ deprecatedField { testField } }'),
       schema,
     )[0];
     expect(error.message).to.equal(
@@ -60,7 +55,7 @@ describe('getDiagnostics', () => {
       'utf8',
     );
 
-    const errors = getDiagnostics(kitchenSink);
+    const errors = getDiagnostics(parse(kitchenSink));
     expect(errors).to.have.lengthOf(0);
   });
 });

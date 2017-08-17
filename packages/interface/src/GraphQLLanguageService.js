@@ -26,14 +26,26 @@ import type {
 import type {Position} from 'graphql-language-service-utils';
 
 import {
-  FRAGMENT_SPREAD,
   FRAGMENT_DEFINITION,
+  OBJECT_TYPE_DEFINITION,
+  INTERFACE_TYPE_DEFINITION,
+  ENUM_TYPE_DEFINITION,
+  UNION_TYPE_DEFINITION,
+  SCALAR_TYPE_DEFINITION,
+  INPUT_OBJECT_TYPE_DEFINITION,
+  TYPE_EXTENSION_DEFINITION,
+  DIRECTIVE_DEFINITION,
+  FRAGMENT_SPREAD,
   OPERATION_DEFINITION,
 } from 'graphql/language/kinds';
 
 import {parse, print} from 'graphql';
 import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
-import {getDiagnostics as getDiagnosticsImpl} from './getDiagnostics';
+import {
+  getDiagnostics as getDiagnosticsImpl,
+  getRange,
+  SEVERITY,
+} from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
@@ -54,41 +66,96 @@ export class GraphQLLanguageService {
     uri: Uri,
     isRelayCompatMode?: boolean,
   ): Promise<Array<Diagnostic>> {
-    let source = query;
+    // Perform syntax diagnostics first, as this doesn't require
+    // schema/fragment definitions, even the project configuration.
+    let queryHasExtensions = false;
     const projectConfig = this._graphQLConfig.getConfigForFile(uri);
-    // If there's a matching config, proceed to prepare to run validation
-    let schema;
-    let customRules;
-    if (projectConfig.schemaPath) {
-      schema = await this._graphQLCache.getSchema(projectConfig.projectName);
-      const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
-        projectConfig,
-      );
-      const fragmentDependencies = await this._graphQLCache.getFragmentDependencies(
-        query,
-        fragmentDefinitions,
-      );
-      const dependenciesSource = fragmentDependencies.reduce(
-        (prev, cur) => `${prev} ${print(cur.definition)}`,
-        '',
-      );
-
-      source = `${source} ${dependenciesSource}`;
-
-      // Check if there are custom validation rules to be used
-      const customRulesModulePath =
-        projectConfig.extensions.customValidationRules;
-      if (customRulesModulePath) {
-        /* eslint-disable no-implicit-coercion */
-        const rulesPath = require.resolve(`${customRulesModulePath}`);
-        if (rulesPath) {
-          customRules = require(`${rulesPath}`)(this._graphQLConfig);
-        }
-        /* eslint-enable no-implicit-coercion */
+    const schemaPath = projectConfig.schemaPath;
+    try {
+      const queryAST = parse(query);
+      if (!schemaPath || uri !== schemaPath) {
+        queryHasExtensions = queryAST.definitions.some(definition => {
+          switch (definition.kind) {
+            case OBJECT_TYPE_DEFINITION:
+            case INTERFACE_TYPE_DEFINITION:
+            case ENUM_TYPE_DEFINITION:
+            case UNION_TYPE_DEFINITION:
+            case SCALAR_TYPE_DEFINITION:
+            case INPUT_OBJECT_TYPE_DEFINITION:
+            case TYPE_EXTENSION_DEFINITION:
+            case DIRECTIVE_DEFINITION:
+              return true;
+          }
+          return false;
+        });
       }
+    } catch (error) {
+      const range = getRange(error.locations[0], query);
+      return [
+        {
+          severity: SEVERITY.ERROR,
+          message: error.message,
+          source: 'GraphQL: Syntax',
+          range,
+        },
+      ];
     }
 
-    return getDiagnosticsImpl(source, schema, customRules, isRelayCompatMode);
+    if (!schemaPath) {
+      return [];
+    }
+
+    // If there's a matching config, proceed to prepare to run validation
+    let source = query;
+    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
+      projectConfig,
+    );
+    const fragmentDependencies = await this._graphQLCache.getFragmentDependencies(
+      query,
+      fragmentDefinitions,
+    );
+    const dependenciesSource = fragmentDependencies.reduce(
+      (prev, cur) => `${prev} ${print(cur.definition)}`,
+      '',
+    );
+
+    source = `${source} ${dependenciesSource}`;
+
+    let validationAst = null;
+    try {
+      validationAst = parse(source);
+    } catch (error) {
+      // the query string is already checked to be parsed properly - errors
+      // from this parse must be from corrupted fragment dependencies.
+      // For IDEs we don't care for errors outside of the currently edited
+      // query, so we return an empty array here.
+      return [];
+    }
+
+    const schema = await this._graphQLCache.getSchema(
+      projectConfig.projectName,
+      queryHasExtensions,
+    );
+
+    // Check if there are custom validation rules to be used
+    let customRules;
+    const customRulesModulePath =
+      projectConfig.extensions.customValidationRules;
+    if (customRulesModulePath) {
+      /* eslint-disable no-implicit-coercion */
+      const rulesPath = require.resolve(`${customRulesModulePath}`);
+      if (rulesPath) {
+        customRules = require(`${rulesPath}`)(this._graphQLConfig);
+      }
+      /* eslint-enable no-implicit-coercion */
+    }
+
+    return getDiagnosticsImpl(
+      validationAst,
+      schema,
+      customRules,
+      isRelayCompatMode,
+    );
   }
 
   async getAutocompleteSuggestions(

@@ -10,6 +10,7 @@
 
 import type {
   ASTNode,
+  DocumentNode,
   GraphQLError,
   GraphQLErrorLocation,
   GraphQLSchema,
@@ -21,7 +22,7 @@ import type {
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
-import {findDeprecatedUsages, parse} from 'graphql';
+import {findDeprecatedUsages} from 'graphql';
 import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
 import {
   Position,
@@ -37,27 +38,11 @@ export const SEVERITY = {
 };
 
 export function getDiagnostics(
-  queryText: string,
+  ast: DocumentNode,
   schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
-  let ast = null;
-  try {
-    ast = parse(queryText);
-  } catch (error) {
-    const range = getRange(error.locations[0], queryText);
-
-    return [
-      {
-        severity: SEVERITY.ERROR,
-        message: error.message,
-        source: 'GraphQL: Syntax',
-        range,
-      },
-    ];
-  }
-
   // We cannot validate the query unless a schema is provided.
   if (!schema) {
     return [];
@@ -115,21 +100,7 @@ function annotations(
   });
 }
 
-/**
- * Get location info from a node in a type-safe way.
- *
- * The only way a node could not have a location is if we initialized the parser
- * (and therefore the lexer) with the `noLocation` option, but we always
- * call `parse` without options above.
- */
-function getLocation(node: any): Location {
-  const typeCastedNode = (node: ASTNode);
-  const location = typeCastedNode.loc;
-  invariant(location, 'Expected ASTNode to have a location.');
-  return location;
-}
-
-function getRange(location: GraphQLErrorLocation, queryText: string) {
+export function getRange(location: GraphQLErrorLocation, queryText: string) {
   const parser = onlineParser();
   const state = parser.startState();
   const lines = queryText.split('\n');
@@ -158,4 +129,18 @@ function getRange(location: GraphQLErrorLocation, queryText: string) {
   const end = stream.getCurrentPosition();
 
   return new Range(new Position(line, start), new Position(line, end));
+}
+
+/**
+ * Get location info from a node in a type-safe way.
+ *
+ * The only way a node could not have a location is if we initialized the parser
+ * (and therefore the lexer) with the `noLocation` option, but we always
+ * call `parse` without options above.
+ */
+function getLocation(node: any): Location {
+  const typeCastedNode = (node: ASTNode);
+  const location = typeCastedNode.loc;
+  invariant(location, 'Expected ASTNode to have a location.');
+  return location;
 }

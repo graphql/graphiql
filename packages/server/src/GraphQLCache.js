@@ -39,16 +39,15 @@ import {
 import {getGraphQLConfig, GraphQLConfig} from 'graphql-config';
 import {GraphQLWatchman} from './GraphQLWatchman';
 import {getQueryAndRange} from './MessageProcessor';
+import stringToHash from './stringToHash';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
 export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
   const graphQLConfig = await getGraphQLConfig(configDir);
-
   const watchmanClient = new GraphQLWatchman();
   watchmanClient.checkVersion();
-
   watchmanClient.watchProject(configDir);
   return new GraphQLCache(configDir, graphQLConfig, watchmanClient);
 }
@@ -60,6 +59,7 @@ export class GraphQLCache {
   _watchmanClient: GraphQLWatchman;
   _cachePromise: Promise<void>;
   _schemaMap: Map<Uri, GraphQLSchema>;
+  _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
 
   constructor(
@@ -73,6 +73,7 @@ export class GraphQLCache {
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
     this._fragmentDefinitionsCache = new Map();
+    this._typeExtensionMap = new Map();
   }
 
   getGraphQLConfig = (): GraphQLConfigInterface => this._graphQLConfig;
@@ -338,9 +339,14 @@ export class GraphQLCache {
     }
   }
 
-  _extendSchema(schema: GraphQLSchema, schemaPath: string): GraphQLSchema {
+  _extendSchema(
+    schema: GraphQLSchema,
+    schemaPath: string,
+    projectName: string,
+  ): GraphQLSchema {
     const graphQLFileMap = this._graphQLFileListCache.get(this._configDir);
     const typeExtensions = [];
+
     if (!graphQLFileMap) {
       return schema;
     }
@@ -365,30 +371,51 @@ export class GraphQLCache {
         });
       });
     });
+    const sorted = typeExtensions.sort((a: any, b: any) => {
+      const aName = a.definition ? a.definition.name.value : a.name.value;
+      const bName = b.definition ? b.definition.name.value : b.name.value;
+      return aName > bName ? 1 : -1;
+    });
+
+    const hash = stringToHash(JSON.stringify(sorted));
+    const typeExtCacheKey = `${schemaPath}:${projectName}`;
+    if (
+      this._typeExtensionMap.has(typeExtCacheKey) &&
+      this._typeExtensionMap.get(typeExtCacheKey) === hash
+    ) {
+      return schema;
+    }
+
+    this._typeExtensionMap.set(typeExtCacheKey, hash);
     return extendSchema(schema, {
       kind: DOCUMENT,
       definitions: typeExtensions,
     });
   }
 
-  getSchema = async (appName: ?string): Promise<?GraphQLSchema> => {
+  getSchema = async (
+    appName: ?string,
+    queryHasExtensions: ?boolean = false,
+  ): Promise<?GraphQLSchema> => {
     const projectConfig = this._graphQLConfig.getProjectConfig(appName);
 
-    if (!projectConfig) {
+    if (!projectConfig || !projectConfig.schemaPath) {
       return null;
     }
 
-    if (this._schemaMap.has(projectConfig.schemaPath)) {
-      const schema = this._schemaMap.get(projectConfig.schemaPath);
-      return schema
-        ? this._extendSchema(schema, projectConfig.schemaPath)
+    const projectName = appName || 'undefinedName';
+
+    const schemaPath = projectConfig.schemaPath;
+    const schemaCacheKey = `${schemaPath}:${projectName}`;
+
+    if (this._schemaMap.has(schemaCacheKey)) {
+      const schema = this._schemaMap.get(schemaCacheKey);
+      return schema && queryHasExtensions
+        ? this._extendSchema(schema, schemaPath, projectName)
         : schema;
     }
 
-    let schema;
-    if (projectConfig.schemaPath) {
-      schema = projectConfig.getSchema();
-    }
+    let schema = projectConfig.getSchema();
 
     const customDirectives = projectConfig.extensions.customDirectives;
     if (customDirectives && schema) {
@@ -400,11 +427,11 @@ export class GraphQLCache {
       return null;
     }
 
-    if (this._graphQLFileListCache.has(this._configDir)) {
-      schema = this._extendSchema(schema, projectConfig.schemaPath);
+    if (queryHasExtensions && this._graphQLFileListCache.has(this._configDir)) {
+      schema = this._extendSchema(schema, schemaPath, projectName);
     }
 
-    this._schemaMap.set(projectConfig.schemaPath, schema);
+    this._schemaMap.set(schemaCacheKey, schema);
     return schema;
   };
 
