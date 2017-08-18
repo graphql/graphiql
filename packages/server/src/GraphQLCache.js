@@ -159,7 +159,7 @@ export class GraphQLCache {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const includes = projectConfig.includes;
+    const includes = projectConfig.includes.map(path => path.split('*')[0]);
     const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
       path: includes,
     });
