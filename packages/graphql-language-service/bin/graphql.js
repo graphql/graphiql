@@ -12,10 +12,5 @@ if (process && process.env) {
   process.env.GRAPHQL_NO_NAME_WARNING = true;
 }
 
-process.on('uncaughtException', error => {
-  process.stdout.write('An error was thrown from GraphQL language service: ' + String(error));
-  process.exit(0);
-});
-
 require('babel-polyfill');
 require('../dist/cli');

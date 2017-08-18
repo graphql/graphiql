@@ -395,7 +395,7 @@ export class GraphQLCache {
 
   getSchema = async (
     appName: ?string,
-    queryHasExtensions: ?boolean = false,
+    queryHasExtensions?: ?boolean = false,
   ): Promise<?GraphQLSchema> => {
     const projectConfig = this._graphQLConfig.getProjectConfig(appName);
 

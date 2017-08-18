@@ -10,7 +10,7 @@
 
 import yargs from 'yargs';
 import client from './client';
-import {startServer} from 'graphql-language-service-server';
+import {Logger, startServer} from 'graphql-language-service-server';
 import watchman from 'fb-watchman';
 
 const {argv} = yargs
@@ -97,6 +97,12 @@ const command = argv._.pop();
 
 switch (command) {
   case 'server':
+    process.on('uncaughtException', error => {
+      process.stdout.write(
+        'An error was thrown from GraphQL language service: ' + String(error),
+      );
+      process.exit(0);
+    });
     const watchmanClient = new watchman.Client();
     watchmanClient.capabilityCheck({}, (error, res) => {
       if (error) {
@@ -117,7 +123,12 @@ switch (command) {
     if (argv && argv.configDir) {
       options.configDir = argv.configDir;
     }
-    startServer(options);
+    try {
+      startServer(options);
+    } catch (error) {
+      const logger = new Logger();
+      logger.error(error);
+    }
     break;
   default:
     client(command, argv);
