@@ -29,7 +29,7 @@
     "babylon": "^6.17.4",
     "fb-watchman": "^2.0.0",
     "graphql": "^0.10.5",
-    "graphql-config": "1.0.4",
+    "graphql-config": "1.0.5",
     "graphql-language-service-interface": "^0.1.8",
     "graphql-language-service-types": "^0.1.5",
     "graphql-language-service-utils": "^0.1.7",
@@ -38,6 +38,6 @@
     "vscode-languageserver": "^3.3.0"
   },
   "devDependencies": {
-    "babel-cli": "6.24.1"
+    "babel-cli": "6.26.0"
   }
 }
