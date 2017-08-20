@@ -159,7 +159,7 @@ export class GraphQLCache {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const includes = projectConfig.includes.map(path => path.split('*')[0]);
+    const includes = projectConfig.includes.map(filePath => filePath.split('*')[0]);
     const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
       path: includes,
     });
@@ -427,7 +427,7 @@ export class GraphQLCache {
       return null;
     }
 
-    if (queryHasExtensions && this._graphQLFileListCache.has(this._configDir)) {
+    if (this._graphQLFileListCache.has(this._configDir)) {
       schema = this._extendSchema(schema, schemaPath, projectName);
     }
 
