@@ -34,6 +34,8 @@ import {
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
+const DEFAULT_DOC_EXPLORER_WIDTH = 350;
+
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
@@ -111,7 +113,9 @@ export class GraphiQL extends React.Component {
         Number(this._storage.get('variableEditorHeight')) || 200,
       docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
-      docExplorerWidth: Number(this._storage.get('docExplorerWidth')) || 350,
+      docExplorerWidth:
+        Number(this._storage.get('docExplorerWidth')) ||
+          DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts,
@@ -890,7 +894,7 @@ export class GraphiQL extends React.Component {
 
   handleDocsResetResize = () => {
     this.setState({
-      docExplorerWidth: 350,
+      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
     });
   };
 
