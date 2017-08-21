@@ -85,7 +85,7 @@ function onMouseHover(cm, box) {
   if (render) {
     const token = cm.getTokenAt(pos, true);
     if (token) {
-      const info = render(token, options, cm);
+      const info = render(token, options, cm, pos);
       if (info) {
         showPopup(cm, box, info);
       }
