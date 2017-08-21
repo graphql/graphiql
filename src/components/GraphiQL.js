@@ -323,8 +323,8 @@ export class GraphiQL extends React.Component {
               this.editorBarComponent = n;
             }}
             className="editorBar"
-            onMouseDown={this.handleResizeStart}
-            onDoubleClick={this.handleResetResize}>
+            onDoubleClick={this.handleResetResize}
+            onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
                 ref={n => {
@@ -377,8 +377,8 @@ export class GraphiQL extends React.Component {
         <div className={docExplorerWrapClasses} style={docWrapStyle}>
           <div
             className="docExplorerResizer"
-            onMouseDown={this.handleDocsResizeStart}
             onDoubleClick={this.handleDocsResetResize}
+            onMouseDown={this.handleDocsResizeStart}
           />
           <DocExplorer
             ref={c => {
