@@ -101,7 +101,10 @@ export interface GraphQLCache {
     contents: Array<CachedContent>,
   ) => Promise<void>,
 
-  getSchema: (appName: ?string) => Promise<?GraphQLSchema>,
+  getSchema: (
+    appName: ?string,
+    queryHasExtensions?: ?boolean,
+  ) => Promise<?GraphQLSchema>,
 }
 
 // online-parser related
