@@ -9,7 +9,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
+import { buildClientSchema, GraphQLSchema } from 'graphql';
+import prettier from 'prettier';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
@@ -688,7 +689,8 @@ export class GraphiQL extends React.Component {
 
   handlePrettifyQuery = () => {
     const editor = this.getQueryEditor();
-    editor.setValue(print(parse(editor.getValue())));
+    const pretty = prettier.format(editor.getValue(), { parser: 'graphql' });
+    editor.setValue(pretty);
   };
 
   handleEditQuery = debounce(100, value => {
