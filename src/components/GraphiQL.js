@@ -63,6 +63,7 @@ export class GraphiQL extends React.Component {
     getDefaultFieldNames: PropTypes.func,
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
+    ResultsTooltip: PropTypes.any,
   };
 
   constructor(props) {
@@ -369,6 +370,7 @@ export class GraphiQL extends React.Component {
                 }}
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
+                ResultsTooltip={this.props.ResultsTooltip}
               />
               {footer}
             </div>
