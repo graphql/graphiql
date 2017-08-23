@@ -22,7 +22,7 @@ import type {
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
-import {findDeprecatedUsages} from 'graphql';
+import {findDeprecatedUsages, parse} from 'graphql';
 import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
 import {
   Position,
@@ -38,6 +38,30 @@ export const SEVERITY = {
 };
 
 export function getDiagnostics(
+  query: string,
+  schema: ?GraphQLSchema = null,
+  customRules?: Array<CustomValidationRule>,
+  isRelayCompatMode?: boolean,
+): Array<Diagnostic> {
+  let ast = null;
+  try {
+    ast = parse(query);
+  } catch (error) {
+    const range = getRange(error.locations[0], query);
+    return [
+      {
+        severity: SEVERITY.ERROR,
+        message: error.message,
+        source: 'GraphQL: Syntax',
+        range,
+      },
+    ];
+  }
+
+  return validateQuery(ast, schema, customRules, isRelayCompatMode);
+}
+
+export function validateQuery(
   ast: DocumentNode,
   schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,

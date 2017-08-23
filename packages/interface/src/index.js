@@ -24,7 +24,7 @@ export {
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
 
-export {getDiagnostics} from './getDiagnostics';
+export {getDiagnostics, validateQuery} from './getDiagnostics';
 export {getOutline} from './getOutline';
 
 export {GraphQLLanguageService} from './GraphQLLanguageService';

@@ -41,11 +41,7 @@ import {
 
 import {parse, print} from 'graphql';
 import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
-import {
-  getDiagnostics as getDiagnosticsImpl,
-  getRange,
-  SEVERITY,
-} from './getDiagnostics';
+import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
@@ -150,12 +146,7 @@ export class GraphQLLanguageService {
       /* eslint-enable no-implicit-coercion */
     }
 
-    return getDiagnosticsImpl(
-      validationAst,
-      schema,
-      customRules,
-      isRelayCompatMode,
-    );
+    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
   async getAutocompleteSuggestions(

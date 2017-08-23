@@ -14,7 +14,7 @@ import fs from 'fs';
 import {buildSchema, parse} from 'graphql';
 import path from 'path';
 
-import {getDiagnostics, SEVERITY} from '../getDiagnostics';
+import {getDiagnostics, validateQuery, SEVERITY} from '../getDiagnostics';
 
 describe('getDiagnostics', () => {
   let schema;
@@ -27,7 +27,7 @@ describe('getDiagnostics', () => {
   });
 
   it('catches field validation errors', () => {
-    const error = getDiagnostics(parse('query queryName { title }'), schema)[0];
+    const error = validateQuery(parse('query queryName { title }'), schema)[0];
     expect(error.message).to.equal(
       'Cannot query field "title" on type "Query".',
     );
@@ -37,7 +37,7 @@ describe('getDiagnostics', () => {
 
   it('catches field deprecation errors', () => {
     const error = getDiagnostics(
-      parse('{ deprecatedField { testField } }'),
+      '{ deprecatedField { testField } }',
       schema,
     )[0];
     expect(error.message).to.equal(
@@ -55,7 +55,7 @@ describe('getDiagnostics', () => {
       'utf8',
     );
 
-    const errors = getDiagnostics(parse(kitchenSink));
+    const errors = getDiagnostics(kitchenSink);
     expect(errors).to.have.lengthOf(0);
   });
 });
