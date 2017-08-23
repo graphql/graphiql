@@ -28,7 +28,6 @@ export class ResultViewer extends React.Component {
   };
   constructor() {
     super();
-    this._tooltip = document.createElement('div');
   }
 
   componentDidMount() {
@@ -44,13 +43,14 @@ export class ResultViewer extends React.Component {
 
     if (this.props.ResultsTooltip) {
       require('codemirror-graphql/utils/info-addon');
+      const tooltipDiv = document.createElement('div');
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
         (token, options, cm, pos) => {
           const Tooltip = this.props.ResultsTooltip;
-          ReactDOM.render(<Tooltip pos={pos} />, this._tooltip);
-          return this._tooltip;
+          ReactDOM.render(<Tooltip pos={pos} />, tooltipDiv);
+          return tooltipDiv;
         },
       );
     }
