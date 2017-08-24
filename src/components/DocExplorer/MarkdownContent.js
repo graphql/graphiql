@@ -8,7 +8,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import Marked from 'marked';
+import MD from 'markdown-it';
+
+const md = new MD();
 
 export default class MarkdownContent extends React.Component {
   static propTypes = {
@@ -26,11 +28,10 @@ export default class MarkdownContent extends React.Component {
       return <div />;
     }
 
-    const html = Marked(markdown, { sanitize: true });
     return (
       <div
         className={this.props.className}
-        dangerouslySetInnerHTML={{ __html: html }}
+        dangerouslySetInnerHTML={{ __html: md.render(markdown) }}
       />
     );
   }
