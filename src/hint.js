@@ -56,9 +56,10 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
    *
    * Switch to codemirror-compliant format before returning results.
    */
-  const tokenStart = token.type !== null && /"|\w/.test(token.string[0])
-    ? token.start
-    : token.end;
+  const tokenStart =
+    token.type !== null && /"|\w/.test(token.string[0])
+      ? token.start
+      : token.end;
   const results = {
     list: rawResults.map(item => ({
       text: item.label,

@@ -26,9 +26,10 @@ CodeMirror.defineOption('info', false, function(cm, options, old) {
 
 function createState(options) {
   return {
-    options: options instanceof Function
-      ? {render: options}
-      : options === true ? {} : options,
+    options:
+      options instanceof Function
+        ? {render: options}
+        : options === true ? {} : options,
   };
 }
 

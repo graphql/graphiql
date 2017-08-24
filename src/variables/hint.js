@@ -53,9 +53,8 @@ CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
 
 function getVariablesHint(cur, token, options) {
   // If currently parsing an invalid state, attempt to hint to the prior state.
-  const state = token.state.kind === 'Invalid'
-    ? token.state.prevState
-    : token.state;
+  const state =
+    token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
   const kind = state.kind;
   const step = state.step;
@@ -150,18 +149,17 @@ function getTypeInfo(variableToType, tokenState) {
       info.type = variableToType[state.name];
     } else if (state.kind === 'ListValue') {
       const nullableType = getNullableType(info.type);
-      info.type = nullableType instanceof GraphQLList
-        ? nullableType.ofType
-        : null;
+      info.type =
+        nullableType instanceof GraphQLList ? nullableType.ofType : null;
     } else if (state.kind === 'ObjectValue') {
       const objectType = getNamedType(info.type);
-      info.fields = objectType instanceof GraphQLInputObjectType
-        ? objectType.getFields()
-        : null;
+      info.fields =
+        objectType instanceof GraphQLInputObjectType
+          ? objectType.getFields()
+          : null;
     } else if (state.kind === 'ObjectField') {
-      const objectField = state.name && info.fields
-        ? info.fields[state.name]
-        : null;
+      const objectField =
+        state.name && info.fields ? info.fields[state.name] : null;
       info.type = objectField && objectField.type;
     }
   });

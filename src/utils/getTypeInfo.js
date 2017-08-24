@@ -60,9 +60,10 @@ export default function getTypeInfo(schema, tokenState) {
         break;
       case 'Field':
       case 'AliasedField':
-        info.fieldDef = info.type && state.name
-          ? getFieldDef(schema, info.parentType, state.name)
-          : null;
+        info.fieldDef =
+          info.type && state.name
+            ? getFieldDef(schema, info.parentType, state.name)
+            : null;
         info.type = info.fieldDef && info.fieldDef.type;
         break;
       case 'SelectionSet':
@@ -72,14 +73,15 @@ export default function getTypeInfo(schema, tokenState) {
         info.directiveDef = state.name && schema.getDirective(state.name);
         break;
       case 'Arguments':
-        const parentDef = state.prevState.kind === 'Field'
-          ? info.fieldDef
-          : state.prevState.kind === 'Directive'
-            ? info.directiveDef
-            : state.prevState.kind === 'AliasedField'
-              ? state.prevState.name &&
+        const parentDef =
+          state.prevState.kind === 'Field'
+            ? info.fieldDef
+            : state.prevState.kind === 'Directive'
+              ? info.directiveDef
+              : state.prevState.kind === 'AliasedField'
+                ? state.prevState.name &&
                   getFieldDef(schema, info.parentType, state.prevState.name)
-              : null;
+                : null;
         info.argDefs = parentDef && parentDef.args;
         break;
       case 'Argument':
@@ -96,26 +98,28 @@ export default function getTypeInfo(schema, tokenState) {
         break;
       case 'EnumValue':
         const enumType = getNamedType(info.inputType);
-        info.enumValue = enumType instanceof GraphQLEnumType
-          ? find(enumType.getValues(), val => val.value === state.name)
-          : null;
+        info.enumValue =
+          enumType instanceof GraphQLEnumType
+            ? find(enumType.getValues(), val => val.value === state.name)
+            : null;
         break;
       case 'ListValue':
         const nullableType = getNullableType(info.inputType);
-        info.inputType = nullableType instanceof GraphQLList
-          ? nullableType.ofType
-          : null;
+        info.inputType =
+          nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case 'ObjectValue':
         const objectType = getNamedType(info.inputType);
-        info.objectFieldDefs = objectType instanceof GraphQLInputObjectType
-          ? objectType.getFields()
-          : null;
+        info.objectFieldDefs =
+          objectType instanceof GraphQLInputObjectType
+            ? objectType.getFields()
+            : null;
         break;
       case 'ObjectField':
-        const objectField = state.name && info.objectFieldDefs
-          ? info.objectFieldDefs[state.name]
-          : null;
+        const objectField =
+          state.name && info.objectFieldDefs
+            ? info.objectFieldDefs[state.name]
+            : null;
         info.inputType = objectField && objectField.type;
         break;
       case 'NamedType':

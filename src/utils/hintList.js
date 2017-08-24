@@ -14,9 +14,10 @@ export default function hintList(cursor, token, list) {
     return;
   }
 
-  const tokenStart = token.type !== null && /"|\w/.test(token.string[0])
-    ? token.start
-    : token.end;
+  const tokenStart =
+    token.type !== null && /"|\w/.test(token.string[0])
+      ? token.start
+      : token.end;
 
   return {
     list: hints,
