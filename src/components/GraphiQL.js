@@ -965,6 +965,11 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
   );
 };
 
+// Export main windows/panes to be used separately if desired.
+GraphiQL.QueryEditor = QueryEditor;
+GraphiQL.VariableEditor = VariableEditor;
+GraphiQL.ResultViewer = ResultViewer;
+
 // Add a button to the Toolbar.
 GraphiQL.Button = ToolbarButton;
 GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
