@@ -29,6 +29,7 @@ export class VariableEditor extends React.Component {
     value: PropTypes.string,
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
+    onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
   };
@@ -91,6 +92,12 @@ export class VariableEditor extends React.Component {
         'Ctrl-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
+          }
+        },
+
+        'Shift-Ctrl-P': () => {
+          if (this.props.onPrettifyQuery) {
+            this.props.onPrettifyQuery();
           }
         },
 

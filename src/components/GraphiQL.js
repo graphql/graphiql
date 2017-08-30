@@ -248,7 +248,7 @@ export class GraphiQL extends React.Component {
       <GraphiQL.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
-          title="Prettify Query"
+          title="Prettify Query (Shift-Ctrl-P)"
           label="Prettify"
         />
         <ToolbarButton
@@ -336,6 +336,7 @@ export class GraphiQL extends React.Component {
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
+                onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
               />
@@ -354,6 +355,7 @@ export class GraphiQL extends React.Component {
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
+                  onPrettifyQuery={this.handlePrettifyQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                 />
@@ -1015,6 +1017,8 @@ const defaultQuery = `# Welcome to GraphiQL
 #     }
 #
 # Keyboard shortcuts:
+#
+#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
 #
 #       Run Query:  Ctrl-Enter (or press the play button above)
 #

@@ -34,6 +34,7 @@ export class QueryEditor extends React.Component {
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
+    onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
   };
@@ -110,6 +111,12 @@ export class QueryEditor extends React.Component {
         'Ctrl-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
+          }
+        },
+
+        'Shift-Ctrl-P': () => {
+          if (this.props.onPrettifyQuery) {
+            this.props.onPrettifyQuery();
           }
         },
 
