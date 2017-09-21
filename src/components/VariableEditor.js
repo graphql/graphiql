@@ -21,6 +21,7 @@ import onHasCompletion from '../utility/onHasCompletion';
  *   - variableToType: A mapping of variable name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - readOnly: Turns the editor to read-only mode.
  *
  */
 export class VariableEditor extends React.Component {
@@ -28,6 +29,7 @@ export class VariableEditor extends React.Component {
     variableToType: PropTypes.object,
     value: PropTypes.string,
     onEdit: PropTypes.func,
+    readOnly: PropTypes.boolean,
     onHintInformationRender: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
@@ -71,6 +73,7 @@ export class VariableEditor extends React.Component {
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
+      readOnly: this.props.readOnly || false,
       foldGutter: {
         minFoldSize: 4,
       },

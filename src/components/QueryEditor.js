@@ -25,6 +25,7 @@ const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
  *   - schema: A GraphQLSchema instance enabling editor linting and hinting.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
+ *   - readOnly: Turns the editor to read-only mode.
  *
  */
 export class QueryEditor extends React.Component {
@@ -32,6 +33,7 @@ export class QueryEditor extends React.Component {
     schema: PropTypes.instanceOf(GraphQLSchema),
     value: PropTypes.string,
     onEdit: PropTypes.func,
+    readOnly: PropTypes.boolean,
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
@@ -80,6 +82,7 @@ export class QueryEditor extends React.Component {
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
+      readOnly: this.props.readOnly || false,
       foldGutter: {
         minFoldSize: 4,
       },
