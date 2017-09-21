@@ -53,6 +53,9 @@ export class VariableEditor extends React.Component {
     require('codemirror/addon/fold/brace-fold');
     require('codemirror/addon/fold/foldgutter');
     require('codemirror/addon/lint/lint');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/jump-to-line');
+    require('codemirror/addon/dialog/dialog');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/variables/hint');
     require('codemirror-graphql/variables/lint');
@@ -100,6 +103,10 @@ export class VariableEditor extends React.Component {
             this.props.onPrettifyQuery();
           }
         },
+
+        // Persistent search box in Query Editor
+        'Cmd-F': 'findPersistent',
+        'Ctrl-F': 'findPersistent',
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
