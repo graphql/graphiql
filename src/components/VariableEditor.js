@@ -29,7 +29,7 @@ export class VariableEditor extends React.Component {
     variableToType: PropTypes.object,
     value: PropTypes.string,
     onEdit: PropTypes.func,
-    readOnly: PropTypes.boolean,
+    readOnly: PropTypes.bool,
     onHintInformationRender: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
