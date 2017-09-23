@@ -112,6 +112,7 @@
         return fetch('/graphql', {
           method: 'post',
           headers: {
+            ...graphQLParams.headers,
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
