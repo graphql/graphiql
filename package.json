@@ -44,7 +44,7 @@
     "babel-plugin-transform-regenerator": "6.24.1",
     "babel-types": "6.26.0",
     "chai": "4.1.2",
-    "eslint": "4.6.1",
+    "eslint": "4.7.2",
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-babel": "4.1.2",
     "eslint-plugin-dependencies": "2.4.0",
