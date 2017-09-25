@@ -51,8 +51,7 @@ describe('GraphQLCache', () => {
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
-        description: undefined, // change to empty string when
-        // https://github.com/graphql/graphql-js/pull/961 is merged
+        description: '',
         locations: ['FIELD'],
         name: 'customDirective',
       });
@@ -64,8 +63,7 @@ describe('GraphQLCache', () => {
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
-        description: undefined, // change to empty string when
-        // https://github.com/graphql/graphql-js/pull/961 is merged
+        description: '',
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });

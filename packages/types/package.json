@@ -25,7 +25,7 @@
     "build-flow": "babel-node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
-  "dependencies": {
-    "graphql": "^0.10.5"
+  "peerDependencies": {
+    "graphql": "^0.10.0 || ^0.11.0"
   }
 }

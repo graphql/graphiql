@@ -12,7 +12,7 @@ import type {GraphQLSchema} from 'graphql';
 
 import invariant from 'assert';
 import fs from 'fs';
-import {buildSchema, buildClientSchema, parse} from 'graphql';
+import {buildSchema, buildClientSchema} from 'graphql';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -105,7 +105,7 @@ function _getDiagnostics(
     // `schema` is not strictly requied as GraphQL diagnostics may still notify
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
-    const resultArray = getDiagnostics(parse(queryText), schema);
+    const resultArray = getDiagnostics(queryText, schema);
     const resultObject = resultArray.reduce((prev, cur, index) => {
       prev[index] = cur;
       return prev;

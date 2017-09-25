@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "npm run lint && npm run pretty-check && npm run testonly && npm run check",
-    "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
+    "testonly": "lerna run build && babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
     "t": "npm run testonly",
     "lint": "eslint src packages/**/src || (printf '\\033[33mTry: \\033[7m npm run lint -- --fix \\033[0m\\n' && exit 1)",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
