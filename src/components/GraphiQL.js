@@ -17,8 +17,7 @@ import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
 import { QueryEditor } from './QueryEditor';
-import { VariableEditor } from './VariableEditor';
-import { HeaderEditor } from './HeaderEditor';
+import { ContentEditor } from './ContentEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
@@ -36,6 +35,8 @@ import {
 } from '../utility/introspectionQueries';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
+const VariableEditor = ContentEditor;
+const HeaderEditor = ContentEditor;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -375,9 +376,9 @@ export class GraphiQL extends React.Component {
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
               />
-              <div className="variable-editor" style={variableStyle}>
+              <div className="content-editor" style={variableStyle}>
                 <div
-                  className="variable-editor-title"
+                  className="content-editor-title"
                   style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
                   onMouseDown={this.handleVariableResizeStart}>
                   {'Query Variables'}
@@ -395,9 +396,9 @@ export class GraphiQL extends React.Component {
                   editorTheme={this.props.editorTheme}
                 />
               </div>
-              <div className="header-editor" style={headerStyle}>
+              <div className="content-editor" style={headerStyle}>
                 <div
-                  className="header-editor-title"
+                  className="content-editor-title"
                   style={{ cursor: headerOpen ? 'row-resize' : 'n-resize' }}
                   onMouseDown={this.handleHeaderResizeStart}>
                   {'Query headers'}

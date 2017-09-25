@@ -12,20 +12,20 @@ import PropTypes from 'prop-types';
 import onHasCompletion from '../utility/onHasCompletion';
 
 /**
- * HeaderEditor
+ * ContentEditor
  *
- * An instance of CodeMirror for editing headers defined in QueryEditor.
+ * An instance of CodeMirror for editing content defined in QueryEditor.
  *
  * Props:
  *
- *   - headerToType: A mapping of header name to GraphQLType.
+ *   - contentToType: A mapping of content name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
  *
  */
-export class HeaderEditor extends React.Component {
+export class ContentEditor extends React.Component {
   static propTypes = {
-    headerToType: PropTypes.object,
+    contentToType: PropTypes.object,
     value: PropTypes.string,
     onEdit: PropTypes.func,
     onHintInformationRender: PropTypes.func,
@@ -72,10 +72,10 @@ export class HeaderEditor extends React.Component {
         minFoldSize: 4,
       },
       lint: {
-        headerToType: this.props.headerToType,
+        contentToType: this.props.contentToType,
       },
       hintOptions: {
-        headerToType: this.props.headerToType,
+        contentToType: this.props.contentToType,
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
@@ -121,9 +121,9 @@ export class HeaderEditor extends React.Component {
     // user-input changes which could otherwise result in an infinite
     // event loop.
     this.ignoreChangeEvent = true;
-    if (this.props.headerToType !== prevProps.headerToType) {
-      this.editor.options.lint.headerToType = this.props.headerToType;
-      this.editor.options.hintOptions.headerToType = this.props.headerToType;
+    if (this.props.contentToType !== prevProps.contentToType) {
+      this.editor.options.lint.contentToType = this.props.contentToType;
+      this.editor.options.hintOptions.contentToType = this.props.contentToType;
       CodeMirror.signal(this.editor, 'change', this.editor);
     }
     if (
