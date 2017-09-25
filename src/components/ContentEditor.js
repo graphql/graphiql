@@ -12,24 +12,22 @@ import PropTypes from 'prop-types';
 import onHasCompletion from '../utility/onHasCompletion';
 
 /**
- * VariableEditor
+ * ContentEditor
  *
- * An instance of CodeMirror for editing variables defined in QueryEditor.
+ * An instance of CodeMirror for editing content defined in QueryEditor.
  *
  * Props:
  *
- *   - variableToType: A mapping of variable name to GraphQLType.
+ *   - contentToType: A mapping of content name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
- *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class VariableEditor extends React.Component {
+export class ContentEditor extends React.Component {
   static propTypes = {
-    variableToType: PropTypes.object,
+    contentToType: PropTypes.object,
     value: PropTypes.string,
     onEdit: PropTypes.func,
-    readOnly: PropTypes.boolean,
     onHintInformationRender: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
@@ -55,9 +53,6 @@ export class VariableEditor extends React.Component {
     require('codemirror/addon/fold/brace-fold');
     require('codemirror/addon/fold/foldgutter');
     require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/variables/hint');
     require('codemirror-graphql/variables/lint');
@@ -73,15 +68,14 @@ export class VariableEditor extends React.Component {
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
-      readOnly: this.props.readOnly ? 'nocursor' : false,
       foldGutter: {
         minFoldSize: 4,
       },
       lint: {
-        variableToType: this.props.variableToType,
+        contentToType: this.props.contentToType,
       },
       hintOptions: {
-        variableToType: this.props.variableToType,
+        contentToType: this.props.contentToType,
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
@@ -107,10 +101,6 @@ export class VariableEditor extends React.Component {
           }
         },
 
-        // Persistent search box in Query Editor
-        'Cmd-F': 'findPersistent',
-        'Ctrl-F': 'findPersistent',
-
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
         'Ctrl-Right': 'goSubwordRight',
@@ -131,9 +121,9 @@ export class VariableEditor extends React.Component {
     // user-input changes which could otherwise result in an infinite
     // event loop.
     this.ignoreChangeEvent = true;
-    if (this.props.variableToType !== prevProps.variableToType) {
-      this.editor.options.lint.variableToType = this.props.variableToType;
-      this.editor.options.hintOptions.variableToType = this.props.variableToType;
+    if (this.props.contentToType !== prevProps.contentToType) {
+      this.editor.options.lint.contentToType = this.props.contentToType;
+      this.editor.options.hintOptions.contentToType = this.props.contentToType;
       CodeMirror.signal(this.editor, 'change', this.editor);
     }
     if (
