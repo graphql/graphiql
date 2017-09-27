@@ -33,7 +33,7 @@ export class QueryEditor extends React.Component {
     schema: PropTypes.instanceOf(GraphQLSchema),
     value: PropTypes.string,
     onEdit: PropTypes.func,
-    readOnly: PropTypes.boolean,
+    readOnly: PropTypes.bool,
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
