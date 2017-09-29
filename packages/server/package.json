@@ -31,7 +31,7 @@
   "dependencies": {
     "babylon": "^6.17.4",
     "fb-watchman": "^2.0.0",
-    "graphql-config": "1.0.5",
+    "graphql-config": "1.0.6",
     "graphql-language-service-interface": "^0.1.13",
     "graphql-language-service-types": "^0.1.12",
     "graphql-language-service-utils": "^0.1.12",

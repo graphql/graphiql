@@ -51,7 +51,7 @@
     "eslint-plugin-flowtype": "2.36.0",
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "flow-bin": "0.56.0",
-    "graphql": "^0.11.3",
+    "graphql": "^0.11.5",
     "graphql-language-service-interface": "^0.1.0-0",
     "graphql-language-service-parser": "^0.1.0-0",
     "graphql-language-service-server": "^0.1.5-0",

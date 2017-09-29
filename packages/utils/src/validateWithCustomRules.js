@@ -46,7 +46,7 @@ export function validateWithCustomRules(
     Array.prototype.push.apply(rules, customRules);
   }
 
-  const errors = validate(schema, ast, rules, typeInfo);
+  const errors: Array<any> = validate(schema, ast, rules, typeInfo);
 
   if (errors.length > 0) {
     return errors.filter(error => {
@@ -55,9 +55,13 @@ export function validateWithCustomRules(
       }
       return !(
         (error.nodes &&
-          error.nodes.length === 1 &&
+          error.nodes[0] &&
+          error.nodes[0].name &&
           error.nodes[0].name.value === 'arguments') ||
-        error.nodes[0].name.value === 'argumentDefinitions'
+        (error.nodes &&
+          error.nodes[0] &&
+          error.nodes[0].name &&
+          error.nodes[0].name.value === 'argumentDefinitions')
       );
     });
   }

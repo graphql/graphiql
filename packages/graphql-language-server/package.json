@@ -16,8 +16,5 @@
   "bugs": {
     "url": "https://github.com/graphql/graphql-language-service/issues"
   },
-  "homepage": "https://github.com/graphql/graphql-language-service#readme",
-  "dependencies": {
-    "graphql-language-service": "0.0.23"
-  }
+  "homepage": "https://github.com/graphql/graphql-language-service#readme"
 }
