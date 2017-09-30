@@ -19,6 +19,7 @@ import {
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
+import sortAlphabetically from '../../utility/sortAlphabetically';
 
 export default class TypeDoc extends React.Component {
   static propTypes = {
@@ -81,7 +82,8 @@ export default class TypeDoc extends React.Component {
     let deprecatedFieldsDef;
     if (type.getFields) {
       const fieldMap = type.getFields();
-      const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+      let fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+      fields = sortAlphabetically(fields);
       fieldsDef = (
         <div className="doc-category">
           <div className="doc-category-title">
