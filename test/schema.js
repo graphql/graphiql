@@ -50,6 +50,18 @@ const TestInputObject = new GraphQLInputObjectType({
     id: { type: GraphQLID },
     enum: { type: TestEnum },
     object: { type: TestInputObject },
+    defaultValueString: {
+      type: GraphQLString,
+      defaultValue: 'test default value',
+    },
+    defaultValueBoolean: {
+      type: GraphQLBoolean,
+      defaultValue: false,
+    },
+    defaultValueInt: {
+      type: GraphQLInt,
+      defaultValue: 5,
+    },
     // List
     listString: { type: new GraphQLList(GraphQLString) },
     listInt: { type: new GraphQLList(GraphQLInt) },
@@ -167,6 +179,10 @@ const TestType = new GraphQLObjectType({
         id: { type: GraphQLID },
         enum: { type: TestEnum },
         object: { type: TestInputObject },
+        defaultValue: {
+          type: GraphQLString,
+          defaultValue: 'test default value',
+        },
         // List
         listString: { type: new GraphQLList(GraphQLString) },
         listInt: { type: new GraphQLList(GraphQLInt) },

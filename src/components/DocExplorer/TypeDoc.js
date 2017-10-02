@@ -19,6 +19,7 @@ import {
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
+import DefaultValue from './DefaultValue';
 
 export default class TypeDoc extends React.Component {
   static propTypes = {
@@ -203,6 +204,7 @@ function Field({ type, field, onClickType, onClickField }) {
       ]}
       {': '}
       <TypeLink type={field.type} onClick={onClickType} />
+      <DefaultValue field={field} />
       {field.description &&
         <p className="field-short-description">{field.description}</p>}
       {field.deprecationReason &&
