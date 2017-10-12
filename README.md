@@ -174,7 +174,7 @@ class CustomGraphiQL extends React.Component {
 
   render() {
     return (
-      <GraphiQL ref={c => { this.graphiql = c; }} ...this.state>
+      <GraphiQL ref={c => { this.graphiql = c; }} {...this.state}>
         <GraphiQL.Logo>
           Custom Logo
         </GraphiQL.Logo>
