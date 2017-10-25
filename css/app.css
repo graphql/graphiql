@@ -46,7 +46,6 @@
 .graphiql-container .topBarWrap {
   display: flex;
   flex-direction: row;
-  overflow-x: hidden;
 }
 
 .graphiql-container .topBar {
