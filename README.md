@@ -216,7 +216,7 @@ In order to theme the editor portions of the interface, you can supply a `editor
 
 // In your GraphiQL JSX
 <GraphiQL
-  editorTheme="solarized"
+  editorTheme="solarized light"
 />
 ```
 
