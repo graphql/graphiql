@@ -181,7 +181,7 @@ class CustomGraphiQL extends React.Component {
         <GraphiQL.Toolbar>
 
           // GraphiQL.Button usage
-          <GraphiQL.Button
+          <GraphiQL.ToolbarButton
             onClick={this.handleClickPrettifyButton}
             label="Prettify"
             title="Prettify Query (Shift-Ctrl-P)"
