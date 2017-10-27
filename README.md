@@ -106,7 +106,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
   default toolbar may contain common operations. Pass the empty
   `<GraphiQL.Toolbar />` if an empty toolbar is desired.
 
-* `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
+* `<GraphiQL.ToolbarButton>`: Add a button to the toolbar above GraphiQL.
 
 * `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
 
