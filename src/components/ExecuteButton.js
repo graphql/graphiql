@@ -45,7 +45,7 @@ export class ExecuteButton extends React.Component {
           {operations.map(operation =>
             <li
               key={operation.name ? operation.name.value : '*'}
-              className={operation === highlight && 'selected'}
+              className={operation === highlight && 'selected' || null}
               onMouseOver={() => this.setState({ highlight: operation })}
               onMouseOut={() => this.setState({ highlight: null })}
               onMouseUp={() => this._onOptionSelected(operation)}>
