@@ -953,7 +953,7 @@ export class GraphiQL extends React.Component {
 GraphiQL.Logo = function GraphiQLLogo(props) {
   return (
     <div className="title">
-      {props.children || <span>{'Graph'}<em>{'i'}</em>{'QL'}</span>}
+      {props.children || <span>{'Graph'}<em>{'i'}</em>{'QL Webscale'}</span>}
     </div>
   );
 };
