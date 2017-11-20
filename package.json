@@ -46,11 +46,11 @@
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.8.0 || ^0.9.0 || ^0.10.0"
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^0.1.13",
-    "graphql-language-service-parser": "^0.1.12"
+    "graphql-language-service-interface": "^1.0.15",
+    "graphql-language-service-parser": "^0.1.14"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -78,12 +78,12 @@
     "babel-plugin-transform-regenerator": "^6.26.0",
     "chai": "4.1.1",
     "chai-subset": "1.5.0",
-    "codemirror": "5.28.0",
+    "codemirror": "^5.28.0",
     "eslint": "^4.5.0",
     "eslint-plugin-babel": "4.1.2",
     "eslint-plugin-flowtype": "2.35.0",
-    "flow-bin": "^0.53.1",
-    "graphql": "^0.10.1",
+    "flow-bin": "^0.56.0",
+    "graphql": "^0.11.6",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",
     "prettier": "^1.4.4",
