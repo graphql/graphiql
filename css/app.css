@@ -70,6 +70,7 @@
 .graphiql-container .docExplorerShow,
 .graphiql-container .historyShow {
   background: linear-gradient(#f7f7f7, #e2e2e2);
+  border-radius: 0;
   border-bottom: 1px solid #d0d0d0;
   border-right: none;
   border-top: none;
