@@ -49,7 +49,7 @@ Complete your CLA here: <https://code.facebook.com/cla>
 3. Install or Update all dependencies
 
    ```sh
-   npm install
+   yarn
    ```
 
 4. Get coding! If you've added code, add tests. If you've changed APIs, update

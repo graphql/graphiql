@@ -200,7 +200,10 @@ function Field({ type, field, onClickType, onClickField }) {
       <TypeLink type={field.type} onClick={onClickType} />
       <DefaultValue field={field} />
       {field.description && (
-        <p className="field-short-description">{field.description}</p>
+        <MarkdownContent
+          className="field-short-description"
+          markdown={field.description}
+        />
       )}
       {field.deprecationReason && (
         <MarkdownContent
