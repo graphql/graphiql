@@ -759,6 +759,13 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
+cross-fetch@0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-0.0.8.tgz#01ed94dc407df2c00f1807fde700a7cfa48a205c"
+  dependencies:
+    node-fetch "1.7.3"
+    whatwg-fetch "2.0.3"
+
 cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -1205,24 +1212,24 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
 
-graphql-config@1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/graphql-config/-/graphql-config-1.0.7.tgz#424bda7da2e70ad6bbec4bd26c83f1d9cb49b271"
+graphql-config@1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/graphql-config/-/graphql-config-1.0.8.tgz#6dd1cd76ff6fbb01662704f8bddc403f6b0c24d9"
   dependencies:
-    graphql "^0.11.6"
-    graphql-request "^1.2.0"
-    js-yaml "^3.9.0"
+    graphql "^0.11.7"
+    graphql-request "^1.4.0"
+    js-yaml "^3.10.0"
     minimatch "^3.0.4"
-    rimraf "^2.6.1"
+    rimraf "^2.6.2"
 
-graphql-language-service-interface@^1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-1.0.15.tgz#d967aac365567146cc8d2ea03d5dc509f024bea7"
+graphql-language-service-interface@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-1.0.16.tgz#0e6dd855bf0bdee84e7456b2128a2e5f56e4f47b"
   dependencies:
-    graphql-config "1.0.7"
+    graphql-config "1.0.8"
     graphql-language-service-parser "^0.1.14"
     graphql-language-service-types "^0.1.14"
-    graphql-language-service-utils "^1.0.15"
+    graphql-language-service-utils "^1.0.16"
 
 graphql-language-service-parser@^0.1.14:
   version "0.1.14"
@@ -1234,22 +1241,22 @@ graphql-language-service-types@^0.1.14:
   version "0.1.14"
   resolved "https://registry.yarnpkg.com/graphql-language-service-types/-/graphql-language-service-types-0.1.14.tgz#e6112785fc23ea8222f59a7f00e61b359f263c88"
 
-graphql-language-service-utils@^1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-1.0.15.tgz#73e86c9acad7c546de3198c136bd1656933169e9"
+graphql-language-service-utils@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-utils/-/graphql-language-service-utils-1.0.16.tgz#eb4e4495aeef0c4b6ffd8c681858558862c65e9e"
   dependencies:
-    graphql-config "1.0.7"
+    graphql-config "1.0.8"
     graphql-language-service-types "^0.1.14"
 
-graphql-request@^1.2.0:
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-1.3.4.tgz#94d5f2e6644d9d9cbce0d06953e100c30e5cb633"
+graphql-request@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-1.4.0.tgz#f5b067c83070296d93fb45760e83dfad0d9f537a"
   dependencies:
-    isomorphic-fetch "^2.2.1"
+    cross-fetch "0.0.8"
 
-graphql@^0.11.6:
-  version "0.11.6"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.11.6.tgz#f0146b5dc1480fda579c21bb6238970fd5cf5aa3"
+graphql@^0.11.7:
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-0.11.7.tgz#e5abaa9cb7b7cccb84e9f0836bf4370d268750c6"
   dependencies:
     iterall "1.1.3"
 
@@ -1494,13 +1501,6 @@ isobject@^2.0.0:
   dependencies:
     isarray "1.0.0"
 
-isomorphic-fetch@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
-  dependencies:
-    node-fetch "^1.0.1"
-    whatwg-fetch ">=0.10.0"
-
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
@@ -1513,7 +1513,14 @@ js-tokens@^3.0.0, js-tokens@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
 
-js-yaml@^3.9.0, js-yaml@^3.9.1:
+js-yaml@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.10.0.tgz#2e78441646bd4682e963f22b6e92823c309c62dc"
+  dependencies:
+    argparse "^1.0.7"
+    esprima "^4.0.0"
+
+js-yaml@^3.9.1:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.9.1.tgz#08775cebdfdd359209f0d2acd383c8f86a6904a0"
   dependencies:
@@ -1778,9 +1785,9 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
-node-fetch@^1.0.1:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.2.tgz#c54e9aac57e432875233525f3c891c4159ffefd7"
+node-fetch@1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
@@ -2126,6 +2133,12 @@ rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
   dependencies:
     glob "^7.0.5"
 
+rimraf@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
+  dependencies:
+    glob "^7.0.5"
+
 run-async@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.3.0.tgz#0371ab4ae0bdd720d4166d7dfda64ff7a445a6c0"
@@ -2453,7 +2466,7 @@ whatwg-encoding@^1.0.1:
   dependencies:
     iconv-lite "0.4.13"
 
-whatwg-fetch@>=0.10.0:
+whatwg-fetch@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
 
