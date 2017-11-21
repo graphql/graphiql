@@ -29,7 +29,7 @@ if (config.scripts.prepublish.indexOf('node ') !== 0) {
 
 // Bail unless we're running during `npm publish`.
 var argv = JSON.parse(process.env.npm_config_argv).original;
-var isPublishing = argv[0].indexOf('pu') === 0;
+var isPublishing = argv.length > 0 && argv[0].indexOf('pu') === 0;
 if (!isPublishing) {
   process.exit(0);
 }
