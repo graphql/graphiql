@@ -48,7 +48,7 @@
     "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-babel": "4.1.2",
     "eslint-plugin-dependencies": "2.4.0",
-    "eslint-plugin-flowtype": "2.36.0",
+    "eslint-plugin-flowtype": "2.39.1",
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "flow-bin": "0.59.0",
     "graphql": "^0.11.7",
