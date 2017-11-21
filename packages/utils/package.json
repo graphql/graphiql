@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-utils",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
