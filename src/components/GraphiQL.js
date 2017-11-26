@@ -530,7 +530,9 @@ export class GraphiQL extends React.Component {
       .catch(error => {
         this.setState({
           schema: null,
-          response: error && String(error.stack || error),
+          response: error && error.stack
+            ? String(error.stack)
+            : JSON.stringify(error, null, 2),
         });
       });
   }
