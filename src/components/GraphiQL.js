@@ -563,7 +563,9 @@ export class GraphiQL extends React.Component {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error && String(error.stack || error),
+          response: error && error.stack
+            ? String(error.stack)
+            : JSON.stringify(error, null, 2),
         });
       });
     } else if (isObservable(fetch)) {
@@ -575,7 +577,9 @@ export class GraphiQL extends React.Component {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error && String(error.stack || error),
+            response: error && error.stack
+              ? String(error.stack)
+              : JSON.stringify(error, null, 2),
             subscription: null,
           });
         },
