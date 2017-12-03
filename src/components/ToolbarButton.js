@@ -19,6 +19,7 @@ export class ToolbarButton extends React.Component {
     onClick: PropTypes.func,
     title: PropTypes.string,
     label: PropTypes.string,
+    active: PropTypes.bool,
   };
 
   constructor(props) {
@@ -28,9 +29,18 @@ export class ToolbarButton extends React.Component {
 
   render() {
     const { error } = this.state;
+    const { active } = this.props;
+
+    let className = 'toolbar-button';
+    if (error) {
+      className += ' error';
+    } else if (active) {
+      className += ' activated';
+    }
+
     return (
       <a
-        className={'toolbar-button' + (error ? ' error' : '')}
+        className={className}
         onMouseDown={preventDefault}
         onClick={this.handleClick}
         title={error ? error.message : this.props.title}>

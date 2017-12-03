@@ -119,6 +119,7 @@ export class GraphiQL extends React.Component {
           DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      forceTracing: false,
       ...queryFacts,
     };
 
@@ -243,6 +244,8 @@ export class GraphiQL extends React.Component {
       find(children, child => child.type === GraphiQL.Logo) ||
       <GraphiQL.Logo />;
 
+    const tracingLabel = 'Tracing ' + (this.state.forceTracing ? 'On' : 'Off');
+
     const toolbar =
       find(children, child => child.type === GraphiQL.Toolbar) ||
       <GraphiQL.Toolbar>
@@ -255,6 +258,12 @@ export class GraphiQL extends React.Component {
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
+        />
+        <ToolbarButton
+          onClick={this.handleForceTracingToggle}
+          active={this.state.forceTracing}
+          title="Tracing"
+          label={tracingLabel}
         />
 
       </GraphiQL.Toolbar>;
@@ -535,7 +544,7 @@ export class GraphiQL extends React.Component {
       });
   }
 
-  _fetchQuery(query, variables, operationName, cb) {
+  _fetchQuery(query, variables, operationName, forceTracing, cb) {
     const fetcher = this.props.fetcher;
     let jsonVariables = null;
 
@@ -555,6 +564,7 @@ export class GraphiQL extends React.Component {
       query,
       variables: jsonVariables,
       operationName,
+      forceTracing,
     });
 
     if (isPromise(fetch)) {
@@ -629,6 +639,7 @@ export class GraphiQL extends React.Component {
         editedQuery,
         variables,
         operationName,
+        this.state.forceTracing,
         result => {
           if (queryID === this._editorQueryID) {
             this.setState({
@@ -946,6 +957,12 @@ export class GraphiQL extends React.Component {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  handleForceTracingToggle = () => {
+    this.setState({
+      forceTracing: !this.state.forceTracing,
+    });
   };
 }
 

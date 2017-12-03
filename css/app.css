@@ -259,6 +259,11 @@
   color: #b00;
 }
 
+.graphiql-container .toolbar-button.activated {
+  background: linear-gradient(#eafeea, #90ee90);
+  color: #008000;
+}
+
 .graphiql-container .toolbar-button-group {
   margin: 0 5px;
   white-space: nowrap;
