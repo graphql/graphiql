@@ -81,6 +81,7 @@ export class QueryHistory extends React.Component {
     const queryNodes = queries.map((query, i) => {
       return (
         <HistoryQuery
+          handleEditLabel={this.editLabel}
           handleToggleFavorite={this.toggleFavorite}
           key={i}
           onSelect={this.props.onSelectQuery}
@@ -103,11 +104,12 @@ export class QueryHistory extends React.Component {
     );
   }
 
-  toggleFavorite = (query, variables, operationName, favorite) => {
+  toggleFavorite = (query, variables, operationName, label, favorite) => {
     const item = {
       query,
       variables,
       operationName,
+      label,
     };
     if (!this.favoriteStore.contains(item)) {
       item.favorite = true;
@@ -115,6 +117,24 @@ export class QueryHistory extends React.Component {
     } else if (favorite) {
       item.favorite = false;
       this.favoriteStore.delete(item);
+    }
+    const historyQueries = this.historyStore.items;
+    const favoriteQueries = this.favoriteStore.items;
+    const queries = historyQueries.concat(favoriteQueries);
+    this.setState({ queries });
+  };
+
+  editLabel = (query, variables, operationName, label, favorite) => {
+    const item = {
+      query,
+      variables,
+      operationName,
+      label,
+    };
+    if (favorite) {
+      this.favoriteStore.edit({ ...item, favorite });
+    } else {
+      this.historyStore.edit(item);
     }
     const historyQueries = this.historyStore.items;
     const favoriteQueries = this.favoriteStore.items;
