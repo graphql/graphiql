@@ -58,7 +58,7 @@
     "graphql-language-service-types": "^0.1.0-0",
     "graphql-language-service-utils": "^1.0.0-0",
     "lerna": "^2.0.0",
-    "mocha": "4.0.1",
+    "mocha": "4.1.0",
     "prettier": "^1.5.3"
   }
 }
