@@ -51,7 +51,7 @@ describe('GraphQLCache', () => {
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
-        description: '',
+        description: undefined,
         locations: ['FIELD'],
         name: 'customDirective',
       });
@@ -63,7 +63,7 @@ describe('GraphQLCache', () => {
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
-        description: '',
+        description: undefined,
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });

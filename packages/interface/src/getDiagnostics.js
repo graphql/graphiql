@@ -12,9 +12,9 @@ import type {
   ASTNode,
   DocumentNode,
   GraphQLError,
-  GraphQLErrorLocation,
   GraphQLSchema,
   Location,
+  SourceLocation,
 } from 'graphql';
 import type {
   Diagnostic,
@@ -124,7 +124,7 @@ function annotations(
   });
 }
 
-export function getRange(location: GraphQLErrorLocation, queryText: string) {
+export function getRange(location: SourceLocation, queryText: string) {
   const parser = onlineParser();
   const state = parser.startState();
   const lines = queryText.split('\n');

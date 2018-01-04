@@ -33,7 +33,12 @@ import {
   UNION_TYPE_DEFINITION,
   SCALAR_TYPE_DEFINITION,
   INPUT_OBJECT_TYPE_DEFINITION,
-  TYPE_EXTENSION_DEFINITION,
+  SCALAR_TYPE_EXTENSION,
+  OBJECT_TYPE_EXTENSION,
+  INTERFACE_TYPE_EXTENSION,
+  UNION_TYPE_EXTENSION,
+  ENUM_TYPE_EXTENSION,
+  INPUT_OBJECT_TYPE_EXTENSION,
   DIRECTIVE_DEFINITION,
 } from 'graphql/language/kinds';
 import {getGraphQLConfig, GraphQLConfig} from 'graphql-config';
@@ -365,7 +370,12 @@ export class GraphQLCache {
             case UNION_TYPE_DEFINITION:
             case SCALAR_TYPE_DEFINITION:
             case INPUT_OBJECT_TYPE_DEFINITION:
-            case TYPE_EXTENSION_DEFINITION:
+            case SCALAR_TYPE_EXTENSION:
+            case OBJECT_TYPE_EXTENSION:
+            case INTERFACE_TYPE_EXTENSION:
+            case UNION_TYPE_EXTENSION:
+            case ENUM_TYPE_EXTENSION:
+            case INPUT_OBJECT_TYPE_EXTENSION:
             case DIRECTIVE_DEFINITION:
               typeExtensions.push(definition);
               break;

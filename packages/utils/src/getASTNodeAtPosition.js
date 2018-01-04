@@ -24,6 +24,7 @@ export function getASTNodeAtPosition(
     enter(node) {
       if (
         node.kind !== 'Name' && // We're usually interested in their parents
+        node.loc &&
         node.loc.start <= offset &&
         offset <= node.loc.end
       ) {
@@ -33,7 +34,7 @@ export function getASTNodeAtPosition(
       }
     },
     leave(node) {
-      if (node.loc.start <= offset && offset <= node.loc.end) {
+      if (node.loc && node.loc.start <= offset && offset <= node.loc.end) {
         return false;
       }
     },

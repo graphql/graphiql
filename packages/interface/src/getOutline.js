@@ -13,6 +13,7 @@ import type {
   TextToken,
   TokenKind,
 } from 'graphql-language-service-types';
+import type {ASTNode} from 'graphql';
 
 import {parse, visit} from 'graphql';
 import {INLINE_FRAGMENT} from 'graphql/language/kinds';
@@ -42,7 +43,7 @@ export function getOutline(queryText: string): ?Outline {
   const visitorFns = outlineTreeConverter(queryText);
   const outlineTrees = visit(ast, {
     leave(node) {
-      if (OUTLINEABLE_KINDS[node.kind] && visitorFns[node.kind]) {
+      if (OUTLINEABLE_KINDS.hasOwnProperty(node.kind) && visitorFns[node.kind]) {
         return visitorFns[node.kind](node);
       }
       return null;
