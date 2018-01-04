@@ -26,6 +26,7 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
+    "graphql-config": "1.1.4",
     "graphql-language-service-types": "^0.1.14"
   }
 }

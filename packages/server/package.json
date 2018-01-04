@@ -26,12 +26,12 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "peerDependencies": {
-    "graphql": "^0.10.0 || ^0.11.0"
+    "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0"
   },
   "dependencies": {
     "babylon": "^6.17.4",
     "fb-watchman": "^2.0.0",
-    "graphql-config": "1.0.8",
+    "graphql-config": "1.1.4",
     "graphql-language-service-interface": "^1.0.16",
     "graphql-language-service-types": "^0.1.14",
     "graphql-language-service-utils": "^1.0.16",
