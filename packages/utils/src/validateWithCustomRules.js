@@ -46,7 +46,12 @@ export function validateWithCustomRules(
     Array.prototype.push.apply(rules, customRules);
   }
 
-  const errors: $ReadOnlyArray<GraphQLError> = validate(schema, ast, rules, typeInfo);
+  const errors: $ReadOnlyArray<GraphQLError> = validate(
+    schema,
+    ast,
+    rules,
+    typeInfo,
+  );
 
   if (errors.length > 0) {
     return errors.filter(error => {
