@@ -13,7 +13,6 @@ import type {
   TextToken,
   TokenKind,
 } from 'graphql-language-service-types';
-import type {ASTNode} from 'graphql';
 
 import {parse, visit} from 'graphql';
 import {INLINE_FRAGMENT} from 'graphql/language/kinds';
