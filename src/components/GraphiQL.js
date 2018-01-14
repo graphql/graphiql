@@ -21,6 +21,7 @@ import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
+import { RequestOptions } from './RequestOptions';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI from '../utility/StorageAPI';
 import getQueryFacts from '../utility/getQueryFacts';
@@ -28,6 +29,8 @@ import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { fillLeafs } from '../utility/fillLeafs';
+import { defaultRequestOptions } from '../utility/defaultRequestOptions';
+import { objectFromPath } from '../utility/objectFromPath';
 import { getLeft, getTop } from '../utility/elementPosition';
 import {
   introspectionQuery,
@@ -114,12 +117,18 @@ export class GraphiQL extends React.Component {
         Number(this._storage.get('variableEditorHeight')) || 200,
       docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
+      requestOptionsOpen:
+        this._storage.get('requestOptionsOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
           DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts,
+      requestOptions: {
+        ...defaultRequestOptions,
+        ...JSON.parse(this._storage.get('requestOptions')),
+      },
     };
 
     // Ensure only the last executed editor query is rendered.
@@ -234,6 +243,8 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
+    this._storage.set('requestOptionsOpen', this.state.requestOptionsOpen);
+    this._saveRequestOptions();
   }
 
   render() {
@@ -255,6 +266,11 @@ export class GraphiQL extends React.Component {
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
+        />
+        <ToolbarButton
+          onClick={this.handleToggleRequestOptionsOpen}
+          title="Request Options"
+          label="Request Options"
         />
 
       </GraphiQL.Toolbar>;
@@ -280,6 +296,12 @@ export class GraphiQL extends React.Component {
       zIndex: '7',
     };
 
+    const requestOptionsStyle = {
+      display: this.state.requestOptionsOpen ? 'block' : 'none',
+      width: '300px',
+      zIndex: '7',
+    };
+
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : null,
@@ -299,6 +321,18 @@ export class GraphiQL extends React.Component {
               {'\u2715'}
             </div>
           </QueryHistory>
+        </div>
+        <div className="requestOptionsWrap" style={requestOptionsStyle}>
+          <RequestOptions
+            handleChange={this.handleRequestOptionsChange}
+            setOptions={this.setRequestOptions}
+            {...this.state.requestOptions}>
+            <div
+              className="docExplorerHide"
+              onClick={this.handleToggleRequestOptionsOpen}>
+              {'\u2715'}
+            </div>
+          </RequestOptions>
         </div>
         <div className="editorWrap">
           <div className="topBarWrap">
@@ -471,12 +505,37 @@ export class GraphiQL extends React.Component {
     return result;
   }
 
+  handleRequestOptionsChange = path => e => {
+    e.persist();
+    this.setState(
+      state => ({
+        requestOptions: {
+          ...state.requestOptions,
+          ...objectFromPath(path, e.target.value),
+        },
+      }),
+      () => {
+        this._saveRequestOptions();
+      },
+    );
+  };
+
   // Private methods
+
+  _saveRequestOptions() {
+    this._storage.set(
+      'requestOptions',
+      JSON.stringify(this.state.requestOptions),
+    );
+  }
 
   _fetchSchema() {
     const fetcher = this.props.fetcher;
 
-    const fetch = observableToPromise(fetcher({ query: introspectionQuery }));
+    const fetch = observableToPromise(
+      fetcher({ query: introspectionQuery }, this.state.requestOptions),
+    );
+
     if (!isPromise(fetch)) {
       this.setState({
         response: 'Fetcher did not return a Promise for introspection.',
@@ -493,9 +552,12 @@ export class GraphiQL extends React.Component {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = observableToPromise(
-          fetcher({
-            query: introspectionQuerySansSubscriptions,
-          }),
+          fetcher(
+            {
+              query: introspectionQuerySansSubscriptions,
+            },
+            this.state.requestOptions,
+          ),
         );
         if (!isPromise(fetch)) {
           throw new Error(
@@ -551,11 +613,14 @@ export class GraphiQL extends React.Component {
       throw new Error('Variables are not a JSON object.');
     }
 
-    const fetch = fetcher({
-      query,
-      variables: jsonVariables,
-      operationName,
-    });
+    const fetch = fetcher(
+      {
+        query,
+        variables: jsonVariables,
+        operationName,
+      },
+      this.state.requestOptions,
+    );
 
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
@@ -792,6 +857,13 @@ export class GraphiQL extends React.Component {
       this.props.onToggleHistory(!this.state.historyPaneOpen);
     }
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+  };
+
+  handleToggleRequestOptionsOpen = () => {
+    if (typeof this.props.onToggleDocs === 'function') {
+      this.props.onToggleDocs(!this.state.docExplorerOpen);
+    }
+    this.setState({ requestOptionsOpen: !this.state.requestOptionsOpen });
   };
 
   handleSelectHistoryQuery = (query, variables, operationName) => {

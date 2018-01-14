@@ -3,6 +3,7 @@
 }
 
 .graphiql-container .doc-explorer-title-bar,
+.graphiql-container .request-options-title-bar,
 .graphiql-container .history-title-bar {
   cursor: default;
   display: flex;
@@ -14,6 +15,7 @@
 }
 
 .graphiql-container .doc-explorer-title,
+.graphiql-container .request-options-title,
 .graphiql-container .history-title {
   flex: 1;
   font-weight: bold;
@@ -56,6 +58,7 @@
 }
 
 .graphiql-container .doc-explorer-contents,
+.graphiql-container .request-options-contents,
 .graphiql-container .history-contents {
   background-color: #ffffff;
   border-top: 1px solid #d6d6d6;

@@ -124,6 +124,7 @@
 }
 
 .graphiql-container .docExplorerWrap,
+.graphiql-container .requestOptionsWrap,
 .graphiql-container .historyPaneWrap {
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
@@ -131,7 +132,8 @@
   z-index: 3;
 }
 
-.graphiql-container .historyPaneWrap {
+.graphiql-container .historyPaneWrap,
+.graphiql-container .requestOptionsWrap {
   min-width: 230px;
   z-index: 5;
 }
