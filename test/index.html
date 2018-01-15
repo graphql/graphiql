@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="css/jump.css" />
     <link rel="stylesheet" href="css/lint.css" />
     <link rel="stylesheet" href="css/loading.css" />
+    <link rel="stylesheet" href="css/react-tabs.css" />
     <link rel="stylesheet" href="css/show-hint.css" />
     <link rel="stylesheet" href="css/history.css" />
 
@@ -134,7 +135,21 @@
           operationName: parameters.operationName,
           onEditQuery: onEditQuery,
           onEditVariables: onEditVariables,
-          onEditOperationName: onEditOperationName
+          onEditOperationName: onEditOperationName,
+          plugins: [
+            {
+              title: 'Analysis',
+              content: 'Analysis content',
+            },
+            {
+              title: 'Metrics',
+              content: 'Metrics content',
+            },
+            {
+              title: 'Visualizations',
+              content: 'Visualization content',
+            }
+          ]
         }),
         document.getElementById('graphiql')
       );

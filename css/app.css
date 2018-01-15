@@ -191,6 +191,12 @@
   position: relative;
 }
 
+.plugins-pane {
+  background-color: #f7f7f7;
+  flex: 0.5;
+  height: 100%;
+}
+
 .graphiql-container .footer {
   background: #f6f7f8;
   border-left: 1px solid #e0e0e0;
