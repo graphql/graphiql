@@ -16,10 +16,10 @@ import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
+import { PluginsPane } from './PluginsPane';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
-import { AnalysisViewer } from './AnalysisViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
@@ -66,6 +66,12 @@ export class GraphiQL extends React.Component {
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
     enableAnalysisViewer: PropTypes.bool,
+    plugins: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        content: PropTypes.any
+      })
+    )
   };
 
   constructor(props) {
@@ -376,17 +382,11 @@ export class GraphiQL extends React.Component {
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
               />
-              {this.props.enableAnalysisViewer
-                ? <AnalysisViewer
-                    ref={c => {
-                      this.resultComponent = c;
-                    }}
-                    value={this.state.response}
-                    editorTheme={this.props.editorTheme}
-                    ResultsTooltip={this.props.ResultsTooltip}
+              {this.props.plugins
+                ? <PluginsPane
+                    plugins={this.props.plugins}
                   />
                 : ''}
-
               {footer}
             </div>
           </div>
