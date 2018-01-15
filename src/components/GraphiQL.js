@@ -36,6 +36,7 @@ import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { omitKeys } from '../utility/omitKeys';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -324,8 +325,10 @@ export class GraphiQL extends React.Component {
         </div>
         <div className="requestOptionsWrap" style={requestOptionsStyle}>
           <RequestOptions
-            handleChange={this.handleRequestOptionsChange}
+            handleOnChange={this.onHandleRequestOptionsChange}
             setOptions={this.setRequestOptions}
+            handleToggleCsrfToken={this.toggleCsrfToken}
+            hasToken={this.hasToken()}
             {...this.state.requestOptions}>
             <div
               className="docExplorerHide"
@@ -505,13 +508,13 @@ export class GraphiQL extends React.Component {
     return result;
   }
 
-  handleRequestOptionsChange = path => e => {
+  onHandleRequestOptionsChange = path => e => {
     e.persist();
     this.setState(
       state => ({
         requestOptions: {
           ...state.requestOptions,
-          ...objectFromPath(path, e.target.value),
+          ...objectFromPath(path, e.target.value, state.requestOptions),
         },
       }),
       () => {
@@ -520,7 +523,62 @@ export class GraphiQL extends React.Component {
     );
   };
 
+  toggleCsrfToken = () => {
+    return this.hasToken()
+      ? this._excludeCsrfToken()
+      : this._includeCsrfToken();
+  };
+
+  hasToken = () => {
+    return Boolean(this.state.requestOptions.headers['X-CSRFToken']);
+  };
+
   // Private methods
+
+  _includeCsrfToken() {
+    this.setState(
+      state => ({
+        requestOptions: {
+          ...state.requestOptions,
+          headers: {
+            ...state.requestOptions.headers,
+            'X-CSRFToken': this._csrfToken(),
+          },
+        },
+      }),
+      () => this._saveRequestOptions(),
+    );
+  }
+
+  _excludeCsrfToken() {
+    this.setState(
+      state => ({
+        requestOptions: {
+          ...state.requestOptions,
+          headers: {
+            ...omitKeys(state.requestOptions.headers),
+          },
+        },
+      }),
+      () => this._saveRequestOptions(),
+    );
+  }
+
+  _csrfToken = () => {
+    if (!document.cookie) {
+      return null;
+    }
+
+    const csrfCookies = document.cookie
+      .split(';')
+      .map(c => c.trim())
+      .filter(c => c.startsWith('csrftoken='));
+    if (csrfCookies.length === 0) {
+      return null;
+    }
+
+    return decodeURIComponent(csrfCookies[0].split('=')[1]);
+  };
 
   _saveRequestOptions() {
     this._storage.set(
