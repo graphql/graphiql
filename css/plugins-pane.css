@@ -1,0 +1,20 @@
+.plugins-pane__title {
+  background: #eeeeee;
+  border-bottom: 1px solid #d6d6d6;
+  color: #777;
+  font-variant: small-caps;
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 14px;
+  padding: 6px 0 8px 43px;
+  text-transform: lowercase;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.plugins-pane__body {
+  background: #fff;
+  height: 100%;
+  padding: 10px;
+}
