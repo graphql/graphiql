@@ -227,7 +227,7 @@ In order to theme the editor portions of the interface, you can supply a `editor
 **Query**
 
 GraphQL queries declaratively describe what data the issuer wishes to fetch from whoever is fulfilling the GraphQL query.
-```
+```graphql
 query FetchSomeIDQuery($someId: String!) {
   human(id: $someId) {
     name
@@ -262,7 +262,7 @@ const schema = new GraphQLSchema({
 });
 ```
 then the following mutation queries are possible:
-```
+```graphql
 mutation TestMutation {
   first: immediatelyChangeTheNumber(newNumber: 1) {
     theNumber
@@ -272,7 +272,7 @@ mutation TestMutation {
 Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/mutations-test.js).
 
 [Relay](https://facebook.github.io/relay) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
-```
+```graphql
 input IntroduceShipInput {
   factionId: ID!
   shipName: String!
@@ -286,7 +286,7 @@ type IntroduceShipPayload {
 }
 ```
 mutation calls are composed as such:
-```
+```graphql
 mutation AddBWingQuery($input: IntroduceShipInput!) {
   introduceShip(input: $input) {
     ship {
@@ -312,7 +312,7 @@ Read more from [Relay Mutation Documentation](https://facebook.github.io/relay/d
 **Fragment**
 
 Fragments allow for the reuse of common repeated selections of fields, reducing duplicated text in the document. Inline Fragments can be used directly within a selection to condition upon a type condition when querying against an interface or union. Therefore, instead of the following query:
-```
+```graphql
 {
   luke: human(id: "1000") {
     name
@@ -326,7 +326,7 @@ Fragments allow for the reuse of common repeated selections of fields, reducing 
 ```
 
 using fragments, the following query is possible.
-```
+```graphql
 {
   luke: human(id: "1000") {
     ...HumanFragment
