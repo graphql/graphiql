@@ -26,6 +26,8 @@
     <script src="./vendor/react-15.4.2.js"></script>
     <script src="./vendor/react-dom-15.4.2.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.js"></script>
+
     <!-- Load each file individually for better debugging  -->
     <!-- Note that in practice, a compiled graphiql.css is included -->
     <link rel="stylesheet" href="css/app.css" />
@@ -45,7 +47,7 @@
   </head>
   <body>
     <div id="graphiql">Loading...</div>
-    <script>
+    <script type="text/babel">
 
       /**
        * This GraphiQL example illustrates how to use some of GraphiQL's props
@@ -126,6 +128,17 @@
         });
       }
 
+      const viewer = function(results) {
+        if (results) {
+          return (
+            <div>
+              <h3>An example plugin</h3>
+              <div> {results} </div>
+            </div>
+          )
+        }
+      };
+
       // Render <GraphiQL /> into the body.
       ReactDOM.render(
         React.createElement(GraphiQL, {
@@ -138,17 +151,9 @@
           onEditOperationName: onEditOperationName,
           plugins: [
             {
-              title: 'Analysis',
-              content: 'Analysis content',
+              title: 'Raw',
+              plugin: viewer,
             },
-            {
-              title: 'Metrics',
-              content: 'Metrics content',
-            },
-            {
-              title: 'Visualizations',
-              content: 'Visualization content',
-            }
           ]
         }),
         document.getElementById('graphiql')

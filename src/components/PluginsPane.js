@@ -9,9 +9,10 @@ export class PluginsPane extends React.Component {
       plugins: PropTypes.arrayOf(
         PropTypes.shape({
           title: PropTypes.string,
-          content: PropTypes.any,
+          plugin: PropTypes.func.isRequired,
         }),
       ),
+      value: PropTypes.string,
     },
   ];
 
@@ -34,12 +35,12 @@ export class PluginsPane extends React.Component {
     return (
       <div className="plugins-pane" style={style}>
         <div
-          className="plugins-pane__title"
+          className="plugins-pane__title variable-editor-title"
           style={{
             cursor: this.state.pluginsPaneOpen ? 'row-resize' : 'n-resize',
           }}
           onMouseDown={this.handleResizeStart}>
-          Plugins
+          {'Plugins'}
         </div>
 
         <Tabs>
@@ -58,8 +59,14 @@ export class PluginsPane extends React.Component {
   }
 
   tabPanels() {
-    const tabs = this.props.plugins.map((plugin, id) => {
-      return <TabPanel key={id}> {plugin.content} </TabPanel>;
+    const tabs = this.props.plugins.map((aPlugin, id) => {
+      const { plugin } = aPlugin;
+      const viewer = plugin && plugin(this.props.value);
+      return (
+        <TabPanel key={id}>
+          {viewer}
+        </TabPanel>
+      );
     });
     return tabs;
   }
