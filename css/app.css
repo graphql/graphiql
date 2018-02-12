@@ -480,19 +480,6 @@ div.CodeMirror-lint-tooltip {
   border: 0;
   color: #141823;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-  font-family:
-    system,
-    -apple-system,
-    'San Francisco',
-    '.SFNSDisplay-Regular',
-    'Segoe UI',
-    Segoe,
-    'Segoe WP',
-    'Helvetica Neue',
-    helvetica,
-    'Lucida Grande',
-    arial,
-    sans-serif;
   font-size: 13px;
   line-height: 16px;
   max-width: 430px;
