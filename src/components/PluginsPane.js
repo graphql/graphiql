@@ -8,8 +8,8 @@ export class PluginsPane extends React.Component {
     {
       plugins: PropTypes.arrayOf(
         PropTypes.shape({
-          title: PropTypes.string,
-          plugin: PropTypes.func.isRequired,
+          title: PropTypes.string.isRequired,
+          plugin: PropTypes.any.isRequired,
         }),
       ),
       value: PropTypes.string,
@@ -60,11 +60,13 @@ export class PluginsPane extends React.Component {
 
   tabPanels() {
     const tabs = this.props.plugins.map((aPlugin, id) => {
-      const { plugin } = aPlugin;
-      const viewer = plugin && plugin(this.props.value);
+      const { props } = aPlugin.plugin;
+      const error = <div> {'Plugin does not include a render prop'}</div>;
+      const view = props.render ? props.render(this.props.value) : error;
+
       return (
         <TabPanel key={id}>
-          {viewer}
+          {view}
         </TabPanel>
       );
     });

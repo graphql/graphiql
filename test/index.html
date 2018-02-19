@@ -139,6 +139,8 @@
         }
       };
 
+      const Plugin = <div />;
+
       // Render <GraphiQL /> into the body.
       ReactDOM.render(
         React.createElement(GraphiQL, {
@@ -152,7 +154,7 @@
           plugins: [
             {
               title: 'Raw',
-              plugin: viewer,
+              plugin: <Plugin render={viewer} />,
             },
           ]
         }),
