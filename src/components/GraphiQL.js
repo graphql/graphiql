@@ -65,11 +65,10 @@ export class GraphiQL extends React.Component {
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
-    enableAnalysisViewer: PropTypes.bool,
     plugins: PropTypes.arrayOf(
       PropTypes.shape({
-        title: PropTypes.string,
-        plugin: PropTypes.func.isRequired,
+        title: PropTypes.string.isRequired,
+        plugin: PropTypes.any.isRequired,
       }),
     ),
   };

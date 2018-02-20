@@ -4,17 +4,15 @@ import PropTypes from 'prop-types';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 export class PluginsPane extends React.Component {
-  static propTypes = [
-    {
-      plugins: PropTypes.arrayOf(
-        PropTypes.shape({
-          title: PropTypes.string.isRequired,
-          plugin: PropTypes.any.isRequired,
-        }),
-      ),
-      value: PropTypes.string,
-    },
-  ];
+  static propTypes = {
+    plugins: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        plugin: PropTypes.any.isRequired,
+      }),
+    ),
+    value: PropTypes.string,
+  };
 
   constructor() {
     super();

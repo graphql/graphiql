@@ -128,6 +128,7 @@
         });
       }
 
+      const Plugin = <div />;
       const viewer = function(results) {
         if (results) {
           return (
@@ -138,8 +139,6 @@
           )
         }
       };
-
-      const Plugin = <div />;
 
       // Render <GraphiQL /> into the body.
       ReactDOM.render(
@@ -153,7 +152,7 @@
           onEditOperationName: onEditOperationName,
           plugins: [
             {
-              title: 'Raw',
+              title: 'Example',
               plugin: <Plugin render={viewer} />,
             },
           ]
