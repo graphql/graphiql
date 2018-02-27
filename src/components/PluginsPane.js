@@ -18,17 +18,27 @@ export class PluginsPane extends React.Component {
     super();
     this.state = {
       pluginsPaneOpen: true,
-      pluginsPaneHeight: 29,
+      pluginsPaneHeight: this.OFFEST,
     };
+    this.OFFEST = 29;
+    this.OFFSET_HEIGHT = `${this.OFFEST}px`;
     this.handleResizeStart = this.handleResizeStart.bind(this);
+  }
+
+  componentDidMount() {
+    this.hidePluginsPane();
   }
 
   render() {
     const style = {
       height: this.state.pluginsPaneOpen
         ? this.state.pluginsPaneHeight
-        : '29px',
+        : this.OFFSET_HEIGHT,
     };
+
+    if (this.state.pluginsPaneOpen === false) {
+      this.hidePluginsPane();
+    }
 
     return (
       <div className="plugins-pane" style={style}>
@@ -84,6 +94,12 @@ export class PluginsPane extends React.Component {
         this.setState({ pluginsPaneOpen: !wasOpen });
       }
 
+      if (wasOpen && !didMove) {
+        this.hidePluginsPane();
+      } else {
+        this.showPluginsPane();
+      }
+
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       onMouseMove = null;
@@ -99,23 +115,38 @@ export class PluginsPane extends React.Component {
 
       const editorBar = document.querySelector('.editorBar');
       const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize - 30;
+      const bottomSize = editorBar.clientHeight - topSize - this.OFFEST;
 
       if (bottomSize < 60) {
         this.setState({
           pluginsPaneOpen: false,
           pluginsPaneHeight: hadHeight,
         });
+        this.hidePluginsPane();
       } else {
         this.setState({
           pluginsPaneOpen: true,
           pluginsPaneHeight: bottomSize,
         });
+        this.showPluginsPane();
       }
     };
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  }
+
+  hidePluginsPane() {
+    const reactTabs = document.querySelector('div.plugins-pane div.react-tabs');
+    if (reactTabs) {
+      reactTabs.style.display = 'none';
+    }
+  }
+  showPluginsPane() {
+    const reactTabs = document.querySelector('div.plugins-pane div.react-tabs');
+    if (reactTabs) {
+      reactTabs.style.display = 'block';
+    }
   }
 }
 
