@@ -50,4 +50,6 @@
 
 .react-tabs__tab-panel--selected {
   display: block;
+  overflow: scroll;
+  height: 250px;
 }
