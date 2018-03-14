@@ -18,10 +18,10 @@ export class PluginsPane extends React.Component {
     super();
     this.state = {
       pluginsPaneOpen: true,
-      pluginsPaneHeight: this.OFFEST,
+      pluginsPaneHeight: this.OFFSET,
     };
-    this.OFFEST = 29;
-    this.OFFSET_HEIGHT = `${this.OFFEST}px`;
+    this.OFFSET = 29;
+    this.OFFSET_HEIGHT = `${this.OFFSET}px`;
     this.handleResizeStart = this.handleResizeStart.bind(this);
   }
 
@@ -38,6 +38,16 @@ export class PluginsPane extends React.Component {
 
     if (this.state.pluginsPaneOpen === false) {
       this.hidePluginsPane();
+    }
+
+    // Fix cutoff/overflow issue :/
+    const pluginTabPanel = document.querySelector(
+      'div.react-tabs__tab-panel--selected',
+    );
+    const updateHeight = style.height && style.height !== this.OFFSET_HEIGHT;
+    if (pluginTabPanel && updateHeight) {
+      const height = style.height - 100;
+      pluginTabPanel.setAttribute('style', `height:${height}px !important`);
     }
 
     return (
@@ -115,7 +125,7 @@ export class PluginsPane extends React.Component {
 
       const editorBar = document.querySelector('.editorBar');
       const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize - this.OFFEST;
+      const bottomSize = editorBar.clientHeight - topSize - this.OFFSET;
 
       if (bottomSize < 60) {
         this.setState({
