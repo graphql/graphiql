@@ -41,14 +41,7 @@ export class PluginsPane extends React.Component {
     }
 
     // Fix cutoff/overflow issue :/
-    const pluginTabPanel = document.querySelector(
-      'div.react-tabs__tab-panel--selected',
-    );
-    const updateHeight = style.height && style.height !== this.OFFSET_HEIGHT;
-    if (pluginTabPanel && updateHeight) {
-      const height = style.height - 100;
-      pluginTabPanel.setAttribute('style', `height:${height}px !important`);
-    }
+    this.setPanelHeight(style.height);
 
     return (
       <div className="plugins-pane" style={style}>
@@ -156,6 +149,24 @@ export class PluginsPane extends React.Component {
     const reactTabs = document.querySelector('div.plugins-pane div.react-tabs');
     if (reactTabs) {
       reactTabs.style.display = 'block';
+    }
+  }
+  setPanelHeight(currPaneHeight) {
+    if (!currPaneHeight) {
+      return;
+    }
+    const updateHeight = currPaneHeight !== this.OFFSET_HEIGHT;
+    const height = currPaneHeight - 100;
+
+    const pluginTabPanels = document.querySelectorAll(
+      'div.react-tabs__tab-panel',
+    );
+    if (pluginTabPanels) {
+      pluginTabPanels.forEach(panel => {
+        if (updateHeight) {
+          panel.setAttribute('style', `height:${height}px !important`);
+        }
+      });
     }
   }
 }
