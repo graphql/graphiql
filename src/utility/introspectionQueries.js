@@ -4,14 +4,17 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import { getOperationAST, parse, introspectionQuery } from 'graphql';
 
 export { introspectionQuery } from 'graphql';
+export const introspectionQueryName = getOperationAST(parse(introspectionQuery))
+  .name.value;
 
 // Some GraphQL services do not support subscriptions and fail an introspection
 // query which includes the `subscriptionType` field as the stock introspection
 // query does. This backup query removes that field.
 export const introspectionQuerySansSubscriptions = `
-  query IntrospectionQuery {
+  query ${introspectionQueryName} {
     __schema {
       queryType { name }
       mutationType { name }
