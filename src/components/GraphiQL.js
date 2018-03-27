@@ -33,6 +33,7 @@ import { getLeft, getTop } from '../utility/elementPosition';
 import { mergeAst } from '../utility/mergeAst';
 import {
   introspectionQuery,
+  introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
@@ -508,7 +509,7 @@ export class GraphiQL extends React.Component {
     const fetch = observableToPromise(
       fetcher({
         query: introspectionQuery,
-        operationName: 'IntrospectionQuery',
+        operationName: introspectionQueryName,
       }),
     );
     if (!isPromise(fetch)) {
@@ -529,7 +530,7 @@ export class GraphiQL extends React.Component {
         const fetch2 = observableToPromise(
           fetcher({
             query: introspectionQuerySansSubscriptions,
-            operationName: 'IntrospectionQuery',
+            operationName: introspectionQueryName,
           }),
         );
         if (!isPromise(fetch)) {
