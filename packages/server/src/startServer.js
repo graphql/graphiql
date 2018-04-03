@@ -10,6 +10,7 @@
 
 import net from 'net';
 
+import {GraphQLWatchman} from './GraphQLWatchman';
 import {MessageProcessor} from './MessageProcessor';
 
 import {
@@ -34,6 +35,7 @@ import {
   ExitNotification,
   InitializeRequest,
   PublishDiagnosticsNotification,
+  DidChangeWatchedFilesNotification,
   ShutdownRequest,
 } from 'vscode-languageserver';
 
@@ -101,7 +103,7 @@ function addHandlers(
   configDir?: string,
   logger: Logger,
 ): void {
-  const messageProcessor = new MessageProcessor(logger);
+  const messageProcessor = new MessageProcessor(logger, new GraphQLWatchman());
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
@@ -167,5 +169,8 @@ function addHandlers(
   connection.onRequest(CompletionResolveRequest.type, item => item);
   connection.onRequest(DefinitionRequest.type, params =>
     messageProcessor.handleDefinitionRequest(params),
+  );
+  connection.onNotification(DidChangeWatchedFilesNotification.type, params =>
+    messageProcessor.handleWatchedFilesChangedNotification(params),
   );
 }

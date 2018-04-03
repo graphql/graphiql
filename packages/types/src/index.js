@@ -101,10 +101,21 @@ export interface GraphQLCache {
     contents: Array<CachedContent>,
   ) => Promise<void>,
 
+  +updateFragmentDefinitionCache: (
+    rootDir: Uri,
+    filePath: Uri,
+    exists: boolean,
+  ) => Promise<void>,
+
   getSchema: (
     appName: ?string,
     queryHasExtensions?: ?boolean,
   ) => Promise<?GraphQLSchema>,
+
+  handleWatchmanSubscribeEvent: (
+    rootDir: string,
+    projectConfig: GraphQLProjectConfig,
+  ) => (result: Object) => void,
 }
 
 // online-parser related
@@ -266,3 +277,17 @@ export type OutlineTree = {
 export type Outline = {
   outlineTrees: Array<OutlineTree>,
 };
+
+export interface DidChangeWatchedFilesParams {
+  changes: FileEvent[],
+}
+export interface FileEvent {
+  uri: string,
+  type: FileChangeType,
+}
+export const FileChangeTypeKind = {
+  Created: 1,
+  Changed: 2,
+  Deleted: 3,
+};
+export type FileChangeType = $Values<typeof FileChangeTypeKind>;

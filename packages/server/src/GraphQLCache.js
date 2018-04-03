@@ -11,6 +11,7 @@
 import type {ASTNode, DocumentNode} from 'graphql/language';
 import type {
   CachedContent,
+  GraphQLCache as GraphQLCacheInterface,
   GraphQLConfig as GraphQLConfigInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
@@ -42,39 +43,32 @@ import {
   DIRECTIVE_DEFINITION,
 } from 'graphql/language/kinds';
 import {getGraphQLConfig, GraphQLConfig} from 'graphql-config';
-import {GraphQLWatchman} from './GraphQLWatchman';
 import {getQueryAndRange} from './MessageProcessor';
 import stringToHash from './stringToHash';
+import glob from 'glob';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
 
-export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
+export async function getGraphQLCache(
+  configDir: Uri,
+): Promise<GraphQLCacheInterface> {
   const graphQLConfig = await getGraphQLConfig(configDir);
-  const watchmanClient = new GraphQLWatchman();
-  watchmanClient.checkVersion();
-  watchmanClient.watchProject(configDir);
-  return new GraphQLCache(configDir, graphQLConfig, watchmanClient);
+  return new GraphQLCache(configDir, graphQLConfig);
 }
 
-export class GraphQLCache {
+export class GraphQLCache implements GraphQLCacheInterface {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
-  _watchmanClient: GraphQLWatchman;
   _cachePromise: Promise<void>;
   _schemaMap: Map<Uri, GraphQLSchema>;
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
 
-  constructor(
-    configDir: Uri,
-    graphQLConfig: GraphQLConfig,
-    watchmanClient: GraphQLWatchman,
-  ): void {
+  constructor(configDir: Uri, graphQLConfig: GraphQLConfig): void {
     this._configDir = configDir;
     this._graphQLConfig = graphQLConfig;
-    this._watchmanClient = watchmanClient || new GraphQLWatchman();
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
     this._fragmentDefinitionsCache = new Map();
@@ -167,17 +161,14 @@ export class GraphQLCache {
     const includes = projectConfig.includes.map(
       filePath => filePath.split('*')[0],
     );
-    const filesFromInputDirs = await this._watchmanClient.listFiles(rootDir, {
-      path: includes,
-    });
 
-    const list = filesFromInputDirs
-      .map(fileInfo => ({
-        filePath: path.join(rootDir, fileInfo.name),
-        size: fileInfo.size,
-        mtime: fileInfo.mtime,
-      }))
-      .filter(fileInfo => projectConfig.includesFile(fileInfo.filePath));
+    const filesFromInputDirs = await this._readFilesFromInputDirs(
+      rootDir,
+      includes,
+    );
+    const list = filesFromInputDirs.filter(fileInfo =>
+      projectConfig.includesFile(fileInfo.filePath),
+    );
 
     const {
       fragmentDefinitions,
@@ -187,79 +178,110 @@ export class GraphQLCache {
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 
-    this._subscribeToFileChanges(rootDir, projectConfig);
-
     return fragmentDefinitions;
   };
 
-  /**
-   * Subscribes to the file changes and update the cache accordingly.
-   * @param `rootDir` the directory of config path
-   */
-  _subscribeToFileChanges(
-    rootDir: Uri,
+  handleWatchmanSubscribeEvent = (
+    rootDir: string,
     projectConfig: GraphQLProjectConfig,
-  ): void {
-    this._watchmanClient.subscribe(this._configDir, result => {
-      if (result.files && result.files.length > 0) {
-        const graphQLFileMap = this._graphQLFileListCache.get(rootDir);
-        if (!graphQLFileMap) {
+  ) => (result: Object) => {
+    if (result.files && result.files.length > 0) {
+      const graphQLFileMap = this._graphQLFileListCache.get(rootDir);
+      if (!graphQLFileMap) {
+        return;
+      }
+      result.files.forEach(async ({name, exists, size, mtime}) => {
+        // Prune the file using the input/excluded directories
+        if (!projectConfig.includesFile(name)) {
           return;
         }
-        result.files.forEach(async ({name, exists, size, mtime}) => {
-          // Prune the file using the input/excluded directories
-          if (!projectConfig.includesFile(name)) {
+        const filePath = path.join(result.root, result.subscription, name);
+
+        // In the event of watchman recrawl (is_fresh_instance),
+        // watchman subscription returns a full set of files within the
+        // watched directory. After pruning with input/excluded directories,
+        // the file could have been created/modified.
+        // Using the cached size/mtime information, only cache the file if
+        // the file doesn't exist or the file exists and one of or both
+        // size/mtime is different.
+        if (result.is_fresh_instance && exists) {
+          const existingFile = graphQLFileMap.get(filePath);
+          // Same size/mtime means the file stayed the same
+          if (
+            existingFile &&
+            existingFile.size === size &&
+            existingFile.mtime === mtime
+          ) {
             return;
           }
-          const filePath = path.join(result.root, result.subscription, name);
 
-          // In the event of watchman recrawl (is_fresh_instance),
-          // watchman subscription returns a full set of files within the
-          // watched directory. After pruning with input/excluded directories,
-          // the file could have been created/modified.
-          // Using the cached size/mtime information, only cache the file if
-          // the file doesn't exist or the file exists and one of or both
-          // size/mtime is different.
-          if (result.is_fresh_instance && exists) {
-            const existingFile = graphQLFileMap.get(filePath);
-            // Same size/mtime means the file stayed the same
-            if (
-              existingFile &&
-              existingFile.size === size &&
-              existingFile.mtime === mtime
-            ) {
-              return;
-            }
-
-            const fileAndContent = await this.promiseToReadGraphQLFile(
-              filePath,
+          const fileAndContent = await this.promiseToReadGraphQLFile(filePath);
+          graphQLFileMap.set(filePath, {
+            ...fileAndContent,
+            size,
+            mtime,
+          });
+          // Otherwise, create/update the cache with the updated file and
+          // content, or delete the cache if (!exists)
+        } else {
+          if (graphQLFileMap) {
+            this._graphQLFileListCache.set(
+              rootDir,
+              await this._updateGraphQLFileListCache(
+                graphQLFileMap,
+                {size, mtime},
+                filePath,
+                exists,
+              ),
             );
-            graphQLFileMap.set(filePath, {
-              ...fileAndContent,
-              size,
-              mtime,
-            });
-            // Otherwise, create/update the cache with the updated file and
-            // content, or delete the cache if (!exists)
-          } else {
-            if (graphQLFileMap) {
-              this._graphQLFileListCache.set(
-                rootDir,
-                await this._updateGraphQLFileListCache(
-                  graphQLFileMap,
-                  {size, mtime},
-                  filePath,
-                  exists,
-                ),
-              );
-            }
-
-            this._updateFragmentDefinitionCache(rootDir, filePath, exists);
           }
-        });
-      }
+
+          this.updateFragmentDefinitionCache(rootDir, filePath, exists);
+        }
+      });
+    }
+  };
+
+  _readFilesFromInputDirs = (
+    rootDir: string,
+    includes: string[],
+  ): Promise<Array<GraphQLFileMetadata>> => {
+    return new Promise((resolve, reject) => {
+      const globResult = new glob.Glob(
+        `{${includes.join(',')}}/**/*.{js,graphql}`,
+        {
+          cwd: rootDir,
+          stat: true,
+          absolute: false,
+          ignore: [
+            'generated/relay',
+            '**/__flow__/**',
+            '**/__generated__/**',
+            '**/__github__/**',
+            '**/__mocks__/**',
+            '**/node_modules/**',
+            '**/__flowtests__/**',
+          ],
+        },
+        (error, results) => {
+          if (error) {
+            reject(error);
+          }
+        },
+      );
+      globResult.on('end', () => {
+        resolve(
+          Object.keys(globResult.statCache).map(filePath => ({
+            filePath,
+            mtime: Math.trunc(
+              globResult.statCache[filePath].mtime.getTime() / 1000,
+            ),
+            size: globResult.statCache[filePath].size,
+          })),
+        );
+      });
     });
-  }
+  };
 
   async _updateGraphQLFileListCache(
     graphQLFileMap: Map<Uri, GraphQLFileInfo>,
@@ -324,7 +346,7 @@ export class GraphQLCache {
     }
   }
 
-  async _updateFragmentDefinitionCache(
+  async updateFragmentDefinitionCache(
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,

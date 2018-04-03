@@ -11,14 +11,21 @@
 import type {
   CachedContent,
   Diagnostic,
+  DidChangeWatchedFilesParams,
   GraphQLCache,
-  Uri,
   Range as RangeType,
+  Uri,
 } from 'graphql-language-service-types';
+import {FileChangeTypeKind} from 'graphql-language-service-types';
 
 import {extname, dirname} from 'path';
+import {readFileSync} from 'fs';
 import {URL} from 'url';
-import {findGraphQLConfigFile} from 'graphql-config';
+import {
+  findGraphQLConfigFile,
+  getGraphQLConfig,
+  GraphQLProjectConfig,
+} from 'graphql-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
 import {Position, Range} from 'graphql-language-service-utils';
 import {
@@ -40,6 +47,7 @@ import {
 import {getGraphQLCache} from './GraphQLCache';
 import {findGraphQLTags} from './findGraphQLTags';
 import {Logger} from './Logger';
+import {GraphQLWatchman} from './GraphQLWatchman';
 
 // Map { uri => { query, range } }
 
@@ -52,6 +60,7 @@ export class MessageProcessor {
   _graphQLCache: GraphQLCache;
   _languageService: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
+  _watchmanClient: ?GraphQLWatchman;
 
   _isInitialized: boolean;
 
@@ -59,12 +68,13 @@ export class MessageProcessor {
 
   _logger: Logger;
 
-  constructor(logger: Logger): void {
+  constructor(logger: Logger, watchmanClient: GraphQLWatchman): void {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
 
     this._logger = logger;
+    this._watchmanClient = watchmanClient;
   }
 
   async handleInitializeRequest(
@@ -94,6 +104,13 @@ export class MessageProcessor {
     }
 
     this._graphQLCache = await getGraphQLCache(rootPath);
+    if (this._watchmanClient) {
+      this._subcribeWatchman(
+        rootPath,
+        this._graphQLCache,
+        this._watchmanClient,
+      );
+    }
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
@@ -110,6 +127,53 @@ export class MessageProcessor {
     );
 
     return serverCapabilities;
+  }
+
+  // Use watchman to subscribe to project file changes only if watchman is
+  // installed. Otherwise, rely on LSP watched files did change events.
+  async _subcribeWatchman(
+    rootPath: string,
+    graphqlCache: GraphQLCache,
+    watchmanClient: GraphQLWatchman,
+  ) {
+    if (!watchmanClient) {
+      return;
+    }
+    try {
+      // If watchman isn't installed, `GraphQLWatchman.checkVersion` will throw
+      await watchmanClient.checkVersion();
+
+      // Otherwise, subcribe watchman according to project config(s).
+      const config = getGraphQLConfig(rootPath);
+      let projectConfigs: GraphQLProjectConfig[] =
+        Object.values(config.getProjects()) || [];
+      // There can either be a single config or one or more project
+      // configs, but not both.
+      if (projectConfigs.length === 0) {
+        projectConfigs = [config.getProjectConfig()];
+      }
+
+      // For each project config, subscribe to the file changes and update the
+      // cache accordingly.
+      projectConfigs.forEach((projectConfig: GraphQLProjectConfig) => {
+        watchmanClient.subscribe(
+          projectConfig.configDir,
+          this._graphQLCache.handleWatchmanSubscribeEvent(
+            rootPath,
+            projectConfig,
+          ),
+        );
+      });
+    } catch (err) {
+      // If checkVersion raises {type: "ENOENT"}, watchman is not available.
+      // But it's okay to proceed. We'll use LSP watched file change notifications
+      // instead. If any other kind of error occurs, rethrow it up the call stack.
+      if (err.code === 'ENOENT') {
+        this._watchmanClient = undefined;
+      } else {
+        throw err;
+      }
+    }
   }
 
   async handleDidOpenOrSaveNotification(
@@ -344,6 +408,62 @@ export class MessageProcessor {
     return {items: result, isIncomplete: false};
   }
 
+  async handleWatchedFilesChangedNotification(
+    params: DidChangeWatchedFilesParams,
+  ): Promise<PublishDiagnosticsParams> {
+    if (!this._isInitialized || this._watchmanClient) {
+      return null;
+    }
+
+    return Promise.all(
+      params.changes.map(async change => {
+        if (
+          change.type === FileChangeTypeKind.Created ||
+          change.type === FileChangeTypeKind.Changed
+        ) {
+          const uri = change.uri;
+          const text: string = readFileSync(new URL(uri).pathname).toString();
+          const contents = getQueryAndRange(text, uri);
+
+          this._updateFragmentDefinition(uri, contents);
+
+          const diagnostics = (await Promise.all(
+            contents.map(async ({query, range}) => {
+              const results = await this._languageService.getDiagnostics(
+                query,
+                uri,
+              );
+              if (results && results.length > 0) {
+                return processDiagnosticsMessage(results, query, range);
+              } else {
+                return [];
+              }
+            }),
+          )).reduce((left, right) => left.concat(right));
+
+          this._logger.log(
+            JSON.stringify({
+              type: 'usage',
+              messageType: 'workspace/didChangeWatchedFiles',
+              projectName: this._graphQLCache
+                .getGraphQLConfig()
+                .getProjectNameForFile(uri),
+              fileName: uri,
+            }),
+          );
+
+          return {uri, diagnostics};
+        } else if (change.type === FileChangeTypeKind.Deleted) {
+          this._graphQLCache.updateFragmentDefinitionCache(
+            this._graphQLCache.getGraphQLConfig().configDir,
+            change.uri,
+            false,
+          );
+        }
+      }),
+    );
+  }
+
   async handleDefinitionRequest(
     params: DefinitionRequest.type,
     token: CancellationToken,
@@ -427,7 +547,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: Array<CachedContent>,
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().rootDir;
+    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,

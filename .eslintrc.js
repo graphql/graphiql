@@ -36,6 +36,8 @@ module.exports = {
     atom: false,
     document: false,
     window: false,
+    Map: true,
+    Set: true
   },
 
   rules: {

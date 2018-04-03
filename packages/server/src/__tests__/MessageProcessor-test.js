@@ -13,9 +13,12 @@ import {Position, Range} from 'graphql-language-service-utils';
 import {beforeEach, describe, it} from 'mocha';
 
 import {MessageProcessor} from '../MessageProcessor';
+import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 
 describe('MessageProcessor', () => {
-  const messageProcessor = new MessageProcessor();
+  const mockWatchmanClient = new MockWatchmanClient();
+  const messageProcessor = new MessageProcessor(undefined, mockWatchmanClient);
+
   const queryDir = `${__dirname}/__queries__`;
   const textDocumentTestString = `
   {

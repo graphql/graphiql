@@ -42,6 +42,7 @@ export class GraphQLWatchman {
           }
         },
       );
+      this._client.on('error', reject);
     });
   }
 
