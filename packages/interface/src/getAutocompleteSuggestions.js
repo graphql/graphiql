@@ -375,7 +375,10 @@ function getSuggestionsForDirective(
   return [];
 }
 
-function getTokenAtPosition(queryText: string, cursor: Position): ContextToken {
+export function getTokenAtPosition(
+  queryText: string,
+  cursor: Position,
+): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
   let stringAtCursor = null;
@@ -513,7 +516,10 @@ function canUseDirective(
 
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
-function getTypeInfo(schema: GraphQLSchema, tokenState: State): TypeInfo {
+export function getTypeInfo(
+  schema: GraphQLSchema,
+  tokenState: State,
+): TypeInfo {
   let argDef;
   let argDefs;
   let directiveDef;

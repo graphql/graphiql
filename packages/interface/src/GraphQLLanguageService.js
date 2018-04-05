@@ -24,6 +24,7 @@ import type {
   Uri,
 } from 'graphql-language-service-types';
 import type {Position} from 'graphql-language-service-utils';
+import type {Hover} from 'vscode-languageserver-types';
 
 import {
   FRAGMENT_DEFINITION,
@@ -46,6 +47,7 @@ import {
 
 import {parse, print} from 'graphql';
 import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
+import {getHoverInformation} from './getHoverInformation';
 import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
@@ -175,6 +177,22 @@ export class GraphQLLanguageService {
       }
     }
     return [];
+  }
+
+  async getHoverInformation(
+    query: string,
+    position: Position,
+    filePath: Uri,
+  ): Promise<Hover.contents> {
+    const projectConfig = this._graphQLConfig.getConfigForFile(filePath);
+    const schema = await this._graphQLCache
+      .getSchema(projectConfig.projectName)
+      .catch(() => null);
+
+    if (schema) {
+      return getHoverInformation(schema, query, position);
+    }
+    return '';
   }
 
   async getDefinition(

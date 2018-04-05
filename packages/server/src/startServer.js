@@ -33,6 +33,7 @@ import {
   DidChangeTextDocumentNotification,
   DidCloseTextDocumentNotification,
   ExitNotification,
+  HoverRequest,
   InitializeRequest,
   PublishDiagnosticsNotification,
   DidChangeWatchedFilesNotification,
@@ -169,6 +170,9 @@ function addHandlers(
   connection.onRequest(CompletionResolveRequest.type, item => item);
   connection.onRequest(DefinitionRequest.type, params =>
     messageProcessor.handleDefinitionRequest(params),
+  );
+  connection.onRequest(HoverRequest.type, params =>
+    messageProcessor.handleHoverRequest(params),
   );
   connection.onNotification(DidChangeWatchedFilesNotification.type, params =>
     messageProcessor.handleWatchedFilesChangedNotification(params),

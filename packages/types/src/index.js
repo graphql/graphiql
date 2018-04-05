@@ -22,6 +22,7 @@ import type {
   GraphQLInputField,
   GraphQLType,
 } from 'graphql/type/definition';
+import type {GraphQLDirective} from 'graphql/type/directives';
 
 export type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
 import type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
@@ -197,7 +198,7 @@ export type TypeInfo = {
   type: ?GraphQLType,
   parentType: ?GraphQLType,
   inputType: ?GraphQLType,
-  directiveDef: ?GraphQLType,
+  directiveDef: ?GraphQLDirective,
   fieldDef: ?GraphQLField<*, *>,
   enumValue: ?GraphQLEnumValue,
   argDef: ?GraphQLArgument,
