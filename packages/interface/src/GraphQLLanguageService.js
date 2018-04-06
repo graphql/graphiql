@@ -109,10 +109,6 @@ export class GraphQLLanguageService {
       ];
     }
 
-    if (!schemaPath) {
-      return [];
-    }
-
     // If there's a matching config, proceed to prepare to run validation
     let source = query;
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
@@ -140,11 +136,6 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    const schema = await this._graphQLCache.getSchema(
-      projectConfig.projectName,
-      queryHasExtensions,
-    );
-
     // Check if there are custom validation rules to be used
     let customRules;
     const customRulesModulePath =
@@ -158,6 +149,14 @@ export class GraphQLLanguageService {
       /* eslint-enable no-implicit-coercion */
     }
 
+    const schema = await this._graphQLCache
+      .getSchema(projectConfig.projectName, queryHasExtensions)
+      .catch(() => null);
+
+    if (!schema) {
+      return [];
+    }
+
     return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
@@ -167,14 +166,12 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this._graphQLConfig.getConfigForFile(filePath);
-    if (projectConfig.schemaPath) {
-      const schema = await this._graphQLCache.getSchema(
-        projectConfig.projectName,
-      );
+    const schema = await this._graphQLCache
+      .getSchema(projectConfig.projectName)
+      .catch(() => null);
 
-      if (schema) {
-        return getAutocompleteSuggestions(schema, query, position);
-      }
+    if (schema) {
+      return getAutocompleteSuggestions(schema, query, position);
     }
     return [];
   }

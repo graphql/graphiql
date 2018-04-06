@@ -12,7 +12,8 @@ import {expect} from 'chai';
 import {GraphQLSchema} from 'graphql/type';
 import {parse} from 'graphql/language';
 import {getGraphQLConfig} from 'graphql-config';
-import {beforeEach, describe, it} from 'mocha';
+import {beforeEach, afterEach, describe, it} from 'mocha';
+import fetchMock from 'fetch-mock';
 
 import {GraphQLCache} from '../GraphQLCache';
 import {getQueryAndRange} from '../MessageProcessor';
@@ -25,11 +26,16 @@ function wihtoutASTNode(definition: object) {
 
 describe('GraphQLCache', () => {
   let cache;
+  let graphQLRC;
 
   beforeEach(async () => {
     const configDir = __dirname;
-    const graphQLRC = getGraphQLConfig(configDir);
+    graphQLRC = getGraphQLConfig(configDir);
     cache = new GraphQLCache(configDir, graphQLRC);
+  });
+
+  afterEach(() => {
+    fetchMock.restore();
   });
 
   describe('getSchema', () => {
@@ -38,7 +44,38 @@ describe('GraphQLCache', () => {
       expect(schema instanceof GraphQLSchema).to.equal(true);
     });
 
-    it('does not generate a schema without a schema path', async () => {
+    it('generates the schema correctly from endpoint', async () => {
+      const introspectionResult = await graphQLRC
+        .getProjectConfig('testWithSchema')
+        .resolveIntrospection();
+
+      fetchMock.mock({
+        matcher: '*',
+        response: {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: introspectionResult,
+        },
+      });
+
+      const schema = await cache.getSchema('testWithEndpoint');
+      expect(fetchMock.called('*')).to.equal(true);
+      expect(schema instanceof GraphQLSchema).to.equal(true);
+    });
+
+    it('falls through to schema on disk if endpoint fails', async () => {
+      fetchMock.mock({
+        matcher: '*',
+        response: 500,
+      });
+
+      const schema = await cache.getSchema('testWithEndpointAndSchema');
+      expect(fetchMock.called('*')).to.equal(true);
+      expect(schema instanceof GraphQLSchema).to.equal(true);
+    });
+
+    it('does not generate a schema without a schema path or endpoint', async () => {
       const schema = await cache.getSchema('testWithoutSchema');
       expect(schema instanceof GraphQLSchema).to.equal(false);
     });
