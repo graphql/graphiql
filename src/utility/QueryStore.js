@@ -18,15 +18,28 @@ export default class QueryStore {
     );
   }
 
-  delete(item) {
-    const index = this.items.findIndex(
+  edit(item) {
+    const itemIndex = this.items.findIndex(
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
         x.operationName === item.operationName,
     );
-    if (index !== -1) {
-      this.items.splice(index, 1);
+    if (itemIndex !== -1) {
+      this.items.splice(itemIndex, 1, item);
+      this.save();
+    }
+  }
+
+  delete(item) {
+    const itemIndex = this.items.findIndex(
+      x =>
+        x.query === item.query &&
+        x.variables === item.variables &&
+        x.operationName === item.operationName,
+    );
+    if (itemIndex !== -1) {
+      this.items.splice(itemIndex, 1);
       this.save();
     }
   }
