@@ -243,6 +243,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
     includes: string[],
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
+    // See https://github.com/graphql/graphql-language-service/issues/221
+    // for details on why special handling is required here for the
+    // includes.length === 1 case.
     if (includes.length === 1) {
       pattern = includes[0];
     } else {
