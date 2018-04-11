@@ -149,7 +149,7 @@ export class MessageProcessor {
       // Otherwise, subcribe watchman according to project config(s).
       const config = getGraphQLConfig(rootPath);
       let projectConfigs: GraphQLProjectConfig[] =
-        Object.values(config.getProjects()) || [];
+        Object.values(config.getProjects() || {}) || [];
       // There can either be a single config or one or more project
       // configs, but not both.
       if (projectConfigs.length === 0) {
