@@ -158,13 +158,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
-    const includes = projectConfig.includes.map(
-      filePath => filePath.split('*')[0],
-    );
-
     const filesFromInputDirs = await this._readFilesFromInputDirs(
       rootDir,
-      includes,
+      projectConfig.includes,
     );
     const list = filesFromInputDirs.filter(fileInfo =>
       projectConfig.includesFile(fileInfo.filePath),
@@ -246,9 +242,18 @@ export class GraphQLCache implements GraphQLCacheInterface {
     rootDir: string,
     includes: string[],
   ): Promise<Array<GraphQLFileMetadata>> => {
+    let pattern: string;
+    // See https://github.com/graphql/graphql-language-service/issues/221
+    // for details on why special handling is required here for the
+    // includes.length === 1 case.
+    if (includes.length === 1) {
+      pattern = includes[0];
+    } else {
+      pattern = `{${includes.join(',')}}`;
+    }
     return new Promise((resolve, reject) => {
       const globResult = new glob.Glob(
-        `{${includes.join(',')}}/**/*.{js,graphql}`,
+        pattern,
         {
           cwd: rootDir,
           stat: true,

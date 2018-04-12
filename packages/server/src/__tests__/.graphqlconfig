@@ -1,6 +1,4 @@
 {
-  "includes": ["__queries__"],
-  "excludes": ["__excludedQueries__"],
   "projects": {
     "testWithSchema": {
       "schemaPath": "__schema__/StarWarsSchema.graphql"
@@ -33,6 +31,17 @@
           "directive @customDirective on FIELD"
         ]
       }
+    },
+    "testSingularIncludesGlob": {
+      "schemaPath": "__schema__/StarWarsSchema.graphql",
+      "includes": [ "__queries__/*.graphql" ]
+    },
+    "testSingularMultipleIncludes": {
+      "schemaPath": "__schema__/StarWarsSchema.graphql",
+      "includes": [
+        "__queries__/*.graphql",
+        "__fragments__/*.graphql"
+      ]
     }
   },
   "extensions": {
