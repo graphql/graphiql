@@ -157,4 +157,18 @@ describe('GraphQLCache', () => {
       expect(result.length).to.equal(1);
     });
   });
+
+  describe('getFragmentDefinitions', () => {
+    it('it caches fragments found through single glob in `includes`', async () => {
+      const config = graphQLRC.getProjectConfig("testSingularIncludesGlob");
+      const fragmentDefinitions = await cache.getFragmentDefinitions(config);
+      expect(fragmentDefinitions.get("testFragment")).to.not.be.undefined;
+    });
+
+    it('it caches fragments found through multiple globs in `includes`', async () => {
+      const config = graphQLRC.getProjectConfig("testSingularMultipleIncludes");
+      const fragmentDefinitions = await cache.getFragmentDefinitions(config);
+      expect(fragmentDefinitions.get("testFragment")).to.not.be.undefined;
+    });
+  });
 });
