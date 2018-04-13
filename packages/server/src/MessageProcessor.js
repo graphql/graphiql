@@ -25,6 +25,7 @@ import {
   findGraphQLConfigFile,
   getGraphQLConfig,
   GraphQLProjectConfig,
+  GraphQLConfig,
 } from 'graphql-config';
 import {GraphQLLanguageService} from 'graphql-language-service-interface';
 import {Position, Range} from 'graphql-language-service-utils';
@@ -107,12 +108,9 @@ export class MessageProcessor {
     }
 
     this._graphQLCache = await getGraphQLCache(rootPath);
+    const config = getGraphQLConfig(rootPath);
     if (this._watchmanClient) {
-      this._subcribeWatchman(
-        rootPath,
-        this._graphQLCache,
-        this._watchmanClient,
-      );
+      this._subcribeWatchman(config, this._watchmanClient);
     }
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
@@ -135,8 +133,7 @@ export class MessageProcessor {
   // Use watchman to subscribe to project file changes only if watchman is
   // installed. Otherwise, rely on LSP watched files did change events.
   async _subcribeWatchman(
-    rootPath: string,
-    graphqlCache: GraphQLCache,
+    config: GraphQLConfig,
     watchmanClient: GraphQLWatchman,
   ) {
     if (!watchmanClient) {
@@ -147,9 +144,11 @@ export class MessageProcessor {
       await watchmanClient.checkVersion();
 
       // Otherwise, subcribe watchman according to project config(s).
-      const config = getGraphQLConfig(rootPath);
-      let projectConfigs: GraphQLProjectConfig[] =
-        Object.values(config.getProjects() || {}) || [];
+      const projectMap = config.getProjects();
+      let projectConfigs: GraphQLProjectConfig[] = projectMap
+        ? Object.values(projectMap)
+        : [];
+
       // There can either be a single config or one or more project
       // configs, but not both.
       if (projectConfigs.length === 0) {
@@ -162,7 +161,7 @@ export class MessageProcessor {
         watchmanClient.subscribe(
           projectConfig.configDir,
           this._graphQLCache.handleWatchmanSubscribeEvent(
-            rootPath,
+            config.configDir,
             projectConfig,
           ),
         );
