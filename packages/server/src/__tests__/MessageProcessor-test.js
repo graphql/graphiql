@@ -14,12 +14,15 @@ import {beforeEach, describe, it} from 'mocha';
 
 import {MessageProcessor} from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
+import {GraphQLConfig} from 'graphql-config';
+import {GraphQLCache} from '../GraphQLCache';
 
 describe('MessageProcessor', () => {
   const mockWatchmanClient = new MockWatchmanClient();
   const messageProcessor = new MessageProcessor(undefined, mockWatchmanClient);
 
   const queryDir = `${__dirname}/__queries__`;
+  const schemaPath = `${__dirname}/__schema__/StarWarsSchema.graphql`;
   const textDocumentTestString = `
   {
     hero(episode: NEWHOPE){
@@ -46,6 +49,7 @@ describe('MessageProcessor', () => {
         };
       },
       updateFragmentDefinition() {},
+      handleWatchmanSubscribeEvent() {},
     };
     messageProcessor._languageService = {
       getAutocompleteSuggestions: (query, position, uri) => {
@@ -166,5 +170,33 @@ describe('MessageProcessor', () => {
 
     const result = await messageProcessor.handleDefinitionRequest(test);
     expect(result[0].uri).to.equal(`file://${queryDir}/testFragment.graphql`);
+  });
+
+  it('loads configs without projects when watchman is present', async () => {
+    const config = new GraphQLConfig(
+      {
+        schemaPath,
+        includes: `${queryDir}/*.graphql`,
+      },
+      'not/a/real/config',
+    );
+
+    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
+  });
+
+  it('loads configs with projects when watchman is present', async () => {
+    const config = new GraphQLConfig(
+      {
+        projects: {
+          foo: {
+            schemaPath,
+            includes: `${queryDir}/*.graphql`,
+          },
+        },
+      },
+      'not/a/real/config',
+    );
+
+    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
   });
 });
