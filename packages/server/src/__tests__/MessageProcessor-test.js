@@ -15,7 +15,6 @@ import {beforeEach, describe, it} from 'mocha';
 import {MessageProcessor} from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 import {GraphQLConfig} from 'graphql-config';
-import {GraphQLCache} from '../GraphQLCache';
 
 describe('MessageProcessor', () => {
   const mockWatchmanClient = new MockWatchmanClient();

@@ -166,9 +166,21 @@ describe('GraphQLCache', () => {
     });
 
     it('it caches fragments found through multiple globs in `includes`', async () => {
-      const config = graphQLRC.getProjectConfig('testSingularMultipleIncludes');
+      const config = graphQLRC.getProjectConfig('testMultipleIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).to.not.be.undefined;
+    });
+
+    it('handles empty includes', async () => {
+      const config = graphQLRC.getProjectConfig('testNoIncludes');
+      const fragmentDefinitions = await cache.getFragmentDefinitions(config);
+      expect(fragmentDefinitions.get('testFragment')).to.be.undefined;
+    });
+
+    it('handles non-existent includes', async () => {
+      const config = graphQLRC.getProjectConfig('testBadIncludes');
+      const fragmentDefinitions = await cache.getFragmentDefinitions(config);
+      expect(fragmentDefinitions.get('testFragment')).to.be.undefined;
     });
   });
 });

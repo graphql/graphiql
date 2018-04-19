@@ -243,6 +243,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
     includes: string[],
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
+
+    if (includes.length === 0) {
+      return Promise.resolve([]);
+    }
+
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
     // includes.length === 1 case.
@@ -251,6 +256,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     } else {
       pattern = `{${includes.join(',')}}`;
     }
+
     return new Promise((resolve, reject) => {
       const globResult = new glob.Glob(
         pattern,
@@ -276,13 +282,17 @@ export class GraphQLCache implements GraphQLCacheInterface {
       );
       globResult.on('end', () => {
         resolve(
-          Object.keys(globResult.statCache).map(filePath => ({
-            filePath,
-            mtime: Math.trunc(
-              globResult.statCache[filePath].mtime.getTime() / 1000,
-            ),
-            size: globResult.statCache[filePath].size,
-          })),
+          Object.keys(globResult.statCache)
+            .filter(
+              filePath => typeof globResult.statCache[filePath] === 'object',
+            )
+            .map(filePath => ({
+              filePath,
+              mtime: Math.trunc(
+                globResult.statCache[filePath].mtime.getTime() / 1000,
+              ),
+              size: globResult.statCache[filePath].size,
+            })),
         );
       });
     });
