@@ -276,13 +276,17 @@ export class GraphQLCache implements GraphQLCacheInterface {
       );
       globResult.on('end', () => {
         resolve(
-          Object.keys(globResult.statCache).map(filePath => ({
-            filePath,
-            mtime: Math.trunc(
-              globResult.statCache[filePath].mtime.getTime() / 1000,
-            ),
-            size: globResult.statCache[filePath].size,
-          })),
+          Object.keys(globResult.statCache)
+            .filter(
+              filePath => typeof globResult.statCache[filePath] === 'object',
+            )
+            .map(filePath => ({
+              filePath,
+              mtime: Math.trunc(
+                globResult.statCache[filePath].mtime.getTime() / 1000,
+              ),
+              size: globResult.statCache[filePath].size,
+            })),
         );
       });
     });
