@@ -36,12 +36,19 @@
       "schemaPath": "__schema__/StarWarsSchema.graphql",
       "includes": [ "__queries__/*.graphql" ]
     },
-    "testSingularMultipleIncludes": {
+    "testMultipleIncludes": {
       "schemaPath": "__schema__/StarWarsSchema.graphql",
       "includes": [
         "__queries__/*.graphql",
         "__fragments__/*.graphql"
       ]
+    },
+    "testNoIncludes": {
+      "schemaPath": "__schema__/StarWarsSchema.graphql"
+    },
+    "testBadIncludes": {
+      "schemaPath": "__schema__/StarWarsSchema.graphql",
+      "includes": ["nope.nopeql"]
     }
   },
   "extensions": {
