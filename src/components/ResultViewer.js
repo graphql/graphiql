@@ -71,8 +71,7 @@ export class ResultViewer extends React.Component {
       info: Boolean(this.props.ResultsTooltip),
       extraKeys: {
         // Persistent search box in Query Editor
-        'Cmd-F': 'findPersistent',
-        'Ctrl-F': 'findPersistent',
+        'Alt-F': 'findPersistent',
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',

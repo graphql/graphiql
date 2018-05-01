@@ -110,8 +110,7 @@ export class VariableEditor extends React.Component {
         },
 
         // Persistent search box in Query Editor
-        'Cmd-F': 'findPersistent',
-        'Ctrl-F': 'findPersistent',
+        'Alt-F': 'findPersistent',
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
