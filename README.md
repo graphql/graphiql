@@ -18,3 +18,11 @@ Refer to [this](./vsc-extension-quickstart.md)
 * graphql-import compatibility
 * Multiple graphql tags
 * Support for Prisma directives
+
+## Related projects
+
+* https://github.com/graphql/graphql-language-service
+* https://github.com/apollographql/vscode-graphql
+* https://github.com/stephen/vscode-graphql
+* https://github.com/kumarharsh/graphql-for-vscode
+* https://github.com/jimkyndemeyer/js-graphql-intellij-plugin
