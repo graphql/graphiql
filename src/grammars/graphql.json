@@ -1,0 +1,228 @@
+{
+ "name": "GraphQL",
+ "scopeName": "source.graphql",
+ "fileTypes": ["gql", "graphql"],
+ "patterns": [
+  {
+   "include": "#comment"
+  },
+  {
+   "name": "meta.fragment",
+   "comment": "a fragment definintion",
+   "match":
+    "(fragment)\\s*([_A-Za-z][_0-9A-Za-z]*)\\s*(on)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+   "captures": {
+    "1": {
+     "name": "storage.type"
+    },
+    "2": {
+     "name": "variable.other"
+    },
+    "3": {
+     "name": "keyword.operator"
+    },
+    "4": {
+     "name": "support.constant"
+    }
+   }
+  },
+  {
+   "name": "declaration.meta.type",
+   "comment": "a graphql type",
+   "match": "(type)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+   "captures": {
+    "1": {
+     "name": "keyword"
+    },
+    "2": {
+     "name": "support"
+    }
+   }
+  },
+  {
+   "name": "meta.operation",
+   "comment": "an operation definition",
+   "match": "(query|mutation)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+   "captures": {
+    "1": {
+     "name": "storage.type"
+    },
+    "2": {
+     "name": "variable.other"
+    }
+   }
+  },
+  {
+   "include": "#arguments"
+  },
+  {
+   "include": "#selections"
+  }
+ ],
+ "repository": {
+  "string": {
+   "name": "string.quoted.double",
+   "begin": "\"",
+   "beginCaptures": {
+    "0": {
+     "name": "punctuation.definition.string.begin"
+    }
+   },
+   "end": "\"",
+   "endCaptures": {
+    "0": {
+     "name": "punctuation.definition.string.end"
+    }
+   },
+   "patterns": [
+    {
+     "include": "#escapedChar"
+    }
+   ]
+  },
+  "variable": {
+   "name": "constant.other.symbol",
+   "match": "\\$[_A-Za-z][_0-9A-Za-z]*"
+  },
+  "boolean": {
+   "name": "constant.language.boolean",
+   "match": "true|false"
+  },
+  "number": {
+   "name": "constant.numeric",
+   "match": "\\d+\\.?\\d*[eE]?[\\+\\-]?\\d*"
+  },
+  "directive": {
+   "name": "storage.modifier",
+   "match": "@[a-z]+"
+  },
+  "argument": {
+   "name": "variable.parameter",
+   "match": "[_A-Za-z][_0-9A-Za-z]*:"
+  },
+  "enum": {
+   "name": "support.constant.enum",
+   "match": "[_A-Za-z][_0-9A-Za-z]*"
+  },
+  "fragmentSpread": {
+   "match": "(\\.\\.\\.)\\s*([_A-Za-z][_0-9A-Za-z]*)\\s*(on)?",
+   "captures": {
+    "1": {
+     "name": "keyword.operator"
+    },
+    "2": {
+     "name": "variable.other"
+    }
+   }
+  },
+  "inlineFragment": {
+   "match": "(\\.\\.\\.)\\s*(on)\\s*([_A-Za-z][_0-9A-Za-z]*)",
+   "captures": {
+    "1": {
+     "name": "keyword.operator"
+    },
+    "2": {
+     "name": "keyword.operator"
+    },
+    "3": {
+     "name": "support.constant"
+    }
+   }
+  },
+  "arguments": {
+   "name": "meta.arguments",
+   "begin": "\\(",
+   "beginCaptures": {
+    "0": {
+     "name": "meta.brace.round.graphql"
+    }
+   },
+   "end": "\\)",
+   "endCaptures": {
+    "0": {
+     "name": "meta.brace.round.graphql"
+    }
+   },
+   "patterns": [
+    {
+     "include": "#argument"
+    },
+    {
+     "include": "#string"
+    },
+    {
+     "include": "#boolean"
+    },
+    {
+     "include": "#variable"
+    },
+    {
+     "include": "#number"
+    },
+    {
+     "include": "#enum"
+    },
+    {
+     "include": "#comment"
+    }
+   ]
+  },
+  "selections": {
+   "name": "meta.selections",
+   "begin": "\\{",
+   "beginCaptures": {
+    "0": {
+     "name": "meta.brace.curly.graphql"
+    }
+   },
+   "end": "\\}",
+   "endCaptures": {
+    "0": {
+     "name": "meta.brace.curly.graphql"
+    }
+   },
+   "patterns": [
+    {
+     "include": "#fieldAlias"
+    },
+    {
+     "include": "#inlineFragment"
+    },
+    {
+     "include": "#fragmentSpread"
+    },
+    {
+     "include": "#directive"
+    },
+    {
+     "include": "#arguments"
+    },
+    {
+     "include": "#comment"
+    },
+    {
+     "include": "#selections"
+    },
+    {
+     "include": "#builtInField"
+    }
+   ]
+  },
+  "comment": {
+   "name": "comment.line.number-sign.graphql",
+   "match": "#.*$"
+  },
+  "builtInField": {
+   "match": "__schema|__typename|__type",
+   "name": "keyword.other.graphql"
+  },
+  "escapedChar": {
+   "match": "\\\\(?:u[\\da-fA-f]{4}|.)",
+   "name": "constant.character.escape.graphql"
+  },
+  "fieldAlias": {
+   "match": "[_A-Za-z][_0-9A-Za-z]*:",
+   "name": "variable.other.alias.graphql"
+  }
+ }
+}

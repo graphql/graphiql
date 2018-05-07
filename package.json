@@ -7,10 +7,31 @@
  "engines": {
   "vscode": "^1.23.0"
  },
- "categories": ["Programming Languages"],
- "activationEvents": ["onCommand:extension.isDebugging"],
+ "categories": ["Programming Languages", "Snippets"],
+ "activationEvents": ["onCommand:extension.isDebugging", "onLanguage:graphql"],
  "main": "./out/extension",
  "contributes": {
+  "languages": [
+   {
+    "id": "graphql",
+    "extensions": [".gql", ".graphql"],
+    "aliases": ["GraphQL", "graphql"],
+    "configuration": "./src/language/graphql.json"
+   }
+  ],
+  "grammars": [
+   {
+    "language": "graphql",
+    "path": "./src/grammars/graphql.json",
+    "scopeName": "source.graphql"
+   }
+  ],
+  "snippets": [
+   {
+    "language": "graphql",
+    "path": "./src/snippets/graphql.json"
+   }
+  ],
   "configuration": {
    "vscode-graphql.debug": {
     "type": ["boolean", "null"],
