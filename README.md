@@ -29,3 +29,4 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://github.com/Microsoft/typescript-template-language-service-decorator
 * https://microsoft.github.io/language-server-protocol
 * https://github.com/mtsmfm/vscode-graphql-lsc
+* https://github.com/Mayank1791989/gql
