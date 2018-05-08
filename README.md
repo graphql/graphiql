@@ -27,5 +27,5 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://github.com/kumarharsh/graphql-for-vscode
 * https://github.com/jimkyndemeyer/js-graphql-intellij-plugin
 * https://github.com/Microsoft/typescript-template-language-service-decorator
-* https://microsoft.github.io/language-server-protocol/specification#initialize
+* https://microsoft.github.io/language-server-protocol
 * https://github.com/mtsmfm/vscode-graphql-lsc
