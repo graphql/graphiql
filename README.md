@@ -35,3 +35,4 @@ Refer to [this](./vsc-extension-quickstart.md)
 
 * [lsp: textDocument/documentSymbol support #195](https://github.com/graphql/graphql-language-service/pull/195)
 * [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164/files)
+* [Explore improving support for embedded languages in JS/TS template strings #34260](https://github.com/Microsoft/vscode/issues/34260)
