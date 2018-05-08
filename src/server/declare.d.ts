@@ -1,7 +1,7 @@
 declare module "graphql-language-service-server" {
- interface Options {
-  method?: "socket" | "stream" | "node";
- }
+  interface Options {
+    method?: "socket" | "stream" | "node";
+  }
 
- function startServer(options: Options): Promise<void>;
+  function startServer(options: Options): Promise<void>;
 }

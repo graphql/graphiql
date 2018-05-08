@@ -1,75 +1,75 @@
 {
- "name": "vscode-graphql",
- "displayName": "vscode-graphql",
- "description": "GraphQL Awesomeness for VSCode",
- "version": "0.0.1",
- "publisher": "prisma",
- "engines": {
-  "vscode": "^1.23.0"
- },
- "categories": ["Programming Languages", "Snippets"],
- "activationEvents": [
-  "onCommand:extension.isDebugging",
-  "onLanguage:graphql",
-  "workspaceContains:**/.graphqlconfig",
-  "workspaceContains:**/.graphqlconfig.yml",
-  "workspaceContains:**/.graphqlconfig.yaml"
- ],
- "main": "./out/extension",
- "contributes": {
-  "languages": [
-   {
-    "id": "graphql",
-    "extensions": [".gql", ".graphql"],
-    "aliases": ["GraphQL", "graphql"],
-    "configuration": "./src/language/language-configuration.json"
-   }
-  ],
-  "grammars": [
-   {
-    "language": "graphql",
-    "path": "./src/grammars/graphql.json",
-    "scopeName": "source.graphql"
-   }
-  ],
-  "snippets": [
-   {
-    "language": "graphql",
-    "path": "./src/snippets/graphql.json"
-   }
-  ],
-  "configuration": {
-   "vscode-graphql.debug": {
-    "type": ["boolean", "null"],
-    "title": "VSCode GraphQL - Debug Mode",
-    "default": false,
-    "description": "Enable debug logs"
-   }
+  "name": "vscode-graphql",
+  "displayName": "vscode-graphql",
+  "description": "GraphQL Awesomeness for VSCode",
+  "version": "0.0.1",
+  "publisher": "prisma",
+  "engines": {
+    "vscode": "^1.23.0"
   },
-  "commands": [
-   {
-    "command": "extension.isDebugging",
-    "title": "VSCode GraphQL - Is Debugging?"
-   }
-  ]
- },
- "scripts": {
-  "vscode:prepublish": "npm run compile",
-  "compile": "tsc -p ./",
-  "watch": "tsc -watch -p ./",
-  "postinstall": "node ./node_modules/vscode/bin/install",
-  "test": "npm run compile && node ./node_modules/vscode/bin/test"
- },
- "devDependencies": {
-  "typescript": "^2.6.1",
-  "vscode": "^1.1.6",
-  "tslint": "^5.8.0",
-  "@types/node": "^7.0.43",
-  "@types/mocha": "^2.2.42"
- },
- "dependencies": {
-  "babel-polyfill": "^6.26.0",
-  "graphql-language-service-server": "^1.1.2",
-  "vscode-languageclient": "^4.1.3"
- }
+  "categories": ["Programming Languages", "Snippets"],
+  "activationEvents": [
+    "onCommand:extension.isDebugging",
+    "onLanguage:graphql",
+    "workspaceContains:**/.graphqlconfig",
+    "workspaceContains:**/.graphqlconfig.yml",
+    "workspaceContains:**/.graphqlconfig.yaml"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "graphql",
+        "extensions": [".gql", ".graphql"],
+        "aliases": ["GraphQL", "graphql"],
+        "configuration": "./src/language/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "graphql",
+        "path": "./src/grammars/graphql.json",
+        "scopeName": "source.graphql"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "graphql",
+        "path": "./src/snippets/graphql.json"
+      }
+    ],
+    "configuration": {
+      "vscode-graphql.debug": {
+        "type": ["boolean", "null"],
+        "title": "VSCode GraphQL - Debug Mode",
+        "default": false,
+        "description": "Enable debug logs"
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.isDebugging",
+        "title": "VSCode GraphQL - Is Debugging?"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6",
+    "tslint": "^5.8.0",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "graphql-language-service-server": "^1.1.2",
+    "vscode-languageclient": "^4.1.3"
+  }
 }
