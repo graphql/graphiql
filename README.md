@@ -30,3 +30,8 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://microsoft.github.io/language-server-protocol
 * https://github.com/mtsmfm/vscode-graphql-lsc
 * https://github.com/Mayank1791989/gql
+
+## Related issues
+
+* [lsp: textDocument/documentSymbol support #195](https://github.com/graphql/graphql-language-service/pull/195)
+* [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164/files)
