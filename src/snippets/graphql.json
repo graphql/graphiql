@@ -18,7 +18,7 @@
     },
     "Union definition": {
       "prefix": "uni",
-      "body": ["Union ${1:UnionName} = $2 | $3"]
+      "body": ["union ${1:UnionName} = $2 | $3"]
     }
   }
 }
