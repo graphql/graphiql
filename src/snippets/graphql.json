@@ -1,8 +1,0 @@
-{
-  ".source.graphql": {
-    "Method documentation": {
-      "prefix": "doc",
-      "body": "@@ ${1:method} - ${2:description}"
-    }
-  }
-}
