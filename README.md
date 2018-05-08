@@ -26,6 +26,7 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://github.com/stephen/vscode-graphql
 * https://github.com/kumarharsh/graphql-for-vscode
 * https://github.com/jimkyndemeyer/js-graphql-intellij-plugin
+* https://github.com/jimkyndemeyer/js-graphql-language-service
 * https://github.com/Microsoft/typescript-template-language-service-decorator
 * https://microsoft.github.io/language-server-protocol
 * https://github.com/mtsmfm/vscode-graphql-lsc
@@ -37,5 +38,4 @@ Refer to [this](./vsc-extension-quickstart.md)
 * [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164)
 * [Explore improving support for embedded languages in JS/TS template strings #34260](https://github.com/Microsoft/vscode/issues/34260)
 * [Extension providing language support in ES6 template strings #5961](https://github.com/Microsoft/vscode/issues/5961)
-* [GraphQL Language Service IntelliJ plugin #4](https://github.com/graphql/graphql-language-service/issues/4)
 * [Community-edition compatible intellij plugin #62](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin/issues/62)
