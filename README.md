@@ -28,3 +28,4 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://github.com/jimkyndemeyer/js-graphql-intellij-plugin
 * https://github.com/Microsoft/typescript-template-language-service-decorator
 * https://microsoft.github.io/language-server-protocol/specification#initialize
+* https://github.com/mtsmfm/vscode-graphql-lsc
