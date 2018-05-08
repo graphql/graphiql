@@ -1,8 +1,24 @@
 {
   ".source.graphql": {
-    "Method documentation": {
-      "prefix": "doc",
-      "body": "@@ ${1:method} - ${2:description}"
+    "Interface definition": {
+      "prefix": "int",
+      "body": ["interface ${1:IName} {", "\t$2", "}"]
+    },
+    "Type definition": {
+      "prefix": "typ",
+      "body": ["type ${1:TypeName} ${2:implements ${3:IName} }{", "\t$4", "}"]
+    },
+    "Input Field definition": {
+      "prefix": "inp",
+      "body": ["input ${1:TypeInput} {", "\t$2", "}"]
+    },
+    "Enum definition": {
+      "prefix": "enu",
+      "body": ["enum ${1:EnumName} {", "\t$2", "}"]
+    },
+    "Union definition": {
+      "prefix": "uni",
+      "body": ["Union ${1:UnionName} = $2 | $3"]
     }
   }
 }
