@@ -16,7 +16,7 @@ const statusBarUIElements = {
   },
   [Status.RUNNING]: {
     icon: "plug",
-    color: "while",
+    color: "white",
     tooltip: "GraphQL language server is running"
   },
   [Status.ERROR]: {
