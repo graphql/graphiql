@@ -8,7 +8,13 @@
   "vscode": "^1.23.0"
  },
  "categories": ["Programming Languages", "Snippets"],
- "activationEvents": ["onCommand:extension.isDebugging", "onLanguage:graphql"],
+ "activationEvents": [
+  "onCommand:extension.isDebugging",
+  "onLanguage:graphql",
+  "workspaceContains:**/.graphqlconfig",
+  "workspaceContains:**/.graphqlconfig.yml",
+  "workspaceContains:**/.graphqlconfig.yaml"
+ ],
  "main": "./out/extension",
  "contributes": {
   "languages": [
@@ -16,7 +22,7 @@
     "id": "graphql",
     "extensions": [".gql", ".graphql"],
     "aliases": ["GraphQL", "graphql"],
-    "configuration": "./src/language/graphql.json"
+    "configuration": "./src/language/language-configuration.json"
    }
   ],
   "grammars": [
@@ -60,5 +66,10 @@
   "tslint": "^5.8.0",
   "@types/node": "^7.0.43",
   "@types/mocha": "^2.2.42"
+ },
+ "dependencies": {
+  "babel-polyfill": "^6.26.0",
+  "graphql-language-service-server": "^1.1.2",
+  "vscode-languageclient": "^4.1.3"
  }
 }
