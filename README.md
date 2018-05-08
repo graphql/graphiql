@@ -34,6 +34,8 @@ Refer to [this](./vsc-extension-quickstart.md)
 ## Related issues
 
 * [lsp: textDocument/documentSymbol support #195](https://github.com/graphql/graphql-language-service/pull/195)
-* [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164/files)
+* [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164)
 * [Explore improving support for embedded languages in JS/TS template strings #34260](https://github.com/Microsoft/vscode/issues/34260)
 * [Extension providing language support in ES6 template strings #5961](https://github.com/Microsoft/vscode/issues/5961)
+* [GraphQL Language Service IntelliJ plugin #4](https://github.com/graphql/graphql-language-service/issues/4)
+* [Community-edition compatible intellij plugin #62](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin/issues/62)
