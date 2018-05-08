@@ -50,6 +50,10 @@
       {
         "command": "extension.isDebugging",
         "title": "VSCode GraphQL - Is Debugging?"
+      },
+      {
+        "command": "extension.showOutputChannel",
+        "title": "VSCode GraphQL - Show Output Channel"
       }
     ]
   },

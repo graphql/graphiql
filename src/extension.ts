@@ -58,13 +58,21 @@ export function activate(context: ExtensionContext) {
   const disposableClient = client.start();
   context.subscriptions.push(disposableClient);
 
-  const disposableCommand = commands.registerCommand(
+  const disposableCommandDebug = commands.registerCommand(
     "extension.isDebugging",
     () => {
       window.showInformationMessage(`is in debug mode: ${debug}`);
     }
   );
-  context.subscriptions.push(disposableCommand);
+  context.subscriptions.push(disposableCommandDebug);
+
+  const disposableCommandShowOutputChannel = commands.registerCommand(
+    "extension.showOutputChannel",
+    () => {
+      client.outputChannel.show();
+    }
+  );
+  context.subscriptions.push(disposableCommandShowOutputChannel);
 }
 
 export function deactivate() {
