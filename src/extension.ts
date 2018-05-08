@@ -8,6 +8,8 @@ import {
   TransportKind
 } from "vscode-languageclient";
 
+import statusBarItem, { initStatusBar } from "./status";
+
 function getConfig() {
   return workspace.getConfiguration(
     "vscode-graphql",
@@ -73,6 +75,12 @@ export function activate(context: ExtensionContext) {
     }
   );
   context.subscriptions.push(disposableCommandShowOutputChannel);
+
+  // Manage Status Bar
+  context.subscriptions.push(statusBarItem);
+  client.onReady().then(() => {
+    initStatusBar(statusBarItem, client, window.activeTextEditor);
+  });
 }
 
 export function deactivate() {
