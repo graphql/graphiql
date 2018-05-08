@@ -7,7 +7,7 @@
   "engines": {
     "vscode": "^1.23.0"
   },
-  "categories": ["Programming Languages"],
+  "categories": ["Programming Languages", "Snippets"],
   "activationEvents": [
     "onCommand:extension.isDebugging",
     "onLanguage:graphql",
@@ -30,6 +30,12 @@
         "language": "graphql",
         "path": "./src/grammars/graphql.json",
         "scopeName": "source.graphql"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "graphql",
+        "path": "./src/snippets/graphql.json"
       }
     ],
     "configuration": {
