@@ -68,14 +68,6 @@ export function activate(context: ExtensionContext) {
   );
   context.subscriptions.push(disposableCommandDebug);
 
-  const disposableCommandShowOutputChannel = commands.registerCommand(
-    "extension.showOutputChannel",
-    () => {
-      client.outputChannel.show();
-    }
-  );
-  context.subscriptions.push(disposableCommandShowOutputChannel);
-
   // Manage Status Bar
   context.subscriptions.push(statusBarItem);
   client.onReady().then(() => {

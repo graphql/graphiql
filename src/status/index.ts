@@ -83,7 +83,7 @@ function updateStatusBar(
   const statusUI = statusBarUIElements[extensionStatus];
   statusBarItem.text = `$(${statusUI.icon}) ${statusBarText}`;
   statusBarItem.tooltip = statusUI.tooltip;
-  statusBarItem.command = "extension.showOutputChannel";
+  statusBarItem.command = "extension.isDebugging";
   statusBarItem.color = statusUI.color;
 
   if (
