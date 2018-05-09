@@ -31,19 +31,3 @@ Refer to [this](./vsc-extension-quickstart.md)
 * https://microsoft.github.io/language-server-protocol
 * https://github.com/mtsmfm/vscode-graphql-lsc
 * https://github.com/Mayank1791989/gql
-
-## Related issues
-
-* [lsp: textDocument/documentSymbol support #195](https://github.com/graphql/graphql-language-service/pull/195)
-* [Recognize gql-tagged queries #164](https://github.com/graphql/graphql-language-service/pull/164)
-* [Explore improving support for embedded languages in JS/TS template strings #34260](https://github.com/Microsoft/vscode/issues/34260)
-* [Extension providing language support in ES6 template strings #5961](https://github.com/Microsoft/vscode/issues/5961)
-* [Community-edition compatible intellij plugin #62](https://github.com/jimkyndemeyer/js-graphql-intellij-plugin/issues/62)
-* [Collaborate to integrate with eslint/vscode plugins #2](https://github.com/jimkyndemeyer/js-graphql-language-service/issues/2)
-* [TS Server plugin extension contributions #41113](https://github.com/Microsoft/vscode/issues/41113)
-* [`.graphqlrc` redesign proposal #16](https://github.com/graphcool/graphql-config/issues/16)
-* [GraphQL Configuration Protocol #20](https://github.com/graphcool/graphql-config/issues/20)
-* [Microsoft language server protocol spec compliance #6](https://github.com/graphql/graphql-language-service/issues/6)
-* [GraphQL language server - VSCode integration #7](https://github.com/graphql/graphql-language-service/issues/7)
-* [Support for schema IDL language #85](https://github.com/graphql/graphql-language-service/issues/85)
-* [Setup way too complex #42](https://github.com/kumarharsh/graphql-for-vscode/issues/42)
