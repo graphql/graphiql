@@ -58,6 +58,12 @@
         "title": "VSCode GraphQL - Debug Mode",
         "default": false,
         "description": "Enable debug logs"
+      },
+      "vscode-graphql.trace.server": {
+        "type": ["string"],
+        "title": "VSCode GraphQL - Trace Language Server",
+        "default": "off",
+        "description": "Enable tracing for language server"
       }
     },
     "commands": [
