@@ -38,8 +38,9 @@ export class Logger implements VSCodeLogger {
 
     this._logFilePath = join(
       dir,
-      `graphql-language-service-log-${os.userInfo()
-        .username}-${getDateString()}.log`,
+      `graphql-language-service-log-${
+        os.userInfo().username
+      }-${getDateString()}.log`,
     );
 
     this._stream = null;

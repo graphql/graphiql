@@ -149,7 +149,9 @@ function getToken(
     // the current token, otherwise expect based on the current step.
     let expected: any =
       typeof state.rule === 'function'
-        ? state.step === 0 ? state.rule(token, stream) : null
+        ? state.step === 0
+          ? state.rule(token, stream)
+          : null
         : state.rule[state.step];
 
     // Seperator between list elements if necessary.

@@ -106,7 +106,9 @@ function annotations(
     const highlightNode =
       node.kind !== 'Variable' && node.name
         ? node.name
-        : node.variable ? node.variable : node;
+        : node.variable
+          ? node.variable
+          : node;
 
     invariant(error.locations, 'GraphQL validation error requires locations.');
     const loc = error.locations[0];

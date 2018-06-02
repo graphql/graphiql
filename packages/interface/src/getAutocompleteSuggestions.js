@@ -304,8 +304,9 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name
-        .value}`,
+      documentation: `fragment ${frag.name.value} on ${
+        frag.typeCondition.name.value
+      }`,
     })),
   );
 }

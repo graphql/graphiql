@@ -30,26 +30,26 @@ import type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
 export interface CharacterStream {
-  getStartOfToken: () => number,
-  getCurrentPosition: () => number,
-  eol: () => boolean,
-  sol: () => boolean,
-  peek: () => string | null,
-  next: () => string,
-  eat: (pattern: TokenPattern) => string | void,
-  eatWhile: (match: TokenPattern) => boolean,
-  eatSpace: () => boolean,
-  skipToEnd: () => void,
-  skipTo: (position: number) => void,
+  getStartOfToken: () => number;
+  getCurrentPosition: () => number;
+  eol: () => boolean;
+  sol: () => boolean;
+  peek: () => string | null;
+  next: () => string;
+  eat: (pattern: TokenPattern) => string | void;
+  eatWhile: (match: TokenPattern) => boolean;
+  eatSpace: () => boolean;
+  skipToEnd: () => void;
+  skipTo: (position: number) => void;
   match: (
     pattern: TokenPattern,
     consume: ?boolean,
     caseFold: ?boolean,
-  ) => Array<string> | boolean,
-  backUp: (num: number) => void,
-  column: () => number,
-  indentation: () => number,
-  current: () => string,
+  ) => Array<string> | boolean;
+  backUp: (num: number) => void;
+  column: () => number;
+  indentation: () => number;
+  current: () => string;
 }
 
 // Cache and config-related.
@@ -80,56 +80,56 @@ export type GraphQLConfigurationExtension = {
 };
 
 export interface GraphQLCache {
-  getGraphQLConfig: () => GraphQLConfig,
+  getGraphQLConfig: () => GraphQLConfig;
 
   getFragmentDependencies: (
     query: string,
     fragmentDefinitions: ?Map<string, FragmentInfo>,
-  ) => Promise<Array<FragmentInfo>>,
+  ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, FragmentInfo>,
-  ) => Promise<Array<FragmentInfo>>,
+  ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDefinitions: (
     graphQLConfig: GraphQLProjectConfig,
-  ) => Promise<Map<string, FragmentInfo>>,
+  ) => Promise<Map<string, FragmentInfo>>;
 
   +updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ) => Promise<void>,
+  ) => Promise<void>;
 
   +updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<void>,
+  ) => Promise<void>;
 
   getSchema: (
     appName: ?string,
     queryHasExtensions?: ?boolean,
-  ) => Promise<?GraphQLSchema>,
+  ) => Promise<?GraphQLSchema>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
-  ) => (result: Object) => void,
+  ) => (result: Object) => void;
 }
 
 // online-parser related
 export interface Position {
-  line: number,
-  character: number,
-  lessThanOrEqualTo: (position: Position) => boolean,
+  line: number;
+  character: number;
+  lessThanOrEqualTo: (position: Position) => boolean;
 }
 
 export interface Range {
-  start: Position,
-  end: Position,
-  containsPosition: (position: Position) => boolean,
+  start: Position;
+  end: Position;
+  containsPosition: (position: Position) => boolean;
 }
 
 export type CachedContent = {
@@ -280,11 +280,11 @@ export type Outline = {
 };
 
 export interface DidChangeWatchedFilesParams {
-  changes: FileEvent[],
+  changes: FileEvent[];
 }
 export interface FileEvent {
-  uri: string,
-  type: FileChangeType,
+  uri: string;
+  type: FileChangeType;
 }
 export const FileChangeTypeKind = {
   Created: 1,

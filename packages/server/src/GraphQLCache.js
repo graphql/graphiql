@@ -544,9 +544,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   /**
-  * Given a list of GraphQL file metadata, read all files collected from watchman
-  * and create fragmentDefinitions and GraphQL files cache.
-  */
+   * Given a list of GraphQL file metadata, read all files collected from watchman
+   * and create fragmentDefinitions and GraphQL files cache.
+   */
   readAllGraphQLFiles = async (
     list: Array<GraphQLFileMetadata>,
   ): Promise<{
@@ -561,13 +561,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
         this.promiseToReadGraphQLFile(fileInfo.filePath)
           .catch(error => {
             /**
-            * fs emits `EMFILE | ENFILE` error when there are too many
-            * open files - this can cause some fragment files not to be
-            * processed.  Solve this case by implementing a queue to save
-            * files failed to be processed because of `EMFILE` error,
-            * and await on Promises created with the next batch from the
-            * queue.
-            */
+             * fs emits `EMFILE | ENFILE` error when there are too many
+             * open files - this can cause some fragment files not to be
+             * processed.  Solve this case by implementing a queue to save
+             * files failed to be processed because of `EMFILE` error,
+             * and await on Promises created with the next batch from the
+             * queue.
+             */
             if (error.code === 'EMFILE' || error.code === 'ENFILE') {
               queue.push(fileInfo);
             }
@@ -587,9 +587,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   /**
-  * Takes an array of GraphQL File information and batch-processes into a
-  * map of fragmentDefinitions and GraphQL file cache.
-  */
+   * Takes an array of GraphQL File information and batch-processes into a
+   * map of fragmentDefinitions and GraphQL file cache.
+   */
   processGraphQLFiles = (
     responses: Array<GraphQLFileInfo>,
   ): {
@@ -630,9 +630,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   /**
-  * Returns a Promise to read a GraphQL file and return a GraphQL metadata
-  * including a parsed AST.
-  */
+   * Returns a Promise to read a GraphQL file and return a GraphQL metadata
+   * including a parsed AST.
+   */
   promiseToReadGraphQLFile = (
     filePath: Uri,
   ): Promise<{

@@ -18,8 +18,8 @@ import type {
 import {opt, list, butNot, t, p} from './RuleHelpers';
 
 /**
-  * Whitespace tokens defined in GraphQL spec.
-  */
+ * Whitespace tokens defined in GraphQL spec.
+ */
 export const isIgnored = (ch: string) =>
   ch === ' ' ||
   ch === '\t' ||
@@ -120,7 +120,9 @@ export const ParseRules: {[name: string]: ParseRule} = {
       ? stream.match(/[\s\u00a0,]*(on\b|@|{)/, false)
         ? 'InlineFragment'
         : 'FragmentSpread'
-      : stream.match(/[\s\u00a0,]*:/, false) ? 'AliasedField' : 'Field';
+      : stream.match(/[\s\u00a0,]*:/, false)
+        ? 'AliasedField'
+        : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.
   AliasedField: [
