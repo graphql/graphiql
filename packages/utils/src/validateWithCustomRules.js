@@ -30,7 +30,10 @@ export function validateWithCustomRules(
   const {
     NoUnusedFragments,
   } = require('graphql/validation/rules/NoUnusedFragments');
-  const rulesToSkip = [NoUnusedFragments];
+  const {
+    ExecutableDefinitions,
+  } = require('graphql/validation/rules/ExecutableDefinitions');
+  const rulesToSkip = [NoUnusedFragments, ExecutableDefinitions];
   if (isRelayCompatMode) {
     const {
       KnownFragmentNames,
