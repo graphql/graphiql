@@ -37,5 +37,9 @@ describe('GraphQLLanguageService', () => {
       './queries/testQuery.graphql',
     );
     expect(diagnostics.length).to.equal(1);
+    const diagnostic = diagnostics[0];
+    expect(diagnostic.message).to.equal(
+      'Syntax Error: Unexpected Name "qeury"',
+    );
   });
 });

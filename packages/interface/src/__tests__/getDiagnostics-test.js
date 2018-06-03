@@ -47,6 +47,36 @@ describe('getDiagnostics', () => {
     expect(error.source).to.equal('GraphQL: Deprecation');
   });
 
+  it('returns no errors for valid query', () => {
+    const errors = getDiagnostics('query { hero { name } }', schema);
+    expect(errors.length).to.equal(0);
+  });
+
+  it('returns no errors for valid query with aliases', () => {
+    const errors = getDiagnostics(
+      'query { superHero: hero { superName: name } superHero2: hero { superName2: name } }',
+      schema,
+    );
+    expect(errors.length).to.equal(0);
+  });
+
+  it('catches a syntax error in the SDL', () => {
+    const errors = getDiagnostics(
+      `
+        type Human implements Character {
+          field_without_type_is_a_syntax_error
+          id: String!
+        }
+      `,
+      schema,
+    );
+    expect(errors.length).to.equal(1);
+    const error = errors[0];
+    expect(error.message).to.equal('Syntax Error: Expected :, found Name "id"');
+    expect(error.severity).to.equal(SEVERITY.ERROR);
+    expect(error.source).to.equal('GraphQL: Syntax');
+  });
+
   // TODO: change this kitchen sink to depend on the local schema
   //       and then run diagnostics with the schema
   it('returns no errors after parsing kitchen-sink query', () => {
