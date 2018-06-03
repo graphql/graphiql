@@ -48,6 +48,7 @@ describe('MessageProcessor', () => {
         };
       },
       updateFragmentDefinition() {},
+      updateObjectTypeDefinition() {},
       handleWatchmanSubscribeEvent() {},
     };
     messageProcessor._languageService = {

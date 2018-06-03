@@ -183,4 +183,41 @@ describe('GraphQLCache', () => {
       expect(fragmentDefinitions.get('testFragment')).to.be.undefined;
     });
   });
+
+  describe('getNamedTypeDependencies', () => {
+    const query = `type Query {
+        hero(episode: Episode): Character
+      }
+      
+      type Episode {
+        id: ID!
+      }
+      `;
+    const parsedQuery = parse(query);
+
+    const namedTypeDefinitions = new Map();
+    namedTypeDefinitions.set('Character', {
+      file: 'someOtherFilePath',
+      content: query,
+      definition: {
+        kind: 'ObjectTypeDefinition',
+        name: {
+          kind: 'Name',
+          value: 'Character',
+        },
+        loc: {
+          start: 0,
+          end: 0,
+        },
+      },
+    });
+
+    it('finds named types referenced from the SDL', async () => {
+      const result = await cache.getObjectTypeDependenciesForAST(
+        parsedQuery,
+        namedTypeDefinitions,
+      );
+      expect(result.length).to.equal(1);
+    });
+  });
 });

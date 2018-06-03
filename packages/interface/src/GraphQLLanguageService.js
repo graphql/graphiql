@@ -13,6 +13,8 @@ import type {
   FragmentSpreadNode,
   FragmentDefinitionNode,
   OperationDefinitionNode,
+  TypeDefinitionNode,
+  NamedTypeNode,
 } from 'graphql';
 import type {
   CompletionItem,
@@ -43,6 +45,7 @@ import {
   DIRECTIVE_DEFINITION,
   FRAGMENT_SPREAD,
   OPERATION_DEFINITION,
+  NAMED_TYPE,
 } from 'graphql/language/kinds';
 
 import {parse, print} from 'graphql';
@@ -52,6 +55,7 @@ import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
+  getDefinitionQueryResultForNamedType,
 } from './getDefinition';
 import {getASTNodeAtPosition} from 'graphql-language-service-utils';
 
@@ -224,9 +228,61 @@ export class GraphQLLanguageService {
             query,
             (node: FragmentDefinitionNode | OperationDefinitionNode),
           );
+        case NAMED_TYPE:
+          return this._getDefinitionForNamedType(
+            query,
+            ast,
+            node,
+            filePath,
+            projectConfig,
+          );
       }
     }
     return null;
+  }
+
+  async _getDefinitionForNamedType(
+    query: string,
+    ast: DocumentNode,
+    node: NamedTypeNode,
+    filePath: Uri,
+    projectConfig: GraphQLProjectConfig,
+  ): Promise<?DefinitionQueryResult> {
+    const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
+      projectConfig,
+    );
+
+    const dependencies = await this._graphQLCache.getObjectTypeDependenciesForAST(
+      ast,
+      objectTypeDefinitions,
+    );
+
+    const localObjectTypeDefinitions = ast.definitions.filter(
+      definition =>
+        definition.kind === OBJECT_TYPE_DEFINITION ||
+        definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
+        definition.kind === ENUM_TYPE_DEFINITION,
+    );
+
+    const typeCastedDefs = ((localObjectTypeDefinitions: any): Array<
+      TypeDefinitionNode,
+    >);
+
+    const localOperationDefinationInfos = typeCastedDefs.map(
+      (definition: TypeDefinitionNode) => ({
+        filePath,
+        content: query,
+        definition,
+      }),
+    );
+
+    const result = await getDefinitionQueryResultForNamedType(
+      query,
+      node,
+      dependencies.concat(localOperationDefinationInfos),
+    );
+
+    return result;
   }
 
   async _getDefinitionForFragmentSpread(

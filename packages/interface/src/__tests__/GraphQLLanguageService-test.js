@@ -16,13 +16,50 @@ import {GraphQLConfig} from 'graphql-config';
 import {GraphQLLanguageService} from '../GraphQLLanguageService';
 
 const MOCK_CONFIG = {
-  includes: ['./queries/**'],
+  schemaPath: './__schema__/StarWarsSchema.graphql',
+  includes: ['./queries/**', '**/*.graphql'],
 };
 
 describe('GraphQLLanguageService', () => {
   const mockCache: any = {
     getGraphQLConfig() {
       return new GraphQLConfig(MOCK_CONFIG, join(__dirname, '.graphqlconfig'));
+    },
+
+    getObjectTypeDefinitions() {
+      return {
+        Episode: {
+          filePath: 'fake file path',
+          content: 'fake file content',
+          definition: {
+            name: {
+              value: 'Episode',
+            },
+            loc: {
+              start: 293,
+              end: 335,
+            },
+          },
+        },
+      };
+    },
+
+    getObjectTypeDependenciesForAST() {
+      return [
+        {
+          filePath: 'fake file path',
+          content: 'fake file content',
+          definition: {
+            name: {
+              value: 'Episode',
+            },
+            loc: {
+              start: 293,
+              end: 335,
+            },
+          },
+        },
+      ];
     },
   };
 
@@ -41,5 +78,14 @@ describe('GraphQLLanguageService', () => {
     expect(diagnostic.message).to.equal(
       'Syntax Error: Unexpected Name "qeury"',
     );
+  });
+
+  it('runs definition service as expected', async () => {
+    const definitionQueryResult = await languageService.getDefinition(
+      'type Query { hero(episode: Episode): Character }',
+      {line: 0, character: 28},
+      './queries/definitionQuery.graphql',
+    );
+    expect(definitionQueryResult.definitions.length).to.equal(1);
   });
 });

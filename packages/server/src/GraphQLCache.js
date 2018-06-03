@@ -16,6 +16,7 @@ import type {
   GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
+  ObjectTypeInfo,
   Uri,
   GraphQLProjectConfig,
 } from 'graphql-language-service-types';
@@ -65,6 +66,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _schemaMap: Map<Uri, GraphQLSchema>;
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
+  _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
 
   constructor(configDir: Uri, graphQLConfig: GraphQLConfig): void {
     this._configDir = configDir;
@@ -72,6 +74,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
     this._fragmentDefinitionsCache = new Map();
+    this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
   }
 
@@ -177,6 +180,112 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return fragmentDefinitions;
   };
 
+  getObjectTypeDependencies = async (
+    query: string,
+    objectTypeDefinitions: ?Map<string, ObjectTypeInfo>,
+  ): Promise<Array<ObjectTypeInfo>> => {
+    // If there isn't context for object type references,
+    // return an empty array.
+    if (!objectTypeDefinitions) {
+      return [];
+    }
+    // If the query cannot be parsed, validations cannot happen yet.
+    // Return an empty array.
+    let parsedQuery;
+    try {
+      parsedQuery = parse(query);
+    } catch (error) {
+      return [];
+    }
+    return this.getObjectTypeDependenciesForAST(
+      parsedQuery,
+      objectTypeDefinitions,
+    );
+  };
+
+  getObjectTypeDependenciesForAST = async (
+    parsedQuery: ASTNode,
+    objectTypeDefinitions: Map<string, ObjectTypeInfo>,
+  ): Promise<Array<ObjectTypeInfo>> => {
+    if (!objectTypeDefinitions) {
+      return [];
+    }
+
+    const existingObjectTypes = new Map();
+    const referencedObjectTypes = new Set();
+
+    visit(parsedQuery, {
+      ObjectTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      InputObjectTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      EnumTypeDefinition(node) {
+        existingObjectTypes.set(node.name.value, true);
+      },
+      NamedType(node) {
+        if (!referencedObjectTypes.has(node.name.value)) {
+          referencedObjectTypes.add(node.name.value);
+        }
+      },
+    });
+
+    const asts = new Set();
+    referencedObjectTypes.forEach(name => {
+      if (!existingObjectTypes.has(name) && objectTypeDefinitions.has(name)) {
+        asts.add(nullthrows(objectTypeDefinitions.get(name)));
+      }
+    });
+
+    const referencedObjects = [];
+
+    asts.forEach(ast => {
+      visit(ast.definition, {
+        NamedType(node) {
+          if (
+            !referencedObjectTypes.has(node.name.value) &&
+            objectTypeDefinitions.get(node.name.value)
+          ) {
+            asts.add(nullthrows(objectTypeDefinitions.get(node.name.value)));
+            referencedObjectTypes.add(node.name.value);
+          }
+        },
+      });
+      if (!existingObjectTypes.has(ast.definition.name.value)) {
+        referencedObjects.push(ast);
+      }
+    });
+
+    return referencedObjects;
+  };
+
+  getObjectTypeDefinitions = async (
+    projectConfig: GraphQLProjectConfig,
+  ): Promise<Map<string, ObjectTypeInfo>> => {
+    // This function may be called from other classes.
+    // If then, check the cache first.
+    const rootDir = projectConfig.configDir;
+    if (this._typeDefinitionsCache.has(rootDir)) {
+      return this._typeDefinitionsCache.get(rootDir) || new Map();
+    }
+    const filesFromInputDirs = await this._readFilesFromInputDirs(
+      rootDir,
+      projectConfig.includes,
+    );
+    const list = filesFromInputDirs.filter(fileInfo =>
+      projectConfig.includesFile(fileInfo.filePath),
+    );
+    const {
+      objectTypeDefinitions,
+      graphQLFileMap,
+    } = await this.readAllGraphQLFiles(list);
+    this._typeDefinitionsCache.set(rootDir, objectTypeDefinitions);
+    this._graphQLFileListCache.set(rootDir, graphQLFileMap);
+
+    return objectTypeDefinitions;
+  };
+
   handleWatchmanSubscribeEvent = (
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
@@ -233,6 +342,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           }
 
           this.updateFragmentDefinitionCache(rootDir, filePath, exists);
+          this.updateObjectTypeDefinitionCache(rootDir, filePath, exists);
         }
       });
     }
@@ -380,6 +490,73 @@ export class GraphQLCache implements GraphQLCacheInterface {
       }
     } else if (fileAndContent && fileAndContent.queries) {
       this.updateFragmentDefinition(rootDir, filePath, fileAndContent.queries);
+    }
+  }
+
+  async updateObjectTypeDefinition(
+    rootDir: Uri,
+    filePath: Uri,
+    contents: Array<CachedContent>,
+  ): Promise<void> {
+    const cache = this._typeDefinitionsCache.get(rootDir);
+    const asts = contents.map(({query}) => {
+      try {
+        return {ast: parse(query), query};
+      } catch (error) {
+        return {ast: null, query};
+      }
+    });
+    if (cache) {
+      // first go through the types list to delete the ones from this file
+      cache.forEach((value, key) => {
+        if (value.filePath === filePath) {
+          cache.delete(key);
+        }
+      });
+      asts.forEach(({ast, query}) => {
+        if (!ast) {
+          return;
+        }
+        ast.definitions.forEach(definition => {
+          if (
+            definition.kind === OBJECT_TYPE_DEFINITION ||
+            definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
+            definition.kind === ENUM_TYPE_DEFINITION
+          ) {
+            cache.set(definition.name.value, {
+              filePath,
+              content: query,
+              definition,
+            });
+          }
+        });
+      });
+    }
+  }
+
+  async updateObjectTypeDefinitionCache(
+    rootDir: Uri,
+    filePath: Uri,
+    exists: boolean,
+  ): Promise<void> {
+    const fileAndContent = exists
+      ? await this.promiseToReadGraphQLFile(filePath)
+      : null;
+    // In the case of type definitions, the cache could just map the
+    // definition name to the parsed ast, whether or not it existed
+    // previously.
+    // For delete, remove the entry from the set.
+    if (!exists) {
+      const cache = this._typeDefinitionsCache.get(rootDir);
+      if (cache) {
+        cache.delete(filePath);
+      }
+    } else if (fileAndContent && fileAndContent.queries) {
+      this.updateObjectTypeDefinition(
+        rootDir,
+        filePath,
+        fileAndContent.queries,
+      );
     }
   }
 
@@ -550,6 +727,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   readAllGraphQLFiles = async (
     list: Array<GraphQLFileMetadata>,
   ): Promise<{
+    objectTypeDefinitions: Map<string, ObjectTypeInfo>,
     fragmentDefinitions: Map<string, FragmentInfo>,
     graphQLFileMap: Map<string, GraphQLFileInfo>,
   }> => {
@@ -593,9 +771,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   processGraphQLFiles = (
     responses: Array<GraphQLFileInfo>,
   ): {
+    objectTypeDefinitions: Map<string, ObjectTypeInfo>,
     fragmentDefinitions: Map<string, FragmentInfo>,
     graphQLFileMap: Map<string, GraphQLFileInfo>,
   } => {
+    const objectTypeDefinitions = new Map();
     const fragmentDefinitions = new Map();
     const graphQLFileMap = new Map();
 
@@ -607,6 +787,17 @@ export class GraphQLCache implements GraphQLCacheInterface {
           ast.definitions.forEach(definition => {
             if (definition.kind === FRAGMENT_DEFINITION) {
               fragmentDefinitions.set(definition.name.value, {
+                filePath,
+                content,
+                definition,
+              });
+            }
+            if (
+              definition.kind === OBJECT_TYPE_DEFINITION ||
+              definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
+              definition.kind === ENUM_TYPE_DEFINITION
+            ) {
+              objectTypeDefinitions.set(definition.name.value, {
                 filePath,
                 content,
                 definition,
@@ -626,7 +817,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       });
     });
 
-    return {fragmentDefinitions, graphQLFileMap};
+    return {objectTypeDefinitions, fragmentDefinitions, graphQLFileMap};
   };
 
   /**

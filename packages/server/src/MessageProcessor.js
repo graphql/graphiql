@@ -279,6 +279,7 @@ export class MessageProcessor {
     }
 
     this._updateFragmentDefinition(uri, contents);
+    this._updateObjectTypeDefinition(uri, contents);
 
     // Send the diagnostics onChange as well
     const diagnostics = [];
@@ -482,6 +483,7 @@ export class MessageProcessor {
           const contents = getQueryAndRange(text, uri);
 
           this._updateFragmentDefinition(uri, contents);
+          this._updateObjectTypeDefinition(uri, contents);
 
           const diagnostics = (await Promise.all(
             contents.map(async ({query, range}) => {
@@ -511,6 +513,11 @@ export class MessageProcessor {
           return {uri, diagnostics};
         } else if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
+            this._graphQLCache.getGraphQLConfig().configDir,
+            change.uri,
+            false,
+          );
+          this._graphQLCache.updateObjectTypeDefinitionCache(
             this._graphQLCache.getGraphQLConfig().configDir,
             change.uri,
             false,
@@ -606,6 +613,19 @@ export class MessageProcessor {
     const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
     await this._graphQLCache.updateFragmentDefinition(
+      rootDir,
+      new URL(uri).pathname,
+      contents,
+    );
+  }
+
+  async _updateObjectTypeDefinition(
+    uri: Uri,
+    contents: Array<CachedContent>,
+  ): Promise<void> {
+    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
+
+    await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,
       new URL(uri).pathname,
       contents,
