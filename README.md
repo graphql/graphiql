@@ -4,31 +4,44 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 
 ## Development
 
-Refer to [this](./vsc-extension-quickstart.md)
+Testing GraphQL Language Features
+
+1.  Clone the repository - https://github.com/prismagraphql/vscode-graphql
+1.  `npm install`
+1.  Open it in VSCode
+1.  Go to debugging section and run the launch program "Extension"
+1.  This will open another VSCode instance with extension enabled - open a project with graphql config file - ":electric_plug: grapqhl" in VSCode status bar indicates that the extension is in use
+
+Testing TypeScript GraphQL Plugin Features
+
+1.  Go to `vscode-graphql/ts-graphql-plugin`
+1.  `npm link`
+1.  Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
+1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
 
 ## Features
 
-### Basic version
+### General features
 
-* Replicate functionality of Intelij (https://github.com/jimkyndemeyer/js-graphql-intellij-plugin) / current VSCode plugin (https://github.com/kumarharsh/graphql-for-vscode)
-* Make compatible with graphql-config
+- Load the extension on detecting `graphql-config file` at root level or in a parent level directory
+- Load the extension in `.graphql`, `.gql files`
+- Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
+- Support `graphql-config file` with one project and multiple projects
+- Test coverage
+- Dev setup README
 
-### Future features
+### `.graphql`, `.gql` file extension support
 
-* graphql-import compatibility
-* Multiple graphql tags
-* Support for Prisma directives
+- syntax highlighting (type, query, mutation, interface, union, enum, scalar, fragments)
+- autocomplete suggestions
+- validation against schema (partial - prisma directives left)
+- snippets (interface, type, input, enum, union)
+- hover support
+- go to definition support
 
-## Related projects
+### `gql` tagged template literal support
 
-* https://github.com/graphql/graphql-language-service
-* https://github.com/apollographql/vscode-graphql
-* https://github.com/stephen/vscode-graphql
-* https://github.com/kumarharsh/graphql-for-vscode
-* https://github.com/jimkyndemeyer/js-graphql-intellij-plugin
-* https://github.com/jimkyndemeyer/js-graphql-language-service
-* https://github.com/Microsoft/typescript-template-language-service-decorator
-* https://microsoft.github.io/language-server-protocol
-* https://github.com/mtsmfm/vscode-graphql-lsc
-* https://github.com/Mayank1791989/gql
-* https://github.com/graphql/codemirror-graphql
+- syntax highlighting (type, query, mutation, interface, union, enum, scalar, )
+- autocomplete suggestions (partial, no support for template literal variables)
+- validation against schema
+- sippets
