@@ -85,6 +85,11 @@
         "command": "extension.isDebugging",
         "title": "VSCode GraphQL - Is Debugging?"
       }
+    ],
+    "typescriptServerPlugins": [
+      {
+        "name": "ts-graphql-plugin"
+      }
     ]
   },
   "scripts": {
