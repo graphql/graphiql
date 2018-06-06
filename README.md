@@ -15,7 +15,7 @@ Testing GraphQL Language Features
 Testing TypeScript GraphQL Plugin Features
 
 1.  Go to `vscode-graphql/ts-graphql-plugin`
-1.  `npm link`
+1.  `npm install` and `npm link`
 1.  Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
 1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
 
