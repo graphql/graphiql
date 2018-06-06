@@ -25,8 +25,11 @@
     "build-flow": "babel-node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
+  "peerDependencies": {
+    "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0"
+  },
   "dependencies": {
-    "graphql-config": "1.1.4",
-    "graphql-language-service-types": "^1.1.0"
+    "graphql-config": "2.0.1",
+    "graphql-language-service-types": "^1.2.1"
   }
 }

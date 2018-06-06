@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-types",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -29,6 +29,6 @@
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0"
   },
   "dependencies": {
-    "graphql-config": "1.1.4"
+    "graphql-config": "2.0.1"
   }
 }
