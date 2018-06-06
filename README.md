@@ -61,7 +61,7 @@ Testing GraphQL Language Features
 1.  `npm install`
 1.  Open it in VSCode
 1.  Go to debugging section and run the launch program "Extension"
-1.  This will open another VSCode instance with extension enabled - open a project with graphql config file - ":electric_plug: grapqhl" in VSCode status bar indicates that the extension is in use
+1.  This will open another VSCode instance with extension enabled - open a project with graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
 
 Testing TypeScript GraphQL Plugin Features
 
