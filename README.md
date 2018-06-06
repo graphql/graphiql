@@ -44,4 +44,4 @@ Testing TypeScript GraphQL Plugin Features
 - syntax highlighting (type, query, mutation, interface, union, enum, scalar, )
 - autocomplete suggestions (partial, no support for template literal variables)
 - validation against schema
-- sippets
+- snippets
