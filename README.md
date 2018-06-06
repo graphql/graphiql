@@ -27,8 +27,6 @@ Testing TypeScript GraphQL Plugin Features
 - Load the extension in `.graphql`, `.gql files`
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
 - Support `graphql-config file` with one project and multiple projects
-- Test coverage
-- Dev setup README
 
 ### `.graphql`, `.gql` file extension support
 
@@ -37,7 +35,7 @@ Testing TypeScript GraphQL Plugin Features
 - validation against schema (partial - prisma directives left)
 - snippets (interface, type, input, enum, union)
 - hover support
-- go to definition support
+- go to definition support (input, enum, type)
 
 ### `gql` tagged template literal support
 
