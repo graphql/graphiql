@@ -69,7 +69,7 @@ export default class GraphQLLanguageServiceProxy
       const diagnostics = getDiagnostics(context.text, schema);
       this._logger(`diagnostics: ${JSON.stringify(diagnostics)}`);
       const transformedDiagnostics = diagnostics
-        .filter(diagnostic => typeof diagnostic.code !== "number")
+        .filter(diagnostic => typeof diagnostic.code === "number")
         .map(diagnostic => {
           const code =
             typeof diagnostic.code === "number" ? diagnostic.code : 9999;
