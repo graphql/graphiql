@@ -23,7 +23,7 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 ### `gql` tagged template literal support
 
 - syntax highlighting (type, query, mutation, interface, union, enum, scalar, )
-- autocomplete suggestions (partial, no support for template literal variables)
+- autocomplete suggestions
 - validation against schema
 - snippets
 
