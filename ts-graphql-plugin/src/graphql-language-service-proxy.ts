@@ -68,20 +68,22 @@ export default class GraphQLLanguageServiceProxy
       const schema = config.getConfigForFile(context.fileName).getSchema();
       const diagnostics = getDiagnostics(context.text, schema);
       this._logger(`diagnostics: ${JSON.stringify(diagnostics)}`);
-      const transformedDiagnostics = diagnostics.map(diagnostic => {
-        const code =
-          typeof diagnostic.code === "number" ? diagnostic.code : 9999;
-        const messageText = diagnostic.message.split("\n")[0];
-        const transformedDiagnostic = {
-          code,
-          messageText,
-          category: diagnostic.severity as ts.DiagnosticCategory,
-          file: context.fileName,
-          start: 0,
-          length: 0
-        };
-        return transformedDiagnostic;
-      });
+      const transformedDiagnostics = diagnostics
+        .filter(diagnostic => typeof diagnostic.code !== "number")
+        .map(diagnostic => {
+          const code =
+            typeof diagnostic.code === "number" ? diagnostic.code : 9999;
+          const messageText = diagnostic.message.split("\n")[0];
+          const transformedDiagnostic = {
+            code,
+            messageText,
+            category: diagnostic.severity as ts.DiagnosticCategory,
+            file: context.fileName,
+            start: 0,
+            length: 0
+          };
+          return transformedDiagnostic;
+        });
       this._logger(
         `transformedDiagnostics: ${JSON.stringify(transformedDiagnostics)}`
       );
