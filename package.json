@@ -100,14 +100,17 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
-    "tslint": "^5.8.0",
+    "@types/graphql": "^0.13.1",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^7.0.43",
-    "@types/mocha": "^2.2.42"
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
+    "graphql": "^0.13.2",
+    "graphql-config-extension-prisma": "0.0.12",
     "graphql-language-service-server": "^1.2.0",
     "vscode-languageclient": "^4.1.3"
   }
