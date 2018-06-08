@@ -1,7 +1,13 @@
 {
   "name": "vscode-graphql",
+  "private": true,
   "displayName": "vscode-graphql",
   "description": "GraphQL Awesomeness for VSCode",
+  "repository": {
+    "type": "git",
+    "url":
+      "https://github.com/divyenduz/ds"
+  },
   "version": "0.0.1",
   "publisher": "prisma",
   "engines": {
@@ -87,7 +93,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
-    "@types/graphql": "^0.13.1",
+    "@types/graphql": "0.12.3",
     "@types/mocha": "^2.2.42",
     "@types/node": "^7.0.43",
     "tslint": "^5.8.0",
@@ -96,8 +102,8 @@
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "graphql": "^0.13.2",
-    "graphql-config-extension-prisma": "0.0.12",
+    "graphql": "0.12.3",
+    "graphql-config-extension-prisma": "0.1.0",
     "graphql-language-service-server": "^1.2.0",
     "vscode-languageclient": "^4.1.3"
   }
