@@ -22,13 +22,32 @@ export default class GraphQLLanguageServiceProxy
     this._logger = logger;
   }
 
+  /*
+    Use the configration of first project if heuristics failed 
+    to find one.
+  */
+  patchProjectConfig(config) {
+    if (!config.config.projects) {
+      return config;
+    }
+    if (config.config.projects) {
+      const projectKeys = Object.keys(config.config.projects);
+      return config.getProjectConfig(projectKeys[0]);
+    }
+    return null;
+  }
+
   getCompletionsAtPosition(
     context: TemplateContext,
     position: ts.LineAndCharacter
   ): ts.CompletionInfo {
     try {
       const config = getGraphQLConfig();
-      const schema = config.getConfigForFile(context.fileName).getSchema();
+      let projectConfig = config.getConfigForFile(context.fileName);
+      if (!projectConfig) {
+        projectConfig = this.patchProjectConfig(config);
+      }
+      const schema = projectConfig.getSchema();
       const completions = getAutocompleteSuggestions(
         schema,
         context.text,
@@ -52,7 +71,7 @@ export default class GraphQLLanguageServiceProxy
       this._logger(`completionInfo: ${JSON.stringify(completionInfo)}`);
       return completionInfo;
     } catch (e) {
-      this._logger(`Unhandled exception: ${e}`);
+      this._logger(`getCompletionsAtPosition: Unhandled exception: ${e}`);
       return {
         isGlobalCompletion: false,
         isMemberCompletion: false,
@@ -65,7 +84,11 @@ export default class GraphQLLanguageServiceProxy
   getSemanticDiagnostics?(context: TemplateContext): ts.Diagnostic[] {
     try {
       const config = getGraphQLConfig();
-      const schema = config.getConfigForFile(context.fileName).getSchema();
+      let projectConfig = config.getConfigForFile(context.fileName);
+      if (!projectConfig) {
+        projectConfig = this.patchProjectConfig(config);
+      }
+      const schema = projectConfig.getSchema();
       const diagnostics = getDiagnostics(context.text, schema);
       this._logger(`diagnostics: ${JSON.stringify(diagnostics)}`);
       const transformedDiagnostics = diagnostics
@@ -89,7 +112,7 @@ export default class GraphQLLanguageServiceProxy
       );
       return transformedDiagnostics;
     } catch (e) {
-      this._logger(`Unhandled exception: ${e}`);
+      this._logger(`getSemanticDiagnostics: Unhandled exception: ${e}`);
       return [];
     }
   }
