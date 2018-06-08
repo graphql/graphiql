@@ -5,15 +5,17 @@
   "description": "GraphQL Awesomeness for VSCode",
   "repository": {
     "type": "git",
-    "url":
-      "https://github.com/divyenduz/ds"
+    "url": "https://github.com/divyenduz/ds"
   },
   "version": "0.0.1",
   "publisher": "prisma",
   "engines": {
     "vscode": "^1.23.0"
   },
-  "categories": ["Programming Languages", "Snippets"],
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
   "activationEvents": [
     "onCommand:extension.isDebugging",
     "onLanguage:graphql",
@@ -26,8 +28,14 @@
     "languages": [
       {
         "id": "graphql",
-        "extensions": [".gql", ".graphql"],
-        "aliases": ["GraphQL", "graphql"],
+        "extensions": [
+          ".gql",
+          ".graphql"
+        ],
+        "aliases": [
+          "GraphQL",
+          "graphql"
+        ],
         "configuration": "./src/language/language-configuration.json"
       }
     ],
@@ -60,13 +68,18 @@
     ],
     "configuration": {
       "vscode-graphql.debug": {
-        "type": ["boolean", "null"],
+        "type": [
+          "boolean",
+          "null"
+        ],
         "title": "VSCode GraphQL - Debug Mode",
         "default": false,
         "description": "Enable debug logs"
       },
       "vscode-graphql.trace.server": {
-        "type": ["string"],
+        "type": [
+          "string"
+        ],
         "title": "VSCode GraphQL - Trace Language Server",
         "default": "off",
         "description": "Enable tracing for language server"
@@ -101,6 +114,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
+    "@divyenduz/ts-graphql-plugin": "0.0.1",
     "babel-polyfill": "^6.26.0",
     "graphql": "0.12.3",
     "graphql-config-extension-prisma": "0.1.0",
