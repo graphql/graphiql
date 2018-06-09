@@ -6,7 +6,7 @@ import {
 import {
   getAutocompleteSuggestions,
   getDiagnostics
-} from "graphql-language-service-interface";
+} from "@divyenduz/graphql-language-service-interface";
 import { getGraphQLConfig } from "graphql-config";
 
 export default class GraphQLLanguageServiceProxy

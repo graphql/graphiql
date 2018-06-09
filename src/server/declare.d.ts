@@ -1,4 +1,4 @@
-declare module "graphql-language-service-server" {
+declare module "@divyenduz/graphql-language-service-server" {
   interface Options {
     method?: "socket" | "stream" | "node";
     extensions?: Array<any>;
