@@ -40,13 +40,13 @@
           "GraphQL",
           "graphql"
         ],
-        "configuration": "./src/language/language-configuration.json"
+        "configuration": "./language/language-configuration.json"
       }
     ],
     "grammars": [
       {
         "language": "graphql",
-        "path": "./src/grammars/graphql.json",
+        "path": "./grammars/graphql.json",
         "scopeName": "source.graphql"
       },
       {
@@ -58,7 +58,7 @@
           "source.vue"
         ],
         "scopeName": "inline.graphql",
-        "path": "./src/grammars/graphql.js.json",
+        "path": "./grammars/graphql.js.json",
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
@@ -67,7 +67,7 @@
     "snippets": [
       {
         "language": "graphql",
-        "path": "./src/snippets/graphql.json"
+        "path": "./snippets/graphql.json"
       }
     ],
     "configuration": {
