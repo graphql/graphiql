@@ -14,7 +14,11 @@
   },
   "categories": [
     "Programming Languages",
-    "Snippets"
+    "Snippets",
+    "Linters",
+    "Themes",
+    "Other",
+    "Language Packs"
   ],
   "activationEvents": [
     "onCommand:extension.isDebugging",
