@@ -121,7 +121,7 @@
     "babel-polyfill": "^6.26.0",
     "graphql": "0.12.3",
     "graphql-config-extension-prisma": "0.1.0",
-    "graphql-language-service-server": "^1.2.0",
+    "@divyenduz/graphql-language-service-server": "1.2.1",
     "vscode-languageclient": "^4.1.3"
   }
 }
