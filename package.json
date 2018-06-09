@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/divyenduz/ds"
   },
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "prisma",
   "engines": {
     "vscode": "^1.23.0"
