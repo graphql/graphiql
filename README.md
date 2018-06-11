@@ -31,6 +31,31 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 
 Just install the [VSCode GraphQL Extension](insert link here). This extension adds syntax highlighting and IntelliSense for graphql files and `gql` tags.
 
+To support language features like "go-to definition" across multiple files, please include `includes` key in the graphql-config per project. For example,
+
+```
+projects:
+  app:
+    schemaPath: src/schema.graphql
+    includes: ["**/*.graphql"]
+    extensions:
+      endpoints:
+        default: http://localhost:4000
+  prisma:
+    schemaPath: src/generated/prisma.graphql
+    includes: ["**/*.graphql"]
+    extensions:
+      prisma: prisma/prisma.yml
+      codegen:
+      - generator: prisma-binding
+        language: typescript
+        output:
+          binding: src/generated/prisma.ts
+```
+
+Notice that `includes` key supports glob pattern and hence
+`[**/*.graphql]` is also valid.
+
 If you want to use a [workspace version of TypeScript](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions) however, you must manually install the plugin along side the version of TypeScript in your workspace:
 
 ```bash
