@@ -15,7 +15,7 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 
 - syntax highlighting (type, query, mutation, interface, union, enum, scalar, fragments)
 - autocomplete suggestions
-- validation against schema (partial - prisma directives left)
+- validation against schema
 - snippets (interface, type, input, enum, union)
 - hover support
 - go to definition support (input, enum, type)
@@ -31,7 +31,7 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 
 Just install the [VSCode GraphQL Extension](insert link here). This extension adds syntax highlighting and IntelliSense for graphql files and `gql` tags.
 
-If you want to use a [workspace version of TypeScript](<(https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions)>) however, you must manually install the plugin along side the version of TypeScript in your workspace:
+If you want to use a [workspace version of TypeScript](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions) however, you must manually install the plugin along side the version of TypeScript in your workspace:
 
 ```bash
 npm install --save-dev ts-graphql-plugin
