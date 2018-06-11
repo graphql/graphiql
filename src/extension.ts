@@ -46,7 +46,7 @@ export function activate(context: ExtensionContext) {
     synchronize: {
       fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql}")
     },
-    outputChannelName: "graphql language server"
+    outputChannelName: "GraphQL Language Server"
   };
 
   const client = new LanguageClient(
