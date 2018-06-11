@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/divyenduz/ds"
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "Prisma",
   "engines": {
     "vscode": "^1.23.0"
@@ -117,7 +117,7 @@
     "vscode": "^1.1.6"
   },
   "dependencies": {
-    "@divyenduz/ts-graphql-plugin": "0.0.5",
+    "@divyenduz/ts-graphql-plugin": "0.0.6",
     "babel-polyfill": "^6.26.0",
     "graphql": "0.12.3",
     "graphql-config-extension-prisma": "0.1.0",
