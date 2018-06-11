@@ -37,7 +37,7 @@ export function activate(context: ExtensionContext) {
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: debugOptions
+      options: debug ? debugOptions : {}
     }
   };
 
@@ -63,7 +63,7 @@ export function activate(context: ExtensionContext) {
   const disposableCommandDebug = commands.registerCommand(
     "extension.isDebugging",
     () => {
-      window.showInformationMessage(`is in debug mode: ${debug}`);
+      window.showInformationMessage(`is in debug mode: ${!!debug}`);
     }
   );
   context.subscriptions.push(disposableCommandDebug);
