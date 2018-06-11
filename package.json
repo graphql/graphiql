@@ -8,7 +8,7 @@
     "url": "https://github.com/divyenduz/ds"
   },
   "version": "0.0.5",
-  "publisher": "prisma",
+  "publisher": "Prisma",
   "engines": {
     "vscode": "^1.23.0"
   },
