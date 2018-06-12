@@ -19,6 +19,10 @@
     "Union definition": {
       "prefix": "uni",
       "body": ["union ${1:UnionName} = $2 | $3"]
+    },
+    "Fragment definition": {
+      "prefix": "fra",
+      "body": ["fragment ${1:FragmentName} on ${2:TypeName} {", "\t$3", "}"]
     }
   }
 }
