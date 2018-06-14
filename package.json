@@ -2,11 +2,16 @@
   "name": "vscode-graphql",
   "private": false,
   "displayName": "GraphQL",
-  "description": "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
+  "description":
+    "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
   "icon": "assets/images/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/prismagraphql/vscode-graphql"
+  },
+  "galleryBanner": {
+    "color": "#032539",
+    "theme": "dark"
   },
   "version": "0.0.8",
   "publisher": "Prisma",
@@ -33,14 +38,8 @@
     "languages": [
       {
         "id": "graphql",
-        "extensions": [
-          ".gql",
-          ".graphql"
-        ],
-        "aliases": [
-          "GraphQL",
-          "graphql"
-        ],
+        "extensions": [".gql", ".graphql"],
+        "aliases": ["GraphQL", "graphql"],
         "configuration": "./language/language-configuration.json"
       }
     ],
@@ -73,18 +72,13 @@
     ],
     "configuration": {
       "vscode-graphql.debug": {
-        "type": [
-          "boolean",
-          "null"
-        ],
+        "type": ["boolean", "null"],
         "title": "VSCode GraphQL - Debug Mode",
         "default": false,
         "description": "Enable debug logs"
       },
       "vscode-graphql.trace.server": {
-        "type": [
-          "string"
-        ],
+        "type": ["string"],
         "title": "VSCode GraphQL - Trace Language Server",
         "default": "off",
         "description": "Enable tracing for language server"
