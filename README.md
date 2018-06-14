@@ -1,6 +1,6 @@
 # VSCode GraphQL
 
-GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Ecosystem](https://www.prisma.io/docs/graphql-ecosystem/) with VSCode for an awesome developer experience.
+GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ecosystem](https://www.prisma.io/docs/graphql-ecosystem/) with VSCode for an awesome developer experience.
 
 ## Features
 
@@ -31,6 +31,8 @@ GraphQL extension VSCode built with an aim to tightly integrate the [GraphQL Eco
 
 Just install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql). This extension adds syntax highlighting and IntelliSense for graphql files and `gql` tags.
 
+**This extension requires a valid `.graphqlconfig.yml` file in the project root.** You can read more about that [here](https://github.com/prismagraphql/graphql-config).
+
 To support language features like "go-to definition" across multiple files, please include `includes` key in the graphql-config per project. For example,
 
 ```yaml
@@ -41,16 +43,15 @@ projects:
     extensions:
       endpoints:
         default: http://localhost:4000
-  prisma:
-    schemaPath: src/generated/prisma.graphql
+  db:
+    schemaPath: src/generated/db.graphql
     includes: ["**/*.graphql"]
     extensions:
-      prisma: prisma/prisma.yml
       codegen:
-      - generator: prisma-binding
+      - generator: graphql-binding
         language: typescript
         output:
-          binding: src/generated/prisma.ts
+          binding: src/generated/db.ts
 ```
 
 Notice that `includes` key supports glob pattern and hence
@@ -82,18 +83,19 @@ Finally, run the `Select TypeScript version` command in VS Code to switch to use
 
 Testing GraphQL Language Features
 
-1.  Clone the repository - https://github.com/prismagraphql/vscode-graphql
-1.  `npm install`
-1.  Open it in VSCode
-1.  Go to debugging section and run the launch program "Extension"
-1.  This will open another VSCode instance with extension enabled - open a project with graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
+1. Clone the repository - https://github.com/prismagraphql/vscode-graphql
+1. `npm install`
+1. Open it in VSCode
+1. Go to the debugging section and run the launch program "Extension"
+1. This will open another VSCode instance with extension enabled
+1. Open a project with a graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
 
 Testing TypeScript GraphQL Plugin Features
 
-1.  Go to `vscode-graphql/ts-graphql-plugin`
-1.  `npm install` and `npm link`
-1.  Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
-1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
+1. Go to `vscode-graphql/ts-graphql-plugin`
+1. `npm install` and `npm link`
+1. Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
+1. Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
 
 ## License 
 
