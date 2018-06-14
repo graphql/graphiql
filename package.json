@@ -3,6 +3,7 @@
   "private": true,
   "displayName": "vscode-graphql",
   "description": "GraphQL Awesomeness for VSCode",
+  "icon": "./assets/image/logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/divyenduz/ds"
