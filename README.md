@@ -33,7 +33,7 @@ Just install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com
 
 To support language features like "go-to definition" across multiple files, please include `includes` key in the graphql-config per project. For example,
 
-```
+```yaml
 projects:
   app:
     schemaPath: src/schema.graphql
@@ -54,7 +54,7 @@ projects:
 ```
 
 Notice that `includes` key supports glob pattern and hence
-`[**/*.graphql]` is also valid.
+`["**/*.graphql"]` is also valid.
 
 If you want to use a [workspace version of TypeScript](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions) however, you must manually install the plugin along side the version of TypeScript in your workspace:
 
