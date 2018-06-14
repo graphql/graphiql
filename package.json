@@ -1,6 +1,7 @@
 {
   "name": "vscode-graphql",
   "private": false,
+  "license": "MIT",
   "displayName": "GraphQL",
   "description":
     "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
