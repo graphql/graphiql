@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/prismagraphql/vscode-graphql"
   },
+  "homepage": "https://github.com/prismagraphql/vscode-graphql/blob/master/README.md",
   "galleryBanner": {
     "color": "#032539",
     "theme": "dark"
