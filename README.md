@@ -9,7 +9,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ec
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
-- Support `graphql-config file` with one project and multiple projects
+- Support [`graphql-config`](https://github.com/prismagraphql/graphql-config) files with one project and multiple projects
 
 ### `.graphql`, `.gql` file extension support
 
@@ -81,22 +81,39 @@ Finally, run the `Select TypeScript version` command in VS Code to switch to use
 
 ## Development
 
-Testing GraphQL Language Features
+This plugin uses two language services based on the context.
 
-1. Clone the repository - https://github.com/prismagraphql/vscode-graphql
-1. `npm install`
-1. Open it in VSCode
-1. Go to the debugging section and run the launch program "Extension"
-1. This will open another VSCode instance with extension enabled
-1. Open a project with a graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
+1.  [GraphQL language service](https://github.com/graphql/graphql-language-service) when in `.graphql`, `.gql` files
+1.  Augmentation of [GraphQL language service in TypeScript](https://github.com/divyenduz/ts-graphql-plugin) language service when using `gql` tag in `.ts`/`.js`/`.tsx`/`.jsx` files based on [this documentation](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin).
 
-Testing TypeScript GraphQL Plugin Features
+Setup and logging for development are different for these language services as documented below.
 
-1. Go to `vscode-graphql/ts-graphql-plugin`
-1. `npm install` and `npm link`
-1. Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
-1. Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
+### A. Testing/logging GraphQL Language Features
 
-## License 
+1.  Clone the repository - https://github.com/prismagraphql/vscode-graphql
+1.  `npm install`
+1.  Open it in VSCode
+1.  Go to the debugging section and run the launch program "Extension"
+1.  This will open another VSCode instance with extension enabled
+1.  Open a project with a graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
+1.  Logs for GraphQL language service will appear in output section under GraphQL Language Service
+    ![GraphQL Language Service Logging](https://s3-ap-southeast-1.amazonaws.com/divyendusingh/vscode-graphql/Screen+Shot+2018-06-25+at+12.31.57+PM.png)
+
+### B. Testing/logging TypeScript GraphQL Plugin Features
+
+1.  Go to `vscode-graphql/ts-graphql-plugin`
+1.  `npm install` and `npm link`
+1.  Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
+1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
+1.  To see the logs of TypeScript language service, instructions are [documented here](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#debugging). We need to set `TSS_LOG` environment variable to log to a file (see below) and then open VSCode through command line for it to pick up the `TSS_LOG` exported variable and then we can tail the file.
+
+```
+export TSS_LOG=-logToFile true -file <absolute-path> -level verbose
+cd <graphql-project-path>
+code .
+tail -f <absolute-path> | grep [\"ts-graphql-plugin\"]
+```
+
+## License
 
 MIT
