@@ -195,11 +195,11 @@
       "comment":
         "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
       "name": "comment.line.graphql",
-      "match": "\\s*#.*"
+      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
     },
     "graphql-description-singleline": {
       "name": "comment.line.number-sign.graphql",
-      "match": "#.*$"
+      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
     },
     "graphql-description-docstring": {
       "name": "comment.block.graphql",
