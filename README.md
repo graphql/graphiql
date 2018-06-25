@@ -9,7 +9,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ec
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
-- Support `graphql-config file` with one project and multiple projects
+- Support [`graphql-config`](https://github.com/prismagraphql/graphql-config) files with one project and multiple projects
 
 ### `.graphql`, `.gql` file extension support
 
