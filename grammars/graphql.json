@@ -195,38 +195,16 @@
       "comment":
         "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
       "name": "comment.line.graphql",
-      "match": "\\s*#.*"
+      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
     },
     "graphql-description-singleline": {
-      "comment":
-        "In new graphql spec 0.12.0, the description have to be specified as doc-strings or single-line text in double quotes",
-      "name": "graphql.description",
-      "match": "^\\s*(\"(?:\"\")?)([^\"].*)(\"(?:\"\")?)$",
-      "captures": {
-        "1": { "name": "comment.quoted.double.graphql.begin" },
-        "2": { "name": "comment.description.graphql" },
-        "3": { "name": "comment.quoted.double.graphql.end" }
-      }
+      "name": "comment.line.number-sign.graphql",
+      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
     },
     "graphql-description-docstring": {
-      "comment":
-        "In new graphql spec 0.12.0, the description have to be specified as doc-strings or single-line text in double quotes",
-      "name": "graphql.description",
-      "begin": "(\"\"\")(?:$|(.*))",
-      "beginCaptures": {
-        "1": { "name": "comment.quoted.double.graphql.begin" },
-        "2": { "name": "comment.block.description.graphql" }
-      },
-      "end": "^\\s*(\"\"\")$",
-      "endCaptures": {
-        "1": { "name": "comment.quoted.double.graphql.end" }
-      },
-      "patterns": [
-        {
-          "name": "comment.block.description.graphql",
-          "match": "^\\s*.*$"
-        }
-      ]
+      "name": "comment.block.graphql",
+      "begin": "\"\"\"",
+      "end": "\"\"\""
     },
     "graphql-variable-definitions": {
       "begin": "\\s*(\\()",
