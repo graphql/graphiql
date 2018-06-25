@@ -15,7 +15,7 @@
     "color": "#032539",
     "theme": "dark"
   },
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "Prisma",
   "engines": {
     "vscode": "^1.23.0"
