@@ -1,6 +1,12 @@
 "use strict";
 import * as path from "path";
-import { workspace, ExtensionContext, window, commands } from "vscode";
+import {
+  workspace,
+  ExtensionContext,
+  window,
+  commands,
+  OutputChannel
+} from "vscode";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -18,6 +24,9 @@ function getConfig() {
 }
 
 export function activate(context: ExtensionContext) {
+  let outputChannel: OutputChannel = window.createOutputChannel(
+    "GraphQL Language Server"
+  );
   const config = getConfig();
   const { debug } = config;
   if (debug) {
@@ -46,6 +55,7 @@ export function activate(context: ExtensionContext) {
     synchronize: {
       fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql}")
     },
+    outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server"
   };
 
@@ -63,7 +73,7 @@ export function activate(context: ExtensionContext) {
   const disposableCommandDebug = commands.registerCommand(
     "extension.isDebugging",
     () => {
-      window.showInformationMessage(`is in debug mode: ${!!debug}`);
+      outputChannel.appendLine(`is in debug mode: ${!!debug}`);
     }
   );
   context.subscriptions.push(disposableCommandDebug);
