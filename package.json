@@ -24,8 +24,7 @@
     "Snippets",
     "Linters",
     "Themes",
-    "Other",
-    "Language Packs"
+    "Other"
   ],
   "activationEvents": [
     "onCommand:extension.isDebugging",
