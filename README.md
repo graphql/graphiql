@@ -62,7 +62,7 @@ Notice that `includes` key supports glob pattern and hence
 If you want to use a [workspace version of TypeScript](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions) however, you must manually install the plugin along side the version of TypeScript in your workspace:
 
 ```bash
-npm install --save-dev ts-graphql-plugin
+npm install --save-dev @divyenduz/ts-graphql-plugin
 ```
 
 Then add a `plugins` section to your [`tsconfig.json`](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or [`jsconfig.json`](https://code.visualstudio.com/Docs/languages/javascript#_javascript-project-jsconfigjson)
@@ -72,7 +72,7 @@ Then add a `plugins` section to your [`tsconfig.json`](http://www.typescriptlang
   "compilerOptions": {
     "plugins": [
       {
-        "name": "ts-graphql-plugin"
+        "name": "@divyenduz/ts-graphql-plugin"
       }
     ]
   }
@@ -103,9 +103,9 @@ Setup and logging for development are different for these language services as d
 
 ### B. Testing/logging TypeScript GraphQL Plugin Features
 
-1.  Go to `vscode-graphql/ts-graphql-plugin`
+1.  Clone [ts-graphql-plugin](https://github.com/divyenduz/ts-graphql-plugin) and go to its directory. 
 1.  `npm install` and `npm link`
-1.  Use `npm link ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
+1.  Use `npm link @divyenduz/ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
 1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
 1.  To see the logs of TypeScript language service, instructions are [documented here](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#debugging). We need to set `TSS_LOG` environment variable to log to a file (see below) and then open VSCode through command line for it to pick up the `TSS_LOG` exported variable and then we can tail the file.
 
