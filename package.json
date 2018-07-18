@@ -1,18 +1,19 @@
 {
-  "name": "graphiql",
-  "version": "0.11.11",
-  "description": "An graphical interactive in-browser GraphQL IDE.",
+  "name": "hasura-console-graphiql",
+  "version": "0.0.1",
+  "description": "A fork of GraphiQL for the console of Hasura GraphQL Engine.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)",
+    "Rishichandra Wawhal <rishichandra.wawhal@gmail.com>"
   ],
-  "homepage": "https://github.com/graphql/graphiql",
+  "homepage": "https://github.com/hasura/graphiql",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues"
+    "url": "https://github.com/hasura/graphiql/issues"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/graphql/graphiql.git"
+    "url": "http://github.com/hasura/graphiql.git"
   },
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/index.js",
@@ -38,7 +39,6 @@
     "lint": "eslint src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "precommit": "npm run testonly && lint-staged",
-    "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "npm run lint && npm run check && npm run testonly && npm run build",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"

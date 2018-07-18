@@ -575,7 +575,7 @@ export class GraphiQL extends React.Component {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error && String(error.stack || error),
+            response: this.makeSubscriptionErrorResponse(error),
             subscription: null,
           });
         },
@@ -592,6 +592,18 @@ export class GraphiQL extends React.Component {
       throw new Error('Fetcher did not return Promise or Observable.');
     }
   }
+
+  makeSubscriptionErrorResponse = error => {
+    const errorResp = {
+      errors: [],
+    };
+    if (error.originalError) {
+      errorResp.errors.push(error.originalError);
+    } else {
+      errorResp.errors.push(error);
+    }
+    return JSON.stringify(errorResp, null, 2);
+  };
 
   handleClickReference = reference => {
     this.setState({ docExplorerOpen: true }, () => {
@@ -643,7 +655,9 @@ export class GraphiQL extends React.Component {
     } catch (error) {
       this.setState({
         isWaitingForResponse: false,
-        response: error.message,
+        response: error.message
+          ? JSON.stringify(error.message, null, 2)
+          : JSON.stringify(error, null, 2),
       });
     }
   };
