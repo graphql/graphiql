@@ -9,6 +9,7 @@
 import {
   getNamedType,
   isLeafType,
+  getNullableType,
   parse,
   print,
   TypeInfo,
@@ -97,7 +98,7 @@ function defaultGetDefaultFieldNames(type) {
   // Include all leaf-type fields.
   const leafFieldNames = [];
   Object.keys(fields).forEach(fieldName => {
-    if (isLeafType(fields[fieldName].type)) {
+    if (isLeafType(getNullableType(fields[fieldName].type))) {
       leafFieldNames.push(fieldName);
     }
   });
