@@ -110,7 +110,7 @@ Setup and logging for development are different for these language services as d
 1.  To see the logs of TypeScript language service, instructions are [documented here](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#debugging). We need to set `TSS_LOG` environment variable to log to a file (see below) and then open VSCode through command line for it to pick up the `TSS_LOG` exported variable and then we can tail the file.
 
 ```
-export TSS_LOG=-logToFile true -file <absolute-path> -level verbose
+export TSS_LOG="-logToFile true -file <absolute-path> -level verbose"
 cd <graphql-project-path>
 code .
 tail -f <absolute-path> | grep [\"ts-graphql-plugin\"]
