@@ -142,8 +142,9 @@ export class VariableEditor extends React.Component {
       this.props.value !== prevProps.value &&
       this.props.value !== this.cachedValue
     ) {
-      this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value);
+      const thisValue = this.props.value || '';
+      this.cachedValue = thisValue;
+      this.editor.setValue(thisValue);
     }
     this.ignoreChangeEvent = false;
   }
