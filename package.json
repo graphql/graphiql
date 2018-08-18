@@ -1,8 +1,13 @@
 {
   "name": "vscode-graphql",
+  "version": "0.1.4",
+  "preview": true,
   "private": false,
   "license": "MIT",
   "displayName": "GraphQL",
+  "keywords": [
+    "multi-root ready"
+  ],
   "description": "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
   "icon": "assets/images/logo.png",
   "repository": {
@@ -14,10 +19,9 @@
     "color": "#032539",
     "theme": "dark"
   },
-  "version": "0.0.9",
   "publisher": "Prisma",
   "engines": {
-    "vscode": "^1.23.0"
+    "vscode": "^1.25.0"
   },
   "categories": [
     "Programming Languages",
@@ -28,6 +32,7 @@
   ],
   "activationEvents": [
     "onCommand:extension.isDebugging",
+    "onCommand:extension.contentProvider",
     "onLanguage:graphql",
     "workspaceContains:**/.graphqlconfig",
     "workspaceContains:**/.graphqlconfig.yml",
@@ -99,6 +104,10 @@
       {
         "command": "extension.isDebugging",
         "title": "VSCode GraphQL - Is Debugging?"
+      },
+      {
+        "command": "extension.contentProvider",
+        "title": "Execute GraphQL Operations"
       }
     ],
     "typescriptServerPlugins": [
@@ -109,26 +118,38 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "rimraf out && tsc -p ./",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "package": "vsce package"
   },
   "devDependencies": {
-    "@types/graphql": "0.12.3",
+    "@types/capitalize": "^1.0.1",
+    "@types/graphql": "0.13.2",
     "@types/mocha": "^2.2.42",
     "@types/node": "^7.0.43",
+    "@types/ws": "^5.1.2",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
+    "vsce": "^1.45.1",
     "vscode": "^1.1.6"
   },
   "dependencies": {
-    "@divyenduz/ts-graphql-plugin": "0.0.6",
+    "@divyenduz/graphql-language-service-server": "1.2.6",
+    "@divyenduz/ts-graphql-plugin": "0.1.0",
+    "apollo-cache-inmemory": "^1.2.6",
+    "apollo-client": "2.3.5",
+    "apollo-link-ws": "^1.0.8",
     "babel-polyfill": "^6.26.0",
-    "graphql": "0.12.3",
+    "capitalize": "^1.0.0",
+    "graphql": "0.13.2",
+    "graphql-config": "^2.1.0",
     "graphql-config-extension-prisma": "0.1.0",
-    "@divyenduz/graphql-language-service-server": "1.2.3",
-    "vscode-languageclient": "^4.1.3"
+    "graphql-tag": "^2.9.2",
+    "http-link-dataloader": "^0.1.3",
+    "subscriptions-transport-ws": "^0.9.14",
+    "vscode-languageclient": "^4.1.3",
+    "ws": "^6.0.0"
   }
 }

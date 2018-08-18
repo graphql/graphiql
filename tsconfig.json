@@ -9,10 +9,11 @@
     /* Strict Type-Checking Option */
     "strict": true /* enable all strict type-checking options */,
     /* Additional Checks */
-    "noUnusedLocals": true /* Report errors on unused locals. */
+    "noUnusedLocals": true /* Report errors on unused locals. */,
     // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
     // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
     // "noUnusedParameters": true,  /* Report errors on unused parameters. */
+    "noImplicitAny": false
   },
   "exclude": ["node_modules", ".vscode-test", "ts-graphql-plugin"]
 }

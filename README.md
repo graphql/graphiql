@@ -113,7 +113,7 @@ Setup and logging for development are different for these language services as d
 export TSS_LOG="-logToFile true -file <absolute-path> -level verbose"
 cd <graphql-project-path>
 code .
-tail -f <absolute-path> | grep [\"ts-graphql-plugin\"]
+tail -f <absolute-path> | grep ts-graphql-plugin-log
 ```
 
 ## License

@@ -5,7 +5,10 @@ import {
   ExtensionContext,
   window,
   commands,
-  OutputChannel
+  OutputChannel,
+  languages,
+  Uri,
+  ViewColumn
 } from "vscode";
 import {
   LanguageClient,
@@ -16,6 +19,10 @@ import {
 
 import statusBarItem, { initStatusBar } from "./status";
 
+import { GraphQLContentProvider } from "./client/graphql-content-provider";
+import { GraphQLCodeLensProvider } from "./client/graphql-codelens-provider";
+import { ExtractedTemplateLiteral } from "./client/source-helper";
+
 function getConfig() {
   return workspace.getConfiguration(
     "vscode-graphql",
@@ -23,7 +30,7 @@ function getConfig() {
   );
 }
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   let outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Language Server"
   );
@@ -70,19 +77,58 @@ export function activate(context: ExtensionContext) {
   const disposableClient = client.start();
   context.subscriptions.push(disposableClient);
 
-  const disposableCommandDebug = commands.registerCommand(
+  const commandIsDebugging = commands.registerCommand(
     "extension.isDebugging",
     () => {
       outputChannel.appendLine(`is in debug mode: ${!!debug}`);
     }
   );
-  context.subscriptions.push(disposableCommandDebug);
+  context.subscriptions.push(commandIsDebugging);
 
   // Manage Status Bar
   context.subscriptions.push(statusBarItem);
   client.onReady().then(() => {
     initStatusBar(statusBarItem, client, window.activeTextEditor);
   });
+
+  context.subscriptions.push(
+    languages.registerCodeLensProvider(
+      ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+      new GraphQLCodeLensProvider(outputChannel)
+    )
+  );
+
+  const commandContentProvider = commands.registerCommand(
+    "extension.contentProvider",
+    (literal: ExtractedTemplateLiteral) => {
+      const uri = Uri.parse("graphql://authority/graphql");
+      const contentProvider = new GraphQLContentProvider(
+        uri,
+        outputChannel,
+        literal
+      );
+      const registration = workspace.registerTextDocumentContentProvider(
+        "graphql",
+        contentProvider
+      );
+      context.subscriptions.push(registration);
+
+      return commands
+        .executeCommand(
+          "vscode.previewHtml",
+          uri,
+          ViewColumn.Two,
+          "GraphQL Content Provider"
+        )
+        .then(
+          _ => {},
+          _ => {
+            window.showErrorMessage("Error opening content.");
+          }
+        );
+    }
+  );
+  context.subscriptions.push(commandContentProvider);
 }
 
 export function deactivate() {
