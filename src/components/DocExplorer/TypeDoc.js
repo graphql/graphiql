@@ -80,7 +80,9 @@ export default class TypeDoc extends React.Component {
     let deprecatedFieldsDef;
     if (type.getFields) {
       const fieldMap = type.getFields();
-      const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+      const fields = Object.keys(fieldMap)
+        .sort((a, b) => a.localeCompare(b))
+        .map(name => fieldMap[name]);
       fieldsDef = (
         <div className="doc-category">
           <div className="doc-category-title">{'fields'}</div>
@@ -126,7 +128,9 @@ export default class TypeDoc extends React.Component {
     let valuesDef;
     let deprecatedValuesDef;
     if (type instanceof GraphQLEnumType) {
-      const values = type.getValues();
+      const values = type
+        .getValues()
+        .sort((a, b) => a.name.localeCompare(b.name));
       valuesDef = (
         <div className="doc-category">
           <div className="doc-category-title">{'values'}</div>
