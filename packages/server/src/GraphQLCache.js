@@ -23,10 +23,18 @@ import type {
 
 import fs from 'fs';
 import path from 'path';
-import {GraphQLSchema, extendSchema, parse, visit} from 'graphql';
+import {GraphQLSchema, Kind, extendSchema, parse, visit} from 'graphql';
 import nullthrows from 'nullthrows';
 
-import {
+import {getGraphQLConfig, GraphQLConfig, GraphQLEndpoint} from 'graphql-config';
+import {getQueryAndRange} from './MessageProcessor';
+import stringToHash from './stringToHash';
+import glob from 'glob';
+
+// Maximum files to read when processing GraphQL files.
+const MAX_READS = 200;
+
+const {
   DOCUMENT,
   FRAGMENT_DEFINITION,
   OBJECT_TYPE_DEFINITION,
@@ -42,14 +50,7 @@ import {
   ENUM_TYPE_EXTENSION,
   INPUT_OBJECT_TYPE_EXTENSION,
   DIRECTIVE_DEFINITION,
-} from 'graphql/language/kinds';
-import {getGraphQLConfig, GraphQLConfig, GraphQLEndpoint} from 'graphql-config';
-import {getQueryAndRange} from './MessageProcessor';
-import stringToHash from './stringToHash';
-import glob from 'glob';
-
-// Maximum files to read when processing GraphQL files.
-const MAX_READS = 200;
+} = Kind;
 
 export async function getGraphQLCache(
   configDir: Uri,
@@ -93,7 +94,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query);
+      parsedQuery = parse(query, {
+        allowLegacySDLImplementsInterfaces: true,
+        allowLegacySDLEmptyFields: true,
+      });
     } catch (error) {
       return [];
     }
@@ -193,7 +197,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query);
+      parsedQuery = parse(query, {
+        allowLegacySDLImplementsInterfaces: true,
+        allowLegacySDLEmptyFields: true,
+      });
     } catch (error) {
       return [];
     }
@@ -442,7 +449,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const cache = this._fragmentDefinitionsCache.get(rootDir);
     const asts = contents.map(({query}) => {
       try {
-        return {ast: parse(query), query};
+        return {
+          ast: parse(query, {
+            allowLegacySDLImplementsInterfaces: true,
+            allowLegacySDLEmptyFields: true,
+          }),
+          query,
+        };
       } catch (error) {
         return {ast: null, query};
       }
@@ -501,7 +514,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const cache = this._typeDefinitionsCache.get(rootDir);
     const asts = contents.map(({query}) => {
       try {
-        return {ast: parse(query), query};
+        return {
+          ast: parse(query, {
+            allowLegacySDLImplementsInterfaces: true,
+            allowLegacySDLEmptyFields: true,
+          }),
+          query,
+        };
       } catch (error) {
         return {ast: null, query};
       }
@@ -678,7 +697,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const customDirectives = projectConfig.extensions.customDirectives;
     if (customDirectives && schema) {
       const directivesSDL = customDirectives.join('\n\n');
-      schema = extendSchema(schema, parse(directivesSDL));
+      schema = extendSchema(
+        schema,
+        parse(directivesSDL, {
+          allowLegacySDLImplementsInterfaces: true,
+          allowLegacySDLEmptyFields: true,
+        }),
+      );
     }
 
     if (!schema) {
@@ -850,7 +875,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
               return;
             }
 
-            queries.forEach(({query}) => asts.push(parse(query)));
+            queries.forEach(({query}) =>
+              asts.push(
+                parse(query, {
+                  allowLegacySDLImplementsInterfaces: true,
+                  allowLegacySDLEmptyFields: true,
+                }),
+              ),
+            );
           } catch (_) {
             // If query has syntax errors, go ahead and still resolve
             // the filePath and the content, but leave ast empty.
