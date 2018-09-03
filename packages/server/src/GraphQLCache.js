@@ -424,7 +424,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const fileAndContent = exists
       ? await this.promiseToReadGraphQLFile(filePath)
       : null;
-    const graphQLFileInfo = {...fileAndContent, ...metrics};
 
     const existingFile = graphQLFileMap.get(filePath);
 
@@ -434,7 +433,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // For delete, check `exists` and splice the file out.
     if (existingFile && !exists) {
       graphQLFileMap.delete(filePath);
-    } else if (graphQLFileInfo) {
+    } else if (fileAndContent) {
+      const graphQLFileInfo = {...fileAndContent, ...metrics};
       graphQLFileMap.set(filePath, graphQLFileInfo);
     }
 
