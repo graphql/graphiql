@@ -28,7 +28,18 @@ import type {
 import type {Position} from 'graphql-language-service-utils';
 import type {Hover} from 'vscode-languageserver-types';
 
+import {Kind, parse, print} from 'graphql';
+import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
+import {getHoverInformation} from './getHoverInformation';
+import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
 import {
+  getDefinitionQueryResultForFragmentSpread,
+  getDefinitionQueryResultForDefinitionNode,
+  getDefinitionQueryResultForNamedType,
+} from './getDefinition';
+import {getASTNodeAtPosition} from 'graphql-language-service-utils';
+
+const {
   FRAGMENT_DEFINITION,
   OBJECT_TYPE_DEFINITION,
   INTERFACE_TYPE_DEFINITION,
@@ -46,18 +57,7 @@ import {
   FRAGMENT_SPREAD,
   OPERATION_DEFINITION,
   NAMED_TYPE,
-} from 'graphql/language/kinds';
-
-import {parse, print} from 'graphql';
-import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
-import {getHoverInformation} from './getHoverInformation';
-import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
-import {
-  getDefinitionQueryResultForFragmentSpread,
-  getDefinitionQueryResultForDefinitionNode,
-  getDefinitionQueryResultForNamedType,
-} from './getDefinition';
-import {getASTNodeAtPosition} from 'graphql-language-service-utils';
+} = Kind;
 
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;

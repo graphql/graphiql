@@ -14,9 +14,10 @@ import type {
   TokenKind,
 } from 'graphql-language-service-types';
 
-import {parse, visit} from 'graphql';
-import {INLINE_FRAGMENT} from 'graphql/language/kinds';
+import {Kind, parse, visit} from 'graphql';
 import {offsetToPosition} from 'graphql-language-service-utils';
+
+const {INLINE_FRAGMENT} = Kind;
 
 const OUTLINEABLE_KINDS = {
   Field: true,
