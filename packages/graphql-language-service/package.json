@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "1.2.2",
+  "version": "1.3.2",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -34,8 +34,8 @@
   "dependencies": {
     "babel-polyfill": "6.16.0",
     "graphql-config": "2.0.1",
-    "graphql-language-service-interface": "^1.2.2",
-    "graphql-language-service-server": "^1.2.2",
+    "graphql-language-service-interface": "^1.3.2",
+    "graphql-language-service-server": "^1.3.2",
     "graphql-language-service-utils": "^1.2.2",
     "yargs": "^3.32.0 || ^7.0.0"
   }
