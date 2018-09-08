@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 
 import Argument from './Argument';
 import TypeLink from './TypeLink';
+import MarkdownContent from './MarkdownContent';
 
 export default class SearchResults extends React.Component {
   static propTypes = {
@@ -71,7 +72,10 @@ export default class SearchResults extends React.Component {
           const field = fields[fieldName];
           let matchingArgs;
 
-          if (!isMatch(fieldName, searchValue)) {
+          if (
+            !isMatch(fieldName, searchValue) &&
+            !isMatch(field.description || '', searchValue)
+          ) {
             if (field.args && field.args.length) {
               matchingArgs = field.args.filter(arg =>
                 isMatch(arg.name, searchValue),
@@ -109,6 +113,10 @@ export default class SearchResults extends React.Component {
                 </span>,
                 ')',
               ]}
+              <MarkdownContent
+                className="doc-type-description"
+                markdown={field.description || 'No Description'}
+              />
             </div>
           );
 
