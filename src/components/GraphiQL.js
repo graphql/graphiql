@@ -407,7 +407,7 @@ export class GraphiQL extends React.Component {
     );
   }
 
-  onKeyDown(keyName, e, handle) {
+  onKeyDown(keyName) {
     if (keyName.toLowerCase() === 'ctrl+d') {
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerOpen: true });
