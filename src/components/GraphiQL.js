@@ -239,51 +239,6 @@ export class GraphiQL extends React.Component {
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
   }
 
-  onKeyUp(keyName, e, handle) {
-    console.log('test:onKeyUp', e, handle);
-    this.setState({
-      output: `onKeyUp ${keyName}`,
-    });
-  }
-
-  onKeyDown(keyName, e, handle) {
-    console.log('test:onKeyDown', keyName, e, handle);
-    if ('ctrl+d' == keyName.toLowerCase()) {
-      if (!this.state.docExplorerOpen) {
-        this.setState({ docExplorerOpen: true });
-      } else if (
-        this.state.docExplorerWidth >=
-        3 * DEFAULT_DOC_EXPLORER_WIDTH
-      ) {
-        this.setState({
-          docExplorerOpen: false,
-          docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
-        });
-      } else {
-        this.setState({ docExplorerWidth: 3 * DEFAULT_DOC_EXPLORER_WIDTH });
-      }
-    } else if ('ctrl+h' == keyName.toLowerCase()) {
-      let doccfg = { historyPaneOpen: !this.state.historyPaneOpen };
-      this.setState(doccfg);
-    } else if ('ctrl+q' == keyName.toLowerCase()) {
-      if (!this.state.variableEditorOpen) {
-        this.setState({ variableEditorOpen: true });
-      } else if (
-        this.state.variableEditorHeight >=
-        3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT
-      ) {
-        this.setState({
-          variableEditorOpen: false,
-          variableEditorHeight: DEFAULT_VARIABLE_EXPLORER_HEIGHT,
-        });
-      } else {
-        this.setState({
-          variableEditorHeight: 3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT,
-        });
-      }
-    }
-  }
-
   render() {
     const children = React.Children.toArray(this.props.children);
 
@@ -336,8 +291,7 @@ export class GraphiQL extends React.Component {
     return (
       <Hotkeys
         keyName="ctrl+d,ctrl+h,ctrl+q"
-        onKeyDown={this.onKeyDown.bind(this)}
-        onKeyUp={this.onKeyUp.bind(this)}>
+        onKeyDown={this.onKeyDown.bind(this)}>
         <div className="graphiql-container">
           <div className="historyPaneWrap" style={historyPaneStyle}>
             <QueryHistory
@@ -451,6 +405,42 @@ export class GraphiQL extends React.Component {
         </div>
       </Hotkeys>
     );
+  }
+
+  onKeyDown(keyName, e, handle) {
+    if (keyName.toLowerCase() === 'ctrl+d') {
+      if (!this.state.docExplorerOpen) {
+        this.setState({ docExplorerOpen: true });
+      } else if (
+        this.state.docExplorerWidth >=
+        3 * DEFAULT_DOC_EXPLORER_WIDTH
+      ) {
+        this.setState({
+          docExplorerOpen: false,
+          docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
+        });
+      } else {
+        this.setState({ docExplorerWidth: 3 * DEFAULT_DOC_EXPLORER_WIDTH });
+      }
+    } else if (keyName.toLowerCase() === 'ctrl+h') {
+      this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+    } else if (keyName.toLowerCase() === 'ctrl+q') {
+      if (!this.state.variableEditorOpen) {
+        this.setState({ variableEditorOpen: true });
+      } else if (
+        this.state.variableEditorHeight >=
+        3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT
+      ) {
+        this.setState({
+          variableEditorOpen: false,
+          variableEditorHeight: DEFAULT_VARIABLE_EXPLORER_HEIGHT,
+        });
+      } else {
+        this.setState({
+          variableEditorHeight: 3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT,
+        });
+      }
+    }
   }
 
   /**
