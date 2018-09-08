@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
 
+import Hotkeys from 'react-hot-keys';
 import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
@@ -35,6 +36,7 @@ import {
 } from '../utility/introspectionQueries';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
+const DEFAULT_VARIABLE_EXPLORER_HEIGHT = 200;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -111,7 +113,8 @@ export class GraphiQL extends React.Component {
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight:
-        Number(this._storage.get('variableEditorHeight')) || 200,
+        Number(this._storage.get('variableEditorHeight')) ||
+          DEFAULT_VARIABLE_EXPLORER_HEIGHT,
       docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
@@ -236,6 +239,51 @@ export class GraphiQL extends React.Component {
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
   }
 
+  onKeyUp(keyName, e, handle) {
+    console.log('test:onKeyUp', e, handle);
+    this.setState({
+      output: `onKeyUp ${keyName}`,
+    });
+  }
+
+  onKeyDown(keyName, e, handle) {
+    console.log('test:onKeyDown', keyName, e, handle);
+    if ('ctrl+d' == keyName.toLowerCase()) {
+      if (!this.state.docExplorerOpen) {
+        this.setState({ docExplorerOpen: true });
+      } else if (
+        this.state.docExplorerWidth >=
+        3 * DEFAULT_DOC_EXPLORER_WIDTH
+      ) {
+        this.setState({
+          docExplorerOpen: false,
+          docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
+        });
+      } else {
+        this.setState({ docExplorerWidth: 3 * DEFAULT_DOC_EXPLORER_WIDTH });
+      }
+    } else if ('ctrl+h' == keyName.toLowerCase()) {
+      let doccfg = { historyPaneOpen: !this.state.historyPaneOpen };
+      this.setState(doccfg);
+    } else if ('ctrl+q' == keyName.toLowerCase()) {
+      if (!this.state.variableEditorOpen) {
+        this.setState({ variableEditorOpen: true });
+      } else if (
+        this.state.variableEditorHeight >=
+        3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT
+      ) {
+        this.setState({
+          variableEditorOpen: false,
+          variableEditorHeight: DEFAULT_VARIABLE_EXPLORER_HEIGHT,
+        });
+      } else {
+        this.setState({
+          variableEditorHeight: 3 * DEFAULT_VARIABLE_EXPLORER_HEIGHT,
+        });
+      }
+    }
+  }
+
   render() {
     const children = React.Children.toArray(this.props.children);
 
@@ -286,141 +334,148 @@ export class GraphiQL extends React.Component {
     };
 
     return (
-      <div className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          <QueryHistory
-            operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
-            onSelectQuery={this.handleSelectHistoryQuery}
-            storage={this._storage}
-            queryID={this._editorQueryID}>
-            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
-              {'\u2715'}
-            </div>
-          </QueryHistory>
-        </div>
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen &&
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}>
-                {'Docs'}
-              </button>}
+      <Hotkeys
+        keyName="ctrl+d,ctrl+h,ctrl+q"
+        onKeyDown={this.onKeyDown.bind(this)}
+        onKeyUp={this.onKeyUp.bind(this)}>
+        <div className="graphiql-container">
+          <div className="historyPaneWrap" style={historyPaneStyle}>
+            <QueryHistory
+              operationName={this.state.operationName}
+              query={this.state.query}
+              variables={this.state.variables}
+              onSelectQuery={this.handleSelectHistoryQuery}
+              storage={this._storage}
+              queryID={this._editorQueryID}>
+              <div
+                className="docExplorerHide"
+                onClick={this.handleToggleHistory}>
+                {'\u2715'}
+              </div>
+            </QueryHistory>
           </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
-                schema={this.state.schema}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
-              />
-              <div className="variable-editor" style={variableStyle}>
-                <div
-                  className="variable-editor-title"
-                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
-                </div>
-                <VariableEditor
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              <div className="topBar">
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunQuery}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+                {toolbar}
+              </div>
+              {!this.state.docExplorerOpen &&
+                <button
+                  className="docExplorerShow"
+                  onClick={this.handleToggleDocs}>
+                  {'Docs'}
+                </button>}
+            </div>
+            <div
+              ref={n => {
+                this.editorBarComponent = n;
+              }}
+              className="editorBar"
+              onDoubleClick={this.handleResetResize}
+              onMouseDown={this.handleResizeStart}>
+              <div className="queryWrap" style={queryWrapStyle}>
+                <QueryEditor
                   ref={n => {
-                    this.variableEditorComponent = n;
+                    this.queryEditorComponent = n;
                   }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
+                  schema={this.state.schema}
+                  value={this.state.query}
+                  onEdit={this.handleEditQuery}
                   onHintInformationRender={this.handleHintInformationRender}
+                  onClickReference={this.handleClickReference}
                   onPrettifyQuery={this.handlePrettifyQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                 />
+                <div className="variable-editor" style={variableStyle}>
+                  <div
+                    className="variable-editor-title"
+                    style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                    onMouseDown={this.handleVariableResizeStart}>
+                    {'Query Variables'}
+                  </div>
+                  <VariableEditor
+                    ref={n => {
+                      this.variableEditorComponent = n;
+                    }}
+                    value={this.state.variables}
+                    variableToType={this.state.variableToType}
+                    onEdit={this.handleEditVariables}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                  />
+                </div>
+              </div>
+              <div className="resultWrap">
+                {this.state.isWaitingForResponse &&
+                  <div className="spinner-container">
+                    <div className="spinner" />
+                  </div>}
+                <ResultViewer
+                  ref={c => {
+                    this.resultComponent = c;
+                  }}
+                  value={this.state.response}
+                  editorTheme={this.props.editorTheme}
+                  ResultsTooltip={this.props.ResultsTooltip}
+                />
+                {footer}
               </div>
             </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse &&
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>}
-              <ResultViewer
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.state.response}
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-              />
-              {footer}
-            </div>
+          </div>
+          <div className={docExplorerWrapClasses} style={docWrapStyle}>
+            <div
+              className="docExplorerResizer"
+              onDoubleClick={this.handleDocsResetResize}
+              onMouseDown={this.handleDocsResizeStart}
+            />
+            <DocExplorer
+              ref={c => {
+                this.docExplorerComponent = c;
+              }}
+              schema={this.state.schema}>
+              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+                {'\u2715'}
+              </div>
+            </DocExplorer>
           </div>
         </div>
-        <div className={docExplorerWrapClasses} style={docWrapStyle}>
-          <div
-            className="docExplorerResizer"
-            onDoubleClick={this.handleDocsResetResize}
-            onMouseDown={this.handleDocsResizeStart}
-          />
-          <DocExplorer
-            ref={c => {
-              this.docExplorerComponent = c;
-            }}
-            schema={this.state.schema}>
-            <div className="docExplorerHide" onClick={this.handleToggleDocs}>
-              {'\u2715'}
-            </div>
-          </DocExplorer>
-        </div>
-      </div>
+      </Hotkeys>
     );
   }
 
   /**
-   * Get the query editor CodeMirror instance.
-   *
-   * @public
-   */
+     * Get the query editor CodeMirror instance.
+     *
+     * @public
+     */
   getQueryEditor() {
     return this.queryEditorComponent.getCodeMirror();
   }
 
   /**
-   * Get the variable editor CodeMirror instance.
-   *
-   * @public
-   */
+     * Get the variable editor CodeMirror instance.
+     *
+     * @public
+     */
   getVariableEditor() {
     return this.variableEditorComponent.getCodeMirror();
   }
 
   /**
-   * Refresh all CodeMirror instances.
-   *
-   * @public
-   */
+     * Refresh all CodeMirror instances.
+     *
+     * @public
+     */
   refresh() {
     this.queryEditorComponent.getCodeMirror().refresh();
     this.variableEditorComponent.getCodeMirror().refresh();
@@ -428,11 +483,11 @@ export class GraphiQL extends React.Component {
   }
 
   /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   *
-   * @public
-   */
+     * Inspect the query, automatically filling in selection sets for non-leaf
+     * fields which do not yet have them.
+     *
+     * @public
+     */
   autoCompleteLeafs() {
     const { insertions, result } = fillLeafs(
       this.state.schema,
@@ -1019,11 +1074,13 @@ const defaultQuery = `# Welcome to GraphiQL
 # Keyboard shortcuts:
 #
 #  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
 #       Run Query:  Ctrl-Enter (or press the play button above)
-#
 #   Auto Complete:  Ctrl-Space (or just start typing)
-#
+
+#  switch History Panel：Ctrl+H
+#  switch Docs Panel：Ctrl+D
+#  switch Query Variable panel：Ctrl+Q
+
 
 `;
 
