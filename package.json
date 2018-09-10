@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "preview": true,
   "private": false,
   "license": "MIT",
@@ -45,7 +45,8 @@
         "id": "graphql",
         "extensions": [
           ".gql",
-          ".graphql"
+          ".graphql",
+          ".prisma"
         ],
         "aliases": [
           "GraphQL",
@@ -145,7 +146,7 @@
     "capitalize": "^1.0.0",
     "graphql": "0.13.2",
     "graphql-config": "^2.1.0",
-    "graphql-config-extension-prisma": "0.1.0",
+    "graphql-config-extension-prisma": "0.2.1",
     "graphql-tag": "^2.9.2",
     "http-link-dataloader": "^0.1.3",
     "subscriptions-transport-ws": "^0.9.14",
