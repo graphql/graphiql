@@ -2285,6 +2285,10 @@ hosted-git-info@^2.1.4:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.4.2.tgz#0076b9f46a270506ddbaaea56496897460612a67"
 
+hotkeys-js@^3.3.1:
+  version "3.3.8"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.3.8.tgz#c8615cf4dd61b3f0b8cec9cc64831a2a9454d9c7"
+
 html-encoding-sniffer@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/html-encoding-sniffer/-/html-encoding-sniffer-1.0.1.tgz#79bf7a785ea495fe66165e734153f363ff5437da"
@@ -3645,6 +3649,12 @@ react-dom@15.5.4:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "~15.5.7"
+
+react-hot-keys@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-hot-keys/-/react-hot-keys-1.2.0.tgz#1ac434bfeb8da8b4955f0260e54dffe167c8b39e"
+  dependencies:
+    hotkeys-js "^3.3.1"
 
 react-test-renderer@15.6.1:
   version "15.6.1"
