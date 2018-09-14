@@ -307,7 +307,7 @@ mutation AddBWingQuery($input: IntroduceShipInput!) {
   }
 }
 ```
-Read more from [Relay Mutation Documentation](https://facebook.github.io/relay/docs/graphql-mutations.html).
+Read more from [Relay Mutation Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#mutations).
 
 **Fragment**
 
