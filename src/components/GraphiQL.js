@@ -67,6 +67,7 @@ export class GraphiQL extends React.Component {
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
+    readOnly: PropTypes.bool,
   };
 
   constructor(props) {
@@ -362,6 +363,7 @@ export class GraphiQL extends React.Component {
                 onMergeQuery={this.handleMergeQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
+                readOnly={this.props.readOnly}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -382,6 +384,7 @@ export class GraphiQL extends React.Component {
                   onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
                 />
               </div>
             </div>

@@ -100,6 +100,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `editorTheme`: an optional string naming a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. Defaults to the `graphiql` theme. See below for full usage.
 
+- `readOnly`: an optional boolean which when `true` will make the `QueryEditor` and `Variables` panes readOnly.
+
 **Children:**
 
 * `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
