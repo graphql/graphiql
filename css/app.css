@@ -161,7 +161,7 @@
 .graphiql-container .variable-editor {
   display: flex;
   flex-direction: column;
-  height: 29px;
+  height: 30px;
   position: relative;
 }
 

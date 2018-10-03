@@ -1,19 +1,18 @@
 {
-  "name": "hasura-console-graphiql",
-  "version": "0.0.1",
-  "description": "A fork of GraphiQL for the console of Hasura GraphQL Engine.",
+  "name": "graphiql",
+  "version": "0.12.0",
+  "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)",
-    "Rishichandra Wawhal <rishichandra.wawhal@gmail.com>"
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
-  "homepage": "https://github.com/hasura/graphiql",
+  "homepage": "https://github.com/graphql/graphiql",
   "bugs": {
-    "url": "https://github.com/hasura/graphiql/issues"
+    "url": "https://github.com/graphql/graphiql/issues"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/hasura/graphiql.git"
+    "url": "http://github.com/graphql/graphiql.git"
   },
   "license": "SEE LICENSE IN LICENSE",
   "main": "dist/index.js",
@@ -39,6 +38,7 @@
     "lint": "eslint src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "precommit": "npm run testonly && lint-staged",
+    "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "npm run lint && npm run check && npm run testonly && npm run build",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
@@ -51,11 +51,11 @@
   },
   "dependencies": {
     "codemirror": "^5.26.0",
-    "codemirror-graphql": "^0.6.11",
+    "codemirror-graphql": "^0.7.1",
     "markdown-it": "^8.4.0"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0",
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0",
     "prop-types": ">=15.5.0",
     "react": "^15.6.0 || ^16.0.0",
     "react-dom": "^15.6.0 || ^16.0.0"
@@ -82,7 +82,7 @@
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.7",
     "flow-bin": "0.52.0",
-    "graphql": "^0.10.1",
+    "graphql": "0.13.2",
     "husky": "^0.14.0",
     "jsdom": "11.1.0",
     "lint-staged": "^4.0.0",

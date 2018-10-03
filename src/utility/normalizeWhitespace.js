@@ -1,8 +1,7 @@
 /**
- *  Copyright (c) Facebook, Inc.
- *  All rights reserved.
+ *  Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the license found in the
+ *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
 
@@ -12,7 +11,7 @@ export const invalidCharacters = Array.from({ length: 11 }, (x, i) => {
   return String.fromCharCode(0x2000 + i);
 }).concat(['\u2028', '\u2029', '\u202f']);
 
-const sanitizeRegex = new RegExp('[' + invalidCharacters.join('|') + ']', 'g');
+const sanitizeRegex = new RegExp('[' + invalidCharacters.join('') + ']', 'g');
 
 export function normalizeWhitespace(line) {
   return line.replace(sanitizeRegex, ' ');

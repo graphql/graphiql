@@ -1,8 +1,7 @@
 /**
- *  Copyright (c) Facebook, Inc.
- *  All rights reserved.
+ *  Copyright (c) Facebook, Inc. and its affiliates.
  *
- *  This source code is licensed under the license found in the
+ *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
 
@@ -142,8 +141,9 @@ export class VariableEditor extends React.Component {
       this.props.value !== prevProps.value &&
       this.props.value !== this.cachedValue
     ) {
-      this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value);
+      const thisValue = this.props.value || '';
+      this.cachedValue = thisValue;
+      this.editor.setValue(thisValue);
     }
     this.ignoreChangeEvent = false;
   }
