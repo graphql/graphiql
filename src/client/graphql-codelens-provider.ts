@@ -9,7 +9,6 @@ import {
 } from "vscode"
 
 import { SourceHelper, ExtractedTemplateLiteral } from "./source-helper"
-import { OperationDefinitionNode } from "graphql"
 import * as capitalize from "capitalize"
 
 export class GraphQLCodeLensProvider implements CodeLensProvider {
@@ -37,7 +36,7 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
         ),
         {
           title: `Execute ${capitalize(
-            (literal.ast.definitions[0] as OperationDefinitionNode).operation,
+            literal.definition.operation,
           )}`,
           command: "extension.contentProvider",
           arguments: [literal],

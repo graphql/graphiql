@@ -6,6 +6,8 @@ import {
   VariableDefinitionNode,
   NamedTypeNode,
   ListTypeNode,
+  OperationDefinitionNode,
+  print,
 } from "graphql"
 
 export class SourceHelper {
@@ -79,6 +81,12 @@ export class SourceHelper {
     const text = document.getText()
     const documents: any[] = []
 
+    if (document.languageId === 'graphql') {
+      const text = document.getText();
+      processGraphQLString(text, 0);
+      return documents;
+    }
+
     tags.forEach(tag => {
       // https://regex101.com/r/Pd5PaU/2
       const regExpGQL = new RegExp(tag + "\\s*`([\\s\\S]+?)`", "mg")
@@ -92,33 +100,41 @@ export class SourceHelper {
           // We are ignoring operations with template variables for now
           continue
         }
-
-        let isLiteralParsableGraphQLOperation = true
-        let ast: DocumentNode | null = null
         try {
-          ast = parse(contents)
-          const isOperation = ast.definitions.some(
-            definition => definition.kind === "OperationDefinition",
-          )
-          isLiteralParsableGraphQLOperation = isOperation ? true : false
-        } catch (e) {
-          isLiteralParsableGraphQLOperation = false
-        }
-        const position = document.positionAt(result.index + 4)
-        if (isLiteralParsableGraphQLOperation) {
-          documents.push({
-            content: contents,
-            uri: document.uri.path,
-            position: position,
-            ast,
-          })
-        }
+          processGraphQLString(contents, result.index + 4);
+        } catch (e) { }
       }
     })
+    return documents;
 
-    return documents
+    function processGraphQLString(text: string, offset: number) {
+      try {
+        const ast = parse(text);
+        const operations = ast.definitions.filter(def => def.kind === 'OperationDefinition')
+        operations.forEach((op: any) => {
+          const filteredAst = {
+            ...ast,
+            definitions: ast.definitions.filter(def => {
+              if (def.kind === 'OperationDefinition' && def !== op) {
+                return false;
+              }
+              return true;
+            }),
+          }
+          const content = print(filteredAst)
+          documents.push({
+            content: content,
+            uri: document.uri.path,
+            position: document.positionAt(op.loc.start + offset),
+            definition: op,
+            ast: filteredAst
+          })
+        })
+      } catch (e) { }
+    }
   }
 }
+
 
 export type GraphQLScalarType = "String" | "Float" | "Int" | "Boolean" | string
 export type GraphQLScalarTSType = string | number | boolean
@@ -128,4 +144,5 @@ export interface ExtractedTemplateLiteral {
   uri: string
   position: Position
   ast: DocumentNode
+  definition: OperationDefinitionNode
 }

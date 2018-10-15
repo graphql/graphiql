@@ -93,7 +93,7 @@ export async function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     languages.registerCodeLensProvider(
-      ["javascript", "typescript", "javascriptreact", "typescriptreact"],
+      ["javascript", "typescript", "javascriptreact", "typescriptreact", "graphql"],
       new GraphQLCodeLensProvider(outputChannel)
     )
   );
