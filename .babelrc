@@ -1,12 +1,8 @@
 {
   "presets": [
-    "es2015",
-    "react"
+    ["@babel/preset-env", { "targets": "> 0.25%, not dead" }],
+    "@babel/react",
+    "@babel/preset-flow"
   ],
-  "plugins": [
-    "syntax-async-functions",
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "transform-regenerator"
-  ]
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }
