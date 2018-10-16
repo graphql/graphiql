@@ -203,6 +203,7 @@
     "prefer-const": 2,
     "prefer-reflect": 0,
     "prefer-spread": 0,
+    "quotes": [2, "single", { "avoidEscape": true }],
     "radix": 2,
     "require-yield": 2,
     "sort-vars": 0,
