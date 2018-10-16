@@ -111,7 +111,7 @@ export class GraphiQL extends React.Component {
             this._storage.get('operationName'),
             queryFacts && queryFacts.operations,
           );
-    
+
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
 
@@ -119,7 +119,7 @@ export class GraphiQL extends React.Component {
     if (this._storage.get('docExplorerOpen')) {
       docExplorerOpen = this.__storage.get('docExplorerOpen') === 'true';
     }
-    
+
     // Initialize state
     this.state = {
       schema: props.schema,
@@ -563,9 +563,7 @@ export class GraphiQL extends React.Component {
           this.setState({ schema, ...queryFacts });
         } else {
           const responseString =
-            typeof result === 'string'
-              ? result
-              : JSON.stringify(result, null, 2);
+            typeof result === 'string' ? result : GraphiQL.formatResult(result);
           this.setState({
             // Set schema to `null` to explicitly indicate that no schema exists.
             schema: null,
@@ -678,7 +676,7 @@ export class GraphiQL extends React.Component {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: JSON.stringify(result, null, 2),
+              response: GraphiQL.formatResult(result),
             });
           }
         },
@@ -1064,6 +1062,10 @@ GraphiQL.SelectOption = ToolbarSelectOption;
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = function GraphiQLFooter(props) {
   return <div className="footer">{props.children}</div>;
+};
+
+GraphiQL.formatResult = function(result) {
+  return JSON.stringify(result, null, 2);
 };
 
 const defaultQuery = `# Welcome to GraphiQL
