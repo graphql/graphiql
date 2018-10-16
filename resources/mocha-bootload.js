@@ -9,7 +9,10 @@
 var JSDOM = require('jsdom').JSDOM;
 
 // setup the simplest document possible
-var doc = new JSDOM('<!doctype html><html><body></body></html>');
+var doc = new JSDOM('<!doctype html><html><body></body></html>', {
+  url: 'http://localhost/',
+  pretendToBeVisual: true,
+});
 
 // get the window object out of the document
 var win = doc.window;
