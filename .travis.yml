@@ -1,7 +1,7 @@
 language: node_js
 node_js: stable
 before_install:
-- npm config set spin false --global
+  - npm config set spin false --global
 cache: yarn
 deploy:
   matrix:
