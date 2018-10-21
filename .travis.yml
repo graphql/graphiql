@@ -4,7 +4,6 @@ before_install:
   - npm config set spin false --global
 cache: yarn
 deploy:
-  matrix:
   - provider: npm
     skip_cleanup: true
     email: agomezs@fb.com
