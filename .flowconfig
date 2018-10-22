@@ -5,6 +5,7 @@
 .*/dist/.*
 .*/resources/.*
 .*/node_modules/conventional-changelog-core/*
+.*/node_modules/graphql/error/GraphQLError.js.flow
 
 [include]
 

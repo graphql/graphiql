@@ -52,7 +52,7 @@
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "fetch-mock": "^6.0.0",
     "flow-bin": "0.68.0",
-    "graphql": "^0.13.0",
+    "graphql": "^14.0.2",
     "graphql-language-service-interface": "^1.0.0-0",
     "graphql-language-service-parser": "^0.1.0-0",
     "graphql-language-service-server": "^1.0.0-0",
