@@ -6,6 +6,7 @@
 
 ## Specifications
 
+  - GraphQL for VSCode Extension Version: 
   - VSCode Version:
   - OS Name:
   - OS Version:
