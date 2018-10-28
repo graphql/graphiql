@@ -6,7 +6,7 @@ jobs:
       - image: circleci/node:8.12.0-browsers
     branches:
       only:
-        - ci-cd
+        - master
     steps:
       - checkout
       - run:
