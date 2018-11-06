@@ -22,6 +22,7 @@ import statusBarItem, { initStatusBar } from "./status";
 import { GraphQLContentProvider } from "./client/graphql-content-provider";
 import { GraphQLCodeLensProvider } from "./client/graphql-codelens-provider";
 import { ExtractedTemplateLiteral } from "./client/source-helper";
+import { CustomInitializationFailedHandler } from "./CustomInitializationFailedHandler";
 
 function getConfig() {
   return workspace.getConfiguration(
@@ -63,7 +64,10 @@ export async function activate(context: ExtensionContext) {
       fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql}")
     },
     outputChannel: outputChannel,
-    outputChannelName: "GraphQL Language Server"
+    outputChannelName: "GraphQL Language Server",
+    initializationFailedHandler: CustomInitializationFailedHandler(
+      outputChannel
+    )
   };
 
   const client = new LanguageClient(
@@ -93,7 +97,13 @@ export async function activate(context: ExtensionContext) {
 
   context.subscriptions.push(
     languages.registerCodeLensProvider(
-      ["javascript", "typescript", "javascriptreact", "typescriptreact", "graphql"],
+      [
+        "javascript",
+        "typescript",
+        "javascriptreact",
+        "typescriptreact",
+        "graphql"
+      ],
       new GraphQLCodeLensProvider(outputChannel)
     )
   );
