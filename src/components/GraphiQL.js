@@ -58,6 +58,7 @@ export class GraphiQL extends React.Component {
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
+    variableEditorOpen: PropTypes.bool,
     onToggleDocs: PropTypes.func,
     getDefaultFieldNames: PropTypes.func,
     editorTheme: PropTypes.string,
@@ -100,6 +101,11 @@ export class GraphiQL extends React.Component {
           queryFacts && queryFacts.operations,
         );
 
+    // Override show/hide of variables editor based on prop
+    const variableEditorOpen = props.variableEditorOpen !== undefined
+    ? props.variableEditorOpen
+    : Boolean(variables);
+
     // Initialize state
     this.state = {
       schema: props.schema,
@@ -108,7 +114,7 @@ export class GraphiQL extends React.Component {
       operationName,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      variableEditorOpen: Boolean(variables),
+      variableEditorOpen,
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
       docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
