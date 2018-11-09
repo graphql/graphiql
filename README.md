@@ -33,7 +33,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ec
 
 Just install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql). This extension adds syntax highlighting and IntelliSense for graphql files and `gql` tags.
 
-**This extension requires a valid `.graphqlconfig.yml` file in the project root.** You can read more about that [here](https://github.com/prismagraphql/graphql-config).
+**This extension requires a valid `.graphqlconfig` or `.graphqlconfig.yml` file in the project root.** You can read more about that [here](https://github.com/prismagraphql/graphql-config).
 
 To support language features like "go-to definition" across multiple files, please include `includes` key in the graphql-config per project. For example,
 
