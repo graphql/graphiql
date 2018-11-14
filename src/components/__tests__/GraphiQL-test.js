@@ -138,8 +138,8 @@ describe('GraphiQL', () => {
 
   it('accepts a variableEditorOpen param', () => {
     const graphiQL = ReactTestRenderer.create(
-      <GraphiQL fetcher={noOpFetcher} variableEditorOpen={true} />,
+      <GraphiQL fetcher={noOpFetcher} variableEditorOpen />,
     );
-    expect(graphiQL.getInstance().state.variableEditorOpen).to.be.true;
+    expect(graphiQL.getInstance().state.variableEditorOpen).to.equal(true);
   });
 });
