@@ -135,4 +135,11 @@ describe('GraphiQL', () => {
     );
     expect(graphiQL.getInstance().state.query).to.equal('GraphQL Party!!');
   });
+
+  it('accepts a variableEditorOpen param', () => {
+    const graphiQL = ReactTestRenderer.create(
+      <GraphiQL fetcher={noOpFetcher} variableEditorOpen={true} />,
+    );
+    expect(graphiQL.getInstance().state.variableEditorOpen).to.be.true;
+  });
 });
