@@ -118,7 +118,9 @@ export class QueryHistory extends React.Component {
       item.favorite = false;
       this.favoriteStore.delete(item);
     }
-    this.setState({ ...this.historyStore.items, ...this.favoriteStore.items });
+    this.setState({
+      queries: [...this.historyStore.items, ...this.favoriteStore.items],
+    });
   };
 
   editLabel = (query, variables, operationName, label, favorite) => {
@@ -133,6 +135,8 @@ export class QueryHistory extends React.Component {
     } else {
       this.historyStore.edit(item);
     }
-    this.setState({ ...this.historyStore.items, ...this.favoriteStore.items });
+    this.setState({
+      queries: [...this.historyStore.items, ...this.favoriteStore.items],
+    });
   };
 }
