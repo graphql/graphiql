@@ -11,6 +11,8 @@
 import {expect} from 'chai';
 import {beforeEach, describe, it} from 'mocha';
 import {join} from 'path';
+import * as fs from 'fs';
+import {buildSchema} from 'graphql';
 
 import {GraphQLConfig} from 'graphql-config';
 import {GraphQLLanguageService} from '../GraphQLLanguageService';
@@ -22,6 +24,15 @@ const MOCK_CONFIG = {
 
 describe('GraphQLLanguageService', () => {
   const mockCache: any = {
+    getSchema() {
+      const schemaSDL = fs.readFileSync(
+        join(__dirname, '__schema__/StarWarsSchema.graphql'),
+        'utf8',
+      );
+      const schemaJS = buildSchema(schemaSDL);
+      return new Promise((resolve, reject) => resolve(schemaJS));
+    },
+
     getGraphQLConfig() {
       return new GraphQLConfig(MOCK_CONFIG, join(__dirname, '.graphqlconfig'));
     },
@@ -87,5 +98,16 @@ describe('GraphQLLanguageService', () => {
       './queries/definitionQuery.graphql',
     );
     expect(definitionQueryResult.definitions.length).to.equal(1);
+  });
+
+  it('runs hover service as expected', async () => {
+    const hoverInformation = await languageService.getHoverInformation(
+      'type Query { hero(episode: String): String }',
+      {line: 0, character: 28},
+      './queries/definitionQuery.graphql',
+    );
+    expect(hoverInformation).to.equal(
+      'String\n\nThe `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.',
+    );
   });
 });
