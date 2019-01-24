@@ -37,6 +37,7 @@ export class QueryEditor extends React.Component {
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
+    onMergeQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
   };
@@ -124,6 +125,12 @@ export class QueryEditor extends React.Component {
         'Shift-Ctrl-P': () => {
           if (this.props.onPrettifyQuery) {
             this.props.onPrettifyQuery();
+          }
+        },
+
+        'Shift-Ctrl-M': () => {
+          if (this.props.onMergeQuery) {
+            this.props.onMergeQuery();
           }
         },
 

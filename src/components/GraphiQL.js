@@ -28,6 +28,7 @@ import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
+import { mergeAst } from '../utility/mergeAst';
 import {
   introspectionQuery,
   introspectionQuerySansSubscriptions,
@@ -251,6 +252,11 @@ export class GraphiQL extends React.Component {
           label="Prettify"
         />
         <ToolbarButton
+          onClick={this.handleMergeQuery}
+          title="Merge Query (Shift-Ctrl-M)"
+          label="Merge"
+        />
+        <ToolbarButton
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
@@ -336,6 +342,7 @@ export class GraphiQL extends React.Component {
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
                 onPrettifyQuery={this.handlePrettifyQuery}
+                onMergeQuery={this.handleMergeQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
               />
@@ -355,6 +362,7 @@ export class GraphiQL extends React.Component {
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
                   onPrettifyQuery={this.handlePrettifyQuery}
+                  onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                 />
@@ -694,6 +702,18 @@ export class GraphiQL extends React.Component {
     editor.setValue(print(parse(editor.getValue())));
   };
 
+  handleMergeQuery = () => {
+    const editor = this.getQueryEditor();
+    const query = editor.getValue();
+
+    if (!query) {
+      return;
+    }
+
+    const ast = parse(query);
+    editor.setValue(print(mergeAst(ast)));
+  };
+
   handleEditQuery = debounce(100, value => {
     const queryFacts = this._updateQueryFacts(
       value,
@@ -1018,6 +1038,8 @@ const defaultQuery = `# Welcome to GraphiQL
 # Keyboard shortcuts:
 #
 #  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
+#
+#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
 #
 #       Run Query:  Ctrl-Enter (or press the play button above)
 #
