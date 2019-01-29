@@ -13,9 +13,17 @@ function resolveDefinition(fragments, obj) {
   }
 
   if (definition.selectionSet) {
-    definition.selectionSet.selections = definition.selectionSet.selections.map(
-      selection => resolveDefinition(fragments, selection),
-    );
+    definition.selectionSet.selections = definition.selectionSet.selections
+      .filter((selection, idx, self) => 
+        selection.kind !== Kind.FRAGMENT_SPREAD || 
+        idx === self.findIndex(_selection => (
+          _selection.kind === Kind.FRAGMENT_SPREAD &&
+          selection.name.value === _selection.name.value
+        ))
+      )
+      .map(
+        selection => resolveDefinition(fragments, selection),
+      );
   }
 
   return definition;

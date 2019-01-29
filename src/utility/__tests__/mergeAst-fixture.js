@@ -20,10 +20,10 @@ export const fixtures = [
     desc: 'inlines simple nested fragment',
     query: `
       query Test {
-        ...Frag1
+        ...Fragment1
       }
       
-      fragment Frag1 on Test {
+      fragment Fragment1 on Test {
         id
       }`,
     mergedQuery: `
@@ -90,6 +90,24 @@ export const fixtures = [
         ...on Test {
           id
         }
+        ...on Test {
+          id
+        }
+      }`,
+  },
+  {
+    desc: 'removes duplicate fragment spreads',
+    query: `
+      query Test {
+        ...Fragment1
+        ...Fragment1
+      }
+      
+      fragment Fragment1 on Test {
+        id
+      }`,
+    mergedQuery: `
+      query Test {
         ...on Test {
           id
         }
