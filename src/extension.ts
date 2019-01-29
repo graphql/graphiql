@@ -1,5 +1,7 @@
 "use strict";
 import * as path from "path";
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import {
   workspace,
   ExtensionContext,
@@ -31,6 +33,22 @@ function getConfig() {
   );
 }
 
+function getEnvironment() {
+  if (workspace.workspaceFolders === undefined) {
+    return process.env;
+  }
+
+  let workspaceEnv = {};
+  workspace.workspaceFolders.forEach(folder => {
+    const envPath = `${folder.uri.fsPath}/.env`;
+    if (fs.existsSync(envPath)) {
+      workspaceEnv = { ...workspaceEnv, ...dotenv.parse(fs.readFileSync(envPath)) };
+    }
+  });
+
+  return { ...process.env, ...workspaceEnv };
+}
+
 export async function activate(context: ExtensionContext) {
   let outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Language Server"
@@ -49,12 +67,18 @@ export async function activate(context: ExtensionContext) {
     execArgv: ["--nolazy", "--debug=6009", "--inspect=localhost:6009"]
   };
 
+  const combinedEnv = getEnvironment();
+
   let serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
+    run: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+      options: { env: combinedEnv }
+    },
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: debug ? debugOptions : {}
+      options: { ...(debug ? debugOptions : {}), env: combinedEnv }
     }
   };
 
