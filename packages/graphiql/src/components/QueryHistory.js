@@ -11,6 +11,9 @@ import PropTypes from 'prop-types';
 import QueryStore from '../utility/QueryStore';
 import HistoryQuery from './HistoryQuery';
 
+const MAX_QUERY_SIZE = 100000;
+const MAX_HISTORY_LENGTH = 20;
+
 const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
     return false;
@@ -18,6 +21,10 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   try {
     parse(nextProps.query);
   } catch (e) {
+    return false;
+  }
+  // Don't try to save giant queries
+  if (nextProps.query.length > MAX_QUERY_SIZE) {
     return false;
   }
   if (!lastQuerySaved) {
@@ -39,8 +46,6 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   return true;
 };
 
-const MAX_HISTORY_LENGTH = 20;
-
 export class QueryHistory extends React.Component {
   static propTypes = {
     query: PropTypes.string,
@@ -53,7 +58,7 @@ export class QueryHistory extends React.Component {
 
   constructor(props) {
     super(props);
-    this.historyStore = new QueryStore('queries', props.storage);
+    this.historyStore = new QueryStore('queries', props.storage, MAX_HISTORY_LENGTH);
     this.favoriteStore = new QueryStore('favorites', props.storage);
     const historyQueries = this.historyStore.fetchAll();
     const favoriteQueries = this.favoriteStore.fetchAll();
@@ -71,9 +76,6 @@ export class QueryHistory extends React.Component {
         operationName: nextProps.operationName,
       };
       this.historyStore.push(item);
-      if (this.historyStore.length > MAX_HISTORY_LENGTH) {
-        this.historyStore.shift();
-      }
       const historyQueries = this.historyStore.items;
       const favoriteQueries = this.favoriteStore.items;
       const queries = historyQueries.concat(favoriteQueries);

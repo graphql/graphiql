@@ -6,9 +6,10 @@
  */
 
  export default class QueryStore {
-  constructor(key, storage) {
+  constructor(key, storage, maxSize = null) {
     this.key = key;
     this.storage = storage;
+    this.maxSize = maxSize;
     this.items = this.fetchAll();
   }
 
@@ -64,13 +65,22 @@
   }
 
   push(item) {
-    this.items.push(item);
-    this.save();
-  }
+    const items = [...this.items, item];
 
-  shift() {
-    this.items.shift();
-    this.save();
+    if (this.maxSize && items.length > this.maxSize) {
+      items.shift();
+    }
+
+    for (let attempts = 0; attempts < 5; attempts++) {
+      const response = this.storage.set(this.key, JSON.stringify({ [this.key]: items }));;
+      if (!response || !response.error) {
+        this.items = items;
+      } else if (response.isQuotaError && this.maxSize) { // Only try to delete last items on LRU stores
+        items.shift();
+      } else {
+        return; // We don't know what happened in this case, so just bailing out
+      }
+    }
   }
 
   save() {
