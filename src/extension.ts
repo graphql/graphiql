@@ -46,7 +46,7 @@ function getEnvironment() {
     }
   });
 
-  return { ...process.env, ...workspaceEnv };
+  return { ...workspaceEnv, ...process.env };
 }
 
 export async function activate(context: ExtensionContext) {
@@ -155,7 +155,7 @@ export async function activate(context: ExtensionContext) {
           "GraphQL Content Provider"
         )
         .then(
-          _ => {},
+          _ => { },
           _ => {
             window.showErrorMessage("Error opening content.");
           }
