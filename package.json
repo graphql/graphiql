@@ -1,6 +1,6 @@
 {
   "name": "@av/graphiql",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.1",
   "description": "Forked - A graphical interactive in-browser GraphQL IDE.",
   "repository": {
     "type": "git",
@@ -30,7 +30,6 @@
     "lint": "eslint src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "precommit": "npm run testonly && lint-staged",
-    "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "npm run lint && npm run check && npm run testonly && npm run build",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
@@ -88,5 +87,17 @@
     "uglify-js": "^3.0.20",
     "uglifyify": "^4.0.2",
     "watchify": "3.9.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues"
+  },
+  "homepage": "https://github.com/graphql/graphiql#readme",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "keywords": [
+    "graphiql"
+  ],
+  "author": ""
 }
