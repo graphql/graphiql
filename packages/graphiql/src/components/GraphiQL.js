@@ -17,6 +17,8 @@ import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
+import { SidebarTabItem } from './SidebarTabItem';
+import { Sidebar } from './Sidebar';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -129,6 +131,7 @@ export class GraphiQL extends React.Component {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      selectedTabOption: 0,
       ...queryFacts,
     };
 
@@ -307,6 +310,33 @@ export class GraphiQL extends React.Component {
       height: variableOpen ? this.state.variableEditorHeight : null,
     };
 
+    const tabs = [
+      <DocExplorer
+        key="docExplorer"
+        ref={c => {
+          this.docExplorerComponent = c;
+        }}
+        schema={this.state.schema}
+        title="Docs"
+      />,
+    ];
+
+    const sidebarAdditions =
+      find(children, child => child.type === GraphiQL.Sidebar) || null;
+    // Array
+    if (sidebarAdditions && sidebarAdditions.props.children.length) {
+      for (const tab of sidebarAdditions.props.children) {
+        const newTab = React.cloneElement(tab, { key: tab.title });
+        tabs.push(newTab);
+      }
+    } else if (sidebarAdditions && sidebarAdditions.props.children) {
+      // Object
+      const newTab = React.cloneElement(sidebarAdditions.props.children, {
+        key: sidebarAdditions.props.children.title,
+      });
+      tabs.push(newTab);
+    }
+
     return (
       <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
@@ -338,7 +368,7 @@ export class GraphiQL extends React.Component {
               <button
                 className="docExplorerShow"
                 onClick={this.handleToggleDocs}>
-                {'Docs'}
+                {'Sidebar'}
               </button>
             )}
           </div>
@@ -409,20 +439,27 @@ export class GraphiQL extends React.Component {
           </div>
         </div>
         <div className={docExplorerWrapClasses} style={docWrapStyle}>
+          <div className="tab-picker">
+            {tabs.map((t, i) => (
+              <div
+                key={t.key}
+                className={`tab-item ${
+                  this.state.selectedTabOption === i ? 'active' : ''
+                }`}
+                onClick={() => this.handleChangeTab(i)}>
+                <a href="#">{t.props.title}</a>
+              </div>
+            ))}
+            <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+              {'\u2715'}
+            </div>
+          </div>
           <div
             className="docExplorerResizer"
             onDoubleClick={this.handleDocsResetResize}
             onMouseDown={this.handleDocsResizeStart}
           />
-          <DocExplorer
-            ref={c => {
-              this.docExplorerComponent = c;
-            }}
-            schema={this.state.schema}>
-            <div className="docExplorerHide" onClick={this.handleToggleDocs}>
-              {'\u2715'}
-            </div>
-          </DocExplorer>
+          {tabs[this.state.selectedTabOption]}
         </div>
       </div>
     );
@@ -630,7 +667,7 @@ export class GraphiQL extends React.Component {
   }
 
   handleClickReference = reference => {
-    this.setState({ docExplorerOpen: true }, () => {
+    this.setState({ docExplorerOpen: true, selectedTabOption: 0 }, () => {
       this.docExplorerComponent.showDocForReference(reference);
     });
   };
@@ -693,6 +730,10 @@ export class GraphiQL extends React.Component {
     if (subscription) {
       subscription.unsubscribe();
     }
+  };
+
+  handleChangeTab = indx => {
+    this.setState({ selectedTabOption: indx });
   };
 
   _runQueryAtCursor() {
@@ -1047,6 +1088,10 @@ GraphiQL.Group = ToolbarGroup;
 // Add a menu of items to the Toolbar.
 GraphiQL.Menu = ToolbarMenu;
 GraphiQL.MenuItem = ToolbarMenuItem;
+
+// Add sidebar tabs
+GraphiQL.Sidebar = Sidebar;
+GraphiQL.SidebarTabItem = SidebarTabItem;
 
 // Add a select-option input to the Toolbar.
 GraphiQL.Select = ToolbarSelect;

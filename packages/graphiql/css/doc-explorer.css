@@ -1,5 +1,7 @@
 .graphiql-container .doc-explorer {
   background: white;
+  position: relative;
+  height: 100%;
 }
 
 .graphiql-container .doc-explorer-title-bar,
@@ -267,4 +269,33 @@
   text-transform: uppercase;
   top: 50%;
   transform: translate(0, -50%);
+}
+
+.graphiql-container .tab-picker {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 3rem;
+  background: linear-gradient(#f7f7f7, #e2e2e2);
+}
+
+.graphiql-container .tab-picker .tab-item {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background: linear-gradient(#f7f7f7, #e2e2e2);
+  cursor: pointer;
+}
+
+.graphiql-container .tab-picker .tab-item a {
+  font-weight: bolder;
+  text-decoration: none;
+  color: black;
+}
+
+.graphiql-container .tab-picker .tab-item.active {
+  background: white;
 }

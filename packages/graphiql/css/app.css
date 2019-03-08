@@ -149,8 +149,9 @@
 .graphiql-container .docExplorerHide {
   cursor: pointer;
   font-size: 18px;
-  margin: -7px -8px -6px 0;
-  padding: 18px 16px 15px 12px;
+  right: 1rem;
+  top: 0.8rem;
+  position: absolute;
 }
 
 .graphiql-container div .query-editor {
