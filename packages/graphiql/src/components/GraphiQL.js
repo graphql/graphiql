@@ -131,7 +131,7 @@ export class GraphiQL extends React.Component {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
-      selectedTabOption: 0,
+      selectedTabOption: Number(this._storage.get('selectedTabOption')) || 0,
       ...queryFacts,
     };
 
@@ -247,6 +247,7 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
+    this._storage.set('selectedTabOption', this.state.selectedTabOption);
   }
 
   render() {
@@ -667,8 +668,10 @@ export class GraphiQL extends React.Component {
   }
 
   handleClickReference = reference => {
-    this.setState({ docExplorerOpen: true, selectedTabOption: 0 }, () => {
-      this.docExplorerComponent.showDocForReference(reference);
+    this.handleChangeTab(0).then(() => {
+      this.setState({ docExplorerOpen: true }, () => {
+        this.docExplorerComponent.showDocForReference(reference);
+      });
     });
   };
 
@@ -733,7 +736,10 @@ export class GraphiQL extends React.Component {
   };
 
   handleChangeTab = indx => {
-    this.setState({ selectedTabOption: indx });
+    this._storage.set('selectedTabOption', indx);
+    return new Promise(resolve => {
+      this.setState({ selectedTabOption: indx }, resolve);
+    });
   };
 
   _runQueryAtCursor() {
