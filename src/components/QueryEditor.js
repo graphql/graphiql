@@ -106,10 +106,22 @@ export class QueryEditor extends React.Component {
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
-        'Cmd-Space': () => this.editor.showHint({ completeSingle: true }),
-        'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),
-        'Alt-Space': () => this.editor.showHint({ completeSingle: true }),
-        'Shift-Space': () => this.editor.showHint({ completeSingle: true }),
+        'Cmd-Space': () =>
+          this.editor.showHint({
+            completeSingle: true,
+          }),
+        'Ctrl-Space': () =>
+          this.editor.showHint({
+            completeSingle: true,
+          }),
+        'Alt-Space': () =>
+          this.editor.showHint({
+            completeSingle: true,
+          }),
+        'Shift-Space': () =>
+          this.editor.showHint({
+            completeSingle: true,
+          }),
 
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
@@ -131,6 +143,18 @@ export class QueryEditor extends React.Component {
         'Shift-Ctrl-M': () => {
           if (this.props.onMergeQuery) {
             this.props.onMergeQuery();
+          }
+        },
+
+        'Cmd-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
+          }
+        },
+
+        'Ctrl-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
           }
         },
 
