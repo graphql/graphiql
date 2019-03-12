@@ -1,4 +1,5 @@
 {
+  "name": "@altangent/graphiql",
   "private": true,
   "license": "MIT",
   "workspaces": [
@@ -16,7 +17,7 @@
     "copy-to-clipboard": "./node-modules/copy-to-clipboard/index.js"
   },
   "scripts": {
-    "build": "lerna run build",
+x    "build": "lerna run build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
