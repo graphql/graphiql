@@ -222,7 +222,7 @@ export class GraphiQL extends React.Component {
         response: nextResponse,
       },
       () => {
-        if (this.state.schema === undefined) {
+        if (this.state.schema === undefined && this.docExplorerComponent) {
           this.docExplorerComponent.reset();
           this._fetchSchema();
         }
@@ -742,7 +742,12 @@ export class GraphiQL extends React.Component {
   handleChangeTab = indx => {
     this._storage.set('selectedTabOption', indx);
     return new Promise(resolve => {
-      this.setState({ selectedTabOption: indx }, resolve);
+      this.setState({ selectedTabOption: indx }, () => {
+        if (this.state.schema === undefined && indx === 0) {
+          this.docExplorerComponent.reset();
+        }
+        resolve();
+      });
     });
   };
 

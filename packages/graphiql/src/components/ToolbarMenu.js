@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 export class ToolbarMenu extends React.Component {
   static propTypes = {
     title: PropTypes.string,
-    label: PropTypes.string,
+    label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   };
 
   constructor(props) {
