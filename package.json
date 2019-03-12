@@ -17,7 +17,7 @@
     "copy-to-clipboard": "./node-modules/copy-to-clipboard/index.js"
   },
   "scripts": {
-x    "build": "lerna run build",
+    "build": "lerna run build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
