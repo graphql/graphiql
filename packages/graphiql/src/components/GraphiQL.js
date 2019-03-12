@@ -251,7 +251,10 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
-    this._storage.set('selectedTabOption', this.state.selectedTabOption);
+    this._storage.set(
+      'selectedTabOption',
+      this.state.selectedTabOption.toString(),
+    );
   }
 
   render() {
@@ -740,7 +743,7 @@ export class GraphiQL extends React.Component {
   };
 
   handleChangeTab = indx => {
-    this._storage.set('selectedTabOption', indx);
+    this._storage.set('selectedTabOption', indx.toString());
     return new Promise(resolve => {
       this.setState({ selectedTabOption: indx }, () => {
         if (this.state.schema === undefined && indx === 0) {
