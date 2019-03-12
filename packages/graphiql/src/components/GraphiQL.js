@@ -71,6 +71,7 @@ export class GraphiQL extends React.Component {
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
     readOnly: PropTypes.bool,
+    selectedTab: PropTypes.number,
   };
 
   constructor(props) {
@@ -124,14 +125,17 @@ export class GraphiQL extends React.Component {
       variableEditorOpen: Boolean(variables),
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
-      docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
+      docExplorerOpen: this._storage.get('docExplorerOpen') === 'false' || true,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
-      selectedTabOption: Number(this._storage.get('selectedTabOption')) || 0,
+      selectedTabOption:
+        Number(this._storage.get('selectedTabOption')) ||
+        this.props.selectedTab ||
+        0,
       ...queryFacts,
     };
 
