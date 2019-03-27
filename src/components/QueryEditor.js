@@ -110,6 +110,7 @@ export class QueryEditor extends React.Component {
         'Ctrl-Space': () => this.editor.showHint({ completeSingle: true }),
         'Alt-Space': () => this.editor.showHint({ completeSingle: true }),
         'Shift-Space': () => this.editor.showHint({ completeSingle: true }),
+        'Shift-Alt-Space': () => this.editor.showHint({ completeSingle: true }),
 
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
