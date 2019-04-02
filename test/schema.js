@@ -9,6 +9,7 @@ const {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLUnionType,
+  GraphQLInputUnionType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLInterfaceType,
@@ -128,6 +129,48 @@ const TestUnion = new GraphQLUnionType({
   },
 });
 
+const InputUnionFirst = new GraphQLObjectType({
+  name: 'First',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Common name string for InputUnionFirst.',
+    },
+    first: {
+      type: new GraphQLList(TestInterface),
+      resolve: () => {
+        return true;
+      },
+    },
+  }),
+  interfaces: [TestInterface],
+});
+
+const InputUnionSecond = new GraphQLObjectType({
+  name: 'First',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+      description: 'Common name string for InputUnionSecond.',
+    },
+    first: {
+      type: new GraphQLList(TestInterface),
+      resolve: () => {
+        return true;
+      },
+    },
+  }),
+  interfaces: [TestInterface],
+});
+
+const TestInputUnion = new GraphQLInputUnionType({
+  name: 'TestInputUnion',
+  types: [InputUnionFirst, InputUnionSecond],
+  resolveType() {
+    return InputUnionFirst;
+  },
+});
+
 const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
@@ -146,6 +189,16 @@ const TestType = new GraphQLObjectType({
     union: {
       type: TestUnion,
       description: '> union field from Test type, block-quoted.',
+      resolve: () => ({}),
+    },
+    inputUnion: {
+      type: TestInputUnion,
+      description: `
+        input union field from Test type, with unordered list:
+        - how
+        - about
+        - that
+      `,
       resolve: () => ({}),
     },
     id: {
