@@ -53,7 +53,7 @@ export class ResultViewer extends React.Component {
           const Tooltip = this.props.ResultsTooltip;
           const ImagePreview = this.props.ImagePreview;
 
-          let infoElements = [];
+          const infoElements = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);
           }

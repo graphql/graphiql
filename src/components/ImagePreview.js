@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
 function tokenToURL(token) {
@@ -14,13 +13,10 @@ function tokenToURL(token) {
     return null;
   }
 
-  const value = token.string
-    .slice(1)
-    .slice(0, -1)
-    .trim();
-  let url;
+  const value = token.string.slice(1).slice(0, -1).trim();
+
   try {
-    let location = window.location;
+    const location = window.location;
     return new URL(value, location.protocol + '//' + location.host);
   } catch (err) {
     return null;
@@ -32,16 +28,25 @@ function isImageURL(url) {
 }
 
 export class ImagePreview extends React.Component {
+  static propTypes = {
+    token: PropTypes.any,
+  };
+
+  static shouldRender(token) {
+    const url = tokenToURL(token);
+    return url ? isImageURL(url) : false;
+  }
+
+  constructor(props) {
+    super(props);
+  }
+
   state = {
     width: null,
     height: null,
     src: null,
     mime: null,
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
     this._updateMetadata();
@@ -53,9 +58,9 @@ export class ImagePreview extends React.Component {
 
   render() {
     let dims = null;
-    if (this.state.width != null && this.state.height != null) {
+    if (this.state.width !== null && this.state.height !== null) {
       let dimensions = this.state.width + 'x' + this.state.height;
-      if (this.state.mime != null) {
+      if (this.state.mime !== null) {
         dimensions += ' ' + this.state.mime;
       }
 
@@ -81,12 +86,12 @@ export class ImagePreview extends React.Component {
       return;
     }
 
-    let width = this._node.naturalWidth;
-    let height = this._node.naturalHeight;
-    let src = this._node.src;
+    const width = this._node.naturalWidth;
+    const height = this._node.naturalHeight;
+    const src = this._node.src;
 
     if (src !== this.state.src) {
-      this.setState({ src: src });
+      this.setState({ src });
       fetch(src, { method: 'HEAD' }).then(response => {
         this.setState({
           mime: response.headers.get('Content-Type'),
@@ -95,15 +100,7 @@ export class ImagePreview extends React.Component {
     }
 
     if (width !== this.state.width || height !== this.state.height) {
-      this.setState({
-        height: height,
-        width: width,
-      });
+      this.setState({ height, width });
     }
-  }
-
-  static shouldRender(token) {
-    const url = tokenToURL(token);
-    return url ? isImageURL(url) : false;
   }
 }
