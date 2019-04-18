@@ -24,6 +24,7 @@ export class ResultViewer extends React.Component {
     value: PropTypes.string,
     editorTheme: PropTypes.string,
     ResultsTooltip: PropTypes.any,
+    ImagePreview: PropTypes.any,
   };
   constructor() {
     super();
@@ -42,7 +43,7 @@ export class ResultViewer extends React.Component {
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
 
-    if (this.props.ResultsTooltip) {
+    if (this.props.ResultsTooltip || this.props.ImagePreview) {
       require('codemirror-graphql/utils/info-addon');
       const tooltipDiv = document.createElement('div');
       CodeMirror.registerHelper(
@@ -50,7 +51,30 @@ export class ResultViewer extends React.Component {
         'graphql-results',
         (token, options, cm, pos) => {
           const Tooltip = this.props.ResultsTooltip;
-          ReactDOM.render(<Tooltip pos={pos} />, tooltipDiv);
+          const ImagePreview = this.props.ImagePreview;
+
+          let infoElements = [];
+          if (Tooltip) {
+            infoElements.push(<Tooltip pos={pos} />);
+          }
+
+          if (
+            ImagePreview &&
+            typeof ImagePreview.shouldRender === 'function' &&
+            ImagePreview.shouldRender(token)
+          ) {
+            infoElements.push(<ImagePreview token={token} />);
+          }
+
+          if (infoElements.length > 0) {
+            ReactDOM.render(
+              <div>
+                {infoElements}
+              </div>,
+              tooltipDiv,
+            );
+          }
+
           return tooltipDiv;
         },
       );
@@ -67,7 +91,7 @@ export class ResultViewer extends React.Component {
         minFoldSize: 4,
       },
       gutters: ['CodeMirror-foldgutter'],
-      info: Boolean(this.props.ResultsTooltip),
+      info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
       extraKeys: {
         // Persistent search box in Query Editor
         'Cmd-F': 'findPersistent',
