@@ -87,10 +87,26 @@ export class VariableEditor extends React.Component {
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
-        'Cmd-Space': () => this.editor.showHint({ completeSingle: false }),
-        'Ctrl-Space': () => this.editor.showHint({ completeSingle: false }),
-        'Alt-Space': () => this.editor.showHint({ completeSingle: false }),
-        'Shift-Space': () => this.editor.showHint({ completeSingle: false }),
+        'Cmd-Space': () =>
+          this.editor.showHint({
+            completeSingle: false,
+            container: this._node,
+          }),
+        'Ctrl-Space': () =>
+          this.editor.showHint({
+            completeSingle: false,
+            container: this._node,
+          }),
+        'Alt-Space': () =>
+          this.editor.showHint({
+            completeSingle: false,
+            container: this._node,
+          }),
+        'Shift-Space': () =>
+          this.editor.showHint({
+            completeSingle: false,
+            container: this._node,
+          }),
 
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {

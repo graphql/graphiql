@@ -62,7 +62,7 @@
     ]
   },
   "dependencies": {
-    "codemirror": "^5.26.0",
+    "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.8.3",
     "markdown-it": "^8.4.0"
   },
