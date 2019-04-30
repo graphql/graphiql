@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
 
 import { ExecuteButton } from './ExecuteButton';
+import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
@@ -380,6 +381,7 @@ export class GraphiQL extends React.Component {
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
+                ImagePreview={ImagePreview}
               />
               {footer}
             </div>
