@@ -54,7 +54,7 @@ export class QueryHistory extends React.Component {
     this.state = { queries };
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     // eslint-disable-line camelcase
     if (
       shouldSaveQuery(nextProps, this.props, this.historyStore.fetchRecent())

@@ -152,7 +152,7 @@ export class GraphiQL extends React.Component {
     global.g = this;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     // eslint-disable-line camelcase
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;

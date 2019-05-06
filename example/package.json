@@ -5,12 +5,12 @@
   },
   "dependencies": {
     "express": "^4.13.3",
-    "express-graphql": "^0.6.6",
+    "express-graphql": "^0.8.0",
     "graphiql": "../",
-    "graphql": "^0.10.1"
+    "graphql": "^14.2.1"
   },
   "optionalDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   }
 }
