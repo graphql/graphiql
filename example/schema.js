@@ -147,11 +147,17 @@ const TestType = new GraphQLObjectType({
     union: {
       type: TestUnion,
       description: '> union field from Test type, block-quoted.',
+      resolve: () => ({}),
     },
     id: {
       type: GraphQLID,
       description: 'id field from Test type.',
       resolve: () => 'abc123',
+    },
+    image: {
+      type: GraphQLString,
+      description: 'field that returns an image URI.',
+      resolve: () => '/images/logo.svg',
     },
     isTest: {
       type: GraphQLBoolean,
