@@ -31,6 +31,7 @@ export class VariableEditor extends React.Component {
     readOnly: PropTypes.bool,
     onHintInformationRender: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
+    onMergeQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
   };
@@ -108,9 +109,17 @@ export class VariableEditor extends React.Component {
           }
         },
 
+        'Shift-Ctrl-M': () => {
+          if (this.props.onMergeQuery) {
+            this.props.onMergeQuery();
+          }
+        },
+
         // Persistent search box in Query Editor
         'Cmd-F': 'findPersistent',
         'Ctrl-F': 'findPersistent',
+        'Cmd-G': 'findPersistent',
+        'Ctrl-G': 'findPersistent',
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
