@@ -55,6 +55,7 @@ export class QueryHistory extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // eslint-disable-line camelcase
     if (
       shouldSaveQuery(nextProps, this.props, this.historyStore.fetchRecent())
     ) {
@@ -93,13 +94,9 @@ export class QueryHistory extends React.Component {
       <div>
         <div className="history-title-bar">
           <div className="history-title">{'History'}</div>
-          <div className="doc-explorer-rhs">
-            {this.props.children}
-          </div>
+          <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
-        <div className="history-contents">
-          {queryNodes}
-        </div>
+        <div className="history-contents">{queryNodes}</div>
       </div>
     );
   }
@@ -118,7 +115,9 @@ export class QueryHistory extends React.Component {
       item.favorite = false;
       this.favoriteStore.delete(item);
     }
-    this.setState({ ...this.historyStore.items, ...this.favoriteStore.items });
+    this.setState({
+      queries: [...this.historyStore.items, ...this.favoriteStore.items],
+    });
   };
 
   editLabel = (query, variables, operationName, label, favorite) => {
@@ -133,6 +132,8 @@ export class QueryHistory extends React.Component {
     } else {
       this.historyStore.edit(item);
     }
-    this.setState({ ...this.historyStore.items, ...this.favoriteStore.items });
+    this.setState({
+      queries: [...this.historyStore.items, ...this.favoriteStore.items],
+    });
   };
 }

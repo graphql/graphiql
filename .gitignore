@@ -10,3 +10,7 @@ dist/
 /graphiql.js
 /graphiql.min.js
 /graphiql.css
+
+# yarn
+yarn-error.log
+example/yarn.lock

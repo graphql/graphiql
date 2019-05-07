@@ -48,22 +48,22 @@ export default class HistoryQuery extends React.Component {
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';
     return (
       <p
-        className={this.state.editable && 'editable'}
+        className={this.state.editable ? 'editable' : undefined}
         onClick={this.handleClick.bind(this)}
         onMouseEnter={this.handleMouseEnter.bind(this)}
         onMouseLeave={this.handleMouseLeave.bind(this)}>
-        {this.state.editable
-          ? <input
-              type="text"
-              defaultValue={this.props.label}
-              ref={c => (this.editField = c)}
-              onBlur={this.handleFieldBlur.bind(this)}
-              onKeyDown={this.handleFieldKeyDown.bind(this)}
-              placeholder="Type a label"
-            />
-          : <span className="history-label">
-              {displayName}
-            </span>}
+        {this.state.editable ? (
+          <input
+            type="text"
+            defaultValue={this.props.label}
+            ref={c => (this.editField = c)}
+            onBlur={this.handleFieldBlur.bind(this)}
+            onKeyDown={this.handleFieldKeyDown.bind(this)}
+            placeholder="Type a label"
+          />
+        ) : (
+          <span className="history-label">{displayName}</span>
+        )}
         <span onClick={this.handleEditClick.bind(this)} style={editStyles}>
           {'\u270e'}
         </span>
