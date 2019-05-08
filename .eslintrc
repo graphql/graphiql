@@ -1,10 +1,7 @@
 {
   "parser": "babel-eslint",
 
-  "plugins": [
-    "babel",
-    "react"
-  ],
+  "plugins": ["babel", "react"],
 
   "settings": {
     "react": {
@@ -18,9 +15,7 @@
     "node": true
   },
 
-  "extends": [
-    "prettier"
-  ],
+  "extends": ["prettier"],
 
   "parserOptions": {
     "arrowFunctions": true,
@@ -58,15 +53,13 @@
     "react/no-unknown-property": 2,
     "react/prefer-es6-class": 2,
     "react/prefer-stateless-function": 2,
-    "react/prop-types": [2, {ignore: ["children"]}],
+    "react/prop-types": [2, { "ignore": ["children"] }],
     "react/react-in-jsx-scope": 2,
     "react/self-closing-comp": 2,
-    "react/sort-comp": [2, {"order": [
-      "static-methods",
-      "lifecycle",
-      "render",
-      "everything-else"
-    ]}],
+    "react/sort-comp": [
+      2,
+      { "order": ["static-methods", "lifecycle", "render", "everything-else"] }
+    ],
     "react/jsx-boolean-value": 2,
     "react/jsx-handler-names": 2,
     "react/jsx-key": 2,
@@ -79,7 +72,7 @@
 
     "block-scoped-var": 0,
     "callback-return": 2,
-    "camelcase": [2, {"properties": "always"}],
+    "camelcase": [2, { "properties": "always" }],
     "comma-dangle": 0,
     "comma-spacing": 0,
     "complexity": 0,
@@ -146,7 +139,7 @@
     "no-irregular-whitespace": 2,
     "no-iterator": 2,
     "no-label-var": 2,
-    "no-labels": [2, {"allowLoop": true}],
+    "no-labels": [2, { "allowLoop": true }],
     "no-lone-blocks": 2,
     "no-lonely-if": 2,
     "no-loop-func": 0,
@@ -192,7 +185,7 @@
     "no-unneeded-ternary": 2,
     "no-unreachable": 2,
     "no-unused-expressions": 2,
-    "no-unused-vars": [2, {"vars": "all", "args": "after-used"}],
+    "no-unused-vars": [2, { "vars": "all", "args": "after-used" }],
     "no-use-before-define": 0,
     "no-useless-call": 2,
     "no-useless-escape": 2,
@@ -220,6 +213,6 @@
     "valid-typeof": 2,
     "vars-on-top": 0,
     "wrap-regex": 0,
-    "yoda": [2, "never", {"exceptRange": true}]
+    "yoda": [2, "never", { "exceptRange": true }]
   }
 }
