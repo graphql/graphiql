@@ -111,11 +111,14 @@ export function ToolbarSelectOption({ onSelect, label, selected }) {
       onMouseDown={preventDefault}
       onMouseUp={onSelect}>
       {label}
-      {selected &&
+      {selected && (
         <svg width="13" height="13">
-          <polygon points="4.851,10.462 0,5.611 2.314,3.297 4.851,5.835
-            10.686,0 13,2.314 4.851,10.462" />
-        </svg>}
+          <polygon
+            points="4.851,10.462 0,5.611 2.314,3.297 4.851,5.835
+            10.686,0 13,2.314 4.851,10.462"
+          />
+        </svg>
+      )}
     </li>
   );
 }
