@@ -13,9 +13,5 @@ import React from 'react';
  * A group of associated controls.
  */
 export function ToolbarGroup({ children }) {
-  return (
-    <div className="toolbar-button-group">
-      {children}
-    </div>
-  );
+  return <div className="toolbar-button-group">{children}</div>;
 }

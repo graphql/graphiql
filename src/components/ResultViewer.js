@@ -67,12 +67,7 @@ export class ResultViewer extends React.Component {
           }
 
           if (infoElements.length > 0) {
-            ReactDOM.render(
-              <div>
-                {infoElements}
-              </div>,
-              tooltipDiv,
-            );
+            ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
           }
 
           return tooltipDiv;
