@@ -45,7 +45,7 @@
   },
   "lint-staged": {
     "*.js": [
-      "prettier --jsx-bracket-same-line --single-quote --trailing-comma=all --write",
+      "prettier --write",
       "git add"
     ]
   },
@@ -88,7 +88,7 @@
     "lint-staged": "^4.0.0",
     "mocha": "3.5.0",
     "postcss-cli": "4.1.0",
-    "prettier": "^1.4.4",
+    "prettier": "^1.17.0",
     "prop-types": "15.5.8",
     "react": "15.5.4",
     "react-dom": "15.5.4",
