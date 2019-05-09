@@ -72,7 +72,7 @@
     "autoprefixer": "7.0.0",
     "babel-eslint": "10.0.1",
     "babelify": "10.0.0",
-    "browserify": "14.4.0",
+    "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
     "chai": "4.1.1",
     "chai-subset": "1.5.0",
@@ -96,6 +96,6 @@
     "react-test-renderer": "15.6.1",
     "uglify-js": "3.0.20",
     "uglifyify": "4.0.2",
-    "watchify": "3.9.0"
+    "watchify": "3.11.1"
   }
 }
