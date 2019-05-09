@@ -35,7 +35,7 @@
     "build": "bash ./resources/build.sh",
     "check": "flow check",
     "dev": "babel-node test/server.js",
-    "lint": "eslint src",
+    "lint": "eslint --report-unused-disable-directives src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "prettier": "prettier --write src/**/*.{js,jsx}",
     "precommit": "npm run testonly && lint-staged",
