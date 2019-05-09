@@ -26,7 +26,7 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "graphql-config": "2.0.1",
