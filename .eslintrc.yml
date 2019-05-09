@@ -1,0 +1,371 @@
+parser: babel-eslint
+
+plugins: 
+  - babel
+  - react
+
+settings: 
+  react: 
+    version:  0.15.0
+
+env: 
+  browser: true
+  es6: true
+  node: true
+
+extends: 
+  - prettier
+
+parserOptions: 
+  arrowFunctions: true
+  binaryLiterals: true
+  blockBindings: true
+  classes: true
+  defaultParams: true
+  destructuring: true
+  experimentalObjectRestSpread: true
+  forOf: true
+  generators: true
+  globalReturn: true
+  jsx: true
+  modules: true
+  objectLiteralComputedProperties: true
+  objectLiteralDuplicateProperties: true
+  objectLiteralShorthandMethods: true
+  objectLiteralShorthandProperties: true
+  octalLiterals: true
+  regexUFlag: true
+  regexYFlag: true
+  restParams: true
+  spread: true
+  superInFunctions: true
+  templateStrings: true
+  unicodeCodePointEscapes: true
+
+rules:
+
+  # chosen eslint-plugin-react rules from 7.13.x
+  # https://github.com/yannickcr/eslint-plugin-react/blob/v7.13.0/index.js
+
+  react/jsx-boolean-value: error
+  react/jsx-handler-names: error
+  react/jsx-key: error
+  react/jsx-no-duplicate-props: error
+  react/jsx-no-literals: error
+  react/jsx-no-undef: error
+  react/jsx-pascal-case: error
+  react/jsx-uses-react: error
+  react/jsx-uses-vars: error
+  react/no-deprecated: error
+  react/no-did-mount-set-state: error
+  react/no-did-update-set-state: error
+  react/no-direct-mutation-state: error
+  react/no-string-refs: error
+  react/no-unknown-property: error
+  react/prop-types: 
+    - error
+    - ignore:
+      - children
+  react/prefer-es6-class: error
+  react/prefer-stateless-function: error
+  react/react-in-jsx-scope: error
+  react/self-closing-comp: error
+  react/sort-comp: 
+    - error
+    - order:  
+      - static-methods
+      - lifecycle
+      - render
+      - everything-else
+
+  ##################################################
+  # ESLint builtin rules list based on `v5.16.x`
+  ##################################################
+
+  # Possible Errors
+  # https://eslint.org/docs/rules/#possible-errors
+
+  # undecided for-direction: error
+  # undecided getter-return: error
+  # undecided no-async-promise-executor: error
+  # undecided no-await-in-loop: error
+  # undecided no-compare-neg-zero: error
+  # undecided no-cond-assign: error
+  # undecided no-console: warn
+  no-constant-condition: error
+  no-control-regex: error
+  no-debugger: warn
+  no-dupe-args: error
+  no-dupe-keys: error
+  no-duplicate-case: error
+  no-empty: error
+  no-empty-character-class: error
+  no-ex-assign: error
+  no-extra-boolean-cast: error
+  no-func-assign: error
+  no-inner-declarations: [error, functions]
+  no-invalid-regexp: error
+  no-irregular-whitespace: error
+  # undecided no-misleading-character-class: error
+  no-obj-calls: error
+  # undecided no-prototype-builtins: off # TODO
+  no-regex-spaces: error
+  no-sparse-arrays: error
+  # undecided no-template-curly-in-string: error
+  no-unreachable: error
+  # undecided no-unsafe-finally: error
+  no-unsafe-negation: error
+  # undecided require-atomic-updates: error
+  use-isnan: error
+  valid-typeof: error
+
+  # Best Practices
+  # https://eslint.org/docs/rules/#best-practices
+
+  # undecided accessor-pairs: error
+  # undecided array-callback-return: [error, { allowImplicit: true }]
+  block-scoped-var: off
+  # undecided class-methods-use-this: off
+  complexity: off # maybe
+  consistent-return: off # TODO
+  curly: [error, all]
+  default-case: off
+  dot-notation: off
+  eqeqeq: [error, smart]
+  guard-for-in: error
+  # undecided max-classes-per-file: off
+  no-alert: error
+  no-caller: error
+  # TODO: recommended rule but disable due to errors in existing code
+  # no-case-declarations: error
+  no-div-regex: error
+  no-else-return: error
+  # undecided no-empty-function: off # TODO
+  # undecided no-empty-pattern: error
+  no-eq-null: off
+  no-eval: error
+  no-extend-native: error
+  no-extra-bind: error
+  # undecided no-extra-label: error
+  no-fallthrough: error
+  no-global-assign: error
+  no-implicit-coercion: error
+  # undecided no-implicit-globals: off
+  no-implied-eval: error
+  no-invalid-this: off
+  no-iterator: error
+  no-labels: [error, {allowLoop: true}]
+  no-lone-blocks: error
+  no-loop-func: off
+  # undecided no-magic-numbers: off
+  no-multi-str: error
+  no-new: error
+  no-new-func: off
+  no-new-wrappers: error
+  no-octal: error
+  no-octal-escape: error
+  no-param-reassign: error
+  no-proto: error
+  no-redeclare: error
+  # undecided no-restricted-properties: off
+  no-return-assign: error
+  # undecided no-return-await: error
+  no-script-url: error
+  # undecided no-self-assign: error
+  no-self-compare: off
+  no-sequences: error
+  no-throw-literal: error
+  # undecided no-unmodified-loop-condition: error
+  no-unused-expressions: error
+  # undecided no-unused-labels: error
+  no-useless-call: error
+  # undecided no-useless-catch: error
+  # undecided no-useless-concat: error
+  no-useless-escape: error
+  no-useless-return: error
+  no-void: error
+  no-warning-comments: off # TODO
+  no-with: error
+  # undecided prefer-named-capture-group: off # ES2018
+  # undecided prefer-promise-reject-errors: off # TODO
+  radix: error
+  # undecided require-await: off # TODO
+  # undecided require-unicode-regexp: off
+  vars-on-top: off
+  yoda: [error, never, {exceptRange: true}]
+
+  # Strict Mode
+  # https://eslint.org/docs/rules/#strict-mode
+
+  strict: off
+
+  # Variables
+  # https://eslint.org/docs/rules/#variables
+
+  init-declarations: off
+  no-delete-var: error
+  no-label-var: error
+  # undecided no-restricted-globals: off
+  no-shadow: error
+  no-shadow-restricted-names: error
+  no-undef: error
+  no-undef-init: error
+  no-undefined: off
+  no-unused-vars: [error, {vars: all, args: after-used, argsIgnorePattern: "^_"}]
+  no-use-before-define: off
+
+  # Node.js and CommonJS
+  # https://eslint.org/docs/rules/#nodejs-and-commonjs
+
+  callback-return: error
+  # undecided global-require: error
+  handle-callback-err: [error, error]
+  # undecided no-buffer-constructor: error
+  no-mixed-requires: [error, true]
+  no-new-require: error
+  no-path-concat: error
+  no-process-env: off
+  no-process-exit: off
+  no-restricted-modules: off
+  no-sync: error
+
+  # Stylistic Issues
+  # https://eslint.org/docs/rules/#stylistic-issues
+
+  camelcase: [error, {properties: always}]
+  # undecided capitalized-comments: off # maybe
+  consistent-this: off
+  # undecided func-name-matching: off
+  func-names: off
+  func-style: off
+  # undecided id-blacklist: off
+  id-length: off
+  id-match: [error, "^(?:_?[a-zA-Z0-9]*)|[_A-Z0-9]+$"]
+  # undecided line-comment-position: off
+  lines-around-comment: off
+  # undecided lines-between-class-members: [error, always, { exceptAfterSingleLine: true }]
+  max-depth: off
+  # undecided max-lines: off
+  # undecided max-lines-per-function: off
+  max-nested-callbacks: off
+  max-params: off
+  max-statements: off
+  # undecided max-statements-per-line: off
+  # undecided multiline-comment-style: off
+  new-cap: off # TODO
+  no-array-constructor: error
+  no-bitwise: off
+  no-continue: off
+  no-inline-comments: off
+  no-lonely-if: error
+  # undecided no-multi-assign: off
+  # undecided no-negated-condition: off
+  no-nested-ternary: off
+  no-new-object: error
+  no-plusplus: off
+  # undecided no-restricted-syntax: off
+  no-tabs: error
+  no-ternary: off
+  no-underscore-dangle: off
+  no-unneeded-ternary: error
+  one-var: [error, never]
+  operator-assignment: [error, always]
+  padding-line-between-statements: off
+  # undecided prefer-object-spread: error
+  quotes: [error, single, { avoidEscape: true, allowTemplateLiterals: true }]
+  # undecided sort-keys: off
+  sort-vars: off
+  spaced-comment: [error, always]
+
+  # ECMAScript 6
+  # https://eslint.org/docs/rules/#ecmascript-6
+
+  # undecided arrow-body-style: error
+  # undecided constructor-super: error
+  no-class-assign: error
+  no-const-assign: error
+  # undecided no-dupe-class-members: error
+  # undecided no-duplicate-imports: error
+  # undecided no-new-symbol: error
+  # undecided no-restricted-imports: off
+  no-this-before-super: error
+  # undecided no-useless-computed-key: error
+  # undecided no-useless-constructor: error
+  # undecided no-useless-rename: error
+  no-var: error
+  object-shorthand: [error, always]
+  prefer-arrow-callback: error
+  prefer-const: error
+  # undecided prefer-destructuring: off
+  # undecided prefer-numeric-literals: error
+  # undecided prefer-rest-params: off # TODO
+  prefer-spread: off
+  # undecided prefer-template: off
+  require-yield: error
+  # undecided sort-imports: off
+  # undecided symbol-description: off
+
+  # Bellow rules are disabled because coflicts with Prettier, see:
+  # https://github.com/prettier/eslint-config-prettier/blob/master/index.js
+  array-bracket-newline: off
+  array-bracket-spacing: off
+  array-element-newline: off
+  arrow-parens: off
+  arrow-spacing: off
+  block-spacing: off
+  brace-style: off
+  comma-dangle: off
+  comma-spacing: off
+  comma-style: off
+  computed-property-spacing: off
+  dot-location: off
+  eol-last: off
+  func-call-spacing: off
+  function-paren-newline: off
+  generator-star-spacing: off
+  implicit-arrow-linebreak: off
+  indent: off
+  jsx-quotes: off
+  key-spacing: off
+  keyword-spacing: off
+  linebreak-style: error
+  max-len: off
+  multiline-ternary: off
+  newline-per-chained-call: off
+  new-parens: off
+  no-confusing-arrow: off
+  no-extra-parens: off
+  no-extra-semi: off
+  no-floating-decimal: off
+  no-mixed-operators: off
+  no-mixed-spaces-and-tabs: off
+  no-multi-spaces: off
+  no-multiple-empty-lines: off
+  no-spaced-func: off
+  no-trailing-spaces: off
+  no-unexpected-multiline: error
+  no-whitespace-before-property: off
+  nonblock-statement-body-position: off
+  object-curly-newline: off
+  object-curly-spacing: [0, always]
+  object-property-newline: off
+  one-var-declaration-per-line: off
+  operator-linebreak: off
+  padded-blocks: off
+  quote-props: off
+  rest-spread-spacing: off
+  semi: off
+  semi-spacing: off
+  semi-style: off
+  space-before-blocks: off
+  space-before-function-paren: off
+  space-in-parens: off
+  space-infix-ops: off
+  space-unary-ops: off
+  switch-colon-spacing: off
+  template-curly-spacing: off
+  template-tag-spacing: off
+  unicode-bom: off
+  wrap-iife: off
+  wrap-regex: off
+  yield-star-spacing: off
