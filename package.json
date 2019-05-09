@@ -38,11 +38,15 @@
     "lint": "eslint --report-unused-disable-directives src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
     "prettier": "prettier --write src/**/*.{js,jsx}",
-    "precommit": "npm run testonly && lint-staged",
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "yarn check --integrity && npm run lint && npm run check && npm run testonly && npm run build",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run testonly && lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
@@ -84,7 +88,7 @@
     "express-graphql": "0.6.7",
     "flow-bin": "0.98.1",
     "graphql": "14.1.1",
-    "husky": "0.14.0",
+    "husky": "2.2.0",
     "jsdom": "15.0.0",
     "lint-staged": "8.1.6",
     "mocha": "6.1.4",
