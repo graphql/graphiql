@@ -21,6 +21,7 @@ const win = doc.window;
 // natural in the test environment
 global.document = win.document;
 global.window = win;
+global.HTMLElement = win.HTMLElement;
 
 global.document.createRange = function() {
   return {
