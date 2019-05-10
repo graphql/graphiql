@@ -106,7 +106,9 @@
 
       // Defines a GraphQL fetcher using the fetch API.
       function graphQLFetcher(graphQLParams) {
-        return fetch('/graphql', {
+        const isDev = window.location.hostname === 'localhost'
+        const api = isDev ? 'https://swapi.graph.cool/' : '/graphql'
+        return fetch(api, {
           method: 'post',
           headers: {
             'Accept': 'application/json',
