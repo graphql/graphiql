@@ -59,7 +59,7 @@ Complete your CLA here: <https://code.facebook.com/cla>
 5. Ensure all tests pass
 
    ```sh
-   npm test
+   yarn test
    ```
 
 ## Release on NPM
@@ -67,7 +67,7 @@ Complete your CLA here: <https://code.facebook.com/cla>
 *Only core contributors may release to NPM.*
 
 To release a new version on NPM, first ensure you're on the `master` branch and
-have recently run `git pull` and that all tests pass with `npm test`.
+have recently run `git pull` and that all tests pass with `yarn test`.
 Use `npm version patch|minor|major` in order to increment the version in
 package.json and tag and commit a release. Then `git push --follow-tags`
 this change so Travis CI can deploy to NPM. *Do not run `npm publish` directly.*
