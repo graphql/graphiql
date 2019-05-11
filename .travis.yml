@@ -3,11 +3,4 @@ language: node_js
 node_js: stable
 
 before_install:
-  - yarn global add greenkeeper-lockfile@1
   - npm config set spin false --global
-
-before_script:
-  - greenkeeper-lockfile-update
-
-after_script:
-  - greenkeeper-lockfile-upload
