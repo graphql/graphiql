@@ -28,8 +28,20 @@
     "react": "global:React",
     "react-dom": "global:ReactDOM"
   },
-  "options": {
-    "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
+  "jest": {
+    "clearMocks": true,
+    "setupFiles": [
+      "<rootDir>/resources/enzyme.config.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/__tests__/**/*-test.js",
+      "**/?(*.)+(spec|test).js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "\\\\node_modules\\\\",
+      "dist"
+    ]
   },
   "scripts": {
     "build": "bash ./resources/build.sh",
@@ -41,7 +53,7 @@
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "yarn check --integrity && npm run lint && npm run check && npm run testonly && npm run build",
-    "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
+    "testonly": "jest"
   },
   "lint-staged": {
     "*.js": [
@@ -70,11 +82,14 @@
     "@babel/preset-react": "7.0.0",
     "autoprefixer": "7.0.0",
     "babel-eslint": "10.0.1",
+    "babel-jest": "^24.8.0",
     "babelify": "10.0.0",
     "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
     "chai": "4.2.0",
     "chai-subset": "1.6.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-15": "^1.4.0",
     "eslint": "5.16.0",
     "eslint-config-prettier": "4.2.0",
     "eslint-plugin-babel": "5.3.0",
@@ -83,15 +98,15 @@
     "express-graphql": "0.6.7",
     "flow-bin": "0.98.1",
     "graphql": "14.1.1",
+    "jest": "^24.8.0",
     "jsdom": "15.0.0",
     "lint-staged": "8.1.6",
-    "mocha": "6.1.4",
     "postcss-cli": "4.1.0",
     "prettier": "1.17.0",
-    "prop-types": "15.5.8",
-    "react": "15.5.4",
-    "react-dom": "15.5.4",
-    "react-test-renderer": "15.6.1",
+    "prop-types": "15.7.2",
+    "react": "15.6.2",
+    "react-dom": "15.6.2",
+    "react-test-renderer": "15.6.2",
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
     "watchify": "3.11.1"
