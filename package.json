@@ -24,10 +24,6 @@
     "README.md",
     "LICENSE"
   ],
-  "browserify-shim": {
-    "react": "global:React",
-    "react-dom": "global:ReactDOM"
-  },
   "options": {
     "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
   },
@@ -72,7 +68,6 @@
     "babel-eslint": "10.0.1",
     "babelify": "10.0.0",
     "browserify": "16.2.3",
-    "browserify-shim": "3.8.14",
     "chai": "4.2.0",
     "chai-subset": "1.6.0",
     "eslint": "5.16.0",
