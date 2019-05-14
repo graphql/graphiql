@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "graphql-config": "2.0.1",
-    "graphql-language-service-types": "1.2.3"
+    "graphql-language-service-types": "^2.0.1"
   }
 }

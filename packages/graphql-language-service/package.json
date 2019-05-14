@@ -34,9 +34,9 @@
   "dependencies": {
     "babel-polyfill": "6.16.0",
     "graphql-config": "2.0.1",
-    "graphql-language-service-interface": "2.0.1",
-    "graphql-language-service-server": "2.0.1",
-    "graphql-language-service-utils": "2.0.1",
+    "graphql-language-service-interface": "^2.0.1",
+    "graphql-language-service-server": "^2.0.1",
+    "graphql-language-service-utils": "^2.0.1",
     "yargs": "^3.32.0 || ^7.0.0"
   }
 }

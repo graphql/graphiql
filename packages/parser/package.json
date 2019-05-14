@@ -1,7 +1,7 @@
 {
   "name": "graphql-language-service-parser",
   "repository": "https://github.com/graphql/graphql-language-service",
-  "version": "1.2.3",
+  "version": "2.0.1",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "graphql-config": "2.0.1",
-    "graphql-language-service-types": "1.2.3"
+    "graphql-language-service-types": "^2.0.1"
   }
 }

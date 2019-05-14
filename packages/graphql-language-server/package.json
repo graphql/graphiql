@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-server",
-  "version": "1.2.2",
+  "version": "2.0.1",
   "description": "An interface for building GraphQL language services for IDEs",
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1"
