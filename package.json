@@ -52,8 +52,9 @@
     "prettier": "prettier --write src/**/*.{js,jsx}",
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "yarn check --integrity && npm run lint && npm run check && npm run testonly && npm run build",
-    "testonly": "jest"
+    "test": "yarn check --integrity && npm run lint && npm run check && npm run test:coverage && npm run build",
+    "testonly": "jest",
+    "test:coverage": "jest --coverage"
   },
   "lint-staged": {
     "*.js": [
