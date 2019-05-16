@@ -52,12 +52,7 @@
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "fetch-mock": "^6.0.0",
     "flow-bin": "0.68.0",
-    "graphql": "^14.0.2",
-    "graphql-language-service-interface": "^1.0.0-0",
-    "graphql-language-service-parser": "^0.1.0-0",
-    "graphql-language-service-server": "^1.0.0-0",
-    "graphql-language-service-types": "^0.1.0-0",
-    "graphql-language-service-utils": "^1.0.0-0",
+    "graphql": "^14.3.0",
     "lerna": "^2.0.0",
     "mocha": "4.1.0",
     "prettier": "1.13"

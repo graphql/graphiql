@@ -29,7 +29,7 @@
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "graphql-config": "2.0.1",
+    "graphql-config": "2.2.1",
     "graphql-language-service-types": "^2.0.1"
   }
 }

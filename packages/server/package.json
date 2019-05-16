@@ -32,7 +32,7 @@
     "babylon": "^6.17.4",
     "fb-watchman": "^2.0.0",
     "glob": "^7.1.2",
-    "graphql-config": "2.0.1",
+    "graphql-config": "2.2.1",
     "graphql-language-service-interface": "^2.0.1",
     "graphql-language-service-types": "^2.0.1",
     "graphql-language-service-utils": "^2.0.1",
