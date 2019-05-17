@@ -151,7 +151,7 @@ export class GraphiQL extends React.Component {
     this.codeMirrorSizer = new CodeMirrorSizer();
 
     global.g = this;
-    
+
     if (this.props.autoPrettify) {
       this.handlePrettifyQuery();
     }
