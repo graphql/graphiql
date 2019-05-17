@@ -65,6 +65,7 @@ export class GraphiQL extends React.Component {
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
+    autoPrettify: PropTypes.boolean,
   };
 
   constructor(props) {
@@ -150,6 +151,10 @@ export class GraphiQL extends React.Component {
     this.codeMirrorSizer = new CodeMirrorSizer();
 
     global.g = this;
+    
+    if (this.props.autoPrettify) {
+      this.handlePrettifyQuery();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
