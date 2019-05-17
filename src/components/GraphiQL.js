@@ -65,7 +65,7 @@ export class GraphiQL extends React.Component {
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
-    autoPrettify: PropTypes.boolean,
+    autoPrettify: PropTypes.bool,
   };
 
   constructor(props) {
