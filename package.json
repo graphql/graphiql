@@ -64,6 +64,7 @@
   "dependencies": {
     "codemirror": "^5.26.0",
     "codemirror-graphql": "^0.8.3",
+    "copy-to-clipboard": "^3.2.0",
     "markdown-it": "^8.4.0"
   },
   "peerDependencies": {

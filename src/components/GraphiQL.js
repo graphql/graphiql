@@ -9,6 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
+import copyToClipboard from 'copy-to-clipboard';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -57,6 +58,7 @@ export class GraphiQL extends React.Component {
       removeItem: PropTypes.func,
     }),
     defaultQuery: PropTypes.string,
+    onCopyQuery: PropTypes.func,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
@@ -265,6 +267,11 @@ export class GraphiQL extends React.Component {
           label="Merge"
         />
         <ToolbarButton
+          onClick={this.handleCopyQuery}
+          title="Copy Query (Shift-Ctrl-C)"
+          label="Copy"
+        />
+        <ToolbarButton
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
@@ -350,6 +357,7 @@ export class GraphiQL extends React.Component {
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
+                onCopyQuery={this.handleCopyQuery}
                 onPrettifyQuery={this.handlePrettifyQuery}
                 onMergeQuery={this.handleMergeQuery}
                 onRunQuery={this.handleEditorRunQuery}
@@ -740,6 +748,23 @@ export class GraphiQL extends React.Component {
       return this.props.onEditQuery(value);
     }
   });
+
+  handleCopyQuery = () => {
+    const editor = this.getQueryEditor();
+    const query = editor.getValue();
+
+    if (!query) {
+      return;
+    }
+
+    const formattedQuery = print(parse(query));
+
+    copyToClipboard(formattedQuery);
+
+    if (this.props.onCopyQuery) {
+      return this.props.onCopyQuery(formattedQuery);
+    }
+  }
 
   _updateQueryFacts = (query, operationName, prevOperations, schema) => {
     const queryFacts = getQueryFacts(schema, query);

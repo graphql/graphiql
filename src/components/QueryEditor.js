@@ -36,6 +36,7 @@ export class QueryEditor extends React.Component {
     readOnly: PropTypes.bool,
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
+    onCopyQuery: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onMergeQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
@@ -120,6 +121,12 @@ export class QueryEditor extends React.Component {
         'Ctrl-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
+          }
+        },
+
+        'Shift-Ctrl-C': () => {
+          if (this.props.onCopyQuery) {
+            this.props.onCopyQuery();
           }
         },
 
