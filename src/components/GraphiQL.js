@@ -757,12 +757,10 @@ export class GraphiQL extends React.Component {
       return;
     }
 
-    const formattedQuery = print(parse(query));
-
-    copyToClipboard(formattedQuery);
+    copyToClipboard(query);
 
     if (this.props.onCopyQuery) {
-      return this.props.onCopyQuery(formattedQuery);
+      return this.props.onCopyQuery(query);
     }
   }
 
