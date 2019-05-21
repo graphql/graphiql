@@ -9,7 +9,6 @@
 import express from 'express';
 import path from 'path';
 import browserify from 'browserify';
-import browserifyShim from 'browserify-shim';
 import watchify from 'watchify';
 import babelify from 'babelify';
 import graphqlHTTP from 'express-graphql';
@@ -28,7 +27,7 @@ const b = browserify({
   entries: [path.join(__dirname, '../src/index.js')],
   cache: {},
   packageCache: {},
-  transform: [babelify, browserifyShim],
+  transform: [babelify],
   plugin: [watchify],
   standalone: 'GraphiQL',
   globalTransform: 'browserify-shim',
