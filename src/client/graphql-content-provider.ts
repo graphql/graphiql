@@ -6,7 +6,8 @@ import {
   Uri,
   Event,
   ProviderResult,
-  window
+  window,
+  WebviewPanel
 } from "vscode";
 
 import { ExtractedTemplateLiteral } from "./source-helper";
@@ -19,11 +20,14 @@ import { visit, VariableDefinitionNode } from "graphql";
 import { NetworkHelper } from "./network-helper";
 import { SourceHelper, GraphQLScalarTSType } from "./source-helper";
 
+// TODO: remove residue of previewHtml API https://github.com/microsoft/vscode/issues/62630
+// We update the panel directly now in place of a event based update API (we might make a custom event updater and remove panel dep though)
 export class GraphQLContentProvider implements TextDocumentContentProvider {
   private uri: Uri;
   private outputChannel: OutputChannel;
   private networkHelper: NetworkHelper;
   private sourceHelper: SourceHelper;
+  private panel: WebviewPanel;
 
   // Event emitter which invokes document updates
   private _onDidChange = new EventEmitter<Uri>();
@@ -31,6 +35,16 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   private html: string = ""; // HTML document buffer
 
   timeout = ms => new Promise(res => setTimeout(res, ms));
+
+  getCurrentHtml(): Promise<string> {
+    return new Promise(resolve => {
+      resolve(this.html);
+    });
+  }
+
+  updatePanel() {
+    this.panel.webview.html = this.html;
+  }
 
   async getVariablesFromUser(
     variableDefinitionNodes: VariableDefinitionNode[]
@@ -57,21 +71,18 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   async getEndpointName(endpointNames: string[]) {
     // Endpoints extensions docs say that at least "default" will be there
     let endpointName = endpointNames[0];
+    console.log({ endpoints: endpointNames.length });
     if (endpointNames.length > 1) {
-      const pickedValue = await window.showQuickPick(
-        endpointNames,
-        {
-          canPickMany: false,
-          ignoreFocusOut: true,
-          placeHolder: 'Select an environment'
-        }
-      );
+      const pickedValue = await window.showQuickPick(endpointNames, {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        placeHolder: "Select an environment"
+      });
 
       if (pickedValue) {
         endpointName = pickedValue;
       }
     }
-
     return endpointName;
   }
 
@@ -93,12 +104,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   constructor(
     uri: Uri,
     outputChannel: OutputChannel,
-    literal: ExtractedTemplateLiteral
+    literal: ExtractedTemplateLiteral,
+    panel: WebviewPanel
   ) {
     this.uri = uri;
     this.outputChannel = outputChannel;
     this.networkHelper = new NetworkHelper(this.outputChannel);
     this.sourceHelper = new SourceHelper(this.outputChannel);
+    this.panel = panel;
 
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(literal.uri));
@@ -108,6 +121,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         );
         this.html = "Error: this file is outside the workspace.";
         this.update(this.uri);
+        this.updatePanel();
         return;
       } else {
         const config = getGraphQLConfig(rootDir!.uri.fsPath);
@@ -124,6 +138,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           );
           this.html = "Error: endpoint data missing from graphql config";
           this.update(this.uri);
+          this.updatePanel();
           return;
         }
 
@@ -138,51 +153,52 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           this.html =
             "Error: endpoint data missing from graphql config endpoints extension";
           this.update(this.uri);
+          this.updatePanel();
           return;
         }
 
-        this.getEndpointName(endpointNames)
-          .then(endpointName => {
-            const endpoint = projectConfig!.endpointsExtension!.getEndpoint(
-              endpointName
-            );
+        this.getEndpointName(endpointNames).then(endpointName => {
+          const endpoint = projectConfig!.endpointsExtension!.getEndpoint(
+            endpointName
+          );
 
-            let variableDefinitionNodes: VariableDefinitionNode[] = [];
-            visit(literal.ast, {
-              VariableDefinition(node: VariableDefinitionNode) {
-                variableDefinitionNodes.push(node);
-              }
-            });
-
-            const updateCallback = (data: string, operation: string) => {
-              if (operation === "subscription") {
-                this.html = `<pre>${data}</pre>` + this.html;
-              } else {
-                this.html += `<pre>${data}</pre>`;
-              }
-              this.update(this.uri);
-            };
-
-            if (variableDefinitionNodes.length > 0) {
-              this.getVariablesFromUser(variableDefinitionNodes).then(
-                (variables: any) => {
-                  this.networkHelper.executeOperation({
-                    endpoint: endpoint,
-                    literal: literal,
-                    variables: variables,
-                    updateCallback
-                  });
-                }
-              );
-            } else {
-              this.networkHelper.executeOperation({
-                endpoint: endpoint,
-                literal: literal,
-                variables: {},
-                updateCallback
-              });
+          let variableDefinitionNodes: VariableDefinitionNode[] = [];
+          visit(literal.ast, {
+            VariableDefinition(node: VariableDefinitionNode) {
+              variableDefinitionNodes.push(node);
             }
           });
+
+          const updateCallback = (data: string, operation: string) => {
+            if (operation === "subscription") {
+              this.html = `<pre>${data}</pre>` + this.html;
+            } else {
+              this.html += `<pre>${data}</pre>`;
+            }
+            this.update(this.uri);
+            this.updatePanel();
+          };
+
+          if (variableDefinitionNodes.length > 0) {
+            this.getVariablesFromUser(variableDefinitionNodes).then(
+              (variables: any) => {
+                this.networkHelper.executeOperation({
+                  endpoint: endpoint,
+                  literal: literal,
+                  variables: variables,
+                  updateCallback
+                });
+              }
+            );
+          } else {
+            this.networkHelper.executeOperation({
+              endpoint: endpoint,
+              literal: literal,
+              variables: {},
+              updateCallback
+            });
+          }
+        });
       }
     } catch (e) {
       this.html = e.toString();
