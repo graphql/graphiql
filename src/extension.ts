@@ -159,6 +159,7 @@ export async function activate(context: ExtensionContext) {
 
       // TODO: Improve this API/implementation later! We moved from previewHtml because it was deprecated https://github.com/microsoft/vscode/issues/62630
       // With minimal change to the code base! We added `getCurrentHtml` to the respective content provider with artificial delay to mock network.
+      // The artificial delay is 500ms. This means that if an operation is slower than that, it won't work right now as we don't have an update API.
       const html = await contentProvider.getCurrentHtml();
       panel.webview.html = html;
 
