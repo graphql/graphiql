@@ -157,28 +157,15 @@ export async function activate(context: ExtensionContext) {
         {}
       );
 
+      // TODO: Improve this API/implementation later! We moved from previewHtml because it was deprecated https://github.com/microsoft/vscode/issues/62630
+      // With minimal change to the code base! We added `getCurrentHtml` to the respective content provider with artificial delay to mock network.
       const html = await contentProvider.getCurrentHtml();
-      console.log({ html });
       panel.webview.html = html;
 
       panel.webview.onDidReceiveMessage(e => {
         outputChannel.appendLine("WebView received an update");
         panel.webview.html = html;
       });
-
-      // return commands
-      //   .executeCommand(
-      //     "vscode.previewHtml",
-      //     uri,
-      //     ViewColumn.Two,
-      //     "GraphQL Content Provider"
-      //   )
-      //   .then(
-      //     _ => {},
-      //     _ => {
-      //       window.showErrorMessage("Error opening content.");
-      //     }
-      //   );
     }
   );
   context.subscriptions.push(commandContentProvider);

@@ -29,10 +29,6 @@ export class NetworkHelper {
     this.outputChannel.appendLine(`NetworkHelper: operation: ${operation}`);
     this.outputChannel.appendLine(`NetworkHelper: endpoint: ${endpoint.url}`);
 
-    // const httpLink = new HTTPLinkDataloader({
-    //   uri: endpoint.url,
-    //   headers: endpoint.headers
-    // });
     const httpLink = createHttpLink({
       uri: endpoint.url,
       headers: endpoint.headers
@@ -72,20 +68,15 @@ export class NetworkHelper {
         });
     } else {
       if (operation === "query") {
-        this.outputChannel.appendLine(
-          JSON.stringify({ operation: literal.content, variables })
-        );
         apolloClient
           .query({
             query: parsedOperation,
             variables
           })
           .then((data: any) => {
-            this.outputChannel.appendLine(JSON.stringify({ data }));
             updateCallback(formatData(data), operation);
           })
           .catch(err => {
-            this.outputChannel.appendLine(JSON.stringify({ err }));
             updateCallback(err.toString(), operation);
           });
       } else {
