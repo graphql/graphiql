@@ -20,6 +20,8 @@ import { visit, VariableDefinitionNode } from "graphql";
 import { NetworkHelper } from "./network-helper";
 import { SourceHelper, GraphQLScalarTSType } from "./source-helper";
 
+// TODO: remove residue of previewHtml API https://github.com/microsoft/vscode/issues/62630
+// We update the panel directly now in place of a event based update API (we might make a custom event updater and remove panel dep though)
 export class GraphQLContentProvider implements TextDocumentContentProvider {
   private uri: Uri;
   private outputChannel: OutputChannel;
