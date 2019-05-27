@@ -10,6 +10,7 @@ import * as ws from "ws";
 
 import { GraphQLEndpoint } from "graphql-config";
 import { OutputChannel } from "vscode";
+import { ApolloLink } from "apollo-link";
 
 export class NetworkHelper {
   private outputChannel: OutputChannel;
@@ -45,7 +46,13 @@ export class NetworkHelper {
     });
 
     const apolloClient = new ApolloClient({
-      link: operation === "subscription" ? wsLink : httpLink,
+      link: ApolloLink.split(
+        () => {
+          return operation === "subscription";
+        },
+        wsLink,
+        httpLink
+      ),
       cache: new InMemoryCache({
         addTypename: false
       })
