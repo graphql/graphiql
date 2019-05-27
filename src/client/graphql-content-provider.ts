@@ -32,6 +32,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   timeout = ms => new Promise(res => setTimeout(res, ms));
 
+  getCurrentHtml(): Promise<string> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(this.html);
+      }, 500);
+    });
+  }
+
   async getVariablesFromUser(
     variableDefinitionNodes: VariableDefinitionNode[]
   ): Promise<{ [key: string]: GraphQLScalarTSType }> {

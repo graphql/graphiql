@@ -3,11 +3,11 @@ import { OperationDefinitionNode } from "graphql";
 
 import ApolloClient from "apollo-client";
 import gql from "graphql-tag";
+import { createHttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import * as ws from "ws";
 
-import { HTTPLinkDataloader } from "http-link-dataloader";
 import { GraphQLEndpoint } from "graphql-config";
 import { OutputChannel } from "vscode";
 
@@ -27,8 +27,13 @@ export class NetworkHelper {
     const operation = (literal.ast.definitions[0] as OperationDefinitionNode)
       .operation;
     this.outputChannel.appendLine(`NetworkHelper: operation: ${operation}`);
+    this.outputChannel.appendLine(`NetworkHelper: endpoint: ${endpoint.url}`);
 
-    const httpLink = new HTTPLinkDataloader({
+    // const httpLink = new HTTPLinkDataloader({
+    //   uri: endpoint.url,
+    //   headers: endpoint.headers
+    // });
+    const httpLink = createHttpLink({
       uri: endpoint.url,
       headers: endpoint.headers
     });
@@ -67,15 +72,20 @@ export class NetworkHelper {
         });
     } else {
       if (operation === "query") {
+        this.outputChannel.appendLine(
+          JSON.stringify({ operation: literal.content, variables })
+        );
         apolloClient
           .query({
             query: parsedOperation,
             variables
           })
           .then((data: any) => {
+            this.outputChannel.appendLine(JSON.stringify({ data }));
             updateCallback(formatData(data), operation);
           })
           .catch(err => {
+            this.outputChannel.appendLine(JSON.stringify({ err }));
             updateCallback(err.toString(), operation);
           });
       } else {

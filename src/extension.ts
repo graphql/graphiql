@@ -1,7 +1,7 @@
 "use strict";
 import * as path from "path";
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
+import * as dotenv from "dotenv";
+import * as fs from "fs";
 import {
   workspace,
   ExtensionContext,
@@ -42,7 +42,10 @@ function getEnvironment() {
   workspace.workspaceFolders.forEach(folder => {
     const envPath = `${folder.uri.fsPath}/.env`;
     if (fs.existsSync(envPath)) {
-      workspaceEnv = { ...workspaceEnv, ...dotenv.parse(fs.readFileSync(envPath)) };
+      workspaceEnv = {
+        ...workspaceEnv,
+        ...dotenv.parse(fs.readFileSync(envPath))
+      };
     }
   });
 
@@ -134,7 +137,7 @@ export async function activate(context: ExtensionContext) {
 
   const commandContentProvider = commands.registerCommand(
     "extension.contentProvider",
-    (literal: ExtractedTemplateLiteral) => {
+    async (literal: ExtractedTemplateLiteral) => {
       const uri = Uri.parse("graphql://authority/graphql");
       const contentProvider = new GraphQLContentProvider(
         uri,
@@ -147,19 +150,35 @@ export async function activate(context: ExtensionContext) {
       );
       context.subscriptions.push(registration);
 
-      return commands
-        .executeCommand(
-          "vscode.previewHtml",
-          uri,
-          ViewColumn.Two,
-          "GraphQL Content Provider"
-        )
-        .then(
-          _ => { },
-          _ => {
-            window.showErrorMessage("Error opening content.");
-          }
-        );
+      const panel = window.createWebviewPanel(
+        "executionReusltWebView",
+        "GraphQL Execution Result",
+        ViewColumn.Two,
+        {}
+      );
+
+      const html = await contentProvider.getCurrentHtml();
+      console.log({ html });
+      panel.webview.html = html;
+
+      panel.webview.onDidReceiveMessage(e => {
+        outputChannel.appendLine("WebView received an update");
+        panel.webview.html = html;
+      });
+
+      // return commands
+      //   .executeCommand(
+      //     "vscode.previewHtml",
+      //     uri,
+      //     ViewColumn.Two,
+      //     "GraphQL Content Provider"
+      //   )
+      //   .then(
+      //     _ => {},
+      //     _ => {
+      //       window.showErrorMessage("Error opening content.");
+      //     }
+      //   );
     }
   );
   context.subscriptions.push(commandContentProvider);
