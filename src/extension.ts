@@ -1,5 +1,7 @@
 "use strict";
 import * as path from "path";
+import * as dotenv from "dotenv";
+import * as fs from "fs";
 import {
   workspace,
   ExtensionContext,
@@ -31,6 +33,25 @@ function getConfig() {
   );
 }
 
+function getEnvironment() {
+  if (workspace.workspaceFolders === undefined) {
+    return process.env;
+  }
+
+  let workspaceEnv = {};
+  workspace.workspaceFolders.forEach(folder => {
+    const envPath = `${folder.uri.fsPath}/.env`;
+    if (fs.existsSync(envPath)) {
+      workspaceEnv = {
+        ...workspaceEnv,
+        ...dotenv.parse(fs.readFileSync(envPath))
+      };
+    }
+  });
+
+  return { ...workspaceEnv, ...process.env };
+}
+
 export async function activate(context: ExtensionContext) {
   let outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Language Server"
@@ -49,12 +70,18 @@ export async function activate(context: ExtensionContext) {
     execArgv: ["--nolazy", "--debug=6009", "--inspect=localhost:6009"]
   };
 
+  const combinedEnv = getEnvironment();
+
   let serverOptions: ServerOptions = {
-    run: { module: serverModule, transport: TransportKind.ipc },
+    run: {
+      module: serverModule,
+      transport: TransportKind.ipc,
+      options: { env: combinedEnv }
+    },
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: debug ? debugOptions : {}
+      options: { ...(debug ? debugOptions : {}), env: combinedEnv }
     }
   };
 
@@ -110,12 +137,21 @@ export async function activate(context: ExtensionContext) {
 
   const commandContentProvider = commands.registerCommand(
     "extension.contentProvider",
-    (literal: ExtractedTemplateLiteral) => {
+    async (literal: ExtractedTemplateLiteral) => {
       const uri = Uri.parse("graphql://authority/graphql");
+
+      const panel = window.createWebviewPanel(
+        "executionReusltWebView",
+        "GraphQL Execution Result",
+        ViewColumn.Two,
+        {}
+      );
+
       const contentProvider = new GraphQLContentProvider(
         uri,
         outputChannel,
-        literal
+        literal,
+        panel
       );
       const registration = workspace.registerTextDocumentContentProvider(
         "graphql",
@@ -123,19 +159,8 @@ export async function activate(context: ExtensionContext) {
       );
       context.subscriptions.push(registration);
 
-      return commands
-        .executeCommand(
-          "vscode.previewHtml",
-          uri,
-          ViewColumn.Two,
-          "GraphQL Content Provider"
-        )
-        .then(
-          _ => {},
-          _ => {
-            window.showErrorMessage("Error opening content.");
-          }
-        );
+      const html = await contentProvider.getCurrentHtml();
+      panel.webview.html = html;
     }
   );
   context.subscriptions.push(commandContentProvider);

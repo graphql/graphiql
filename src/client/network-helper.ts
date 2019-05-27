@@ -3,13 +3,14 @@ import { OperationDefinitionNode } from "graphql";
 
 import ApolloClient from "apollo-client";
 import gql from "graphql-tag";
+import { createHttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import * as ws from "ws";
 
-import { HTTPLinkDataloader } from "http-link-dataloader";
 import { GraphQLEndpoint } from "graphql-config";
 import { OutputChannel } from "vscode";
+import { ApolloLink } from "apollo-link";
 
 export class NetworkHelper {
   private outputChannel: OutputChannel;
@@ -27,8 +28,9 @@ export class NetworkHelper {
     const operation = (literal.ast.definitions[0] as OperationDefinitionNode)
       .operation;
     this.outputChannel.appendLine(`NetworkHelper: operation: ${operation}`);
+    this.outputChannel.appendLine(`NetworkHelper: endpoint: ${endpoint.url}`);
 
-    const httpLink = new HTTPLinkDataloader({
+    const httpLink = createHttpLink({
       uri: endpoint.url,
       headers: endpoint.headers
     });
@@ -44,7 +46,13 @@ export class NetworkHelper {
     });
 
     const apolloClient = new ApolloClient({
-      link: operation === "subscription" ? wsLink : httpLink,
+      link: ApolloLink.split(
+        () => {
+          return operation === "subscription";
+        },
+        wsLink,
+        httpLink
+      ),
       cache: new InMemoryCache({
         addTypename: false
       })
