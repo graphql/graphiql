@@ -21,7 +21,7 @@
   },
   "publisher": "Prisma",
   "engines": {
-    "vscode": "1.25.0"
+    "vscode": "1.34.0"
   },
   "categories": [
     "Programming Languages",
