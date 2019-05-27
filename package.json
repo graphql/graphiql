@@ -133,7 +133,7 @@
     "@types/node": "7.10.6",
     "@types/ws": "5.1.2",
     "tslint": "5.8.0",
-    "typescript": "2.6.1",
+    "typescript": "3.4.1",
     "vsce": "1.45.1",
     "vscode": "1.1.34"
   },
