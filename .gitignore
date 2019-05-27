@@ -7,6 +7,7 @@ npm-debug.log
 node_modules/
 coverage/
 /*.js
+!.babelrc.js
 /utils
 /variables
 /results
