@@ -139,16 +139,6 @@ export async function activate(context: ExtensionContext) {
     "extension.contentProvider",
     async (literal: ExtractedTemplateLiteral) => {
       const uri = Uri.parse("graphql://authority/graphql");
-      const contentProvider = new GraphQLContentProvider(
-        uri,
-        outputChannel,
-        literal
-      );
-      const registration = workspace.registerTextDocumentContentProvider(
-        "graphql",
-        contentProvider
-      );
-      context.subscriptions.push(registration);
 
       const panel = window.createWebviewPanel(
         "executionReusltWebView",
@@ -157,16 +147,20 @@ export async function activate(context: ExtensionContext) {
         {}
       );
 
-      // TODO: Improve this API/implementation later! We moved from previewHtml because it was deprecated https://github.com/microsoft/vscode/issues/62630
-      // With minimal change to the code base! We added `getCurrentHtml` to the respective content provider with artificial delay to mock network.
-      // The artificial delay is 500ms. This means that if an operation is slower than that, it won't work right now as we don't have an update API.
+      const contentProvider = new GraphQLContentProvider(
+        uri,
+        outputChannel,
+        literal,
+        panel
+      );
+      const registration = workspace.registerTextDocumentContentProvider(
+        "graphql",
+        contentProvider
+      );
+      context.subscriptions.push(registration);
+
       const html = await contentProvider.getCurrentHtml();
       panel.webview.html = html;
-
-      panel.webview.onDidReceiveMessage(e => {
-        outputChannel.appendLine("WebView received an update");
-        panel.webview.html = html;
-      });
     }
   );
   context.subscriptions.push(commandContentProvider);

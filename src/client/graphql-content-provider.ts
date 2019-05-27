@@ -6,7 +6,8 @@ import {
   Uri,
   Event,
   ProviderResult,
-  window
+  window,
+  WebviewPanel
 } from "vscode";
 
 import { ExtractedTemplateLiteral } from "./source-helper";
@@ -24,6 +25,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   private outputChannel: OutputChannel;
   private networkHelper: NetworkHelper;
   private sourceHelper: SourceHelper;
+  private panel: WebviewPanel;
 
   // Event emitter which invokes document updates
   private _onDidChange = new EventEmitter<Uri>();
@@ -34,10 +36,12 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   getCurrentHtml(): Promise<string> {
     return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(this.html);
-      }, 500);
+      resolve(this.html);
     });
+  }
+
+  updatePanel() {
+    this.panel.webview.html = this.html;
   }
 
   async getVariablesFromUser(
@@ -80,12 +84,14 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   constructor(
     uri: Uri,
     outputChannel: OutputChannel,
-    literal: ExtractedTemplateLiteral
+    literal: ExtractedTemplateLiteral,
+    panel: WebviewPanel
   ) {
     this.uri = uri;
     this.outputChannel = outputChannel;
     this.networkHelper = new NetworkHelper(this.outputChannel);
     this.sourceHelper = new SourceHelper(this.outputChannel);
+    this.panel = panel;
 
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(literal.uri));
@@ -95,6 +101,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         );
         this.html = "Error: this file is outside the workspace.";
         this.update(this.uri);
+        this.updatePanel();
         return;
       } else {
         const config = getGraphQLConfig(rootDir!.uri.fsPath);
@@ -111,6 +118,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           );
           this.html = "Error: endpoint data missing from graphql config";
           this.update(this.uri);
+          this.updatePanel();
           return;
         }
 
@@ -125,6 +133,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           this.html =
             "Error: endpoint data missing from graphql config endpoints extension";
           this.update(this.uri);
+          this.updatePanel();
           return;
         }
 
@@ -149,6 +158,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
             this.html += `<pre>${data}</pre>`;
           }
           this.update(this.uri);
+          this.updatePanel();
         };
 
         if (variableDefinitionNodes.length > 0) {
