@@ -29,7 +29,9 @@ function createState(options) {
     options:
       options instanceof Function
         ? {render: options}
-        : options === true ? {} : options,
+        : options === true
+        ? {}
+        : options,
   };
 }
 
