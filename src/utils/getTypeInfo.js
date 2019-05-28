@@ -77,11 +77,11 @@ export default function getTypeInfo(schema, tokenState) {
           state.prevState.kind === 'Field'
             ? info.fieldDef
             : state.prevState.kind === 'Directive'
-              ? info.directiveDef
-              : state.prevState.kind === 'AliasedField'
-                ? state.prevState.name &&
-                  getFieldDef(schema, info.parentType, state.prevState.name)
-                : null;
+            ? info.directiveDef
+            : state.prevState.kind === 'AliasedField'
+            ? state.prevState.name &&
+              getFieldDef(schema, info.parentType, state.prevState.name)
+            : null;
         info.argDefs = parentDef && parentDef.args;
         break;
       case 'Argument':
