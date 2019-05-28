@@ -90,10 +90,11 @@ export function getArgumentReference(typeInfo: any): ArgumentReference {
       };
 }
 
-export function getEnumValueReference(typeInfo: any): any {
+export function getEnumValueReference(typeInfo: any): EnumValueReference {
   return {
     kind: 'EnumValue',
     value: typeInfo.enumValue,
+    // $FlowFixMe
     type: getNamedType(typeInfo.inputType),
   };
 }

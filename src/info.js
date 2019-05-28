@@ -182,7 +182,7 @@ function renderDeprecation(into, options, def) {
 function text(into, content, className, options = {onClick: null}, ref) {
   if (className) {
     const onClick = options.onClick;
-    let node = document.createElement('span');
+    let node;
     if (onClick) {
       node = document.createElement('a');
 
@@ -192,6 +192,8 @@ function text(into, content, className, options = {onClick: null}, ref) {
       node.addEventListener('click', function(e: MouseEvent) {
         onClick(ref, e);
       });
+    } else {
+      node = document.createElement('span');
     }
     node.className = className;
     node.appendChild(document.createTextNode(content));
