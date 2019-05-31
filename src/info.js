@@ -179,17 +179,21 @@ function renderDeprecation(into, options, def) {
   }
 }
 
-function text(into, content, className, options, ref) {
+function text(into, content, className, options = {onClick: null}, ref) {
   if (className) {
     const onClick = options.onClick;
-    const node = document.createElement(onClick ? 'a' : 'span');
+    let node;
     if (onClick) {
+      node = document.createElement('a');
+
       // Providing a href forces proper a tag behavior, though we don't actually
       // want clicking the node to navigate anywhere.
       node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
-      node.addEventListener('click', function(e) {
+      node.addEventListener('click', function(e: MouseEvent) {
         onClick(ref, e);
       });
+    } else {
+      node = document.createElement('span');
     }
     node.className = className;
     node.appendChild(document.createTextNode(content));

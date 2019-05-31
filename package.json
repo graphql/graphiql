@@ -33,7 +33,7 @@
     "mocha_tdd": "--full-trace --watch --require resources/mocha-bootload src/**/__tests__/**/*-test.js"
   },
   "scripts": {
-    "test": "npm run lint && npm run pretty-check && npm run testonly",
+    "test": "yarn run check && yarn run lint && yarn run pretty-check && yarn run testonly",
     "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
     "testwatch": "babel-node --inspect ./node_modules/.bin/_mocha $npm_package_options_mocha_tdd",
     "lint": "eslint src",
@@ -42,7 +42,7 @@
     "watch": "babel --optional runtime resources/watch.js | node",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
-    "preversion": ". ./resources/checkgit.sh && npm test",
+    "preversion": ". ./resources/checkgit.sh && yarn test",
     "prepublish": ". ./resources/prepublish.sh"
   },
   "peerDependencies": {
@@ -67,7 +67,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-babel": "5.3.0",
     "eslint-plugin-flowtype": "3.9.1",
-    "flow-bin": "^0.56.0",
+    "flow-bin": "^0.98.1",
     "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",

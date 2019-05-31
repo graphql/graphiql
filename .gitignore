@@ -11,3 +11,4 @@ coverage/
 /utils
 /variables
 /results
+/__tests__

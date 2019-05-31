@@ -14,6 +14,7 @@ import type {
   GraphQLArgument,
   GraphQLDirective,
   GraphQLEnumValue,
+  GraphQLEnumType,
   GraphQLField,
   GraphQLNamedType,
 } from 'graphql';
@@ -27,7 +28,7 @@ export type SchemaReference =
 
 export type FieldReference = {
   kind: 'Field',
-  field: GraphQLField,
+  field: GraphQLField<any, any>,
   type: ?GraphQLNamedType,
 };
 
@@ -39,7 +40,7 @@ export type DirectiveReference = {
 export type ArgumentReference = {
   kind: 'Argument',
   argument: GraphQLArgument,
-  field?: GraphQLField,
+  field?: GraphQLField<any, any>,
   type?: ?GraphQLNamedType,
   directive?: GraphQLDirective,
 };
@@ -93,6 +94,7 @@ export function getEnumValueReference(typeInfo: any): EnumValueReference {
   return {
     kind: 'EnumValue',
     value: typeInfo.enumValue,
+    // $FlowFixMe
     type: getNamedType(typeInfo.inputType),
   };
 }
