@@ -13,17 +13,15 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "test": "lerna run test",
-    "testonly": "lerna run testonly",
+    "test": "yarn run build && yarn run check && yarn run lint && yarn run testonly",
+    "testonly": "yarn run build && lerna run test",
     "lint": "eslint --report-unused-disable-directives packages/*/src",
     "lint-check": "eslint --print-config .eslintrc.yml | eslint-config-prettier-check",
     "check": "flow check",
     "prettier": "prettier --write packages/*/src/**/*.{js,jsx}",
     "prettier-check": "prettier packages/*/src/**/*.{js,jsx}"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  }
+  "workspaces": [
+    "packages/*"
+  ]
 }

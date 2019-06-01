@@ -1,5 +1,7 @@
 language: node_js
-node_js: stable
+node_js: 
+  - stable
+  - lts/*
 before_install:
   - npm config set spin false --global
 cache: yarn
@@ -12,7 +14,7 @@ deploy:
     on:
       tags: true
       branch: master
-    script: "yarn run lerna:publish"
+    script: "lerna exec -- yarn publish"
   - provider: releases
     skip_cleanup: true
     api_key:

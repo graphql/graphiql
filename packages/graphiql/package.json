@@ -49,8 +49,7 @@
     "dev": "babel-node test/server.js",
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "npm run lint && npm run check && npm run testonly && npm run build",
-    "testonly": "jest"
+    "test": "jest"
   },
   "lint-staged": {
     "*.js": [

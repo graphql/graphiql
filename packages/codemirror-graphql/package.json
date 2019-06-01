@@ -33,8 +33,7 @@
     "mocha_tdd": "--full-trace --watch --require resources/mocha-bootload src/**/__tests__/**/*-test.js"
   },
   "scripts": {
-    "test": "yarn run check && yarn run lint && yarn run pretty-check && yarn run testonly",
-    "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
+    "test": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
     "testwatch": "babel-node --inspect ./node_modules/.bin/_mocha $npm_package_options_mocha_tdd",
     "lint": "eslint src",
     "check": "flow check",
