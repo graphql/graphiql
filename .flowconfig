@@ -1,12 +1,26 @@
 [ignore]
-.*/css/.*
+.*/__mocks__/.*
+.*/__tests__/.*
+.*/coverage/.*
 .*/dist/.*
+.*/resources/.*
+.*/node_modules/conventional-changelog-core/*
+.*/node_modules/graphql/error/GraphQLError.js.flow
+!<PROJECT_ROOT>/node_modules/codemirror
 .*/coverage/.*
 .*/resources/.*
 .*/node_modules/.*
+!<PROJECT_ROOT>/node_modules/chai
+!<PROJECT_ROOT>/node_modules/mocha
+!<PROJECT_ROOT>/node_modules/graphql
+!<PROJECT_ROOT>/node_modules/iterall
+!<PROJECT_ROOT>/node_modules/codemirror
 
 [include]
 
 [libs]
 
 [options]
+module.name_mapper='^graphql-language-service-\([^/]+\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
+module.name_mapper='graphiql' -> '<PROJECT_ROOT>/packages/graphiql/src/index.js'
+module.name_mapper='codemirror-graphql' -> '<PROJECT_ROOT>/packages/codemirror-graphql/src/index.js'

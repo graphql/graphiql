@@ -5,7 +5,10 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "testonly": "lerna run testonly",
+    "lint": "lerna run lint",
+    "check": "lerna run check"
   },
   "workspaces": {
     "packages": [

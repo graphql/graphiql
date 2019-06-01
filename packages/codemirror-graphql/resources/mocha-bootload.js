@@ -8,13 +8,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-var JSDOM = require('jsdom').JSDOM;
+const JSDOM = require('jsdom').JSDOM;
 
 // setup the simplest document possible
-var doc = new JSDOM('<!doctype html><html><body></body></html>');
+const doc = new JSDOM('<!doctype html><html><body></body></html>', {
+  url: 'http://localhost/'
+});
 
 // get the window object out of the document
-var win = doc.window;
+const win = doc.window;
 
 // set globals for mocha that make access to document and window feel
 // natural in the test environment
@@ -41,7 +43,7 @@ propagateToGlobal(win);
 // from mocha-jsdom
 // https://github.com/rstacruz/mocha-jsdom/blob/master/index.js#L80
 function propagateToGlobal(window) {
-  for (var key in window) {
+  for (const key in window) {
     if (!window.hasOwnProperty(key)) {
       continue;
     }
@@ -52,9 +54,9 @@ function propagateToGlobal(window) {
   }
 }
 
-var chai = require('chai');
+const chai = require('chai');
 
-var chaiSubset = require('chai-subset');
+const chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 
 process.on('unhandledRejection', function(error) {
