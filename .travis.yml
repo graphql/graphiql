@@ -4,7 +4,7 @@ before_install:
   - npm config set spin false --global
 cache: yarn
 deploy:
-  - provider: npm
+  - provider: script
     skip_cleanup: true
     email: agomezs@fb.com
     api_key:
@@ -12,6 +12,7 @@ deploy:
     on:
       tags: true
       branch: master
+    script: "yarn run lerna:publish"
   - provider: releases
     skip_cleanup: true
     api_key:
@@ -20,6 +21,11 @@ deploy:
       - packages/graphiql/graphiql.js
       - packages/graphiql/graphiql.min.js
       - packages/graphiql/graphiql.css
+      - packages/codemirror-graphql/hint.js
+      - packages/codemirror-graphql/info.js
+      - packages/codemirror-graphql/jump.js
+      - packages/codemirror-graphql/lint.js
+      - packages/codemirror-graphql/mode.js
     on:
       tags: true
       branch: master
