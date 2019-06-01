@@ -189,7 +189,7 @@ function text(into, content, className, options = {onClick: null}, ref) {
       // Providing a href forces proper a tag behavior, though we don't actually
       // want clicking the node to navigate anywhere.
       node.href = 'javascript:void 0'; // eslint-disable-line no-script-url
-      node.addEventListener('click', function(e: MouseEvent) {
+      node.addEventListener('click', (e: MouseEvent) => {
         onClick(ref, e);
       });
     } else {

@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-CodeMirror.defineOption('info', false, function(cm, options, old) {
+CodeMirror.defineOption('info', false, (cm, options, old) => {
   if (old && old !== CodeMirror.Init) {
     const oldOnMouseOver = cm.state.info.onMouseOver;
     CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);
@@ -154,7 +154,7 @@ function showPopup(cm, box, info) {
 
     if (popup.style.opacity) {
       popup.style.opacity = 0;
-      setTimeout(function() {
+      setTimeout(() => {
         if (popup.parentNode) {
           popup.parentNode.removeChild(popup);
         }

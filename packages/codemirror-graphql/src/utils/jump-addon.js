@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-CodeMirror.defineOption('jump', false, function(cm, options, old) {
+CodeMirror.defineOption('jump', false, (cm, options, old) => {
   if (old && old !== CodeMirror.Init) {
     const oldOnMouseOver = cm.state.jump.onMouseOver;
     CodeMirror.off(cm.getWrapperElement(), 'mouseover', oldOnMouseOver);

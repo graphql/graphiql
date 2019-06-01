@@ -16,8 +16,6 @@ import { TestSchema } from './testSchema';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
-/* eslint-disable max-len */
-
 function createEditorWithLint(lintConfig) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql',
