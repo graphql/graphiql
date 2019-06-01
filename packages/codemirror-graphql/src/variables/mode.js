@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 
-import {list, t, onlineParser, opt, p} from 'graphql-language-service-parser';
+import { list, t, onlineParser, opt, p } from 'graphql-language-service-parser';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -20,7 +20,7 @@ CodeMirror.defineMode('graphql-variables', config => {
     eatWhitespace: stream => stream.eatSpace(),
     lexRules: LexRules,
     parseRules: ParseRules,
-    editorConfig: {tabSize: config.tabSize},
+    editorConfig: { tabSize: config.tabSize },
   });
 
   return {

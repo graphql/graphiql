@@ -7,13 +7,13 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
 import '../mode';
-import {readFileSync} from 'fs';
-import {join} from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 describe('graphql-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
@@ -88,7 +88,7 @@ describe('graphql-mode', () => {
   it('parses schema-kitchen-sink query without invalidchar', () => {
     const schemaKitchenSink = readFileSync(
       join(__dirname, '/schema-kitchen-sink.graphql'),
-      {encoding: 'utf8'},
+      { encoding: 'utf8' },
     );
 
     CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {

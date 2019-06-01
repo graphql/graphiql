@@ -772,7 +772,7 @@ export class GraphiQL extends React.Component {
     if (this.props.onCopyQuery) {
       return this.props.onCopyQuery(query);
     }
-  }
+  };
 
   _updateQueryFacts = (query, operationName, prevOperations, schema) => {
     const queryFacts = getQueryFacts(schema, query);

@@ -8,14 +8,14 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import {isCompositeType} from 'graphql';
+import { isCompositeType } from 'graphql';
 
 import '../hint';
-import {TestSchema} from './testSchema';
+import { TestSchema } from './testSchema';
 
 function createEditorWithHint() {
   return CodeMirror(document.createElement('div'), {
@@ -59,7 +59,7 @@ describe('graphql-hint', () => {
   });
 
   it('provides correct initial keywords', async () => {
-    const suggestions = await getHintSuggestions('', {line: 0, ch: 0});
+    const suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
     const initialKeywords = [
       'query',
       'mutation',
@@ -71,7 +71,7 @@ describe('graphql-hint', () => {
   });
 
   it('provides correct field name suggestions', async () => {
-    const suggestions = await getHintSuggestions('{ ', {line: 0, ch: 2});
+    const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     const fieldConfig = TestSchema.getQueryType().getFields();
     const fieldNames = Object.keys(fieldConfig).filter(
       name => !fieldConfig[name].isDeprecated,
@@ -98,9 +98,9 @@ describe('graphql-hint', () => {
   });
 
   it('provides correct field name suggestion indentation', async () => {
-    const suggestions = await getHintSuggestions('{\n  ', {line: 1, ch: 2});
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 2, sticky: null});
+    const suggestions = await getHintSuggestions('{\n  ', { line: 1, ch: 2 });
+    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 1, ch: 2, sticky: null });
   });
 
   it('provides correct argument suggestions', async () => {
@@ -126,7 +126,10 @@ describe('graphql-hint', () => {
   });
 
   it('provides correct directive suggestions', async () => {
-    const suggestions = await getHintSuggestions('{ test (@', {line: 0, ch: 9});
+    const suggestions = await getHintSuggestions('{ test (@', {
+      line: 0,
+      ch: 9,
+    });
     const directiveNames = ['include', 'skip'];
     checkSuggestions(directiveNames, suggestions.list);
   });
@@ -152,7 +155,7 @@ describe('graphql-hint', () => {
   it('provides correct directive suggestions on args definitions', async () => {
     const suggestions = await getHintSuggestions(
       'type Type { field(arg: String @',
-      {line: 0, ch: 31},
+      { line: 0, ch: 31 },
     );
     const directiveNames = ['onArg', 'onAllDefs'];
     checkSuggestions(directiveNames, suggestions.list);
@@ -208,7 +211,7 @@ describe('graphql-hint', () => {
   it('provides fragment name suggestion', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on Test { id }  query { ...',
-      {line: 0, ch: 40},
+      { line: 0, ch: 40 },
     );
     checkSuggestions(['Foo'], suggestions.list);
   });
@@ -216,7 +219,7 @@ describe('graphql-hint', () => {
   it('provides fragment names for fragments defined lower', async () => {
     const suggestions = await getHintSuggestions(
       'query { ... } fragment Foo on Test { id }',
-      {line: 0, ch: 11},
+      { line: 0, ch: 11 },
     );
     checkSuggestions(['Foo'], suggestions.list);
   });
@@ -228,7 +231,7 @@ describe('graphql-hint', () => {
         'fragment Baz on Second { name } ' +
         'fragment Qux on TestUnion { name } ' +
         'fragment Nrf on Test { id }',
-      {line: 0, ch: 31},
+      { line: 0, ch: 31 },
     );
     checkSuggestions(['Bar', 'Baz', 'Qux'], suggestions.list);
   });
@@ -236,7 +239,7 @@ describe('graphql-hint', () => {
   it('provides correct field name suggestion inside inline fragment', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on TestUnion { ... on First { ',
-      {line: 0, ch: 43},
+      { line: 0, ch: 43 },
     );
     const fieldNames = Object.keys(TestSchema.getType('First').getFields());
     checkSuggestions(fieldNames, suggestions.list);
@@ -245,7 +248,7 @@ describe('graphql-hint', () => {
   it('provides correct field name suggestion inside typeless inline fragment', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on First { ... { ',
-      {line: 0, ch: 30},
+      { line: 0, ch: 30 },
     );
     const fieldNames = Object.keys(TestSchema.getType('First').getFields());
     checkSuggestions(fieldNames, suggestions.list);

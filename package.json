@@ -8,7 +8,9 @@
     "test": "lerna run test",
     "testonly": "lerna run testonly",
     "lint": "lerna run lint",
-    "check": "lerna run check"
+    "check": "lerna run check",
+    "prettier": "prettier --write packages/*/src/**/*.{js,jsx}",
+    "prettier-check": "prettier packages/*/src/**/*.{js,jsx}"
   },
   "workspaces": {
     "packages": [

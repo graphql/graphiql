@@ -129,9 +129,9 @@ function enableJumpMode(cm) {
     const destination = getDestination(token, options, cm);
     if (destination) {
       const marker = cm.markText(
-        {line: pos.line, ch: token.start},
-        {line: pos.line, ch: token.end},
-        {className: 'CodeMirror-jump-token'},
+        { line: pos.line, ch: token.start },
+        { line: pos.line, ch: token.end },
+        { className: 'CodeMirror-jump-token' },
       );
 
       cm.state.jump.marker = marker;

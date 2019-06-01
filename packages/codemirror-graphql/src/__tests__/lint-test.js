@@ -7,14 +7,14 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import '../lint';
-import {TestSchema} from './testSchema';
-import {readFileSync} from 'fs';
-import {join} from 'path';
+import { TestSchema } from './testSchema';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /* eslint-disable max-len */
 

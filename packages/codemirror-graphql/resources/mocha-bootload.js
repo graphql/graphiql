@@ -12,7 +12,7 @@ const JSDOM = require('jsdom').JSDOM;
 
 // setup the simplest document possible
 const doc = new JSDOM('<!doctype html><html><body></body></html>', {
-  url: 'http://localhost/'
+  url: 'http://localhost/',
 });
 
 // get the window object out of the document

@@ -21,8 +21,8 @@ export default function hintList(cursor, token, list) {
 
   return {
     list: hints,
-    from: {line: cursor.line, column: tokenStart},
-    to: {line: cursor.line, column: token.end},
+    from: { line: cursor.line, column: tokenStart },
+    to: { line: cursor.line, column: token.end },
   };
 }
 

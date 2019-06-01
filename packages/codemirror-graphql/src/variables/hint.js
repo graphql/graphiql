@@ -61,7 +61,7 @@ function getVariablesHint(cur, token, options) {
 
   // Variables can only be an object literal.
   if (kind === 'Document' && step === 0) {
-    return hintList(cur, token, [{text: '{'}]);
+    return hintList(cur, token, [{ text: '{' }]);
   }
 
   const variableToType = options.variableToType;
@@ -114,7 +114,7 @@ function getVariablesHint(cur, token, options) {
   ) {
     const namedInputType = getNamedType(typeInfo.type);
     if (namedInputType instanceof GraphQLInputObjectType) {
-      return hintList(cur, token, [{text: '{'}]);
+      return hintList(cur, token, [{ text: '{' }]);
     } else if (namedInputType instanceof GraphQLEnumType) {
       const valueMap = namedInputType.getValues();
       const values = Object.keys(valueMap).map(name => valueMap[name]);
@@ -129,8 +129,8 @@ function getVariablesHint(cur, token, options) {
       );
     } else if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [
-        {text: 'true', type: GraphQLBoolean, description: 'Not false.'},
-        {text: 'false', type: GraphQLBoolean, description: 'Not true.'},
+        { text: 'true', type: GraphQLBoolean, description: 'Not false.' },
+        { text: 'false', type: GraphQLBoolean, description: 'Not true.' },
       ]);
     }
   }

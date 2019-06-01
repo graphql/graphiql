@@ -49,7 +49,6 @@
     "dev": "babel-node test/server.js",
     "lint": "eslint --report-unused-disable-directives src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
-    "prettier": "prettier --write src/**/*.{js,jsx}",
     "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "npm run lint && npm run check && npm run testonly && npm run build",

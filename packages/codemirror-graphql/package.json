@@ -40,8 +40,6 @@
     "check": "flow check",
     "build": "babel src --ignore __tests__ --out-dir .",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "pretty": "node resources/pretty.js",
-    "pretty-check": "node resources/pretty.js --check",
     "preversion": ". ./resources/checkgit.sh && yarn test",
     "prepublish": ". ./resources/prepublish.sh"
   },

@@ -107,7 +107,7 @@ function parseVal() {
 }
 
 function curToken() {
-  return {kind, start, end, value: JSON.parse(string.slice(start, end))};
+  return { kind, start, end, value: JSON.parse(string.slice(start, end)) };
 }
 
 function expect(str) {
@@ -130,7 +130,7 @@ function expect(str) {
 }
 
 function syntaxError(message) {
-  return {message, start, end};
+  return { message, start, end };
 }
 
 function skip(k) {
