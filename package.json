@@ -1,13 +1,15 @@
 {
   "private": true,
   "devDependencies": {
-    "lerna": "^3.13.1",
+    "babel-eslint": "10.0.1",
     "eslint": "^5.16.0",
-    "babel-eslint": "10.0.1",  
+    "eslint-config-prettier": "4.2.0",
     "eslint-plugin-babel": "5.3.0",
     "eslint-plugin-flowtype": "3.9.1",
-    "eslint-config-prettier": "4.2.0",
-    "eslint-plugin-react": "7.13.0"
+    "eslint-plugin-react": "7.13.0",
+    "flow-bin": "^0.100.0",
+    "lerna": "^3.13.1",
+    "prettier": "^1.17.1"
   },
   "scripts": {
     "build": "lerna run build",
@@ -15,7 +17,7 @@
     "testonly": "lerna run testonly",
     "lint": "eslint --report-unused-disable-directives packages/*/src",
     "lint-check": "eslint --print-config .eslintrc.yml | eslint-config-prettier-check",
-    "check": "lerna run check",
+    "check": "flow check",
     "prettier": "prettier --write packages/*/src/**/*.{js,jsx}",
     "prettier-check": "prettier packages/*/src/**/*.{js,jsx}"
   },

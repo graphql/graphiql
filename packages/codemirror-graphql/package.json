@@ -61,11 +61,9 @@
     "chai": "4.1.1",
     "chai-subset": "1.5.0",
     "codemirror": "^5.28.0",
-    "flow-bin": "^0.98.1",
     "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",
-    "prettier": "^1.17.1",
     "sane": "2.0.0"
   }
 }
