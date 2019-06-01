@@ -7,7 +7,3 @@ yarn-error.log
 
 node_modules/
 coverage/
-dist/
-/packages/graphiql/graphiql.js
-/packages/graphiql/graphiql.min.js
-/packages/graphiql/graphiql.css
