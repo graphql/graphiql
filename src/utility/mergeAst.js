@@ -14,16 +14,17 @@ function resolveDefinition(fragments, obj) {
 
   if (definition.selectionSet) {
     definition.selectionSet.selections = definition.selectionSet.selections
-      .filter((selection, idx, self) => 
-        selection.kind !== Kind.FRAGMENT_SPREAD || 
-        idx === self.findIndex(_selection => (
-          _selection.kind === Kind.FRAGMENT_SPREAD &&
-          selection.name.value === _selection.name.value
-        ))
+      .filter(
+        (selection, idx, self) =>
+          selection.kind !== Kind.FRAGMENT_SPREAD ||
+          idx ===
+            self.findIndex(
+              _selection =>
+                _selection.kind === Kind.FRAGMENT_SPREAD &&
+                selection.name.value === _selection.name.value,
+            ),
       )
-      .map(
-        selection => resolveDefinition(fragments, selection),
-      );
+      .map(selection => resolveDefinition(fragments, selection));
   }
 
   return definition;
@@ -45,7 +46,8 @@ export function mergeAst(queryAst) {
   copyAst.definitions = queryAst.definitions
     .filter(elem => {
       return elem.kind !== Kind.FRAGMENT_DEFINITION;
-    }).map(op => resolveDefinition(fragments, op));
+    })
+    .map(op => resolveDefinition(fragments, op));
 
   return copyAst;
 }

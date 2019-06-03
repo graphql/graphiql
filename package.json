@@ -1,12 +1,20 @@
 {
-  "name": "@av/graphiql",
-  "version": "0.0.1-alpha.2",
-  "description": "Forked - A graphical interactive in-browser GraphQL IDE.",
+  "name": "graphiql",
+  "version": "0.13.0",
+  "description": "An graphical interactive in-browser GraphQL IDE.",
+  "contributors": [
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "homepage": "https://github.com/graphql/graphiql",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/graphql/graphiql.git"
   },
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "main": "dist/index.js",
   "files": [
     "dist",
@@ -20,29 +28,43 @@
     "react": "global:React",
     "react-dom": "global:ReactDOM"
   },
-  "options": {
-    "mocha": "--full-trace --require resources/mocha-bootload src/**/*-test.js"
+  "jest": {
+    "clearMocks": true,
+    "setupFiles": [
+      "<rootDir>/resources/enzyme.config.js"
+    ],
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/__tests__/**/*-test.js",
+      "**/?(*.)+(spec|test).js?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "\\\\node_modules\\\\",
+      "dist"
+    ]
   },
   "scripts": {
     "build": "bash ./resources/build.sh",
     "check": "flow check",
     "dev": "babel-node test/server.js",
-    "lint": "eslint src",
+    "lint": "eslint --report-unused-disable-directives src",
     "lint-check": "eslint --print-config .eslintrc | eslint-config-prettier-check",
-    "precommit": "npm run testonly && lint-staged",
+    "prettier": "prettier --write src/**/*.{js,jsx}",
+    "prepublish": ". ./resources/prepublish.sh",
     "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "npm run lint && npm run check && npm run testonly && npm run build",
-    "testonly": "babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha"
+    "test": "yarn check --integrity && npm run lint && npm run check && npm run testonly && npm run build",
+    "testonly": "jest"
   },
   "lint-staged": {
     "*.js": [
-      "prettier --jsx-bracket-same-line --single-quote --trailing-comma=all --write",
+      "prettier --write",
       "git add"
     ]
   },
   "dependencies": {
-    "codemirror": "^5.26.0",
-    "codemirror-graphql": "^0.7.1",
+    "codemirror": "^5.47.0",
+    "codemirror-graphql": "^0.8.3",
+    "copy-to-clipboard": "^3.2.0",
     "markdown-it": "^8.4.0"
   },
   "peerDependencies": {
@@ -52,52 +74,42 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "^7.0.0",
-    "babel-cli": "6.24.1",
-    "babel-eslint": "7.2.3",
-    "babel-plugin-syntax-async-functions": "6.13.0",
-    "babel-plugin-transform-class-properties": "6.24.1",
-    "babel-plugin-transform-object-rest-spread": "6.22.0",
-    "babel-plugin-transform-regenerator": "6.24.1",
-    "babel-preset-es2015": "6.24.1",
-    "babel-preset-react": "6.24.1",
-    "babelify": "7.3.0",
-    "browserify": "^14.4.0",
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.4",
+    "@babel/node": "7.2.2",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/preset-env": "7.4.4",
+    "@babel/preset-flow": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "autoprefixer": "7.0.0",
+    "babel-eslint": "10.0.1",
+    "babel-jest": "^24.8.0",
+    "babelify": "10.0.0",
+    "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
-    "chai": "4.1.1",
-    "chai-subset": "1.5.0",
-    "eslint": "4.4.1",
-    "eslint-config-prettier": "^2.3.0",
-    "eslint-plugin-babel": "4.1.2",
-    "eslint-plugin-react": "7.2.0",
+    "chai": "4.2.0",
+    "chai-subset": "1.6.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-15": "^1.4.0",
+    "eslint": "5.16.0",
+    "eslint-config-prettier": "4.2.0",
+    "eslint-plugin-babel": "5.3.0",
+    "eslint-plugin-react": "7.13.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.7",
-    "flow-bin": "0.52.0",
-    "graphql": "^14.1.1",
-    "husky": "^0.14.0",
-    "jsdom": "11.1.0",
-    "lint-staged": "^4.0.0",
-    "mocha": "3.5.0",
+    "flow-bin": "0.98.1",
+    "graphql": "14.1.1",
+    "jest": "^24.8.0",
+    "jsdom": "15.0.0",
+    "lint-staged": "8.1.6",
     "postcss-cli": "4.1.0",
-    "prettier": "^1.4.4",
-    "prop-types": "15.5.8",
-    "react": "15.5.4",
-    "react-dom": "15.5.4",
-    "react-test-renderer": "15.6.1",
-    "uglify-js": "^3.0.20",
-    "uglifyify": "^4.0.2",
-    "watchify": "3.9.0"
-  },
-  "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues"
-  },
-  "homepage": "https://github.com/graphql/graphiql#readme",
-  "directories": {
-    "example": "example",
-    "test": "test"
-  },
-  "keywords": [
-    "graphiql"
-  ],
-  "author": ""
+    "prettier": "1.17.0",
+    "prop-types": "15.7.2",
+    "react": "15.6.2",
+    "react-dom": "15.6.2",
+    "react-test-renderer": "15.6.2",
+    "uglify-js": "3.5.11",
+    "uglifyify": "5.0.1",
+    "watchify": "3.11.1"
+  }
 }
