@@ -1,4 +1,5 @@
 language: node_js
+<<<<<<< HEAD
 node_js: 
   - stable
   - lts/*
@@ -31,3 +32,10 @@ deploy:
     on:
       tags: true
       branch: master
+=======
+
+node_js: stable
+
+before_install:
+  - npm config set spin false --global
+>>>>>>> import-gls

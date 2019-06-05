@@ -1,27 +1,47 @@
 {
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "options": {
+    "mocha": "--full-trace --require @babel/register --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js",
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
+  },
+  "scripts": {
+    "build": "lerna run build",
+    "test": "yarn run lint && yarn run pretty-check && yarn run testonly && yarn run check",
+    "testonly": "lerna run build && babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
+    "t": "yarn run testonly",
+    "lint": "eslint src packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "check": "flow check --show-all-errors",
+    "prepublish": "node resources/prepublish.js",
+    "pretty": "node resources/pretty.js",
+    "pretty-check": "node resources/pretty.js --check"
+  },
   "devDependencies": {
-    "babel-eslint": "10.0.1",
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.4",
+    "@babel/node": "7.2.2",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "7.4.4",
+    "@babel/preset-flow": "7.0.0",
+    "@babel/register": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "chai": "4.1.2",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "4.2.0",
     "eslint-plugin-babel": "5.3.0",
     "eslint-plugin-flowtype": "3.9.1",
     "eslint-plugin-react": "7.13.0",
+    "eslint-plugin-dependencies": "2.4.0",
+    "eslint-plugin-prefer-object-spread": "1.2.1",
+    "fetch-mock": "^6.0.0",
     "flow-bin": "^0.100.0",
+    "graphql": "^14.3.0",
     "lerna": "^3.13.1",
-    "prettier": "^1.17.1"
-  },
-  "scripts": {
-    "build": "lerna run build",
-    "test": "yarn run build && yarn run check && yarn run lint && yarn run testonly",
-    "testonly": "yarn run build && lerna run test",
-    "lint": "eslint --report-unused-disable-directives packages/*/src",
-    "lint-check": "eslint --print-config .eslintrc.yml | eslint-config-prettier-check",
-    "check": "flow check",
-    "prettier": "prettier --write packages/*/src/**/*.{js,jsx}",
-    "prettier-check": "prettier packages/*/src/**/*.{js,jsx}"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+    "prettier": "^1.17.1",
+    "mocha": "6.1.4"
+  }
 }

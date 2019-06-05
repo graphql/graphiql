@@ -1,0 +1,37 @@
+schema {
+  query: Query
+}
+
+""" This is type documentation for Chicken """
+scalar Chicken
+
+""" docs for color """
+enum Color {
+  RED
+  GREEN
+  BLUE
+}
+
+union UnionType = String | Float | Boolean
+
+interface TestInterface {
+  id: String!
+}
+
+""" This is type documentation for TestType """
+type TestType implements TestInterface {
+  """ This is field documentation for TestType.testField """
+  testField: String
+  testDeprecatedField: Float @deprecated(reason: "deprecation reason")
+  testEnumField: Color
+}
+
+type Query {
+
+  """ This is field documentation for Query.thing """
+  thing: TestType
+  listOfThing: [TestType!]
+  parameterizedField(id: String!): TestType
+  cluck: Chicken
+  unionField: UnionType
+}
