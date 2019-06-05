@@ -23,16 +23,16 @@
   ],
   "scripts": {
     "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
-    "build": "npm run build-js && npm run build-flow",
-    "build-js": "babel-node ../../resources/buildJs.js",
-    "build-flow": "babel-node ../../resources/buildFlow.js",
+    "build": "yarn run build-js && yarn run build-flow",
+    "build-js": "node ../../resources/buildJs.js",
+    "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
   "peerDependencies": {
     "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "babel-polyfill": "6.16.0",
+    "@babel/polyfill": "7.4.4",
     "graphql-config": "2.2.1",
     "graphql-language-service-interface": "^2.0.1",
     "graphql-language-service-server": "^2.0.1",

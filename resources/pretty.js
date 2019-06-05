@@ -46,7 +46,7 @@ if (status) {
   print(err);
   if (check) {
     print(`\n${YELLOW}The files listed above are not correctly formatted.`);
-    print(`Try: ${INVERSE} npm run pretty ${RESET}`);
+    print(`Try: ${INVERSE} yarn run pretty ${RESET}`);
   }
 }
 if (error) {

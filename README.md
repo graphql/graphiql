@@ -31,7 +31,7 @@ cd {path/to/your/repo}
 npm install ../graphql-language-service
 ```
 
-After pulling the latest changes from this repo, be sure to run `npm run build` to transform the `src/` directory and generate the `dist/` directory.
+After pulling the latest changes from this repo, be sure to run `yarn run build` to transform the `src/` directory and generate the `dist/` directory.
 
 The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
 

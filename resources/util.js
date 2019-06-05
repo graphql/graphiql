@@ -10,17 +10,19 @@
 
 'use strict';
 
-import {execFileSync} from 'child_process';
-import {createReadStream, createWriteStream} from 'fs';
+const {execFileSync} = require('child_process');
+const {createReadStream, createWriteStream} = require('fs');
 
-export function cp(source: string, destination: string): void {
+function cp(source, destination) {
   createReadStream(source).pipe(createWriteStream(destination));
 }
 
-export function exec(executable: string, ...args: string[]): void {
+function exec(executable, ...args) {
   print(execFileSync(executable, args).toString());
 }
 
-export function print(string: string): void {
+function print(string) {
   process.stdout.write(string);
 }
+
+module.exports = {cp, exec, print};

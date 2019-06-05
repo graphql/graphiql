@@ -2,9 +2,6 @@
   "name": "graphql-language-server",
   "version": "2.0.1",
   "description": "An interface for building GraphQL language services for IDEs",
-  "scripts": {
-    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/graphql/graphql-language-service.git"
