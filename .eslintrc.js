@@ -28,6 +28,8 @@ module.exports = {
     atomtest: true,
     es6: true,
     node: true,
+    jest: true,
+    mocha: true
   },
 
   'extends': ['prettier'],

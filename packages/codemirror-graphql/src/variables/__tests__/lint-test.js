@@ -8,7 +8,7 @@
  */
 
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { parse } from 'graphql';

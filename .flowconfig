@@ -6,16 +6,11 @@
 .*/resources/.*
 .*/node_modules/conventional-changelog-core/*
 .*/node_modules/graphql/error/GraphQLError.js.flow
-!<PROJECT_ROOT>/node_modules/codemirror
-.*/coverage/.*
-.*/resources/.*
-.*/node_modules/.*
 !<PROJECT_ROOT>/node_modules/chai
 !<PROJECT_ROOT>/node_modules/mocha
 !<PROJECT_ROOT>/node_modules/graphql
 !<PROJECT_ROOT>/node_modules/iterall
 !<PROJECT_ROOT>/node_modules/codemirror
-
 [include]
 
 [libs]

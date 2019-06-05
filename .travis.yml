@@ -4,6 +4,8 @@ node_js:
   - lts/*
 before_install:
   - npm config set spin false --global
+install:
+  - yarn --ignore-scripts # ignore prepublish scripts
 cache: yarn
 deploy:
   - provider: script

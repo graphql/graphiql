@@ -10,7 +10,7 @@
 
 const { exec } = require('./util');
 
-exec(
+const commands = [
   'babel',
   'src',
   '--ignore',
@@ -19,4 +19,9 @@ exec(
   'dist',
   '--root-mode',
   'upward',
-);
+];
+const extraArgs = process.argv[2]
+if (extraArgs) {
+  commands.push(extraArgs.split(' '));
+}
+exec(...commands);

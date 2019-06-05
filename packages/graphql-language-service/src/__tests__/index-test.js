@@ -7,7 +7,7 @@
  */
 
 import { expect } from 'chai';
-import { describe, it } from 'mocha';
+
 
 describe('blinking light demo', () => {
   it('runs', () => {
