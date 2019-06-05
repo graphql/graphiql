@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "removeComments": true,
+    "sourceMap": true,
+    // "declaration": true, @TODO disable allowJs so we can enable these
+    // "declarationMap": true,
+    "target": "es5",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictNullChecks": true,
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "allowJs": true,
+    "lib": ["es2018", "dom", "esnext"],
+    "typeRoots": [
+      "../../node_modules/@types/"
+    ]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "src/**/__tests__/**/*",
+    "src/**/__mocks__/**/*"
+  ]
+}
