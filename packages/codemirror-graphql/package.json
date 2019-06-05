@@ -31,7 +31,7 @@
   "scripts": {
     "lint": "eslint src",
     "check": "flow check",
-    "build": "babel src --root-mode upward --ignore __tests__ --out-dir . && yarn run build-flow",
+    "build": "babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "test": "yarn run lint && yarn run pretty-check && yarn run build && yarn run testonly && yarn run check",
+    "test": "yarn run lint && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
     "lint": "eslint packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
