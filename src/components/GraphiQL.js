@@ -9,8 +9,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
+import copyToClipboard from 'copy-to-clipboard';
 
 import { ExecuteButton } from './ExecuteButton';
+import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
@@ -31,6 +33,7 @@ import { getLeft, getTop } from '../utility/elementPosition';
 import { mergeAst } from '../utility/mergeAst';
 import {
   introspectionQuery,
+  introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
@@ -56,6 +59,7 @@ export class GraphiQL extends React.Component {
       removeItem: PropTypes.func,
     }),
     defaultQuery: PropTypes.string,
+    onCopyQuery: PropTypes.func,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
@@ -64,6 +68,7 @@ export class GraphiQL extends React.Component {
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
+    readOnly: PropTypes.bool,
   };
 
   constructor(props) {
@@ -78,28 +83,33 @@ export class GraphiQL extends React.Component {
     this._storage = new StorageAPI(props.storage);
 
     // Determine the initial query to display.
-    const query = props.query !== undefined
-      ? props.query
-      : this._storage.get('query') !== null
+    const query =
+      props.query !== undefined
+        ? props.query
+        : this._storage.get('query') !== null
         ? this._storage.get('query')
-        : props.defaultQuery !== undefined ? props.defaultQuery : defaultQuery;
+        : props.defaultQuery !== undefined
+        ? props.defaultQuery
+        : defaultQuery;
 
     // Get the initial query facts.
     const queryFacts = getQueryFacts(props.schema, query);
 
     // Determine the initial variables to display.
-    const variables = props.variables !== undefined
-      ? props.variables
-      : this._storage.get('variables');
+    const variables =
+      props.variables !== undefined
+        ? props.variables
+        : this._storage.get('variables');
 
     // Determine the initial operationName to use.
-    const operationName = props.operationName !== undefined
-      ? props.operationName
-      : getSelectedOperationName(
-          null,
-          this._storage.get('operationName'),
-          queryFacts && queryFacts.operations,
-        );
+    const operationName =
+      props.operationName !== undefined
+        ? props.operationName
+        : getSelectedOperationName(
+            null,
+            this._storage.get('operationName'),
+            queryFacts && queryFacts.operations,
+          );
 
     // Initialize state
     this.state = {
@@ -116,7 +126,7 @@ export class GraphiQL extends React.Component {
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
-          DEFAULT_DOC_EXPLORER_WIDTH,
+        DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
       ...queryFacts,
@@ -239,12 +249,14 @@ export class GraphiQL extends React.Component {
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const logo =
-      find(children, child => child.type === GraphiQL.Logo) ||
-      <GraphiQL.Logo />;
+    const logo = find(children, child => child.type === GraphiQL.Logo) || (
+      <GraphiQL.Logo />
+    );
 
-    const toolbar =
-      find(children, child => child.type === GraphiQL.Toolbar) ||
+    const toolbar = find(
+      children,
+      child => child.type === GraphiQL.Toolbar,
+    ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
@@ -257,12 +269,17 @@ export class GraphiQL extends React.Component {
           label="Merge"
         />
         <ToolbarButton
+          onClick={this.handleCopyQuery}
+          title="Copy Query (Shift-Ctrl-C)"
+          label="Copy"
+        />
+        <ToolbarButton
           onClick={this.handleToggleHistory}
           title="Show History"
           label="History"
         />
-
-      </GraphiQL.Toolbar>;
+      </GraphiQL.Toolbar>
+    );
 
     const footer = find(children, child => child.type === GraphiQL.Footer);
 
@@ -317,12 +334,13 @@ export class GraphiQL extends React.Component {
               />
               {toolbar}
             </div>
-            {!this.state.docExplorerOpen &&
+            {!this.state.docExplorerOpen && (
               <button
                 className="docExplorerShow"
                 onClick={this.handleToggleDocs}>
                 {'Docs'}
-              </button>}
+              </button>
+            )}
           </div>
           <div
             ref={n => {
@@ -341,10 +359,12 @@ export class GraphiQL extends React.Component {
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
+                onCopyQuery={this.handleCopyQuery}
                 onPrettifyQuery={this.handlePrettifyQuery}
                 onMergeQuery={this.handleMergeQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
+                readOnly={this.props.readOnly}
               />
               <div className="variable-editor" style={variableStyle}>
                 <div
@@ -365,14 +385,16 @@ export class GraphiQL extends React.Component {
                   onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
                 />
               </div>
             </div>
             <div className="resultWrap">
-              {this.state.isWaitingForResponse &&
+              {this.state.isWaitingForResponse && (
                 <div className="spinner-container">
                   <div className="spinner" />
-                </div>}
+                </div>
+              )}
               <ResultViewer
                 ref={c => {
                   this.resultComponent = c;
@@ -380,6 +402,7 @@ export class GraphiQL extends React.Component {
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
+                ImagePreview={ImagePreview}
               />
               {footer}
             </div>
@@ -483,7 +506,12 @@ export class GraphiQL extends React.Component {
   _fetchSchema() {
     const fetcher = this.props.fetcher;
 
-    const fetch = observableToPromise(fetcher({ query: introspectionQuery }));
+    const fetch = observableToPromise(
+      fetcher({
+        query: introspectionQuery,
+        operationName: introspectionQueryName,
+      }),
+    );
     if (!isPromise(fetch)) {
       this.setState({
         response: 'Fetcher did not return a Promise for introspection.',
@@ -502,6 +530,7 @@ export class GraphiQL extends React.Component {
         const fetch2 = observableToPromise(
           fetcher({
             query: introspectionQuerySansSubscriptions,
+            operationName: introspectionQueryName,
           }),
         );
         if (!isPromise(fetch)) {
@@ -524,9 +553,10 @@ export class GraphiQL extends React.Component {
           const queryFacts = getQueryFacts(schema, this.state.query);
           this.setState({ schema, ...queryFacts });
         } else {
-          const responseString = typeof result === 'string'
-            ? result
-            : JSON.stringify(result, null, 2);
+          const responseString =
+            typeof result === 'string'
+              ? result
+              : JSON.stringify(result, null, 2);
           this.setState({
             // Set schema to `null` to explicitly indicate that no schema exists.
             schema: null,
@@ -547,9 +577,8 @@ export class GraphiQL extends React.Component {
     let jsonVariables = null;
 
     try {
-      jsonVariables = variables && variables.trim() !== ''
-        ? JSON.parse(variables)
-        : null;
+      jsonVariables =
+        variables && variables.trim() !== '' ? JSON.parse(variables) : null;
     } catch (error) {
       throw new Error(`Variables are invalid JSON: ${error.message}.`);
     }
@@ -729,6 +758,21 @@ export class GraphiQL extends React.Component {
       return this.props.onEditQuery(value);
     }
   });
+
+  handleCopyQuery = () => {
+    const editor = this.getQueryEditor();
+    const query = editor.getValue();
+
+    if (!query) {
+      return;
+    }
+
+    copyToClipboard(query);
+
+    if (this.props.onCopyQuery) {
+      return this.props.onCopyQuery(query);
+    }
+  }
 
   _updateQueryFacts = (query, operationName, prevOperations, schema) => {
     const queryFacts = getQueryFacts(schema, query);
@@ -972,18 +1016,20 @@ export class GraphiQL extends React.Component {
 GraphiQL.Logo = function GraphiQLLogo(props) {
   return (
     <div className="title">
-      {props.children || <span>{'Graph'}<em>{'i'}</em>{'QL'}</span>}
+      {props.children || (
+        <span>
+          {'Graph'}
+          <em>{'i'}</em>
+          {'QL'}
+        </span>
+      )}
     </div>
   );
 };
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
-  return (
-    <div className="toolbar">
-      {props.children}
-    </div>
-  );
+  return <div className="toolbar">{props.children}</div>;
 };
 
 // Export main windows/panes to be used separately if desired.
@@ -1008,11 +1054,7 @@ GraphiQL.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Footer = function GraphiQLFooter(props) {
-  return (
-    <div className="footer">
-      {props.children}
-    </div>
-  );
+  return <div className="footer">{props.children}</div>;
 };
 
 const defaultQuery = `# Welcome to GraphiQL

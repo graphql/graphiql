@@ -36,6 +36,7 @@ export class QueryEditor extends React.Component {
     readOnly: PropTypes.bool,
     onHintInformationRender: PropTypes.func,
     onClickReference: PropTypes.func,
+    onCopyQuery: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onMergeQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
@@ -106,22 +107,11 @@ export class QueryEditor extends React.Component {
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
-        'Cmd-Space': () =>
-          this.editor.showHint({
-            completeSingle: true,
-          }),
-        'Ctrl-Space': () =>
-          this.editor.showHint({
-            completeSingle: true,
-          }),
-        'Alt-Space': () =>
-          this.editor.showHint({
-            completeSingle: true,
-          }),
-        'Shift-Space': () =>
-          this.editor.showHint({
-            completeSingle: true,
-          }),
+        'Cmd-Space': () => this.editor.showHint({ completeSingle: true, container: this._node }),
+        'Ctrl-Space': () => this.editor.showHint({ completeSingle: true, container: this._node }),
+        'Alt-Space': () => this.editor.showHint({ completeSingle: true, container: this._node }),
+        'Shift-Space': () => this.editor.showHint({ completeSingle: true, container: this._node }),
+        'Shift-Alt-Space': () => this.editor.showHint({ completeSingle: true, container: this._node }),
 
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
@@ -131,6 +121,12 @@ export class QueryEditor extends React.Component {
         'Ctrl-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
+          }
+        },
+
+        'Shift-Ctrl-C': () => {
+          if (this.props.onCopyQuery) {
+            this.props.onCopyQuery();
           }
         },
 
@@ -161,6 +157,8 @@ export class QueryEditor extends React.Component {
         // Persistent search box in Query Editor
         'Cmd-F': 'findPersistent',
         'Ctrl-F': 'findPersistent',
+        'Cmd-G': 'findPersistent',
+        'Ctrl-G': 'findPersistent',
 
         // Editor improvements
         'Ctrl-Left': 'goSubwordLeft',
