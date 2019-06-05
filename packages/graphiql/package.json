@@ -44,7 +44,9 @@
     ]
   },
   "scripts": {
-    "build": "bash ./resources/build.sh",
+    "build": "yarn run build-js && yarn run build-flow",
+    "build-js": "node ../../resources/buildJs.js",
+    "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node test/server.js",
     "prepublish": ". ./resources/prepublish.sh",
@@ -70,15 +72,7 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.4.4",
-    "@babel/core": "7.4.4",
-    "@babel/node": "7.2.2",
-    "@babel/plugin-proposal-class-properties": "7.4.4",
-    "@babel/preset-env": "7.4.4",
-    "@babel/preset-flow": "7.0.0",
-    "@babel/preset-react": "7.0.0",
     "autoprefixer": "7.0.0",
-    "babel-jest": "^24.8.0",
     "babelify": "10.0.0",
     "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
@@ -91,7 +85,6 @@
     "graphql": "14.1.1",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
-    "lint-staged": "8.1.6",
     "postcss-cli": "4.1.0",
     "prop-types": "15.7.2",
     "react": "15.6.2",

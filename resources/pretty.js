@@ -15,8 +15,8 @@ const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
 const options = [
-  '--no-bracket-spacing',
-  '--single-quote',
+  // '--no-bracket-spacing',
+  // '--single-quote',
   '--trailing-comma=all',
 ];
 const glob = '{packages/*/{resources,src},resources,src}/**/*.js';

@@ -1,16 +1,9 @@
 {
-<<<<<<< HEAD
-=======
-  "lerna": "2.0.0",
->>>>>>> import-gls
+  "lerna": "3.13.1",
   "packages": [
     "packages/*"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,
-<<<<<<< HEAD
-  "version": "0.0.0"
-=======
   "version": "2.0.1"
->>>>>>> import-gls
 }

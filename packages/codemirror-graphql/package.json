@@ -37,7 +37,9 @@
     "testwatch": "babel-node --inspect ./node_modules/.bin/_mocha $npm_package_options_mocha_tdd",
     "lint": "eslint src",
     "check": "flow check",
-    "build": "babel src --ignore __tests__ --out-dir .",
+    "build": "yarn run build-js && yarn run build-flow",
+    "build-js": "node ../../resources/buildJs.js",
+    "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
     "preversion": ". ./resources/checkgit.sh && yarn test",
     "prepublish": ". ./resources/prepublish.sh"
@@ -51,12 +53,6 @@
     "graphql-language-service-parser": "^1.2.2"
   },
   "devDependencies": {
-    "@babel/cli": "7.4.4",
-    "@babel/core": "7.4.4",
-    "@babel/node": "7.2.2",
-    "@babel/plugin-proposal-class-properties": "7.4.4",
-    "@babel/preset-env": "7.4.4",
-    "@babel/preset-flow": "7.0.0",
     "chai": "4.1.1",
     "chai-subset": "1.5.0",
     "codemirror": "^5.28.0",

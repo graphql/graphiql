@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "options": {
-    "mocha": "--full-trace --require @babel/register --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js",
+    "mocha": "--full-trace --require @babel/register --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js --ignore packages/graphiql/**/*",
     "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
   },
   "scripts": {
@@ -12,10 +12,10 @@
     "test": "yarn run lint && yarn run pretty-check && yarn run testonly && yarn run check",
     "testonly": "lerna run build && babel-node ./node_modules/.bin/_mocha $npm_package_options_mocha",
     "t": "yarn run testonly",
-    "lint": "eslint src packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint": "eslint packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
-    "prepublish": "node resources/prepublish.js",
+    "propublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check"
   },
@@ -27,6 +27,7 @@
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "7.4.4",
     "@babel/preset-flow": "7.0.0",
+    "@babel/preset-react": "7.0.0",
     "@babel/register": "^7.4.4",
     "babel-eslint": "^10.0.1",
     "chai": "4.1.2",
