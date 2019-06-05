@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import {getAutocompleteSuggestions} from 'graphql-language-service-interface';
+import { getAutocompleteSuggestions } from 'graphql-language-service-interface';
 
 /**
  * Registers a "hint" helper for CodeMirror.
@@ -68,8 +68,8 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
       isDeprecated: item.isDeprecated,
       deprecationReason: item.deprecationReason,
     })),
-    from: {line: cur.line, column: tokenStart},
-    to: {line: cur.line, column: token.end},
+    from: { line: cur.line, column: tokenStart },
+    to: { line: cur.line, column: token.end },
   };
 
   if (results && results.list && results.list.length > 0) {

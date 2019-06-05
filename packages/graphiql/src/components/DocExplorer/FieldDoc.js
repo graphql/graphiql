@@ -29,10 +29,8 @@ export default class FieldDoc extends React.Component {
     if (field.args && field.args.length > 0) {
       argsDef = (
         <div className="doc-category">
-          <div className="doc-category-title">
-            {'arguments'}
-          </div>
-          {field.args.map(arg =>
+          <div className="doc-category-title">{'arguments'}</div>
+          {field.args.map(arg => (
             <div key={arg.name} className="doc-category-item">
               <div>
                 <Argument arg={arg} onClickType={this.props.onClickType} />
@@ -41,8 +39,8 @@ export default class FieldDoc extends React.Component {
                 className="doc-value-description"
                 markdown={arg.description}
               />
-            </div>,
-          )}
+            </div>
+          ))}
         </div>
       );
     }
@@ -53,15 +51,14 @@ export default class FieldDoc extends React.Component {
           className="doc-type-description"
           markdown={field.description || 'No Description'}
         />
-        {field.deprecationReason &&
+        {field.deprecationReason && (
           <MarkdownContent
             className="doc-deprecation"
             markdown={field.deprecationReason}
-          />}
+          />
+        )}
         <div className="doc-category">
-          <div className="doc-category-title">
-            {'type'}
-          </div>
+          <div className="doc-category-title">{'type'}</div>
           <TypeLink type={field.type} onClick={this.props.onClickType} />
         </div>
         {argsDef}

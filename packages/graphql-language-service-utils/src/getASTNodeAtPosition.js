@@ -8,10 +8,10 @@
  *  @flow
  */
 
-import type {ASTNode} from 'graphql/language';
+import type { ASTNode } from 'graphql/language';
 
-import {Position} from './Range';
-import {visit} from 'graphql';
+import { Position } from './Range';
+import { visit } from 'graphql';
 
 export function getASTNodeAtPosition(
   query: string,

@@ -22,8 +22,8 @@ import type {
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
-import {findDeprecatedUsages, parse} from 'graphql';
-import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
+import { findDeprecatedUsages, parse } from 'graphql';
+import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 import {
   Position,
   Range,
@@ -107,8 +107,8 @@ function annotations(
       node.kind !== 'Variable' && node.name
         ? node.name
         : node.variable
-          ? node.variable
-          : node;
+        ? node.variable
+        : node;
 
     invariant(error.locations, 'GraphQL validation error requires locations.');
     const loc = error.locations[0];

@@ -40,7 +40,7 @@ CodeMirror.defineMode('graphql', config => {
     eatWhitespace: stream => stream.eatWhile(isIgnored),
     lexRules: LexRules,
     parseRules: ParseRules,
-    editorConfig: {tabSize: config.tabSize},
+    editorConfig: { tabSize: config.tabSize },
   });
 
   return {

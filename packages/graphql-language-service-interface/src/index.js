@@ -16,7 +16,7 @@ export {
   hintList,
 } from './autocompleteUtils';
 
-export {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
+export { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
 
 export {
   LANGUAGE,
@@ -24,8 +24,8 @@ export {
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
 
-export {getDiagnostics, validateQuery} from './getDiagnostics';
-export {getOutline} from './getOutline';
-export {getHoverInformation} from './getHoverInformation';
+export { getDiagnostics, validateQuery } from './getDiagnostics';
+export { getOutline } from './getOutline';
+export { getHoverInformation } from './getHoverInformation';
 
-export {GraphQLLanguageService} from './GraphQLLanguageService';
+export { GraphQLLanguageService } from './GraphQLLanguageService';

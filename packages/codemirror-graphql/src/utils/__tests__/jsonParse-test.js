@@ -7,8 +7,8 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import jsonParse from '../jsonParse';
 
 describe('jsonParse', () => {
@@ -22,18 +22,18 @@ describe('jsonParse', () => {
   it('correctly parses escaped strings', () => {
     checkEscapedString(
       '{ "test": "\\"" }',
-      {kind: 'String', start: 2, end: 8, value: 'test'},
-      {kind: 'String', start: 10, end: 14, value: '"'},
+      { kind: 'String', start: 2, end: 8, value: 'test' },
+      { kind: 'String', start: 10, end: 14, value: '"' },
     );
     checkEscapedString(
       '{ "test": "\\\\" }',
-      {kind: 'String', start: 2, end: 8, value: 'test'},
-      {kind: 'String', start: 10, end: 14, value: '\\'},
+      { kind: 'String', start: 2, end: 8, value: 'test' },
+      { kind: 'String', start: 10, end: 14, value: '\\' },
     );
     checkEscapedString(
       '{ "slash": "\\/" }',
-      {kind: 'String', start: 2, end: 9, value: 'slash'},
-      {kind: 'String', start: 11, end: 15, value: '/'},
+      { kind: 'String', start: 2, end: 9, value: 'slash' },
+      { kind: 'String', start: 11, end: 15, value: '/' },
     );
   });
 });

@@ -38,13 +38,13 @@ import type {
   Token,
 } from 'graphql-language-service-types';
 
-import {LexRules, ParseRules, isIgnored} from './Rules';
+import { LexRules, ParseRules, isIgnored } from './Rules';
 
 type ParserOptions = {
   eatWhitespace: (stream: CharacterStream) => boolean,
   lexRules: LexRulesType,
   parseRules: ParseRulesType,
-  editorConfig: {[name: string]: any},
+  editorConfig: { [name: string]: any },
 };
 
 export default function onlineParser(
@@ -84,7 +84,7 @@ function getToken(
   state: State,
   options: ParserOptions,
 ): string {
-  const {lexRules, parseRules, eatWhitespace, editorConfig} = options;
+  const { lexRules, parseRules, eatWhitespace, editorConfig } = options;
   // Restore state after an empty-rule.
   if (state.rule && state.rule.length === 0) {
     popRule(state);
@@ -218,7 +218,7 @@ function pushRule(rules: ParseRulesType, state: State, ruleKind: string): void {
   if (!rules[ruleKind]) {
     throw new TypeError('Unknown rule: ' + ruleKind);
   }
-  state.prevState = {...state};
+  state.prevState = { ...state };
   state.kind = ruleKind;
   state.name = null;
   state.type = null;
@@ -319,7 +319,7 @@ function lex(lexRules: LexRulesType, stream: CharacterStream): ?Token {
   for (let i = 0; i < kinds.length; i++) {
     const match = stream.match(lexRules[kinds[i]]);
     if (match && match instanceof Array) {
-      return {kind: kinds[i], value: match[0]};
+      return { kind: kinds[i], value: match[0] };
     }
   }
 }

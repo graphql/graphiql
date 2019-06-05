@@ -16,5 +16,3 @@ describe('DocExplorer', () => {
     expect(error.text()).to.equal('No Schema Available');
   });
 });
-
-

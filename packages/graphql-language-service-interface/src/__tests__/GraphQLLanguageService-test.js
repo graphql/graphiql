@@ -8,14 +8,14 @@
  *  @flow
  */
 
-import {expect} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
-import {join} from 'path';
+import { expect } from 'chai';
+import { beforeEach, describe, it } from 'mocha';
+import { join } from 'path';
 import * as fs from 'fs';
-import {buildSchema} from 'graphql';
+import { buildSchema } from 'graphql';
 
-import {GraphQLConfig} from 'graphql-config';
-import {GraphQLLanguageService} from '../GraphQLLanguageService';
+import { GraphQLConfig } from 'graphql-config';
+import { GraphQLLanguageService } from '../GraphQLLanguageService';
 
 const MOCK_CONFIG = {
   schemaPath: './__schema__/StarWarsSchema.graphql',
@@ -94,7 +94,7 @@ describe('GraphQLLanguageService', () => {
   it('runs definition service as expected', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
-      {line: 0, character: 28},
+      { line: 0, character: 28 },
       './queries/definitionQuery.graphql',
     );
     expect(definitionQueryResult.definitions.length).to.equal(1);
@@ -103,7 +103,7 @@ describe('GraphQLLanguageService', () => {
   it('runs hover service as expected', async () => {
     const hoverInformation = await languageService.getHoverInformation(
       'type Query { hero(episode: String): String }',
-      {line: 0, character: 28},
+      { line: 0, character: 28 },
       './queries/definitionQuery.graphql',
     );
     expect(hoverInformation).to.equal(

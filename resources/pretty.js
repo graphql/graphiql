@@ -7,18 +7,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const {spawnSync} = require('child_process');
-const {join} = require('path');
+const { spawnSync } = require('child_process');
+const { join } = require('path');
 
 const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
-const options = [
-  // '--no-bracket-spacing',
-  // '--single-quote',
-  '--trailing-comma=all',
-];
+const options = ['--trailing-comma=all'];
 const glob = '{packages/*/{resources,src},resources,src}/**/*.js';
 const root = join(__dirname, '..');
 const executable = join(root, 'node_modules', '.bin', 'prettier');
@@ -27,7 +23,7 @@ const check = process.argv.indexOf('--check') !== -1;
 const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 
-const {stdout, stderr, status, error} = spawnSync(executable, [
+const { stdout, stderr, status, error } = spawnSync(executable, [
   ...options,
   mode,
   glob,

@@ -15,7 +15,7 @@ import type {
   Rule,
   ParseRule,
 } from 'graphql-language-service-types';
-import {opt, list, butNot, t, p} from './RuleHelpers';
+import { opt, list, butNot, t, p } from './RuleHelpers';
 
 /**
  * Whitespace tokens defined in GraphQL spec.
@@ -53,7 +53,7 @@ export const LexRules = {
  * spec. Minor deviations allow for a simpler implementation. The resulting
  * parser can parse everything the spec declares possible.
  */
-export const ParseRules: {[name: string]: ParseRule} = {
+export const ParseRules: { [name: string]: ParseRule } = {
   Document: [list('Definition')],
   Definition(token: Token) {
     switch (token.value) {
@@ -121,8 +121,8 @@ export const ParseRules: {[name: string]: ParseRule} = {
         ? 'InlineFragment'
         : 'FragmentSpread'
       : stream.match(/[\s\u00a0,]*:/, false)
-        ? 'AliasedField'
-        : 'Field';
+      ? 'AliasedField'
+      : 'Field';
   },
   // Note: this minor deviation of "AliasedField" simplifies the lookahead.
   AliasedField: [

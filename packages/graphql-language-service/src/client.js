@@ -8,17 +8,17 @@
  *  @flow
  */
 
-import type {GraphQLSchema} from 'graphql';
+import type { GraphQLSchema } from 'graphql';
 
 import invariant from 'assert';
 import fs from 'fs';
-import {buildSchema, buildClientSchema} from 'graphql';
+import { buildSchema, buildClientSchema } from 'graphql';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getOutline,
 } from 'graphql-language-service-interface';
-import {Position} from 'graphql-language-service-utils';
+import { Position } from 'graphql-language-service-utils';
 import path from 'path';
 
 const GRAPHQL_SUCCESS_CODE = 0;

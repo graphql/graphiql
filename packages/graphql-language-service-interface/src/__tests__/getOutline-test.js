@@ -8,9 +8,9 @@
  *  @flow
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
-import {getOutline} from '../getOutline';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
+import { getOutline } from '../getOutline';
 
 describe('getOutline()', () => {
   it('returns outline trees correctly', () => {

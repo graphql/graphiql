@@ -10,16 +10,16 @@
 
 // These functions help build matching rules for ParseRules.
 
-import type {Rule, Token} from 'graphql-language-service-types';
+import type { Rule, Token } from 'graphql-language-service-types';
 
 // An optional rule.
 export function opt(ofRule: Rule | string): Rule {
-  return {ofRule};
+  return { ofRule };
 }
 
 // A list of another rule.
 export function list(ofRule: Rule | string, separator?: string | Rule): Rule {
-  return {ofRule, isList: true, separator};
+  return { ofRule, isList: true, separator };
 }
 
 // An constraint described as `but not` in the GraphQL spec.
@@ -40,7 +40,7 @@ export function butNot(rule: Rule, exclusions: Array<Rule>) {
 
 // Token of a kind
 export function t(kind: string, style: string) {
-  return {style, match: (token: Token) => token.kind === kind};
+  return { style, match: (token: Token) => token.kind === kind };
 }
 
 // Punctuator

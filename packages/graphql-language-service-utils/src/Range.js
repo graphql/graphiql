@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {Location} from 'graphql/language';
+import type { Location } from 'graphql/language';
 import type {
   Range as RangeInterface,
   Position as PositionInterface,

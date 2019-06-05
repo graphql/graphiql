@@ -7,15 +7,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
-import {parse} from 'graphql';
+import { parse } from 'graphql';
 
 import '../lint';
 import collectVariables from '../../utils/collectVariables';
-import {TestSchema} from '../../__tests__/testSchema';
+import { TestSchema } from '../../__tests__/testSchema';
 
 function createEditorWithLint(lintConfig) {
   return CodeMirror(document.createElement('div'), {
@@ -66,8 +66,8 @@ describe('graphql-variables-lint', () => {
       message: 'Expected value of type "Int".',
       severity: 'error',
       type: 'validation',
-      from: {line: 0, ch: 10, sticky: null},
-      to: {line: 0, ch: 15, sticky: null},
+      from: { line: 0, ch: 10, sticky: null },
+      to: { line: 0, ch: 15, sticky: null },
     });
   });
 
@@ -81,8 +81,8 @@ describe('graphql-variables-lint', () => {
       message: 'Variable "$food" does not appear in any GraphQL query.',
       severity: 'error',
       type: 'validation',
-      from: {line: 0, ch: 3, sticky: null},
-      to: {line: 0, ch: 9, sticky: null},
+      from: { line: 0, ch: 3, sticky: null },
+      to: { line: 0, ch: 9, sticky: null },
     });
   });
 

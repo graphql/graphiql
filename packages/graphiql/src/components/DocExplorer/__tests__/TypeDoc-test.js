@@ -29,7 +29,7 @@ describe('TypeDoc', () => {
       'fieldWithArgs(stringArg: String): String',
     );
   });
-  
+
   it('handles onClickField and onClickType', () => {
     const onClickType = jest.fn();
     const onClickField = jest.fn();
@@ -78,7 +78,9 @@ describe('TypeDoc', () => {
         .text(),
     ).to.equal('deprecatedField');
     expect(
-      W.find('.doc-deprecation').at(0).text()
+      W.find('.doc-deprecation')
+        .at(0)
+        .text(),
     ).to.equal('example deprecation reason\n');
   });
 

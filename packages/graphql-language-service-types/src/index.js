@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {GraphQLSchema} from 'graphql';
+import type { GraphQLSchema } from 'graphql';
 import type {
   ASTNode,
   DocumentNode,
@@ -16,7 +16,7 @@ import type {
   NamedTypeNode,
   TypeDefinitionNode,
 } from 'graphql/language';
-import type {ValidationContext} from 'graphql/validation';
+import type { ValidationContext } from 'graphql/validation';
 import type {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -24,10 +24,10 @@ import type {
   GraphQLInputField,
   GraphQLType,
 } from 'graphql/type/definition';
-import type {GraphQLDirective} from 'graphql/type/directives';
+import type { GraphQLDirective } from 'graphql/type/directives';
 
-export type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
-import type {GraphQLConfig, GraphQLProjectConfig} from 'graphql-config';
+export type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+import type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 

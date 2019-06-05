@@ -8,16 +8,16 @@
  *  @flow
  */
 
-import type {Hover} from 'vscode-languageserver-types';
+import type { Hover } from 'vscode-languageserver-types';
 
-import {expect} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import { expect } from 'chai';
+import { beforeEach, describe, it } from 'mocha';
 import fs from 'fs';
-import {buildSchema} from 'graphql';
-import {Position} from 'graphql-language-service-utils';
+import { buildSchema } from 'graphql';
+import { Position } from 'graphql-language-service-utils';
 import path from 'path';
 
-import {getHoverInformation} from '../getHoverInformation';
+import { getHoverInformation } from '../getHoverInformation';
 
 describe('getHoverInformation', () => {
   let schema;

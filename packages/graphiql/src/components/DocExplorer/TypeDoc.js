@@ -131,7 +131,9 @@ export default class TypeDoc extends React.Component {
           <div className="doc-category-title">{'values'}</div>
           {values
             .filter(value => !value.isDeprecated)
-            .map(value => <EnumValue key={value.name} value={value} />)}
+            .map(value => (
+              <EnumValue key={value.name} value={value} />
+            ))}
         </div>
       );
 

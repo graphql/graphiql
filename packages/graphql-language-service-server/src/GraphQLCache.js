@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {ASTNode, DocumentNode} from 'graphql/language';
+import type { ASTNode, DocumentNode } from 'graphql/language';
 import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
@@ -23,11 +23,15 @@ import type {
 
 import fs from 'fs';
 import path from 'path';
-import {GraphQLSchema, Kind, extendSchema, parse, visit} from 'graphql';
+import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
-import {getGraphQLConfig, GraphQLConfig, GraphQLEndpoint} from 'graphql-config';
-import {getQueryAndRange} from './MessageProcessor';
+import {
+  getGraphQLConfig,
+  GraphQLConfig,
+  GraphQLEndpoint,
+} from 'graphql-config';
+import { getQueryAndRange } from './MessageProcessor';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 
@@ -302,7 +306,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (!graphQLFileMap) {
         return;
       }
-      result.files.forEach(async ({name, exists, size, mtime}) => {
+      result.files.forEach(async ({ name, exists, size, mtime }) => {
         // Prune the file using the input/excluded directories
         if (!projectConfig.includesFile(name)) {
           return;
@@ -341,7 +345,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               rootDir,
               await this._updateGraphQLFileListCache(
                 graphQLFileMap,
-                {size, mtime},
+                { size, mtime },
                 filePath,
                 exists,
               ),
@@ -417,7 +421,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   async _updateGraphQLFileListCache(
     graphQLFileMap: Map<Uri, GraphQLFileInfo>,
-    metrics: {size: number, mtime: number},
+    metrics: { size: number, mtime: number },
     filePath: Uri,
     exists: boolean,
   ): Promise<Map<Uri, GraphQLFileInfo>> {
@@ -434,7 +438,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (existingFile && !exists) {
       graphQLFileMap.delete(filePath);
     } else if (fileAndContent) {
-      const graphQLFileInfo = {...fileAndContent, ...metrics};
+      const graphQLFileInfo = { ...fileAndContent, ...metrics };
       graphQLFileMap.set(filePath, graphQLFileInfo);
     }
 
@@ -447,7 +451,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     contents: Array<CachedContent>,
   ): Promise<void> {
     const cache = this._fragmentDefinitionsCache.get(rootDir);
-    const asts = contents.map(({query}) => {
+    const asts = contents.map(({ query }) => {
       try {
         return {
           ast: parse(query, {
@@ -457,7 +461,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           query,
         };
       } catch (error) {
-        return {ast: null, query};
+        return { ast: null, query };
       }
     });
     if (cache) {
@@ -467,7 +471,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           cache.delete(key);
         }
       });
-      asts.forEach(({ast, query}) => {
+      asts.forEach(({ ast, query }) => {
         if (!ast) {
           return;
         }
@@ -512,7 +516,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     contents: Array<CachedContent>,
   ): Promise<void> {
     const cache = this._typeDefinitionsCache.get(rootDir);
-    const asts = contents.map(({query}) => {
+    const asts = contents.map(({ query }) => {
       try {
         return {
           ast: parse(query, {
@@ -522,7 +526,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           query,
         };
       } catch (error) {
-        return {ast: null, query};
+        return { ast: null, query };
       }
     });
     if (cache) {
@@ -532,7 +536,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           cache.delete(key);
         }
       });
-      asts.forEach(({ast, query}) => {
+      asts.forEach(({ ast, query }) => {
         if (!ast) {
           return;
         }
@@ -590,7 +594,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (!graphQLFileMap) {
       return schema;
     }
-    graphQLFileMap.forEach(({filePath, asts}) => {
+    graphQLFileMap.forEach(({ filePath, asts }) => {
       asts.forEach(ast => {
         if (filePath === schemaPath) {
           return;
@@ -659,7 +663,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let schema = null;
 
     if (endpointInfo) {
-      const {endpoint, endpointName} = endpointInfo;
+      const { endpoint, endpointName } = endpointInfo;
 
       schemaCacheKey = `${endpointName}:${projectName}`;
 
@@ -722,7 +726,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   _getDefaultEndpoint(
     projectConfig: GraphQLProjectConfig,
-  ): ?{endpointName: string, endpoint: GraphQLEndpoint} {
+  ): ?{ endpointName: string, endpoint: GraphQLEndpoint } {
     // Jumping through hoops to get the default endpoint by name (needed for cache key)
     const endpointsExtension = projectConfig.endpointsExtension;
     if (!endpointsExtension) {
@@ -805,7 +809,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const graphQLFileMap = new Map();
 
     responses.forEach(response => {
-      const {filePath, content, asts, mtime, size} = response;
+      const { filePath, content, asts, mtime, size } = response;
 
       if (asts) {
         asts.forEach(ast => {
@@ -842,7 +846,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       });
     });
 
-    return {objectTypeDefinitions, fragmentDefinitions, graphQLFileMap};
+    return { objectTypeDefinitions, fragmentDefinitions, graphQLFileMap };
   };
 
   /**
@@ -871,11 +875,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
             queries = getQueryAndRange(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
-              resolve({filePath, content, asts: [], queries: []});
+              resolve({ filePath, content, asts: [], queries: [] });
               return;
             }
 
-            queries.forEach(({query}) =>
+            queries.forEach(({ query }) =>
               asts.push(
                 parse(query, {
                   allowLegacySDLImplementsInterfaces: true,
@@ -886,11 +890,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
           } catch (_) {
             // If query has syntax errors, go ahead and still resolve
             // the filePath and the content, but leave ast empty.
-            resolve({filePath, content, asts: [], queries: []});
+            resolve({ filePath, content, asts: [], queries: [] });
             return;
           }
         }
-        resolve({filePath, content, asts, queries});
+        resolve({ filePath, content, asts, queries });
       }),
     );
   };

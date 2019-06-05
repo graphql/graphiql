@@ -7,15 +7,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {expect} from 'chai';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { describe, it } from 'mocha';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import {parse} from 'graphql';
+import { parse } from 'graphql';
 
 import '../hint';
 import collectVariables from '../../utils/collectVariables';
-import {TestSchema} from '../../__tests__/testSchema';
+import { TestSchema } from '../../__tests__/testSchema';
 
 function createEditorWithHint(query) {
   return CodeMirror(document.createElement('div'), {
@@ -59,7 +59,7 @@ describe('graphql-variables-hint', () => {
   });
 
   it('provides correct initial token', async () => {
-    const suggestions = await getHintSuggestions('', '', {line: 0, ch: 0});
+    const suggestions = await getHintSuggestions('', '', { line: 0, ch: 0 });
     const initialKeywords = ['{'];
     checkSuggestions(initialKeywords, suggestions.list);
   });
@@ -68,7 +68,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{ ',
-      {line: 0, ch: 2},
+      { line: 0, ch: 2 },
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
   });
@@ -77,39 +77,39 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  ',
-      {line: 1, ch: 2},
+      { line: 1, ch: 2 },
     );
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 2, sticky: null});
+    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 1, ch: 2, sticky: null });
   });
 
   it('provides correct variable completion', async () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  ba',
-      {line: 1, ch: 4},
+      { line: 1, ch: 4 },
     );
     checkSuggestions(['"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 4, sticky: null});
+    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 1, ch: 4, sticky: null });
   });
 
   it('provides correct variable completion with open quote', async () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  "',
-      {line: 1, ch: 4},
+      { line: 1, ch: 4 },
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 1, ch: 2, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 1, ch: 3, sticky: null});
+    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 1, ch: 3, sticky: null });
   });
 
   it('provides correct Enum suggestions', async () => {
     const suggestions = await getHintSuggestions(
       'query ($myEnum: TestEnum) { f }',
       '{\n  "myEnum": ',
-      {line: 1, ch: 12},
+      { line: 1, ch: 12 },
     );
     const TestEnum = TestSchema.getType('TestEnum');
     checkSuggestions(
@@ -122,7 +122,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": ',
-      {line: 1, ch: 13},
+      { line: 1, ch: 13 },
     );
     checkSuggestions(['{'], suggestions.list);
   });
@@ -131,33 +131,33 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    ',
-      {line: 2, ch: 4},
+      { line: 2, ch: 4 },
     );
     const TestInput = TestSchema.getType('TestInput');
     checkSuggestions(
       Object.keys(TestInput.getFields()).map(name => `"${name}": `),
       suggestions.list,
     );
-    expect(suggestions.from).to.deep.equal({line: 2, ch: 4, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 2, ch: 4, sticky: null});
+    expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 2, ch: 4, sticky: null });
   });
 
   it('provides correct Input Object field completion', async () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    bool',
-      {line: 2, ch: 8},
+      { line: 2, ch: 8 },
     );
     checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({line: 2, ch: 4, sticky: null});
-    expect(suggestions.to).to.deep.equal({line: 2, ch: 8, sticky: null});
+    expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
+    expect(suggestions.to).to.deep.equal({ line: 2, ch: 8, sticky: null });
   });
 
   it('provides correct Input Object field value completion', async () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    "boolean": ',
-      {line: 2, ch: 15},
+      { line: 2, ch: 15 },
     );
     checkSuggestions(['true', 'false'], suggestions.list);
   });

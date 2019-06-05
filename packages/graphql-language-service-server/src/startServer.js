@@ -10,8 +10,8 @@
 
 import net from 'net';
 
-import {GraphQLWatchman} from './GraphQLWatchman';
-import {MessageProcessor} from './MessageProcessor';
+import { GraphQLWatchman } from './GraphQLWatchman';
+import { MessageProcessor } from './MessageProcessor';
 
 import {
   createMessageConnection,
@@ -40,7 +40,7 @@ import {
   ShutdownRequest,
 } from 'vscode-languageserver';
 
-import {Logger} from './Logger';
+import { Logger } from './Logger';
 
 type Options = {
   port?: number,

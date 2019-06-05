@@ -25,19 +25,19 @@ import type {
   GraphQLProjectConfig,
   Uri,
 } from 'graphql-language-service-types';
-import type {Position} from 'graphql-language-service-utils';
-import type {Hover} from 'vscode-languageserver-types';
+import type { Position } from 'graphql-language-service-utils';
+import type { Hover } from 'vscode-languageserver-types';
 
-import {Kind, parse, print} from 'graphql';
-import {getAutocompleteSuggestions} from './getAutocompleteSuggestions';
-import {getHoverInformation} from './getHoverInformation';
-import {validateQuery, getRange, SEVERITY} from './getDiagnostics';
+import { Kind, parse, print } from 'graphql';
+import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
+import { getHoverInformation } from './getHoverInformation';
+import { validateQuery, getRange, SEVERITY } from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
 } from './getDefinition';
-import {getASTNodeAtPosition} from 'graphql-language-service-utils';
+import { getASTNodeAtPosition } from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,
@@ -264,9 +264,7 @@ export class GraphQLLanguageService {
         definition.kind === ENUM_TYPE_DEFINITION,
     );
 
-    const typeCastedDefs = ((localObjectTypeDefinitions: any): Array<
-      TypeDefinitionNode,
-    >);
+    const typeCastedDefs = ((localObjectTypeDefinitions: any): Array<TypeDefinitionNode>);
 
     const localOperationDefinationInfos = typeCastedDefs.map(
       (definition: TypeDefinitionNode) => ({
@@ -305,9 +303,7 @@ export class GraphQLLanguageService {
       definition => definition.kind === FRAGMENT_DEFINITION,
     );
 
-    const typeCastedDefs = ((localFragDefinitions: any): Array<
-      FragmentDefinitionNode,
-    >);
+    const typeCastedDefs = ((localFragDefinitions: any): Array<FragmentDefinitionNode>);
 
     const localFragInfos = typeCastedDefs.map(
       (definition: FragmentDefinitionNode) => ({

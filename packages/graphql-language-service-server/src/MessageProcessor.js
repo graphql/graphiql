@@ -16,19 +16,19 @@ import type {
   Range as RangeType,
   Uri,
 } from 'graphql-language-service-types';
-import {FileChangeTypeKind} from 'graphql-language-service-types';
+import { FileChangeTypeKind } from 'graphql-language-service-types';
 
-import {extname, dirname} from 'path';
-import {readFileSync} from 'fs';
-import {URL} from 'url';
+import { extname, dirname } from 'path';
+import { readFileSync } from 'fs';
+import { URL } from 'url';
 import {
   findGraphQLConfigFile,
   getGraphQLConfig,
   GraphQLProjectConfig,
   GraphQLConfig,
 } from 'graphql-config';
-import {GraphQLLanguageService} from 'graphql-language-service-interface';
-import {Position, Range} from 'graphql-language-service-utils';
+import { GraphQLLanguageService } from 'graphql-language-service-interface';
+import { Position, Range } from 'graphql-language-service-utils';
 import {
   CancellationToken,
   NotificationMessage,
@@ -47,10 +47,10 @@ import {
   PublishDiagnosticsParams,
 } from 'vscode-languageserver';
 
-import {getGraphQLCache} from './GraphQLCache';
-import {findGraphQLTags} from './findGraphQLTags';
-import {Logger} from './Logger';
-import {GraphQLWatchman} from './GraphQLWatchman';
+import { getGraphQLCache } from './GraphQLCache';
+import { findGraphQLTags } from './findGraphQLTags';
+import { Logger } from './Logger';
+import { GraphQLWatchman } from './GraphQLWatchman';
 
 // Map { uri => { query, range } }
 
@@ -91,7 +91,7 @@ export class MessageProcessor {
 
     const serverCapabilities: ServerCapabilities = {
       capabilities: {
-        completionProvider: {resolveProvider: true},
+        completionProvider: { resolveProvider: true },
         definitionProvider: true,
         textDocumentSync: 1,
         hoverProvider: true,
@@ -190,7 +190,7 @@ export class MessageProcessor {
     }
 
     const textDocument = params.textDocument;
-    const {text, uri} = textDocument;
+    const { text, uri } = textDocument;
 
     const diagnostics = [];
 
@@ -211,7 +211,7 @@ export class MessageProcessor {
     }
 
     await Promise.all(
-      contents.map(async ({query, range}) => {
+      contents.map(async ({ query, range }) => {
         const results = await this._languageService.getDiagnostics(
           query,
           uri,
@@ -234,7 +234,7 @@ export class MessageProcessor {
       }),
     );
 
-    return {uri, diagnostics};
+    return { uri, diagnostics };
   }
 
   async handleDidChangeNotification(
@@ -284,7 +284,7 @@ export class MessageProcessor {
     // Send the diagnostics onChange as well
     const diagnostics = [];
     await Promise.all(
-      contents.map(async ({query, range}) => {
+      contents.map(async ({ query, range }) => {
         const results = await this._languageService.getDiagnostics(query, uri);
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
@@ -303,7 +303,7 @@ export class MessageProcessor {
       }),
     );
 
-    return {uri, diagnostics};
+    return { uri, diagnostics };
   }
 
   handleDidCloseNotification(params: NotificationMessage): void {
@@ -394,7 +394,7 @@ export class MessageProcessor {
       return [];
     }
 
-    const {query, range} = found;
+    const { query, range } = found;
 
     if (range) {
       position.line -= range.start.line;
@@ -416,7 +416,7 @@ export class MessageProcessor {
       }),
     );
 
-    return {items: result, isIncomplete: false};
+    return { items: result, isIncomplete: false };
   }
 
   async handleHoverRequest(
@@ -449,7 +449,7 @@ export class MessageProcessor {
       return '';
     }
 
-    const {query, range} = found;
+    const { query, range } = found;
 
     if (range) {
       position.line -= range.start.line;
@@ -486,7 +486,7 @@ export class MessageProcessor {
           this._updateObjectTypeDefinition(uri, contents);
 
           const diagnostics = (await Promise.all(
-            contents.map(async ({query, range}) => {
+            contents.map(async ({ query, range }) => {
               const results = await this._languageService.getDiagnostics(
                 query,
                 uri,
@@ -510,7 +510,7 @@ export class MessageProcessor {
             }),
           );
 
-          return {uri, diagnostics};
+          return { uri, diagnostics };
         } else if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
             this._graphQLCache.getGraphQLConfig().configDir,
@@ -558,7 +558,7 @@ export class MessageProcessor {
       return [];
     }
 
-    const {query, range} = found;
+    const { query, range } = found;
     if (range) {
       position.line -= range.start.line;
     }
@@ -688,7 +688,7 @@ export function getQueryAndRange(
       return [];
     }
     const templates = findGraphQLTags(text);
-    return templates.map(({template, range}) => ({query: template, range}));
+    return templates.map(({ template, range }) => ({ query: template, range }));
   } else {
     const query = text;
     if (!query && query !== '') {
@@ -699,7 +699,7 @@ export function getQueryAndRange(
       new Position(0, 0),
       new Position(lines.length - 1, lines[lines.length - 1].length - 1),
     );
-    return [{query, range}];
+    return [{ query, range }];
   }
 }
 

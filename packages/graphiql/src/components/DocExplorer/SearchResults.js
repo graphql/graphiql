@@ -97,14 +97,14 @@ export default class SearchResults extends React.Component {
               {matchingArgs && [
                 '(',
                 <span key="args">
-                  {matchingArgs.map(arg =>
+                  {matchingArgs.map(arg => (
                     <Argument
                       key={arg.name}
                       arg={arg}
                       onClickType={onClickType}
                       showDefaultValue={false}
-                    />,
-                  )}
+                    />
+                  ))}
                 </span>,
                 ')',
               ]}
@@ -124,11 +124,7 @@ export default class SearchResults extends React.Component {
       matchedWithin.length + matchedTypes.length + matchedFields.length ===
       0
     ) {
-      return (
-        <span className="doc-alert-text">
-          {'No results found.'}
-        </span>
-      );
+      return <span className="doc-alert-text">{'No results found.'}</span>;
     }
 
     if (withinType && matchedTypes.length + matchedFields.length > 0) {
@@ -136,9 +132,7 @@ export default class SearchResults extends React.Component {
         <div>
           {matchedWithin}
           <div className="doc-category">
-            <div className="doc-category-title">
-              {'other results'}
-            </div>
+            <div className="doc-category-title">{'other results'}</div>
             {matchedTypes}
             {matchedFields}
           </div>

@@ -14,10 +14,10 @@ import type {
   TokenKind,
 } from 'graphql-language-service-types';
 
-import {Kind, parse, visit} from 'graphql';
-import {offsetToPosition} from 'graphql-language-service-utils';
+import { Kind, parse, visit } from 'graphql';
+import { offsetToPosition } from 'graphql-language-service-utils';
 
-const {INLINE_FRAGMENT} = Kind;
+const { INLINE_FRAGMENT } = Kind;
 
 const OUTLINEABLE_KINDS = {
   Field: true,
@@ -30,7 +30,7 @@ const OUTLINEABLE_KINDS = {
   InlineFragment: true,
 };
 
-type OutlineTreeConverterType = {[name: string]: Function};
+type OutlineTreeConverterType = { [name: string]: Function };
 
 export function getOutline(queryText: string): ?Outline {
   let ast;
@@ -52,7 +52,7 @@ export function getOutline(queryText: string): ?Outline {
       return null;
     },
   });
-  return {outlineTrees};
+  return { outlineTrees };
 }
 
 function outlineTreeConverter(docText: string): OutlineTreeConverterType {
@@ -68,7 +68,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
         ? [buildToken('plain', node.alias), buildToken('plain', ': ')]
         : [];
       tokenizedText.push(buildToken('plain', node.name));
-      return {tokenizedText, ...meta(node)};
+      return { tokenizedText, ...meta(node) };
     },
     OperationDefinition: node => ({
       tokenizedText: [
@@ -104,7 +104,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
 }
 
 function buildToken(kind: TokenKind, value: string): TextToken {
-  return {kind, value};
+  return { kind, value };
 }
 
 function concatMap(arr: Array<any>, fn: Function): Array<any> {

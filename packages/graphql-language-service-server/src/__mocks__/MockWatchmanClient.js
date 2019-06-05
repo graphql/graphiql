@@ -8,8 +8,8 @@
  *  @flow
  */
 
-import type {Uri} from 'graphql-language-service-types';
-import type {WatchmanCommandResponse} from '../GraphQLWatchman';
+import type { Uri } from 'graphql-language-service-types';
+import type { WatchmanCommandResponse } from '../GraphQLWatchman';
 
 class MockWatchmanClient {
   checkVersion(): Promise<void> {
@@ -18,7 +18,7 @@ class MockWatchmanClient {
 
   listFiles(
     entryPath: Uri,
-    options?: {[name: string]: any} = {},
+    options?: { [name: string]: any } = {},
   ): Promise<Array<any>> {
     return Promise.resolve([]);
   }

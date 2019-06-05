@@ -6,9 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 /* eslint-disable no-console */
-const path = require("path");
+const path = require('path');
 
-process.on("unhandledRejection", error => {
-  console.error("Unhandled Promise Rejection:");
+process.on('unhandledRejection', error => {
+  console.error('Unhandled Promise Rejection:');
   console.error((error && error.stack) || error);
 });

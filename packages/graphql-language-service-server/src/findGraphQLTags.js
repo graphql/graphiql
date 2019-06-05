@@ -8,9 +8,9 @@
  *  @flow
  */
 
-import {Position, Range} from 'graphql-language-service-utils';
+import { Position, Range } from 'graphql-language-service-utils';
 
-import {parse} from 'babylon';
+import { parse } from 'babylon';
 
 // Attempt to be as inclusive as possible of source text.
 const BABYLON_OPTIONS = {
@@ -37,7 +37,7 @@ const BABYLON_OPTIONS = {
 
 export function findGraphQLTags(
   text: string,
-): Array<{tag: string, template: string, range: Range}> {
+): Array<{ tag: string, template: string, range: Range }> {
   const result = [];
   const ast = parse(text, BABYLON_OPTIONS);
 
@@ -126,7 +126,7 @@ const CREATE_CONTAINER_FUNCTIONS = {
   createRefetchContainer: true,
 };
 
-const IDENTIFIERS = {graphql: true};
+const IDENTIFIERS = { graphql: true };
 
 const IGNORED_KEYS = {
   comments: true,

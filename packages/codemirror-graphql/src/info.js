@@ -8,7 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import {GraphQLList, GraphQLNonNull} from 'graphql';
+import { GraphQLList, GraphQLNonNull } from 'graphql';
 import CodeMirror from 'codemirror';
 
 import getTypeInfo from './utils/getTypeInfo';
@@ -179,7 +179,7 @@ function renderDeprecation(into, options, def) {
   }
 }
 
-function text(into, content, className, options = {onClick: null}, ref) {
+function text(into, content, className, options = { onClick: null }, ref) {
   if (className) {
     const onClick = options.onClick;
     let node;

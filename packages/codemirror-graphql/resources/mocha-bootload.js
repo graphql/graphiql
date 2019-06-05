@@ -28,10 +28,10 @@ global.document.createRange = function() {
     setEnd: function() {},
     setStart: function() {},
     getClientRects: function() {
-      return {top: 0, bottom: 0, left: 0, right: 0};
+      return { top: 0, bottom: 0, left: 0, right: 0 };
     },
     getBoundingClientRect: function() {
-      return {right: 0};
+      return { right: 0 };
     },
   };
 };

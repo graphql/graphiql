@@ -8,13 +8,13 @@
  *  @flow
  */
 
-import {expect} from 'chai';
-import {Position, Range} from 'graphql-language-service-utils';
-import {beforeEach, describe, it} from 'mocha';
+import { expect } from 'chai';
+import { Position, Range } from 'graphql-language-service-utils';
+import { beforeEach, describe, it } from 'mocha';
 
-import {MessageProcessor} from '../MessageProcessor';
+import { MessageProcessor } from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
-import {GraphQLConfig} from 'graphql-config';
+import { GraphQLConfig } from 'graphql-config';
 
 describe('MessageProcessor', () => {
   const mockWatchmanClient = new MockWatchmanClient();
@@ -53,7 +53,7 @@ describe('MessageProcessor', () => {
     };
     messageProcessor._languageService = {
       getAutocompleteSuggestions: (query, position, uri) => {
-        return [{label: `${query} at ${uri}`}];
+        return [{ label: `${query} at ${uri}` }];
       },
       getDiagnostics: (query, uri) => {
         return [];
@@ -61,10 +61,10 @@ describe('MessageProcessor', () => {
     };
   });
   messageProcessor._isInitialized = true;
-  messageProcessor._logger = {log() {}};
+  messageProcessor._logger = { log() {} };
 
   it('initializes properly and opens a file', async () => {
-    const {capabilities} = await messageProcessor.handleInitializeRequest({
+    const { capabilities } = await messageProcessor.handleInitializeRequest({
       rootPath: __dirname,
     });
     expect(capabilities.definitionProvider).to.equal(true);
@@ -86,12 +86,12 @@ describe('MessageProcessor', () => {
 
     const test = {
       position: new Position(0, 0),
-      textDocument: {uri},
+      textDocument: { uri },
     };
 
     const result = await messageProcessor.handleCompletionRequest(test);
     expect(result).to.deep.equal({
-      items: [{label: `${query} at ${uri}`}],
+      items: [{ label: `${query} at ${uri}` }],
       isIncomplete: false,
     });
   });
@@ -121,8 +121,8 @@ describe('MessageProcessor', () => {
         version: 1,
       },
       contentChanges: [
-        {text: textDocumentTestString},
-        {text: textDocumentChangedString},
+        { text: textDocumentTestString },
+        { text: textDocumentChangedString },
       ],
     });
     // Query fixed, no more errors
@@ -132,8 +132,8 @@ describe('MessageProcessor', () => {
   it('properly removes from the file cache with the didClose handler', async () => {
     await messageProcessor.handleDidCloseNotification(initialDocument);
 
-    const position = {line: 4, character: 5};
-    const params = {textDocument: initialDocument.textDocument, position};
+    const position = { line: 4, character: 5 };
+    const params = { textDocument: initialDocument.textDocument, position };
 
     // Should throw because file has been deleted from cache
     return messageProcessor

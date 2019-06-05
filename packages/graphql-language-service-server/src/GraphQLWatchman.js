@@ -8,7 +8,7 @@
  *  @flow
  */
 
-import type {Uri} from 'graphql-language-service-types';
+import type { Uri } from 'graphql-language-service-types';
 
 import watchman from 'fb-watchman';
 
@@ -48,9 +48,9 @@ export class GraphQLWatchman {
 
   async listFiles(
     entryPath: Uri,
-    options?: {[name: string]: any} = {},
+    options?: { [name: string]: any } = {},
   ): Promise<Array<any>> {
-    const {watch, relative_path} = await this.watchProject(entryPath);
+    const { watch, relative_path } = await this.watchProject(entryPath);
     const result = await this.runCommand('query', watch, {
       expression: [
         'allof',
@@ -102,7 +102,7 @@ export class GraphQLWatchman {
     entryPath: Uri,
     callback: (result: Object) => void,
   ): Promise<void> {
-    const {watch, relative_path} = await this.watchProject(entryPath);
+    const { watch, relative_path } = await this.watchProject(entryPath);
 
     await this.runCommand('subscribe', watch, relative_path || watch, {
       expression: ['allof', ['match', '*.graphql']],

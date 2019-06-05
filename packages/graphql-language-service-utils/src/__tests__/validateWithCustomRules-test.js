@@ -6,13 +6,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import {expect} from 'chai';
-import {readFileSync} from 'fs';
-import {GraphQLError, buildSchema, parse} from 'graphql';
-import {beforeEach, describe, it} from 'mocha';
-import {join} from 'path';
+import { expect } from 'chai';
+import { readFileSync } from 'fs';
+import { GraphQLError, buildSchema, parse } from 'graphql';
+import { beforeEach, describe, it } from 'mocha';
+import { join } from 'path';
 
-import {validateWithCustomRules} from '../validateWithCustomRules';
+import { validateWithCustomRules } from '../validateWithCustomRules';
 
 describe('validateWithCustomRules', () => {
   let schema;

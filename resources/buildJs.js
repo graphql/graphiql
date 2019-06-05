@@ -6,8 +6,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-"use strict";
+'use strict';
 
-const { exec } = require("./util");
+const { exec } = require('./util');
 
-exec("babel", "src", "--ignore", "**/__tests__/**", "--out-dir", "dist", "--root-mode", "upward");
+exec(
+  'babel',
+  'src',
+  '--ignore',
+  '**/__tests__/**',
+  '--out-dir',
+  'dist',
+  '--root-mode',
+  'upward',
+);

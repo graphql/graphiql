@@ -32,10 +32,11 @@ export default class SearchBox extends React.Component {
           type="text"
           placeholder={this.props.placeholder}
         />
-        {this.state.value &&
+        {this.state.value && (
           <div className="search-box-clear" onClick={this.handleClear}>
             {'\u2715'}
-          </div>}
+          </div>
+        )}
       </label>
     );
   }

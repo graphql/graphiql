@@ -57,10 +57,12 @@ describe('GraphiQL', () => {
   const noOpFetcher = () => {};
 
   it('should throw error without fetcher', () => {
-    expect(() => mount(<GraphiQL />).simulateError(
-      Error('GraphiQL requires a fetcher function'),
-    ));
-  })
+    expect(() =>
+      mount(<GraphiQL />).simulateError(
+        Error('GraphiQL requires a fetcher function'),
+      ),
+    );
+  });
 
   it('should construct correctly with fetcher', () => {
     expect(() => mount(<GraphiQL fetcher={noOpFetcher} />)).to.not.throw();

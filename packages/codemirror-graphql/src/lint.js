@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import {getDiagnostics} from 'graphql-language-service-interface';
+import { getDiagnostics } from 'graphql-language-service-interface';
 
 const SEVERITY = ['error', 'warning', 'information', 'hint'];
 const TYPE = {

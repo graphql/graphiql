@@ -8,8 +8,8 @@
  */
 
 import sane from 'sane';
-import {resolve as resolvePath} from 'path';
-import {spawn} from 'child_process';
+import { resolve as resolvePath } from 'path';
+import { spawn } from 'child_process';
 import flowBinPath from 'flow-bin';
 
 process.env.PATH += ':./node_modules/.bin';
@@ -39,7 +39,7 @@ var flowServer = spawn(flowBinPath, ['server'], {
   env: process.env,
 });
 
-var watcher = sane(srcDir, {glob: ['**/*.js', '**/*.graphql']})
+var watcher = sane(srcDir, { glob: ['**/*.js', '**/*.graphql'] })
   .on('ready', startWatch)
   .on('add', changeFile)
   .on('delete', deleteFile)

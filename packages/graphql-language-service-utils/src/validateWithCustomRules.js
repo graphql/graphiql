@@ -8,12 +8,12 @@
  *  @flow
  */
 
-import type {DocumentNode} from 'graphql/language';
-import type {GraphQLError} from 'graphql/error';
-import type {GraphQLSchema} from 'graphql/type';
-import type {CustomValidationRule} from 'graphql-language-service-types';
+import type { DocumentNode } from 'graphql/language';
+import type { GraphQLError } from 'graphql/error';
+import type { GraphQLSchema } from 'graphql/type';
+import type { CustomValidationRule } from 'graphql-language-service-types';
 
-import {specifiedRules, TypeInfo, validate} from 'graphql';
+import { specifiedRules, TypeInfo, validate } from 'graphql';
 
 /**
  * Validate a GraphQL Document optionally with custom validation rules.

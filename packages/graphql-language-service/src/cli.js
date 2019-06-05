@@ -10,10 +10,10 @@
 
 import yargs from 'yargs';
 import client from './client';
-import {Logger, startServer} from 'graphql-language-service-server';
+import { Logger, startServer } from 'graphql-language-service-server';
 import watchman from 'fb-watchman';
 
-const {argv} = yargs
+const { argv } = yargs
   .usage(
     'GraphQL Language Service Command-Line Interface.\n' +
       'Usage: $0 <command> <file>\n' +

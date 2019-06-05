@@ -8,13 +8,13 @@
  *  @flow
  */
 
-import {expect} from 'chai';
-import {beforeEach, describe, it} from 'mocha';
+import { expect } from 'chai';
+import { beforeEach, describe, it } from 'mocha';
 import fs from 'fs';
-import {buildSchema, parse} from 'graphql';
+import { buildSchema, parse } from 'graphql';
 import path from 'path';
 
-import {getDiagnostics, validateQuery, SEVERITY} from '../getDiagnostics';
+import { getDiagnostics, validateQuery, SEVERITY } from '../getDiagnostics';
 
 describe('getDiagnostics', () => {
   let schema;

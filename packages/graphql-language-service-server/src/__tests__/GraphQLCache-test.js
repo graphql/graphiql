@@ -8,18 +8,18 @@
  *  @flow
  */
 
-import {expect} from 'chai';
-import {GraphQLSchema} from 'graphql/type';
-import {parse} from 'graphql/language';
-import {getGraphQLConfig} from 'graphql-config';
-import {beforeEach, afterEach, describe, it} from 'mocha';
+import { expect } from 'chai';
+import { GraphQLSchema } from 'graphql/type';
+import { parse } from 'graphql/language';
+import { getGraphQLConfig } from 'graphql-config';
+import { beforeEach, afterEach, describe, it } from 'mocha';
 import fetchMock from 'fetch-mock';
 
-import {GraphQLCache} from '../GraphQLCache';
-import {getQueryAndRange} from '../MessageProcessor';
+import { GraphQLCache } from '../GraphQLCache';
+import { getQueryAndRange } from '../MessageProcessor';
 
 function wihtoutASTNode(definition: object) {
-  const result = {...definition};
+  const result = { ...definition };
   delete result.astNode;
   return result;
 }

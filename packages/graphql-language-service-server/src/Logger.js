@@ -8,11 +8,11 @@
  *  @flow
  */
 
-import type {Logger as VSCodeLogger} from 'vscode-jsonrpc';
+import type { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 
 import fs from 'fs';
 import os from 'os';
-import {join} from 'path';
+import { join } from 'path';
 
 const SEVERITY = {
   ERROR: 'ERROR',

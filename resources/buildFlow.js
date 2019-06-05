@@ -8,9 +8,9 @@
 
 'use strict';
 
-const {readdirSync} = require('fs');
-const {join} = require('path');
-const {cp} = require('./util');
+const { readdirSync } = require('fs');
+const { join } = require('path');
+const { cp } = require('./util');
 
 // Non-recursively copy src/*.js to dist/*.js.flow:
 readdirSync('src').forEach(entry => {

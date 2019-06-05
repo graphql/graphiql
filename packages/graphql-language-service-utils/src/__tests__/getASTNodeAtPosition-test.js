@@ -6,12 +6,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import {expect} from 'chai';
-import {parse} from 'graphql';
-import {describe, it} from 'mocha';
+import { expect } from 'chai';
+import { parse } from 'graphql';
+import { describe, it } from 'mocha';
 
-import {Position} from '../Range';
-import {getASTNodeAtPosition, pointToOffset} from '../getASTNodeAtPosition';
+import { Position } from '../Range';
+import { getASTNodeAtPosition, pointToOffset } from '../getASTNodeAtPosition';
 
 const doc = `
 query A {

@@ -19,7 +19,7 @@ import type {
   State,
   TypeInfo,
 } from 'graphql-language-service-types';
-import type {Position} from 'graphql-language-service-utils';
+import type { Position } from 'graphql-language-service-utils';
 
 import {
   GraphQLBoolean,
@@ -37,7 +37,7 @@ import {
   isCompositeType,
   isInputType,
 } from 'graphql';
-import {CharacterStream, onlineParser} from 'graphql-language-service-parser';
+import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 import {
   forEachState,
   getDefinitionState,
@@ -73,11 +73,11 @@ export function getAutocompleteSuggestions(
   // Definition kinds
   if (kind === 'Document') {
     return hintList(token, [
-      {label: 'query'},
-      {label: 'mutation'},
-      {label: 'subscription'},
-      {label: 'fragment'},
-      {label: '{'},
+      { label: 'query' },
+      { label: 'mutation' },
+      { label: 'subscription' },
+      { label: 'fragment' },
+      { label: '{' },
     ]);
   }
 
@@ -387,7 +387,7 @@ export function getTokenAtPosition(
     if (index === cursor.line) {
       if (stream.getCurrentPosition() >= cursor.character) {
         styleAtCursor = style;
-        stateAtCursor = {...state};
+        stateAtCursor = { ...state };
         stringAtCursor = stream.current();
         return 'BREAK';
       }

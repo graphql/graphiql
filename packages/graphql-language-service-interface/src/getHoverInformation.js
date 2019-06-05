@@ -13,12 +13,12 @@
  * https://github.com/graphql/codemirror-graphql/blob/master/src/info.js
  */
 
-import type {GraphQLSchema} from 'graphql';
-import type {ContextToken} from 'graphql-language-service-types';
-import type {Hover} from 'vscode-languageserver-types';
-import type {Position} from 'graphql-language-service-utils';
-import {getTokenAtPosition, getTypeInfo} from './getAutocompleteSuggestions';
-import {GraphQLNonNull, GraphQLList} from 'graphql';
+import type { GraphQLSchema } from 'graphql';
+import type { ContextToken } from 'graphql-language-service-types';
+import type { Hover } from 'vscode-languageserver-types';
+import type { Position } from 'graphql-language-service-utils';
+import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
+import { GraphQLNonNull, GraphQLList } from 'graphql';
 
 export function getHoverInformation(
   schema: GraphQLSchema,
@@ -36,7 +36,7 @@ export function getHoverInformation(
   const kind = state.kind;
   const step = state.step;
   const typeInfo = getTypeInfo(schema, token.state);
-  const options = {schema};
+  const options = { schema };
 
   // Given a Schema and a Token, produce the contents of an info tooltip.
   // To do this, create a div element that we will render "into" and then pass
