@@ -58,6 +58,7 @@ export function getFieldDef(
     return TypeNameMetaFieldDef;
   }
   if (type.getFields && typeof type.getFields === 'function') {
+    // $FlowFixMe
     return (type.getFields()[fieldName]: any);
   }
 

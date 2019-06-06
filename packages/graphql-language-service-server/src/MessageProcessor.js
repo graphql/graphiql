@@ -364,6 +364,7 @@ export class MessageProcessor {
     token: CancellationToken,
   ): Promise<CompletionList | Array<CompletionItem>> {
     if (!this._isInitialized) {
+      // $FlowFixMe
       return [];
     }
 
@@ -391,6 +392,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
+      // $FlowFixMe
       return [];
     }
 

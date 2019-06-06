@@ -171,6 +171,7 @@ function getSuggestionsForFieldNames(
     const parentType = typeInfo.parentType;
     const fields =
       parentType.getFields instanceof Function
+        // $FlowFixMe
         ? objectValues(parentType.getFields())
         : [];
     if (isAbstractType(parentType)) {
