@@ -68,8 +68,26 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     return variables;
   }
 
+  async getEndpointName(endpointNames: string[]) {
+    // Endpoints extensions docs say that at least "default" will be there
+    let endpointName = endpointNames[0];
+    console.log({ endpoints: endpointNames.length });
+    if (endpointNames.length > 1) {
+      const pickedValue = await window.showQuickPick(endpointNames, {
+        canPickMany: false,
+        ignoreFocusOut: true,
+        placeHolder: "Select an environment"
+      });
+
+      if (pickedValue) {
+        endpointName = pickedValue;
+      }
+    }
+    return endpointName;
+  }
+
   /*
-    Use the configration of first project if heuristics failed 
+    Use the configration of first project if heuristics failed
     to find one.
   */
   patchProjectConfig(config: GraphQLConfig) {
@@ -139,49 +157,48 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           return;
         }
 
-        // TODO: Can ask user for the endpoint if muliple exist
-        // Endpoints extensions docs say that at least "default" will be there
-        const endpointName = endpointNames[0];
-        const endpoint = projectConfig!.endpointsExtension!.getEndpoint(
-          endpointName
-        );
+        this.getEndpointName(endpointNames).then(endpointName => {
+          const endpoint = projectConfig!.endpointsExtension!.getEndpoint(
+            endpointName
+          );
 
-        let variableDefinitionNodes: VariableDefinitionNode[] = [];
-        visit(literal.ast, {
-          VariableDefinition(node: VariableDefinitionNode) {
-            variableDefinitionNodes.push(node);
+          let variableDefinitionNodes: VariableDefinitionNode[] = [];
+          visit(literal.ast, {
+            VariableDefinition(node: VariableDefinitionNode) {
+              variableDefinitionNodes.push(node);
+            }
+          });
+
+          const updateCallback = (data: string, operation: string) => {
+            if (operation === "subscription") {
+              this.html = `<pre>${data}</pre>` + this.html;
+            } else {
+              this.html += `<pre>${data}</pre>`;
+            }
+            this.update(this.uri);
+            this.updatePanel();
+          };
+
+          if (variableDefinitionNodes.length > 0) {
+            this.getVariablesFromUser(variableDefinitionNodes).then(
+              (variables: any) => {
+                this.networkHelper.executeOperation({
+                  endpoint: endpoint,
+                  literal: literal,
+                  variables: variables,
+                  updateCallback
+                });
+              }
+            );
+          } else {
+            this.networkHelper.executeOperation({
+              endpoint: endpoint,
+              literal: literal,
+              variables: {},
+              updateCallback
+            });
           }
         });
-
-        const updateCallback = (data: string, operation: string) => {
-          if (operation === "subscription") {
-            this.html = `<pre>${data}</pre>` + this.html;
-          } else {
-            this.html += `<pre>${data}</pre>`;
-          }
-          this.update(this.uri);
-          this.updatePanel();
-        };
-
-        if (variableDefinitionNodes.length > 0) {
-          this.getVariablesFromUser(variableDefinitionNodes).then(
-            (variables: any) => {
-              this.networkHelper.executeOperation({
-                endpoint: endpoint,
-                literal: literal,
-                variables: variables,
-                updateCallback
-              });
-            }
-          );
-        } else {
-          this.networkHelper.executeOperation({
-            endpoint: endpoint,
-            literal: literal,
-            variables: {},
-            updateCallback
-          });
-        }
       }
     } catch (e) {
       this.html = e.toString();
