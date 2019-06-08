@@ -107,9 +107,12 @@
       // use fetch, and could instead implement graphQLFetcher however you like,
       // as long as it returns a Promise or Observable.
       function graphQLFetcher(graphQLParams) {
-        // This example expects a GraphQL server at the path /graphql.
+        // When working locally, the example expects a GraphQL server at the path /graphql.
+        // In a PR preview, it connects to the Star Wars API externally.
         // Change this to point wherever you host your GraphQL server.
-        return fetch('/graphql', {
+        const isDev = window.location.hostname === 'localhost'
+        const api = isDev ? '/graphql' : 'https://swapi.graph.cool/'
+        return fetch(api, {
           method: 'post',
           headers: {
             'Accept': 'application/json',
