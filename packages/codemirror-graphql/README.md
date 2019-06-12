@@ -1,12 +1,12 @@
 GraphQL mode for CodeMirror
 ===========================
-
-[![Build Status](https://travis-ci.org/graphql/codemirror-graphql.svg?branch=master)](https://travis-ci.org/graphql/codemirror-graphql)
+[![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg?style=flat-square)](https://npmjs.com/codemirror-graphql)
+[![License](https://img.shields.io/npm/l/codemirror-graphql.svg?style=flat-square)](LICENSE)
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema.
 
-![](resources/example.gif)
+![Demo .gif of GraphQL Codemirror Mode](resources/example.gif)
 
 ### Getting Started
 

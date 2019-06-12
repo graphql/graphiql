@@ -7,13 +7,10 @@
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)",
     "Angel Gomez Salazar <agomezs@fb.com>"
   ],
-  "homepage": "https://github.com/graphql/codemirror-graphql",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/codemirror-graphql#readme",
+  "repository": "https://github.com/graphql/graphiql/tree/master/packages/codemirror-graphql",
   "bugs": {
-    "url": "https://github.com/graphql/codemirror-graphql/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/graphql/codemirror-graphql.git"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },
   "license": "BSD-3-Clause",
   "files": [
