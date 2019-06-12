@@ -12,6 +12,7 @@
   "bugs": {
     "url": "https://github.com/graphql/graphql-language-service/issues?q=issue+label:language-utils"
   },
+  "license": "MIT",
   "files": [
     "dist"
   ],

@@ -1,6 +1,6 @@
 /** @flow */
 /**
- *  Copyright (c), Facebook, Inc.
+ *  Copyright (c) 2019 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the

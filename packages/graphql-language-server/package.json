@@ -5,7 +5,7 @@
   "keywords": [
     "graphql"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues"
   },

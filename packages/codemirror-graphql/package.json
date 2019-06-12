@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "files": [
     "hint.js",
     "info.js",
