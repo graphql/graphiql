@@ -1,6 +1,7 @@
 {
   "description": "An example using GraphiQL",
   "scripts": {
+    "setup": "cp ../graphiql.js ../graphiql.css .",
     "start": "node server.js"
   },
   "dependencies": {

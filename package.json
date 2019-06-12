@@ -7,6 +7,13 @@
     "mocha": "--full-trace --require @babel/register --require resources/mochaBootload 'packages/{*,!graphiql}/src/**/__tests__/**/*-test.js'",
     "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
   },
+  "browserify-shim": {
+    "react": "global:React",
+    "react-dom": "global:ReactDOM"
+  },
+  "browser": {
+    "copy-to-clipboard": "./node-modules/copy-to-clipboard/index.js"
+  },
   "scripts": {
     "build": "lerna run build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",

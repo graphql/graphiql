@@ -28,7 +28,7 @@ const b = browserify({
   entries: [path.join(__dirname, '../src/index.js')],
   cache: {},
   packageCache: {},
-  transform: [babelify, browserifyShim],
+  transform: [[babelify, { rootMode: 'upward' }], browserifyShim],
   plugin: [watchify],
   standalone: 'GraphiQL',
   globalTransform: 'browserify-shim',
