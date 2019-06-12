@@ -13,6 +13,7 @@
   "bin": {
     "graphql": "./bin/graphql.js"
   },
+  "license": "MIT",
   "files": [
     "bin",
     "dist"
