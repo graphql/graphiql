@@ -37,8 +37,8 @@
       copy them directly into your environment, or perhaps include them in your
       favored resource bundler.
      -->
-    <link rel="stylesheet" href="./node_modules/graphiql/graphiql.css" />
-    <script src="./node_modules/graphiql/graphiql.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/graphiql.css" />
+    <script src="/graphiql.js" charset="utf-8"></script>
 
   </head>
   <body>
@@ -110,7 +110,7 @@
         // When working locally, the example expects a GraphQL server at the path /graphql.
         // In a PR preview, it connects to the Star Wars API externally.
         // Change this to point wherever you host your GraphQL server.
-        const isDev = window.location.hostname === 'localhost'
+        const isDev = !window.location.hostname.match(/(^|\.)netlify\.com$|(^|\.)graphql\.org$/)
         const api = isDev ? '/graphql' : 'https://swapi.graph.cool/'
         return fetch(api, {
           method: 'post',
