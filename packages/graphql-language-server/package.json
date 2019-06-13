@@ -1,19 +1,16 @@
 {
   "name": "graphql-language-server",
   "version": "2.0.1",
-  "description": "An interface for building GraphQL language services for IDEs",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/graphql/graphql-language-service.git"
-  },
+  "description": "(deprecated) An interface for building GraphQL language services for IDEs",
   "keywords": [
     "graphql"
   ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/graphql/graphql-language-service/issues"
+    "url": "https://github.com/graphql/graphiql/issues"
   },
-  "homepage": "https://github.com/graphql/graphql-language-service#readme",
+  "repository": "https://github.com/graphql/graphiql",
+  "homepage": "https://github.com/graphql/graphiql#readme",
   "dependencies": {
     "graphql-config": "2.2.1"
   }
