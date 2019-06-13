@@ -21,7 +21,7 @@
   },
   "publisher": "Prisma",
   "engines": {
-    "vscode": "1.34.0"
+    "vscode": "^1.32.0"
   },
   "categories": [
     "Programming Languages",
@@ -45,8 +45,7 @@
         "id": "graphql",
         "extensions": [
           ".gql",
-          ".graphql",
-          ".prisma"
+          ".graphql"
         ],
         "aliases": [
           "GraphQL",
