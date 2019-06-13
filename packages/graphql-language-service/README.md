@@ -1,10 +1,10 @@
 # GraphQL Language Service
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/graphql/graphql-language-service.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.org/graphql/graphql-language-service.svg?branch=master)](https://travis-ci.org/graphql/graphql-language-service)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg?style=flat-square)](https://npmjs.com/graphql-language-service)
+[![License](https://img.shields.io/npm/l/graphql-language-service.svg?style=flat-square)](LICENSE)
 
 _This is currently in technical preview. We welcome your feedback and suggestions._
-
-[![Build Status](https://travis-ci.org/graphql/graphql-language-service.svg?branch=master)](https://travis-ci.org/graphql/graphql-language-service)
 
 GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
