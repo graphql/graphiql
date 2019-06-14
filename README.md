@@ -1,6 +1,8 @@
 GraphiQL
 ========
 
+> ⚠️NOTICE!⚠️ This repository is about to become a monorepo.  Please make new PRs against the [ide-monorepo branch](https://github.com/graphql/graphiql/tree/ide-monorepo)
+
 */ˈɡrafək(ə)l/* A graphical interactive in-browser GraphQL IDE. [Try the live demo](https://graphql.org/swapi-graphql).
 
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
