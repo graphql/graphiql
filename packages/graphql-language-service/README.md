@@ -1,6 +1,5 @@
 # GraphQL Language Service
 
-[![Build Status](https://travis-ci.org/graphql/graphql-language-service.svg?branch=master)](https://travis-ci.org/graphql/graphql-language-service)
 [![NPM](https://img.shields.io/npm/v/graphql-language-service.svg?style=flat-square)](https://npmjs.com/graphql-language-service)
 [![License](https://img.shields.io/npm/l/graphql-language-service.svg?style=flat-square)](LICENSE)
 
