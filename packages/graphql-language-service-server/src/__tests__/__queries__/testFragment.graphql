@@ -1,0 +1,7 @@
+fragment testFragment on Character {
+  name
+  appearsIn
+  friends {
+    name
+  }
+}

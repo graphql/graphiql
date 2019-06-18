@@ -1,0 +1,89 @@
+{
+  "name": "graphiql",
+  "version": "0.13.0",
+  "description": "An graphical interactive in-browser GraphQL IDE.",
+  "contributors": [
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "http://github.com/graphql/graphiql/tree/master/packages/graphiql",
+  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "graphiql.js",
+    "graphiql.min.js",
+    "graphiql.css",
+    "README.md",
+    "LICENSE"
+  ],
+  "jest": {
+    "clearMocks": true,
+    "setupFiles": [
+      "<rootDir>/resources/enzyme.config.js"
+    ],
+    "transform": {
+      "^.+\\.jsx?$": "./resources/jestBabelTransform"
+    },
+    "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": [
+      "\\\\node_modules\\\\",
+      "dist"
+    ]
+  },
+  "scripts": {
+    "build": "yarn run build-js && yarn run build-flow",
+    "build-js": "bash ./resources/build.sh",
+    "build-flow": "node ../../resources/buildFlow.js",
+    "check": "flow check",
+    "dev": "babel-node --root-mode upward test/server.js",
+    "prepublish": ". ./resources/prepublish.sh",
+    "preversion": ". ./resources/checkgit.sh && npm test",
+    "test": "jest --no-cache spec"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "codemirror": "^5.47.0",
+    "codemirror-graphql": "^0.8.3",
+    "copy-to-clipboard": "^3.2.0",
+    "markdown-it": "^8.4.0"
+  },
+  "peerDependencies": {
+    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0",
+    "prop-types": ">=15.5.0",
+    "react": "^15.6.0 || ^16.0.0",
+    "react-dom": "^15.6.0 || ^16.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "7.0.0",
+    "babelify": "10.0.0",
+    "browserify": "16.2.3",
+    "browserify-shim": "3.8.14",
+    "chai": "4.2.0",
+    "chai-subset": "1.6.0",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-15": "^1.4.0",
+    "express": "5.0.0-alpha.5",
+    "express-graphql": "0.6.7",
+    "graphql": "14.1.1",
+    "jest": "^24.8.0",
+    "jsdom": "15.0.0",
+    "postcss-cli": "4.1.0",
+    "prop-types": "15.7.2",
+    "react": "15.6.2",
+    "react-dom": "15.6.2",
+    "react-test-renderer": "15.6.2",
+    "uglify-js": "3.5.11",
+    "uglifyify": "5.0.1",
+    "watchify": "3.11.1"
+  }
+}

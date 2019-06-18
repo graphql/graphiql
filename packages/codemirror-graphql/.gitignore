@@ -1,0 +1,8 @@
+node_modules/
+coverage/
+/*.js
+!.babelrc.js
+/utils
+/variables
+/results
+/__tests__

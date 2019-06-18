@@ -1,0 +1,7 @@
+dist/
+/graphiql.js
+/graphiql.min.js
+/graphiql.css
+example/yarn.lock
+example/graphiql.js
+example/graphiql.css

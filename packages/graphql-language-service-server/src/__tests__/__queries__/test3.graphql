@@ -1,0 +1,5 @@
+{
+  hero(episode: EMPIRE){
+    ...testFragment
+  }
+}
