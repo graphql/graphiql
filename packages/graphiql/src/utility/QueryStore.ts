@@ -1,14 +1,3 @@
-<<<<<<< HEAD:packages/graphiql/src/utility/QueryStore.js
-/**
- *  Copyright (c) 2019 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
- export default class QueryStore {
-  constructor(key, storage) {
-=======
 import StorageAPI from './StorageAPI';
 
 type GraphQLQueryItem = {
@@ -23,7 +12,6 @@ export default class QueryStore {
   key: string
 
   constructor(key: string, storage: StorageAPI) {
->>>>>>> c8c4756... begin graphiql typescript conversion:packages/graphiql/src/utility/QueryStore.ts
     this.key = key;
     this.storage = storage;
     this.items = this.fetchAll();
