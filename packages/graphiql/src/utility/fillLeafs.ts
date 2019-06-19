@@ -18,7 +18,6 @@ import {
   SelectionSetNode,
   GraphQLObjectType,
 } from 'graphql';
-import { Maybe } from '../types';
 
 interface Insertion {
   index: number;

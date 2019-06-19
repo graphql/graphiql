@@ -5,7 +5,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { parse, typeFromAST } from 'graphql';
+import { parse, typeFromAST, GraphQLSchema } from 'graphql';
+import { Maybe } from '../types';
+
+interface QueryFact {}
 
 /**
  * Provided previous "queryFacts", a GraphQL schema, and a query document
@@ -13,22 +16,25 @@ import { parse, typeFromAST } from 'graphql';
  *
  * If the query cannot be parsed, returns undefined.
  */
-export default function getQueryFacts(schema, documentStr) {
+export default function getQueryFacts(
+  schema: GraphQLSchema,
+  documentStr: string,
+): Maybe<QueryFact[]> {
   if (!documentStr) {
-    return;
+    return null;
   }
 
   let documentAST;
   try {
     documentAST = parse(documentStr);
   } catch (e) {
-    return;
+    return null;
   }
 
   const variableToType = schema ? collectVariables(schema, documentAST) : null;
 
   // Collect operations by their names.
-  const operations = [];
+  const operations: QueryFact[] = [];
   documentAST.definitions.forEach(def => {
     if (def.kind === 'OperationDefinition') {
       operations.push(def);
