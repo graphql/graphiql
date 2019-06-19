@@ -1,10 +1,9 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) Facebook, Inc. and its affiliates.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 export const fixtures = [
   {
     desc: 'does not modify query with no fragments',
@@ -23,7 +22,7 @@ export const fixtures = [
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
       }`,
@@ -40,15 +39,15 @@ export const fixtures = [
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         ...Fragment2
       }
-      
+
       fragment Fragment2 on Test {
         ...Fragment3
       }
-      
+
       fragment Fragment3 on Test {
         id
       }`,
@@ -71,15 +70,15 @@ export const fixtures = [
         ...Fragment2
         ...Fragment3
       }
-      
+
       fragment Fragment1 on Test {
         id
       }
-      
+
       fragment Fragment2 on Test {
         id
       }
-      
+
       fragment Fragment3 on Test {
         id
       }`,
@@ -103,7 +102,7 @@ export const fixtures = [
         ...Fragment1
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
       }`,

@@ -1,15 +1,22 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) Facebook, Inc. and its affiliates.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
 import { getOperationAST, parse, introspectionQuery } from 'graphql';
 
 export { introspectionQuery } from 'graphql';
-export const introspectionQueryName = getOperationAST(parse(introspectionQuery))
-  .name.value;
+
+// look for the introspection operation definition
+const introspectionOperation = getOperationAST(
+  parse(introspectionQuery),
+  undefined,
+);
+export const introspectionQueryName =
+  introspectionOperation && introspectionOperation.name
+    ? introspectionOperation.name.value
+    : null;
 
 // Some GraphQL services do not support subscriptions and fail an introspection
 // query which includes the `subscriptionType` field as the stock introspection
@@ -32,7 +39,6 @@ export const introspectionQuerySansSubscriptions = `
       }
     }
   }
-
   fragment FullType on __Type {
     kind
     name
@@ -65,14 +71,12 @@ export const introspectionQuerySansSubscriptions = `
       ...TypeRef
     }
   }
-
   fragment InputValue on __InputValue {
     name
     description
     type { ...TypeRef }
     defaultValue
   }
-
   fragment TypeRef on __Type {
     kind
     name

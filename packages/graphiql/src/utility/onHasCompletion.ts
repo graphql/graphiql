@@ -1,13 +1,14 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) Facebook, Inc. and its affiliates.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import * as CodeMirror from 'codemirror'
-
 import { GraphQLNonNull, GraphQLList, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
+import { Doc } from 'codemirror';
+
+import { Maybe } from '../types';
 
 const md = new MD();
 
@@ -15,17 +16,21 @@ const md = new MD();
  * Render a custom UI for CodeMirror's hint which includes additional info
  * about the type and description for the selected context.
  */
-export default function onHasCompletion(_cm, data, onHintInformationRender: Function) {
+export default function onHasCompletion(
+  _cm: any,
+  data: Doc,
+  onHintInformationRender: Function,
+) {
   const CodeMirror = require('codemirror');
 
   let information: HTMLDivElement;
   let deprecation: HTMLDivElement;
 
   // When a hint result is selected, we augment the UI with information.
-  CodeMirror.on(data, 'select', (ctx, el) => {
+  CodeMirror.on(data, 'select', (ctx, el: HTMLElement) => {
     // Only the first time (usually when the hint UI is first displayed)
     // do we create the information nodes.
-    if (!information) {
+    if (!information && el.parentNode) {
       const hintsUl: Node = el.parentNode;
 
       // This "information" node will contain the additional info about the
@@ -41,7 +46,7 @@ export default function onHasCompletion(_cm, data, onHintInformationRender: Func
 
       // When CodeMirror attempts to remove the hint UI, we detect that it was
       // removed and in turn remove the information nodes.
-      let onRemoveFn: EventHandlerNonNull | null;
+      let onRemoveFn: Maybe<EventHandlerNonNull>;
       hintsUl.addEventListener(
         'DOMNodeRemoved',
         (onRemoveFn = event => {

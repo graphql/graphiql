@@ -9,7 +9,7 @@ type GraphQLQueryItem = {
 export default class QueryStore {
   items: GraphQLQueryItem[];
   storage: StorageAPI;
-  key: string
+  key: string;
 
   constructor(key: string, storage: StorageAPI) {
     this.key = key;

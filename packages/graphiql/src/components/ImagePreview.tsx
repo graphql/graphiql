@@ -6,6 +6,7 @@
  */
 
 import * as React from 'react';
+import { Maybe } from '../types';
 
 function tokenToURL(token): URL {
   if (token.type !== 'string') {
@@ -33,7 +34,7 @@ type ImagePreviewProps = {
 
 type ImagePreviewState = {
   src: any;
-  mime: string | null;
+  mime: Maybe<string>;
   height: any;
   width: any;
 };
