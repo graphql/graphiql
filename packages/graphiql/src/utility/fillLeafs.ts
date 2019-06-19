@@ -12,7 +12,20 @@ import {
   print,
   TypeInfo,
   visit,
+  GraphQLSchema,
+  GraphQLType,
+  DocumentNode,
+  SelectionSetNode,
+  GraphQLObjectType,
 } from 'graphql';
+import { Maybe } from '../types';
+
+interface Insertion {
+  index: number;
+  string: string;
+}
+
+type FieldFinder = (a: GraphQLType) => string[];
 
 /**
  * Given a document string which may not be valid due to terminal fields not
@@ -24,14 +37,18 @@ import {
  * Note that there is no guarantee that the result will be a valid query, this
  * utility represents a "best effort" which may be useful within IDE tools.
  */
-export function fillLeafs(schema, docString, getDefaultFieldNames) {
-  const insertions = [];
+export function fillLeafs(
+  schema: GraphQLSchema,
+  docString: string,
+  getDefaultFieldNames: FieldFinder,
+) {
+  const insertions: Insertion[] = [];
 
   if (!schema) {
     return { insertions, result: docString };
   }
 
-  let ast;
+  let ast: DocumentNode;
   try {
     ast = parse(docString);
   } catch (error) {
@@ -48,13 +65,15 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
       typeInfo.enter(node);
       if (node.kind === 'Field' && !node.selectionSet) {
         const fieldType = typeInfo.getType();
-        const selectionSet = buildSelectionSet(fieldType, fieldNameFn);
-        if (selectionSet) {
-          const indent = getIndentation(docString, node.loc.start);
-          insertions.push({
-            index: node.loc.end,
-            string: ' ' + print(selectionSet).replace(/\n/g, '\n' + indent),
-          });
+        if (fieldType) {
+          const selectionSet = buildSelectionSet(fieldType, fieldNameFn);
+          if (selectionSet && node.loc) {
+            const indent = getIndentation(docString, node.loc.start);
+            insertions.push({
+              index: node.loc.end,
+              string: ' ' + print(selectionSet).replace(/\n/g, '\n' + indent),
+            });
+          }
         }
       }
     },
@@ -70,9 +89,9 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
 // The default function to use for producing the default fields from a type.
 // This function first looks for some common patterns, and falls back to
 // including all leaf-type fields.
-function defaultGetDefaultFieldNames(type) {
+function defaultGetDefaultFieldNames(type: GraphQLType) {
   // If this type cannot access fields, then return an empty set.
-  if (!type.getFields) {
+  if (!(type instanceof GraphQLObjectType)) {
     return [];
   }
 
@@ -94,7 +113,7 @@ function defaultGetDefaultFieldNames(type) {
   }
 
   // Include all leaf-type fields.
-  const leafFieldNames = [];
+  const leafFieldNames: string[] = [];
   Object.keys(fields).forEach(fieldName => {
     if (isLeafType(fields[fieldName].type)) {
       leafFieldNames.push(fieldName);
@@ -105,7 +124,10 @@ function defaultGetDefaultFieldNames(type) {
 
 // Given a GraphQL type, and a function which produces field names, recursively
 // generate a SelectionSet which includes default fields.
-function buildSelectionSet(type, getDefaultFieldNames) {
+function buildSelectionSet(
+  type: GraphQLType,
+  getDefaultFieldNames: FieldFinder,
+): SelectionSetNode | undefined {
   // Unwrap any non-null or list types.
   const namedType = getNamedType(type);
 
@@ -142,13 +164,13 @@ function buildSelectionSet(type, getDefaultFieldNames) {
 
 // Given an initial string, and a list of "insertion" { index, string } objects,
 // return a new string with these insertions applied.
-function withInsertions(initial, insertions) {
+function withInsertions(initial: string, insertions: Insertion[]) {
   if (insertions.length === 0) {
     return initial;
   }
   let edited = '';
   let prevIndex = 0;
-  insertions.forEach(({ index, string }) => {
+  insertions.forEach(({ index, string }: Insertion) => {
     edited += initial.slice(prevIndex, index) + string;
     prevIndex = index;
   });
@@ -158,7 +180,7 @@ function withInsertions(initial, insertions) {
 
 // Given a string and an index, look backwards to find the string of whitespace
 // following the next previous line break.
-function getIndentation(str, index) {
+function getIndentation(str: string, index: number) {
   let indentStart = index;
   let indentEnd = index;
   while (indentStart) {
