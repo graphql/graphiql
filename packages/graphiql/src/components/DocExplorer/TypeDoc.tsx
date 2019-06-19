@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -189,8 +188,8 @@ export default class TypeDoc extends React.Component<
 }
 
 type FieldProps = {
-  type: GraphQLType,
-  field: GraphQLField<any, any>,
+  type: GraphQLType;
+  field: GraphQLField<any, any>;
   onClickType: (type: GraphQLType, e: React.MouseEvent<any>) => any;
   onClickField: (
     field: GraphQLField<any, any>,
