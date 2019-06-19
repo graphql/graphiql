@@ -44,7 +44,6 @@ type QueryEditorProps = {
  *
  */
 export class QueryEditor extends React.Component<QueryEditorProps, {}> {
-
   editor: CodeMirror.Editor;
   _node: HTMLElement;
   ignoreChangeEvent: boolean;

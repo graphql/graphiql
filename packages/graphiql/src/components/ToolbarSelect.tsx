@@ -4,16 +4,16 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import * as React from "react";
+import * as React from 'react';
 
 type ToolbarSelectProps = {
-  title?: string,
-  label?: string,
-  onSelect?: (...args: any[]) => any
+  title?: string;
+  label?: string;
+  onSelect?: (...args: any[]) => any;
 };
 
 type ToolbarSelectState = {
-  visible: boolean
+  visible: boolean;
 };
 
 /**
@@ -26,8 +26,8 @@ export class ToolbarSelect extends React.Component<
   ToolbarSelectProps,
   ToolbarSelectState
 > {
-  _listener: EventListener
-  _node: HTMLElement
+  _listener: EventListener;
+  _node: HTMLElement;
 
   constructor(props: ToolbarSelectProps) {
     super(props);
@@ -52,7 +52,7 @@ export class ToolbarSelect extends React.Component<
         return (
           <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />
         );
-      }
+      },
     );
     return (
       <a
@@ -62,14 +62,13 @@ export class ToolbarSelect extends React.Component<
         ref={node => {
           this._node = node;
         }}
-        title={this.props.title}
-      >
+        title={this.props.title}>
         {selectedChild.props.label}
         <svg width="13" height="10">
           <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
           <path fill="#666" d="M 5 6 L 13 6 L 9 10 z" />
         </svg>
-        <ul className={"toolbar-select-options" + (visible ? " open" : "")}>
+        <ul className={'toolbar-select-options' + (visible ? ' open' : '')}>
           {optionChildren}
         </ul>
       </a>
@@ -78,12 +77,12 @@ export class ToolbarSelect extends React.Component<
   _subscribe() {
     if (!this._listener) {
       this._listener = this.handleClick.bind(this);
-      document.addEventListener("click", this._listener);
+      document.addEventListener('click', this._listener);
     }
   }
   _release() {
     if (this._listener) {
-      document.removeEventListener("click", this._listener);
+      document.removeEventListener('click', this._listener);
       this._listener = null;
     }
   }
@@ -102,28 +101,27 @@ export class ToolbarSelect extends React.Component<
 }
 
 type ToolbarSelectOptionProps = {
-  onSelect?: (...args: any[]) => any,
-  selected?: boolean,
-  label?: string,
-  value?: any
+  onSelect?: (...args: any[]) => any;
+  selected?: boolean;
+  label?: string;
+  value?: any;
 };
 
 export const ToolbarSelectOption: React.SFC<ToolbarSelectOptionProps> = ({
   onSelect,
   label,
-  selected
+  selected,
 }) => {
   return (
     <li
       onMouseOver={(e: React.MouseEvent) => {
-        e.target.className = "hover";
+        e.target.className = 'hover';
       }}
       onMouseOut={(e: React.MouseEvent) => {
         e.target.className = null;
       }}
       onMouseDown={preventDefault}
-      onMouseUp={onSelect}
-    >
+      onMouseUp={onSelect}>
       {label}
       {selected && (
         <svg width="13" height="13">

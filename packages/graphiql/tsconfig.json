@@ -21,13 +21,8 @@
     "jsx": "react",
     "allowJs": true,
     "lib": ["es2018", "dom", "esnext"],
-    "typeRoots": [
-      "../../node_modules/@types/"
-    ]
+    "typeRoots": ["../../node_modules/@types/"]
   },
-  "include": ["src/**/*.ts"],
-  "exclude": [
-    "src/**/__tests__/**/*",
-    "src/**/__mocks__/**/*"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/**/__tests__/**/*", "src/**/__mocks__/**/*"]
 }

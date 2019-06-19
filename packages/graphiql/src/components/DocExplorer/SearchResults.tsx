@@ -4,17 +4,17 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from "react";
-import { GraphQLSchema, GraphQLType } from 'graphql'
-import Argument from "./Argument";
-import TypeLink from "./TypeLink";
+import React from 'react';
+import { GraphQLSchema, GraphQLType } from 'graphql';
+import Argument from './Argument';
+import TypeLink from './TypeLink';
 
 type SearchResultsProps = {
-  schema?: GraphQLSchema,
-  withinType?: GraphQLType,
-  searchValue?: string,
-  onClickType?: (...args: any[]) => any,
-  onClickField?: (...args: any[]) => any
+  schema?: GraphQLSchema;
+  withinType?: GraphQLType;
+  searchValue?: string;
+  onClickType?: (...args: any[]) => any;
+  onClickField?: (...args: any[]) => any;
 };
 
 export default class SearchResults extends React.Component<
@@ -55,7 +55,7 @@ export default class SearchResults extends React.Component<
         matchedTypes.push(
           <div className="doc-category-item" key={typeName}>
             <TypeLink type={type} onClick={onClickType} />
-          </div>
+          </div>,
         );
       }
       if (type.getFields) {
@@ -66,7 +66,7 @@ export default class SearchResults extends React.Component<
           if (!isMatch(fieldName, searchValue)) {
             if (field.args && field.args.length) {
               matchingArgs = field.args.filter(arg =>
-                isMatch(arg.name, searchValue)
+                isMatch(arg.name, searchValue),
               );
               if (matchingArgs.length === 0) {
                 return;
@@ -76,19 +76,18 @@ export default class SearchResults extends React.Component<
             }
           }
           const match = (
-            <div className="doc-category-item" key={typeName + "." + fieldName}>
+            <div className="doc-category-item" key={typeName + '.' + fieldName}>
               {withinType !== type && [
                 <TypeLink key="type" type={type} onClick={onClickType} />,
-                "."
+                '.',
               ]}
               <a
                 className="field-name"
-                onClick={event => onClickField(field, type, event)}
-              >
+                onClick={event => onClickField(field, type, event)}>
                 {field.name}
               </a>
               {matchingArgs && [
-                "(",
+                '(',
                 <span key="args">
                   {matchingArgs.map(arg => (
                     <Argument
@@ -99,7 +98,7 @@ export default class SearchResults extends React.Component<
                     />
                   ))}
                 </span>,
-                ")"
+                ')',
               ]}
             </div>
           );
@@ -115,22 +114,14 @@ export default class SearchResults extends React.Component<
       matchedWithin.length + matchedTypes.length + matchedFields.length ===
       0
     ) {
-<<<<<<< HEAD:packages/graphiql/src/components/DocExplorer/SearchResults.js
       return <span className="doc-alert-text">{'No results found.'}</span>;
-=======
-      return <span className="doc-alert-text">{"No results found."}</span>;
->>>>>>> c8c4756... begin graphiql typescript conversion:packages/graphiql/src/components/DocExplorer/SearchResults.tsx
     }
     if (withinType && matchedTypes.length + matchedFields.length > 0) {
       return (
         <div>
           {matchedWithin}
           <div className="doc-category">
-<<<<<<< HEAD:packages/graphiql/src/components/DocExplorer/SearchResults.js
             <div className="doc-category-title">{'other results'}</div>
-=======
-            <div className="doc-category-title">{"other results"}</div>
->>>>>>> c8c4756... begin graphiql typescript conversion:packages/graphiql/src/components/DocExplorer/SearchResults.tsx
             {matchedTypes}
             {matchedFields}
           </div>
@@ -148,8 +139,8 @@ export default class SearchResults extends React.Component<
 }
 function isMatch(sourceText, searchValue) {
   try {
-    const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => "\\" + ch);
-    return sourceText.search(new RegExp(escaped, "i")) !== -1;
+    const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
+    return sourceText.search(new RegExp(escaped, 'i')) !== -1;
   } catch (e) {
     return sourceText.toLowerCase().indexOf(searchValue.toLowerCase()) !== -1;
   }
