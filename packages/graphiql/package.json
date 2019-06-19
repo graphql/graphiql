@@ -64,7 +64,7 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "7.0.0",
+    "autoprefixer": "9.6.0",
     "babelify": "10.0.0",
     "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
@@ -77,7 +77,7 @@
     "graphql": "14.1.1",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
-    "postcss-cli": "4.1.0",
+    "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",
     "react": "15.6.2",
     "react-dom": "15.6.2",
