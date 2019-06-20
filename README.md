@@ -10,7 +10,8 @@
 
 GraphiQL is the reference implementation of GraphQL IDE, an official project under the GraphQL Foundation.
 
-This repository contains much of the code that powers GraphiQL (and many other tools!), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+This repository contains much of the code that powers GraphiQL (and many other tools), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+
 
 ## [GraphiQL](packages/graphiql#readme)
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
@@ -68,14 +69,16 @@ Utilities to support the [GraphQL Language Service](packages/graphql-language-se
 This is an open source project, and we welcome contributions. Please see
 [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
 
+
 ## Fielding Proposals!
 
 The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scaleable, interoperable and extensible.
 Feel free to open a PR to create a document in the `/proposals/` directory. 
 Eventually we hope to move these to a repo that serves this purpose.
 
+
 ## Community
 
-- __Discord__ - Most discussion outside of gitub happens on our [Discord Server](https://discord.gg/eNuu9Cb)
+- __Discord__ - Most discussion outside of github happens on our [Discord Server](https://discord.gg/eNuu9Cb)
 - __Twitter__ - [@GraphiQL](https://twitter.com/@GraphiQL) and [#GraphiQL](https://twitter.com/hashtag/GraphiQL)
-- __Github__ - Create feature requests and start discussions above!
+- __Github__ - Create feature requests and start discussions above
