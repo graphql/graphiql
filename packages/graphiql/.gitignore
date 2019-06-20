@@ -1,4 +1,5 @@
 dist/
+cdn/
 /graphiql.js
 /graphiql.min.js
 /graphiql.css
