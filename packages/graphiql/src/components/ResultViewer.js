@@ -42,17 +42,15 @@ export class ResultViewer extends React.Component {
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
-
-    if (this.props.ResultsTooltip || this.props.ImagePreview) {
+    const Tooltip = this.props.ResultsTooltip;
+    const ImagePreview = this.props.ImagePreview;
+    if (Tooltip || ImagePreview) {
       require('codemirror-graphql/utils/info-addon');
       const tooltipDiv = document.createElement('div');
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
         (token, options, cm, pos) => {
-          const Tooltip = this.props.ResultsTooltip;
-          const ImagePreview = this.props.ImagePreview;
-
           const infoElements = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);
@@ -66,10 +64,11 @@ export class ResultViewer extends React.Component {
             infoElements.push(<ImagePreview token={token} />);
           }
 
-          if (infoElements.length > 0) {
-            ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
+          if (!infoElements.length) {
+            ReactDOM.unmountComponentAtNode(tooltipDiv);
+            return null;
           }
-
+          ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
           return tooltipDiv;
         },
       );

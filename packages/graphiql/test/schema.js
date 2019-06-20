@@ -140,7 +140,7 @@ const TestType = new GraphQLObjectType({
       type: TestType,
       description:
         '`longDescriptionType` field from `Test` type, which ' +
-          'has a long, verbose, description to test inline field docs',
+        'has a long, verbose, description to test inline field docs',
       resolve: () => ({}),
     },
     union: {
@@ -159,6 +159,11 @@ const TestType = new GraphQLObjectType({
       resolve: () => {
         return true;
       },
+    },
+    image: {
+      type: GraphQLString,
+      description: 'field that returns an image URI.',
+      resolve: () => '/images/logo.svg',
     },
     deprecatedField: {
       type: TestType,
