@@ -7,29 +7,29 @@ before_install:
 install:
   - yarn --ignore-scripts # ignore prepublish scripts
 cache: yarn
-deploy:
-  - provider: script
-    skip_cleanup: true
-    email: agomezs@fb.com
-    api_key:
-      secure: uKXlFfrKz0uOcu1tIwfQOS8A4rpVu0fIfSFReIo1hWd2CujqKIt94KalsgxVLxQfhxePVepzBamHlGu0x9B9uqz7uFe+nzKQ4df1k/UGElv+vozIoxsTs70sZe/XHqhazraT3B/4G98LoDuP+3c6qBbq6vJvehGG+9q3btuYoXqeF1BAGDW6YNGoq/fDUHCwsyg7n1LIBCWtWKJTlbtk4ppMfPNIE10UYMmREzXaMzY+mShlBs0/SlWIRDen5JujgV0jeVVCOJPS+wsCKZ17gWoIRpJgCHCgPfiTuU05CC+KkSuQoCaCYEdH1np9wJhpuaFK9I8myAlMMwzBQf61TnsQKcP/RjU1padL88RGgzspT36CEGXXqGHLbAR48nmL95B7SN+ZfnAtwlBXvvyNvt6V+VVvv4sgQ9C7vvV2Uj3ebOlmbEz9+8SPCQ5LuRVzxmYunkt2WacrV2uEPHRmsges70VIBGhAz3D09gTAHvZJFaLPeQTMFswm/TxJzbkWWL/2uEulG71A6QAJNV+zYT8OfEg3dhjKqolgqwHoDmXU8im6za+5MRuyZ8NaJ1NJ3iJMTXfInrmCGDhhm8ufO2eH35/tDl2lBAluvBsr8cgw3Sdd4yYAoP/utiIuXlMMFvjMfo0cJsaqQ2MLY5zXb/n/xoUC0Q9hr3tzc8ZMkQo=
-    on:
-      tags: true
-      branch: master
-    script: "lerna exec -- yarn publish"
-  - provider: releases
-    skip_cleanup: true
-    api_key:
-      secure: HzZELTrnObaY3L/Qf+sgxtzwZM8KpNNB3CzxHjkihIkl8bt2ibUgvPrArsUisyGI5WXiW6KMzyjDEmODjyT61InCUzXwdqtH7cpcYL1hLrCXUK1MH2yobesMlqcZiu1BdXgYPfhxA9BzA8aQmSmcnIj1+8nVh2ZRYcPE4Lct3eExzLKUr4hvDoGhfStEknLcuSaiICQXqVRQbnVclR/D5fZ77Nt/XdX6yTPd5+BqtEaLXM8rO1zCmD23QNrgHl9lOzIlc7hJ87TQ2t58f1l3nqxaDQieNGctM8ahrPHfYxKX2MZsuKgNEtBmsm+ldnaI2yKoFZNiBY4nEy35beqLROHihisxMo5+kw5L6f7aQ4YpI8lrmeWXUjHBIv9lpnuo8DVO2sBwhvywNhcHqLMX5wt6akh8HSdERpUxcA9cIPVY3vi3tGIJTxidxZUqFHM83Bvh54pss5Afi9HWodTIP+0/HtB7WdKBXH0F4CefuLDhy4aVb5tMo+bi1ENhjpdjl3o+VshkEYXOP2Ge8DAoatFqgXjrc/OQS+Ca7n/75dGwZVBGsX0Gg2Bp+zaWIp5xgqImclsBuk+879/tHUitxt4ZjkWH8E07voiU7WIrmw/BX/kQR3l5T1ROjjtJg1dGuRTSryjCzg+qx3ssXmf4szsaSgOTTPdMgI6HY5cJxEQ=
-    file:
-      - packages/graphiql/graphiql.js
-      - packages/graphiql/graphiql.min.js
-      - packages/graphiql/graphiql.css
-      - packages/codemirror-graphql/hint.js
-      - packages/codemirror-graphql/info.js
-      - packages/codemirror-graphql/jump.js
-      - packages/codemirror-graphql/lint.js
-      - packages/codemirror-graphql/mode.js
-    on:
-      tags: true
-      branch: master
+# deploy:
+#   - provider: script
+#     skip_cleanup: true
+#     email: agomezs@fb.com
+#     api_key:
+#       secure: uKXlFfrKz0uOcu1tIwfQOS8A4rpVu0fIfSFReIo1hWd2CujqKIt94KalsgxVLxQfhxePVepzBamHlGu0x9B9uqz7uFe+nzKQ4df1k/UGElv+vozIoxsTs70sZe/XHqhazraT3B/4G98LoDuP+3c6qBbq6vJvehGG+9q3btuYoXqeF1BAGDW6YNGoq/fDUHCwsyg7n1LIBCWtWKJTlbtk4ppMfPNIE10UYMmREzXaMzY+mShlBs0/SlWIRDen5JujgV0jeVVCOJPS+wsCKZ17gWoIRpJgCHCgPfiTuU05CC+KkSuQoCaCYEdH1np9wJhpuaFK9I8myAlMMwzBQf61TnsQKcP/RjU1padL88RGgzspT36CEGXXqGHLbAR48nmL95B7SN+ZfnAtwlBXvvyNvt6V+VVvv4sgQ9C7vvV2Uj3ebOlmbEz9+8SPCQ5LuRVzxmYunkt2WacrV2uEPHRmsges70VIBGhAz3D09gTAHvZJFaLPeQTMFswm/TxJzbkWWL/2uEulG71A6QAJNV+zYT8OfEg3dhjKqolgqwHoDmXU8im6za+5MRuyZ8NaJ1NJ3iJMTXfInrmCGDhhm8ufO2eH35/tDl2lBAluvBsr8cgw3Sdd4yYAoP/utiIuXlMMFvjMfo0cJsaqQ2MLY5zXb/n/xoUC0Q9hr3tzc8ZMkQo=
+#     on:
+#       tags: true
+#       branch: master
+#     script: "lerna exec -- yarn publish"
+#   - provider: releases
+#     skip_cleanup: true
+#     api_key:
+#       secure: HzZELTrnObaY3L/Qf+sgxtzwZM8KpNNB3CzxHjkihIkl8bt2ibUgvPrArsUisyGI5WXiW6KMzyjDEmODjyT61InCUzXwdqtH7cpcYL1hLrCXUK1MH2yobesMlqcZiu1BdXgYPfhxA9BzA8aQmSmcnIj1+8nVh2ZRYcPE4Lct3eExzLKUr4hvDoGhfStEknLcuSaiICQXqVRQbnVclR/D5fZ77Nt/XdX6yTPd5+BqtEaLXM8rO1zCmD23QNrgHl9lOzIlc7hJ87TQ2t58f1l3nqxaDQieNGctM8ahrPHfYxKX2MZsuKgNEtBmsm+ldnaI2yKoFZNiBY4nEy35beqLROHihisxMo5+kw5L6f7aQ4YpI8lrmeWXUjHBIv9lpnuo8DVO2sBwhvywNhcHqLMX5wt6akh8HSdERpUxcA9cIPVY3vi3tGIJTxidxZUqFHM83Bvh54pss5Afi9HWodTIP+0/HtB7WdKBXH0F4CefuLDhy4aVb5tMo+bi1ENhjpdjl3o+VshkEYXOP2Ge8DAoatFqgXjrc/OQS+Ca7n/75dGwZVBGsX0Gg2Bp+zaWIp5xgqImclsBuk+879/tHUitxt4ZjkWH8E07voiU7WIrmw/BX/kQR3l5T1ROjjtJg1dGuRTSryjCzg+qx3ssXmf4szsaSgOTTPdMgI6HY5cJxEQ=
+#     file:
+#       - packages/graphiql/graphiql.js
+#       - packages/graphiql/graphiql.min.js
+#       - packages/graphiql/graphiql.css
+#       - packages/codemirror-graphql/hint.js
+#       - packages/codemirror-graphql/info.js
+#       - packages/codemirror-graphql/jump.js
+#       - packages/codemirror-graphql/lint.js
+#       - packages/codemirror-graphql/mode.js
+#     on:
+#       tags: true
+#       branch: master
