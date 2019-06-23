@@ -104,6 +104,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `readOnly`: an optional boolean which when `true` will make the `QueryEditor` and `Variables` panes readOnly.
 
+- `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
+
 **Children:**
 
 * `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
