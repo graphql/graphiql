@@ -137,7 +137,6 @@
     "vscode": "1.1.34"
   },
   "dependencies": {
-    "@divyenduz/graphql-language-service-server": "1.2.6",
     "@divyenduz/ts-graphql-plugin": "0.1.0",
     "apollo-cache-inmemory": "1.2.6",
     "apollo-client": "2.3.5",
@@ -150,6 +149,7 @@
     "graphql": "0.13.2",
     "graphql-config": "2.1.0",
     "graphql-config-extension-prisma": "0.3.0",
+    "graphql-language-service-server": "^2.0.0",
     "graphql-tag": "2.9.2",
     "subscriptions-transport-ws": "0.9.14",
     "vscode-languageclient": "4.1.3",
