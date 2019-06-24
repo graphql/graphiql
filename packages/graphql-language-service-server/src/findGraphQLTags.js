@@ -10,27 +10,37 @@
 
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { parse } from 'babylon';
+import { parse } from '@babel/parser';
 
 // Attempt to be as inclusive as possible of source text.
-const BABYLON_OPTIONS = {
+const PARSER_OPTIONS = {
   allowImportExportEverywhere: true,
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
   sourceType: 'module',
   plugins: [
-    // Previously "*"
-    'asyncGenerators',
-    'classProperties',
-    'decorators',
-    'doExpressions',
-    'dynamicImport',
-    'exportExtensions',
     'flow',
+    'jsx',
+    'doExpressions',
+    'objectRestSpread',
+    ['decorators', {decoratorsBeforeExport: false}],
+    'classProperties',
+    'classPrivateProperties',
+    'classPrivateMethods',
+    'exportDefaultFrom',
+    'exportNamespaceFrom',
+    'asyncGenerators',
     'functionBind',
     'functionSent',
-    'jsx',
-    'objectRestSpread',
+    'dynamicImport',
+    'numericSeparator',
+    'optionalChaining',
+    'importMeta',
+    'bigInt',
+    'optionalCatchBinding',
+    'throwExpressions',
+    ['pipelineOperator', {proposal: 'minimal'}],
+    'nullishCoalescingOperator',
   ],
   strictMode: false,
 };
@@ -39,7 +49,7 @@ export function findGraphQLTags(
   text: string,
 ): Array<{ tag: string, template: string, range: Range }> {
   const result = [];
-  const ast = parse(text, BABYLON_OPTIONS);
+  const ast = parse(text, PARSER_OPTIONS);
 
   const visitors = {
     CallExpression: node => {
