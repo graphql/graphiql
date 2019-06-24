@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import { Position, Range } from 'graphql-language-service-utils';
 import { beforeEach, describe, it } from 'mocha';
 
-import { MessageProcessor } from '../MessageProcessor';
+import {MessageProcessor, getQueryAndRange} from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 import { GraphQLConfig } from 'graphql-config';
 
@@ -198,5 +198,35 @@ describe('MessageProcessor', () => {
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
+  });
+
+  it('getQueryAndRange finds queries in tagged templates', async () => {
+    const text = `
+// @flow
+import {gql} from 'react-apollo';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = getQueryAndRange(text, 'test.js');
+    expect(contents[0].query).to.equal(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
   });
 });
