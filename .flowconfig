@@ -18,8 +18,8 @@
 !<PROJECT_ROOT>/node_modules/graphql-language-service-parser
 !<PROJECT_ROOT>/node_modules/graphql-language-service-types
 !<PROJECT_ROOT>/node_modules/graphql-language-service-utils
-!<PROJECT_ROOT>/node_modules/babylon
 !<PROJECT_ROOT>/node_modules/glob
+!<PROJECT_ROOT>/node_modules/@babel/parser
 !<PROJECT_ROOT>/node_modules/vscode-languageserver
 !<PROJECT_ROOT>/node_modules/vscode-jsonrpc
 !<PROJECT_ROOT>/node_modules/vscode-languageserver-types
