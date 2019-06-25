@@ -12,7 +12,7 @@ import { expect } from 'chai';
 import { Position, Range } from 'graphql-language-service-utils';
 import { beforeEach, describe, it } from 'mocha';
 
-import {MessageProcessor, getQueryAndRange} from '../MessageProcessor';
+import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
 import { GraphQLConfig } from 'graphql-config';
 
