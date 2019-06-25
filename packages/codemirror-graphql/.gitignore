@@ -1,7 +1,7 @@
 node_modules/
 coverage/
 /*.js
-!.babelrc.js
+!babel.config.js
 /utils
 /variables
 /results
