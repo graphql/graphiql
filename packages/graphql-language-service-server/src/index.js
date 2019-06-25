@@ -7,7 +7,6 @@
  *
  *  @flow
  */
-
 export { GraphQLCache, getGraphQLCache } from './GraphQLCache';
 
 export { GraphQLWatchman } from './GraphQLWatchman';
