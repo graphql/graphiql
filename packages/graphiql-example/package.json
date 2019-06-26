@@ -1,13 +1,15 @@
 {
+  "name": "graphiql-example",
+  "private": true,
   "description": "An example using GraphiQL",
   "scripts": {
-    "setup": "cp ../graphiql.js ../graphiql.css .",
+    "setup": "cp ../graphiql/graphiql.js ../graphiql/graphiql.css .",
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.13.3",
     "express-graphql": "^0.6.6",
-    "graphiql": "../",
+    "graphiql": "../graphiql",
     "graphql": "^0.10.1"
   },
   "optionalDependencies": {

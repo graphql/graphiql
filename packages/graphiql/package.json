@@ -63,6 +63,17 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.5",
+    "@babel/node": "7.4.5",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "7.4.5",
+    "@babel/preset-flow": "7.0.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/register": "^7.4.4",
+    "@babel/plugin-transform-regenerator": "^7.4.5",
     "autoprefixer": "9.6.0",
     "babelify": "10.0.0",
     "browserify": "16.2.3",
@@ -81,7 +92,6 @@
     "react": "15.6.2",
     "react-dom": "15.6.2",
     "react-test-renderer": "15.6.2",
-    "regenerator-runtime": "^0.13.2",
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
     "watchify": "3.11.1"
