@@ -86,9 +86,12 @@ export async function activate(context: ExtensionContext) {
   };
 
   let clientOptions: LanguageClientOptions = {
-    documentSelector: [{ scheme: "file", language: "graphql" }],
+    documentSelector: [
+      { scheme: "file", language: "graphql" }
+      { scheme: "file", language: "javascript" },
+    ],
     synchronize: {
-      fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql}")
+      fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql,js}")
     },
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
