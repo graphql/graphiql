@@ -76,6 +76,7 @@ describe('getAutocompleteSuggestions', () => {
     ]);
     // Below should provide root field names
     expect(testSuggestions(' {}', new Position(0, 2))).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },
@@ -93,6 +94,7 @@ query name {
         new Position(2, 0),
       ),
     ).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },
@@ -103,6 +105,7 @@ query name {
   it('provides correct field name suggestions', () => {
     const result = testSuggestions('{ ', new Position(0, 2));
     expect(result).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },
@@ -125,6 +128,7 @@ query name {
     );
 
     expect(result).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
       { label: 'friends', detail: '[Character]' },
       { label: 'id', detail: 'String!' },
@@ -139,6 +143,7 @@ query name {
       new Position(0, 25),
     );
     expect(result).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
       { label: 'friends', detail: '[Character]' },
       { label: 'id', detail: 'String!' },
@@ -265,6 +270,7 @@ query name {
         new Position(0, 42),
       ),
     ).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
       { label: 'friends', detail: '[Character]' },
       { label: 'id', detail: 'String!' },
@@ -276,6 +282,7 @@ query name {
     expect(
       testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
     ).to.deep.equal([
+      { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
       { label: 'friends', detail: '[Character]' },
       { label: 'id', detail: 'String!' },
