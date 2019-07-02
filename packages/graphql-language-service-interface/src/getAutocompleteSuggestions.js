@@ -174,7 +174,7 @@ function getSuggestionsForFieldNames(
         // $FlowFixMe
         ? objectValues(parentType.getFields())
         : [];
-    if (isAbstractType(parentType)) {
+    if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
     if (parentType === schema.getQueryType()) {
