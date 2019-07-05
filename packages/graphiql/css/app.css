@@ -370,7 +370,6 @@
   max-width: 300px;
   overflow: hidden;
   padding: 2px 20px 4px 11px;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
