@@ -229,4 +229,27 @@ query Test {
 }
 `);
   });
+
+  it('getQueryAndRange ignores non gql tagged templates', async () => {
+    const text = `
+// @flow
+import randomthing from 'package';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = randomthing\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = getQueryAndRange(text, 'test.js');
+    expect(contents.length).to.equal(0);
+  });
 });
