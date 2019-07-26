@@ -84,6 +84,7 @@ export class VariableEditor extends React.Component {
         variableToType: this.props.variableToType,
         closeOnUnfocus: false,
         completeSingle: false,
+        container: this._node,
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {

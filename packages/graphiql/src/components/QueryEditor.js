@@ -95,6 +95,7 @@ export class QueryEditor extends React.Component {
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
+        container: this._node,
       },
       info: {
         schema: this.props.schema,
