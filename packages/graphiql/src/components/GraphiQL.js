@@ -69,6 +69,7 @@ export class GraphiQL extends React.Component {
     onToggleHistory: PropTypes.func,
     ResultsTooltip: PropTypes.any,
     readOnly: PropTypes.bool,
+    docExplorerOpen: PropTypes.bool,
   };
 
   constructor(props) {
@@ -110,19 +111,27 @@ export class GraphiQL extends React.Component {
             this._storage.get('operationName'),
             queryFacts && queryFacts.operations,
           );
+    
+    // prop can be supplied to open docExplorer initially
+    let docExplorerOpen = props.docExplorerOpen || false;
 
+    // but then local storage state overrides it
+    if (this._storage.get('docExplorerOpen')) {
+      docExplorerOpen = this.__storage.get('docExplorerOpen') === 'true';
+    }
+    
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables,
       operationName,
+      docExplorerOpen,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
       variableEditorOpen: Boolean(variables),
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
-      docExplorerOpen: this._storage.get('docExplorerOpen') === 'true' || false,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
