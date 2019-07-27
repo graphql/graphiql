@@ -31,7 +31,7 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "peerDependencies": {
-    "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0-b || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "7.4.4",
