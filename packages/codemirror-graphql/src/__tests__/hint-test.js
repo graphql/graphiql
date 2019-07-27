@@ -8,7 +8,6 @@
  */
 
 import { expect } from 'chai';
-// 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import { isCompositeType } from 'graphql';
@@ -76,13 +75,18 @@ describe('graphql-hint', () => {
       name => !fieldConfig[name].isDeprecated,
     );
     checkSuggestions(
-      fieldNames.concat(['__schema', '__type']),
+      fieldNames.concat(['__typename', '__schema', '__type']),
       suggestions.list,
     );
 
     const fieldTypes = fieldNames.map(name => fieldConfig[name].type);
     const expectedTypes = suggestions.list
-      .filter(item => item.text !== '__schema' && item.text !== '__type')
+      .filter(
+        item =>
+          item.text !== '__schema' &&
+          item.text !== '__type' &&
+          item.text !== '__typename',
+      )
       .map(item => item.type);
     expect(fieldTypes).to.deep.equal(expectedTypes);
   });
@@ -93,7 +97,10 @@ describe('graphql-hint', () => {
       ch: 21,
     });
     const fieldConfig = TestSchema.getType('First').getFields();
-    checkSuggestions(Object.keys(fieldConfig), suggestions.list);
+    checkSuggestions(
+      [...Object.keys(fieldConfig), '__typename'],
+      suggestions.list,
+    );
   });
 
   it('provides correct field name suggestion indentation', async () => {
@@ -241,6 +248,7 @@ describe('graphql-hint', () => {
       { line: 0, ch: 43 },
     );
     const fieldNames = Object.keys(TestSchema.getType('First').getFields());
+    fieldNames.push('__typename');
     checkSuggestions(fieldNames, suggestions.list);
   });
 
@@ -250,6 +258,7 @@ describe('graphql-hint', () => {
       { line: 0, ch: 30 },
     );
     const fieldNames = Object.keys(TestSchema.getType('First').getFields());
+    fieldNames.push('__typename');
     checkSuggestions(fieldNames, suggestions.list);
   });
 });
