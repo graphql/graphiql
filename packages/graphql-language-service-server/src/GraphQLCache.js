@@ -33,6 +33,7 @@ import {
 } from 'graphql-config';
 import { getQueryAndRange } from './MessageProcessor';
 import stringToHash from './stringToHash';
+import {GraphQLSchemaLoaderExtension, GraphQLSchemaLoader} from './GraphQLSchemaLoaderExtension';
 import glob from 'glob';
 
 // Maximum files to read when processing GraphQL files.
@@ -658,9 +659,21 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const projectName = appName || 'undefinedName';
     const schemaPath = projectConfig.schemaPath;
     const endpointInfo = this._getDefaultEndpoint(projectConfig);
+    const schemaLoaderExtension = this._getSchemaLoaderExtension(projectConfig);
 
     let schemaCacheKey = null;
     let schema = null;
+
+    if(schemaLoaderExtension != null) {
+      schemaCacheKey = `${projectName}`;
+      if (this._schemaMap.has(schemaCacheKey)) {
+        return this._schemaMap.get(schemaCacheKey);
+      }
+      console.log(schemaLoaderExtension);
+      schema = await schemaLoaderExtension.getSchemaLoader().getSchema();
+      this._schemaMap.set(schemaCacheKey, schema);
+      return schema;
+    }
 
     if (endpointInfo) {
       const { endpoint, endpointName } = endpointInfo;
@@ -747,6 +760,26 @@ export class GraphQLCache implements GraphQLCacheInterface {
       endpointName,
       endpoint: endpointsExtension.getEndpoint(endpointName),
     };
+  }
+
+  _getSchemaLoaderExtension(
+    projectConfig: GraphQLProjectConfig,
+  ): ?GraphQLSchemaLoader {
+    if(!projectConfig.extensions || !projectConfig.extensions['schema-loader']) {
+      return;
+    }
+    const {'schema-loader': schemaLoader} = projectConfig.extensions;
+    if (typeof schemaLoader !== 'object' || Array.isArray(schemaLoader)) {
+      throw new Error("schema-loader should be an object")
+    }
+
+    if (Object.keys(schemaLoader).length === 0) {
+      return null
+    }
+
+    return new GraphQLSchemaLoaderExtension(
+      schemaLoader,
+    )
   }
 
   /**

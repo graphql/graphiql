@@ -80,6 +80,11 @@ describe('GraphQLCache', () => {
       expect(schema instanceof GraphQLSchema).to.equal(false);
     });
 
+    it('it leverages schema extension if no schema is set', async () => {
+      const schema = await cache.getSchema('testWithSchemaLoader');
+      expect(schema instanceof GraphQLSchema).to.equal(true);
+    });
+
     it('extend the schema with appropriate custom directive', async () => {
       const schema = await cache.getSchema('testWithCustomDirectives');
       expect(
@@ -188,7 +193,7 @@ describe('GraphQLCache', () => {
     const query = `type Query {
         hero(episode: Episode): Character
       }
-      
+
       type Episode {
         id: ID!
       }

@@ -24,6 +24,14 @@
     },
     "testWithoutSchema": {
     },
+    "testWithSchemaLoader": {
+      "extensions": {
+        "schema-loader": {
+          "loaderPackage": "./__tests__/fake-loader.js",
+          "loaderArgs": {}
+        }
+      }
+    },
     "testWithCustomDirectives": {
       "schemaPath": "__schema__/StarWarsSchema.graphql",
       "extensions": {
