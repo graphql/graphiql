@@ -669,7 +669,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (this._schemaMap.has(schemaCacheKey)) {
         return this._schemaMap.get(schemaCacheKey);
       }
-      console.log(schemaLoaderExtension);
       schema = await schemaLoaderExtension.getSchemaLoader().getSchema();
       this._schemaMap.set(schemaCacheKey, schema);
       return schema;
