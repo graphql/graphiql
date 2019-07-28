@@ -38,6 +38,7 @@
     <link rel="stylesheet" href="css/loading.css" />
     <link rel="stylesheet" href="css/show-hint.css" />
     <link rel="stylesheet" href="css/history.css" />
+    <link rel="stylesheet" href="css/request-options.css" />
 
     <!-- Note: this resource is not a file, it is bundled live by the test server -->
     <script src="./graphiql.js"></script>
@@ -105,15 +106,13 @@
       }
 
       // Defines a GraphQL fetcher using the fetch API.
-      function graphQLFetcher(graphQLParams) {
+      function graphQLFetcher(graphQLParams, requestOptions = {}) {
+        function body(method) {
+          return method === 'GET' ? {} : { body: JSON.stringify(graphQLParams) };
+        }
         return fetch('/graphql', {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(graphQLParams),
-          credentials: 'include',
+          ...body(requestOptions.method),
+          ...requestOptions,
         }).then(function (response) {
           return response.text();
         }).then(function (responseBody) {

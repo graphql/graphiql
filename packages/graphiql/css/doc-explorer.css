@@ -2,6 +2,7 @@
   background: white;
 }
 
+.graphiql-container .request-options-title-bar,
 .graphiql-container .doc-explorer-title-bar,
 .graphiql-container .history-title-bar {
   cursor: default;
@@ -13,6 +14,7 @@
   user-select: none;
 }
 
+.graphiql-container .request-options-title,
 .graphiql-container .doc-explorer-title,
 .graphiql-container .history-title {
   flex: 1;
@@ -55,6 +57,7 @@
   position: relative;
 }
 
+.graphiql-container .request-options-contents,
 .graphiql-container .doc-explorer-contents,
 .graphiql-container .history-contents {
   background-color: #ffffff;

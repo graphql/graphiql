@@ -22,6 +22,7 @@ import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
+import { RequestOptions } from './RequestOptions';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI from '../utility/StorageAPI';
 import getQueryFacts from '../utility/getQueryFacts';
@@ -36,6 +37,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { defaultRequestOptions } from '../utility/defaultRequestOptions';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -64,6 +66,7 @@ export class GraphiQL extends React.Component {
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
     onToggleDocs: PropTypes.func,
+    onToggleRequestOptions: PropTypes.func,
     getDefaultFieldNames: PropTypes.func,
     editorTheme: PropTypes.string,
     onToggleHistory: PropTypes.func,
@@ -111,7 +114,7 @@ export class GraphiQL extends React.Component {
             this._storage.get('operationName'),
             queryFacts && queryFacts.operations,
           );
-    
+
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
 
@@ -119,7 +122,7 @@ export class GraphiQL extends React.Component {
     if (this._storage.get('docExplorerOpen')) {
       docExplorerOpen = this.__storage.get('docExplorerOpen') === 'true';
     }
-    
+
     // Initialize state
     this.state = {
       schema: props.schema,
@@ -133,11 +136,17 @@ export class GraphiQL extends React.Component {
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
+      requestOptionsOpen:
+        this._storage.get('requestOptionsOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      requestOptions: {
+        ...defaultRequestOptions,
+        ...JSON.parse(this._storage.get('requestOptions')),
+      },
       ...queryFacts,
     };
 
@@ -253,6 +262,7 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
+    this._storage.set('requestOptionsOpen', this.state.requestOptionsOpen);
   }
 
   render() {
@@ -287,6 +297,11 @@ export class GraphiQL extends React.Component {
           title="Show History"
           label="History"
         />
+        <ToolbarButton
+          onClick={this.handleToggleRequestOptionsOpen}
+          title="Request Options"
+          label="Request Options"
+        />
       </GraphiQL.Toolbar>
     );
 
@@ -311,6 +326,12 @@ export class GraphiQL extends React.Component {
       zIndex: '7',
     };
 
+    const requestOptionsStyle = {
+      display: this.state.requestOptionsOpen ? 'block' : 'none',
+      width: '300px',
+      zIndex: '7',
+    };
+
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : null,
@@ -330,6 +351,20 @@ export class GraphiQL extends React.Component {
               {'\u2715'}
             </div>
           </QueryHistory>
+        </div>
+        <div className="requestOptionsWrap" style={requestOptionsStyle}>
+          <RequestOptions
+            onContentTypeChange={this.handleContentTypeChange}
+            onMethodChange={this.handleMethodChange}
+            handleToggleCsrfToken={this.toggleCsrfToken}
+            hasToken={this.hasToken()}
+            {...this.state.requestOptions}>
+            <div
+              className="docExplorerHide"
+              onClick={this.handleToggleRequestOptionsOpen}>
+              {'\u2715'}
+            </div>
+          </RequestOptions>
         </div>
         <div className="editorWrap">
           <div className="topBarWrap">
@@ -510,16 +545,83 @@ export class GraphiQL extends React.Component {
     return result;
   }
 
+  toggleCsrfToken = () => {
+    return this.hasToken()
+      ? this._excludeCsrfToken()
+      : this._includeCsrfToken();
+  };
+
+  hasToken = () => {
+    return Boolean(this.state.requestOptions.headers['X-CSRFToken']);
+  };
+
   // Private methods
+
+  _includeCsrfToken() {
+    this.setState(
+      state => ({
+        requestOptions: {
+          ...state.requestOptions,
+          headers: {
+            ...state.requestOptions.headers,
+            'X-CSRFToken': this._csrfToken(),
+          },
+        },
+      }),
+      () => this._saveRequestOptions(),
+    );
+  }
+
+  _excludeCsrfToken() {
+    this.setState(
+      state => {
+        const headers = { ...state.requestOptions.headers };
+        delete headers['X-CSRFToken'];
+        return {
+          requestOptions: {
+            ...state.requestOptions,
+            headers,
+          },
+        };
+      },
+      () => this._saveRequestOptions(),
+    );
+  }
+
+  _csrfToken = () => {
+    if (!document.cookie) {
+      return null;
+    }
+
+    const csrfCookies = document.cookie
+      .split(';')
+      .map(c => c.trim())
+      .filter(c => c.startsWith('csrftoken='));
+    if (csrfCookies.length === 0) {
+      return null;
+    }
+
+    return decodeURIComponent(csrfCookies[0].split('=')[1]);
+  };
+
+  _saveRequestOptions() {
+    this._storage.set(
+      'requestOptions',
+      JSON.stringify(this.state.requestOptions),
+    );
+  }
 
   _fetchSchema() {
     const fetcher = this.props.fetcher;
 
     const fetch = observableToPromise(
-      fetcher({
-        query: introspectionQuery,
-        operationName: introspectionQueryName,
-      }),
+      fetcher(
+        {
+          query: introspectionQuery,
+          operationName: introspectionQueryName,
+        },
+        this.state.requestOptions,
+      ),
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -537,10 +639,13 @@ export class GraphiQL extends React.Component {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = observableToPromise(
-          fetcher({
-            query: introspectionQuerySansSubscriptions,
-            operationName: introspectionQueryName,
-          }),
+          fetcher(
+            {
+              query: introspectionQuerySansSubscriptions,
+              operationName: introspectionQueryName,
+            },
+            this.state.requestOptions,
+          ),
         );
         if (!isPromise(fetch)) {
           throw new Error(
@@ -596,11 +701,14 @@ export class GraphiQL extends React.Component {
       throw new Error('Variables are not a JSON object.');
     }
 
-    const fetch = fetcher({
-      query,
-      variables: jsonVariables,
-      operationName,
-    });
+    const fetch = fetcher(
+      {
+        query,
+        variables: jsonVariables,
+        operationName,
+      },
+      this.state.requestOptions,
+    );
 
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
@@ -866,6 +974,13 @@ export class GraphiQL extends React.Component {
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
+  handleToggleRequestOptionsOpen = () => {
+    if (typeof this.props.onToggleRequestOptions === 'function') {
+      this.props.onToggleDocs(!this.state.requestOptionsOpen);
+    }
+    this.setState({ requestOptionsOpen: !this.state.requestOptionsOpen });
+  };
+
   handleSelectHistoryQuery = (query, variables, operationName) => {
     this.handleEditQuery(query);
     this.handleEditVariables(variables);
@@ -1018,6 +1133,35 @@ export class GraphiQL extends React.Component {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  handleContentTypeChange = (contentType: string) => {
+    this.setState(
+      state => ({
+        ...state,
+        requestOptions: {
+          ...state.requestOptions,
+          headers: {
+            ...state.requestOptions.headers,
+            'Content-Type': contentType,
+          },
+        },
+      }),
+      () => this._saveRequestOptions(),
+    );
+  };
+
+  handleMethodChange = (method: string) => {
+    this.setState(
+      state => ({
+        ...state,
+        requestOptions: {
+          ...state.requestOptions,
+          method,
+        },
+      }),
+      () => this._saveRequestOptions(),
+    );
   };
 }
 
