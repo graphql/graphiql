@@ -1,7 +1,8 @@
 {
   "lerna": "3.13.1",
   "packages": [
-    "packages/*"
+    "packages/*",
+    "packages/graphiql-examples/*"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

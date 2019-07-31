@@ -1,3 +1,3 @@
 [build]
-  command = "yarn install && yarn build && cd packages/graphiql/example && yarn install && yarn setup"
-  publish = "packages/graphiql/example"
+  command = "yarn && yarn build && lerna run setup"
+  publish = "packages/graphiql-examples/cdn"

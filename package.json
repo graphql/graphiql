@@ -2,7 +2,8 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/graphiql-examples/*"
   ],
   "options": {
     "mocha": "--full-trace --require @babel/register --require resources/mochaBootload 'packages/{*,!graphiql}/src/**/__tests__/**/*-test.js'",
