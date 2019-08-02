@@ -20,6 +20,10 @@ import { visit, VariableDefinitionNode } from "graphql";
 import { NetworkHelper } from "./network-helper";
 import { SourceHelper, GraphQLScalarTSType } from "./source-helper";
 
+type Env = {
+  [name: string]: string | undefined;
+};
+
 // TODO: remove residue of previewHtml API https://github.com/microsoft/vscode/issues/62630
 // We update the panel directly now in place of a event based update API (we might make a custom event updater and remove panel dep though)
 export class GraphQLContentProvider implements TextDocumentContentProvider {
@@ -28,6 +32,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   private networkHelper: NetworkHelper;
   private sourceHelper: SourceHelper;
   private panel: WebviewPanel;
+  private env: Env;
 
   // Event emitter which invokes document updates
   private _onDidChange = new EventEmitter<Uri>();
@@ -105,13 +110,15 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     uri: Uri,
     outputChannel: OutputChannel,
     literal: ExtractedTemplateLiteral,
-    panel: WebviewPanel
+    panel: WebviewPanel,
+    env: Env
   ) {
     this.uri = uri;
     this.outputChannel = outputChannel;
     this.networkHelper = new NetworkHelper(this.outputChannel);
     this.sourceHelper = new SourceHelper(this.outputChannel);
     this.panel = panel;
+    this.env = env;
 
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(literal.uri));
@@ -159,7 +166,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
         this.getEndpointName(endpointNames).then(endpointName => {
           const endpoint = projectConfig!.endpointsExtension!.getEndpoint(
-            endpointName
+            endpointName,
+            this.env
           );
 
           let variableDefinitionNodes: VariableDefinitionNode[] = [];

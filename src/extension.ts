@@ -154,7 +154,8 @@ export async function activate(context: ExtensionContext) {
         uri,
         outputChannel,
         literal,
-        panel
+        panel,
+        combinedEnv
       );
       const registration = workspace.registerTextDocumentContentProvider(
         "graphql",
