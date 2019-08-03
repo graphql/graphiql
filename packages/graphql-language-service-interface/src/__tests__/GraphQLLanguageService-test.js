@@ -8,8 +8,6 @@
  *  @flow
  */
 
-import { expect } from 'chai';
-import { beforeEach, describe, it } from 'mocha';
 import { join } from 'path';
 import * as fs from 'fs';
 import { buildSchema } from 'graphql';
@@ -84,9 +82,9 @@ describe('GraphQLLanguageService', () => {
       'qeury',
       './queries/testQuery.graphql',
     );
-    expect(diagnostics.length).to.equal(1);
+    expect(diagnostics.length).toEqual(1);
     const diagnostic = diagnostics[0];
-    expect(diagnostic.message).to.equal(
+    expect(diagnostic.message).toEqual(
       'Syntax Error: Unexpected Name "qeury"',
     );
   });
@@ -97,7 +95,7 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 28 },
       './queries/definitionQuery.graphql',
     );
-    expect(definitionQueryResult.definitions.length).to.equal(1);
+    expect(definitionQueryResult.definitions.length).toEqual(1);
   });
 
   it('runs hover service as expected', async () => {
@@ -106,7 +104,7 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 28 },
       './queries/definitionQuery.graphql',
     );
-    expect(hoverInformation).to.equal(
+    expect(hoverInformation).toEqual(
       'String\n\nThe `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.',
     );
   });

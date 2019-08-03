@@ -8,9 +8,7 @@
  *  @flow
  */
 
-import { expect } from 'chai';
 import { Position, Range } from 'graphql-language-service-utils';
-import { beforeEach, describe, it } from 'mocha';
 
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
@@ -67,9 +65,9 @@ describe('MessageProcessor', () => {
     const { capabilities } = await messageProcessor.handleInitializeRequest({
       rootPath: __dirname,
     });
-    expect(capabilities.definitionProvider).to.equal(true);
-    expect(capabilities.completionProvider.resolveProvider).to.equal(true);
-    expect(capabilities.textDocumentSync).to.equal(1);
+    expect(capabilities.definitionProvider).toEqual(true);
+    expect(capabilities.completionProvider.resolveProvider).toEqual(true);
+    expect(capabilities.textDocumentSync).toEqual(1);
   });
 
   it('runs completion requests properly', async () => {
@@ -90,7 +88,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleCompletionRequest(test);
-    expect(result).to.deep.equal({
+    expect(result).toEqual({
       items: [{ label: `${query} at ${uri}` }],
       isIncomplete: false,
     });
@@ -126,7 +124,7 @@ describe('MessageProcessor', () => {
       ],
     });
     // Query fixed, no more errors
-    expect(result.diagnostics.length).to.equal(0);
+    expect(result.diagnostics.length).toEqual(0);
   });
 
   it('properly removes from the file cache with the didClose handler', async () => {
@@ -138,7 +136,7 @@ describe('MessageProcessor', () => {
     // Should throw because file has been deleted from cache
     return messageProcessor
       .handleCompletionRequest(params)
-      .then(result => expect(result).to.equal(null))
+      .then(result => expect(result).toEqual(null))
       .catch(error => {});
   });
 
@@ -169,7 +167,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    expect(result[0].uri).to.equal(`file://${queryDir}/testFragment.graphql`);
+    expect(result[0].uri).toEqual(`file://${queryDir}/testFragment.graphql`);
   });
 
   it('loads configs without projects when watchman is present', async () => {
@@ -220,7 +218,7 @@ query Test {
 export function Example(arg: string) {}`;
 
     const contents = getQueryAndRange(text, 'test.js');
-    expect(contents[0].query).to.equal(`
+    expect(contents[0].query).toEqual(`
 query Test {
   test {
     value
@@ -250,6 +248,6 @@ query Test {
 export function Example(arg: string) {}`;
 
     const contents = getQueryAndRange(text, 'test.js');
-    expect(contents.length).to.equal(0);
+    expect(contents.length).toEqual(0);
   });
 });

@@ -7,8 +7,17 @@
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
+require('@babel/register', {
+  rootMode: 'upward',
+});
 
+<<<<<<< HEAD:resources/mochaBootload.js
 require('@babel/polyfill');
+=======
+require('@babel/polyfill', {
+  rootMode: 'upward',
+});
+>>>>>>> Convert GLS tests to jest, migrate graphiql tests from chai expect to jest expect:packages/codemirror-graphql/resources/mochaBootload.js
 
 const JSDOM = require('jsdom').JSDOM;
 

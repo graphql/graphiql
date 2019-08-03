@@ -10,8 +10,6 @@
 
 import type { Hover } from 'vscode-languageserver-types';
 
-import { expect } from 'chai';
-import { beforeEach, describe, it } from 'mocha';
 import fs from 'fs';
 import { buildSchema } from 'graphql';
 import { Position } from 'graphql-language-service-utils';
@@ -38,7 +36,7 @@ describe('getHoverInformation', () => {
       'query { thing { testField } }',
       new Position(0, 20),
     );
-    expect(actual).to.deep.equal(
+    expect(actual).toEqual(
       'TestType.testField: String\n\n This is field documentation for TestType.testField',
     );
   });
@@ -48,7 +46,7 @@ describe('getHoverInformation', () => {
       'query { thing { other: testField } }',
       new Position(0, 25),
     );
-    expect(actual).to.deep.equal(
+    expect(actual).toEqual(
       'TestType.testField: String\n\n This is field documentation for TestType.testField',
     );
   });
@@ -58,7 +56,7 @@ describe('getHoverInformation', () => {
       'query { thing { testField } }',
       new Position(0, 10),
     );
-    expect(actual).to.deep.equal(
+    expect(actual).toEqual(
       'Query.thing: TestType\n\n This is field documentation for Query.thing',
     );
   });
@@ -68,7 +66,7 @@ describe('getHoverInformation', () => {
       'query { listOfThing { testField } }',
       new Position(0, 10),
     );
-    expect(actual).to.deep.equal('Query.listOfThing: [TestType!]');
+    expect(actual).toEqual('Query.listOfThing: [TestType!]');
   });
 
   it('provides deprecated field information', () => {
@@ -76,7 +74,7 @@ describe('getHoverInformation', () => {
       'query { thing { testDeprecatedField } }',
       new Position(0, 20),
     );
-    expect(actual).to.deep.equal(
+    expect(actual).toEqual(
       'TestType.testDeprecatedField: Float\n\nDeprecated: deprecation reason',
     );
   });
@@ -86,12 +84,12 @@ describe('getHoverInformation', () => {
       'query { thing { testEnumField } }',
       new Position(0, 20),
     );
-    expect(actual).to.deep.equal('TestType.testEnumField: Color');
+    expect(actual).toEqual('TestType.testEnumField: Color');
   });
 
   it('provides scalar field information', () => {
     const actual = testHover('query { cluck }', new Position(0, 10));
-    expect(actual).to.deep.equal('Query.cluck: Chicken');
+    expect(actual).toEqual('Query.cluck: Chicken');
   });
 
   it('provides parameter type information', () => {
@@ -99,7 +97,7 @@ describe('getHoverInformation', () => {
       'query { parameterizedField(id: "foo") { testField } }',
       new Position(0, 28),
     );
-    expect(actual).to.deep.equal('Query.parameterizedField(id: String!)');
+    expect(actual).toEqual('Query.parameterizedField(id: String!)');
   });
 
   it('provides directive information', () => {
@@ -107,13 +105,13 @@ describe('getHoverInformation', () => {
       'query { thing { testField @skip(if:true) } }',
       new Position(0, 30),
     );
-    expect(actual).to.deep.equal(
+    expect(actual).toEqual(
       '@skip\n\nDirects the executor to skip this field or fragment when the `if` argument is true.',
     );
   });
 
   it('provides union information', () => {
     const actual = testHover('query { unionField }', new Position(0, 12));
-    expect(actual).to.deep.equal('Query.unionField: UnionType');
+    expect(actual).toEqual('Query.unionField: UnionType');
   });
 });

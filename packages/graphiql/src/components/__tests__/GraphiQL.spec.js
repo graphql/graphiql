@@ -4,7 +4,6 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { expect } from 'chai';
 import React from 'react';
 import { mount } from 'enzyme';
 
@@ -65,7 +64,7 @@ describe('GraphiQL', () => {
   });
 
   it('should construct correctly with fetcher', () => {
-    expect(() => mount(<GraphiQL fetcher={noOpFetcher} />)).to.not.throw();
+    expect(() => mount(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
   });
 
   it('should refetch schema with new fetcher', async () => {
@@ -83,46 +82,46 @@ describe('GraphiQL', () => {
 
     // Initial render calls fetcher
     const instance = mount(<GraphiQL fetcher={firstFetcher} />);
-    expect(firstCalled).to.equal(true);
+    expect(firstCalled).toEqual(true);
 
     await wait();
 
     // Re-render does not call fetcher again
     firstCalled = false;
     instance.setProps({ fetcher: firstFetcher });
-    expect(firstCalled).to.equal(false);
+    expect(firstCalled).toEqual(false);
 
     await wait();
 
     // Re-render with new fetcher is called.
     instance.setProps({ fetcher: secondFetcher });
-    expect(secondCalled).to.equal(true);
+    expect(secondCalled).toEqual(true);
   });
 
   it('should not throw error if schema missing and query provided', () => {
     expect(() =>
       mount(<GraphiQL fetcher={noOpFetcher} query="{}" />),
-    ).to.not.throw();
+    ).not.toThrow();
   });
 
   it('defaults to the built-in default query', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state().query).to.include('# Welcome to GraphiQL');
+    expect(graphiQL.state().query).toContain('# Welcome to GraphiQL');
   });
 
   it('accepts a custom default query', () => {
     const graphiQL = mount(
       <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
-    expect(graphiQL.state().query).to.equal('GraphQL Party!!');
+    expect(graphiQL.state().query).toEqual('GraphQL Party!!');
   });
   it('accepts a docExplorerOpen prop', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} docExplorerOpen />);
-    expect(graphiQL.state().docExplorerOpen).to.equal(true);
+    expect(graphiQL.state().docExplorerOpen).toEqual(true);
   });
   it('defaults to closed docExplorer', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state().docExplorerOpen).to.equal(false);
+    expect(graphiQL.state().docExplorerOpen).toEqual(false);
   });
 
   it('accepts a defaultVariableEditorOpen param', () => {

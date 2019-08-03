@@ -1,0 +1,26 @@
+const path = require('path');
+
+module.exports = {
+  verbose: true,
+  clearMocks: true,
+  collectCoverage: true,
+  setupFiles: [
+    path.join(__dirname, '/resources/enzyme.config.js')
+  ],
+  testMatch: ['<rootDir>/src/**/*-test.js', '<rootDir>/src/**/*.spec.js'],
+  transform: {
+    '^.+\\.jsx?$': require.resolve('./resources/jestBabelTransform'),
+  },
+  testEnvironment: require.resolve('jest-environment-jsdom-global'),
+  testPathIgnorePatterns: [
+    '\\\\node_modules\\\\',
+    'dist',
+  ],
+  collectCoverageFrom: [
+    '**/src/**/*.{js,jsx}',
+    '!**/node_modules/**',
+    '!**/__tests__/**',
+    '!**/resources/**',
+    '!packages/codemirrir-graphql/**'
+  ],
+};

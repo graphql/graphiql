@@ -1,0 +1,24 @@
+codecov:
+  notify:
+    require_ci_to_pass: no
+
+coverage:
+  precision: 2
+  round: down
+  range: "30...100"
+
+  status:
+    project: yes
+    patch: yes
+    changes: no
+
+flags:
+  graphiql:
+    paths:
+      - packages/graphiql/
+  graphql-language-service-interface:
+    paths:
+      - packages/graphql-language-service-interface/
+  graphql-language-service-utils:
+    paths:
+      - packages/graphql-language-service-utils/

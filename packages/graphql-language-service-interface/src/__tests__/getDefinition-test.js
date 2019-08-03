@@ -8,8 +8,6 @@
  *  @flow
  */
 
-import { expect } from 'chai';
-
 import { parse } from 'graphql';
 import {
   getDefinitionQueryResultForFragmentSpread,
@@ -45,9 +43,9 @@ describe('getDefinition', () => {
           },
         ],
       );
-      expect(result.definitions.length).to.equal(1);
-      expect(result.definitions[0].position.line).to.equal(1);
-      expect(result.definitions[0].position.character).to.equal(32);
+      expect(result.definitions.length).toEqual(1);
+      expect(result.definitions[0].position.line).toEqual(1);
+      expect(result.definitions[0].position.character).toEqual(32);
     });
   });
 
@@ -74,9 +72,9 @@ describe('getDefinition', () => {
           },
         ],
       );
-      expect(result.definitions.length).to.equal(1);
-      expect(result.definitions[0].position.line).to.equal(1);
-      expect(result.definitions[0].position.character).to.equal(6);
+      expect(result.definitions.length).toEqual(1);
+      expect(result.definitions[0].position.line).toEqual(1);
+      expect(result.definitions[0].position.character).toEqual(6);
     });
   });
 });
