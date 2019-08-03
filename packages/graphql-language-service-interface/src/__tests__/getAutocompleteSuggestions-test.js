@@ -50,6 +50,26 @@ describe('getAutocompleteSuggestions', () => {
       });
   }
 
+  it('provides correct sortText response', () => {
+    const result = getAutocompleteSuggestions(schema, `{ h`, new Position(0, 3))
+      .map(({sortText, label, detail}) => ({sortText, label, detail}))
+    expect(result).to.deep.equal([{
+      sortText: '0hero',
+      label: 'hero',
+      detail: 'Character',
+    },
+    {
+      sortText: '1human',
+      label: 'human',
+      detail: 'Human',
+    },
+    {
+      sortText: '6__schema',
+      label: '__schema',
+      detail: '__Schema!',
+    }]);
+  });
+
   it('provides correct initial keywords', () => {
     expect(testSuggestions('', new Position(0, 0))).to.deep.equal([
       { label: '{' },

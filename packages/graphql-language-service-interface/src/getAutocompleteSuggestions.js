@@ -182,7 +182,9 @@ function getSuggestionsForFieldNames(
     }
     return hintList(
       token,
-      fields.map(field => ({
+      fields.map((field, index) => ({
+        // This will sort the fields in the same order they are listed in the schema
+        sortText: String(index) + field.name,
         label: field.name,
         detail: String(field.type),
         documentation: field.description,
