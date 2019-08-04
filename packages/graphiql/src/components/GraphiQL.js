@@ -116,8 +116,8 @@ export class GraphiQL extends React.Component {
     let docExplorerOpen = props.docExplorerOpen || false;
 
     // but then local storage state overrides it
-    if (this._storage && this._storage.get('docExplorerOpen')) {
-      docExplorerOpen = this.__storage.get('docExplorerOpen') === 'true';
+    if (this._storage.get('docExplorerOpen')) {
+      docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
     }
 
     // Initialize state
@@ -225,7 +225,10 @@ export class GraphiQL extends React.Component {
       },
       () => {
         if (this.state.schema === undefined) {
-          this.docExplorerComponent.reset();
+          if (this.docExplorerComponent) {
+            this.docExplorerComponent.reset();
+          }
+
           this._fetchSchema();
         }
       },
@@ -298,7 +301,7 @@ export class GraphiQL extends React.Component {
     };
 
     const docWrapStyle = {
-      display: this.state.docExplorerOpen ? 'block' : 'none',
+      display: 'block',
       width: this.state.docExplorerWidth,
     };
     const docExplorerWrapClasses =
@@ -417,22 +420,24 @@ export class GraphiQL extends React.Component {
             </div>
           </div>
         </div>
-        <div className={docExplorerWrapClasses} style={docWrapStyle}>
-          <div
-            className="docExplorerResizer"
-            onDoubleClick={this.handleDocsResetResize}
-            onMouseDown={this.handleDocsResizeStart}
-          />
-          <DocExplorer
-            ref={c => {
-              this.docExplorerComponent = c;
-            }}
-            schema={this.state.schema}>
-            <div className="docExplorerHide" onClick={this.handleToggleDocs}>
-              {'\u2715'}
-            </div>
-          </DocExplorer>
-        </div>
+        {this.state.docExplorerOpen && (
+          <div className={docExplorerWrapClasses} style={docWrapStyle}>
+            <div
+              className="docExplorerResizer"
+              onDoubleClick={this.handleDocsResetResize}
+              onMouseDown={this.handleDocsResizeStart}
+            />
+            <DocExplorer
+              ref={c => {
+                this.docExplorerComponent = c;
+              }}
+              schema={this.state.schema}>
+              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+                {'\u2715'}
+              </div>
+            </DocExplorer>
+          </div>
+        )}
       </div>
     );
   }

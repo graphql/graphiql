@@ -116,4 +116,12 @@ describe('GraphiQL', () => {
     );
     expect(graphiQL.state().query).to.equal('GraphQL Party!!');
   });
+  it('accepts a docExplorerOpen prop', () => {
+    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} docExplorerOpen />);
+    expect(graphiQL.state().docExplorerOpen).to.equal(true);
+  });
+  it('defaults to closed docExplorer', () => {
+    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
+    expect(graphiQL.state().docExplorerOpen).to.equal(false);
+  });
 });
