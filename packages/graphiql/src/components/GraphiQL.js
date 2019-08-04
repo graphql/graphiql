@@ -116,7 +116,7 @@ export class GraphiQL extends React.Component {
     let docExplorerOpen = props.docExplorerOpen || false;
 
     // but then local storage state overrides it
-    if (this._storage.get('docExplorerOpen')) {
+    if (this._storage && this._storage.get('docExplorerOpen')) {
       docExplorerOpen = this.__storage.get('docExplorerOpen') === 'true';
     }
 
