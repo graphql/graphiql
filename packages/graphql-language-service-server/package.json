@@ -1,0 +1,45 @@
+{
+  "name": "graphql-language-service-server",
+  "version": "2.0.1",
+  "description": "Server process backing the GraphQL Language Service",
+  "contributors": [
+    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service-server",
+  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service-server#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "graphql"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
+    "build": "yarn run build-js && yarn run build-flow",
+    "build-js": "node ../../resources/buildJs.js",
+    "build-flow": "node ../../resources/buildFlow.js",
+    "prepublish": "node ../../resources/prepublish.js"
+  },
+  "peerDependencies": {
+    "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.4.5",
+    "fb-watchman": "^2.0.0",
+    "glob": "^7.1.2",
+    "graphql-config": "2.2.1",
+    "graphql-language-service-interface": "^2.0.1",
+    "graphql-language-service-types": "^2.0.1",
+    "graphql-language-service-utils": "^2.0.1",
+    "nullthrows": "^1.0.0",
+    "vscode-jsonrpc": "^3.3.0",
+    "vscode-languageserver": "^3.3.0"
+  }
+}

@@ -1,0 +1,5 @@
+packages/graphiql/test/vendor
+!.eslintrc.js
+**/node_modules/**
+**/flow-typed/**
+**/dist/**
