@@ -90,6 +90,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
+- `defaultVariableEditorOpen`: an optional boolean that sets whether or not to show the variables pane on startup. If not defined, it will be based off whether or not variables are present.
+
 - `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
 
 - `onEditVariables`: an optional function which will be called when the Query variable editor changes. The argument to the function will be the variables string.
