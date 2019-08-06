@@ -59,11 +59,11 @@ export class GraphiQL extends React.Component {
       removeItem: PropTypes.func,
     }),
     defaultQuery: PropTypes.string,
+    defaultVariableEditorOpen: PropTypes.bool,
     onCopyQuery: PropTypes.func,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
     onEditOperationName: PropTypes.func,
-    variableEditorOpen: PropTypes.bool,
     onToggleDocs: PropTypes.func,
     getDefaultFieldNames: PropTypes.func,
     editorTheme: PropTypes.string,
@@ -120,6 +120,9 @@ export class GraphiQL extends React.Component {
     if (this._storage.get('docExplorerOpen')) {
       docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
     }
+
+    // initial variable editor pane open
+    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
 
     // Initialize state
     this.state = {
