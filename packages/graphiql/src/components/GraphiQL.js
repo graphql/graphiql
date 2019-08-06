@@ -318,10 +318,7 @@ export class GraphiQL extends React.Component {
       zIndex: '7',
     };
 
-    // Override show/hide of variables editor based on prop
-    const variableOpen = this.props.variableEditorOpen !== undefined
-    ? this.props.variableEditorOpen
-    : this.state.variableEditorOpen;
+    const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : null,
     };
