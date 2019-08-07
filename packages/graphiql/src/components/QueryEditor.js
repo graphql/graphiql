@@ -193,10 +193,12 @@ export class QueryEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
-    this.editor.off('hasCompletion', this._onHasCompletion);
-    this.editor = null;
+    if (this.editor) {
+      this.editor.off('change', this._onEdit);
+      this.editor.off('keyup', this._onKeyUp);
+      this.editor.off('hasCompletion', this._onHasCompletion);
+      this.editor = null;  
+    }
   }
 
   render() {
