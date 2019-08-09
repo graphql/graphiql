@@ -105,6 +105,62 @@ describe('GraphQLCache', () => {
     });
   });
 
+  describe('handleWatchmanSubscribeEvent', () => {
+    it('handles invalidating the schema cache', async () => {
+      const projectConfig = graphQLRC.getProjectConfig('testWithSchema');
+      await cache.getSchema('testWithSchema');
+      expect(cache._schemaMap.size).to.equal(1);
+      const handler = cache.handleWatchmanSubscribeEvent(__dirname, projectConfig);
+      const testResult = {
+        root: __dirname,
+        subscription: '',
+        files: [{
+          name: '__schema__/StarWarsSchema.graphql',
+          exists: true,
+          size: 5,
+          is_fresh_instance: true,
+          mtime: Date.now()
+        }]
+      }
+      handler(testResult);
+      expect(cache._schemaMap.size).to.equal(0);
+    });
+
+    it('handles invalidating the endpoint cache', async () => {
+      const projectConfig = graphQLRC.getProjectConfig('testWithEndpointAndSchema');
+      const introspectionResult = await graphQLRC
+        .getProjectConfig('testWithSchema')
+        .resolveIntrospection();
+
+      fetchMock.mock({
+        matcher: '*',
+        response: {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: introspectionResult,
+        },
+      });
+
+      await cache.getSchema('testWithEndpointAndSchema');
+      expect(cache._schemaMap.size).to.equal(1);
+      const handler = cache.handleWatchmanSubscribeEvent(__dirname, projectConfig);
+      const testResult = {
+        root: __dirname,
+        subscription: '',
+        files: [{
+          name: '__schema__/StarWarsSchema.graphql',
+          exists: true,
+          size: 5,
+          is_fresh_instance: true,
+          mtime: Date.now()
+        }]
+      }
+      handler(testResult);
+      expect(cache._schemaMap.size).to.equal(0);
+    });
+  });
+
   describe('getFragmentDependencies', () => {
     const duckContent = `fragment Duck on Duck {
       cuack

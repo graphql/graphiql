@@ -303,15 +303,19 @@ export class GraphQLCache implements GraphQLCacheInterface {
   ) => (result: Object) => {
     if (result.files && result.files.length > 0) {
       const graphQLFileMap = this._graphQLFileListCache.get(rootDir);
-      if (!graphQLFileMap) {
-        return;
-      }
       result.files.forEach(async ({ name, exists, size, mtime }) => {
+        const filePath = path.join(result.root, result.subscription, name);
+        if (projectConfig.schemaPath && filePath === projectConfig.schemaPath) {
+          this._invalidateSchemaCacheForProject(projectConfig);
+        }
+
+        if (!graphQLFileMap) {
+          return;
+        }
         // Prune the file using the input/excluded directories
         if (!projectConfig.includesFile(name)) {
           return;
         }
-        const filePath = path.join(result.root, result.subscription, name);
 
         // In the event of watchman recrawl (is_fresh_instance),
         // watchman subscription returns a full set of files within the
@@ -655,17 +659,17 @@ export class GraphQLCache implements GraphQLCacheInterface {
       return null;
     }
 
-    const projectName = appName || 'undefinedName';
     const schemaPath = projectConfig.schemaPath;
     const endpointInfo = this._getDefaultEndpoint(projectConfig);
+    const {endpointKey, schemaKey} = this._getSchemaCacheKeysForProject(projectConfig);
 
     let schemaCacheKey = null;
     let schema = null;
 
-    if (endpointInfo) {
-      const { endpoint, endpointName } = endpointInfo;
+    if (endpointInfo && endpointKey) {
+      const { endpoint } = endpointInfo;
 
-      schemaCacheKey = `${endpointName}:${projectName}`;
+      schemaCacheKey = endpointKey;
 
       // Maybe use cache
       if (this._schemaMap.has(schemaCacheKey)) {
@@ -683,8 +687,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
       }
     }
 
-    if (!schema && schemaPath) {
-      schemaCacheKey = `${schemaPath}:${projectName}`;
+    if (!schema && schemaPath && schemaKey) {
+      schemaCacheKey = schemaKey;
 
       // Maybe use cache
       if (this._schemaMap.has(schemaCacheKey)) {
@@ -723,6 +727,25 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
     return schema;
   };
+
+  _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
+    const {endpointKey, schemaKey} = this._getSchemaCacheKeysForProject(projectConfig);
+    endpointKey && this._schemaMap.delete(endpointKey);
+    schemaKey && this._schemaMap.delete(schemaKey);
+  }
+
+  _getSchemaCacheKeysForProject(projectConfig: GraphQLProjectConfig) {
+    const endpointInfo = this._getDefaultEndpoint(projectConfig);
+    const projectName = this._getProjectName(projectConfig);
+    return {
+      endpointKey: endpointInfo ? `${endpointInfo.endpointName}:${projectName}` : null,
+      schemaKey: projectConfig.schemaPath ? `${projectConfig.schemaPath}:${projectName}` : null,
+    }
+  }
+
+  _getProjectName(projectConfig: GraphQLProjectConfig) {
+    return projectConfig || 'undefinedName';
+  }
 
   _getDefaultEndpoint(
     projectConfig: GraphQLProjectConfig,
