@@ -109,7 +109,12 @@ function getToken(
 
   // If there's no matching token, skip ahead.
   if (!token) {
-    stream.match(/\S+/);
+    const matchedSomething = stream.match(/\S+/);
+    if (!matchedSomething) {
+      // We need to eat at least one character, and we couldn't match any
+      // non-whitespace, so it must be exotic whitespace.
+      stream.match(/\s/);
+    }
     pushRule(SpecialParseRules, state, 'Invalid');
     return 'invalidchar';
   }
