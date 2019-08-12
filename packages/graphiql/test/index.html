@@ -41,6 +41,10 @@
 
     <!-- Note: this resource is not a file, it is bundled live by the test server -->
     <script src="./graphiql.js"></script>
+
+    <!-- We use these files for testing subscriptions -->
+    <script src="//unpkg.com/subscriptions-transport-ws@0.5.4/browser/client.js"></script>
+    <script src="//unpkg.com/graphiql-subscriptions-fetcher@0.0.2/browser/client.js"></script>
   </head>
   <body>
     <div id="graphiql">Loading...</div>
@@ -105,15 +109,16 @@
       }
 
       // Defines a GraphQL fetcher using the fetch API.
+      const graphQLEndpoint = window.location.protocol + '//' + window.location.host + '/graphql';
       function graphQLFetcher(graphQLParams) {
-        return fetch('/graphql', {
+        return fetch(graphQLEndpoint, {
           method: 'post',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(graphQLParams),
-          credentials: 'include',
+          credentials: 'same-origin',
         }).then(function (response) {
           return response.text();
         }).then(function (responseBody) {
@@ -124,11 +129,24 @@
           }
         });
       }
+      const subscriptionsEndpoint = graphQLEndpoint.replace(/^http/, "ws");
+      const subscriptionsClient =
+        new window.SubscriptionsTransportWs.SubscriptionClient(
+          subscriptionsEndpoint,
+          {
+            reconnect: true
+          }
+        );
+      const graphQLFetcherWithSubscriptions = 
+        window.GraphiQLSubscriptionsFetcher.graphQLFetcher(
+          subscriptionsClient,
+          graphQLFetcher
+        );
 
       // Render <GraphiQL /> into the body.
       ReactDOM.render(
         React.createElement(GraphiQL, {
-          fetcher: graphQLFetcher,
+          fetcher: graphQLFetcherWithSubscriptions,
           query: parameters.query,
           variables: parameters.variables,
           operationName: parameters.operationName,
