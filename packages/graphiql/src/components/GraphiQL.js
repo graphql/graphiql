@@ -1073,16 +1073,18 @@ GraphiQL.formatResult = function(result) {
   return JSON.stringify(result, null, 2);
 };
 
-GraphiQL.formatError = function(error) {
-  const formattedError = JSON.stringify(error, null, 2);
-  if (formattedError === '{}' && error.message) {
-    return JSON.stringify(
-      { message: error.message, stack: error.stack },
-      null,
-      2,
-    );
-  }
-  return formattedError;
+const formatSingleError = error => ({
+  ...error,
+  // Raise these details even if they're non-enumerable
+  message: error.message,
+  stack: error.stack,
+});
+
+GraphiQL.formatError = function(rawError) {
+  const result = Array.isArray(rawError)
+    ? rawError.map(formatSingleError)
+    : formatSingleError(rawError);
+  return JSON.stringify(result, null, 2);
 };
 
 const defaultQuery = `# Welcome to GraphiQL
