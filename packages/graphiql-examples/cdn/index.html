@@ -65,7 +65,7 @@
         }
       });
 
-      // if variables was provided, try to format it.
+      // If variables was provided, try to format it.
       if (parameters.variables) {
         try {
           parameters.variables =
@@ -77,7 +77,7 @@
       }
 
       // When the query and variables string is edited, update the URL bar so
-      // that it can be easily shared
+      // that it can be easily shared.
       function onEditQuery(newQuery) {
         parameters.query = newQuery;
         updateURL();
