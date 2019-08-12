@@ -579,7 +579,7 @@ export class GraphiQL extends React.Component {
       .catch(error => {
         this.setState({
           schema: null,
-          response: error && String(error.stack || error),
+          response: error ? GraphiQL.formatError(error) : null,
         });
       });
   }
@@ -611,7 +611,7 @@ export class GraphiQL extends React.Component {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error && String(error.stack || error),
+          response: error ? GraphiQL.formatError(error) : null,
         });
       });
     } else if (isObservable(fetch)) {
@@ -623,7 +623,7 @@ export class GraphiQL extends React.Component {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error && String(error.stack || error),
+            response: error ? GraphiQL.formatError(error) : null,
             subscription: null,
           });
         },
@@ -1071,6 +1071,18 @@ GraphiQL.Footer = function GraphiQLFooter(props) {
 
 GraphiQL.formatResult = function(result) {
   return JSON.stringify(result, null, 2);
+};
+
+GraphiQL.formatError = function(error) {
+  const formattedError = JSON.stringify(error, null, 2);
+  if (formattedError === '{}' && error.message) {
+    return JSON.stringify(
+      { message: error.message, stack: error.stack },
+      null,
+      2,
+    );
+  }
+  return formattedError;
 };
 
 const defaultQuery = `# Welcome to GraphiQL
