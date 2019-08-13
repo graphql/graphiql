@@ -8,6 +8,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import commonKeys from '../utility/commonKeys';
 
 /**
  * ResultViewer
@@ -86,19 +87,7 @@ export class ResultViewer extends React.Component {
       },
       gutters: ['CodeMirror-foldgutter'],
       info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
-      extraKeys: {
-        // Persistent search box in Query Editor
-        'Cmd-F': 'findPersistent',
-        'Ctrl-F': 'findPersistent',
-        'Cmd-G': 'findPersistent',
-        'Ctrl-G': 'findPersistent',
-
-        // Editor improvements
-        'Ctrl-Left': 'goSubwordLeft',
-        'Ctrl-Right': 'goSubwordRight',
-        'Alt-Left': 'goGroupLeft',
-        'Alt-Right': 'goGroupRight',
-      },
+      extraKeys: commonKeys,
     });
   }
 
