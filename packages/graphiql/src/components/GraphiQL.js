@@ -59,6 +59,7 @@ export class GraphiQL extends React.Component {
       removeItem: PropTypes.func,
     }),
     defaultQuery: PropTypes.string,
+    defaultVariableEditorOpen: PropTypes.bool,
     onCopyQuery: PropTypes.func,
     onEditQuery: PropTypes.func,
     onEditVariables: PropTypes.func,
@@ -120,6 +121,9 @@ export class GraphiQL extends React.Component {
       docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
     }
 
+    // initial variable editor pane open
+    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+
     // Initialize state
     this.state = {
       schema: props.schema,
@@ -129,7 +133,7 @@ export class GraphiQL extends React.Component {
       docExplorerOpen,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      variableEditorOpen: Boolean(variables),
+      variableEditorOpen,
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,

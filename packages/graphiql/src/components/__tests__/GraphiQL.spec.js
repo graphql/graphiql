@@ -124,4 +124,16 @@ describe('GraphiQL', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
     expect(graphiQL.state().docExplorerOpen).to.equal(false);
   });
+
+  it('accepts a defaultVariableEditorOpen param', () => {
+    let graphiQL = mount(<GraphiQL fetcher={noOpFetcher}/>);
+    expect(graphiQL.state().variableEditorOpen).to.equal(false);
+    expect(graphiQL.state().defaultVariableEditorOpen).to.equal(undefined);
+
+    graphiQL = mount(<GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />);
+    expect(graphiQL.state().variableEditorOpen).to.equal(true);
+
+    graphiQL = mount(<GraphiQL fetcher={noOpFetcher} variables="{test: 'value'}" defaultVariableEditorOpen={false} />);
+    expect(graphiQL.state().variableEditorOpen).to.equal(false);
+  });
 });
