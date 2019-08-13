@@ -1,7 +1,8 @@
+const isMacOs = window.navigator.platform === 'MacIntel';
+
 const commonKeys = {
   // Persistent search box in Query Editor
-  'Cmd-F': 'findPersistent',
-  'Ctrl-F': 'findPersistent',
+  [isMacOs ? 'Cmd-F' : 'Ctrl-F']: 'findPersistent',
   'Cmd-G': 'findPersistent',
   'Ctrl-G': 'findPersistent',
 
