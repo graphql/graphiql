@@ -11,6 +11,7 @@ import { GraphQLSchema } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
+import commonKeys from '../utility/commonKeys';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -148,17 +149,7 @@ export class QueryEditor extends React.Component {
           }
         },
 
-        // Persistent search box in Query Editor
-        'Cmd-F': 'findPersistent',
-        'Ctrl-F': 'findPersistent',
-        'Cmd-G': 'findPersistent',
-        'Ctrl-G': 'findPersistent',
-
-        // Editor improvements
-        'Ctrl-Left': 'goSubwordLeft',
-        'Ctrl-Right': 'goSubwordRight',
-        'Alt-Left': 'goGroupLeft',
-        'Alt-Right': 'goGroupRight',
+        ...commonKeys,
       },
     });
 
@@ -197,7 +188,7 @@ export class QueryEditor extends React.Component {
       this.editor.off('change', this._onEdit);
       this.editor.off('keyup', this._onKeyUp);
       this.editor.off('hasCompletion', this._onHasCompletion);
-      this.editor = null;  
+      this.editor = null;
     }
   }
 
