@@ -210,9 +210,9 @@
 }
 
 /* No `.graphiql-container` here so themes can overwrite */
-.result-window .CodeMirror {
+/* .result-window .CodeMirror {
   background: #f6f7f8;
-}
+} */
 
 .graphiql-container .result-window .CodeMirror-gutters {
   background-color: #eeeeee;
