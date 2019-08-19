@@ -3,7 +3,12 @@
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent",
-  "publish": {
-    "distTag": "next"
+  "command": {
+    "publish": {
+      "distTag": "next"
+    },
+    "version": {
+      "allowBranch": ["master"]
+    }
   }
 }
