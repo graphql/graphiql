@@ -2,5 +2,8 @@
   "packages": ["packages/*", "packages/graphiql-examples/*"],
   "npmClient": "yarn",
   "useWorkspaces": true,
-  "version": "independent"
+  "version": "independent",
+  "publish": {
+    "distTag": "next"
+  }
 }
