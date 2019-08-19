@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Takes package@next and promotes it to package@latest for each package we manage.
 function next2latest {
   V=$(npm info $1 dist-tags.next | xargs)
