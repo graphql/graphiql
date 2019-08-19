@@ -1,4 +1,8 @@
-const isMacOs = window.navigator.platform === 'MacIntel';
+let isMacOs = false
+
+if (typeof window === Object) {
+ isMacOs = window.navigator.platform === 'MacIntel';
+}
 
 const commonKeys = {
   // Persistent search box in Query Editor
