@@ -1,6 +1,6 @@
 let isMacOs = false
 
-if (typeof window === Object) {
+if (typeof window === 'object') {
  isMacOs = window.navigator.platform === 'MacIntel';
 }
 
