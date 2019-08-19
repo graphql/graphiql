@@ -87,6 +87,7 @@ describe('GraphQLCache', () => {
       ).to.deep.equal({
         args: [],
         description: undefined,
+        isRepeatable: false,
         locations: ['FIELD'],
         name: 'customDirective',
       });
@@ -99,6 +100,7 @@ describe('GraphQLCache', () => {
       ).to.deep.equal({
         args: [],
         description: undefined,
+        isRepeatable: false,
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });
