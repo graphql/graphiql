@@ -8,7 +8,8 @@
       "distTag": "next"
     },
     "version": {
-      "allowBranch": ["master"]
+      "allowBranch": ["master"],
+      "message": "chore(release): publish %s"
     }
   }
 }
