@@ -21,6 +21,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
 
+### How To Setup/Implement GraphiQL
+The [GraphiQL Readme](packages/graphiql#readme) explains some of the ways to implement GraphiQL, and we also have the [examples](packages/graphiql-examples) directory as well!
 
 ## [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme)
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
