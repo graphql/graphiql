@@ -24,8 +24,8 @@ Ref: [lerna version](https://github.com/lerna/lerna/tree/master/commands/version
 
 ## Step 2: publish to npm
 
-We always publish to the `next` tag on npm (i.e. to install you'd do
-`npm install graphiql@next`) so we can test releases in-situ before making
+We always publish to the `rc` tag on npm (i.e. to install you'd do
+`npm install graphiql@rc`) so we can test releases in-situ before making
 them official. This is handled automatically (via `lerna.json`'s
 `publish.distTag` setting).
 
@@ -41,15 +41,15 @@ Ref: [lerna publish](https://github.com/lerna/lerna/tree/master/commands/publish
 
 This step left as an exercise for the reader ;)
 
-(Pull down the latest `graphiql@next` or related package into your
+(Pull down the latest `graphiql@rc` or related package into your
 application and test everything worked as expected.)
 
 ## Step 4: promote the release to official
 
-Since we release to the `@next` tag; when we're ready we need to promote the
+Since we release to the `@rc` tag; when we're ready we need to promote the
 releases to `@latest`; you can do so with the handly script:
 
-1. `./next2latest` (you will be asked for your OTP)
+1. `./rc2latest` (you will be asked for your OTP)
 2. If this fails part way through for 2FA/OTP reasons, just run step 1 again
 
 ## Well done!

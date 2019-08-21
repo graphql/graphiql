@@ -5,7 +5,7 @@
   "version": "independent",
   "command": {
     "publish": {
-      "distTag": "next"
+      "distTag": "rc"
     },
     "version": {
       "allowBranch": ["master"],
