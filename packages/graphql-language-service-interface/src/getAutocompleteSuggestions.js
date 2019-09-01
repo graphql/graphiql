@@ -54,7 +54,7 @@ export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
-  contextToken?: ContextToken
+  contextToken?: ContextToken,
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -96,7 +96,7 @@ export function getAutocompleteSuggestions(
           label: argDef.name,
           detail: String(argDef.type),
           documentation: argDef.description,
-        }))
+        })),
       );
     }
   }
@@ -111,7 +111,7 @@ export function getAutocompleteSuggestions(
           label: field.name,
           detail: String(field.type),
           documentation: field.description,
-        }))
+        })),
       );
     }
   }
@@ -165,14 +165,14 @@ export function getAutocompleteSuggestions(
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: TypeInfo,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
     const fields =
       parentType.getFields instanceof Function
-        ? // $FlowFixMe
-          objectValues(parentType.getFields())
+        // $FlowFixMe
+        ? objectValues(parentType.getFields())
         : [];
     if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
@@ -190,7 +190,7 @@ function getSuggestionsForFieldNames(
         documentation: field.description,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
-      }))
+      })),
     );
   }
   return [];
@@ -198,7 +198,7 @@ function getSuggestionsForFieldNames(
 
 function getSuggestionsForInputValues(
   token: ContextToken,
-  typeInfo: TypeInfo
+  typeInfo: TypeInfo,
 ): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType);
   if (namedInputType instanceof GraphQLEnumType) {
@@ -211,7 +211,7 @@ function getSuggestionsForInputValues(
         documentation: value.description,
         isDeprecated: value.isDeprecated,
         deprecationReason: value.deprecationReason,
-      }))
+      })),
     );
   } else if (namedInputType === GraphQLBoolean) {
     return hintList(token, [
@@ -234,7 +234,7 @@ function getSuggestionsForInputValues(
 function getSuggestionsForFragmentTypeConditions(
   token: ContextToken,
   typeInfo: TypeInfo,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   let possibleTypes;
   if (typeInfo.parentType) {
@@ -267,7 +267,7 @@ function getSuggestionsForFragmentTypeConditions(
         label: String(type),
         documentation: (namedType && namedType.description) || '',
       };
-    })
+    }),
   );
 }
 
@@ -275,7 +275,7 @@ function getSuggestionsForFragmentSpread(
   token: ContextToken,
   typeInfo: TypeInfo,
   schema: GraphQLSchema,
-  queryText: string
+  queryText: string,
 ): Array<CompletionItem> {
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
@@ -298,8 +298,8 @@ function getSuggestionsForFragmentSpread(
       doTypesOverlap(
         schema,
         typeInfo.parentType,
-        typeMap[frag.typeCondition.name.value]
-      )
+        typeMap[frag.typeCondition.name.value],
+      ),
   );
 
   return hintList(
@@ -307,13 +307,15 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
-    }))
+      documentation: `fragment ${frag.name.value} on ${
+        frag.typeCondition.name.value
+      }`,
+    })),
   );
 }
 
 function getFragmentDefinitions(
-  queryText: string
+  queryText: string,
 ): Array<FragmentDefinitionNode> {
   const fragmentDefs = [];
   runOnlineParser(queryText, (_, state) => {
@@ -344,7 +346,7 @@ function getFragmentDefinitions(
 
 function getSuggestionsForVariableDefinition(
   token: ContextToken,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   const inputTypeMap = schema.getTypeMap();
   const inputTypes = objectValues(inputTypeMap).filter(isInputType);
@@ -353,14 +355,14 @@ function getSuggestionsForVariableDefinition(
     inputTypes.map(type => ({
       label: type.name,
       documentation: type.description,
-    }))
+    })),
   );
 }
 
 function getSuggestionsForDirective(
   token: ContextToken,
   state: State,
-  schema: GraphQLSchema
+  schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (state.prevState && state.prevState.kind) {
     const directives = schema
@@ -371,7 +373,7 @@ function getSuggestionsForDirective(
       directives.map(directive => ({
         label: directive.name,
         documentation: directive.description || '',
-      }))
+      })),
     );
   }
   return [];
@@ -379,7 +381,7 @@ function getSuggestionsForDirective(
 
 export function getTokenAtPosition(
   queryText: string,
-  cursor: Position
+  cursor: Position,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;
@@ -417,12 +419,12 @@ type callbackFnType = (
   stream: CharacterStream,
   state: State,
   style: string,
-  index: number
+  index: number,
 ) => void | 'BREAK';
 
 function runOnlineParser(
   queryText: string,
-  callback: callbackFnType
+  callback: callbackFnType,
 ): ContextToken {
   const lines = queryText.split('\n');
   const parser = onlineParser();
@@ -461,7 +463,7 @@ function runOnlineParser(
 
 function canUseDirective(
   state: $PropertyType<State, 'prevState'>,
-  directive: GraphQLDirective
+  directive: GraphQLDirective,
 ): boolean {
   if (!state || !state.kind) {
     return false;
@@ -520,7 +522,7 @@ function canUseDirective(
 // from the graphql-mode parser.
 export function getTypeInfo(
   schema: GraphQLSchema,
-  tokenState: State
+  tokenState: State,
 ): TypeInfo {
   let argDef;
   let argDefs;

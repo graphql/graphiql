@@ -8,6 +8,7 @@
 
 import { expect } from 'chai';
 
+
 describe('blinking light demo', () => {
   it('runs', () => {
     // This is just a place holder for now as all the existing tests have moved

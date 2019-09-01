@@ -16,7 +16,7 @@ import { visit } from 'graphql';
 export function getASTNodeAtPosition(
   query: string,
   ast: ASTNode,
-  point: Position
+  point: Position,
 ): ?ASTNode {
   const offset = pointToOffset(query, point);
   let nodeContainingPosition: ?ASTNode;
@@ -48,7 +48,7 @@ export function pointToOffset(text: string, point: Position): number {
     point.character +
     linesUntilPosition
       .map(
-        line => line.length + 1 // count EOL
+        line => line.length + 1, // count EOL
       )
       .reduce((a, b) => a + b, 0)
   );

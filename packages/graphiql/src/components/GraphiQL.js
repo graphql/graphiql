@@ -110,7 +110,7 @@ export class GraphiQL extends React.Component {
         : getSelectedOperationName(
             null,
             this._storage.get('operationName'),
-            queryFacts && queryFacts.operations
+            queryFacts && queryFacts.operations,
           );
 
     // prop can be supplied to open docExplorer initially
@@ -122,10 +122,7 @@ export class GraphiQL extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen =
-      props.defaultVariableEditorOpen !== undefined
-        ? props.defaultVariableEditorOpen
-        : Boolean(variables);
+    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
 
     // Initialize state
     this.state = {
@@ -154,7 +151,7 @@ export class GraphiQL extends React.Component {
     // Subscribe to the browser window closing, treating it as an unmount.
     if (typeof window === 'object') {
       window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount()
+        this.componentWillUnmount(),
       );
     }
   }
@@ -203,7 +200,7 @@ export class GraphiQL extends React.Component {
         nextQuery,
         nextOperationName,
         this.state.operations,
-        nextSchema
+        nextSchema,
       );
 
       if (updatedQueryAttributes !== undefined) {
@@ -238,7 +235,7 @@ export class GraphiQL extends React.Component {
 
           this._fetchSchema();
         }
-      }
+      },
     );
   }
 
@@ -274,7 +271,7 @@ export class GraphiQL extends React.Component {
 
     const toolbar = find(
       children,
-      child => child.type === GraphiQL.Toolbar
+      child => child.type === GraphiQL.Toolbar,
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
@@ -488,7 +485,7 @@ export class GraphiQL extends React.Component {
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
-      this.props.getDefaultFieldNames
+      this.props.getDefaultFieldNames,
     );
     if (insertions && insertions.length > 0) {
       const editor = this.getQueryEditor();
@@ -505,8 +502,8 @@ export class GraphiQL extends React.Component {
               className: 'autoInsertedLeaf',
               clearOnEnter: true,
               title: 'Automatically added leaf fields',
-            }
-          )
+            },
+          ),
         );
         setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
         let newCursorIndex = cursorIndex;
@@ -531,7 +528,7 @@ export class GraphiQL extends React.Component {
       fetcher({
         query: introspectionQuery,
         operationName: introspectionQueryName,
-      })
+      }),
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -552,11 +549,11 @@ export class GraphiQL extends React.Component {
           fetcher({
             query: introspectionQuerySansSubscriptions,
             operationName: introspectionQueryName,
-          })
+          }),
         );
         if (!isPromise(fetch)) {
           throw new Error(
-            'Fetcher did not return a Promise for introspection.'
+            'Fetcher did not return a Promise for introspection.',
           );
         }
         return fetch2;
@@ -691,7 +688,7 @@ export class GraphiQL extends React.Component {
               response: GraphiQL.formatResult(result),
             });
           }
-        }
+        },
       );
 
       this.setState({ subscription });
@@ -767,7 +764,7 @@ export class GraphiQL extends React.Component {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema
+      this.state.schema,
     );
     this.setState({
       query: value,
@@ -800,7 +797,7 @@ export class GraphiQL extends React.Component {
       const updatedOperationName = getSelectedOperationName(
         prevOperations,
         operationName,
-        queryFacts.operations
+        queryFacts.operations,
       );
 
       // Report changing of operationName if it changed.
@@ -839,7 +836,7 @@ export class GraphiQL extends React.Component {
       (onRemoveFn = () => {
         elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
         elem.removeEventListener('click', this._onClickHintInformation);
-      })
+      }),
     );
   };
 
@@ -1146,7 +1143,7 @@ function observableToPromise(observable) {
       reject,
       () => {
         reject(new Error('no value resolved'));
-      }
+      },
     );
   });
 }

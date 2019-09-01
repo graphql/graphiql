@@ -9,6 +9,7 @@
 import { expect } from 'chai';
 import { parse } from 'graphql';
 
+
 import { Position } from '../Range';
 import { getASTNodeAtPosition, pointToOffset } from '../getASTNodeAtPosition';
 

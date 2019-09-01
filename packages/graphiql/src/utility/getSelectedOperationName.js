@@ -12,7 +12,7 @@
 export default function getSelectedOperationName(
   prevOperations,
   prevSelectedOperationName,
-  operations
+  operations,
 ) {
   // If there are not enough operations to bother with, return nothing.
   if (!operations || operations.length < 1) {

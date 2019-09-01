@@ -58,7 +58,7 @@ CodeMirror.registerHelper(
 
     // Then highlight any issues with the provided variables.
     return validateVariables(editor, variableToType, ast);
-  }
+  },
 );
 
 // Given a variableToType object, a source text, and a JSON AST, produces a
@@ -74,8 +74,8 @@ function validateVariables(editor, variableToType, variablesAST) {
         lintError(
           editor,
           member.key,
-          `Variable "$${variableName}" does not appear in any GraphQL query.`
-        )
+          `Variable "$${variableName}" does not appear in any GraphQL query.`,
+        ),
       );
     } else {
       validateValue(type, member.value).forEach(([node, message]) => {

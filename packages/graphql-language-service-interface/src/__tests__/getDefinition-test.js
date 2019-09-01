@@ -43,7 +43,7 @@ describe('getDefinition', () => {
               ...namedTypeDefinition,
             },
           },
-        ]
+        ],
       );
       expect(result.definitions.length).to.equal(1);
       expect(result.definitions[0].position.line).to.equal(1);
@@ -72,7 +72,7 @@ describe('getDefinition', () => {
             content: fragment,
             definition: fragmentDefinition,
           },
-        ]
+        ],
       );
       expect(result.definitions.length).to.equal(1);
       expect(result.definitions[0].position.line).to.equal(1);

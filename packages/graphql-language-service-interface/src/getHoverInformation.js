@@ -24,7 +24,7 @@ export function getHoverInformation(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
-  contextToken?: ContextToken
+  contextToken?: ContextToken,
 ): Hover.contents {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 

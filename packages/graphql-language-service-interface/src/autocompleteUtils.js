@@ -46,7 +46,7 @@ export function getDefinitionState(tokenState: State): ?State {
 export function getFieldDef(
   schema: GraphQLSchema,
   type: GraphQLType,
-  fieldName: string
+  fieldName: string,
 ): ?GraphQLField<*, *> {
   if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
     return SchemaMetaFieldDef;
@@ -68,7 +68,7 @@ export function getFieldDef(
 // Utility for iterating through a CodeMirror parse state stack bottom-up.
 export function forEachState(
   stack: State,
-  fn: (state: State) => ?TypeInfo
+  fn: (state: State) => ?TypeInfo,
 ): void {
   const reverseStateStack = [];
   let state = stack;
@@ -94,7 +94,7 @@ export function objectValues(object: Object): Array<any> {
 // Create the expected hint response given a possible list and a token
 export function hintList(
   token: ContextToken,
-  list: Array<CompletionItem>
+  list: Array<CompletionItem>,
 ): Array<CompletionItem> {
   return filterAndSortList(list, normalizeText(token.string));
 }
@@ -103,7 +103,7 @@ export function hintList(
 // provide a concise list.
 function filterAndSortList(
   list: Array<CompletionItem>,
-  text: string
+  text: string,
 ): Array<CompletionItem> {
   if (!text) {
     return filterNonEmpty(list, entry => !entry.isDeprecated);
@@ -116,14 +116,14 @@ function filterAndSortList(
 
   const conciseMatches = filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
-    pair => !pair.entry.isDeprecated
+    pair => !pair.entry.isDeprecated,
   );
 
   const sortedMatches = conciseMatches.sort(
     (a, b) =>
       (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
       a.proximity - b.proximity ||
-      a.entry.label.length - b.entry.label.length
+      a.entry.label.length - b.entry.label.length,
   );
 
   return sortedMatches.map(pair => pair.entry);
@@ -133,7 +133,7 @@ function filterAndSortList(
 // in which case return the original array.
 function filterNonEmpty(
   array: Array<Object>,
-  predicate: (entry: Object) => boolean
+  predicate: (entry: Object) => boolean,
 ): Array<Object> {
   const filtered = array.filter(predicate);
   return filtered.length === 0 ? array : filtered;
@@ -192,7 +192,7 @@ function lexicalDistance(a: string, b: string): number {
       d[i][j] = Math.min(
         d[i - 1][j] + 1,
         d[i][j - 1] + 1,
-        d[i - 1][j - 1] + cost
+        d[i - 1][j - 1] + cost,
       );
 
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {

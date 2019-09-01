@@ -22,7 +22,7 @@ export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
   customRules?: Array<CustomValidationRule>,
-  isRelayCompatMode?: boolean
+  isRelayCompatMode?: boolean,
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
   // be used anywhere in the codebase they're all technically "used" by clients
@@ -41,7 +41,7 @@ export function validateWithCustomRules(
     rulesToSkip.push(KnownFragmentNames);
   }
   const rules = specifiedRules.filter(
-    rule => !rulesToSkip.some(r => r === rule)
+    rule => !rulesToSkip.some(r => r === rule),
   );
 
   const typeInfo = new TypeInfo(schema);
@@ -53,7 +53,7 @@ export function validateWithCustomRules(
     schema,
     ast,
     rules,
-    typeInfo
+    typeInfo,
   );
 
   if (errors.length > 0) {

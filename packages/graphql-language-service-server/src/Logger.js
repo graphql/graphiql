@@ -40,7 +40,7 @@ export class Logger implements VSCodeLogger {
       dir,
       `graphql-language-service-log-${
         os.userInfo().username
-      }-${getDateString()}.log`
+      }-${getDateString()}.log`,
     );
 
     this._stream = null;

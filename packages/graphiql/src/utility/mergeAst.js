@@ -22,8 +22,8 @@ function resolveDefinition(fragments, obj) {
             self.findIndex(
               _selection =>
                 _selection.kind === Kind.FRAGMENT_SPREAD &&
-                selection.name.value === _selection.name.value
-            )
+                selection.name.value === _selection.name.value,
+            ),
       )
       .map(selection => resolveDefinition(fragments, selection));
   }

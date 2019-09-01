@@ -83,7 +83,7 @@ describe('GraphQLCache', () => {
     it('extend the schema with appropriate custom directive', async () => {
       const schema = await cache.getSchema('testWithCustomDirectives');
       expect(
-        wihtoutASTNode(schema.getDirective('customDirective'))
+        wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
         description: undefined,
@@ -96,7 +96,7 @@ describe('GraphQLCache', () => {
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = await cache.getSchema('testWithSchema');
       expect(
-        wihtoutASTNode(schema.getDirective('customDirective'))
+        wihtoutASTNode(schema.getDirective('customDirective')),
       ).to.deep.equal({
         args: [],
         description: undefined,
@@ -104,6 +104,62 @@ describe('GraphQLCache', () => {
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });
+    });
+  });
+
+  describe('handleWatchmanSubscribeEvent', () => {
+    it('handles invalidating the schema cache', async () => {
+      const projectConfig = graphQLRC.getProjectConfig('testWithSchema');
+      await cache.getSchema('testWithSchema');
+      expect(cache._schemaMap.size).to.equal(1);
+      const handler = cache.handleWatchmanSubscribeEvent(__dirname, projectConfig);
+      const testResult = {
+        root: __dirname,
+        subscription: '',
+        files: [{
+          name: '__schema__/StarWarsSchema.graphql',
+          exists: true,
+          size: 5,
+          is_fresh_instance: true,
+          mtime: Date.now()
+        }]
+      }
+      handler(testResult);
+      expect(cache._schemaMap.size).to.equal(0);
+    });
+
+    it('handles invalidating the endpoint cache', async () => {
+      const projectConfig = graphQLRC.getProjectConfig('testWithEndpointAndSchema');
+      const introspectionResult = await graphQLRC
+        .getProjectConfig('testWithSchema')
+        .resolveIntrospection();
+
+      fetchMock.mock({
+        matcher: '*',
+        response: {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: introspectionResult,
+        },
+      });
+
+      await cache.getSchema('testWithEndpointAndSchema');
+      expect(cache._schemaMap.size).to.equal(1);
+      const handler = cache.handleWatchmanSubscribeEvent(__dirname, projectConfig);
+      const testResult = {
+        root: __dirname,
+        subscription: '',
+        files: [{
+          name: '__schema__/StarWarsSchema.graphql',
+          exists: true,
+          size: 5,
+          is_fresh_instance: true,
+          mtime: Date.now()
+        }]
+      }
+      handler(testResult);
+      expect(cache._schemaMap.size).to.equal(0);
     });
   });
 
@@ -144,7 +200,7 @@ describe('GraphQLCache', () => {
       const contents = getQueryAndRange(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
         parse(contents[0].query),
-        fragmentDefinitions
+        fragmentDefinitions,
       );
       expect(result.length).to.equal(2);
     });
@@ -154,7 +210,7 @@ describe('GraphQLCache', () => {
 
       const result = await cache.getFragmentDependenciesForAST(
         ast,
-        fragmentDefinitions
+        fragmentDefinitions,
       );
       expect(result.length).to.equal(1);
     });
@@ -217,7 +273,7 @@ describe('GraphQLCache', () => {
     it('finds named types referenced from the SDL', async () => {
       const result = await cache.getObjectTypeDependenciesForAST(
         parsedQuery,
-        namedTypeDefinitions
+        namedTypeDefinitions,
       );
       expect(result.length).to.equal(1);
     });
