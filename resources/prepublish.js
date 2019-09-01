@@ -55,4 +55,4 @@ fs.readdirSync(packages).forEach(pkg => {
 
 // Otherwise, perform a build.
 const execFileSync = require('child_process').execFileSync;
-process.stdout.write(execFileSync('npm', ['run', 'build']));
+process.stdout.write(execFileSync('yarn', ['run', 'build']));

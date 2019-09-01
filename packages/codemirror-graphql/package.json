@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "0.9.0",
+  "version": "0.9.1-alpha.1",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -8,7 +8,7 @@
     "Angel Gomez Salazar <agomezs@fb.com>"
   ],
   "homepage": "https://github.com/graphql/graphiql/tree/master/packages/codemirror-graphql#readme",
-  "repository": "https://github.com/graphql/graphiql/tree/master/packages/codemirror-graphql",
+  "repository": "https://github.com/graphql/graphiql",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },
@@ -31,17 +31,15 @@
     "build": "babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",
-    "watch": "babel --optional runtime resources/watch.js | node",
-    "preversion": ". ./resources/checkgit.sh && yarn test",
-    "prepublish": ". ./resources/prepublish.sh"
+    "watch": "babel --optional runtime resources/watch.js | node"
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.1.0",
-    "graphql-language-service-parser": "^1.3.0"
+    "graphql-language-service-interface": "^2.1.1-alpha.1",
+    "graphql-language-service-parser": "^1.3.1-alpha.1"
   },
   "devDependencies": {
     "chai": "4.1.1",

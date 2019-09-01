@@ -6,6 +6,7 @@
     "packages/graphiql-examples/*"
   ],
   "options": {
+    "commit_msg": "We are now using commitlint + conventional-changelog.\n This prompt will help validate commit messages to make \n it easier to manage versions. Please refer to \n CONTRIBUTING.md for details",
     "mocha": "--full-trace --require @babel/register --require resources/mochaBootload 'packages/{*,!graphiql}/src/**/__tests__/**/*-test.js'",
     "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
   },
@@ -15,6 +16,13 @@
   },
   "browser": {
     "copy-to-clipboard": "./node-modules/copy-to-clipboard/index.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn testonly",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "scripts": {
     "build": "lerna run build",
@@ -26,7 +34,10 @@
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
-    "pretty-check": "node resources/pretty.js --check"
+    "pretty-check": "node resources/pretty.js --check",
+    "version:release": "lerna version",
+    "version:prerelease": "lerna version --conventional-prerelease",
+    "version:graduate": "lerna version --conventional-graduate"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
@@ -39,8 +50,12 @@
     "@babel/preset-flow": "7.0.0",
     "@babel/preset-react": "7.0.0",
     "@babel/register": "^7.4.4",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/config-lerna-scopes": "^8.1.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
+    "conventional-changelog-conventionalcommits": "^4.1.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-babel": "5.3.0",
@@ -51,6 +66,7 @@
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
     "graphql": "^14.3.1",
+    "husky": "^3.0.5",
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
     "prettier": "^1.18.2"
