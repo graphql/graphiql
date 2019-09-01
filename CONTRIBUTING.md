@@ -59,18 +59,19 @@ Complete your CLA here: <https://code.facebook.com/cla>
 5. Ensure all tests pass
 
    ```sh
-   npm test
+   yarn test
    ```
 
 ## Commit Message Conventions
 
 Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatiblity with various git clients.
 
+
 ## Cutting New Releases
 
-If you have NPM privileges, you have the ability to cut new releases of the packages herein.
+We chose a manual process which is pretty simple and flexible because of our conventional commit messages.
 
-Because of semantic versioning, this is a relatively easy process.
+If you have NPM privileges, you have the ability to cut new releases of the packages herein.
 
 ### Requirements
 
@@ -78,10 +79,11 @@ You'll need:
 - `GH_TOKEN` : a github user token as an environment variable
 - `git` command line installed, obviously!
 - to run `yarn adduser` first to ensure you're authenticated for publishing
+- your npm 2FA should be enabled, and you should have your second factor device handy for publish
 - your remote should be named `origin` for github, and should be the ssh url
 - (coming soon) GPG key uploaded to account for signing
 
-Note: Ideally we can avoid publishing from any branch but `master`, but we can always `--allow-branch mybranch` in case of an emergency for pre-releases.
+Note: Ideally we can avoid publishing from any branch but `master`, but we can always `--allow-branch mybranch` in case of an emergency for pre-releases. _Whenever you can, always publish from `master`_.
 
 ### Prereleases
 
@@ -97,13 +99,13 @@ yarn version:prerelease *
 
 for all packages.
 
-It will automatically create and prompt you for eacho of the pre-release versions that reflect the conventional pattern from the commit log - so some packages may end up prealpha, others may be preminor, etc.
+It will automatically create and prompt you for each of the pre-release versions that reflect the conventional pattern from the commit log - so some packages may end up pre-alpha, others may be pre-minor, etc.
 
-For example, if you made a change to `graphql-language-service-utils` there would be a new version for every single package. But if you made a change to `graphiql` in the commits since the last publih, there should only be a new pre-release version for `graphiql` when you run this command.
+For example, if you made a change to `graphql-language-service-utils` there would be a new version for every single package. But if you made a change to `graphiql` in the commits since the last publish, there should only be a new pre-release version for `graphiql` when you run this command.
 
-You can also `--amend` a previous release before publishing, if you wanted the changelog/etc entries to update and for it to re-run everything on the same version bump attempt.
+You can also `--amend` a previous release before publishing.
 
-Once this is complete, run `publish:prerelease` to complete this process, so that we can ensure we use pre-release tags.
+Once this is complete, run `publish:prerelease` to complete this process, so that we can ensure we use pre-release tags. And then you'll of course authenticate again with your 2FA device.
 
 
 ### Graduating Prereleases
@@ -115,7 +117,6 @@ yarn version:graduate *
 ```
 
 Would graduate all pre-alphas to patch releases, pre-minors to minor releases, etc.
-`lerna publish` or `yarn run publish:graduate` will both be suitable here.
 
 You can also give a comma seperated list of packages, or just a single one, as with `prereleases`
 
@@ -126,11 +127,26 @@ yarn version:graduate codemirror-graphql
 then you can run
 
 ```sh
-yarn publish:graduate
+yarn run publish:graduate
 ```
+
+And authenticate with 2FA
+
 
 ### Full Releases
 
+```sh
+yarn version:release
+```
+
+Will automatically detect and generate changelog/etc with appropriate versions and entries for all subpackage, no need to supply package names or an asterisk
+
+Then you can run
+```sh
+lerna publish
+```
+
+And authenticate with 2FA
 
 ## License
 
