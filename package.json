@@ -21,7 +21,8 @@
     "hooks": {
       "pre-commit": "yarn pretty && yarn lint",
       "pre-push": "yarn testonly",
-      "commit-msg": "commitlint $HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint $HUSKY_GIT_PARAMS",
+      "prepare-commit-msg": "commitlint $HUSKY_GIT_PARAMS"
     }
   },
   "scripts": {
