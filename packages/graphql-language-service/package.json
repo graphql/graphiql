@@ -6,7 +6,7 @@
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
-  "repository": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service",
+  "repository": "https://github.com/graphql/graphiql",
   "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-service"

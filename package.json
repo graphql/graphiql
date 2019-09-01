@@ -7,7 +7,8 @@
   ],
   "options": {
     "mocha": "--full-trace --require @babel/register --require resources/mochaBootload 'packages/{*,!graphiql}/src/**/__tests__/**/*-test.js'",
-    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js",
+    "commit_msg": "We are now using commitlint + conventional-changelog.\n This prompt will help validate commit messages to make \n it easier to manage versions. Please refer to \n CONTRIBUTING.md for details"
   },
   "browserify-shim": {
     "react": "global:React",
@@ -18,6 +19,14 @@
   },
   "scripts": {
     "build": "lerna run build",
+    "release:version": "lerna version",
+    "release": "yarn release:version && lerna publush",
+    "prerelease:version": "node resources/prerelease.js",
+    "prerelease": "yarn run prerelease:version && lerna publish",
+    "graduate:version": "lerna version --conventional-graduate",
+    "graduate": "yarn run graduate:vesion && lerna publish",
+    "precommit": "commit",
+    "commit": "echo $npm_package_options_commit_msg && commit",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
@@ -26,10 +35,7 @@
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
-    "pretty-check": "node resources/pretty.js --check",
-    "release": "lerna version && lerna publish",
-    "prerelease": "node resources/prerelease.js",
-    "graduate": "lerna version --conventional-graduate"
+    "pretty-check": "node resources/pretty.js --check"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
@@ -45,6 +51,7 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
+    "@commitlint/prompt-cli": "^8.1.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
