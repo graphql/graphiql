@@ -28,7 +28,7 @@
     "build": "lerna run build",
     "release:version": "lerna version",
     "release": "yarn release:version && lerna publish",
-    "devrelease:version": "node resources/prerelease.js",
+    "devrelease:version": "lerna version --conventional-prerelease",
     "devrelease": "yarn run prerelease:version && lerna publish",
     "graduate:version": "lerna version --conventional-graduate",
     "graduate": "yarn run graduate:vesion && lerna publish",

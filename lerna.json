@@ -15,7 +15,6 @@
       "allowBranch": ["master"],
       "message": "chore(release): publish %s",
       "conventionalCommits": true,
-      "changelogPreset": "conventionalcommits",
       "createRelease": "github"
     }
   }
