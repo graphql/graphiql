@@ -6,9 +6,9 @@
     "packages/graphiql-examples/*"
   ],
   "options": {
+    "commit_msg": "We are now using commitlint + conventional-changelog.\n This prompt will help validate commit messages to make \n it easier to manage versions. Please refer to \n CONTRIBUTING.md for details",
     "mocha": "--full-trace --require @babel/register --require resources/mochaBootload 'packages/{*,!graphiql}/src/**/__tests__/**/*-test.js'",
-    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js",
-    "commit_msg": "We are now using commitlint + conventional-changelog.\n This prompt will help validate commit messages to make \n it easier to manage versions. Please refer to \n CONTRIBUTING.md for details"
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload packages/*/src/**/__tests__/**/*-test.js"
   },
   "browserify-shim": {
     "react": "global:React",

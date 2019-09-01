@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-server",
-  "version": "2.0.2",
+  "version": "2.0.3-alpha.1",
   "description": "(deprecated) An interface for building GraphQL language services for IDEs",
   "keywords": [
     "graphql"
@@ -9,7 +9,7 @@
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues"
   },
-  "repository": "https://github.com/graphql/graphiql",
+  "repository": "http://github.com/graphql/graphiql",
   "homepage": "https://github.com/graphql/graphiql#readme",
   "dependencies": {
     "graphql-config": "2.2.1"
