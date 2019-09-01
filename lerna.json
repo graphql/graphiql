@@ -5,11 +5,18 @@
   "version": "independent",
   "command": {
     "publish": {
-      "distTag": "rc"
+      "allowBranch": [
+        "master"
+      ],
+      "preDistTag": "next"
     },
     "version": {
+      "ignore-changes": "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
       "allowBranch": ["master"],
-      "message": "chore(release): publish %s"
+      "message": "chore(release): publish %s",
+      "conventionalCommits": true,
+      "changelogPreset": "conventionalcommits",
+      "createRelease": "github"
     }
   }
 }

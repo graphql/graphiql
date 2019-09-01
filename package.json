@@ -26,7 +26,10 @@
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
-    "pretty-check": "node resources/pretty.js --check"
+    "pretty-check": "node resources/pretty.js --check",
+    "release": "lerna version && lerna publish",
+    "prerelease": "node resources/prerelease.js",
+    "graduate": "lerna version --conventional-graduate"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
@@ -41,6 +44,7 @@
     "@babel/register": "^7.4.4",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
+    "conventional-changelog-conventionalcommits": "^4.1.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-babel": "5.3.0",
