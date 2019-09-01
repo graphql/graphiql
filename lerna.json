@@ -8,10 +8,11 @@
       "allowBranch": [
         "master"
       ],
-      "preDistTag": "next"
+      "preDistTag": "next",
+      "distTag": "latest"
     },
     "version": {
-      "ignore-changes": "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
+      "ignoreChanges": "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
       "allowBranch": ["master"],
       "message": "chore(release): publish %s",
       "conventionalCommits": true,

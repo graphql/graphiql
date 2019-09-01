@@ -26,12 +26,6 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "release:version": "lerna version",
-    "release": "yarn release:version && lerna publish",
-    "devrelease:version": "lerna version --conventional-prerelease",
-    "devrelease": "yarn run prerelease:version && lerna publish",
-    "graduate:version": "lerna version --conventional-graduate",
-    "graduate": "yarn run graduate:vesion && lerna publish",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
@@ -40,7 +34,10 @@
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
-    "pretty-check": "node resources/pretty.js --check"
+    "pretty-check": "node resources/pretty.js --check",
+    "version:release": "lerna version",
+    "version:prerelease": "lerna version --conventional-prerelease",
+    "version:graduate": "lerna version --conventional-graduate"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",

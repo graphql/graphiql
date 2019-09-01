@@ -62,24 +62,75 @@ Complete your CLA here: <https://code.facebook.com/cla>
    npm test
    ```
 
-## Release on NPM
+## Commit Message Conventions
 
-*Only core contributors may release to NPM.*
+Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatiblity with various git clients.
 
-To release a new version on NPM, first ensure you're on the `master` branch and
-have recently run `git pull` and that all tests pass with `npm test`.
-Use `npm version patch|minor|major` in order to increment the version in
-package.json and tag and commit a release. Then `git push --follow-tags`
-this change so Travis CI can deploy to NPM. *Do not run `npm publish` directly.*
-Once published, add [release notes](https://github.com/graphql/graphql-js/tags).
-Use [semver](http://semver.org/) to determine which version part to increment.
+## Cutting New Releases
 
-Example for a patch release:
+If you have NPM privileges, you have the ability to cut new releases of the packages herein.
+
+Because of semantic versioning, this is a relatively easy process.
+
+### Requirements
+
+You'll need:
+- `GH_TOKEN` : a github user token as an environment variable
+- `git` command line installed, obviously!
+- to run `yarn adduser` first to ensure you're authenticated for publishing
+- your remote should be named `origin` for github, and should be the ssh url
+- (coming soon) GPG key uploaded to account for signing
+
+Note: Ideally we can avoid publishing from any branch but `master`, but we can always `--allow-branch mybranch` in case of an emergency for pre-releases.
+
+### Prereleases
 
 ```sh
-npm version patch
-git push --follow-tags
+yarn version:prerelease graphiql,codemirror-graphql
 ```
+
+Or
+
+```sh
+yarn version:prerelease *
+```
+
+for all packages.
+
+It will automatically create and prompt you for eacho of the pre-release versions that reflect the conventional pattern from the commit log - so some packages may end up prealpha, others may be preminor, etc.
+
+For example, if you made a change to `graphql-language-service-utils` there would be a new version for every single package. But if you made a change to `graphiql` in the commits since the last publih, there should only be a new pre-release version for `graphiql` when you run this command.
+
+You can also `--amend` a previous release before publishing, if you wanted the changelog/etc entries to update and for it to re-run everything on the same version bump attempt.
+
+Once this is complete, run `publish:prerelease` to complete this process, so that we can ensure we use pre-release tags.
+
+
+### Graduating Prereleases
+
+Now, after creating and publishing some pre-release versions, if you want to graduate them you can do so with a command that works in very much the same way as above.
+
+```sh
+yarn version:graduate *
+```
+
+Would graduate all pre-alphas to patch releases, pre-minors to minor releases, etc.
+`lerna publish` or `yarn run publish:graduate` will both be suitable here.
+
+You can also give a comma seperated list of packages, or just a single one, as with `prereleases`
+
+```sh
+yarn version:graduate codemirror-graphql
+```
+
+then you can run
+
+```sh
+yarn publish:graduate
+```
+
+### Full Releases
+
 
 ## License
 
