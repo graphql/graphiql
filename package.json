@@ -19,18 +19,17 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn pretty && yarn lint",
+      "pre-commit": "yarn lint",
       "pre-push": "yarn testonly",
-      "commit-msg": "commitlint $HUSKY_GIT_PARAMS",
-      "prepare-commit-msg": "commitlint $HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "scripts": {
     "build": "lerna run build",
     "release:version": "lerna version",
     "release": "yarn release:version && lerna publish",
-    "prerelease:version": "node resources/prerelease.js",
-    "prerelease": "yarn run prerelease:version && lerna publish",
+    "devrelease:version": "node resources/prerelease.js",
+    "devrelease": "yarn run prerelease:version && lerna publish",
     "graduate:version": "lerna version --conventional-graduate",
     "graduate": "yarn run graduate:vesion && lerna publish",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
