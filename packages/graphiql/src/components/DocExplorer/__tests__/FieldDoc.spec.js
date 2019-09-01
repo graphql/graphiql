@@ -40,7 +40,7 @@ describe.only('FieldDoc', () => {
       <FieldDoc
         field={exampleObject.getFields().string}
         onClickType={jest.fn()}
-      />,
+      />
     );
     expect(W.find('MarkdownContent').text()).to.equal('No Description\n');
     expect(W.find('TypeLink').text()).to.equal('String');
@@ -52,7 +52,7 @@ describe.only('FieldDoc', () => {
       <FieldDoc
         field={exampleObject.getFields().string}
         onClickType={jest.fn()}
-      />,
+      />
     );
     expect(W.find('MarkdownContent').text()).to.equal('No Description\n');
     expect(W.find('TypeLink').text()).to.equal('String');
@@ -64,17 +64,17 @@ describe.only('FieldDoc', () => {
       <FieldDoc
         field={exampleObject.getFields().stringWithArgs}
         onClickType={jest.fn()}
-      />,
+      />
     );
     expect(
       W.find('TypeLink')
         .at(0)
-        .text(),
+        .text()
     ).to.equal('String');
     expect(
       W.find('.doc-type-description')
         .at(0)
-        .text(),
+        .text()
     ).to.equal('Example String field with arguments\n');
     expect(W.find('Argument').length).to.equal(1);
     expect(W.find('Argument').text()).to.equal('stringArg: String');

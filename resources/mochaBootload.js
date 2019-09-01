@@ -8,7 +8,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-require('@babel/polyfill')
+require('@babel/polyfill');
 
 const JSDOM = require('jsdom').JSDOM;
 
@@ -61,7 +61,7 @@ const chai = require('chai');
 const chaiSubset = require('chai-subset');
 chai.use(chaiSubset);
 
-process.on('unhandledRejection', (error) => {
+process.on('unhandledRejection', error => {
   console.error('Unhandled Promise Rejection:');
   console.error((error && error.stack) || error);
 });

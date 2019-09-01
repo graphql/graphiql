@@ -41,7 +41,7 @@ export function getDiagnostics(
   query: string,
   schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,
-  isRelayCompatMode?: boolean,
+  isRelayCompatMode?: boolean
 ): Array<Diagnostic> {
   let ast = null;
   try {
@@ -65,7 +65,7 @@ export function validateQuery(
   ast: DocumentNode,
   schema: ?GraphQLSchema = null,
   customRules?: Array<CustomValidationRule>,
-  isRelayCompatMode?: boolean,
+  isRelayCompatMode?: boolean
 ): Array<Diagnostic> {
   // We cannot validate the query unless a schema is provided.
   if (!schema) {
@@ -74,14 +74,14 @@ export function validateQuery(
 
   const validationErrorAnnotations = mapCat(
     validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, SEVERITY.ERROR, 'Validation'),
+    error => annotations(error, SEVERITY.ERROR, 'Validation')
   );
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
   // support older versions of graphql-js.
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, SEVERITY.WARNING, 'Deprecation'),
+        annotations(error, SEVERITY.WARNING, 'Deprecation')
       );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
@@ -89,7 +89,7 @@ export function validateQuery(
 // General utility for map-cating (aka flat-mapping).
 function mapCat<T>(
   array: Array<T>,
-  mapper: (item: T) => Array<any>,
+  mapper: (item: T) => Array<any>
 ): Array<any> {
   return Array.prototype.concat.apply([], array.map(mapper));
 }
@@ -97,7 +97,7 @@ function mapCat<T>(
 function annotations(
   error: GraphQLError,
   severity: number,
-  type: string,
+  type: string
 ): Array<Diagnostic> {
   if (!error.nodes) {
     return [];
@@ -120,7 +120,7 @@ function annotations(
       severity,
       range: new Range(
         new Position(loc.line - 1, loc.column - 1),
-        new Position(loc.line - 1, end),
+        new Position(loc.line - 1, end)
       ),
     };
   });
@@ -133,7 +133,7 @@ export function getRange(location: SourceLocation, queryText: string) {
 
   invariant(
     lines.length >= location.line,
-    'Query text must have more lines than where the error happened',
+    'Query text must have more lines than where the error happened'
   );
 
   let stream = null;

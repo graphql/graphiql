@@ -103,7 +103,7 @@ export function getEnumValueReference(typeInfo: any): EnumValueReference {
 // though it defaults to the current type.
 export function getTypeReference(
   typeInfo: any,
-  type?: GraphQLNamedType,
+  type?: GraphQLNamedType
 ): TypeReference {
   return {
     kind: 'Type',

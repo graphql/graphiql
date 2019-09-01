@@ -46,7 +46,7 @@ export interface CharacterStream {
   match: (
     pattern: TokenPattern,
     consume: ?boolean,
-    caseFold: ?boolean,
+    caseFold: ?boolean
   ) => Array<string> | boolean;
   backUp: (num: number) => void;
   column: () => number;
@@ -86,64 +86,64 @@ export interface GraphQLCache {
 
   getObjectTypeDependencies: (
     query: string,
-    fragmentDefinitions: ?Map<string, ObjectTypeInfo>,
+    fragmentDefinitions: ?Map<string, ObjectTypeInfo>
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
+    fragmentDefinitions: Map<string, ObjectTypeInfo>
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
+    graphQLConfig: GraphQLProjectConfig
   ) => Promise<Map<string, ObjectTypeInfo>>;
 
   +updateObjectTypeDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ) => Promise<void>;
 
   +updateObjectTypeDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ) => Promise<void>;
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: ?Map<string, FragmentInfo>,
+    fragmentDefinitions: ?Map<string, FragmentInfo>
   ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, FragmentInfo>,
+    fragmentDefinitions: Map<string, FragmentInfo>
   ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
+    graphQLConfig: GraphQLProjectConfig
   ) => Promise<Map<string, FragmentInfo>>;
 
   +updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ) => Promise<void>;
 
   +updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ) => Promise<void>;
 
   getSchema: (
     appName: ?string,
-    queryHasExtensions?: ?boolean,
+    queryHasExtensions?: ?boolean
   ) => Promise<?GraphQLSchema>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
-    projectConfig: GraphQLProjectConfig,
+    projectConfig: GraphQLProjectConfig
   ) => (result: Object) => void;
 }
 

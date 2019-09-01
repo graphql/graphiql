@@ -20,7 +20,7 @@ const commands = [
   '--root-mode',
   'upward',
 ];
-const extraArgs = process.argv[2]
+const extraArgs = process.argv[2];
 if (extraArgs) {
   commands.push(extraArgs.split(' '));
 }

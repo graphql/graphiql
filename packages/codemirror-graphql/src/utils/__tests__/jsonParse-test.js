@@ -23,17 +23,17 @@ describe('jsonParse', () => {
     checkEscapedString(
       '{ "test": "\\"" }',
       { kind: 'String', start: 2, end: 8, value: 'test' },
-      { kind: 'String', start: 10, end: 14, value: '"' },
+      { kind: 'String', start: 10, end: 14, value: '"' }
     );
     checkEscapedString(
       '{ "test": "\\\\" }',
       { kind: 'String', start: 2, end: 8, value: 'test' },
-      { kind: 'String', start: 10, end: 14, value: '\\' },
+      { kind: 'String', start: 10, end: 14, value: '\\' }
     );
     checkEscapedString(
       '{ "slash": "\\/" }',
       { kind: 'String', start: 2, end: 9, value: 'slash' },
-      { kind: 'String', start: 11, end: 15, value: '/' },
+      { kind: 'String', start: 11, end: 15, value: '/' }
     );
   });
 });

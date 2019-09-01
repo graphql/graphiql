@@ -80,7 +80,7 @@ function getVariablesHint(cur, token, options) {
       variableNames.map(name => ({
         text: `"${name}": `,
         type: variableToType[name],
-      })),
+      }))
     );
   }
 
@@ -88,7 +88,7 @@ function getVariablesHint(cur, token, options) {
   if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
     if (typeInfo.fields) {
       const inputFields = Object.keys(typeInfo.fields).map(
-        fieldName => typeInfo.fields[fieldName],
+        fieldName => typeInfo.fields[fieldName]
       );
       return hintList(
         cur,
@@ -97,7 +97,7 @@ function getVariablesHint(cur, token, options) {
           text: `"${field.name}": `,
           type: field.type,
           description: field.description,
-        })),
+        }))
       );
     }
   }
@@ -125,7 +125,7 @@ function getVariablesHint(cur, token, options) {
           text: `"${value.name}"`,
           type: namedInputType,
           description: value.description,
-        })),
+        }))
       );
     } else if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [

@@ -17,16 +17,20 @@
   "browser": {
     "copy-to-clipboard": "./node-modules/copy-to-clipboard/index.js"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn pretty && yarn lint",
+      "pre-push": "yarn testonly"
+    }
+  },
   "scripts": {
     "build": "lerna run build",
     "release:version": "lerna version",
-    "release": "yarn release:version && lerna publush",
+    "release": "yarn release:version && lerna publish",
     "prerelease:version": "node resources/prerelease.js",
     "prerelease": "yarn run prerelease:version && lerna publish",
     "graduate:version": "lerna version --conventional-graduate",
     "graduate": "yarn run graduate:vesion && lerna publish",
-    "precommit": "commit",
-    "commit": "echo $npm_package_options_commit_msg && commit",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "mocha $npm_package_options_mocha && lerna run test --scope graphiql",
     "t": "yarn run testonly",
@@ -51,7 +55,6 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
-    "@commitlint/prompt-cli": "^8.1.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
@@ -65,6 +68,7 @@
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
     "graphql": "^14.3.1",
+    "husky": "^3.0.5",
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
     "prettier": "^1.18.2"

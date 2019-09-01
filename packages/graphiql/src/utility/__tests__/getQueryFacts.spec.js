@@ -45,7 +45,7 @@ describe('collectVariables', () => {
       TestSchema,
       parse(`
       query ($foo: Int, $bar: String) { id }
-    `),
+    `)
     );
     expect(Object.keys(variableToType)).to.deep.equal(['foo', 'bar']);
     expect(variableToType.foo).to.equal(GraphQLInt);
@@ -58,7 +58,7 @@ describe('collectVariables', () => {
       parse(`
       query A($foo: Int, $bar: String) { id }
       query B($foo: Int, $baz: Float) { id }
-    `),
+    `)
     );
     expect(Object.keys(variableToType)).to.deep.equal(['foo', 'bar', 'baz']);
     expect(variableToType.foo).to.equal(GraphQLInt);
