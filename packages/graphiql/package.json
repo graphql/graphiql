@@ -27,12 +27,8 @@
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node --root-mode upward test/server.js",
-<<<<<<< HEAD
-    "test": "jest --no-cache spec"
-=======
     "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "node ../../resources/runTests ENZYME=true"
->>>>>>> Convert GLS tests to jest, migrate graphiql tests from chai expect to jest expect
   },
   "lint-staged": {
     "*.js": [

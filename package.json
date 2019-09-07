@@ -21,7 +21,7 @@
   "scripts": {
     "build": "lerna run build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
-    "testonly": "lerna run test --parallel",
+    "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
     "lint": "eslint packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
@@ -48,12 +48,9 @@
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "babel-eslint": "^10.0.1",
-<<<<<<< HEAD
     "chai": "4.2.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
-=======
     "codecov": "^3.5.0",
->>>>>>> Convert GLS tests to jest, migrate graphiql tests from chai expect to jest expect
     "eslint": "^5.16.0",
     "eslint-config-prettier": "4.3.0",
     "eslint-plugin-babel": "5.3.0",
@@ -64,16 +61,12 @@
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
     "graphql": "^14.3.1",
-<<<<<<< HEAD
     "husky": "^3.0.5",
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
-=======
     "jest": "^24.8.0",
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
-    "lerna": "^3.15.0",
->>>>>>> Convert GLS tests to jest, migrate graphiql tests from chai expect to jest expect
     "prettier": "^1.18.2"
   }
 }

@@ -126,13 +126,13 @@ describe('GraphiQL', () => {
 
   it('accepts a defaultVariableEditorOpen param', () => {
     let graphiQL = mount(<GraphiQL fetcher={noOpFetcher}/>);
-    expect(graphiQL.state().variableEditorOpen).to.equal(false);
-    expect(graphiQL.state().defaultVariableEditorOpen).to.equal(undefined);
+    expect(graphiQL.state().variableEditorOpen).toEqual(false);
+    expect(graphiQL.state().defaultVariableEditorOpen).toEqual(undefined);
 
     graphiQL = mount(<GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />);
-    expect(graphiQL.state().variableEditorOpen).to.equal(true);
+    expect(graphiQL.state().variableEditorOpen).toEqual(true);
 
     graphiQL = mount(<GraphiQL fetcher={noOpFetcher} variables="{test: 'value'}" defaultVariableEditorOpen={false} />);
-    expect(graphiQL.state().variableEditorOpen).to.equal(false);
+    expect(graphiQL.state().variableEditorOpen).toEqual(false);
   });
 });
