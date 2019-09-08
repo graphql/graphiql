@@ -4,13 +4,17 @@
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr)
 
-[![](packages/graphiql/resources/graphiql.png)](http://graphql.org/swapi-graphql)
+[![](packages/graphiql/resources/graphiql.png)](https://graphiql-test.netlify.com/)
 
 ## Intro
 
-GraphiQL is the reference implementation of GraphQL IDE, an official project under the GraphQL Foundation.
+GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation.
 
-This repository contains much of the code that powers GraphiQL (and many other tools), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+This repository contains much of the code that powers GraphiQL (and many other tools such as Altair, Insomnia, GraphQL GraphQL Playground, VScode plugins, and more!), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+
+The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
+
+The purpose of this monorepo is to give folks a solid language service, and editor modes, and to show an example of how to use them with GrahiQL.
 
 
 ## [GraphiQL](packages/graphiql#readme)
@@ -45,7 +49,7 @@ Server process backing the [GraphQL Language Service](packages/graphql-language-
 ## [GraphQL Language Service Interface](packages/graphql-language-service-interface#readme)
 [![NPM](https://img.shields.io/npm/v/graphql-language-service-interface.svg)](https://npmjs.com/graphql-language-service-interface)
 
-Interface to the [GraphQL Language Service](packages/graphql-language-service#readme)
+LSP Interface to the [GraphQL Language Service](packages/graphql-language-service#readme)
 
 
 ## [GraphQL Language Service Parser](packages/graphql-language-service-parser#readme)
