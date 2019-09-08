@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  *  Copyright (c) 2019 GraphQL Contributors
  *  All rights reserved.
@@ -5,21 +6,23 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   FragmentDefinitionNode,
   GraphQLDirective,
   GraphQLSchema,
+  GraphQLType,
+  GraphQLObjectType,
+  ArgumentNode,  
 } from 'graphql';
-import type {
+import {
   CompletionItem,
   ContextToken,
   State,
-  TypeInfo,
+  AllTypeInfo
 } from 'graphql-language-service-types';
-import type { Position } from 'graphql-language-service-utils';
+import { Position } from 'graphql-language-service-utils';
 
 import {
   GraphQLBoolean,
@@ -164,16 +167,13 @@ export function getAutocompleteSuggestions(
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForFieldNames(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
     const fields =
-      parentType.getFields instanceof Function
-        // $FlowFixMe
-        ? objectValues(parentType.getFields())
-        : [];
+      'getFields' in parentType ? objectValues(parentType.getFields()) : [];
     if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
@@ -198,7 +198,7 @@ function getSuggestionsForFieldNames(
 
 function getSuggestionsForInputValues(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
 ): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType);
   if (namedInputType instanceof GraphQLEnumType) {
@@ -220,6 +220,7 @@ function getSuggestionsForInputValues(
         detail: String(GraphQLBoolean),
         documentation: 'Not false.',
       },
+
       {
         label: 'false',
         detail: String(GraphQLBoolean),
@@ -233,7 +234,7 @@ function getSuggestionsForInputValues(
 
 function getSuggestionsForFragmentTypeConditions(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
   let possibleTypes;
@@ -273,7 +274,7 @@ function getSuggestionsForFragmentTypeConditions(
 
 function getSuggestionsForFragmentSpread(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
   queryText: string,
 ): Array<CompletionItem> {
@@ -307,9 +308,7 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${
-        frag.typeCondition.name.value
-      }`,
+      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
     })),
   );
 }
@@ -317,7 +316,7 @@ function getSuggestionsForFragmentSpread(
 function getFragmentDefinitions(
   queryText: string,
 ): Array<FragmentDefinitionNode> {
-  const fragmentDefs = [];
+  const fragmentDefs: FragmentDefinitionNode[] = [];
   runOnlineParser(queryText, (_, state) => {
     if (state.kind === 'FragmentDefinition' && state.name && state.type) {
       fragmentDefs.push({
@@ -326,10 +325,12 @@ function getFragmentDefinitions(
           kind: 'Name',
           value: state.name,
         },
+
         selectionSet: {
           kind: 'SelectionSet',
           selections: [],
         },
+
         typeCondition: {
           kind: 'NamedType',
           name: {
@@ -420,7 +421,7 @@ type callbackFnType = (
   state: State,
   style: string,
   index: number,
-) => void | 'BREAK';
+) => undefined | 'BREAK';
 
 function runOnlineParser(
   queryText: string,
@@ -462,7 +463,7 @@ function runOnlineParser(
 }
 
 function canUseDirective(
-  state: $PropertyType<State, 'prevState'>,
+  state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {
   if (!state || !state.kind) {
@@ -515,24 +516,25 @@ function canUseDirective(
           return locations.indexOf('INPUT_FIELD_DEFINITION') !== -1;
       }
   }
+
   return false;
 }
-
+type Maybe<T> = T | null | undefined;
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
 export function getTypeInfo(
   schema: GraphQLSchema,
   tokenState: State,
-): TypeInfo {
-  let argDef;
-  let argDefs;
+): AllTypeInfo {
+  let argDef: ArgumentNode;
+  let argDefs: ArgumentNode[];
   let directiveDef;
   let enumValue;
   let fieldDef;
-  let inputType;
+  let inputType: GraphQLType | null;
   let objectFieldDefs;
-  let parentType;
-  let type;
+  let parentType: GraphQLType;
+  let type: Maybe<GraphQLObjectType<any, any, { [key: string]: any }>>;
 
   forEachState(tokenState, state => {
     switch (state.kind) {

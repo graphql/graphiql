@@ -5,29 +5,28 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { GraphQLSchema } from 'graphql';
-import type {
+import { GraphQLSchema } from 'graphql';
+import {
   ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
 } from 'graphql/language';
-import type { ValidationContext } from 'graphql/validation';
-import type {
+import { ValidationContext } from 'graphql/validation';
+import {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputField,
   GraphQLType,
 } from 'graphql/type/definition';
-import type { GraphQLDirective } from 'graphql/type/directives';
+import { GraphQLDirective } from 'graphql/type/directives';
 
-export type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
-import type { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+export { GraphQLConfig, GraphQLProjectConfig };
+import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
@@ -38,15 +37,15 @@ export interface CharacterStream {
   sol: () => boolean;
   peek: () => string | null;
   next: () => string;
-  eat: (pattern: TokenPattern) => string | void;
+  eat: (pattern: TokenPattern) => string | undefined;
   eatWhile: (match: TokenPattern) => boolean;
   eatSpace: () => boolean;
   skipToEnd: () => void;
   skipTo: (position: number) => void;
   match: (
     pattern: TokenPattern,
-    consume: ?boolean,
-    caseFold: ?boolean,
+    consume?: boolean | null | undefined,
+    caseFold?: boolean | null | undefined,
   ) => Array<string> | boolean;
   backUp: (num: number) => void;
   column: () => number;
@@ -57,28 +56,28 @@ export interface CharacterStream {
 // Cache and config-related.
 export type GraphQLConfiguration = GraphQLProjectConfiguration & {
   projects?: {
-    [projectName: string]: GraphQLProjectConfiguration,
-  },
+    [projectName: string]: GraphQLProjectConfiguration;
+  };
 };
 
 export type GraphQLProjectConfiguration = {
   // The name for this project configuration.
   // If not supplied, the object key can be used for the project name.
-  name?: string,
-  schemaPath?: string, // a file with schema IDL
+  name?: string;
+  schemaPath?: string; // a file with schema IDL
 
   // For multiple applications with overlapping files,
   // these configuration options may be helpful
-  includes?: Array<string>,
-  excludes?: Array<string>,
+  includes?: Array<string>;
+  excludes?: Array<string>;
 
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
-  extensions?: GraphQLConfigurationExtension,
+  extensions?: GraphQLConfigurationExtension;
 };
 
 export type GraphQLConfigurationExtension = {
-  [name: string]: mixed,
+  [name: string]: unknown;
 };
 
 export interface GraphQLCache {
@@ -86,7 +85,7 @@ export interface GraphQLCache {
 
   getObjectTypeDependencies: (
     query: string,
-    fragmentDefinitions: ?Map<string, ObjectTypeInfo>,
+    fragmentDefinitions: Map<string, ObjectTypeInfo> | null | undefined,
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDependenciesForAST: (
@@ -98,21 +97,21 @@ export interface GraphQLCache {
     graphQLConfig: GraphQLProjectConfig,
   ) => Promise<Map<string, ObjectTypeInfo>>;
 
-  +updateObjectTypeDefinition: (
+  updateObjectTypeDefinition: (
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ) => Promise<void>;
+  ) => Promise<undefined>;
 
-  +updateObjectTypeDefinitionCache: (
+  updateObjectTypeDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<void>;
+  ) => Promise<undefined>;
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: ?Map<string, FragmentInfo>,
+    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
   ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDependenciesForAST: (
@@ -124,27 +123,27 @@ export interface GraphQLCache {
     graphQLConfig: GraphQLProjectConfig,
   ) => Promise<Map<string, FragmentInfo>>;
 
-  +updateFragmentDefinition: (
+  updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ) => Promise<void>;
+  ) => Promise<undefined>;
 
-  +updateFragmentDefinitionCache: (
+  updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<void>;
+  ) => Promise<undefined>;
 
   getSchema: (
-    appName: ?string,
-    queryHasExtensions?: ?boolean,
-  ) => Promise<?GraphQLSchema>;
+    appName: string | null | undefined,
+    queryHasExtensions?: boolean | null | undefined,
+  ) => Promise<GraphQLSchema | null | undefined>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
-  ) => (result: Object) => void;
+  ) => (result: Object) => undefined;
 }
 
 // online-parser related
@@ -161,132 +160,133 @@ export interface Range {
 }
 
 export type CachedContent = {
-  query: string,
-  range: ?Range,
+  query: string;
+  range: Range | null | undefined;
 };
 
-export type ParseRule =
-  | ((token: Token, stream: CharacterStream) => ?string)
-  | Array<Rule | string>;
+export type RuleOrString = Rule | string
+
+export type ParseRule = RuleOrString[] | ((token: Token, stream: CharacterStream) => string | null | undefined)
 
 export type Token = {
-  kind: string,
-  value: string,
+  kind: string;
+  value: string;
 };
 
 export type Rule = {
-  style?: string,
-  match?: (token: Token) => boolean,
-  update?: (state: State, token: Token) => void,
-  separator?: string | Rule,
-  isList?: boolean,
-  ofRule?: Rule | string,
+  style?: string;
+  match?: (token: Token) => boolean;
+  update?: (state: State, token: Token) => void;
+  separator?: string | Rule;
+  isList?: boolean;
+  ofRule?: Rule | string;
 };
 
 export type State = {
-  level: number,
-  levels?: Array<number>,
-  prevState: ?State,
-  rule: ?ParseRule,
-  kind: ?string,
-  name: ?string,
-  type: ?string,
-  step: number,
-  needsSeperator: boolean,
-  needsAdvance?: boolean,
-  indentLevel?: number,
+  level: number;
+  levels?: Array<number>;
+  prevState: State | null | undefined;
+  rule: ParseRule | null | undefined;
+  kind: string | null | undefined;
+  name: string | null | undefined;
+  type: string | null | undefined;
+  step: number;
+  needsSeperator: boolean;
+  needsAdvance?: boolean;
+  indentLevel?: number;
 };
 
 // GraphQL Language Service related types
 export type Uri = string;
 
 export type GraphQLFileMetadata = {
-  filePath: Uri,
-  size: number,
-  mtime: number,
+  filePath: Uri;
+  size: number;
+  mtime: number;
 };
 
 export type GraphQLFileInfo = {
-  filePath: Uri,
-  content: string,
-  asts: Array<DocumentNode>,
-  size: number,
-  mtime: number,
+  filePath: Uri;
+  content: string;
+  asts: Array<DocumentNode>;
+  size: number;
+  mtime: number;
 };
 
 export type ContextToken = {
-  start: number,
-  end: number,
-  string: string,
-  state: State,
-  style: string,
+  start: number;
+  end: number;
+  string: string;
+  state: State;
+  style: string;
 };
 
-export type TypeInfo = {
-  type: ?GraphQLType,
-  parentType: ?GraphQLType,
-  inputType: ?GraphQLType,
-  directiveDef: ?GraphQLDirective,
-  fieldDef: ?GraphQLField<*, *>,
-  enumValue: ?GraphQLEnumValue,
-  argDef: ?GraphQLArgument,
-  argDefs: ?Array<GraphQLArgument>,
-  objectFieldDefs: ?GraphQLInputField,
+export type AllTypeInfo = {
+  type: GraphQLType | null | undefined;
+  parentType: GraphQLType | null | undefined;
+  inputType: GraphQLType | null | undefined;
+  directiveDef: GraphQLDirective | null | undefined;
+  fieldDef: GraphQLField<any, any> | null | undefined;
+  enumValue: GraphQLEnumValue | null | undefined;
+  argDef: GraphQLArgument | null | undefined;
+  argDefs: Array<GraphQLArgument> | null | undefined;
+  objectFieldDefs: GraphQLInputField | null | undefined;
 };
 
 export type FragmentInfo = {
-  filePath?: Uri,
-  content: string,
-  definition: FragmentDefinitionNode,
+  filePath?: Uri;
+  content: string;
+  definition: FragmentDefinitionNode;
 };
 
 export type NamedTypeInfo = {
-  filePath?: Uri,
-  content: string,
-  definition: NamedTypeNode,
+  filePath?: Uri;
+  content: string;
+  definition: NamedTypeNode;
 };
 
 export type ObjectTypeInfo = {
-  filePath?: Uri,
-  content: string,
-  definition: TypeDefinitionNode,
+  filePath?: Uri;
+  content: string;
+  definition: TypeDefinitionNode;
 };
 
 export type CustomValidationRule = (context: ValidationContext) => Object;
 
 export type Diagnostic = {
-  range: Range,
-  severity?: number,
-  code?: number | string,
-  source?: string,
-  message: string,
+  range: Range;
+  severity?: number;
+  code?: number | string;
+  source?: string;
+  message: string;
 };
 
 export type CompletionItem = {
-  label: string,
-  kind?: number,
-  detail?: string,
-  documentation?: ?string,
+  label: string;
+  kind?: number;
+  detail?: string;
+  documentation?: string | null | undefined;
   // GraphQL Deprecation information
-  isDeprecated?: ?boolean,
-  deprecationReason?: ?string,
+  isDeprecated?: boolean | null | undefined;
+  deprecationReason?: string | null | undefined;
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
 // Definitions/hyperlink
 export type Definition = {
-  path: Uri,
-  position: Position,
-  range?: Range,
-  id?: string,
-  name?: string,
-  language: string,
-  projectRoot?: Uri,
+  path: Uri;
+  position: Position;
+  range?: Range;
+  id?: string;
+  name?: string;
+  language: string;
+  projectRoot?: Uri;
 };
+
 export type DefinitionQueryResult = {
-  queryRange: Array<Range>,
-  definitions: Array<Definition>,
+  queryRange: Array<Range>;
+  definitions: Array<Definition>;
 };
 
 // Outline view
@@ -301,34 +301,47 @@ export type TokenKind =
   | 'plain'
   | 'type';
 export type TextToken = {
-  kind: TokenKind,
-  value: string,
+  kind: TokenKind;
+  value: string | undefined;
 };
+
 export type TokenizedText = Array<TextToken>;
 export type OutlineTree = {
   // Must be one or the other. If both are present, tokenizedText is preferred.
-  plainText?: string,
-  tokenizedText?: TokenizedText,
-  representativeName?: string,
+  plainText?: string;
+  tokenizedText?: TokenizedText;
+  representativeName?: string;
 
-  startPosition: Position,
-  endPosition?: Position,
-  children: Array<OutlineTree>,
+  startPosition: Position;
+  endPosition?: Position;
+  children: Array<OutlineTree>;
 };
+
 export type Outline = {
-  outlineTrees: Array<OutlineTree>,
+  outlineTrees: Array<OutlineTree>;
 };
 
 export interface DidChangeWatchedFilesParams {
   changes: FileEvent[];
 }
+
 export interface FileEvent {
   uri: string;
   type: FileChangeType;
 }
+
 export const FileChangeTypeKind = {
   Created: 1,
   Changed: 2,
   Deleted: 3,
 };
-export type FileChangeType = $Values<typeof FileChangeTypeKind>;
+
+export type FileChangeTypeKind = {
+  Created: 1;
+  Changed: 2;
+  Deleted: 3;
+};
+
+export type FileChangeTypeKeys = keyof FileChangeTypeKind;
+
+export type FileChangeType = FileChangeTypeKind[FileChangeTypeKeys];

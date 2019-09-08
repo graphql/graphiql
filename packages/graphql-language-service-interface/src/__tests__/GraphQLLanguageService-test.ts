@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import { join } from 'path';
@@ -23,10 +22,8 @@ const MOCK_CONFIG = {
 describe('GraphQLLanguageService', () => {
   const mockCache: any = {
     getSchema() {
-      const schemaSDL = fs.readFileSync(
-        join(__dirname, '__schema__/StarWarsSchema.graphql'),
-        'utf8',
-      );
+      const schemaSDL = fs.readFileSync(join(__dirname, '__schema__/StarWarsSchema.graphql'), 'utf8');
+
       const schemaJS = buildSchema(schemaSDL);
       return new Promise((resolve, reject) => resolve(schemaJS));
     },
@@ -44,6 +41,7 @@ describe('GraphQLLanguageService', () => {
             name: {
               value: 'Episode',
             },
+
             loc: {
               start: 293,
               end: 335,
@@ -62,6 +60,7 @@ describe('GraphQLLanguageService', () => {
             name: {
               value: 'Episode',
             },
+
             loc: {
               start: 293,
               end: 335,

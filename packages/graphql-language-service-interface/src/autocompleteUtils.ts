@@ -5,29 +5,32 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { GraphQLField, GraphQLSchema, GraphQLType } from 'graphql';
+import { GraphQLField, GraphQLSchema, GraphQLType } from 'graphql';
 import { isCompositeType } from 'graphql';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
-import type {
+import {
   CompletionItem,
   ContextToken,
   State,
-  TypeInfo,
+  AllTypeInfo,
 } from 'graphql-language-service-types';
 
 // Utility for returning the state representing the Definition this token state
 // is within, if any.
-export function getDefinitionState(tokenState: State): ?State {
+export function getDefinitionState(
+  tokenState: State,
+): State | null | undefined {
   let definitionState;
 
-  forEachState(tokenState, state => {
+  // TODO - couldn't figure this one out
+  // @ts-ignore
+  forEachState(tokenState, (state: State): AllTypeInfo | null | undefined => {
     switch (state.kind) {
       case 'Query':
       case 'ShortQuery':
@@ -47,7 +50,7 @@ export function getFieldDef(
   schema: GraphQLSchema,
   type: GraphQLType,
   fieldName: string,
-): ?GraphQLField<*, *> {
+): GraphQLField<any, any> | null | undefined {
   if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
     return SchemaMetaFieldDef;
   }
@@ -57,9 +60,8 @@ export function getFieldDef(
   if (fieldName === TypeNameMetaFieldDef.name && isCompositeType(type)) {
     return TypeNameMetaFieldDef;
   }
-  if (type.getFields && typeof type.getFields === 'function') {
-    // $FlowFixMe
-    return (type.getFields()[fieldName]: any);
+  if ('getFields' in type) {
+    return type.getFields()[fieldName] as any;
   }
 
   return null;
@@ -68,10 +70,10 @@ export function getFieldDef(
 // Utility for iterating through a CodeMirror parse state stack bottom-up.
 export function forEachState(
   stack: State,
-  fn: (state: State) => ?TypeInfo,
+  fn: (state: State) => AllTypeInfo | null | undefined,
 ): void {
   const reverseStateStack = [];
-  let state = stack;
+  let state: State | null | undefined = stack;
   while (state && state.kind) {
     reverseStateStack.push(state);
     state = state.prevState;
@@ -81,7 +83,7 @@ export function forEachState(
   }
 }
 
-export function objectValues(object: Object): Array<any> {
+export function objectValues(object: Record<string, any>): Array<any> {
   const keys = Object.keys(object);
   const len = keys.length;
   const values = new Array(len);
@@ -106,7 +108,7 @@ function filterAndSortList(
   text: string,
 ): Array<CompletionItem> {
   if (!text) {
-    return filterNonEmpty(list, entry => !entry.isDeprecated);
+    return filterNonEmpty<CompletionItem>(list, entry => !entry.isDeprecated);
   }
 
   const byProximity = list.map(entry => ({
@@ -131,10 +133,10 @@ function filterAndSortList(
 
 // Filters the array by the predicate, unless it results in an empty array,
 // in which case return the original array.
-function filterNonEmpty(
-  array: Array<Object>,
-  predicate: (entry: Object) => boolean,
-): Array<Object> {
+function filterNonEmpty<T>(
+  array: Array<T>,
+  predicate: (entry: T) => boolean,
+): Array<T> {
   const filtered = array.filter(predicate);
   return filtered.length === 0 ? array : filtered;
 }

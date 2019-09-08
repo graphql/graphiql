@@ -5,18 +5,18 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   ASTNode,
   FragmentSpreadNode,
   FragmentDefinitionNode,
   OperationDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  Location,
 } from 'graphql';
-import type {
+import {
   Definition,
   DefinitionQueryResult,
   FragmentInfo,
@@ -25,19 +25,20 @@ import type {
   Uri,
   ObjectTypeInfo,
 } from 'graphql-language-service-types';
+
 import { locToRange, offsetToPosition } from 'graphql-language-service-utils';
 import invariant from 'assert';
 
 export const LANGUAGE = 'GraphQL';
 
 function getRange(text: string, node: ASTNode): Range {
-  const location = node.loc;
+  const location = node.loc as Location;
   invariant(location, 'Expected ASTNode to have a location.');
   return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {
-  const location = node.loc;
+  const location = node.loc as Location;
   invariant(location, 'Expected ASTNode to have a location.');
   return offsetToPosition(text, location.start);
 }
@@ -51,6 +52,7 @@ export async function getDefinitionQueryResultForNamedType(
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === name,
   );
+
   if (defNodes.length === 0) {
     process.stderr.write(`Definition not found for GraphQL type ${name}`);
     return { queryRange: [], definitions: [] };
@@ -59,6 +61,7 @@ export async function getDefinitionQueryResultForNamedType(
     ({ filePath, content, definition }) =>
       getDefinitionForNodeDefinition(filePath || '', content, definition),
   );
+
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, node)),
@@ -74,6 +77,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name.value === name,
   );
+
   if (defNodes.length === 0) {
     process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
     return { queryRange: [], definitions: [] };
@@ -82,6 +86,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
     ({ filePath, content, definition }) =>
       getDefinitionForFragmentDefinition(filePath || '', content, definition),
   );
+
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, fragment)),
@@ -110,6 +115,9 @@ function getDefinitionForFragmentDefinition(
     path,
     position: getPosition(text, definition),
     range: getRange(text, definition),
+    // @ts-ignore
+    // TODO: doesnt seem to pick up the inference
+    // from invariant() exception logic
     name: name.value || '',
     language: LANGUAGE,
     // This is a file inside the project root, good enough for now

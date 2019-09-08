@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 /**
@@ -28,23 +27,24 @@
  *
  */
 
-import typeof {
+import {
   LexRules as LexRulesType,
   ParseRules as ParseRulesType,
 } from './Rules';
-import type {
+import {
   CharacterStream,
   State,
   Token,
+  Rule,
 } from 'graphql-language-service-types';
 
 import { LexRules, ParseRules, isIgnored } from './Rules';
 
 type ParserOptions = {
-  eatWhitespace: (stream: CharacterStream) => boolean,
-  lexRules: LexRulesType,
-  parseRules: ParseRulesType,
-  editorConfig: { [name: string]: any },
+  eatWhitespace: (stream: CharacterStream) => boolean;
+  lexRules: typeof LexRulesType;
+  parseRules: typeof ParseRulesType;
+  editorConfig: { [name: string]: any };
 };
 
 export default function onlineParser(
@@ -55,8 +55,8 @@ export default function onlineParser(
     editorConfig: {},
   },
 ): {
-  startState: () => State,
-  token: (stream: CharacterStream, state: State) => string,
+  startState: () => State;
+  token: (stream: CharacterStream, state: State) => string;
 } {
   return {
     startState() {
@@ -70,6 +70,7 @@ export default function onlineParser(
         needsSeperator: false,
         prevState: null,
       };
+
       pushRule(options.parseRules, initialState, 'Document');
       return initialState;
     },
@@ -131,13 +132,17 @@ function getToken(
   // Handle changes in expected indentation level
   if (token.kind === 'Punctuation') {
     if (/^[{([]/.test(token.value)) {
-      // Push on the stack of levels one level deeper than the current level.
-      state.levels = (state.levels || []).concat(state.indentLevel + 1);
+      if (state.indentLevel !== undefined) {
+        // Push on the stack of levels one level deeper than the current level.
+        state.levels = (state.levels || []).concat(state.indentLevel + 1);
+      }
     } else if (/^[})\]]/.test(token.value)) {
       // Pop from the stack of levels.
       // If the top of the stack is lower than the current level, lower the
       // current level to match.
       const levels = (state.levels = (state.levels || []).slice(0, -1));
+      // FIXME
+      // what if state.indentLevel === 0?
       if (state.indentLevel) {
         if (
           levels.length > 0 &&
@@ -207,6 +212,8 @@ function getToken(
 function assign(to: Object, from: Object): Object {
   const keys = Object.keys(from);
   for (let i = 0; i < keys.length; i++) {
+    // @ts-ignore
+    // TODO: ParseRules as numerical index
     to[keys[i]] = from[keys[i]];
   }
   return to;
@@ -219,7 +226,11 @@ const SpecialParseRules = {
 };
 
 // Push a new rule onto the state.
-function pushRule(rules: ParseRulesType, state: State, ruleKind: string): void {
+function pushRule(
+  rules: typeof ParseRulesType,
+  state: State,
+  ruleKind: string,
+): void {
   if (!rules[ruleKind]) {
     throw new TypeError('Unknown rule: ' + ruleKind);
   }
@@ -233,7 +244,7 @@ function pushRule(rules: ParseRulesType, state: State, ruleKind: string): void {
 }
 
 // Pop the current rule from the state.
-function popRule(state: State): void {
+function popRule(state: State): undefined {
   // Check if there's anything to pop
   if (!state.prevState) {
     return;
@@ -248,12 +259,15 @@ function popRule(state: State): void {
 }
 
 // Advance the step of the current rule.
-function advanceRule(state: State, successful: boolean): void {
+function advanceRule(state: State, successful: boolean): undefined {
   // If this is advancing successfully and the current state is a list, give
   // it an opportunity to repeat itself.
-  if (isList(state)) {
-    if (state.rule && state.rule[state.step].separator) {
-      const separator = state.rule[state.step].separator;
+  if (isList(state) && state.rule) {
+    // @ts-ignore
+    // TODO: ParseRules as numerical index
+    const step = state.rule[state.step];
+    if (step.separator) {
+      const separator = step.separator;
       state.needsSeperator = !state.needsSeperator;
       // If the separator was optional, then give it an opportunity to repeat.
       if (!state.needsSeperator && separator.ofRule) {
@@ -281,6 +295,8 @@ function advanceRule(state: State, successful: boolean): void {
     if (state.rule) {
       // Do not advance a List step so it has the opportunity to repeat itself.
       if (isList(state)) {
+        // @ts-ignore
+        // TODO: ParseRules as numerical index
         if (state.rule && state.rule[state.step].separator) {
           state.needsSeperator = !state.needsSeperator;
         }
@@ -292,12 +308,12 @@ function advanceRule(state: State, successful: boolean): void {
   }
 }
 
-function isList(state: State): ?boolean {
-  return (
+function isList(state: State): boolean | null | undefined {
+  const step =
     Array.isArray(state.rule) &&
     typeof state.rule[state.step] !== 'string' &&
-    state.rule[state.step].isList
-  );
+    (state.rule[state.step] as Rule);
+  return step && step.isList;
 }
 
 // Unwind the state after an unsuccessful match.
@@ -306,6 +322,8 @@ function unsuccessful(state: State): void {
   // until the entire stack of rules is empty.
   while (
     state.rule &&
+    // TODO: not sure how to fix this performantly
+    // @ts-ignore
     !(Array.isArray(state.rule) && state.rule[state.step].ofRule)
   ) {
     popRule(state);
@@ -319,9 +337,14 @@ function unsuccessful(state: State): void {
 }
 
 // Given a stream, returns a { kind, value } pair, or null.
-function lex(lexRules: LexRulesType, stream: CharacterStream): ?Token {
+function lex(
+  lexRules: typeof LexRulesType,
+  stream: CharacterStream,
+): Token | null | undefined {
   const kinds = Object.keys(lexRules);
   for (let i = 0; i < kinds.length; i++) {
+    // @ts-ignore
+    // TODO: ParseRules as numerical index
     const match = stream.match(lexRules[kinds[i]]);
     if (match && match instanceof Array) {
       return { kind: kinds[i], value: match[0] };

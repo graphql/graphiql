@@ -5,14 +5,10 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import { parse } from 'graphql';
-import {
-  getDefinitionQueryResultForFragmentSpread,
-  getDefinitionQueryResultForNamedType,
-} from '../getDefinition';
+import { getDefinitionQueryResultForFragmentSpread, getDefinitionQueryResultForNamedType } from '../getDefinition';
 
 describe('getDefinition', () => {
   describe('getDefinitionQueryResultForNamedType', () => {
@@ -33,6 +29,7 @@ describe('getDefinition', () => {
         {
           ...namedTypeDefinition,
         },
+
         [
           {
             file: 'someFile',
@@ -43,6 +40,10 @@ describe('getDefinition', () => {
           },
         ],
       );
+<<<<<<< HEAD:packages/graphql-language-service-interface/src/__tests__/getDefinition-test.js
+=======
+
+>>>>>>> chore: Convert LSP tests to jest from mocha (#871):packages/graphql-language-service-interface/src/__tests__/getDefinition-test.ts
       expect(result.definitions.length).toEqual(1);
       expect(result.definitions[0].position.line).toEqual(1);
       expect(result.definitions[0].position.character).toEqual(32);
@@ -58,9 +59,9 @@ describe('getDefinition', () => {
       fragment Duck on Duck {
         cuack
       }`;
-      const fragmentSpread = parse(query).definitions[0].selectionSet
-        .selections[0];
+      const fragmentSpread = parse(query).definitions[0].selectionSet.selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
+<<<<<<< HEAD:packages/graphql-language-service-interface/src/__tests__/getDefinition-test.js
       const result = await getDefinitionQueryResultForFragmentSpread(
         query,
         fragmentSpread,
@@ -72,6 +73,16 @@ describe('getDefinition', () => {
           },
         ],
       );
+=======
+      const result = await getDefinitionQueryResultForFragmentSpread(query, fragmentSpread, [
+        {
+          file: 'someFile',
+          content: fragment,
+          definition: fragmentDefinition,
+        },
+      ]);
+
+>>>>>>> chore: Convert LSP tests to jest from mocha (#871):packages/graphql-language-service-interface/src/__tests__/getDefinition-test.ts
       expect(result.definitions.length).toEqual(1);
       expect(result.definitions[0].position.line).toEqual(1);
       expect(result.definitions[0].position.character).toEqual(6);

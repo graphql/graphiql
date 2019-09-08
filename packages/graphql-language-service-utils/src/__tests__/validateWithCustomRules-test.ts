@@ -36,6 +36,7 @@ describe('validateWithCustomRules', () => {
         },
       }),
     ];
+
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
     expect(errors.length).toEqual(1);
     expect(errors[0].message).toEqual(
@@ -67,6 +68,7 @@ describe('validateWithCustomRules', () => {
     const astWithArgumentsDirective = parse(
       'query { human(id: "1") @arguments(foo: "bar") { name } }',
     );
+
     expect(
       validateWithCustomRules(schema, astWithArgumentsDirective, []),
     ).toEqual([]);
@@ -74,6 +76,7 @@ describe('validateWithCustomRules', () => {
     const astWithArgumentDefDirective = parse(
       '{ human(id: "2") { name @argumentDefinitions(arg: "foo") } }',
     );
+
     expect(
       validateWithCustomRules(schema, astWithArgumentDefDirective),
     ).toEqual([]);

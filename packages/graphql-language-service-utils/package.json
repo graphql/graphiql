@@ -20,6 +20,7 @@
     "graphql"
   ],
   "main": "dist/index.js",
+  "types": "src/index.ts",
   "scripts": {
     "test": "node ../../resources/runTests.js",
     "build": "yarn run build-js && yarn run build-flow",

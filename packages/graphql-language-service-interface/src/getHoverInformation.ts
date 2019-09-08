@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 /**
@@ -13,19 +12,29 @@
  * https://github.com/graphql/codemirror-graphql/blob/master/src/info.js
  */
 
-import type { GraphQLSchema } from 'graphql';
-import type { ContextToken } from 'graphql-language-service-types';
-import type { Hover } from 'vscode-languageserver-types';
-import type { Position } from 'graphql-language-service-utils';
+import {
+  GraphQLSchema,
+  GraphQLNonNull,
+  GraphQLList,
+  GraphQLType,
+  GraphQLField,
+  GraphQLFieldConfig,
+} from 'graphql';
+import {
+  ContextToken,
+  AllTypeInfo,
+} from 'graphql-language-service-types';
+
+import { Hover } from 'vscode-languageserver-types';
+import { Position } from 'graphql-language-service-utils';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
-import { GraphQLNonNull, GraphQLList } from 'graphql';
 
 export function getHoverInformation(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
   contextToken?: ContextToken,
-): Hover.contents {
+): Hover['contents'] | void | undefined {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
   if (!schema || !token || !token.state) {
@@ -45,59 +54,59 @@ export function getHoverInformation(
     (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
     (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
   ) {
-    const into = [];
+    const into: string[] = [];
     renderField(into, typeInfo, options);
     renderDescription(into, options, typeInfo.fieldDef);
     return into.join('').trim();
   } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
-    const into = [];
+    const into: string[] = [];
     renderDirective(into, typeInfo, options);
     renderDescription(into, options, typeInfo.directiveDef);
     return into.join('').trim();
   } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
-    const into = [];
+    const into: string[] = [];
     renderArg(into, typeInfo, options);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
   } else if (
     kind === 'EnumValue' &&
     typeInfo.enumValue &&
-    typeInfo.enumValue.description
+    'description' in typeInfo.enumValue
   ) {
-    const into = [];
+    const into: string[] = [];
     renderEnumValue(into, typeInfo, options);
     renderDescription(into, options, typeInfo.enumValue);
     return into.join('').trim();
   } else if (
     kind === 'NamedType' &&
     typeInfo.type &&
-    typeInfo.type.description
+    'description' in typeInfo.type
   ) {
-    const into = [];
+    const into: string[] = [];
     renderType(into, typeInfo, options, typeInfo.type);
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
 }
 
-function renderField(into, typeInfo, options) {
+function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderQualifiedField(into, typeInfo, options);
-  renderTypeAnnotation(into, typeInfo, options, typeInfo.type);
+  renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
 }
 
-function renderQualifiedField(into, typeInfo, options) {
+function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options) {
   if (!typeInfo.fieldDef) {
     return;
   }
-  const fieldName = (typeInfo.fieldDef.name: string);
+  const fieldName = typeInfo.fieldDef.name as string;
   if (fieldName.slice(0, 2) !== '__') {
-    renderType(into, typeInfo, options, typeInfo.parentType);
+    renderType(into, typeInfo, options, typeInfo.parentType as GraphQLType);
     text(into, '.');
   }
   text(into, fieldName);
 }
 
-function renderDirective(into, typeInfo, options) {
+function renderDirective(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (!typeInfo.directiveDef) {
     return;
   }
@@ -105,7 +114,7 @@ function renderDirective(into, typeInfo, options) {
   text(into, name);
 }
 
-function renderArg(into, typeInfo, options) {
+function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (typeInfo.directiveDef) {
     renderDirective(into, typeInfo, options);
   } else if (typeInfo.fieldDef) {
@@ -119,26 +128,41 @@ function renderArg(into, typeInfo, options) {
   const name = typeInfo.argDef.name;
   text(into, '(');
   text(into, name);
-  renderTypeAnnotation(into, typeInfo, options, typeInfo.inputType);
+  renderTypeAnnotation(
+    into,
+    typeInfo,
+    options,
+    typeInfo.inputType as GraphQLType,
+  );
   text(into, ')');
 }
 
-function renderTypeAnnotation(into, typeInfo, options, t) {
+function renderTypeAnnotation(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any,
+  t: GraphQLType,
+) {
   text(into, ': ');
   renderType(into, typeInfo, options, t);
 }
 
-function renderEnumValue(into, typeInfo, options) {
+function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (!typeInfo.enumValue) {
     return;
   }
   const name = typeInfo.enumValue.name;
-  renderType(into, typeInfo, options, typeInfo.inputType);
+  renderType(into, typeInfo, options, typeInfo.inputType as GraphQLType);
   text(into, '.');
   text(into, name);
 }
 
-function renderType(into, typeInfo, options, t) {
+function renderType(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any,
+  t: GraphQLType,
+) {
   if (!t) {
     return;
   }
@@ -154,7 +178,12 @@ function renderType(into, typeInfo, options, t) {
   }
 }
 
-function renderDescription(into, options, def) {
+function renderDescription(
+  into: string[],
+  options: any,
+  // TODO: Figure out the right type for this one
+  def: any,
+) {
   if (!def) {
     return;
   }
@@ -167,12 +196,16 @@ function renderDescription(into, options, def) {
   renderDeprecation(into, options, def);
 }
 
-function renderDeprecation(into, options, def) {
+function renderDeprecation(
+  into: string[],
+  options: any,
+  def: GraphQLField<any, any> | GraphQLFieldConfig<any, any>,
+) {
   if (!def) {
     return;
   }
-  const reason =
-    typeof def.deprecationReason === 'string' ? def.deprecationReason : null;
+
+  const reason = def['deprecationReason'] ? def.deprecationReason : null;
   if (!reason) {
     return;
   }

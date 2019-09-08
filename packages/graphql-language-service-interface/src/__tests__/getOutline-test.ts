@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import { getOutline } from '../getOutline';
@@ -46,7 +45,7 @@ describe('getOutline()', () => {
     expect(tree[0].children[0].tokenizedText.length).toEqual(1);
     expect(tree[0].children[0].tokenizedText[0]).toEqual({
       kind: 'plain',
-      value: 'name',
-    });
+      value: 'name' });
+
   });
 });

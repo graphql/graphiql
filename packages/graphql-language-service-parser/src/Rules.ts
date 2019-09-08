@@ -5,10 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   CharacterStream,
   State,
   Token,
@@ -96,6 +95,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     'SelectionSet',
   ],
+
   Mutation: [
     word('mutation'),
     opt(name('def')),
@@ -103,6 +103,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     'SelectionSet',
   ],
+
   Subscription: [
     word('subscription'),
     opt(name('def')),
@@ -110,6 +111,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     'SelectionSet',
   ],
+
   VariableDefinitions: [p('('), list('VariableDefinition'), p(')')],
   VariableDefinition: ['Variable', p(':'), 'Type', opt('DefaultValue')],
   Variable: [p('$', 'variable'), name('variable')],
@@ -133,12 +135,14 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     opt('SelectionSet'),
   ],
+
   Field: [
     name('property'),
     opt('Arguments'),
     list('Directive'),
     opt('SelectionSet'),
   ],
+
   Arguments: [p('('), list('Argument'), p(')')],
   Argument: [name('attribute'), p(':'), 'Value'],
   FragmentSpread: [p('...'), name('def'), list('Directive')],
@@ -148,6 +152,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     'SelectionSet',
   ],
+
   FragmentDefinition: [
     word('fragment'),
     opt(butNot(name('def'), [word('on')])),
@@ -155,6 +160,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('Directive'),
     'SelectionSet',
   ],
+
   TypeCondition: [word('on'), 'NamedType'],
   // Variables could be parsed in cases where only Const is expected by spec.
   Value(token: Token) {
@@ -172,6 +178,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
           case '$':
             return 'Variable';
         }
+
         return null;
       case 'Name':
         switch (token.value) {
@@ -179,6 +186,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
           case 'false':
             return 'BooleanValue';
         }
+
         if (token.value === 'null') {
           return 'NullValue';
         }
@@ -209,6 +217,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('OperationTypeDef'),
     p('}'),
   ],
+
   OperationTypeDef: [name('keyword'), p(':'), name('atom')],
   ScalarDef: [word('scalar'), name('atom'), list('Directive')],
   ObjectTypeDef: [
@@ -220,6 +229,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('FieldDef'),
     p('}'),
   ],
+
   Implements: [word('implements'), list('NamedType')],
   FieldDef: [
     name('property'),
@@ -228,6 +238,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     'Type',
     list('Directive'),
   ],
+
   ArgumentsDef: [p('('), list('InputValueDef'), p(')')],
   InputValueDef: [
     name('attribute'),
@@ -236,6 +247,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     opt('DefaultValue'),
     list('Directive'),
   ],
+
   InterfaceDef: [
     word('interface'),
     name('atom'),
@@ -244,6 +256,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('FieldDef'),
     p('}'),
   ],
+
   UnionDef: [
     word('union'),
     name('atom'),
@@ -251,6 +264,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     p('='),
     list('UnionMember', p('|')),
   ],
+
   UnionMember: ['NamedType'],
   EnumDef: [
     word('enum'),
@@ -260,6 +274,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('EnumValueDef'),
     p('}'),
   ],
+
   EnumValueDef: [name('string-2'), list('Directive')],
   InputDef: [
     word('input'),
@@ -269,6 +284,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('InputValueDef'),
     p('}'),
   ],
+
   ExtendDef: [word('extend'), 'ObjectTypeDef'],
   DirectiveDef: [
     word('directive'),
@@ -278,6 +294,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
     word('on'),
     list('DirectiveLocation', p('|')),
   ],
+
   DirectiveLocation: [name('string-2')],
 };
 

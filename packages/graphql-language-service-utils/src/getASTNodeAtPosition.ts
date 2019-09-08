@@ -5,10 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { ASTNode } from 'graphql/language';
+import { ASTNode } from 'graphql/language';
 
 import { Position } from './Range';
 import { visit } from 'graphql';
@@ -17,9 +16,9 @@ export function getASTNodeAtPosition(
   query: string,
   ast: ASTNode,
   point: Position,
-): ?ASTNode {
+): ASTNode | null | undefined {
   const offset = pointToOffset(query, point);
-  let nodeContainingPosition: ?ASTNode;
+  let nodeContainingPosition: ASTNode | null | undefined;
   visit(ast, {
     enter(node) {
       if (
@@ -39,6 +38,7 @@ export function getASTNodeAtPosition(
       }
     },
   });
+
   return nodeContainingPosition;
 }
 

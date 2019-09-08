@@ -24,13 +24,14 @@
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
     "lint": "eslint packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint:fix": "eslint 'packages/*/src/**/*.{ts,js,jsx,tsx,json}' --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "version:release": "lerna version",
-    "version:prerelease": "lerna version --conventional-prerelease",
+    "version:prerelease": "lerna versiton --conventional-prerelease",
     "version:graduate": "lerna version --conventional-graduate"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
+    "@types/jest": "^24.0.18",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
@@ -60,13 +62,14 @@
     "eslint-plugin-react": "7.13.0",
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
-    "graphql": "^14.3.1",
+    "graphql": "^14.5.2",
     "husky": "^3.0.5",
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
     "jest": "^24.8.0",
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "typescript": "^3.6.3"
   }
 }

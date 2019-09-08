@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "removeComments": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["dom", "es2017", "esnext.asynciterable"],
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "graphql-language-*" : ["graphql-language-*"]
+    },
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js"
+  ]
+}
