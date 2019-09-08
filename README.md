@@ -10,7 +10,7 @@
 
 GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation.
 
-This repository contains much of the code that powers GraphiQL (and many other tools such as Altair, Insomnia, GraphQL GraphQL Playground, VScode plugins, and more!), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+This repository contains much of the code that powers GraphiQL (and many other tools such as Altair, Insomnia, GraphQL Playground, VScode plugins, and more!), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
 
 The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
 
