@@ -21,27 +21,14 @@
     "README.md",
     "LICENSE"
   ],
-  "jest": {
-    "clearMocks": true,
-    "setupFiles": [
-      "<rootDir>/resources/enzyme.config.js"
-    ],
-    "transform": {
-      "^.+\\.jsx?$": "./resources/jestBabelTransform"
-    },
-    "testEnvironment": "jsdom",
-    "testPathIgnorePatterns": [
-      "\\\\node_modules\\\\",
-      "dist"
-    ]
-  },
   "scripts": {
     "build": "yarn run build-js && yarn run build-flow",
     "build-js": "bash ./resources/build.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node --root-mode upward test/server.js",
-    "test": "jest --no-cache spec"
+    "preversion": ". ./resources/checkgit.sh && npm test",
+    "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {
     "*.js": [
@@ -67,8 +54,6 @@
     "babelify": "10.0.0",
     "browserify": "16.2.3",
     "browserify-shim": "3.8.14",
-    "chai": "4.2.0",
-    "chai-subset": "1.6.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",

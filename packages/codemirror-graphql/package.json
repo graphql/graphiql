@@ -25,13 +25,20 @@
     "README.md",
     "LICENSE"
   ],
+  "options": {
+    "mocha": "--full-trace --require resources/mochaBootload src/*/__tests__/*-test.js",
+    "mocha_tdd": "--full-trace --watch --require resources/mochaBootload src/**/*/__tests__/*-test.js"
+  },
   "scripts": {
     "lint": "eslint src",
     "check": "flow check",
     "build": "babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",
-    "watch": "babel --optional runtime resources/watch.js | node"
+    "watch": "babel --optional runtime resources/watch.js | node",
+    "preversion": ". ./resources/checkgit.sh && yarn test",
+    "prepublish": ". ./resources/prepublish.sh",
+    "test": "mocha $npm_package_options_mocha"
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",

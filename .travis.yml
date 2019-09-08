@@ -6,6 +6,8 @@ before_install:
   - npm config set spin false --global
 install:
   - yarn --ignore-scripts # ignore prepublish scripts
+after_success:
+  - codecov
 cache: yarn
 # deploy:
 #   - provider: script

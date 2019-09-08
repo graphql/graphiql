@@ -8,8 +8,6 @@
  *  @flow
  */
 
-import { expect } from 'chai';
-import { beforeEach, describe, it } from 'mocha';
 import fs from 'fs';
 import { buildSchema, parse } from 'graphql';
 import path from 'path';
@@ -28,11 +26,11 @@ describe('getDiagnostics', () => {
 
   it('catches field validation errors', () => {
     const error = validateQuery(parse('query queryName { title }'), schema)[0];
-    expect(error.message).to.equal(
+    expect(error.message).toEqual(
       'Cannot query field "title" on type "Query".',
     );
-    expect(error.severity).to.equal(SEVERITY.ERROR);
-    expect(error.source).to.equal('GraphQL: Validation');
+    expect(error.severity).toEqual(SEVERITY.ERROR);
+    expect(error.source).toEqual('GraphQL: Validation');
   });
 
   it('catches field deprecation errors', () => {
@@ -40,16 +38,16 @@ describe('getDiagnostics', () => {
       '{ deprecatedField { testField } }',
       schema,
     )[0];
-    expect(error.message).to.equal(
+    expect(error.message).toEqual(
       'The field Query.deprecatedField is deprecated. Use test instead.',
     );
-    expect(error.severity).to.equal(SEVERITY.WARNING);
-    expect(error.source).to.equal('GraphQL: Deprecation');
+    expect(error.severity).toEqual(SEVERITY.WARNING);
+    expect(error.source).toEqual('GraphQL: Deprecation');
   });
 
   it('returns no errors for valid query', () => {
     const errors = getDiagnostics('query { hero { name } }', schema);
-    expect(errors.length).to.equal(0);
+    expect(errors.length).toEqual(0);
   });
 
   it('returns no errors for valid query with aliases', () => {
@@ -57,7 +55,7 @@ describe('getDiagnostics', () => {
       'query { superHero: hero { superName: name } superHero2: hero { superName2: name } }',
       schema,
     );
-    expect(errors.length).to.equal(0);
+    expect(errors.length).toEqual(0);
   });
 
   it('catches a syntax error in the SDL', () => {
@@ -70,11 +68,11 @@ describe('getDiagnostics', () => {
       `,
       schema,
     );
-    expect(errors.length).to.equal(1);
+    expect(errors.length).toEqual(1);
     const error = errors[0];
-    expect(error.message).to.equal('Syntax Error: Expected :, found Name "id"');
-    expect(error.severity).to.equal(SEVERITY.ERROR);
-    expect(error.source).to.equal('GraphQL: Syntax');
+    expect(error.message).toEqual('Syntax Error: Expected :, found Name "id"');
+    expect(error.severity).toEqual(SEVERITY.ERROR);
+    expect(error.source).toEqual('GraphQL: Syntax');
   });
 
   // TODO: change this kitchen sink to depend on the local schema
@@ -86,6 +84,6 @@ describe('getDiagnostics', () => {
     );
 
     const errors = getDiagnostics(kitchenSink);
-    expect(errors).to.have.lengthOf(0);
+    expect(errors).toHaveLength(0);
   });
 });

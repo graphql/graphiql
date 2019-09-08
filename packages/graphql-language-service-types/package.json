@@ -21,7 +21,6 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
     "build": "yarn run build-js && yarn run build-flow",
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",

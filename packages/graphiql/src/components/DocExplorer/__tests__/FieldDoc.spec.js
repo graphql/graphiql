@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { mount } from 'enzyme';
-import { expect } from 'chai';
 
 import FieldDoc from '../FieldDoc';
 
@@ -34,7 +33,7 @@ const exampleObject = new GraphQLObjectType({
   },
 });
 
-describe.only('FieldDoc', () => {
+describe('FieldDoc', () => {
   it('should render a simple string field', () => {
     const W = mount(
       <FieldDoc
@@ -42,9 +41,9 @@ describe.only('FieldDoc', () => {
         onClickType={jest.fn()}
       />,
     );
-    expect(W.find('MarkdownContent').text()).to.equal('No Description\n');
-    expect(W.find('TypeLink').text()).to.equal('String');
-    expect(W.find('Argument').length).to.equal(0);
+    expect(W.find('MarkdownContent').text()).toEqual('No Description\n');
+    expect(W.find('TypeLink').text()).toEqual('String');
+    expect(W.find('Argument').length).toEqual(0);
   });
 
   it('should re-render on field change', () => {
@@ -54,9 +53,9 @@ describe.only('FieldDoc', () => {
         onClickType={jest.fn()}
       />,
     );
-    expect(W.find('MarkdownContent').text()).to.equal('No Description\n');
-    expect(W.find('TypeLink').text()).to.equal('String');
-    expect(W.find('Argument').length).to.equal(0);
+    expect(W.find('MarkdownContent').text()).toEqual('No Description\n');
+    expect(W.find('TypeLink').text()).toEqual('String');
+    expect(W.find('Argument').length).toEqual(0);
   });
 
   it('should render a string field with arguments', () => {
@@ -70,13 +69,13 @@ describe.only('FieldDoc', () => {
       W.find('TypeLink')
         .at(0)
         .text(),
-    ).to.equal('String');
+    ).toEqual('String');
     expect(
       W.find('.doc-type-description')
         .at(0)
         .text(),
-    ).to.equal('Example String field with arguments\n');
-    expect(W.find('Argument').length).to.equal(1);
-    expect(W.find('Argument').text()).to.equal('stringArg: String');
+    ).toEqual('Example String field with arguments\n');
+    expect(W.find('Argument').length).toEqual(1);
+    expect(W.find('Argument').text()).toEqual('stringArg: String');
   });
 });

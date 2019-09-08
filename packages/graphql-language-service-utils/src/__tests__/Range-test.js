@@ -8,8 +8,6 @@
  *  @flow
  */
 
-import { expect } from 'chai';
-import { before, describe, it } from 'mocha';
 import { Range, Position, offsetToPosition, locToRange } from '../Range';
 
 const text = `query test {
@@ -22,18 +20,18 @@ const offsetRangeEnd = new Position(1, 5);
 describe('Position', () => {
   it('constructs a Position object', () => {
     const pos = new Position(3, 5);
-    expect(pos).to.not.be.undefined;
-    expect(pos.character).to.equal(5);
-    expect(pos.line).to.equal(3);
+    expect(pos).not.toBeUndefined;
+    expect(pos.character).toEqual(5);
+    expect(pos.line).toEqual(3);
   });
 
   it('compares Position objects', () => {
     const posA = new Position(1, 2);
     const posB = new Position(2, 2);
     const posC = new Position(2, 3);
-    expect(posA.lessThanOrEqualTo(posB)).to.equal(true);
-    expect(posB.lessThanOrEqualTo(posC)).to.equal(true);
-    expect(posC.lessThanOrEqualTo(posA)).to.equal(false);
+    expect(posA.lessThanOrEqualTo(posB)).toEqual(true);
+    expect(posB.lessThanOrEqualTo(posC)).toEqual(true);
+    expect(posC.lessThanOrEqualTo(posA)).toEqual(false);
   });
 });
 
@@ -42,40 +40,40 @@ describe('Range', () => {
   let end;
   let range;
 
-  before(() => {
+  beforeAll(() => {
     start = new Position(2, 3);
     end = new Position(2, 5);
     range = new Range(start, end);
   });
 
   it('constructs a Range object', () => {
-    expect(range).to.not.be.undefined;
-    expect(range.start).to.deep.equal(start);
-    expect(range.end).to.deep.equal(end);
+    expect(range).not.toBeUndefined;
+    expect(range.start).toEqual(start);
+    expect(range.end).toEqual(end);
   });
 
   it('checks if it contains certain position', () => {
     const posA = new Position(2, 4);
     const posB = new Position(3, 5);
-    expect(range.containsPosition(posA)).to.equal(true);
-    expect(range.containsPosition(posB)).to.equal(false);
+    expect(range.containsPosition(posA)).toEqual(true);
+    expect(range.containsPosition(posB)).toEqual(false);
   });
 });
 
 describe('offsetToPosition()', () => {
   it('returns the offset to a position', () => {
     const position = offsetToPosition(text, absRange.start);
-    expect(position.character).to.equal(offsetRangeStart.character);
-    expect(position.line).to.equal(offsetRangeStart.line);
+    expect(position.character).toEqual(offsetRangeStart.character);
+    expect(position.line).toEqual(offsetRangeStart.line);
   });
 });
 
 describe('locToRange()', () => {
   it('returns the range for a location', () => {
     const range = locToRange(text, absRange);
-    expect(range.start.character).to.equal(offsetRangeStart.character);
-    expect(range.start.line).to.equal(offsetRangeStart.line);
-    expect(range.end.character).to.equal(offsetRangeEnd.character);
-    expect(range.end.line).to.equal(offsetRangeEnd.line);
+    expect(range.start.character).toEqual(offsetRangeStart.character);
+    expect(range.start.line).toEqual(offsetRangeStart.line);
+    expect(range.end.character).toEqual(offsetRangeEnd.character);
+    expect(range.end.line).toEqual(offsetRangeEnd.line);
   });
 });

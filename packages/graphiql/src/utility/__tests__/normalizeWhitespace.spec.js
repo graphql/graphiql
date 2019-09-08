@@ -5,13 +5,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { expect } from 'chai';
-
 import { invalidCharacters, normalizeWhitespace } from '../normalizeWhitespace';
 
 describe('QueryEditor', () => {
   it('removes unicode characters', () => {
     const result = normalizeWhitespace(invalidCharacters.join(''));
-    expect(result).to.equal(' '.repeat(invalidCharacters.length));
+    expect(result).toEqual(' '.repeat(invalidCharacters.length));
   });
 });

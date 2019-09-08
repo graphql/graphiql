@@ -6,10 +6,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { expect } from 'chai';
 import { readFileSync } from 'fs';
 import { GraphQLError, buildSchema, parse } from 'graphql';
-import { beforeEach, describe, it } from 'mocha';
 import { join } from 'path';
 
 import { validateWithCustomRules } from '../validateWithCustomRules';
@@ -39,8 +37,8 @@ describe('validateWithCustomRules', () => {
       }),
     ];
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
-    expect(errors.length).to.equal(1);
-    expect(errors[0].message).to.equal(
+    expect(errors.length).toEqual(1);
+    expect(errors[0].message).toEqual(
       'Argument ID must be a number written in string type.',
     );
   });
@@ -53,7 +51,7 @@ describe('validateWithCustomRules', () => {
       [],
       true,
     );
-    expect(noErrors.length).to.equal(0);
+    expect(noErrors.length).toEqual(0);
 
     const errors = validateWithCustomRules(
       schema,
@@ -61,8 +59,8 @@ describe('validateWithCustomRules', () => {
       [],
       false,
     );
-    expect(errors.length).to.equal(1);
-    expect(errors[0].message).to.equal('Unknown fragment "UnknownFragment".');
+    expect(errors.length).toEqual(1);
+    expect(errors[0].message).toEqual('Unknown fragment "UnknownFragment".');
   });
 
   it('does not validate for Relay @arguments and @argumentDefinition', () => {
@@ -71,13 +69,13 @@ describe('validateWithCustomRules', () => {
     );
     expect(
       validateWithCustomRules(schema, astWithArgumentsDirective, []),
-    ).to.deep.equal([]);
+    ).toEqual([]);
 
     const astWithArgumentDefDirective = parse(
       '{ human(id: "2") { name @argumentDefinitions(arg: "foo") } }',
     );
     expect(
       validateWithCustomRules(schema, astWithArgumentDefDirective),
-    ).to.deep.equal([]);
+    ).toEqual([]);
   });
 });

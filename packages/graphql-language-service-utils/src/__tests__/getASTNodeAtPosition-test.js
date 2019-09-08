@@ -6,9 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { expect } from 'chai';
 import { parse } from 'graphql';
-
 
 import { Position } from '../Range';
 import { getASTNodeAtPosition, pointToOffset } from '../getASTNodeAtPosition';
@@ -28,36 +26,36 @@ describe('getASTNodeAtPosition', () => {
   it('gets the node at the beginning', () => {
     const point = new Position(2, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).to.not.be.undefined;
+    expect(node).not.toBeUndefined;
     if (node != null) {
-      expect(node.name.value).to.equal('field');
+      expect(node.name.value).toEqual('field');
     }
   });
 
   it('does not find the node before the beginning', () => {
     const point = new Position(0, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).to.not.be.undefined;
+    expect(node).not.toBeUndefined;
     if (node != null) {
-      expect(node.kind).to.equal('Document');
+      expect(node.kind).toEqual('Document');
     }
   });
 
   it('gets the node at the end', () => {
     const point = new Position(2, 5);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).to.not.be.undefined;
+    expect(node).not.toBeUndefined;
     if (node != null) {
-      expect(node.name.value).to.equal('field');
+      expect(node.name.value).toEqual('field');
     }
   });
 
   it('does not find the node after the end', () => {
     const point = new Position(4, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).to.not.be.undefined;
+    expect(node).not.toBeUndefined;
     if (node != null) {
-      expect(node.kind).to.equal('Document');
+      expect(node.kind).toEqual('Document');
     }
   });
 });
@@ -65,11 +63,11 @@ describe('getASTNodeAtPosition', () => {
 describe('pointToOffset', () => {
   it('works for single lines', () => {
     const text = 'lorem';
-    expect(pointToOffset(text, new Position(0, 2))).to.equal(2);
+    expect(pointToOffset(text, new Position(0, 2))).toEqual(2);
   });
 
   it('takes EOL into account', () => {
     const text = 'lorem\n';
-    expect(pointToOffset(text, new Position(1, 0))).to.equal(text.length);
+    expect(pointToOffset(text, new Position(1, 0))).toEqual(text.length);
   });
 });
