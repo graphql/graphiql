@@ -1,5 +1,5 @@
 {
-  "name": "graphiql",
+  "name": "@altangent/graphiql",
   "version": "0.13.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
