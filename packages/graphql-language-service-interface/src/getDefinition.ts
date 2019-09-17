@@ -16,6 +16,7 @@ import {
   TypeDefinitionNode,
   Location,
 } from 'graphql';
+
 import {
   Definition,
   DefinitionQueryResult,

@@ -13,16 +13,17 @@ import {
   GraphQLDirective,
   GraphQLSchema,
   GraphQLType,
-  GraphQLObjectType,
-  ArgumentNode,  
+  GraphQLCompositeType,
+  GraphQLEnumValue,
 } from 'graphql';
+
 import {
   CompletionItem,
   ContextToken,
   State,
-  AllTypeInfo
+  AllTypeInfo,
+  Position
 } from 'graphql-language-service-types';
-import { Position } from 'graphql-language-service-utils';
 
 import {
   GraphQLBoolean,
@@ -40,7 +41,9 @@ import {
   isCompositeType,
   isInputType,
 } from 'graphql';
+
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
+
 import {
   forEachState,
   getDefinitionState,
@@ -200,7 +203,7 @@ function getSuggestionsForInputValues(
   token: ContextToken,
   typeInfo: AllTypeInfo,
 ): Array<CompletionItem> {
-  const namedInputType = getNamedType(typeInfo.inputType);
+  const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
   if (namedInputType instanceof GraphQLEnumType) {
     const values = namedInputType.getValues();
     return hintList(
@@ -237,7 +240,7 @@ function getSuggestionsForFragmentTypeConditions(
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
-  let possibleTypes;
+  let possibleTypes: GraphQLType[];
   if (typeInfo.parentType) {
     if (isAbstractType(typeInfo.parentType)) {
       const abstractType = assertAbstractType(typeInfo.parentType);
@@ -262,7 +265,7 @@ function getSuggestionsForFragmentTypeConditions(
   }
   return hintList(
     token,
-    possibleTypes.map(type => {
+    possibleTypes.map((type: GraphQLType) => {
       const namedType = getNamedType(type);
       return {
         label: String(type),
@@ -296,11 +299,9 @@ function getSuggestionsForFragmentSpread(
       // Only include fragments which could possibly be spread here.
       isCompositeType(typeInfo.parentType) &&
       isCompositeType(typeMap[frag.typeCondition.name.value]) &&
-      doTypesOverlap(
-        schema,
-        typeInfo.parentType,
-        typeMap[frag.typeCondition.name.value],
-      ),
+      doTypesOverlap(schema, typeInfo.parentType, typeMap[
+        frag.typeCondition.name.value
+      ] as GraphQLCompositeType),
   );
 
   return hintList(
@@ -317,7 +318,7 @@ function getFragmentDefinitions(
   queryText: string,
 ): Array<FragmentDefinitionNode> {
   const fragmentDefs: FragmentDefinitionNode[] = [];
-  runOnlineParser(queryText, (_, state) => {
+  runOnlineParser(queryText, (_, state: State) => {
     if (state.kind === 'FragmentDefinition' && state.name && state.type) {
       fragmentDefs.push({
         kind: 'FragmentDefinition',
@@ -353,7 +354,8 @@ function getSuggestionsForVariableDefinition(
   const inputTypes = objectValues(inputTypeMap).filter(isInputType);
   return hintList(
     token,
-    inputTypes.map(type => ({
+    // TODO: couldn't get Exclude<> working here
+    inputTypes.map((type: any) => ({
       label: type.name,
       documentation: type.description,
     })),
@@ -421,7 +423,7 @@ type callbackFnType = (
   state: State,
   style: string,
   index: number,
-) => undefined | 'BREAK';
+) => void | 'BREAK';
 
 function runOnlineParser(
   queryText: string,
@@ -519,22 +521,22 @@ function canUseDirective(
 
   return false;
 }
-type Maybe<T> = T | null | undefined;
+
 // Utility for collecting rich type information given any token's state
 // from the graphql-mode parser.
 export function getTypeInfo(
   schema: GraphQLSchema,
   tokenState: State,
 ): AllTypeInfo {
-  let argDef: ArgumentNode;
-  let argDefs: ArgumentNode[];
-  let directiveDef;
-  let enumValue;
-  let fieldDef;
-  let inputType: GraphQLType | null;
-  let objectFieldDefs;
-  let parentType: GraphQLType;
-  let type: Maybe<GraphQLObjectType<any, any, { [key: string]: any }>>;
+  let argDef: AllTypeInfo['argDef'];
+  let argDefs: AllTypeInfo['argDefs'];
+  let directiveDef: AllTypeInfo['directiveDef'];
+  let enumValue: AllTypeInfo['enumValue'];
+  let fieldDef: AllTypeInfo['fieldDef'];
+  let inputType: AllTypeInfo['inputType'];
+  let objectFieldDefs: AllTypeInfo['objectFieldDefs'];
+  let parentType: AllTypeInfo['parentType'];
+  let type: AllTypeInfo['type'];
 
   forEachState(tokenState, state => {
     switch (state.kind) {
@@ -566,7 +568,7 @@ export function getTypeInfo(
         }
         break;
       case 'SelectionSet':
-        parentType = getNamedType(type);
+        parentType = getNamedType(type as GraphQLType);
         break;
       case 'Directive':
         directiveDef = state.name ? schema.getDirective(state.name) : null;
@@ -615,19 +617,22 @@ export function getTypeInfo(
         inputType = argDef && argDef.type;
         break;
       case 'EnumValue':
-        const enumType = getNamedType(inputType);
+        const enumType = getNamedType(inputType as GraphQLType);
         enumValue =
           enumType instanceof GraphQLEnumType
-            ? find(enumType.getValues(), val => val.value === state.name)
+            ? find(
+                enumType.getValues(),
+                (val: GraphQLEnumValue) => val.value === state.name,
+              )
             : null;
         break;
       case 'ListValue':
-        const nullableType = getNullableType(inputType);
+        const nullableType = getNullableType(inputType as GraphQLType);
         inputType =
           nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case 'ObjectValue':
-        const objectType = getNamedType(inputType);
+        const objectType = getNamedType(inputType as GraphQLType);
         objectFieldDefs =
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()
@@ -660,7 +665,7 @@ export function getTypeInfo(
 }
 
 // Returns the first item in the array which causes predicate to return truthy.
-function find(array, predicate) {
+function find(array: any[], predicate: Function) {
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i])) {
       return array[i];

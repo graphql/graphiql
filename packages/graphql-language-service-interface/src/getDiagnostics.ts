@@ -18,7 +18,7 @@ import {
 
 import {
   Diagnostic,
-  CustomValidationRule,
+  CustomValidationRule
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
@@ -26,11 +26,7 @@ import { findDeprecatedUsages, parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 
-import {
-  Position,
-  Range,
-  validateWithCustomRules,
-} from 'graphql-language-service-utils';
+import { Range, validateWithCustomRules, Position } from 'graphql-language-service-utils';
 
 export const SEVERITY = {
   ERROR: 1,
@@ -155,11 +151,13 @@ export function getRange(location: SourceLocation, queryText: string): Range {
   }
 
   invariant(stream, 'Expected Parser stream to be available.');
-
   const line = location.line - 1;
+  // @ts-ignore
+  // https://github.com/microsoft/TypeScript/pull/32695
   const start = stream.getStartOfToken();
+  // @ts-ignore
+  // https://github.com/microsoft/TypeScript/pull/32695
   const end = stream.getCurrentPosition();
-
   return new Range(new Position(line, start), new Position(line, end));
 }
 

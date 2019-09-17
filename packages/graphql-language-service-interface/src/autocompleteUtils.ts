@@ -70,7 +70,7 @@ export function getFieldDef(
 // Utility for iterating through a CodeMirror parse state stack bottom-up.
 export function forEachState(
   stack: State,
-  fn: (state: State) => AllTypeInfo | null | undefined,
+  fn: (state: State) => AllTypeInfo | null | void,
 ): void {
   const reverseStateStack = [];
   let state: State | null | undefined = stack;

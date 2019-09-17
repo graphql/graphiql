@@ -7,6 +7,7 @@
  *
  */
 
+ import { Position } from 'graphql-language-service-types'
 import { join } from 'path';
 import * as fs from 'fs';
 import { buildSchema } from 'graphql';
@@ -71,7 +72,7 @@ describe('GraphQLLanguageService', () => {
     },
   };
 
-  let languageService;
+  let languageService: GraphQLLanguageService;
   beforeEach(() => {
     languageService = new GraphQLLanguageService(mockCache);
   });
@@ -100,7 +101,7 @@ describe('GraphQLLanguageService', () => {
   it('runs hover service as expected', async () => {
     const hoverInformation = await languageService.getHoverInformation(
       'type Query { hero(episode: String): String }',
-      { line: 0, character: 28 },
+      { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
     expect(hoverInformation).toEqual(

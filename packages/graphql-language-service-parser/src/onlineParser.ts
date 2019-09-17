@@ -36,6 +36,7 @@ import {
   State,
   Token,
   Rule,
+  RuleKind,
 } from 'graphql-language-service-types';
 
 import { LexRules, ParseRules, isIgnored } from './Rules';
@@ -177,7 +178,7 @@ function getToken(
 
       // A string represents a Rule
       if (typeof expected === 'string') {
-        pushRule(parseRules, state, expected);
+        pushRule(parseRules, state, expected as RuleKind);
         continue;
       }
 
@@ -229,7 +230,7 @@ const SpecialParseRules = {
 function pushRule(
   rules: typeof ParseRulesType,
   state: State,
-  ruleKind: string,
+  ruleKind: RuleKind,
 ): void {
   if (!rules[ruleKind]) {
     throw new TypeError('Unknown rule: ' + ruleKind);

@@ -545,9 +545,76 @@
         "version": "db6616c5ee468b42d3903b9aa71db6e794c723f3079315d5c326aaa8fa4b6fa4",
         "signature": "db6616c5ee468b42d3903b9aa71db6e794c723f3079315d5c326aaa8fa4b6fa4"
       },
+      "../graphql-language-service-types/src/index.ts": {
+        "version": "0eccbb489f441658fcd2acfe7811403eed555060b86fcf4683ef1ee34245ccc6"
+      },
+      "../graphql-language-service-utils/src/Range.ts": {
+        "version": "58926b36007f993a2e6adb291d57f992bccd60f9b934bcb4dda254e6937a3e36"
+      },
+      "../graphql-language-service-utils/src/getASTNodeAtPosition.ts": {
+        "version": "7495e8a9bd7eb6c386230570388eec0c6cf64779d2f52219a2c09a41e5db2e2a"
+      },
+      "../graphql-language-service-utils/src/validateWithCustomRules.ts": {
+        "version": "59c17d228f43716a438348d3dfd2085ecc1393c481d9ed38d2ffed7867516a9b"
+      },
+      "../graphql-language-service-utils/src/index.ts": {
+        "version": "b40b3ad0dc655bbc0f033315f9b1ab4a543f148759f82f18675b9cc5001e6b20"
+      },
+      "../../node_modules/vscode-languageserver-types/lib/main.d.ts": {
+        "version": "8f3891a98196fd9653045a665ec2844148bff0a4f82a7ae53a5db591ed3c2efe",
+        "signature": "8f3891a98196fd9653045a665ec2844148bff0a4f82a7ae53a5db591ed3c2efe"
+      },
+      "../graphql-language-service-parser/dist/CharacterStream.d.ts": {
+        "version": "1c504c5689ed0400b6c48b94721fb023f5b94813f1a6d99cdfcd4df867e880fe",
+        "signature": "1c504c5689ed0400b6c48b94721fb023f5b94813f1a6d99cdfcd4df867e880fe"
+      },
+      "../graphql-language-service-parser/dist/Rules.d.ts": {
+        "version": "3c44f8e6343510059f4c2d062ed8637e58444333301022877ac49c635b76cc2f",
+        "signature": "3c44f8e6343510059f4c2d062ed8637e58444333301022877ac49c635b76cc2f"
+      },
+      "../graphql-language-service-parser/dist/RuleHelpers.d.ts": {
+        "version": "5a3c9d7eac0cfa3b5308c6360d274fd3c2fd5d97bde42ba627088f064c54d677",
+        "signature": "5a3c9d7eac0cfa3b5308c6360d274fd3c2fd5d97bde42ba627088f064c54d677"
+      },
+      "../graphql-language-service-parser/dist/onlineParser.d.ts": {
+        "version": "fe4a9dab6a32ebb38be6c09919fa8f547ec045d4071c43eeac4c59d9b9b42921",
+        "signature": "fe4a9dab6a32ebb38be6c09919fa8f547ec045d4071c43eeac4c59d9b9b42921"
+      },
+      "../graphql-language-service-parser/dist/index.d.ts": {
+        "version": "86f0afb0728c90e507a529bfa6a4653a01bfba0ed816633e2557e104fffb6f31",
+        "signature": "86f0afb0728c90e507a529bfa6a4653a01bfba0ed816633e2557e104fffb6f31"
+      },
+      "./src/autocompleteUtils.ts": {
+        "version": "6b3414ec7b09ac5ad26f94eaa3f857e410f8ad19d909c6c3401c83ae0efd4b17",
+        "signature": "e3da19e7c243a172a65646bf752c0cf6d3aae7f60e072c3fc1f09d9782a13bd5"
+      },
+      "./src/getAutocompleteSuggestions.ts": {
+        "version": "519221b49ea0ad062cf98e296c736ec651468c3470e1691028284d3a30667e91",
+        "signature": "af6f81d61b06aca0235c739de229190e6842db1a49e10e185c78e3732dcfc103"
+      },
+      "./src/getHoverInformation.ts": {
+        "version": "9a397a39bf5209427db4720ad24fc12864ad78f8089c52791dbd3d3df6cb7553",
+        "signature": "7031b1faec37c49ceb9d8c0cc06af6daf4a63df71785b61817da884f9ffbe5cf"
+      },
+      "./src/getDiagnostics.ts": {
+        "version": "18a3a400eaf538c24c4013e72c71a3a75cea0382e4aaad55b43ae5e1419d9fd8",
+        "signature": "5b9d612bbf622f401a50b7295b87aeb70a237d339723cd823d3fe5a31cd219f3"
+      },
+      "./src/getDefinition.ts": {
+        "version": "0053a97cba5101c37c341ac0321d5dcd47b4d90634bb917ead7ddd69e2fd7d8a",
+        "signature": "e065485e923ed3a2ce70b3ac4492137332332a4d81487a1f414a81471baf0ea9"
+      },
+      "./src/GraphQLLanguageService.ts": {
+        "version": "fcae8d5a52bce41436cc5ff53b9f993e8ca3f0d141572a807e9fb741ca573078",
+        "signature": "c67999641cc9cd334fccd42bf191d9b3f74daf6ca32fba3a976a9a11f7025a3f"
+      },
+      "./src/getOutline.ts": {
+        "version": "bc3235e5303230fbd4f8bec73ba9db67c9cdb82f92fe89224306ade2bf06076a",
+        "signature": "58e3f86e77d7495cba9cdcb1f17a21ad2fa2a18226b57effd9c24ce7dc84955b"
+      },
       "./src/index.ts": {
-        "version": "0eccbb489f441658fcd2acfe7811403eed555060b86fcf4683ef1ee34245ccc6",
-        "signature": "6c53f93b9c40562253e73e4a0e85ce5145b5772810b6421bc99ba72f6fac46b4"
+        "version": "4b529b65968befc3704ca2872e843591d5d5ec0a16a9a808be5f15f3bdb6eca7",
+        "signature": "ae569044b7a4c89ee68a89c8c35ae8dd1d1bd6548145570415364c2644a4a44b"
       },
       "../../node_modules/@types/node/globals.d.ts": {
         "version": "e4461b72726848da76a31153b6b01af5e0be3b08dbfa2ec5741ad302eb20f2ed",
@@ -1672,13 +1739,148 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/index.ts": [
+      "../graphql-language-service-types/src/index.ts": [
         "../../node_modules/graphql/index.d.ts",
         "../../node_modules/graphql/language/index.d.ts",
         "../../node_modules/graphql/validation/index.d.ts",
         "../../node_modules/graphql/type/definition.d.ts",
         "../../node_modules/graphql/type/directives.d.ts",
         "../../node_modules/graphql-config/lib/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-utils/src/Range.ts": [
+        "../../node_modules/graphql/language/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-utils/src/getASTNodeAtPosition.ts": [
+        "../../node_modules/graphql/language/index.d.ts",
+        "../graphql-language-service-utils/src/Range.ts",
+        "../../node_modules/graphql/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-utils/src/validateWithCustomRules.ts": [
+        "../../node_modules/graphql/language/index.d.ts",
+        "../../node_modules/graphql/error/index.d.ts",
+        "../../node_modules/graphql/type/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/graphql/index.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-utils/src/index.ts": [
+        "../graphql-language-service-utils/src/getASTNodeAtPosition.ts",
+        "../graphql-language-service-utils/src/Range.ts",
+        "../graphql-language-service-utils/src/validateWithCustomRules.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../../node_modules/vscode-languageserver-types/lib/main.d.ts": [
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/CharacterStream.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/graphql/tsutils/Maybe.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/Rules.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/RuleHelpers.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/onlineParser.d.ts": [
+        "../graphql-language-service-parser/dist/Rules.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/index.d.ts": [
+        "../graphql-language-service-parser/dist/CharacterStream.d.ts",
+        "../graphql-language-service-parser/dist/Rules.d.ts",
+        "../graphql-language-service-parser/dist/RuleHelpers.d.ts",
+        "../graphql-language-service-parser/dist/onlineParser.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/autocompleteUtils.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../../node_modules/graphql/type/introspection.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/getAutocompleteSuggestions.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../graphql-language-service-parser/dist/index.d.ts",
+        "./src/autocompleteUtils.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/getHoverInformation.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/vscode-languageserver-types/lib/main.d.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "./src/getAutocompleteSuggestions.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/getDiagnostics.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/assert.d.ts",
+        "../graphql-language-service-parser/dist/index.d.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/getDefinition.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../../node_modules/@types/node/assert.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/GraphQLLanguageService.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../../node_modules/vscode-languageserver-types/lib/main.d.ts",
+        "./src/getAutocompleteSuggestions.ts",
+        "./src/getHoverInformation.ts",
+        "./src/getDiagnostics.ts",
+        "./src/getDefinition.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/getOutline.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "./src/index.ts": [
+        "./src/autocompleteUtils.ts",
+        "./src/getAutocompleteSuggestions.ts",
+        "./src/getDefinition.ts",
+        "./src/getDiagnostics.ts",
+        "./src/getOutline.ts",
+        "./src/getHoverInformation.ts",
+        "./src/GraphQLLanguageService.ts",
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
@@ -2102,13 +2304,77 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "./src/getOutline.ts": [
+        "../graphql-language-service-types/src/index.ts"
+      ],
       "./src/index.ts": [
-        "../../node_modules/graphql-config/lib/index.d.ts",
-        "../../node_modules/graphql/language/index.d.ts",
+        "./src/autocompleteUtils.ts",
+        "./src/getAutocompleteSuggestions.ts",
+        "./src/getDefinition.ts",
+        "./src/getDiagnostics.ts",
+        "./src/getOutline.ts",
+        "./src/getHoverInformation.ts",
+        "./src/GraphQLLanguageService.ts"
+      ],
+      "./src/GraphQLLanguageService.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../../node_modules/vscode-languageserver-types/lib/main.d.ts",
+        "../../node_modules/graphql/index.d.ts"
+      ],
+      "./src/getDefinition.ts": [
         "../../node_modules/graphql/index.d.ts",
-        "../../node_modules/graphql/type/definition.d.ts",
-        "../../node_modules/graphql/type/directives.d.ts",
-        "../../node_modules/graphql/validation/index.d.ts"
+        "../graphql-language-service-types/src/index.ts"
+      ],
+      "./src/getDiagnostics.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../graphql-language-service-utils/src/index.ts"
+      ],
+      "./src/getHoverInformation.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/vscode-languageserver-types/lib/main.d.ts"
+      ],
+      "./src/getAutocompleteSuggestions.ts": [
+        "../../node_modules/graphql/index.d.ts",
+        "../graphql-language-service-utils/src/index.ts",
+        "../graphql-language-service-types/src/index.ts"
+      ],
+      "./src/autocompleteUtils.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/graphql/index.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/onlineParser.d.ts": [
+        "../graphql-language-service-parser/dist/Rules.d.ts",
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/index.d.ts": [
+        "../graphql-language-service-parser/dist/CharacterStream.d.ts",
+        "../graphql-language-service-parser/dist/Rules.d.ts",
+        "../graphql-language-service-parser/dist/RuleHelpers.d.ts",
+        "../graphql-language-service-parser/dist/onlineParser.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/RuleHelpers.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/Rules.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
+      "../graphql-language-service-parser/dist/CharacterStream.d.ts": [
+        "../graphql-language-service-types/src/index.ts",
+        "../../node_modules/graphql/tsutils/Maybe.d.ts",
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "../../node_modules/graphql-config/lib/utils.d.ts": [
         "../../node_modules/graphql/index.d.ts",
@@ -2870,6 +3136,10 @@
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
       ],
+      "../../node_modules/vscode-languageserver-types/lib/main.d.ts": [
+        "../../node_modules/@types/node/util.d.ts",
+        "../../node_modules/@types/node/ts3.2/util.d.ts"
+      ],
       "../../node_modules/@types/node/globals.d.ts": [
         "../../node_modules/@types/node/util.d.ts",
         "../../node_modules/@types/node/ts3.2/util.d.ts"
@@ -3269,6 +3539,24 @@
       "../../node_modules/graphql-config/lib/utils.d.ts",
       "../../node_modules/graphql-config/lib/errors.d.ts",
       "../../node_modules/graphql-config/lib/index.d.ts",
+      "../graphql-language-service-types/src/index.ts",
+      "../graphql-language-service-utils/src/Range.ts",
+      "../graphql-language-service-utils/src/getASTNodeAtPosition.ts",
+      "../graphql-language-service-utils/src/validateWithCustomRules.ts",
+      "../graphql-language-service-utils/src/index.ts",
+      "../../node_modules/vscode-languageserver-types/lib/main.d.ts",
+      "../graphql-language-service-parser/dist/CharacterStream.d.ts",
+      "../graphql-language-service-parser/dist/Rules.d.ts",
+      "../graphql-language-service-parser/dist/RuleHelpers.d.ts",
+      "../graphql-language-service-parser/dist/onlineParser.d.ts",
+      "../graphql-language-service-parser/dist/index.d.ts",
+      "./src/autocompleteUtils.ts",
+      "./src/getAutocompleteSuggestions.ts",
+      "./src/getHoverInformation.ts",
+      "./src/getDiagnostics.ts",
+      "./src/getDefinition.ts",
+      "./src/GraphQLLanguageService.ts",
+      "./src/getOutline.ts",
       "./src/index.ts",
       "../../node_modules/@types/node/globals.d.ts",
       "../../node_modules/@types/node/assert.d.ts",

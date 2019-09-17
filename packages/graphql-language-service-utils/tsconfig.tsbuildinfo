@@ -182,8 +182,8 @@
         "signature": "9a270d184390b8fe3ab1dc838da770a10663611c644d8e11e4e2c2d4389e3d5b"
       },
       "../../node_modules/graphql/type/definition.d.ts": {
-        "version": "7fab802d7b9d8067b0903ce65934e80325a621304831a2b9a60d7630134c12e4",
-        "signature": "7fab802d7b9d8067b0903ce65934e80325a621304831a2b9a60d7630134c12e4"
+        "version": "e204da770c705a4486c23fe0a3a9b997eadfecc2f01764e9f4b42accb134a3e7",
+        "signature": "e204da770c705a4486c23fe0a3a9b997eadfecc2f01764e9f4b42accb134a3e7"
       },
       "../../node_modules/graphql/language/directiveLocation.d.ts": {
         "version": "ad193a600d60c419e7d95b2570a09af40a401b4f43de818220f00852ebf9f60b",
@@ -546,7 +546,7 @@
         "signature": "db6616c5ee468b42d3903b9aa71db6e794c723f3079315d5c326aaa8fa4b6fa4"
       },
       "../graphql-language-service-types/src/index.ts": {
-        "version": "522a600e28a0b23ca8483484fce636240b7ec3fec62f48e6ff40567a74297d85"
+        "version": "0eccbb489f441658fcd2acfe7811403eed555060b86fcf4683ef1ee34245ccc6"
       },
       "./src/Range.ts": {
         "version": "58926b36007f993a2e6adb291d57f992bccd60f9b934bcb4dda254e6937a3e36",
@@ -585,8 +585,8 @@
         "signature": "400db42c3a46984118bff14260d60cec580057dc1ab4c2d7310beb643e4f5935"
       },
       "../../node_modules/@types/node/child_process.d.ts": {
-        "version": "123366127434e33eade36f3d06653dbc7457397fc93cfdd100776cfc12b6734c",
-        "signature": "123366127434e33eade36f3d06653dbc7457397fc93cfdd100776cfc12b6734c"
+        "version": "fbf717914b6e7d87d969b13c646b5d15dca61c9b89ea48e97a1513809445b003",
+        "signature": "fbf717914b6e7d87d969b13c646b5d15dca61c9b89ea48e97a1513809445b003"
       },
       "../../node_modules/@types/node/cluster.d.ts": {
         "version": "ce629710e5e58724902b753212e97861fd73e2aa09f5d88cb6d55dc763cf8c8a",
@@ -753,8 +753,8 @@
         "signature": "71ba0678a3c647f5c0706ae975c031ace0d464e60f9ce56eaa7f1678d065aab7"
       },
       "../../node_modules/jest-diff/build/index.d.ts": {
-        "version": "b2c5ded6320c45c5d3e1c481c5d2808adf24dd1a59ffc944b72a418e95da5b17",
-        "signature": "b2c5ded6320c45c5d3e1c481c5d2808adf24dd1a59ffc944b72a418e95da5b17"
+        "version": "162c6f2951bd80ae6e16679378f382200b26bba9de8f255af3a2895fbfa670b4",
+        "signature": "162c6f2951bd80ae6e16679378f382200b26bba9de8f255af3a2895fbfa670b4"
       },
       "../../node_modules/@types/jest/index.d.ts": {
         "version": "fa957aac96a5a1b31eab2ad478219b9559d1ab7d0668920817614a8384d8965b",

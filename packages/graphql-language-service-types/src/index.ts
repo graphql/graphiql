@@ -7,7 +7,7 @@
  *
  */
 
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, KindEnum } from 'graphql';
 import {
   ASTNode,
   DocumentNode,
@@ -20,7 +20,7 @@ import {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
-  GraphQLInputField,
+  GraphQLInputFieldMap,
   GraphQLType,
 } from 'graphql/type/definition';
 import { GraphQLDirective } from 'graphql/type/directives';
@@ -164,9 +164,11 @@ export type CachedContent = {
   range: Range | null | undefined;
 };
 
-export type RuleOrString = Rule | string
+export type RuleOrString = Rule | string;
 
-export type ParseRule = RuleOrString[] | ((token: Token, stream: CharacterStream) => string | null | undefined)
+export type ParseRule =
+  | RuleOrString[]
+  | ((token: Token, stream: CharacterStream) => string | null | void);
 
 export type Token = {
   kind: string;
@@ -182,12 +184,36 @@ export type Rule = {
   ofRule?: Rule | string;
 };
 
+export type RuleKind =
+  | KindEnum
+  | 'AliasedField'
+  | 'Arguments'
+  | 'ShortQuery'
+  | 'Query'
+  | 'Mutation'
+  | 'Subscription'
+  | 'TypeCondition'
+  | 'Invalid'
+  | 'Comment'
+  | 'SchemaDef'
+  | 'ScalarDef'
+  | 'ObjectTypeDef'
+  | 'InterfaceDef'
+  | 'UnionDef'
+  | 'EnumDef'
+  | 'FieldDef'
+  | 'InputDef'
+  | 'InputValueDef'
+  | 'ArgumentsDef'
+  | 'ExtendDef'
+  | 'DirectiveDef';
+
 export type State = {
   level: number;
   levels?: Array<number>;
   prevState: State | null | undefined;
   rule: ParseRule | null | undefined;
-  kind: string | null | undefined;
+  kind: RuleKind | null | undefined;
   name: string | null | undefined;
   type: string | null | undefined;
   step: number;
@@ -230,7 +256,7 @@ export type AllTypeInfo = {
   enumValue: GraphQLEnumValue | null | undefined;
   argDef: GraphQLArgument | null | undefined;
   argDefs: Array<GraphQLArgument> | null | undefined;
-  objectFieldDefs: GraphQLInputField | null | undefined;
+  objectFieldDefs: GraphQLInputFieldMap | null | undefined;
 };
 
 export type FragmentInfo = {
@@ -251,7 +277,9 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type CustomValidationRule = (context: ValidationContext) => Object;
+export type CustomValidationRule = (
+  context: ValidationContext,
+) => Record<string, any>;
 
 export type Diagnostic = {
   range: Range;
@@ -265,6 +293,7 @@ export type CompletionItem = {
   label: string;
   kind?: number;
   detail?: string;
+  sortText?: string;
   documentation?: string | null | undefined;
   // GraphQL Deprecation information
   isDeprecated?: boolean | null | undefined;

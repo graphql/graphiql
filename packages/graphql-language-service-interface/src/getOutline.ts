@@ -9,8 +9,22 @@
 
 import { Outline, TextToken, TokenKind } from 'graphql-language-service-types';
 
-import { Kind, parse, visit, DefinitionNode, FieldNode, InlineFragmentNode, DocumentNode, FragmentSpreadNode, OperationDefinitionNode, NameNode, FragmentDefinitionNode, SelectionSetNode } from 'graphql';
-import { offsetToPosition } from 'graphql-language-service-utils';
+import {
+  Kind,
+  parse,
+  visit,
+  FieldNode,
+  InlineFragmentNode,
+  DocumentNode,
+  FragmentSpreadNode,
+  OperationDefinitionNode,
+  NameNode,
+  FragmentDefinitionNode,
+  SelectionSetNode,
+  SelectionNode,
+  DefinitionNode,
+} from 'graphql';
+import { offsetToPosition, Position } from 'graphql-language-service-utils';
 
 const { INLINE_FRAGMENT } = Kind;
 
@@ -25,7 +39,24 @@ const OUTLINEABLE_KINDS = {
   InlineFragment: true,
 };
 
-type OutlineTreeConverterType = { [name: string]: Function };
+type OutlineTreeResult = {
+  representativeName: string;
+  startPosition: Position;
+  endPosition: Position;
+  children: SelectionSetNode[] | [];
+  tokenizedText: TextToken[];
+};
+
+type OutlineTreeConverterType = {
+  [name: string]: (
+    node: any,
+  ) =>
+    | OutlineTreeResult
+    | SelectionSetNode
+    | readonly DefinitionNode[]
+    | readonly SelectionNode[]
+    | string;
+};
 
 export function getOutline(queryText: string): Outline | null | undefined {
   let ast;
@@ -52,8 +83,10 @@ export function getOutline(queryText: string): Outline | null | undefined {
 }
 
 function outlineTreeConverter(docText: string): OutlineTreeConverterType {
-  const meta = (node: DefinitionNode) => ({
-    representativeName: node.name as string,
+  // TODO: couldn't find a type that would work for all cases here,
+  // however the inference is not broken by this at least
+  const meta = (node: any) => ({
+    representativeName: node.name,
     startPosition: offsetToPosition(docText, node.loc.start),
     endPosition: offsetToPosition(docText, node.loc.end),
     children: node.selectionSet || [],
@@ -61,9 +94,10 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
 
   return {
     Field: (node: FieldNode) => {
-      const tokenizedText = 'alias' in node
-        ? [buildToken('plain', node.alias.value), buildToken('plain', ': ')]
-        : [];
+      const tokenizedText =
+        node.alias && node.alias.value
+          ? [buildToken('plain', node.alias.value), buildToken('plain', ': ')]
+          : [];
       tokenizedText.push(buildToken('plain', node.name.value));
       return { tokenizedText, ...meta(node) };
     },
@@ -71,15 +105,14 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       tokenizedText: [
         buildToken('keyword', node.operation),
         buildToken('whitespace', ' '),
-        buildToken('class-name', node.name.value),
+        buildToken('class-name', node.name ? node.name.value : ''),
       ],
-
       ...meta(node),
     }),
 
     Document: (node: DocumentNode) => node.definitions,
     SelectionSet: (node: SelectionSetNode) =>
-      concatMap(node.selections, child => {
+      concatMap<SelectionNode>(node.selections, (child: SelectionNode) => {
         return child.kind === INLINE_FRAGMENT ? child.selectionSet : child;
       }),
     Name: (node: NameNode) => node.value,
@@ -89,7 +122,6 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
         buildToken('whitespace', ' '),
         buildToken('class-name', node.name.value),
       ],
-
       ...meta(node),
     }),
 
@@ -98,7 +130,6 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
         buildToken('plain', '...'),
         buildToken('class-name', node.name.value),
       ],
-
       ...meta(node),
     }),
 
@@ -110,7 +141,7 @@ function buildToken(kind: TokenKind, value: string | undefined): TextToken {
   return { kind, value };
 }
 
-function concatMap(arr: Array<any>, fn: Function): Array<any> {
+function concatMap<V>(arr: Readonly<V[]>, fn: Function): Readonly<V[]> {
   const res = [];
   for (let i = 0; i < arr.length; i++) {
     const x = fn(arr[i], i);

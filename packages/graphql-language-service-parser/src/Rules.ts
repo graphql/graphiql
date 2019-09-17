@@ -12,6 +12,7 @@ import {
   State,
   Token,
   Rule,
+  RuleKind,
   ParseRule,
 } from 'graphql-language-service-types';
 import { opt, list, butNot, t, p } from './RuleHelpers';
@@ -47,6 +48,8 @@ export const LexRules = {
   Comment: /^#.*/,
 };
 
+
+
 /**
  * The parser rules. These are very close to, but not exactly the same as the
  * spec. Minor deviations allow for a simpler implementation. The resulting
@@ -54,7 +57,7 @@ export const LexRules = {
  */
 export const ParseRules: { [name: string]: ParseRule } = {
   Document: [list('Definition')],
-  Definition(token: Token) {
+  Definition(token: Token): RuleKind | void {
     switch (token.value) {
       case '{':
         return 'ShortQuery';
@@ -85,6 +88,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
       case 'directive':
         return 'DirectiveDef';
     }
+
   },
   // Note: instead of "Operation", these rules have been separated out.
   ShortQuery: ['SelectionSet'],
@@ -284,7 +288,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('InputValueDef'),
     p('}'),
   ],
-
   ExtendDef: [word('extend'), 'ObjectTypeDef'],
   DirectiveDef: [
     word('directive'),

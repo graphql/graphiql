@@ -9,16 +9,16 @@
 
 import { ASTNode } from 'graphql/language';
 
-import { Position } from './Range';
+import { Position as TPosition } from 'graphql-language-service-types';
 import { visit } from 'graphql';
 
 export function getASTNodeAtPosition(
   query: string,
   ast: ASTNode,
-  point: Position,
-): ASTNode | null | undefined {
+  point: TPosition,
+): ASTNode | undefined {
   const offset = pointToOffset(query, point);
-  let nodeContainingPosition: ASTNode | null | undefined;
+  let nodeContainingPosition: ASTNode | undefined;
   visit(ast, {
     enter(node) {
       if (
@@ -42,7 +42,7 @@ export function getASTNodeAtPosition(
   return nodeContainingPosition;
 }
 
-export function pointToOffset(text: string, point: Position): number {
+export function pointToOffset(text: string, point: TPosition): number {
   const linesUntilPosition = text.split('\n').slice(0, point.line);
   return (
     point.character +

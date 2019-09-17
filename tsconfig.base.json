@@ -21,9 +21,10 @@
     "baseUrl": ".",
     "paths": {
       "graphql-language-*" : ["graphql-language-*"]
-    },
+    }
   },
   "exclude": [
+    "**/dist/**.*",
     "**/*.spec.ts",
     "**/*.spec.js",
     "**/*-test.ts",

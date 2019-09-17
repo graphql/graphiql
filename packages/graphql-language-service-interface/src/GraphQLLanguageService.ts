@@ -24,9 +24,10 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
   Uri,
+  Position
 } from 'graphql-language-service-types';
 
-import { Position } from 'graphql-language-service-utils';
+// import { Position } from 'graphql-language-service-utils';
 import { Hover } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
@@ -69,6 +70,14 @@ export class GraphQLLanguageService {
     this._graphQLConfig = cache.getGraphQLConfig();
   }
 
+  getConfigForURI(uri: Uri) {
+    const config = this._graphQLConfig.getConfigForFile(uri);
+    if (config) {
+      return config;
+    }
+    throw Error(`No config found for uri: ${uri}`);
+  }
+
   async getDiagnostics(
     query: string,
     uri: Uri,
@@ -77,10 +86,9 @@ export class GraphQLLanguageService {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
-    const projectConfig = this._graphQLConfig.getConfigForFile(
-      uri,
-    ) as GraphQLProjectConfig;
-    const schemaPath = projectConfig.schemaPath;
+    const projectConfig = this.getConfigForURI(uri);
+    const { schemaPath, projectName, extensions } = projectConfig;
+
     try {
       const queryAST = parse(query);
       if (!schemaPath || uri !== schemaPath) {
@@ -148,8 +156,7 @@ export class GraphQLLanguageService {
 
     // Check if there are custom validation rules to be used
     let customRules;
-    const customRulesModulePath =
-      projectConfig.extensions.customValidationRules;
+    const customRulesModulePath = extensions.customValidationRules;
     if (customRulesModulePath) {
       /* eslint-disable no-implicit-coercion */
       const rulesPath = require.resolve(`${customRulesModulePath}`);
@@ -160,7 +167,7 @@ export class GraphQLLanguageService {
     }
 
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName, queryHasExtensions)
+      .getSchema(projectName, queryHasExtensions)
       .catch(() => null);
 
     if (!schema) {
@@ -175,9 +182,7 @@ export class GraphQLLanguageService {
     position: Position,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
-    const projectConfig = this._graphQLConfig.getConfigForFile(
-      filePath,
-    ) as GraphQLProjectConfig;
+    const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
       .getSchema(projectConfig.projectName)
       .catch(() => null);
@@ -193,9 +198,7 @@ export class GraphQLLanguageService {
     position: Position,
     filePath: Uri,
   ): Promise<Hover['contents']> {
-    const projectConfig = this._graphQLConfig.getConfigForFile(
-      filePath,
-    ) as GraphQLProjectConfig;
+    const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
       .getSchema(projectConfig.projectName)
       .catch(() => null);
@@ -211,9 +214,7 @@ export class GraphQLLanguageService {
     position: Position,
     filePath: Uri,
   ): Promise<DefinitionQueryResult | null | undefined> {
-    const projectConfig = this._graphQLConfig.getConfigForFile(
-      filePath,
-    ) as GraphQLProjectConfig;
+    const projectConfig = this.getConfigForURI(filePath);
 
     let ast;
     try {

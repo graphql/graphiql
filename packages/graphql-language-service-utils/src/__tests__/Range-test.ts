@@ -44,9 +44,9 @@ describe('Position', () => {
 });
 
 describe('Range', () => {
-  let start;
-  let end;
-  let range;
+  let start: Position;
+  let end: Position;
+  let range: Range;
 
   beforeAll(() => {
     start = new Position(2, 3);

@@ -7,13 +7,13 @@
  */
 
 import { readFileSync } from 'fs';
-import { GraphQLError, buildSchema, parse } from 'graphql';
+import { GraphQLError, buildSchema, parse, GraphQLSchema } from 'graphql';
 import { join } from 'path';
 
 import { validateWithCustomRules } from '../validateWithCustomRules';
 
 describe('validateWithCustomRules', () => {
-  let schema;
+  let schema: GraphQLSchema;
 
   beforeEach(() => {
     const schemaPath = join(__dirname, '__schema__', 'StarWarsSchema.graphql');

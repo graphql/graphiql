@@ -20,13 +20,9 @@ import {
   GraphQLField,
   GraphQLFieldConfig,
 } from 'graphql';
-import {
-  ContextToken,
-  AllTypeInfo,
-} from 'graphql-language-service-types';
+import { ContextToken, AllTypeInfo } from 'graphql-language-service-types';
 
-import { Hover } from 'vscode-languageserver-types';
-import { Position } from 'graphql-language-service-utils';
+import { Hover, Position } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
 export function getHoverInformation(
@@ -34,11 +30,11 @@ export function getHoverInformation(
   queryText: string,
   cursor: Position,
   contextToken?: ContextToken,
-): Hover['contents'] | void | undefined {
+): Hover['contents'] {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
   if (!schema || !token || !token.state) {
-    return [];
+    return '';
   }
 
   const state = token.state;
@@ -87,6 +83,7 @@ export function getHoverInformation(
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
+  return ''
 }
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
@@ -94,7 +91,7 @@ function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
 }
 
-function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options) {
+function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (!typeInfo.fieldDef) {
     return;
   }
@@ -106,7 +103,7 @@ function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options) {
   text(into, fieldName);
 }
 
-function renderDirective(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderDirective(into: string[], typeInfo: AllTypeInfo, _options: any) {
   if (!typeInfo.directiveDef) {
     return;
   }
@@ -198,7 +195,7 @@ function renderDescription(
 
 function renderDeprecation(
   into: string[],
-  options: any,
+  _options: any,
   def: GraphQLField<any, any> | GraphQLFieldConfig<any, any>,
 ) {
   if (!def) {
