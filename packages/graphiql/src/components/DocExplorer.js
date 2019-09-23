@@ -63,27 +63,18 @@ export class DocExplorer extends React.Component {
       this.props.initialTypeName) {
       // The schema has changed, and we should render an initial type.
 
-      let typeMap = this.props.schema.getTypeMap();
-      let fullType = typeMap[this.props.initialTypeName];
+      const typeMap = this.props.schema.getTypeMap();
+      const fullType = typeMap[this.props.initialTypeName];
 
-      if (!fullType) {
-        console.error(`Type ${this.props.initialTypeName} not found in schema.`);
-        return;
-      }
-
-      if (this.props.initialFieldName) {
+      if (fullType && this.props.initialFieldName) {
         if (fullType.getFields) {
-          let fullField = fullType.getFields()[this.props.initialFieldName];
+          const fullField = fullType.getFields()[this.props.initialFieldName];
           if (fullField) {
             this.showDoc(fullField);
           }
           this.showDoc(fullType.getFields()[this.props.initialFieldName]);
-        } else {
-          console.error(`Field ${this.props.initialFieldName} 
-            not found in schema for type ${this.props.initialTypeName}`);
-          return; // Whoops! Looks like this field isn't in the schema.
         }
-      } else {
+      } else if (fullType) { // Make sure that fullType exists.
         this.showDoc(fullType);
       }
     }
@@ -180,14 +171,15 @@ export class DocExplorer extends React.Component {
     if (!typeOrField) { return; }
 
     if (this.props.onShowDoc) {
-      let typeName, fieldName;
+      let typeName;
+      let fieldName;
       if (isType(typeOrField)) {
         typeName = typeOrField.name;
-        fieldName = "";
+        fieldName = '';
       } else {
         fieldName = typeOrField.name;
-        let navStack = this.state.navStack;
-        let lastState = navStack[navStack.length - 1];
+        const navStack = this.state.navStack;
+        const lastState = navStack[navStack.length - 1];
         typeName = lastState.name;
       }
 
