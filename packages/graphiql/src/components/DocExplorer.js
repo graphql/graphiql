@@ -39,6 +39,9 @@ const initialNav = {
 export class DocExplorer extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
+    initialFieldName: PropTypes.string,
+    initialTypeName: PropTypes.string,
+    onShowDoc: PropTypes.func
   };
 
   constructor() {
@@ -52,6 +55,38 @@ export class DocExplorer extends React.Component {
       this.props.schema !== nextProps.schema ||
       this.state.navStack !== nextState.navStack
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.schema && 
+      (this.props.schema !== prevProps.schema) && 
+      this.props.initialTypeName) {
+      // The schema has changed, and we should render an initial type.
+
+      let typeMap = this.props.schema.getTypeMap();
+      let fullType = typeMap[this.props.initialTypeName];
+
+      if (!fullType) {
+        console.error(`Type ${this.props.initialTypeName} not found in schema.`);
+        return;
+      }
+
+      if (this.props.initialFieldName) {
+        if (fullType.getFields) {
+          let fullField = fullType.getFields()[this.props.initialFieldName];
+          if (fullField) {
+            this.showDoc(fullField);
+          }
+          this.showDoc(fullType.getFields()[this.props.initialFieldName]);
+        } else {
+          console.error(`Field ${this.props.initialFieldName} 
+            not found in schema for type ${this.props.initialTypeName}`);
+          return; // Whoops! Looks like this field isn't in the schema.
+        }
+      } else {
+        this.showDoc(fullType);
+      }
+    }
   }
 
   render() {
@@ -142,6 +177,23 @@ export class DocExplorer extends React.Component {
 
   // Public API
   showDoc(typeOrField) {
+    if (!typeOrField) { return; }
+
+    if (this.props.onShowDoc) {
+      let typeName, fieldName;
+      if (isType(typeOrField)) {
+        typeName = typeOrField.name;
+        fieldName = "";
+      } else {
+        fieldName = typeOrField.name;
+        let navStack = this.state.navStack;
+        let lastState = navStack[navStack.length - 1];
+        typeName = lastState.name;
+      }
+
+      this.props.onShowDoc(typeName, fieldName)
+    }
+
     const navStack = this.state.navStack;
     const topNav = navStack[navStack.length - 1];
     if (topNav.def !== typeOrField) {
