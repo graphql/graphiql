@@ -99,8 +99,8 @@
       }
 
       function onShowDoc(typeName, fieldName) {
-        parameters.initialTypeName = typeName;
-        parameters.initialFieldName = fieldName;
+        parameters.initialDocTypeName = typeName;
+        parameters.initialDocFieldName = fieldName;
         updateURL();
       }
 
@@ -160,8 +160,8 @@
           onEditVariables: onEditVariables,
           onEditOperationName: onEditOperationName,
           docExplorerOpen: true,
-          initialTypeName: parameters.initialTypeName,
-          initialFieldName: parameters.initialFieldName,
+          initialDocTypeName: parameters.initialDocTypeName,
+          initialDocFieldName: parameters.initialDocFieldName,
           onShowDoc: onShowDoc
         }),
         document.getElementById('graphiql')

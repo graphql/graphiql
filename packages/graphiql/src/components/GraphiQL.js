@@ -71,8 +71,8 @@ export class GraphiQL extends React.Component {
     ResultsTooltip: PropTypes.any,
     readOnly: PropTypes.bool,
     docExplorerOpen: PropTypes.bool,
-    initialFieldName: PropTypes.string,
-    initialTypeName: PropTypes.string,
+    initialDocFieldName: PropTypes.string,
+    initialDocTypeName: PropTypes.string,
     onShowDoc: PropTypes.func
   };
 
@@ -439,8 +439,8 @@ export class GraphiQL extends React.Component {
                 this.docExplorerComponent = c;
               }}
               schema={this.state.schema}
-              initialFieldName={this.props.initialFieldName}
-              initialTypeName={this.props.initialTypeName}
+              initialDocFieldName={this.props.initialDocFieldName}
+              initialDocTypeName={this.props.initialDocTypeName}
               onShowDoc={this.props.onShowDoc}
               >
               <div className="docExplorerHide" onClick={this.handleToggleDocs}>

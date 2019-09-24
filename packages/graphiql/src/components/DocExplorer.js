@@ -39,8 +39,8 @@ const initialNav = {
 export class DocExplorer extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
-    initialFieldName: PropTypes.string,
-    initialTypeName: PropTypes.string,
+    initialDocFieldName: PropTypes.string,
+    initialDocTypeName: PropTypes.string,
     onShowDoc: PropTypes.func
   };
 
@@ -60,19 +60,19 @@ export class DocExplorer extends React.Component {
   componentDidUpdate(prevProps) {
     if (this.props.schema && 
       (this.props.schema !== prevProps.schema) && 
-      this.props.initialTypeName) {
+      this.props.initialDocTypeName) {
       // The schema has changed, and we should render an initial type.
 
       const typeMap = this.props.schema.getTypeMap();
-      const fullType = typeMap[this.props.initialTypeName];
+      const fullType = typeMap[this.props.initialDocTypeName];
 
-      if (fullType && this.props.initialFieldName) {
+      if (fullType && this.props.initialDocFieldName) {
         if (fullType.getFields) {
-          const fullField = fullType.getFields()[this.props.initialFieldName];
+          const fullField = fullType.getFields()[this.props.initialDocFieldName];
           if (fullField) {
             this.showDoc(fullField);
           }
-          this.showDoc(fullType.getFields()[this.props.initialFieldName]);
+          this.showDoc(fullType.getFields()[this.props.initialDocFieldName]);
         }
       } else if (fullType) { // Make sure that fullType exists.
         this.showDoc(fullType);
