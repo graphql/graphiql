@@ -175,7 +175,7 @@ export class DocExplorer extends React.Component {
       let fieldName;
       if (isType(typeOrField)) {
         typeName = typeOrField.name;
-        fieldName = '';
+        fieldName = null;
       } else {
         fieldName = typeOrField.name;
         const navStack = this.state.navStack;
