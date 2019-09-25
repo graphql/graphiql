@@ -7,8 +7,9 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
-export default class HistoryQuery extends React.Component {
+class HistoryQuerySource extends React.Component {
   static propTypes = {
     favorite: PropTypes.bool,
     favoriteSize: PropTypes.number,
@@ -30,6 +31,8 @@ export default class HistoryQuery extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     const editStyles = {
       display: this.state.showButtons ? '' : 'none',
       marginLeft: '10px',
@@ -59,7 +62,7 @@ export default class HistoryQuery extends React.Component {
             ref={c => (this.editField = c)}
             onBlur={this.handleFieldBlur.bind(this)}
             onKeyDown={this.handleFieldKeyDown.bind(this)}
-            placeholder="Type a label"
+            placeholder={ t('Type a label') }
           />
         ) : (
           <span className="history-label">{displayName}</span>
@@ -139,3 +142,5 @@ export default class HistoryQuery extends React.Component {
     });
   }
 }
+
+export const HistoryQuery = withTranslation('Toolbar')(HistoryQuerySource);

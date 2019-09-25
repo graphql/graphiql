@@ -40,7 +40,11 @@
     "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.9.0",
     "copy-to-clipboard": "^3.2.0",
+    "i18next": "^17.0.16",
+    "i18next-browser-languagedetector": "~3.0.3",
+    "i18next-xhr-backend": "~3.1.2",
     "markdown-it": "^8.4.0",
+    "react-i18next": "^10.12.5",
     "regenerator-runtime": "^0.13.3"
   },
   "peerDependencies": {

@@ -9,7 +9,14 @@ if [ ! -d "node_modules/.bin" ]; then
 fi
 
 rm -rf dist/ && mkdir -p dist/
+
+
 babel src --root-mode upward --ignore __tests__ --out-dir dist/
+
+#copy static assets
+cp -rf public/* ./
+echo "Public assets copied"
+
 echo "Bundling graphiql.js..."
 browserify -g browserify-shim -s GraphiQL dist/index.js > graphiql.js
 echo "Bundling graphiql.min.js..."
