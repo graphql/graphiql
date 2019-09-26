@@ -23,7 +23,7 @@
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
-    "lint": "eslint packages/**/src || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint": "eslint --ext js,ts,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",

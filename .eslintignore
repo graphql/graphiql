@@ -3,3 +3,5 @@ packages/graphiql/test/vendor
 **/node_modules/**
 **/flow-typed/**
 **/dist/**
+node_modules
+packages/graphiql/graphiql.*
