@@ -293,9 +293,18 @@ module.exports = {
 
   overrides: [
     {
+      // Converted from 'dependencies' options in ancient config
       files: ['**/spec/**', '**/sample-*/**'],
       rules: {
         'import/no-cycle': 0,
+      },
+    },
+    {
+      // Resources are typically our helper scripts; make life easier there
+      files: ['resources/*.js', 'packages/*/resources/*.js'],
+      rules: {
+        'no-console': 0,
+        'no-await-in-loop': 0,
       },
     },
   ],

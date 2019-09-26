@@ -191,15 +191,15 @@ function allTests(filepaths) {
 }
 
 function isTest(filepath) {
-  return isJS(filepath) && ~filepath.indexOf('__tests__/');
+  return isJS(filepath) && filepath.includes('__tests__/');
 }
 
 // Print helpers
 
-var CLEARSCREEN = '\u001b[2J';
-var CLEARLINE = '\r\x1B[K';
-var CHECK = green('\u2713');
-var X = red('\u2718');
+const CLEARSCREEN = '\u001b[2J';
+const CLEARLINE = '\r\x1B[K';
+const CHECK = green('\u2713');
+const X = red('\u2718');
 
 function invert(str) {
   return `\u001b[7m ${str} \u001b[27m`;
