@@ -260,11 +260,15 @@ module.exports = {
     'babel/no-invalid-this': 0,
     'babel/object-curly-spacing': 0,
 
-    // dependencies (https://github.com/zertosh/eslint-plugin-dependencies)
-    'dependencies/case-sensitive': 1,
-    'dependencies/no-cycles': [0, { skip: ['/spec/', '/sample-[^/]+/'] }],
-    'dependencies/no-unresolved': 0,
-    'dependencies/require-json-ext': 1,
+    // import (https://github.com/benmosher/eslint-plugin-import)
+    'import/no-unresolved': 1,
+    'import/no-cycle': 0,
+    'import/extensions': [
+      1,
+      {
+        json: 'always',
+      },
+    ],
 
     // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
     'flowtype/boolean-style': 1,
@@ -285,5 +289,14 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
   },
 
-  plugins: ['babel', 'dependencies', 'flowtype', 'prefer-object-spread'],
+  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+
+  overrides: [
+    {
+      files: ['**/spec/**', '**/sample-*/**'],
+      rules: {
+        'import/no-cycle': 0,
+      },
+    },
+  ],
 };
