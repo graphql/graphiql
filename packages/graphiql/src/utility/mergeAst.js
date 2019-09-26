@@ -38,12 +38,12 @@ export function mergeAst(queryAst) {
       return elem.kind === Kind.FRAGMENT_DEFINITION;
     })
     .forEach(frag => {
-      const copyFragment = Object.assign({}, frag);
+      const copyFragment = { ...frag };
       copyFragment.kind = Kind.INLINE_FRAGMENT;
       fragments[frag.name.value] = copyFragment;
     });
 
-  const copyAst = Object.assign({}, queryAst);
+  const copyAst = { ...queryAst };
   copyAst.definitions = queryAst.definitions
     .filter(elem => {
       return elem.kind !== Kind.FRAGMENT_DEFINITION;

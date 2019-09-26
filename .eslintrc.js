@@ -29,7 +29,8 @@ module.exports = {
     es6: true,
     node: true,
     jest: true,
-    mocha: true
+    mocha: true,
+    browser: true,
   },
 
   'extends': ['prettier'],
