@@ -1,7 +1,35 @@
-packages/graphiql/test/vendor
+################################################################################
+#
+# First things first; we need to ignore our built files. To achive this, we
+# have to do a bit of an ignore dance where we ignore everything, and then
+# specifically un-ignore the source code, configuration files, etc.
+#
+# First: ignore FILES (not folders!)
+/packages/**/*.js
+/packages/**/*.jsx
+/packages/**/*.ts
+/packages/**/*.tsx
+#
+# Now un-ignore source code, tests, configuration, etc
+!/packages/*/src/**
+!/packages/*/test/**
+!/packages/codemirror-graphql/resources/**
+!/packages/examples/**
 !.eslintrc.js
-**/node_modules/**
-**/flow-typed/**
-**/dist/**
-node_modules
-packages/graphiql/graphiql.*
+!babel.config.js
+#
+# End of the ignore dance.
+#
+################################################################################
+
+# Regular eslintignore configuration follows.
+
+# ESLint automatically ignores node_modules _in the root_, so we only need to specify nested node_modules
+**/node_modules
+
+# Build artifacts
+**/flow-typed
+**/dist
+
+# Vendored files
+/packages/graphiql/test/vendor
