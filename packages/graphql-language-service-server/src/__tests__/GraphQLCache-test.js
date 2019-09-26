@@ -83,8 +83,8 @@ describe('GraphQLCache', () => {
       expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual({
         args: [],
         description: undefined,
-        // TODO: failing now that tests are doing deep comparison
-        // isRepeatable: false,
+        extensions: undefined,
+        isRepeatable: false,
         locations: ['FIELD'],
         name: 'customDirective',
       });
@@ -95,8 +95,8 @@ describe('GraphQLCache', () => {
       expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual({
         args: [],
         description: undefined,
-        // TODO: failing now that tests are doing deep comparison
-        // isRepeatable: false,
+        extensions: undefined,
+        isRepeatable: false,
         locations: ['FRAGMENT_SPREAD'],
         name: 'customDirective',
       });
