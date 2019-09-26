@@ -33,6 +33,9 @@
   padding: 17px 12px 16px 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: 0;
+  border: 0;
+  line-height: 14px;
 }
 
 .doc-explorer-narrow .doc-explorer-back {
@@ -219,8 +222,7 @@
   position: relative;
 }
 
-.graphiql-container .search-box:before {
-  content: '\26b2';
+.graphiql-container .search-box-icon {
   cursor: pointer;
   display: block;
   font-size: 24px;
@@ -241,6 +243,7 @@
   right: 3px;
   top: 8px;
   user-select: none;
+  border: 0;
 }
 
 .graphiql-container .search-box .search-box-clear:hover {

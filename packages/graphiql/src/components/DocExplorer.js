@@ -112,14 +112,18 @@ export class DocExplorer extends React.Component {
     }
 
     return (
-      <div className="doc-explorer" key={navItem.name}>
+      <section
+        className="doc-explorer"
+        key={navItem.name}
+        aria-label="Documentation Explorer">
         <div className="doc-explorer-title-bar">
           {prevName && (
-            <div
+            <button
               className="doc-explorer-back"
-              onClick={this.handleNavBackClick}>
+              onClick={this.handleNavBackClick}
+              aria-label={`Go back to ${prevName}`}>
               {prevName}
-            </div>
+            </button>
           )}
           <div className="doc-explorer-title">
             {navItem.title || navItem.name}
@@ -136,7 +140,7 @@ export class DocExplorer extends React.Component {
           )}
           {content}
         </div>
-      </div>
+      </section>
     );
   }
 

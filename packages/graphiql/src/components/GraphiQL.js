@@ -122,7 +122,10 @@ export class GraphiQL extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+    const variableEditorOpen =
+      props.defaultVariableEditorOpen !== undefined
+        ? props.defaultVariableEditorOpen
+        : Boolean(variables);
 
     // Initialize state
     this.state = {
@@ -333,9 +336,12 @@ export class GraphiQL extends React.Component {
             onSelectQuery={this.handleSelectHistoryQuery}
             storage={this._storage}
             queryID={this._editorQueryID}>
-            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+            <button
+              className="docExplorerHide"
+              onClick={this.handleToggleHistory}
+              aria-label="Close History">
               {'\u2715'}
-            </div>
+            </button>
           </QueryHistory>
         </div>
         <div className="editorWrap">
@@ -353,7 +359,8 @@ export class GraphiQL extends React.Component {
             {!this.state.docExplorerOpen && (
               <button
                 className="docExplorerShow"
-                onClick={this.handleToggleDocs}>
+                onClick={this.handleToggleDocs}
+                aria-label="Open Documentation Explorer">
                 {'Docs'}
               </button>
             )}
@@ -382,9 +389,13 @@ export class GraphiQL extends React.Component {
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
               />
-              <div className="variable-editor" style={variableStyle}>
+              <section
+                className="variable-editor"
+                style={variableStyle}
+                aria-label="Query Variables">
                 <div
                   className="variable-editor-title"
+                  id="variable-editor-title"
                   style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
                   onMouseDown={this.handleVariableResizeStart}>
                   {'Query Variables'}
@@ -403,7 +414,7 @@ export class GraphiQL extends React.Component {
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                 />
-              </div>
+              </section>
             </div>
             <div className="resultWrap">
               {this.state.isWaitingForResponse && (
@@ -436,9 +447,12 @@ export class GraphiQL extends React.Component {
                 this.docExplorerComponent = c;
               }}
               schema={this.state.schema}>
-              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+              <button
+                className="docExplorerHide"
+                onClick={this.handleToggleDocs}
+                aria-label="Close Documentation Explorer">
                 {'\u2715'}
-              </div>
+              </button>
             </DocExplorer>
           </div>
         )}
@@ -1045,7 +1059,11 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
-  return <div className="toolbar">{props.children}</div>;
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Editor Commands">
+      {props.children}
+    </div>
+  );
 };
 
 // Export main windows/panes to be used separately if desired.

@@ -85,25 +85,25 @@ export class QueryHistory extends React.Component {
 
   render() {
     const queries = this.state.queries.slice().reverse();
-    const queryNodes = queries.map((query, i) => {
+    const queryNodes = queries.map(query => {
       return (
         <HistoryQuery
           handleEditLabel={this.editLabel}
           handleToggleFavorite={this.toggleFavorite}
-          key={i}
+          key={query.query}
           onSelect={this.props.onSelectQuery}
           {...query}
         />
       );
     });
     return (
-      <div>
+      <section aria-label="History">
         <div className="history-title-bar">
           <div className="history-title">{'History'}</div>
           <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
-        <div className="history-contents">{queryNodes}</div>
-      </div>
+        <ul className="history-contents">{queryNodes}</ul>
+      </section>
     );
   }
 

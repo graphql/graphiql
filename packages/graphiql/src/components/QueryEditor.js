@@ -202,8 +202,9 @@ export class QueryEditor extends React.Component {
 
   render() {
     return (
-      <div
+      <section
         className="query-editor"
+        aria-label="Query Editor"
         ref={node => {
           this._node = node;
         }}

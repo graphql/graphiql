@@ -28,18 +28,18 @@ export class ToolbarButton extends React.Component {
   render() {
     const { error } = this.state;
     return (
-      <a
+      <button
         className={'toolbar-button' + (error ? ' error' : '')}
-        onMouseDown={preventDefault}
         onClick={this.handleClick}
-        title={error ? error.message : this.props.title}>
+        title={error ? error.message : this.props.title}
+        aria-invalid={error ? 'true' : 'false'}
+        aria-description={error ? error.message : null}>
         {this.props.label}
-      </a>
+      </button>
     );
   }
 
-  handleClick = e => {
-    e.preventDefault();
+  handleClick = () => {
     try {
       this.props.onClick();
       this.setState({ error: null });
@@ -47,8 +47,4 @@ export class ToolbarButton extends React.Component {
       this.setState({ error });
     }
   };
-}
-
-function preventDefault(e) {
-  e.preventDefault();
 }
