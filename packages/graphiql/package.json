@@ -58,7 +58,7 @@
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.7",
-    "graphql": "14.4.2",
+    "graphql": "^14.4.2",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
     "postcss-cli": "6.1.2",
