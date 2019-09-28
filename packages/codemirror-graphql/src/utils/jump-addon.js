@@ -108,7 +108,10 @@ function onKeyDown(cm, event) {
   cm.on('mousedown', onMouseDown);
 }
 
-const isMac = navigator && navigator.appVersion.indexOf('Mac') !== -1;
+const isMac =
+  typeof navigator !== 'undefined' &&
+  navigator &&
+  navigator.appVersion.indexOf('Mac') !== -1;
 
 function isJumpModifier(key) {
   return key === (isMac ? 'Meta' : 'Control');

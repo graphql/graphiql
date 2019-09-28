@@ -156,6 +156,7 @@ function validateValue(type, valueAST) {
       valueAST.kind !== 'String') ||
     (type.name === 'Float' && valueAST.kind !== 'Number') ||
     (type.name === 'Int' &&
+      // eslint-disable-next-line no-bitwise
       (valueAST.kind !== 'Number' || (valueAST.value | 0) !== valueAST.value))
   ) {
     return [[valueAST, `Expected value of type "${type}".`]];
@@ -190,6 +191,7 @@ function lintError(editor, node, message) {
 }
 
 function isNullish(value: mixed): boolean {
+  // eslint-disable-next-line no-self-compare
   return value === null || value === undefined || value !== value;
 }
 
