@@ -261,21 +261,6 @@ module.exports = {
     'dependencies/no-unresolved': 0,
     'dependencies/require-json-ext': 1,
 
-    // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-    'flowtype/boolean-style': 1,
-    'flowtype/define-flow-type': 1,
-    'flowtype/no-dupe-keys': 0,
-    'flowtype/no-primitive-constructor-types': 1,
-    'flowtype/no-weak-types': 0,
-    'flowtype/require-parameter-type': 0,
-    'flowtype/require-return-type': 0,
-    'flowtype/require-valid-file-annotation': 0,
-    'flowtype/require-variable-type': 0,
-    'flowtype/sort-keys': 0,
-    'flowtype/type-id-match': 0,
-    'flowtype/use-flow-type': 1,
-    'flowtype/valid-syntax': 0,
-
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
   },
@@ -286,4 +271,36 @@ module.exports = {
     'flowtype',
     'prefer-object-spread',
   ],
+
+  overrides: [
+  // Rules for Flow only
+    {
+      files: ["*.js", "*.jsx"],
+      rules: {
+        // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
+        'flowtype/boolean-style': 1,
+        'flowtype/define-flow-type': 1,
+        'flowtype/no-dupe-keys': 0,
+        'flowtype/no-primitive-constructor-types': 1,
+        'flowtype/no-weak-types': 0,
+        'flowtype/require-parameter-type': 0,
+        'flowtype/require-return-type': 0,
+        'flowtype/require-valid-file-annotation': 0,
+        'flowtype/require-variable-type': 0,
+        'flowtype/sort-keys': 0,
+        'flowtype/type-id-match': 0,
+        'flowtype/use-flow-type': 1,
+        'flowtype/valid-syntax': 0,
+      },
+    },
+
+    // Rules for TypeScript only
+    {
+      files: ["*.ts", "*.tsx"],
+      parser: "@typescript-eslint/parser",
+      rules: {
+        "no-unused-vars": "off",
+      },
+    },
+  ]
 };
