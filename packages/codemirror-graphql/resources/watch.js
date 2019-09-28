@@ -14,13 +14,13 @@ import flowBinPath from 'flow-bin';
 
 process.env.PATH += ':./node_modules/.bin';
 
-var cmd = resolvePath(__dirname);
-var srcDir = resolvePath(cmd, './src');
+const cmd = resolvePath(__dirname);
+const srcDir = resolvePath(cmd, './src');
 
 function exec(command, options) {
   return new Promise((resolve, reject) => {
-    var child = spawn(command, options, {
-      cmd: cmd,
+    const child = spawn(command, options, {
+      cmd,
       env: process.env,
       stdio: 'inherit',
     });
@@ -34,12 +34,12 @@ function exec(command, options) {
   });
 }
 
-var flowServer = spawn(flowBinPath, ['server'], {
-  cmd: cmd,
+const flowServer = spawn(flowBinPath, ['server'], {
+  cmd,
   env: process.env,
 });
 
-var watcher = sane(srcDir, { glob: ['**/*.js', '**/*.graphql'] })
+const watcher = sane(srcDir, { glob: ['**/*.js', '**/*.graphql'] })
   .on('ready', startWatch)
   .on('add', changeFile)
   .on('delete', deleteFile)
@@ -52,10 +52,10 @@ process.on('SIGINT', () => {
   process.exit();
 });
 
-var isChecking;
-var needsCheck;
-var toCheck = {};
-var timeout;
+let isChecking;
+let needsCheck;
+let toCheck = {};
+let timeout;
 
 function startWatch() {
   process.stdout.write(CLEARSCREEN + green(invert('watching...')));
@@ -84,7 +84,7 @@ function guardedCheck() {
     return;
   }
   isChecking = true;
-  var filepaths = Object.keys(toCheck);
+  const filepaths = Object.keys(toCheck);
   toCheck = {};
   needsCheck = false;
   checkFiles(filepaths).then(() => {
@@ -191,15 +191,15 @@ function allTests(filepaths) {
 }
 
 function isTest(filepath) {
-  return isJS(filepath) && ~filepath.indexOf('__tests__/');
+  return isJS(filepath) && filepath.includes('__tests__/');
 }
 
 // Print helpers
 
-var CLEARSCREEN = '\u001b[2J';
-var CLEARLINE = '\r\x1B[K';
-var CHECK = green('\u2713');
-var X = red('\u2718');
+const CLEARSCREEN = '\u001b[2J';
+const CLEARLINE = '\r\x1B[K';
+const CHECK = green('\u2713');
+const X = red('\u2718');
 
 function invert(str) {
   return `\u001b[7m ${str} \u001b[27m`;
