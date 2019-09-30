@@ -7,7 +7,7 @@
  *
  */
 
- import { Position } from 'graphql-language-service-types'
+import { Position } from 'graphql-language-service-types';
 import { join } from 'path';
 import * as fs from 'fs';
 import { buildSchema } from 'graphql';
@@ -23,10 +23,13 @@ const MOCK_CONFIG = {
 describe('GraphQLLanguageService', () => {
   const mockCache: any = {
     getSchema() {
-      const schemaSDL = fs.readFileSync(join(__dirname, '__schema__/StarWarsSchema.graphql'), 'utf8');
+      const schemaSDL = fs.readFileSync(
+        join(__dirname, '__schema__/StarWarsSchema.graphql'),
+        'utf8',
+      );
 
       const schemaJS = buildSchema(schemaSDL);
-      return new Promise((resolve, reject) => resolve(schemaJS));
+      return new Promise((resolve, _reject) => resolve(schemaJS));
     },
 
     getGraphQLConfig() {
@@ -84,17 +87,16 @@ describe('GraphQLLanguageService', () => {
     );
     expect(diagnostics.length).toEqual(1);
     const diagnostic = diagnostics[0];
-    expect(diagnostic.message).toEqual(
-      'Syntax Error: Unexpected Name "qeury"',
-    );
+    expect(diagnostic.message).toEqual('Syntax Error: Unexpected Name "qeury"');
   });
 
   it('runs definition service as expected', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
-      { line: 0, character: 28 },
+      new Position(0, 28),
       './queries/definitionQuery.graphql',
     );
+    // @ts-ignore
     expect(definitionQueryResult.definitions.length).toEqual(1);
   });
 

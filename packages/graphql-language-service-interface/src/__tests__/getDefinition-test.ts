@@ -19,12 +19,13 @@ describe('getDefinition', () => {
       const query = `type Query {
         hero(episode: Episode): Character
       }
-      
+
       type Episode {
         id: ID!
       }
       `;
       const parsedQuery = parse(query);
+      // @ts-ignore
       const namedTypeDefinition = parsedQuery.definitions[0].fields[0].type;
 
       const result = await getDefinitionQueryResultForNamedType(
@@ -35,6 +36,7 @@ describe('getDefinition', () => {
 
         [
           {
+            // @ts-ignore
             file: 'someFile',
             content: query,
             definition: {
@@ -58,6 +60,7 @@ describe('getDefinition', () => {
       fragment Duck on Duck {
         cuack
       }`;
+      // @ts-ignore
       const fragmentSpread = parse(query).definitions[0].selectionSet
         .selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
@@ -68,6 +71,7 @@ describe('getDefinition', () => {
           {
             file: 'someFile',
             content: fragment,
+            // @ts-ignore
             definition: fragmentDefinition,
           },
         ],

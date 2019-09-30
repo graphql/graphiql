@@ -17,8 +17,11 @@ const text = `query test {
 const absRange: Location = {
   start: 15,
   end: 18,
+  // @ts-ignore
   startToken: null,
+  // @ts-ignore
   endToken: null,
+  // @ts-ignore
   source: null,
 }; // position of 'name' attribute in the test query
 

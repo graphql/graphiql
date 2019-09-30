@@ -7,7 +7,14 @@
  */
 
 import { readFileSync } from 'fs';
-import { GraphQLError, buildSchema, parse, GraphQLSchema } from 'graphql';
+import {
+  GraphQLError,
+  buildSchema,
+  parse,
+  GraphQLSchema,
+  ValidationContext,
+  ArgumentNode,
+} from 'graphql';
 import { join } from 'path';
 
 import { validateWithCustomRules } from '../validateWithCustomRules';
@@ -23,8 +30,9 @@ describe('validateWithCustomRules', () => {
   it('validates with custom rules defined', () => {
     const invalidAST = parse('query { human(id: "a") { name } }');
     const customRules = [
-      context => ({
-        Argument(node) {
+      (context: ValidationContext) => ({
+        Argument(node: ArgumentNode) {
+          // @ts-ignore
           if (!/^\d+$/.test(node.value.value)) {
             context.reportError(
               new GraphQLError(
