@@ -78,6 +78,8 @@ class GraphiQLSource extends React.Component {
   constructor(props) {
     super(props);
 
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     // Ensure props are correct
     if (typeof props.fetcher !== 'function') {
       throw new TypeError('GraphiQL requires a fetcher function.');
@@ -94,7 +96,7 @@ class GraphiQLSource extends React.Component {
         ? this._storage.get('query')
         : props.defaultQuery !== undefined
           ? props.defaultQuery
-          : defaultQuery;
+          : t(defaultQuery);
 
     // Get the initial query facts.
     const queryFacts = getQueryFacts(props.schema, query);
@@ -265,7 +267,7 @@ class GraphiQLSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const children = React.Children.toArray(this.props.children);
 
@@ -329,125 +331,127 @@ class GraphiQLSource extends React.Component {
     };
 
     return (
-      <div className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          <QueryHistory
-            operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
-            onSelectQuery={this.handleSelectHistoryQuery}
-            storage={this._storage}
-            queryID={this._editorQueryID}>
-            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
-              {'\u2715'}
-            </div>
-          </QueryHistory>
-        </div>
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}>
-                { t('Docs') }
-              </button>
-            )}
+      <React.Suspense fallback={ <div className="spinner" /> }>
+        <div className="graphiql-container">
+          <div className="historyPaneWrap" style={historyPaneStyle}>
+            <QueryHistory
+              operationName={this.state.operationName}
+              query={this.state.query}
+              variables={this.state.variables}
+              onSelectQuery={this.handleSelectHistoryQuery}
+              storage={this._storage}
+              queryID={this._editorQueryID}>
+              <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+                {'\u2715'}
+              </div>
+            </QueryHistory>
           </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
-                schema={this.state.schema}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
-                onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-              />
-              <div className="variable-editor" style={variableStyle}>
-                <div
-                  className="variable-editor-title"
-                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
-                </div>
-                <VariableEditor
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              <div className="topBar">
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunQuery}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+                {toolbar}
+              </div>
+              {!this.state.docExplorerOpen && (
+                <button
+                  className="docExplorerShow"
+                  onClick={this.handleToggleDocs}>
+                  { t('DocExplorer:Docs') }
+                </button>
+              )}
+            </div>
+            <div
+              ref={n => {
+                this.editorBarComponent = n;
+              }}
+              className="editorBar"
+              onDoubleClick={this.handleResetResize}
+              onMouseDown={this.handleResizeStart}>
+              <div className="queryWrap" style={queryWrapStyle}>
+                <QueryEditor
                   ref={n => {
-                    this.variableEditorComponent = n;
+                    this.queryEditorComponent = n;
                   }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
+                  schema={this.state.schema}
+                  value={this.state.query}
+                  onEdit={this.handleEditQuery}
                   onHintInformationRender={this.handleHintInformationRender}
+                  onClickReference={this.handleClickReference}
+                  onCopyQuery={this.handleCopyQuery}
                   onPrettifyQuery={this.handlePrettifyQuery}
                   onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                 />
-              </div>
-            </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
+                <div className="variable-editor" style={variableStyle}>
+                  <div
+                    className="variable-editor-title"
+                    style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                    onMouseDown={this.handleVariableResizeStart}>
+                    { t('Editor:Query Variables')}
+                  </div>
+                  <VariableEditor
+                    ref={n => {
+                      this.variableEditorComponent = n;
+                    }}
+                    value={this.state.variables}
+                    variableToType={this.state.variableToType}
+                    onEdit={this.handleEditVariables}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                  />
                 </div>
-              )}
-              <ResultViewer
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.state.response}
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
-              />
-              {footer}
+              </div>
+              <div className="resultWrap">
+                {this.state.isWaitingForResponse && (
+                  <div className="spinner-container">
+                    <div className="spinner" />
+                  </div>
+                )}
+                <ResultViewer
+                  ref={c => {
+                    this.resultComponent = c;
+                  }}
+                  value={this.state.response}
+                  editorTheme={this.props.editorTheme}
+                  ResultsTooltip={this.props.ResultsTooltip}
+                  ImagePreview={ImagePreview}
+                />
+                {footer}
+              </div>
             </div>
           </div>
+          {this.state.docExplorerOpen && (
+            <div className={docExplorerWrapClasses} style={docWrapStyle}>
+              <div
+                className="docExplorerResizer"
+                onDoubleClick={this.handleDocsResetResize}
+                onMouseDown={this.handleDocsResizeStart}
+              />
+              <DocExplorer
+                ref={c => {
+                  this.docExplorerComponent = c;
+                }}
+                schema={this.state.schema}>
+                <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+                  {'\u2715'}
+                </div>
+              </DocExplorer>
+            </div>
+          )}
         </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
-              schema={this.state.schema}>
-              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
-                {'\u2715'}
-              </div>
-            </DocExplorer>
-          </div>
-        )}
-      </div>
+      </React.Suspense>
     );
   }
 
@@ -487,6 +491,8 @@ class GraphiQLSource extends React.Component {
    * @public
    */
   autoCompleteLeafs() {
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
@@ -506,7 +512,7 @@ class GraphiQLSource extends React.Component {
             {
               className: 'autoInsertedLeaf',
               clearOnEnter: true,
-              title: 'Automatically added leaf fields',
+              title: t('Editor:Automatically added leaf fields'),
             },
           ),
         );
@@ -527,6 +533,8 @@ class GraphiQLSource extends React.Component {
   // Private methods
 
   _fetchSchema() {
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     const fetcher = this.props.fetcher;
 
     const fetch = observableToPromise(
@@ -537,7 +545,7 @@ class GraphiQLSource extends React.Component {
     );
     if (!isPromise(fetch)) {
       this.setState({
-        response: 'Fetcher did not return a Promise for introspection.',
+        response: t('Fetcher did not return a Promise for introspection'),
       });
       return;
     }
@@ -558,7 +566,7 @@ class GraphiQLSource extends React.Component {
         );
         if (!isPromise(fetch)) {
           throw new Error(
-            'Fetcher did not return a Promise for introspection.',
+            t('Fetcher did not return a Promise for introspection'),
           );
         }
         return fetch2;
@@ -594,6 +602,8 @@ class GraphiQLSource extends React.Component {
   }
 
   _fetchQuery(query, variables, operationName, cb) {
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     const fetcher = this.props.fetcher;
     let jsonVariables = null;
 
@@ -601,11 +611,11 @@ class GraphiQLSource extends React.Component {
       jsonVariables =
         variables && variables.trim() !== '' ? JSON.parse(variables) : null;
     } catch (error) {
-      throw new Error(`Variables are invalid JSON: ${error.message}.`);
+      throw new Error(`${ t('Variables are invalid JSON')}: ${error.message}.`);
     }
 
     if (typeof jsonVariables !== 'object') {
-      throw new Error('Variables are not a JSON object.');
+      throw new Error(t('Variables are not a JSON object'));
     }
 
     const fetch = fetcher({
@@ -646,7 +656,7 @@ class GraphiQLSource extends React.Component {
 
       return subscription;
     } else {
-      throw new Error('Fetcher did not return Promise or Observable.');
+      throw new Error(t('Fetcher did not return Promise or Observable'));
     }
   }
 
@@ -1033,7 +1043,7 @@ class GraphiQLSource extends React.Component {
   };
 }
 
-export const GraphiQL = withTranslation('DocExplorer')(GraphiQLSource);
+export const GraphiQL = withTranslation()(GraphiQLSource);
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Logo = function GraphiQLLogo(props) {
@@ -1098,38 +1108,7 @@ GraphiQL.formatError = function(rawError) {
   return JSON.stringify(result, null, 2);
 };
 
-const defaultQuery = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that starts
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
-#
-#       Run Query:  Ctrl-Enter (or press the play button above)
-#
-#   Auto Complete:  Ctrl-Space (or just start typing)
-#
-
-`;
+const defaultQuery = 'Editor:Welcome to GraphiQL';
 
 // Duck-type promise detection.
 function isPromise(value) {

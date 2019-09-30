@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { GraphQLSchema, isType } from 'graphql';
 
 import FieldDoc from './DocExplorer/FieldDoc';
-import SchemaDoc from './DocExplorer/SchemaDoc';
+import { SchemaDoc } from './DocExplorer/SchemaDoc';
 import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
@@ -56,7 +56,7 @@ class DocExplorerSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const schema = this.props.schema;
     const navStack = this.state.navStack;
@@ -133,7 +133,7 @@ class DocExplorerSource extends React.Component {
           {shouldSearchBoxAppear && (
             <SearchBox
               value={navItem.search}
-              placeholder={`${ t('Search') } ${navItem.name}...`}
+              placeholder={`${ t('Search') } ${ t(navItem.name) }...`}
               onSearch={this.handleSearch}
             />
           )}

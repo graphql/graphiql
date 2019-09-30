@@ -14,6 +14,9 @@ import enDocExplorer from '../locales/en/DocExplorer.json';
 import ruToolbar from '../locales/ru/Toolbar.json'
 import enToolbar from '../locales/en/Toolbar.json'
 
+import ruEditor from '../locales/ru/Editor.json'
+import enEditor from '../locales/ru/Editor.json'
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -36,7 +39,7 @@ i18n
 
       // optional expire and domain for set cookie
       cookieMinutes: 10,
-      cookieDomain: 'myDomain',
+      cookieDomain: window.location.hostname,
 
       // optional htmlTag with lang attribute, the default is:
       htmlTag: document.documentElement
@@ -107,12 +110,14 @@ i18n
       en: {
         translations: enTranslations, //  default
         DocExplorer: enDocExplorer,
-        Toolbar: enToolbar
+        Toolbar: enToolbar,
+        Editor: enEditor
       },
       ru: {
         translations: ruTranslations,
         DocExplorer: ruDocExplorer,
-        Toolbar: ruToolbar
+        Toolbar: ruToolbar,
+        Editor: ruEditor
       },
     },
     fallbackLng: {
@@ -140,8 +145,5 @@ i18n
     },
 
 });
-
-// const fs = require('fs');
-// let folders = fs.readdir(__dirname + '/../public');
 
 export default i18n;

@@ -85,7 +85,7 @@ class QueryHistorySource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const queries = this.state.queries.slice().reverse();
     const queryNodes = queries.map((query, i) => {

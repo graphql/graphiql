@@ -27,7 +27,8 @@ class ToolbarButtonSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     const { error } = this.state;
     return (
       <a
