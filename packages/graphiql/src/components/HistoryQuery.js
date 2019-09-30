@@ -143,4 +143,5 @@ class HistoryQuerySource extends React.Component {
   }
 }
 
-export const HistoryQuery = withTranslation('Toolbar')(HistoryQuerySource);
+const HistoryQuery = withTranslation('Toolbar')(HistoryQuerySource);
+export default HistoryQuery;

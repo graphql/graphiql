@@ -67,9 +67,9 @@
     "jsdom": "15.0.0",
     "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",
-    "react": "15.6.2",
-    "react-dom": "15.6.2",
-    "react-test-renderer": "15.6.2",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-test-renderer": "16.9.0",
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
     "watchify": "3.11.1"

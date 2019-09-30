@@ -113,11 +113,9 @@ i18n
     // // have a common namespace used around the full app
     // ns: ['translations'],
     defaultNS: 'translation',
-    cleanCode: true,
     load: 'currentOnly',
     preload: [ 'en', 'ru'],
     keySeparator: '.', // we use content as keys
-    saveMissing: false,
     nsSeparator: ':',
     interpolation: {
       escapeValue: false, // not needed for react!!
@@ -125,7 +123,7 @@ i18n
     },
     react: {
       wait: true,
-      useSuspense: false
+      useSuspense: true
     },
 
 });

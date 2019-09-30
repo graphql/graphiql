@@ -36,6 +36,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { withTranslation } from 'react-i18next';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -45,7 +46,8 @@ const DEFAULT_DOC_EXPLORER_WIDTH = 350;
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component {
+class GraphiQLSource extends React.Component {
+
   static propTypes = {
     fetcher: PropTypes.func.isRequired,
     schema: PropTypes.instanceOf(GraphQLSchema),
@@ -91,8 +93,8 @@ export class GraphiQL extends React.Component {
         : this._storage.get('query') !== null
         ? this._storage.get('query')
         : props.defaultQuery !== undefined
-        ? props.defaultQuery
-        : defaultQuery;
+          ? props.defaultQuery
+          : defaultQuery;
 
     // Get the initial query facts.
     const queryFacts = getQueryFacts(props.schema, query);
@@ -108,10 +110,10 @@ export class GraphiQL extends React.Component {
       props.operationName !== undefined
         ? props.operationName
         : getSelectedOperationName(
-            null,
-            this._storage.get('operationName'),
-            queryFacts && queryFacts.operations,
-          );
+        null,
+        this._storage.get('operationName'),
+        queryFacts && queryFacts.operations,
+        );
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
@@ -263,17 +265,19 @@ export class GraphiQL extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     const children = React.Children.toArray(this.props.children);
 
-    const logo = find(children, child => child.type === GraphiQL.Logo) || (
-      <GraphiQL.Logo />
+    const logo = find(children, child => child.type === GraphiQLSource.Logo) || (
+      <GraphiQLSource.Logo />
     );
 
     const toolbar = find(
       children,
-      child => child.type === GraphiQL.Toolbar,
+      child => child.type === GraphiQLSource.Toolbar,
     ) || (
-      <GraphiQL.Toolbar>
+      <GraphiQLSource.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
           title="Prettify Query (Shift-Ctrl-P)"
@@ -294,29 +298,32 @@ export class GraphiQL extends React.Component {
           title="Show History"
           label="History"
         />
-      </GraphiQL.Toolbar>
+      </GraphiQLSource.Toolbar>
     );
 
-    const footer = find(children, child => child.type === GraphiQL.Footer);
+    const footer = find(children, child => child.type === GraphiQLSource.Footer);
 
     const queryWrapStyle = {
       WebkitFlex: this.state.editorFlex,
       flex: this.state.editorFlex,
     };
+    console.log(queryWrapStyle);
 
     const docWrapStyle = {
       display: 'block',
       width: this.state.docExplorerWidth,
     };
+    console.log(docWrapStyle);
     const docExplorerWrapClasses =
       'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-
+    console.log(docExplorerWrapClasses);
     const historyPaneStyle = {
       display: this.state.historyPaneOpen ? 'block' : 'none',
       width: '230px',
       zIndex: '7',
     };
+    console.log(historyPaneStyle);
 
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
@@ -325,123 +332,127 @@ export class GraphiQL extends React.Component {
 
     return (
       <div className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          <QueryHistory
-            operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
-            onSelectQuery={this.handleSelectHistoryQuery}
-            storage={this._storage}
-            queryID={this._editorQueryID}>
-            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
-              {'\u2715'}
-            </div>
-          </QueryHistory>
-        </div>
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}>
-                {'Docs'}
-              </button>
-            )}
-          </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
-                schema={this.state.schema}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
-                onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-              />
-              <div className="variable-editor" style={variableStyle}>
-                <div
-                  className="variable-editor-title"
-                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
-                </div>
-                <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                />
-              </div>
-            </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>
-              )}
-              <ResultViewer
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.state.response}
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
-              />
-              {footer}
-            </div>
-          </div>
-        </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
-              schema={this.state.schema}>
-              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+        <React.Suspense fallback={ <div> { 'Loading...' }</div> }>
+          <div className="historyPaneWrap" style={historyPaneStyle}>
+            <QueryHistory
+              operationName={this.state.operationName}
+              query={this.state.query}
+              variables={this.state.variables}
+              onSelectQuery={this.handleSelectHistoryQuery}
+              storage={this._storage}
+              queryID={this._editorQueryID}>
+              <div className="docExplorerHide" onClick={this.handleToggleHistory}>
                 {'\u2715'}
               </div>
-            </DocExplorer>
+            </QueryHistory>
           </div>
-        )}
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              <div className="topBar">
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunQuery}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+                {toolbar}
+              </div>
+              {!this.state.docExplorerOpen && (
+                <button
+                  className="docExplorerShow"
+                  onClick={this.handleToggleDocs}>
+                  {/*{ t('Docs') }*/}
+                </button>
+              )}
+            </div>
+            <React.Suspense fallback={ <div> { 'Loading...' }</div> }>
+              <div
+                ref={n => {
+                  this.editorBarComponent = n;
+                }}
+                className="editorBar"
+                onDoubleClick={this.handleResetResize}
+                onMouseDown={this.handleResizeStart}>
+                <div className="queryWrap" style={queryWrapStyle}>
+                  <QueryEditor
+                    ref={n => {
+                      this.queryEditorComponent = n;
+                    }}
+                    schema={this.state.schema}
+                    value={this.state.query}
+                    onEdit={this.handleEditQuery}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onClickReference={this.handleClickReference}
+                    onCopyQuery={this.handleCopyQuery}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                  />
+                  <div className="variable-editor" style={variableStyle}>
+                    <div
+                      className="variable-editor-title"
+                      style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                      onMouseDown={this.handleVariableResizeStart}>
+                      {'Query Variables'}
+                    </div>
+                    <VariableEditor
+                      ref={n => {
+                        this.variableEditorComponent = n;
+                      }}
+                      value={this.state.variables}
+                      variableToType={this.state.variableToType}
+                      onEdit={this.handleEditVariables}
+                      onHintInformationRender={this.handleHintInformationRender}
+                      onPrettifyQuery={this.handlePrettifyQuery}
+                      onMergeQuery={this.handleMergeQuery}
+                      onRunQuery={this.handleEditorRunQuery}
+                      editorTheme={this.props.editorTheme}
+                      readOnly={this.props.readOnly}
+                    />
+                  </div>
+                </div>
+                <div className="resultWrap">
+                  {this.state.isWaitingForResponse && (
+                    <div className="spinner-container">
+                      <div className="spinner" />
+                    </div>
+                  )}
+                  <ResultViewer
+                    ref={c => {
+                      this.resultComponent = c;
+                    }}
+                    value={this.state.response}
+                    editorTheme={this.props.editorTheme}
+                    ResultsTooltip={this.props.ResultsTooltip}
+                    ImagePreview={ImagePreview}
+                  />
+                  {footer}
+                </div>
+              </div>
+            </React.Suspense>
+          </div>
+          {this.state.docExplorerOpen && (
+            <div className={docExplorerWrapClasses} style={docWrapStyle}>
+              <div
+                className="docExplorerResizer"
+                onDoubleClick={this.handleDocsResetResize}
+                onMouseDown={this.handleDocsResizeStart}
+              />
+              <DocExplorer
+                ref={c => {
+                  this.docExplorerComponent = c;
+                }}
+                schema={this.state.schema}>
+                <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+                  {'\u2715'}
+                </div>
+              </DocExplorer>
+            </div>
+          )}
+        </React.Suspense>
       </div>
     );
   }
@@ -572,7 +583,7 @@ export class GraphiQL extends React.Component {
           this.setState({ schema, ...queryFacts });
         } else {
           const responseString =
-            typeof result === 'string' ? result : GraphiQL.formatResult(result);
+            typeof result === 'string' ? result : GraphiQLSource.formatResult(result);
           this.setState({
             // Set schema to `null` to explicitly indicate that no schema exists.
             schema: null,
@@ -583,7 +594,7 @@ export class GraphiQL extends React.Component {
       .catch(error => {
         this.setState({
           schema: null,
-          response: error ? GraphiQL.formatError(error) : null,
+          response: error ? GraphiQLSource.formatError(error) : null,
         });
       });
   }
@@ -615,7 +626,7 @@ export class GraphiQL extends React.Component {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : null,
+          response: error ? GraphiQLSource.formatError(error) : null,
         });
       });
     } else if (isObservable(fetch)) {
@@ -627,7 +638,7 @@ export class GraphiQL extends React.Component {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error ? GraphiQL.formatError(error) : null,
+            response: error ? GraphiQLSource.formatError(error) : null,
             subscription: null,
           });
         },
@@ -685,7 +696,7 @@ export class GraphiQL extends React.Component {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response: GraphiQLSource.formatResult(result),
             });
           }
         },
@@ -1028,8 +1039,89 @@ export class GraphiQL extends React.Component {
   };
 }
 
+const GraphiQLwithTranslation = withTranslation('DocExplorer', { useSuspense: true })(GraphiQLSource);
+
+export function GraphiQL({ fetcher,
+                           schema,
+                           query,
+                           variables,
+                           operationName,
+                           response,
+                           storage,
+                           defaultQuery,
+                           defaultVariableEditorOpen,
+                           onCopyQuery,
+                           onEditQuery,
+                           onEditVariables,
+                           onEditOperationName,
+                           onToggleDocs,
+                           getDefaultFieldNames,
+                           editorTheme,
+                           onToggleHistory,
+                           ResultsTooltip,
+                           readOnly,
+                           docExplorerOpen
+                           })
+{
+  return (
+    <div>
+      <React.Suspense fallback={ <div> { 'Loading...' }</div> } >
+        <GraphiQLwithTranslation
+          fetcher={ fetcher }
+          schema={ schema }
+          query={ query }
+          variables={ variables }
+          operationName={ operationName }
+          response={ response }
+          storage={ storage }
+          defaultQuery={ defaultQuery }
+          defaultVariableEditorOpen={ defaultVariableEditorOpen }
+          onCopyQuery={ onCopyQuery }
+          onEditQuery={ onEditQuery }
+          onEditVariables={ onEditVariables }
+          onEditOperationName={ onEditOperationName }
+          onToggleDocs={ onToggleDocs }
+          getDefaultFieldNames = { getDefaultFieldNames }
+          editorTheme={ editorTheme }
+          onToggleHistory={ onToggleHistory }
+          ResultsTooltip={ ResultsTooltip }
+          readOnly={ readOnly }
+          docExplorerOpen={ docExplorerOpen }
+        />
+      </React.Suspense>
+    </div>
+  );
+}
+
+GraphiQL.propTypes = {
+  fetcher: PropTypes.func.isRequired,
+  schema: PropTypes.instanceOf(GraphQLSchema),
+  query: PropTypes.string,
+  variables: PropTypes.string,
+  operationName: PropTypes.string,
+  response: PropTypes.string,
+  storage: PropTypes.shape({
+    getItem: PropTypes.func,
+    setItem: PropTypes.func,
+    removeItem: PropTypes.func,
+  }),
+  defaultQuery: PropTypes.string,
+  defaultVariableEditorOpen: PropTypes.bool,
+  onCopyQuery: PropTypes.func,
+  onEditQuery: PropTypes.func,
+  onEditVariables: PropTypes.func,
+  onEditOperationName: PropTypes.func,
+  onToggleDocs: PropTypes.func,
+  getDefaultFieldNames: PropTypes.func,
+  editorTheme: PropTypes.string,
+  onToggleHistory: PropTypes.func,
+  ResultsTooltip: PropTypes.any,
+  readOnly: PropTypes.bool,
+  docExplorerOpen: PropTypes.bool,
+};
+
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Logo = function GraphiQLLogo(props) {
+GraphiQLwithTranslation.Logo = function GraphiQLLogo(props) {
   return (
     <div className="title">
       {props.children || (
@@ -1044,36 +1136,36 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
 };
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Toolbar = function GraphiQLToolbar(props) {
+GraphiQLwithTranslation.Toolbar = function GraphiQLToolbar(props) {
   return <div className="toolbar">{props.children}</div>;
 };
 
 // Export main windows/panes to be used separately if desired.
-GraphiQL.QueryEditor = QueryEditor;
-GraphiQL.VariableEditor = VariableEditor;
-GraphiQL.ResultViewer = ResultViewer;
+GraphiQLwithTranslation.QueryEditor = QueryEditor;
+GraphiQLwithTranslation.VariableEditor = VariableEditor;
+GraphiQLwithTranslation.ResultViewer = ResultViewer;
 
 // Add a button to the Toolbar.
-GraphiQL.Button = ToolbarButton;
-GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+GraphiQLwithTranslation.Button = ToolbarButton;
+GraphiQLwithTranslation.ToolbarButton = ToolbarButton; // Don't break existing API.
 
 // Add a group of buttons to the Toolbar
-GraphiQL.Group = ToolbarGroup;
+GraphiQLwithTranslation.Group = ToolbarGroup;
 
 // Add a menu of items to the Toolbar.
-GraphiQL.Menu = ToolbarMenu;
-GraphiQL.MenuItem = ToolbarMenuItem;
+GraphiQLwithTranslation.Menu = ToolbarMenu;
+GraphiQLwithTranslation.MenuItem = ToolbarMenuItem;
 
 // Add a select-option input to the Toolbar.
-GraphiQL.Select = ToolbarSelect;
-GraphiQL.SelectOption = ToolbarSelectOption;
+GraphiQLwithTranslation.Select = ToolbarSelect;
+GraphiQLwithTranslation.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
-GraphiQL.Footer = function GraphiQLFooter(props) {
+GraphiQLwithTranslation.Footer = function GraphiQLFooter(props) {
   return <div className="footer">{props.children}</div>;
 };
 
-GraphiQL.formatResult = function(result) {
+GraphiQLwithTranslation.formatResult = function(result) {
   return JSON.stringify(result, null, 2);
 };
 
@@ -1084,7 +1176,7 @@ const formatSingleError = error => ({
   stack: error.stack,
 });
 
-GraphiQL.formatError = function(rawError) {
+GraphiQLwithTranslation.formatError = function(rawError) {
   const result = Array.isArray(rawError)
     ? rawError.map(formatSingleError)
     : formatSingleError(rawError);
