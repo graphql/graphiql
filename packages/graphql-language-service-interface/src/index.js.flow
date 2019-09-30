@@ -1,0 +1,64 @@
+/**
+ *  Copyright (c) 2019 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  @flow
+ */
+
+import type {
+  Outline,
+  CustomValidationRule,
+  Diagnostic,
+  ContextToken,
+  Position,
+  DefinitionQueryResult,
+  Uri,
+  GraphQLCache,
+  CompletionItem,
+} from 'graphql-language-service-types';
+import type { GraphQLSchema } from 'graphql';
+import type { Hover } from 'vscode-languageserver-types';
+
+declare export function getOutline(queryText: string): ?Outline;
+declare export function getDiagnostics(
+  query: string,
+  schema: ?GraphQLSchema,
+  customRules?: Array<CustomValidationRule>,
+  isRelayCompatMode?: boolean,
+): Array<Diagnostic>;
+declare export function getAutocompleteSuggestions(
+  schema: GraphQLSchema,
+  queryText: string,
+  cursor: Position,
+  contextToken?: ContextToken,
+): Array<CompletionItem>;
+declare export class GraphQLLanguageService {
+  constructor(cache: GraphQLCache): GraphQLLanguageService;
+
+  getDefinition(
+    query: string,
+    position: Position,
+    filePath: Uri,
+  ): Promise<?DefinitionQueryResult>;
+
+  getDiagnostics(
+    query: string,
+    uri: Uri,
+    isRelayCompatMode?: boolean,
+  ): Promise<Array<Diagnostic>>;
+
+  getHoverInformation(
+    query: string,
+    position: Position,
+    filePath: Uri,
+  ): Promise<Hover.contents>;
+
+  getAutocompleteSuggestions(
+    query: string,
+    position: Position,
+    filePath: Uri,
+  ): Promise<Array<CompletionItem>>;
+}
