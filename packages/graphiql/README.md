@@ -356,4 +356,4 @@ fragment HumanFragment on Human {
 }
 ```
 
-Read more from [GraphQL Fragment Specification](https://graphql.github.io/graphql-spec/).
+Read more from [GraphQL Fragment Specification](https://graphql.github.io/graphql-spec/draft/#sec-Language.Fragments).
