@@ -5,19 +5,22 @@ import { initReactI18next } from 'react-i18next';
 //  Resources
 
 //  Default
-import ruTranslations from '../locales/ru/translation.json';
-import enTranslations from '../locales/en/translation.json';
+import ruTranslations from './locales/ru/translation.json';
+import enTranslations from './locales/en/translation.json';
 
-import ruDocExplorer from '../locales/ru/DocExplorer.json';
-import enDocExplorer from '../locales/en/DocExplorer.json';
+import ruDocExplorer from './locales/ru/DocExplorer.json';
+import enDocExplorer from './locales/en/DocExplorer.json';
 
-import ruToolbar from '../locales/ru/Toolbar.json'
-import enToolbar from '../locales/en/Toolbar.json'
+import ruToolbar from './locales/ru/Toolbar.json'
+import enToolbar from './locales/en/Toolbar.json'
 
-import ruEditor from '../locales/ru/Editor.json'
-import enEditor from '../locales/ru/Editor.json'
+import ruEditor from './locales/ru/Editor.json'
+import enEditor from './locales/ru/Editor.json'
 
-i18n
+
+const i18nextGraphql = i18n.createInstance();
+
+i18nextGraphql
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -142,8 +145,7 @@ i18n
     react: {
       wait: true,
       useSuspense: true
-    },
-
+    }
 });
 
-export default i18n;
+export default i18nextGraphql;
