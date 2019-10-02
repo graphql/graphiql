@@ -18,8 +18,9 @@ describe('getDiagnostics', () => {
   let schema: GraphQLSchema;
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
-    path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
-    'utf8');
+      path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
+      'utf8',
+    );
 
     schema = buildSchema(schemaIDL);
   });
@@ -60,7 +61,7 @@ describe('getDiagnostics', () => {
 
   it('catches a syntax error in the SDL', () => {
     const errors = getDiagnostics(
-    `
+      `
         type Human implements Character {
           field_without_type_is_a_syntax_error
           id: String!
@@ -79,9 +80,9 @@ describe('getDiagnostics', () => {
   //       and then run diagnostics with the schema
   it('returns no errors after parsing kitchen-sink query', () => {
     const kitchenSink = fs.readFileSync(
-    path.join(__dirname, '/kitchen-sink.graphql'),
-    'utf8');
-
+      path.join(__dirname, '/kitchen-sink.graphql'),
+      'utf8',
+    );
 
     const errors = getDiagnostics(kitchenSink);
     expect(errors).toHaveLength(0);

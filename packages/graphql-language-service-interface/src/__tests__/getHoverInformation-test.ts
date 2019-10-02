@@ -21,8 +21,9 @@ describe('getHoverInformation', () => {
   let schema: GraphQLSchema;
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
-    path.join(__dirname, '__schema__/HoverTestSchema.graphql'),
-    'utf8');
+      path.join(__dirname, '__schema__/HoverTestSchema.graphql'),
+      'utf8',
+    );
 
     schema = buildSchema(schemaIDL);
   });

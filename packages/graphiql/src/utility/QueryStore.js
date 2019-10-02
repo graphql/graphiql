@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
- export default class QueryStore {
+export default class QueryStore {
   constructor(key, storage) {
     this.key = key;
     this.storage = storage;

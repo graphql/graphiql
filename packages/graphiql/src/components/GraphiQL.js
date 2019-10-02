@@ -122,7 +122,10 @@ export class GraphiQL extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+    const variableEditorOpen =
+      props.defaultVariableEditorOpen !== undefined
+        ? props.defaultVariableEditorOpen
+        : Boolean(variables);
 
     // Initialize state
     this.state = {

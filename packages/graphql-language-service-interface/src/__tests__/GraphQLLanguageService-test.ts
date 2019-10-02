@@ -93,7 +93,7 @@ describe('GraphQLLanguageService', () => {
   it('runs definition service as expected', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
-      new Position(0, 28),
+      { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
     // @ts-ignore

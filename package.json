@@ -19,7 +19,7 @@
     }
   },
   "scripts": {
-    "build": "lerna run build",
+    "build": "tsc --build && lerna run build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
