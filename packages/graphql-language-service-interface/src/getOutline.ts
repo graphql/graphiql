@@ -95,17 +95,17 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
   return {
     Field: (node: FieldNode) => {
       const tokenizedText =
-        node.alias && node.alias.value
-          ? [buildToken('plain', node.alias.value), buildToken('plain', ': ')]
+        node.alias
+          ? [buildToken('plain', (node.alias as unknown) as string), buildToken('plain', ': ')]
           : [];
-      tokenizedText.push(buildToken('plain', node.name.value));
+      tokenizedText.push(buildToken('plain', (node.name as unknown) as string));
       return { tokenizedText, ...meta(node) };
     },
     OperationDefinition: (node: OperationDefinitionNode) => ({
       tokenizedText: [
         buildToken('keyword', node.operation),
         buildToken('whitespace', ' '),
-        buildToken('class-name', node.name ? node.name.value : ''),
+        buildToken('class-name', (node.name as unknown) as string),
       ],
       ...meta(node),
     }),
@@ -120,7 +120,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       tokenizedText: [
         buildToken('keyword', 'fragment'),
         buildToken('whitespace', ' '),
-        buildToken('class-name', node.name.value),
+        buildToken('class-name', (node.name as unknown) as string),
       ],
       ...meta(node),
     }),
@@ -128,7 +128,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     FragmentSpread: (node: FragmentSpreadNode) => ({
       tokenizedText: [
         buildToken('plain', '...'),
-        buildToken('class-name', node.name.value),
+        buildToken('class-name', (node.name as unknown) as string),
       ],
       ...meta(node),
     }),
