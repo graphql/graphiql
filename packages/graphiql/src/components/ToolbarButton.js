@@ -7,14 +7,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
 /**
  * ToolbarButton
  *
  * A button to use within the Toolbar.
  */
-class ToolbarButtonSource extends React.Component {
+export class ToolbarButton extends React.Component {
   static propTypes = {
     onClick: PropTypes.func,
     title: PropTypes.string,
@@ -27,15 +26,14 @@ class ToolbarButtonSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
     const { error } = this.state;
     return (
       <a
         className={'toolbar-button' + (error ? ' error' : '')}
         onMouseDown={preventDefault}
         onClick={this.handleClick}
-        title={ t(error ? error.message : this.props.title) }>
-        { t(this.props.label) }
+        title={error ? error.message : this.props.title}>
+        {this.props.label}
       </a>
     );
   }
@@ -50,8 +48,6 @@ class ToolbarButtonSource extends React.Component {
     }
   };
 }
-
-export const ToolbarButton = withTranslation('Toolbar')(ToolbarButtonSource);
 
 function preventDefault(e) {
   e.preventDefault();

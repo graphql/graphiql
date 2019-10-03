@@ -29,13 +29,8 @@
     -->
     <script src="//cdn.jsdelivr.net/es6-promise/4.0.5/es6-promise.auto.min.js"></script>
     <script src="//cdn.jsdelivr.net/fetch/0.9.0/fetch.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <!--    <script src="//cdn.jsdelivr.net/react/16.8.6/react.min.js"></script>-->
-<!--    <script src="//cdn.jsdelivr.net/react/16.8.6/react-dom.min.js"></script>-->
-
-<!--    <script src="//cdn.jsdelivr.net/react/15.4.2/react.min.js"></script>-->
-<!--    <script src="//cdn.jsdelivr.net/react/15.4.2/react-dom.min.js"></script>-->
+    <script src="//cdn.jsdelivr.net/react/15.4.2/react.min.js"></script>
+    <script src="//cdn.jsdelivr.net/react/15.4.2/react-dom.min.js"></script>
 
     <!--
       These two files can be found in the npm module, however you may wish to
@@ -47,19 +42,19 @@
 
   </head>
   <body>
-
     <div id="graphiql">Loading...</div>
+    <script>
 
-    <script>/**
-     * This GraphiQL example illustrates how to use some of GraphiQL's props
-     * in order to enable reading and updating the URL parameters, making
-     * link sharing of queries a little bit easier.
-     *
-     * This is only one example of this kind of feature, GraphiQL exposes
-     * various React params to enable interesting integrations.
-     */
+      /**
+       * This GraphiQL example illustrates how to use some of GraphiQL's props
+       * in order to enable reading and updating the URL parameters, making
+       * link sharing of queries a little bit easier.
+       *
+       * This is only one example of this kind of feature, GraphiQL exposes
+       * various React params to enable interesting integrations.
+       */
 
-    // Parse the search string to get url parameters.
+      // Parse the search string to get url parameters.
       var search = window.location.search;
       var parameters = {};
       search.substr(1).split('&').forEach(function (entry) {
@@ -140,19 +135,19 @@
       // See the README in the top level of this module to learn more about
       // how you can customize GraphiQL by providing different values or
       // additional child elements.
-      debugger
-      ReactDOM.render(React.createElement(GraphiQL, {
-                fetcher: graphQLFetcher,
-                query: parameters.query,
-                variables: parameters.variables,
-                operationName: parameters.operationName,
-                onEditQuery: onEditQuery,
-                onEditVariables: onEditVariables,
-                defaultVariableEditorOpen: true,
-                onEditOperationName: onEditOperationName
-              }),
-          document.getElementById('graphiql')
-        );
+      ReactDOM.render(
+        React.createElement(GraphiQL, {
+          fetcher: graphQLFetcher,
+          query: parameters.query,
+          variables: parameters.variables,
+          operationName: parameters.operationName,
+          onEditQuery: onEditQuery,
+          onEditVariables: onEditVariables,
+          defaultVariableEditorOpen: true,
+          onEditOperationName: onEditOperationName
+        }),
+        document.getElementById('graphiql')
+      );
     </script>
   </body>
 </html>

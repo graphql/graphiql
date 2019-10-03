@@ -1,23 +1,23 @@
 parser: babel-eslint
 
-plugins:
+plugins: 
   - babel
   - react
 
-settings:
-  react:
+settings: 
+  react: 
     version:  0.15.0
 
-env:
+env: 
   browser: true
   es6: true
   node: true
   jest: true
 
-extends:
+extends: 
   - prettier
 
-parserOptions:
+parserOptions: 
   arrowFunctions: true
   binaryLiterals: true
   blockBindings: true
@@ -63,19 +63,17 @@ rules:
   react/no-direct-mutation-state: error
   react/no-string-refs: error
   react/no-unknown-property: error
-  react/prop-types:
+  react/prop-types: 
     - error
     - ignore:
       - children
-      - t
-      - i18n
   react/prefer-es6-class: error
   react/prefer-stateless-function: error
   react/react-in-jsx-scope: error
   react/self-closing-comp: error
-  react/sort-comp:
+  react/sort-comp: 
     - error
-    - order:
+    - order:  
       - static-methods
       - lifecycle
       - render
