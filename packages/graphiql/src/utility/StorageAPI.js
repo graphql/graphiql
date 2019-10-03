@@ -7,7 +7,8 @@
 
 export default class StorageAPI {
   constructor(storage) {
-    this.storage = storage || window.localStorage;
+    this.storage =
+      storage || (typeof window !== 'undefined' ? window.localStorage : null);
   }
 
   get(name) {

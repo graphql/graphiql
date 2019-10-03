@@ -1,11 +1,11 @@
 language: node_js
-node_js: 
+node_js:
   - stable
   - lts/*
 before_install:
   - npm config set spin false --global
 install:
-  - yarn --ignore-scripts # ignore prepublish scripts
+  - yarn --frozen-lockfile --ignore-scripts # ignore prepublish scripts
 after_success:
   - codecov
 cache: yarn
