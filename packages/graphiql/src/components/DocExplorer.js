@@ -15,11 +15,9 @@ import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 
-import { withTranslation } from 'react-i18next';
-
 const initialNav = {
-    name: 'Schema',
-    title: 'Documentation Explorer'
+  name: 'Schema',
+  title: 'Documentation Explorer',
 };
 
 /**
@@ -38,13 +36,14 @@ const initialNav = {
  *     top bar. Typically this will be a "close" button for temporary explorer.
  *
  */
-class DocExplorerSource extends React.Component {
+export class DocExplorer extends React.Component {
   static propTypes = {
     schema: PropTypes.instanceOf(GraphQLSchema),
   };
 
   constructor() {
     super();
+
     this.state = { navStack: [initialNav] };
   }
 
@@ -56,8 +55,6 @@ class DocExplorerSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
-
     const schema = this.props.schema;
     const navStack = this.state.navStack;
     const navItem = navStack[navStack.length - 1];
@@ -73,7 +70,7 @@ class DocExplorerSource extends React.Component {
     } else if (!schema) {
       // Schema is null when it explicitly does not exist, typically due to
       // an error during introspection.
-      content = <div className="error-container">{ t('No Schema Available') }</div>;
+      content = <div className="error-container">{'No Schema Available'}</div>;
     } else if (navItem.search) {
       content = (
         <SearchResults
@@ -121,11 +118,11 @@ class DocExplorerSource extends React.Component {
             <div
               className="doc-explorer-back"
               onClick={this.handleNavBackClick}>
-              { t(prevName) }
+              {prevName}
             </div>
           )}
           <div className="doc-explorer-title">
-            { t(navItem.title) || t(navItem.name) }
+            {navItem.title || navItem.name}
           </div>
           <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
@@ -133,7 +130,7 @@ class DocExplorerSource extends React.Component {
           {shouldSearchBoxAppear && (
             <SearchBox
               value={navItem.search}
-              placeholder={`${ t('Search') } ${navItem.name}...`}
+              placeholder={`Search ${navItem.name}...`}
               onSearch={this.handleSearch}
             />
           )}
@@ -198,5 +195,3 @@ class DocExplorerSource extends React.Component {
     this.showSearch(value);
   };
 }
-
-export const DocExplorer = withTranslation('DocExplorer')(DocExplorerSource);
