@@ -5,5 +5,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import 'regenerator-runtime/runtime';
+import './i18n.js'
 // The primary React component to use.
 module.exports = require('./components/GraphiQL').GraphiQL;

@@ -10,6 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import QueryStore from '../utility/QueryStore';
 import HistoryQuery from './HistoryQuery';
+import { withTranslation } from 'react-i18next';
 
 const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
@@ -41,7 +42,7 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
 
 const MAX_HISTORY_LENGTH = 20;
 
-export class QueryHistory extends React.Component {
+class QueryHistorySource extends React.Component {
   static propTypes = {
     query: PropTypes.string,
     variables: PropTypes.string,
@@ -84,6 +85,8 @@ export class QueryHistory extends React.Component {
   }
 
   render() {
+    const { t } = this.props;
+
     const queries = this.state.queries.slice().reverse();
     const queryNodes = queries.map((query, i) => {
       return (
@@ -99,7 +102,7 @@ export class QueryHistory extends React.Component {
     return (
       <div>
         <div className="history-title-bar">
-          <div className="history-title">{'History'}</div>
+          <div className="history-title">{ t('History') }</div>
           <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
         <div className="history-contents">{queryNodes}</div>
@@ -143,3 +146,5 @@ export class QueryHistory extends React.Component {
     });
   };
 }
+
+export const QueryHistory = withTranslation('Toolbar')(QueryHistorySource);
