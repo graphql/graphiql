@@ -1,0 +1,13 @@
+{
+  "Variable {{Name}} does not appear in any GraphQL query": "Переменная {{Name}} не отображается ни в одном запросе GraphQL.",
+  "Type {{Type}} is non-nullable and cannot be null": "Тип \"{{Type}}\" не имеет значения NULL и не может быть нулевым.",
+  "Type {{Type}} must be an Object": "Тип \"{{Type}}\" должен быть объектом.",
+  "Type {{Type}} does not have a field {{FieldName}}": "Тип \"{{Type}\" не имеет поля \"{{FieldName}}\".",
+  "Object of type {{Type}} is missing required field {{FieldName}}": "В объекте типа \"{{Type}}\" отсутствует обязательное поле \"{{FieldName}}\".",
+  "[end of file]": "[Конец файла]",
+  "Expected {{str}} but found {{found}}": "Ожидается {{str}} но найдено {{found}}.",
+  "Bad character escape sequence": "Плохая последовательность символов.",
+  "Unterminated string": "Неопределенная строка.",
+  "Expected hexadecimal digit": "Ожидается шестнадцатеричное число.",
+  "Expected decimal digit": "Ожидается число с плавающей запятой."
+}
