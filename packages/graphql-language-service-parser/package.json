@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.3.1-alpha.1.1",
+  "version": "1.3.1-alpha.1",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -27,13 +27,10 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "peerDependencies": {
-    "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "graphql-config": "2.2.1",
-    "graphql-language-service-types": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal/graphql-language-service-types/-/graphql-language-service-types-1.3.1-alpha.1.tgz"
-  },
-  "publishConfig": {
-    "registry": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal"
+    "graphql-language-service-types": "^1.3.1-alpha.1"
   }
 }
