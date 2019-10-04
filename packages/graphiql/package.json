@@ -27,7 +27,6 @@
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node --root-mode upward test/server.js",
-    "preversion": ". ./resources/checkgit.sh && npm test",
     "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {
@@ -38,7 +37,7 @@
   },
   "dependencies": {
     "codemirror": "^5.47.0",
-    "codemirror-graphql": "^0.9.0",
+    "codemirror-graphql": "^0.11.0",
     "copy-to-clipboard": "^3.2.0",
     "markdown-it": "^8.4.0",
     "regenerator-runtime": "^0.13.3"

@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "composite": false,
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",

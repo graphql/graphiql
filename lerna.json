@@ -9,12 +9,12 @@
         "master"
       ],
       "preDistTag": "next",
-      "distTag": "latest"
+      "distTag": "latest",
+      "conventionalCommits": true
     },
     "version": {
-      "ignoreChanges": "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
-      "allowBranch": ["master"],
-      "message": "chore(release): publish %s",
+      "ignoreChanges": ["'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'"],
+      "message": "chore(release): publish",
       "conventionalCommits": true,
       "createRelease": "github"
     }
