@@ -1,3 +1,5 @@
+
+import i18next from '../i18n'
 /**
  *  Copyright (c) 2019 GraphQL Contributors
  *  All rights reserved.
@@ -118,7 +120,7 @@ function expect(str) {
 
   let found;
   if (kind === 'EOF') {
-    found = '[end of file]';
+    found = i18next.t('[end of file]');
   } else if (end - start > 1) {
     found = '`' + string.slice(start, end) + '`';
   } else {
@@ -126,7 +128,7 @@ function expect(str) {
     found = '`' + (match ? match[0] : string[start]) + '`';
   }
 
-  throw syntaxError(`Expected ${str} but found ${found}.`);
+  throw syntaxError(i18next.t('Expected {{str}} but found {{found}}', { str, found }));
 }
 
 function syntaxError(message) {
@@ -241,10 +243,10 @@ function readString() {
           readHex();
           break;
         default:
-          throw syntaxError('Bad character escape sequence.');
+          throw syntaxError(i18next.t('Bad character escape sequence'));
       }
     } else if (end === strLen) {
-      throw syntaxError('Unterminated string.');
+      throw syntaxError(i18next.t('Unterminated string'));
     } else {
       ch();
     }
@@ -255,7 +257,7 @@ function readString() {
     return;
   }
 
-  throw syntaxError('Unterminated string.');
+  throw syntaxError(i18next.t('Unterminated string'));
 }
 
 function readHex() {
@@ -266,7 +268,7 @@ function readHex() {
   ) {
     return ch();
   }
-  throw syntaxError('Expected hexadecimal digit.');
+  throw syntaxError(i18next.t('Expected hexadecimal digit'));
 }
 
 function readNumber() {
@@ -302,7 +304,7 @@ function readNumber() {
 function readDigits() {
   if (code < 48 || code > 57) {
     // 0 - 9
-    throw syntaxError('Expected decimal digit.');
+    throw syntaxError(i18next.t('Expected decimal digit'));
   }
   do {
     ch();

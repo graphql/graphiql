@@ -7,6 +7,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 
 /**
  * ExecuteButton
@@ -14,7 +15,7 @@ import PropTypes from 'prop-types';
  * What a nice round shiny button. Shows a drop-down when there are multiple
  * queries to run.
  */
-export class ExecuteButton extends React.Component {
+class ExecuteButtonSource extends React.Component {
   static propTypes = {
     onRun: PropTypes.func,
     onStop: PropTypes.func,
@@ -32,6 +33,8 @@ export class ExecuteButton extends React.Component {
   }
 
   render() {
+    const { t } = this.props; //   i18n tranlator. { t, i18n }
+
     const operations = this.props.operations;
     const optionsOpen = this.state.optionsOpen;
     const hasOptions = operations && operations.length > 1;
@@ -82,7 +85,7 @@ export class ExecuteButton extends React.Component {
           className="execute-button"
           onMouseDown={onMouseDown}
           onClick={onClick}
-          title="Execute Query (Ctrl-Enter)">
+          title={ t('Execute Query (Ctrl-Enter)') }>
           <svg width="34" height="34">
             {pathJSX}
           </svg>
@@ -129,3 +132,6 @@ export class ExecuteButton extends React.Component {
     document.addEventListener('mouseup', onMouseUp);
   };
 }
+
+
+export const ExecuteButton = withTranslation('Toolbar')(ExecuteButtonSource);

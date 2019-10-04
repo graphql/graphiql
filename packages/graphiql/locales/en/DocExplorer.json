@@ -1,0 +1,12 @@
+{
+  "Docs": "Docs",
+  "Search": "Search",
+  "Schema": "Schema",
+  "root types": "root types",
+  "Documentation Explorer": "Documentation Explorer",
+  "No Schema Available": "No Schema Available",
+  "A GraphQL schema provides a root type for each kind of operation": "A GraphQL schema provides a root type for each kind of operation.",
+  "query": "query",
+  "mutation": "mutation",
+  "subscription": "subscription"
+}

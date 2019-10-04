@@ -64,6 +64,7 @@ CodeMirror.registerHelper(
 // Given a variableToType object, a source text, and a JSON AST, produces a
 // list of CodeMirror annotations for any variable validation errors.
 function validateVariables(editor, variableToType, variablesAST) {
+
   const errors = [];
 
   variablesAST.members.forEach(member => {
@@ -74,7 +75,7 @@ function validateVariables(editor, variableToType, variablesAST) {
         lintError(
           editor,
           member.key,
-          `Variable "$${variableName}" does not appear in any GraphQL query.`,
+          (`${i18next.t('Variable {{Name}} does not appear in any GraphQL query', { Name: variableName })}`),
         ),
       );
     } else {
@@ -92,7 +93,7 @@ function validateValue(type, valueAST) {
   // Validate non-nullable values.
   if (type instanceof GraphQLNonNull) {
     if (valueAST.kind === 'Null') {
-      return [[valueAST, `Type "${type}" is non-nullable and cannot be null.`]];
+      return [[valueAST, (i18next.t('Type {{Type}} is non-nullable and cannot be null', { Type: type }))]];
     }
     return validateValue(type.ofType, valueAST);
   }
@@ -113,7 +114,7 @@ function validateValue(type, valueAST) {
   // Validate input objects.
   if (type instanceof GraphQLInputObjectType) {
     if (valueAST.kind !== 'Object') {
-      return [[valueAST, `Type "${type}" must be an Object.`]];
+      return [[valueAST, (i18next.t('Type {{Type}} must be an Object', { Type: type }))]];
     }
 
     // Validate each field in the input object.
@@ -124,7 +125,7 @@ function validateValue(type, valueAST) {
       const inputField = type.getFields()[fieldName];
       if (!inputField) {
         return [
-          [member.key, `Type "${type}" does not have a field "${fieldName}".`],
+          [member.key, (i18next.t('Type {{Type}} does not have a field {{FieldName}}', { Type: type, FieldName: fieldName }))],
         ];
       }
       const fieldType = inputField ? inputField.type : undefined;
@@ -138,7 +139,7 @@ function validateValue(type, valueAST) {
         if (fieldType instanceof GraphQLNonNull) {
           fieldErrors.push([
             valueAST,
-            `Object of type "${type}" is missing required field "${fieldName}".`,
+            (i18next.t('Object of type {{Type}} is missing required field {{FieldName}}', { Type: type, FieldName: fieldName } )),
           ]);
         }
       }

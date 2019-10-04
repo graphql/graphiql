@@ -1,0 +1,12 @@
+{
+  "Docs": "Документация",
+  "Search": "Поиск",
+  "Schema": "Схема",
+  "root types": "Корневые типы",
+  "Documentation Explorer": "Обозреватель документации",
+  "No Schema Available": "Схема недоступна",
+  "A GraphQL schema provides a root type for each kind of operation": "GraphQL схема предоставляет корневой тип для каждого вида операций.",
+  "query": "запрос",
+  "mutation": "мутация",
+  "subscription": "подписка"
+}
