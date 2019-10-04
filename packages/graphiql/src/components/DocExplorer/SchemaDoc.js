@@ -10,10 +10,9 @@ import PropTypes from 'prop-types';
 
 import TypeLink from './TypeLink';
 import MarkdownContent from './MarkdownContent';
-import { withTranslation } from 'react-i18next';
 
 // Render the top level Schema
-class SchemaDocSource extends React.Component {
+export default class SchemaDoc extends React.Component {
   static propTypes = {
     schema: PropTypes.object,
     onClickType: PropTypes.func,
@@ -24,8 +23,6 @@ class SchemaDocSource extends React.Component {
   }
 
   render() {
-    const { t } = this.props; //   i18n tranlator. { t, i18n }
-
     const schema = this.props.schema;
     const queryType = schema.getQueryType();
     const mutationType = schema.getMutationType && schema.getMutationType();
@@ -37,26 +34,26 @@ class SchemaDocSource extends React.Component {
         <MarkdownContent
           className="doc-type-description"
           markdown={
-            t('A GraphQL schema provides a root type for each kind of operation')
+            'A GraphQL schema provides a root type for each kind of operation.'
           }
         />
         <div className="doc-category">
-          <div className="doc-category-title">{ t('root types') }</div>
+          <div className="doc-category-title">{'root types'}</div>
           <div className="doc-category-item">
-            <span className="keyword">{ t('query') }</span>
+            <span className="keyword">{'query'}</span>
             {': '}
             <TypeLink type={queryType} onClick={this.props.onClickType} />
           </div>
           {mutationType && (
             <div className="doc-category-item">
-              <span className="keyword">{ t('mutation') }</span>
+              <span className="keyword">{'mutation'}</span>
               {': '}
               <TypeLink type={mutationType} onClick={this.props.onClickType} />
             </div>
           )}
           {subscriptionType && (
             <div className="doc-category-item">
-              <span className="keyword">{ t('subscription') }</span>
+              <span className="keyword">{'subscription'}</span>
               {': '}
               <TypeLink
                 type={subscriptionType}
@@ -69,5 +66,3 @@ class SchemaDocSource extends React.Component {
     );
   }
 }
-
-export const SchemaDoc = withTranslation('DocExplorer')(SchemaDocSource);
