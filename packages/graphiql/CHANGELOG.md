@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/graphql/graphiql/compare/graphiql@0.15.0...graphiql@0.15.1) (2019-10-04)
+
+
+### Bug Fixes
+
+* build tweaks ([0bc6a7c](https://github.com/graphql/graphiql/commit/0bc6a7c))
+
+
+
+
+
 # 0.15.0 (2019-10-04)
 
 
