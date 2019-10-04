@@ -81,7 +81,7 @@ describe('GraphQLCache', () => {
     it('extend the schema with appropriate custom directive', async () => {
       const schema = await cache.getSchema('testWithCustomDirectives');
       expect(
-        wihtoutASTNode(schema.getDirective('customDirective')),
+        wihtoutASTNode(schema.getDirective('customDirective'))
       ).toMatchObject(
         expect.objectContaining({
           args: [],
@@ -90,14 +90,14 @@ describe('GraphQLCache', () => {
           // isRepeatable: false,
           locations: ['FIELD'],
           name: 'customDirective',
-        }),
+        })
       );
     });
 
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = await cache.getSchema('testWithSchema');
       expect(
-        wihtoutASTNode(schema.getDirective('customDirective')),
+        wihtoutASTNode(schema.getDirective('customDirective'))
       ).toMatchObject(
         expect.objectContaining({
           args: [],
@@ -106,7 +106,7 @@ describe('GraphQLCache', () => {
           // isRepeatable: false,
           locations: ['FRAGMENT_SPREAD'],
           name: 'customDirective',
-        }),
+        })
       );
     });
   });
@@ -118,7 +118,7 @@ describe('GraphQLCache', () => {
       expect(cache._schemaMap.size).toEqual(1);
       const handler = cache.handleWatchmanSubscribeEvent(
         __dirname,
-        projectConfig,
+        projectConfig
       );
       const testResult = {
         root: __dirname,
@@ -139,7 +139,7 @@ describe('GraphQLCache', () => {
 
     it('handles invalidating the endpoint cache', async () => {
       const projectConfig = graphQLRC.getProjectConfig(
-        'testWithEndpointAndSchema',
+        'testWithEndpointAndSchema'
       );
       const introspectionResult = await graphQLRC
         .getProjectConfig('testWithSchema')
@@ -159,7 +159,7 @@ describe('GraphQLCache', () => {
       expect(cache._schemaMap.size).toEqual(1);
       const handler = cache.handleWatchmanSubscribeEvent(
         __dirname,
-        projectConfig,
+        projectConfig
       );
       const testResult = {
         root: __dirname,
@@ -216,7 +216,7 @@ describe('GraphQLCache', () => {
       const contents = getQueryAndRange(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
         parse(contents[0].query),
-        fragmentDefinitions,
+        fragmentDefinitions
       );
       expect(result.length).toEqual(2);
     });
@@ -226,7 +226,7 @@ describe('GraphQLCache', () => {
 
       const result = await cache.getFragmentDependenciesForAST(
         ast,
-        fragmentDefinitions,
+        fragmentDefinitions
       );
       expect(result.length).toEqual(1);
     });
@@ -289,7 +289,7 @@ describe('GraphQLCache', () => {
     it('finds named types referenced from the SDL', async () => {
       const result = await cache.getObjectTypeDependenciesForAST(
         parsedQuery,
-        namedTypeDefinitions,
+        namedTypeDefinitions
       );
       expect(result.length).toEqual(1);
     });

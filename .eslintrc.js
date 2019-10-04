@@ -10,9 +10,7 @@
 
 module.exports = {
   root: true,
-
   parser: 'babel-eslint',
-
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -22,7 +20,6 @@ module.exports = {
       experimentalObjectRestSpread: true,
     },
   },
-
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
@@ -33,7 +30,7 @@ module.exports = {
     browser: true,
   },
 
-  extends: ['prettier'],
+  extends: ['prettier', 'plugin:import/typescript'],
 
   globals: {
     atom: false,
@@ -270,6 +267,21 @@ module.exports = {
       },
     ],
 
+    // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
+    'flowtype/boolean-style': 1,
+    'flowtype/define-flow-type': 1,
+    'flowtype/no-dupe-keys': 0,
+    'flowtype/no-primitive-constructor-types': 1,
+    'flowtype/no-weak-types': 0,
+    'flowtype/require-parameter-type': 0,
+    'flowtype/require-return-type': 0,
+    'flowtype/require-valid-file-annotation': 0,
+    'flowtype/require-variable-type': 0,
+    'flowtype/sort-keys': 0,
+    'flowtype/type-id-match': 0,
+    'flowtype/use-flow-type': 1,
+    'flowtype/valid-syntax': 0,
+
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
   },
@@ -277,27 +289,17 @@ module.exports = {
   plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
 
   overrides: [
+    // Rules for TypeScript only
     {
-      // Converted from 'dependencies' options in ancient config
-      files: ['**/spec/**', '**/sample-*/**'],
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
       rules: {
-        'import/no-cycle': 0,
+        'no-unused-vars': 'off',
       },
     },
+    // Rules for Flow only
     {
-      // Resources are typically our helper scripts; make life easier there
-      files: ['resources/*.js', 'packages/*/resources/*.js'],
-      rules: {
-        'no-console': 0,
-        'no-await-in-loop': 0,
-      },
-    },
-  ],
-
-  overrides: [
-  // Rules for Flow only
-    {
-      files: ["*.js", "*.jsx"],
+      files: ['*.js', '*.jsx'],
       rules: {
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
         'flowtype/boolean-style': 1,
@@ -315,14 +317,20 @@ module.exports = {
         'flowtype/valid-syntax': 0,
       },
     },
-
-    // Rules for TypeScript only
     {
-      files: ["*.ts", "*.tsx"],
-      parser: "@typescript-eslint/parser",
+      // Converted from 'dependencies' options in ancient config
+      files: ['**/spec/**', '**/sample-*/**'],
       rules: {
-        "no-unused-vars": "off",
+        'import/no-cycle': 0,
       },
     },
-  ]
+    {
+      // Resources are typically our helper scripts; make life easier there
+      files: ['resources/*.js', 'packages/*/resources/*.js'],
+      rules: {
+        'no-console': 0,
+        'no-await-in-loop': 0,
+      },
+    },
+  ],
 };

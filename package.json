@@ -19,13 +19,13 @@
     }
   },
   "scripts": {
-    "build": "tsc --build && lerna run build",
+    "build": "tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
-    "lint": "eslint 'packages/**/src/**/*.{ts,js,jsx,tsx,json}' || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
-    "lint:fix": "eslint 'packages/*/src/**/*.{ts,js,jsx,tsx,json}' --fix",
-    "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint:fix": "eslint --ext=ts,js,jsx,tsx . --fix",
+    "lint:check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
@@ -49,12 +49,13 @@
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "@types/jest": "^24.0.18",
+    "@typescript-eslint/parser": "^2.3.1",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "4.3.0",
+    "eslint": "^6.4.0",
+    "eslint-config-prettier": "6.3.0",
     "eslint-plugin-babel": "5.3.0",
     "eslint-plugin-flowtype": "4.3.0",
     "eslint-plugin-import": "^2.18.2",
@@ -72,8 +73,5 @@
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
-  },
-  "dependencies": {
-    "@typescript-eslint/parser": "^2.3.1"
   }
 }

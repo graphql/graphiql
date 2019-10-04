@@ -14,5 +14,5 @@ exec(
   'jest',
   '--config',
   path.join(__dirname, '../', 'jest.config.js'),
-  '--rootDir',
+  '--rootDir'
 );

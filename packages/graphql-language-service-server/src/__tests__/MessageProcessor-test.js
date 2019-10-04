@@ -176,7 +176,7 @@ describe('MessageProcessor', () => {
         schemaPath,
         includes: `${queryDir}/*.graphql`,
       },
-      'not/a/real/config',
+      'not/a/real/config'
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
@@ -192,7 +192,7 @@ describe('MessageProcessor', () => {
           },
         },
       },
-      'not/a/real/config',
+      'not/a/real/config'
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
