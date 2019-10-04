@@ -24,10 +24,10 @@ module.exports = {
   testEnvironment: require.resolve('jest-environment-jsdom-global'),
   testPathIgnorePatterns: ['node_modules', 'dist', 'codemirror-graphql'],
   collectCoverageFrom: [
-    '**/src/**/*.{js,jsx}',
+    '**/src/**/*.{js,jsx,ts,tsx}',
     '!**/node_modules/**',
     '!**/__tests__/**',
     '!**/resources/**',
-    '!packages/codemirrir-graphql/**',
+    '!**/codemirror-graphql/**',
   ],
 };

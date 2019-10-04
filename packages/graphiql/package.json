@@ -26,7 +26,7 @@
     "build-js": "bash ./resources/build.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "babel-node --root-mode upward test/server.js",
+    "dev": "babel-node test/server.js",
     "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {

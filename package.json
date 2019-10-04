@@ -49,7 +49,7 @@
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "@types/jest": "^24.0.18",
-    "@typescript-eslint/parser": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "codecov": "^3.5.0",
