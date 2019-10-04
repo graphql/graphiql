@@ -5,9 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
+import { Position } from 'graphql-language-service-types';
 import { join } from 'path';
 import * as fs from 'fs';
 import { buildSchema } from 'graphql';
@@ -27,8 +27,9 @@ describe('GraphQLLanguageService', () => {
         join(__dirname, '__schema__/StarWarsSchema.graphql'),
         'utf8',
       );
+
       const schemaJS = buildSchema(schemaSDL);
-      return new Promise((resolve, reject) => resolve(schemaJS));
+      return new Promise((resolve, _reject) => resolve(schemaJS));
     },
 
     getGraphQLConfig() {
@@ -44,6 +45,7 @@ describe('GraphQLLanguageService', () => {
             name: {
               value: 'Episode',
             },
+
             loc: {
               start: 293,
               end: 335,
@@ -62,6 +64,7 @@ describe('GraphQLLanguageService', () => {
             name: {
               value: 'Episode',
             },
+
             loc: {
               start: 293,
               end: 335,
@@ -72,7 +75,7 @@ describe('GraphQLLanguageService', () => {
     },
   };
 
-  let languageService;
+  let languageService: GraphQLLanguageService;
   beforeEach(() => {
     languageService = new GraphQLLanguageService(mockCache);
   });
@@ -84,24 +87,23 @@ describe('GraphQLLanguageService', () => {
     );
     expect(diagnostics.length).toEqual(1);
     const diagnostic = diagnostics[0];
-    expect(diagnostic.message).toEqual(
-      'Syntax Error: Unexpected Name "qeury"',
-    );
+    expect(diagnostic.message).toEqual('Syntax Error: Unexpected Name "qeury"');
   });
 
   it('runs definition service as expected', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
-      { line: 0, character: 28 },
+      { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
+    // @ts-ignore
     expect(definitionQueryResult.definitions.length).toEqual(1);
   });
 
   it('runs hover service as expected', async () => {
     const hoverInformation = await languageService.getHoverInformation(
       'type Query { hero(episode: String): String }',
-      { line: 0, character: 28 },
+      { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
     expect(hoverInformation).toEqual(

@@ -71,7 +71,7 @@ export class ResultViewer extends React.Component {
           }
           ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
           return tooltipDiv;
-        },
+        }
       );
     }
 

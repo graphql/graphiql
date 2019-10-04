@@ -5,25 +5,25 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { CompletionItem } from 'graphql-language-service-types';
+import { CompletionItem } from 'graphql-language-service-types';
 
 import fs from 'fs';
-import { buildSchema } from 'graphql';
+import { buildSchema, GraphQLSchema } from 'graphql';
 import { Position } from 'graphql-language-service-utils';
 import path from 'path';
 
 import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
 
 describe('getAutocompleteSuggestions', () => {
-  let schema;
+  let schema: GraphQLSchema;
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
       'utf8',
     );
+
     schema = buildSchema(schemaIDL);
   });
 
@@ -49,23 +49,30 @@ describe('getAutocompleteSuggestions', () => {
   }
 
   it('provides correct sortText response', () => {
-    const result = getAutocompleteSuggestions(schema, `{ h`, new Position(0, 3))
-      .map(({sortText, label, detail}) => ({sortText, label, detail}))
-    expect(result).toEqual([{
-      sortText: '0hero',
-      label: 'hero',
-      detail: 'Character',
-    },
-    {
-      sortText: '1human',
-      label: 'human',
-      detail: 'Human',
-    },
-    {
-      sortText: '6__schema',
-      label: '__schema',
-      detail: '__Schema!',
-    }]);
+    const result = getAutocompleteSuggestions(
+      schema,
+      `{ h`,
+      new Position(0, 3),
+    ).map(({ sortText, label, detail }) => ({ sortText, label, detail }));
+    expect(result).toEqual([
+      {
+        sortText: '0hero',
+        label: 'hero',
+        detail: 'Character',
+      },
+
+      {
+        sortText: '1human',
+        label: 'human',
+        detail: 'Human',
+      },
+
+      {
+        sortText: '6__schema',
+        label: '__schema',
+        detail: '__Schema!',
+      },
+    ]);
   });
 
   it('provides correct initial keywords', () => {
@@ -92,6 +99,7 @@ describe('getAutocompleteSuggestions', () => {
       { label: 'query' },
       { label: 'subscription' },
     ]);
+
     // Below should provide root field names
     expect(testSuggestions(' {}', new Position(0, 2))).toEqual([
       { label: '__typename', detail: 'String!' },
@@ -160,6 +168,7 @@ query name {
       'fragment test on Human { ',
       new Position(0, 25),
     );
+
     expect(result).toEqual([
       { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
@@ -190,6 +199,7 @@ query name {
       '{ hero(episode: JEDI) { ... on } }',
       new Position(0, 31),
     );
+
     expect(suggestionsOnCompositeType).toEqual([
       { label: 'Character' },
       { label: 'Droid' },
@@ -201,24 +211,18 @@ query name {
         'fragment Foo on Character { ... on }',
         new Position(0, 35),
       ),
-    ).toEqual([
-      { label: 'Character' },
-      { label: 'Droid' },
-      { label: 'Human' },
-    ]);
+    ).toEqual([{ label: 'Character' }, { label: 'Droid' }, { label: 'Human' }]);
   });
 
   it('provides correct typeCondition suggestions on fragment', () => {
     const result = testSuggestions('fragment Foo on {}', new Position(0, 16));
-    expect(result.filter(({ label }) => !label.startsWith('__'))).toEqual(
-      [
-        { label: 'Character' },
-        { label: 'Droid' },
-        { label: 'Human' },
-        { label: 'Query' },
-        { label: 'TestType' },
-      ],
-    );
+    expect(result.filter(({ label }) => !label.startsWith('__'))).toEqual([
+      { label: 'Character' },
+      { label: 'Droid' },
+      { label: 'Human' },
+      { label: 'Query' },
+      { label: 'TestType' },
+    ]);
   });
 
   it('provides correct ENUM suggestions', () => {
@@ -262,13 +266,11 @@ query name {
       { label: 'skip' },
       { label: 'test' },
     ]);
+
     expect(
       testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
-    ).toEqual([
-      { label: 'include' },
-      { label: 'skip' },
-      { label: 'test' },
-    ]);
+    ).toEqual([{ label: 'include' }, { label: 'skip' }, { label: 'test' }]);
+
     expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
   });
 

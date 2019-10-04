@@ -83,7 +83,7 @@ export class MessageProcessor {
   async handleInitializeRequest(
     params: InitializeRequest.type,
     token: CancellationToken,
-    configDir?: string,
+    configDir?: string
   ): Promise<InitializeResult.type> {
     if (!params) {
       throw new Error('`params` argument is required to initialize.');
@@ -99,11 +99,11 @@ export class MessageProcessor {
     };
 
     const rootPath = dirname(
-      findGraphQLConfigFile(configDir ? configDir.trim() : params.rootPath),
+      findGraphQLConfigFile(configDir ? configDir.trim() : params.rootPath)
     );
     if (!rootPath) {
       throw new Error(
-        '`--configDir` option or `rootPath` argument is required.',
+        '`--configDir` option or `rootPath` argument is required.'
       );
     }
 
@@ -124,7 +124,7 @@ export class MessageProcessor {
       JSON.stringify({
         type: 'usage',
         messageType: 'initialize',
-      }),
+      })
     );
 
     return serverCapabilities;
@@ -134,7 +134,7 @@ export class MessageProcessor {
   // installed. Otherwise, rely on LSP watched files did change events.
   async _subcribeWatchman(
     config: GraphQLConfig,
-    watchmanClient: GraphQLWatchman,
+    watchmanClient: GraphQLWatchman
   ) {
     if (!watchmanClient) {
       return;
@@ -162,8 +162,8 @@ export class MessageProcessor {
           projectConfig.configDir,
           this._graphQLCache.handleWatchmanSubscribeEvent(
             config.configDir,
-            projectConfig,
-          ),
+            projectConfig
+          )
         );
       });
     } catch (err) {
@@ -179,7 +179,7 @@ export class MessageProcessor {
   }
 
   async handleDidOpenOrSaveNotification(
-    params: NotificationMessage,
+    params: NotificationMessage
   ): Promise<PublishDiagnosticsParams> {
     if (!this._isInitialized) {
       return null;
@@ -215,12 +215,12 @@ export class MessageProcessor {
         const results = await this._languageService.getDiagnostics(
           query,
           uri,
-          this._isRelayCompatMode(query) ? false : true,
+          this._isRelayCompatMode(query) ? false : true
         );
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
         }
-      }),
+      })
     );
 
     this._logger.log(
@@ -231,14 +231,14 @@ export class MessageProcessor {
           .getGraphQLConfig()
           .getProjectNameForFile(uri),
         fileName: uri,
-      }),
+      })
     );
 
     return { uri, diagnostics };
   }
 
   async handleDidChangeNotification(
-    params: NotificationMessage,
+    params: NotificationMessage
   ): Promise<PublishDiagnosticsParams> {
     if (!this._isInitialized) {
       return null;
@@ -254,7 +254,7 @@ export class MessageProcessor {
       !params.textDocument.uri
     ) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
+        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.'
       );
     }
 
@@ -289,7 +289,7 @@ export class MessageProcessor {
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
         }
-      }),
+      })
     );
 
     this._logger.log(
@@ -300,7 +300,7 @@ export class MessageProcessor {
           .getGraphQLConfig()
           .getProjectNameForFile(uri),
         fileName: uri,
-      }),
+      })
     );
 
     return { uri, diagnostics };
@@ -331,7 +331,7 @@ export class MessageProcessor {
           .getGraphQLConfig()
           .getProjectNameForFile(uri),
         fileName: uri,
-      }),
+      })
     );
   }
 
@@ -345,7 +345,7 @@ export class MessageProcessor {
   }
 
   validateDocumentAndPosition(
-    params: CompletionRequest.type | HoverRequest.type,
+    params: CompletionRequest.type | HoverRequest.type
   ): void {
     if (
       !params ||
@@ -354,14 +354,14 @@ export class MessageProcessor {
       !params.position
     ) {
       throw new Error(
-        '`textDocument`, `textDocument.uri`, and `position` arguments are required.',
+        '`textDocument`, `textDocument.uri`, and `position` arguments are required.'
       );
     }
   }
 
   async handleCompletionRequest(
     params: CompletionRequest.type,
-    token: CancellationToken,
+    token: CancellationToken
   ): Promise<CompletionList | Array<CompletionItem>> {
     if (!this._isInitialized) {
       // $FlowFixMe
@@ -404,7 +404,7 @@ export class MessageProcessor {
     const result = await this._languageService.getAutocompleteSuggestions(
       query,
       position,
-      textDocument.uri,
+      textDocument.uri
     );
 
     this._logger.log(
@@ -415,7 +415,7 @@ export class MessageProcessor {
           .getGraphQLConfig()
           .getProjectNameForFile(textDocument.uri),
         fileName: textDocument.uri,
-      }),
+      })
     );
 
     return { items: result, isIncomplete: false };
@@ -423,7 +423,7 @@ export class MessageProcessor {
 
   async handleHoverRequest(
     params: HoverRequest.type,
-    token: CancellationToken,
+    token: CancellationToken
   ): Promise<Hover> {
     if (!this._isInitialized) {
       return [];
@@ -459,7 +459,7 @@ export class MessageProcessor {
     const result = await this._languageService.getHoverInformation(
       query,
       position,
-      textDocument.uri,
+      textDocument.uri
     );
 
     return {
@@ -468,7 +468,7 @@ export class MessageProcessor {
   }
 
   async handleWatchedFilesChangedNotification(
-    params: DidChangeWatchedFilesParams,
+    params: DidChangeWatchedFilesParams
   ): Promise<PublishDiagnosticsParams> {
     if (!this._isInitialized || this._watchmanClient) {
       return null;
@@ -491,14 +491,14 @@ export class MessageProcessor {
             contents.map(async ({ query, range }) => {
               const results = await this._languageService.getDiagnostics(
                 query,
-                uri,
+                uri
               );
               if (results && results.length > 0) {
                 return processDiagnosticsMessage(results, query, range);
               } else {
                 return [];
               }
-            }),
+            })
           )).reduce((left, right) => left.concat(right));
 
           this._logger.log(
@@ -509,7 +509,7 @@ export class MessageProcessor {
                 .getGraphQLConfig()
                 .getProjectNameForFile(uri),
               fileName: uri,
-            }),
+            })
           );
 
           return { uri, diagnostics };
@@ -517,21 +517,21 @@ export class MessageProcessor {
           this._graphQLCache.updateFragmentDefinitionCache(
             this._graphQLCache.getGraphQLConfig().configDir,
             change.uri,
-            false,
+            false
           );
           this._graphQLCache.updateObjectTypeDefinitionCache(
             this._graphQLCache.getGraphQLConfig().configDir,
             change.uri,
-            false,
+            false
           );
         }
-      }),
+      })
     );
   }
 
   async handleDefinitionRequest(
     params: DefinitionRequest.type,
-    token: CancellationToken,
+    token: CancellationToken
   ): Promise<Array<Location>> {
     if (!this._isInitialized) {
       return [];
@@ -567,7 +567,7 @@ export class MessageProcessor {
     const result = await this._languageService.getDefinition(
       query,
       position,
-      textDocument.uri,
+      textDocument.uri
     );
     const formatted = result
       ? result.definitions.map(res => {
@@ -596,7 +596,7 @@ export class MessageProcessor {
           .getGraphQLConfig()
           .getProjectNameForFile(textDocument.uri),
         fileName: textDocument.uri,
-      }),
+      })
     );
     return formatted;
   }
@@ -610,27 +610,27 @@ export class MessageProcessor {
 
   async _updateFragmentDefinition(
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,
       new URL(uri).pathname,
-      contents,
+      contents
     );
   }
 
   async _updateObjectTypeDefinition(
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
     await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,
       new URL(uri).pathname,
-      contents,
+      contents
     );
   }
 
@@ -648,7 +648,7 @@ export class MessageProcessor {
   _invalidateCache(
     textDocument: Object,
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ): void {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
@@ -678,7 +678,7 @@ export class MessageProcessor {
 // are not found.
 export function getQueryAndRange(
   text: string,
-  uri: string,
+  uri: string
 ): Array<CachedContent> {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
@@ -700,7 +700,7 @@ export function getQueryAndRange(
     const lines = query.split('\n');
     const range = new Range(
       new Position(0, 0),
-      new Position(lines.length - 1, lines[lines.length - 1].length - 1),
+      new Position(lines.length - 1, lines[lines.length - 1].length - 1)
     );
     return [{ query, range }];
   }
@@ -709,14 +709,14 @@ export function getQueryAndRange(
 function processDiagnosticsMessage(
   results: Array<Diagnostic>,
   query: string,
-  range: ?RangeType,
+  range: ?RangeType
 ): Array<Diagnostic> {
   const queryLines = query.split('\n');
   const totalLines = queryLines.length;
   const lastLineLength = queryLines[totalLines - 1].length;
   const lastCharacterPosition = new Position(totalLines, lastLineLength);
   const processedResults = results.filter(diagnostic =>
-    diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
+    diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition)
   );
 
   if (range) {
@@ -726,12 +726,12 @@ function processDiagnosticsMessage(
       range: new Range(
         new Position(
           diagnostic.range.start.line + offset.line,
-          diagnostic.range.start.character,
+          diagnostic.range.start.character
         ),
         new Position(
           diagnostic.range.end.line + offset.line,
-          diagnostic.range.end.character,
-        ),
+          diagnostic.range.end.character
+        )
       ),
     }));
   }

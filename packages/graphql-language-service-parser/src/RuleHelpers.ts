@@ -10,7 +10,7 @@
 
 // These functions help build matching rules for ParseRules.
 
-import type { Rule, Token } from 'graphql-language-service-types';
+import { Rule, Token } from 'graphql-language-service-types';
 
 // An optional rule.
 export function opt(ofRule: Rule | string): Rule {
@@ -32,8 +32,8 @@ export function butNot(rule: Rule, exclusions: Array<Rule>) {
     }
     return (
       check &&
-      exclusions.every(exclusion => exclusion.match && !exclusion.match(token))
-    );
+      exclusions.every(exclusion => exclusion.match && !exclusion.match(token)));
+
   };
   return rule;
 }
@@ -48,6 +48,6 @@ export function p(value: string, style?: string): Rule {
   return {
     style: style || 'punctuation',
     match: (token: Token) =>
-      token.kind === 'Punctuation' && token.value === value,
-  };
+    token.kind === 'Punctuation' && token.value === value };
+
 }

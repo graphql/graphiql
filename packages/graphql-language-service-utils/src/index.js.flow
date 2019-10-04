@@ -1,0 +1,29 @@
+/**
+ *  Copyright (c) 2019 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  @flow
+ */
+
+import type { Location } from 'graphql/language';
+import type {
+  Range as RangeInterface,
+  Position as PositionInterface,
+} from 'graphql-language-service-types';
+
+declare export function getASTNodeAtPosition(): void;
+declare export class Position implements PositionInterface {
+  line: number;
+  character: number;
+  constructor(row: number, column: number): Position;
+  lessThanOrEqualTo: (position: PositionInterface) => boolean;
+}
+declare export class Range implements RangeInterface {
+  start: PositionInterface;
+  end: PositionInterface;
+  constructor(start: Position, end: Position): Range;
+  containsPosition: (position: PositionInterface) => boolean;
+}

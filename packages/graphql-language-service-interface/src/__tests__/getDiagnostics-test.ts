@@ -9,18 +9,19 @@
  */
 
 import fs from 'fs';
-import { buildSchema, parse } from 'graphql';
+import { buildSchema, parse, GraphQLSchema } from 'graphql';
 import path from 'path';
 
 import { getDiagnostics, validateQuery, SEVERITY } from '../getDiagnostics';
 
 describe('getDiagnostics', () => {
-  let schema;
+  let schema: GraphQLSchema;
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
       'utf8',
     );
+
     schema = buildSchema(schemaIDL);
   });
 

@@ -19,10 +19,11 @@
   "keywords": [
     "graphql"
   ],
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "scripts": {
-    "build": "yarn run build-js && yarn run build-flow",
-    "build-js": "node ../../resources/buildJs.js",
+    "build": "yarn run build-ts && yarn run build-flow",
+    "build-ts": "tsc",
     "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },

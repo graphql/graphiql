@@ -7,7 +7,6 @@
  */
 
 import { parse } from 'graphql';
-
 import { Position } from '../Range';
 import { getASTNodeAtPosition, pointToOffset } from '../getASTNodeAtPosition';
 
@@ -28,6 +27,7 @@ describe('getASTNodeAtPosition', () => {
     const node = getASTNodeAtPosition(doc, ast, point);
     expect(node).not.toBeUndefined;
     if (node != null) {
+      // @ts-ignore
       expect(node.name.value).toEqual('field');
     }
   });
@@ -46,6 +46,7 @@ describe('getASTNodeAtPosition', () => {
     const node = getASTNodeAtPosition(doc, ast, point);
     expect(node).not.toBeUndefined;
     if (node != null) {
+      // @ts-ignore
       expect(node.name.value).toEqual('field');
     }
   });

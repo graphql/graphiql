@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 /**
@@ -19,7 +18,7 @@
  *
  */
 
-import type {
+import {
   TokenPattern,
   CharacterStream as CharacterStreamInterface,
 } from 'graphql-language-service-types';
@@ -29,7 +28,7 @@ export default class CharacterStream implements CharacterStreamInterface {
   _pos: number;
   _sourceText: string;
 
-  constructor(sourceText: string): void {
+  constructor(sourceText: string) {
     this._start = 0;
     this._pos = 0;
     this._sourceText = sourceText;
@@ -69,7 +68,7 @@ export default class CharacterStream implements CharacterStreamInterface {
     return char;
   };
 
-  eat = (pattern: TokenPattern): string | void => {
+  eat = (pattern: TokenPattern): string | undefined => {
     const isMatched = this._testNextCharacter(pattern);
     if (isMatched) {
       this._start = this._pos;
@@ -110,8 +109,8 @@ export default class CharacterStream implements CharacterStreamInterface {
 
   match = (
     pattern: TokenPattern,
-    consume: ?boolean = true,
-    caseFold: ?boolean = false,
+    consume: boolean | null | undefined = true,
+    caseFold: boolean | null | undefined = false,
   ): Array<string> | boolean => {
     let token = null;
     let match = null;

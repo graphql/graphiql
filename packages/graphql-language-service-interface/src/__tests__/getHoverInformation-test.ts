@@ -8,26 +8,27 @@
  *  @flow
  */
 
-import type { Hover } from 'vscode-languageserver-types';
+import { Hover } from 'vscode-languageserver-types';
 
 import fs from 'fs';
-import { buildSchema } from 'graphql';
+import { buildSchema, GraphQLSchema } from 'graphql';
 import { Position } from 'graphql-language-service-utils';
 import path from 'path';
 
 import { getHoverInformation } from '../getHoverInformation';
 
 describe('getHoverInformation', () => {
-  let schema;
+  let schema: GraphQLSchema;
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/HoverTestSchema.graphql'),
       'utf8',
     );
+
     schema = buildSchema(schemaIDL);
   });
 
-  function testHover(query: string, point: Position): Hover.contents {
+  function testHover(query: string, point: Position): Hover['contents'] {
     return getHoverInformation(schema, query, point);
   }
 

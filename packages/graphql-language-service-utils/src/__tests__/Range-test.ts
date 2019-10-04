@@ -5,15 +5,26 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
+import { Location } from 'graphql/language';
 import { Range, Position, offsetToPosition, locToRange } from '../Range';
 
 const text = `query test {
   name
 }`;
-const absRange = { start: 15, end: 18 }; // position of 'name' attribute in the test query
+
+const absRange: Location = {
+  start: 15,
+  end: 18,
+  // @ts-ignore
+  startToken: null,
+  // @ts-ignore
+  endToken: null,
+  // @ts-ignore
+  source: null,
+}; // position of 'name' attribute in the test query
+
 const offsetRangeStart = new Position(1, 2);
 const offsetRangeEnd = new Position(1, 5);
 
@@ -36,9 +47,9 @@ describe('Position', () => {
 });
 
 describe('Range', () => {
-  let start;
-  let end;
-  let range;
+  let start: Position;
+  let end: Position;
+  let range: Range;
 
   beforeAll(() => {
     start = new Position(2, 3);

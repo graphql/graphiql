@@ -23,14 +23,14 @@ const { argv } = yargs
       '    [-f | --file] {filePath}\n' +
       '    [-s | --schema] {schemaPath}\n' +
       '    [-m | --method] {method}\n' +
-      '    [-p | --port] {port}\n',
+      '    [-p | --port] {port}\n'
   )
   .help('h')
   .alias('h', 'help')
   .demand(
     1,
     'At least one command is required.\n' +
-      'Commands: "server, validate, autocomplete, outline"\n',
+      'Commands: "server, validate, autocomplete, outline"\n'
   )
   .option('t', {
     alias: 'text',
@@ -99,7 +99,7 @@ switch (command) {
   case 'server':
     process.on('uncaughtException', error => {
       process.stdout.write(
-        'An error was thrown from GraphQL language service: ' + String(error),
+        'An error was thrown from GraphQL language service: ' + String(error)
       );
       process.exit(0);
     });
@@ -107,7 +107,7 @@ switch (command) {
     watchmanClient.capabilityCheck({}, (error, res) => {
       if (error) {
         process.stderr.write(
-          `Cannot find installed watchman service with an error: ${error}`,
+          `Cannot find installed watchman service with an error: ${error}`
         );
         process.exit(0);
       }
