@@ -50,5 +50,5 @@ type Query {
   hero(episode: Episode): Character
   human(id: String!): Human
   droid(id: String!): Droid
-  inputTypeTest(args: InputType = {key: "key"}): TestType
+  inputTypeTest(args: InputType = { key: "key" }): TestType
 }

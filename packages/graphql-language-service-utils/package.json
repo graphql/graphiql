@@ -26,7 +26,8 @@
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
     "build-flow": "node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js"
+    "prepublish": "node ../../resources/prepublish.js",
+    "pretty": "node ../../resources/pretty.js"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"

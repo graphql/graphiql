@@ -20,12 +20,10 @@ function cp(source, destination) {
 function exec(executable, ...args) {
   try {
     print(execFileSync(executable, args).toString());
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
-  catch(err) {
-    console.error(err)
-    throw err
-  }
-  
 }
 
 function print(string) {

@@ -24,7 +24,7 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
   Uri,
-  Position
+  Position,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';

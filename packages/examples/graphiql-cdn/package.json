@@ -3,7 +3,7 @@
   "version": "0.0.4",
   "private": true,
   "license": "MIT",
-  "description": "An example using GraphiQL",
+  "description": "An example using GraphiQL cdn bundle",
   "scripts": {
     "setup": "cp ../../graphiql/graphiql.js ../../graphiql/graphiql.css .",
     "start": "node server"

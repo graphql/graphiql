@@ -27,7 +27,8 @@
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node test/server.js",
-    "test": "node ../../resources/runTests ENZYME=true"
+    "test": "node ../../resources/runTests ENZYME=true",
+    "pretty": "node ../../resources/pretty.js"
   },
   "lint-staged": {
     "*.js": [

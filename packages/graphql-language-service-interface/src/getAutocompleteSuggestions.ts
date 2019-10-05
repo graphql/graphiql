@@ -22,7 +22,7 @@ import {
   ContextToken,
   State,
   AllTypeInfo,
-  Position
+  Position,
 } from 'graphql-language-service-types';
 
 import {

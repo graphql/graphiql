@@ -36,7 +36,8 @@
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "prepublish": "node ../../resources/prepublish.js",
+    "prepublish": "node ../../resources/prepublish",
+    "pretty": "node ../../resources/pretty.js",
     "test": "mocha $npm_package_options_mocha"
   },
   "peerDependencies": {

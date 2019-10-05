@@ -58,8 +58,8 @@ describe('GraphiQL', () => {
   it('should throw error without fetcher', () => {
     expect(() =>
       mount(<GraphiQL />).simulateError(
-        Error('GraphiQL requires a fetcher function')
-      )
+        Error('GraphiQL requires a fetcher function'),
+      ),
     );
   });
 
@@ -100,7 +100,7 @@ describe('GraphiQL', () => {
 
   it('should not throw error if schema missing and query provided', () => {
     expect(() =>
-      mount(<GraphiQL fetcher={noOpFetcher} query="{}" />)
+      mount(<GraphiQL fetcher={noOpFetcher} query="{}" />),
     ).not.toThrow();
   });
 
@@ -111,7 +111,7 @@ describe('GraphiQL', () => {
 
   it('accepts a custom default query', () => {
     const graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />
+      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
     expect(graphiQL.state().query).toEqual('GraphQL Party!!');
   });
@@ -130,7 +130,7 @@ describe('GraphiQL', () => {
     expect(graphiQL.state().defaultVariableEditorOpen).toEqual(undefined);
 
     graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />
+      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
     expect(graphiQL.state().variableEditorOpen).toEqual(true);
 
@@ -139,7 +139,7 @@ describe('GraphiQL', () => {
         fetcher={noOpFetcher}
         variables="{test: 'value'}"
         defaultVariableEditorOpen={false}
-      />
+      />,
     );
     expect(graphiQL.state().variableEditorOpen).toEqual(false);
   });

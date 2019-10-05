@@ -38,7 +38,7 @@ describe('getHoverInformation', () => {
       new Position(0, 20),
     );
     expect(actual).toEqual(
-      'TestType.testField: String\n\n This is field documentation for TestType.testField',
+      'TestType.testField: String\n\nThis is field documentation for TestType.testField',
     );
   });
 
@@ -48,7 +48,7 @@ describe('getHoverInformation', () => {
       new Position(0, 25),
     );
     expect(actual).toEqual(
-      'TestType.testField: String\n\n This is field documentation for TestType.testField',
+      'TestType.testField: String\n\nThis is field documentation for TestType.testField',
     );
   });
 
@@ -58,7 +58,7 @@ describe('getHoverInformation', () => {
       new Position(0, 10),
     );
     expect(actual).toEqual(
-      'Query.thing: TestType\n\n This is field documentation for Query.thing',
+      'Query.thing: TestType\n\nThis is field documentation for Query.thing',
     );
   });
 

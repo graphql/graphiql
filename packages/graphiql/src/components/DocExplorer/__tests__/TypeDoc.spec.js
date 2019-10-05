@@ -26,13 +26,13 @@ describe('TypeDoc', () => {
         schema={ExampleSchema}
         type={ExampleQuery}
         onClickType={jest.fn()}
-      />
+      />,
     );
     const cats = W.find('.doc-category-item');
     expect(cats.at(0).text()).toEqual('string: String');
     expect(cats.at(1).text()).toEqual('union: exampleUnion');
     expect(cats.at(2).text()).toEqual(
-      'fieldWithArgs(stringArg: String): String'
+      'fieldWithArgs(stringArg: String): String',
     );
   });
 
@@ -45,7 +45,7 @@ describe('TypeDoc', () => {
         type={ExampleQuery}
         onClickType={onClickType}
         onClickField={onClickField}
-      />
+      />,
     );
     W.find('TypeLink')
       .at(0)
@@ -69,7 +69,7 @@ describe('TypeDoc', () => {
         schema={ExampleSchema}
         type={ExampleQuery}
         onClickType={jest.fn()}
-      />
+      />,
     );
     let cats = W.find('.doc-category-item');
     expect(cats.length).toEqual(3);
@@ -81,12 +81,12 @@ describe('TypeDoc', () => {
     expect(
       W.find('.field-name')
         .at(3)
-        .text()
+        .text(),
     ).toEqual('deprecatedField');
     expect(
       W.find('.doc-deprecation')
         .at(0)
-        .text()
+        .text(),
     ).toEqual('example deprecation reason\n');
   });
 
@@ -95,7 +95,7 @@ describe('TypeDoc', () => {
     expect(
       W.find('.doc-category-title')
         .at(0)
-        .text()
+        .text(),
     ).toEqual('possible types');
   });
 
@@ -104,7 +104,7 @@ describe('TypeDoc', () => {
     expect(
       W.find('.doc-category-title')
         .at(0)
-        .text()
+        .text(),
     ).toEqual('values');
     const enums = W.find('EnumValue');
     expect(enums.at(0).props().value.value).toEqual('Value 1');
@@ -129,7 +129,7 @@ describe('TypeDoc', () => {
     expect(
       W.find('.doc-deprecation')
         .at(1)
-        .text()
+        .text(),
     ).toEqual('Only two are needed\n');
   });
 });

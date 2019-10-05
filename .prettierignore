@@ -1,0 +1,7 @@
+**/coverage/**
+**.graphql
+.graphqlconfig
+
+# breaks prettier graphql parser
+packages/graphql-language-service-server/src/__tests__/__queries__/test.graphql
+packages/codemirror-graphql/src/__tests__/schema-kitchen-sink.graphql

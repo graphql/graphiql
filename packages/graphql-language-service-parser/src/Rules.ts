@@ -48,8 +48,6 @@ export const LexRules = {
   Comment: /^#.*/,
 };
 
-
-
 /**
  * The parser rules. These are very close to, but not exactly the same as the
  * spec. Minor deviations allow for a simpler implementation. The resulting
@@ -88,7 +86,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
       case 'directive':
         return 'DirectiveDef';
     }
-
   },
   // Note: instead of "Operation", these rules have been separated out.
   ShortQuery: ['SelectionSet'],

@@ -26,7 +26,9 @@ export default class SearchBox extends React.Component {
   render() {
     return (
       <label className="search-box">
-        <div className="search-box-icon" aria-hidden="true">{'\u26b2'}</div>
+        <div className="search-box-icon" aria-hidden="true">
+          {'\u26b2'}
+        </div>
         <input
           value={this.state.value}
           onChange={this.handleChange}

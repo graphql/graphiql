@@ -21,7 +21,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
   }
 
@@ -30,7 +30,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1, item);
@@ -43,7 +43,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1);
