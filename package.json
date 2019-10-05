@@ -3,7 +3,7 @@
   "license": "MIT",
   "workspaces": [
     "packages/*",
-    "packages/graphiql-examples/*"
+    "packages/examples/*"
   ],
   "browserify-shim": {
     "react": "global:React",
