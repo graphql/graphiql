@@ -5,11 +5,10 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { Location } from 'graphql/language';
-import type {
+import { Location } from 'graphql/language';
+import {
   Range as RangeInterface,
   Position as PositionInterface,
 } from 'graphql-language-service-types';
@@ -17,16 +16,16 @@ import type {
 export class Range implements RangeInterface {
   start: PositionInterface;
   end: PositionInterface;
-  constructor(start: PositionInterface, end: PositionInterface): void {
+  constructor(start: PositionInterface, end: PositionInterface) {
     this.start = start;
     this.end = end;
   }
 
-  setStart(line: number, character: number): void {
+  setStart(line: number, character: number) {
     this.start = new Position(line, character);
   }
 
-  setEnd(line: number, character: number): void {
+  setEnd(line: number, character: number) {
     this.end = new Position(line, character);
   }
 
@@ -44,16 +43,16 @@ export class Range implements RangeInterface {
 export class Position implements PositionInterface {
   line: number;
   character: number;
-  constructor(line: number, character: number): void {
+  constructor(line: number, character: number) {
     this.line = line;
     this.character = character;
   }
 
-  setLine(line: number): void {
+  setLine(line: number) {
     this.line = line;
   }
 
-  setCharacter(character: number): void {
+  setCharacter(character: number) {
     this.character = character;
   }
 

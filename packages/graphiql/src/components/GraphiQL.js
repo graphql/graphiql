@@ -112,10 +112,10 @@ class GraphiQLSource extends React.Component {
       props.operationName !== undefined
         ? props.operationName
         : getSelectedOperationName(
-        null,
-        this._storage.get('operationName'),
-        queryFacts && queryFacts.operations,
-        );
+            null,
+            this._storage.get('operationName'),
+            queryFacts && queryFacts.operations,
+          );
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
@@ -126,7 +126,10 @@ class GraphiQLSource extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+    const variableEditorOpen =
+      props.defaultVariableEditorOpen !== undefined
+        ? props.defaultVariableEditorOpen
+        : Boolean(variables);
 
     // Initialize state
     this.state = {
@@ -314,7 +317,6 @@ class GraphiQLSource extends React.Component {
       display: 'block',
       width: this.state.docExplorerWidth,
     };
-
     const docExplorerWrapClasses =
       'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
@@ -541,7 +543,7 @@ class GraphiQLSource extends React.Component {
       fetcher({
         query: introspectionQuery,
         operationName: introspectionQueryName,
-      }),
+      })
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -562,7 +564,7 @@ class GraphiQLSource extends React.Component {
           fetcher({
             query: introspectionQuerySansSubscriptions,
             operationName: introspectionQueryName,
-          }),
+          })
         );
         if (!isPromise(fetch)) {
           throw new Error(
@@ -703,7 +705,7 @@ class GraphiQLSource extends React.Component {
               response: GraphiQL.formatResult(result),
             });
           }
-        },
+        }
       );
 
       this.setState({ subscription });
@@ -779,7 +781,7 @@ class GraphiQLSource extends React.Component {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.state.schema
     );
     this.setState({
       query: value,
@@ -1062,7 +1064,11 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
-  return <div className="toolbar">{props.children}</div>;
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Editor Commands">
+      {props.children}
+    </div>
+  );
 };
 
 // Export main windows/panes to be used separately if desired.

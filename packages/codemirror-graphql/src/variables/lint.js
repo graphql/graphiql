@@ -65,7 +65,6 @@ CodeMirror.registerHelper(
 // Given a variableToType object, a source text, and a JSON AST, produces a
 // list of CodeMirror annotations for any variable validation errors.
 function validateVariables(editor, variableToType, variablesAST) {
-
   const errors = [];
 
   variablesAST.members.forEach(member => {
@@ -192,6 +191,7 @@ function lintError(editor, node, message) {
 }
 
 function isNullish(value: mixed): boolean {
+  // eslint-disable-next-line no-self-compare
   return value === null || value === undefined || value !== value;
 }
 

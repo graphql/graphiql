@@ -80,26 +80,34 @@ describe('GraphQLCache', () => {
 
     it('extend the schema with appropriate custom directive', async () => {
       const schema = await cache.getSchema('testWithCustomDirectives');
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual({
-        args: [],
-        description: undefined,
-        // TODO: failing now that tests are doing deep comparison
-        // isRepeatable: false,
-        locations: ['FIELD'],
-        name: 'customDirective',
-      });
+      expect(
+        wihtoutASTNode(schema.getDirective('customDirective')),
+      ).toMatchObject(
+        expect.objectContaining({
+          args: [],
+          description: undefined,
+          // TODO: failing now that tests are doing deep comparison
+          // isRepeatable: false,
+          locations: ['FIELD'],
+          name: 'customDirective',
+        }),
+      );
     });
 
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = await cache.getSchema('testWithSchema');
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual({
-        args: [],
-        description: undefined,
-        // TODO: failing now that tests are doing deep comparison
-        // isRepeatable: false,
-        locations: ['FRAGMENT_SPREAD'],
-        name: 'customDirective',
-      });
+      expect(
+        wihtoutASTNode(schema.getDirective('customDirective')),
+      ).toMatchObject(
+        expect.objectContaining({
+          args: [],
+          description: undefined,
+          // TODO: failing now that tests are doing deep comparison
+          // isRepeatable: false,
+          locations: ['FRAGMENT_SPREAD'],
+          name: 'customDirective',
+        }),
+      );
     });
   });
 
@@ -254,7 +262,7 @@ describe('GraphQLCache', () => {
     const query = `type Query {
         hero(episode: Episode): Character
       }
-      
+
       type Episode {
         id: ID!
       }

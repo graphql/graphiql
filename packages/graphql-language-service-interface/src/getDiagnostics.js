@@ -5,10 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   ASTNode,
   DocumentNode,
   GraphQLError,
@@ -16,18 +15,21 @@ import type {
   Location,
   SourceLocation,
 } from 'graphql';
-import type {
+
+import {
   Diagnostic,
   CustomValidationRule,
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
 import { findDeprecatedUsages, parse } from 'graphql';
+
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
+
 import {
-  Position,
   Range,
   validateWithCustomRules,
+  Position,
 } from 'graphql-language-service-utils';
 
 export const SEVERITY = {
@@ -39,7 +41,7 @@ export const SEVERITY = {
 
 export function getDiagnostics(
   query: string,
-  schema: ?GraphQLSchema = null,
+  schema: GraphQLSchema | null | undefined = null,
   customRules?: Array<CustomValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
@@ -63,7 +65,7 @@ export function getDiagnostics(
 
 export function validateQuery(
   ast: DocumentNode,
-  schema: ?GraphQLSchema = null,
+  schema: GraphQLSchema | null | undefined = null,
   customRules?: Array<CustomValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
@@ -76,6 +78,7 @@ export function validateQuery(
     validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
     error => annotations(error, SEVERITY.ERROR, 'Validation'),
   );
+
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
   // support older versions of graphql-js.
   const deprecationWarningAnnotations = !findDeprecatedUsages
@@ -83,6 +86,7 @@ export function validateQuery(
     : mapCat(findDeprecatedUsages(schema, ast), error =>
         annotations(error, SEVERITY.WARNING, 'Deprecation'),
       );
+
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
@@ -104,13 +108,15 @@ function annotations(
   }
   return error.nodes.map(node => {
     const highlightNode =
-      node.kind !== 'Variable' && node.name
+      node.kind !== 'Variable' && 'name' in node
         ? node.name
-        : node.variable
+        : 'variable' in node
         ? node.variable
         : node;
 
     invariant(error.locations, 'GraphQL validation error requires locations.');
+    // @ts-ignore
+    // https://github.com/microsoft/TypeScript/pull/32695
     const loc = error.locations[0];
     const highlightLoc = getLocation(highlightNode);
     const end = loc.column + (highlightLoc.end - highlightLoc.start);
@@ -126,7 +132,7 @@ function annotations(
   });
 }
 
-export function getRange(location: SourceLocation, queryText: string) {
+export function getRange(location: SourceLocation, queryText: string): Range {
   const parser = onlineParser();
   const state = parser.startState();
   const lines = queryText.split('\n');
@@ -149,11 +155,13 @@ export function getRange(location: SourceLocation, queryText: string) {
   }
 
   invariant(stream, 'Expected Parser stream to be available.');
-
   const line = location.line - 1;
+  // @ts-ignore
+  // https://github.com/microsoft/TypeScript/pull/32695
   const start = stream.getStartOfToken();
+  // @ts-ignore
+  // https://github.com/microsoft/TypeScript/pull/32695
   const end = stream.getCurrentPosition();
-
   return new Range(new Position(line, start), new Position(line, end));
 }
 
@@ -165,8 +173,10 @@ export function getRange(location: SourceLocation, queryText: string) {
  * call `parse` without options above.
  */
 function getLocation(node: any): Location {
-  const typeCastedNode = (node: ASTNode);
+  const typeCastedNode = node as ASTNode;
   const location = typeCastedNode.loc;
   invariant(location, 'Expected ASTNode to have a location.');
+  // @ts-ignore
+  // https://github.com/microsoft/TypeScript/pull/32695
   return location;
 }

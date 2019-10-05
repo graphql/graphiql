@@ -661,7 +661,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     const schemaPath = projectConfig.schemaPath;
     const endpointInfo = this._getDefaultEndpoint(projectConfig);
-    const {endpointKey, schemaKey} = this._getSchemaCacheKeysForProject(projectConfig);
+    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
+      projectConfig,
+    );
 
     let schemaCacheKey = null;
     let schema = null;
@@ -729,7 +731,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
-    const {endpointKey, schemaKey} = this._getSchemaCacheKeysForProject(projectConfig);
+    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
+      projectConfig,
+    );
     endpointKey && this._schemaMap.delete(endpointKey);
     schemaKey && this._schemaMap.delete(schemaKey);
   }
@@ -738,9 +742,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const endpointInfo = this._getDefaultEndpoint(projectConfig);
     const projectName = this._getProjectName(projectConfig);
     return {
-      endpointKey: endpointInfo ? `${endpointInfo.endpointName}:${projectName}` : null,
-      schemaKey: projectConfig.schemaPath ? `${projectConfig.schemaPath}:${projectName}` : null,
-    }
+      endpointKey: endpointInfo
+        ? `${endpointInfo.endpointName}:${projectName}`
+        : null,
+      schemaKey: projectConfig.schemaPath
+        ? `${projectConfig.schemaPath}:${projectName}`
+        : null,
+    };
   }
 
   _getProjectName(projectConfig: GraphQLProjectConfig) {

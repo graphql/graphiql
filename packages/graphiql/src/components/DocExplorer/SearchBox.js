@@ -26,16 +26,23 @@ export default class SearchBox extends React.Component {
   render() {
     return (
       <label className="search-box">
+        <div className="search-box-icon" aria-hidden="true">
+          {'\u26b2'}
+        </div>
         <input
           value={this.state.value}
           onChange={this.handleChange}
           type="text"
           placeholder={this.props.placeholder}
+          aria-label={this.props.placeholder}
         />
         {this.state.value && (
-          <div className="search-box-clear" onClick={this.handleClear}>
+          <button
+            className="search-box-clear"
+            onClick={this.handleClear}
+            aria-label="Clear search input">
             {'\u2715'}
-          </div>
+          </button>
         )}
       </label>
     );

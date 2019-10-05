@@ -63,8 +63,10 @@ extend type Foo {
   seven(argument: [[String!]!]!): Type
 }
 
+# prettier-ignore
 extend type Foo @onType {}
 
+# prettier-ignore
 type NoFields {}
 
 directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT

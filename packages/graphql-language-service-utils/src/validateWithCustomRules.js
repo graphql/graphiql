@@ -5,13 +5,12 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { DocumentNode } from 'graphql/language';
-import type { GraphQLError } from 'graphql/error';
-import type { GraphQLSchema } from 'graphql/type';
-import type { CustomValidationRule } from 'graphql-language-service-types';
+import { DocumentNode, TypeDefinitionNode } from 'graphql/language';
+import { GraphQLError } from 'graphql/error';
+import { GraphQLSchema } from 'graphql/type';
+import { CustomValidationRule } from 'graphql-language-service-types';
 
 import { specifiedRules, TypeInfo, validate } from 'graphql';
 
@@ -40,16 +39,18 @@ export function validateWithCustomRules(
     } = require('graphql/validation/rules/KnownFragmentNames');
     rulesToSkip.push(KnownFragmentNames);
   }
+
   const rules = specifiedRules.filter(
     rule => !rulesToSkip.some(r => r === rule),
   );
 
   const typeInfo = new TypeInfo(schema);
+
   if (customRules) {
     Array.prototype.push.apply(rules, customRules);
   }
 
-  const errors: $ReadOnlyArray<GraphQLError> = validate(
+  const errors: Readonly<Array<GraphQLError>> = validate(
     schema,
     ast,
     rules,
@@ -61,17 +62,13 @@ export function validateWithCustomRules(
       if (error.message.indexOf('Unknown directive') === -1) {
         return true;
       }
-      return !(
-        (error.nodes &&
-          error.nodes[0] &&
-          error.nodes[0].name &&
-          error.nodes[0].name.value === 'arguments') ||
-        (error.nodes &&
-          error.nodes[0] &&
-          error.nodes[0].name &&
-          error.nodes[0].name.value &&
-          error.nodes[0].name.value === 'argumentDefinitions')
-      );
+      if (error.nodes && (error.nodes[0] as TypeDefinitionNode)) {
+        const node = <TypeDefinitionNode>error.nodes[0];
+        return !(
+          (node.name && node.name.value === 'arguments') ||
+          node.name.value === 'argumentDefinitions'
+        );
+      }
     });
   }
 

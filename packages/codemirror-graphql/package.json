@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "0.9.1-alpha.1.2",
+  "version": "0.11.1",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -38,8 +38,8 @@
     "build-js": "node ../../resources/buildJs.js",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "preversion": ". ./resources/checkgit.sh && yarn test",
-    "prepublish": ". ./resources/prepublish.sh",
+    "prepublish": "node ../../resources/prepublish",
+    "pretty": "node ../../resources/pretty.js",
     "test": "mocha $npm_package_options_mocha"
   },
   "peerDependencies": {
@@ -49,8 +49,8 @@
     "i18next-browser-languagedetector": "~3.0.3"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.1.1-alpha.1",
-    "graphql-language-service-parser": "^1.3.1-alpha.1"
+    "graphql-language-service-interface": "^2.3.0",
+    "graphql-language-service-parser": "^1.5.0"
   },
   "devDependencies": {
     "chai": "4.1.1",
@@ -59,7 +59,6 @@
     "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",
-    "sane": "2.0.0",
-    "babel-plugin-inline-json-import": "^0.3.2"
+    "sane": "2.0.0"
   }
 }

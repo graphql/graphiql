@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  *  Copyright (c) 2019 GraphQL Contributors
  *  All rights reserved.
@@ -5,21 +6,24 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   FragmentDefinitionNode,
   GraphQLDirective,
   GraphQLSchema,
+  GraphQLType,
+  GraphQLCompositeType,
+  GraphQLEnumValue,
 } from 'graphql';
-import type {
+
+import {
   CompletionItem,
   ContextToken,
   State,
-  TypeInfo,
+  AllTypeInfo,
+  Position,
 } from 'graphql-language-service-types';
-import type { Position } from 'graphql-language-service-utils';
 
 import {
   GraphQLBoolean,
@@ -37,7 +41,9 @@ import {
   isCompositeType,
   isInputType,
 } from 'graphql';
+
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
+
 import {
   forEachState,
   getDefinitionState,
@@ -164,16 +170,13 @@ export function getAutocompleteSuggestions(
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForFieldNames(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
     const fields =
-      parentType.getFields instanceof Function
-        // $FlowFixMe
-        ? objectValues(parentType.getFields())
-        : [];
+      'getFields' in parentType ? objectValues(parentType.getFields()) : [];
     if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
@@ -198,9 +201,9 @@ function getSuggestionsForFieldNames(
 
 function getSuggestionsForInputValues(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
 ): Array<CompletionItem> {
-  const namedInputType = getNamedType(typeInfo.inputType);
+  const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
   if (namedInputType instanceof GraphQLEnumType) {
     const values = namedInputType.getValues();
     return hintList(
@@ -220,6 +223,7 @@ function getSuggestionsForInputValues(
         detail: String(GraphQLBoolean),
         documentation: 'Not false.',
       },
+
       {
         label: 'false',
         detail: String(GraphQLBoolean),
@@ -233,10 +237,10 @@ function getSuggestionsForInputValues(
 
 function getSuggestionsForFragmentTypeConditions(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
 ): Array<CompletionItem> {
-  let possibleTypes;
+  let possibleTypes: GraphQLType[];
   if (typeInfo.parentType) {
     if (isAbstractType(typeInfo.parentType)) {
       const abstractType = assertAbstractType(typeInfo.parentType);
@@ -261,7 +265,7 @@ function getSuggestionsForFragmentTypeConditions(
   }
   return hintList(
     token,
-    possibleTypes.map(type => {
+    possibleTypes.map((type: GraphQLType) => {
       const namedType = getNamedType(type);
       return {
         label: String(type),
@@ -273,7 +277,7 @@ function getSuggestionsForFragmentTypeConditions(
 
 function getSuggestionsForFragmentSpread(
   token: ContextToken,
-  typeInfo: TypeInfo,
+  typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
   queryText: string,
 ): Array<CompletionItem> {
@@ -295,11 +299,9 @@ function getSuggestionsForFragmentSpread(
       // Only include fragments which could possibly be spread here.
       isCompositeType(typeInfo.parentType) &&
       isCompositeType(typeMap[frag.typeCondition.name.value]) &&
-      doTypesOverlap(
-        schema,
-        typeInfo.parentType,
-        typeMap[frag.typeCondition.name.value],
-      ),
+      doTypesOverlap(schema, typeInfo.parentType, typeMap[
+        frag.typeCondition.name.value
+      ] as GraphQLCompositeType),
   );
 
   return hintList(
@@ -307,9 +309,7 @@ function getSuggestionsForFragmentSpread(
     relevantFrags.map(frag => ({
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
-      documentation: `fragment ${frag.name.value} on ${
-        frag.typeCondition.name.value
-      }`,
+      documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
     })),
   );
 }
@@ -317,8 +317,8 @@ function getSuggestionsForFragmentSpread(
 function getFragmentDefinitions(
   queryText: string,
 ): Array<FragmentDefinitionNode> {
-  const fragmentDefs = [];
-  runOnlineParser(queryText, (_, state) => {
+  const fragmentDefs: FragmentDefinitionNode[] = [];
+  runOnlineParser(queryText, (_, state: State) => {
     if (state.kind === 'FragmentDefinition' && state.name && state.type) {
       fragmentDefs.push({
         kind: 'FragmentDefinition',
@@ -326,10 +326,12 @@ function getFragmentDefinitions(
           kind: 'Name',
           value: state.name,
         },
+
         selectionSet: {
           kind: 'SelectionSet',
           selections: [],
         },
+
         typeCondition: {
           kind: 'NamedType',
           name: {
@@ -352,7 +354,8 @@ function getSuggestionsForVariableDefinition(
   const inputTypes = objectValues(inputTypeMap).filter(isInputType);
   return hintList(
     token,
-    inputTypes.map(type => ({
+    // TODO: couldn't get Exclude<> working here
+    inputTypes.map((type: any) => ({
       label: type.name,
       documentation: type.description,
     })),
@@ -462,7 +465,7 @@ function runOnlineParser(
 }
 
 function canUseDirective(
-  state: $PropertyType<State, 'prevState'>,
+  state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {
   if (!state || !state.kind) {
@@ -515,6 +518,7 @@ function canUseDirective(
           return locations.indexOf('INPUT_FIELD_DEFINITION') !== -1;
       }
   }
+
   return false;
 }
 
@@ -523,16 +527,16 @@ function canUseDirective(
 export function getTypeInfo(
   schema: GraphQLSchema,
   tokenState: State,
-): TypeInfo {
-  let argDef;
-  let argDefs;
-  let directiveDef;
-  let enumValue;
-  let fieldDef;
-  let inputType;
-  let objectFieldDefs;
-  let parentType;
-  let type;
+): AllTypeInfo {
+  let argDef: AllTypeInfo['argDef'];
+  let argDefs: AllTypeInfo['argDefs'];
+  let directiveDef: AllTypeInfo['directiveDef'];
+  let enumValue: AllTypeInfo['enumValue'];
+  let fieldDef: AllTypeInfo['fieldDef'];
+  let inputType: AllTypeInfo['inputType'];
+  let objectFieldDefs: AllTypeInfo['objectFieldDefs'];
+  let parentType: AllTypeInfo['parentType'];
+  let type: AllTypeInfo['type'];
 
   forEachState(tokenState, state => {
     switch (state.kind) {
@@ -564,7 +568,7 @@ export function getTypeInfo(
         }
         break;
       case 'SelectionSet':
-        parentType = getNamedType(type);
+        parentType = getNamedType(type as GraphQLType);
         break;
       case 'Directive':
         directiveDef = state.name ? schema.getDirective(state.name) : null;
@@ -613,19 +617,22 @@ export function getTypeInfo(
         inputType = argDef && argDef.type;
         break;
       case 'EnumValue':
-        const enumType = getNamedType(inputType);
+        const enumType = getNamedType(inputType as GraphQLType);
         enumValue =
           enumType instanceof GraphQLEnumType
-            ? find(enumType.getValues(), val => val.value === state.name)
+            ? find(
+                enumType.getValues(),
+                (val: GraphQLEnumValue) => val.value === state.name,
+              )
             : null;
         break;
       case 'ListValue':
-        const nullableType = getNullableType(inputType);
+        const nullableType = getNullableType(inputType as GraphQLType);
         inputType =
           nullableType instanceof GraphQLList ? nullableType.ofType : null;
         break;
       case 'ObjectValue':
-        const objectType = getNamedType(inputType);
+        const objectType = getNamedType(inputType as GraphQLType);
         objectFieldDefs =
           objectType instanceof GraphQLInputObjectType
             ? objectType.getFields()
@@ -658,7 +665,7 @@ export function getTypeInfo(
 }
 
 // Returns the first item in the array which causes predicate to return truthy.
-function find(array, predicate) {
+function find(array: any[], predicate: Function) {
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i])) {
       return array[i];

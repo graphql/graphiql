@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "0.14.6",
+  "version": "0.15.1",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -27,9 +27,9 @@
     "build-js": "bash ./resources/build.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "babel-node --root-mode upward test/server.js",
-    "preversion": ". ./resources/checkgit.sh && npm test",
-    "test": "node ../../resources/runTests ENZYME=true"
+    "dev": "babel-node test/server.js",
+    "test": "node ../../resources/runTests ENZYME=true",
+    "pretty": "node ../../resources/pretty.js"
   },
   "lint-staged": {
     "*.js": [
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "codemirror": "^5.47.0",
-    "codemirror-graphql": "^0.9.0",
+    "codemirror-graphql": "^0.11.1",
     "copy-to-clipboard": "^3.2.0",
     "i18next": "^17.0.16",
     "i18next-browser-languagedetector": "~3.0.3",
@@ -63,7 +63,7 @@
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.7",
-    "graphql": "^14.0.0",
+    "graphql": "14.4.2",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
     "postcss-cli": "6.1.2",
