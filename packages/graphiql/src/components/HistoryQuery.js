@@ -24,20 +24,11 @@ export default class HistoryQuery extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showButtons: false,
       editable: false,
     };
   }
 
   render() {
-    const editStyles = {
-      display: this.state.showButtons ? '' : 'none',
-      marginLeft: '10px',
-    };
-    const starStyles = {
-      display: this.props.favorite || this.state.showButtons ? '' : 'none',
-      marginLeft: '10px',
-    };
     const displayName =
       this.props.label ||
       this.props.operationName ||
@@ -47,11 +38,7 @@ export default class HistoryQuery extends React.Component {
         .join('');
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';
     return (
-      <p
-        className={this.state.editable ? 'editable' : undefined}
-        onClick={this.handleClick.bind(this)}
-        onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={this.handleMouseLeave.bind(this)}>
+      <li className={this.state.editable ? 'editable' : undefined}>
         {this.state.editable ? (
           <input
             type="text"
@@ -62,27 +49,28 @@ export default class HistoryQuery extends React.Component {
             placeholder="Type a label"
           />
         ) : (
-          <span className="history-label">{displayName}</span>
+          <button
+            className="history-label"
+            onClick={this.handleClick.bind(this)}>
+            {displayName}
+          </button>
         )}
-        <span onClick={this.handleEditClick.bind(this)} style={editStyles}>
+        <button
+          onClick={this.handleEditClick.bind(this)}
+          aria-label="Edit label">
           {'\u270e'}
-        </span>
-        <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
+        </button>
+        <button
+          className={this.props.favorite ? 'favorited' : undefined}
+          onClick={this.handleStarClick.bind(this)}
+          aria-label={this.props.favorite ? 'Remove favorite' : 'Add favorite'}>
           {starIcon}
-        </span>
-      </p>
+        </button>
+      </li>
     );
   }
 
   editField = null;
-
-  handleMouseEnter() {
-    this.setState({ showButtons: true });
-  }
-
-  handleMouseLeave() {
-    this.setState({ showButtons: false });
-  }
 
   handleClick() {
     this.props.onSelect(
