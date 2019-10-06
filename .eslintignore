@@ -26,10 +26,12 @@
 
 # ESLint automatically ignores node_modules _in the root_, so we only need to specify nested node_modules
 **/node_modules
+/packages/examples/graphiql-cdn/graphiql*
 
 # Build artifacts
 **/flow-typed
 **/dist
 
 # Vendored files
+/packages/codemirror-graphql/
 /packages/graphiql/test/vendor
