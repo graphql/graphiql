@@ -34,6 +34,7 @@ import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
 import { getHoverInformation } from './getHoverInformation';
 import { validateQuery, getRange, SEVERITY } from './getDiagnostics';
+import { resolveFile, requireFile } from './fileUtils'
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
@@ -82,7 +83,7 @@ export class GraphQLLanguageService {
     query: string,
     uri: Uri,
     isRelayCompatMode?: boolean,
-  ): Promise<Array<Diagnostic>> {
+  ): Promise<Diagnostic[]> {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
@@ -159,9 +160,9 @@ export class GraphQLLanguageService {
     const customRulesModulePath = extensions.customValidationRules;
     if (customRulesModulePath) {
       /* eslint-disable no-implicit-coercion */
-      const rulesPath = require.resolve(`${customRulesModulePath}`);
+      const rulesPath = resolveFile(customRulesModulePath);
       if (rulesPath) {
-        customRules = require(`${rulesPath}`)(this._graphQLConfig);
+        customRules = requireFile(rulesPath)(this._graphQLConfig);
       }
       /* eslint-enable no-implicit-coercion */
     }
@@ -213,7 +214,7 @@ export class GraphQLLanguageService {
     query: string,
     position: Position,
     filePath: Uri,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null | void> {
     const projectConfig = this.getConfigForURI(filePath);
 
     let ast;
@@ -262,7 +263,7 @@ export class GraphQLLanguageService {
     node: NamedTypeNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null | void> {
     const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
       projectConfig,
     );
