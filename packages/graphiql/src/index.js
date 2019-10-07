@@ -7,3 +7,4 @@
 import 'regenerator-runtime/runtime';
 // The primary React component to use.
 module.exports = require('./components/GraphiQL').GraphiQL;
+module.exports.GraphiQL = require('./components/GraphiQL').GraphiQL;

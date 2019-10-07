@@ -27,6 +27,7 @@ module.exports = {
     '**/src/**/*.{js,jsx,ts,tsx}',
     '!**/node_modules/**',
     '!**/__tests__/**',
+    '!**/__mocks__/**',
     '!**/resources/**',
     '!**/codemirror-graphql/**',
   ],

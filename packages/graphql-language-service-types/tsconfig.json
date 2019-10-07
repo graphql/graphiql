@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base",
   "compilerOptions": {
+    "esModuleInterop": true,
     "rootDir": "./src",
     "outDir": "./dist",
   }
