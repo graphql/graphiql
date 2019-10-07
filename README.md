@@ -8,7 +8,7 @@
 
 ## Intro
 
-GraphiQL is the referen][=================“' p,k˚˚tym/alternative editors. The code uses the permissive MIT license.
+GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation. The code uses the permissive MIT license.
 
 The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
 
