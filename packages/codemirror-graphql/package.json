@@ -59,6 +59,7 @@
     "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",
-    "sane": "2.0.0"
+    "sane": "2.0.0",
+    "babel-plugin-inline-json-import": "^0.3.2"
   }
 }
