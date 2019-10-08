@@ -17,6 +17,7 @@ import {
 } from 'graphql';
 
 import jsonParse from '../utils/jsonParse';
+import i18next from '../i18n';
 
 /**
  * Registers a "lint" helper for CodeMirror.

@@ -31,8 +31,5 @@
   },
   "dependencies": {
     "graphql-config": "2.2.1"
-  },
-  "publishConfig": {
-    "registry": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal"
   }
 }

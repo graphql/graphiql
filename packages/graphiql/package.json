@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "0.14.4",
+  "version": "0.14.6",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "codemirror": "^5.47.0",
-    "codemirror-graphql": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal/codemirror-graphql/-/codemirror-graphql-0.9.1-alpha.1.2.tgz",
+    "codemirror-graphql": "^0.9.0",
     "copy-to-clipboard": "^3.2.0",
     "i18next": "^17.0.16",
     "i18next-browser-languagedetector": "~3.0.3",
@@ -68,14 +68,11 @@
     "jsdom": "15.0.0",
     "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",
-    "react": "16.9.0",
-    "react-dom": "16.9.0",
-    "react-test-renderer": "16.9.0",
+    "react": "15.6.2",
+    "react-dom": "15.6.2",
+    "react-test-renderer": "15.6.2",
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
     "watchify": "3.11.1"
-  },
-  "publishConfig": {
-    "registry": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal"
   }
 }
