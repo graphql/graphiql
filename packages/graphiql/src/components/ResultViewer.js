@@ -71,7 +71,7 @@ export class ResultViewer extends React.Component {
           }
           ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
           return tooltipDiv;
-        },
+        }
       );
     }
 
@@ -105,8 +105,11 @@ export class ResultViewer extends React.Component {
 
   render() {
     return (
-      <div
+      <section
         className="result-window"
+        aria-label="Result Window"
+        aria-live="polite"
+        aria-atomic="true"
         ref={node => {
           this._node = node;
         }}

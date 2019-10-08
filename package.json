@@ -3,7 +3,7 @@
   "license": "MIT",
   "workspaces": [
     "packages/*",
-    "packages/graphiql-examples/*"
+    "packages/examples/*"
   ],
   "browserify-shim": {
     "react": "global:React",
@@ -19,12 +19,13 @@
     }
   },
   "scripts": {
-    "build": "lerna run build",
+    "build": "tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "t": "yarn run testonly",
-    "lint": "eslint --ext js,ts,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
-    "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
+    "lint:fix": "eslint --ext=ts,js,jsx,tsx . --fix",
+    "lint:check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
     "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
@@ -47,7 +48,9 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
-    "babel-eslint": "^10.0.3",
+    "@types/jest": "^24.0.18",
+    "@typescript-eslint/parser": "^2.3.0",
+    "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
@@ -60,13 +63,15 @@
     "eslint-plugin-react": "7.14.3",
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
-    "graphql": "^14.3.1",
+    "graphql": "^14.5.2",
     "husky": "^3.0.5",
     "jest": "^24.8.0",
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
   }
 }

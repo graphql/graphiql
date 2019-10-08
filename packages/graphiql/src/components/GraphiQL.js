@@ -110,7 +110,7 @@ export class GraphiQL extends React.Component {
         : getSelectedOperationName(
             null,
             this._storage.get('operationName'),
-            queryFacts && queryFacts.operations,
+            queryFacts && queryFacts.operations
           );
 
     // prop can be supplied to open docExplorer initially
@@ -122,7 +122,10 @@ export class GraphiQL extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+    const variableEditorOpen =
+      props.defaultVariableEditorOpen !== undefined
+        ? props.defaultVariableEditorOpen
+        : Boolean(variables);
 
     // Initialize state
     this.state = {
@@ -151,7 +154,7 @@ export class GraphiQL extends React.Component {
     // Subscribe to the browser window closing, treating it as an unmount.
     if (typeof window === 'object') {
       window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount(),
+        this.componentWillUnmount()
       );
     }
   }
@@ -200,7 +203,7 @@ export class GraphiQL extends React.Component {
         nextQuery,
         nextOperationName,
         this.state.operations,
-        nextSchema,
+        nextSchema
       );
 
       if (updatedQueryAttributes !== undefined) {
@@ -235,7 +238,7 @@ export class GraphiQL extends React.Component {
 
           this._fetchSchema();
         }
-      },
+      }
     );
   }
 
@@ -271,7 +274,7 @@ export class GraphiQL extends React.Component {
 
     const toolbar = find(
       children,
-      child => child.type === GraphiQL.Toolbar,
+      child => child.type === GraphiQL.Toolbar
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
@@ -333,9 +336,12 @@ export class GraphiQL extends React.Component {
             onSelectQuery={this.handleSelectHistoryQuery}
             storage={this._storage}
             queryID={this._editorQueryID}>
-            <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+            <button
+              className="docExplorerHide"
+              onClick={this.handleToggleHistory}
+              aria-label="Close History">
               {'\u2715'}
-            </div>
+            </button>
           </QueryHistory>
         </div>
         <div className="editorWrap">
@@ -353,7 +359,8 @@ export class GraphiQL extends React.Component {
             {!this.state.docExplorerOpen && (
               <button
                 className="docExplorerShow"
-                onClick={this.handleToggleDocs}>
+                onClick={this.handleToggleDocs}
+                aria-label="Open Documentation Explorer">
                 {'Docs'}
               </button>
             )}
@@ -382,9 +389,13 @@ export class GraphiQL extends React.Component {
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
               />
-              <div className="variable-editor" style={variableStyle}>
+              <section
+                className="variable-editor"
+                style={variableStyle}
+                aria-label="Query Variables">
                 <div
                   className="variable-editor-title"
+                  id="variable-editor-title"
                   style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
                   onMouseDown={this.handleVariableResizeStart}>
                   {'Query Variables'}
@@ -403,7 +414,7 @@ export class GraphiQL extends React.Component {
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                 />
-              </div>
+              </section>
             </div>
             <div className="resultWrap">
               {this.state.isWaitingForResponse && (
@@ -436,9 +447,12 @@ export class GraphiQL extends React.Component {
                 this.docExplorerComponent = c;
               }}
               schema={this.state.schema}>
-              <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+              <button
+                className="docExplorerHide"
+                onClick={this.handleToggleDocs}
+                aria-label="Close Documentation Explorer">
                 {'\u2715'}
-              </div>
+              </button>
             </DocExplorer>
           </div>
         )}
@@ -485,7 +499,7 @@ export class GraphiQL extends React.Component {
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
-      this.props.getDefaultFieldNames,
+      this.props.getDefaultFieldNames
     );
     if (insertions && insertions.length > 0) {
       const editor = this.getQueryEditor();
@@ -502,8 +516,8 @@ export class GraphiQL extends React.Component {
               className: 'autoInsertedLeaf',
               clearOnEnter: true,
               title: 'Automatically added leaf fields',
-            },
-          ),
+            }
+          )
         );
         setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
         let newCursorIndex = cursorIndex;
@@ -528,7 +542,7 @@ export class GraphiQL extends React.Component {
       fetcher({
         query: introspectionQuery,
         operationName: introspectionQueryName,
-      }),
+      })
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -549,11 +563,11 @@ export class GraphiQL extends React.Component {
           fetcher({
             query: introspectionQuerySansSubscriptions,
             operationName: introspectionQueryName,
-          }),
+          })
         );
         if (!isPromise(fetch)) {
           throw new Error(
-            'Fetcher did not return a Promise for introspection.',
+            'Fetcher did not return a Promise for introspection.'
           );
         }
         return fetch2;
@@ -688,7 +702,7 @@ export class GraphiQL extends React.Component {
               response: GraphiQL.formatResult(result),
             });
           }
-        },
+        }
       );
 
       this.setState({ subscription });
@@ -764,7 +778,7 @@ export class GraphiQL extends React.Component {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.state.schema
     );
     this.setState({
       query: value,
@@ -797,7 +811,7 @@ export class GraphiQL extends React.Component {
       const updatedOperationName = getSelectedOperationName(
         prevOperations,
         operationName,
-        queryFacts.operations,
+        queryFacts.operations
       );
 
       // Report changing of operationName if it changed.
@@ -836,7 +850,7 @@ export class GraphiQL extends React.Component {
       (onRemoveFn = () => {
         elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
         elem.removeEventListener('click', this._onClickHintInformation);
-      }),
+      })
     );
   };
 
@@ -1045,7 +1059,11 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
-  return <div className="toolbar">{props.children}</div>;
+  return (
+    <div className="toolbar" role="toolbar" aria-label="Editor Commands">
+      {props.children}
+    </div>
+  );
 };
 
 // Export main windows/panes to be used separately if desired.
@@ -1143,7 +1161,7 @@ function observableToPromise(observable) {
       reject,
       () => {
         reject(new Error('no value resolved'));
-      },
+      }
     );
   });
 }

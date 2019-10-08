@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-types",
-  "version": "1.3.1-alpha.1",
+  "version": "1.5.0",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -20,9 +20,10 @@
     "graphql"
   ],
   "main": "dist/index.js",
+  "typings": "src/index",
   "scripts": {
-    "build": "yarn run build-js && yarn run build-flow",
-    "build-js": "node ../../resources/buildJs.js",
+    "build": "yarn run build-ts && yarn run build-flow",
+    "build-ts": "tsc",
     "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },

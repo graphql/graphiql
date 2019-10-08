@@ -10,9 +10,7 @@
 
 module.exports = {
   root: true,
-
   parser: 'babel-eslint',
-
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -22,7 +20,6 @@ module.exports = {
       experimentalObjectRestSpread: true,
     },
   },
-
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
@@ -33,7 +30,7 @@ module.exports = {
     browser: true,
   },
 
-  extends: ['prettier'],
+  extends: ['prettier', 'plugin:import/typescript'],
 
   globals: {
     atom: false,
@@ -292,6 +289,34 @@ module.exports = {
   plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
 
   overrides: [
+    // Rules for TypeScript only
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      rules: {
+        'no-unused-vars': 'off',
+      },
+    },
+    // Rules for Flow only
+    {
+      files: ['*.js', '*.jsx'],
+      rules: {
+        // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
+        'flowtype/boolean-style': 1,
+        'flowtype/define-flow-type': 1,
+        'flowtype/no-dupe-keys': 0,
+        'flowtype/no-primitive-constructor-types': 1,
+        'flowtype/no-weak-types': 0,
+        'flowtype/require-parameter-type': 0,
+        'flowtype/require-return-type': 0,
+        'flowtype/require-valid-file-annotation': 0,
+        'flowtype/require-variable-type': 0,
+        'flowtype/sort-keys': 0,
+        'flowtype/type-id-match': 0,
+        'flowtype/use-flow-type': 1,
+        'flowtype/valid-syntax': 0,
+      },
+    },
     {
       // Converted from 'dependencies' options in ancient config
       files: ['**/spec/**', '**/sample-*/**'],

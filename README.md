@@ -8,9 +8,7 @@
 
 ## Intro
 
-GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation.
-
-This repository contains much of the code that powers GraphiQL (and many other tools such as Altair, Insomnia, GraphQL Playground, VScode plugins, and more!), split into modules that can be used to build custom/alternative editors. The code uses the permissive MIT license.
+GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation. The code uses the permissive MIT license.
 
 The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
 
@@ -21,12 +19,12 @@ The purpose of this monorepo is to give folks a solid language service, and edit
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 [![CDNJS](https://img.shields.io/cdnjs/v/graphiql.svg)](https://cdnjs.com/libraries/graphiql)
 
-_/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
+_/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the master branch.
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
 
 ### How To Setup/Implement GraphiQL
-The [GraphiQL Readme](packages/graphiql#readme) explains some of the ways to implement GraphiQL, and we also have the [examples](packages/graphiql-examples) directory as well!
+The [GraphiQL Readme](packages/graphiql#readme) explains some of the ways to implement GraphiQL, and we also have the [examples](packages/examples) directory as well!
 
 ## [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme)
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
- export default class QueryStore {
+export default class QueryStore {
   constructor(key, storage, maxSize = null) {
     this.key = key;
     this.storage = storage;
@@ -22,7 +22,7 @@
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName,
+        x.operationName === item.operationName
     );
   }
 
@@ -31,7 +31,7 @@
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName,
+        x.operationName === item.operationName
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1, item);
@@ -44,7 +44,7 @@
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName,
+        x.operationName === item.operationName
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1);

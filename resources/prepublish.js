@@ -37,19 +37,21 @@ if (!isPublishing) {
 // Complain loudly if the user has run hoistDependencies locally.
 const packages = path.join(__dirname, '..', 'packages');
 fs.readdirSync(packages).forEach(pkg => {
-  const json = require(path.join(packages, pkg, 'package.json'));
-  if (json.main && json.main.match(/\bsrc\b/)) {
-    const message =
-      'The package.json file for ' +
-      json.name +
-      ' has "main" ' +
-      'set to "' +
-      json.main +
-      '" in "src" but it should refer to "dist". ' +
-      'This is an error and likely due to running hoistDependencies.js and ' +
-      'committing or keeping the result. Please revert those changes and ' +
-      'try again.';
-    throw new Error(message);
+  if (fs.existsSync(path.join(packages, pkg, 'package.json'))) {
+    const json = require(path.join(packages, pkg, 'package.json'));
+    if (json.main && json.main.match(/\bsrc\b/)) {
+      const message =
+        'The package.json file for ' +
+        json.name +
+        ' has "main" ' +
+        'set to "' +
+        json.main +
+        '" in "src" but it should refer to "dist". ' +
+        'This is an error and likely due to running hoistDependencies.js and ' +
+        'committing or keeping the result. Please revert those changes and ' +
+        'try again.';
+      throw new Error(message);
+    }
   }
 });
 
