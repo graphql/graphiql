@@ -59,7 +59,8 @@ export class QueryHistory extends React.Component {
   constructor(props) {
     super(props);
     this.historyStore = new QueryStore('queries', props.storage, MAX_HISTORY_LENGTH);
-    this.favoriteStore = new QueryStore('favorites', props.storage);
+    // favorites are not automatically deleted, so there's no need for a max length
+    this.favoriteStore = new QueryStore('favorites', props.storage, null);
     const historyQueries = this.historyStore.fetchAll();
     const favoriteQueries = this.favoriteStore.fetchAll();
     const queries = historyQueries.concat(favoriteQueries);
