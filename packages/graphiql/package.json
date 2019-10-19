@@ -35,6 +35,9 @@
       "git add"
     ]
   },
+  "browserify": {
+    "transform": [["babelify", { "presets": ["@babel/preset-env"] }]]
+  },
   "dependencies": {
     "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.11.1",
