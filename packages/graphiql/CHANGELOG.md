@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/graphql/graphiql/compare/graphiql@0.15.1...graphiql@0.16.0) (2019-10-19)
+
+
+### Bug Fixes
+
+* **accessibility:** improve accessibility of all components ([#967](https://github.com/graphql/graphiql/issues/967)) ([73a3f90](https://github.com/graphql/graphiql/commit/73a3f90))
+* **css:** added minimum width for result panel in GraphiQL ([#980](https://github.com/graphql/graphiql/issues/980)) ([0c8b7ad](https://github.com/graphql/graphiql/commit/0c8b7ad))
+* **graphiql:** better quota management ([#764](https://github.com/graphql/graphiql/issues/764)) ([7efed6c](https://github.com/graphql/graphiql/commit/7efed6c))
+
+
+### Features
+
+* **css:** beautify code tag in doc explorer ([#959](https://github.com/graphql/graphiql/issues/959)) resolves [#949](https://github.com/graphql/graphiql/issues/949) ([30810a2](https://github.com/graphql/graphiql/commit/30810a2))
+
+
+
+
+
 ## [0.15.1](https://github.com/graphql/graphiql/compare/graphiql@0.15.0...graphiql@0.15.1) (2019-10-04)
 
 
