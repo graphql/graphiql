@@ -9,8 +9,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import debounce from '../../utility/debounce';
+import { withTranslation } from 'react-i18next';
 
-export default class SearchBox extends React.Component {
+export class SearchBoxSource extends React.Component {
   static propTypes = {
     value: PropTypes.string,
     placeholder: PropTypes.string,
@@ -57,3 +58,5 @@ export default class SearchBox extends React.Component {
     this.props.onSearch('');
   };
 }
+
+export const SearchBox = withTranslation('DocExplorer')(SearchBoxSource);

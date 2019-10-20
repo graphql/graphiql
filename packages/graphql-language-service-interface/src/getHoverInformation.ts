@@ -83,7 +83,7 @@ export function getHoverInformation(
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
-  return ''
+  return '';
 }
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {

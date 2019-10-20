@@ -25,15 +25,13 @@
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
     "build-flow": "node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js"
+    "prepublish": "node ../../resources/prepublish.js",
+    "pretty": "node ../../resources/pretty.js"
   },
   "peerDependencies": {
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "graphql-config": "2.2.1"
-  },
-  "publishConfig": {
-    "registry": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal"
   }
 }

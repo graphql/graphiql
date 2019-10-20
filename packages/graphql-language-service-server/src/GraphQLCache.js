@@ -927,6 +927,58 @@ export class GraphQLCache implements GraphQLCacheInterface {
         }
         resolve({ filePath, content, asts, queries });
       })
+  configDir: Uri
+    fragmentDefinitions: ?Map<string, FragmentInfo>
+    fragmentDefinitions: Map<string, FragmentInfo>
+    projectConfig: GraphQLProjectConfig
+      projectConfig.includes
+      projectConfig.includesFile(fileInfo.filePath)
+    objectTypeDefinitions: ?Map<string, ObjectTypeInfo>
+      objectTypeDefinitions
+    objectTypeDefinitions: Map<string, ObjectTypeInfo>
+    projectConfig: GraphQLProjectConfig
+      projectConfig.includes
+      projectConfig.includesFile(fileInfo.filePath)
+    projectConfig: GraphQLProjectConfig
+                exists
+              )
+    includes: string[]
+        }
+              filePath => typeof globResult.statCache[filePath] === 'object'
+                globResult.statCache[filePath].mtime.getTime() / 1000
+            }))
+    exists: boolean
+    contents: Array<CachedContent>
+    exists: boolean
+    contents: Array<CachedContent>
+    exists: boolean
+        fileAndContent.queries
+    schemaCacheKey: ?string
+    queryHasExtensions?: ?boolean = false
+    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
+      projectConfig
+    );
+        })
+    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
+      projectConfig
+    );
+      endpointKey: endpointInfo
+        ? `${endpointInfo.endpointName}:${projectName}`
+        : null,
+      schemaKey: projectConfig.schemaPath
+        ? `${projectConfig.schemaPath}:${projectName}`
+        : null,
+    };
+    projectConfig: GraphQLProjectConfig
+      name => rawEndpointsMap[name] === defaultRawEndpoint
+    list: Array<GraphQLFileMetadata>
+            })
+          )
+    responses: Array<GraphQLFileInfo>
+    filePath: Uri
+                })
+              )
+      })
     );
   };
 }

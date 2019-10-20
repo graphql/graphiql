@@ -158,6 +158,7 @@ export function getRange(location: SourceLocation, queryText: string): Range {
   // @ts-ignore
   // https://github.com/microsoft/TypeScript/pull/32695
   const end = stream.getCurrentPosition();
+
   return new Range(new Position(line, start), new Position(line, end));
 }
 

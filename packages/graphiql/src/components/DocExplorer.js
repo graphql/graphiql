@@ -11,7 +11,7 @@ import { GraphQLSchema, isType } from 'graphql';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import { SchemaDoc } from './DocExplorer/SchemaDoc';
-import SearchBox from './DocExplorer/SearchBox';
+import { SearchBox } from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 

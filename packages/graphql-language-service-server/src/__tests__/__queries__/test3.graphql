@@ -1,5 +1,5 @@
 {
-  hero(episode: EMPIRE){
+  hero(episode: EMPIRE) {
     ...testFragment
   }
 }
