@@ -12,6 +12,9 @@ import QueryStore from '../utility/QueryStore';
 import HistoryQuery from './HistoryQuery';
 import { withTranslation } from 'react-i18next';
 
+const MAX_QUERY_SIZE = 100000;
+const MAX_HISTORY_LENGTH = 20;
+
 const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   if (nextProps.queryID === current.queryID) {
     return false;
@@ -19,6 +22,10 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   try {
     parse(nextProps.query);
   } catch (e) {
+    return false;
+  }
+  // Don't try to save giant queries
+  if (nextProps.query.length > MAX_QUERY_SIZE) {
     return false;
   }
   if (!lastQuerySaved) {
@@ -40,9 +47,7 @@ const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
   return true;
 };
 
-const MAX_HISTORY_LENGTH = 20;
-
-class QueryHistorySource extends React.Component {
+export class QueryHistorySource extends React.Component {
   static propTypes = {
     query: PropTypes.string,
     variables: PropTypes.string,
@@ -54,8 +59,9 @@ class QueryHistorySource extends React.Component {
 
   constructor(props) {
     super(props);
-    this.historyStore = new QueryStore('queries', props.storage);
-    this.favoriteStore = new QueryStore('favorites', props.storage);
+    this.historyStore = new QueryStore('queries', props.storage, MAX_HISTORY_LENGTH);
+    // favorites are not automatically deleted, so there's no need for a max length
+    this.favoriteStore = new QueryStore('favorites', props.storage, null);
     const historyQueries = this.historyStore.fetchAll();
     const favoriteQueries = this.favoriteStore.fetchAll();
     const queries = historyQueries.concat(favoriteQueries);
@@ -72,9 +78,6 @@ class QueryHistorySource extends React.Component {
         operationName: nextProps.operationName,
       };
       this.historyStore.push(item);
-      if (this.historyStore.length > MAX_HISTORY_LENGTH) {
-        this.historyStore.shift();
-      }
       const historyQueries = this.historyStore.items;
       const favoriteQueries = this.favoriteStore.items;
       const queries = historyQueries.concat(favoriteQueries);
@@ -85,28 +88,29 @@ class QueryHistorySource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const queries = this.state.queries.slice().reverse();
-    const queryNodes = queries.map((query, i) => {
+    const queryNodes = queries.map(query => {
       return (
         <HistoryQuery
           handleEditLabel={this.editLabel}
           handleToggleFavorite={this.toggleFavorite}
-          key={i}
+          key={query.query}
           onSelect={this.props.onSelectQuery}
           {...query}
         />
       );
     });
     return (
-      <div>
+      <section aria-label={t('History')}>
         <div className="history-title-bar">
-          <div className="history-title">{ t('History') }</div>
+          <div className="history-title">{t('History')}</div>
           <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
-        <div className="history-contents">{queryNodes}</div>
-      </div>
+        <ul className="history-contents">{queryNodes}</ul>
+      </section>
     );
   }
 

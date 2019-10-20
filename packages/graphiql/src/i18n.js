@@ -17,6 +17,8 @@ import enToolbar from './locales/en/Toolbar.json'
 import ruEditor from './locales/ru/Editor.json'
 import enEditor from './locales/ru/Editor.json'
 
+import ruErrors from './locales/ru/Errors.json'
+import enErrors from './locales/ru/Errors.json'
 
 const i18nextGraphql = i18n.createInstance();
 
@@ -47,7 +49,6 @@ i18nextGraphql
       // optional htmlTag with lang attribute, the default is:
       htmlTag: document.documentElement
     },
-
 
     // backend: { //  auto load locales from backend - xhr-backend options
     //   // path where resources get loaded from, or a function
@@ -114,13 +115,15 @@ i18nextGraphql
         translations: enTranslations, //  default
         DocExplorer: enDocExplorer,
         Toolbar: enToolbar,
-        Editor: enEditor
+        Editor: enEditor,
+        Errors: enErrors
       },
       ru: {
         translations: ruTranslations,
         DocExplorer: ruDocExplorer,
         Toolbar: ruToolbar,
-        Editor: ruEditor
+        Editor: ruEditor,
+        Errors: ruErrors
       },
     },
     fallbackLng: {

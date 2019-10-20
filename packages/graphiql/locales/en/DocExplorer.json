@@ -1,6 +1,6 @@
 {
   "Docs": "Docs",
-  "Search": "Search",
+  "Search {{name}}": "Search {{name}}...",
   "Schema": "Schema",
   "root types": "root types",
   "Documentation Explorer": "Documentation Explorer",
@@ -8,5 +8,9 @@
   "A GraphQL schema provides a root type for each kind of operation": "A GraphQL schema provides a root type for each kind of operation.",
   "query": "query",
   "mutation": "mutation",
-  "subscription": "subscription"
+  "subscription": "subscription",
+  "Go back to {{value}}": "Go back to {{value}}",
+  "Close History": "Close History",
+  "Open Documentation Explorer": "Open Documentation Explorer",
+  "Close Documentation Explorer": "Close Documentation Explorer"
 }

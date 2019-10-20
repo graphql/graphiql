@@ -10,9 +10,7 @@
 
 module.exports = {
   root: true,
-
   parser: 'babel-eslint',
-
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -22,38 +20,38 @@ module.exports = {
       experimentalObjectRestSpread: true,
     },
   },
-
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
     es6: true,
     node: true,
     jest: true,
-    mocha: true
+    mocha: true,
+    browser: true,
   },
 
-  'extends': ['prettier'],
+  extends: ['prettier', 'plugin:import/typescript'],
 
   globals: {
     atom: false,
     document: false,
     window: false,
     Map: true,
-    Set: true
+    Set: true,
   },
 
   rules: {
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
     'no-cond-assign': 1,
     'no-console': 1,
-    'no-constant-condition': [1, {checkLoops: false}],
+    'no-constant-condition': [1, { checkLoops: false }],
     'no-control-regex': 1,
     'no-debugger': 1,
     'no-dupe-args': 1,
     'no-dupe-keys': 1,
     'no-duplicate-case': 1,
     'no-empty-character-class': 1,
-    'no-empty': [1, {allowEmptyCatch: true}],
+    'no-empty': [1, { allowEmptyCatch: true }],
     'no-ex-assign': 1,
     'no-extra-boolean-cast': 1,
     'no-extra-parens': 0,
@@ -79,12 +77,12 @@ module.exports = {
     'array-callback-return': 0,
     'block-scoped-var': 0,
     'class-methods-use-this': 0,
-    'complexity': 0,
+    complexity: 0,
     'consistent-return': 0,
-    'curly': 1,
+    curly: 1,
     'default-case': 0,
     'dot-notation': 1,
-    'eqeqeq': [1, 'allow-null'],
+    eqeqeq: [1, 'allow-null'],
     'guard-for-in': 0,
     'no-alert': 1,
     'no-await-in-loop': 1,
@@ -119,7 +117,7 @@ module.exports = {
     'no-octal': 1,
     'no-param-reassign': 1,
     'no-proto': 1,
-    'no-redeclare': [1, {builtinGlobals: true}],
+    'no-redeclare': [1, { builtinGlobals: true }],
     'no-restricted-properties': 0,
     'no-return-assign': 1,
     'no-return-await': 1,
@@ -138,14 +136,14 @@ module.exports = {
     'no-void': 1,
     'no-warning-comments': 0,
     'no-with': 1,
-    'radix': 1,
+    radix: 1,
     'require-await': 0,
     // 'require-await': 1,
     'vars-on-top': 0,
-    'yoda': 1,
+    yoda: 1,
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
-    'strict': 0,
+    strict: 0,
 
     // Variables (http://eslint.org/docs/rules/#variables)
     'init-declarations': 0,
@@ -158,7 +156,7 @@ module.exports = {
     'no-undef-init': 0,
     'no-undef': 1,
     'no-undefined': 0,
-    'no-unused-vars': [1, {args: 'none'}],
+    'no-unused-vars': [1, { args: 'none' }],
     'no-use-before-define': 0,
 
     // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
@@ -174,7 +172,7 @@ module.exports = {
     'no-sync': 0,
 
     // Stylistic Issues (http://eslint.org/docs/rules/#stylistic-issues)
-    'camelcase': 0,
+    camelcase: 0,
     'capitalized-comments': 0,
     'consistent-this': 0,
     'func-name-matching': 0,
@@ -183,7 +181,7 @@ module.exports = {
     'id-blacklist': 0,
     'id-length': 0,
     'id-match': 0,
-    'indent': 0,
+    indent: 0,
     'line-comment-position': 0,
     'linebreak-style': 1,
     'lines-around-comment': 0,
@@ -222,7 +220,11 @@ module.exports = {
     'require-jsdoc': 0,
     'sort-keys': 0,
     'sort-vars': 0,
-    'spaced-comment': [1, 'always', {line: {exceptions: ['-']}, block: {balanced: true}}],
+    'spaced-comment': [
+      1,
+      'always',
+      { line: { exceptions: ['-'] }, block: { balanced: true } },
+    ],
     'wrap-regex': 0,
 
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
@@ -240,7 +242,7 @@ module.exports = {
     'no-useless-rename': 1,
     'no-var': 1,
     'object-shorthand': 1,
-    'prefer-arrow-callback': [1, {allowNamedFunctions: true}],
+    'prefer-arrow-callback': [1, { allowNamedFunctions: true }],
     'prefer-const': 1,
     'prefer-numeric-literals': 0,
     'prefer-rest-params': 0,
@@ -255,11 +257,15 @@ module.exports = {
     'babel/no-invalid-this': 0,
     'babel/object-curly-spacing': 0,
 
-    // dependencies (https://github.com/zertosh/eslint-plugin-dependencies)
-    'dependencies/case-sensitive': 1,
-    'dependencies/no-cycles': [0, {skip: ['/spec/', '/sample-[^/]+/']}],
-    'dependencies/no-unresolved': 0,
-    'dependencies/require-json-ext': 1,
+    // import (https://github.com/benmosher/eslint-plugin-import)
+    'import/no-unresolved': 1,
+    'import/no-cycle': 0,
+    'import/extensions': [
+      1,
+      {
+        json: 'always',
+      },
+    ],
 
     // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
     'flowtype/boolean-style': 1,
@@ -280,10 +286,51 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
   },
 
-  plugins: [
-    'babel',
-    'dependencies',
-    'flowtype',
-    'prefer-object-spread',
+  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+
+  overrides: [
+    // Rules for TypeScript only
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      rules: {
+        'no-unused-vars': 'off',
+      },
+    },
+    // Rules for Flow only
+    {
+      files: ['*.js', '*.jsx'],
+      rules: {
+        // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
+        'flowtype/boolean-style': 1,
+        'flowtype/define-flow-type': 1,
+        'flowtype/no-dupe-keys': 0,
+        'flowtype/no-primitive-constructor-types': 1,
+        'flowtype/no-weak-types': 0,
+        'flowtype/require-parameter-type': 0,
+        'flowtype/require-return-type': 0,
+        'flowtype/require-valid-file-annotation': 0,
+        'flowtype/require-variable-type': 0,
+        'flowtype/sort-keys': 0,
+        'flowtype/type-id-match': 0,
+        'flowtype/use-flow-type': 1,
+        'flowtype/valid-syntax': 0,
+      },
+    },
+    {
+      // Converted from 'dependencies' options in ancient config
+      files: ['**/spec/**', '**/sample-*/**'],
+      rules: {
+        'import/no-cycle': 0,
+      },
+    },
+    {
+      // Resources are typically our helper scripts; make life easier there
+      files: ['resources/*.js', 'packages/*/resources/*.js'],
+      rules: {
+        'no-console': 0,
+        'no-await-in-loop': 0,
+      },
+    },
   ],
 };

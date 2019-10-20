@@ -45,6 +45,7 @@ class DocExplorerSource extends React.Component {
 
   constructor() {
     super();
+
     this.state = { navStack: [initialNav] };
   }
 
@@ -56,6 +57,7 @@ class DocExplorerSource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const schema = this.props.schema;
@@ -115,14 +117,18 @@ class DocExplorerSource extends React.Component {
     }
 
     return (
-      <div className="doc-explorer" key={navItem.name}>
+      <section
+        className="doc-explorer"
+        key={navItem.name}
+        aria-label={t('Documentation Explorer')}>
         <div className="doc-explorer-title-bar">
           {prevName && (
-            <div
+            <button
               className="doc-explorer-back"
-              onClick={this.handleNavBackClick}>
-              { t(prevName) }
-            </div>
+              onClick={this.handleNavBackClick}
+              aria-label={t(`Go back to {{value}}`, { value: prevName })}>
+              {prevName}
+            </button>
           )}
           <div className="doc-explorer-title">
             { t(navItem.title) || t(navItem.name) }
@@ -133,13 +139,13 @@ class DocExplorerSource extends React.Component {
           {shouldSearchBoxAppear && (
             <SearchBox
               value={navItem.search}
-              placeholder={`${ t('Search') } ${ t(navItem.name) }...`}
+              placeholder={t('Search {{name}}', { name: t(navItem.name) })}
               onSearch={this.handleSearch}
             />
           )}
           {content}
         </div>
-      </div>
+      </section>
     );
   }
 

@@ -1,13 +1,10 @@
-GraphiQL
-========
+# GraphiQL
+
 [![CDNJS](https://img.shields.io/cdnjs/v/graphiql.svg)](https://cdnjs.com/libraries/graphiql)
 [![npm](https://img.shields.io/npm/v/graphiql.svg)](https://www.npmjs.com/package/graphiql)
 [![License](https://img.shields.io/npm/l/graphiql.svg?style=flat-square)](LICENSE)
 
-*/ˈɡrafək(ə)l/* A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
-
-
-
+_/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
 [![](resources/graphiql.png)](http://graphql.org/swapi-graphql)
 
@@ -44,21 +41,19 @@ function graphQLFetcher(graphQLParams) {
 ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 ```
 
-Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [example](../graphiql-examples/cdn/) in the git repository to see how to use the pre-bundled file.
+Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file.
 
 Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
 
-For an example of setting up a GraphiQL, check out the [example](../graphiql-examples/cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
-
+For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
 
 ### Features
 
-* Syntax highlighting
-* Intelligent type ahead of fields, arguments, types, and more.
-* Real-time error highlighting and reporting.
-* Automatic query completion.
-* Run and inspect query results.
-
+- Syntax highlighting
+- Intelligent type ahead of fields, arguments, types, and more.
+- Real-time error highlighting and reporting.
+- Automatic query completion.
+- Run and inspect query results.
 
 ### Usage
 
@@ -67,7 +62,7 @@ GraphiQL exports a single React component which is intended to encompass the ent
 ```js
 import GraphiQL from 'graphiql';
 
-<GraphiQL />
+<GraphiQL />;
 ```
 
 GraphiQL supports customization in UI and behavior by accepting React props and children.
@@ -110,27 +105,27 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 **Children:**
 
-* `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
+- `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
-* `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL. If not provided, a
+- `<GraphiQL.Toolbar>`: Add a custom toolbar above GraphiQL. If not provided, a
   default toolbar may contain common operations. Pass the empty
   `<GraphiQL.Toolbar />` if an empty toolbar is desired.
 
-* `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
+- `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
 
-* `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
+- `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
 
-  * `<GraphiQL.MenuItem>`: Items for a menu.
+  - `<GraphiQL.MenuItem>`: Items for a menu.
 
-* `<GraphiQL.Select>`: Add a select list to the toolbar above GraphiQL.
+- `<GraphiQL.Select>`: Add a select list to the toolbar above GraphiQL.
 
-  * `<GraphiQL.SelectOption>`: Options for a select list.
+  - `<GraphiQL.SelectOption>`: Options for a select list.
 
-* `<GraphiQL.Group>`: Add a group of associated controls to the
+- `<GraphiQL.Group>`: Add a group of associated controls to the
   toolbar above GraphiQL. Expects children to be `<GraphiQL.Button>`,
   `<GraphiQL.Menu>`, or `<GraphiQL.Select>`.
 
-* `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
+- `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
 
 ### Usage Examples
 
@@ -219,7 +214,6 @@ class CustomGraphiQL extends React.Component {
 
 In order to theme the editor portions of the interface, you can supply a `editorTheme` prop. You'll also need to load the appropriate CSS for the theme (similar to loading the CSS for this project). [See the themes available here](https://codemirror.net/demo/theme.html).
 
-
 ```js
 // In your html
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.23.0/theme/solarized.css" />
@@ -235,6 +229,7 @@ In order to theme the editor portions of the interface, you can supply a `editor
 **Query**
 
 GraphQL queries declaratively describe what data the issuer wishes to fetch from whoever is fulfilling the GraphQL query.
+
 ```graphql
 query FetchSomeIDQuery($someId: String!) {
   human(id: $someId) {
@@ -242,11 +237,13 @@ query FetchSomeIDQuery($someId: String!) {
   }
 }
 ```
+
 More examples available from: [GraphQL Queries](http://graphql.org/docs/queries/).
 
 **Mutation**
 
 Given this schema,
+
 ```js
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
@@ -260,16 +257,18 @@ const schema = new GraphQLSchema({
       immediatelyChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: (function (obj, { newNumber }) {
+        resolve: function(obj, { newNumber }) {
           return obj.immediatelyChangeTheNumber(newNumber);
-        })
-      }
+        },
+      },
     },
     name: 'Mutation',
-  })
+  }),
 });
 ```
+
 then the following mutation queries are possible:
+
 ```graphql
 mutation TestMutation {
   first: immediatelyChangeTheNumber(newNumber: 1) {
@@ -277,9 +276,11 @@ mutation TestMutation {
   }
 }
 ```
+
 Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/mutations-test.js).
 
-[Relay](https://facebook.github.io/relay) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
+[Relay](https://relay.dev/) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
+
 ```graphql
 input IntroduceShipInput {
   factionId: ID!
@@ -293,7 +294,9 @@ type IntroduceShipPayload {
   clientMutationId: String!
 }
 ```
+
 mutation calls are composed as such:
+
 ```graphql
 mutation AddBWingQuery($input: IntroduceShipInput!) {
   introduceShip(input: $input) {
@@ -315,11 +318,13 @@ mutation AddBWingQuery($input: IntroduceShipInput!) {
   }
 }
 ```
-Read more from [Relay Mutation Documentation](https://facebook.github.io/relay/docs/en/graphql-server-specification.html#mutations).
+
+Read more from [Relay Mutation Documentation](https://relay.dev/docs/en/graphql-server-specification.html#mutations).
 
 **Fragment**
 
 Fragments allow for the reuse of common repeated selections of fields, reducing duplicated text in the document. Inline Fragments can be used directly within a selection to condition upon a type condition when querying against an interface or union. Therefore, instead of the following query:
+
 ```graphql
 {
   luke: human(id: "1000") {
@@ -334,6 +339,7 @@ Fragments allow for the reuse of common repeated selections of fields, reducing 
 ```
 
 using fragments, the following query is possible.
+
 ```graphql
 {
   luke: human(id: "1000") {
@@ -350,4 +356,4 @@ fragment HumanFragment on Human {
 }
 ```
 
-Read more from [GraphQL Fragment Specification](http://facebook.github.io/graphql/#sec-Language.Fragments).
+Read more from [GraphQL Fragment Specification](https://graphql.github.io/graphql-spec/draft/#sec-Language.Fragments).

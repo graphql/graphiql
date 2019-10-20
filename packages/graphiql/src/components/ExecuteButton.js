@@ -33,6 +33,7 @@ class ExecuteButtonSource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const operations = this.props.operations;

@@ -18,7 +18,14 @@ function cp(source, destination) {
 }
 
 function exec(executable, ...args) {
-  print(execFileSync(executable, args).toString());
+  try {
+    print(execFileSync(executable, args).toString());
+  }
+  catch(err) {
+    console.error(err)
+    throw err
+  }
+  
 }
 
 function print(string) {

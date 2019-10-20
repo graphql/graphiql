@@ -27,22 +27,23 @@ class ToolbarButtonSource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const { error } = this.state;
     return (
-      <a
+      <button
         className={'toolbar-button' + (error ? ' error' : '')}
-        onMouseDown={preventDefault}
         onClick={this.handleClick}
-        title={ t(error ? error.message : this.props.title) }>
-        { t(this.props.label) }
-      </a>
+        title={t(error ? error.message : this.props.title)}
+        aria-invalid={error ? 'true' : 'false'}
+        aria-description={error ? t(error.message) : null}>
+        {t(this.props.label)}
+      </button>
     );
   }
 
-  handleClick = e => {
-    e.preventDefault();
+  handleClick = () => {
     try {
       this.props.onClick();
       this.setState({ error: null });
@@ -53,7 +54,3 @@ class ToolbarButtonSource extends React.Component {
 }
 
 export const ToolbarButton = withTranslation('Toolbar')(ToolbarButtonSource);
-
-function preventDefault(e) {
-  e.preventDefault();
-}

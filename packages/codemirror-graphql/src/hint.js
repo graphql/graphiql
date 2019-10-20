@@ -39,7 +39,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     schema,
     editor.getValue(),
     cur,
-    token,
+    token
   );
   /**
    * GraphQL language service responds to the autocompletion request with

@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "0.14.4",
+  "version": "0.16.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -27,8 +27,7 @@
     "build-js": "bash ./resources/build.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "babel-node --root-mode upward test/server.js",
-    "preversion": ". ./resources/checkgit.sh && npm test",
+    "dev": "babel-node test/server.js",
     "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {
@@ -37,9 +36,14 @@
       "git add"
     ]
   },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
   "dependencies": {
     "codemirror": "^5.47.0",
-    "codemirror-graphql": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal/codemirror-graphql/-/codemirror-graphql-0.9.1-alpha.1.2.tgz",
+    "codemirror-graphql": "^0.11.2",
     "copy-to-clipboard": "^3.2.0",
     "i18next": "^17.0.16",
     "i18next-browser-languagedetector": "~3.0.3",
@@ -51,8 +55,8 @@
   "peerDependencies": {
     "graphql": "^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0",
     "prop-types": ">=15.5.0",
-    "react": "^15.6.0 || ^16.0.0",
-    "react-dom": "^15.6.0 || ^16.0.0"
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
   },
   "devDependencies": {
     "autoprefixer": "9.6.0",
@@ -74,8 +78,5 @@
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
     "watchify": "3.11.1"
-  },
-  "publishConfig": {
-    "registry": "http://nexus.voskhod.local/nexus-2.7.0/content/repositories/npm-internal"
   }
 }

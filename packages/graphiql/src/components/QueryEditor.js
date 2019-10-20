@@ -12,6 +12,7 @@ import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
+import i18next from '../i18n';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -202,8 +203,9 @@ export class QueryEditor extends React.Component {
 
   render() {
     return (
-      <div
+      <section
         className="query-editor"
+        aria-label={i18next.t('Editor:Query Editor')}
         ref={node => {
           this._node = node;
         }}

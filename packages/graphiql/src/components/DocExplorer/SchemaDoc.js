@@ -24,6 +24,7 @@ class SchemaDocSource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const schema = this.props.schema;

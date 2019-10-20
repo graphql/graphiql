@@ -7,7 +7,7 @@
  */
 
 'use strict';
-const path = require('path')
+const path = require('path');
 const { exec } = require('./util');
 
 exec(
@@ -15,4 +15,4 @@ exec(
   '--config',
   path.join(__dirname, '../', 'jest.config.js'),
   '--rootDir'
-)
+);

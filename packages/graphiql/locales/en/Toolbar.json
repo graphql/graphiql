@@ -7,5 +7,10 @@
   "Copy": "Copy",
   "Copy Query (Shift-Ctrl-C)": "Copy Query (Shift-Ctrl-C)",
   "History": "History",
-  "Show History": "Show History"
+  "Show History": "Show History",
+  "Editor Commands": "Editor Commands",
+  "Edit label": "Edit label",
+  "Add favorite": "Add favorite",
+  "Remove favorite": "Remove favorite",
+  "Type a label": "Type a label"
 }

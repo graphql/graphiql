@@ -1,3 +1,4 @@
+/* global jsdom */
 function bootJSDOM() {
   /* eslint-disable no-console, object-shorthand */
   /**
@@ -54,10 +55,10 @@ function bootJSDOM() {
   const chaiSubset = require('chai-subset');
   chai.use(chaiSubset);
 
-  process.on('unhandledRejection', (error) => {
+  process.on('unhandledRejection', error => {
     console.error('Unhandled Promise Rejection:');
     console.error((error && error.stack) || error);
   });
 }
 
-module.exports = bootJSDOM
+module.exports = bootJSDOM;

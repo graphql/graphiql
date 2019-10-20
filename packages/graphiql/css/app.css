@@ -78,7 +78,6 @@
   cursor: pointer;
   font-size: 14px;
   margin: 0;
-  outline: 0;
   padding: 2px 20px 0 18px;
 }
 
@@ -120,6 +119,7 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  flex-basis: 1em;
   position: relative;
 }
 
@@ -151,6 +151,9 @@
   font-size: 18px;
   margin: -7px -8px -6px 0;
   padding: 18px 16px 15px 12px;
+  background: 0;
+  border: 0;
+  line-height: 14px;
 }
 
 .graphiql-container div .query-editor {
@@ -229,6 +232,7 @@
 .graphiql-container .toolbar-button {
   background: #fdfdfd;
   background: linear-gradient(#f9f9f9, #ececec);
+  border: 0;
   border-radius: 3px;
   box-shadow:
     inset 0 0 0 1px rgba(0,0,0,0.20),
@@ -310,10 +314,6 @@
     inset 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
-.graphiql-container .execute-button:focus {
-  outline: 0;
-}
-
 .graphiql-container .toolbar-menu,
 .graphiql-container .toolbar-select {
   position: relative;
@@ -380,8 +380,8 @@
 .graphiql-container .toolbar-select-options > li.hover,
 .graphiql-container .toolbar-select-options > li:active,
 .graphiql-container .toolbar-select-options > li:hover,
-.graphiql-container .history-contents > p:hover,
-.graphiql-container .history-contents > p:active {
+.graphiql-container .history-contents > li:hover,
+.graphiql-container .history-contents > li:active {
   background: #e10098;
   color: #fff;
 }

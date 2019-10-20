@@ -25,22 +25,14 @@ class HistoryQuerySource extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showButtons: false,
       editable: false,
     };
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
-    const editStyles = {
-      display: this.state.showButtons ? '' : 'none',
-      marginLeft: '10px',
-    };
-    const starStyles = {
-      display: this.props.favorite || this.state.showButtons ? '' : 'none',
-      marginLeft: '10px',
-    };
     const displayName =
       this.props.label ||
       this.props.operationName ||
@@ -50,11 +42,7 @@ class HistoryQuerySource extends React.Component {
         .join('');
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';
     return (
-      <p
-        className={this.state.editable ? 'editable' : undefined}
-        onClick={this.handleClick.bind(this)}
-        onMouseEnter={this.handleMouseEnter.bind(this)}
-        onMouseLeave={this.handleMouseLeave.bind(this)}>
+      <li className={this.state.editable ? 'editable' : undefined}>
         {this.state.editable ? (
           <input
             type="text"
@@ -65,34 +53,35 @@ class HistoryQuerySource extends React.Component {
             placeholder={ t('Type a label') }
           />
         ) : (
-          <span className="history-label">{displayName}</span>
+          <button
+            className="history-label"
+            onClick={this.handleClick.bind(this)}>
+            {displayName}
+          </button>
         )}
-        <span onClick={this.handleEditClick.bind(this)} style={editStyles}>
+        <button
+          onClick={this.handleEditClick.bind(this)}
+          aria-label={t('Edit label')}>
           {'\u270e'}
-        </span>
-        <span onClick={this.handleStarClick.bind(this)} style={starStyles}>
+        </button>
+        <button
+          className={this.props.favorite ? 'favorited' : undefined}
+          onClick={this.handleStarClick.bind(this)}
+          aria-label={this.props.favorite ? t('Remove favorite') : t('Add favorite')}>
           {starIcon}
-        </span>
-      </p>
+        </button>
+      </li>
     );
   }
 
   editField = null;
-
-  handleMouseEnter() {
-    this.setState({ showButtons: true });
-  }
-
-  handleMouseLeave() {
-    this.setState({ showButtons: false });
-  }
 
   handleClick() {
     this.props.onSelect(
       this.props.query,
       this.props.variables,
       this.props.operationName,
-      this.props.label,
+      this.props.label
     );
   }
 
@@ -103,7 +92,7 @@ class HistoryQuerySource extends React.Component {
       this.props.variables,
       this.props.operationName,
       this.props.label,
-      this.props.favorite,
+      this.props.favorite
     );
   }
 
@@ -115,7 +104,7 @@ class HistoryQuerySource extends React.Component {
       this.props.variables,
       this.props.operationName,
       e.target.value,
-      this.props.favorite,
+      this.props.favorite
     );
   }
 
@@ -128,7 +117,7 @@ class HistoryQuerySource extends React.Component {
         this.props.variables,
         this.props.operationName,
         e.target.value,
-        this.props.favorite,
+        this.props.favorite
       );
     }
   }

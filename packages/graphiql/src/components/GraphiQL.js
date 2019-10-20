@@ -37,6 +37,7 @@ import {
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 import { withTranslation } from 'react-i18next';
+import i18next from '../i18n';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -78,11 +79,12 @@ class GraphiQLSource extends React.Component {
   constructor(props) {
     super(props);
 
-    const { t } = this.props; //   i18n tranlator. { t, i18n }
+    // eslint-disable-next-line react/prop-types
+        const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     // Ensure props are correct
     if (typeof props.fetcher !== 'function') {
-      throw new TypeError('GraphiQL requires a fetcher function.');
+      throw new TypeError(i18next.t('Errors:GraphiQL requires a fetcher function'));
     }
 
     // Cache the storage instance
@@ -112,10 +114,10 @@ class GraphiQLSource extends React.Component {
       props.operationName !== undefined
         ? props.operationName
         : getSelectedOperationName(
-        null,
-        this._storage.get('operationName'),
-        queryFacts && queryFacts.operations,
-        );
+            null,
+            this._storage.get('operationName'),
+            queryFacts && queryFacts.operations
+          );
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
@@ -126,7 +128,10 @@ class GraphiQLSource extends React.Component {
     }
 
     // initial variable editor pane open
-    const variableEditorOpen = props.defaultVariableEditorOpen !== undefined ? props.defaultVariableEditorOpen : Boolean(variables);
+    const variableEditorOpen =
+      props.defaultVariableEditorOpen !== undefined
+        ? props.defaultVariableEditorOpen
+        : Boolean(variables);
 
     // Initialize state
     this.state = {
@@ -155,7 +160,7 @@ class GraphiQLSource extends React.Component {
     // Subscribe to the browser window closing, treating it as an unmount.
     if (typeof window === 'object') {
       window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount(),
+        this.componentWillUnmount()
       );
     }
   }
@@ -204,7 +209,7 @@ class GraphiQLSource extends React.Component {
         nextQuery,
         nextOperationName,
         this.state.operations,
-        nextSchema,
+        nextSchema
       );
 
       if (updatedQueryAttributes !== undefined) {
@@ -239,7 +244,7 @@ class GraphiQLSource extends React.Component {
 
           this._fetchSchema();
         }
-      },
+      }
     );
   }
 
@@ -267,6 +272,7 @@ class GraphiQLSource extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const children = React.Children.toArray(this.props.children);
@@ -277,7 +283,7 @@ class GraphiQLSource extends React.Component {
 
     const toolbar = find(
       children,
-      child => child.type === GraphiQL.Toolbar,
+      child => child.type === GraphiQL.Toolbar
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
@@ -314,7 +320,6 @@ class GraphiQLSource extends React.Component {
       display: 'block',
       width: this.state.docExplorerWidth,
     };
-
     const docExplorerWrapClasses =
       'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
@@ -331,7 +336,7 @@ class GraphiQLSource extends React.Component {
     };
 
     return (
-      <React.Suspense fallback={ <div className="spinner" /> }>
+      <React.Suspense>
         <div className="graphiql-container">
           <div className="historyPaneWrap" style={historyPaneStyle}>
             <QueryHistory
@@ -341,9 +346,12 @@ class GraphiQLSource extends React.Component {
               onSelectQuery={this.handleSelectHistoryQuery}
               storage={this._storage}
               queryID={this._editorQueryID}>
-              <div className="docExplorerHide" onClick={this.handleToggleHistory}>
+              <button
+                className="docExplorerHide"
+                onClick={this.handleToggleHistory}
+                aria-label={t('DocExplorer:Close History')}>
                 {'\u2715'}
-              </div>
+              </button>
             </QueryHistory>
           </div>
           <div className="editorWrap">
@@ -361,8 +369,9 @@ class GraphiQLSource extends React.Component {
               {!this.state.docExplorerOpen && (
                 <button
                   className="docExplorerShow"
-                  onClick={this.handleToggleDocs}>
-                  { t('DocExplorer:Docs') }
+                  onClick={this.handleToggleDocs}
+                  aria-label={t('DocExplorer:Open Documentation Explorer')}>
+                  {t('DocExplorer:Docs')}
                 </button>
               )}
             </div>
@@ -390,12 +399,16 @@ class GraphiQLSource extends React.Component {
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                 />
-                <div className="variable-editor" style={variableStyle}>
+                <section
+                  className="variable-editor"
+                  style={variableStyle}
+                  aria-label={t('Editor:Query Variables')}>
                   <div
                     className="variable-editor-title"
+                    id="variable-editor-title"
                     style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
                     onMouseDown={this.handleVariableResizeStart}>
-                    { t('Editor:Query Variables')}
+                    {t('Editor:Query Variables')}
                   </div>
                   <VariableEditor
                     ref={n => {
@@ -411,7 +424,7 @@ class GraphiQLSource extends React.Component {
                     editorTheme={this.props.editorTheme}
                     readOnly={this.props.readOnly}
                   />
-                </div>
+                </section>
               </div>
               <div className="resultWrap">
                 {this.state.isWaitingForResponse && (
@@ -444,9 +457,12 @@ class GraphiQLSource extends React.Component {
                   this.docExplorerComponent = c;
                 }}
                 schema={this.state.schema}>
-                <div className="docExplorerHide" onClick={this.handleToggleDocs}>
+                <button
+                  className="docExplorerHide"
+                  onClick={this.handleToggleDocs}
+                  aria-label={t('DocExplorer:Close Documentation Explorer')}>
                   {'\u2715'}
-                </div>
+                </button>
               </DocExplorer>
             </div>
           )}
@@ -491,12 +507,13 @@ class GraphiQLSource extends React.Component {
    * @public
    */
   autoCompleteLeafs() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
-      this.props.getDefaultFieldNames,
+      this.props.getDefaultFieldNames
     );
     if (insertions && insertions.length > 0) {
       const editor = this.getQueryEditor();
@@ -513,8 +530,8 @@ class GraphiQLSource extends React.Component {
               className: 'autoInsertedLeaf',
               clearOnEnter: true,
               title: t('Editor:Automatically added leaf fields'),
-            },
-          ),
+            }
+          )
         );
         setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
         let newCursorIndex = cursorIndex;
@@ -533,6 +550,7 @@ class GraphiQLSource extends React.Component {
   // Private methods
 
   _fetchSchema() {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const fetcher = this.props.fetcher;
@@ -541,11 +559,11 @@ class GraphiQLSource extends React.Component {
       fetcher({
         query: introspectionQuery,
         operationName: introspectionQueryName,
-      }),
+      })
     );
     if (!isPromise(fetch)) {
       this.setState({
-        response: t('Fetcher did not return a Promise for introspection'),
+        response: t('Errors:Fetcher did not return a Promise for introspection')
       });
       return;
     }
@@ -562,11 +580,11 @@ class GraphiQLSource extends React.Component {
           fetcher({
             query: introspectionQuerySansSubscriptions,
             operationName: introspectionQueryName,
-          }),
+          })
         );
         if (!isPromise(fetch)) {
           throw new Error(
-            t('Fetcher did not return a Promise for introspection'),
+            t('Errors:Fetcher did not return a Promise for introspection')
           );
         }
         return fetch2;
@@ -602,6 +620,7 @@ class GraphiQLSource extends React.Component {
   }
 
   _fetchQuery(query, variables, operationName, cb) {
+    // eslint-disable-next-line react/prop-types
     const { t } = this.props; //   i18n tranlator. { t, i18n }
 
     const fetcher = this.props.fetcher;
@@ -611,11 +630,11 @@ class GraphiQLSource extends React.Component {
       jsonVariables =
         variables && variables.trim() !== '' ? JSON.parse(variables) : null;
     } catch (error) {
-      throw new Error(`${ t('Variables are invalid JSON')}: ${error.message}.`);
+      throw new Error(`${ t('Errors:Variables are invalid JSON')}: ${error.message}.`);
     }
 
     if (typeof jsonVariables !== 'object') {
-      throw new Error(t('Variables are not a JSON object'));
+      throw new Error(t('Errors:Variables are not a JSON object'));
     }
 
     const fetch = fetcher({
@@ -656,7 +675,7 @@ class GraphiQLSource extends React.Component {
 
       return subscription;
     } else {
-      throw new Error(t('Fetcher did not return Promise or Observable'));
+      throw new Error(t('Errors:Fetcher did not return Promise or Observable'));
     }
   }
 
@@ -703,7 +722,7 @@ class GraphiQLSource extends React.Component {
               response: GraphiQL.formatResult(result),
             });
           }
-        },
+        }
       );
 
       this.setState({ subscription });
@@ -779,7 +798,7 @@ class GraphiQLSource extends React.Component {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.state.schema
     );
     this.setState({
       query: value,
@@ -812,7 +831,7 @@ class GraphiQLSource extends React.Component {
       const updatedOperationName = getSelectedOperationName(
         prevOperations,
         operationName,
-        queryFacts.operations,
+        queryFacts.operations
       );
 
       // Report changing of operationName if it changed.
@@ -851,7 +870,7 @@ class GraphiQLSource extends React.Component {
       (onRemoveFn = () => {
         elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
         elem.removeEventListener('click', this._onClickHintInformation);
-      }),
+      })
     );
   };
 
@@ -1062,7 +1081,11 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
-  return <div className="toolbar">{props.children}</div>;
+  return (
+    <div className="toolbar" role="toolbar" aria-label={i18next.t('Toolbar:Editor Commands')}>
+      {props.children}
+    </div>
+  );
 };
 
 // Export main windows/panes to be used separately if desired.
@@ -1128,8 +1151,8 @@ function observableToPromise(observable) {
       },
       reject,
       () => {
-        reject(new Error('no value resolved'));
-      },
+        reject(new Error(i18next.t('no value resolved')));
+      }
     );
   });
 }

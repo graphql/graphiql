@@ -108,7 +108,10 @@ function onKeyDown(cm, event) {
   cm.on('mousedown', onMouseDown);
 }
 
-const isMac = navigator && navigator.appVersion.indexOf('Mac') !== -1;
+const isMac =
+  typeof navigator !== 'undefined' &&
+  navigator &&
+  navigator.appVersion.indexOf('Mac') !== -1;
 
 function isJumpModifier(key) {
   return key === (isMac ? 'Meta' : 'Control');
@@ -131,7 +134,7 @@ function enableJumpMode(cm) {
       const marker = cm.markText(
         { line: pos.line, ch: token.start },
         { line: pos.line, ch: token.end },
-        { className: 'CodeMirror-jump-token' },
+        { className: 'CodeMirror-jump-token' }
       );
 
       cm.state.jump.marker = marker;

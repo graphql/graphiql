@@ -5,9 +5,27 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+function isQuotaError (storage, e) {
+  return (
+    e instanceof DOMException &&
+    // everything except Firefox
+    (e.code === 22 ||
+      // Firefox
+      e.code === 1014 ||
+      // test name field too, because code might not be present
+      // everything except Firefox
+      e.name === 'QuotaExceededError' ||
+      // Firefox
+      e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+    // acknowledge QuotaExceededError only if there's something already stored
+    storage.length !== 0
+  );
+}
+
 export default class StorageAPI {
   constructor(storage) {
-    this.storage = storage || window.localStorage;
+    this.storage =
+      storage || (typeof window !== 'undefined' ? window.localStorage : null);
   }
 
   get(name) {
@@ -16,45 +34,37 @@ export default class StorageAPI {
       // Clean up any inadvertently saved null/undefined values.
       if (value === 'null' || value === 'undefined') {
         this.storage.removeItem('graphiql:' + name);
-      } else {
-        return value;
+        return null;
       }
+
+      return value;
     }
+
+    return null
   }
 
   set(name, value) {
+    let quotaError = false;
+    let error = null;
+
     if (this.storage) {
       const key = `graphiql:${name}`;
       if (value) {
-        if (isStorageAvailable(this.storage, key, value)) {
+        try {
           this.storage.setItem(key, value);
+        } catch(e) {
+          error = e;
+          quotaError = isQuotaError(this.storage, e);
         }
       } else {
         // Clean up by removing the item if there's no value to set
         this.storage.removeItem(key);
       }
     }
-  }
-}
 
-function isStorageAvailable(storage, key, value) {
-  try {
-    storage.setItem(key, value);
-    return true;
-  } catch (e) {
-    return (
-      e instanceof DOMException &&
-      // everything except Firefox
-      (e.code === 22 ||
-        // Firefox
-        e.code === 1014 ||
-        // test name field too, because code might not be present
-        // everything except Firefox
-        e.name === 'QuotaExceededError' ||
-        // Firefox
-        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-      // acknowledge QuotaExceededError only if there's something already stored
-      storage.length !== 0
-    );
+    return {
+      isQuotaError: quotaError,
+      error
+    };
   }
 }

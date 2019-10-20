@@ -7,5 +7,10 @@
   "Copy": "Копировать",
   "Copy Query (Shift-Ctrl-C)": "Копировать Запрос (Shift-Ctrl-C)",
   "History": "История",
-  "Show History": "Показать Историю"
+  "Show History": "Показать Историю",
+  "Editor Commands": "Редактор Команд",
+  "Edit label": "Изменить надпись",
+  "Add favorite": "Добавить в избранное",
+  "Remove favorite": "Удалить из избранного",
+  "Type a label": "Тип надписи"
 }
