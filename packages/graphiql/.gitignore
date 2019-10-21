@@ -5,3 +5,4 @@ dist/
 example/yarn.lock
 example/graphiql.js
 example/graphiql.css
+test/pid

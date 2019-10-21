@@ -27,6 +27,8 @@
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
     "dev": "babel-node test/server.js",
+    "e2e": "yarn e2e:server && cypress run && kill -9 `cat test/pid`",
+    "e2e:server": "PORT=8080 babel-node test/server.js & wait-on http://localhost:8080",
     "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {
