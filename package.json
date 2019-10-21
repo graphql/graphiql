@@ -20,8 +20,10 @@
   },
   "scripts": {
     "build": "tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
-    "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly",
+    "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn run e2e",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
+    "e2e": "cd packages/graphiql && yarn e2e",
+    "cypress:open": "cd packages/graphiql && yarn e2e:server & cypress open --project ./packages/graphiql",
     "t": "yarn run testonly",
     "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn run lint -- --fix \\033[0m\\n' && exit 1)",
     "lint:fix": "eslint --ext=ts,js,jsx,tsx . --fix",
@@ -54,6 +56,7 @@
     "chai": "4.2.0",
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
+    "cypress": "^3.4.1",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "6.3.0",
     "eslint-plugin-babel": "5.3.0",
@@ -72,6 +75,7 @@
     "mocha": "6.1.4",
     "prettier": "^1.18.2",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "wait-on": "^3.3.0"
   }
 }

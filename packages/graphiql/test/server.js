@@ -13,11 +13,12 @@ import browserifyShim from 'browserify-shim';
 import watchify from 'watchify';
 import babelify from 'babelify';
 import graphqlHTTP from 'express-graphql';
-
+import fs from 'fs'
 import schema from './schema';
+ 
+
 
 const app = express();
-
 // Server
 app.use('/graphql', graphqlHTTP({ schema }));
 
@@ -59,8 +60,17 @@ app.use(express.static(__dirname));
 
 console.log('Initial build...');
 makeBundle(() => {
-  app.listen(0, function() {
+  app.listen(process.env.PORT || 0, function() {
     const port = this.address().port;
-    console.log(`Started on http://localhost:${port}/`);
+    console.log('PID', process.pid)
+    fs.writeFile(path.join(__dirname, 'pid'), parseInt(process.pid, 10), () => {
+      console.log(`Started on http://localhost:${port}/`);
+    }) 
+    process.once('SIGINT', () => {
+      process.exit()
+    })
+    process.once('SIGTERM', () => {
+      process.exit()
+    })
   });
 });
