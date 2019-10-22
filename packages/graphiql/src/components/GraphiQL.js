@@ -182,10 +182,10 @@ export class GraphiQL extends React.Component {
     if (nextProps.schema !== undefined) {
       nextSchema = nextProps.schema;
     }
-    if (nextProps.query !== undefined) {
+    if (nextProps.query !== undefined && this.props.query !== nextProps.query) {
       nextQuery = nextProps.query;
     }
-    if (nextProps.variables !== undefined) {
+    if (nextProps.variables !== undefined && this.props.variables !== nextProps.variables) {
       nextVariables = nextProps.variables;
     }
     if (nextProps.operationName !== undefined) {
