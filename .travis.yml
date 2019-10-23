@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - 10
   - 12
-  - 13
+  - stable
 before_install:
   - npm config set spin false --global
 addons:
@@ -15,7 +15,7 @@ cache:
   directories:
     - ~/.cache
 install:
-  - yarn --frozen-lockfile --ignore-scripts # ignore prepublish scripts
+  - yarn --frozen-lockfile # ignore prepublish scripts
   - cypress install
 after_success:
   - codecov
