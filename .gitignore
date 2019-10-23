@@ -10,6 +10,8 @@ coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 dist
+esm
+cypress/screenshots
 node_modules/
 npm-debug.log
 lerna-debug.log
