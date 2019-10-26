@@ -1,26 +1,26 @@
-function getExtension (pathParts: string[]): string | null {
-  return pathParts.pop() || null
-}
+import fs from "fs";
 
-function removeExtension  (filePath: string, pathParts: string[]): string {
+export function getFileExtension(filePath: string): string | null {
+  const pathParts = /^.+\.([^.]+)$/.exec(filePath);
   // if there's a file extension
-  if (pathParts.length > 1) {
-    // pop the extension from the array
-    pathParts.pop() as string
-    return pathParts.join('.')
+  if (pathParts && pathParts.length > 1) {
+    return pathParts[1]
   }
-  // if there is no file extension
-  else {
-    return filePath
+  return null
+}
+export function getPathWithoutExtension(filePath: string, extension: string | null) {
+  let pathWithoutExtension = filePath 
+  if (extension) {
+    pathWithoutExtension = filePath.substr(0, filePath.length - (extension.length + 1))
   }
+  return pathWithoutExtension
 }
 
 // these make webpack happy
 
 export function resolveFile (filePath: string) {
-  const pathParts = filePath.split('.')
-  const extension = getExtension(pathParts)
-  const pathWithoutExtension = removeExtension(filePath, pathParts)
+  const extension = getFileExtension(filePath)
+  const pathWithoutExtension = getPathWithoutExtension(filePath, extension)
   switch(extension){
     case 'js': {
       return require.resolve(pathWithoutExtension + '.js')
@@ -29,6 +29,9 @@ export function resolveFile (filePath: string) {
       return require.resolve(pathWithoutExtension + '.json')
     }
     default : {
+      if (extension) {
+        throw Error(`cannot require.resolve() module with extension '${extension}'`)
+      }
       return require.resolve(pathWithoutExtension + '.js')
     }
   }
@@ -37,9 +40,8 @@ export function resolveFile (filePath: string) {
 // again, explicit with the extensions
 
 export function requireFile(filePath: string){
-  const pathParts = filePath.split('.')
-  const extension = getExtension(pathParts)
-  const pathWithoutExtension = removeExtension(filePath, pathParts)
+  const extension = getFileExtension(filePath)
+  const pathWithoutExtension = getPathWithoutExtension(filePath, extension)
   switch(extension){
     case 'js': {
       return require(pathWithoutExtension + '.js')
@@ -48,10 +50,15 @@ export function requireFile(filePath: string){
       return require(pathWithoutExtension + '.json')
     }
     default : {
-      if (extension) {
-        throw Error(`cannot require module with extension '${extension}'`)
+      if (fs.existsSync(filePath + `.js`)) {
+        return require(filePath + '.js')
       }
-      return require(pathWithoutExtension + '.js')
+      if (fs.existsSync(filePath + `.json`)) {
+        return require(filePath + '.json')
+      }
+      if (extension) {
+        throw Error(`cannot require() module with extension '${extension}'`)
+      }
     }
   }
 }
