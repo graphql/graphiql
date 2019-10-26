@@ -13,13 +13,15 @@
     "url": "https://github.com/graphql/graphql-language-service/issues?q=issue+label:language-types"
   },
   "license": "MIT",
-  "files": [
-    "dist"
+   "files": [
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
+  "module": "esm/index.js",
   "typings": "src/index",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",

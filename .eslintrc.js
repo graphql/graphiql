@@ -20,6 +20,7 @@ module.exports = {
       experimentalObjectRestSpread: true,
     },
   },
+  plugins: ['babel', 'react', 'import', 'flowtype', 'prefer-object-spread'],
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
@@ -284,9 +285,40 @@ module.exports = {
 
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
-  },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+    // react rules
+    'react/jsx-boolean-value': 'error',
+    'react/jsx-handler-names': 'error',
+    'react/jsx-key': 'error',
+    'react/jsx-no-duplicate-props': 'error',
+    'react/jsx-no-literals': 'error',
+    'react/jsx-no-undef': 'error',
+    'react/jsx-pascal-case': 'error',
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
+    'react/no-deprecated': 'error',
+    'react/no-did-mount-set-state': 'error',
+    'react/no-did-update-set-state': 'error',
+    'react/no-direct-mutation-state': 'error',
+    'react/no-string-refs': 'error',
+    'react/no-unknown-property': 'error',
+    'react/prop-types': [
+      'error',
+      {
+        ignore: ['children'],
+      },
+    ],
+    'react/prefer-es6-class': 'error',
+    'react/prefer-stateless-function': 'error',
+    'react/react-in-jsx-scope': 'error',
+    'react/self-closing-comp': 'error',
+    'react/sort-comp': [
+      'error',
+      {
+        order: ['static-methods', 'lifecycle', 'render', 'everything-else'],
+      },
+    ],
+  },
 
   overrides: [
     // Rules for TypeScript only

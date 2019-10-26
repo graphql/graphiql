@@ -21,7 +21,8 @@
   "scripts": {
     "build": "tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn run e2e",
-    "testonly": "jest && lerna run test --scope codemirror-graphql",
+    "testonly": "yarn jest && lerna run test --scope codemirror-graphql",
+    "jest": "jest",
     "e2e": "cd packages/graphiql && yarn e2e",
     "cypress:open": "cd packages/graphiql && yarn e2e:server & cypress open --project ./packages/graphiql",
     "t": "yarn run testonly",

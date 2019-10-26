@@ -13,13 +13,15 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-parser"
   },
   "license": "MIT",
-  "files": [
-    "dist"
+   "files": [
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "./dist/index.js",
+  "module": "esm/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",

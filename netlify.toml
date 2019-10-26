@@ -1,5 +1,3 @@
 [build]
   command = "yarn && yarn build && lerna run setup"
   publish = "packages/examples/graphiql-cdn"
-[build]
-  publish = "packages/examples/graphiql-webpack/dist"

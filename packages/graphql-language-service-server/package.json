@@ -13,7 +13,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
   },
   "license": "MIT",
-  "files": [
+   "files": [
     "dist"
   ],
   "keywords": [

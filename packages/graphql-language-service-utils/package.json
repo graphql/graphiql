@@ -14,12 +14,14 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
+  "module": "esm/index.js",
   "types": "src/index.ts",
   "scripts": {
     "test": "node ../../resources/runTests.js",
