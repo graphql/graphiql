@@ -34,13 +34,21 @@ describe('GraphiQL On Initialization', function() {
       '#graphiql', '.graphiql-container', '.topBarWrap', '.editorWrap', '.queryWrap', '.resultWrap', '.variable-editor'
     ]
     cy.visit(`/?query=${testQuery}`)
+    cy.wait(4000)
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'))
   })
 
   it('Executes a GraphQL query over HTTP that has the expected result', function() {
     cy.get('.execute-button').click()
+    cy.wait(3000)
     cy.window().then((w) => {
-      cy.expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(mockSuccess)
+      const result = w.g.resultComponent.viewer.getValue() 
+      if (result) {
+        cy.expect(JSON.parse(result)).to.deep.equal(mockSuccess)
+      }
+      else {
+        throw Error('result not received')
+      }
     })
   })
 

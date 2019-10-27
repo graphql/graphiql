@@ -1,8 +1,10 @@
 dist/
+esm/
+bundle/
+cypress/screenshots
 /graphiql.js
 /graphiql.min.js
+/graphiql.lazy.min.js
+/graphiql.bundled.min.js
 /graphiql.css
-example/yarn.lock
-example/graphiql.js
-example/graphiql.css
 test/pid

@@ -168,7 +168,6 @@ export class GraphiQL extends React.Component {
 
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
-
     global.g = this;
   }
 

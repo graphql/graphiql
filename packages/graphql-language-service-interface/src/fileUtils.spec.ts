@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { getFileExtension, getPathWithoutExtension, resolveFile, requireFile } from './fileUtils'
 
 describe('getFileExtension', ()=>{
@@ -38,18 +40,31 @@ describe('requireFile', ()=>{
     ).toThrowError(`cannot require() module with extension 'npmignore'`)
   })
   it ('should require file with no extension using js', ()=> {
-    const config = requireFile(__dirname + '/../../../jest.config')
+    const config = requireFile(path.join(__dirname, '../../../jest.config'))
     expect(config.collectCoverage).toEqual(true)
   })
    it ('should require file with no extension using json', ()=> {
-    const file = requireFile(__dirname + '/../package')
+    const file = requireFile(path.join(__dirname, '../package'))
     expect(file.name).toEqual('graphql-language-service-interface')
   })
 })
 
 describe('resolveFile', () => {
   it ('should resolve when path has extension', ()=> {
-    const extension = resolveFile('../package.json')
-    expect(extension).toEqual(require.resolve(__dirname + '/../package.json'))
+    const resolvedPath = resolveFile('../package.json')
+    expect(resolvedPath).toEqual(require.resolve(path.join(__dirname, '../package.json')))
+  })
+  
+  it ('should resolve when path has extension', ()=> {
+    const resolvedPath = resolveFile(path.join(__dirname, '../package'))
+    expect(resolvedPath).toEqual(require.resolve(path.join(__dirname, '../package.json')))
+  })
+  it ('should resolve when path has extension', ()=> {
+    const resolvedPath = resolveFile('../../../.eslintrc.js')
+    expect(resolvedPath).toEqual(require.resolve(path.join(__dirname, '../../../.eslintrc.js')))
+  })
+  it ('should resolve when path has no extension', ()=> {
+    const resolvedPath = resolveFile(path.join(__dirname, '../../../.eslintrc'))
+    expect(resolvedPath).toEqual(require.resolve(path.join(__dirname, '../../../.eslintrc.js')))
   })
 })

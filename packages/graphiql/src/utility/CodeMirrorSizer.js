@@ -17,8 +17,15 @@ export default class CodeMirrorSizer {
   updateSizes(components) {
     components.forEach((component, i) => {
       const size = component.getClientHeight();
-      if (i <= this.sizes.length && size !== this.sizes[i]) {
-        component.getCodeMirror().setSize();
+      if (
+        i <= this.sizes.length &&
+        size !== this.sizes[i] &&
+        component.getCodeMirror
+      ) {
+        const editor = component.getCodeMirror();
+        if (editor) {
+          editor.setSize();
+        }
       }
       this.sizes[i] = size;
     });

@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 /*.js
+/*.esm.js
 !babel.config.js
 /utils
 /variables

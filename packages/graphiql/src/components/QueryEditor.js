@@ -53,28 +53,33 @@ export class QueryEditor extends React.Component {
     this.cachedValue = props.value || '';
   }
 
-  componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
-    // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/comment/comment');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/hint');
-    require('codemirror-graphql/lint');
-    require('codemirror-graphql/info');
-    require('codemirror-graphql/jump');
-    require('codemirror-graphql/mode');
-
+  async componentDidMount() {
+    const { default: CodeMirror } = await import(
+      /* webpackChunkName: "codemirror" */
+      /* webpackMode: "lazy" */
+      /* webpackPrefetch: true */
+      /* webpackPreload: true */
+      'codemirror'
+    );
+    await Promise.all([
+      import('codemirror/addon/hint/show-hint'),
+      import('codemirror/addon/comment/comment'),
+      import('codemirror/addon/edit/matchbrackets'),
+      import('codemirror/addon/edit/closebrackets'),
+      import('codemirror/addon/fold/foldgutter'),
+      import('codemirror/addon/fold/brace-fold'),
+      import('codemirror/addon/search/search'),
+      import('codemirror/addon/search/searchcursor'),
+      import('codemirror/addon/search/jump-to-line'),
+      import('codemirror/addon/dialog/dialog'),
+      import('codemirror/addon/lint/lint'),
+      import('codemirror/keymap/sublime'),
+      import('codemirror-graphql/hint'),
+      import('codemirror-graphql/lint'),
+      import('codemirror-graphql/info'),
+      import('codemirror-graphql/jump'),
+      import('codemirror-graphql/mode'),
+    ]);
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
@@ -160,35 +165,41 @@ export class QueryEditor extends React.Component {
         ...commonKeys,
       },
     });
-
     this.editor.on('change', this._onEdit);
     this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
     this.editor.on('beforeChange', this._onBeforeChange);
   }
 
-  componentDidUpdate(prevProps) {
-    const CodeMirror = require('codemirror');
-
-    // Ensure the changes caused by this update are not interpretted as
-    // user-input changes which could otherwise result in an infinite
-    // event loop.
-    this.ignoreChangeEvent = true;
-    if (this.props.schema !== prevProps.schema) {
-      this.editor.options.lint.schema = this.props.schema;
-      this.editor.options.hintOptions.schema = this.props.schema;
-      this.editor.options.info.schema = this.props.schema;
-      this.editor.options.jump.schema = this.props.schema;
-      CodeMirror.signal(this.editor, 'change', this.editor);
+  async componentDidUpdate(prevProps) {
+    const { default: CodeMirror } = await import(
+      /* webpackChunkName: "codemirror" */
+      /* webpackMode: "lazy" */
+      /* webpackPrefetch: true */
+      /* webpackPreload: true */
+      'codemirror'
+    );
+    if (this.editor) {
+      // Ensure the changes caused by this update are not interpretted as
+      // user-input changes which could otherwise result in an infinite
+      // event loop.
+      this.ignoreChangeEvent = true;
+      if (this.props.schema !== prevProps.schema) {
+        this.editor.options.lint.schema = this.props.schema;
+        this.editor.options.hintOptions.schema = this.props.schema;
+        this.editor.options.info.schema = this.props.schema;
+        this.editor.options.jump.schema = this.props.schema;
+        CodeMirror.signal(this.editor, 'change', this.editor);
+      }
+      if (
+        this.props.value !== prevProps.value &&
+        this.props.value !== this.cachedValue
+      ) {
+        this.cachedValue = this.props.value;
+        this.editor.setValue(this.props.value);
+      }
+      this.ignoreChangeEvent = false;
     }
-    if (
-      this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue
-    ) {
-      this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value);
-    }
-    this.ignoreChangeEvent = false;
   }
 
   componentWillUnmount() {

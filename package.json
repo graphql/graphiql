@@ -19,7 +19,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
+    "build": "tsc --build --clean && tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn run e2e",
     "testonly": "yarn jest && lerna run test --scope codemirror-graphql",
     "jest": "jest",
@@ -42,6 +42,7 @@
     "@babel/core": "7.4.5",
     "@babel/node": "7.4.5",
     "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "7.4.5",
@@ -53,7 +54,10 @@
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "@types/jest": "^24.0.18",
     "@typescript-eslint/parser": "^2.3.0",
+    "acorn": "^7.1.0",
+    "acorn-dynamic-import": "^4.0.0",
     "babel-eslint": "^10.0.1",
+    "babel-plugin-dynamic-import-node": "^2.3.0",
     "chai": "4.2.0",
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",

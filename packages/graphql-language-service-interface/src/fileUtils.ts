@@ -29,10 +29,15 @@ export function resolveFile (filePath: string) {
       return require.resolve(pathWithoutExtension + '.json')
     }
     default : {
+      if (fs.existsSync(filePath + `.js`)) {
+        return require.resolve(filePath + '.js')
+      }
+      if (fs.existsSync(filePath + `.json`)) {
+        return require.resolve(filePath + '.json')
+      }
       if (extension) {
         throw Error(`cannot require.resolve() module with extension '${extension}'`)
       }
-      return require.resolve(pathWithoutExtension + '.js')
     }
   }
 }

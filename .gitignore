@@ -11,6 +11,7 @@ packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 dist
 esm
+bundle
 cypress/screenshots
 node_modules/
 npm-debug.log

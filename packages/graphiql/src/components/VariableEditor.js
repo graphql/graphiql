@@ -46,24 +46,31 @@ export class VariableEditor extends React.Component {
     this.cachedValue = props.value || '';
   }
 
-  componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
+  async componentDidMount() {
+    // Lazily import to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
-    require('codemirror-graphql/variables/mode');
-
+    const { default: CodeMirror } = await import(
+      /* webpackChunkName: "codemirror" */
+      /* webpackMode: "lazy" */
+      /* webpackPrefetch: true */
+      /* webpackPreload: true */
+      'codemirror'
+    );
+    await Promise.all([
+      import('codemirror/addon/hint/show-hint'),
+      import('codemirror/addon/edit/matchbrackets'),
+      import('codemirror/addon/edit/closebrackets'),
+      import('codemirror/addon/fold/brace-fold'),
+      import('codemirror/addon/fold/foldgutter'),
+      import('codemirror/addon/lint/lint'),
+      import('codemirror/addon/search/searchcursor'),
+      import('codemirror/addon/search/jump-to-line'),
+      import('codemirror/addon/dialog/dialog'),
+      import('codemirror/keymap/sublime'),
+      import('codemirror-graphql/variables/hint'),
+      import('codemirror-graphql/variables/lint'),
+      import('codemirror-graphql/variables/mode'),
+    ]);
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
@@ -136,40 +143,48 @@ export class VariableEditor extends React.Component {
         ...commonKeys,
       },
     });
-
     this.editor.on('change', this._onEdit);
     this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentDidUpdate(prevProps) {
-    const CodeMirror = require('codemirror');
-
-    // Ensure the changes caused by this update are not interpretted as
-    // user-input changes which could otherwise result in an infinite
-    // event loop.
-    this.ignoreChangeEvent = true;
-    if (this.props.variableToType !== prevProps.variableToType) {
-      this.editor.options.lint.variableToType = this.props.variableToType;
-      this.editor.options.hintOptions.variableToType = this.props.variableToType;
-      CodeMirror.signal(this.editor, 'change', this.editor);
+  async componentDidUpdate(prevProps) {
+    const { default: CodeMirror } = await import(
+      /* webpackChunkName: "codemirror" */
+      /* webpackMode: "lazy" */
+      /* webpackPrefetch: true */
+      /* webpackPreload: true */
+      'codemirror'
+    );
+    if (this.editor) {
+      // Ensure the changes caused by this update are not interpretted as
+      // user-input changes which could otherwise result in an infinite
+      // event loop.
+      this.ignoreChangeEvent = true;
+      if (this.props.variableToType !== prevProps.variableToType) {
+        this.editor.options.lint.variableToType = this.props.variableToType;
+        this.editor.options.hintOptions.variableToType = this.props.variableToType;
+        CodeMirror.signal(this.editor, 'change', this.editor);
+      }
+      if (
+        this.props.value !== prevProps.value &&
+        this.props.value !== this.cachedValue
+      ) {
+        const thisValue = this.props.value || '';
+        this.cachedValue = thisValue;
+        this.editor.setValue(thisValue);
+      }
+      this.ignoreChangeEvent = false;
     }
-    if (
-      this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue
-    ) {
-      const thisValue = this.props.value || '';
-      this.cachedValue = thisValue;
-      this.editor.setValue(thisValue);
-    }
-    this.ignoreChangeEvent = false;
   }
 
   componentWillUnmount() {
-    this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
-    this.editor.off('hasCompletion', this._onHasCompletion);
-    this.editor = null;
+    if (this.editor) {
+      this.editor.off('change', this._onEdit);
+      this.editor.off('keyup', this._onKeyUp);
+      this.editor.off('hasCompletion', this._onHasCompletion);
+      this.editor = null;
+    }
   }
 
   render() {

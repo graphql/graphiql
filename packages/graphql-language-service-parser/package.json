@@ -21,7 +21,7 @@
     "graphql"
   ],
   "main": "./dist/index.js",
-  "module": "esm/index.js",
+  "module": "./esm/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",

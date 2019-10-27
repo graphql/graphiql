@@ -13,10 +13,11 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "module": "esm/index.js",
   "files": [
     "dist",
-    "graphiql.js",
+    "esm",
+    "bundle",
     "graphiql.min.js",
     "graphiql.css",
     "README.md",
@@ -24,11 +25,12 @@
   ],
   "scripts": {
     "build": "yarn run build-js && yarn run build-flow",
-    "build-js": "bash ./resources/build.sh",
+    "build-dist": "bash ./resources/buildBundles.sh",
+    "build-js": "bash ./resources/buildBabel.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "babel-node test/server.js",
-    "e2e": "yarn e2e:server && cypress run && kill -9 `cat test/pid`",
+    "dev": "PORT=8080 babel-node test/server",
+    "e2e": "kill -9 `cat test/pid` | true && yarn e2e:server && cypress run && kill -9 `cat test/pid`",
     "e2e:server": "PORT=8080 babel-node test/server.js & wait-on http://localhost:8080",
     "test": "node ../../resources/runTests ENZYME=true"
   },
@@ -36,11 +38,6 @@
     "*.js": [
       "prettier --write",
       "git add"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
     ]
   },
   "dependencies": {
@@ -59,16 +56,19 @@
   },
   "devDependencies": {
     "@types/react": "^16.9.9",
+    "acorn": "^7.1.0",
+    "acorn-dynamic-import": "^4.0.0",
     "autoprefixer": "9.6.0",
-    "babelify": "10.0.0",
-    "browserify": "16.2.3",
-    "browserify-shim": "3.8.14",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "dynamic-cdn-webpack-plugin": "^4.0.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.9.0",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
+    "module-to-cdn": "^3.1.5",
     "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",
     "react": "15.6.2",
@@ -76,6 +76,9 @@
     "react-test-renderer": "15.6.2",
     "uglify-js": "3.5.11",
     "uglifyify": "5.0.1",
-    "watchify": "3.11.1"
+    "watchify": "3.11.1",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0"
   }
 }

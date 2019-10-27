@@ -23,7 +23,9 @@
     "variables",
     "results",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "src",
+    "esm"
   ],
   "options": {
     "mocha": "--full-trace --require resources/mochaBootload src/*/__tests__/*-test.js",
@@ -32,8 +34,9 @@
   "scripts": {
     "lint": "eslint src",
     "check": "flow check",
-    "build": "babel src --root-mode upward --ignore __tests__ --out-dir .",
-    "build-js": "node ../../resources/buildJs.js",
+    "build": "yarn run build-esm && yarn run build-js && ./resources/copyESM.sh",
+    "build-esm": "rm -rf esm && rm -rf '**/*.esm.js' && ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
+    "build-js": "babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
     "prepublish": "node ../../resources/prepublish.js",
@@ -52,7 +55,6 @@
     "chai": "4.1.1",
     "chai-subset": "1.5.0",
     "codemirror": "^5.28.0",
-    "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "3.5.0",
     "sane": "2.0.0"

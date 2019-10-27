@@ -20,8 +20,8 @@
   "keywords": [
     "graphql"
   ],
-  "main": "dist/index.js",
-  "module": "esm/index.js",
+  "main": "./dist/index.js",
+  "module": "./esm/index.js",
   "scripts": {
     "test": "node ../../resources/runTests.js",
     "build": "yarn run build-ts && yarn run build-flow",

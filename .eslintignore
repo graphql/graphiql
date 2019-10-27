@@ -31,6 +31,8 @@
 # Build artifacts
 **/flow-typed
 **/dist
+**/esm
+**/bundle
 
 # Vendored files
 /packages/codemirror-graphql/

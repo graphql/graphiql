@@ -23,6 +23,7 @@ module.exports = {
         test: /\.html$/,
         use: ["file?name=[name].[ext]"]
       },
+      // for graphql module, which uses mjs still
       {
         type: "javascript/auto",
         test: /\.mjs$/,
@@ -31,7 +32,7 @@ module.exports = {
       },
       {
         test: /\.(js|jsx)$/,
-        use: [{ loader: "babel-loader", options: { presets: ["@babel/preset-env", "@babel/preset-react"]} }]
+        use: [{ loader: "babel-loader", options: { presets: [["@babel/preset-env", { modules: false }], "@babel/preset-react"]} }]
       },
       {
         test: /\.css$/,
