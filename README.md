@@ -85,4 +85,4 @@ Eventually we hope to move these to a repo that serves this purpose.
 
 - __Discord__ - Most discussion outside of github happens on our [Discord Server](https://discord.gg/eNuu9Cb)
 - __Twitter__ - [@GraphiQL](https://twitter.com/@GraphiQL) and [#GraphiQL](https://twitter.com/hashtag/GraphiQL)
-- __Github__ - Create feature requests and start discussions above
+- __GitHub__ - Create feature requests and start discussions above
