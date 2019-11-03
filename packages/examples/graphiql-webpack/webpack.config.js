@@ -48,7 +48,7 @@ module.exports = {
     extensions: [".js", ".json", ".jsx", ".css", ".mjs"],
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: "index.html.bundle.ejs" }),
+    new HtmlWebpackPlugin({ template: "index.html.ejs" }),
   ],
   devServer: {
     hot: true,
