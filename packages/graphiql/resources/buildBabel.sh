@@ -9,7 +9,11 @@ if [ ! -d "node_modules/.bin" ]; then
 fi
 
 rm -rf dist/ esm/ && mkdir -p dist/ esm/
-echo \n"Babel CJS build..."
+
+echo "
+Babel CJS build..."
 NODE_ENV=production babel src --ignore '**/__tests__/**' --out-dir dist/
-echo \n"Babel ESM build..."
+
+echo "
+Babel ESM build..."
 NODE_ENV=production ESM=true babel src --ignore '**/__tests__/**' --out-dir esm/

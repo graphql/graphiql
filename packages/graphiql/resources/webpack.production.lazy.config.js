@@ -1,24 +1,23 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
-const path = require('path')
-const webpack = require('webpack')
+const path = require('path');
+const webpack = require('webpack');
 
-const config = require('./webpack.shared.config')
+const config = require('./webpack.shared.config');
 
 module.exports = {
   ...config,
-  mode: "production",
+  mode: 'production',
   output: {
     ...config.output,
-   // publicPath: 'https://unpkg.com/graphiql/bundle/', // CDN (always HTTPS)
-    // publicPath: 'bundle/', // CDN (always HTTPS)
-    path:  path.join(__dirname, '../bundle')
+    path: path.join(__dirname, '../bundle/lazy'),
   },
   externals: {
     react: 'React',
-    'react-dom': 'ReactDOM'
+    'react-dom': 'ReactDOM',
   },
+  // these settings were interesting to experiment with
   optimization: {
     splitChunks: {
       cacheGroups: {
@@ -26,23 +25,8 @@ module.exports = {
           test: /[\\/]node_modules[\\/]/,
           name: "vendor",
           chunks: "initial",
-        },
-        lazy: {
-          name: "lazy",
-          chunks: "async",
         }
       },
     },
-  },
-  plugins: [
-    ...config.plugins,
-    process.env.ANALYZE && new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-      reportFilename: path.join(__dirname, '../coverage/analyzer/unpkg/index.html')
-    }),
-    new HtmlWebpackPlugin({
-      template: '../resources/index.bundle.html.ejs'
-    }),
-  ],
+  }
 };

@@ -8,18 +8,31 @@ if [ ! -d "node_modules/.bin" ]; then
   exit 1
 fi
 
-rm -rf graphiql.min.js bundle/
+rm -rf graphiql.js *.min.js graphiql.min.js bundle
 
-echo "Webpack Bundle: /graphiql.min.js..."
-ESM=true ANALYZE=true webpack-cli --config resources/webpack.production.min.config.js
+echo "
+Webpack Bundle: /graphiql.min.js..."
+ESM=true webpack-cli --config resources/webpack.production.min.config.js
+cp bundle/min/*.min.js .
+cp resources/genericExample.js bundle/min
 
-echo "Webpack Async CDN Bundle: /graphiql.lazy.min.js and friends..."
-ESM=true ANALYZE=true webpack-cli --config resources/webpack.production.lazy.config.js
-cp -v bundle/graphiql.main.min.js graphiql.lazy.min.js
+echo "
+Webpack Bundle: /graphiql.render.js..."
+ESM=true webpack-cli --config resources/webpack.production.render.config.js
+cp bundle/render/*.min.js .
+
+echo "
+Webpack Async CDN Bundle: /graphiql.lazy.min.js and friends..."
+ESM=true webpack-cli --config resources/webpack.production.lazy.config.js
+cp bundle/lazy/graphiql.main.min.js ./graphiql.lazy.min.js
+cp resources/genericExample.js bundle/lazy
 
 # echo "Bundling graphiql.min.js..."
 # browserify -g browserify-shim -t uglifyify -s GraphiQL graphiql.js | uglifyjs -c > graphiql.min.js
 # echo "Bundling graphiql.css..."
 postcss --no-map --use autoprefixer -d dist/ css/*.css
 cat dist/*.css > graphiql.css
+cp graphiql.css bundle/lazy 
+cp graphiql.css bundle/min 
+cp graphiql.css bundle/render
 echo "Done"

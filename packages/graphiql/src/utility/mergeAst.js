@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Kind } from 'graphql/language/kinds';
+import { Kind } from 'graphql';
 
 function resolveDefinition(fragments, obj) {
   let definition = obj;

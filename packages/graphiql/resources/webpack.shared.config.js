@@ -1,56 +1,53 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
-
-module.exports = {
-  entry: "./index.jsx",
-  context: path.resolve(__dirname, "../src"),
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const resultConfig = {
+  entry: './index.jsx',
+  context: path.resolve(__dirname, '../src'),
   output: {
-    path:  path.join(__dirname, '../bundle'),
+    path: path.join(__dirname, '../bundle'),
     library: 'GraphiQL',
     libraryTarget: 'window',
     libraryExport: 'default',
-    filename: 'graphiql.[name].min.js'
+    filename: 'graphiql.[name].min.js',
   },
   node: {
-    fs: "empty"
+    fs: 'empty',
   },
   module: {
     rules: [
+      // for graphql module, which uses .mjs
       {
-        test: /\.html$/,
-        use: ["file?name=[name].[ext]"]
-      },
-      // for graphql module, which uses mjs still
-      {
-        type: "javascript/auto",
+        type: 'javascript/auto',
         test: /\.mjs$/,
         use: [],
-        include: /node_modules/
+        include: /node_modules/,
       },
-      {
-        test: /\.esm.js$/,
-        type: 'javascript/esm',
-        include: /node_modules/
-      },
+      // i think we need to add another rule for
+      // codemirror-graphql esm.js files to load
       {
         test: /\.(js|jsx)$/,
-        use: [{ loader: "babel-loader" }]
-      },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
-      },
-      {
-        test: /\.svg$/,
-        use: [{ loader: "svg-inline-loader" }]
+        use: [{ loader: 'babel-loader' }],
       }
-    ]
+    ],
   },
   plugins: [],
   resolve: {
-    extensions: [".js", ".json", ".jsx", ".css", ".mjs"],
+    extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
     alias: {
-      'graphiql': path.resolve(__dirname, '../bundle/main')
-    }
-  }
+      graphiql: path.resolve(__dirname, '../bundle/main'),
+    },
+  },
+};
+
+if (process.env.ANALYZE) {
+  resultConfig.plugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: path.join(__dirname, '../coverage/analyzer/index.html'),
+    })
+  );
 }
+
+module.exports = resultConfig;

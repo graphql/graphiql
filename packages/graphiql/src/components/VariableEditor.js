@@ -67,9 +67,9 @@ export class VariableEditor extends React.Component {
       import('codemirror/addon/search/jump-to-line'),
       import('codemirror/addon/dialog/dialog'),
       import('codemirror/keymap/sublime'),
-      import('codemirror-graphql/variables/hint'),
-      import('codemirror-graphql/variables/lint'),
-      import('codemirror-graphql/variables/mode'),
+      import('codemirror-graphql/esm/variables/hint'),
+      import('codemirror-graphql/esm/variables/lint'),
+      import('codemirror-graphql/esm/variables/mode'),
     ]);
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',

@@ -20,8 +20,9 @@
   },
   "scripts": {
     "build": "tsc --build --clean && tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
-    "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn run e2e",
-    "testonly": "yarn jest && lerna run test --scope codemirror-graphql",
+    "build-dist": "mkdir -p dist/min dist/lazy | true && cp -v packages/graphiql/bundle/* dist/lazy && cp -v packages/graphiql/index.html dist/min/ && cp -v packages/graphiql/*.{css,js} dist/min/",
+    "test:ci": "yarn run lint && yarn run check && yarn run build && lerna run build-dist && yarn run test  && yarn run e2e",
+    "test": "yarn jest && lerna run test --scope codemirror-graphql",
     "jest": "jest",
     "e2e": "cd packages/graphiql && yarn e2e",
     "cypress:open": "cd packages/graphiql && yarn e2e:server & cypress open --project ./packages/graphiql",
@@ -61,6 +62,7 @@
     "chai": "4.2.0",
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
+    "copy": "^0.3.2",
     "cypress": "^3.4.1",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "6.3.0",
@@ -79,6 +81,7 @@
     "lerna": "^3.16.4",
     "mocha": "6.1.4",
     "prettier": "^1.18.2",
+    "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3",
     "wait-on": "^3.3.0"

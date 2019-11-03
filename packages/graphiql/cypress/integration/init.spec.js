@@ -34,7 +34,7 @@ describe('GraphiQL On Initialization', function() {
       '#graphiql', '.graphiql-container', '.topBarWrap', '.editorWrap', '.queryWrap', '.resultWrap', '.variable-editor'
     ]
     cy.visit(`/?query=${testQuery}`)
-    cy.wait(4000)
+      cy.wait(4000)
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'))
   })
 

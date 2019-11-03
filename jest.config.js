@@ -17,7 +17,7 @@ module.exports = {
     '<rootDir>/packages/*/src/**/*.spec.{js,ts}',
   ],
   transform: {
-    '^.+\\.jsx?$': require.resolve('./resources/jestBabelTransform'),
+   '^.+\\.jsx?$': require.resolve('./resources/jestBabelTransform'),
     ...tsjPreset.transform,
     ...jsWithBabelPreset.transform
   },

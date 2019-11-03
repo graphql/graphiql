@@ -1,8 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = require('./webpack.shared.config');
 
@@ -12,13 +10,15 @@ const config = require('./webpack.shared.config');
 
 const resultConfig = {
   ...config,
+  entry: './renderGraphiQL.js',
   mode: 'production',
   output: {
     ...config.output,
-    // publicPath: '/bundle/', // CDN (always HTTPS)
-    // publicPath: 'https://unpkg.com/graphiql/bundle/', // CDN (always HTTPS)
-    path: path.join(__dirname, '../bundle/min'),
-    filename: 'graphiql.min.js',
+    path: path.join(__dirname, '../bundle/render'),
+    library: 'renderGraphiQL',
+    libraryTarget: 'window',
+    libraryExport: 'default',
+    filename: 'graphiql.render.min.js',
   },
   externals: {
     react: 'React',
@@ -29,7 +29,7 @@ const resultConfig = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     })
-  ],
+  ]
 };
 
 module.exports = resultConfig;

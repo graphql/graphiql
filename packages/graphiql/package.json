@@ -45,6 +45,7 @@
     "codemirror-graphql": "^0.11.2",
     "copy-to-clipboard": "^3.2.0",
     "graphql": "14.5.6",
+    "isomorphic-fetch": "^2.2.1",
     "markdown-it": "^8.4.0",
     "regenerator-runtime": "^0.13.3"
   },
@@ -74,9 +75,7 @@
     "react": "15.6.2",
     "react-dom": "15.6.2",
     "react-test-renderer": "15.6.2",
-    "uglify-js": "3.5.11",
-    "uglifyify": "5.0.1",
-    "watchify": "3.11.1",
+    "serve": "^11.2.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.9.0"

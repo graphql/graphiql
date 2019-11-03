@@ -34,13 +34,16 @@
   "scripts": {
     "lint": "eslint src",
     "check": "flow check",
-    "build": "yarn run build-esm && yarn run build-js && ./resources/copyESM.sh",
-    "build-esm": "rm -rf esm && rm -rf '**/*.esm.js' && ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
-    "build-js": "babel src --root-mode upward --ignore __tests__ --out-dir .",
+    "build": "yarn run build-esm && yarn run build-js",
+    "build-esm": "yarn clean-esm && ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm && yarn copy-esm",
+    "copy-esm": "node ../../resources/renameFileExtensions.js './esm/**/*.js' . .esm.js",
+    "build-js": "yarn clean-js && babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
     "prepublish": "node ../../resources/prepublish.js",
-    "test": "mocha $npm_package_options_mocha"
+    "test": "mocha $npm_package_options_mocha",
+    "clean-esm": "../../node_modules/.bin/rimraf esm && ../../node_modules/.bin/rimraf '*.esm.js'",
+    "clean-js": "../../node_modules/.bin/rimraf '{results,utils,variables}' && ../../node_modules/.bin/rimraf '{hint,info,jump,lint,mode}.js'"
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",
