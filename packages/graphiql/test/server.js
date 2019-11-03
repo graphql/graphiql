@@ -8,22 +8,14 @@
 /* eslint-disable no-console */
 import express from 'express';
 import path from 'path';
-import webpackMiddleware from 'webpack-dev-middleware';
 import graphqlHTTP from 'express-graphql';
-import fs from 'fs'
+import fs from 'fs';
 import schema from './schema';
-import Webpack from 'webpack';
-import webpackConfig from '../resources/webpack.development.config';
-
-const compiler = Webpack(webpackConfig);
-
 
 const app = express();
 // Server
 app.use('/graphql', graphqlHTTP({ schema }));
-app.use(webpackMiddleware(compiler, webpackConfig))
-
-console.log('Initial build...');
+app.use(express.static(path.join(__dirname, '../')))
 
 app.listen(process.env.PORT || 0, function() {
   const port = this.address().port;
