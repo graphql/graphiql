@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
-    "build": "webpack",
+    "build-dist": "webpack",
     "start": "webpack-dev-server --watch"
   },
   "dependencies": {
