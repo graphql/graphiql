@@ -16,6 +16,8 @@ cache:
 install:
   - yarn --frozen-lockfile # ignore prepublish scripts
   - cypress install
+script:
+  - yarn test:ci
 after_success:
   - codecov
 
