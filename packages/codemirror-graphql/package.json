@@ -35,7 +35,7 @@
     "lint": "eslint src",
     "check": "flow check",
     "build": "yarn run build-esm && yarn run build-js",
-    "build-esm": "yarn clean-esm && ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm && yarn copy-esm",
+    "build-esm": "yarn clean-esm && ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
     "copy-esm": "node ../../resources/renameFileExtensions.js './esm/**/*.js' . .esm.js",
     "build-js": "yarn clean-js && babel src --root-mode upward --ignore __tests__ --out-dir .",
     "build-flow": "node ../../resources/buildFlow.js",
