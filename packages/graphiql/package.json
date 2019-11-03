@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build": "yarn run build-js && yarn run build-flow",
-    "build-dist": "bash ./resources/buildBundles.sh",
+    "build-bundles": "bash ./resources/buildBundles.sh",
     "build-js": "bash ./resources/buildBabel.sh",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",

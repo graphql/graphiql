@@ -20,8 +20,9 @@
   },
   "scripts": {
     "build": "tsc --build --clean && tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
-    "build-dist": "mkdir -p dist/min dist/lazy | true && cp -v packages/graphiql/bundle/* dist/lazy && cp -v packages/graphiql/index.html dist/min/ && cp -v packages/graphiql/*.{css,js} dist/min/",
-    "test:ci": "yarn run lint && yarn run check && yarn run build && lerna run build-dist && yarn run test  && yarn run e2e",
+    "build-bundles": "lerna run build-bundles --parallel",
+    "build-bundles-disabled": "mkdir -p dist/min dist/lazy | true && cp -rv packages/graphiql/bundle/* dist/lazy && cp -rv packages/graphiql/index.html dist/min/ && cp -v packages/graphiql/*.{css,js} dist/min/",
+    "test:ci": "yarn run lint && yarn run check && yarn run build && lerna run build-bundles && yarn run test  && yarn run e2e",
     "test": "yarn jest && lerna run test --scope codemirror-graphql",
     "jest": "jest",
     "e2e": "cd packages/graphiql && yarn e2e",
