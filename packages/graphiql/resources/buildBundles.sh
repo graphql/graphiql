@@ -11,23 +11,29 @@ fi
 rm -rf graphiql.js *.min.js graphiql.min.js bundle
 
 echo "
-Webpack Bundle: /graphiql.min.js..."
+Webpack CDN Bundle: /graphiql.min.js..."
 BUNDLE=true ESM=true webpack-cli --config resources/webpack.production.min.config.js
 cp bundle/min/*.min.js .
 echo "
-Webpack Bundle: /graphiql.js..."
+Webpack CDN Bundle: /graphiql.js..."
 BUNDLE=true ESM=true webpack-cli --config resources/webpack.development.bundle.config.js
 cp bundle/index/*js .
 
 echo "
 Webpack Bundle: /graphiql.render.js..."
-ESM=true webpack-cli --config resources/webpack.production.render.config.js
+BUNDLE=true ESM=true webpack-cli --config resources/webpack.production.render.config.js
 cp bundle/render/*.min.js .
 
 echo "
-Webpack Async CDN Bundle: /graphiql.lazy.min.js and friends..."
-ESM=true webpack-cli --config resources/webpack.production.lazy.config.js
+Webpack Async  Bundle: /graphiql.lazy.min.js and friends..."
+BUNDLE=true ESM=true webpack-cli --config resources/webpack.production.lazy.config.js
 cp bundle/lazy/graphiql.main.min.js ./graphiql.lazy.min.js
+
+echo "
+Webpack Async UNPKG CDN Bundle: /graphiql.lazy.unpkg.min.js and friends..."
+BUNDLE=true ESM=true webpack-cli --config resources/webpack.production.lazy.unpkg.config.js
+cp bundle/lazy-unpkg/graphiql.main.min.js ./graphiql.lazy.unpkg.min.js
+
 
 # echo "Bundling graphiql.css..."
 postcss --no-map --use autoprefixer -d dist/ css/*.css

@@ -3,6 +3,7 @@ esm/
 bundle/
 cypress/screenshots
 /graphiql.js
+/graphiql.min.js
 /graphiql.*.min.js
 /graphiql.css
 test/pid

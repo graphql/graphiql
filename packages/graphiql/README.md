@@ -8,9 +8,52 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 
 [![](resources/graphiql.png)](http://graphql.org/swapi-graphql)
 
-### Getting started
+## Features
 
-Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)! It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up. With `npm`:
+- Syntax highlighting
+- Intelligent type ahead of fields, arguments, types, and more.
+- Real-time error highlighting and reporting.
+- Automatic query completion.
+- Run and inspect query results.
+- Subscriptions support
+- Highly customizeable for any HTTP/etc GraphQL services 
+  - any way that a GraphQL schema can be executed with a promise is supported. Howeve, currently only JSON results are supported.
+- Explore your schema
+  - Clicking GraphQL query keywords and fields shows the item in docs
+  - GraphQL Schema types are searchable
+  - Renders your Type descriptions with markdown
+- Improved accessibility
+
+## Getting started
+
+GraphiQL is used for many purposes, in many contexts. Thus, there are a number of ways to use GraphiQL in your project.
+
+
+
+### CDN Bundle
+
+Just a simple index.html file and something like below will get you started:
+
+```html
+<div id="graphiql">Loading...</div>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/browse/graphiql@latest/graphiql.render.min.js"></script>
+  <script>
+    renderGraphiQL({ 
+      containerId: 'graphiql', 
+      url: 'http://my.graphql.api/graphql'
+    })
+  </script>
+```
+
+View the complete example [in the usage docs](#browser-bundles).
+
+### Webpack and Bundlers
+
+If you are using webpack or a bundler, you can import our GraphiQL npm package, and begin work on your purpose built implementation, whether minimal or complex.
+
+Furthermore with this strategy, you are able to customize bundling further, in terms of browser targeting, using dynamic imports and otherwise.
 
 ```
 npm install --save graphiql
@@ -24,36 +67,34 @@ yarn add graphiql
 
 GraphiQL provides a React component responsible for rendering the UI, which should be provided with a function for fetching from GraphQL, we recommend using the [fetch](https://fetch.spec.whatwg.org/) standard API.
 
-```js
+```ts
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ExecutionResult } from 'graphql'
 import GraphiQL from 'graphiql';
 import fetch from 'isomorphic-fetch';
 
-function graphQLFetcher(graphQLParams) {
-  return fetch(window.location.origin + '/graphql', {
+import 'graphiql/graphiql.css'
+
+interface GraphQLParams { query: string, variables: any, operationName: string }
+
+async function graphQLFetcher(graphQLParams: GraphQLParams): Promise<ExecutionResult> {
+  const response = await fetch(window.location.origin + '/graphql', {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(graphQLParams),
-  }).then(response => response.json());
+  })
+  return response.json()
 }
 
 ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 ```
 
-Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file.
+You can build your own bundles for the web with [webpack](https://webpack.js.org/), rollup, metro bundler, etc.
 
-Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
+See the [webpack example](../examples/graphiql-webpack/) here in the monorepo to learn how to bundle up GraphiQL for your own purpose-built implementation.
 
-For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
 
-### Features
-
-- Syntax highlighting
-- Intelligent type ahead of fields, arguments, types, and more.
-- Real-time error highlighting and reporting.
-- Automatic query completion.
-- Run and inspect query results.
 
 ### Usage
 
@@ -67,7 +108,7 @@ import GraphiQL from 'graphiql';
 
 GraphiQL supports customization in UI and behavior by accepting React props and children.
 
-**Props:**
+#### GraphiQL Props:
 
 - `fetcher`: a function which accepts GraphQL-HTTP parameters and returns a Promise or Observable which resolves to the GraphQL parsed JSON response.
 
@@ -103,7 +144,14 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-**Children:**
+#### Children:
+
+Each of these are components that can be set directly. For example:
+
+```js
+import GraphiQL from 'graphiql'
+GraphiQL.Logo = <Icon><CustomLogo></Icon>
+```
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -127,44 +175,107 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
 
+### Browser Bundles
+
+There are several provided browser bundles. They target the browsers in the [`.browserslistrc`](.browserslistrc) file - `last 2 versions` of firefox, chrome, edge, and safari. IE is not supported anymore. If you'd like to customize further the browser targeting or bundling strategy, see the [bundlers section](#webpack-and-bundlers)
+
+All of them require `react` and `react-dom` as externals. You can use [React's reccomendations for loading their libraries from CDN](https://reactjs.org/docs/cdn-links.html).
+
+
+#### Complete CDN Example
+Here is a complete example of the easiest to use bundle, which just exports a global function `renderGraphiQL`:
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      height: 100%;
+      margin: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #graphiql {
+      height: 100vh;
+    }
+  </style>
+  <link  rel="stylesheet" href="https://unpkg.com/browse/graphiql@latest/graphiql.css" />
+</head>
+
+<body>
+  <div id="graphiql">Loading...</div>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/browse/graphiql@latest/graphiql.render.min.js"></script>
+  <script>
+    loginToMyService().then(token => {
+      renderGraphiQL({ 
+        containerId: 'graphiql', 
+        url: 'https://my.graphql.service/graphql',
+        headers: {
+          Authorization: "Bearer " + token
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>
+
+```
+
+If you don't supply a custom `fetcher` function, but you do supply a `url`, then it will try to `POST` a standard GraphQL HTTP request to that URL, as well as retrieve the introspection schema from that URL.
+
+We reccomend using `unpkg` over cdnjs, as does react. The updates to their CDN are almost instantaneous. GraphiQL 0.x.y will be undergoing a lot of changes and releases before we get to a stable version.
+
+#### CDN Bundle: graphiql.min.js
+
+The `graphiql.min.js` continues to work as always. Here's how to acheive the same implementation as above.
+Note that the second argument to `React.createElement` are [the props for GraphiQL](#graphiql-props).
+
+```js
+<div id="graphiql">Loading...</div>
+<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<script type="text/javascript" src="https://unpkg.com/browse/graphiql@latest/graphiql.min.js"></script>
+<script>
+  const getFetcher = token => async (graphQLParams) => {
+   const result = await fetch('https://my.graphql.service/graphql', { 
+     headers: { 
+       Authorization: "Bearer " + token, 
+       Content-type: 'application/json'
+     }, 
+     method: "POST"
+    })
+    return result.json()
+  }
+  loginToMyService().then(token => {
+    ReactDOM.render(
+      React.createElement(GraphiQL, {
+        fetcher: getFetcher(token)
+      }),
+      document.getElementById('graphiql')
+    );
+  }
+</script>
+```
+
 ### Usage Examples
 
 ```js
+GraphiQL.Logo = <div>Custom Logo</div>
+
+
 class CustomGraphiQL extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       // REQUIRED:
       // `fetcher` must be provided in order for GraphiQL to operate
-      fetcher: this.props.fetcher,
-
-      // OPTIONAL PARAMETERS
-      // GraphQL artifacts
-      query: '',
-      variables: '',
-      response: '',
-
-      // GraphQL Schema
-      // If `undefined` is provided, an introspection query is executed
-      // using the fetcher.
-      schema: undefined,
-
-      // Useful to determine which operation to run
-      // when there are multiple of them.
-      operationName: null,
-      storage: null,
-      defaultQuery: null,
-
-      // Custom Event Handlers
-      onEditQuery: null,
-      onEditVariables: null,
-      onEditOperationName: null,
-
-      // GraphiQL automatically fills in leaf nodes when the query
-      // does not provide them. Change this if your GraphQL Definitions
-      // should behave differently than what's defined here:
-      // (https://github.com/graphql/graphiql/blob/master/src/utility/fillLeafs.js#L75)
-      getDefaultFieldNames: null
+      fetcher: this.props.fetcher
     };
   }
 
@@ -223,137 +334,3 @@ In order to theme the editor portions of the interface, you can supply a `editor
   editorTheme="solarized light"
 />
 ```
-
-### Query Samples
-
-**Query**
-
-GraphQL queries declaratively describe what data the issuer wishes to fetch from whoever is fulfilling the GraphQL query.
-
-```graphql
-query FetchSomeIDQuery($someId: String!) {
-  human(id: $someId) {
-    name
-  }
-}
-```
-
-More examples available from: [GraphQL Queries](http://graphql.org/docs/queries/).
-
-**Mutation**
-
-Given this schema,
-
-```js
-const schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    fields: {
-      numberHolder: { type: numberHolderType },
-    },
-    name: 'Query',
-  }),
-  mutation: new GraphQLObjectType({
-    fields: {
-      immediatelyChangeTheNumber: {
-        type: numberHolderType,
-        args: { newNumber: { type: GraphQLInt } },
-        resolve: function(obj, { newNumber }) {
-          return obj.immediatelyChangeTheNumber(newNumber);
-        },
-      },
-    },
-    name: 'Mutation',
-  }),
-});
-```
-
-then the following mutation queries are possible:
-
-```graphql
-mutation TestMutation {
-  first: immediatelyChangeTheNumber(newNumber: 1) {
-    theNumber
-  }
-}
-```
-
-Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/mutations-test.js).
-
-[Relay](https://relay.dev/) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
-
-```graphql
-input IntroduceShipInput {
-  factionId: ID!
-  shipName: String!
-  clientMutationId: String!
-}
-
-type IntroduceShipPayload {
-  faction: Faction
-  ship: Ship
-  clientMutationId: String!
-}
-```
-
-mutation calls are composed as such:
-
-```graphql
-mutation AddBWingQuery($input: IntroduceShipInput!) {
-  introduceShip(input: $input) {
-    ship {
-      id
-      name
-    }
-    faction {
-      name
-    }
-    clientMutationId
-  }
-}
-{
-  "input": {
-    "shipName": "B-Wing",
-    "factionId": "1",
-    "clientMutationId": "abcde"
-  }
-}
-```
-
-Read more from [Relay Mutation Documentation](https://relay.dev/docs/en/graphql-server-specification.html#mutations).
-
-**Fragment**
-
-Fragments allow for the reuse of common repeated selections of fields, reducing duplicated text in the document. Inline Fragments can be used directly within a selection to condition upon a type condition when querying against an interface or union. Therefore, instead of the following query:
-
-```graphql
-{
-  luke: human(id: "1000") {
-    name
-    homePlanet
-  }
-  leia: human(id: "1003") {
-    name
-    homePlanet
-  }
-}
-```
-
-using fragments, the following query is possible.
-
-```graphql
-{
-  luke: human(id: "1000") {
-    ...HumanFragment
-  }
-  leia: human(id: "1003") {
-    ...HumanFragment
-  }
-}
-
-fragment HumanFragment on Human {
-  name
-  homePlanet
-}
-```
-
-Read more from [GraphQL Fragment Specification](https://graphql.github.io/graphql-spec/draft/#sec-Language.Fragments).

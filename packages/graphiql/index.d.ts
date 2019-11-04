@@ -38,7 +38,7 @@ declare module 'graphiql' {
     response?: string,
     query?: string
   }
-  type RenderGraphiQLConfig = {
+  export type RenderConfig = {
     /**
      * the url if no fetcher is provided
      */
@@ -46,10 +46,10 @@ declare module 'graphiql' {
     /**
      * the headers if no fetcher is provided
      */
-    headers: string
+    headers: Headers
     containerId?: string
     containerEl?: HTMLElement
-  } & GraphiQLProps
-  export function renderGraphiQL(config: RenderGraphiQLConfig): Promise<void>
+  } & GraphiQLProps;
+  export function renderGraphiQL(config: RenderConfig): Promise<void>
 }
 

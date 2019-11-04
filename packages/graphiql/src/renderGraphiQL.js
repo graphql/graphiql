@@ -13,7 +13,7 @@ const getFetcher = async (opts) => {
   // only load isomorphic fetch if a fetcher is not provided
   const { default: fetch } = await import('isomorphic-fetch');
   if (!opts.containerEl || opts.containerId) {
-    logger.warn('no containerEl or containerId provided, defaulting #root')
+    logger.warn('no containerEl or containerId provided, defaulting to #root')
   }
   if (!opts.url || !opts.fetcher) {
     logger.warn('no url or custom fetcher provided, defaulting to POSTs against http://localhost:8080')

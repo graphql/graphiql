@@ -1,5 +1,6 @@
 const babelEnvConfig = {
-  ignoreBrowserslistConfig: Boolean(process.env.ESM),
+  // ignore browserslist ONLY when we make our main/modules babel builds
+  ignoreBrowserslistConfig: Boolean(process.env.ESM && !process.env.BUNDLE),
   modules: process.env.ESM ? false : 'commonjs',
   targets: process.env.ESM ? 'last 1 chrome version, last 1 firefox version': undefined,
 };
