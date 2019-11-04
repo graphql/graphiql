@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "An example using GraphiQL",
   "scripts": {
-    "build-demo": "rm -rf bundle | true && mkdir -p bundle | true && cp -R ../../graphiql/bundle/min/* bundle/ && cp -R ../../graphiql/*.css bundle/",
+    "build-demo": "rm -rf bundle || true && mkdir -p bundle || true && cp -R ../../graphiql/bundle/min/* bundle/ && cp -R ../../graphiql/*.css bundle/",
     "start": "node server"
   },
   "dependencies": {
