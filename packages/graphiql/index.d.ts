@@ -1,9 +1,8 @@
 
 declare module 'graphiql' {
   import React from 'react'
-  
   import { GraphQLSchema } from 'graphql'
-  export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState>{}
+  export interface GraphiQL extends React.Component<GraphiQLProps, GraphiQLState>{}
 
   export interface GraphiQLProps {
     fetcher?: (props: {
@@ -39,5 +38,18 @@ declare module 'graphiql' {
     response?: string,
     query?: string
   }
+  type RenderGraphiQLConfig = {
+    /**
+     * the url if no fetcher is provided
+     */
+    url: string
+    /**
+     * the headers if no fetcher is provided
+     */
+    headers: string
+    containerId?: string
+    containerEl?: HTMLElement
+  } & GraphiQLProps
+  export function renderGraphiQL(config: RenderGraphiQLConfig): Promise<void>
 }
 

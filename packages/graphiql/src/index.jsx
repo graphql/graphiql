@@ -8,5 +8,6 @@ import 'regenerator-runtime/runtime';
 
 // The primary React component to use.
 import { GraphiQL } from './components/GraphiQL'
+export { renderGraphiQL } from './renderGraphiQL'
 
 export default GraphiQL;
