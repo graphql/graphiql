@@ -50,6 +50,6 @@ declare module 'graphiql' {
     containerId?: string
     containerEl?: HTMLElement
   } & GraphiQLProps;
-  export function renderGraphiQL(config: RenderConfig): Promise<void>
+  export function renderGraphiQL(config?: RenderConfig): Promise<void>
 }
 
