@@ -27,7 +27,7 @@ const resultConfig = {
       // codemirror-graphql esm.js files to load
       {
         test: /\.(js|jsx)$/,
-        use: [{ loader: 'babel-loader' }],
+        use: [{ loader: 'babel-loader', options: require('../babel.config') }],
       }
     ],
   },
