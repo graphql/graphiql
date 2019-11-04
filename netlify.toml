@@ -1,3 +1,5 @@
 [build]
-  command = "yarn && yarn build && lerna run build-bundles && lerna run build-demo"
+  command = "yarn && yarn build && lerna run build-bundles && lerna run build-demo && cd functions && yarn"
   publish = "packages/graphiql"
+  functions = "functions"
+

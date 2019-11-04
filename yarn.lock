@@ -6251,6 +6251,7 @@ graceful-fs@^4.1.4:
     codemirror-graphql "^0.11.2"
     copy-to-clipboard "^3.2.0"
     graphql "14.5.6"
+    isomorphic-fetch "^2.2.1"
     markdown-it "^8.4.0"
     regenerator-runtime "^0.13.3"
 

@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import GraphiQL from 'graphiql'
+import 'graphiql/graphiql.css'
 
-// import 'graphiql/graphiql.css'
 const App = () => (
   <GraphiQL
     style={{ height: '100vh' }}
