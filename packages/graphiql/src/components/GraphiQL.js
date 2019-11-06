@@ -758,7 +758,28 @@ export class GraphiQL extends React.Component {
 
   handlePrettifyQuery = () => {
     const editor = this.getQueryEditor();
-    editor.setValue(print(parse(editor.getValue())));
+    const editorContent = editor.getValue();
+    const prettifiedEditorContent = print(parse(editorContent));
+
+    if (prettifiedEditorContent !== editorContent) {
+      editor.setValue(prettifiedEditorContent);
+    }
+
+    const variableEditor = this.getVariableEditor();
+    const variableEditorContent = variableEditor.getValue();
+
+    try {
+      const prettifiedVariableEditorContent = JSON.stringify(
+        JSON.parse(variableEditorContent),
+        null,
+        2
+      );
+      if (prettifiedVariableEditorContent !== variableEditorContent) {
+        variableEditor.setValue(prettifiedVariableEditorContent);
+      }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
+    }
   };
 
   handleMergeQuery = () => {
