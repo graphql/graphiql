@@ -13,7 +13,8 @@
 # Now un-ignore source code, tests, configuration, etc
 !/packages/*/src/**
 !/packages/*/test/**
-!/packages/codemirror-graphql/resources/**
+!/packages/*/resources/**
+!/packages/*/cypress/**
 !/packages/examples/**
 !.eslintrc.js
 !babel.config.js
