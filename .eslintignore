@@ -12,6 +12,7 @@
 #
 # Now un-ignore source code, tests, configuration, etc
 !/packages/graphiql/index.d.ts
+!/packages/graphiql/test
 !/packages/*/src/**
 !/packages/*/test/**
 !/packages/*/resources/**

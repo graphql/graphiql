@@ -1,9 +1,7 @@
-
-   
-import React from 'react'
-import ReactDOM from 'react-dom'
-import GraphiQL from '../src'
-import '../graphiql.css'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import GraphiQL from '../src';
+import '../graphiql.css';
 /**
  * This GraphiQL example illustrates how to use some of GraphiQL's props
  * in order to enable reading and updating the URL parameters, making
@@ -16,19 +14,26 @@ import '../graphiql.css'
 // Parse the search string to get url parameters.
 const search = window.location.search;
 const parameters = {};
-search.substr(1).split('&').forEach( (entry) => {
-  const eq = entry.indexOf('=');
-  if (eq >= 0) {
-    parameters[decodeURIComponent(entry.slice(0, eq))] =
-      decodeURIComponent(entry.slice(eq + 1));
-  }
-});
+search
+  .substr(1)
+  .split('&')
+  .forEach(entry => {
+    const eq = entry.indexOf('=');
+    if (eq >= 0) {
+      parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
+        entry.slice(eq + 1),
+      );
+    }
+  });
 
 // if variables was provided, try to format it.
 if (parameters.variables) {
   try {
-    parameters.variables =
-      JSON.stringify(JSON.parse(parameters.variables), null, 2);
+    parameters.variables = JSON.stringify(
+      JSON.parse(parameters.variables),
+      null,
+      2,
+    );
   } catch (e) {
     // Do nothing, we want to display the invalid JSON as a string, rather
     // than present an error.
@@ -53,47 +58,54 @@ function onEditOperationName(newOperationName) {
 }
 
 function updateURL() {
-  const newSearch = '?' + Object.keys(parameters).filter(  (key) => {
-    return Boolean(parameters[key]);
-  }).map( (key) => {
-    return encodeURIComponent(key) + '=' +
-      encodeURIComponent(parameters[key]);
-  }).join('&');
+  const newSearch =
+    '?' +
+    Object.keys(parameters)
+      .filter(key => {
+        return Boolean(parameters[key]);
+      })
+      .map(key => {
+        return (
+          encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key])
+        );
+      })
+      .join('&');
   history.replaceState(null, null, newSearch);
 }
 
 // Defines a GraphQL fetcher using the fetch API.
-const graphQLEndpoint = window.location.protocol + '//' + window.location.host + '/graphql';
+const graphQLEndpoint =
+  window.location.protocol + '//' + window.location.host + '/graphql';
 function graphQLFetcher(graphQLParams) {
   return fetch(graphQLEndpoint, {
     method: 'post',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(graphQLParams),
     credentials: 'same-origin',
-  }).then(r => r.text()).then( (responseBody) => {
-    try {
-      return JSON.parse(responseBody);
-    } catch (error) {
-      return responseBody;
-    }
-  });
+  })
+    .then(r => r.text())
+    .then(responseBody => {
+      try {
+        return JSON.parse(responseBody);
+      } catch (error) {
+        return responseBody;
+      }
+    });
 }
 const subscriptionsEndpoint = graphQLEndpoint.replace(/^http/, 'ws');
-const subscriptionsClient =
-  new window.SubscriptionsTransportWs.SubscriptionClient(
-    subscriptionsEndpoint,
-    {
-      reconnect: true
-    }
-  );
-const graphQLFetcherWithSubscriptions = 
-  window.GraphiQLSubscriptionsFetcher.graphQLFetcher(
-    subscriptionsClient,
-    graphQLFetcher
-  );
+const subscriptionsClient = new window.SubscriptionsTransportWs.SubscriptionClient(
+  subscriptionsEndpoint,
+  {
+    reconnect: true,
+  },
+);
+const graphQLFetcherWithSubscriptions = window.GraphiQLSubscriptionsFetcher.graphQLFetcher(
+  subscriptionsClient,
+  graphQLFetcher,
+);
 
 // Render <GraphiQL /> into the body.
 ReactDOM.render(
@@ -107,5 +119,5 @@ ReactDOM.render(
     onEditOperationName={onEditOperationName}
     docExplorerOpen
   />,
-  document.getElementById('graphiql')
+  document.getElementById('graphiql'),
 );
