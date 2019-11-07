@@ -364,5 +364,12 @@ module.exports = {
         'no-await-in-loop': 0,
       },
     },
+    {
+      files: ['**/cypress/**'],
+      globals: {
+        Cypress: false,
+        cy: false,
+      },
+    },
   ],
 };

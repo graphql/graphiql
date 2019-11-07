@@ -26,8 +26,8 @@ const mockSuccess = {
   },
 };
 
-describe('GraphiQL On Initialization', function() {
-  it('Renders without error', function() {
+describe('GraphiQL On Initialization', () => {
+  it('Renders without error', () => {
     const containers = [
       '#graphiql',
       '.graphiql-container',
@@ -41,7 +41,7 @@ describe('GraphiQL On Initialization', function() {
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
   });
 
-  it('Executes a GraphQL query over HTTP that has the expected result', function() {
+  it('Executes a GraphQL query over HTTP that has the expected result', () => {
     cy.get('.execute-button').click();
     cy.wait(3000);
     cy.window().then(w => {
@@ -54,12 +54,12 @@ describe('GraphiQL On Initialization', function() {
     });
   });
 
-  it('Toggles doc pane back on', function() {
+  it('Toggles doc pane back on', () => {
     cy.get('.docExplorerShow').click();
     cy.get('.doc-explorer').should('be.visible');
   });
 
-  it('Toggles doc pane off', function() {
+  it('Toggles doc pane off', () => {
     // there are two components with .docExplorerHide, one in query history
     cy.get('.docExplorerWrap button.docExplorerHide').click();
     cy.get('.doc-explorer').should('not.exist');

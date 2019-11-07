@@ -45,4 +45,4 @@ export type RenderConfig = {
   containerId?: string;
   containerEl?: HTMLElement;
 } & GraphiQLProps;
-export function renderGraphiQL(config?: RenderConfig): Promise<void>;
+declare function renderGraphiQL(config?: RenderConfig): Promise<void>;
