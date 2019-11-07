@@ -14,8 +14,8 @@ const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
-const options = ['--trailing-comma=es5'];
-const glob = '{packages/*/{resources,src},resources,src}/**/*.js';
+const options = ['--trailing-comma=es5', '--ignore-path=.eslintignore'];
+const glob = '**/*.{js,jsx,ts,tsx}';
 const root = join(__dirname, '..');
 const executable = join(root, 'node_modules', '.bin', 'prettier');
 

@@ -20,6 +20,7 @@
 !/packages/examples/**
 !.eslintrc.js
 !babel.config.js
+!webpack.*.js
 #
 # End of the ignore dance.
 #
