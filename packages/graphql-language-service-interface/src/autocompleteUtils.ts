@@ -24,7 +24,7 @@ import {
 // Utility for returning the state representing the Definition this token state
 // is within, if any.
 export function getDefinitionState(
-  tokenState: State,
+  tokenState: State
 ): State | null | undefined {
   let definitionState;
 
@@ -49,7 +49,7 @@ export function getDefinitionState(
 export function getFieldDef(
   schema: GraphQLSchema,
   type: GraphQLType,
-  fieldName: string,
+  fieldName: string
 ): GraphQLField<any, any> | null | undefined {
   if (fieldName === SchemaMetaFieldDef.name && schema.getQueryType() === type) {
     return SchemaMetaFieldDef;
@@ -70,7 +70,7 @@ export function getFieldDef(
 // Utility for iterating through a CodeMirror parse state stack bottom-up.
 export function forEachState(
   stack: State,
-  fn: (state: State) => AllTypeInfo | null | void,
+  fn: (state: State) => AllTypeInfo | null | void
 ): void {
   const reverseStateStack = [];
   let state: State | null | undefined = stack;
@@ -96,7 +96,7 @@ export function objectValues(object: Record<string, any>): Array<any> {
 // Create the expected hint response given a possible list and a token
 export function hintList(
   token: ContextToken,
-  list: Array<CompletionItem>,
+  list: Array<CompletionItem>
 ): Array<CompletionItem> {
   return filterAndSortList(list, normalizeText(token.string));
 }
@@ -105,7 +105,7 @@ export function hintList(
 // provide a concise list.
 function filterAndSortList(
   list: Array<CompletionItem>,
-  text: string,
+  text: string
 ): Array<CompletionItem> {
   if (!text) {
     return filterNonEmpty<CompletionItem>(list, entry => !entry.isDeprecated);
@@ -118,14 +118,14 @@ function filterAndSortList(
 
   const conciseMatches = filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
-    pair => !pair.entry.isDeprecated,
+    pair => !pair.entry.isDeprecated
   );
 
   const sortedMatches = conciseMatches.sort(
     (a, b) =>
       (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
       a.proximity - b.proximity ||
-      a.entry.label.length - b.entry.label.length,
+      a.entry.label.length - b.entry.label.length
   );
 
   return sortedMatches.map(pair => pair.entry);
@@ -135,7 +135,7 @@ function filterAndSortList(
 // in which case return the original array.
 function filterNonEmpty<T>(
   array: Array<T>,
-  predicate: (entry: T) => boolean,
+  predicate: (entry: T) => boolean
 ): Array<T> {
   const filtered = array.filter(predicate);
   return filtered.length === 0 ? array : filtered;
@@ -194,7 +194,7 @@ function lexicalDistance(a: string, b: string): number {
       d[i][j] = Math.min(
         d[i - 1][j] + 1,
         d[i][j - 1] + 1,
-        d[i - 1][j - 1] + cost,
+        d[i - 1][j - 1] + cost
       );
 
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {

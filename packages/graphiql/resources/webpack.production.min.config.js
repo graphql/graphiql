@@ -28,7 +28,7 @@ const resultConfig = {
     ...config.plugins,
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
-    })
+    }),
   ],
 };
 

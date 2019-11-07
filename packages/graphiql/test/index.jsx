@@ -21,7 +21,7 @@ search
     const eq = entry.indexOf('=');
     if (eq >= 0) {
       parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-        entry.slice(eq + 1),
+        entry.slice(eq + 1)
       );
     }
   });
@@ -32,7 +32,7 @@ if (parameters.variables) {
     parameters.variables = JSON.stringify(
       JSON.parse(parameters.variables),
       null,
-      2,
+      2
     );
   } catch (e) {
     // Do nothing, we want to display the invalid JSON as a string, rather
@@ -100,11 +100,11 @@ const subscriptionsClient = new window.SubscriptionsTransportWs.SubscriptionClie
   subscriptionsEndpoint,
   {
     reconnect: true,
-  },
+  }
 );
 const graphQLFetcherWithSubscriptions = window.GraphiQLSubscriptionsFetcher.graphQLFetcher(
   subscriptionsClient,
-  graphQLFetcher,
+  graphQLFetcher
 );
 
 // Render <GraphiQL /> into the body.
@@ -119,5 +119,5 @@ ReactDOM.render(
     onEditOperationName={onEditOperationName}
     docExplorerOpen
   />,
-  document.getElementById('graphiql'),
+  document.getElementById('graphiql')
 );

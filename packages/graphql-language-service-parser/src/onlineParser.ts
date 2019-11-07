@@ -54,7 +54,7 @@ export default function onlineParser(
     lexRules: LexRules,
     parseRules: ParseRules,
     editorConfig: {},
-  },
+  }
 ): {
   startState: () => State;
   token: (stream: CharacterStream, state: State) => string;
@@ -84,7 +84,7 @@ export default function onlineParser(
 function getToken(
   stream: CharacterStream,
   state: State,
-  options: ParserOptions,
+  options: ParserOptions
 ): string {
   const { lexRules, parseRules, eatWhitespace, editorConfig } = options;
   // Restore state after an empty-rule.
@@ -230,7 +230,7 @@ const SpecialParseRules = {
 function pushRule(
   rules: typeof ParseRulesType,
   state: State,
-  ruleKind: RuleKind,
+  ruleKind: RuleKind
 ): void {
   if (!rules[ruleKind]) {
     throw new TypeError('Unknown rule: ' + ruleKind);
@@ -340,7 +340,7 @@ function unsuccessful(state: State): void {
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(
   lexRules: typeof LexRulesType,
-  stream: CharacterStream,
+  stream: CharacterStream
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);
   for (let i = 0; i < kinds.length; i++) {

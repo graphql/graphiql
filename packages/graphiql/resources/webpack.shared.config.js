@@ -1,6 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const resultConfig = {
   entry: './index.jsx',
   context: path.resolve(__dirname, '../src'),
@@ -28,7 +28,7 @@ const resultConfig = {
       {
         test: /\.(js|jsx)$/,
         use: [{ loader: 'babel-loader', options: require('../babel.config') }],
-      }
+      },
     ],
   },
   plugins: [],

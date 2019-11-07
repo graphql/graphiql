@@ -31,7 +31,9 @@ const finalConfig = {
     fs: 'empty',
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: path.resolve(path.join(__dirname, 'index.bundle.html.ejs')) })
+    new HtmlWebpackPlugin({
+      template: path.resolve(path.join(__dirname, 'index.bundle.html.ejs')),
+    }),
   ],
 };
 

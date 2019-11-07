@@ -21,7 +21,7 @@ export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
   customRules?: Array<CustomValidationRule>,
-  isRelayCompatMode?: boolean,
+  isRelayCompatMode?: boolean
 ): Array<GraphQLError> {
   // Because every fragment is considered for determing model subsets that may
   // be used anywhere in the codebase they're all technically "used" by clients
@@ -41,7 +41,7 @@ export function validateWithCustomRules(
   }
 
   const rules = specifiedRules.filter(
-    rule => !rulesToSkip.some(r => r === rule),
+    rule => !rulesToSkip.some(r => r === rule)
   );
 
   const typeInfo = new TypeInfo(schema);
@@ -54,7 +54,7 @@ export function validateWithCustomRules(
     schema,
     ast,
     rules,
-    typeInfo,
+    typeInfo
   );
 
   if (errors.length > 0) {
@@ -62,11 +62,10 @@ export function validateWithCustomRules(
       if (error.message.indexOf('Unknown directive') === -1) {
         return true;
       }
-      if (error.nodes && error.nodes[0] as TypeDefinitionNode) {
+      if (error.nodes && (error.nodes[0] as TypeDefinitionNode)) {
         const node = <TypeDefinitionNode>error.nodes[0];
         return !(
-          node.name &&
-          node.name.value === 'arguments' ||
+          (node.name && node.name.value === 'arguments') ||
           node.name.value === 'argumentDefinitions'
         );
       }

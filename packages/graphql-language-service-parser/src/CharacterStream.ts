@@ -110,7 +110,7 @@ export default class CharacterStream implements CharacterStreamInterface {
   match = (
     pattern: TokenPattern,
     consume: boolean | null | undefined = true,
-    caseFold: boolean | null | undefined = false,
+    caseFold: boolean | null | undefined = false
   ): Array<string> | boolean => {
     let token = null;
     let match = null;

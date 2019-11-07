@@ -37,8 +37,8 @@ describe('validateWithCustomRules', () => {
             context.reportError(
               new GraphQLError(
                 'Argument ID must be a number written in string type.',
-                [node],
-              ),
+                [node]
+              )
             );
           }
         },
@@ -48,7 +48,7 @@ describe('validateWithCustomRules', () => {
     const errors = validateWithCustomRules(schema, invalidAST, customRules);
     expect(errors.length).toEqual(1);
     expect(errors[0].message).toEqual(
-      'Argument ID must be a number written in string type.',
+      'Argument ID must be a number written in string type.'
     );
   });
 
@@ -58,7 +58,7 @@ describe('validateWithCustomRules', () => {
       schema,
       astWithUnknownFragment,
       [],
-      true,
+      true
     );
     expect(noErrors.length).toEqual(0);
 
@@ -66,7 +66,7 @@ describe('validateWithCustomRules', () => {
       schema,
       astWithUnknownFragment,
       [],
-      false,
+      false
     );
     expect(errors.length).toEqual(1);
     expect(errors[0].message).toEqual('Unknown fragment "UnknownFragment".');
@@ -74,19 +74,19 @@ describe('validateWithCustomRules', () => {
 
   it('does not validate for Relay @arguments and @argumentDefinition', () => {
     const astWithArgumentsDirective = parse(
-      'query { human(id: "1") @arguments(foo: "bar") { name } }',
+      'query { human(id: "1") @arguments(foo: "bar") { name } }'
     );
 
     expect(
-      validateWithCustomRules(schema, astWithArgumentsDirective, []),
+      validateWithCustomRules(schema, astWithArgumentsDirective, [])
     ).toEqual([]);
 
     const astWithArgumentDefDirective = parse(
-      '{ human(id: "2") { name @argumentDefinitions(arg: "foo") } }',
+      '{ human(id: "2") { name @argumentDefinitions(arg: "foo") } }'
     );
 
     expect(
-      validateWithCustomRules(schema, astWithArgumentDefDirective),
+      validateWithCustomRules(schema, astWithArgumentDefDirective)
     ).toEqual([]);
   });
 });

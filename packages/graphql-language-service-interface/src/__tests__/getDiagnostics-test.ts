@@ -19,7 +19,7 @@ describe('getDiagnostics', () => {
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
-      'utf8',
+      'utf8'
     );
 
     schema = buildSchema(schemaIDL);
@@ -28,7 +28,7 @@ describe('getDiagnostics', () => {
   it('catches field validation errors', () => {
     const error = validateQuery(parse('query queryName { title }'), schema)[0];
     expect(error.message).toEqual(
-      'Cannot query field "title" on type "Query".',
+      'Cannot query field "title" on type "Query".'
     );
     expect(error.severity).toEqual(SEVERITY.ERROR);
     expect(error.source).toEqual('GraphQL: Validation');
@@ -37,10 +37,10 @@ describe('getDiagnostics', () => {
   it('catches field deprecation errors', () => {
     const error = getDiagnostics(
       '{ deprecatedField { testField } }',
-      schema,
+      schema
     )[0];
     expect(error.message).toEqual(
-      'The field Query.deprecatedField is deprecated. Use test instead.',
+      'The field Query.deprecatedField is deprecated. Use test instead.'
     );
     expect(error.severity).toEqual(SEVERITY.WARNING);
     expect(error.source).toEqual('GraphQL: Deprecation');
@@ -54,7 +54,7 @@ describe('getDiagnostics', () => {
   it('returns no errors for valid query with aliases', () => {
     const errors = getDiagnostics(
       'query { superHero: hero { superName: name } superHero2: hero { superName2: name } }',
-      schema,
+      schema
     );
     expect(errors.length).toEqual(0);
   });
@@ -67,7 +67,7 @@ describe('getDiagnostics', () => {
           id: String!
         }
       `,
-      schema,
+      schema
     );
     expect(errors.length).toEqual(1);
     const error = errors[0];
@@ -81,7 +81,7 @@ describe('getDiagnostics', () => {
   it('returns no errors after parsing kitchen-sink query', () => {
     const kitchenSink = fs.readFileSync(
       path.join(__dirname, '/kitchen-sink.graphql'),
-      'utf8',
+      'utf8'
     );
 
     const errors = getDiagnostics(kitchenSink);

@@ -45,7 +45,7 @@ export interface CharacterStream {
   match: (
     pattern: TokenPattern,
     consume?: boolean | null | undefined,
-    caseFold?: boolean | null | undefined,
+    caseFold?: boolean | null | undefined
   ) => Array<string> | boolean;
   backUp: (num: number) => void;
   column: () => number;
@@ -85,64 +85,64 @@ export interface GraphQLCache {
 
   getObjectTypeDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo> | null | undefined,
+    fragmentDefinitions: Map<string, ObjectTypeInfo> | null | undefined
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
+    fragmentDefinitions: Map<string, ObjectTypeInfo>
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
+    graphQLConfig: GraphQLProjectConfig
   ) => Promise<Map<string, ObjectTypeInfo>>;
 
   updateObjectTypeDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ) => Promise<undefined>;
 
   updateObjectTypeDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ) => Promise<undefined>;
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
+    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined
   ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, FragmentInfo>,
+    fragmentDefinitions: Map<string, FragmentInfo>
   ) => Promise<Array<FragmentInfo>>;
 
   getFragmentDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
+    graphQLConfig: GraphQLProjectConfig
   ) => Promise<Map<string, FragmentInfo>>;
 
   updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: Array<CachedContent>
   ) => Promise<undefined>;
 
   updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
-    exists: boolean,
+    exists: boolean
   ) => Promise<undefined>;
 
   getSchema: (
     appName: string | null | undefined,
-    queryHasExtensions?: boolean | null | undefined,
+    queryHasExtensions?: boolean | null | undefined
   ) => Promise<GraphQLSchema | null | undefined>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
-    projectConfig: GraphQLProjectConfig,
+    projectConfig: GraphQLProjectConfig
   ) => (result: Object) => undefined;
 }
 
@@ -278,7 +278,7 @@ export type ObjectTypeInfo = {
 };
 
 export type CustomValidationRule = (
-  context: ValidationContext,
+  context: ValidationContext
 ) => Record<string, any>;
 
 export type Diagnostic = {

@@ -21,7 +21,7 @@ describe('getAutocompleteSuggestions', () => {
   beforeEach(async () => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
-      'utf8',
+      'utf8'
     );
 
     schema = buildSchema(schemaIDL);
@@ -30,11 +30,11 @@ describe('getAutocompleteSuggestions', () => {
   // Returns a soreted autocomplete suggestions in an increasing order.
   function testSuggestions(
     query: string,
-    point: Position,
+    point: Position
   ): Array<CompletionItem> {
     return getAutocompleteSuggestions(schema, query, point)
       .filter(
-        field => !['__schema', '__type'].some(name => name === field.label),
+        field => !['__schema', '__type'].some(name => name === field.label)
       )
       .sort((a, b) => a.label.localeCompare(b.label))
       .map(suggestion => {
@@ -52,7 +52,7 @@ describe('getAutocompleteSuggestions', () => {
     const result = getAutocompleteSuggestions(
       schema,
       `{ h`,
-      new Position(0, 3),
+      new Position(0, 3)
     ).map(({ sortText, label, detail }) => ({ sortText, label, detail }));
     expect(result).toEqual([
       {
@@ -117,8 +117,8 @@ query name {
   ...testFragment
 }
     `,
-        new Position(2, 0),
-      ),
+        new Position(2, 0)
+      )
     ).toEqual([
       { label: '__typename', detail: 'String!' },
       { label: 'droid', detail: 'Droid' },
@@ -150,7 +150,7 @@ query name {
   it('provides correct field name suggestions with alias', () => {
     const result = testSuggestions(
       '{ alias: human(id: "1") { ',
-      new Position(0, 26),
+      new Position(0, 26)
     );
 
     expect(result).toEqual([
@@ -166,7 +166,7 @@ query name {
   it('provides correct field suggestions for fragments', () => {
     const result = testSuggestions(
       'fragment test on Human { ',
-      new Position(0, 25),
+      new Position(0, 25)
     );
 
     expect(result).toEqual([
@@ -192,12 +192,12 @@ query name {
   it('provides correct typeCondition suggestions', () => {
     const suggestionsOnQuery = testSuggestions('{ ... on ', new Position(0, 9));
     expect(
-      suggestionsOnQuery.filter(({ label }) => !label.startsWith('__')),
+      suggestionsOnQuery.filter(({ label }) => !label.startsWith('__'))
     ).toEqual([{ label: 'Query' }]);
 
     const suggestionsOnCompositeType = testSuggestions(
       '{ hero(episode: JEDI) { ... on } }',
-      new Position(0, 31),
+      new Position(0, 31)
     );
 
     expect(suggestionsOnCompositeType).toEqual([
@@ -209,8 +209,8 @@ query name {
     expect(
       testSuggestions(
         'fragment Foo on Character { ... on }',
-        new Position(0, 35),
-      ),
+        new Position(0, 35)
+      )
     ).toEqual([{ label: 'Character' }, { label: 'Droid' }, { label: 'Human' }]);
   });
 
@@ -241,22 +241,22 @@ query name {
     expect(
       testSuggestions(
         `${fragmentDef} query { human(id: "1") { ...`,
-        new Position(0, 57),
-      ),
+        new Position(0, 57)
+      )
     ).toEqual([{ label: 'Foo', detail: 'Human' }]);
     expect(
       testSuggestions(
         `query { human(id: "1") { ... }} ${fragmentDef}`,
-        new Position(0, 28),
-      ),
+        new Position(0, 28)
+      )
     ).toEqual([{ label: 'Foo', detail: 'Human' }]);
 
     // Test on abstract type
     expect(
       testSuggestions(
         `${fragmentDef} query { hero(episode: JEDI) { ...`,
-        new Position(0, 62),
-      ),
+        new Position(0, 62)
+      )
     ).toEqual([{ label: 'Foo', detail: 'Human' }]);
   });
 
@@ -268,7 +268,7 @@ query name {
     ]);
 
     expect(
-      testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
+      testSuggestions('{ aliasTest: test @ }', new Position(0, 19))
     ).toEqual([{ label: 'include' }, { label: 'skip' }, { label: 'test' }]);
 
     expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
@@ -276,7 +276,7 @@ query name {
 
   it('provides correct testInput suggestions', () => {
     expect(
-      testSuggestions('{ inputTypeTest(args: {', new Position(0, 23)),
+      testSuggestions('{ inputTypeTest(args: {', new Position(0, 23))
     ).toEqual([
       { label: 'key', detail: 'String!' },
       { label: 'value', detail: 'Int' },
@@ -287,8 +287,8 @@ query name {
     expect(
       testSuggestions(
         'fragment Foo on Character { ... on Human { }}',
-        new Position(0, 42),
-      ),
+        new Position(0, 42)
+      )
     ).toEqual([
       { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
@@ -300,7 +300,7 @@ query name {
 
     // Typeless inline fragment assumes the type automatically
     expect(
-      testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
+      testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30))
     ).toEqual([
       { label: '__typename', detail: 'String!' },
       { label: 'appearsIn', detail: '[Episode]' },
@@ -319,6 +319,6 @@ query name {
 
   it('provides correct directive suggestions on args definitions', () =>
     expect(
-      testSuggestions('type Type { field(arg: String @', new Position(0, 31)),
+      testSuggestions('type Type { field(arg: String @', new Position(0, 31))
     ).toEqual([{ label: 'onAllDefs' }, { label: 'onArg' }]));
 });

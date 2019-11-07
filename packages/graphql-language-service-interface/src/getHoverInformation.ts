@@ -20,7 +20,11 @@ import {
   GraphQLField,
   GraphQLFieldConfig,
 } from 'graphql';
-import { ContextToken, AllTypeInfo, Position } from 'graphql-language-service-types';
+import {
+  ContextToken,
+  AllTypeInfo,
+  Position,
+} from 'graphql-language-service-types';
 
 import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
@@ -29,7 +33,7 @@ export function getHoverInformation(
   schema: GraphQLSchema,
   queryText: string,
   cursor: Position,
-  contextToken?: ContextToken,
+  contextToken?: ContextToken
 ): Hover['contents'] {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -83,7 +87,7 @@ export function getHoverInformation(
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
-  return ''
+  return '';
 }
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
@@ -91,7 +95,11 @@ function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
 }
 
-function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderQualifiedField(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any
+) {
   if (!typeInfo.fieldDef) {
     return;
   }
@@ -129,7 +137,7 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
     into,
     typeInfo,
     options,
-    typeInfo.inputType as GraphQLType,
+    typeInfo.inputType as GraphQLType
   );
   text(into, ')');
 }
@@ -138,7 +146,7 @@ function renderTypeAnnotation(
   into: string[],
   typeInfo: AllTypeInfo,
   options: any,
-  t: GraphQLType,
+  t: GraphQLType
 ) {
   text(into, ': ');
   renderType(into, typeInfo, options, t);
@@ -158,7 +166,7 @@ function renderType(
   into: string[],
   typeInfo: AllTypeInfo,
   options: any,
-  t: GraphQLType,
+  t: GraphQLType
 ) {
   if (!t) {
     return;
@@ -179,7 +187,7 @@ function renderDescription(
   into: string[],
   options: any,
   // TODO: Figure out the right type for this one
-  def: any,
+  def: any
 ) {
   if (!def) {
     return;
@@ -196,7 +204,7 @@ function renderDescription(
 function renderDeprecation(
   into: string[],
   _options: any,
-  def: GraphQLField<any, any> | GraphQLFieldConfig<any, any>,
+  def: GraphQLField<any, any> | GraphQLFieldConfig<any, any>
 ) {
   if (!def) {
     return;

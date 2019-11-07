@@ -43,7 +43,7 @@ describe('getDefinition', () => {
               ...namedTypeDefinition,
             },
           },
-        ],
+        ]
       );
       expect(result.definitions.length).toEqual(1);
       expect(result.definitions[0].position.line).toEqual(1);
@@ -74,7 +74,7 @@ describe('getDefinition', () => {
             // @ts-ignore
             definition: fragmentDefinition,
           },
-        ],
+        ]
       );
       expect(result.definitions.length).toEqual(1);
       expect(result.definitions[0].position.line).toEqual(1);
