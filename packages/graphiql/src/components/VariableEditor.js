@@ -40,13 +40,76 @@ export class VariableEditor extends React.Component {
   constructor(props) {
     super();
 
+    this.state = {
+      loaded: false,
+      loadingError: null,
+    };
+
     // Keep a cached version of the value, this cache will be updated when the
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this._ready = this._importCode()
+      .then(() => this._setup())
+      .then(() => {
+        this.setState({ loaded: true });
+      })
+      .catch(error => {
+        this.setState({ loadingError: error });
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    this._ready.then(() => {
+      const CodeMirror = this.CodeMirror;
+      if (this.editor) {
+        // Ensure the changes caused by this update are not interpretted as
+        // user-input changes which could otherwise result in an infinite
+        // event loop.
+        this.ignoreChangeEvent = true;
+        if (this.props.variableToType !== prevProps.variableToType) {
+          this.editor.options.lint.variableToType = this.props.variableToType;
+          this.editor.options.hintOptions.variableToType = this.props.variableToType;
+          CodeMirror.signal(this.editor, 'change', this.editor);
+        }
+        if (
+          this.props.value !== prevProps.value &&
+          this.props.value !== this.cachedValue
+        ) {
+          const thisValue = this.props.value || '';
+          this.cachedValue = thisValue;
+          this.editor.setValue(thisValue);
+        }
+        this.ignoreChangeEvent = false;
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.editor) {
+      this.editor.off('change', this._onEdit);
+      this.editor.off('keyup', this._onKeyUp);
+      this.editor.off('hasCompletion', this._onHasCompletion);
+      this.editor = null;
+    }
+  }
+
+  render() {
+    // TODO: if this.state.loadingError, display an error message
+    return (
+      <div
+        className="codemirrorWrap"
+        ref={node => {
+          this._node = node;
+        }}
+      />
+    );
+  }
+
+  async _importCode() {
     // Lazily import to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
     const { default: CodeMirror } = await import(
@@ -56,6 +119,7 @@ export class VariableEditor extends React.Component {
       /* webpackPreload: true */
       'codemirror'
     );
+    this.CodeMirror = CodeMirror;
     await Promise.all([
       import('codemirror/addon/hint/show-hint'),
       import('codemirror/addon/edit/matchbrackets'),
@@ -71,6 +135,10 @@ export class VariableEditor extends React.Component {
       import('codemirror-graphql/esm/variables/lint'),
       import('codemirror-graphql/esm/variables/mode'),
     ]);
+  }
+
+  _setup() {
+    const CodeMirror = this.CodeMirror;
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
@@ -146,56 +214,6 @@ export class VariableEditor extends React.Component {
     this.editor.on('change', this._onEdit);
     this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
-  }
-
-  async componentDidUpdate(prevProps) {
-    const { default: CodeMirror } = await import(
-      /* webpackChunkName: "codemirror" */
-      /* webpackMode: "lazy" */
-      /* webpackPrefetch: true */
-      /* webpackPreload: true */
-      'codemirror'
-    );
-    if (this.editor) {
-      // Ensure the changes caused by this update are not interpretted as
-      // user-input changes which could otherwise result in an infinite
-      // event loop.
-      this.ignoreChangeEvent = true;
-      if (this.props.variableToType !== prevProps.variableToType) {
-        this.editor.options.lint.variableToType = this.props.variableToType;
-        this.editor.options.hintOptions.variableToType = this.props.variableToType;
-        CodeMirror.signal(this.editor, 'change', this.editor);
-      }
-      if (
-        this.props.value !== prevProps.value &&
-        this.props.value !== this.cachedValue
-      ) {
-        const thisValue = this.props.value || '';
-        this.cachedValue = thisValue;
-        this.editor.setValue(thisValue);
-      }
-      this.ignoreChangeEvent = false;
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.editor) {
-      this.editor.off('change', this._onEdit);
-      this.editor.off('keyup', this._onKeyUp);
-      this.editor.off('hasCompletion', this._onHasCompletion);
-      this.editor = null;
-    }
-  }
-
-  render() {
-    return (
-      <div
-        className="codemirrorWrap"
-        ref={node => {
-          this._node = node;
-        }}
-      />
-    );
   }
 
   /**

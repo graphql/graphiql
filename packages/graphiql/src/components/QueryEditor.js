@@ -47,13 +47,78 @@ export class QueryEditor extends React.Component {
   constructor(props) {
     super();
 
+    this.state = {
+      loaded: false,
+      loadingError: null,
+    };
+
     // Keep a cached version of the value, this cache will be updated when the
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+    this._ready = this._importCode()
+      .then(() => this._setup())
+      .then(() => {
+        this.setState({ loaded: true });
+      })
+      .catch(error => {
+        this.setState({ loadingError: error });
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    this._ready.then(() => {
+      const CodeMirror = this.CodeMirror;
+      if (this.editor) {
+        // Ensure the changes caused by this update are not interpretted as
+        // user-input changes which could otherwise result in an infinite
+        // event loop.
+        this.ignoreChangeEvent = true;
+        if (this.props.schema !== prevProps.schema) {
+          this.editor.options.lint.schema = this.props.schema;
+          this.editor.options.hintOptions.schema = this.props.schema;
+          this.editor.options.info.schema = this.props.schema;
+          this.editor.options.jump.schema = this.props.schema;
+          CodeMirror.signal(this.editor, 'change', this.editor);
+        }
+        if (
+          this.props.value !== prevProps.value &&
+          this.props.value !== this.cachedValue
+        ) {
+          this.cachedValue = this.props.value;
+          this.editor.setValue(this.props.value);
+        }
+        this.ignoreChangeEvent = false;
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (this.editor) {
+      this.editor.off('change', this._onEdit);
+      this.editor.off('keyup', this._onKeyUp);
+      this.editor.off('hasCompletion', this._onHasCompletion);
+      this.editor = null;
+    }
+  }
+
+  render() {
+    // TODO: if this.state.loadingError, display an error message
+    return (
+      <section
+        className="query-editor"
+        aria-label="Query Editor"
+        ref={node => {
+          this._node = node;
+        }}
+      />
+    );
+  }
+
+  async _importCode() {
     const { default: CodeMirror } = await import(
       /* webpackChunkName: "codemirror" */
       /* webpackMode: "lazy" */
@@ -61,6 +126,7 @@ export class QueryEditor extends React.Component {
       /* webpackPreload: true */
       'codemirror'
     );
+    this.CodeMirror = CodeMirror;
     await Promise.all([
       import('codemirror/addon/hint/show-hint'),
       import('codemirror/addon/comment/comment'),
@@ -80,6 +146,10 @@ export class QueryEditor extends React.Component {
       import('codemirror-graphql/esm/jump'),
       import('codemirror-graphql/esm/mode'),
     ]);
+  }
+
+  _setup() {
+    const CodeMirror = this.CodeMirror;
     this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
@@ -169,58 +239,6 @@ export class QueryEditor extends React.Component {
     this.editor.on('keyup', this._onKeyUp);
     this.editor.on('hasCompletion', this._onHasCompletion);
     this.editor.on('beforeChange', this._onBeforeChange);
-  }
-
-  async componentDidUpdate(prevProps) {
-    const { default: CodeMirror } = await import(
-      /* webpackChunkName: "codemirror" */
-      /* webpackMode: "lazy" */
-      /* webpackPrefetch: true */
-      /* webpackPreload: true */
-      'codemirror'
-    );
-    if (this.editor) {
-      // Ensure the changes caused by this update are not interpretted as
-      // user-input changes which could otherwise result in an infinite
-      // event loop.
-      this.ignoreChangeEvent = true;
-      if (this.props.schema !== prevProps.schema) {
-        this.editor.options.lint.schema = this.props.schema;
-        this.editor.options.hintOptions.schema = this.props.schema;
-        this.editor.options.info.schema = this.props.schema;
-        this.editor.options.jump.schema = this.props.schema;
-        CodeMirror.signal(this.editor, 'change', this.editor);
-      }
-      if (
-        this.props.value !== prevProps.value &&
-        this.props.value !== this.cachedValue
-      ) {
-        this.cachedValue = this.props.value;
-        this.editor.setValue(this.props.value);
-      }
-      this.ignoreChangeEvent = false;
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.editor) {
-      this.editor.off('change', this._onEdit);
-      this.editor.off('keyup', this._onKeyUp);
-      this.editor.off('hasCompletion', this._onHasCompletion);
-      this.editor = null;
-    }
-  }
-
-  render() {
-    return (
-      <section
-        className="query-editor"
-        aria-label="Query Editor"
-        ref={node => {
-          this._node = node;
-        }}
-      />
-    );
   }
 
   /**
