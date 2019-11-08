@@ -11,13 +11,15 @@ module.exports = {
   verbose: true,
   clearMocks: true,
   collectCoverage: true,
-  setupFiles: [path.join(__dirname, '/resources/enzyme.config.js')],
+  setupFiles: [path.join(__dirname, 'resources/enzyme.config.js')],
   testMatch: [
     '<rootDir>/packages/*/src/**/*-test.{js,ts}',
     '<rootDir>/packages/*/src/**/*.spec.{js,ts}',
   ],
   transform: {
-    '^.+\\.jsx?$': require.resolve('./resources/jestBabelTransform'),
+    '^.+\\.jsx?$': require.resolve(
+      path.join(__dirname, 'resources/jestBabelTransform')
+    ),
     ...tsjPreset.transform,
     ...jsWithBabelPreset.transform,
   },
@@ -29,6 +31,8 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__mocks__/**',
     '!**/resources/**',
+    // we gather coverage for this from mocha still
     '!**/codemirror-graphql/**',
+    '!**/examples/**',
   ],
 };

@@ -6,10 +6,10 @@
   "include": [],
   "references": [
      {
-      "path": "./tsconfig.cjs.json"
+      "path": "./resources/tsconfig.cjs.json"
     },
     {
-      "path": "./tsconfig.esm.json"
+      "path": "./resources/tsconfig.esm.json"
     },
   ]
 }

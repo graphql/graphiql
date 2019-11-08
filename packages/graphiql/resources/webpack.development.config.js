@@ -5,6 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const finalConfig = {
   ...config,
+  mode: 'development',
   context: path.resolve(__dirname, '../test'),
   entry: isDev
     ? [
@@ -14,10 +15,7 @@ const finalConfig = {
         './index.jsx', // the entry point of our app
       ]
     : './index.jsx',
-  output: {
-    ...config.output,
-    path: path.resolve(path.join(__dirname, '../test/dist')),
-  },
+  externals: {},
   devtool: 'inline-source-map',
   devServer: {
     hot: true,
@@ -25,13 +23,9 @@ const finalConfig = {
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'graphiql.com'],
   },
-  mode: 'development',
-  node: {
-    fs: 'empty',
-  },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(path.join(__dirname, 'index.bundle.html.ejs')),
+      template: path.resolve(path.join(__dirname, 'index.html.ejs')),
     }),
   ],
 };

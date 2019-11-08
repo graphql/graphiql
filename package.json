@@ -19,10 +19,12 @@
     }
   },
   "scripts": {
-    "build": "tsc --build --clean && tsc --build && lerna run build --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
+    "build-all-ts": "tsc --build --clean && tsc --build",
+    "build-all-babel": "lerna run build --parallel --scope codemirror-graphql --scope graphiql --scope graphql-language-service --scope graphql-language-service-server",
+    "build": "yarn build-all-ts && yarn build-all-babel",
     "build-bundles": "lerna run build-bundles --parallel",
     "build-bundles-disabled": "mkdir -p dist/min dist/lazy | true && cp -rv packages/graphiql/bundle/* dist/lazy && cp -rv packages/graphiql/index.html dist/min/ && cp -v packages/graphiql/*.{css,js} dist/min/",
-    "test:ci": "yarn run lint && yarn run check && yarn run build && lerna run build-bundles && yarn run test  && yarn run e2e",
+    "test:ci": "yarn run lint && yarn run check && yarn run build && lerna run build-bundles && yarn run test && yarn run e2e",
     "test": "yarn jest && lerna run test --scope codemirror-graphql",
     "jest": "jest",
     "e2e": "cd packages/graphiql && yarn e2e",
@@ -44,7 +46,7 @@
     "@babel/core": "7.4.5",
     "@babel/node": "7.4.5",
     "@babel/plugin-proposal-class-properties": "7.4.4",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-syntax-dynamic-import": "7.2.0",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "7.4.5",

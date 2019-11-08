@@ -1,5 +1,6 @@
 const path = require('path');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
 const resultConfig = {
   entry: './index.jsx',
   context: path.resolve(__dirname, '../src'),
@@ -12,6 +13,11 @@ const resultConfig = {
   },
   node: {
     fs: 'empty',
+  },
+  devtool: 'inline-source-map',
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
   },
   module: {
     rules: [
@@ -32,10 +38,8 @@ const resultConfig = {
   },
   plugins: [],
   resolve: {
+    // we aren't directly resolving ts with webpack.... yet... :)))
     extensions: ['.js', '.json', '.jsx', '.css', '.mjs'],
-    alias: {
-      graphiql: path.resolve(__dirname, '../bundle/main'),
-    },
   },
 };
 

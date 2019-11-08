@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.base",
+  "extends": "../../resources/tsconfig.base",
   "compilerOptions": {
     "esModuleInterop": true,
     "rootDir": "./src",

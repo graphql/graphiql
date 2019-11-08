@@ -6,7 +6,7 @@
  * This is only one example of this kind of feature, GraphiQL exposes
  * various React params to enable interesting integrations.
  */
-/* global ReactDOM,React,GraphiQL */
+/* global ReactDOM, React, GraphiQL */
 
 // Parse the search string to get url parameters.
 const search = window.location.search;
@@ -107,6 +107,7 @@ function graphQLFetcher(graphQLParams) {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 ReactDOM.render(
+  // @ts-ignore
   React.createElement(GraphiQL, {
     fetcher: graphQLFetcher,
     query: parameters.query,
