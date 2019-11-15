@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "An example using GraphiQL",
   "scripts": {
-    "setup": "cp ../../graphiql/graphiql.js ../../graphiql/graphiql.css .",
+    "build-demo": "cp ../../graphiql/graphiql.js ../../graphiql/graphiql.css .",
     "start": "node server"
   },
   "dependencies": {

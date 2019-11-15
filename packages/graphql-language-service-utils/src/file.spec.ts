@@ -42,7 +42,7 @@ describe('getPathWithoutExtension', () => {
 describe('requireFile', () => {
   it('should require file with extension', async () => {
     const file = await requireFile('../package.json');
-    expect(file.name).toEqual('graphql-language-service-interface');
+    expect(file.name).toEqual('graphql-language-service-utils');
   });
   it('should fail when requiring an invalid extension', () => {
     expect(() => requireFile('../.npmignore')).toThrowError(
@@ -55,7 +55,7 @@ describe('requireFile', () => {
   });
   it('should require file with no extension using json', async () => {
     const file = await requireFile(path.join(__dirname, '../package'));
-    expect(file.name).toEqual('graphql-language-service-interface');
+    expect(file.name).toEqual('graphql-language-service-utils');
   });
 });
 
