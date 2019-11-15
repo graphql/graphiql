@@ -39,7 +39,8 @@ import {
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
 } from './getDefinition';
-import { getASTNodeAtPosition } from 'graphql-language-service-utils';
+
+import { getASTNodeAtPosition, requireFile, resolveFile } from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,
@@ -159,13 +160,15 @@ export class GraphQLLanguageService {
     const customRulesModulePath = extensions.customValidationRules;
     if (customRulesModulePath) {
       /* eslint-disable no-implicit-coercion */
-      const rulesPath = require.resolve(`${customRulesModulePath}`);
+      const rulesPath = resolveFile(customRulesModulePath);
       if (rulesPath) {
-        customRules = require(`${rulesPath}`)(this._graphQLConfig);
+        const customValidationRules = await requireFile(rulesPath);
+        if (customValidationRules) {
+          customRules = customValidationRules(this._graphQLConfig);
+        }
       }
       /* eslint-enable no-implicit-coercion */
     }
-
     const schema = await this._graphQLCache
       .getSchema(projectName, queryHasExtensions)
       .catch(() => null);

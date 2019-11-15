@@ -21,6 +21,10 @@
   ],
   "main": "dist/index.js",
   "types": "src/index.ts",
+  "engines": {
+    "node": ">= 9.7.3"
+  },
+  "engineStrict": true,
   "scripts": {
     "test": "node ../../resources/runTests.js",
     "build": "yarn run build-ts && yarn run build-flow",
