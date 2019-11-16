@@ -5,11 +5,7 @@
   "license": "MIT",
   "description": "An example using GraphiQL",
   "scripts": {
-<<<<<<< HEAD
     "build-demo": "cp ../../graphiql/graphiql.js ../../graphiql/graphiql.css ../../graphiql/resources/renderExample.js .",
-=======
-    "build-demo": "cp ../../graphiql/graphiql.js ../../graphiql/graphiql.css .",
->>>>>>> chore: use build-demo as standard command
     "start": "node server"
   },
   "dependencies": {
