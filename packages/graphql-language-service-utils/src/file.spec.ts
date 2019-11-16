@@ -49,6 +49,16 @@ describe('requireFile', () => {
       `cannot require() module with extension 'npmignore'`,
     );
   });
+  it('should fail when requiring a valid extension but invalid js path', () => {
+    expect(() => requireFile('../.npmignore.js')).toThrowError(
+      `Cannot find module '../.npmignore.js' from 'file.ts'`,
+    );
+  });
+  it('should fail when requiring a valid extension but invalid json path', () => {
+    expect(() => requireFile('../.npmignore.json')).toThrowError(
+      `Cannot find module '../.npmignore.json' from 'file.ts'`,
+    );
+  });
   it('should require file with no extension using js', async () => {
     const config = await requireFile(path.join(__dirname, '../../../jest.config'));
     await expect(config.collectCoverage).toEqual(true);
@@ -73,12 +83,20 @@ describe('resolveFile', () => {
       require.resolve(path.join(__dirname, '../package.json')),
     );
   });
+
   it('should resolve when path has extension', () => {
-    const resolvedPath = resolveFile('../../../.eslintrc.js');
+    const resolvedPath = resolveFile(path.join(__dirname, '../package'));
     expect(resolvedPath).toEqual(
-      require.resolve(path.join(__dirname, '../../../.eslintrc.js')),
+      require.resolve(path.join(__dirname, '../package.json')),
     );
   });
+
+  it('should resolve when path has extension but path is not found', () => {
+    expect(() => resolveFile('../../../.eslinignore.js')).toThrowError(
+      `Cannot find module '../../../.eslinignore.js'`,
+    );
+  });
+
   it('should resolve when path has no extension', () => {
     const resolvedPath = resolveFile(
       path.join(__dirname, '../../../.eslintrc'),

@@ -1,6 +1,7 @@
 node_modules/
 coverage/
 /*.js
+/*.js.flow
 !babel.config.js
 /utils
 /variables

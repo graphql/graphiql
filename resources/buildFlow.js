@@ -16,7 +16,7 @@ const { cp } = require('./util');
 readdirSync('src').forEach(entry => {
   if (entry.endsWith('.js')) {
     const source = join('src', entry);
-    const destination = join('dist', `${entry}.flow`);
+    const destination = join(process.argv[2] || 'dist', `${entry}.flow`);
     cp(source, destination);
   }
 });

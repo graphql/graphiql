@@ -20,6 +20,11 @@ module.exports = {
       experimentalObjectRestSpread: true,
     },
   },
+  settings: {
+    'react': {
+      'version': 'detect'
+    }
+  },
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
@@ -28,9 +33,10 @@ module.exports = {
     jest: true,
     mocha: true,
     browser: true,
+    'cypress/globals': true
   },
 
-  extends: ['prettier', 'plugin:import/typescript'],
+  extends: ['prettier', 'plugin:import/typescript', 'plugin:react/recommended'],
 
   globals: {
     atom: false,
@@ -286,7 +292,7 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
   },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread', 'cypress'],
 
   overrides: [
     // Rules for TypeScript only

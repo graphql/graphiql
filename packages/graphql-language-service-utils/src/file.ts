@@ -1,5 +1,3 @@
-import fs from 'fs';
-
 export function getFileExtension(filePath: string): string | null {
   const pathParts = /^.+\.([^.]+)$/.exec(filePath);
   // if there's a file extension
@@ -23,6 +21,11 @@ export function getPathWithoutExtension(
   return pathWithoutExtension;
 }
 
+function handleExtensionErr(extension: string | null) {
+  if (extension) {
+    throw Error(`cannot require() module with extension '${extension}'`);
+  }
+}
 // these make webpack happy
 
 export function resolveFile(filePath: string) {
@@ -36,16 +39,15 @@ export function resolveFile(filePath: string) {
       return require.resolve(pathWithoutExtension + '.json');
     }
     default: {
-      if (fs.existsSync(filePath + `.js`)) {
+      try {
         return require.resolve(filePath + '.js');
-      }
-      if (fs.existsSync(filePath + `.json`)) {
-        return require.resolve(filePath + '.json');
-      }
-      if (extension) {
-        throw Error(
-          `cannot require.resolve() module with extension '${extension}'`,
-        );
+      } catch (err) {
+        try {
+          return require.resolve(filePath + '.json');
+        } catch (err) {
+          handleExtensionErr(extension);
+          throw err;
+        }
       }
     }
   }
@@ -60,22 +62,29 @@ export function requireFile(filePath: string) {
   const pathWithoutExtension = getPathWithoutExtension(filePath, extension);
   switch (extension) {
     case 'js': {
-      return import(pathWithoutExtension + '.js');
+      if (resolveFile(pathWithoutExtension + '.js')) {
+        return import(pathWithoutExtension + '.js');
+      }
+      return null;
     }
     case 'json': {
-      return import(pathWithoutExtension + '.json');
+      if (resolveFile(pathWithoutExtension + '.json')) {
+        return import(pathWithoutExtension + '.json');
+      }
+      return null;
     }
     default: {
-      if (fs.existsSync(filePath + `.js`)) {
-        return import(filePath + '.js');
+      try {
+        if (resolveFile(filePath + `.js`)) {
+          return import(filePath + '.js');
+        }
+      } catch (err) {
+        handleExtensionErr(extension);
       }
-      if (fs.existsSync(filePath + `.json`)) {
+      if (resolveFile(filePath + `.json`)) {
         return import(filePath + '.json');
       }
-      if (extension) {
-        throw Error(`cannot require() module with extension '${extension}'`);
-      }
-      throw Error(`No extension found, and no supported file found to match '${filePath}'`);
+      handleExtensionErr(extension);
     }
   }
 }
