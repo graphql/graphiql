@@ -14,3 +14,6 @@ coverage
 resources
 src
 packages
+packages/graphiql/*.html
+cypress.json
+babel.config.js

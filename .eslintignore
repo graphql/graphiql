@@ -12,6 +12,7 @@
 #
 # Now un-ignore source code, tests, configuration, etc
 !/packages/*/src/**
+!/packages/*/cypress/**
 !/packages/*/test/**
 !/packages/codemirror-graphql/resources/**
 !/packages/examples/**
@@ -31,6 +32,7 @@
 # Build artifacts
 **/flow-typed
 **/dist
+**/renderExample.js
 
 # Vendored files
 /packages/codemirror-graphql/

@@ -8,7 +8,6 @@ if [ ! -d "node_modules/.bin" ]; then
   exit 1
 fi
 
-rm -rf dist/ && mkdir -p dist/
 babel src --ignore __tests__ --out-dir dist/
 echo "Bundling graphiql.js..."
 browserify -g browserify-shim -s GraphiQL dist/index.js > graphiql.js

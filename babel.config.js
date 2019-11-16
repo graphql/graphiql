@@ -5,5 +5,8 @@ module.exports = {
     require.resolve('@babel/preset-flow'),
     require.resolve('@babel/preset-react'),
   ],
-  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
+  plugins: [
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-syntax-dynamic-import'),
+  ],
 };

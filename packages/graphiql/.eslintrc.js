@@ -71,6 +71,8 @@ module.exports = {
         order: ['static-methods', 'lifecycle', 'render', 'everything-else'],
       },
     ],
+    // temporary
+    'react/no-find-dom-node': 'warn',
     'no-constant-condition': 'error',
     'no-control-regex': 'error',
     'no-debugger': 'warn',

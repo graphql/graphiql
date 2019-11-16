@@ -11,54 +11,60 @@ const prettifiedVariables = `{
 
 const uglyQuery = `{longDescriptionType {id}}`;
 
-const uglyVaribles = `{"a": 1}`;
+const uglyVariables = `{"a": 1}`;
 
 const brokenQuery = `longDescriptionType {id}}`;
 
-const brokenVaribles = `"a": 1}`;
+const brokenVariables = `"a": 1}`;
 
-describe('GraphiQL Prettify', function() {
-  it('Regular prettification', function() {
-    cy.visit(`/?query=${encodeURIComponent(uglyQuery)}&variables=${encodeURIComponent(uglyVaribles)}`);
+describe('GraphiQL Prettify', () => {
+  it('Regular prettification', () => {
+    cy.visitWithOp({ query: uglyQuery, variables: uglyVariables });
 
-    cy.get('[title="Prettify Query (Shift-Ctrl-P)"]').click();
+    cy.clickPrettify();
 
-    cy.window().then((w) => {
+    cy.window().then(w => {
       cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(prettifiedVariables);
-    })
-  }) 
+      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
+        prettifiedVariables,
+      );
+    });
+  });
 
-  it('Noop prettification', function() {
-    cy.visit(`/?query=${encodeURIComponent(prettifiedQuery)}&variables=${encodeURIComponent(prettifiedVariables)}`);
+  it('Noop prettification', () => {
+    cy.visitWithOp({ query: prettifiedQuery, variables: prettifiedVariables });
 
-    cy.get('[title="Prettify Query (Shift-Ctrl-P)"]').click();
+    cy.clickPrettify();
 
-    cy.window().then((w) => {
+    cy.window().then(w => {
       cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(prettifiedVariables);
-    })
-  }) 
-  
-  it('No crash on bad query', function() {
-    cy.visit(`/?query=${encodeURIComponent(brokenQuery)}&variables=${encodeURIComponent(uglyVaribles)}`);
+      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
+        prettifiedVariables,
+      );
+    });
+  });
 
-    cy.get('[title="Prettify Query (Shift-Ctrl-P)"]').click();
+  it('No crash on bad query', () => {
+    cy.visitWithOp({ query: brokenQuery, variables: uglyVariables });
 
-    cy.window().then((w) => {
+    cy.clickPrettify();
+
+    cy.window().then(w => {
       cy.expect(w.g.getQueryEditor().getValue()).to.equal(brokenQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(prettifiedVariables);
-    })
-  }) 
+      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
+        prettifiedVariables,
+      );
+    });
+  });
 
-  it('No crash on bad variables', function() {
-    cy.visit(`/?query=${encodeURIComponent(uglyQuery)}&variables=${encodeURIComponent(brokenVaribles)}`);
+  it('No crash on bad variables', () => {
+    cy.visitWithOp({ query: uglyQuery, variables: brokenVariables });
 
-    cy.get('[title="Prettify Query (Shift-Ctrl-P)"]').click();
+    cy.clickPrettify();
 
-    cy.window().then((w) => {
+    cy.window().then(w => {
       cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(brokenVaribles);
-    })
-  }) 
-})
+      cy.expect(w.g.getVariableEditor().getValue()).to.equal(brokenVariables);
+    });
+  });
+});
