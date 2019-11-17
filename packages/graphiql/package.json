@@ -15,11 +15,10 @@
   "main": "dist/index.js",
   "files": [
     "dist",
+    "esm",
     "graphiql.js",
     "graphiql.min.js",
-    "graphiql.css",
-    "README.md",
-    "LICENSE"
+    "graphiql.css"
   ],
   "nyc": {
     "report-dir": "coverage/cypress",

@@ -14,13 +14,15 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
-  "typings": "src/index",
+  "module": "esm/index.js",
+  "typings": "src/index.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",

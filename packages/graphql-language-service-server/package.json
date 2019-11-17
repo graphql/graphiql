@@ -14,16 +14,20 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "esm/index.d.ts",
   "scripts": {
     "test": "node ../../resources/runTests.js",
-    "build": "yarn run build-js && yarn run build-flow",
+    "build": "yarn build-js && yarn build-esm && yarn build-flow",
     "build-js": "node ../../resources/buildJs.js",
+    "build-esm": "ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
     "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
