@@ -14,13 +14,15 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "module": "esm/index.js",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">= 9.7.3"
   },
