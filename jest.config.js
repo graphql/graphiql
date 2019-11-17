@@ -5,8 +5,8 @@ const { jsWithBabel: jsWithBabelPreset } = require('ts-jest/presets');
 module.exports = {
   globals: {
     'ts-jest': {
-      tsConfig: './tsconfig.base.json'
-    }
+      tsConfig: './resources/tsconfig.base.esm.json',
+    },
   },
   verbose: true,
   clearMocks: true,
@@ -19,12 +19,13 @@ module.exports = {
   transform: {
     '^.+\\.jsx?$': require.resolve('./resources/jestBabelTransform'),
     ...tsjPreset.transform,
-    ...jsWithBabelPreset.transform
+    ...jsWithBabelPreset.transform,
   },
   testEnvironment: require.resolve('jest-environment-jsdom-global'),
   testPathIgnorePatterns: ['node_modules', 'dist', 'codemirror-graphql'],
   collectCoverageFrom: [
     '**/src/**/*.{js,jsx,ts,tsx}',
+    '!**/{dist,esm}/**',
     '!**/node_modules/**',
     '!**/__tests__/**',
     '!**/resources/**',
