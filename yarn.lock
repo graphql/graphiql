@@ -9431,6 +9431,21 @@ matched@^0.4.1:
     lazy-cache "^2.0.1"
     resolve-dir "^0.1.0"
 
+matched@^0.4.1:
+  version "0.4.4"
+  resolved "https://registry.npmjs.org/matched/-/matched-0.4.4.tgz#56d7b7eb18033f0cf9bc52eb2090fac7dc1e89fa"
+  integrity sha1-Vte36xgDPwz5vFLrIJD6x9weifo=
+  dependencies:
+    arr-union "^3.1.0"
+    async-array-reduce "^0.2.0"
+    extend-shallow "^2.0.1"
+    fs-exists-sync "^0.1.0"
+    glob "^7.0.5"
+    has-glob "^0.1.1"
+    is-valid-glob "^0.3.0"
+    lazy-cache "^2.0.1"
+    resolve-dir "^0.1.0"
+
 math-random@^1.0.1:
   version "1.0.4"
   resolved "https://registry.npmjs.org/math-random/-/math-random-1.0.4.tgz#5dd6943c938548267016d4e34f057583080c514c"
