@@ -1,7 +1,7 @@
 // for ESM don't transpile modules
 
 const envConfig = {
-  ignoreBrowserslistConfig: Boolean(!process.env.CDN),
+  ignoreBrowserslistConfig: true,
   modules: 'commonjs',
   targets: { node: true }
 };
@@ -12,6 +12,8 @@ if (process.env.ESM) {
 
 if (process.env.CDN) {
   envConfig.modules = 'umd'
+  envConfig.targets = null
+  envConfig.ignoreBrowserslistConfig = false
 }
 
 module.exports = {
