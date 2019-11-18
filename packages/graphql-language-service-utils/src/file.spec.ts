@@ -60,7 +60,9 @@ describe('requireFile', () => {
     );
   });
   it('should require file with no extension using js', async () => {
-    const config = await requireFile(path.join(__dirname, '../../../jest.config'));
+    const config = await requireFile(
+      path.join(__dirname, '../../../jest.config'),
+    );
     await expect(config.collectCoverage).toEqual(true);
   });
   it('should require file with no extension using json', async () => {

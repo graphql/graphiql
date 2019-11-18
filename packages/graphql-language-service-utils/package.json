@@ -14,8 +14,7 @@
   },
   "license": "MIT",
   "files": [
-    "dist",
-    "esm"
+    "dist"
   ],
   "keywords": [
     "graphql"
@@ -40,5 +39,8 @@
   "dependencies": {
     "graphql-config": "2.2.1",
     "graphql-language-service-types": "^1.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23"
   }
 }

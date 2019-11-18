@@ -80,6 +80,7 @@
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
     "lerna": "^3.16.4",
+    "mkdirp": "^0.5.1",
     "mocha": "6.1.4",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",

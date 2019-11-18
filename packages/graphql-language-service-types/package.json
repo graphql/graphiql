@@ -22,7 +22,7 @@
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "typings": "src/index.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
