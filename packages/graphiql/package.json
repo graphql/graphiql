@@ -35,7 +35,7 @@
     "build-demo": "cp resources/index.html .",
     "check": "flow check",
     "dev": "babel-node test/server.js",
-    "e2e": "yarn e2e:server && cypress run && kill -9 `cat test/pid`",
+    "e2e": "yarn e2e:server && cypress run",
     "e2e:server": "PORT=8080 node test/e2e-server & wait-on http://localhost:8080",
     "test": "node ../../resources/runTests ENZYME=true"
   },

@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 module.exports = {
@@ -21,9 +20,9 @@ module.exports = {
     },
   },
   settings: {
-    'react': {
-      'version': 'detect'
-    }
+    react: {
+      version: 'detect',
+    },
   },
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
@@ -33,7 +32,6 @@ module.exports = {
     jest: true,
     mocha: true,
     browser: true,
-    'cypress/globals': true
   },
 
   extends: ['prettier', 'plugin:import/typescript', 'plugin:react/recommended'],
@@ -292,9 +290,19 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
   },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread', 'cypress'],
+  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
 
   overrides: [
+    // Cypress plugin, global, etc only for cypress directory
+    // https://github.com/cypress-io/eslint-plugin-cypress
+    // cypress clashes with jest expect()
+    {
+      files: ['**/cypress/**'],
+      plugins: ['cypress'],
+      env: {
+        'cypress/globals': true,
+      },
+    },
     // Rules for TypeScript only
     {
       files: ['*.ts', '*.tsx'],
