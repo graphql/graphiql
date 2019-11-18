@@ -3,5 +3,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./esm",
-  }
+  },
+  "references": [
+    {
+      "path": "../graphql-language-service-types"
+    }
+  ]
 }
