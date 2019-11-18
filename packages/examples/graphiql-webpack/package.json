@@ -6,7 +6,7 @@
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
     "build-demo": "webpack",
-    "start": "webpack-dev-server --watch"
+    "start": "webpack serve"
   },
   "dependencies": {
     "express": "^4.17.1",

@@ -18,7 +18,8 @@
     "esm",
     "graphiql.js",
     "graphiql.min.js",
-    "graphiql.css"
+    "graphiql.css",
+    "graphiql.min.css"
   ],
   "nyc": {
     "report-dir": "coverage/cypress",
@@ -28,13 +29,18 @@
     ]
   },
   "scripts": {
-    "build": "yarn build-clean && yarn build-js && yarn build-flow && yarn build-demo",
-    "build-clean": "rimraf 'graphiql.{css,*min.js,js}' esm dist",
-    "build-js": "bash ./resources/build.sh",
+    "webpack": "webpack --config resources/webpack.config.js",
+    "analyze-bundle": "NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
+    "build": "yarn build-clean && yarn build-js && yarn build-flow",
+    "build-clean": "rimraf esm dist",
+    "build-js": "babel src --ignore __tests__ --out-dir dist/ && ESM=1 babel src --ignore __tests__ --out-dir esm/",
+    "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
+    "build-bundles-dev": "NODE_ENV=development CDN=1 yarn webpack -d --bail",
+    "build-bundles-min": "NODE_ENV=production CDN=1 yarn webpack -p --bail",
+    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
     "build-flow": "node ../../resources/buildFlow.js",
-    "build-demo": "cp resources/index.html .",
     "check": "flow check",
-    "dev": "babel-node test/server.js",
+    "dev": "NODE_ENV=development node test/server.js",
     "e2e": "yarn e2e:server && cypress run",
     "e2e:server": "PORT=8080 node test/e2e-server & wait-on http://localhost:8080",
     "test": "node ../../resources/runTests ENZYME=true"
@@ -43,11 +49,6 @@
     "*.js": [
       "prettier --write",
       "git add"
-    ]
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
     ]
   },
   "dependencies": {
@@ -64,27 +65,30 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
-    "autoprefixer": "9.6.0",
-    "babelify": "10.0.0",
-    "browserify": "16.2.3",
-    "browserify-shim": "3.8.14",
+    "css-loader": "3.2.0",
+    "cssnano": "^4.1.10",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.6.7",
     "graphql": "14.4.2",
+    "html-webpack-plugin": "^3.2.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
-    "nyc": "^14.1.1",
-    "postcss-cli": "6.1.2",
+    "mini-css-extract-plugin": "^0.8.0",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
     "prop-types": "15.7.2",
     "react": "15.6.2",
     "react-dom": "15.6.2",
+    "react-hot-loader": "^4.12.18",
     "react-test-renderer": "15.6.2",
     "rimraf": "^3.0.0",
     "serve": "^11.2.0",
-    "uglify-js": "3.5.11",
-    "uglifyify": "5.0.1",
-    "watchify": "3.11.1"
+    "style-loader": "^1.0.0",
+    "webpack-bundle-analyzer": "^3.6.0",
+    "webpack-cli": "^3.3.10"
   }
 }

@@ -16,7 +16,7 @@ const app = express();
 // Server
 app.use('/graphql', graphqlHTTP({ schema }));
 
-app.use(express.static(path.resolve(path.join(__dirname, '../'))));
+app.use(express.static(path.resolve(__dirname, '../')));
 
 app.listen(process.env.PORT || 0, function() {
   const port = this.address().port;

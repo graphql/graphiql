@@ -37,5 +37,5 @@ Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
     cy.expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
       mockSuccess,
     );
-  });
+  })
 });

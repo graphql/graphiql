@@ -5,5 +5,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import 'regenerator-runtime/runtime';
-// The primary React component to use.
-module.exports = require('./components/GraphiQL').GraphiQL;
+
+import './css/app.css';
+import './css/codemirror.css';
+import './css/foldgutter.css';
+import './css/info.css';
+import './css/jump.css';
+import './css/lint.css';
+import './css/loading.css';
+import './css/show-hint.css';
+
+import { GraphiQL } from './components/GraphiQL';
+export default GraphiQL;
