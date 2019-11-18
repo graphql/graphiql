@@ -1,12 +1,24 @@
 // for ESM don't transpile modules
+
+const envConfig = {
+  ignoreBrowserslistConfig: Boolean(!process.env.CDN),
+  modules: 'commonjs',
+  targets: { node: true }
+};
+
+if (process.env.ESM) {
+  envConfig.modules = false
+}
+
+if (process.env.CDN) {
+  envConfig.modules = 'umd'
+}
+
 module.exports = {
   presets: [
     [
       require.resolve('@babel/preset-env'),
-      {
-        modules: process.env.ESM ? false : 'commonjs',
-        targets: process.env.ESM ? { node: true } : '> 0.25%, not dead'
-      },
+      envConfig,
     ],
     require.resolve('@babel/preset-flow'),
     require.resolve('@babel/preset-react'),

@@ -16,12 +16,9 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2017", "esnext.asynciterable"],
+    "lib": ["dom", "es2017", "esnext"],
     "types": ["node", "jest"],
-    "baseUrl": ".",
-    "paths": {
-      "graphql-language-*" : ["graphql-language-*"]
-    }
+    "baseUrl": "."
   },
   "exclude": [
     "**/dist/**.*",
