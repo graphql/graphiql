@@ -37,7 +37,9 @@ app.use(
   '../graphiql.css',
   express.static(path.join(__dirname, '../graphiql.css')),
 );
+
 app.use('/images', express.static(path.join(__dirname, 'images')));
+
 app.use(
   '/renderExample.js',
   express.static(path.join(__dirname, '../resources/renderExample.js')),
@@ -45,6 +47,7 @@ app.use(
 
 app.listen(process.env.PORT || 0, function() {
   const port = this.address().port;
+
   console.log('PID', process.pid);
   console.log(`Started on http://localhost:${port}/`);
 

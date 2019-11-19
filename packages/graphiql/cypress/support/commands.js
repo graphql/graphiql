@@ -32,7 +32,7 @@ Cypress.Commands.add('visitWithOp', ({ query, variables }) => {
 Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
-  cy.wait(500);
+  cy.wait(200);
   cy.window().then(w => {
     cy.expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
       mockSuccess,

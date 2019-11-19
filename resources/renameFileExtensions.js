@@ -8,7 +8,7 @@ const rimraf = require('rimraf');
 const [, , src, dest, destExtension] = process.argv;
 if (!src || !dest || !destExtension) {
   console.error(
-    `\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.js './dist/**/*.js' './dest-dir' .new.extension.js`
+    `\nMissing arguments.\n\nUsage:\nnode renameFileExtensions.js './dist/**/*.js' './dest-dir' .new.extension.js`,
   );
   process.exit(1);
 }
