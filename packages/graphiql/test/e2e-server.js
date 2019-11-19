@@ -9,10 +9,10 @@
 const express = require('express');
 const path = require('path');
 const graphqlHTTP = require('express-graphql');
-const fs = require('fs');
 const schema = require('./schema');
 
 const app = express();
+
 // Server
 app.use('/graphql', graphqlHTTP({ schema }));
 
@@ -20,10 +20,10 @@ app.use(express.static(path.resolve(__dirname, '../')));
 
 app.listen(process.env.PORT || 0, function() {
   const port = this.address().port;
+
+  console.log(`Started on http://localhost:${port}/`);
   console.log('PID', process.pid);
-  fs.writeFile(path.join(__dirname, 'pid'), parseInt(process.pid, 10), () => {
-    console.log(`Started on http://localhost:${port}/`);
-  });
+
   process.once('SIGINT', () => {
     process.exit();
   });
@@ -31,4 +31,3 @@ app.listen(process.env.PORT || 0, function() {
     process.exit();
   });
 });
-

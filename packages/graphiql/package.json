@@ -40,9 +40,10 @@
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "NODE_ENV=development node test/server.js",
-    "e2e": "yarn e2e:server && cypress run",
-    "e2e:server": "PORT=8080 node test/e2e-server & wait-on http://localhost:8080",
+    "dev": "NODE_ENV=development node test/dev-server.js",
+    "cypress-open": "yarn e2e-server 'cypress open'",
+    "e2e": "yarn e2e-server 'cypress run'",
+    "e2e-server": "start-server-and-test 'PORT=8080 node test/e2e-server' http-get://localhost:8080",
     "test": "node ../../resources/runTests ENZYME=true"
   },
   "lint-staged": {
@@ -87,6 +88,7 @@
     "react-test-renderer": "15.6.2",
     "rimraf": "^3.0.0",
     "serve": "^11.2.0",
+    "start-server-and-test": "^1.10.6",
     "style-loader": "^1.0.0",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10"

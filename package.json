@@ -27,7 +27,7 @@
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && lerna run build-bundles && yarn run e2e",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
     "e2e": "cd packages/graphiql && yarn e2e",
-    "cypress-open": "cd packages/graphiql && yarn e2e:server & cypress open --project ./packages/graphiql",
+    "cypress-open": "cd packages/graphiql && yarn cypress-open",
     "t": "yarn run testonly",
     "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn format \\033[0m\\n' && exit 1)",
     "lint-fix": "eslint --ext=ts,js,jsx,tsx . --fix",
@@ -84,7 +84,6 @@
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
-    "typescript": "^3.6.3",
-    "wait-on": "^3.3.0"
+    "typescript": "^3.6.3"
   }
 }
