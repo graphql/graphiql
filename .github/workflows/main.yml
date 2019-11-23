@@ -8,7 +8,7 @@ jobs:
     - name: Lighthouse Audit Netlify deploy preview
       uses: jakejarvis/lighthouse-action@master
       with:
-        netlify_site: 'graphiql-test.netlify.com'
+        netlify_site: 'graphiql-test'
     - uses: actions/upload-artifact@master
       with:
         name: report
