@@ -12,7 +12,7 @@ GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an offic
 
 The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
 
-The purpose of this monorepo is to give folks a solid language service, and editor modes, and to show an example of how to use them with GrahiQL.
+The purpose of this monorepo is to give folks a solid language service, and editor modes, and to show an example of how to use them with GraphiQL.
 
 
 ## [GraphiQL](packages/graphiql#readme)
