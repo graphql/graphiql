@@ -55,7 +55,7 @@
     "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.11.2",
     "copy-to-clipboard": "^3.2.0",
-    "markdown-it": "^8.4.0",
+    "markdown-it": "^10.0.0",
     "regenerator-runtime": "^0.13.3"
   },
   "peerDependencies": {
