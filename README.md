@@ -19,6 +19,8 @@ The purpose of this monorepo is to give folks a solid language service, and edit
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 [![CDNJS](https://img.shields.io/cdnjs/v/graphiql.svg)](https://cdnjs.com/libraries/graphiql)
 
+**Note**: We are aware that `graphiql.min.js` is not working as of `0.15.0`, and we are waiting for the resolution to be approved so we can re-release it. If you need to use a CDN build, you can use the unminified `graphiql.js` which is working for all versions.
+
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the master branch.
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
