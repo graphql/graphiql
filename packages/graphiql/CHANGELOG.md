@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.17.0](https://github.com/graphql/graphiql/compare/graphiql@0.16.0...graphiql@0.17.0) (2019-11-26)
+
+
+### Bug Fixes
+
+* security bump, resolves [#1004](https://github.com/graphql/graphiql/issues/1004), SNYK-JS-MARKDOWNIT-459438 ([89c83db](https://github.com/graphql/graphiql/commit/89c83db))
+* webpack resolutions for [#882](https://github.com/graphql/graphiql/issues/882), add webpack example ([ea9df3e](https://github.com/graphql/graphiql/commit/ea9df3e))
+
+
+### Features
+
+* **graphiql:** Prettify also formats query variables ([b7d0bfd](https://github.com/graphql/graphiql/commit/b7d0bfd))
+
+
+
+
+
 # [0.16.0](https://github.com/graphql/graphiql/compare/graphiql@0.15.1...graphiql@0.16.0) (2019-10-19)
 
 
