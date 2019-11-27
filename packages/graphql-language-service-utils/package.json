@@ -20,7 +20,7 @@
     "graphql"
   ],
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "engines": {
     "node": ">= 9.7.3"
   },
