@@ -17,7 +17,8 @@
   "license": "MIT",
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql",
@@ -25,8 +26,9 @@
   ],
   "scripts": {
     "test": "node ../../resources/runTests.js",
-    "build": "yarn run build-js && yarn run build-flow",
+    "build": "yarn run build-js && yarn build-esm && yarn run build-flow",
     "build-js": "node ../../resources/buildJs.js",
+    "build-esm": "ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
     "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
