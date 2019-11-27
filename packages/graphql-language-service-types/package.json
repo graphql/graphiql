@@ -20,7 +20,7 @@
     "graphql"
   ],
   "main": "dist/index.js",
-  "typings": "src/index",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
