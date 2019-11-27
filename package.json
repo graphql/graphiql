@@ -62,6 +62,7 @@
     "codecov": "^3.5.0",
     "conventional-changelog-conventionalcommits": "^4.1.0",
     "copy": "^0.3.2",
+    "cross-env": "^6.0.3",
     "cypress": "^3.6.1",
     "eslint": "^6.4.0",
     "eslint-config-prettier": "6.7.0",

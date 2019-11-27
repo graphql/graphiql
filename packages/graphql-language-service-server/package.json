@@ -27,7 +27,7 @@
     "test": "node ../../resources/runTests.js",
     "build": "yarn build-js && yarn build-esm && yarn build-flow",
     "build-js": "node ../../resources/buildJs.js",
-    "build-esm": "ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
+    "build-esm": "cross-env ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
     "build-flow": "node ../../resources/buildFlow.js",
     "prepublish": "node ../../resources/prepublish.js"
   },
@@ -45,5 +45,8 @@
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^3.3.0",
     "vscode-languageserver": "^3.3.0"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3"
   }
 }

@@ -30,21 +30,21 @@
   },
   "scripts": {
     "webpack": "webpack --config resources/webpack.config.js",
-    "analyze-bundle": "NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
+    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
     "build": "yarn build-clean && yarn build-js && yarn build-flow",
     "build-clean": "rimraf esm dist",
-    "build-js": "babel src --ignore __tests__ --out-dir dist/ && ESM=1 babel src --ignore __tests__ --out-dir esm/",
+    "build-js": "babel src --ignore __tests__ --out-dir dist/ && cross-env ESM=1 babel src --ignore __tests__ --out-dir esm/",
     "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
-    "build-bundles-dev": "NODE_ENV=development CDN=1 yarn webpack -d --bail",
-    "build-bundles-min": "NODE_ENV=production CDN=1 yarn webpack -p --bail",
+    "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn webpack -d --bail",
+    "build-bundles-min": "cross-env NODE_ENV=production CDN=1 yarn webpack -p --bail",
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
     "build-flow": "node ../../resources/buildFlow.js",
     "check": "flow check",
-    "dev": "NODE_ENV=development node test/dev-server.js",
+    "dev": "cross-env NODE_ENV=development node test/dev-server.js",
     "cypress-open": "yarn e2e-server 'cypress open'",
     "e2e": "yarn e2e-server 'cypress run'",
-    "e2e-server": "start-server-and-test 'PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "test": "node ../../resources/runTests ENZYME=true"
+    "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
+    "test": "cross-env ENZYME=true node ../../resources/runTests"
   },
   "lint-staged": {
     "*.js": [
@@ -66,6 +66,7 @@
     "react-dom": "^15.6.0 || ^16.0.0"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "css-loader": "3.2.0",
     "cssnano": "^4.1.10",
     "enzyme": "^3.9.0",
