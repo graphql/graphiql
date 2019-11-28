@@ -85,7 +85,7 @@
     "rimraf": "^3.0.0",
     "serve": "^11.2.0",
     "uglify-js": "3.5.11",
-    "uglifyify": "5.0.1",
+    "uglifyify": "5.0.2",
     "watchify": "3.11.1"
   }
 }
