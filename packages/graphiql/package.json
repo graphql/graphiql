@@ -81,7 +81,7 @@
     "prop-types": "15.7.2",
     "react": "15.6.2",
     "react-dom": "15.6.2",
-    "react-test-renderer": "15.6.2",
+    "react-test-renderer": "16.12.0",
     "rimraf": "^3.0.0",
     "serve": "^11.2.0",
     "uglify-js": "3.5.11",
