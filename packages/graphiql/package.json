@@ -72,7 +72,7 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-15": "^1.4.0",
     "express": "5.0.0-alpha.5",
-    "express-graphql": "0.6.7",
+    "express-graphql": "0.9.0",
     "graphql": "14.4.2",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
