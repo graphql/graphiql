@@ -31,18 +31,23 @@ const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
  */
 export class QueryEditor extends React.Component {
   static propTypes = {
-    schema: PropTypes.instanceOf(GraphQLSchema),
-    value: PropTypes.string,
-    onEdit: PropTypes.func,
-    readOnly: PropTypes.bool,
-    onHintInformationRender: PropTypes.func,
+    editorTheme: PropTypes.string,
+    keyMap: PropTypes.oneOf('sublime', 'vim'),
     onClickReference: PropTypes.func,
     onCopyQuery: PropTypes.func,
-    onPrettifyQuery: PropTypes.func,
+    onEdit: PropTypes.func,
+    onHintInformationRender: PropTypes.func,
     onMergeQuery: PropTypes.func,
+    onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
-    editorTheme: PropTypes.string,
+    readOnly: PropTypes.bool,
+    schema: PropTypes.instanceOf(GraphQLSchema),
+    value: PropTypes.string,
   };
+
+  static defaultProps = {
+    keyMap: 'vim'
+  }
 
   constructor(props) {
     super();
@@ -69,6 +74,7 @@ export class QueryEditor extends React.Component {
     require('codemirror/addon/dialog/dialog');
     require('codemirror/addon/lint/lint');
     require('codemirror/keymap/sublime');
+    require('codemirror/keymap/vim');
     require('codemirror-graphql/hint');
     require('codemirror-graphql/lint');
     require('codemirror-graphql/info');
@@ -81,7 +87,7 @@ export class QueryEditor extends React.Component {
       tabSize: 2,
       mode: 'graphql',
       theme: this.props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
+      keyMap: this.props.keyMap,
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
