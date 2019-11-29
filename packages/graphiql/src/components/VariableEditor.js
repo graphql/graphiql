@@ -26,16 +26,22 @@ import commonKeys from '../utility/commonKeys';
  */
 export class VariableEditor extends React.Component {
   static propTypes = {
-    variableToType: PropTypes.object,
-    value: PropTypes.string,
-    onEdit: PropTypes.func,
-    readOnly: PropTypes.bool,
-    onHintInformationRender: PropTypes.func,
-    onPrettifyQuery: PropTypes.func,
-    onMergeQuery: PropTypes.func,
-    onRunQuery: PropTypes.func,
     editorTheme: PropTypes.string,
+    keyMap: PropTypes.oneOf(['sublime', 'vim']),
+    onEdit: PropTypes.func,
+    onHintInformationRender: PropTypes.func,
+    onMergeQuery: PropTypes.func,
+    onPrettifyQuery: PropTypes.func,
+    onRunQuery: PropTypes.func,
+    onToggleKeyMap: PropTypes.func,
+    readOnly: PropTypes.bool,
+    value: PropTypes.string,
+    variableToType: PropTypes.object,
   };
+
+  static defaultProps = {
+    keyMap: 'sublime'
+  }
 
   constructor(props) {
     super();
@@ -60,6 +66,7 @@ export class VariableEditor extends React.Component {
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/addon/dialog/dialog');
     require('codemirror/keymap/sublime');
+    require('codemirror/keymap/vim');
     require('codemirror-graphql/variables/hint');
     require('codemirror-graphql/variables/lint');
     require('codemirror-graphql/variables/mode');
@@ -70,7 +77,7 @@ export class VariableEditor extends React.Component {
       tabSize: 2,
       mode: 'graphql-variables',
       theme: this.props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
+      keyMap: this.props.keyMap,
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
@@ -132,6 +139,17 @@ export class VariableEditor extends React.Component {
             this.props.onMergeQuery();
           }
         },
+        'Cmd-\\': () => {
+          if (this.props.onToggleKeyMap) {
+            this.props.onToggleKeyMap();
+          }
+        },
+
+        'Ctrl-\\': () => {
+          if (this.props.onToggleKeyMap) {
+            this.props.onToggleKeyMap();
+          }
+        },
 
         ...commonKeys,
       },
@@ -161,6 +179,9 @@ export class VariableEditor extends React.Component {
       const thisValue = this.props.value || '';
       this.cachedValue = thisValue;
       this.editor.setValue(thisValue);
+    }
+    if (this.props.keyMap !== prevProps.keyMap) {
+      this.editor.setOption('keyMap', this.props.keyMap)
     }
     this.ignoreChangeEvent = false;
   }

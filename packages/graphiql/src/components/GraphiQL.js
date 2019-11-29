@@ -413,15 +413,17 @@ export class GraphiQL extends React.Component {
                   ref={n => {
                     this.variableEditorComponent = n;
                   }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
+                  editorTheme={this.props.editorTheme}
+                  keyMap={this.state.keyMap}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
                   onMergeQuery={this.handleMergeQuery}
+                  onPrettifyQuery={this.handlePrettifyQuery}
                   onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
+                  onToggleKeyMap={this.handleToggleKeyMap}
                   readOnly={this.props.readOnly}
+                  value={this.state.variables}
+                  variableToType={this.state.variableToType}
                 />
               </section>
             </div>
