@@ -71,7 +71,12 @@ export class GraphiQL extends React.Component {
     ResultsTooltip: PropTypes.any,
     readOnly: PropTypes.bool,
     docExplorerOpen: PropTypes.bool,
+    keyMap: PropTypes.oneOf(['sublime', 'vim'])
   };
+
+  static defaultProps = {
+    keyMap: 'sublime'
+  }
 
   constructor(props) {
     super(props);
@@ -145,6 +150,7 @@ export class GraphiQL extends React.Component {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      keyMap: props.keyMap,
       ...queryFacts,
     };
 
@@ -377,17 +383,19 @@ export class GraphiQL extends React.Component {
                 ref={n => {
                   this.queryEditorComponent = n;
                 }}
-                schema={this.state.schema}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
+                editorTheme={this.props.editorTheme}
+                keyMap={this.state.keyMap}
                 onClickReference={this.handleClickReference}
                 onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
+                onEdit={this.handleEditQuery}
+                onHintInformationRender={this.handleHintInformationRender}
                 onMergeQuery={this.handleMergeQuery}
+                onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
+                onToggleKeyMap={this.handleToggleKeyMap}
                 readOnly={this.props.readOnly}
+                schema={this.state.schema}
+                value={this.state.query}
               />
               <section
                 className="variable-editor"
@@ -912,6 +920,12 @@ export class GraphiQL extends React.Component {
     this.handleEditQuery(query);
     this.handleEditVariables(variables);
     this.handleEditOperationName(operationName);
+  };
+
+  handleToggleKeyMap = () => {
+    this.setState({
+      keyMap: this.state.keyMap === 'sublime' ? 'vim' : 'sublime'
+    });
   };
 
   handleResizeStart = downEvent => {

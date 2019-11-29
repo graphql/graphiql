@@ -32,7 +32,7 @@ const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 export class QueryEditor extends React.Component {
   static propTypes = {
     editorTheme: PropTypes.string,
-    keyMap: PropTypes.oneOf('sublime', 'vim'),
+    keyMap: PropTypes.oneOf(['sublime', 'vim']),
     onClickReference: PropTypes.func,
     onCopyQuery: PropTypes.func,
     onEdit: PropTypes.func,
@@ -40,13 +40,14 @@ export class QueryEditor extends React.Component {
     onMergeQuery: PropTypes.func,
     onPrettifyQuery: PropTypes.func,
     onRunQuery: PropTypes.func,
+    onToggleKeyMap: PropTypes.func,
     readOnly: PropTypes.bool,
     schema: PropTypes.instanceOf(GraphQLSchema),
     value: PropTypes.string,
   };
 
   static defaultProps = {
-    keyMap: 'vim'
+    keyMap: 'sublime'
   }
 
   constructor(props) {
@@ -163,6 +164,18 @@ export class QueryEditor extends React.Component {
           }
         },
 
+        'Cmd-\\': () => {
+          if (this.props.onToggleKeyMap) {
+            this.props.onToggleKeyMap();
+          }
+        },
+
+        'Ctrl-\\': () => {
+          if (this.props.onToggleKeyMap) {
+            this.props.onToggleKeyMap();
+          }
+        },
+
         ...commonKeys,
       },
     });
@@ -193,6 +206,9 @@ export class QueryEditor extends React.Component {
     ) {
       this.cachedValue = this.props.value;
       this.editor.setValue(this.props.value);
+    }
+    if (this.props.keyMap !== prevProps.keyMap) {
+      this.editor.setOption('keyMap', this.props.keyMap)
     }
     this.ignoreChangeEvent = false;
   }
