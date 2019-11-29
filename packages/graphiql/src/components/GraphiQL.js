@@ -150,7 +150,7 @@ export class GraphiQL extends React.Component {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
-      keyMap: props.keyMap,
+      keyMap: this._storage.get('keyMap') || props.keyMap,
       ...queryFacts,
     };
 
@@ -269,6 +269,7 @@ export class GraphiQL extends React.Component {
     this._storage.set('docExplorerWidth', this.state.docExplorerWidth);
     this._storage.set('docExplorerOpen', this.state.docExplorerOpen);
     this._storage.set('historyPaneOpen', this.state.historyPaneOpen);
+    this._storage.set('keyMap', this.state.keyMap);
   }
 
   render() {
@@ -923,9 +924,12 @@ export class GraphiQL extends React.Component {
   };
 
   handleToggleKeyMap = () => {
+    const updatedKeyMap = this.state.keyMap === 'sublime' ? 'vim' : 'sublime';
     this.setState({
-      keyMap: this.state.keyMap === 'sublime' ? 'vim' : 'sublime'
+      keyMap: updatedKeyMap
     });
+
+    this._storage.set('keyMap', updatedKeyMap);
   };
 
   handleResizeStart = downEvent => {
