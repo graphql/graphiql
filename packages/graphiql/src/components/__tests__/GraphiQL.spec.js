@@ -115,10 +115,17 @@ describe('GraphiQL', () => {
     );
     expect(graphiQL.state().query).toEqual('GraphQL Party!!');
   });
+
   it('accepts a docExplorerOpen prop', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} docExplorerOpen />);
     expect(graphiQL.state().docExplorerOpen).toEqual(true);
   });
+
+  it('accepts a keyMap prop', () => {
+    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} keyMap="vim"/>);
+    expect(graphiQL.state().keyMap).toEqual('vim');
+  });
+
   it('defaults to closed docExplorer', () => {
     const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
     expect(graphiQL.state().docExplorerOpen).toEqual(false);
