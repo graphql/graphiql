@@ -13,5 +13,14 @@ describe('QueryEditor', () => {
   it('should renders with no props', () => {
     expect(() => mount(<QueryEditor />)).not.toThrow();
   });
+
+  it('should update codemirror after changing keyMap prop', () => {
+    const wrapper = mount(<QueryEditor />);
+    expect(wrapper.instance().editor.options.keyMap).toEqual('sublime');
+
+    wrapper.setProps({ keyMap: 'vim' });
+
+    expect(wrapper.instance().editor.options.keyMap).toEqual('vim');
+  });
 });
 
