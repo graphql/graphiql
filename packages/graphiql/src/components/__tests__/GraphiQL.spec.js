@@ -131,6 +131,14 @@ describe('GraphiQL', () => {
     expect(graphiQL.state().docExplorerOpen).toEqual(false);
   });
 
+  it('should save keyMap to localStorage', () => {
+    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
+
+    expect(graphiQL.instance()._storage.get('keyMap')).toBeFalsy();
+    graphiQL.instance().handleToggleKeyMap();
+    expect(graphiQL.instance()._storage.get('keyMap')).toEqual('vim');
+  });
+
   it('accepts a defaultVariableEditorOpen param', () => {
     let graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
     expect(graphiQL.state().variableEditorOpen).toEqual(false);
