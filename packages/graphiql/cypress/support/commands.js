@@ -29,13 +29,19 @@ Cypress.Commands.add('visitWithOp', ({ query, variables }) => {
   return cy.visit(url);
 });
 
-Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
-  cy.visitWithOp(op);
+Cypress.Commands.add('assertQueryResult', (mockSuccess, sleep = 0) => {
   cy.clickExecuteQuery();
-  cy.wait(500);
+  if (sleep) {
+   cy.wait(sleep);
+  }
   cy.window().then(w => {
     cy.expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
       mockSuccess,
     );
   });
+});
+
+Cypress.Commands.add('assertQueryResultFromOp', (op, mockSuccess, sleep) => {
+  cy.visitWithOp(op);
+  cy.assertQueryResult(mockSuccess, sleep);
 });

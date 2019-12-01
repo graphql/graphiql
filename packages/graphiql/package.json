@@ -20,13 +20,6 @@
     "graphiql.min.js",
     "graphiql.css"
   ],
-  "nyc": {
-    "report-dir": "coverage/cypress",
-    "reporter": [
-      "lcov",
-      "json"
-    ]
-  },
   "scripts": {
     "build": "yarn build-clean && yarn build-js && yarn build-flow && yarn build-demo",
     "build-clean": "rimraf 'graphiql.{css,*min.js,js}' esm dist",
@@ -75,7 +68,6 @@
     "graphql": "14.4.2",
     "jest": "^24.8.0",
     "jsdom": "15.0.0",
-    "nyc": "^14.1.1",
     "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",
     "react": "15.6.2",

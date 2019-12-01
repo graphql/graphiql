@@ -42,7 +42,8 @@ describe('GraphiQL On Initialization', () => {
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {
-    cy.assertQueryResult({ query: testQuery }, mockSuccess);
+    cy.visit(`/?query=${testQuery}`);
+    cy.assertQueryResult(mockSuccess, 500);
   });
 
   it('Toggles doc pane on', () => {
