@@ -74,7 +74,7 @@
     "express-graphql": "0.6.7",
     "graphql": "14.4.2",
     "jest": "^24.8.0",
-    "jsdom": "15.0.0",
+    "jsdom": "15.2.1",
     "nyc": "^14.1.1",
     "postcss-cli": "6.1.2",
     "prop-types": "15.7.2",

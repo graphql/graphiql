@@ -62,7 +62,7 @@
     "chai-subset": "1.5.0",
     "codemirror": "^5.28.0",
     "graphql": "^14.0.2",
-    "jsdom": "^11.2.0",
+    "jsdom": "^15.2.1",
     "mocha": "3.5.0",
     "rimraf": "^3.0.0",
     "sane": "2.0.0"
