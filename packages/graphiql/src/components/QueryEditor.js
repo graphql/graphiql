@@ -156,8 +156,18 @@ export class QueryEditor extends React.Component {
             this.props.onMergeQuery();
           }
         },
-
         ...commonKeys,
+        'Cmd-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
+          }
+        },
+
+        'Ctrl-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
+          }
+        },
       },
     });
 
