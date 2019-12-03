@@ -6951,10 +6951,10 @@ graceful-fs@^4.1.4:
   integrity sha1-TK+tdrxi8C+gObL5Tpo906ORpyU=
 
 "graphiql@file:packages/graphiql":
-  version "0.17.0"
+  version "0.17.1"
   dependencies:
     codemirror "^5.47.0"
-    codemirror-graphql "^0.11.3"
+    codemirror-graphql "^0.11.4"
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
     markdown-it "^10.0.0"
@@ -6986,17 +6986,10 @@ graphql-request@^1.5.0:
   dependencies:
     cross-fetch "2.2.2"
 
-graphql@14.4.2:
-  version "14.4.2"
-  resolved "https://registry.npmjs.org/graphql/-/graphql-14.4.2.tgz#553a7d546d524663eda49ed6df77577be3203ae3"
-  integrity sha512-6uQadiRgnpnSS56hdZUSvFrVcQ6OF9y6wkxJfKquFtHlnl7+KSuWwSJsdwiK1vybm1HgcdbpGkCpvhvsVQ0UZQ==
-  dependencies:
-    iterall "^1.2.2"
-
-graphql@14.5.6, graphql@^14.0.2, graphql@^14.4.2, graphql@^14.5.2:
-  version "14.5.6"
-  resolved "https://registry.npmjs.org/graphql/-/graphql-14.5.6.tgz#3fa12173b50e6ccdef953c31c82f37c50ef58bec"
-  integrity sha512-zJ6Oz8P1yptV4O4DYXdArSwvmirPetDOBnGFRBl0zQEC68vNW3Ny8qo8VzMgfr+iC8PKiRYJ+f2wub41oDCoQg==
+graphql@14.5.8, graphql@^14.0.2, graphql@^14.4.2, graphql@^14.5.2:
+  version "14.5.8"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-14.5.8.tgz#504f3d3114cb9a0a3f359bbbcf38d9e5bf6a6b3c"
+  integrity sha512-MMwmi0zlVLQKLdGiMfWkgQD7dY/TUKt4L+zgJ/aR0Howebod3aNgP5JkgvAULiR2HPVZaP2VEElqtdidHweLkg==
   dependencies:
     iterall "^1.2.2"
 
