@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.2](https://github.com/graphql/graphiql/compare/graphiql@0.17.1...graphiql@0.17.2) (2019-12-03)
+
+
+### Bug Fixes
+
+* ensure css files move with babel dist ([ca95547](https://github.com/graphql/graphiql/commit/ca95547))
+* remove css from downstream components. soon to be replaced w styled ([e765543](https://github.com/graphql/graphiql/commit/e765543))
+
+
+
+
+
 ## [0.17.1](https://github.com/graphql/graphiql/compare/graphiql@0.17.0...graphiql@0.17.1) (2019-12-03)
 
 
