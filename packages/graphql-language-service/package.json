@@ -29,8 +29,7 @@
     "build": "yarn run build-js && yarn build-esm && yarn run build-flow",
     "build-js": "node ../../resources/buildJs.js",
     "build-esm": "ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
-    "build-flow": "node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js"
+    "build-flow": "node ../../resources/buildFlow.js"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
