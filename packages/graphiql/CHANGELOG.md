@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.1](https://github.com/graphql/graphiql/compare/graphiql@0.17.0...graphiql@0.17.1) (2019-12-03)
+
+
+### Bug Fixes
+
+* **graphiql:** duplicate query history key issue, fixes [#988](https://github.com/graphql/graphiql/issues/988) ([#1035](https://github.com/graphql/graphiql/issues/1035)) ([69c6826](https://github.com/graphql/graphiql/commit/69c6826))
+* convert browserify build to webpack, fixes [#976](https://github.com/graphql/graphiql/issues/976) ([#1001](https://github.com/graphql/graphiql/issues/1001)) ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
+* hints vertical scroll ([216eaeb](https://github.com/graphql/graphiql/commit/216eaeb))
+
+
+
+
+
 # [0.17.0](https://github.com/graphql/graphiql/compare/graphiql@0.16.0...graphiql@0.17.0) (2019-11-26)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.4](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.3...codemirror-graphql@0.11.4) (2019-12-03)
+
+
+### Bug Fixes
+
+* convert browserify build to webpack, fixes [#976](https://github.com/graphql/graphiql/issues/976) ([#1001](https://github.com/graphql/graphiql/issues/1001)) ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
+* csp headers violation [@gracenoah](https://github.com/gracenoah) graphql/codemirror-graphql[#246](https://github.com/graphql/graphiql/issues/246) ([#1044](https://github.com/graphql/graphiql/issues/1044)) ([3c9dfa5](https://github.com/graphql/graphiql/commit/3c9dfa5))
+
+
+
+
+
 ## [0.11.3](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.2...codemirror-graphql@0.11.3) (2019-11-26)
 
 **Note:** Version bump only for package codemirror-graphql
