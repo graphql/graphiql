@@ -11,8 +11,6 @@ import PropTypes from 'prop-types';
 import QueryStore from '../utility/QueryStore';
 import HistoryQuery from './HistoryQuery';
 
-import '../css/history.css';
-
 const MAX_QUERY_SIZE = 100000;
 const MAX_HISTORY_LENGTH = 20;
 
