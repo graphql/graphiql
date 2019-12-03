@@ -42,7 +42,7 @@ if (tempPath) {
         fs.renameSync(file.dest, path.resolve(destinationPath));
       }
     });
-    // should cleanup temp directory after renaming 
+    // should cleanup temp directory after renaming
     // every file to the destination path
     rimraf.sync(tempRenamePath);
   });

@@ -15,6 +15,8 @@ const commands = [
   'src',
   '--ignore',
   '**/__tests__/**',
+  '--ignore',
+  '**/*.spec.*',
   '--out-dir',
   'dist',
   '--root-mode',
