@@ -5,8 +5,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import '../css/doc-explorer.css';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GraphQLSchema, isType } from 'graphql';
