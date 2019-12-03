@@ -33,7 +33,6 @@
     "lint-fix": "eslint --ext=ts,js,jsx,tsx . --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
-    "prepublish": "node resources/prepublish.js",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "version-release": "lerna version",
