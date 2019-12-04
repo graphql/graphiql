@@ -419,16 +419,17 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@babel/node@7.4.5":
-  version "7.4.5"
-  resolved "https://registry.npmjs.org/@babel/node/-/node-7.4.5.tgz#bce71bb44d902bfdd4da0b9c839a8a90fc084056"
-  integrity sha512-nDXPT0KwYMycDHhFG9wKlkipCR+iXzzoX9bD2aF2UABLhQ13AKhNi5Y61W8ASGPPll/7p9GrHesmlOgTUJVcfw==
+"@babel/node@7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/node/-/node-7.7.4.tgz#de1cc9c67b335a19e4f71208554779bc63719f5a"
+  integrity sha512-Vhhq2kK+BpsR2tW35zP8yOJZ7ONMVBwCD9fmNeRTU3MNNpcJDrrtVP5NK8ZX4nQAs0GSq6ky8noyn6MCVgL08g==
   dependencies:
-    "@babel/polyfill" "^7.0.0"
-    "@babel/register" "^7.0.0"
+    "@babel/register" "^7.7.4"
     commander "^2.8.1"
-    lodash "^4.17.11"
+    core-js "^3.2.1"
+    lodash "^4.17.13"
     node-environment-flags "^1.0.5"
+    regenerator-runtime "^0.13.3"
     v8flags "^3.1.1"
 
 "@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.4.3", "@babel/parser@^7.4.5", "@babel/parser@^7.6.0":
@@ -1004,7 +1005,7 @@
     core-js "^2.6.5"
     regenerator-runtime "^0.13.2"
 
-"@babel/polyfill@^7.0.0", "@babel/polyfill@^7.4.4":
+"@babel/polyfill@^7.4.4":
   version "7.6.0"
   resolved "https://registry.npmjs.org/@babel/polyfill/-/polyfill-7.6.0.tgz#6d89203f8b6cd323e8d946e47774ea35dc0619cc"
   integrity sha512-q5BZJI0n/B10VaQQvln1IlDK3BTBJFbADx7tv+oXDPIDZuTo37H5Adb9jhlXm/fEN4Y7/64qD9mnrJJG7rmaTw==
@@ -1153,7 +1154,7 @@
     "@babel/plugin-transform-react-jsx-self" "^7.0.0"
     "@babel/plugin-transform-react-jsx-source" "^7.0.0"
 
-"@babel/register@^7.0.0", "@babel/register@^7.4.4":
+"@babel/register@^7.4.4", "@babel/register@^7.7.4":
   version "7.7.4"
   resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.7.4.tgz#45a4956471a9df3b012b747f5781cc084ee8f128"
   integrity sha512-/fmONZqL6ZMl9KJUYajetCrID6m0xmL4odX7v+Xvoxcv0DdbP/oO0TWIeLUCHqczQ6L6njDMqmqHFy2cp3FFsA==
@@ -4500,6 +4501,11 @@ core-js@^2.4.0, core-js@^2.5.0, core-js@^2.6.5:
   version "2.6.9"
   resolved "https://registry.npmjs.org/core-js/-/core-js-2.6.9.tgz#6b4b214620c834152e179323727fc19741b084f2"
   integrity sha512-HOpZf6eXmnl7la+cUdMnLvUxKNqLUzJvgIziQ0DiF3JwSImNphIqdGqzj6hIKyX04MmV0poclQ7+wjWvxQyR2A==
+
+core-js@^3.2.1:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.4.7.tgz#57c35937da80fe494fbc3adcf9cf3dc00eb86b34"
+  integrity sha512-qaPVGw30J1wQ0GR3GvoPqlGf9GZfKKF4kFC7kiHlcsPTqH3txrs9crCp3ZiMAXuSenhz89Jnl4GZs/67S5VOSg==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
