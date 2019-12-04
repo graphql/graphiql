@@ -6951,7 +6951,7 @@ graceful-fs@^4.1.4:
   integrity sha1-TK+tdrxi8C+gObL5Tpo906ORpyU=
 
 "graphiql@file:packages/graphiql":
-  version "0.17.1"
+  version "0.17.2"
   dependencies:
     codemirror "^5.47.0"
     codemirror-graphql "^0.11.4"
@@ -14145,10 +14145,10 @@ vscode-jsonrpc@3.5.0:
   resolved "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.5.0.tgz#87239d9e166b2d7352245b8a813597804c1d63aa"
   integrity sha1-hyOdnhZrLXNSJFuKgTWXgEwdY6o=
 
-vscode-jsonrpc@^3.3.0:
-  version "3.6.2"
-  resolved "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.6.2.tgz#3b5eef691159a15556ecc500e9a8a0dd143470c8"
-  integrity sha512-T24Jb5V48e4VgYliUXMnZ379ItbrXgOimweKaJshD84z+8q7ZOZjJan0MeDe+Ugb+uqERDVV8SBmemaGMSMugA==
+vscode-jsonrpc@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-4.0.0.tgz#a7bf74ef3254d0a0c272fab15c82128e378b3be9"
+  integrity sha512-perEnXQdQOJMTDFNv+UF3h1Y0z4iSiaN9jIlb0OqIYgosPCZGYh/MCUlkFtV2668PL69lRDO32hmvL2yiidUYg==
 
 vscode-languageserver-protocol@3.5.1:
   version "3.5.1"
