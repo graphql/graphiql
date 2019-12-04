@@ -15,9 +15,10 @@
 !/packages/*/cypress/**
 !/packages/*/test/**
 !/packages/codemirror-graphql/resources/**
-!/packages/examples/**
+!/examples/**
 !.eslintrc.js
 !babel.config.js
+!examples/**/src/*
 #
 # End of the ignore dance.
 #
@@ -27,12 +28,15 @@
 
 # ESLint automatically ignores node_modules _in the root_, so we only need to specify nested node_modules
 **/node_modules
-/packages/examples/graphiql-cdn/graphiql*
+/examples/graphiql-cdn/graphiql*
 
 # Build artifacts
 **/flow-typed
 **/dist
+**/esm
+**/webpack
 **/renderExample.js
+**/*.min.js
 
 # Vendored files
 /packages/codemirror-graphql/

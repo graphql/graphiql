@@ -8,7 +8,6 @@ module.exports = {
       tsConfig: './resources/tsconfig.base.esm.json',
     },
   },
-  verbose: true,
   clearMocks: true,
   collectCoverage: true,
   setupFiles: [path.join(__dirname, '/resources/enzyme.config.js')],

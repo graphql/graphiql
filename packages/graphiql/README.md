@@ -6,11 +6,109 @@
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
-[![](resources/graphiql.png)](http://graphql.org/swapi-graphql)
+[![](https://raw.githubusercontent.com/graphql/graphiql/HEAD/resources/graphiql.png)](http://graphql.org/swapi-graphql)
 
-### Getting started
+## Features
 
-Using a node.js server? Just use [`express-graphql`](https://github.com/graphql/express-graphql)! It can automatically present GraphiQL. Using another GraphQL service? GraphiQL is pretty easy to set up. With `npm`:
+- Syntax highlighting.
+- Intelligent type ahead of fields, arguments, types, and more.
+- Real-time error highlighting and reporting for queries and variables.
+- Automatic query and variables completion.
+- Automatically adds required fields to queries.
+- Documentation explorer, search, with markdown support.
+- Query History using local storage
+- Run and inspect query results using _any_ promise that resolves JSON results. HTTPS or WSS not required.
+- Supports full [GraphQL Language Specification](https://github.com/graphql/graphql-wg): 
+  - Queries, Mutations, Subscriptions, Fragments, Unions, directives, multiple operations per query, etc
+
+
+## Demos
+
+We have a few demos of `master` branch via the default netlify build (the same URL paths apply to deploy previews on PRs):
+
+1. [`graphiql.min.js` demo](https://graphiql-test.netlify.com/) - the min.js bundle for the current ref
+2. [`graphiql.js` demo](https://graphiql-test.netlify.com/dev) - development build is nice for react inspector, debugging, etc
+3. [webpack example](https://graphiql-test.netlify.com/webpack) - Demonstration of webpack usage from `examples/graphiql-webpack`
+4. [cdn example](https://graphiql-test.netlify.com/cdn) - Demonstration of usage of our @latest CDN package release. Similar to 1) but for the last actual npm release.
+5. [bundle analyzer for graphiql.min.js](https://graphiql-test.netlify.com/analyzer)
+
+## Getting started
+
+Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](../examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
+
+### GraphiQL for my GraphQL Service/HTTP Server/Etc
+
+You may be using a runtime that already provides graphiql, or that provides it via a middleware. For example, we support [`express-graphql`](https://github.com/graphql/express-graphql)!
+
+I would suggest a search for "graphiql <my runtime>" such as "graphiql express", "graphiql absinthe", etc to learn a potentially simpler route to setup for your environment. There are many npm packages, ruby gems, java utilities for deploying graphiql.
+
+Here are some example searches:
+
+- https://www.npmjs.com/search?q=graphiql - ~117 hits
+- https://pypi.org/search/?q=graphiql - ~33 hits
+- https://search.maven.org/search?q=graphiql - ~15 hits
+- https://rubygems.org/search?utf8=%E2%9C%93&query=graphiql - ~6 hits
+- https://godoc.org/?q=graphiql - ~12 hits
+- https://packagist.org/?query=%22graphiql%22 - ~5 hits
+- https://crates.io/search?q=graphiql - ~2 hits
+
+though this doesnt include runtimes or libraries where `graphiql` is used isn't referenced in the package registry search entry
+
+### CDN Bundle
+
+Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
+
+For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
+
+The most minimal way to set up GraphiQL is a single index.html file:
+
+```html
+<html>
+  <head>
+    <title>Simple GraphiQL Example</title>
+    <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+  </head>
+  <body style="margin: 0;">
+    <div id="graphiql" style="height: 100vh;"></div>
+
+    <script crossorigin src="https://unpkg.com/react/umd/react.min.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom/umd/react-dom.min.js"
+    /></script>
+    <script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js" />
+
+    <script>
+      function graphQLFetcher(graphQLParams) {
+        return fetch('https://my/graphql', {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(graphQLParams),
+        }).then(function(response) {
+          return response.json();
+        });
+      }
+      ReactDOM.render(
+        React.createElement(GraphiQL, { fetcher: graphQLFetcher }),
+        document.getElementById('graphiql'),
+      );
+    </script>
+  </body>
+</html>
+```
+
+**Notes**:
+
+- the inlined styles are important for ensuring GraphiQL is visible and fills the canvas.
+- using `React.createElement` directly is belaborous, so follow the webpack instructions below for more highly customized implementation
+
+### Webpack/Bundler
+
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We confirm that this builds on every travis CI run, and that it works end to end with every publish.
+
+Using another GraphQL service? GraphiQL is pretty easy to set up.
+
+With `yarn`:
 
 ```
 npm install --save graphiql
@@ -41,33 +139,11 @@ function graphQLFetcher(graphQLParams) {
 ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 ```
 
-Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file.
-
-Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
-
-For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
-
-### Features
-
-- Syntax highlighting
-- Intelligent type ahead of fields, arguments, types, and more.
-- Real-time error highlighting and reporting.
-- Automatic query completion.
-- Run and inspect query results.
-
-### Usage
-
-GraphiQL exports a single React component which is intended to encompass the entire browser viewport. This React component renders the GraphiQL editor.
-
-```js
-import GraphiQL from 'graphiql';
-
-<GraphiQL />;
-```
+## Options
 
 GraphiQL supports customization in UI and behavior by accepting React props and children.
 
-**Props:**
+### Props
 
 - `fetcher`: a function which accepts GraphQL-HTTP parameters and returns a Promise or Observable which resolves to the GraphQL parsed JSON response.
 
@@ -103,7 +179,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-**Children:**
+### Children
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -114,11 +190,9 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 - `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
 
 - `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
-
   - `<GraphiQL.MenuItem>`: Items for a menu.
 
 - `<GraphiQL.Select>`: Add a select list to the toolbar above GraphiQL.
-
   - `<GraphiQL.SelectOption>`: Options for a select list.
 
 - `<GraphiQL.Group>`: Add a group of associated controls to the
@@ -127,7 +201,9 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
 
-### Usage Examples
+## Full Usage Example
+
+Here's a more complex react implementation. This would require webpack or a bundler.
 
 ```js
 class CustomGraphiQL extends React.Component {
