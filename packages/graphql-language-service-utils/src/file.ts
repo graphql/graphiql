@@ -23,31 +23,33 @@ export function getPathWithoutExtension(
 
 function handleExtensionErr(extension: string | null) {
   if (extension) {
-    throw Error(`cannot require() module with extension '${extension}'`);
+    throw Error(`cannot import() module with extension '${extension}'`);
   }
 }
+
 // these make webpack happy
+
+const resolveJs = (path: string) => require.resolve(path + '.js');
+const resolveJSON = (path: string) => require.resolve(path + '.json');
+
+const importJs = (path: string) => import(path + '.js');
+const importJSON = (path: string) => import(path + '.json');
 
 export function resolveFile(filePath: string) {
   const extension = getFileExtension(filePath);
   const pathWithoutExtension = getPathWithoutExtension(filePath, extension);
   switch (extension) {
     case 'js': {
-      return require.resolve(pathWithoutExtension + '.js');
+      return resolveJs(pathWithoutExtension);
     }
     case 'json': {
-      return require.resolve(pathWithoutExtension + '.json');
+      return resolveJSON(pathWithoutExtension);
     }
     default: {
       try {
-        return require.resolve(filePath + '.js');
-      } catch (err) {
-        try {
-          return require.resolve(filePath + '.json');
-        } catch (err) {
-          handleExtensionErr(extension);
-          throw err;
-        }
+        return resolveJs(filePath);
+      } catch (_error) {
+        return resolveJSON(filePath);
       }
     }
   }
@@ -60,29 +62,30 @@ export function resolveFile(filePath: string) {
 export function requireFile(filePath: string) {
   const extension = getFileExtension(filePath);
   const pathWithoutExtension = getPathWithoutExtension(filePath, extension);
+
   switch (extension) {
     case 'js': {
-      if (resolveFile(pathWithoutExtension + '.js')) {
-        return import(pathWithoutExtension + '.js');
+      if (resolveFile(pathWithoutExtension + `.js`)) {
+        return importJs(pathWithoutExtension);
       }
       return null;
     }
     case 'json': {
-      if (resolveFile(pathWithoutExtension + '.json')) {
-        return import(pathWithoutExtension + '.json');
+      if (resolveFile(pathWithoutExtension + `.json`)) {
+        return importJSON(pathWithoutExtension);
       }
       return null;
     }
     default: {
       try {
         if (resolveFile(filePath + `.js`)) {
-          return import(filePath + '.js');
+          return importJs(filePath);
         }
       } catch (err) {
         handleExtensionErr(extension);
       }
       if (resolveFile(filePath + `.json`)) {
-        return import(filePath + '.json');
+        return importJSON(filePath);
       }
       handleExtensionErr(extension);
     }
