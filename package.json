@@ -20,7 +20,7 @@
     "build-bundles": "lerna run build-bundles",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-demo",
     "testonly": "jest && lerna run test --scope codemirror-graphql",
-    "e2e": "cd packages/graphiql && yarn e2e",
+    "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
     "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn format \\033[0m\\n' && exit 1)",
