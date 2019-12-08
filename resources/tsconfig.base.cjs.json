@@ -21,6 +21,7 @@
     "baseUrl": "."
   },
   "exclude": [
+    "**/__tests__/**",
     "**/dist/**.*",
     "**/*.spec.ts",
     "**/*.spec.js",
