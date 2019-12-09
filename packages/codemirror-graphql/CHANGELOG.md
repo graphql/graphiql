@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.6](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.5...codemirror-graphql@0.11.6) (2019-12-09)
+
+
+### Bug Fixes
+
+* codemirror results bundle ([dd06eb5](https://github.com/graphql/graphiql/commit/dd06eb5))
+
+
+
+
+
 ## [0.11.5](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.4...codemirror-graphql@0.11.5) (2019-12-09)
 
 
