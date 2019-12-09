@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.3](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.2...graphql-language-service-utils@2.3.3) (2019-12-09)
+
+
+### Bug Fixes
+
+* test output, webpack resolution, clean build ([3b1c2c1](https://github.com/graphql/graphiql/commit/3b1c2c1))
+* **gls-utils:** [#1055](https://github.com/graphql/graphiql/issues/1055) - move file test, refactor for fixtures ([19d8d7f](https://github.com/graphql/graphiql/commit/19d8d7f))
+
+
+
+
+
 ## [2.3.2](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.1...graphql-language-service-utils@2.3.2) (2019-12-03)
 
 

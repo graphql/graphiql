@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.3](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.3.2...graphql-language-service-server@2.3.3) (2019-12-09)
+
+
+### Bug Fixes
+
+* a few more tweaks to babel ignore ([e0ad2c6](https://github.com/graphql/graphiql/commit/e0ad2c6))
+
+
+
+
+
 ## [2.3.2](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.3.1...graphql-language-service-server@2.3.2) (2019-12-03)
 
 

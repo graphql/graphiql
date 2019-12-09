@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.5](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.4...codemirror-graphql@0.11.5) (2019-12-09)
+
+
+### Bug Fixes
+
+* a few more tweaks to babel ignore ([e0ad2c6](https://github.com/graphql/graphiql/commit/e0ad2c6))
+
+
+
+
+
 ## [0.11.4](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.3...codemirror-graphql@0.11.4) (2019-12-03)
 
 

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.3](https://github.com/graphql/graphiql/compare/graphiql@0.17.2...graphiql@0.17.3) (2019-12-09)
+
+
+### Bug Fixes
+
+* express-graphql version ([e9848b0](https://github.com/graphql/graphiql/commit/e9848b0))
+* test output, webpack resolution, clean build ([3b1c2c1](https://github.com/graphql/graphiql/commit/3b1c2c1))
+
+
+
+
+
 ## [0.17.2](https://github.com/graphql/graphiql/compare/graphiql@0.17.1...graphiql@0.17.2) (2019-12-03)
 
 
