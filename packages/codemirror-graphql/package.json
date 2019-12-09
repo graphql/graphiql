@@ -30,7 +30,8 @@
     "mode.js",
     "mode.js.flow",
     "utils",
-    "variables"
+    "variables",
+    "results"
   ],
   "options": {
     "mocha": "--full-trace --require resources/mochaBootload src/*/__tests__/*-test.js",
