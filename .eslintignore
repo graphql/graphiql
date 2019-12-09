@@ -5,20 +5,25 @@
 # specifically un-ignore the source code, configuration files, etc.
 #
 # First: ignore FILES (not folders!)
+
 /packages/**/*.js
 /packages/**/*.jsx
 /packages/**/*.ts
 /packages/**/*.tsx
+
+/examples/**/*.js
+/examples/**/*.jsx
+/examples/**/*.ts
+/examples/**/*.tsx
 #
 # Now un-ignore source code, tests, configuration, etc
 !/packages/*/src/**
 !/packages/*/cypress/**
 !/packages/*/test/**
 !/packages/codemirror-graphql/resources/**
-!/examples/**
 !.eslintrc.js
 !babel.config.js
-!examples/**/src/*
+!examples/**/{src,resources,cypress}/*
 #
 # End of the ignore dance.
 #

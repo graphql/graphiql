@@ -33,6 +33,7 @@ module.exports = {
     '!**/node_modules/**',
     '!**/__tests__/**',
     '!**/resources/**',
+    '!**/examples/**',
     '!**/codemirror-graphql/**',
   ],
 };
