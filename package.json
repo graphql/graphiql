@@ -34,7 +34,7 @@
     "version-graduate": "lerna version --conventional-graduate"
   },
   "devDependencies": {
-    "@babel/cli": "7.7.4",
+    "@babel/cli": "7.7.5",
     "@babel/core": "7.7.5",
     "@babel/node": "7.7.4",
     "@babel/plugin-proposal-class-properties": "7.7.4",
