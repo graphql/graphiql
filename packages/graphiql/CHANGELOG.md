@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.4](https://github.com/graphql/graphiql/compare/graphiql@0.17.3...graphiql@0.17.4) (2019-12-09)
+
+
+### Bug Fixes
+
+* graphiql babel test ignore paths ([e1588d9](https://github.com/graphql/graphiql/commit/e1588d9))
+
+
+
+
+
 ## [0.17.3](https://github.com/graphql/graphiql/compare/graphiql@0.17.2...graphiql@0.17.3) (2019-12-09)
 
 
