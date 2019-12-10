@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "chai": "4.1.1",
-    "chai-subset": "1.5.0",
+    "chai-subset": "1.6.0",
     "codemirror": "^5.28.0",
     "cross-env": "^6.0.3",
     "graphql": "^14.0.2",
