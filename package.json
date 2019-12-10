@@ -66,7 +66,7 @@
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "eslint-plugin-react": "7.17.0",
     "fetch-mock": "^6.0.0",
-    "flow-bin": "^0.101.0",
+    "flow-bin": "^0.113.0",
     "graphql": "^14.5.2",
     "husky": "^3.0.5",
     "jest": "^24.8.0",
