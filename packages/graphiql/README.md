@@ -18,9 +18,8 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 - Documentation explorer, search, with markdown support.
 - Query History using local storage
 - Run and inspect query results using _any_ promise that resolves JSON results. HTTPS or WSS not required.
-- Supports full [GraphQL Language Specification](https://github.com/graphql/graphql-wg): 
+- Supports full [GraphQL Language Specification](https://github.com/graphql/graphql-wg):
   - Queries, Mutations, Subscriptions, Fragments, Unions, directives, multiple operations per query, etc
-
 
 ## Demos
 
@@ -52,7 +51,7 @@ Here are some example searches:
 - https://packagist.org/?query=%22graphiql%22 - ~5 hits
 - https://crates.io/search?q=graphiql - ~2 hits
 
-though this doesnt include runtimes or libraries where `graphiql` is used isn't referenced in the package registry search entry
+This doesn't include runtimes or libraries where GraphiQL is used but isn't referenced in the package registry search entry.
 
 ### CDN Bundle
 
@@ -79,15 +78,12 @@ The most minimal way to set up GraphiQL is a single index.html file:
     <script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js" />
 
     <script>
-      function graphQLFetcher(graphQLParams) {
-        return fetch('https://my/graphql', {
+      const graphQLFetcher = (graphQLParams) => fetch(
+        'https://my/graphql', {
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(graphQLParams),
-        }).then(function(response) {
-          return response.json();
-        });
-      }
+        }).then((response) => response.json().catch(() => response.text())
       ReactDOM.render(
         React.createElement(GraphiQL, { fetcher: graphQLFetcher }),
         document.getElementById('graphiql'),
@@ -104,11 +100,11 @@ The most minimal way to set up GraphiQL is a single index.html file:
 
 ### Webpack/Bundler
 
-**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We confirm that this builds on every travis CI run, and that it works end to end with every publish.
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. f you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
 
 Using another GraphQL service? Here's how to get GraphiQL set up:
 
-With `yarn`:
+With `npm`:
 
 ```
 npm install --save graphiql
@@ -190,9 +186,11 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 - `<GraphiQL.Button>`: Add a button to the toolbar above GraphiQL.
 
 - `<GraphiQL.Menu>`: Add a dropdown menu to the toolbar above GraphiQL.
+
   - `<GraphiQL.MenuItem>`: Items for a menu.
 
 - `<GraphiQL.Select>`: Add a select list to the toolbar above GraphiQL.
+
   - `<GraphiQL.SelectOption>`: Options for a select list.
 
 - `<GraphiQL.Group>`: Add a group of associated controls to the

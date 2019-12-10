@@ -25,7 +25,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 ### How To Setup/Implement GraphiQL
 [![Edit graphiql-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/graphiql-example-nhzvc)
-(requires no create react app configuration)
+(works with `create-react-app` without requiring additional configuration)
 
 The [GraphiQL Readme](packages/graphiql#readme) explains some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
@@ -79,17 +79,20 @@ This is an open source project, and we welcome contributions. Please see
 
 ## Developing/Contributing
 
-This repo is a yarn workspaces monorepo that also uses lerna for some convenience.
-It requires node 11 and the latest yarn ideally.  `npm` commands _will_ fail.
+We welcome contributions and assistance! If you want to know where to start, check out our [Github Projects](https://github.com/graphql/graphiql/projects). If you want to add a new feature, note that GraphiQL is eventually going to support its own extension system, and we are rarely adding new features, so make sure you submit feature requests with that in mind.
 
-As of December 2019 we are officially supporting windows OS for development tooling. If you encounter any bugs when using these or other npm scripts, pleas report them!
+This repo is a yarn workspaces monorepo that also uses lerna for some convenience.
+It requires node 11 and the latest stable version of yarn. 
+Running these commands with `npm` _will_ cause you problems.
+
+As of December 2019 we are officially supporting Windows OS for development tooling. If you encounter any bugs when using these or other package.json scripts, please report them!
 
 ### Getting Started
 
 1. `yarn` - install and link all packages
 2. `yarn build` - cleans first, then builds everything but webpack bundles - `tsc --build`, `babel` etc
 3. `yarn build-bundles` - builds webpack bundles that are used for releases
-4. `yarn build-demo` - builds demo projects for netlify. we run this on CI to make sure webpack can consume our project in a standalone project.
+4. `yarn build-demo` - builds demo projects for netlify; we run this on CI to make sure webpack can consume our project in a standalone project.
 5. `yarn test` - runs all of the above alongside linting and checks, jest mocha Cypress etc.
 6. `yarn pretty` - autoformats
 7. `yarn lint` - checks for linting issues
