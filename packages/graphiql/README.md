@@ -106,7 +106,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
 
 **Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We confirm that this builds on every travis CI run, and that it works end to end with every publish.
 
-Using another GraphQL service? GraphiQL is pretty easy to set up.
+Using another GraphQL service? Here's how to get GraphiQL set up:
 
 With `yarn`:
 
