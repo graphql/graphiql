@@ -268,14 +268,11 @@ export class GraphiQL extends React.Component {
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const logo = find(children, child => child.type === GraphiQL.Logo) || (
+    const logo = find(children, child => isChildComponentType(child, GraphiQL.Logo)) || (
       <GraphiQL.Logo />
     );
 
-    const toolbar = find(
-      children,
-      child => child.type === GraphiQL.Toolbar
-    ) || (
+    const toolbar = find(children, child => isChildComponentType(child, GraphiQL.Toolbar)) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
@@ -300,7 +297,7 @@ export class GraphiQL extends React.Component {
       </GraphiQL.Toolbar>
     );
 
-    const footer = find(children, child => child.type === GraphiQL.Footer);
+    const footer = find(children, child => isChildComponentType(child, GraphiQL.Footer));
 
     const queryWrapStyle = {
       WebkitFlex: this.state.editorFlex,
@@ -1077,6 +1074,7 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
     </div>
   );
 };
+GraphiQL.Logo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
@@ -1086,6 +1084,7 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
     </div>
   );
 };
+GraphiQL.Toolbar.displayName = 'GraphiQLToolbar';
 
 // Export main windows/panes to be used separately if desired.
 GraphiQL.QueryEditor = QueryEditor;
@@ -1111,6 +1110,7 @@ GraphiQL.SelectOption = ToolbarSelectOption;
 GraphiQL.Footer = function GraphiQLFooter(props) {
   return <div className="footer">{props.children}</div>;
 };
+GraphiQL.Footer.displayName = 'GraphiQLFooter';
 
 GraphiQL.formatResult = function(result) {
   return JSON.stringify(result, null, 2);
@@ -1190,4 +1190,13 @@ function observableToPromise(observable) {
 // Duck-type observable detection.
 function isObservable(value) {
   return typeof value === 'object' && typeof value.subscribe === 'function';
+}
+
+// Determines if the React child is of the same type of the provided React component
+function isChildComponentType(child, component) {
+  if (child.type && child.type.displayName === component.displayName) {
+    return true;
+  }
+
+  return child.type === component;
 }
