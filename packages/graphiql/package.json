@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "cross-env": "^6.0.3",
-    "css-loader": "3.3.0",
+    "css-loader": "3.3.2",
     "cssnano": "^4.1.10",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-15": "^1.4.0",
