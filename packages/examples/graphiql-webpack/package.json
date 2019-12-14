@@ -1,27 +1,27 @@
 {
   "name": "graphiql-example-webpack",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "private": true,
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
     "build-demo": "webpack",
-    "start": "webpack-dev-server --watch"
+    "start": "webpack serve"
   },
   "dependencies": {
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
     "graphiql": "file:../../graphiql",
-    "graphql": "14.5.6",
+    "graphql": "14.5.8",
     "react": "16.10.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "7.7.0",
-    "@babel/plugin-syntax-dynamic-import": "7.2.0",
-    "@babel/preset-env": "7.7.1",
+    "@babel/plugin-proposal-class-properties": "7.7.4",
+    "@babel/plugin-syntax-dynamic-import": "7.7.4",
+    "@babel/preset-env": "7.7.6",
     "@babel/preset-react": "7.7.0",
     "babel-loader": "^8.0.6",
-    "css-loader": "3.2.0",
+    "css-loader": "3.3.0",
     "html-webpack-plugin": "^3.2.0",
     "react-dom": "^16.11.0",
     "style-loader": "^1.0.0",

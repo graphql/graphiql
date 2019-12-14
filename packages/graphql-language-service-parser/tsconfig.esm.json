@@ -1,19 +1,13 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./esm",
     "composite": true
   },
   "references": [
     {
-      "path": "../graphql-language-service-parser"
-    },
-    {
       "path": "../graphql-language-service-types"
-    },
-    {
-      "path": "../graphql-language-service-utils"
     }
   ],
   "exclude": ["**/__tests__/**","**/*.spec.*"]

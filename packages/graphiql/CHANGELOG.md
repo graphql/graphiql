@@ -3,6 +3,62 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.17.5](https://github.com/graphql/graphiql/compare/graphiql@0.17.4...graphiql@0.17.5) (2019-12-09)
+
+**Note:** Version bump only for package graphiql
+
+
+
+
+
+## [0.17.4](https://github.com/graphql/graphiql/compare/graphiql@0.17.3...graphiql@0.17.4) (2019-12-09)
+
+
+### Bug Fixes
+
+* graphiql babel test ignore paths ([e1588d9](https://github.com/graphql/graphiql/commit/e1588d9))
+
+
+
+
+
+## [0.17.3](https://github.com/graphql/graphiql/compare/graphiql@0.17.2...graphiql@0.17.3) (2019-12-09)
+
+
+### Bug Fixes
+
+* express-graphql version ([e9848b0](https://github.com/graphql/graphiql/commit/e9848b0))
+* test output, webpack resolution, clean build ([3b1c2c1](https://github.com/graphql/graphiql/commit/3b1c2c1))
+
+
+
+
+
+## [0.17.2](https://github.com/graphql/graphiql/compare/graphiql@0.17.1...graphiql@0.17.2) (2019-12-03)
+
+
+### Bug Fixes
+
+* ensure css files move with babel dist ([ca95547](https://github.com/graphql/graphiql/commit/ca95547))
+* remove css from downstream components. soon to be replaced w styled ([e765543](https://github.com/graphql/graphiql/commit/e765543))
+
+
+
+
+
+## [0.17.1](https://github.com/graphql/graphiql/compare/graphiql@0.17.0...graphiql@0.17.1) (2019-12-03)
+
+
+### Bug Fixes
+
+* **graphiql:** duplicate query history key issue, fixes [#988](https://github.com/graphql/graphiql/issues/988) ([#1035](https://github.com/graphql/graphiql/issues/1035)) ([69c6826](https://github.com/graphql/graphiql/commit/69c6826))
+* convert browserify build to webpack, fixes [#976](https://github.com/graphql/graphiql/issues/976) ([#1001](https://github.com/graphql/graphiql/issues/1001)) ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
+* hints vertical scroll ([216eaeb](https://github.com/graphql/graphiql/commit/216eaeb))
+
+
+
+
+
 # [0.17.0](https://github.com/graphql/graphiql/compare/graphiql@0.16.0...graphiql@0.17.0) (2019-11-26)
 
 

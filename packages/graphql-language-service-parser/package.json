@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -14,24 +14,25 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "esm/index.d.ts",
   "scripts": {
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
-    "build-flow": "node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js"
+    "build-flow": "node ../../resources/buildFlow.js"
   },
   "peerDependencies": {
     "graphql": "^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "graphql-config": "2.2.1",
-    "graphql-language-service-types": "^1.5.0"
+    "graphql-language-service-types": "^1.5.2"
   }
 }

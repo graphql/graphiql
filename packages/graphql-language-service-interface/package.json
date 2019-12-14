@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-interface",
-  "version": "2.3.1",
+  "version": "2.3.3",
   "description": "Interface to the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -14,26 +14,28 @@
   },
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql"
   ],
   "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "esm/index.d.ts",
   "scripts": {
     "test": "node ../../resources/runTests.js",
     "build": "yarn run build-ts && yarn run build-flow",
     "build-ts": "tsc",
-    "build-flow": "node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js"
+    "build-flow": "node ../../resources/buildFlow.js"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "graphql-config": "2.2.1",
-    "graphql-language-service-parser": "^1.5.0",
-    "graphql-language-service-types": "^1.5.0",
-    "graphql-language-service-utils": "^2.3.1"
+    "graphql-language-service-parser": "^1.5.2",
+    "graphql-language-service-types": "^1.5.2",
+    "graphql-language-service-utils": "^2.3.3"
   }
 }

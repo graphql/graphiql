@@ -7,8 +7,8 @@
   margin-left: -6px;
   margin: 0;
   max-height: 14.5em;
-  overflow-y: auto;
   overflow: hidden;
+  overflow-y: auto;
   padding: 0;
   position: absolute;
   z-index: 10;

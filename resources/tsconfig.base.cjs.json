@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "composite": false,
+    "composite": true,
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
@@ -16,14 +16,12 @@
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["dom", "es2017", "esnext.asynciterable"],
+    "lib": ["dom", "es2017", "esnext"],
     "types": ["node", "jest"],
-    "baseUrl": ".",
-    "paths": {
-      "graphql-language-*" : ["graphql-language-*"]
-    }
+    "baseUrl": "."
   },
   "exclude": [
+    "**/__tests__/**",
     "**/dist/**.*",
     "**/*.spec.ts",
     "**/*.spec.js",
