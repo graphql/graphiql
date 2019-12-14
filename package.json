@@ -23,7 +23,7 @@
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
-    "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn format \\033[0m\\n' && exit 1)",
+    "lint": "eslint --ext=ts,js,jsx,tsx . || ( echo. && echo. && echo Try:  yarn format && echo. && exit 1)",
     "lint-fix": "eslint --ext=ts,js,jsx,tsx . --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
