@@ -21,10 +21,10 @@ const App = () => (
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(graphQLParams),
-          credentials: 'include',
+          credentials: 'same-origin',
         },
       );
-      return data.json();
+      return data.json().catch(() => data.text());
     }}
   />
 );
