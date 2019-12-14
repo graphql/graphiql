@@ -23,7 +23,7 @@
 !/packages/codemirror-graphql/resources/**
 !.eslintrc.js
 !babel.config.js
-!examples/**/{src,resources,cypress}/*
+!/examples/**/{src,resources,cypress}/*
 #
 # End of the ignore dance.
 #
