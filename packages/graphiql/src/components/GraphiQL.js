@@ -151,6 +151,9 @@ export class GraphiQL extends React.Component {
     // Ensure only the last executed editor query is rendered.
     this._editorQueryID = 0;
 
+    // Ref to QueryHistory component
+    this._queryHistory = null;
+
     // Subscribe to the browser window closing, treating it as an unmount.
     if (typeof window === 'object') {
       window.addEventListener('beforeunload', () =>
@@ -172,7 +175,9 @@ export class GraphiQL extends React.Component {
     global.g = this;
   }
 
-  componentWillReceiveProps(nextProps) {
+  // TODO: refactor and remove after updating to React 16
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) { 
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
@@ -327,6 +332,7 @@ export class GraphiQL extends React.Component {
       <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
+            ref={node => { this._queryHistory = node }}
             operationName={this.state.operationName}
             query={this.state.query}
             variables={this.state.variables}
@@ -686,6 +692,12 @@ export class GraphiQL extends React.Component {
         response: null,
         operationName,
       });
+
+      this._queryHistory.updateHistory(
+        editedQuery,
+        variables,
+        operationName
+      );
 
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
