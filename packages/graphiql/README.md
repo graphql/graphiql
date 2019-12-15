@@ -6,7 +6,7 @@
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
-[![](https://raw.githubusercontent.com/graphql/graphiql/HEAD/resources/graphiql.png)](http://graphql.org/swapi-graphql)
+[![](https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.png)](http://graphql.org/swapi-graphql)
 
 ## Features
 
