@@ -32,8 +32,8 @@ function handleExtensionErr(extension: string | null) {
 const resolveJs = (path: string) => require.resolve(path + '.js');
 const resolveJSON = (path: string) => require.resolve(path + '.json');
 
-const importJs = (path: string) => import(path + '.js');
-const importJSON = (path: string) => import(path + '.json');
+const importJs = (path: string) => require(path + '.js');
+const importJSON = (path: string) => require(path + '.json');
 
 export function resolveFile(filePath: string) {
   const extension = getFileExtension(filePath);

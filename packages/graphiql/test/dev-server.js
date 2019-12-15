@@ -16,14 +16,7 @@ const webpackConfig = require('../resources/webpack.config');
 
 const compiler = Webpack(webpackConfig);
 
-const devServerOptions = {
-  ...webpackConfig.devServer,
-  ...{
-    stats: {
-      colors: true,
-    },
-  },
-};
+const devServerOptions = webpackConfig.devServer
 
 const app = new WebpackDevServer(compiler, devServerOptions);
 
@@ -32,11 +25,6 @@ app.use('/graphql', graphqlHTTP({ schema }));
 app.listen(8080, '127.0.0.1', () => {
   console.log('Starting server on http://localhost:8080');
 });
-
-app.use(
-  '../graphiql.css',
-  express.static(path.join(__dirname, '../graphiql.css')),
-);
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

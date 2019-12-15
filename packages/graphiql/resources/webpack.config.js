@@ -6,13 +6,14 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
+const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath('../', ...args);
 
 const resultConfig = {
   mode: process.env.NODE_ENV,
-  entry: Boolean(isDev && process.env.WEBPACK_SERVE)
+  entry: isHMR
     ? [
         'react-hot-loader/patch', // activate HMR for React
         'webpack-dev-server/client?http://localhost:8080', // bundle the client for webpack-dev-server and connect to the provided endpoint
@@ -49,12 +50,14 @@ const resultConfig = {
         test: /\.mjs$/,
         use: [],
         include: /node_modules/,
+        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
       },
       // i think we need to add another rule for
       // codemirror-graphql esm.js files to load
       {
         test: /\.(js|jsx)$/,
         use: [{ loader: 'babel-loader' }],
+        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
       },
       {
         test: /\.css$/,
@@ -62,7 +65,7 @@ const resultConfig = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: isDev,
+              hmr: isHMR,
             },
           },
           'css-loader',
@@ -81,7 +84,7 @@ const resultConfig = {
     new HtmlWebpackPlugin({
       template: relPath('index.html.ejs'),
       inject: 'head',
-      filename: isDev ? 'dev.html' : 'index.html',
+      filename: isDev && !isHMR ? 'dev.html' : 'index.html',
     }),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
@@ -100,7 +103,7 @@ const cssLoaders = [
   {
     loader: MiniCssExtractPlugin.loader,
     options: {
-      hmr: isDev,
+      hmr: isHMR,
     },
   },
   'css-loader',
@@ -117,8 +120,8 @@ if (process.env.ANALYZE) {
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       openAnalyzer: false,
-      reportFilename: rootPath('coverage/analyzer/index.html'),
-    })
+      reportFilename: rootPath('analyzer.html'),
+    }),
   );
 }
 
