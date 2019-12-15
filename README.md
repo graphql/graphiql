@@ -8,9 +8,14 @@
 
 GraphiQL is the reference implementation of this monorepo, GraphQL IDE, an official project under the GraphQL Foundation. The code uses the permissive MIT license.
 
-The `graphql-language-service-interface` should be your go-to for language server protocol spec (LSP) implementations, which is now our first order IDE spec.
+Whether you want a simple GraphiQL IDE instance for your server, or a more advanced web or desktop GraphQL IDE experience for your framework or plugin, or you want to build an IDE extension or plugin, you've come to the right place!
 
-The purpose of this monorepo is to give folks a solid language service, and editor modes, and to show an example of how to use them with GraphiQL.
+The purpose of this monorepo is to give the GraphQL Community:
+- a solid, to-specification official language service, 
+- a codemirror mode
+- an example of how to use this ecosystem with GraphiQL.
+- examples of how to implement or extend GraphiQL
+
 
 
 ## [GraphiQL](packages/graphiql#readme)
@@ -53,7 +58,7 @@ Server process backing the [GraphQL Language Service](packages/graphql-language-
 ## [GraphQL Language Service Interface](packages/graphql-language-service-interface#readme)
 [![NPM](https://img.shields.io/npm/v/graphql-language-service-interface.svg)](https://npmjs.com/graphql-language-service-interface)
 
-LSP Interface to the [GraphQL Language Service](packages/graphql-language-service#readme)
+Runtime agnostic Language Service used by [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) and [GraphQL Language Service Server](packages/graphql-language-service-server#readme)
 
 
 ## [GraphQL Language Service Parser](packages/graphql-language-service-parser#readme)
@@ -65,7 +70,7 @@ An online immutable parser for [GraphQL](http://graphql.org/), designed to be us
 ## [GraphQL Language Service Types](packages/graphql-language-service-types#readme)
 [![NPM](https://img.shields.io/npm/v/graphql-language-service-types.svg)](https://npmjs.com/graphql-language-service-types)
 
-[Flow](https://flowtype.org/) type definitions for the [GraphQL Language Service](packages/graphql-language-service#readme).
+[Flow](https://flowtype.org/) and Typescript type definitions for the [GraphQL Language Service](packages/graphql-language-service#readme).
 
 
 ## [GraphQL Language Service Utilities](packages/graphql-language-service-utils#readme)
@@ -103,6 +108,14 @@ As of December 2019 we are officially supporting Windows OS for development tool
 9. `yarn jest` - runs global jest commands across the entire monorepo; try `yarn jest --watch` or `yarn jest DocExplorer` for example :D
 
 Learn more in [`CONTRIBUTING.md`](./CONTRIBUTING.md) documentation.
+
+## Initiatives
+
+Lots of activity lately! These things are in progress currently:
+
+- making web and IDE services 100% [LSP](https://langserver.org) specification complete
+- a monaco editor mode
+- extensions and themes to make GraphiQL a multipurpose tool for building GraphQL IDEs
 
 ### Fielding Proposals!
 
