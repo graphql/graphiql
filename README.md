@@ -17,7 +17,7 @@ The purpose of this monorepo is to give folks a solid language service, and edit
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 [![CDNJS](https://img.shields.io/cdnjs/v/graphiql.svg)](https://cdnjs.com/libraries/graphiql)
 
-[![](packages/graphiql/resources/graphiql.png)](https://graphiql-test.netlify.com/)
+[![](packages/graphiql/resources/graphiql.jpg)](https://graphiql-test.netlify.com/)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the master branch.
 
@@ -33,7 +33,7 @@ The [GraphiQL Readme](packages/graphiql#readme) explains some of the ways to imp
 ## [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme)
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
 
-![](resources/example.gif)
+![](packages/codemirror-graphql/resources/example.gif)
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and typeahead hinter powered by your GraphQL Schema
 
