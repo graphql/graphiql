@@ -1,4 +1,9 @@
 dist/
+esm/
+cdn/
+webpack/
+cdn.html
+analyzer.html
 /graphiql.*js
 /graphiql.*css
 example/yarn.lock

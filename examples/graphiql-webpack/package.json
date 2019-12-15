@@ -5,13 +5,13 @@
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
-    "build-demo": "webpack",
+    "build-demo": "webpack && mkdirp ../../packages/graphiql/webpack && copy 'dist/' ../../packages/graphiql/webpack/",
     "start": "webpack serve"
   },
   "dependencies": {
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
-    "graphiql": "file:../../graphiql",
+    "graphiql": "file:../../packages/graphiql",
     "graphql": "14.5.8",
     "react": "16.10.2"
   },
