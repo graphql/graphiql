@@ -14,32 +14,26 @@ import HistoryQuery from './HistoryQuery';
 const MAX_QUERY_SIZE = 100000;
 const MAX_HISTORY_LENGTH = 20;
 
-const shouldSaveQuery = (nextProps, current, lastQuerySaved) => {
-  if (nextProps.queryID === current.queryID) {
-    return false;
-  }
+const shouldSaveQuery = (query, variables, lastQuerySaved) => {
   try {
-    parse(nextProps.query);
+    parse(query);
   } catch (e) {
     return false;
   }
   // Don't try to save giant queries
-  if (nextProps.query.length > MAX_QUERY_SIZE) {
+  if (query.length > MAX_QUERY_SIZE) {
     return false;
   }
   if (!lastQuerySaved) {
     return true;
   }
-  if (
-    JSON.stringify(nextProps.query) === JSON.stringify(lastQuerySaved.query)
-  ) {
+  if (JSON.stringify(query) === JSON.stringify(lastQuerySaved.query)) {
     if (
-      JSON.stringify(nextProps.variables) ===
-      JSON.stringify(lastQuerySaved.variables)
+      JSON.stringify(variables) === JSON.stringify(lastQuerySaved.variables)
     ) {
       return false;
     }
-    if (!nextProps.variables && !lastQuerySaved.variables) {
+    if (variables && !lastQuerySaved.variables) {
       return false;
     }
   }
@@ -71,25 +65,6 @@ export class QueryHistory extends React.Component {
     this.state = { queries };
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      shouldSaveQuery(nextProps, this.props, this.historyStore.fetchRecent())
-    ) {
-      const item = {
-        query: nextProps.query,
-        variables: nextProps.variables,
-        operationName: nextProps.operationName,
-      };
-      this.historyStore.push(item);
-      const historyQueries = this.historyStore.items;
-      const favoriteQueries = this.favoriteStore.items;
-      const queries = historyQueries.concat(favoriteQueries);
-      this.setState({
-        queries,
-      });
-    }
-  }
-
   render() {
     const queries = this.state.queries.slice().reverse();
     const queryNodes = queries.map((query, i) => {
@@ -113,6 +88,22 @@ export class QueryHistory extends React.Component {
       </section>
     );
   }
+
+  updateHistory = (query, variables, operationName) => {
+    if (shouldSaveQuery(query, variables, this.historyStore.fetchRecent())) {
+      this.historyStore.push({
+        query,
+        variables,
+        operationName,
+      });
+      const historyQueries = this.historyStore.items;
+      const favoriteQueries = this.favoriteStore.items;
+      const queries = historyQueries.concat(favoriteQueries);
+      this.setState({
+        queries,
+      });
+    }
+  };
 
   toggleFavorite = (query, variables, operationName, label, favorite) => {
     const item = {

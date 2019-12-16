@@ -12,7 +12,7 @@ require('@babel/polyfill', {
 
 // if (process.env.ENZYME) {
 const { configure } = require('enzyme');
-const Adapter = require('enzyme-adapter-react-15');
+const Adapter = require('enzyme-adapter-react-16');
 configure({ adapter: new Adapter() });
 // }
 

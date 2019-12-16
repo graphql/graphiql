@@ -51,15 +51,15 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
     "prop-types": ">=15.5.0",
-    "react": "^15.6.0 || ^16.0.0",
-    "react-dom": "^15.6.0 || ^16.0.0"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
   },
   "devDependencies": {
     "cross-env": "^6.0.3",
     "css-loader": "3.3.2",
     "cssnano": "^4.1.10",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-15": "^1.4.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "express": "5.0.0-alpha.5",
     "express-graphql": "0.9.0",
     "graphql": "14.5.8",
@@ -72,10 +72,10 @@
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
     "prop-types": "15.7.2",
-    "react": "15.6.2",
-    "react-dom": "15.6.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.18",
-    "react-test-renderer": "15.6.2",
+    "react-test-renderer": "^16.12.0",
     "rimraf": "^3.0.0",
     "serve": "^11.2.0",
     "start-server-and-test": "^1.10.6",
