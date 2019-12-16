@@ -71,11 +71,8 @@ The most minimal way to set up GraphiQL is a single index.html file:
     <div id="graphiql" style="height: 100vh;"></div>
 
     <script crossorigin src="https://unpkg.com/react/umd/react.min.js"></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom/umd/react-dom.min.js"
-    /></script>
-    <script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js" />
+    <script crossorigin src="https://unpkg.com/react-dom/umd/react-dom.min.js"></script>
+    <script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js" ></script>
 
     <script>
       const graphQLFetcher = (graphQLParams) => fetch(
@@ -83,7 +80,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
           method: 'post',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(graphQLParams),
-        }).then((response) => response.json().catch(() => response.text())
+        }).then((response) => response.json()).catch(() => response.text())
       ReactDOM.render(
         React.createElement(GraphiQL, { fetcher: graphQLFetcher }),
         document.getElementById('graphiql'),
