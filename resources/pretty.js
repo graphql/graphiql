@@ -14,7 +14,6 @@ const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
-const options = ['--trailing-comma=all'];
 const glob =
   '{packages/*/{resources,src},resources,src}/**/*.{js,ts,md,json5,toml,json}';
 const root = join(__dirname, '..');
@@ -24,11 +23,7 @@ const check = process.argv.indexOf('--check') !== -1;
 const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 
-const { stdout, stderr, status, error } = spawnSync(executable, [
-  ...options,
-  mode,
-  glob,
-]);
+const { stdout, stderr, status, error } = spawnSync(executable, [mode, glob]);
 const out = stdout.toString().trim();
 const err = stderr.toString().trim();
 
@@ -43,7 +38,7 @@ if (status) {
   print(err);
   if (check) {
     print(`\n${YELLOW}The files listed above are not correctly formatted.`);
-    print(`Try: ${INVERSE} yarn run pretty ${RESET}`);
+    print(`Try: ${INVERSE} yarn pretty ${RESET}`);
   }
 }
 if (error) {
