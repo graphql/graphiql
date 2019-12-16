@@ -1,0 +1,12 @@
+name: Discord Notifications
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Action called: {{ GITHUB_ACTION }}'
