@@ -33,7 +33,7 @@ const resultConfig = {
     hot: true,
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
-    allowedHosts: ['local.example.com', 'graphiql.com'],
+    allowedHosts: ['local.example.com', 'graphiql.com']
   },
   node: {
     fs: 'empty',

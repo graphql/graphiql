@@ -171,8 +171,8 @@ export class GraphiQL extends React.Component {
 
     global.g = this;
   }
-
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
@@ -199,6 +199,7 @@ export class GraphiQL extends React.Component {
       nextQuery !== this.state.query ||
       nextOperationName !== this.state.operationName
     ) {
+      // TODO: this could happen as a side effect/reducer of dispatched action
       const updatedQueryAttributes = this._updateQueryFacts(
         nextQuery,
         nextOperationName,
@@ -221,7 +222,7 @@ export class GraphiQL extends React.Component {
     ) {
       nextSchema = undefined;
     }
-
+    // TODO: this could happen as a side effect/reducer of dispatched action
     this.setState(
       {
         schema: nextSchema,
