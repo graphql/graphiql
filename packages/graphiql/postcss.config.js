@@ -1,4 +1,4 @@
-module.exports = ({ file, options, env }) => ({
+module.exports = ({ file, options }) => ({
   plugins: {
     'postcss-import': { root: file.dirname },
     // contains autoprefixer, etc
