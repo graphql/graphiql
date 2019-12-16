@@ -43,7 +43,13 @@ function renderType(type, onClick) {
     );
   }
   return (
-    <a className="type-name" onClick={event => {event.preventDefault(); onClick(type, event)}} href="#">
+    <a
+      className="type-name"
+      onClick={event => {
+        event.preventDefault();
+        onClick(type, event);
+      }}
+      href="#">
       {type.name}
     </a>
   );

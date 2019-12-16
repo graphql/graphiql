@@ -134,7 +134,7 @@ function enableJumpMode(cm) {
       const marker = cm.markText(
         { line: pos.line, ch: token.start },
         { line: pos.line, ch: token.end },
-        { className: 'CodeMirror-jump-token' }
+        { className: 'CodeMirror-jump-token' },
       );
 
       cm.state.jump.marker = marker;

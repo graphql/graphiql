@@ -5,25 +5,14 @@
 # specifically un-ignore the source code, configuration files, etc.
 #
 # First: ignore FILES (not folders!)
+/{packages,examples}/**/*.{js,jsx,ts,tsx}
 
-/packages/**/*.js
-/packages/**/*.jsx
-/packages/**/*.ts
-/packages/**/*.tsx
-
-/examples/**/*.js
-/examples/**/*.jsx
-/examples/**/*.ts
-/examples/**/*.tsx
 #
 # Now un-ignore source code, tests, configuration, etc
-!/packages/*/src/**
-!/packages/*/cypress/**
-!/packages/*/test/**
-!/packages/codemirror-graphql/resources/**
+!/{packages,examples}/*/{src,cypress,resources}/**
+
 !.eslintrc.js
 !babel.config.js
-!/examples/**/{src,resources,cypress}/*
 #
 # End of the ignore dance.
 #
@@ -33,7 +22,7 @@
 
 # ESLint automatically ignores node_modules _in the root_, so we only need to specify nested node_modules
 **/node_modules
-/examples/graphiql-cdn/graphiql*
+/packages/graphiql/graphiql.*
 
 # Build artifacts
 **/flow-typed

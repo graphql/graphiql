@@ -46,20 +46,20 @@ describe('graphql-variables-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
     const editor = createEditorWithLint();
     expect(editor.getHelpers(editor.getCursor(), 'lint')).to.not.have.lengthOf(
-      0
+      0,
     );
   });
 
   it('catches syntax errors', async () => {
     expect((await printLintErrors(null, '{ foo: "bar" }'))[0].message).to.equal(
-      'Expected String but found `foo`.'
+      'Expected String but found `foo`.',
     );
   });
 
   it('catches type validation errors', async () => {
     const errors = await printLintErrors(
       'query ($foo: Int) { f }',
-      ' { "foo": "NaN" }'
+      ' { "foo": "NaN" }',
     );
 
     expect(errors[0]).to.deep.equal({
@@ -74,7 +74,7 @@ describe('graphql-variables-lint', () => {
   it('reports unknown variable names', async () => {
     const errors = await printLintErrors(
       'query ($foo: Int) { f }',
-      ' { "food": "NaN" }'
+      ' { "food": "NaN" }',
     );
 
     expect(errors[0]).to.deep.equal({

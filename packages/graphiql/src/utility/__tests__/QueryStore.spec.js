@@ -14,14 +14,14 @@ class StorageMock {
     this.map = {};
   }
 
-  set (key, value) {
+  set(key, value) {
     this.count++;
 
     if (this.shouldThrow()) {
       return {
         error: {},
         isQuotaError: true,
-        storageAvailable: true
+        storageAvailable: true,
       };
     }
 
@@ -30,11 +30,11 @@ class StorageMock {
     return {
       error: null,
       isQuotaError: false,
-      storageAvailable: true
+      storageAvailable: true,
     };
   }
 
-  get (key) {
+  get(key) {
     return this.map[key] || null;
   }
 }
@@ -42,10 +42,7 @@ class StorageMock {
 describe('QueryStore', () => {
   describe('with no max items', () => {
     it('can push multiple items', () => {
-      const store = new QueryStore(
-        'normal',
-        new StorageAPI()
-      );
+      const store = new QueryStore('normal', new StorageAPI());
 
       for (let i = 0; i < 100; i++) {
         store.push(`item${i}`);
@@ -56,10 +53,7 @@ describe('QueryStore', () => {
 
     it('will fail silently on quota error', () => {
       let i = 0;
-      const store = new QueryStore(
-        'normal',
-        new StorageMock(() => i > 4)
-      );
+      const store = new QueryStore('normal', new StorageMock(() => i > 4));
 
       for (; i < 10; i++) {
         store.push(`item${i}`);
@@ -73,11 +67,7 @@ describe('QueryStore', () => {
 
   describe('with max items', () => {
     it('can push a limited number of items', () => {
-      const store = new QueryStore(
-        'limited',
-        new StorageAPI(),
-        20
-      );
+      const store = new QueryStore('limited', new StorageAPI(), 20);
 
       for (let i = 0; i < 100; i++) {
         store.push(`item${i}`);
@@ -98,7 +88,7 @@ describe('QueryStore', () => {
           retryCounter++;
           return shouldThrow();
         }),
-        10
+        10,
       );
 
       for (let i = 0; i < 20; i++) {
@@ -130,7 +120,7 @@ describe('QueryStore', () => {
           retryCounter++;
           return shouldTrow();
         }),
-        10
+        10,
       );
 
       for (let i = 0; i < 20; i++) {

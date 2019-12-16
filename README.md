@@ -102,7 +102,7 @@ As of December 2019 we are officially supporting Windows OS for development tool
 3. `yarn build-bundles` - builds webpack bundles that are used for releases
 4. `yarn build-demo` - builds demo projects for netlify; we run this on CI to make sure webpack can consume our project in a standalone project.
 5. `yarn test` - runs all of the above alongside linting and checks, jest mocha Cypress etc.
-6. `yarn pretty` - autoformats
+6. `yarn format` - autoformats with eslint --fix and prettier
 7. `yarn lint` - checks for linting issues
 8. `yarn e2e` - runs cypress headlessly against the minified bundle and a local schema server, like in CI.
 9. `yarn jest` - runs global jest commands across the entire monorepo; try `yarn jest --watch` or `yarn jest DocExplorer` for example :D
