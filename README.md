@@ -105,7 +105,7 @@ As of December 2019 we are officially supporting Windows OS for development tool
 6. `yarn format` - autoformats with eslint --fix and prettier
 7. `yarn lint` - checks for linting issues
 8. `yarn e2e` - runs cypress headlessly against the minified bundle and a local schema server, like in CI.
-9. `yarn jest` - runs global jest commands across the entire monorepo; try `yarn jest --watch` or `yarn jest DocExplorer` for example :D
+9.  `yarn jest` - runs global jest commands across the entire monorepo; try `yarn jest --watch` or `yarn jest DocExplorer` for example :D
 
 Learn more in [`CONTRIBUTING.md`](./CONTRIBUTING.md) documentation.
 
