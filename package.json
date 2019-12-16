@@ -23,6 +23,7 @@
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
+    "eslint": "eslint",
     "lint": "eslint --ext=ts,js,jsx,tsx .",
     "lint-fix": "eslint --ext=ts,js,jsx,tsx . --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",

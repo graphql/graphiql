@@ -94,10 +94,12 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
 
   return {
     Field: (node: FieldNode) => {
-      const tokenizedText =
-        node.alias
-          ? [buildToken('plain', (node.alias as unknown) as string), buildToken('plain', ': ')]
-          : [];
+      const tokenizedText = node.alias
+        ? [
+            buildToken('plain', (node.alias as unknown) as string),
+            buildToken('plain', ': '),
+          ]
+        : [];
       tokenizedText.push(buildToken('plain', (node.name as unknown) as string));
       return { tokenizedText, ...meta(node) };
     },

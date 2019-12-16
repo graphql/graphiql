@@ -50,7 +50,7 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
             deprecation = null;
             onRemoveFn = null;
           }
-        })
+        }),
       );
     }
 

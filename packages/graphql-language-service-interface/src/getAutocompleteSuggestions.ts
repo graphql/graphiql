@@ -22,7 +22,7 @@ import {
   ContextToken,
   State,
   AllTypeInfo,
-  Position
+  Position,
 } from 'graphql-language-service-types';
 
 import {
@@ -299,9 +299,11 @@ function getSuggestionsForFragmentSpread(
       // Only include fragments which could possibly be spread here.
       isCompositeType(typeInfo.parentType) &&
       isCompositeType(typeMap[frag.typeCondition.name.value]) &&
-      doTypesOverlap(schema, typeInfo.parentType, typeMap[
-        frag.typeCondition.name.value
-      ] as GraphQLCompositeType),
+      doTypesOverlap(
+        schema,
+        typeInfo.parentType,
+        typeMap[frag.typeCondition.name.value] as GraphQLCompositeType,
+      ),
   );
 
   return hintList(

@@ -17,7 +17,7 @@ search
     var eq = entry.indexOf('=');
     if (eq >= 0) {
       parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
-        entry.slice(eq + 1)
+        entry.slice(eq + 1),
       );
     }
   });
@@ -28,7 +28,7 @@ if (parameters.variables) {
     parameters.variables = JSON.stringify(
       JSON.parse(parameters.variables),
       null,
-      2
+      2,
     );
   } catch (e) {
     // Do nothing, we want to display the invalid JSON as a string, rather
@@ -77,7 +77,7 @@ function graphQLFetcher(graphQLParams) {
   // In a PR preview, it connects to the Star Wars API externally.
   // Change this to point wherever you host your GraphQL server.
   const isDev = !window.location.hostname.match(
-    /(^|\.)netlify\.com$|(^|\.)graphql\.org$/
+    /(^|\.)netlify\.com$|(^|\.)graphql\.org$/,
   );
   const api = isDev ? '/graphql' : 'https://swapi.graph.cool/';
   return fetch(api, {
@@ -116,5 +116,5 @@ ReactDOM.render(
     defaultVariableEditorOpen: true,
     onEditOperationName: onEditOperationName,
   }),
-  document.getElementById('graphiql')
+  document.getElementById('graphiql'),
 );

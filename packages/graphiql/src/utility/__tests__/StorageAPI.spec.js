@@ -19,7 +19,7 @@ describe('StorageAPI', () => {
     let result = storage.set('key2', 'value');
     expect(result).toEqual({
       error: null,
-      isQuotaError: false
+      isQuotaError: false,
     });
 
     result = storage.get('key2');
@@ -30,13 +30,13 @@ describe('StorageAPI', () => {
     let result = storage.set('key3', 'value');
     expect(result).toEqual({
       error: null,
-      isQuotaError: false
+      isQuotaError: false,
     });
 
     result = storage.set('key3');
     expect(result).toEqual({
       error: null,
-      isQuotaError: false
+      isQuotaError: false,
     });
 
     result = storage.get('key3');
@@ -47,13 +47,13 @@ describe('StorageAPI', () => {
     let result = storage.set('key4', 'value');
     expect(result).toEqual({
       error: null,
-      isQuotaError: false
+      isQuotaError: false,
     });
 
     result = storage.set('key4', 'value2');
     expect(result).toEqual({
       error: null,
-      isQuotaError: false
+      isQuotaError: false,
     });
 
     result = storage.get('key4');
@@ -74,8 +74,10 @@ describe('StorageAPI', () => {
 
   it('returns any error while setting a value', () => {
     const throwingStorage = new StorageAPI({
-      setItem: () => { throw new DOMException('Terrible Error'); },
-      length: 1
+      setItem: () => {
+        throw new DOMException('Terrible Error');
+      },
+      length: 1,
     });
     const result = throwingStorage.set('key', 'value');
 
@@ -88,7 +90,7 @@ describe('StorageAPI', () => {
       setItem: () => {
         throw new DOMException('Terrible Error', 'QuotaExceededError');
       },
-      length: 1
+      length: 1,
     });
     const result = throwingStorage.set('key', 'value');
 

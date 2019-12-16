@@ -47,7 +47,7 @@ export class ToolbarSelect extends React.Component {
         return (
           <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />
         );
-      }
+      },
     );
     return (
       <a

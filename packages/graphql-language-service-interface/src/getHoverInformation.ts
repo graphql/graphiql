@@ -20,7 +20,11 @@ import {
   GraphQLField,
   GraphQLFieldConfig,
 } from 'graphql';
-import { ContextToken, AllTypeInfo, Position } from 'graphql-language-service-types';
+import {
+  ContextToken,
+  AllTypeInfo,
+  Position,
+} from 'graphql-language-service-types';
 
 import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
@@ -83,7 +87,7 @@ export function getHoverInformation(
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
-  return ''
+  return '';
 }
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
@@ -91,7 +95,11 @@ function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
   renderTypeAnnotation(into, typeInfo, options, typeInfo.type as GraphQLType);
 }
 
-function renderQualifiedField(into: string[], typeInfo: AllTypeInfo, options: any) {
+function renderQualifiedField(
+  into: string[],
+  typeInfo: AllTypeInfo,
+  options: any,
+) {
   if (!typeInfo.fieldDef) {
     return;
   }
