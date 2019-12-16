@@ -1,6 +1,4 @@
-- name: Discord notification
+- name: Discord Notification
   env:
     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
   uses: Ilshidur/action-discord@master
-  with:
-    args: 'Action called: {{ GITHUB_ACTION }}'
