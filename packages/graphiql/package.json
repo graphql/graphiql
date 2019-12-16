@@ -21,13 +21,6 @@
     "graphiql.css",
     "graphiql.min.css"
   ],
-  "nyc": {
-    "report-dir": "coverage/cypress",
-    "reporter": [
-      "lcov",
-      "json"
-    ]
-  },
   "scripts": {
     "webpack": "webpack --config resources/webpack.config.js",
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
@@ -46,12 +39,6 @@
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
     "test": "cross-env ENZYME=true node ../../resources/runTests"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --write",
-      "git add"
-    ]
   },
   "dependencies": {
     "codemirror": "^5.47.0",
