@@ -345,6 +345,9 @@ export class GraphiQL extends React.Component {
       <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
+            ref={node => {
+              this._queryHistory = node;
+            }}
             operationName={this.state.operationName}
             query={this.state.query}
             variables={this.state.variables}
@@ -704,6 +707,8 @@ export class GraphiQL extends React.Component {
         response: null,
         operationName,
       });
+
+      this._queryHistory.updateHistory(editedQuery, variables, operationName);
 
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
