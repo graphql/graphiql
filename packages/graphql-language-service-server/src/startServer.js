@@ -12,6 +12,7 @@ import net from 'net';
 
 import { GraphQLWatchman } from './GraphQLWatchman';
 import { MessageProcessor } from './MessageProcessor';
+import type { GraphQLConfig } from 'graphql-language-service-types';
 
 import {
   createMessageConnection,
@@ -46,7 +47,9 @@ type Options = {
   port?: number,
   method?: string,
   configDir?: string,
+  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
 };
+('graphql-language-service-types');
 
 export default (async function startServer(options: Options): Promise<void> {
   const logger = new Logger();
@@ -78,7 +81,12 @@ export default (async function startServer(options: Options): Promise<void> {
               process.exit(0);
             });
             const connection = createMessageConnection(reader, writer, logger);
-            addHandlers(connection, options.configDir, logger);
+            addHandlers(
+              connection,
+              options.configDir,
+              logger,
+              options.extensions,
+            );
             connection.listen();
           })
           .listen(port);
@@ -94,7 +102,7 @@ export default (async function startServer(options: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(connection, options.configDir, logger);
+    addHandlers(connection, options.configDir, logger, options.extensions);
     connection.listen();
   }
 });
@@ -103,8 +111,13 @@ function addHandlers(
   connection: MessageConnection,
   configDir?: string,
   logger: Logger,
+  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
 ): void {
-  const messageProcessor = new MessageProcessor(logger, new GraphQLWatchman());
+  const messageProcessor = new MessageProcessor(
+    logger,
+    new GraphQLWatchman(),
+    extensions,
+  );
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {

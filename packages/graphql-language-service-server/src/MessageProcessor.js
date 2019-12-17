@@ -70,14 +70,20 @@ export class MessageProcessor {
   _willShutdown: boolean;
 
   _logger: Logger;
+  _extensions: ?Array<(config: GraphQLConfig) => GraphQLConfig>;
 
-  constructor(logger: Logger, watchmanClient: GraphQLWatchman): void {
+  constructor(
+    logger: Logger,
+    watchmanClient: GraphQLWatchman,
+    extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  ): void {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
 
     this._logger = logger;
     this._watchmanClient = watchmanClient;
+    this._extensions = extensions;
   }
 
   async handleInitializeRequest(
@@ -107,8 +113,15 @@ export class MessageProcessor {
       );
     }
 
-    this._graphQLCache = await getGraphQLCache(rootPath);
-    const config = getGraphQLConfig(rootPath);
+    this._graphQLCache = await getGraphQLCache(rootPath, this._extensions);
+    let config = getGraphQLConfig(rootPath);
+    if (this._extensions && this._extensions.length > 0) {
+      /* eslint-disable no-await-in-loop */
+      for (let i = 0; i < this._extensions.length; i++) {
+        const extension = this._extensions[i];
+        config = await extension(config);
+      }
+    }
     if (this._watchmanClient) {
       this._subcribeWatchman(config, this._watchmanClient);
     }
