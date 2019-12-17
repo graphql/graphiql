@@ -1,12 +1,33 @@
-name: Discord Notifications
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Discord Notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'Action called: {{ GITHUB_ACTION }}'
+- name: "Discord Notification - Fork"
+  on: [fork]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'GraphiQL forked by [@{{ EVENT_PAYLOAD.owner.login }}](EVENT_PAYLOAD.owner.html_url) as [EVENT_PAYLOAD.full_name](EVENT_PAYLOAD.html_url)'
+
+- name: "Discord Notification - Star"
+  on: [star]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'GraphiQL starred by [@{{ EVENT_PAYLOAD.owner.login }}](EVENT_PAYLOAD.owner.html_url)'
+
+
+- name: "Discord Notification - Issue"
+  on: [issue]
+  runs-on: ubuntu-latest
+  steps:
+    - name: Discord Notification
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+      uses: Ilshidur/action-discord@master
+      with:
+        args: 'GraphiQL starred by [@{{ EVENT_PAYLOAD.owner.login }}](EVENT_PAYLOAD.owner.html_url)'
