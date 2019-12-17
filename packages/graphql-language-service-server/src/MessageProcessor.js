@@ -117,8 +117,7 @@ export class MessageProcessor {
     let config = getGraphQLConfig(rootPath);
     if (this._extensions && this._extensions.length > 0) {
       /* eslint-disable no-await-in-loop */
-      for (let i = 0; i < this._extensions.length; i++) {
-        const extension = this._extensions[i];
+      for (const extension of this._extensions) {
         config = await extension(config);
       }
     }
