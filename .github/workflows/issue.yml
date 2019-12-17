@@ -1,0 +1,13 @@
+name: "Issues"
+on: [issues]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Notification - Issues
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Issue [@{{ EVENT_PAYLOAD.owner.login }}](EVENT_PAYLOAD.issue.html_url) as [EVENT_PAYLOAD.full_name](EVENT_PAYLOAD.html_url)'
+
