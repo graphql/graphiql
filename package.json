@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "preview": true,
   "private": false,
   "license": "MIT",
@@ -145,7 +145,7 @@
     "babel-polyfill": "6.26.0",
     "capitalize": "1.0.0",
     "dotenv": "6.2.0",
-    "graphql": "14.5.8",
+    "graphql": "0.12.x",
     "graphql-config": "2.2.1",
     "graphql-config-extension-prisma": "0.3.0",
     "graphql-language-service-server": "2.3.3",
