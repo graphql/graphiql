@@ -32,7 +32,7 @@ function getMockProps(customProps) {
   };
 }
 
-describe.only('QueryHistory', () => {
+describe('QueryHistory', () => {
   it('will not save invalid queries', () => {
     const W = mount(<QueryHistory {...getMockProps()} />);
     const instance = W.instance();
