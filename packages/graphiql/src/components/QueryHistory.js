@@ -89,6 +89,7 @@ export class QueryHistory extends React.Component {
     );
   }
 
+  // Public API
   updateHistory = (query, variables, operationName) => {
     if (shouldSaveQuery(query, variables, this.historyStore.fetchRecent())) {
       this.historyStore.push({
@@ -105,6 +106,7 @@ export class QueryHistory extends React.Component {
     }
   };
 
+  // Public API
   toggleFavorite = (query, variables, operationName, label, favorite) => {
     const item = {
       query,
@@ -124,6 +126,7 @@ export class QueryHistory extends React.Component {
     });
   };
 
+  // Public API
   editLabel = (query, variables, operationName, label, favorite) => {
     const item = {
       query,
