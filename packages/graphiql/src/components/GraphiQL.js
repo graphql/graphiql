@@ -39,11 +39,10 @@ import {
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
-// eslint-disable-next-line no-console
-const logger = console.log;
+const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
-if (!React.version || !React.version.indexOf('16') < 0) {
-  logger.warn(
+if (majorVersion < 16) {
+  throw Error(
     [
       'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
       'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
