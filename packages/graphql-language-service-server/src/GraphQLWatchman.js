@@ -11,6 +11,7 @@
 import type { Uri } from 'graphql-language-service-types';
 
 import watchman from 'fb-watchman';
+import { makeWatchmanExpressionForLanguages } from './languages';
 
 export type WatchmanCommandResponse = {
   version: string,
@@ -40,7 +41,7 @@ export class GraphQLWatchman {
             // {'version': '3.8.0', 'capabilities': {'relative_root': true}}.
             resolve();
           }
-        }
+        },
       );
       this._client.on('error', reject);
     });
@@ -48,14 +49,14 @@ export class GraphQLWatchman {
 
   async listFiles(
     entryPath: Uri,
-    options?: { [name: string]: any } = {}
+    options?: { [name: string]: any } = {},
   ): Promise<Array<any>> {
     const { watch, relative_path } = await this.watchProject(entryPath);
     const result = await this.runCommand('query', watch, {
       expression: [
         'allof',
         ['type', 'f'],
-        ['anyof', ['match', '*.graphql'], ['match', '*.js']],
+        ['anyof', ...makeWatchmanExpressionForLanguages()],
         ['not', ['dirname', 'generated/relay']],
         ['not', ['match', '**/__flow__/**', 'wholename']],
         ['not', ['match', '**/__generated__/**', 'wholename']],
@@ -83,7 +84,7 @@ export class GraphQLWatchman {
           reject(error);
         }
         resolve(response);
-      })
+      }),
     ).catch(error => {
       throw new Error(error);
     });
@@ -100,7 +101,7 @@ export class GraphQLWatchman {
 
   async subscribe(
     entryPath: Uri,
-    callback: (result: Object) => void
+    callback: (result: Object) => void,
   ): Promise<void> {
     const { watch, relative_path } = await this.watchProject(entryPath);
 
