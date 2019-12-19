@@ -1,5 +1,7 @@
 // @flow
-type Range = {
+import { Position, Range } from 'graphql-language-service-utils';
+
+type StrRange = {
   start: number,
   end: number,
   line: number,
@@ -11,7 +13,7 @@ type Location = {
   character: number,
 };
 
-type GraphQLSource = {
+export type GraphQLSource = {
   template: string,
   range: Range,
 };
@@ -25,7 +27,7 @@ export function getLocator(source: string) {
   let start = 0;
   const lineRanges = originalLines.map((line, i) => {
     const end = start + line.length + 1;
-    const range: Range = { start, end, line: i };
+    const range: StrRange = { start, end, line: i };
 
     start = end;
     return range;
@@ -33,11 +35,11 @@ export function getLocator(source: string) {
 
   let i = 0;
 
-  function rangeContains(range: Range, index: number) {
+  function rangeContains(range: StrRange, index: number) {
     return range.start <= index && index < range.end;
   }
 
-  function getLocation(range: Range, index: number): Location {
+  function getLocation(range: StrRange, index: number): Location {
     return {
       line: offsetLine + range.line,
       column: offsetColumn + index - range.start,

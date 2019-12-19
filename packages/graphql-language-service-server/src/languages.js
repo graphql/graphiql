@@ -1,6 +1,6 @@
 // @flow
 import { Position, Range } from 'graphql-language-service-utils';
-import { makeExtractTagsFromSource } from './languageUtils';
+import { makeExtractTagsFromSource, type GraphQLSource } from './languageUtils';
 import { findGraphQLTags } from './findGraphQLTags';
 
 export type LanguageConfig = {
