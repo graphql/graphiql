@@ -78,6 +78,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
       const graphQLFetcher = graphQLParams =>
         fetch('https://my/graphql', {
           method: 'post',
+          credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(graphQLParams),
         })
