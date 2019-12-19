@@ -5,10 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { Logger as VSCodeLogger } from 'vscode-jsonrpc';
+import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 
 import fs from 'fs';
 import os from 'os';
@@ -23,9 +22,9 @@ const SEVERITY = {
 
 export class Logger implements VSCodeLogger {
   _logFilePath: string;
-  _stream: ?fs.WriteStream;
+  _stream: fs.WriteStream | null;
 
-  constructor(): void {
+  constructor() {
     const dir = join(os.tmpdir(), 'graphql-language-service-logs');
     try {
       if (!fs.existsSync(dir)) {

@@ -5,18 +5,19 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
+import {
+  Uri,
+  WatchmanSubscriptionResult,
+} from 'graphql-language-service-types';
 
-import type { Uri } from 'graphql-language-service-types';
-
-import watchman from 'fb-watchman';
+import * as watchman from 'fb-watchman';
 
 export type WatchmanCommandResponse = {
-  version: string,
-  relative_path: Uri,
-  watcher: string,
-  watch: Uri,
+  version: string;
+  relative_path: Uri;
+  watcher: string;
+  watch: Uri;
 };
 
 export class GraphQLWatchman {
@@ -32,7 +33,7 @@ export class GraphQLWatchman {
           optional: [],
           required: ['cmd-watch-project'],
         },
-        (error, response) => {
+        (error, _response) => {
           if (error) {
             reject(error);
           } else {
@@ -48,7 +49,7 @@ export class GraphQLWatchman {
 
   async listFiles(
     entryPath: Uri,
-    options?: { [name: string]: any } = {},
+    options: { [name: string]: any } = {},
   ): Promise<Array<any>> {
     const { watch, relative_path } = await this.watchProject(entryPath);
     const result = await this.runCommand('query', watch, {
@@ -89,18 +90,12 @@ export class GraphQLWatchman {
     });
   }
 
-  async watchProject(directoryPath: Uri): Promise<WatchmanCommandResponse> {
-    try {
-      const response = await this.runCommand('watch-project', directoryPath);
-      return response;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
+  watchProject = (directoryPath: Uri): Promise<WatchmanCommandResponse> =>
+    this.runCommand('watch-project', directoryPath);
 
   async subscribe(
     entryPath: Uri,
-    callback: (result: Object) => void,
+    callback: (result: WatchmanSubscriptionResult) => void,
   ): Promise<void> {
     const { watch, relative_path } = await this.watchProject(entryPath);
 
@@ -110,7 +105,7 @@ export class GraphQLWatchman {
       relative_root: relative_path,
     });
 
-    this._client.on('subscription', result => {
+    this._client.on('subscription', (result: WatchmanSubscriptionResult) => {
       if (result.subscription !== relative_path) {
         return;
       }
@@ -120,6 +115,5 @@ export class GraphQLWatchman {
 
   dispose() {
     this._client.end();
-    this._client = null;
   }
 }

@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import net from 'net';
@@ -43,9 +42,9 @@ import {
 import { Logger } from './Logger';
 
 type Options = {
-  port?: number,
-  method?: string,
-  configDir?: string,
+  port?: number;
+  method?: string;
+  configDir?: string;
 };
 
 export default (async function startServer(options: Options): Promise<void> {
@@ -78,7 +77,7 @@ export default (async function startServer(options: Options): Promise<void> {
               process.exit(0);
             });
             const connection = createMessageConnection(reader, writer, logger);
-            addHandlers(connection, options.configDir, logger);
+            addHandlers(connection, logger, options.configDir);
             connection.listen();
           })
           .listen(port);
@@ -94,15 +93,15 @@ export default (async function startServer(options: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(connection, options.configDir, logger);
+    addHandlers(connection, logger, options.configDir);
     connection.listen();
   }
 });
 
 function addHandlers(
   connection: MessageConnection,
-  configDir?: string,
   logger: Logger,
+  configDir?: string,
 ): void {
   const messageProcessor = new MessageProcessor(logger, new GraphQLWatchman());
   connection.onNotification(

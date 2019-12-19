@@ -5,15 +5,26 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
-
+import {
+  File,
+  Expression,
+  ArrayExpression,
+  ExpressionStatement,
+  CallExpression,
+  AssignmentExpression,
+  MemberExpression,
+  Identifier,
+  FunctionExpression,
+  TaggedTemplateExpression,
+} from '@babel/types';
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { parse } from '@babel/parser';
+import { parse, ParserOptions } from '@babel/parser';
+import { SourceLocation } from 'graphql';
 
 // Attempt to be as inclusive as possible of source text.
-const PARSER_OPTIONS = {
+const PARSER_OPTIONS: ParserOptions = {
   allowImportExportEverywhere: true,
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
@@ -45,14 +56,20 @@ const PARSER_OPTIONS = {
   strictMode: false,
 };
 
-export function findGraphQLTags(
-  text: string,
-): Array<{ tag: string, template: string, range: Range }> {
-  const result = [];
+const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
+  createFragmentContainer: true,
+  createPaginationContainer: true,
+  createRefetchContainer: true,
+};
+
+export type TagResult = { tag: string; template: string; range: Range };
+
+export function findGraphQLTags(text: string): TagResult[] {
+  const result: TagResult[] = [];
   const ast = parse(text, PARSER_OPTIONS);
 
   const visitors = {
-    CallExpression: node => {
+    CallExpression: (node: CallExpression) => {
       const callee = node.callee;
       if (
         !(
@@ -108,31 +125,27 @@ export function findGraphQLTags(
         visit(node.arguments[ii], visitors);
       }
     },
-    TaggedTemplateExpression: node => {
+    TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
         const loc = node.quasi.quasis[0].loc;
-        const range = new Range(
-          new Position(loc.start.line - 1, loc.start.column),
-          new Position(loc.end.line - 1, loc.end.column),
-        );
-        result.push({
-          tag: tagName,
-          template: node.quasi.quasis[0].value.raw,
-          range,
-        });
+        if (loc) {
+          const range = new Range(
+            new Position(loc.start.line - 1, loc.start.column),
+            new Position(loc.end.line - 1, loc.end.column),
+          );
+          result.push({
+            tag: tagName,
+            template: node.quasi.quasis[0].value.raw,
+            range,
+          });
+        }
       }
     },
   };
   visit(ast, visitors);
   return result;
 }
-
-const CREATE_CONTAINER_FUNCTIONS = {
-  createFragmentContainer: true,
-  createPaginationContainer: true,
-  createRefetchContainer: true,
-};
 
 const IDENTIFIERS = { graphql: true, gql: true };
 
@@ -147,7 +160,7 @@ const IGNORED_KEYS = {
   type: true,
 };
 
-function getGraphQLTagName(tag) {
+function getGraphQLTagName(tag: TagResult): string | null {
   if (tag.type === 'Identifier' && IDENTIFIERS.hasOwnProperty(tag.name)) {
     return tag.name;
   } else if (
@@ -176,7 +189,7 @@ function visit(node, visitors) {
   traverse(node, visitors);
 }
 
-function traverse(node, visitors) {
+function traverse(node: Expression, visitors) {
   for (const key in node) {
     if (IGNORED_KEYS[key]) {
       continue;

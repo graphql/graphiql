@@ -6,7 +6,11 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
+import {
+  Diagnostic as DiagnosticType,
+  Position as PositionType,
+  CompletionItem as CompletionItemType,
+} from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
 import {
   ASTNode,
@@ -85,7 +89,7 @@ export interface GraphQLCache {
 
   getObjectTypeDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo> | null | undefined,
+    fragmentDefinitions: Map<string, ObjectTypeInfo>,
   ) => Promise<Array<ObjectTypeInfo>>;
 
   getObjectTypeDependenciesForAST: (
@@ -101,13 +105,13 @@ export interface GraphQLCache {
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   updateObjectTypeDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   getFragmentDependencies: (
     query: string,
@@ -127,31 +131,31 @@ export interface GraphQLCache {
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   getSchema: (
     appName: string | null | undefined,
     queryHasExtensions?: boolean | null | undefined,
-  ) => Promise<GraphQLSchema | null | undefined>;
+  ) => Promise<GraphQLSchema | null | void>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
     projectConfig: GraphQLProjectConfig,
-  ) => (result: Object) => undefined;
+  ) => (result: WatchmanSubscriptionResult) => void;
 }
 
 // online-parser related
-export interface Position {
+export type Position = PositionType & {
   line: number;
   character: number;
-  lessThanOrEqualTo: (position: Position) => boolean;
-}
+  lessThanOrEqualTo?: (position: Position) => boolean;
+};
 
 export interface Range {
   start: Position;
@@ -161,7 +165,7 @@ export interface Range {
 
 export type CachedContent = {
   query: string;
-  range: Range | null | undefined;
+  range: Range | null;
 };
 
 export type RuleOrString = Rule | string;
@@ -277,28 +281,26 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
+export type WatchmanSubscriptionResult = {
+  root: string;
+  subscription: string;
+  is_fresh_instance: boolean;
+  files: {
+    name: string;
+    size: number;
+    mtime: number;
+    exists: boolean;
+    type: 'f' | 'd' | 's';
+  }[];
+};
+
 export type CustomValidationRule = (
   context: ValidationContext,
 ) => Record<string, any>;
 
-export type Diagnostic = {
-  range: Range;
-  severity?: number;
-  code?: number | string;
-  source?: string;
-  message: string;
-};
+export type Diagnostic = DiagnosticType;
 
-export type CompletionItem = {
-  label: string;
-  kind?: number;
-  detail?: string;
-  sortText?: string;
-  documentation?: string | null | undefined;
-  // GraphQL Deprecation information
-  isDeprecated?: boolean | null | undefined;
-  deprecationReason?: string | null | undefined;
-};
+export type CompletionItem = CompletionItemType;
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 

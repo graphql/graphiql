@@ -46,6 +46,7 @@
     "vscode-languageserver": "^5.2.1"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3"
+    "cross-env": "^6.0.3",
+    "@types/fb-watchman": "2.0.0"
   }
 }

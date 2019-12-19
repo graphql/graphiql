@@ -5,17 +5,14 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type {
+import {
   CachedContent,
-  Diagnostic,
-  DidChangeWatchedFilesParams,
   GraphQLCache,
-  Range as RangeType,
   Uri,
 } from 'graphql-language-service-types';
+
 import { FileChangeTypeKind } from 'graphql-language-service-types';
 
 import { extname, dirname } from 'path';
@@ -28,23 +25,27 @@ import {
   GraphQLConfig,
 } from 'graphql-config';
 import { GraphQLLanguageService } from 'graphql-language-service-interface';
-import { Position, Range } from 'graphql-language-service-utils';
+
+import { Range, Position } from 'graphql-language-service-utils';
+
+import { CompletionParams } from 'vscode-languageserver-protocol';
+
 import {
-  CancellationToken,
-  NotificationMessage,
-  ServerCapabilities,
-} from 'vscode-jsonrpc';
-import {
+  Diagnostic,
   CompletionItem,
-  CompletionRequest,
   CompletionList,
-  DefinitionRequest,
+  CancellationToken,
   Hover,
-  HoverRequest,
-  InitializeRequest,
   InitializeResult,
   Location,
   PublishDiagnosticsParams,
+  DidChangeTextDocumentParams,
+  DidCloseTextDocumentParams,
+  DidChangeWatchedFilesParams,
+  InitializeParams,
+  Range as RangeType,
+  VersionedTextDocumentIdentifier,
+  DidSaveTextDocumentParams,
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
@@ -55,15 +56,15 @@ import { GraphQLWatchman } from './GraphQLWatchman';
 // Map { uri => { query, range } }
 
 type CachedDocumentType = {
-  version: number,
-  contents: Array<CachedContent>,
+  version: number;
+  contents: Array<CachedContent>;
 };
 
 export class MessageProcessor {
-  _graphQLCache: GraphQLCache;
-  _languageService: GraphQLLanguageService;
+  _graphQLCache!: GraphQLCache;
+  _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
-  _watchmanClient: ?GraphQLWatchman;
+  _watchmanClient?: GraphQLWatchman | null;
 
   _isInitialized: boolean;
 
@@ -71,7 +72,7 @@ export class MessageProcessor {
 
   _logger: Logger;
 
-  constructor(logger: Logger, watchmanClient: GraphQLWatchman): void {
+  constructor(logger: Logger, watchmanClient: GraphQLWatchman) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
@@ -81,15 +82,15 @@ export class MessageProcessor {
   }
 
   async handleInitializeRequest(
-    params: InitializeRequest.type,
-    token: CancellationToken,
+    params: InitializeParams,
+    _token: CancellationToken,
     configDir?: string,
-  ): Promise<InitializeResult.type> {
+  ): Promise<InitializeResult> {
     if (!params) {
       throw new Error('`params` argument is required to initialize.');
     }
 
-    const serverCapabilities: ServerCapabilities = {
+    const serverCapabilities: InitializeResult = {
       capabilities: {
         completionProvider: { resolveProvider: true },
         definitionProvider: true,
@@ -99,7 +100,9 @@ export class MessageProcessor {
     };
 
     const rootPath = dirname(
-      findGraphQLConfigFile(configDir ? configDir.trim() : params.rootPath),
+      findGraphQLConfigFile(
+        configDir ? configDir.trim() : (params.rootPath as string),
+      ),
     );
     if (!rootPath) {
       throw new Error(
@@ -179,8 +182,8 @@ export class MessageProcessor {
   }
 
   async handleDidOpenOrSaveNotification(
-    params: NotificationMessage,
-  ): Promise<PublishDiagnosticsParams> {
+    params: DidSaveTextDocumentParams,
+  ): Promise<PublishDiagnosticsParams | null> {
     if (!this._isInitialized) {
       return null;
     }
@@ -192,9 +195,9 @@ export class MessageProcessor {
     const textDocument = params.textDocument;
     const { text, uri } = textDocument;
 
-    const diagnostics = [];
+    const diagnostics: Diagnostic[] = [];
 
-    let contents = [];
+    let contents: CachedContent[] = [];
 
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
@@ -238,8 +241,8 @@ export class MessageProcessor {
   }
 
   async handleDidChangeNotification(
-    params: NotificationMessage,
-  ): Promise<PublishDiagnosticsParams> {
+    params: DidChangeTextDocumentParams,
+  ): Promise<PublishDiagnosticsParams | null> {
     if (!this._isInitialized) {
       return null;
     }
@@ -282,7 +285,7 @@ export class MessageProcessor {
     this._updateObjectTypeDefinition(uri, contents);
 
     // Send the diagnostics onChange as well
-    const diagnostics = [];
+    const diagnostics: Diagnostic[] = [];
     await Promise.all(
       contents.map(async ({ query, range }) => {
         const results = await this._languageService.getDiagnostics(query, uri);
@@ -306,7 +309,7 @@ export class MessageProcessor {
     return { uri, diagnostics };
   }
 
-  handleDidCloseNotification(params: NotificationMessage): void {
+  handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
     if (!this._isInitialized) {
       return;
     }
@@ -344,9 +347,7 @@ export class MessageProcessor {
     process.exit(this._willShutdown ? 0 : 1);
   }
 
-  validateDocumentAndPosition(
-    params: CompletionRequest.type | HoverRequest.type,
-  ): void {
+  validateDocumentAndPosition(params: CompletionParams): void {
     if (
       !params ||
       !params.textDocument ||
@@ -360,11 +361,9 @@ export class MessageProcessor {
   }
 
   async handleCompletionRequest(
-    params: CompletionRequest.type,
-    token: CancellationToken,
+    params: CompletionParams,
   ): Promise<CompletionList | Array<CompletionItem>> {
     if (!this._isInitialized) {
-      // $FlowFixMe
       return [];
     }
 
@@ -422,11 +421,11 @@ export class MessageProcessor {
   }
 
   async handleHoverRequest(
-    params: HoverRequest.type,
-    token: CancellationToken,
+    params: HoverParams,
+    // token?: CancellationToken,
   ): Promise<Hover> {
     if (!this._isInitialized) {
-      return [];
+      return { contents: [] };
     }
 
     this.validateDocumentAndPosition(params);
@@ -448,7 +447,7 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      return '';
+      return { contents: [] };
     }
 
     const { query, range } = found;
@@ -469,7 +468,7 @@ export class MessageProcessor {
 
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
-  ): Promise<PublishDiagnosticsParams> {
+  ): Promise<PublishDiagnosticsParams[] | null> {
     if (!this._isInitialized || this._watchmanClient) {
       return null;
     }
@@ -532,8 +531,9 @@ export class MessageProcessor {
   }
 
   async handleDefinitionRequest(
-    params: DefinitionRequest.type,
-    token: CancellationToken,
+    // params: DefinitionParams,
+    params: CompletionParams,
+    _token?: CancellationToken,
   ): Promise<Array<Location>> {
     if (!this._isInitialized) {
       return [];
@@ -636,7 +636,7 @@ export class MessageProcessor {
     );
   }
 
-  _getCachedDocument(uri: string): ?CachedDocumentType {
+  _getCachedDocument(uri: string): CachedDocumentType | null {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (cachedDocument) {
@@ -648,7 +648,7 @@ export class MessageProcessor {
   }
 
   _invalidateCache(
-    textDocument: Object,
+    textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
     contents: Array<CachedContent>,
   ): void {
@@ -709,10 +709,10 @@ export function getQueryAndRange(
 }
 
 function processDiagnosticsMessage(
-  results: Array<Diagnostic>,
+  results: Diagnostic[],
   query: string,
-  range: ?RangeType,
-): Array<Diagnostic> {
+  range: RangeType | null,
+): Diagnostic[] {
   const queryLines = query.split('\n');
   const totalLines = queryLines.length;
   const lastLineLength = queryLines[totalLines - 1].length;

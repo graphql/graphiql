@@ -191,7 +191,7 @@ function getSuggestionsForFieldNames(
         label: field.name,
         detail: String(field.type),
         documentation: field.description,
-        isDeprecated: field.isDeprecated,
+        deprecated: field.deprecated,
         deprecationReason: field.deprecationReason,
       })),
     );
@@ -212,7 +212,7 @@ function getSuggestionsForInputValues(
         label: value.name,
         detail: String(namedInputType),
         documentation: value.description,
-        isDeprecated: value.isDeprecated,
+        deprecated: value.deprecated,
         deprecationReason: value.deprecationReason,
       })),
     );
