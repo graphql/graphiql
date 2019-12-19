@@ -11,6 +11,11 @@ type Location = {
   character: number,
 };
 
+type GraphQLSource = {
+  template: string,
+  range: Range,
+};
+
 export function getLocator(source: string) {
   const offsetLine = 0;
   const offsetColumn = 0;
@@ -63,3 +68,35 @@ export function getLocator(source: string) {
 export function locate(source: string, search: any): Location {
   return getLocator(source)(search);
 }
+
+/**
+ * A helper for extracting GraphQL operations from source via a regexp.
+ * It assumes that the only thing the regexp matches is the actual content,
+ * so if that's not true for your regexp you probably shouldn't use this
+ * directly.
+ */
+export const makeExtractTagsFromSource = (
+  regexp: RegExp,
+): ((text: string) => $ReadOnlyArray<GraphQLSource>) => (
+  text: string,
+): $ReadOnlyArray<GraphQLSource> => {
+  const locator = getLocator(text);
+  const sources: Array<GraphQLSource> = [];
+  let result;
+  while ((result = regexp.exec(text)) !== null) {
+    if (result) {
+      const start = locator(result.index);
+      const end = locator(result.index + result[0].length);
+
+      sources.push({
+        template: result[0],
+        range: new Range(
+          new Position(start.line, start.column),
+          new Position(end.line, end.column),
+        ),
+      });
+    }
+  }
+
+  return [...sources];
+};

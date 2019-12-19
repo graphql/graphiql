@@ -1,44 +1,7 @@
 // @flow
 import { Position, Range } from 'graphql-language-service-utils';
-import { getLocator } from './languageUtils';
+import { makeExtractTagsFromSource } from './languageUtils';
 import { findGraphQLTags } from './findGraphQLTags';
-
-type GraphQLSource = {
-  template: string,
-  range: Range,
-};
-
-/**
- * A helper for extracting GraphQL operations from source via a regexp.
- * It assumes that the only thing the regexp matches is the actual content,
- * so if that's not true for your regexp you probably shouldn't use this
- * directly.
- */
-export const makeExtractTagsFromSource = (
-  regexp: RegExp,
-): ((text: string) => $ReadOnlyArray<GraphQLSource>) => (
-  text: string,
-): $ReadOnlyArray<GraphQLSource> => {
-  const locator = getLocator(text);
-  const sources: Array<GraphQLSource> = [];
-  let result;
-  while ((result = regexp.exec(text)) !== null) {
-    if (result) {
-      const start = locator(result.index);
-      const end = locator(result.index + result[0].length);
-
-      sources.push({
-        template: result[0],
-        range: new Range(
-          new Position(start.line, start.column),
-          new Position(end.line, end.column),
-        ),
-      });
-    }
-  }
-
-  return [...sources];
-};
 
 export type LanguageConfig = {
   +extensions: $ReadOnlyArray<string>,
