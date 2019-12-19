@@ -82,6 +82,7 @@ function graphQLFetcher(graphQLParams) {
   const api = isDev ? '/graphql' : 'https://swapi.graph.cool/';
   return fetch(api, {
     method: 'post',
+    credentials: 'include',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
