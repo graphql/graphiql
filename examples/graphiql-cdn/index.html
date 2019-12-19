@@ -54,6 +54,7 @@
       function graphQLFetcher(graphQLParams) {
         return fetch('https://swapi-graphql.netlify.com/.netlify/functions/index', {
           method: 'post',
+          credentials: 'include',
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
