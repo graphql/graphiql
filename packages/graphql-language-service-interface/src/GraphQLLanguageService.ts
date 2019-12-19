@@ -24,7 +24,7 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
   Uri,
-  Position
+  Position,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';
@@ -40,7 +40,11 @@ import {
   getDefinitionQueryResultForNamedType,
 } from './getDefinition';
 
-import { getASTNodeAtPosition, requireFile, resolveFile } from 'graphql-language-service-utils';
+import {
+  getASTNodeAtPosition,
+  requireFile,
+  resolveFile,
+} from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,

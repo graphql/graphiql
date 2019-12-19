@@ -62,11 +62,10 @@ export function validateWithCustomRules(
       if (error.message.indexOf('Unknown directive') === -1) {
         return true;
       }
-      if (error.nodes && error.nodes[0] as TypeDefinitionNode) {
+      if (error.nodes && (error.nodes[0] as TypeDefinitionNode)) {
         const node = <TypeDefinitionNode>error.nodes[0];
         return !(
-          node.name &&
-          node.name.value === 'arguments' ||
+          (node.name && node.name.value === 'arguments') ||
           node.name.value === 'argumentDefinitions'
         );
       }

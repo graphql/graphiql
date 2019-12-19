@@ -22,7 +22,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
   }
 
@@ -31,7 +31,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1, item);
@@ -44,7 +44,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
-        x.operationName === item.operationName
+        x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1);
@@ -72,10 +72,14 @@ export default class QueryStore {
     }
 
     for (let attempts = 0; attempts < 5; attempts++) {
-      const response = this.storage.set(this.key, JSON.stringify({ [this.key]: items }));;
+      const response = this.storage.set(
+        this.key,
+        JSON.stringify({ [this.key]: items }),
+      );
       if (!response || !response.error) {
         this.items = items;
-      } else if (response.isQuotaError && this.maxSize) { // Only try to delete last items on LRU stores
+      } else if (response.isQuotaError && this.maxSize) {
+        // Only try to delete last items on LRU stores
         items.shift();
       } else {
         return; // We don't know what happened in this case, so just bailing out

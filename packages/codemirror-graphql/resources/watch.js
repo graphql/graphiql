@@ -101,14 +101,14 @@ function checkFiles(filepaths) {
     .then(testSuccess =>
       lintFiles(filepaths).then(lintSuccess =>
         typecheckStatus().then(
-          typecheckSuccess => testSuccess && lintSuccess && typecheckSuccess
-        )
-      )
+          typecheckSuccess => testSuccess && lintSuccess && typecheckSuccess,
+        ),
+      ),
     )
     .catch(() => false)
     .then(success => {
       process.stdout.write(
-        '\n' + (success ? '' : '\x07') + green(invert('watching...'))
+        '\n' + (success ? '' : '\x07') + green(invert('watching...')),
       );
     });
 }
@@ -129,7 +129,7 @@ function parseFiles(filepaths) {
           srcPath(filepath),
         ]);
       }
-    })
+    }),
   );
 }
 
@@ -141,8 +141,8 @@ function runTests(filepaths) {
     ['--reporter', 'progress', '--require', 'resources/mocha-bootload'].concat(
       allTests(filepaths)
         ? filepaths.map(srcPath)
-        : ['src/**/__tests__/**/*.js']
-    )
+        : ['src/**/__tests__/**/*.js'],
+    ),
   ).catch(() => false);
 }
 
@@ -158,14 +158,14 @@ function lintFiles(filepaths) {
             .catch(() => false)
             .then(success => {
               console.log(
-                CLEARLINE + '  ' + (success ? CHECK : X) + ' ' + filepath
+                CLEARLINE + '  ' + (success ? CHECK : X) + ' ' + filepath,
               );
               return prevSuccess && success;
             });
         }
         return prevSuccess;
       }),
-    Promise.resolve(true)
+    Promise.resolve(true),
   );
 }
 

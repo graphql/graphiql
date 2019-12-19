@@ -58,8 +58,8 @@ describe('GraphiQL', () => {
   it('should throw error without fetcher', () => {
     expect(() =>
       mount(<GraphiQL />).simulateError(
-        Error('GraphiQL requires a fetcher function')
-      )
+        Error('GraphiQL requires a fetcher function'),
+      ),
     );
   });
 
@@ -100,7 +100,7 @@ describe('GraphiQL', () => {
 
   it('should not throw error if schema missing and query provided', () => {
     expect(() =>
-      mount(<GraphiQL fetcher={noOpFetcher} query="{}" />)
+      mount(<GraphiQL fetcher={noOpFetcher} query="{}" />),
     ).not.toThrow();
   });
 
@@ -111,7 +111,7 @@ describe('GraphiQL', () => {
 
   it('accepts a custom default query', () => {
     const graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />
+      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
     expect(graphiQL.state().query).toEqual('GraphQL Party!!');
   });
@@ -130,7 +130,7 @@ describe('GraphiQL', () => {
     expect(graphiQL.state().defaultVariableEditorOpen).toEqual(undefined);
 
     graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />
+      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
     expect(graphiQL.state().variableEditorOpen).toEqual(true);
 
@@ -139,14 +139,16 @@ describe('GraphiQL', () => {
         fetcher={noOpFetcher}
         variables="{test: 'value'}"
         defaultVariableEditorOpen={false}
-      />
+      />,
     );
     expect(graphiQL.state().variableEditorOpen).toEqual(false);
   });
 
   describe('children overrides', () => {
-    const MyFunctionalComponent = () => { return null; }
-    const wrap = (component) => () => <div>{component}</div>;
+    const MyFunctionalComponent = () => {
+      return null;
+    };
+    const wrap = component => () => <div>{component}</div>;
 
     it('properly ignores fragments', () => {
       const myFragment = (
@@ -157,9 +159,7 @@ describe('GraphiQL', () => {
       );
 
       const graphiQL = mount(
-        <GraphiQL fetcher={noOpFetcher}>
-          {myFragment}
-        </GraphiQL>
+        <GraphiQL fetcher={noOpFetcher}>{myFragment}</GraphiQL>,
       );
 
       expect(graphiQL.exists()).toEqual(true);
@@ -171,7 +171,7 @@ describe('GraphiQL', () => {
       const graphiQL = mount(
         <GraphiQL fetcher={noOpFetcher}>
           <MyFunctionalComponent />
-        </GraphiQL>
+        </GraphiQL>,
       );
 
       expect(graphiQL.exists()).toEqual(true);
@@ -181,13 +181,15 @@ describe('GraphiQL', () => {
 
     it('properly ignores non-override class components', () => {
       class MyClassComponent {
-        render() { return null };
+        render() {
+          return null;
+        }
       }
 
       const graphiQL = mount(
         <GraphiQL fetcher={noOpFetcher}>
           <MyClassComponent />
-        </GraphiQL>
+        </GraphiQL>,
       );
 
       expect(graphiQL.exists()).toEqual(true);
@@ -200,24 +202,32 @@ describe('GraphiQL', () => {
         const graphiQL = mount(
           <GraphiQL fetcher={noOpFetcher} data-test-selector="override-logo">
             <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>
-          </GraphiQL>
+          </GraphiQL>,
         );
 
-        expect(graphiQL.find({ 'data-test-selector': 'override-logo' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-logo' }).exists(),
+        ).toEqual(true);
       });
 
       it('can be overridden using a named component', () => {
-        const WrappedLogo = wrap(<GraphiQL.Logo data-test-selector="override-logo">{'My Great Logo'}</GraphiQL.Logo>);
+        const WrappedLogo = wrap(
+          <GraphiQL.Logo data-test-selector="override-logo">
+            {'My Great Logo'}
+          </GraphiQL.Logo>,
+        );
         WrappedLogo.displayName = 'GraphiQLLogo';
 
         const graphiQL = mount(
           <GraphiQL fetcher={noOpFetcher}>
             <WrappedLogo />
-          </GraphiQL>
+          </GraphiQL>,
         );
 
         expect(graphiQL.find(WrappedLogo).exists()).toEqual(true);
-        expect(graphiQL.find({ 'data-test-selector': 'override-logo' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-logo' }).exists(),
+        ).toEqual(true);
       });
     });
 
@@ -228,28 +238,32 @@ describe('GraphiQL', () => {
             <GraphiQL.Toolbar data-test-selector="override-toolbar">
               <GraphiQL.Button />
             </GraphiQL.Toolbar>
-          </GraphiQL>
+          </GraphiQL>,
         );
 
-        expect(graphiQL.find({ 'data-test-selector': 'override-toolbar' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-toolbar' }).exists(),
+        ).toEqual(true);
       });
 
       it('can be overridden using a named component', () => {
         const WrappedToolbar = wrap(
           <GraphiQL.Toolbar data-test-selector="override-toolbar">
             <GraphiQL.Button />
-          </GraphiQL.Toolbar>
+          </GraphiQL.Toolbar>,
         );
         WrappedToolbar.displayName = 'GraphiQLToolbar';
 
         const graphiQL = mount(
           <GraphiQL fetcher={noOpFetcher}>
             <WrappedToolbar />
-          </GraphiQL>
+          </GraphiQL>,
         );
 
         expect(graphiQL.find(WrappedToolbar).exists()).toEqual(true);
-        expect(graphiQL.find({ 'data-test-selector': 'override-toolbar' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-toolbar' }).exists(),
+        ).toEqual(true);
       });
     });
 
@@ -260,28 +274,32 @@ describe('GraphiQL', () => {
             <GraphiQL.Footer data-test-selector="override-footer">
               <GraphiQL.Button />
             </GraphiQL.Footer>
-          </GraphiQL>
+          </GraphiQL>,
         );
 
-        expect(graphiQL.find({ 'data-test-selector': 'override-footer' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-footer' }).exists(),
+        ).toEqual(true);
       });
 
       it('can be overridden using a named component', () => {
         const WrappedFooter = wrap(
           <GraphiQL.Footer data-test-selector="override-footer">
             <GraphiQL.Button />
-          </GraphiQL.Footer>
+          </GraphiQL.Footer>,
         );
         WrappedFooter.displayName = 'GraphiQLFooter';
 
         const graphiQL = mount(
           <GraphiQL fetcher={noOpFetcher}>
             <WrappedFooter />
-          </GraphiQL>
+          </GraphiQL>,
         );
 
         expect(graphiQL.find(WrappedFooter).exists()).toEqual(true);
-        expect(graphiQL.find({ 'data-test-selector': 'override-footer' }).exists()).toEqual(true);
+        expect(
+          graphiQL.find({ 'data-test-selector': 'override-footer' }).exists(),
+        ).toEqual(true);
       });
     });
   });

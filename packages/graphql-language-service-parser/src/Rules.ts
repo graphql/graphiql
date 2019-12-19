@@ -26,7 +26,8 @@ export const isIgnored = (ch: string) =>
   ch === ',' ||
   ch === '\n' ||
   ch === '\r' ||
-  ch === '\uFEFF';
+  ch === '\uFEFF' ||
+  ch === '\u00A0';
 
 /**
  * The lexer rules. These are exactly as described by the spec.
@@ -47,8 +48,6 @@ export const LexRules = {
   // Comments consume entire lines.
   Comment: /^#.*/,
 };
-
-
 
 /**
  * The parser rules. These are very close to, but not exactly the same as the
@@ -88,7 +87,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
       case 'directive':
         return 'DirectiveDef';
     }
-
   },
   // Note: instead of "Operation", these rules have been separated out.
   ShortQuery: ['SelectionSet'],

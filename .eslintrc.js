@@ -68,7 +68,7 @@ module.exports = {
     'no-regex-spaces': 1,
     'no-sparse-arrays': 1,
     'no-template-curly-in-string': 0,
-    'no-unexpected-multiline': 1,
+    'no-unexpected-multiline': 0, // prettier --list-different
     'no-unreachable': 1,
     'no-unsafe-finally': 1,
     'no-unsafe-negation': 1,
@@ -102,7 +102,7 @@ module.exports = {
     'no-extra-bind': 1,
     'no-extra-label': 1,
     'no-fallthrough': 1,
-    'no-floating-decimal': 1,
+    'no-floating-decimal': 0, // prettier --list-different
     'no-global-assign': 1,
     'no-implicit-coercion': 1,
     'no-implicit-globals': 0,
@@ -187,7 +187,7 @@ module.exports = {
     'id-match': 0,
     indent: 0,
     'line-comment-position': 0,
-    'linebreak-style': 1,
+    'linebreak-style': 0, // prettier --list-different
     'lines-around-comment': 0,
     'lines-around-directive': 0,
     'max-depth': 0,
@@ -246,7 +246,7 @@ module.exports = {
     'no-useless-rename': 1,
     'no-var': 1,
     'object-shorthand': 1,
-    'prefer-arrow-callback': [1, { allowNamedFunctions: true }],
+    'prefer-arrow-callback': [0, { allowNamedFunctions: true }], // prettier --list-different
     'prefer-const': 1,
     'prefer-numeric-literals': 0,
     'prefer-rest-params': 0,
@@ -316,7 +316,7 @@ module.exports = {
       files: ['*.js', '*.jsx'],
       rules: {
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-        'flowtype/boolean-style': 1,
+        'flowtype/boolean-style': 0, // prettier --list-different
         'flowtype/define-flow-type': 1,
         'flowtype/no-dupe-keys': 0,
         'flowtype/no-primitive-constructor-types': 1,

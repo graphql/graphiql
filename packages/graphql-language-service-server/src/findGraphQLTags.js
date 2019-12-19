@@ -46,7 +46,7 @@ const PARSER_OPTIONS = {
 };
 
 export function findGraphQLTags(
-  text: string
+  text: string,
 ): Array<{ tag: string, template: string, range: Range }> {
   const result = [];
   const ast = parse(text, PARSER_OPTIONS);
@@ -77,7 +77,7 @@ export function findGraphQLTags(
             const loc = property.value.loc;
             const range = new Range(
               new Position(loc.start.line - 1, loc.start.column),
-              new Position(loc.end.line - 1, loc.end.column)
+              new Position(loc.end.line - 1, loc.end.column),
             );
             result.push({
               tag: tagName,
@@ -93,7 +93,7 @@ export function findGraphQLTags(
           const loc = fragments.loc;
           const range = new Range(
             new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column)
+            new Position(loc.end.line - 1, loc.end.column),
           );
           result.push({
             tag: tagName,
@@ -114,7 +114,7 @@ export function findGraphQLTags(
         const loc = node.quasi.quasis[0].loc;
         const range = new Range(
           new Position(loc.start.line - 1, loc.start.column),
-          new Position(loc.end.line - 1, loc.end.column)
+          new Position(loc.end.line - 1, loc.end.column),
         );
         result.push({
           tag: tagName,

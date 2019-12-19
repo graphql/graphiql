@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-function isQuotaError (storage, e) {
+function isQuotaError(storage, e) {
   return (
     e instanceof DOMException &&
     // everything except Firefox
@@ -40,7 +40,7 @@ export default class StorageAPI {
       return value;
     }
 
-    return null
+    return null;
   }
 
   set(name, value) {
@@ -52,7 +52,7 @@ export default class StorageAPI {
       if (value) {
         try {
           this.storage.setItem(key, value);
-        } catch(e) {
+        } catch (e) {
           error = e;
           quotaError = isQuotaError(this.storage, e);
         }
@@ -64,7 +64,7 @@ export default class StorageAPI {
 
     return {
       isQuotaError: quotaError,
-      error
+      error,
     };
   }
 }

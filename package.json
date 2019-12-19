@@ -5,9 +5,15 @@
     "packages/*",
     "examples/*"
   ],
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx,md}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint",
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -23,12 +29,14 @@
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
-    "lint": "eslint --ext=ts,js,jsx,tsx . || (printf '\\033[33mTry: \\033[7m yarn format \\033[0m\\n' && exit 1)",
-    "lint-fix": "eslint --ext=ts,js,jsx,tsx . --fix",
+    "eslint": "eslint --ext=ts,js,jsx,tsx .",
+    "lint": "yarn eslint && yarn lint-check && yarn pretty-check",
+    "lint-fix": "yarn eslint --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "check": "flow check --show-all-errors",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
+    "format": "yarn eslint --fix && yarn pretty",
     "version-release": "lerna version",
     "version-prerelease": "lerna version --conventional-prerelease",
     "version-graduate": "lerna version --conventional-graduate"
@@ -73,6 +81,7 @@
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
     "lerna": "^3.16.4",
+    "lint-staged": "^10.0.0-beta.8",
     "mkdirp": "^0.5.1",
     "mocha": "6.1.4",
     "prettier": "^1.18.2",

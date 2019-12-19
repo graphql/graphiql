@@ -1,0 +1,15 @@
+name: "PR Review Submitted"
+on:
+  pull_request_review:
+    types: [submitted]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord Notification - PR Review Submitted
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Review submitted by [@{{ EVENT_PAYLOAD.owner.login }}](EVENT_PAYLOAD.owner.html_url) for [EVENT_PAYLOAD.pull_request.name](EVENT_PAYLOAD.pull_request.html_url)'
+
