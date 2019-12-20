@@ -10,12 +10,6 @@ require('@babel/polyfill', {
   rootMode: 'upward',
 });
 
-// if (process.env.ENZYME) {
-const { configure } = require('enzyme');
-const Adapter = require('enzyme-adapter-react-16');
-configure({ adapter: new Adapter() });
-// }
-
 global.window = jsdom.window;
 global.document = jsdom.window.document;
 

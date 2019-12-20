@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 import TypeLink from '../TypeLink';
 
@@ -17,32 +18,32 @@ const listType = new GraphQLList(GraphQLString);
 
 describe('TypeLink', () => {
   it('should render a string', () => {
-    const instance = mount(<TypeLink type={GraphQLString} />);
-    expect(instance.text()).toEqual('String');
-    expect(instance.find('a').length).toEqual(1);
-    expect(instance.find('a').hasClass('type-name')).toEqual(true);
+    const { container } = render(<TypeLink type={GraphQLString} />);
+    expect(container).toHaveTextContent('String');
+    expect(container.querySelectorAll('a')).toHaveLength(1);
+    expect(container.querySelector('a')).toHaveClass('type-name');
   });
   it('should render a nonnull type', () => {
-    const instance = mount(<TypeLink type={nonNullType} />);
-    expect(instance.text()).toEqual('String!');
-    expect(instance.find('span').length).toEqual(1);
+    const { container } = render(<TypeLink type={nonNullType} />);
+    expect(container).toHaveTextContent('String!');
+    expect(container.querySelectorAll('span')).toHaveLength(1);
   });
   it('should render a list type', () => {
-    const instance = mount(<TypeLink type={listType} />);
-    expect(instance.text()).toEqual('[String]');
-    expect(instance.find('span').length).toEqual(1);
+    const { container } = render(<TypeLink type={listType} />);
+    expect(container).toHaveTextContent('[String]');
+    expect(container.querySelectorAll('span')).toHaveLength(1);
   });
   it('should handle a click event', () => {
     const op = jest.fn();
-    const instance = mount(<TypeLink type={listType} onClick={op} />);
-    instance.find('a').simulate('click');
+    const { container } = render(<TypeLink type={listType} onClick={op} />);
+    fireEvent.click(container.querySelector('a'));
     expect(op.mock.calls.length).toEqual(1);
     expect(op.mock.calls[0][0]).toEqual(GraphQLString);
   });
   it('should re-render on type change', () => {
-    const instance = mount(<TypeLink type={listType} />);
-    expect(instance.text()).toEqual('[String]');
-    instance.setProps({ type: GraphQLString });
-    expect(instance.text()).toEqual('String');
+    const { container, rerender } = render(<TypeLink type={listType} />);
+    expect(container).toHaveTextContent('[String]');
+    rerender(<TypeLink type={GraphQLString} />);
+    expect(container).toHaveTextContent('String');
   });
 });
