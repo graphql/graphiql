@@ -6,22 +6,17 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+
 import {
-  File,
   Expression,
-  ArrayExpression,
-  ExpressionStatement,
-  CallExpression,
-  AssignmentExpression,
-  MemberExpression,
-  Identifier,
-  FunctionExpression,
   TaggedTemplateExpression,
+  ObjectExpression,
+  TemplateLiteral,
 } from '@babel/types';
+
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { parse, ParserOptions } from '@babel/parser';
-import { SourceLocation } from 'graphql';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -62,67 +57,83 @@ const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
   createRefetchContainer: true,
 };
 
-export type TagResult = { tag: string; template: string; range: Range };
+type TagResult = { tag: string; template: string; range: Range };
+
+interface TagVisitiors {
+  [type: string]: (node: any) => void;
+}
 
 export function findGraphQLTags(text: string): TagResult[] {
   const result: TagResult[] = [];
   const ast = parse(text, PARSER_OPTIONS);
 
   const visitors = {
-    CallExpression: (node: CallExpression) => {
-      const callee = node.callee;
-      if (
-        !(
-          (callee.type === 'Identifier' &&
-            CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
-          (callee.kind === 'MemberExpression' &&
-            callee.object.type === 'Identifier' &&
-            callee.object.value === 'Relay' &&
-            callee.property.type === 'Identifier' &&
-            CREATE_CONTAINER_FUNCTIONS[callee.property.name])
-        )
-      ) {
-        traverse(node, visitors);
-        return;
-      }
-      const fragments = node.arguments[1];
-      if (fragments.type === 'ObjectExpression') {
-        fragments.properties.forEach(property => {
-          const tagName = getGraphQLTagName(property.value.tag);
-          const template = getGraphQLText(property.value.quasi);
-          if (tagName) {
-            const loc = property.value.loc;
-            const range = new Range(
-              new Position(loc.start.line - 1, loc.start.column),
-              new Position(loc.end.line - 1, loc.end.column),
-            );
-            result.push({
-              tag: tagName,
-              template,
-              range,
-            });
-          }
-        });
-      } else {
-        const tagName = getGraphQLTagName(fragments.tag);
-        const template = getGraphQLText(fragments.quasi);
-        if (tagName) {
-          const loc = fragments.loc;
-          const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
-          );
-          result.push({
-            tag: tagName,
-            template,
-            range,
-          });
+    CallExpression: (node: Expression) => {
+      if ('callee' in node) {
+        const callee = node.callee;
+        if (
+          !(
+            (callee.type === 'Identifier' &&
+              CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
+            (callee.kind === 'MemberExpression' &&
+              callee.object.type === 'Identifier' &&
+              callee.object.value === 'Relay' &&
+              callee.property.type === 'Identifier' &&
+              CREATE_CONTAINER_FUNCTIONS[callee.property.name])
+          )
+        ) {
+          traverse(node, visitors);
+          return;
         }
-      }
 
-      // Visit remaining arguments
-      for (let ii = 2; ii < node.arguments.length; ii++) {
-        visit(node.arguments[ii], visitors);
+        if ('arguments' in node) {
+          const fragments = node.arguments[1];
+          if (fragments.type === 'ObjectExpression') {
+            fragments.properties.forEach(
+              (property: ObjectExpression['properties'][0]) => {
+                if (
+                  'value' in property &&
+                  'loc' in property.value &&
+                  'tag' in property.value
+                ) {
+                  const tagName = getGraphQLTagName(property.value.tag);
+                  const template = getGraphQLText(property.value.quasi);
+                  if (tagName && property.value.loc) {
+                    const loc = property.value.loc;
+                    const range = new Range(
+                      new Position(loc.start.line - 1, loc.start.column),
+                      new Position(loc.end.line - 1, loc.end.column),
+                    );
+                    result.push({
+                      tag: tagName,
+                      template,
+                      range,
+                    });
+                  }
+                }
+              },
+            );
+          } else if ('tag' in fragments) {
+            const tagName = getGraphQLTagName(fragments.tag);
+            const template = getGraphQLText(fragments.quasi);
+            if (tagName && fragments.loc) {
+              const loc = fragments.loc;
+              const range = new Range(
+                new Position(loc.start.line - 1, loc.start.column),
+                new Position(loc.end.line - 1, loc.end.column),
+              );
+              result.push({
+                tag: tagName,
+                template,
+                range,
+              });
+            }
+          }
+          // Visit remaining arguments
+          for (let ii = 2; ii < node.arguments.length; ii++) {
+            visit(node.arguments[ii], visitors);
+          }
+        }
       }
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
@@ -149,7 +160,7 @@ export function findGraphQLTags(text: string): TagResult[] {
 
 const IDENTIFIERS = { graphql: true, gql: true };
 
-const IGNORED_KEYS = {
+const IGNORED_KEYS: { [key: string]: boolean } = {
   comments: true,
   end: true,
   leadingComments: true,
@@ -160,7 +171,7 @@ const IGNORED_KEYS = {
   type: true,
 };
 
-function getGraphQLTagName(tag: TagResult): string | null {
+function getGraphQLTagName(tag: Expression): string | null {
   if (tag.type === 'Identifier' && IDENTIFIERS.hasOwnProperty(tag.name)) {
     return tag.name;
   } else if (
@@ -175,21 +186,21 @@ function getGraphQLTagName(tag: TagResult): string | null {
   return null;
 }
 
-function getGraphQLText(quasi) {
+function getGraphQLText(quasi: TemplateLiteral) {
   const quasis = quasi.quasis;
   return quasis[0].value.raw;
 }
 
-function visit(node, visitors) {
+function visit(node: { [key: string]: any }, visitors: TagVisitiors) {
   const fn = visitors[node.type];
-  if (fn != null) {
+  if (fn && fn != null) {
     fn(node);
     return;
   }
   traverse(node, visitors);
 }
 
-function traverse(node: Expression, visitors) {
+function traverse(node: { [key: string]: any }, visitors: TagVisitiors) {
   for (const key in node) {
     if (IGNORED_KEYS[key]) {
       continue;

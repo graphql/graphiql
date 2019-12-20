@@ -5,11 +5,11 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import yargs from 'yargs';
 import client from './client';
+
 import { Logger, startServer } from 'graphql-language-service-server';
 import watchman from 'fb-watchman';
 
@@ -95,6 +95,10 @@ const { argv } = yargs
 
 const command = argv._.pop();
 
+if (!command) {
+  throw Error('no command supplied');
+}
+
 switch (command) {
   case 'server':
     process.on('uncaughtException', error => {
@@ -104,16 +108,19 @@ switch (command) {
       process.exit(0);
     });
     const watchmanClient = new watchman.Client();
-    watchmanClient.capabilityCheck({}, (error, res) => {
-      if (error) {
-        process.stderr.write(
-          `Cannot find installed watchman service with an error: ${error}`,
-        );
-        process.exit(0);
-      }
-    });
+    watchmanClient.capabilityCheck(
+      { optional: [], required: [] },
+      (error, _res) => {
+        if (error) {
+          process.stderr.write(
+            `Cannot find installed watchman service with an error: ${error}`,
+          );
+          process.exit(0);
+        }
+      },
+    );
 
-    const options = {};
+    const options: { [key: string]: any } = {};
     if (argv && argv.port) {
       options.port = argv.port;
     }
@@ -130,9 +137,10 @@ switch (command) {
       logger.error(error);
     }
     break;
-  default:
-    client(command, argv);
+  default: {
+    client(command, argv as { [key: string]: string });
     break;
+  }
 }
 
 // Exit the process when stream closes from remote end.

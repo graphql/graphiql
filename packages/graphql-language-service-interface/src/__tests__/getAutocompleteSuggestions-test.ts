@@ -103,6 +103,10 @@ describe('getAutocompleteSuggestions', () => {
     // Below should provide root field names
     expect(testSuggestions(' {}', new Position(0, 2))).toEqual([
       { label: '__typename', detail: 'String!' },
+      {
+        detail: 'TestType',
+        label: 'deprecatedField',
+      },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },
@@ -121,6 +125,10 @@ query name {
       ),
     ).toEqual([
       { label: '__typename', detail: 'String!' },
+      {
+        detail: 'TestType',
+        label: 'deprecatedField',
+      },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },
@@ -132,6 +140,10 @@ query name {
     const result = testSuggestions('{ ', new Position(0, 2));
     expect(result).toEqual([
       { label: '__typename', detail: 'String!' },
+      {
+        detail: 'TestType',
+        label: 'deprecatedField',
+      },
       { label: 'droid', detail: 'Droid' },
       { label: 'hero', detail: 'Character' },
       { label: 'human', detail: 'Human' },

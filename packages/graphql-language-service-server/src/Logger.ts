@@ -13,7 +13,7 @@ import fs from 'fs';
 import os from 'os';
 import { join } from 'path';
 
-const SEVERITY = {
+const SEVERITY: { [key: string]: string } = {
   ERROR: 'ERROR',
   WARNING: 'WARNING',
   INFO: 'INFO',
@@ -68,7 +68,7 @@ export class Logger implements VSCodeLogger {
 
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${message}\n\n`;
     // write to the file in tmpdir
-    fs.appendFile(this._logFilePath, logMessage, error => {});
+    fs.appendFile(this._logFilePath, logMessage, _error => {});
   }
 }
 

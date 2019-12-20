@@ -46,6 +46,7 @@ import {
   Range as RangeType,
   VersionedTextDocumentIdentifier,
   DidSaveTextDocumentParams,
+  TextDocumentPositionParams,
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
@@ -83,7 +84,7 @@ export class MessageProcessor {
 
   async handleInitializeRequest(
     params: InitializeParams,
-    _token: CancellationToken,
+    _token?: CancellationToken,
     configDir?: string,
   ): Promise<InitializeResult> {
     if (!params) {
@@ -192,8 +193,8 @@ export class MessageProcessor {
       throw new Error('`textDocument` argument is required.');
     }
 
-    const textDocument = params.textDocument;
-    const { text, uri } = textDocument;
+    const { text, textDocument } = params;
+    const { uri } = textDocument;
 
     const diagnostics: Diagnostic[] = [];
 
@@ -267,7 +268,7 @@ export class MessageProcessor {
 
     // As `contentChanges` is an array and we just want the
     // latest update to the text, grab the last entry from the array.
-    const uri = textDocument.uri || params.uri;
+    const uri = textDocument.uri;
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
@@ -420,10 +421,7 @@ export class MessageProcessor {
     return { items: result, isIncomplete: false };
   }
 
-  async handleHoverRequest(
-    params: HoverParams,
-    // token?: CancellationToken,
-  ): Promise<Hover> {
+  async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
     if (!this._isInitialized) {
       return { contents: [] };
     }
@@ -525,7 +523,9 @@ export class MessageProcessor {
             change.uri,
             false,
           );
+          return { uri: change.uri, diagnostics: [] };
         }
+        return { uri: change.uri, diagnostics: [] };
       }),
     );
   }
@@ -573,7 +573,7 @@ export class MessageProcessor {
     );
     const formatted = result
       ? result.definitions.map(res => {
-          const defRange = res.range;
+          const defRange = res.range as Range;
           return {
             // TODO: fix this hack!
             // URI is being misused all over this library - there's a link that
@@ -654,7 +654,11 @@ export class MessageProcessor {
   ): void {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
-      if (cachedDocument && cachedDocument.version < textDocument.version) {
+      if (
+        cachedDocument &&
+        textDocument.version &&
+        cachedDocument.version < textDocument.version
+      ) {
         // Current server capabilities specify the full sync of the contents.
         // Therefore always overwrite the entire content.
         this._textDocumentCache.set(uri, {
@@ -662,7 +666,7 @@ export class MessageProcessor {
           contents,
         });
       }
-    } else {
+    } else if (textDocument.version) {
       this._textDocumentCache.set(uri, {
         version: textDocument.version,
         contents,
@@ -718,6 +722,7 @@ function processDiagnosticsMessage(
   const lastLineLength = queryLines[totalLines - 1].length;
   const lastCharacterPosition = new Position(totalLines, lastLineLength);
   const processedResults = results.filter(diagnostic =>
+    // @ts-ignore
     diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
   );
 

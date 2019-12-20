@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "test": "node ../../resources/runTests.js",
-    "build": "yarn run build-js && yarn build-esm && yarn run build-flow",
+    "build": "tsc && yarn run build-flow",
     "build-js": "node ../../resources/buildJs.js",
     "build-esm": "ESM=true babel src --root-mode upward --ignore __tests__ --out-dir esm",
     "build-flow": "node ../../resources/buildFlow.js"

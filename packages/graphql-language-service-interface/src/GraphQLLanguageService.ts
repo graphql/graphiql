@@ -220,7 +220,7 @@ export class GraphQLLanguageService {
     query: string,
     position: Position,
     filePath: Uri,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const projectConfig = this.getConfigForURI(filePath);
 
     let ast;
@@ -269,7 +269,7 @@ export class GraphQLLanguageService {
     node: NamedTypeNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
       projectConfig,
     );
@@ -313,7 +313,7 @@ export class GraphQLLanguageService {
     node: FragmentSpreadNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
       projectConfig,
     );

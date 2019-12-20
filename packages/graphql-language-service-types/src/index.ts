@@ -140,9 +140,9 @@ export interface GraphQLCache {
   ) => Promise<void>;
 
   getSchema: (
-    appName: string | null | undefined,
-    queryHasExtensions?: boolean | null | undefined,
-  ) => Promise<GraphQLSchema | null | void>;
+    appName?: string,
+    queryHasExtensions?: boolean,
+  ) => Promise<GraphQLSchema | null>;
 
   handleWatchmanSubscribeEvent: (
     rootDir: string,
@@ -239,6 +239,7 @@ export type GraphQLFileInfo = {
   filePath: Uri;
   content: string;
   asts: Array<DocumentNode>;
+  queries: Array<CachedContent>;
   size: number;
   mtime: number;
 };
@@ -284,13 +285,13 @@ export type ObjectTypeInfo = {
 export type WatchmanSubscriptionResult = {
   root: string;
   subscription: string;
-  is_fresh_instance: boolean;
+  is_fresh_instance?: boolean;
   files: {
     name: string;
     size: number;
     mtime: number;
     exists: boolean;
-    type: 'f' | 'd' | 's';
+    type?: 'f' | 'd' | 's';
   }[];
 };
 

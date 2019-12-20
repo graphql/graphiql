@@ -5,7 +5,6 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import { GraphQLSchema } from 'graphql/type';
@@ -16,15 +15,16 @@ import fetchMock from 'fetch-mock';
 import { GraphQLCache } from '../GraphQLCache';
 import { getQueryAndRange } from '../MessageProcessor';
 
-function wihtoutASTNode(definition: object) {
+function wihtoutASTNode(definition: any) {
   const result = { ...definition };
   delete result.astNode;
   return result;
 }
 
 describe('GraphQLCache', () => {
-  let cache;
-  let graphQLRC;
+  const configDir = __dirname;
+  let graphQLRC = getGraphQLConfig(configDir);
+  let cache = new GraphQLCache(configDir, graphQLRC);
 
   beforeEach(async () => {
     const configDir = __dirname;
@@ -78,7 +78,9 @@ describe('GraphQLCache', () => {
     });
 
     it('extend the schema with appropriate custom directive', async () => {
-      const schema = await cache.getSchema('testWithCustomDirectives');
+      const schema = (await cache.getSchema(
+        'testWithCustomDirectives',
+      )) as GraphQLSchema;
       expect(
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).toMatchObject(
@@ -94,7 +96,7 @@ describe('GraphQLCache', () => {
     });
 
     it('extend the schema with appropriate custom directive 2', async () => {
-      const schema = await cache.getSchema('testWithSchema');
+      const schema = (await cache.getSchema('testWithSchema')) as GraphQLSchema;
       expect(
         wihtoutASTNode(schema.getDirective('customDirective')),
       ).toMatchObject(
@@ -122,12 +124,12 @@ describe('GraphQLCache', () => {
       const testResult = {
         root: __dirname,
         subscription: '',
+        is_fresh_instance: true,
         files: [
           {
             name: '__schema__/StarWarsSchema.graphql',
             exists: true,
             size: 5,
-            is_fresh_instance: true,
             mtime: Date.now(),
           },
         ],

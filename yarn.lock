@@ -3056,6 +3056,11 @@
   dependencies:
     "@types/events" "*"
 
+"@types/fetch-mock@^7.3.2":
+  version "7.3.2"
+  resolved "https://registry.npmjs.org/@types/fetch-mock/-/fetch-mock-7.3.2.tgz#58805ba36a9357be92cc8c008dbfda937e9f7d8f"
+  integrity sha512-NCEfv49jmDsBAixjMjEHKVgmVQlJ+uK56FOc+2roYPExnXCZDpi6mJOHQ3v23BiO84hBDStND9R2itJr7PNoow==
+
 "@types/glob@^7.1.1":
   version "7.1.1"
   resolved "https://registry.npmjs.org/@types/glob/-/glob-7.1.1.tgz#aa59a1c6e3fbc421e07ccd31a944c30eba521575"

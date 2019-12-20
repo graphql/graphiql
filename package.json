@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts && yarn build-js",
-    "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphql-language-service",
+    "build-js": "lerna run build --scope codemirror-graphql",
     "build-ts": "yarn run tsc",
     "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
     "build-validate": "lerna run build-validate",
@@ -63,6 +63,7 @@
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.2.1",
+    "@types/fetch-mock": "^7.3.2",
     "@types/jest": "^24.0.18",
     "@typescript-eslint/parser": "^2.3.0",
     "babel-eslint": "^10.0.1",

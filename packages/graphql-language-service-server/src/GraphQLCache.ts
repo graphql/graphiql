@@ -63,13 +63,6 @@ export async function getGraphQLCache(
   return new GraphQLCache(configDir, graphQLConfig);
 }
 
-export type ReadGraphQLDocumentResponse = {
-  filePath: Uri;
-  content: string;
-  asts: Array<DocumentNode>;
-  queries: Array<CachedContent>;
-};
-
 export class GraphQLCache implements GraphQLCacheInterface {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
@@ -93,7 +86,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   getFragmentDependencies = async (
     query: string,
-    fragmentDefinitions?: Map<string, FragmentInfo>,
+    fragmentDefinitions?: Map<string, FragmentInfo> | null,
   ): Promise<FragmentInfo[]> => {
     // If there isn't context for fragment references,
     // return an empty array.
@@ -683,7 +676,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     if (endpointInfo && endpointKey) {
       const { endpoint } = endpointInfo;
-
       schemaCacheKey = endpointKey;
 
       // Maybe use cache
@@ -691,7 +683,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         schema = this._schemaMap.get(schemaCacheKey);
         return schema && queryHasExtensions
           ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-          : schema;
+          : schema || null;
       }
 
       // Read schema from network
@@ -708,9 +700,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
       // Maybe use cache
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);
-        return schema && queryHasExtensions
-          ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-          : schema;
+        if (schema) {
+          return queryHasExtensions
+            ? this._extendSchema(schema, schemaPath, schemaCacheKey)
+            : schema;
+        }
       }
 
       // Read from disk
@@ -823,15 +817,15 @@ export class GraphQLCache implements GraphQLCacheInterface {
               queue.push(fileInfo);
             }
           })
-          .then((response: ReadGraphQLDocumentResponse) =>
-            responses.push({
-              asts: response.asts,
-              content: response.content,
-              filePath: response.filePath,
-              mtime: fileInfo.mtime,
-              size: fileInfo.size,
-            }),
-          ),
+          .then((response: GraphQLFileInfo | void) => {
+            if (response) {
+              responses.push({
+                ...response,
+                mtime: fileInfo.mtime,
+                size: fileInfo.size,
+              });
+            }
+          }),
       );
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
@@ -903,9 +897,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
    * Returns a Promise to read a GraphQL file and return a GraphQL metadata
    * including a parsed AST.
    */
-  promiseToReadGraphQLFile = (
-    filePath: Uri,
-  ): Promise<ReadGraphQLDocumentResponse> => {
+  promiseToReadGraphQLFile = (filePath: Uri): Promise<GraphQLFileInfo> => {
     return new Promise((resolve, reject) =>
       fs.readFile(filePath, 'utf8', (error, content) => {
         if (error) {
@@ -920,7 +912,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
             queries = getQueryAndRange(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
-              resolve({ filePath, content, asts: [], queries: [] });
+              resolve({
+                filePath,
+                content,
+                asts: [],
+                queries: [],
+                mtime: 0,
+                size: 0,
+              });
               return;
             }
 
@@ -932,14 +931,29 @@ export class GraphQLCache implements GraphQLCacheInterface {
                 }),
               ),
             );
+            resolve({
+              filePath,
+              content,
+              asts,
+              queries,
+              mtime: 0,
+              size: 0,
+            });
           } catch (_) {
             // If query has syntax errors, go ahead and still resolve
             // the filePath and the content, but leave ast empty.
-            resolve({ filePath, content, asts: [], queries: [] });
+            resolve({
+              filePath,
+              content,
+              asts: [],
+              queries: [],
+              mtime: 0,
+              size: 0,
+            });
             return;
           }
         }
-        resolve({ filePath, content, asts, queries });
+        resolve({ filePath, content, asts, queries, mtime: 0, size: 0 });
       }),
     );
   };

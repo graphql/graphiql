@@ -5,10 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
-import type { GraphQLSchema } from 'graphql';
+import { GraphQLSchema } from 'graphql';
 
 import invariant from 'assert';
 import fs from 'fs';
@@ -20,12 +19,21 @@ import {
 } from 'graphql-language-service-interface';
 import { Position } from 'graphql-language-service-utils';
 import path from 'path';
+import { CompletionItem, Diagnostic } from 'graphql-language-service-types/src';
 
 const GRAPHQL_SUCCESS_CODE = 0;
 const GRAPHQL_FAILURE_CODE = 1;
 
 type EXIT_CODE = 0 | 1;
 
+// export type GraphQLLanguageServiceClientArgV = {
+//   [key: string]: any;
+//   row: string;
+//   column: string;
+//   schemaPath?: string;
+//   file?: string;
+//   text?: string;
+// };
 /**
  * Performs GraphQL language service features with provided arguments from
  * the command-line interface.
@@ -37,7 +45,10 @@ type EXIT_CODE = 0 | 1;
  *             Query validation is only performed if a schema path is supplied.
  */
 
-export default function main(command: string, argv: Object): void {
+export default function main(
+  command: string,
+  argv: { [key: string]: string },
+): void {
   const filePath = argv.file && argv.file.trim();
   invariant(
     argv.text || argv.file,
@@ -51,8 +62,9 @@ export default function main(command: string, argv: Object): void {
   switch (command) {
     case 'autocomplete':
       const lines = text.split('\n');
-      const row = argv.row || lines.length - 1;
-      const column = argv.column || lines[lines.length - 1].length;
+      const row = parseInt(argv.row, 10) || lines.length - 1;
+      const column =
+        parseInt(argv.column, 10) || lines[lines.length - 1].length;
       const point = new Position(row, column);
       exitCode = _getAutocompleteSuggestions(text, point, schemaPath);
       break;
@@ -67,6 +79,10 @@ export default function main(command: string, argv: Object): void {
   }
 
   process.exit(exitCode);
+}
+
+interface AutocompleteResultsMap {
+  [i: number]: CompletionItem;
 }
 
 function _getAutocompleteSuggestions(
@@ -84,10 +100,13 @@ function _getAutocompleteSuggestions(
     const resultArray = schema
       ? getAutocompleteSuggestions(schema, queryText, point)
       : [];
-    const resultObject = resultArray.reduce((prev, cur, index) => {
-      prev[index] = cur;
-      return prev;
-    }, {});
+    const resultObject: AutocompleteResultsMap = resultArray.reduce(
+      (prev: AutocompleteResultsMap, cur, index) => {
+        prev[index] = cur;
+        return prev;
+      },
+      {},
+    );
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
@@ -96,8 +115,12 @@ function _getAutocompleteSuggestions(
   }
 }
 
+interface DiagnosticResultsMap {
+  [i: number]: Diagnostic;
+}
+
 function _getDiagnostics(
-  filePath: string,
+  _filePath: string,
   queryText: string,
   schemaPath?: string,
 ): EXIT_CODE {
@@ -106,10 +129,13 @@ function _getDiagnostics(
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getDiagnostics(queryText, schema);
-    const resultObject = resultArray.reduce((prev, cur, index) => {
-      prev[index] = cur;
-      return prev;
-    }, {});
+    const resultObject: DiagnosticResultsMap = resultArray.reduce(
+      (prev: DiagnosticResultsMap, cur, index) => {
+        prev[index] = cur;
+        return prev;
+      },
+      {},
+    );
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
