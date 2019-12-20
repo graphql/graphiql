@@ -8530,9 +8530,9 @@ linkify-it@^2.0.0:
     uc.micro "^1.0.1"
 
 lint-staged@^10.0.0-beta.8:
-  version "10.0.0-beta.12"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.0.0-beta.12.tgz#7fd204e4736a2b6990a4500ce3ca33fb9ab8151a"
-  integrity sha512-UovL5rt7zU7csGICq4ZyO0Uhl9D4lR3Uefr5KJZrv0BTMGITxVHSX34eI9asTE6maM+xciYhFscx0/+r08w8dQ==
+  version "10.0.0-beta.13"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.0.0-beta.13.tgz#49a802b6c5984977e82c4cbdcfe65d1b382efcfb"
+  integrity sha512-zPCqJG4WMsQ4OueBU11Mv82lwXnbUdEiQMcgJG2EA+3H2vps1UkvforLj1JPuVzAXuKLMzLVfaplzqzvbnZuPA==
   dependencies:
     chalk "^3.0.0"
     commander "^4.0.1"
