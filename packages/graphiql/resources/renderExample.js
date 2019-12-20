@@ -79,7 +79,7 @@ function graphQLFetcher(graphQLParams) {
   const isDev = !window.location.hostname.match(
     /(^|\.)netlify\.com$|(^|\.)graphql\.org$/,
   );
-  const api = isDev ? '/graphql' : 'https://deploy-preview-1128--graphiql-test.netlify.com/';
+  const api = isDev ? '/graphql' : 'https://deploy-preview-1128--graphiql-test.netlify.com/graphql';
   return fetch(api, {
     method: 'post',
     credentials: 'include',
