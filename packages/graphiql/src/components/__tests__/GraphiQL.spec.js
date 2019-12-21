@@ -8,21 +8,9 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import { GraphiQL } from '../GraphiQL';
-
-const mockStorage = (function() {
-  let store = {};
-  return {
-    getItem(key) {
-      return store.hasOwnProperty(key) ? store[key] : null;
-    },
-    setItem(key, value) {
-      store[key] = value.toString();
-    },
-    clear() {
-      store = {};
-    },
-  };
-})();
+import { getMockStorage } from './helpers/storage';
+import HistoryQuery from '../HistoryQuery';
+import { mockQuery1, mockVariables1, mockOperationName1 } from './fixtures';
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -49,7 +37,7 @@ const wait = () =>
     .then(() => Promise.resolve());
 
 Object.defineProperty(window, 'localStorage', {
-  value: mockStorage,
+  value: getMockStorage(),
 });
 
 describe('GraphiQL', () => {
@@ -142,6 +130,20 @@ describe('GraphiQL', () => {
       />,
     );
     expect(graphiQL.state().variableEditorOpen).toEqual(false);
+  });
+
+  it('adds a history item when the execute query function button is clicked', () => {
+    const W = mount(<GraphiQL fetcher={noOpFetcher} />);
+    W.setState({
+      query: mockQuery1,
+      variables: mockVariables1,
+      operationName: mockOperationName1,
+    });
+    W.find('button.execute-button')
+      .first()
+      .simulate('click');
+    W.update();
+    expect(W.find(HistoryQuery).length).toBe(1);
   });
 
   describe('children overrides', () => {

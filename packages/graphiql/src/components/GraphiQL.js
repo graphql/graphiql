@@ -39,6 +39,18 @@ import {
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
+const majorVersion = parseInt(React.version.slice(0, 2), 10);
+
+if (majorVersion < 16) {
+  throw Error(
+    [
+      'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
+      'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
+      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
+    ].join('\n'),
+  );
+}
+
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
@@ -171,8 +183,9 @@ export class GraphiQL extends React.Component {
 
     global.g = this;
   }
-
-  componentWillReceiveProps(nextProps) {
+  // todo: these values should be updated in a reducer imo
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
@@ -331,6 +344,9 @@ export class GraphiQL extends React.Component {
       <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
+            ref={node => {
+              this._queryHistory = node;
+            }}
             operationName={this.state.operationName}
             query={this.state.query}
             variables={this.state.variables}
@@ -690,6 +706,8 @@ export class GraphiQL extends React.Component {
         response: null,
         operationName,
       });
+
+      this._queryHistory.updateHistory(editedQuery, variables, operationName);
 
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
