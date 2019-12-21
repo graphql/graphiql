@@ -1,7 +1,6 @@
 // @flow
 import { Position, Range } from 'graphql-language-service-utils';
 import { makeExtractTagsFromSource, type GraphQLSource } from './languageUtils';
-import { findGraphQLTags } from './findGraphQLTags';
 
 export type LanguageConfig = {
   +extensions: $ReadOnlyArray<string>,
@@ -14,11 +13,13 @@ export type LanguageConfig = {
  */
 const jsFileFilter = new RegExp(/graphql`|graphql\.experimental`|gql`/g);
 const jsGraphQLTagsRegexp = new RegExp(
-  /(?<=(graphql|gql|graphql\.experimental)`)[.\s\S]+?(?=`)/g,
+  /(?<=(graphql|gql|graphql\.experimental)`)[\s\S]+?(?=`)/g,
 );
 
-// Unused for now, but potentially something to move to later on
-const _jsExtractor = makeExtractTagsFromSource(jsGraphQLTagsRegexp);
+// This removes interpolation in JS strings, like ` ${someInterpolationHere}`
+const jsRemoveInterpolationRegexp = new RegExp(/([\s]+\${)[\s\S]+?(})/g);
+
+const jsExtractor = makeExtractTagsFromSource(jsGraphQLTagsRegexp);
 
 const reasonFileFilterRegexp = new RegExp(/(\[%(graphql|relay\.))/g);
 const reasonGraphQLTagsRegexp = new RegExp(
@@ -29,7 +30,11 @@ const reasonExtractor = makeExtractTagsFromSource(reasonGraphQLTagsRegexp);
 const jsLanguages: LanguageConfig = {
   extensions: ['js', 'jsx', 'ts', 'tsx'],
   fileFilter: (content: string) => jsFileFilter.test(content),
-  extractSources: findGraphQLTags,
+  extractSources: (content: string) =>
+    jsExtractor(content).map(source => ({
+      ...source,
+      template: source.template.replace(jsRemoveInterpolationRegexp, ''),
+    })),
 };
 
 const graphql: LanguageConfig = {
