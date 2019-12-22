@@ -1,5 +1,5 @@
-import React from 'react'
-import { Global } from '@emotion/core'
+import React from 'react';
+import { Global } from '@emotion/core';
 
 export default {
   fonts: {
@@ -17,26 +17,30 @@ export default {
   },
 };
 
-export const Reset = () => <Global styles={theme => ({
-  '*': {
-    margin: '0',
-    boxSizing: 'border-box'
-  },
-  body: {
-    fontFamily: theme.fonts.body,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.background,
-  },
-  small: {
-    fontSize: '100%',
-  },
-  a: {
-    textDecoration: 'none',
-  },
-  button: {
-    border: 0,
-    padding: 0,
-    fontSize: '100%',
-    backgroundColor: 'transparent',
-  },
-})} />
+export const Reset = () => (
+  <Global
+    styles={theme => ({
+      '*': {
+        margin: '0',
+        boxSizing: 'border-box',
+      },
+      body: {
+        fontFamily: theme.fonts.body,
+        color: theme.colors.text,
+        backgroundColor: theme.colors.background,
+      },
+      small: {
+        fontSize: '100%',
+      },
+      a: {
+        textDecoration: 'none',
+      },
+      button: {
+        border: 0,
+        padding: 0,
+        fontSize: '100%',
+        backgroundColor: 'transparent',
+      },
+    })}
+  />
+);

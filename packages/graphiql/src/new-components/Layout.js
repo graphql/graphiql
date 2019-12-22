@@ -3,19 +3,24 @@ import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
 
-const Widget = ({ children }) => <div sx={{ padding: 2 }}>{children}</div>
+const Widget = ({ children }) => <div sx={{ padding: 2 }}>{children}</div>;
 
-const Container = ({ children, mini = false }) => <div sx={
-  {
-    backgroundColor: !mini && 'cardBackground',
-    boxShadow: !mini && (theme => `0 0 0 .1px ${theme.colors.border}, 0 1px 4px 0 ${theme.colors.border}`)
-  }}>
-  {children}
-</div>
+const Container = ({ children, mini = false }) => (
+  <div
+    sx={{
+      backgroundColor: !mini && 'cardBackground',
+      boxShadow:
+        !mini &&
+        (theme =>
+          `0 0 0 .1px ${theme.colors.border}, 0 1px 4px 0 ${theme.colors.border}`),
+    }}>
+    {children}
+  </div>
+);
 
 Container.propTypes = {
-  mini: PropTypes.bool
-}
+  mini: PropTypes.bool,
+};
 
 const Layout = ({ nav = 'nav' }) => {
   return (
@@ -30,9 +35,15 @@ const Layout = ({ nav = 'nav' }) => {
         minHeight: '100vh',
       }}>
       <Container mini>{nav}</Container>
-      <Container><Widget>{'container'}</Widget></Container>
-      <Container><Widget>{'container'}</Widget></Container>
-      <Container><Widget>{'container'}</Widget></Container>
+      <Container>
+        <Widget>{'container'}</Widget>
+      </Container>
+      <Container>
+        <Widget>{'container'}</Widget>
+      </Container>
+      <Container>
+        <Widget>{'container'}</Widget>
+      </Container>
     </main>
   );
 };
