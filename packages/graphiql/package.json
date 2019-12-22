@@ -38,15 +38,19 @@
     "cypress-open": "yarn e2e-server 'cypress open'",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "test": "cross-env ENZYME=true node ../../resources/runTests"
+    "test": "cross-env ENZYME=true node ../../resources/runTests",
+    "storybook": "start-storybook"
   },
   "dependencies": {
+    "@emotion/core": "^10.0.22",
+    "@mdx-js/react": "^1.5.2",
     "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.11.6",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
     "markdown-it": "^10.0.0",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.3",
+    "theme-ui": "^0.2.52"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0",
@@ -55,6 +59,7 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
+    "@storybook/react": "^5.2.8",
     "cross-env": "^6.0.3",
     "css-loader": "3.4.0",
     "cssnano": "^4.1.10",
