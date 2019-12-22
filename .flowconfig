@@ -1,6 +1,7 @@
 [ignore]
-.*/*/.*
+*.*
 !*.flow.js
+!packages/codemirror-graphql/.*
 
 [include]
 

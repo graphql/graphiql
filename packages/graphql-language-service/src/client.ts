@@ -26,14 +26,6 @@ const GRAPHQL_FAILURE_CODE = 1;
 
 type EXIT_CODE = 0 | 1;
 
-// export type GraphQLLanguageServiceClientArgV = {
-//   [key: string]: any;
-//   row: string;
-//   column: string;
-//   schemaPath?: string;
-//   file?: string;
-//   text?: string;
-// };
 /**
  * Performs GraphQL language service features with provided arguments from
  * the command-line interface.

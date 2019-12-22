@@ -42,11 +42,20 @@ import {
 import { Logger } from './Logger';
 
 type Options = {
+  // port for the LSP server to run on
   port?: number;
-  method?: string;
+  // socket, streams, or node (ipc). if socket, port is required
+  method?: 'socket' | 'stream' | 'node';
+  // the directory where graphql-config is found
   configDir?: string;
 };
 
+/**
+ * startServer - initialize LSP server with options
+ *
+ * @param options {Options} server initialization methods
+ * @returns {Promise<void>}
+ */
 export default (async function startServer(options: Options): Promise<void> {
   const logger = new Logger();
 
@@ -63,7 +72,6 @@ export default (async function startServer(options: Options): Promise<void> {
             '--port is required to establish socket connection.',
           );
           process.exit(1);
-          return;
         }
 
         const port = options.port;

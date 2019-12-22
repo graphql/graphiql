@@ -58,7 +58,7 @@ import { GraphQLWatchman } from './GraphQLWatchman';
 
 type CachedDocumentType = {
   version: number;
-  contents: Array<CachedContent>;
+  contents: CachedContent[];
 };
 
 export class MessageProcessor {
@@ -612,7 +612,7 @@ export class MessageProcessor {
 
   async _updateFragmentDefinition(
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
@@ -625,7 +625,7 @@ export class MessageProcessor {
 
   async _updateObjectTypeDefinition(
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
 
@@ -650,7 +650,7 @@ export class MessageProcessor {
   _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ): void {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
@@ -682,10 +682,7 @@ export class MessageProcessor {
 // Check the uri to determine the file type (JavaScript/GraphQL).
 // If .js file, either return the parsed query/range or null if GraphQL queries
 // are not found.
-export function getQueryAndRange(
-  text: string,
-  uri: string,
-): Array<CachedContent> {
+export function getQueryAndRange(text: string, uri: string): CachedContent[] {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
   if (extname(uri) === '.js') {

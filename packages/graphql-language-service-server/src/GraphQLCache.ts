@@ -56,9 +56,7 @@ const {
   DIRECTIVE_DEFINITION,
 } = Kind;
 
-export async function getGraphQLCache(
-  configDir: Uri,
-): Promise<GraphQLCacheInterface> {
+export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
   const graphQLConfig = await getGraphQLConfig(configDir);
   return new GraphQLCache(configDir, graphQLConfig);
 }
@@ -679,11 +677,14 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schemaCacheKey = endpointKey;
 
       // Maybe use cache
+      console.log('hasSchema', this._schemaMap.has(schemaCacheKey));
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);
+        console.log(schema);
+        // @ts-ignore
         return schema && queryHasExtensions
           ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-          : schema || null;
+          : schema;
       }
 
       // Read schema from network
@@ -770,9 +771,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (!endpointsExtension) {
       return null;
     }
+    // not public but needed
     // @ts-ignore
     const defaultRawEndpoint = endpointsExtension.getRawEndpoint();
     const rawEndpointsMap = endpointsExtension.getRawEndpointsMap();
+
     const endpointName = Object.keys(rawEndpointsMap).find(
       name => rawEndpointsMap[name] === defaultRawEndpoint,
     );

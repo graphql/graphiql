@@ -22,6 +22,9 @@
     },
     {
       "path": "../packages/graphql-language-service-server"
+    },
+    {
+      "path": "../packages/graphql-language-service"
     }
   ]
 }

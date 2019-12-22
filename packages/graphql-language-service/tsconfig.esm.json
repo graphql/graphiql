@@ -13,6 +13,9 @@
     },
     {
       "path": "../graphql-language-service-utils"
+    },
+     {
+      "path": "../graphql-language-service-types"
     }
   ],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]

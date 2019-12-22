@@ -50,7 +50,7 @@ export interface CharacterStream {
     pattern: TokenPattern,
     consume?: boolean | null | undefined,
     caseFold?: boolean | null | undefined,
-  ) => Array<string> | boolean;
+  ) => string[] | boolean;
   backUp: (num: number) => void;
   column: () => number;
   indentation: () => number;
@@ -72,8 +72,8 @@ export type GraphQLProjectConfiguration = {
 
   // For multiple applications with overlapping files,
   // these configuration options may be helpful
-  includes?: Array<string>;
-  excludes?: Array<string>;
+  includes?: string[];
+  excludes?: string[];
 
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
@@ -90,12 +90,12 @@ export interface GraphQLCache {
   getObjectTypeDependencies: (
     query: string,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<Array<ObjectTypeInfo>>;
+  ) => Promise<ObjectTypeInfo[]>;
 
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<Array<ObjectTypeInfo>>;
+  ) => Promise<ObjectTypeInfo[]>;
 
   getObjectTypeDefinitions: (
     graphQLConfig: GraphQLProjectConfig,
@@ -104,7 +104,7 @@ export interface GraphQLCache {
   updateObjectTypeDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ) => Promise<void>;
 
   updateObjectTypeDefinitionCache: (
@@ -116,12 +116,12 @@ export interface GraphQLCache {
   getFragmentDependencies: (
     query: string,
     fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
-  ) => Promise<Array<FragmentInfo>>;
+  ) => Promise<FragmentInfo[]>;
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, FragmentInfo>,
-  ) => Promise<Array<FragmentInfo>>;
+  ) => Promise<FragmentInfo[]>;
 
   getFragmentDefinitions: (
     graphQLConfig: GraphQLProjectConfig,
@@ -130,7 +130,7 @@ export interface GraphQLCache {
   updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
+    contents: CachedContent[],
   ) => Promise<void>;
 
   updateFragmentDefinitionCache: (
@@ -214,7 +214,7 @@ export type RuleKind =
 
 export type State = {
   level: number;
-  levels?: Array<number>;
+  levels?: number[];
   prevState: State | null | undefined;
   rule: ParseRule | null | undefined;
   kind: RuleKind | null | undefined;
@@ -238,8 +238,8 @@ export type GraphQLFileMetadata = {
 export type GraphQLFileInfo = {
   filePath: Uri;
   content: string;
-  asts: Array<DocumentNode>;
-  queries: Array<CachedContent>;
+  asts: DocumentNode[];
+  queries: CachedContent[];
   size: number;
   mtime: number;
 };
@@ -260,7 +260,7 @@ export type AllTypeInfo = {
   fieldDef: GraphQLField<any, any> | null | undefined;
   enumValue: GraphQLEnumValue | null | undefined;
   argDef: GraphQLArgument | null | undefined;
-  argDefs: Array<GraphQLArgument> | null | undefined;
+  argDefs: GraphQLArgument[] | null | undefined;
   objectFieldDefs: GraphQLInputFieldMap | null | undefined;
 };
 
@@ -301,7 +301,10 @@ export type CustomValidationRule = (
 
 export type Diagnostic = DiagnosticType;
 
-export type CompletionItem = CompletionItemType;
+export type CompletionItem = CompletionItemType & {
+  isDeprecated?: boolean;
+  deprecationReason?: string;
+};
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
@@ -317,8 +320,8 @@ export type Definition = {
 };
 
 export type DefinitionQueryResult = {
-  queryRange: Array<Range>;
-  definitions: Array<Definition>;
+  queryRange: Range[];
+  definitions: Definition[];
 };
 
 // Outline view
@@ -337,7 +340,7 @@ export type TextToken = {
   value: string | undefined;
 };
 
-export type TokenizedText = Array<TextToken>;
+export type TokenizedText = TextToken[];
 export type OutlineTree = {
   // Must be one or the other. If both are present, tokenizedText is preferred.
   plainText?: string;
@@ -346,11 +349,11 @@ export type OutlineTree = {
 
   startPosition: Position;
   endPosition?: Position;
-  children: Array<OutlineTree>;
+  children: OutlineTree[];
 };
 
 export type Outline = {
-  outlineTrees: Array<OutlineTree>;
+  outlineTrees: OutlineTree[];
 };
 
 export interface DidChangeWatchedFilesParams {
