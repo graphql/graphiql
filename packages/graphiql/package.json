@@ -33,6 +33,7 @@
     "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack -p --bail",
     "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
     "build-flow": "node ../../resources/buildFlow.js",
+    "build-demo": "build-storybook -o ./storybook",
     "check": "flow check",
     "dev": "cross-env NODE_ENV=development node test/dev-server.js",
     "cypress-open": "yarn e2e-server 'cypress open'",
