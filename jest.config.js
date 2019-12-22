@@ -29,6 +29,8 @@ module.exports = {
   testPathIgnorePatterns: ['node_modules', 'dist', 'codemirror-graphql'],
   collectCoverageFrom: [
     '**/src/**/*.{js,jsx,ts,tsx}',
+    '!**/src/**/*.stories.js*',
+    '!**/new-components/theme.js*',
     '!**/{dist,esm}/**',
     '!**/node_modules/**',
     '!**/__tests__/**',
