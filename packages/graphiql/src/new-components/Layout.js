@@ -4,8 +4,9 @@ import { jsx } from 'theme-ui';
 import PropTypes from 'prop-types';
 import { Card } from './Layout/LayoutBlocks';
 import LayoutSlot from './Layout/LayoutSlot';
+import { PANEL_SIZES } from './theme/constants';
 
-const NAV_WIDTH = '6em';
+export const NAV_WIDTH = '6em';
 
 /*
 Layout is divided into 3 'slot' areas: 
@@ -14,6 +15,9 @@ Layout is divided into 3 'slot' areas:
 - the nav panels, which are a potentially infinite stack, 
   they are wrapped in `LayoutNavPanel` to specify what size 
   they want to render at
+
+This should allow third parties to provide their own Layout+LayoutNavPanel
+as long as itit exposes the same API
 */
 const sizeInCSSUnits = (theme, size) => {
   switch (size) {
@@ -81,7 +85,11 @@ const Layout = ({
             alignItems: 'stretch',
             gap: 2,
           }}>
-          {navPanels}
+          {navPanels.map(({ component, key, size }) => (
+            <LayoutSlot name={key} key={key} size={size}>
+              {component}
+            </LayoutSlot>
+          ))}
         </div>
       )}
       {explorer && (
@@ -109,12 +117,15 @@ Layout.propTypes = {
     input: PropTypes.node,
     response: PropTypes.node,
     console: PropTypes.node,
-  }),
-  nav: PropTypes.node,
-  navPanels: PropTypes.oneOfType([
-    PropTypes.arrayOf(LayoutNavPanel),
-    PropTypes.objectOf(LayoutNavPanel),
-  ]),
+  }).isRequired,
+  nav: PropTypes.node.isRequired,
+  navPanels: PropTypes.arrayOf(
+    PropTypes.shape({
+      component: PropTypes.node,
+      key: PropTypes.string,
+      size: PropTypes.oneOf(PANEL_SIZES),
+    }),
+  ).isRequired,
 };
 
 export { LayoutNavPanel };
