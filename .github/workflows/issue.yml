@@ -1,5 +1,7 @@
 name: "Issues"
-on: [issues]
+on:
+  issues:
+    types: [closed]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,6 +11,6 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WH_GRAPHIQL_GENERAL }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'Issue [{{ EVENT_PAYLOAD.issue.title }}]({{ EVENT_PAYLOAD.issue.html_url }}) [{{ EVENT_PAYLOAD.action }}] by [@{{ EVENT_PAYLOAD.issue.user.login }}]({{ EVENT_PAYLOAD.issue.user.html_url }})'
+          args: 'Issue [{{ EVENT_PAYLOAD.issue.title }}]({{ EVENT_PAYLOAD.issue.html_url }}) {{ EVENT_PAYLOAD.action }} by [@{{ EVENT_PAYLOAD.issue.user.login }}]({{ EVENT_PAYLOAD.issue.user.html_url }})'
 
 
