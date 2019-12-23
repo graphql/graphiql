@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+<main
+  className="css-288br5-Layout"
+>
+  <div
+    className="css-445rez-Container"
+  >
+    nav
+  </div>
+  <div
+    className="css-99y0y9-Container"
+  >
+    <div
+      className="css-dj446p-Widget"
+    >
+      container
+    </div>
+  </div>
+  <div
+    className="css-99y0y9-Container"
+  >
+    <div
+      className="css-dj446p-Widget"
+    >
+      container
+    </div>
+  </div>
+  <div
+    className="css-99y0y9-Container"
+  >
+    <div
+      className="css-dj446p-Widget"
+    >
+      container
+    </div>
+  </div>
+</main>
+`;
