@@ -3,37 +3,28 @@ import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
 
-const CardRowText = ({ children }) => (
-  <p
-    sx={{
-      padding: 2,
-    }}>
-    {children}
-  </p>
-);
-
-const CardRow = ({ children, flex = false }) => (
+const ListRow = ({ children, flex = false, padding = true }) => (
   <div
     sx={{
       overflow: 'auto',
       flex: flex && '1 1 auto',
+      padding: padding && 2,
     }}>
     {children}
   </div>
 );
-CardRow.propTypes = {
+ListRow.propTypes = {
   flex: PropTypes.bool,
+  padding: PropTypes.bool,
 };
 
-const Card = ({ children }) => (
+const List = ({ children }) => (
   <div
     sx={{
       backgroundColor: 'cardBackground',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      boxShadow: theme =>
-        `0 0 0 .1px ${theme.colors.border}, 0 1px 4px 0 ${theme.colors.border}`,
       '> *:not(:first-child)': {
         borderTop: theme => `1px solid ${theme.colors.border}`,
       },
@@ -45,8 +36,9 @@ const Card = ({ children }) => (
   </div>
 );
 
-Card.propTypes = {
+List.propTypes = {
   mini: PropTypes.bool,
 };
 
-export { Card, CardRow, CardRowText };
+export default List;
+export { ListRow };

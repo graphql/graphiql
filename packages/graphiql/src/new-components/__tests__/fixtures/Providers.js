@@ -1,5 +1,5 @@
 import React from 'react';
-import ThemeProvider from '../../theme/ThemeProvider';
+import ThemeProvider from '../../themes/provider';
 
 /*
 export a wrapper component that adds all needed providers

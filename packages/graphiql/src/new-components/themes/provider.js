@@ -12,6 +12,7 @@ const Reset = () => (
       },
       body: {
         fontFamily: themeStyles.fonts.body,
+        fontSize: themeStyles.fontSizes[1],
         color: themeStyles.colors.text,
         backgroundColor: themeStyles.colors.background,
       },

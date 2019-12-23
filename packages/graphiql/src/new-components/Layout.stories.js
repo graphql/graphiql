@@ -1,56 +1,66 @@
 import React from 'react';
 import Nav from './Nav';
-import { Card, CardRow, CardRowText } from './Card';
+import List, { ListRow } from './List';
 import { useThemeLayout } from './themes/provider';
+
+const explorer = {
+  input: (
+    <List>
+      <ListRow>{'Input'}</ListRow>
+    </List>
+  ),
+  response: (
+    <List>
+      <ListRow>{'Response'}</ListRow>
+    </List>
+  ),
+  console: (
+    <List>
+      <ListRow>{'Console/Inspector'}</ListRow>
+    </List>
+  ),
+};
+const nav = <Nav />;
+const slots = { nav, explorer };
 
 export default { title: 'Layout' };
 
-export const withDefaultSlots = () => {
+export const withSlots = () => {
   const Layout = useThemeLayout();
-  return <Layout />;
-};
-
-export const withCustomNav = () => {
-  const Layout = useThemeLayout();
-  return <Layout nav={<Nav />} />;
+  return <Layout {...slots} />;
 };
 
 export const withManySidebars = () => {
   const Layout = useThemeLayout();
   return (
     <Layout
+      {...slots}
       navPanels={[
         {
           key: 1,
           size: 'sidebar',
           component: (
-            <Card>
-              <CardRow>
-                <CardRowText>{'Sidebar'}</CardRowText>
-              </CardRow>
-            </Card>
+            <List>
+              <ListRow>{'Sidebar'}</ListRow>
+            </List>
           ),
         },
         {
           key: 2,
           size: 'aside',
           component: (
-            <Card>
-              <CardRow>
-                <CardRowText>{'aside'}</CardRowText>
-              </CardRow>
-            </Card>
+            <List>
+              <ListRow>{'aside'}</ListRow>
+            </List>
           ),
         },
         {
           key: 3,
           size: 'aside',
           component: (
-            <Card>
-              <CardRow>
-                <CardRowText>{'Another aside'}</CardRowText>
-              </CardRow>
-            </Card>
+            <List>
+              <ListRow>{'Another aside'}</ListRow>
+            </List>
           ),
         },
       ]}
@@ -62,19 +72,41 @@ export const withFullScreenPanel = () => {
   const Layout = useThemeLayout();
   return (
     <Layout
+      {...slots}
       navPanels={[
         {
           key: 1,
           size: 'full-screen',
           component: (
-            <Card>
-              <CardRow>
-                <CardRowText>{'Woooo'}</CardRowText>
-              </CardRow>
-            </Card>
+            <List>
+              <ListRow>{'Woooo'}</ListRow>
+            </List>
           ),
         },
       ]}
+    />
+  );
+};
+
+export const withStringsOnly = () => {
+  const Layout = useThemeLayout();
+  return (
+    <Layout
+      {...{
+        explorer: {
+          input: 'input',
+          response: 'response',
+          console: 'console',
+        },
+        nav: 'nav',
+        navPanels: [
+          {
+            component: 'sidebar',
+            key: 'sidebar',
+            size: 'sidebar',
+          },
+        ],
+      }}
     />
   );
 };

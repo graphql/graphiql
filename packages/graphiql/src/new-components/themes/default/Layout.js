@@ -2,100 +2,97 @@
 import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
-import LayoutSlot from './LayoutSlot';
-import { PANEL_SIZES } from './../constants';
+import { PANEL_SIZES, LAYOUT_PROP_TYPES } from './../constants';
 
-export const NAV_WIDTH = '6em';
+const NAV_WIDTH = '6em';
+const CONTENT_MIN_WIDTH = '60em';
 
-/*
-Layout is divided into 3 'slot' areas: 
-- the explorer itself, which has 3 panels (input, response, console)
-- the nav
-- the nav panels, which are a potentially infinite stack, 
-  they are wrapped in `LayoutNavPanel` to specify what size 
-  they want to render at
-
-This should allow third parties to provide their own Layout+LayoutNavPanel
-as long as itit exposes the same API
-*/
-
-const defaults = {
-  explorer: {
-    input: 'input',
-    response: 'response',
-    console: 'console',
-  },
-  nav: 'nav',
-  navPanels: [],
+const sizeInCSSUnits = (theme, size) => {
+  switch (size) {
+    case 'sidebar':
+      return '10em';
+    case 'aside':
+      return '20em';
+    default:
+      return `calc(100vw - ${theme.space[2] * 3}px - ${NAV_WIDTH})`;
+  }
 };
 
-const Layout = ({
-  nav = defaults.nav,
-  navPanels = defaults.navPanels,
-  explorer = defaults.explorer,
-}) => {
+const Card = ({ children, size, transparent = false, innerSx }) => (
+  <div
+    sx={{
+      display: 'grid',
+      backgroundColor: !transparent && 'cardBackground',
+      boxShadow: !transparent && 'card',
+      minWidth: size && (theme => sizeInCSSUnits(theme, size)),
+      gridTemplate: '100% / 100%',
+      ...innerSx,
+    }}>
+    {children}
+  </div>
+);
+
+Card.propTypes = {
+  transparent: PropTypes.bool,
+  size: PropTypes.oneOf(PANEL_SIZES),
+  innerSx: PropTypes.object,
+};
+
+const gridBase = {
+  display: 'grid',
+  gridAutoFlow: 'column',
+  gridAutoColumns: '1fr',
+  gridAutoRows: '100%',
+  gap: 2,
+};
+
+const Layout = ({ nav, navPanels, explorer }) => {
+  const hasNavPanels = navPanels && navPanels.length > 0;
   return (
     <main
       sx={{
-        display: 'grid',
-        gap: 2,
+        ...gridBase,
         padding: 2,
-        gridAutoFlow: 'column',
-        gridTemplateColumns: `${NAV_WIDTH} min-content minmax(60em, 1fr)`,
-        gridAutoColumns: '1fr',
-        gridAutoRows: '100%',
+        gridTemplate: hasNavPanels
+          ? `'nav panels explorer' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
+          : `'nav explorer' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,
         height: '100vh',
       }}>
-      {nav && <LayoutSlot name="nav">{nav}</LayoutSlot>}
-      {navPanels && (
+      {nav && (
+        <Card innerSx={{ gridArea: 'nav' }} transparent>
+          {nav}
+        </Card>
+      )}
+      {hasNavPanels && (
         <div
           sx={{
-            display: 'grid',
-            gridAutoFlow: 'column',
-            alignItems: 'stretch',
-            gap: 2,
+            gridArea: 'panels',
+            ...gridBase,
           }}>
           {navPanels.map(({ component, key, size }) => (
-            <LayoutSlot name={key} key={key} size={size}>
+            <Card key={key} size={size}>
               {component}
-            </LayoutSlot>
+            </Card>
           ))}
         </div>
       )}
       {explorer && (
         <div
           sx={{
-            display: 'grid',
-            alignItems: 'stretch',
-            gap: 2,
-            gridTemplateAreas: `'a b' 'c c'`,
-            'div[data-slot="explorer-console"]': {
-              gridArea: 'c',
-            },
+            ...gridBase,
+            gridArea: 'explorer',
+            gridAutoRows: '1fr',
+            gridTemplateAreas: `'input response' 'console console'`,
           }}>
-          <LayoutSlot name="explorer-input">{explorer.input}</LayoutSlot>
-          <LayoutSlot name="explorer-response">{explorer.response}</LayoutSlot>
-          <LayoutSlot name="explorer-console">{explorer.console}</LayoutSlot>
+          <Card>{explorer.input}</Card>
+          <Card>{explorer.response}</Card>
+          <Card innerSx={{ gridArea: 'console' }}>{explorer.console}</Card>
         </div>
       )}
     </main>
   );
 };
 
-Layout.propTypes = {
-  explorer: PropTypes.shape({
-    input: PropTypes.node,
-    response: PropTypes.node,
-    console: PropTypes.node,
-  }).isRequired,
-  nav: PropTypes.node.isRequired,
-  navPanels: PropTypes.arrayOf(
-    PropTypes.shape({
-      component: PropTypes.node,
-      key: PropTypes.string,
-      size: PropTypes.oneOf(PANEL_SIZES),
-    }),
-  ).isRequired,
-};
+Layout.propTypes = LAYOUT_PROP_TYPES;
 
 export default Layout;
