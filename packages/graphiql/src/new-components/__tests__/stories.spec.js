@@ -1,3 +1,6 @@
 import initStoryshots from '@storybook/addon-storyshots';
+import path from 'path';
 
-initStoryshots({});
+initStoryshots({
+  configPath: path.resolve(__dirname, '../../../.storybook'),
+});
