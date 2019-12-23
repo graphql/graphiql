@@ -30,8 +30,8 @@ module.exports = {
   collectCoverageFrom: [
     '**/src/**/*.{js,jsx,ts,tsx}',
     '!**/src/**/*.stories.js*',
-    '!**/new-components/theme.js*',
-    '!**/new-components/**', //TODO: add proper coverage to new components
+    '!**/new-components/theme/default.js*',
+    '!**/new-components/**', // TODO: add proper coverage to new components
     '!**/{dist,esm}/**',
     '!**/node_modules/**',
     '!**/__tests__/**',
