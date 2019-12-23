@@ -9,6 +9,7 @@ node_modules/
 coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
+packages/graphiql/storybook
 dist
 esm
 cypress/screenshots
