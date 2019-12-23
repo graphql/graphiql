@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import PropTypes from 'prop-types';
-import { PANEL_SIZES } from './../theme/constants';
-import { NAV_WIDTH } from './../Layout';
+import { PANEL_SIZES } from './../constants';
+import { NAV_WIDTH } from './Layout';
 
 const sizeInCSSUnits = (theme, size) => {
   switch (size) {

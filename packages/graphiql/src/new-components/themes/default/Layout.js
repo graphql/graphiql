@@ -2,9 +2,8 @@
 import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
-import { Card } from './Layout/LayoutBlocks';
-import LayoutSlot from './Layout/LayoutSlot';
-import { PANEL_SIZES } from './theme/constants';
+import LayoutSlot from './LayoutSlot';
+import { PANEL_SIZES } from './../constants';
 
 export const NAV_WIDTH = '6em';
 
@@ -19,44 +18,15 @@ Layout is divided into 3 'slot' areas:
 This should allow third parties to provide their own Layout+LayoutNavPanel
 as long as itit exposes the same API
 */
-const sizeInCSSUnits = (theme, size) => {
-  switch (size) {
-    case 'sidebar':
-      return '10em';
-    case 'aside':
-      return '20em';
-    default:
-      return `calc(100vw - ${theme.space[2] * 3}px - ${NAV_WIDTH})`;
-  }
-};
-const LayoutNavPanel = ({ children, size = 'sidebar' }) => {
-  return (
-    <div
-      sx={{
-        minWidth: theme => sizeInCSSUnits(theme, size),
-        display: 'grid',
-        gridTemplate: '100% / 100%',
-      }}>
-      {children}
-    </div>
-  );
-};
-LayoutNavPanel.propTypes = {
-  size: PropTypes.oneOf(['sidebar', 'aside', 'full-screen']),
-};
 
 const defaults = {
   explorer: {
-    input: <Card>{'input'}</Card>,
-    response: <Card>{'response'}</Card>,
-    console: <Card>{'console'}</Card>,
+    input: 'input',
+    response: 'response',
+    console: 'console',
   },
   nav: 'nav',
-  navPanels: [
-    <LayoutNavPanel key="main sidebar">
-      <Card>{'sidebar'}</Card>
-    </LayoutNavPanel>,
-  ],
+  navPanels: [],
 };
 
 const Layout = ({
@@ -128,5 +98,4 @@ Layout.propTypes = {
   ).isRequired,
 };
 
-export { LayoutNavPanel };
 export default Layout;

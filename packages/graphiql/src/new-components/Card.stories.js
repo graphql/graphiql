@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { Card, CardRow, CardRowText } from './LayoutBlocks';
+import { Card, CardRow, CardRowText } from './Card';
 
-export default { title: 'Layout Cards' };
+export default { title: 'Cards' };
 
 export const withFlexChild = () => (
   <div
