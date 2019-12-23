@@ -9,7 +9,7 @@
     "start": "webpack serve"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^5.0.0-alpha.7",
     "express-graphql": "^0.9.0",
     "graphiql": "file:../../packages/graphiql",
     "graphql": "14.5.8",
