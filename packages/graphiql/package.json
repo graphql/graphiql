@@ -45,7 +45,6 @@
   "dependencies": {
     "@emotion/core": "^10.0.22",
     "@mdx-js/react": "^1.5.2",
-    "@storybook/addon-storyshots": "^5.2.8",
     "codemirror": "^5.47.0",
     "codemirror-graphql": "^0.11.6",
     "copy-to-clipboard": "^3.2.0",
@@ -61,6 +60,7 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
+    "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^6.0.3",
