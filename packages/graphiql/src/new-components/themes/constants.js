@@ -22,8 +22,8 @@ export const LAYOUT_PROP_TYPES = {
   navPanels: PropTypes.arrayOf(
     PropTypes.shape({
       component: PropTypes.node,
-      key: PropTypes.string,
+      key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       size: PropTypes.oneOf(PANEL_SIZES),
     }),
-  ).isRequired,
+  ),
 };

@@ -25,7 +25,7 @@ const List = ({ children }) => (
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      '> *:not(:first-child)': {
+      '> *:not(:first-of-type)': {
         borderTop: theme => `1px solid ${theme.colors.border}`,
       },
       '> *': {
