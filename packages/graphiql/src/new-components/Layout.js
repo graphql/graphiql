@@ -2,14 +2,44 @@
 import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
-import { Card, CardRow } from './Layout/LayoutBlocks';
+import { Card } from './Layout/LayoutBlocks';
+import LayoutSlot from './Layout/LayoutSlot';
+
+const NAV_WIDTH = '6em';
 
 /*
 Layout is divided into 3 'slot' areas: 
 - the explorer itself, which has 3 panels (input, response, console)
 - the nav
-- the nav panels, which are a potentially infinite stack
+- the nav panels, which are a potentially infinite stack, 
+  they are wrapped in `LayoutNavPanel` to specify what size 
+  they want to render at
 */
+const sizeInCSSUnits = (theme, size) => {
+  switch (size) {
+    case 'sidebar':
+      return '10em';
+    case 'aside':
+      return '20em';
+    default:
+      return `calc(100vw - ${theme.space[2] * 3}px - ${NAV_WIDTH})`;
+  }
+};
+const LayoutNavPanel = ({ children, size = 'sidebar' }) => {
+  return (
+    <div
+      sx={{
+        minWidth: theme => sizeInCSSUnits(theme, size),
+        display: 'grid',
+        gridTemplate: '100% / 100%',
+      }}>
+      {children}
+    </div>
+  );
+};
+LayoutNavPanel.propTypes = {
+  size: PropTypes.oneOf(['sidebar', 'aside', 'full-screen']),
+};
 
 const defaults = {
   explorer: {
@@ -18,24 +48,17 @@ const defaults = {
     console: <Card>{'console'}</Card>,
   },
   nav: 'nav',
-  navPanels: [<Card key="main sidebar">{'sidebar'}</Card>],
+  navPanels: [
+    <LayoutNavPanel key="main sidebar">
+      <Card>{'sidebar'}</Card>
+    </LayoutNavPanel>,
+  ],
 };
-
-const Slot = ({ children, name }) => (
-  <div
-    sx={{
-      display: 'grid',
-    }}
-    data-slot={name}>
-    {children}
-  </div>
-);
-Slot.propTypes = { name: PropTypes.string };
 
 const Layout = ({
   nav = defaults.nav,
-  explorer = defaults.explorer,
   navPanels = defaults.navPanels,
+  explorer = defaults.explorer,
 }) => {
   return (
     <main
@@ -44,27 +67,37 @@ const Layout = ({
         gap: 2,
         padding: 2,
         gridAutoFlow: 'column',
-        gridTemplateColumns: '6em minmax(10em, 1fr)',
+        gridTemplateColumns: `${NAV_WIDTH} min-content minmax(60em, 1fr)`,
         gridAutoColumns: '1fr',
-        minHeight: '100vh',
+        gridAutoRows: '100%',
+        height: '100vh',
       }}>
-      {nav && <Slot name="nav">{nav}</Slot>}
-      {navPanels && <Slot name="nav-panels">{navPanels}</Slot>}
+      {nav && <LayoutSlot name="nav">{nav}</LayoutSlot>}
+      {navPanels && (
+        <div
+          sx={{
+            display: 'grid',
+            gridAutoFlow: 'column',
+            alignItems: 'stretch',
+            gap: 2,
+          }}>
+          {navPanels}
+        </div>
+      )}
       {explorer && (
         <div
           sx={{
             display: 'grid',
             alignItems: 'stretch',
             gap: 2,
-            minWidth: '60em',
             gridTemplateAreas: `'a b' 'c c'`,
             'div[data-slot="explorer-console"]': {
               gridArea: 'c',
             },
           }}>
-          <Slot name="explorer-input">{explorer.input}</Slot>
-          <Slot name="explorer-response">{explorer.response}</Slot>
-          <Slot name="explorer-console">{explorer.console}</Slot>
+          <LayoutSlot name="explorer-input">{explorer.input}</LayoutSlot>
+          <LayoutSlot name="explorer-response">{explorer.response}</LayoutSlot>
+          <LayoutSlot name="explorer-console">{explorer.console}</LayoutSlot>
         </div>
       )}
     </main>
@@ -78,6 +111,11 @@ Layout.propTypes = {
     console: PropTypes.node,
   }),
   nav: PropTypes.node,
-  navPanels: PropTypes.arrayOf(PropTypes.node),
+  navPanels: PropTypes.oneOfType([
+    PropTypes.arrayOf(LayoutNavPanel),
+    PropTypes.objectOf(LayoutNavPanel),
+  ]),
 };
+
+export { LayoutNavPanel };
 export default Layout;

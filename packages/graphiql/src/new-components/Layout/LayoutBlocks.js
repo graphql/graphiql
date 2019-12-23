@@ -1,17 +1,20 @@
-/*
-CARD: an elevated surface that makes up the layout panels, made up of rows
-ROW: 
-*/
-
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 
 import PropTypes from 'prop-types';
 
+const CardRowText = ({ children }) => (
+  <p
+    sx={{
+      padding: 2,
+    }}>
+    {children}
+  </p>
+);
+
 const CardRow = ({ children, flex = false }) => (
   <div
     sx={{
-      padding: 2,
       overflow: 'auto',
       flex: flex && '1 1 auto',
     }}>
@@ -46,4 +49,4 @@ Card.propTypes = {
   mini: PropTypes.bool,
 };
 
-export { Card, CardRow };
+export { Card, CardRow, CardRowText };
