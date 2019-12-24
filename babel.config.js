@@ -22,9 +22,13 @@ module.exports = {
     require.resolve('@babel/preset-flow'),
     require.resolve('@babel/preset-react'),
   ],
+  env: {
+    test: {
+      plugins: [require.resolve('babel-plugin-macros')],
+    },
+  },
   plugins: [
     require.resolve('@babel/plugin-proposal-class-properties'),
     require.resolve('@babel/plugin-syntax-dynamic-import'),
-    require.resolve('babel-plugin-macros'),
   ],
 };
