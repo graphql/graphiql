@@ -10,7 +10,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { GraphiQL } from '../GraphiQL';
 import { getMockStorage } from './helpers/storage';
-import { MockCodeMirror, codeMirrorModules } from './helpers/codeMirror';
+import { codeMirrorModules } from './helpers/codeMirror';
 import {
   mockQuery1,
   mockVariables1,
@@ -20,7 +20,6 @@ import {
   mockVariables2,
 } from './fixtures';
 
-jest.mock('codemirror', () => MockCodeMirror);
 codeMirrorModules.forEach(m => jest.mock(m, () => {}));
 
 // The smallest possible introspection result that builds a schema.
