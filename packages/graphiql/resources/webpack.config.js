@@ -34,6 +34,7 @@ const resultConfig = {
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'graphiql.com'],
+    before: require('../test/beforeDevServer'),
   },
   node: {
     fs: 'empty',
