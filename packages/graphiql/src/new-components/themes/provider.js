@@ -1,5 +1,5 @@
 import { ThemeProvider } from 'theme-ui';
-import theme from './default';
+import { theme, Layout } from './default';
 import React from 'react';
 import { Global } from '@emotion/core';
 
@@ -12,6 +12,7 @@ const Reset = () => (
       },
       body: {
         fontFamily: themeStyles.fonts.body,
+        fontSize: themeStyles.fontSizes[1],
         color: themeStyles.colors.text,
         backgroundColor: themeStyles.colors.background,
       },
@@ -31,6 +32,8 @@ const Reset = () => (
   />
 );
 
+const useThemeLayout = () => Layout;
+
 const Provider = ({ children }) => (
   <ThemeProvider theme={theme}>
     <Reset />
@@ -38,4 +41,5 @@ const Provider = ({ children }) => (
   </ThemeProvider>
 );
 
+export { useThemeLayout };
 export default Provider;
