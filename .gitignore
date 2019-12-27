@@ -9,6 +9,7 @@ node_modules/
 coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
+packages/graphiql/storybook
 dist
 esm
 cypress/screenshots
@@ -16,3 +17,4 @@ node_modules/
 npm-debug.log
 lerna-debug.log
 **/tsconfig.tsbuildinfo
+**/*.tsbuildinfo

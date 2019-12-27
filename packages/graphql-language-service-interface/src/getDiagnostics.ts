@@ -18,7 +18,7 @@ import {
 
 import {
   Diagnostic,
-  CustomValidationRule
+  CustomValidationRule,
 } from 'graphql-language-service-types';
 
 import invariant from 'assert';
@@ -26,7 +26,11 @@ import { findDeprecatedUsages, parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 
-import { Range, validateWithCustomRules, Position } from 'graphql-language-service-utils';
+import {
+  Range,
+  validateWithCustomRules,
+  Position,
+} from 'graphql-language-service-utils';
 
 export const SEVERITY = {
   ERROR: 1,

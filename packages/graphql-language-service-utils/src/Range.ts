@@ -8,7 +8,10 @@
  */
 
 import { Location } from 'graphql/language';
-import { Range as RangeInterface, Position as PositionInterface } from 'graphql-language-service-types';
+import {
+  Range as RangeInterface,
+  Position as PositionInterface,
+} from 'graphql-language-service-types';
 
 export class Range implements RangeInterface {
   start: PositionInterface;
@@ -34,8 +37,8 @@ export class Range implements RangeInterface {
     } else {
       return this.start.line <= position.line && this.end.line >= position.line;
     }
-  };}
-
+  };
+}
 
 export class Position implements PositionInterface {
   line: number;
@@ -54,9 +57,9 @@ export class Position implements PositionInterface {
   }
 
   lessThanOrEqualTo = (position: PositionInterface): boolean =>
-  this.line < position.line ||
-  this.line === position.line && this.character <= position.character;}
-
+    this.line < position.line ||
+    (this.line === position.line && this.character <= position.character);
+}
 
 export function offsetToPosition(text: string, loc: number): Position {
   const EOL = '\n';

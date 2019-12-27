@@ -41,7 +41,7 @@ export default function main(command: string, argv: Object): void {
   const filePath = argv.file && argv.file.trim();
   invariant(
     argv.text || argv.file,
-    'A path to the GraphQL file or its contents is required.'
+    'A path to the GraphQL file or its contents is required.',
   );
 
   const text = ensureText(argv.text, filePath);
@@ -72,11 +72,11 @@ export default function main(command: string, argv: Object): void {
 function _getAutocompleteSuggestions(
   queryText: string,
   point: Position,
-  schemaPath: string
+  schemaPath: string,
 ): EXIT_CODE {
   invariant(
     schemaPath,
-    'A schema path is required to provide GraphQL autocompletion'
+    'A schema path is required to provide GraphQL autocompletion',
   );
 
   try {
@@ -99,7 +99,7 @@ function _getAutocompleteSuggestions(
 function _getDiagnostics(
   filePath: string,
   queryText: string,
-  schemaPath?: string
+  schemaPath?: string,
 ): EXIT_CODE {
   try {
     // `schema` is not strictly requied as GraphQL diagnostics may still notify

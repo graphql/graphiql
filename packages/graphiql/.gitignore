@@ -1,7 +1,11 @@
 dist/
-/graphiql.js
-/graphiql.min.js
-/graphiql.css
+esm/
+cdn/
+webpack/
+cdn.html
+analyzer.html
+/graphiql.*js
+/graphiql.*css
 example/yarn.lock
 example/graphiql.js
 example/graphiql.css

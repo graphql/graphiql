@@ -1,5 +1,5 @@
 {
-  "packages": ["packages/*", "packages/examples/*"],
+  "packages": ["packages/*", "examples/*"],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent",
@@ -13,7 +13,7 @@
     "version": {
       "ignoreChanges": [
         "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
-        "**/packages/examples"
+        "**/examples"
       ],
       "message": "chore(release): publish",
       "conventionalCommits": true,

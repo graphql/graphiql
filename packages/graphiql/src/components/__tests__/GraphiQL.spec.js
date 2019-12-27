@@ -5,24 +5,22 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 import { GraphiQL } from '../GraphiQL';
+import { getMockStorage } from './helpers/storage';
+import { codeMirrorModules } from './helpers/codeMirror';
+import {
+  mockQuery1,
+  mockVariables1,
+  mockOperationName1,
+  mockBadQuery,
+  mockQuery2,
+  mockVariables2,
+} from './fixtures';
 
-const mockStorage = (function() {
-  let store = {};
-  return {
-    getItem(key) {
-      return store.hasOwnProperty(key) ? store[key] : null;
-    },
-    setItem(key, value) {
-      store[key] = value.toString();
-    },
-    clear() {
-      store = {};
-    },
-  };
-})();
+codeMirrorModules.forEach(m => jest.mock(m, () => {}));
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -48,23 +46,30 @@ const wait = () =>
     .then(() => Promise.resolve())
     .then(() => Promise.resolve());
 
+const waitTime = timeout =>
+  new Promise(resolve => setTimeout(resolve, timeout));
+
 Object.defineProperty(window, 'localStorage', {
-  value: mockStorage,
+  value: getMockStorage(),
+});
+
+beforeEach(() => {
+  window.localStorage.clear();
 });
 
 describe('GraphiQL', () => {
   const noOpFetcher = () => {};
 
   it('should throw error without fetcher', () => {
-    expect(() =>
-      mount(<GraphiQL />).simulateError(
-        Error('GraphiQL requires a fetcher function')
-      )
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    expect(() => render(<GraphiQL />)).toThrowError(
+      'GraphiQL requires a fetcher function',
     );
+    spy.mockRestore();
   });
 
   it('should construct correctly with fetcher', () => {
-    expect(() => mount(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
+    expect(() => render(<GraphiQL fetcher={noOpFetcher} />)).not.toThrow();
   });
 
   it('should refetch schema with new fetcher', async () => {
@@ -81,44 +86,50 @@ describe('GraphiQL', () => {
     }
 
     // Initial render calls fetcher
-    const instance = mount(<GraphiQL fetcher={firstFetcher} />);
+    const { rerender } = render(<GraphiQL fetcher={firstFetcher} />);
     expect(firstCalled).toEqual(true);
 
     await wait();
 
     // Re-render does not call fetcher again
     firstCalled = false;
-    instance.setProps({ fetcher: firstFetcher });
+    rerender(<GraphiQL fetcher={firstFetcher} />);
     expect(firstCalled).toEqual(false);
 
     await wait();
 
     // Re-render with new fetcher is called.
-    instance.setProps({ fetcher: secondFetcher });
+    rerender(<GraphiQL fetcher={secondFetcher} />);
     expect(secondCalled).toEqual(true);
   });
 
   it('should not throw error if schema missing and query provided', () => {
     expect(() =>
-      mount(<GraphiQL fetcher={noOpFetcher} query="{}" />)
+      render(<GraphiQL fetcher={noOpFetcher} query="{}" />),
     ).not.toThrow();
   });
 
   it('defaults to the built-in default query', () => {
-    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state().query).toContain('# Welcome to GraphiQL');
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    expect(
+      container.querySelector('.query-editor .mockCodeMirror').value,
+    ).toContain('# Welcome to GraphiQL');
   });
 
   it('accepts a custom default query', () => {
-    const graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />
+    const { container } = render(
+      <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
-    expect(graphiQL.state().query).toEqual('GraphQL Party!!');
+    expect(
+      container.querySelector('.query-editor .mockCodeMirror'),
+    ).toHaveValue('GraphQL Party!!');
   });
 
   it('accepts a docExplorerOpen prop', () => {
-    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} docExplorerOpen />);
-    expect(graphiQL.state().docExplorerOpen).toEqual(true);
+    const { container } = render(
+      <GraphiQL fetcher={noOpFetcher} docExplorerOpen />,
+    );
+    expect(container.querySelector('.docExplorerWrap')).toBeInTheDocument();
   });
 
   it('accepts a keyMap prop', () => {
@@ -127,8 +138,8 @@ describe('GraphiQL', () => {
   });
 
   it('defaults to closed docExplorer', () => {
-    const graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state().docExplorerOpen).toEqual(false);
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    expect(container.querySelector('.docExplorerWrap')).not.toBeInTheDocument();
   });
 
   it('should save keyMap to localStorage', () => {
@@ -140,22 +151,298 @@ describe('GraphiQL', () => {
   });
 
   it('accepts a defaultVariableEditorOpen param', () => {
-    let graphiQL = mount(<GraphiQL fetcher={noOpFetcher} />);
-    expect(graphiQL.state().variableEditorOpen).toEqual(false);
-    expect(graphiQL.state().defaultVariableEditorOpen).toEqual(undefined);
-
-    graphiQL = mount(
-      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />
+    const { container: container1 } = render(
+      <GraphiQL fetcher={noOpFetcher} />,
     );
-    expect(graphiQL.state().variableEditorOpen).toEqual(true);
+    const queryVariables = container1.querySelector(
+      '[aria-label="Query Variables"]',
+    );
 
-    graphiQL = mount(
+    expect(queryVariables.style.height).toEqual('');
+
+    const variableEditorTitle = container1.querySelector(
+      '#variable-editor-title',
+    );
+    fireEvent.mouseDown(variableEditorTitle);
+    fireEvent.mouseMove(variableEditorTitle);
+    expect(queryVariables.style.height).toEqual('200px');
+
+    const { container: container2 } = render(
+      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
+    );
+    expect(
+      container2.querySelector('[aria-label="Query Variables"]').style.height,
+    ).toEqual('200px');
+
+    const { container: container3 } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         variables="{test: 'value'}"
         defaultVariableEditorOpen={false}
-      />
+      />,
     );
-    expect(graphiQL.state().variableEditorOpen).toEqual(false);
+    const queryVariables3 = container3.querySelector(
+      '[aria-label="Query Variables"]',
+    );
+    expect(queryVariables3.style.height).toEqual('');
+  });
+
+  it('adds a history item when the execute query function button is clicked', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        query={mockQuery1}
+        variables={mockVariables1}
+        operationName={mockOperationName1}
+        fetcher={noOpFetcher}
+      />,
+    );
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+  });
+
+  it('will not save invalid queries', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL query={mockBadQuery} fetcher={noOpFetcher} />,
+    );
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(0);
+  });
+
+  it('will save if there was not a previously saved query', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+      />,
+    );
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+  });
+
+  it('will not save a query if the query is the same as previous query', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+      />,
+    );
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+  });
+
+  it('will save if new query is different than previous query', async () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+      />,
+    );
+    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+
+    fireEvent.change(
+      container.querySelector('[aria-label="Query Editor"] .mockCodeMirror'),
+      {
+        target: { value: mockQuery2 },
+      },
+    );
+
+    // wait for onChange debounce
+    await waitTime(150);
+
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+  });
+
+  it('will save query if variables are different ', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+      />,
+    );
+    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+
+    fireEvent.change(
+      container.querySelector('[aria-label="Query Variables"] .mockCodeMirror'),
+      {
+        target: { value: mockVariables2 },
+      },
+    );
+
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+  });
+
+  describe('children overrides', () => {
+    const MyFunctionalComponent = () => {
+      return null;
+    };
+    const wrap = component => () => (
+      <div className="test-wrapper">{component}</div>
+    );
+
+    it('properly ignores fragments', () => {
+      const myFragment = (
+        <React.Fragment>
+          <MyFunctionalComponent />
+          <MyFunctionalComponent />
+        </React.Fragment>
+      );
+
+      const { container, getByRole } = render(
+        <GraphiQL fetcher={noOpFetcher}>{myFragment}</GraphiQL>,
+      );
+
+      expect(
+        container.querySelector('.graphiql-container'),
+      ).toBeInTheDocument();
+      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(getByRole('toolbar')).toBeInTheDocument();
+    });
+
+    it('properly ignores non-override children components', () => {
+      const { container, getByRole } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <MyFunctionalComponent />
+        </GraphiQL>,
+      );
+
+      expect(
+        container.querySelector('.graphiql-container'),
+      ).toBeInTheDocument();
+      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(getByRole('toolbar')).toBeInTheDocument();
+    });
+
+    it('properly ignores non-override class components', () => {
+      class MyClassComponent {
+        render() {
+          return null;
+        }
+      }
+
+      const { container, getByRole } = render(
+        <GraphiQL fetcher={noOpFetcher}>
+          <MyClassComponent />
+        </GraphiQL>,
+      );
+
+      expect(
+        container.querySelector('.graphiql-container'),
+      ).toBeInTheDocument();
+      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(getByRole('toolbar')).toBeInTheDocument();
+    });
+
+    describe('GraphiQL.Logo', () => {
+      it('can be overridden using the exported type', () => {
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>
+          </GraphiQL>,
+        );
+
+        expect(
+          container.querySelector('.graphiql-container'),
+        ).toBeInTheDocument();
+      });
+
+      it('can be overridden using a named component', () => {
+        const WrappedLogo = wrap(
+          <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>,
+        );
+        WrappedLogo.displayName = 'GraphiQLLogo';
+
+        const { getByText } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <WrappedLogo />
+          </GraphiQL>,
+        );
+
+        expect(getByText('My Great Logo')).toBeInTheDocument();
+      });
+    });
+
+    describe('GraphiQL.Toolbar', () => {
+      it('can be overridden using the exported type', () => {
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <GraphiQL.Toolbar>
+              <GraphiQL.Button />
+            </GraphiQL.Toolbar>
+          </GraphiQL>,
+        );
+
+        expect(
+          container.querySelectorAll('[role="toolbar"] .toolbar-button'),
+        ).toHaveLength(1);
+      });
+
+      it('can be overridden using a named component', () => {
+        const WrappedToolbar = wrap(
+          <GraphiQL.Toolbar>
+            <GraphiQL.Button />
+          </GraphiQL.Toolbar>,
+        );
+        WrappedToolbar.displayName = 'GraphiQLToolbar';
+
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <WrappedToolbar />
+          </GraphiQL>,
+        );
+
+        expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
+        expect(
+          container.querySelectorAll('[role="toolbar"] button'),
+        ).toHaveLength(1);
+      });
+    });
+
+    describe('GraphiQL.Footer', () => {
+      it('can be overridden using the exported type', () => {
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <GraphiQL.Footer>
+              <GraphiQL.Button />
+            </GraphiQL.Footer>
+          </GraphiQL>,
+        );
+
+        expect(container.querySelectorAll('.footer button')).toHaveLength(1);
+      });
+
+      it('can be overridden using a named component', () => {
+        const WrappedFooter = wrap(
+          <GraphiQL.Footer data-test-selector="override-footer">
+            <GraphiQL.Button />
+          </GraphiQL.Footer>,
+        );
+        WrappedFooter.displayName = 'GraphiQLFooter';
+
+        const { container } = render(
+          <GraphiQL fetcher={noOpFetcher}>
+            <WrappedFooter />
+          </GraphiQL>,
+        );
+
+        expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
+        expect(container.querySelectorAll('.footer button')).toHaveLength(1);
+      });
+    });
   });
 });

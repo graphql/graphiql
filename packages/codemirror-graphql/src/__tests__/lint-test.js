@@ -44,7 +44,7 @@ describe('graphql-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
     const editor = createEditorWithLint();
     expect(editor.getHelpers(editor.getCursor(), 'lint')).to.not.have.lengthOf(
-      0
+      0,
     );
   });
 

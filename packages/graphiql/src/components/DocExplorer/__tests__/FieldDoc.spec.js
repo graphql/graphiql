@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 import FieldDoc from '../FieldDoc';
 
@@ -35,47 +36,58 @@ const exampleObject = new GraphQLObjectType({
 
 describe('FieldDoc', () => {
   it('should render a simple string field', () => {
-    const W = mount(
+    const { container } = render(
       <FieldDoc
         field={exampleObject.getFields().string}
         onClickType={jest.fn()}
-      />
+      />,
     );
-    expect(W.find('MarkdownContent').text()).toEqual('No Description\n');
-    expect(W.find('TypeLink').text()).toEqual('String');
-    expect(W.find('Argument').length).toEqual(0);
+    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
+      'No Description',
+    );
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('.arg')).not.toBeInTheDocument();
   });
 
   it('should re-render on field change', () => {
-    const W = mount(
+    const { container, rerender } = render(
       <FieldDoc
         field={exampleObject.getFields().string}
         onClickType={jest.fn()}
-      />
+      />,
     );
-    expect(W.find('MarkdownContent').text()).toEqual('No Description\n');
-    expect(W.find('TypeLink').text()).toEqual('String');
-    expect(W.find('Argument').length).toEqual(0);
-  });
+    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
+      'No Description',
+    );
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('.arg')).not.toBeInTheDocument();
 
-  it('should render a string field with arguments', () => {
-    const W = mount(
+    rerender(
       <FieldDoc
         field={exampleObject.getFields().stringWithArgs}
         onClickType={jest.fn()}
-      />
+      />,
     );
-    expect(
-      W.find('TypeLink')
-        .at(0)
-        .text()
-    ).toEqual('String');
-    expect(
-      W.find('.doc-type-description')
-        .at(0)
-        .text()
-    ).toEqual('Example String field with arguments\n');
-    expect(W.find('Argument').length).toEqual(1);
-    expect(W.find('Argument').text()).toEqual('stringArg: String');
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
+      'Example String field with arguments',
+    );
+  });
+
+  it('should render a string field with arguments', () => {
+    const { container } = render(
+      <FieldDoc
+        field={exampleObject.getFields().stringWithArgs}
+        onClickType={jest.fn()}
+      />,
+    );
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
+      'Example String field with arguments',
+    );
+    expect(container.querySelectorAll('.arg')).toHaveLength(1);
+    expect(container.querySelector('.arg')).toHaveTextContent(
+      'stringArg: String',
+    );
   });
 });

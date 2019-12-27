@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../packages/graphql-language-service-utils/tsconfig.esm.json"
+    },
+    {
+      "path": "../packages/graphql-language-service-types/tsconfig.esm.json"
+    },
+    {
+      "path": "../packages/graphql-language-service-parser/tsconfig.esm.json"
+    },
+    {
+      "path": "../packages/graphql-language-service-interface/tsconfig.esm.json"
+    }
+  ]
+}

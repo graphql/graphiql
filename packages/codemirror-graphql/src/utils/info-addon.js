@@ -50,9 +50,6 @@ function onMouseOver(cm, e) {
 
   const box = target.getBoundingClientRect();
 
-  const hoverTime = getHoverTime(cm);
-  state.hoverTimeout = setTimeout(onHover, hoverTime);
-
   const onMouseMove = function() {
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = setTimeout(onHover, hoverTime);
@@ -71,6 +68,9 @@ function onMouseOver(cm, e) {
     state.hoverTimeout = undefined;
     onMouseHover(cm, box);
   };
+
+  const hoverTime = getHoverTime(cm);
+  state.hoverTimeout = setTimeout(onHover, hoverTime);
 
   CodeMirror.on(document, 'mousemove', onMouseMove);
   CodeMirror.on(cm.getWrapperElement(), 'mouseout', onMouseOut);

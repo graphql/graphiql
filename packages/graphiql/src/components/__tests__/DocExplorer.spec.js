@@ -1,17 +1,24 @@
+/**
+ *  Copyright (c) 2019 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 import React from 'react';
-import { mount } from 'enzyme';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 import { DocExplorer } from '../DocExplorer';
 
 describe('DocExplorer', () => {
   it('renders spinner when no schema prop is present', () => {
-    const W = mount(<DocExplorer />);
-    const spinner = W.find('.spinner-container');
-    expect(spinner.length).toEqual(1);
+    const { container } = render(<DocExplorer />);
+    const spinner = container.querySelectorAll('.spinner-container');
+    expect(spinner).toHaveLength(1);
   });
   it('renders with null schema', () => {
-    const W = mount(<DocExplorer schema={null} />);
-    const error = W.find('.error-container');
-    expect(error.length).toEqual(1);
-    expect(error.text()).toEqual('No Schema Available');
+    const { container } = render(<DocExplorer schema={null} />);
+    const error = container.querySelectorAll('.error-container');
+    expect(error).toHaveLength(1);
+    expect(error[0]).toHaveTextContent('No Schema Available');
   });
 });

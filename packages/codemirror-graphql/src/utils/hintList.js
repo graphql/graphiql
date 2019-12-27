@@ -40,14 +40,14 @@ function filterAndSortList(list, text) {
 
   const conciseMatches = filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
-    pair => !pair.entry.isDeprecated
+    pair => !pair.entry.isDeprecated,
   );
 
   const sortedMatches = conciseMatches.sort(
     (a, b) =>
       (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
       a.proximity - b.proximity ||
-      a.entry.text.length - b.entry.text.length
+      a.entry.text.length - b.entry.text.length,
   );
 
   return sortedMatches.map(pair => pair.entry);
@@ -113,7 +113,7 @@ function lexicalDistance(a, b) {
       d[i][j] = Math.min(
         d[i - 1][j] + 1,
         d[i][j - 1] + 1,
-        d[i - 1][j - 1] + cost
+        d[i - 1][j - 1] + cost,
       );
 
       if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {

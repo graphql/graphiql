@@ -31,14 +31,14 @@ function isImageURL(url) {
 }
 
 export class ImagePreview extends React.Component {
-  static propTypes = {
-    token: PropTypes.any,
-  };
-
   static shouldRender(token) {
     const url = tokenToURL(token);
     return url ? isImageURL(url) : false;
   }
+
+  static propTypes = {
+    token: PropTypes.any,
+  };
 
   constructor(props) {
     super(props);

@@ -8,7 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
-//
+
 Cypress.Commands.add('getCy', cyName => {
   return cy.get(`[data-cy=${cyName}]`);
 });
@@ -32,22 +32,10 @@ Cypress.Commands.add('visitWithOp', ({ query, variables }) => {
 Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
-  cy.wait(500);
+  cy.wait(200);
   cy.window().then(w => {
     cy.expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
       mockSuccess,
     );
-  });
+  })
 });
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This is will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })

@@ -54,7 +54,7 @@ describe('graphql-variables-hint', () => {
   it('attaches a GraphQL hint function with correct mode/hint options', async () => {
     const editor = await createEditorWithHint('{ f }');
     expect(editor.getHelpers(editor.getCursor(), 'hint')).to.not.have.lengthOf(
-      0
+      0,
     );
   });
 
@@ -68,7 +68,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{ ',
-      { line: 0, ch: 2 }
+      { line: 0, ch: 2 },
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
   });
@@ -77,7 +77,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  ',
-      { line: 1, ch: 2 }
+      { line: 1, ch: 2 },
     );
     expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
     expect(suggestions.to).to.deep.equal({ line: 1, ch: 2, sticky: null });
@@ -87,7 +87,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  ba',
-      { line: 1, ch: 4 }
+      { line: 1, ch: 4 },
     );
     checkSuggestions(['"bar": '], suggestions.list);
     expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
@@ -98,7 +98,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($foo: String!, $bar: Int) { f }',
       '{\n  "',
-      { line: 1, ch: 4 }
+      { line: 1, ch: 4 },
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
     expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
@@ -109,12 +109,12 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myEnum: TestEnum) { f }',
       '{\n  "myEnum": ',
-      { line: 1, ch: 12 }
+      { line: 1, ch: 12 },
     );
     const TestEnum = TestSchema.getType('TestEnum');
     checkSuggestions(
       TestEnum.getValues().map(value => `"${value.name}"`),
-      suggestions.list
+      suggestions.list,
     );
   });
 
@@ -122,7 +122,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": ',
-      { line: 1, ch: 13 }
+      { line: 1, ch: 13 },
     );
     checkSuggestions(['{'], suggestions.list);
   });
@@ -131,12 +131,12 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    ',
-      { line: 2, ch: 4 }
+      { line: 2, ch: 4 },
     );
     const TestInput = TestSchema.getType('TestInput');
     checkSuggestions(
       Object.keys(TestInput.getFields()).map(name => `"${name}": `),
-      suggestions.list
+      suggestions.list,
     );
     expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
     expect(suggestions.to).to.deep.equal({ line: 2, ch: 4, sticky: null });
@@ -146,7 +146,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    bool',
-      { line: 2, ch: 8 }
+      { line: 2, ch: 8 },
     );
     checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions.list);
     expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
@@ -157,7 +157,7 @@ describe('graphql-variables-hint', () => {
     const suggestions = await getHintSuggestions(
       'query ($myInput: TestInput) { f }',
       '{\n  "myInput": {\n    "boolean": ',
-      { line: 2, ch: 15 }
+      { line: 2, ch: 15 },
     );
     checkSuggestions(['true', 'false'], suggestions.list);
   });

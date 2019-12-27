@@ -163,7 +163,7 @@ export class QueryEditor extends React.Component {
             this.props.onMergeQuery();
           }
         },
-
+        
         'Cmd-\\': () => {
           if (this.props.onToggleKeyMap) {
             this.props.onToggleKeyMap();
@@ -176,6 +176,18 @@ export class QueryEditor extends React.Component {
           }
         },
 
+        'Cmd-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
+          }
+        },
+        
+        'Ctrl-S': () => {
+          if (this.props.onRunQuery) {
+            // empty
+          }
+        },
+        
         ...commonKeys,
       },
     });

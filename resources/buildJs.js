@@ -14,7 +14,7 @@ const commands = [
   'babel',
   'src',
   '--ignore',
-  '**/__tests__/**',
+  '**/__tests__/**,**/__mocks__/**,**/*.spec.*,**/*-test.*',
   '--out-dir',
   'dist',
   '--root-mode',

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.5.2](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.5.1...graphql-language-service-parser@1.5.2) (2019-12-09)
+
+
+### Bug Fixes
+
+* test output, webpack resolution, clean build ([3b1c2c1](https://github.com/graphql/graphiql/commit/3b1c2c1))
+* **gls-utils:** [#1055](https://github.com/graphql/graphiql/issues/1055) - move file test, refactor for fixtures ([19d8d7f](https://github.com/graphql/graphiql/commit/19d8d7f))
+
+
+
+
+
+## [1.5.1](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.5.0...graphql-language-service-parser@1.5.1) (2019-12-03)
+
+**Note:** Version bump only for package graphql-language-service-parser
+
+
+
+
+
 # 1.5.0 (2019-10-04)
 
 

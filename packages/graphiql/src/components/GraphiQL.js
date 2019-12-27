@@ -39,6 +39,18 @@ import {
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
+const majorVersion = parseInt(React.version.slice(0, 2), 10);
+
+if (majorVersion < 16) {
+  throw Error(
+    [
+      'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
+      'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
+      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
+    ].join('\n'),
+  );
+}
+
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
@@ -115,7 +127,7 @@ export class GraphiQL extends React.Component {
         : getSelectedOperationName(
             null,
             this._storage.get('operationName'),
-            queryFacts && queryFacts.operations
+            queryFacts && queryFacts.operations,
           );
 
     // prop can be supplied to open docExplorer initially
@@ -160,7 +172,7 @@ export class GraphiQL extends React.Component {
     // Subscribe to the browser window closing, treating it as an unmount.
     if (typeof window === 'object') {
       window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount()
+        this.componentWillUnmount(),
       );
     }
   }
@@ -177,8 +189,9 @@ export class GraphiQL extends React.Component {
 
     global.g = this;
   }
-
-  componentWillReceiveProps(nextProps) {
+  // todo: these values should be updated in a reducer imo
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
@@ -209,7 +222,7 @@ export class GraphiQL extends React.Component {
         nextQuery,
         nextOperationName,
         this.state.operations,
-        nextSchema
+        nextSchema,
       );
 
       if (updatedQueryAttributes !== undefined) {
@@ -244,7 +257,7 @@ export class GraphiQL extends React.Component {
 
           this._fetchSchema();
         }
-      }
+      },
     );
   }
 
@@ -275,13 +288,12 @@ export class GraphiQL extends React.Component {
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const logo = find(children, child => child.type === GraphiQL.Logo) || (
-      <GraphiQL.Logo />
-    );
+    const logo = find(children, child =>
+      isChildComponentType(child, GraphiQL.Logo),
+    ) || <GraphiQL.Logo />;
 
-    const toolbar = find(
-      children,
-      child => child.type === GraphiQL.Toolbar
+    const toolbar = find(children, child =>
+      isChildComponentType(child, GraphiQL.Toolbar),
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
@@ -307,7 +319,9 @@ export class GraphiQL extends React.Component {
       </GraphiQL.Toolbar>
     );
 
-    const footer = find(children, child => child.type === GraphiQL.Footer);
+    const footer = find(children, child =>
+      isChildComponentType(child, GraphiQL.Footer),
+    );
 
     const queryWrapStyle = {
       WebkitFlex: this.state.editorFlex,
@@ -337,6 +351,9 @@ export class GraphiQL extends React.Component {
       <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
+            ref={node => {
+              this._queryHistory = node;
+            }}
             operationName={this.state.operationName}
             query={this.state.query}
             variables={this.state.variables}
@@ -510,7 +527,7 @@ export class GraphiQL extends React.Component {
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
-      this.props.getDefaultFieldNames
+      this.props.getDefaultFieldNames,
     );
     if (insertions && insertions.length > 0) {
       const editor = this.getQueryEditor();
@@ -527,8 +544,8 @@ export class GraphiQL extends React.Component {
               className: 'autoInsertedLeaf',
               clearOnEnter: true,
               title: 'Automatically added leaf fields',
-            }
-          )
+            },
+          ),
         );
         setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
         let newCursorIndex = cursorIndex;
@@ -553,7 +570,7 @@ export class GraphiQL extends React.Component {
       fetcher({
         query: introspectionQuery,
         operationName: introspectionQueryName,
-      })
+      }),
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -574,11 +591,11 @@ export class GraphiQL extends React.Component {
           fetcher({
             query: introspectionQuerySansSubscriptions,
             operationName: introspectionQueryName,
-          })
+          }),
         );
         if (!isPromise(fetch)) {
           throw new Error(
-            'Fetcher did not return a Promise for introspection.'
+            'Fetcher did not return a Promise for introspection.',
           );
         }
         return fetch2;
@@ -701,6 +718,8 @@ export class GraphiQL extends React.Component {
         operationName,
       });
 
+      this._queryHistory.updateHistory(editedQuery, variables, operationName);
+
       // _fetchQuery may return a subscription.
       const subscription = this._fetchQuery(
         editedQuery,
@@ -713,7 +732,7 @@ export class GraphiQL extends React.Component {
               response: GraphiQL.formatResult(result),
             });
           }
-        }
+        },
       );
 
       this.setState({ subscription });
@@ -783,7 +802,7 @@ export class GraphiQL extends React.Component {
       const prettifiedVariableEditorContent = JSON.stringify(
         JSON.parse(variableEditorContent),
         null,
-        2
+        2,
       );
       if (prettifiedVariableEditorContent !== variableEditorContent) {
         variableEditor.setValue(prettifiedVariableEditorContent);
@@ -810,7 +829,7 @@ export class GraphiQL extends React.Component {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema
+      this.state.schema,
     );
     this.setState({
       query: value,
@@ -843,7 +862,7 @@ export class GraphiQL extends React.Component {
       const updatedOperationName = getSelectedOperationName(
         prevOperations,
         operationName,
-        queryFacts.operations
+        queryFacts.operations,
       );
 
       // Report changing of operationName if it changed.
@@ -882,7 +901,7 @@ export class GraphiQL extends React.Component {
       (onRemoveFn = () => {
         elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
         elem.removeEventListener('click', this._onClickHintInformation);
-      })
+      }),
     );
   };
 
@@ -1097,6 +1116,7 @@ GraphiQL.Logo = function GraphiQLLogo(props) {
     </div>
   );
 };
+GraphiQL.Logo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 GraphiQL.Toolbar = function GraphiQLToolbar(props) {
@@ -1106,6 +1126,7 @@ GraphiQL.Toolbar = function GraphiQLToolbar(props) {
     </div>
   );
 };
+GraphiQL.Toolbar.displayName = 'GraphiQLToolbar';
 
 // Export main windows/panes to be used separately if desired.
 GraphiQL.QueryEditor = QueryEditor;
@@ -1131,6 +1152,7 @@ GraphiQL.SelectOption = ToolbarSelectOption;
 GraphiQL.Footer = function GraphiQLFooter(props) {
   return <div className="footer">{props.children}</div>;
 };
+GraphiQL.Footer.displayName = 'GraphiQLFooter';
 
 GraphiQL.formatResult = function(result) {
   return JSON.stringify(result, null, 2);
@@ -1202,7 +1224,7 @@ function observableToPromise(observable) {
       reject,
       () => {
         reject(new Error('no value resolved'));
-      }
+      },
     );
   });
 }
@@ -1210,4 +1232,13 @@ function observableToPromise(observable) {
 // Duck-type observable detection.
 function isObservable(value) {
   return typeof value === 'object' && typeof value.subscribe === 'function';
+}
+
+// Determines if the React child is of the same type of the provided React component
+function isChildComponentType(child, component) {
+  if (child.type && child.type.displayName === component.displayName) {
+    return true;
+  }
+
+  return child.type === component;
 }

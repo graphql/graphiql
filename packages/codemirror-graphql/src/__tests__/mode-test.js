@@ -39,7 +39,7 @@ describe('graphql-mode', () => {
 
   it('parses Relay-style anonymous FragmentDefinitions', () => {
     CodeMirror.runMode('fragment on Test { id }', 'graphql', (token, style) =>
-      expect(style).to.not.equal('invalidchar')
+      expect(style).to.not.equal('invalidchar'),
     );
   });
 
@@ -47,17 +47,17 @@ describe('graphql-mode', () => {
     CodeMirror.runMode(
       '{ ... on OptionalType { name } }',
       'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+      (token, style) => expect(style).to.not.equal('invalidchar'),
     );
 
     CodeMirror.runMode('{ ... { name } }', 'graphql', (token, style) =>
-      expect(style).to.not.equal('invalidchar')
+      expect(style).to.not.equal('invalidchar'),
     );
 
     CodeMirror.runMode(
       '{ ... @optionalDirective { name } }',
       'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar')
+      (token, style) => expect(style).to.not.equal('invalidchar'),
     );
   });
 
@@ -88,7 +88,7 @@ describe('graphql-mode', () => {
   it('parses schema-kitchen-sink query without invalidchar', () => {
     const schemaKitchenSink = readFileSync(
       join(__dirname, '/schema-kitchen-sink.graphql'),
-      { encoding: 'utf8' }
+      { encoding: 'utf8' },
     );
 
     CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {
@@ -110,7 +110,7 @@ describe('graphql-mode', () => {
       'graphql',
       (token, style) => {
         expect(style).to.not.equal('invalidchar');
-      }
+      },
     );
 
     CodeMirror.runMode(
@@ -124,7 +124,7 @@ describe('graphql-mode', () => {
       'graphql',
       (token, style) => {
         expect(style).to.not.equal('invalidchar');
-      }
+      },
     );
   });
 });
