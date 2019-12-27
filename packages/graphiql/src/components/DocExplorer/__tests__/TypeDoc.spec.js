@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
 import { GraphQLString } from 'graphql';
 
@@ -21,17 +22,17 @@ import {
 
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {
-    const W = mount(
+    const { container } = render(
       <TypeDoc
         schema={ExampleSchema}
         type={ExampleQuery}
         onClickType={jest.fn()}
       />,
     );
-    const cats = W.find('.doc-category-item');
-    expect(cats.at(0).text()).toEqual('string: String');
-    expect(cats.at(1).text()).toEqual('union: exampleUnion');
-    expect(cats.at(2).text()).toEqual(
+    const cats = container.querySelectorAll('.doc-category-item');
+    expect(cats[0]).toHaveTextContent('string: String');
+    expect(cats[1]).toHaveTextContent('union: exampleUnion');
+    expect(cats[2]).toHaveTextContent(
       'fieldWithArgs(stringArg: String): String',
     );
   });
@@ -39,7 +40,7 @@ describe('TypeDoc', () => {
   it('handles onClickField and onClickType', () => {
     const onClickType = jest.fn();
     const onClickField = jest.fn();
-    const W = mount(
+    const { container } = render(
       <TypeDoc
         schema={ExampleSchema}
         type={ExampleQuery}
@@ -47,16 +48,11 @@ describe('TypeDoc', () => {
         onClickField={onClickField}
       />,
     );
-    W.find('TypeLink')
-      .at(0)
-      .simulate('click');
+    fireEvent.click(container.querySelector('.type-name'));
     expect(onClickType.mock.calls.length).toEqual(1);
     expect(onClickType.mock.calls[0][0]).toEqual(GraphQLString);
 
-    W.find('.field-name')
-      .at(0)
-      .simulate('click');
-
+    fireEvent.click(container.querySelector('.field-name'));
     expect(onClickField.mock.calls.length).toEqual(1);
     expect(onClickField.mock.calls[0][0].name).toEqual('string');
     expect(onClickField.mock.calls[0][0].type).toEqual(GraphQLString);
@@ -64,72 +60,69 @@ describe('TypeDoc', () => {
   });
 
   it('renders deprecated fields when you click to see them', () => {
-    const W = mount(
+    const { container } = render(
       <TypeDoc
         schema={ExampleSchema}
         type={ExampleQuery}
         onClickType={jest.fn()}
       />,
     );
-    let cats = W.find('.doc-category-item');
-    expect(cats.length).toEqual(3);
+    let cats = container.querySelectorAll('.doc-category-item');
+    expect(cats).toHaveLength(3);
 
-    W.find('.show-btn').simulate('click');
+    fireEvent.click(container.querySelector('.show-btn'));
 
-    cats = W.find('.doc-category-item');
-    expect(cats.length).toEqual(4);
-    expect(
-      W.find('.field-name')
-        .at(3)
-        .text(),
-    ).toEqual('deprecatedField');
-    expect(
-      W.find('.doc-deprecation')
-        .at(0)
-        .text(),
-    ).toEqual('example deprecation reason\n');
+    cats = container.querySelectorAll('.doc-category-item');
+    expect(cats).toHaveLength(4);
+    expect(container.querySelectorAll('.field-name')[3]).toHaveTextContent(
+      'deprecatedField',
+    );
+    expect(container.querySelector('.doc-deprecation')).toHaveTextContent(
+      'example deprecation reason',
+    );
   });
 
   it('renders a Union type', () => {
-    const W = mount(<TypeDoc schema={ExampleSchema} type={ExampleUnion} />);
-    expect(
-      W.find('.doc-category-title')
-        .at(0)
-        .text(),
-    ).toEqual('possible types');
+    const { container } = render(
+      <TypeDoc schema={ExampleSchema} type={ExampleUnion} />,
+    );
+    expect(container.querySelector('.doc-category-title')).toHaveTextContent(
+      'possible types',
+    );
   });
 
   it('renders an Enum type', () => {
-    const W = mount(<TypeDoc schema={ExampleSchema} type={ExampleEnum} />);
-    expect(
-      W.find('.doc-category-title')
-        .at(0)
-        .text(),
-    ).toEqual('values');
-    const enums = W.find('EnumValue');
-    expect(enums.at(0).props().value.value).toEqual('Value 1');
-    expect(enums.at(1).props().value.value).toEqual('Value 2');
+    const { container } = render(
+      <TypeDoc schema={ExampleSchema} type={ExampleEnum} />,
+    );
+    expect(container.querySelector('.doc-category-title')).toHaveTextContent(
+      'values',
+    );
+    const enums = container.querySelectorAll('.enum-value');
+    expect(enums[0]).toHaveTextContent('value1');
+    expect(enums[1]).toHaveTextContent('value2');
   });
 
   it('shows deprecated enum values on click', () => {
-    const W = mount(<TypeDoc schema={ExampleSchema} type={ExampleEnum} />);
-    expect(W.state().showDeprecated).toEqual(false);
-    const titles = W.find('.doc-category-title');
-    expect(titles.at(0).text()).toEqual('values');
-    expect(titles.at(1).text()).toEqual('deprecated values');
-    let enums = W.find('EnumValue');
-    expect(enums.length).toEqual(2);
+    const { getByText, container } = render(
+      <TypeDoc schema={ExampleSchema} type={ExampleEnum} />,
+    );
+    const showBtn = getByText('Show deprecated values...');
+    expect(showBtn).toBeInTheDocument();
+    const titles = container.querySelectorAll('.doc-category-title');
+    expect(titles[0]).toHaveTextContent('values');
+    expect(titles[1]).toHaveTextContent('deprecated values');
+    let enums = container.querySelectorAll('.enum-value');
+    expect(enums).toHaveLength(2);
 
     // click button to show deprecated enum values
-    W.find('.show-btn').simulate('click');
-    expect(W.state().showDeprecated).toEqual(true);
-    enums = W.find('EnumValue');
-    expect(enums.length).toEqual(3);
-    expect(enums.at(2).props().value.value).toEqual('Value 3');
-    expect(
-      W.find('.doc-deprecation')
-        .at(1)
-        .text(),
-    ).toEqual('Only two are needed\n');
+    fireEvent.click(showBtn);
+    expect(showBtn).not.toBeInTheDocument();
+    enums = container.querySelectorAll('.enum-value');
+    expect(enums).toHaveLength(3);
+    expect(enums[2]).toHaveTextContent('value3');
+    expect(container.querySelector('.doc-deprecation')).toHaveTextContent(
+      'Only two are needed',
+    );
   });
 });

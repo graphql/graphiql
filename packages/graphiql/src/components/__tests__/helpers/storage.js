@@ -1,22 +1,25 @@
 export function getMockStorage() {
-  return (function() {
-    let store = {};
-    return {
-      getItem(key) {
-        return store.hasOwnProperty(key) ? store[key] : null;
-      },
-      setItem(key, value) {
-        store[key] = value.toString();
-      },
-      clear() {
-        store = {};
-      },
-      get(key) {
-        return store.hasOwnProperty(key) ? store[key] : null;
-      },
-      set(key, value) {
-        store[key] = value.toString();
-      },
-    };
-  })();
+  let store = {};
+  return {
+    getItem(key) {
+      return store.hasOwnProperty(key) ? store[key] : null;
+    },
+    setItem(key, value) {
+      store[key] = value.toString();
+    },
+    clear() {
+      store = {};
+    },
+    removeItem(key) {
+      if (store.hasOwnProperty(key)) {
+        const updatedStore = {};
+        for (const k in store) {
+          if (k !== key) {
+            updatedStore[k] = store[k];
+          }
+        }
+        store = updatedStore;
+      }
+    },
+  };
 }
