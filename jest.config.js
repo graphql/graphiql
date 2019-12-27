@@ -10,7 +10,7 @@ module.exports = {
   },
   clearMocks: true,
   collectCoverage: true,
-  setupFiles: [path.join(__dirname, '/resources/enzyme.config.js')],
+  setupFiles: [path.join(__dirname, '/resources/test.config.js')],
   testMatch: [
     '<rootDir>/packages/*/src/**/*-test.{js,ts}',
     '<rootDir>/packages/*/src/**/*.spec.{js,ts}',

@@ -5,7 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import React from 'react';
-import { mount } from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+
 import HistoryQuery from '../HistoryQuery';
 import { mockOperationName1, mockQuery1, mockVariables1 } from './fixtures';
 
@@ -31,21 +32,15 @@ describe('HistoryQuery', () => {
   it('renders operationName if label is not provided', () => {
     const otherMockProps = { operationName: mockOperationName1 };
     const props = getMockProps(otherMockProps);
-    const W = mount(<HistoryQuery {...props} />);
-    expect(
-      W.find('button.history-label')
-        .first()
-        .text(),
-    ).toBe(mockOperationName1);
+    const { container } = render(<HistoryQuery {...props} />);
+    expect(container.querySelector('button.history-label').textContent).toBe(
+      mockOperationName1,
+    );
   });
 
   it('renders a string version of the query if label or operation name are not provided', () => {
-    const W = mount(<HistoryQuery {...getMockProps()} />);
-    expect(
-      W.find('button.history-label')
-        .first()
-        .text(),
-    ).toBe(
+    const { container } = render(<HistoryQuery {...getMockProps()} />);
+    expect(container.querySelector('button.history-label').textContent).toBe(
       mockQuery1
         .split('\n')
         .filter(line => line.indexOf('#') !== 0)
@@ -58,9 +53,10 @@ describe('HistoryQuery', () => {
     const otherMockProps = {
       operationName: mockOperationName1,
     };
-    const W = mount(<HistoryQuery {...getMockProps(otherMockProps)} />);
-    W.find('button.history-label').simulate('click');
-    W.update();
+    const { container } = render(
+      <HistoryQuery {...getMockProps(otherMockProps)} />,
+    );
+    fireEvent.click(container.querySelector('button.history-label'));
     expect(onSelectSpy).toHaveBeenCalledWith(
       mockQuery1,
       mockVariables1,
@@ -70,13 +66,10 @@ describe('HistoryQuery', () => {
   });
 
   it('renders label input if the edit label button is clicked', () => {
-    const W = mount(<HistoryQuery {...getMockProps()} />);
-    W.find({ 'aria-label': 'Edit label' })
-      .first()
-      .simulate('click');
-    W.update();
-    expect(W.find('li.editable').length).toBe(1);
-    expect(W.find('input').length).toBe(1);
-    expect(W.find('button.history-label').length).toBe(0);
+    const { container } = render(<HistoryQuery {...getMockProps()} />);
+    fireEvent.click(container.querySelector('[aria-label="Edit label"]'));
+    expect(container.querySelectorAll('li.editable').length).toBe(1);
+    expect(container.querySelectorAll('input').length).toBe(1);
+    expect(container.querySelectorAll('button.history-label').length).toBe(0);
   });
 });
