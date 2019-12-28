@@ -7,7 +7,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
 import { buildClientSchema, GraphQLSchema, parse, print } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 
@@ -341,7 +340,11 @@ export class GraphiQL extends React.Component {
     };
 
     return (
-      <div className="graphiql-container">
+      <div
+        ref={n => {
+          this.graphiqlContainer = n;
+        }}
+        className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
             ref={node => {
@@ -440,6 +443,9 @@ export class GraphiQL extends React.Component {
                 </div>
               )}
               <ResultViewer
+                registerRef={n => {
+                  this.resultViewerElement = n;
+                }}
                 ref={c => {
                   this.resultComponent = c;
                 }}
@@ -947,7 +953,7 @@ export class GraphiQL extends React.Component {
         return onMouseUp();
       }
 
-      const editorBar = ReactDOM.findDOMNode(this.editorBarComponent);
+      const editorBar = this.editorBarComponent;
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
@@ -979,7 +985,7 @@ export class GraphiQL extends React.Component {
       return false;
     }
     // Specifically the result window's drag bar.
-    const resultWindow = ReactDOM.findDOMNode(this.resultComponent);
+    const resultWindow = this.resultViewerElement;
     while (target) {
       if (target === resultWindow) {
         return true;
@@ -1000,7 +1006,7 @@ export class GraphiQL extends React.Component {
         return onMouseUp();
       }
 
-      const app = ReactDOM.findDOMNode(this);
+      const app = this.graphiqlContainer;
       const cursorPos = moveEvent.clientX - getLeft(app) - offset;
       const docsSize = app.clientWidth - cursorPos;
 
@@ -1050,7 +1056,7 @@ export class GraphiQL extends React.Component {
 
       didMove = true;
 
-      const editorBar = ReactDOM.findDOMNode(this.editorBarComponent);
+      const editorBar = this.editorBarComponent;
       const topSize = moveEvent.clientY - getTop(editorBar) - offset;
       const bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {

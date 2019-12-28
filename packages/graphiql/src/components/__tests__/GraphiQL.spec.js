@@ -430,4 +430,63 @@ describe('GraphiQL', () => {
       });
     });
   });
+
+  it('readjusts the query wrapper flex style field when the result panel is resized', () => {
+    const spy = jest
+      .spyOn(Element.prototype, 'clientWidth', 'get')
+      .mockReturnValue(900);
+
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+    const codeMirrorGutter = container.querySelector(
+      '.result-window .CodeMirror-gutter',
+    );
+    const queryWrap = container.querySelector('.queryWrap');
+
+    fireEvent.mouseDown(codeMirrorGutter, {
+      button: 0,
+      ctrlKey: false,
+    });
+
+    fireEvent.mouseMove(codeMirrorGutter, {
+      buttons: 1,
+      clientX: 700,
+    });
+
+    fireEvent.mouseUp(codeMirrorGutter);
+
+    expect(queryWrap.style.flex).toEqual('3.5');
+
+    spy.mockRestore();
+  });
+
+  it('allows for resizing the doc explorer correctly', () => {
+    const spy = jest
+      .spyOn(Element.prototype, 'clientWidth', 'get')
+      .mockReturnValue(1200);
+
+    const { container, getByLabelText } = render(
+      <GraphiQL fetcher={noOpFetcher} />,
+    );
+
+    fireEvent.click(getByLabelText(/Open Documentation Explorer/i));
+    const docExplorerResizer = container.querySelector('.docExplorerResizer');
+
+    fireEvent.mouseDown(docExplorerResizer, {
+      clientX: 3,
+    });
+
+    fireEvent.mouseMove(docExplorerResizer, {
+      buttons: 1,
+      clientX: 800,
+    });
+
+    fireEvent.mouseUp(docExplorerResizer);
+
+    expect(container.querySelector('.docExplorerWrap').style.width).toBe(
+      '403px',
+    );
+
+    spy.mockRestore();
+  });
 });

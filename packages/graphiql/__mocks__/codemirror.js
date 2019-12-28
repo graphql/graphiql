@@ -1,12 +1,17 @@
 function CodeMirror(node, { value, ...options }) {
   let _eventListeners = {};
+  const mockWrapper = document.createElement('div');
+  const mockGutter = document.createElement('div');
+  mockGutter.className = 'CodeMirror-gutter';
   const mockTextArea = document.createElement('textarea');
   mockTextArea.className = 'mockCodeMirror';
   mockTextArea.addEventListener('change', e => {
     _emit('change', e);
   });
   mockTextArea.value = value;
-  node.appendChild(mockTextArea);
+  mockWrapper.appendChild(mockGutter);
+  mockWrapper.appendChild(mockTextArea);
+  node.appendChild(mockWrapper);
 
   function _emit(event, data) {
     if (_eventListeners[event]) {
