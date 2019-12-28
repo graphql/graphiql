@@ -21,7 +21,7 @@
     "build": "yarn run build-clean && yarn build-ts && yarn build-js",
     "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphiql --scope graphql-language-service",
     "build-ts": "tsc --build",
-    "build-clean": "tsc --build --clean && rimraf '{packages,examples}/**/{dist,esm,bundle}' && lerna run build-clean --parallel",
+    "build-clean": "tsc --build --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
     "build-demo": "lerna run build-demo",
     "build-bundles": "lerna run build-bundles",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-demo",

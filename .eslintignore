@@ -29,6 +29,8 @@
 **/dist
 **/esm
 **/webpack
+**/cdn
+**/storybook
 **/renderExample.js
 **/*.min.js
 
