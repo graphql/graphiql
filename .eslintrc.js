@@ -29,8 +29,6 @@ module.exports = {
     atomtest: true,
     es6: true,
     node: true,
-    jest: true,
-    mocha: true,
     browser: true,
   },
 
@@ -271,21 +269,6 @@ module.exports = {
       },
     ],
 
-    // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-    'flowtype/boolean-style': 1,
-    'flowtype/define-flow-type': 1,
-    'flowtype/no-dupe-keys': 0,
-    'flowtype/no-primitive-constructor-types': 1,
-    'flowtype/no-weak-types': 0,
-    'flowtype/require-parameter-type': 0,
-    'flowtype/require-return-type': 0,
-    'flowtype/require-valid-file-annotation': 0,
-    'flowtype/require-variable-type': 0,
-    'flowtype/sort-keys': 0,
-    'flowtype/type-id-match': 0,
-    'flowtype/use-flow-type': 1,
-    'flowtype/valid-syntax': 0,
-
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
   },
@@ -303,6 +286,23 @@ module.exports = {
         'cypress/globals': true,
       },
     },
+    {
+      files: ['packages/codemirror-graphql/**/*'],
+      env: {
+        mocha: true,
+      },
+    },
+    {
+      files: [
+        '**/src/**/__test__/**',
+        '**/src/**/*.spec.*',
+        '**/src/**/*-test.*',
+      ],
+      extends: ['plugin:jest/recommended'],
+      env: {
+        'jest/globals': true,
+      },
+    },
     // Rules for TypeScript only
     {
       files: ['*.ts', '*.tsx'],
@@ -313,10 +313,14 @@ module.exports = {
     },
     // Rules for Flow only
     {
-      files: ['*.js', '*.jsx'],
+      files: [
+        'packages/codemirror-graphql/src/**/*.js',
+        'packages/codemirror-graphql/src/**/*.jsx',
+      ],
+      plugins: ['flowtype'],
       rules: {
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-        'flowtype/boolean-style': 0, // prettier --list-different
+        'flowtype/boolean-style': 1,
         'flowtype/define-flow-type': 1,
         'flowtype/no-dupe-keys': 0,
         'flowtype/no-primitive-constructor-types': 1,
