@@ -26,6 +26,7 @@ export class ResultViewer extends React.Component {
     editorTheme: PropTypes.string,
     ResultsTooltip: PropTypes.any,
     ImagePreview: PropTypes.any,
+    registerRef: PropTypes.func,
   };
   constructor() {
     super();
@@ -111,6 +112,7 @@ export class ResultViewer extends React.Component {
         aria-live="polite"
         aria-atomic="true"
         ref={node => {
+          this.props.registerRef(node);
           this._node = node;
         }}
       />
