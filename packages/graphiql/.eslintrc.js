@@ -1,6 +1,6 @@
 module.exports = {
   parser: 'babel-eslint',
-  plugins: ['babel', 'react'],
+  plugins: ['babel', 'react', 'no-only-tests'],
   settings: {
     react: {
       version: '0.15.0',
@@ -266,6 +266,7 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 'off',
     'no-multi-spaces': 'off',
     'no-multiple-empty-lines': 'off',
+    'no-only-tests/no-only-tests': 'error',
     'no-spaced-func': 'off',
     'no-trailing-spaces': 'off',
     'no-unexpected-multiline': 'error',
