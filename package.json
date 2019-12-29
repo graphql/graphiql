@@ -6,9 +6,14 @@
     "examples/*"
   ],
   "lint-staged": {
-    "*.{js,ts,jsx,tsx,md}": [
+    "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add"
+    ],
+    "*.{md}": [
+       "prettier --write",
+       "git add"
     ]
   },
   "husky": {
@@ -22,10 +27,11 @@
     "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphiql --scope graphql-language-service",
     "build-ts": "tsc --build",
     "build-clean": "tsc --build --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
+    "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo",
     "build-bundles": "lerna run build-bundles",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-demo",
-    "testonly": "jest && lerna run test --scope codemirror-graphql",
+    "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
