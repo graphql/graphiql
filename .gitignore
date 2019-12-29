@@ -11,6 +11,8 @@ coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 packages/graphiql/storybook
+packages/graphiql/lsp
+packages/graphiql/docs
 dist
 esm
 cypress/screenshots
@@ -19,3 +21,4 @@ npm-debug.log
 lerna-debug.log
 **/tsconfig.tsbuildinfo
 **/*.tsbuildinfo
+site/public

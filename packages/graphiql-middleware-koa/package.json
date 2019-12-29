@@ -1,0 +1,12 @@
+{
+  "name": "@graphql/graphiql-middleware-koa",
+  "description": "",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": {
+    "name": "GraphQL Contributirs"
+  },
+  "dependencies": {
+    "@graphql/render-graphiql": "file:../render-graphiql"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@graphql/graphiql-middleware-express",
+  "version": "0.0.1",
+  "description": "Official GraphiQL Wrapper",
+  "dependencies": {
+    "@graphql/render-graphiql": "file:../render-graphiql"
+  }
+}

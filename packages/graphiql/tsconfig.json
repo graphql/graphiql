@@ -1,0 +1,12 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "jsx": "react"
+  },
+  "references": [
+    {
+      "path": "../graphql-language-service-types"
+    }
+  ],
+  "exclude": ["**/__tests__/**","**/*.spec.*"]
+}

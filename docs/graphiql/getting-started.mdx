@@ -1,0 +1,40 @@
+---
+title: "Getting Started"
+metaDescription: "Getting started with GraphiQL, figuring out what kind of an implementation you need."
+order: 10
+---
+
+Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](../examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
+
+### GraphiQL for my GraphQL Service/HTTP Server/Etc
+
+You may be using a framework or runtime that already provides graphiql, or that provides it via a middleware or plugin.
+
+For example, we support [`express-graphql`](https://github.com/graphql/express-graphql)!
+
+Here are some example searches:
+
+- https://www.npmjs.com/search?q=graphiql - ~117 hits
+- https://pypi.org/search/?q=graphiql - ~33 hits
+- https://search.maven.org/search?q=graphiql - ~15 hits
+- https://rubygems.org/search?utf8=%E2%9C%93&query=graphiql - ~6 hits
+- https://godoc.org/?q=graphiql - ~12 hits
+- https://packagist.org/?query=%22graphiql%22 - ~5 hits
+- https://crates.io/search?q=graphiql - ~2 hits
+
+This doesn't include runtimes or libraries where GraphiQL is used but isn't referenced in the package registry search entry.
+
+### CDN Bundle
+
+Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
+
+For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
+
+The most minimal way to set up GraphiQL is a single `index.html` file:
+
+`embed:graphiql-cdn/index.html`
+
+**Notes**:
+
+- the inlined styles are important for ensuring GraphiQL is visible and fills the canvas.
+- using `React.createElement` directly is belaborous, so follow the webpack instructions below for more highly customized implementation -->

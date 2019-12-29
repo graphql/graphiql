@@ -4,6 +4,7 @@
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
+    "jsx": "react",
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": true,

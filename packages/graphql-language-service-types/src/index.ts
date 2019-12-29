@@ -309,7 +309,7 @@ export type Definition = {
   range?: Range;
   id?: string;
   name?: string;
-  language: string;
+  language?: string;
   projectRoot?: Uri;
 };
 

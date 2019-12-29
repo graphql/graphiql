@@ -1,7 +1,11 @@
 # GraphiQL
 
-[![CDNJS](https://img.shields.io/cdnjs/v/graphiql.svg)](https://cdnjs.com/libraries/graphiql)
-[![npm](https://img.shields.io/npm/v/graphiql.svg)](https://www.npmjs.com/package/graphiql)
+[![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![npm downloads](https://img.shields.io/npm/dm/graphiql?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphiql)
+![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
+![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 [![License](https://img.shields.io/npm/l/graphiql.svg?style=flat-square)](LICENSE)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
@@ -70,9 +74,18 @@ The most minimal way to set up GraphiQL is a single index.html file:
   <body style="margin: 0;">
     <div id="graphiql" style="height: 100vh;"></div>
 
-    <script crossorigin src="https://unpkg.com/react/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/graphiql/graphiql.min.js" ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+    ></script>
 
     <script>
       const graphQLFetcher = graphQLParams =>
@@ -174,7 +187,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-### Children
+### Children (dropped as of 0.18.0)
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -199,6 +212,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 - `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
 
 ## Full Usage Example
+
+> **All of these APIs demonstrated are soon to be deprecated**: Stay posted as the APIs change.
 
 Here's a more complex react implementation. This would require webpack or a bundler.
 

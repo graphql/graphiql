@@ -28,12 +28,26 @@
 **/flow-typed
 **/dist
 **/esm
-**/webpack
-**/cdn
-**/storybook
+packages/graphiql/webpack
+packages/graphiql/storybook
+packages/graphiql/lsp
+packages/graphiql/docs
+site/public
+# for some reason babel-eslint keeps trying to parse this file as flow:
+packages/graphiql/index.d.ts
+
+# codemirror's build artefacts are exported from the package root
+**/codemirror-graphql/variables
+**/codemirror-graphql/utils
+**/codemirror-graphql/results
+**/codemirror-graphql/jump.*
+**/codemirror-graphql/mode.*
+**/codemirror-graphql/lint.*
+**/codemirror-graphql/info.*
+**/codemirror-graphql/hint.*
+
 **/renderExample.js
 **/*.min.js
 
 # Vendored files
-/packages/codemirror-graphql/
 /packages/graphiql/test/vendor

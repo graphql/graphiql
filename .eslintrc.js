@@ -9,16 +9,8 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
-  parserOptions: {
-    ecmaVersion: 7,
-    sourceType: 'module',
-    ecmaFeatures: {
-      globalReturn: true,
-      jsx: true,
-      experimentalObjectRestSpread: true,
-    },
-  },
+  parser: '@typescript-eslint/parser',
+  parserOptions: { sourceType: 'module' },
   settings: {
     react: {
       version: 'detect',
@@ -32,7 +24,7 @@ module.exports = {
     browser: true,
   },
 
-  extends: ['prettier', 'plugin:import/typescript', 'plugin:react/recommended'],
+  extends: ['prettier', 'plugin:react/recommended'],
 
   globals: {
     atom: false,
@@ -254,26 +246,12 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
-    // Babel (https://github.com/babel/eslint-plugin-babel)
-    'babel/new-cap': 0,
-    'babel/no-invalid-this': 0,
-    'babel/object-curly-spacing': 0,
-
-    // import (https://github.com/benmosher/eslint-plugin-import)
-    'import/no-unresolved': 1,
-    'import/no-cycle': 0,
-    'import/extensions': [
-      1,
-      {
-        json: 'always',
-      },
-    ],
-
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
+    'react/prop-types': 0,
   },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+  plugins: ['@typescript-eslint', 'prefer-object-spread'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
@@ -287,17 +265,13 @@ module.exports = {
       },
     },
     {
-      files: ['packages/codemirror-graphql/**/*'],
+      files: ['packages/codemirror-graphql/src/**/*'],
       env: {
         mocha: true,
       },
     },
     {
-      files: [
-        '**/src/**/__test__/**',
-        '**/src/**/*.spec.*',
-        '**/src/**/*-test.*',
-      ],
+      files: ['packages/{graphql-*,graphiql}/src/**'],
       extends: ['plugin:jest/recommended'],
       env: {
         'jest/globals': true,
@@ -305,22 +279,36 @@ module.exports = {
     },
     // Rules for TypeScript only
     {
-      files: ['*.ts', '*.tsx'],
+      files: ['*.d.ts', '*.ts', '*.tsx'],
+      plugins: ['@typescript-eslint'],
       parser: '@typescript-eslint/parser',
       rules: {
         'no-unused-vars': 'off',
       },
     },
-    // Rules for Flow only
+    // Rules for Flow/Babel only
     {
-      files: [
-        'packages/codemirror-graphql/src/**/*.js',
-        'packages/codemirror-graphql/src/**/*.jsx',
-      ],
-      plugins: ['flowtype'],
+      parser: 'babel-eslint',
+      parserOptions: {
+        ecmaVersion: 7,
+        sourceType: 'module',
+        ecmaFeatures: {
+          globalReturn: true,
+          jsx: true,
+          experimentalObjectRestSpread: true,
+        },
+      },
+      files: ['*.js', '*.jsx'],
+      plugins: ['flowtype', 'babel', 'import'],
       rules: {
+        // Babel (https://github.com/babel/eslint-plugin-babel)
+        'babel/new-cap': 0,
+        'babel/no-invalid-this': 0,
+        'babel/object-curly-spacing': 0,
+
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-        'flowtype/boolean-style': 1,
+        // conflicts with prettier
+        'flowtype/boolean-style': 0,
         'flowtype/define-flow-type': 1,
         'flowtype/no-dupe-keys': 0,
         'flowtype/no-primitive-constructor-types': 1,
@@ -333,6 +321,16 @@ module.exports = {
         'flowtype/type-id-match': 0,
         'flowtype/use-flow-type': 1,
         'flowtype/valid-syntax': 0,
+
+        // import (https://github.com/benmosher/eslint-plugin-import)
+        'import/no-unresolved': 1,
+        'import/no-cycle': 0,
+        'import/extensions': [
+          1,
+          {
+            json: 'always',
+          },
+        ],
       },
     },
     {

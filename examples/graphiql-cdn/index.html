@@ -49,7 +49,6 @@
       src="https://unpkg.com/graphiql/graphiql.min.js"
       type="application/javascript"
     ></script>
-    <script src="/renderExample.js" type="application/javascript"></script>
     <script>
       function graphQLFetcher(graphQLParams) {
         return fetch('https://swapi-graphql.netlify.com/.netlify/functions/index', {
@@ -59,7 +58,6 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(graphQLParams),
-          credentials: 'include',
         }).then(function(response) {
           try {
             return response.json();

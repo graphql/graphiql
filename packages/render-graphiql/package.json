@@ -1,0 +1,12 @@
+{
+  "name": "@graphql/render-graphiql",
+  "version": "0.0.1",
+  "description": "Official GraphiQL wrapper function",
+  "main": "./dist/index.js",
+  "module": "./esm/index.js",
+  "typings": "./dist/index.d.ts",
+  "files": ["dist", "esm"],
+  "dependencies": {
+    "render-graphiql": "file:../render-graphiql"
+  }
+}

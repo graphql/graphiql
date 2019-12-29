@@ -1,0 +1,41 @@
+---
+title: "Using Bundlers"
+metaDescription: "Using Bundlers with GraphiQL, an Overview"
+---
+
+# NPM Example (For bundlers)
+
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. f you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
+
+Using another GraphQL service? Here's how to get GraphiQL set up:
+
+With `npm`:
+
+```shell
+npm install --save graphiql
+```
+
+Alternatively, if you are using [`yarn`](https://yarnpkg.com/):
+
+```shell
+yarn add graphiql
+```
+
+GraphiQL provides a React component responsible for rendering the UI, which should be provided with a function for fetching from GraphQL, we recommend using the [fetch](https://fetch.spec.whatwg.org/) standard API.
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import GraphiQL from 'graphiql';
+import fetch from 'isomorphic-fetch';
+
+function graphQLFetcher(graphQLParams) {
+  return fetch(window.location.origin + '/graphql', {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(graphQLParams),
+  }).then(response => response.json());
+}
+
+ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
+```
