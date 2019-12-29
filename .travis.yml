@@ -16,6 +16,9 @@ cache:
 install:
   - yarn --frozen-lockfile # ignore prepublish scripts
   - cypress install
+script:
+  - git fetch --all
+  - yarn run ci
 after_success:
   - codecov
 

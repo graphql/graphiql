@@ -293,11 +293,7 @@ module.exports = {
       },
     },
     {
-      files: [
-        '**/src/**/__test__/**',
-        '**/src/**/*.spec.*',
-        '**/src/**/*-test.*',
-      ],
+      files: ['packages/{graphql-*,graphiql}/src/**'],
       extends: ['plugin:jest/recommended'],
       env: {
         'jest/globals': true,
