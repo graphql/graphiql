@@ -1,6 +1,6 @@
 module.exports = {
   parser: 'babel-eslint',
-  plugins: ['babel', 'react', 'no-only-tests'],
+  plugins: ['babel', 'react', 'jest'],
   settings: {
     react: {
       version: '0.15.0',
@@ -40,6 +40,7 @@ module.exports = {
     unicodeCodePointEscapes: true,
   },
   rules: {
+    'jest/no-focused-tests': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
     'react/jsx-key': 'error',
@@ -266,7 +267,6 @@ module.exports = {
     'no-mixed-spaces-and-tabs': 'off',
     'no-multi-spaces': 'off',
     'no-multiple-empty-lines': 'off',
-    'no-only-tests/no-only-tests': 'error',
     'no-spaced-func': 'off',
     'no-trailing-spaces': 'off',
     'no-unexpected-multiline': 'error',
