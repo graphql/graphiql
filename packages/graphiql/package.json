@@ -13,6 +13,7 @@
   },
   "license": "MIT",
   "main": "dist/index.js",
+  "module": "esm/index.js",
   "files": [
     "dist",
     "esm",

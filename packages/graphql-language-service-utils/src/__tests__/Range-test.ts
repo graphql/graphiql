@@ -31,7 +31,7 @@ const offsetRangeEnd = new Position(1, 5);
 describe('Position', () => {
   it('constructs a Position object', () => {
     const pos = new Position(3, 5);
-    expect(pos).not.toBeUndefined;
+    expect(pos).not.toBeUndefined();
     expect(pos.character).toEqual(5);
     expect(pos.line).toEqual(3);
   });
@@ -58,7 +58,7 @@ describe('Range', () => {
   });
 
   it('constructs a Range object', () => {
-    expect(range).not.toBeUndefined;
+    expect(range).not.toBeUndefined();
     expect(range.start).toEqual(start);
     expect(range.end).toEqual(end);
   });

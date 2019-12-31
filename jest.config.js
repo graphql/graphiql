@@ -10,6 +10,7 @@ module.exports = {
   },
   clearMocks: true,
   collectCoverage: true,
+  coverageDirectory: 'coverage/jest',
   setupFiles: [path.join(__dirname, '/resources/test.config.js')],
   testMatch: [
     '<rootDir>/packages/*/src/**/*-test.{js,ts}',

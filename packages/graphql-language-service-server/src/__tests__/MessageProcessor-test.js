@@ -11,11 +11,13 @@
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
-import MockWatchmanClient from '../__mocks__/MockWatchmanClient';
+
+jest.mock('../GraphQLWatchman');
+import { GraphQLWatchman } from '../GraphQLWatchman';
 import { GraphQLConfig } from 'graphql-config';
 
 describe('MessageProcessor', () => {
-  const mockWatchmanClient = new MockWatchmanClient();
+  const mockWatchmanClient = new GraphQLWatchman();
   const messageProcessor = new MessageProcessor(undefined, mockWatchmanClient);
 
   const queryDir = `${__dirname}/__queries__`;
@@ -55,6 +57,17 @@ describe('MessageProcessor', () => {
       },
       getDiagnostics: (query, uri) => {
         return [];
+      },
+      getDefinition: (query, position, uri) => {
+        return {
+          definitions: [
+            {
+              uri,
+              position,
+              path: uri,
+            },
+          ],
+        };
       },
     };
   });
@@ -141,8 +154,7 @@ describe('MessageProcessor', () => {
   });
 
   // Doesn't work with mock watchman client
-  // TODO edit MessageProcessor to make the messageProcessor easier to test
-  it.skip('runs definition requests', async () => {
+  it('runs definition requests', async () => {
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -167,7 +179,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    expect(result[0].uri).toEqual(`file://${queryDir}/testFragment.graphql`);
+    await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
   });
 
   it('loads configs without projects when watchman is present', async () => {
@@ -180,6 +192,11 @@ describe('MessageProcessor', () => {
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
+    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
+    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
+      'not/a/real',
+      undefined,
+    );
   });
 
   it('loads configs with projects when watchman is present', async () => {
@@ -196,6 +213,11 @@ describe('MessageProcessor', () => {
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
+    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
+    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
+      'not/a/real',
+      undefined,
+    );
   });
 
   it('getQueryAndRange finds queries in tagged templates', async () => {

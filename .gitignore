@@ -7,9 +7,11 @@ yarn-error.log
 
 node_modules/
 coverage/
+.nyc_output
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 packages/graphiql/storybook
+packages/graphiql/lsp
 dist
 esm
 cypress/screenshots

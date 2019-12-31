@@ -27,3 +27,4 @@ declare export class Range implements RangeInterface {
   constructor(start: Position, end: Position): Range;
   containsPosition: (position: PositionInterface) => boolean;
 }
+

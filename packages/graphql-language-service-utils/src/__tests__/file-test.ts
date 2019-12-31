@@ -89,7 +89,7 @@ describe('requireFile', () => {
 });
 
 describe('resolveFile', () => {
-  it('should resolve when path has extension', () => {
+  it('should resolve when path has extension with .json', () => {
     const resolvedPath = resolveFile(
       path.join(__dirname, './__fixtures__/package.json'),
     );
@@ -98,7 +98,7 @@ describe('resolveFile', () => {
     );
   });
 
-  it('should resolve when path has extension', () => {
+  it('should resolve when path has extension without .json', () => {
     const resolvedPath = resolveFile(
       path.join(__dirname, '__fixtures__', 'package'),
     );
@@ -107,12 +107,21 @@ describe('resolveFile', () => {
     );
   });
 
-  it('should resolve when path has extension', () => {
+  it('should resolve when path has extension with .js', () => {
     const resolvedPath = resolveFile(
-      path.join(__dirname, '__fixtures__', 'package'),
+      path.join(__dirname, '__fixtures__', 'file.js'),
     );
     expect(resolvedPath).toEqual(
-      require.resolve(path.join(__dirname, '__fixtures__', 'package')),
+      require.resolve(path.join(__dirname, '__fixtures__', 'file.js')),
+    );
+  });
+
+  it('should resolve when path has extension without .js', () => {
+    const resolvedPath = resolveFile(
+      path.join(__dirname, '__fixtures__', 'file.js'),
+    );
+    expect(resolvedPath).toEqual(
+      require.resolve(path.join(__dirname, '__fixtures__', 'file')),
     );
   });
 

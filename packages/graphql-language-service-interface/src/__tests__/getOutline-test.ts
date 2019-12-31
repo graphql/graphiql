@@ -16,7 +16,7 @@ describe('getOutline()', () => {
     }`;
     // @ts-ignore
     const tree = getOutline(query).outlineTrees;
-    expect(tree).not.toBeUndefined;
+    expect(tree).not.toBeUndefined();
     expect(tree.length).toEqual(1);
     // @ts-ignore
     expect(tree[0].startPosition.line).toEqual(0);

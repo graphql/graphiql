@@ -6,9 +6,14 @@
     "examples/*"
   ],
   "lint-staged": {
-    "*.{js,ts,jsx,tsx,md}": [
+    "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "git add"
+    ],
+    "*.{md}": [
+      "prettier --write",
+      "git add"
     ]
   },
   "husky": {
@@ -20,12 +25,16 @@
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts && yarn build-js",
     "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphiql --scope graphql-language-service",
-    "build-ts": "tsc --build",
-    "build-clean": "tsc --build --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
-    "build-demo": "lerna run build-demo",
+    "build-ts": "yarn run tsc",
+    "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
+    "build-validate": "lerna run build-validate",
+    "build-demo": "lerna run build-demo && yarn run build-docs",
+    "build-docs": "rimraf 'packages/graphiql/docs' && typedoc 'packages'",
     "build-bundles": "lerna run build-bundles",
-    "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-demo",
-    "testonly": "jest && lerna run test --scope codemirror-graphql",
+    "tsc": "tsc --build",
+    "test": "yarn build && yarn run testonly",
+    "ci": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-validate",
+    "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
@@ -37,9 +46,7 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
-    "version-release": "lerna version",
-    "version-prerelease": "lerna version --conventional-prerelease",
-    "version-graduate": "lerna version --conventional-graduate"
+    "lerna-publish": "lerna publish"
   },
   "devDependencies": {
     "@babel/cli": "7.7.7",
@@ -56,6 +63,7 @@
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
     "@commitlint/config-lerna-scopes": "^8.1.0",
+    "@strictsoftware/typedoc-plugin-monorepo": "^0.2.1",
     "@types/jest": "^24.0.18",
     "@typescript-eslint/parser": "^2.3.0",
     "babel-eslint": "^10.0.1",
@@ -65,12 +73,13 @@
     "copy": "^0.3.2",
     "cross-env": "^6.0.3",
     "cypress": "^3.6.1",
-    "eslint": "^6.4.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "6.9.0",
     "eslint-plugin-babel": "5.3.0",
     "eslint-plugin-cypress": "^2.7.0",
     "eslint-plugin-flowtype": "4.5.2",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.1.1",
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "eslint-plugin-react": "7.17.0",
     "fetch-mock": "^6.0.0",
@@ -87,6 +96,7 @@
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
+    "typedoc": "^0.15.6",
     "typescript": "^3.6.3"
   }
 }
