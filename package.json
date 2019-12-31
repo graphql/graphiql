@@ -30,7 +30,7 @@
     "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
     "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo && yarn run build-docs",
-    "build-docs": "yarn workspace graphiql-site build-docs && rimraf 'packages/graphiql/docs' && typedoc --options resources/typedoc.json 'packages'",
+    "build-docs": "yarn workspace graphiql-site build-docs && rimraf 'packages/graphiql/lsp' && typedoc --options resources/typedoc.json 'packages'",
     "build-bundles": "lerna run build-bundles",
     "tsc": "tsc --build",
     "test": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-validate",
