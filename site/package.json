@@ -58,7 +58,7 @@
   "main": "n/a",
   "scripts": {
     "start": "gatsby develop",
-    "build-docs": "gatsby build --prefix-paths && yarn copy-site",
+    "build-docs": "gatsby build --prefix-paths docs && yarn copy-site",
     "copy-site": "mkdirp '../packages/graphiql/docs' && copy 'public/**/*' '../packages/graphiql/docs/'"
   },
   "devDependencies": {
