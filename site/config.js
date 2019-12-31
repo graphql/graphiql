@@ -1,6 +1,6 @@
 const config = {
   gatsby: {
-    pathPrefix: '/',
+    pathPrefix: '/docs',
     siteUrl: 'https://graphiql-test.netlify.com',
     gaTrackingId: null,
   },
