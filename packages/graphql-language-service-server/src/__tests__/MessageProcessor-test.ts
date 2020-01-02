@@ -12,19 +12,24 @@ import { Position, Range } from 'graphql-language-service-utils';
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 
 jest.mock('../GraphQLWatchman');
-jest.mock('../GraphQLCache');
+jest.mock('../Logger');
 
 import { GraphQLWatchman } from '../GraphQLWatchman';
 import { GraphQLConfig } from 'graphql-config';
 
-import { CompletionItem } from 'graphql-language-service-types';
+import {
+  CompletionItem,
+  DefinitionQueryResult,
+} from 'graphql-language-service-types';
 
 import { CompletionList } from 'vscode-languageserver';
+import { Logger } from '../Logger';
 
 describe('MessageProcessor', () => {
   const mockWatchmanClient = new GraphQLWatchman();
 
-  const messageProcessor = new MessageProcessor(undefined, mockWatchmanClient);
+  const logger = new Logger();
+  const messageProcessor = new MessageProcessor(logger, mockWatchmanClient);
 
   const queryDir = `${__dirname}/__queries__`;
   const schemaPath = `${__dirname}/__schema__/StarWarsSchema.graphql`;
@@ -34,6 +39,51 @@ describe('MessageProcessor', () => {
     }
   }
   `;
+
+  beforeEach(() => {
+    messageProcessor._graphQLCache = {
+      // @ts-ignore
+      getGraphQLConfig() {
+        return {
+          configDir: __dirname,
+          getProjectNameForFile() {
+            return null;
+          },
+        };
+      },
+      // @ts-ignore
+      updateFragmentDefinition() {},
+      // @ts-ignore
+      updateObjectTypeDefinition() {},
+      // @ts-ignore
+      handleWatchmanSubscribeEvent() {},
+    };
+    messageProcessor._languageService = {
+      // @ts-ignore
+      getAutocompleteSuggestions: (query, position, uri) => {
+        return [{ label: `${query} at ${uri}` }];
+      },
+      // @ts-ignore
+      getDiagnostics: (query, uri) => {
+        return [];
+      },
+      getDefinition: async (
+        _query,
+        position,
+        uri,
+      ): Promise<DefinitionQueryResult> => {
+        return {
+          queryRange: [new Range(position, position)],
+          definitions: [
+            {
+              position,
+              path: uri,
+            },
+          ],
+        };
+      },
+    };
+  });
 
   const initialDocument = {
     textDocument: {
@@ -76,7 +126,6 @@ describe('MessageProcessor', () => {
       position: new Position(0, 0),
       textDocument: { uri },
     };
-
     const result = await messageProcessor.handleCompletionRequest(test);
     expect(result).toEqual({
       items: [{ label: `${query} at ${uri}` }],
@@ -134,7 +183,7 @@ describe('MessageProcessor', () => {
       .catch(() => {});
   });
 
-  // Doesn't work with mock watchman client
+  // modified to work with jest.mock() of WatchmanClient
   it('runs definition requests', async () => {
     const validQuery = `
   {
@@ -148,9 +197,18 @@ describe('MessageProcessor', () => {
       textDocument: {
         text: validQuery,
         uri: `${queryDir}/test3.graphql`,
-        version: 0,
+        version: 1,
       },
     };
+    messageProcessor._getCachedDocument = (_uri: string) => ({
+      version: 1,
+      contents: [
+        {
+          query: validQuery,
+          range: new Range(new Position(0, 0), new Position(20, 4)),
+        },
+      ],
+    });
 
     await messageProcessor.handleDidOpenOrSaveNotification(newDocument);
 

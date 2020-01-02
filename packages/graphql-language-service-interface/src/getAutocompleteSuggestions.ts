@@ -191,7 +191,8 @@ function getSuggestionsForFieldNames(
         label: field.name,
         detail: String(field.type),
         documentation: field.description,
-        deprecated: field.deprecated,
+        deprecated: field.isDeprecated,
+        isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
       })),
     );
@@ -202,19 +203,22 @@ function getSuggestionsForFieldNames(
 function getSuggestionsForInputValues(
   token: ContextToken,
   typeInfo: AllTypeInfo,
-): Array<CompletionItem> {
+): CompletionItem[] {
   const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
   if (namedInputType instanceof GraphQLEnumType) {
-    const values = namedInputType.getValues();
+    const values: GraphQLEnumValues[] = namedInputType.getValues();
     return hintList(
       token,
-      values.map(value => ({
-        label: value.name,
-        detail: String(namedInputType),
-        documentation: value.description,
-        deprecated: value.deprecated,
-        deprecationReason: value.deprecationReason,
-      })),
+      values.map(
+        (value: GraphQLEnumValue): CompletionItem => ({
+          label: value.name,
+          detail: String(namedInputType),
+          documentation: value.description,
+          deprecated: value.isDeprecated,
+          isDeprecated: value.isDeprecated,
+          deprecationReason: value.deprecationReason,
+        }),
+      ),
     );
   } else if (namedInputType === GraphQLBoolean) {
     return hintList(token, [

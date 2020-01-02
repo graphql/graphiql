@@ -677,10 +677,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schemaCacheKey = endpointKey;
 
       // Maybe use cache
-      console.log('hasSchema', this._schemaMap.has(schemaCacheKey));
       if (this._schemaMap.has(schemaCacheKey)) {
         schema = this._schemaMap.get(schemaCacheKey);
-        console.log(schema);
         // @ts-ignore
         return schema && queryHasExtensions
           ? this._extendSchema(schema, schemaPath, schemaCacheKey)

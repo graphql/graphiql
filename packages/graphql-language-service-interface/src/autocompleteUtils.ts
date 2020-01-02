@@ -107,7 +107,7 @@ function filterAndSortList(
   text: string,
 ): Array<CompletionItem> {
   if (!text) {
-    return filterNonEmpty<CompletionItem>(list, entry => !entry.deprecated);
+    return filterNonEmpty<CompletionItem>(list, entry => !entry.isDeprecated);
   }
 
   const byProximity = list.map(entry => ({
@@ -117,12 +117,12 @@ function filterAndSortList(
 
   const conciseMatches = filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
-    pair => !pair.entry.deprecated,
+    pair => !pair.entry.isDeprecated,
   );
 
   const sortedMatches = conciseMatches.sort(
     (a, b) =>
-      (a.entry.deprecated ? 1 : 0) - (b.entry.deprecated ? 1 : 0) ||
+      (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
       a.proximity - b.proximity ||
       a.entry.label.length - b.entry.label.length,
   );

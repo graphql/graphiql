@@ -54,8 +54,6 @@ import { findGraphQLTags } from './findGraphQLTags';
 import { Logger } from './Logger';
 import { GraphQLWatchman } from './GraphQLWatchman';
 
-// Map { uri => { query, range } }
-
 type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
@@ -392,7 +390,6 @@ export class MessageProcessor {
 
     // If there is no GraphQL query in this file, return an empty result.
     if (!found) {
-      // $FlowFixMe
       return [];
     }
 
@@ -531,8 +528,7 @@ export class MessageProcessor {
   }
 
   async handleDefinitionRequest(
-    // params: DefinitionParams,
-    params: CompletionParams,
+    params: TextDocumentPositionParams,
     _token?: CancellationToken,
   ): Promise<Array<Location>> {
     if (!this._isInitialized) {
