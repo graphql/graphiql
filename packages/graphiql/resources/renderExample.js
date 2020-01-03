@@ -76,10 +76,10 @@ function graphQLFetcher(graphQLParams) {
   // When working locally, the example expects a GraphQL server at the path /graphql.
   // In a PR preview, it connects to the Star Wars API externally.
   // Change this to point wherever you host your GraphQL server.
-  const isDev = !window.location.hostname.match(
-    /(^|\.)netlify\.com$|(^|\.)graphql\.org$/,
-  );
-  const api = isDev ? '/graphql' : 'https://swapi.graph.cool/';
+  const isDev = window.location.hostname.match(/localhost$/);
+  const api = isDev
+    ? '/graphql'
+    : 'https://swapi-graphql.netlify.com/.netlify/functions/index';
   return fetch(api, {
     method: 'post',
     headers: {
@@ -87,7 +87,7 @@ function graphQLFetcher(graphQLParams) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(graphQLParams),
-    credentials: 'include',
+    credentials: 'omit',
   })
     .then(function(response) {
       return response.text();
