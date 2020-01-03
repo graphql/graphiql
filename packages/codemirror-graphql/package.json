@@ -45,7 +45,7 @@
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow} && rimraf esm results utils variables coverage __tests__",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "nyc --require @babel/polyfill --reporter lcov mocha $npm_package_options_mocha"
+    "test": "nyc --require @babel/polyfill --reporter lcov --reporter text mocha $npm_package_options_mocha"
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",
