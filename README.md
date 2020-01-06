@@ -2,7 +2,7 @@
 
 # GraphQL IDE Monorepo
 
-> **Looking for the [GraphiQL Docs?]('./packages/graphiql/README.md')**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`]('./packages/graphiql')
+> **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr)
