@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 const Tab = ({ active, ...props }) => (
   <button
     sx={{
-      display: 'flex',
       padding: 3,
       outline: 'none',
+      textAlign: 'end',
+      verticalAlign: 'baseline',
       transition: ({ transitions }) => transitions[0],
       cursor: 'pointer',
       ':focus, :hover': {
@@ -20,18 +21,18 @@ const Tab = ({ active, ...props }) => (
     {...props}
   />
 );
-
 Tab.propTypes = { active: PropTypes.bool };
 
-const Tabs = ({ tabs, active, onChange }) => {
+const ListWithCssDividers = ({ children, ...props }) => {
   return (
     <ul
+      {...props}
       sx={{
-        display: 'flex',
+        ...props.sx,
         '& > *': {
           position: 'relative',
         },
-        '& > *:not(:first-child):before': {
+        '& > *:not(:first-of-type):before': {
           content: '""',
           display: 'block',
           position: 'absolute',
@@ -42,19 +43,33 @@ const Tabs = ({ tabs, active, onChange }) => {
           left: 0,
         },
       }}>
+      {children}
+    </ul>
+  );
+};
+ListWithCssDividers.propTypes = { sx: PropTypes.object };
+
+const Tabs = ({ tabs, active, onChange }) => {
+  return (
+    <ListWithCssDividers
+      sx={{
+        display: 'flex',
+        height: '100%',
+        alignItems: 'stretch',
+      }}>
       {tabs.map((tab, index) => (
-        <li key={index}>
+        <li sx={{ display: 'grid' }} key={index}>
           <Tab active={active === index} onClick={() => onChange(index)}>
             {tab}
           </Tab>
         </li>
       ))}
-    </ul>
+    </ListWithCssDividers>
   );
 };
 
 Tabs.propTypes = {
-  tabs: PropTypes.arrayOf(PropTypes.Node).isRequired,
+  tabs: PropTypes.arrayOf(PropTypes.node).isRequired,
   active: PropTypes.number.isRequired,
   onChange: PropTypes.func.isRequired,
 };
