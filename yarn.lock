@@ -1101,13 +1101,13 @@
   integrity sha512-HuwlHQ3DyVhpK9GHgTMhJXD8Zp8PGIQVpQGYh/iTrEU6TVxdRC61BxIDZvfWatCaiG617Z/U8maRAFrqFM4TqA==
 
 "@commitlint/config-lerna-scopes@^8.1.0":
-  version "8.2.0"
-  resolved "https://registry.npmjs.org/@commitlint/config-lerna-scopes/-/config-lerna-scopes-8.2.0.tgz#19809fec506a5356018a483af5754196bcb22129"
-  integrity sha512-V8Y4wq0UfZhKZGWLn0F3J11OANOp5wGPS6OdNf67PDbV0Xs39zc9j6HoH1PCEnVcaRHlSCr09B1kkxZvsABUEw==
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-lerna-scopes/-/config-lerna-scopes-8.3.4.tgz#4e977cb39114664ce7db502b1d8e5d77f1a92340"
+  integrity sha512-kaSZ4i9uA/v0AS4Nt4E0D+qYtnPEnkYqOYvgxee16rUxP8uCgBbiv6oNnF3Tk/eHxopHzbG80n1YVYcb2s7edw==
   dependencies:
     import-from "3.0.0"
     resolve-pkg "2.0.0"
-    semver "6.2.0"
+    semver "6.3.0"
 
 "@commitlint/ensure@^8.3.0":
   version "8.3.0"
@@ -14784,11 +14784,6 @@ semver-compare@^1.0.0:
   version "5.7.1"
   resolved "https://registry.npmjs.org/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
   integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
-
-semver@6.2.0:
-  version "6.2.0"
-  resolved "https://registry.npmjs.org/semver/-/semver-6.2.0.tgz#4d813d9590aaf8a9192693d6c85b9344de5901db"
-  integrity sha512-jdFC1VdUGT/2Scgbimf7FSx9iJLXoqfglSF+gJeuNWVpiE37OIbc1jywR/GJyFdz3mnkz2/id0L0J/cr0izR5A==
 
 semver@6.3.0, semver@^6.0.0, semver@^6.1.2, semver@^6.2.0, semver@^6.3.0:
   version "6.3.0"
