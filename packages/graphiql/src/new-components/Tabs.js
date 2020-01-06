@@ -21,6 +21,8 @@ const Tab = ({ active, ...props }) => (
   />
 );
 
+Tab.propTypes = { active: PropTypes.bool };
+
 const Tabs = ({ tabs, active, onChange }) => {
   return (
     <ul
