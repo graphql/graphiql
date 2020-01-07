@@ -2,7 +2,8 @@ import Layout from './Layout';
 
 const palette = {
   neutral: {
-    20: '#939393',
+    20: '#999999',
+    70: '#333333',
     90: `rgba(0, 0, 0, 0.1)`,
     100: '#fff',
   },
@@ -14,6 +15,7 @@ const palette = {
 
 const colors = {
   text: palette.neutral[20],
+  darkText: palette.neutral[70],
   background: palette.fuscia[90],
   cardBackground: palette.neutral[100],
   primary: palette.fuscia[50],
@@ -27,10 +29,13 @@ const theme = {
     monospace: 'Menlo, monospace',
   },
   fontSizes: [12, 16, 20],
-  space: [5, 10, 20],
+  space: [0, 5, 10, 15, 20],
   colors,
+  transitions: ['.25s'],
   shadows: {
     card: `0 0 0 .1px ${colors.border}, 0 1px 4px 0 ${colors.border}`,
+    primaryUnderline: `inset 0 -4px 0 0 ${colors.primary}`,
+    underline: `inset 0 -4px 0 0 ${colors.border}`,
   },
 };
 

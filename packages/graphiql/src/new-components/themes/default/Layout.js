@@ -43,7 +43,7 @@ const gridBase = {
   gridAutoFlow: 'column',
   gridAutoColumns: '1fr',
   gridAutoRows: '100%',
-  gap: 2,
+  gap: 3,
 };
 
 const Layout = ({ nav, navPanels, explorer }) => {
@@ -52,7 +52,7 @@ const Layout = ({ nav, navPanels, explorer }) => {
     <main
       sx={{
         ...gridBase,
-        padding: 2,
+        padding: 3,
         gridTemplate: hasNavPanels
           ? `'nav panels explorer' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
           : `'nav explorer' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,

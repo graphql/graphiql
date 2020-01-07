@@ -8,7 +8,7 @@ const ListRow = ({ children, flex = false, padding = true }) => (
     sx={{
       overflow: 'auto',
       flex: flex && '1 1 auto',
-      padding: padding && 2,
+      padding: padding && 3,
     }}>
     {children}
   </div>
