@@ -7,8 +7,10 @@ const Reset = () => (
   <Global
     styles={themeStyles => ({
       '*': {
-        margin: '0',
+        margin: 0,
+        padding: 0,
         boxSizing: 'border-box',
+        listStyle: 'none',
       },
       body: {
         fontFamily: themeStyles.fonts.body,
