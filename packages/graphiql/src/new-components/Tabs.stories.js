@@ -1,4 +1,4 @@
-import List, { ListRow } from './List';
+import List, { ListRow } from './List/List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
 
