@@ -2,8 +2,9 @@
 import { jsx } from 'theme-ui';
 import List, { ListRow } from './List/List';
 import { SectionHeader, Explainer } from './Type';
+import { layout } from '../../.storybook/decorators';
 
-export default { title: 'Type' };
+export default { title: 'Type', decorators: [layout] };
 
 export const type = () => (
   <List>

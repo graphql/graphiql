@@ -3,9 +3,9 @@ import Tabs from './Tabs';
 import React from 'react';
 import Toolbar from './Toolbar';
 import Content from './Content';
-import WithDividers from './support/WithDividers';
+import { layout } from '../../../.storybook/decorators';
 
-export default { title: 'Toolbars' };
+export default { title: 'Toolbar', decorators: [layout] };
 
 export const Basic = () => (
   <List>

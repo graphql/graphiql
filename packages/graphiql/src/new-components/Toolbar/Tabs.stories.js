@@ -1,8 +1,9 @@
 import List, { ListRow } from '../List/List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
+import { layout } from '../../../.storybook/decorators';
 
-export default { title: 'Tabbar' };
+export default { title: 'Tabbar', decorators: [layout] };
 
 // eslint-disable-next-line react/prop-types
 const ManagedTabs = ({ tabs }) => {
