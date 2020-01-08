@@ -40,7 +40,8 @@ describe('getDiagnostics', () => {
       schema,
     )[0];
     expect(error.message).toEqual(
-      'The field Query.deprecatedField is deprecated. Use test instead.',
+      // eslint-disable-next-line no-useless-escape
+      'The field "Query.deprecatedField" is deprecated. Use test instead.',
     );
     expect(error.severity).toEqual(SEVERITY.WARNING);
     expect(error.source).toEqual('GraphQL: Deprecation');
@@ -71,7 +72,10 @@ describe('getDiagnostics', () => {
     );
     expect(errors.length).toEqual(1);
     const error = errors[0];
-    expect(error.message).toEqual('Syntax Error: Expected :, found Name "id"');
+    expect(error.message).toEqual(
+      // eslint-disable-next-line no-useless-escape
+      'Syntax Error: Expected ":", found Name "id".',
+    );
     expect(error.severity).toEqual(SEVERITY.ERROR);
     expect(error.source).toEqual('GraphQL: Syntax');
   });

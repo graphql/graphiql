@@ -98,7 +98,7 @@
     "eslint-plugin-react": "7.18.3",
     "fetch-mock": "6.5.2",
     "flow-bin": "^0.119.1",
-    "graphql": "^14.6.0",
+    "graphql": "^15.0.0",
     "husky": "^4.0.7",
     "jest": "^25.1.0",
     "jest-environment-jsdom": "^25.1.0",
