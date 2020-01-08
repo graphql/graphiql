@@ -1,14 +1,14 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-
 import PropTypes from 'prop-types';
 
-const ListRow = ({ children, flex = false, padding = true }) => (
+const ListRow = ({ children, flex = false, padding = false }) => (
   <div
     sx={{
       overflow: 'auto',
       flex: flex && '1 1 auto',
-      padding: padding && 3,
+      padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
+      minHeight: ({ spaces }) => spaces.rowMinHeight,
     }}>
     {children}
   </div>
