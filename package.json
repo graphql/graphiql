@@ -85,7 +85,7 @@
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
     "graphql": "^14.5.2",
-    "husky": "^3.0.5",
+    "husky": "^4.0.6",
     "jest": "^24.8.0",
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
