@@ -7,17 +7,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package graphiql-example-cdn
 
-
-
-
-
 ## [0.0.6](https://github.com/graphql/graphiql/compare/graphiql-example-cdn@0.0.5...graphiql-example-cdn@0.0.6) (2019-11-26)
 
 **Note:** Version bump only for package graphiql-example-cdn
-
-
-
-
 
 ## [0.0.5](https://github.com/graphql/graphiql/compare/graphiql-example-cdn@0.0.4...graphiql-example-cdn@0.0.5) (2019-10-19)
 
