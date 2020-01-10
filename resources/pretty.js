@@ -15,7 +15,7 @@ const RESET = '\x1b[0m';
 const YELLOW = '\x1b[33m';
 
 // Simple glob because we use .eslintignore to limit it
-const glob = '**/*.{js,ts,jsx,tsx,md,json5,json}';
+const glob = '**/*.{js,ts,jsx,tsx,md,json5,json,html}';
 const root = join(__dirname, '..');
 const executable = join(root, 'node_modules', '.bin', 'prettier');
 const ignorePath = ['--ignore-path', '.eslintignore'];

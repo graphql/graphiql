@@ -52,17 +52,21 @@
     <script src="/renderExample.js" type="application/javascript"></script>
     <script>
       function graphQLFetcher(graphQLParams) {
-        return fetch('https://swapi-graphql.netlify.com/.netlify/functions/index', {
-          method: 'post',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+        return fetch(
+          'https://swapi-graphql.netlify.com/.netlify/functions/index',
+          {
+            method: 'post',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(graphQLParams),
+            credentials: 'include',
           },
-          body: JSON.stringify(graphQLParams),
-          credentials: 'include',
-        }).then(function(response) {
-          return response.json()
-            .catch(function () { return response.text(); });
+        ).then(function(response) {
+          return response.json().catch(function() {
+            return response.text();
+          });
         });
       }
 
