@@ -19,7 +19,7 @@ app.post('/graphql', graphqlHTTP({ schema }));
 app.get(
   '/graphql',
   graphqlHTTP({
-    schema
+    schema,
   }),
 );
 

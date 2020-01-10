@@ -2,7 +2,7 @@
   "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./dist"
   },
-  "exclude": ["**/__tests__/**","**/*.spec.*"]
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }
