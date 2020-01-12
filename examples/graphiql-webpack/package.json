@@ -6,7 +6,8 @@
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
     "build-validate": "webpack",
-    "build-demo": "yarn build-validate && mkdirp ../../packages/graphiql/webpack && copy 'dist/' ../../packages/graphiql/webpack/",
+    "build-demo": "yarn build-validate && yarn copy-demo",
+    "copy-demo": "mkdirp ../../packages/graphiql/webpack && copy 'dist/*' '../../packages/graphiql/webpack'",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {

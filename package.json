@@ -8,12 +8,10 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
-    "*.{md}": [
-      "prettier --write",
-      "git add"
+    "*.{md,html,json,toml}": [
+      "prettier --write"
     ]
   },
   "husky": {
@@ -24,12 +22,12 @@
   },
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts && yarn build-js",
-    "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphiql --scope graphql-language-service",
+    "build-js": "lerna run build --scope codemirror-graphql --scope graphql-language-service-server --scope graphql-language-service",
     "build-ts": "yarn run tsc",
     "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
     "build-validate": "lerna run build-validate",
-    "build-demo": "lerna run build-demo && yarn run build-docs",
-    "build-docs": "rimraf 'packages/graphiql/docs' && typedoc 'packages'",
+    "build-demo": "lerna run build-demo",
+    "build-docs": "rimraf 'packages/graphiql/lsp' && typedoc 'packages'",
     "build-bundles": "lerna run build-bundles",
     "tsc": "tsc --build",
     "test": "yarn build && yarn run testonly",
@@ -59,6 +57,7 @@
     "@babel/preset-env": "7.7.7",
     "@babel/preset-flow": "7.7.4",
     "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "7.8.0",
     "@babel/register": "^7.4.4",
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",

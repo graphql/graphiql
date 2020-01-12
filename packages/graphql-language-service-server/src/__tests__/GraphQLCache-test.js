@@ -46,7 +46,6 @@ describe('GraphQLCache', () => {
       const introspectionResult = await graphQLRC
         .getProjectConfig('testWithSchema')
         .resolveIntrospection();
-
       fetchMock.mock({
         matcher: '*',
         response: {

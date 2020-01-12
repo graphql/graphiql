@@ -1,0 +1,13 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": false,
+    "jsx": "react",
+    "allowJs": true,
+    "baseUrl": ".",
+    "noEmit": true
+  },
+  "include": ["src"]
+}
