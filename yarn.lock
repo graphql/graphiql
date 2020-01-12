@@ -3688,10 +3688,18 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-ansi-styles@^4.0.0, ansi-styles@^4.1.0:
+ansi-styles@^4.0.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-4.2.0.tgz#5681f0dcf7ae5880a7841d8831c4724ed9cc0172"
   integrity sha512-7kFQgnEaMdRtwf6uSfUnVr9gSGC7faurn+J/Mv90/W+iTtN0405/nLdopfMWwchyxhbGYl6TC4Sccn9TUkGAgg==
+  dependencies:
+    "@types/color-name" "^1.1.1"
+    color-convert "^2.0.1"
+
+ansi-styles@^4.1.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-4.2.1.tgz#90ae75c424d008d2624c5bf29ead3177ebfcf359"
+  integrity sha512-9VGjrMsG1vePxcSweQsN20KY/c4zN0h9fLjqAbwbPfahM3t+NL+M9HC8xeXG2I8pX5NoamTGNuomEUFI7fcUjA==
   dependencies:
     "@types/color-name" "^1.1.1"
     color-convert "^2.0.1"
@@ -10680,9 +10688,9 @@ linkify-it@^2.0.0:
     uc.micro "^1.0.1"
 
 lint-staged@^10.0.0-beta.8:
-  version "10.0.0-beta.14"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.0.0-beta.14.tgz#cbf8b28ed30ab349a0fc0511ed69517610cca2f8"
-  integrity sha512-AdlmRw9G6MLOh9RVzKQ78yWcs1SaNpNs5y5tEetwujFgqIp/fXMZY53KnJByHjtcg6uKSN/DPNxdjpRlkVw12Q==
+  version "10.0.0-beta.15"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.0.0-beta.15.tgz#39548f8295af0e7b09a772179db4c4e430b7488f"
+  integrity sha512-9zyLFOjpyBXeLlEqlatCrn6ucEqMJ/NhY9FzWrVdJG1fxYW/708a3IUkIlbFgi53a1G029cBDdnOg2rESLVCyw==
   dependencies:
     chalk "^3.0.0"
     commander "^4.0.1"
