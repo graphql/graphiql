@@ -12,7 +12,7 @@ describe('Find', () => {
     expect(find([1, 2, 3], num => num === 2)).toEqual(2);
   });
 
-  it('should return undefined if element which returns true for predicate dont exist in the array', () => {
+  it("should return undefined if element which returns true for predicate doesn't exist in the array", () => {
     expect(find([1, 2, 3], num => num === 4)).toBeUndefined();
   });
 });

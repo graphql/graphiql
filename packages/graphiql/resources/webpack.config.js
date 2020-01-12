@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -36,6 +37,7 @@ const resultConfig = {
     allowedHosts: ['local.example.com', 'graphiql.com'],
     before: require('../test/beforeDevServer'),
   },
+  devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
   node: {
     fs: 'empty',
   },
@@ -56,9 +58,9 @@ const resultConfig = {
       // i think we need to add another rule for
       // codemirror-graphql esm.js files to load
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
-        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
+        exclude: /\.(d\.ts|d\.ts\.map)$/,
       },
       {
         test: /\.css$/,
@@ -93,9 +95,13 @@ const resultConfig = {
       filename: isDev ? 'graphiql.css' : 'graphiql.min.css',
       chunkFilename: '[id].css',
     }),
+    new ForkTsCheckerWebpackPlugin({
+      async: isDev,
+      tsconfig: rootPath('tsconfig.json'),
+    }),
   ],
   resolve: {
-    extensions: ['.mjs', '.js', '.json', '.jsx', '.css'],
+    extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
     modules: [rootPath('node_modules'), rootPath('../', '../', 'node_modules')],
   },
 };
