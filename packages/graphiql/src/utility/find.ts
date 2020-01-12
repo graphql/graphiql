@@ -8,7 +8,7 @@
 export default function find<T>(
   list: Array<T>,
   predicate: (item: T) => boolean,
-): T | undefined {
+): T | void {
   for (let i = 0; i < list.length; i++) {
     if (predicate(list[i])) {
       return list[i];
