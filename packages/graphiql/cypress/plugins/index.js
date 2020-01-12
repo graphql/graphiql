@@ -16,4 +16,4 @@ module.exports = (_on, _config) => {
   // on('file:preprocessor', require('@cypress/code-coverage/use-babelrc'));
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-}
+};

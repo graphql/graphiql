@@ -33,6 +33,7 @@ packages/graphiql/storybook
 packages/graphiql/lsp
 **/renderExample.js
 **/*.min.js
+/coverage/
 
 
 # codemirror's build artefacts are exported from the package root

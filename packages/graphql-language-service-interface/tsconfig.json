@@ -16,5 +16,5 @@
       "path": "../graphql-language-service-utils"
     }
   ],
-  "exclude": ["**/__tests__/**","**/*.spec.*"]
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

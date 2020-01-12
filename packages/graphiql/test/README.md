@@ -1,5 +1,4 @@
-Test GraphiQL Application
-========================
+# Test GraphiQL Application
 
 This test folder serves as a basis for testing in-development changes
 and offers watching/compiling of the `src` folder. To utilize this, simply:
