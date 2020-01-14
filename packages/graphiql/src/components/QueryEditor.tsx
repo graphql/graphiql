@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { GraphQLSchema } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
@@ -15,6 +14,20 @@ import commonKeys from '../utility/commonKeys';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
+
+type QueryEditorProps = {
+  schema?: GraphQLSchema;
+  value?: string;
+  onEdit?: (value: string) => void;
+  readOnly?: boolean;
+  onHintInformationRender?: () => void;
+  onClickReference?: () => void;
+  onCopyQuery?: () => void;
+  onPrettifyQuery?: () => void;
+  onMergeQuery?: () => void;
+  onRunQuery?: () => void;
+  editorTheme?: string;
+};
 
 /**
  * QueryEditor
@@ -29,23 +42,15 @@ const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class QueryEditor extends React.Component {
-  static propTypes = {
-    schema: PropTypes.instanceOf(GraphQLSchema),
-    value: PropTypes.string,
-    onEdit: PropTypes.func,
-    readOnly: PropTypes.bool,
-    onHintInformationRender: PropTypes.func,
-    onClickReference: PropTypes.func,
-    onCopyQuery: PropTypes.func,
-    onPrettifyQuery: PropTypes.func,
-    onMergeQuery: PropTypes.func,
-    onRunQuery: PropTypes.func,
-    editorTheme: PropTypes.string,
-  };
+export class QueryEditor extends React.Component<QueryEditorProps, {}> {
+  cachedValue: string;
+  editor: CodeMirror.Editor | null;
+  ignoreChangeEvent: boolean;
 
-  constructor(props) {
-    super();
+  _node: HTMLElement | null = null;
+
+  constructor(props: QueryEditorProps) {
+    super(props);
 
     // Keep a cached version of the value, this cache will be updated when the
     // editor is updated, which can later be used to protect the editor from
@@ -177,7 +182,7 @@ export class QueryEditor extends React.Component {
     this.editor.on('beforeChange', this._onBeforeChange);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: QueryEditorProps) {
     const CodeMirror = require('codemirror');
 
     // Ensure the changes caused by this update are not interpretted as
@@ -238,13 +243,13 @@ export class QueryEditor extends React.Component {
   }
 
   _onKeyUp = (cm, event) => {
-    if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
+    if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && this.editor) {
       this.editor.execCommand('autocomplete');
     }
   };
 
   _onEdit = () => {
-    if (!this.ignoreChangeEvent) {
+    if (!this.ignoreChangeEvent && this.editor) {
       this.cachedValue = this.editor.getValue();
       if (this.props.onEdit) {
         this.props.onEdit(this.cachedValue);

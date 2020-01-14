@@ -4,12 +4,24 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import StorageAPI from './StorageAPI';
+
+export type QueryStoreItem = {
+  operationName: string;
+  query: string;
+  variables: string;
+  label?: string;
+  favorite?: boolean;
+};
 
 export default class QueryStore {
-  constructor(key, storage, maxSize = null) {
-    this.key = key;
-    this.storage = storage;
-    this.maxSize = maxSize;
+  items: Array<QueryStoreItem>;
+
+  constructor(
+    private key: string,
+    private storage: StorageAPI,
+    private maxSize: number | null = null,
+  ) {
     this.items = this.fetchAll();
   }
 
@@ -17,7 +29,7 @@ export default class QueryStore {
     return this.items.length;
   }
 
-  contains(item) {
+  contains(item: QueryStoreItem) {
     return this.items.some(
       x =>
         x.query === item.query &&
@@ -26,7 +38,7 @@ export default class QueryStore {
     );
   }
 
-  edit(item) {
+  edit(item: QueryStoreItem) {
     const itemIndex = this.items.findIndex(
       x =>
         x.query === item.query &&
@@ -39,7 +51,7 @@ export default class QueryStore {
     }
   }
 
-  delete(item) {
+  delete(item: QueryStoreItem) {
     const itemIndex = this.items.findIndex(
       x =>
         x.query === item.query &&
@@ -58,13 +70,14 @@ export default class QueryStore {
 
   fetchAll() {
     const raw = this.storage.get(this.key);
+    console.log({ raw });
     if (raw) {
-      return JSON.parse(raw)[this.key];
+      return JSON.parse(raw)[this.key] as Array<QueryStoreItem>;
     }
     return [];
   }
 
-  push(item) {
+  push(item: QueryStoreItem) {
     const items = [...this.items, item];
 
     if (this.maxSize && items.length > this.maxSize) {

@@ -5,7 +5,24 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { parse, typeFromAST } from 'graphql';
+import {
+  parse,
+  typeFromAST,
+  GraphQLSchema,
+  DocumentNode,
+  OperationDefinitionNode,
+  NamedTypeNode,
+  GraphQLNamedType,
+} from 'graphql';
+
+export type VariableToType = {
+  [variable: string]: GraphQLNamedType;
+};
+
+export type QueryFacts = {
+  variableToType: VariableToType | null;
+  operations: OperationDefinitionNode[];
+};
 
 /**
  * Provided previous "queryFacts", a GraphQL schema, and a query document
@@ -13,22 +30,25 @@ import { parse, typeFromAST } from 'graphql';
  *
  * If the query cannot be parsed, returns undefined.
  */
-export default function getQueryFacts(schema, documentStr) {
+export default function getQueryFacts(
+  schema?: GraphQLSchema,
+  documentStr?: string | null,
+): QueryFacts | undefined {
   if (!documentStr) {
     return;
   }
 
-  let documentAST;
+  let documentAST: DocumentNode;
   try {
     documentAST = parse(documentStr);
-  } catch (e) {
+  } catch {
     return;
   }
 
   const variableToType = schema ? collectVariables(schema, documentAST) : null;
 
   // Collect operations by their names.
-  const operations = [];
+  const operations: OperationDefinitionNode[] = [];
   documentAST.definitions.forEach(def => {
     if (def.kind === 'OperationDefinition') {
       operations.push(def);
@@ -41,14 +61,19 @@ export default function getQueryFacts(schema, documentStr) {
 /**
  * Provided a schema and a document, produces a `variableToType` Object.
  */
-export function collectVariables(schema, documentAST) {
-  const variableToType = Object.create(null);
+export function collectVariables(
+  schema: GraphQLSchema,
+  documentAST: DocumentNode,
+): VariableToType | null {
+  const variableToType: {
+    [variable: string]: GraphQLNamedType;
+  } = Object.create(null);
   documentAST.definitions.forEach(definition => {
     if (definition.kind === 'OperationDefinition') {
       const variableDefinitions = definition.variableDefinitions;
       if (variableDefinitions) {
         variableDefinitions.forEach(({ variable, type }) => {
-          const inputType = typeFromAST(schema, type);
+          const inputType = typeFromAST(schema, type as NamedTypeNode); // TODO: don't use 'as'
           if (inputType) {
             variableToType[variable.name.value] = inputType;
           }

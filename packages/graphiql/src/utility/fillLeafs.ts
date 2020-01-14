@@ -12,7 +12,19 @@ import {
   print,
   TypeInfo,
   visit,
+  GraphQLSchema,
+  DocumentNode,
+  GraphQLOutputType,
+  GraphQLType,
 } from 'graphql';
+import { Maybe } from '../components/GraphiQL';
+
+type Insertion = {
+  index: number;
+  string: string;
+};
+
+type GetDefaultFieldNamesFn = (type: GraphQLType) => Array<string>;
 
 /**
  * Given a document string which may not be valid due to terminal fields not
@@ -24,14 +36,18 @@ import {
  * Note that there is no guarantee that the result will be a valid query, this
  * utility represents a "best effort" which may be useful within IDE tools.
  */
-export function fillLeafs(schema, docString, getDefaultFieldNames) {
-  const insertions = [];
+export function fillLeafs(
+  schema: GraphQLSchema,
+  docString: string,
+  getDefaultFieldNames: GetDefaultFieldNamesFn,
+) {
+  const insertions: Array<Insertion> = [];
 
   if (!schema) {
     return { insertions, result: docString };
   }
 
-  let ast;
+  let ast: DocumentNode;
   try {
     ast = parse(docString);
   } catch (error) {
@@ -48,8 +64,11 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
       typeInfo.enter(node);
       if (node.kind === 'Field' && !node.selectionSet) {
         const fieldType = typeInfo.getType();
-        const selectionSet = buildSelectionSet(fieldType, fieldNameFn);
-        if (selectionSet) {
+        const selectionSet = buildSelectionSet(
+          isFieldType(fieldType),
+          fieldNameFn,
+        );
+        if (selectionSet && node.loc) {
           const indent = getIndentation(docString, node.loc.start);
           insertions.push({
             index: node.loc.end,
@@ -70,9 +89,10 @@ export function fillLeafs(schema, docString, getDefaultFieldNames) {
 // The default function to use for producing the default fields from a type.
 // This function first looks for some common patterns, and falls back to
 // including all leaf-type fields.
-function defaultGetDefaultFieldNames(type) {
+function defaultGetDefaultFieldNames(type: GraphQLType) {
   // If this type cannot access fields, then return an empty set.
-  if (!type.getFields) {
+  // if (!type.getFields) {
+  if (!('getFields' in type)) {
     return [];
   }
 
@@ -94,7 +114,7 @@ function defaultGetDefaultFieldNames(type) {
   }
 
   // Include all leaf-type fields.
-  const leafFieldNames = [];
+  const leafFieldNames: Array<string> = [];
   Object.keys(fields).forEach(fieldName => {
     if (isLeafType(fields[fieldName].type)) {
       leafFieldNames.push(fieldName);
@@ -105,7 +125,10 @@ function defaultGetDefaultFieldNames(type) {
 
 // Given a GraphQL type, and a function which produces field names, recursively
 // generate a SelectionSet which includes default fields.
-function buildSelectionSet(type, getDefaultFieldNames) {
+function buildSelectionSet(
+  type: GraphQLOutputType | void,
+  getDefaultFieldNames: GetDefaultFieldNamesFn,
+) {
   // Unwrap any non-null or list types.
   const namedType = getNamedType(type);
 
@@ -142,7 +165,7 @@ function buildSelectionSet(type, getDefaultFieldNames) {
 
 // Given an initial string, and a list of "insertion" { index, string } objects,
 // return a new string with these insertions applied.
-function withInsertions(initial, insertions) {
+function withInsertions(initial: string, insertions: Array<Insertion>) {
   if (insertions.length === 0) {
     return initial;
   }
@@ -158,7 +181,7 @@ function withInsertions(initial, insertions) {
 
 // Given a string and an index, look backwards to find the string of whitespace
 // following the next previous line break.
-function getIndentation(str, index) {
+function getIndentation(str: string, index: number) {
   let indentStart = index;
   let indentEnd = index;
   while (indentStart) {
@@ -174,4 +197,12 @@ function getIndentation(str, index) {
     }
   }
   return str.substring(indentStart, indentEnd);
+}
+
+function isFieldType(
+  fieldType: Maybe<GraphQLOutputType>,
+): GraphQLOutputType | void {
+  if (fieldType) {
+    return fieldType;
+  }
 }

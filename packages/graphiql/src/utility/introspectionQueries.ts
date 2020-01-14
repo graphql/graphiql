@@ -14,7 +14,7 @@ export const introspectionQueryName = getOperationAST(parse(introspectionQuery))
 // Some GraphQL services do not support subscriptions and fail an introspection
 // query which includes the `subscriptionType` field as the stock introspection
 // query does. This backup query removes that field.
-export const introspectionQuerySansSubscriptions = `
+export const introspectionQuerySansSubscriptions = /* GraphQL */ `
   query ${introspectionQueryName} {
     __schema {
       queryType { name }

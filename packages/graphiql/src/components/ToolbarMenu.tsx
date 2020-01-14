@@ -5,21 +5,30 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { FC, MouseEventHandler, MouseEvent } from 'react';
+
+type ToolbarMenuProps = {
+  title: string;
+  label: string;
+};
+
+type ToolbarMenuState = {
+  visible: boolean;
+};
 
 /**
  * ToolbarMenu
  *
  * A menu style button to use within the Toolbar.
  */
-export class ToolbarMenu extends React.Component {
-  static propTypes = {
-    title: PropTypes.string,
-    label: PropTypes.string,
-  };
+export class ToolbarMenu extends React.Component<
+  ToolbarMenuProps,
+  ToolbarMenuState
+> {
+  _node: HTMLAnchorElement;
+  _listener: this['handleClick'] | null;
 
-  constructor(props) {
+  constructor(props: ToolbarMenuProps) {
     super(props);
     this.state = { visible: false };
   }
@@ -36,7 +45,9 @@ export class ToolbarMenu extends React.Component {
         onClick={this.handleOpen.bind(this)}
         onMouseDown={preventDefault}
         ref={node => {
-          this._node = node;
+          if (node) {
+            this._node = node;
+          }
         }}
         title={this.props.title}>
         {this.props.label}
@@ -64,7 +75,7 @@ export class ToolbarMenu extends React.Component {
     }
   }
 
-  handleClick(e) {
+  handleClick(e: MouseEvent<HTMLAnchorElement>) {
     if (this._node !== e.target) {
       preventDefault(e);
       this.setState({ visible: false });
@@ -72,14 +83,24 @@ export class ToolbarMenu extends React.Component {
     }
   }
 
-  handleOpen = e => {
+  handleOpen: MouseEventHandler<HTMLAnchorElement> = e => {
     preventDefault(e);
     this.setState({ visible: true });
     this._subscribe();
   };
 }
 
-export function ToolbarMenuItem({ onSelect, title, label }) {
+type ToolbarMenuItemProps = {
+  onSelect: () => void;
+  title: string;
+  label: string;
+};
+
+export const ToolbarMenuItem: FC<ToolbarMenuItemProps> = ({
+  onSelect,
+  title,
+  label,
+}) => {
   return (
     <li
       onMouseOver={e => {
@@ -94,14 +115,8 @@ export function ToolbarMenuItem({ onSelect, title, label }) {
       {label}
     </li>
   );
-}
-
-ToolbarMenuItem.propTypes = {
-  onSelect: PropTypes.func,
-  title: PropTypes.string,
-  label: PropTypes.string,
 };
 
-function preventDefault(e) {
+function preventDefault(e: MouseEvent) {
   e.preventDefault();
 }

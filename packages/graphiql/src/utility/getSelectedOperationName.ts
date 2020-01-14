@@ -1,3 +1,5 @@
+import { OperationDefinitionNode } from 'graphql';
+
 /**
  *  Copyright (c) 2019 GraphQL Contributors.
  *
@@ -10,9 +12,9 @@
  * operations, determine what the next selected operation should be.
  */
 export default function getSelectedOperationName(
-  prevOperations,
-  prevSelectedOperationName,
-  operations,
+  prevOperations: OperationDefinitionNode | null,
+  prevSelectedOperationName: string | null,
+  operations?: OperationDefinitionNode[],
 ) {
   // If there are not enough operations to bother with, return nothing.
   if (!operations || operations.length < 1) {

@@ -6,21 +6,27 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+
+type ToolbarButtonProps = {
+  onClick: () => void;
+  title: string;
+  label: string;
+};
+
+type ToolbarButtonState = {
+  error: Error | null;
+};
 
 /**
  * ToolbarButton
  *
  * A button to use within the Toolbar.
  */
-export class ToolbarButton extends React.Component {
-  static propTypes = {
-    onClick: PropTypes.func,
-    title: PropTypes.string,
-    label: PropTypes.string,
-  };
-
-  constructor(props) {
+export class ToolbarButton extends React.Component<
+  ToolbarButtonProps,
+  ToolbarButtonState
+> {
+  constructor(props: ToolbarButtonProps) {
     super(props);
     this.state = { error: null };
   }

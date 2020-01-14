@@ -5,13 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { FC } from 'react';
 
 /**
  * ToolbarGroup
  *
  * A group of associated controls.
  */
-export function ToolbarGroup({ children }) {
+export const ToolbarGroup: FC = ({ children }) => {
   return <div className="toolbar-button-group">{children}</div>;
-}
+};

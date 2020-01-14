@@ -5,7 +5,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-function isQuotaError(storage, e) {
+export interface Storage {
+  getItem: (key: string) => string | null;
+  removeItem: (key: string) => void;
+  setItem: (key: string, value: string) => void;
+  length: number;
+}
+
+function isQuotaError(storage: Storage, e: Error) {
   return (
     e instanceof DOMException &&
     // everything except Firefox
@@ -23,12 +30,14 @@ function isQuotaError(storage, e) {
 }
 
 export default class StorageAPI {
-  constructor(storage) {
+  storage: Storage | null;
+
+  constructor(storage?: Storage) {
     this.storage =
       storage || (typeof window !== 'undefined' ? window.localStorage : null);
   }
 
-  get(name) {
+  get(name: string) {
     if (this.storage) {
       const value = this.storage.getItem('graphiql:' + name);
       // Clean up any inadvertently saved null/undefined values.
@@ -43,7 +52,7 @@ export default class StorageAPI {
     return null;
   }
 
-  set(name, value) {
+  set(name: string, value: string) {
     let quotaError = false;
     let error = null;
 
