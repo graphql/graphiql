@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { GraphQLNonNull, GraphQLList } from 'graphql';
+import { GraphQLNonNull, GraphQLList, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
 
 const md = new MD();
@@ -87,7 +87,7 @@ export default function onHasCompletion(cm, data, onHintInformationRender) {
   });
 }
 
-function renderType(type) {
+function renderType(type: GraphQLType): string {
   if (type instanceof GraphQLNonNull) {
     return `${renderType(type.ofType)}!`;
   }

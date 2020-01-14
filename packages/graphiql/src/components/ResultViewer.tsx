@@ -5,10 +5,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import commonKeys from '../utility/commonKeys';
+
+type ImagePreviewType = Component & { shouldRender: (token: any) => void }; // TODO: remove any
+
+type ResultViewerProps = {
+  value?: string;
+  editorTheme?: string;
+  ResultsTooltip?: JSX.Element;
+  ImagePreview?: ImagePreviewType;
+  registerRef: (node: HTMLElement) => void;
+};
 
 /**
  * ResultViewer
@@ -20,17 +29,9 @@ import commonKeys from '../utility/commonKeys';
  *   - value: The text of the editor.
  *
  */
-export class ResultViewer extends React.Component {
-  static propTypes = {
-    value: PropTypes.string,
-    editorTheme: PropTypes.string,
-    ResultsTooltip: PropTypes.any,
-    ImagePreview: PropTypes.any,
-    registerRef: PropTypes.func,
-  };
-  constructor() {
-    super();
-  }
+export class ResultViewer extends React.Component<ResultViewerProps, {}> {
+  viewer: CodeMirror.Editor | null = null;
+  _node: HTMLElement | null = null;
 
   componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
@@ -53,7 +54,7 @@ export class ResultViewer extends React.Component {
         'info',
         'graphql-results',
         (token, options, cm, pos) => {
-          const infoElements = [];
+          const infoElements: Component[] = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);
           }
@@ -92,12 +93,14 @@ export class ResultViewer extends React.Component {
     });
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: ResultViewerProps) {
     return this.props.value !== nextProps.value;
   }
 
   componentDidUpdate() {
-    this.viewer.setValue(this.props.value || '');
+    if (this.viewer) {
+      this.viewer.setValue(this.props.value || '');
+    }
   }
 
   componentWillUnmount() {
@@ -112,8 +115,10 @@ export class ResultViewer extends React.Component {
         aria-live="polite"
         aria-atomic="true"
         ref={node => {
-          this.props.registerRef(node);
-          this._node = node;
+          if (node) {
+            this.props.registerRef(node);
+            this._node = node;
+          }
         }}
       />
     );

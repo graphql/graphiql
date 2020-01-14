@@ -7,14 +7,18 @@
 
 import { parse } from 'graphql';
 import React from 'react';
-import PropTypes from 'prop-types';
-import QueryStore from '../utility/QueryStore';
+import QueryStore, { QueryStoreItem } from '../utility/QueryStore';
 import HistoryQuery from './HistoryQuery';
+import StorageAPI from 'src/utility/StorageAPI';
 
 const MAX_QUERY_SIZE = 100000;
 const MAX_HISTORY_LENGTH = 20;
 
-const shouldSaveQuery = (query, variables, lastQuerySaved) => {
+const shouldSaveQuery = (
+  query: string,
+  variables: string,
+  lastQuerySaved: QueryStoreItem,
+) => {
   try {
     parse(query);
   } catch (e) {
@@ -40,17 +44,27 @@ const shouldSaveQuery = (query, variables, lastQuerySaved) => {
   return true;
 };
 
-export class QueryHistory extends React.Component {
-  static propTypes = {
-    query: PropTypes.string,
-    variables: PropTypes.string,
-    operationName: PropTypes.string,
-    queryID: PropTypes.number,
-    onSelectQuery: PropTypes.func,
-    storage: PropTypes.object,
-  };
+type QueryHistoryProps = {
+  query?: string;
+  variables?: string;
+  operationName?: string;
+  queryID?: string;
+  onSelectQuery?: () => void;
+  storage: StorageAPI;
+};
 
-  constructor(props) {
+type QueryHistoryState = {
+  queries: Array<QueryStoreItem>;
+};
+
+export class QueryHistory extends React.Component<
+  QueryHistoryProps,
+  QueryHistoryState
+> {
+  historyStore: QueryStore;
+  favoriteStore: QueryStore;
+
+  constructor(props: QueryHistoryProps) {
     super(props);
     this.historyStore = new QueryStore(
       'queries',
@@ -90,7 +104,7 @@ export class QueryHistory extends React.Component {
   }
 
   // Public API
-  updateHistory = (query, variables, operationName) => {
+  updateHistory = (query: string, variables: string, operationName: string) => {
     if (shouldSaveQuery(query, variables, this.historyStore.fetchRecent())) {
       this.historyStore.push({
         query,
@@ -107,8 +121,14 @@ export class QueryHistory extends React.Component {
   };
 
   // Public API
-  toggleFavorite = (query, variables, operationName, label, favorite) => {
-    const item = {
+  toggleFavorite = (
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: boolean,
+  ) => {
+    const item: QueryStoreItem = {
       query,
       variables,
       operationName,
@@ -127,7 +147,13 @@ export class QueryHistory extends React.Component {
   };
 
   // Public API
-  editLabel = (query, variables, operationName, label, favorite) => {
+  editLabel = (
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: boolean,
+  ) => {
     const item = {
       query,
       variables,
