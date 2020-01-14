@@ -41,8 +41,8 @@ describe('MessageProcessor', () => {
     messageProcessor._graphQLCache = {
       getGraphQLConfig() {
         return {
-          configDir: __dirname,
-          getProjectNameForFile() {
+          dirpath: __dirname,
+          getProjectForFile() {
             return null;
           },
         };
@@ -185,10 +185,13 @@ describe('MessageProcessor', () => {
   it('loads configs without projects when watchman is present', async () => {
     const config = new GraphQLConfig(
       {
-        schemaPath,
-        includes: `${queryDir}/*.graphql`,
+        filepath: 'not/a/real/config',
+        config: {
+          schema: schemaPath,
+          include: `${queryDir}/*.graphql`,
+        },
       },
-      'not/a/real/config',
+      [],
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
@@ -202,14 +205,17 @@ describe('MessageProcessor', () => {
   it('loads configs with projects when watchman is present', async () => {
     const config = new GraphQLConfig(
       {
-        projects: {
-          foo: {
-            schemaPath,
-            includes: `${queryDir}/*.graphql`,
+        filepath: 'not/a/real/config',
+        config: {
+          projects: {
+            foo: {
+              schema: schemaPath,
+              include: `${queryDir}/*.graphql`,
+            },
           },
         },
       },
-      'not/a/real/config',
+      [],
     );
 
     await messageProcessor._subcribeWatchman(config, mockWatchmanClient);

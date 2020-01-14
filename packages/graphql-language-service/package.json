@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "7.7.0",
-    "graphql-config": "2.2.1",
+    "graphql-config": "3.0.0-alpha.17",
     "graphql-language-service-interface": "^2.3.3",
     "graphql-language-service-server": "^2.3.3",
     "graphql-language-service-utils": "^2.3.3",

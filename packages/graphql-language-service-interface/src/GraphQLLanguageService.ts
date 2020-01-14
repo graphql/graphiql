@@ -76,7 +76,7 @@ export class GraphQLLanguageService {
   }
 
   getConfigForURI(uri: Uri) {
-    const config = this._graphQLConfig.getConfigForFile(uri);
+    const config = this._graphQLConfig.getProjectForFile(uri);
     if (config) {
       return config;
     }
@@ -92,7 +92,7 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
-    const { schemaPath, projectName, extensions } = projectConfig;
+    const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
       const queryAST = parse(query);
@@ -191,7 +191,7 @@ export class GraphQLLanguageService {
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {
@@ -207,7 +207,7 @@ export class GraphQLLanguageService {
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {

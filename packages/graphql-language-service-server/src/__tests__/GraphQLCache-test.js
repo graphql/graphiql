@@ -8,10 +8,14 @@
  *  @flow
  */
 
+jest.mock('cross-fetch', () => ({
+  fetch: require('fetch-mock').fetchHandler,
+}));
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
-import { getGraphQLConfig } from 'graphql-config';
+import { loadConfig } from 'graphql-config';
 import fetchMock from 'fetch-mock';
+import { introspectionFromSchema } from 'graphql';
 
 import { GraphQLCache } from '../GraphQLCache';
 import { getQueryAndRange } from '../MessageProcessor';
@@ -28,7 +32,7 @@ describe('GraphQLCache', () => {
 
   beforeEach(async () => {
     const configDir = __dirname;
-    graphQLRC = getGraphQLConfig(configDir);
+    graphQLRC = await loadConfig({ rootDir: configDir });
     cache = new GraphQLCache(configDir, graphQLRC);
   });
 
@@ -43,9 +47,12 @@ describe('GraphQLCache', () => {
     });
 
     it('generates the schema correctly from endpoint', async () => {
-      const introspectionResult = await graphQLRC
-        .getProjectConfig('testWithSchema')
-        .resolveIntrospection();
+      const introspectionResult = {
+        data: introspectionFromSchema(
+          await graphQLRC.getProject('testWithSchema').getSchema(),
+          { descriptions: true },
+        ),
+      };
       fetchMock.mock({
         matcher: '*',
         response: {
@@ -57,17 +64,6 @@ describe('GraphQLCache', () => {
       });
 
       const schema = await cache.getSchema('testWithEndpoint');
-      expect(fetchMock.called('*')).toEqual(true);
-      expect(schema instanceof GraphQLSchema).toEqual(true);
-    });
-
-    it('falls through to schema on disk if endpoint fails', async () => {
-      fetchMock.mock({
-        matcher: '*',
-        response: 500,
-      });
-
-      const schema = await cache.getSchema('testWithEndpointAndSchema');
       expect(fetchMock.called('*')).toEqual(true);
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
@@ -112,7 +108,7 @@ describe('GraphQLCache', () => {
 
   describe('handleWatchmanSubscribeEvent', () => {
     it('handles invalidating the schema cache', async () => {
-      const projectConfig = graphQLRC.getProjectConfig('testWithSchema');
+      const projectConfig = graphQLRC.getProject('testWithSchema');
       await cache.getSchema('testWithSchema');
       expect(cache._schemaMap.size).toEqual(1);
       const handler = cache.handleWatchmanSubscribeEvent(
@@ -137,12 +133,12 @@ describe('GraphQLCache', () => {
     });
 
     it('handles invalidating the endpoint cache', async () => {
-      const projectConfig = graphQLRC.getProjectConfig(
-        'testWithEndpointAndSchema',
-      );
-      const introspectionResult = await graphQLRC
-        .getProjectConfig('testWithSchema')
-        .resolveIntrospection();
+      const projectConfig = graphQLRC.getProject('testWithEndpointAndSchema');
+      const introspectionResult = {
+        data: introspectionFromSchema(
+          await graphQLRC.getProject('testWithSchema').getSchema(),
+        ),
+      };
 
       fetchMock.mock({
         matcher: '*',
@@ -233,25 +229,25 @@ describe('GraphQLCache', () => {
 
   describe('getFragmentDefinitions', () => {
     it('it caches fragments found through single glob in `includes`', async () => {
-      const config = graphQLRC.getProjectConfig('testSingularIncludesGlob');
+      const config = graphQLRC.getProject('testSingularIncludesGlob');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
     it('it caches fragments found through multiple globs in `includes`', async () => {
-      const config = graphQLRC.getProjectConfig('testMultipleIncludes');
+      const config = graphQLRC.getProject('testMultipleIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
     it('handles empty includes', async () => {
-      const config = graphQLRC.getProjectConfig('testNoIncludes');
+      const config = graphQLRC.getProject('testNoIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();
     });
 
     it('handles non-existent includes', async () => {
-      const config = graphQLRC.getProjectConfig('testBadIncludes');
+      const config = graphQLRC.getProject('testBadIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();
     });
