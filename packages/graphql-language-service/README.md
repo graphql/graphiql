@@ -38,9 +38,9 @@ After pulling the latest changes from this repo, be sure to run `yarn run build`
 
 The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
 
-### GraphQL configuration file (`.graphqlconfig`)
+### GraphQL configuration file (`.graphqlrc.yml`)
 
-Check out [graphql-config](https://github.com/graphcool/graphql-config)
+Check out [graphql-config](https://graphql-config.com/docs/introduction)
 
 The graphql features we support are:
 
@@ -80,7 +80,7 @@ Options:
                     autocomplete suggestions.
                     If omitted, the last column number will be used.
                                                                         [number]
-  -c, --configDir   Path to the .graphqlrc configuration file.
+  -c, --configDir   Path to the .graphqlrc.yml configuration file.
                     Walks up the directory tree from the provided config
                     directory, or the current working directory, until a
                     .graphqlrc is found or the root directory is found.
@@ -96,23 +96,23 @@ Commands: "server, validate, autocomplete, outline"
 
 GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
 
-The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlconfig` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
+The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlrc.yml` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
 
 ```
 ./application
 
   ./productA
-    .graphqlconfig
+    .graphqlrc.yml
     ProductAQuery.graphql
     ProductASchema.graphql
 
   ./productB
-    .graphqlconfig
+    .graphqlrc.yml
     ProductBQuery.graphql
     ProductBSchema.graphql
 ```
 
-A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlconfig` file, as illustrated in the directory structure above.
+A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc.yml` file, as illustrated in the directory structure above.
 
 The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
 
