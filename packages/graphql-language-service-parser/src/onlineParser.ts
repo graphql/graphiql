@@ -235,7 +235,7 @@ function pushRule(
   if (!rules[ruleKind]) {
     throw new TypeError('Unknown rule: ' + ruleKind);
   }
-  state.prevState = { ...state };
+  state.prevState = Object.assign({}, state);
   state.kind = ruleKind;
   state.name = null;
   state.type = null;
