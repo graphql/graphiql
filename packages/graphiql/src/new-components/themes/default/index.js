@@ -22,16 +22,23 @@ const colors = {
   border: palette.neutral[90],
 };
 
+const space = [0, 5, 10, 15, 20];
+const fontSizes = [12, 16, 20];
+
 const theme = {
   fonts: {
     body: 'system-ui, sans-serif',
     heading: '"Avenir Next", sans-serif',
     monospace: 'Menlo, monospace',
   },
-  fontSizes: [12, 16, 20],
-  space: [0, 5, 10, 15, 20],
+  fontSizes,
+  space,
   colors,
   transitions: ['.25s'],
+  spaces: {
+    rowPadding: space[3],
+    rowMinHeight: space[3] + fontSizes[1] + space[3],
+  },
   shadows: {
     card: `0 0 0 .1px ${colors.border}, 0 1px 4px 0 ${colors.border}`,
     primaryUnderline: `inset 0 -4px 0 0 ${colors.primary}`,

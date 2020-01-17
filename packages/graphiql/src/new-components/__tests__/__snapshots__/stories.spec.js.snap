@@ -37,7 +37,7 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Woooo
         </div>
@@ -54,7 +54,7 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Input
         </div>
@@ -67,7 +67,7 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Response
         </div>
@@ -80,7 +80,7 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Console/Inspector
         </div>
@@ -127,7 +127,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Sidebar
         </div>
@@ -140,7 +140,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           aside
         </div>
@@ -153,7 +153,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Another aside
         </div>
@@ -170,7 +170,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Input
         </div>
@@ -183,7 +183,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Response
         </div>
@@ -196,7 +196,7 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Console/Inspector
         </div>
@@ -243,7 +243,7 @@ exports[`Storyshots Layout With Slots 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Input
         </div>
@@ -256,7 +256,7 @@ exports[`Storyshots Layout With Slots 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Response
         </div>
@@ -269,7 +269,7 @@ exports[`Storyshots Layout With Slots 1`] = `
         className="css-e025bq-List"
       >
         <div
-          className="css-ypzwgl-ListRow"
+          className="css-6dhis2-ListRow"
         >
           Console/Inspector
         </div>
@@ -332,12 +332,14 @@ exports[`Storyshots Lists With Flex Child 1`] = `
     className="css-e025bq-List"
   >
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
-      Lists are a vertical stack of components and form the basis of most modules. This one is very long
+      <div>
+        Lists are a vertical stack of components and form the basis of most modules. This one is very long
+      </div>
     </div>
     <div
-      className="css-11ix84p-ListRow"
+      className="css-7bkyhc-ListRow"
     >
       You normally want 1 flex area that grows forever like this one
       <div>
@@ -1259,27 +1261,27 @@ exports[`Storyshots Lists With Stacked Rows 1`] = `
     className="css-e025bq-List"
   >
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Title
     </div>
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Navigation
     </div>
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Search
     </div>
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Filter
     </div>
     <div
-      className="css-11ix84p-ListRow"
+      className="css-7bkyhc-ListRow"
     >
       Actual content
       <div>
@@ -2185,12 +2187,12 @@ exports[`Storyshots Lists With Stacked Rows 1`] = `
       Actual content ends here
     </div>
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Footer
     </div>
     <div
-      className="css-ypzwgl-ListRow"
+      className="css-q8crt6-ListRow"
     >
       Footers footer
     </div>
@@ -2198,140 +2200,853 @@ exports[`Storyshots Lists With Stacked Rows 1`] = `
 </div>
 `;
 
-exports[`Storyshots Tabs Tabbar 1`] = `
+exports[`Storyshots Tabbar Tabbar 1`] = `
 <div
-  className="css-e025bq-List"
+  style={
+    Object {
+      "border": "1px solid #eee",
+      "margin": "5em auto",
+      "maxWidth": "60em",
+    }
+  }
 >
   <div
-    className="css-1kkieog-ListRow"
-  >
-    <ul
-      className="css-1usdqpg-Tabs"
-    >
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-8zi662-Tab"
-          onClick={[Function]}
-        >
-          First
-        </button>
-      </li>
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-141niuh-Tab"
-          onClick={[Function]}
-        >
-          Second
-        </button>
-      </li>
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-8zi662-Tab"
-          onClick={[Function]}
-        >
-          Third
-        </button>
-      </li>
-    </ul>
-  </div>
-  <div
-    className="css-1kkieog-ListRow"
-  >
-    <ul
-      className="css-1usdqpg-Tabs"
-    >
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-8zi662-Tab"
-          onClick={[Function]}
-        >
-          With
-        </button>
-      </li>
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-141niuh-Tab"
-          onClick={[Function]}
-        >
-          a
-        </button>
-      </li>
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-8zi662-Tab"
-          onClick={[Function]}
-        >
-          nested
-        </button>
-      </li>
-      <li
-        className="css-lgj0h8"
-      >
-        <button
-          className="css-8zi662-Tab"
-          onClick={[Function]}
-        >
-          Component 
-          <small
-            style={
-              Object {
-                "background": "yellow",
-                "padding": 3,
-              }
-            }
-          >
-            2
-          </small>
-        </button>
-      </li>
-    </ul>
-  </div>
-  <div
-    className="css-1kkieog-ListRow"
+    className="css-e025bq-List"
   >
     <div
-      style={
-        Object {
-          "height": 100,
-        }
-      }
+      className="css-6dhis2-ListRow"
     >
       <ul
-        className="css-1usdqpg-Tabs"
+        className="css-uydjkm-WithDividers"
+        data-contains-divider={true}
       >
         <li
-          className="css-lgj0h8"
-        >
-          <button
-            className="css-8zi662-Tab"
-            onClick={[Function]}
-          >
-            Very tall
-          </button>
-        </li>
-        <li
-          className="css-lgj0h8"
+          className="css-tq0oo4"
         >
           <button
             className="css-141niuh-Tab"
             onClick={[Function]}
           >
-            tabs
+            One
+          </button>
+        </li>
+        <li
+          className="css-tq0oo4"
+        >
+          <div
+            aria-hidden={true}
+            className="css-6aw4lc-Divider"
+            data-is-divider={true}
+          />
+          <button
+            className="css-8zi662-Tab"
+            onClick={[Function]}
+          >
+            Two
+          </button>
+        </li>
+        <li
+          className="css-tq0oo4"
+        >
+          <div
+            aria-hidden={true}
+            className="css-6aw4lc-Divider"
+            data-is-divider={true}
+          />
+          <button
+            className="css-8zi662-Tab"
+            onClick={[Function]}
+          >
+            Three
           </button>
         </li>
       </ul>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <ul
+        className="css-uydjkm-WithDividers"
+        data-contains-divider={true}
+      >
+        <li
+          className="css-tq0oo4"
+        >
+          <button
+            className="css-141niuh-Tab"
+            onClick={[Function]}
+          >
+            With
+          </button>
+        </li>
+        <li
+          className="css-tq0oo4"
+        >
+          <div
+            aria-hidden={true}
+            className="css-6aw4lc-Divider"
+            data-is-divider={true}
+          />
+          <button
+            className="css-8zi662-Tab"
+            onClick={[Function]}
+          >
+            a
+          </button>
+        </li>
+        <li
+          className="css-tq0oo4"
+        >
+          <div
+            aria-hidden={true}
+            className="css-6aw4lc-Divider"
+            data-is-divider={true}
+          />
+          <button
+            className="css-8zi662-Tab"
+            onClick={[Function]}
+          >
+            nested
+          </button>
+        </li>
+        <li
+          className="css-tq0oo4"
+        >
+          <div
+            aria-hidden={true}
+            className="css-6aw4lc-Divider"
+            data-is-divider={true}
+          />
+          <button
+            className="css-8zi662-Tab"
+            onClick={[Function]}
+          >
+            Component 
+            <small
+              style={
+                Object {
+                  "background": "yellow",
+                  "padding": 3,
+                }
+              }
+            >
+              2
+            </small>
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div
+      className="css-crkf2n-ListRow"
+    >
+      <div
+        style={
+          Object {
+            "display": "grid",
+            "height": "100px",
+          }
+        }
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <button
+              className="css-141niuh-Tab"
+              onClick={[Function]}
+            >
+              Very tall
+            </button>
+          </li>
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              aria-hidden={true}
+              className="css-6aw4lc-Divider"
+              data-is-divider={true}
+            />
+            <button
+              className="css-8zi662-Tab"
+              onClick={[Function]}
+            >
+              tabs
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Toolbar Basic 1`] = `
+<div
+  style={
+    Object {
+      "border": "1px solid #eee",
+      "margin": "5em auto",
+      "maxWidth": "60em",
+    }
+  }
+>
+  <div
+    className="css-e025bq-List"
+  >
+    <div
+      className="css-q8crt6-ListRow"
+    >
+      <p>
+        Toolbars group together widgets in a flexbox. You can cutomize what type of
+      justification to use and if elements go together it'll add dividers
+      between them
+      </p>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1ae10t4-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-yyqua-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1s856wh-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <div
+              className="css-ungdc8-Content"
+            >
+              Some text
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1ycjblk-Toolbar"
+      >
+        <div
+          className="css-ungdc8-Content"
+        >
+          Some text
+        </div>
+        <div
+          className="css-ungdc8-Content"
+        >
+          Some text
+        </div>
+        <div
+          className="css-ungdc8-Content"
+        >
+          Some text
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Toolbar Toolbar With Tabs 1`] = `
+<div
+  style={
+    Object {
+      "border": "1px solid #eee",
+      "margin": "5em auto",
+      "maxWidth": "60em",
+    }
+  }
+>
+  <div
+    className="css-e025bq-List"
+  >
+    <div
+      className="css-q8crt6-ListRow"
+    >
+      <p>
+        The dividers don't nest so if you have tabs inside a toolbar the tabs won't get dividers
+      </p>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1ae10t4-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-yyqua-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1s856wh-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+          <li
+            className="css-1t44jqq"
+          >
+            <div
+              aria-hidden={true}
+              className="css-u594xb-Divider"
+              data-is-divider={true}
+            />
+            <ul
+              className="css-uydjkm-WithDividers"
+              data-contains-divider={true}
+            >
+              <li
+                className="css-tq0oo4"
+              >
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  First
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-8zi662-Tab"
+                  onClick={[Function]}
+                >
+                  Second
+                </button>
+              </li>
+              <li
+                className="css-tq0oo4"
+              >
+                <div
+                  aria-hidden={true}
+                  className="css-6aw4lc-Divider"
+                  data-is-divider={true}
+                />
+                <button
+                  className="css-141niuh-Tab"
+                  onClick={[Function]}
+                >
+                  Third
+                </button>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div
+      className="css-6dhis2-ListRow"
+    >
+      <div
+        className="css-1ycjblk-Toolbar"
+      >
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <button
+              className="css-8zi662-Tab"
+              onClick={[Function]}
+            >
+              First
+            </button>
+          </li>
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              aria-hidden={true}
+              className="css-6aw4lc-Divider"
+              data-is-divider={true}
+            />
+            <button
+              className="css-8zi662-Tab"
+              onClick={[Function]}
+            >
+              Second
+            </button>
+          </li>
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              aria-hidden={true}
+              className="css-6aw4lc-Divider"
+              data-is-divider={true}
+            />
+            <button
+              className="css-141niuh-Tab"
+              onClick={[Function]}
+            >
+              Third
+            </button>
+          </li>
+        </ul>
+        <ul
+          className="css-uydjkm-WithDividers"
+          data-contains-divider={true}
+        >
+          <li
+            className="css-tq0oo4"
+          >
+            <button
+              className="css-8zi662-Tab"
+              onClick={[Function]}
+            >
+              First
+            </button>
+          </li>
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              aria-hidden={true}
+              className="css-6aw4lc-Divider"
+              data-is-divider={true}
+            />
+            <button
+              className="css-8zi662-Tab"
+              onClick={[Function]}
+            >
+              Second
+            </button>
+          </li>
+          <li
+            className="css-tq0oo4"
+          >
+            <div
+              aria-hidden={true}
+              className="css-6aw4lc-Divider"
+              data-is-divider={true}
+            />
+            <button
+              className="css-141niuh-Tab"
+              onClick={[Function]}
+            >
+              Third
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -2339,30 +3054,40 @@ exports[`Storyshots Tabs Tabbar 1`] = `
 
 exports[`Storyshots Type Type 1`] = `
 <div
-  className="css-e025bq-List"
+  style={
+    Object {
+      "border": "1px solid #eee",
+      "margin": "5em auto",
+      "maxWidth": "60em",
+    }
+  }
 >
   <div
-    className="css-ypzwgl-ListRow"
+    className="css-e025bq-List"
   >
-    <h2
-      className="css-82xfaz-SectionHeader"
+    <div
+      className="css-q8crt6-ListRow"
     >
-      Title
-    </h2>
-  </div>
-  <div
-    className="css-ypzwgl-ListRow"
-  >
-    <span
-      className="css-f0hvcz-Explainer"
+      <h2
+        className="css-82xfaz-SectionHeader"
+      >
+        Title
+      </h2>
+    </div>
+    <div
+      className="css-q8crt6-ListRow"
     >
-      Small explainer text
-    </span>
-  </div>
-  <div
-    className="css-ypzwgl-ListRow"
-  >
-    Normal text
+      <span
+        className="css-f0hvcz-Explainer"
+      >
+        Small explainer text
+      </span>
+    </div>
+    <div
+      className="css-q8crt6-ListRow"
+    >
+      Normal text
+    </div>
   </div>
 </div>
 `;

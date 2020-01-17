@@ -1,21 +1,22 @@
-import List, { ListRow } from './List';
+import List, { ListRow } from '../List/List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
+import { layout } from '../../../.storybook/decorators';
 
-export default { title: 'Tabs' };
+export default { title: 'Tabbar', decorators: [layout] };
 
 // eslint-disable-next-line react/prop-types
 const ManagedTabs = ({ tabs }) => {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
   return <Tabs active={active} tabs={tabs} onChange={setActive} />;
 };
 
 export const Tabbar = () => (
   <List>
-    <ListRow padding={false}>
-      <ManagedTabs tabs={['First', 'Second', 'Third']} />
+    <ListRow>
+      <ManagedTabs tabs={['One', 'Two', 'Three']} />
     </ListRow>
-    <ListRow padding={false}>
+    <ListRow>
       <ManagedTabs
         tabs={[
           'With',
@@ -28,8 +29,8 @@ export const Tabbar = () => (
         ]}
       />
     </ListRow>
-    <ListRow padding={false}>
-      <div style={{ height: 100 }}>
+    <ListRow flex>
+      <div style={{ height: '100px', display: 'grid' }}>
         <ManagedTabs tabs={['Very tall', 'tabs']} />
       </div>
     </ListRow>
