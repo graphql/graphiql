@@ -1,54 +1,50 @@
-/**
- *  Copyright (c) 2019 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
+import { DocumentNode, FragmentDefinitionNode, visit } from 'graphql';
 
-import { Kind } from 'graphql/language/kinds';
-
-function resolveDefinition(fragments, obj) {
-  let definition = obj;
-  if (definition.kind === Kind.FRAGMENT_SPREAD) {
-    definition = fragments[definition.name.value];
+export function uniqueBy(array: any[], iteratee: (item: any) => any) {
+  const FilteredMap = new Map();
+  const result = [];
+  for (const item of array) {
+    const uniqeValue = iteratee(item);
+    if (!FilteredMap.has(uniqeValue)) {
+      FilteredMap.set(uniqeValue, true);
+      result.push(item);
+    }
   }
-
-  if (definition.selectionSet) {
-    definition.selectionSet.selections = definition.selectionSet.selections
-      .filter(
-        (selection, idx, self) =>
-          selection.kind !== Kind.FRAGMENT_SPREAD ||
-          idx ===
-            self.findIndex(
-              _selection =>
-                _selection.kind === Kind.FRAGMENT_SPREAD &&
-                selection.name.value === _selection.name.value,
-            ),
-      )
-      .map(selection => resolveDefinition(fragments, selection));
-  }
-
-  return definition;
+  return result;
 }
 
-export function mergeAst(queryAst) {
-  const fragments = {};
-  queryAst.definitions
-    .filter(elem => {
-      return elem.kind === Kind.FRAGMENT_DEFINITION;
-    })
-    .forEach(frag => {
-      const copyFragment = { ...frag };
-      copyFragment.kind = Kind.INLINE_FRAGMENT;
-      fragments[frag.name.value] = copyFragment;
-    });
+/**
+ * Given a document AST, inline all named fragment definitions
+ */
+export function mergeAST(documentAST: DocumentNode): DocumentNode {
+  const fragmentDefinitions: {
+    [key: string]: FragmentDefinitionNode;
+  } = Object.create(null);
 
-  const copyAst = { ...queryAst };
-  copyAst.definitions = queryAst.definitions
-    .filter(elem => {
-      return elem.kind !== Kind.FRAGMENT_DEFINITION;
-    })
-    .map(op => resolveDefinition(fragments, op));
+  for (const definition of documentAST.definitions) {
+    if (definition.kind === 'FragmentDefinition') {
+      fragmentDefinitions[definition.name.value] = definition;
+    }
+  }
 
-  return copyAst;
+  return visit(documentAST, {
+    FragmentSpread(node) {
+      return {
+        ...fragmentDefinitions[node.name.value],
+        kind: 'InlineFragment',
+      };
+    },
+    SelectionSet(node) {
+      return {
+        ...node,
+        selections: uniqueBy(
+          node.selections,
+          selection => selection.name.value,
+        ),
+      };
+    },
+    FragmentDefinition() {
+      return null;
+    },
+  });
 }

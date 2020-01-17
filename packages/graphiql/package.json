@@ -65,7 +65,7 @@
     "@testing-library/jest-dom": "4.2.4",
     "@testing-library/react": "9.4.0",
     "@types/codemirror": "0.0.82",
-    "@types/markdown-it": "0.0.9",
+    "@types/markdown-it": "^0.0.9",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^6.0.3",
     "css-loader": "3.4.1",

@@ -5,7 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode, ComponentType, FC, ReactPropTypes, PropsWithChildren } from 'react';
+import React, {
+  ReactNode,
+  ComponentType,
+  FC,
+  ReactPropTypes,
+  PropsWithChildren,
+} from 'react';
 import {
   buildClientSchema,
   GraphQLSchema,
@@ -63,7 +69,7 @@ declare namespace global {
   export let g: GraphiQL;
 }
 
-export type Maybe<T> = T | null | undefined
+export type Maybe<T> = T | null | undefined;
 
 type FetcherParams = {
   query: string;
@@ -140,10 +146,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       : formatSingleError(rawError);
     return JSON.stringify(result, null, 2);
   }
-
-  static Logo = GraphiQLLogo;
-  static Toolbar = GraphiQLToolbar;
-  static Footer = GraphiQLFooter;
 
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
@@ -341,11 +343,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
-    if (this.state.query) this._storage.set('query', this.state.query);
-    if (this.state.variables)
+    if (this.state.query) {
+      this._storage.set('query', this.state.query);
+    }
+    if (this.state.variables) {
       this._storage.set('variables', this.state.variables);
-    if (this.state.operationName)
+    }
+    if (this.state.operationName) {
       this._storage.set('operationName', this.state.operationName);
+    }
     this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
     this._storage.set(
       'variableEditorHeight',
@@ -571,6 +577,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
   }
 
+  static Logo = GraphiQLLogo;
+  static Toolbar = GraphiQLToolbar;
+  static Footer = GraphiQLFooter;
+
+  static Button: React.SFC;
+
   /**
    * Get the query editor CodeMirror instance.
    *
@@ -599,9 +611,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    * @public
    */
   refresh() {
-    if (this.queryEditorComponent) this.queryEditorComponent.getCodeMirror().refresh();
-    if (this.variableEditorComponent) this.variableEditorComponent.getCodeMirror().refresh();
-    if (this.resultComponent) this.resultComponent.getCodeMirror().refresh();
+    if (this.queryEditorComponent) {
+      this.queryEditorComponent.getCodeMirror().refresh();
+    }
+    if (this.variableEditorComponent) {
+      this.variableEditorComponent.getCodeMirror().refresh();
+    }
+    if (this.resultComponent) {
+      this.resultComponent.getCodeMirror().refresh();
+    }
   }
 
   /**
@@ -1197,7 +1215,7 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
       )}
     </div>
   );
-};
+}
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
@@ -1207,7 +1225,7 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
       {props.children}
     </div>
   );
-};
+}
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Export main windows/panes to be used separately if desired.
@@ -1233,7 +1251,7 @@ GraphiQL.SelectOption = ToolbarSelectOption;
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
-};
+}
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 // GraphiQL.formatResult = function(result) {
@@ -1332,9 +1350,7 @@ function observableToPromise<T>(
 }
 
 // Duck-type observable detection.
-function isObservable<T>(
-  value: any,
-): value is Observable<T> {
+function isObservable<T>(value: any): value is Observable<T> {
   return (
     typeof value === 'object' &&
     'subscribe' in value &&
@@ -1353,7 +1369,7 @@ function isChildComponentType<T extends ComponentType>(
     'type' in child &&
     typeof child.type === 'object' &&
     'displayName' in child.type &&
-    child.type
+    child.type &&
     // typeof child.type === 'object' &&
     // 'displayName' in child.type &&
     child.type.displayName === component.displayName
