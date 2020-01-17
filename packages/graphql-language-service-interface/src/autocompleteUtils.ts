@@ -15,8 +15,8 @@ import {
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
 import {
-  CompletionItem,
-  ContextToken,
+  CompletionItemBase,
+  ContextTokenUnion,
   State,
   AllTypeInfo,
 } from 'graphql-language-service-types';
@@ -93,21 +93,21 @@ export function objectValues(object: Record<string, any>): Array<any> {
 }
 
 // Create the expected hint response given a possible list and a token
-export function hintList(
-  token: ContextToken,
-  list: Array<CompletionItem>,
-): Array<CompletionItem> {
+export function hintList<T extends CompletionItemBase>(
+  token: ContextTokenUnion,
+  list: Array<T>,
+): Array<T> {
   return filterAndSortList(list, normalizeText(token.string));
 }
 
 // Given a list of hint entries and currently typed text, sort and filter to
 // provide a concise list.
-function filterAndSortList(
-  list: Array<CompletionItem>,
+function filterAndSortList<T extends CompletionItemBase>(
+  list: Array<T>,
   text: string,
-): Array<CompletionItem> {
+): Array<T> {
   if (!text) {
-    return filterNonEmpty<CompletionItem>(list, entry => !entry.isDeprecated);
+    return filterNonEmpty<T>(list, entry => !entry.isDeprecated);
   }
 
   const byProximity = list.map(entry => ({

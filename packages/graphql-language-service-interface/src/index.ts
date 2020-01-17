@@ -15,7 +15,12 @@ export {
   hintList,
 } from './autocompleteUtils';
 
-export { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
+export {
+  canUseDirective,
+  getAutocompleteSuggestions,
+  getFragmentDefinitions,
+  getTypeInfo,
+} from './getAutocompleteSuggestions';
 
 export {
   LANGUAGE,
