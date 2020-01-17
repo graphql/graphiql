@@ -53,7 +53,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}> {
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
-        (token, options, cm, pos) => {
+        (token, options, cm: CodeMirror.Editor, pos) => {
           const infoElements: Component[] = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);

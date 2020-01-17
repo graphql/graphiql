@@ -6,17 +6,23 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { astFromValue, print } from 'graphql';
+import { astFromValue, print, GraphQLArgument, ValueNode } from 'graphql';
 
-export default function DefaultValue({ field }) {
+const printDefault = (ast?: ValueNode | null): string => {
+  if (!ast) {
+    return '';
+  }
+  return print(ast);
+};
+
+export default function DefaultValue({ field }: { field: GraphQLArgument }) {
   const { type, defaultValue } = field;
   if (defaultValue !== undefined) {
     return (
       <span>
         {' = '}
         <span className="arg-default-value">
-          {print(astFromValue(defaultValue, type))}
+          {printDefault(astFromValue(defaultValue, type))}
         </span>
       </span>
     );
@@ -24,7 +30,3 @@ export default function DefaultValue({ field }) {
 
   return null;
 }
-
-DefaultValue.propTypes = {
-  field: PropTypes.object.isRequired,
-};

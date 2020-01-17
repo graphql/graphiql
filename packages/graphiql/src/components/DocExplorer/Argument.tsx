@@ -6,11 +6,21 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import { GraphQLArgument } from 'graphql';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
 
-export default function Argument({ arg, onClickType, showDefaultValue }) {
+type ArgumentProps = {
+  arg: GraphQLArgument;
+  onClickType: () => void;
+  showDefaultValue?: boolean;
+};
+
+export default function Argument({
+  arg,
+  onClickType,
+  showDefaultValue,
+}: ArgumentProps) {
   return (
     <span className="arg">
       <span className="arg-name">{arg.name}</span>
@@ -20,9 +30,3 @@ export default function Argument({ arg, onClickType, showDefaultValue }) {
     </span>
   );
 }
-
-Argument.propTypes = {
-  arg: PropTypes.object.isRequired,
-  onClickType: PropTypes.func.isRequired,
-  showDefaultValue: PropTypes.bool,
-};

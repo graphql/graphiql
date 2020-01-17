@@ -16,15 +16,17 @@ import {
   DocumentNode,
   GraphQLOutputType,
   GraphQLType,
+  SelectionSetNode,
 } from 'graphql';
+
+import { GetDefaultFieldNamesFn } from '../types';
+
 import { Maybe } from '../components/GraphiQL';
 
 type Insertion = {
   index: number;
   string: string;
 };
-
-type GetDefaultFieldNamesFn = (type: GraphQLType) => Array<string>;
 
 /**
  * Given a document string which may not be valid due to terminal fields not
@@ -41,7 +43,7 @@ export function fillLeafs(
   docString: string,
   getDefaultFieldNames: GetDefaultFieldNamesFn,
 ) {
-  const insertions: Array<Insertion> = [];
+  const insertions: Insertion[] = [];
 
   if (!schema) {
     return { insertions, result: docString };
@@ -65,7 +67,7 @@ export function fillLeafs(
       if (node.kind === 'Field' && !node.selectionSet) {
         const fieldType = typeInfo.getType();
         const selectionSet = buildSelectionSet(
-          isFieldType(fieldType),
+          isFieldType(fieldType) as GraphQLOutputType,
           fieldNameFn,
         );
         if (selectionSet && node.loc) {
@@ -99,17 +101,17 @@ function defaultGetDefaultFieldNames(type: GraphQLType) {
   const fields = type.getFields();
 
   // Is there an `id` field?
-  if (fields['id']) {
+  if (fields.id) {
     return ['id'];
   }
 
   // Is there an `edges` field?
-  if (fields['edges']) {
+  if (fields.edges) {
     return ['edges'];
   }
 
   // Is there an `node` field?
-  if (fields['node']) {
+  if (fields.node) {
     return ['node'];
   }
 
@@ -126,9 +128,9 @@ function defaultGetDefaultFieldNames(type: GraphQLType) {
 // Given a GraphQL type, and a function which produces field names, recursively
 // generate a SelectionSet which includes default fields.
 function buildSelectionSet(
-  type: GraphQLOutputType | void,
+  type: GraphQLOutputType,
   getDefaultFieldNames: GetDefaultFieldNamesFn,
-) {
+): SelectionSetNode | undefined {
   // Unwrap any non-null or list types.
   const namedType = getNamedType(type);
 
@@ -141,7 +143,11 @@ function buildSelectionSet(
   const fieldNames = getDefaultFieldNames(namedType);
 
   // If there are no field names to use, return no selection set.
-  if (!Array.isArray(fieldNames) || fieldNames.length === 0) {
+  if (
+    !Array.isArray(fieldNames) ||
+    fieldNames.length === 0 ||
+    !('getFields' in namedType)
+  ) {
     return;
   }
 
@@ -157,7 +163,12 @@ function buildSelectionSet(
           kind: 'Name',
           value: fieldName,
         },
-        selectionSet: buildSelectionSet(fieldType, getDefaultFieldNames),
+        // we can use as here, because we already know that fieldType
+        // comes from an origin parameter
+        selectionSet: buildSelectionSet(
+          fieldType as GraphQLOutputType,
+          getDefaultFieldNames,
+        ),
       };
     }),
   };
@@ -165,7 +176,7 @@ function buildSelectionSet(
 
 // Given an initial string, and a list of "insertion" { index, string } objects,
 // return a new string with these insertions applied.
-function withInsertions(initial: string, insertions: Array<Insertion>) {
+function withInsertions(initial: string, insertions: Insertion[]) {
   if (insertions.length === 0) {
     return initial;
   }

@@ -8,7 +8,8 @@
     "allowJs": true,
     "baseUrl": ".",
     "noEmit": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "types": ["./types"]
   },
   "include": ["src"]
 }

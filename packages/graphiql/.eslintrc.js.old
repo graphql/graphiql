@@ -1,6 +1,6 @@
 module.exports = {
-  parser: 'babel-eslint',
-  plugins: ['babel', 'react'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['jest', 'react', '@typescript-eslint'],
   settings: {
     react: {
       version: '0.15.0',
@@ -12,7 +12,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ['prettier'],
+  extends: ['prettier', 'plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended'],
   parserOptions: {
     arrowFunctions: true,
     binaryLiterals: true,

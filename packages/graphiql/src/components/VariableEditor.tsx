@@ -4,13 +4,27 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
-import React from 'react';
-import PropTypes from 'prop-types';
+import { GraphQLType } from 'graphql';
+import * as CodeMirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+import * as React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 
+type VariableEditorProps = {
+  variableToType: { [variable: string]: GraphQLType };
+  value: string;
+  onEdit: (value: string) => void;
+  readOnly: boolean;
+  onHintInformationRender: (value: string) => void;
+  onPrettifyQuery: (value?: string) => void;
+  onMergeQuery: (value?: string) => void;
+  onRunQuery: (value?: string) => void;
+  editorTheme: string;
+};
+
+const something: CodeMirror.EditorConfiguration['extraKeys'] = null;
 /**
  * VariableEditor
  *
@@ -24,26 +38,20 @@ import commonKeys from '../utility/commonKeys';
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class VariableEditor extends React.Component {
-  static propTypes = {
-    variableToType: PropTypes.object,
-    value: PropTypes.string,
-    onEdit: PropTypes.func,
-    readOnly: PropTypes.bool,
-    onHintInformationRender: PropTypes.func,
-    onPrettifyQuery: PropTypes.func,
-    onMergeQuery: PropTypes.func,
-    onRunQuery: PropTypes.func,
-    editorTheme: PropTypes.string,
-  };
+export class VariableEditor extends React.Component<VariableEditorProps> {
+  editor: CodeMirror.Editor;
+  cachedValue: string;
+  _node: HTMLElement;
+  ignoreChangeEvent: boolean;
 
-  constructor(props) {
-    super();
+  constructor(props: VariableEditorProps) {
+    super(props);
 
     // Keep a cached version of the value, this cache will be updated when the
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
+    this.ignoreChangeEvent = true;
   }
 
   componentDidMount() {
@@ -64,7 +72,7 @@ export class VariableEditor extends React.Component {
     require('codemirror-graphql/variables/lint');
     require('codemirror-graphql/variables/mode');
 
-    this.editor = CodeMirror(this._node, {
+    const editor = (this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -109,7 +117,6 @@ export class VariableEditor extends React.Component {
             completeSingle: false,
             container: this._node,
           }),
-
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
@@ -120,7 +127,6 @@ export class VariableEditor extends React.Component {
             this.props.onRunQuery();
           }
         },
-
         'Shift-Ctrl-P': () => {
           if (this.props.onPrettifyQuery) {
             this.props.onPrettifyQuery();
@@ -135,15 +141,18 @@ export class VariableEditor extends React.Component {
 
         ...commonKeys,
       },
-    });
+    }));
 
-    this.editor.on('change', this._onEdit);
-    this.editor.on('keyup', this._onKeyUp);
-    this.editor.on('hasCompletion', this._onHasCompletion);
+    editor.on('change', this._onEdit);
+    editor.on('keyup', this._onKeyUp);
+    editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: VariableEditorProps) {
     const CodeMirror = require('codemirror');
+    if (!this.editor) {
+      return;
+    }
 
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
@@ -166,6 +175,9 @@ export class VariableEditor extends React.Component {
   }
 
   componentWillUnmount() {
+    if (!this.editor) {
+      return;
+    }
     this.editor.off('change', this._onEdit);
     this.editor.off('keyup', this._onKeyUp);
     this.editor.off('hasCompletion', this._onHasCompletion);
@@ -177,7 +189,7 @@ export class VariableEditor extends React.Component {
       <div
         className="codemirrorWrap"
         ref={node => {
-          this._node = node;
+          this._node = node as HTMLDivElement;
         }}
       />
     );
@@ -198,8 +210,11 @@ export class VariableEditor extends React.Component {
     return this._node && this._node.clientHeight;
   }
 
-  _onKeyUp = (cm, event) => {
+  private _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
     const code = event.keyCode;
+    if (!this.editor) {
+      return;
+    }
     if (
       (code >= 65 && code <= 90) || // letters
       (!event.shiftKey && code >= 48 && code <= 57) || // numbers
@@ -210,7 +225,10 @@ export class VariableEditor extends React.Component {
     }
   };
 
-  _onEdit = () => {
+  private _onEdit = () => {
+    if (!this.editor) {
+      return;
+    }
     if (!this.ignoreChangeEvent) {
       this.cachedValue = this.editor.getValue();
       if (this.props.onEdit) {
@@ -219,7 +237,7 @@ export class VariableEditor extends React.Component {
     }
   };
 
-  _onHasCompletion = (cm, data) => {
+  _onHasCompletion = (cm: CodeMirror.Editor, data: any) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
   };
 }

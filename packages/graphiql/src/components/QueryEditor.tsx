@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { GraphQLSchema } from 'graphql';
+import * as CodeMirror from 'codemirror';
+import { GraphQLSchema, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
@@ -21,7 +22,7 @@ type QueryEditorProps = {
   onEdit?: (value: string) => void;
   readOnly?: boolean;
   onHintInformationRender?: () => void;
-  onClickReference?: () => void;
+  onClickReference?: (reference: GraphQLType) => void;
   onCopyQuery?: () => void;
   onPrettifyQuery?: () => void;
   onMergeQuery?: () => void;
@@ -43,8 +44,8 @@ type QueryEditorProps = {
  *
  */
 export class QueryEditor extends React.Component<QueryEditorProps, {}> {
-  cachedValue: string;
-  editor: CodeMirror.Editor | null;
+  cachedValue: string | undefined;
+  editor: (CodeMirror.Editor & { options: any }) | null;
   ignoreChangeEvent: boolean;
 
   _node: HTMLElement | null = null;
@@ -80,7 +81,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
-    this.editor = CodeMirror(this._node, {
+    const editor: CodeMirror.Editor = (this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -105,25 +106,27 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
       },
       info: {
         schema: this.props.schema,
-        renderDescription: text => md.render(text),
-        onClick: reference => this.props.onClickReference(reference),
+        renderDescription: (text: string) => md.render(text),
+        onClick: (reference: GraphQLType) =>
+          this.props.onClickReference && this.props.onClickReference(reference),
       },
       jump: {
         schema: this.props.schema,
-        onClick: reference => this.props.onClickReference(reference),
+        onClick: (reference: GraphQLType) =>
+          this.props.onClickReference && this.props.onClickReference(reference),
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
-          this.editor.showHint({ completeSingle: true, container: this._node }),
+          editor.showHint({ completeSingle: true, container: this._node }),
         'Ctrl-Space': () =>
-          this.editor.showHint({ completeSingle: true, container: this._node }),
+          editor.showHint({ completeSingle: true, container: this._node }),
         'Alt-Space': () =>
-          this.editor.showHint({ completeSingle: true, container: this._node }),
+          editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Space': () =>
-          this.editor.showHint({ completeSingle: true, container: this._node }),
+          editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Alt-Space': () =>
-          this.editor.showHint({ completeSingle: true, container: this._node }),
+          editor.showHint({ completeSingle: true, container: this._node }),
 
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
@@ -174,12 +177,13 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
           }
         },
       },
-    });
-
-    this.editor.on('change', this._onEdit);
-    this.editor.on('keyup', this._onKeyUp);
-    this.editor.on('hasCompletion', this._onHasCompletion);
-    this.editor.on('beforeChange', this._onBeforeChange);
+    }));
+    if (editor) {
+      editor.on('change', this._onEdit);
+      editor.on('keyup', this._onKeyUp);
+      editor.on('hasCompletion', this._onHasCompletion);
+      editor.on('beforeChange', this._onBeforeChange);
+    }
   }
 
   componentDidUpdate(prevProps: QueryEditorProps) {
@@ -189,7 +193,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     // user-input changes which could otherwise result in an infinite
     // event loop.
     this.ignoreChangeEvent = true;
-    if (this.props.schema !== prevProps.schema) {
+    if (this.props.schema !== prevProps.schema && this.editor) {
       this.editor.options.lint.schema = this.props.schema;
       this.editor.options.hintOptions.schema = this.props.schema;
       this.editor.options.info.schema = this.props.schema;
@@ -198,10 +202,11 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     }
     if (
       this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue
+      this.props.value !== this.cachedValue &&
+      this.editor
     ) {
       this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value);
+      this.editor.setValue(this.props.value as string);
     }
     this.ignoreChangeEvent = false;
   }
@@ -242,13 +247,13 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     return this._node && this._node.clientHeight;
   }
 
-  _onKeyUp = (cm, event) => {
+  private _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && this.editor) {
       this.editor.execCommand('autocomplete');
     }
   };
 
-  _onEdit = () => {
+  private _onEdit = () => {
     if (!this.ignoreChangeEvent && this.editor) {
       this.cachedValue = this.editor.getValue();
       if (this.props.onEdit) {
@@ -261,11 +266,11 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
    * Render a custom UI for CodeMirror's hint which includes additional info
    * about the type and description for the selected context.
    */
-  _onHasCompletion = (cm, data) => {
+  private _onHasCompletion = (cm: CodeMirror.Editor, data: any) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
   };
 
-  _onBeforeChange(instance, change) {
+  private _onBeforeChange(_instance: CodeMirror.Editor, change: any) {
     // The update function is only present on non-redo, non-undo events.
     if (change.origin === 'paste') {
       const text = change.text.map(normalizeWhitespace);
