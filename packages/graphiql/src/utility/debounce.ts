@@ -12,7 +12,9 @@
 export default function debounce(duration: number, fn: Function) {
   let timeout: number | null;
   return function() {
-    if (timeout) window.clearTimeout(timeout);
+    if (timeout) {
+      window.clearTimeout(timeout);
+    }
     timeout = window.setTimeout(() => {
       timeout = null;
       fn.apply(this, arguments);

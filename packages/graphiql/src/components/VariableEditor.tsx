@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { GraphQLType } from 'graphql';
-import * as CodeMirror from 'codemirror';
+import * as CM from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import * as React from 'react';
 
@@ -16,15 +16,14 @@ type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
   value?: string;
   onEdit: (value: string) => void;
-  readOnly?: boolean;
-  onHintInformationRender: (value: string) => void;
+  readOnly: boolean;
+  onHintInformationRender: (value: HTMLDivElement) => void;
   onPrettifyQuery: (value?: string) => void;
   onMergeQuery: (value?: string) => void;
   onRunQuery: (value?: string) => void;
   editorTheme?: string;
 };
 
-const something: CodeMirror.EditorConfiguration['extraKeys'] = null;
 /**
  * VariableEditor
  *
@@ -39,7 +38,7 @@ const something: CodeMirror.EditorConfiguration['extraKeys'] = null;
  *
  */
 export class VariableEditor extends React.Component<VariableEditorProps> {
-  editor: CodeMirror.Editor;
+  editor: CM.Editor;
   cachedValue: string;
   _node: HTMLElement;
   ignoreChangeEvent: boolean;

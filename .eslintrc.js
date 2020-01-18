@@ -321,7 +321,7 @@ module.exports = {
         'no-unused-vars': 'off',
       },
     },
-    // Rules for Flow only
+    // Rules for Babel & Flow only
     {
       files: ['packages/codemirror-graphql/src/**/*.js'],
       parser: 'babel-eslint',
