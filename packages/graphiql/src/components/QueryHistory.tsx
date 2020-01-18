@@ -48,7 +48,7 @@ type QueryHistoryProps = {
   query?: string;
   variables?: string;
   operationName?: string;
-  queryID?: string;
+  queryID?: number;
   onSelectQuery?: (
     query: string,
     variables?: string,

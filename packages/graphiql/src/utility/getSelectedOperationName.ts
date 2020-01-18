@@ -12,8 +12,8 @@ import { OperationDefinitionNode } from 'graphql';
  * operations, determine what the next selected operation should be.
  */
 export default function getSelectedOperationName(
-  prevOperations: OperationDefinitionNode | null,
-  prevSelectedOperationName: string | null,
+  prevOperations?: OperationDefinitionNode,
+  prevSelectedOperationName?: string,
   operations?: OperationDefinitionNode[],
 ) {
   // If there are not enough operations to bother with, return nothing.

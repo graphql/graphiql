@@ -5,22 +5,37 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode, MouseEvent } from 'react';
+import {
+  GraphQLSchema,
+  GraphQLField,
+  GraphQLObjectType,
+  GraphQLInterfaceType,
+  GraphQLInputObjectType,
+  GraphQLInputField,
+  GraphQLType,
+} from 'graphql';
 
 import Argument from './Argument';
 import TypeLink from './TypeLink';
 
-export default class SearchResults extends React.Component {
-  static propTypes = {
-    schema: PropTypes.object,
-    withinType: PropTypes.object,
-    searchValue: PropTypes.string,
-    onClickType: PropTypes.func,
-    onClickField: PropTypes.func,
-  };
+type SearchResultsProps = {
+  schema: GraphQLSchema;
+  withinType: GraphQLType;
+  searchValue: string;
+  onClickType: () => void;
+  onClickField: <TSource, TContext, TArgs>(
+    field: GraphQLField<TSource, TContext, TArgs> | GraphQLInputField,
+    type: GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType,
+    event: MouseEvent,
+  ) => void;
+};
 
-  shouldComponentUpdate(nextProps) {
+export default class SearchResults extends React.Component<
+  SearchResultsProps,
+  {}
+> {
+  shouldComponentUpdate(nextProps: SearchResultsProps) {
     return (
       this.props.schema !== nextProps.schema ||
       this.props.searchValue !== nextProps.searchValue
@@ -34,9 +49,9 @@ export default class SearchResults extends React.Component {
     const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
 
-    const matchedWithin = [];
-    const matchedTypes = [];
-    const matchedFields = [];
+    const matchedWithin: ReactNode[] = [];
+    const matchedTypes: ReactNode[] = [];
+    const matchedFields: ReactNode[] = [];
 
     const typeMap = schema.getTypeMap();
     let typeNames = Object.keys(typeMap);
@@ -64,14 +79,14 @@ export default class SearchResults extends React.Component {
         );
       }
 
-      if (type.getFields) {
+      if ('getFields' in type) {
         const fields = type.getFields();
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];
           let matchingArgs;
 
           if (!isMatch(fieldName, searchValue)) {
-            if (field.args && field.args.length) {
+            if ('args' in field && field.args.length) {
               matchingArgs = field.args.filter(arg =>
                 isMatch(arg.name, searchValue),
               );
@@ -150,7 +165,7 @@ export default class SearchResults extends React.Component {
   }
 }
 
-function isMatch(sourceText, searchValue) {
+function isMatch(sourceText: string, searchValue: string) {
   try {
     const escaped = searchValue.replace(/[^_0-9A-Za-z]/g, ch => '\\' + ch);
     return sourceText.search(new RegExp(escaped, 'i')) !== -1;

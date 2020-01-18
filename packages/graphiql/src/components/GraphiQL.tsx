@@ -199,11 +199,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const operationName =
       props.operationName !== undefined
         ? props.operationName
-        : getSelectedOperationName(
-            null,
-            this._storage.get('operationName'),
-            queryFacts && queryFacts.operations,
-          );
+        : getSelectedOperationName({
+            prevSelectedOperationName: this._storage.get('operationName'),
+            operations: queryFacts && queryFacts.operations,
+          });
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
@@ -1061,7 +1060,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   handleSelectHistoryQuery = (
-    _query: string,
+    _query?: string,
     variables?: string,
     operationName?: string,
   ) => {
@@ -1082,7 +1081,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     downEvent.preventDefault();
 
-    const offset = downEvent.clientX - getLeft(downEvent.target);
+    const offset = downEvent.clientX - getLeft(downEvent.currentTarget);
 
     let onMouseMove = (moveEvent: MouseEvent<Element, MouseEvent>) => {
       if (moveEvent.buttons === 0) {

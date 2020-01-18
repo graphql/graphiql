@@ -11,26 +11,26 @@ export type HistoryQueryProps = {
   favorite?: boolean;
   favoriteSize?: number;
   handleEditLabel: (
-    query?: string,
-    variables?: string,
-    operationName?: string,
-    label?: string,
-    favorite?: boolean,
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: boolean,
   ) => void;
   handleToggleFavorite: (
-    query?: string,
-    variables?: string,
-    operationName?: string,
-    label?: string,
-    favorite?: boolean,
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: boolean,
   ) => void;
   operationName?: string;
   onSelect: (
     query?: string,
     variables?: string,
     operationName?: string,
-    label?: string,
-  ) => void;
+  ) => // label?: string,
+  void;
   query: string;
   variables?: string;
   label?: string;

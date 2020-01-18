@@ -43,13 +43,13 @@ export default class StorageAPI {
       // Clean up any inadvertently saved null/undefined values.
       if (value === 'null' || value === 'undefined') {
         this.storage.removeItem('graphiql:' + name);
-        return null;
+        return;
       }
 
-      return value;
+      if (value) {
+        return value;
+      }
     }
-
-    return null;
   }
 
   set(name: string, value: string) {

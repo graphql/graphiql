@@ -5,14 +5,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactNode } from 'react';
 import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
+  GraphQLType,
+  GraphQLEnumValue,
+  GraphQLField,
+  GraphQLInputField,
 } from 'graphql';
 
 import Argument from './Argument';
@@ -20,20 +23,27 @@ import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
 
-export default class TypeDoc extends React.Component {
-  static propTypes = {
-    schema: PropTypes.instanceOf(GraphQLSchema),
-    type: PropTypes.object,
-    onClickType: PropTypes.func,
-    onClickField: PropTypes.func,
-  };
+type TypeDocProps = {
+  schema: GraphQLSchema;
+  type: GraphQLType;
+  onClickType: () => void;
+  onClickField: () => void;
+};
 
-  constructor(props) {
+type TypeDocState = {
+  showDeprecated: boolean;
+};
+
+export default class TypeDoc extends React.Component<
+  TypeDocProps,
+  TypeDocState
+> {
+  constructor(props: TypeDocProps) {
     super(props);
     this.state = { showDeprecated: false };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: TypeDocProps, nextState: TypeDocState) {
     return (
       this.props.type !== nextProps.type ||
       this.props.schema !== nextProps.schema ||
@@ -47,8 +57,8 @@ export default class TypeDoc extends React.Component {
     const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
 
-    let typesTitle;
-    let types;
+    let typesTitle: string | null = null;
+    let types: readonly GraphQLObjectType[] | GraphQLInterfaceType[] = [];
     if (type instanceof GraphQLUnionType) {
       typesTitle = 'possible types';
       types = schema.getPossibleTypes(type);
@@ -77,14 +87,16 @@ export default class TypeDoc extends React.Component {
     // InputObject and Object
     let fieldsDef;
     let deprecatedFieldsDef;
-    if (type.getFields) {
+    if ('getFields' in type) {
       const fieldMap = type.getFields();
       const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
       fieldsDef = (
         <div className="doc-category">
           <div className="doc-category-title">{'fields'}</div>
           {fields
-            .filter(field => !field.isDeprecated)
+            .filter(field =>
+              'isDeprecated' in field ? !field.isDeprecated : true,
+            )
             .map(field => (
               <Field
                 key={field.name}
@@ -97,7 +109,9 @@ export default class TypeDoc extends React.Component {
         </div>
       );
 
-      const deprecatedFields = fields.filter(field => field.isDeprecated);
+      const deprecatedFields = fields.filter(field =>
+        'isDeprecated' in field ? !field.isDeprecated : true,
+      );
       if (deprecatedFields.length > 0) {
         deprecatedFieldsDef = (
           <div className="doc-category">
@@ -122,8 +136,8 @@ export default class TypeDoc extends React.Component {
       }
     }
 
-    let valuesDef;
-    let deprecatedValuesDef;
+    let valuesDef: ReactNode;
+    let deprecatedValuesDef: ReactNode;
     if (type instanceof GraphQLEnumType) {
       const values = type.getValues();
       valuesDef = (
@@ -160,7 +174,9 @@ export default class TypeDoc extends React.Component {
       <div>
         <MarkdownContent
           className="doc-type-description"
-          markdown={type.description || 'No Description'}
+          markdown={
+            ('description' in type && type.description) || 'No Description'
+          }
         />
         {type instanceof GraphQLObjectType && typesDef}
         {fieldsDef}
@@ -175,7 +191,14 @@ export default class TypeDoc extends React.Component {
   handleShowDeprecated = () => this.setState({ showDeprecated: true });
 }
 
-function Field({ type, field, onClickType, onClickField }) {
+type FieldProps = {
+  type: GraphQLType;
+  field: GraphQLField | GraphQLInputField;
+  onClickType: () => void;
+  onClickField: () => void;
+};
+
+function Field({ type, field, onClickType, onClickField }: FieldProps) {
   return (
     <div className="doc-category-item">
       <a
@@ -212,14 +235,11 @@ function Field({ type, field, onClickType, onClickField }) {
   );
 }
 
-Field.propTypes = {
-  type: PropTypes.object,
-  field: PropTypes.object,
-  onClickType: PropTypes.func,
-  onClickField: PropTypes.func,
+type EnumValue = {
+  value: GraphQLEnumValue;
 };
 
-function EnumValue({ value }) {
+function EnumValue({ value }: EnumValue) {
   return (
     <div className="doc-category-item">
       <div className="enum-value">{value.name}</div>
@@ -236,7 +256,3 @@ function EnumValue({ value }) {
     </div>
   );
 }
-
-EnumValue.propTypes = {
-  value: PropTypes.object,
-};

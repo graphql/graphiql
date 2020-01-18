@@ -5,17 +5,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import { GraphQLList, GraphQLNonNull } from 'graphql';
+import React, { MouseEvent } from 'react';
+import { GraphQLList, GraphQLNonNull, GraphQLType } from 'graphql';
 
-export default class TypeLink extends React.Component {
-  static propTypes = {
-    type: PropTypes.object,
-    onClick: PropTypes.func,
-  };
+type OnClickFunction = (
+  type: GraphQLType,
+  event?: MouseEvent<HTMLAnchorElement>,
+) => void;
 
-  shouldComponentUpdate(nextProps) {
+type TypeLinkProps = {
+  type: GraphQLType;
+  onClick: OnClickFunction;
+};
+
+export default class TypeLink extends React.Component<TypeLinkProps, {}> {
+  shouldComponentUpdate(nextProps: TypeLinkProps) {
     return this.props.type !== nextProps.type;
   }
 
@@ -24,7 +28,7 @@ export default class TypeLink extends React.Component {
   }
 }
 
-function renderType(type, onClick) {
+function renderType(type: GraphQLType, onClick: OnClickFunction) {
   if (type instanceof GraphQLNonNull) {
     return (
       <span>
