@@ -39,13 +39,13 @@ type Insertion = {
  * utility represents a "best effort" which may be useful within IDE tools.
  */
 export function fillLeafs(
-  schema: GraphQLSchema,
-  docString: string,
-  getDefaultFieldNames: GetDefaultFieldNamesFn,
+  schema?: GraphQLSchema,
+  docString?: string,
+  getDefaultFieldNames?: GetDefaultFieldNamesFn,
 ) {
   const insertions: Insertion[] = [];
 
-  if (!schema) {
+  if (!schema || !docString) {
     return { insertions, result: docString };
   }
 

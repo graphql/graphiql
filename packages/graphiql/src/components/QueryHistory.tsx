@@ -15,15 +15,20 @@ const MAX_QUERY_SIZE = 100000;
 const MAX_HISTORY_LENGTH = 20;
 
 const shouldSaveQuery = (
-  query: string,
-  variables: string,
-  lastQuerySaved: QueryStoreItem,
+  query?: string,
+  variables?: string,
+  lastQuerySaved?: QueryStoreItem,
 ) => {
+  if (!query) {
+    return false;
+  }
+
   try {
     parse(query);
   } catch (e) {
     return false;
   }
+
   // Don't try to save giant queries
   if (query.length > MAX_QUERY_SIZE) {
     return false;
@@ -108,7 +113,11 @@ export class QueryHistory extends React.Component<
   }
 
   // Public API
-  updateHistory = (query: string, variables: string, operationName: string) => {
+  updateHistory = (
+    query?: string,
+    variables?: string,
+    operationName?: string,
+  ) => {
     if (shouldSaveQuery(query, variables, this.historyStore.fetchRecent())) {
       this.historyStore.push({
         query,

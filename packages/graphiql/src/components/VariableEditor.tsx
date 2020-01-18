@@ -16,7 +16,7 @@ type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
   value?: string;
   onEdit: (value: string) => void;
-  readOnly: boolean;
+  readOnly?: boolean;
   onHintInformationRender: (value: HTMLDivElement) => void;
   onPrettifyQuery: (value?: string) => void;
   onMergeQuery: (value?: string) => void;

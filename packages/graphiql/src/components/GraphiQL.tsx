@@ -21,6 +21,7 @@ import {
   print,
   OperationDefinitionNode,
   IntrospectionQuery,
+  GraphQLType,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 
@@ -98,7 +99,7 @@ type GraphiQLProps = {
   storage?: Storage;
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
-  onCopyQuery?: () => void;
+  onCopyQuery?: (query?: string) => void;
   onEditQuery?: () => void;
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
@@ -661,31 +662,33 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
     if (insertions && insertions.length > 0) {
       const editor = this.getQueryEditor();
-      editor.operation(() => {
-        const cursor = editor.getCursor();
-        const cursorIndex = editor.indexFromPos(cursor);
-        editor.setValue(result);
-        let added = 0;
-        const markers = insertions.map(({ index, string }) =>
-          editor.markText(
-            editor.posFromIndex(index + added),
-            editor.posFromIndex(index + (added += string.length)),
-            {
-              className: 'autoInsertedLeaf',
-              clearOnEnter: true,
-              title: 'Automatically added leaf fields',
-            },
-          ),
-        );
-        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-        let newCursorIndex = cursorIndex;
-        insertions.forEach(({ index, string }) => {
-          if (index < cursorIndex) {
-            newCursorIndex += string.length;
-          }
+      if (editor) {
+        editor.operation(() => {
+          const cursor = editor.getCursor();
+          const cursorIndex = editor.indexFromPos(cursor);
+          editor.setValue(result || '');
+          let added = 0;
+          const markers = insertions.map(({ index, string }) =>
+            editor.markText(
+              editor.posFromIndex(index + added),
+              editor.posFromIndex(index + (added += string.length)),
+              {
+                className: 'autoInsertedLeaf',
+                clearOnEnter: true,
+                title: 'Automatically added leaf fields',
+              },
+            ),
+          );
+          setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+          let newCursorIndex = cursorIndex;
+          insertions.forEach(({ index, string }) => {
+            if (index < cursorIndex) {
+              newCursorIndex += string.length;
+            }
+          });
+          editor.setCursor(editor.posFromIndex(newCursorIndex));
         });
-        editor.setCursor(editor.posFromIndex(newCursorIndex));
-      });
+      }
     }
 
     return result;
@@ -796,7 +799,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       // completion of the Observable. Returns a Subscription object.
       const subscription = fetch.subscribe({
         next: cb,
-        error: error => {
+        error: (error: Error) => {
           this.setState({
             isWaitingForResponse: false,
             response: error ? GraphiQL.formatError(error) : undefined,
@@ -817,7 +820,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   }
 
-  handleClickReference = reference => {
+  handleClickReference = (reference: GraphQLType) => {
     this.setState({ docExplorerOpen: true }, () => {
       if (this.docExplorerComponent) {
         this.docExplorerComponent.showDocForReference(reference);
@@ -846,7 +849,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     try {
       this.setState({
         isWaitingForResponse: true,
-        response: null,
+        response: undefined,
         operationName,
       });
 
@@ -899,7 +902,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const operations = this.state.operations;
     if (operations) {
       const editor = this.getQueryEditor();
-      if (editor.hasFocus()) {
+      if (editor && editor.hasFocus()) {
         const cursor = editor.getCursor();
         const cursorIndex = editor.indexFromPos(cursor);
 
@@ -907,6 +910,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         for (let i = 0; i < operations.length; i++) {
           const operation = operations[i];
           if (
+            operation.loc &&
             operation.loc.start <= cursorIndex &&
             operation.loc.end >= cursorIndex
           ) {
@@ -992,8 +996,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   _updateQueryFacts = (
     query: string,
     operationName?: string,
-    prevOperations,
-    schema: GraphQLSchema,
+    prevOperations?: OperationDefinitionNode[],
+    schema?: GraphQLSchema,
   ) => {
     const queryFacts = getQueryFacts(schema, query);
     if (queryFacts) {
@@ -1048,15 +1052,19 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this._runQueryAtCursor();
   };
 
-  _onClickHintInformation = (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (event.target.className === 'typeName') {
-      const typeName = event.target.innerHTML;
+  private _onClickHintInformation: MouseEventHandler<
+    HTMLDivElement
+  > = event => {
+    if (event.currentTarget.className === 'typeName') {
+      const typeName = event.currentTarget.innerHTML;
       const schema = this.state.schema;
       if (schema) {
         const type = schema.getType(typeName);
         if (type) {
           this.setState({ docExplorerOpen: true }, () => {
-            this.docExplorerComponent.showDoc(type);
+            if (this.docExplorerComponent) {
+              this.docExplorerComponent.showDoc(type);
+            }
           });
         }
       }
@@ -1297,23 +1305,12 @@ function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
 }
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
-// GraphiQL.formatResult = function(result) {
-//   return JSON.stringify(result, null, 2);
-// };
-
-const formatSingleError = error => ({
+const formatSingleError = (error: Error) => ({
   ...error,
   // Raise these details even if they're non-enumerable
   message: error.message,
   stack: error.stack,
 });
-
-// GraphiQL.formatError = function(rawError) {
-//   const result = Array.isArray(rawError)
-//     ? rawError.map(formatSingleError)
-//     : formatSingleError(rawError);
-//   return JSON.stringify(result, null, 2);
-// };
 
 const defaultQuery = `# Welcome to GraphiQL
 #

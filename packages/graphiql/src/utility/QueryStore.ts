@@ -7,9 +7,9 @@
 import StorageAPI from './StorageAPI';
 
 export type QueryStoreItem = {
-  operationName: string;
-  query: string;
-  variables: string;
+  query?: string;
+  variables?: string;
+  operationName?: string;
   label?: string;
   favorite?: boolean;
 };
