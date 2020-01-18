@@ -1,7 +1,7 @@
 import List, { ListRow } from '../List/List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
-import { layout } from '../../../.storybook/decorators';
+import { layout } from '../themes/decorators';
 
 export default { title: 'Tabbar', decorators: [layout] };
 

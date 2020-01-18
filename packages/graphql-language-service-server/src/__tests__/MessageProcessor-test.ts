@@ -5,29 +5,74 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 
-jest.mock('../GraphQLWatchman');
-import { GraphQLWatchman } from '../GraphQLWatchman';
-import { GraphQLConfig } from 'graphql-config';
+jest.mock('../Logger');
+
+import { DefinitionQueryResult } from 'graphql-language-service-types';
+
+import { Logger } from '../Logger';
 
 describe('MessageProcessor', () => {
-  const mockWatchmanClient = new GraphQLWatchman();
-  const messageProcessor = new MessageProcessor(undefined, mockWatchmanClient);
+  const logger = new Logger();
+  const messageProcessor = new MessageProcessor(logger);
 
   const queryDir = `${__dirname}/__queries__`;
-  const schemaPath = `${__dirname}/__schema__/StarWarsSchema.graphql`;
   const textDocumentTestString = `
   {
     hero(episode: NEWHOPE){
     }
   }
   `;
+
+  beforeEach(() => {
+    messageProcessor._graphQLCache = {
+      // @ts-ignore
+      getGraphQLConfig() {
+        return {
+          configDir: __dirname,
+          getProjectNameForFile() {
+            return null;
+          },
+        };
+      },
+      // @ts-ignore
+      updateFragmentDefinition() {},
+      // @ts-ignore
+      updateObjectTypeDefinition() {},
+      // @ts-ignore
+      handleWatchmanSubscribeEvent() {},
+    };
+    messageProcessor._languageService = {
+      // @ts-ignore
+      getAutocompleteSuggestions: (query, position, uri) => {
+        return [{ label: `${query} at ${uri}` }];
+      },
+      // @ts-ignore
+      getDiagnostics: (query, uri) => {
+        return [];
+      },
+      getDefinition: async (
+        _query,
+        position,
+        uri,
+      ): Promise<DefinitionQueryResult> => {
+        return {
+          queryRange: [new Range(position, position)],
+          definitions: [
+            {
+              position,
+              path: uri,
+            },
+          ],
+        };
+      },
+    };
+  });
 
   const initialDocument = {
     textDocument: {
@@ -37,47 +82,17 @@ describe('MessageProcessor', () => {
     },
   };
 
-  beforeEach(() => {
-    messageProcessor._graphQLCache = {
-      getGraphQLConfig() {
-        return {
-          configDir: __dirname,
-          getProjectNameForFile() {
-            return null;
-          },
-        };
-      },
-      updateFragmentDefinition() {},
-      updateObjectTypeDefinition() {},
-      handleWatchmanSubscribeEvent() {},
-    };
-    messageProcessor._languageService = {
-      getAutocompleteSuggestions: (query, position, uri) => {
-        return [{ label: `${query} at ${uri}` }];
-      },
-      getDiagnostics: (query, uri) => {
-        return [];
-      },
-      getDefinition: (query, position, uri) => {
-        return {
-          definitions: [
-            {
-              uri,
-              position,
-              path: uri,
-            },
-          ],
-        };
-      },
-    };
-  });
   messageProcessor._isInitialized = true;
-  messageProcessor._logger = { log() {} };
 
   it('initializes properly and opens a file', async () => {
-    const { capabilities } = await messageProcessor.handleInitializeRequest({
-      rootPath: __dirname,
-    });
+    const { capabilities } = await messageProcessor.handleInitializeRequest(
+      // @ts-ignore
+      {
+        rootUri: __dirname,
+      },
+      null,
+      __dirname,
+    );
     expect(capabilities.definitionProvider).toEqual(true);
     expect(capabilities.completionProvider.resolveProvider).toEqual(true);
     expect(capabilities.textDocumentSync).toEqual(1);
@@ -87,6 +102,7 @@ describe('MessageProcessor', () => {
     const uri = `${queryDir}/test2.graphql`;
     const query = 'test';
     messageProcessor._textDocumentCache.set(uri, {
+      version: 0,
       contents: [
         {
           query,
@@ -99,7 +115,6 @@ describe('MessageProcessor', () => {
       position: new Position(0, 0),
       textDocument: { uri },
     };
-
     const result = await messageProcessor.handleCompletionRequest(test);
     expect(result).toEqual({
       items: [{ label: `${query} at ${uri}` }],
@@ -110,6 +125,7 @@ describe('MessageProcessor', () => {
   it('properly changes the file cache with the didChange handler', async () => {
     const uri = `file://${queryDir}/test.graphql`;
     messageProcessor._textDocumentCache.set(uri, {
+      version: 1,
       contents: [
         {
           query: '',
@@ -127,6 +143,7 @@ describe('MessageProcessor', () => {
 
     const result = await messageProcessor.handleDidChangeNotification({
       textDocument: {
+        // @ts-ignore
         text: textDocumentTestString,
         uri,
         version: 1,
@@ -150,10 +167,10 @@ describe('MessageProcessor', () => {
     return messageProcessor
       .handleCompletionRequest(params)
       .then(result => expect(result).toEqual(null))
-      .catch(error => {});
+      .catch(() => {});
   });
 
-  // Doesn't work with mock watchman client
+  // modified to work with jest.mock() of WatchmanClient
   it('runs definition requests', async () => {
     const validQuery = `
   {
@@ -167,9 +184,18 @@ describe('MessageProcessor', () => {
       textDocument: {
         text: validQuery,
         uri: `${queryDir}/test3.graphql`,
-        version: 0,
+        version: 1,
       },
     };
+    messageProcessor._getCachedDocument = (_uri: string) => ({
+      version: 1,
+      contents: [
+        {
+          query: validQuery,
+          range: new Range(new Position(0, 0), new Position(20, 4)),
+        },
+      ],
+    });
 
     await messageProcessor.handleDidOpenOrSaveNotification(newDocument);
 
@@ -180,44 +206,6 @@ describe('MessageProcessor', () => {
 
     const result = await messageProcessor.handleDefinitionRequest(test);
     await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
-  });
-
-  it('loads configs without projects when watchman is present', async () => {
-    const config = new GraphQLConfig(
-      {
-        schemaPath,
-        includes: `${queryDir}/*.graphql`,
-      },
-      'not/a/real/config',
-    );
-
-    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
-    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
-    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
-      'not/a/real',
-      undefined,
-    );
-  });
-
-  it('loads configs with projects when watchman is present', async () => {
-    const config = new GraphQLConfig(
-      {
-        projects: {
-          foo: {
-            schemaPath,
-            includes: `${queryDir}/*.graphql`,
-          },
-        },
-      },
-      'not/a/real/config',
-    );
-
-    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
-    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
-    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
-      'not/a/real',
-      undefined,
-    );
   });
 
   it('getQueryAndRange finds queries in tagged templates', async () => {

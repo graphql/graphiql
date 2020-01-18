@@ -25,10 +25,11 @@ import {
   GraphQLProjectConfig,
   Uri,
   Position,
+  CustomValidationRule,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';
-import { Hover } from 'vscode-languageserver-types';
+import { Hover, DiagnosticSeverity } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
@@ -122,7 +123,7 @@ export class GraphQLLanguageService {
       const range = getRange(error.locations[0], query);
       return [
         {
-          severity: SEVERITY.ERROR,
+          severity: SEVERITY.ERROR as DiagnosticSeverity,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
@@ -166,7 +167,9 @@ export class GraphQLLanguageService {
       /* eslint-disable no-implicit-coercion */
       const rulesPath = resolveFile(customRulesModulePath);
       if (rulesPath) {
-        const customValidationRules = await requireFile(rulesPath);
+        const customValidationRules: (
+          config: GraphQLConfig,
+        ) => CustomValidationRule[] = await requireFile(rulesPath);
         if (customValidationRules) {
           customRules = customValidationRules(this._graphQLConfig);
         }
@@ -220,7 +223,7 @@ export class GraphQLLanguageService {
     query: string,
     position: Position,
     filePath: Uri,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const projectConfig = this.getConfigForURI(filePath);
 
     let ast;
@@ -269,7 +272,7 @@ export class GraphQLLanguageService {
     node: NamedTypeNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
       projectConfig,
     );
@@ -313,7 +316,7 @@ export class GraphQLLanguageService {
     node: FragmentSpreadNode,
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
-  ): Promise<DefinitionQueryResult | null | undefined> {
+  ): Promise<DefinitionQueryResult | null> {
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
       projectConfig,
     );

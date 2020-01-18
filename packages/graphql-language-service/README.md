@@ -5,13 +5,13 @@
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 [![License](https://img.shields.io/npm/l/graphql-language-service.svg?style=flat-square)](LICENSE)
 
-_This is currently in technical preview. We welcome your feedback and suggestions._
+_We welcome your feedback and suggestions._
 
 GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
 Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
 
-Currently supported features include:
+Supported features include:
 
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
@@ -22,7 +22,9 @@ Currently supported features include:
 
 ### Dependencies
 
-GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs/install.html) to install Watchman.
+An LSP compatible client with it's own file watcher, that sends watch notifications to the server.
+
+**DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
 
 ### Installation
 
@@ -39,6 +41,11 @@ The library includes a node executable file which you can find in `./node_module
 ### GraphQL configuration file (`.graphqlconfig`)
 
 Check out [graphql-config](https://github.com/graphcool/graphql-config)
+
+The graphql features we support are:
+
+- `customDirectives` - `['@myExampleDirective']`
+- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`;
 
 ### Using the command-line interface
 

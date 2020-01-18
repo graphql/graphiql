@@ -5,11 +5,10 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 /* eslint-disable no-bitwise */
-export default function(str: string): number {
+export default function stringToHash(str: string): number {
   let hash = 0;
   if (str.length === 0) {
     return hash;

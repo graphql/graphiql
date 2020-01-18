@@ -29,8 +29,7 @@ export function getDefinitionState(
   let definitionState;
 
   // TODO - couldn't figure this one out
-  // @ts-ignore
-  forEachState(tokenState, (state: State): AllTypeInfo | null | undefined => {
+  forEachState(tokenState, (state: State): void => {
     switch (state.kind) {
       case 'Query':
       case 'ShortQuery':

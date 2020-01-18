@@ -16,10 +16,7 @@ import {
   SourceLocation,
 } from 'graphql';
 
-import {
-  Diagnostic,
-  CustomValidationRule,
-} from 'graphql-language-service-types';
+import { CustomValidationRule } from 'graphql-language-service-types';
 
 import invariant from 'assert';
 import { findDeprecatedUsages, parse } from 'graphql';
@@ -32,11 +29,13 @@ import {
   Position,
 } from 'graphql-language-service-utils';
 
+import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
+
 export const SEVERITY = {
-  ERROR: 1,
-  WARNING: 2,
-  INFORMATION: 3,
-  HINT: 4,
+  ERROR: 1 as DiagnosticSeverity,
+  WARNING: 2 as DiagnosticSeverity,
+  INFORMATION: 3 as DiagnosticSeverity,
+  HINT: 4 as DiagnosticSeverity,
 };
 
 export function getDiagnostics(
@@ -52,7 +51,7 @@ export function getDiagnostics(
     const range = getRange(error.locations[0], query);
     return [
       {
-        severity: SEVERITY.ERROR,
+        severity: SEVERITY.ERROR as DiagnosticSeverity,
         message: error.message,
         source: 'GraphQL: Syntax',
         range,
@@ -100,7 +99,7 @@ function mapCat<T>(
 
 function annotations(
   error: GraphQLError,
-  severity: number,
+  severity: DiagnosticSeverity,
   type: string,
 ): Array<Diagnostic> {
   if (!error.nodes) {

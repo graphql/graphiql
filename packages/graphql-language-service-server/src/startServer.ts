@@ -5,12 +5,9 @@
  *  This source code is licensed under the license found in the
  *  LICENSE file in the root directory of this source tree.
  *
- *  @flow
  */
 
 import net from 'net';
-
-import { GraphQLWatchman } from './GraphQLWatchman';
 import { MessageProcessor } from './MessageProcessor';
 
 import {
@@ -43,11 +40,20 @@ import {
 import { Logger } from './Logger';
 
 type Options = {
-  port?: number,
-  method?: string,
-  configDir?: string,
+  // port for the LSP server to run on
+  port?: number;
+  // socket, streams, or node (ipc). if socket, port is required
+  method?: 'socket' | 'stream' | 'node';
+  // the directory where graphql-config is found
+  configDir?: string;
 };
 
+/**
+ * startServer - initialize LSP server with options
+ *
+ * @param options {Options} server initialization methods
+ * @returns {Promise<void>}
+ */
 export default (async function startServer(options: Options): Promise<void> {
   const logger = new Logger();
 
@@ -64,7 +70,6 @@ export default (async function startServer(options: Options): Promise<void> {
             '--port is required to establish socket connection.',
           );
           process.exit(1);
-          return;
         }
 
         const port = options.port;
@@ -78,7 +83,7 @@ export default (async function startServer(options: Options): Promise<void> {
               process.exit(0);
             });
             const connection = createMessageConnection(reader, writer, logger);
-            addHandlers(connection, options.configDir, logger);
+            addHandlers(connection, logger, options.configDir);
             connection.listen();
           })
           .listen(port);
@@ -94,17 +99,17 @@ export default (async function startServer(options: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(connection, options.configDir, logger);
+    addHandlers(connection, logger, options.configDir);
     connection.listen();
   }
 });
 
 function addHandlers(
   connection: MessageConnection,
-  configDir?: string,
   logger: Logger,
+  configDir?: string,
 ): void {
-  const messageProcessor = new MessageProcessor(logger, new GraphQLWatchman());
+  const messageProcessor = new MessageProcessor(logger);
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {

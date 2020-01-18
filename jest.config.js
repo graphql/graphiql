@@ -39,5 +39,6 @@ module.exports = {
     '!**/resources/**',
     '!**/examples/**',
     '!**/codemirror-graphql/**',
+    '!**/graphql-language-service-types/**',
   ],
 };

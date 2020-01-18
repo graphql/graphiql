@@ -28,19 +28,19 @@ import {
 } from 'graphql-language-service-types';
 
 import { locToRange, offsetToPosition } from 'graphql-language-service-utils';
-import invariant from 'assert';
+import assert from 'assert';
 
 export const LANGUAGE = 'GraphQL';
 
 function getRange(text: string, node: ASTNode): Range {
   const location = node.loc as Location;
-  invariant(location, 'Expected ASTNode to have a location.');
+  assert(location, 'Expected ASTNode to have a location.');
   return locToRange(text, location);
 }
 
 function getPosition(text: string, node: ASTNode): Position {
   const location = node.loc as Location;
-  invariant(location, 'Expected ASTNode to have a location.');
+  assert(location, 'Expected ASTNode to have a location.');
   return offsetToPosition(text, location.start);
 }
 
@@ -111,14 +111,16 @@ function getDefinitionForFragmentDefinition(
   definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): Definition {
   const name = definition.name;
-  invariant(name, 'Expected ASTNode to have a Name.');
+  if (!name) {
+    throw Error('Expected ASTNode to have a Name.');
+  }
+
   return {
     path,
     position: getPosition(text, definition),
     range: getRange(text, definition),
-    // @ts-ignore
     // TODO: doesnt seem to pick up the inference
-    // from invariant() exception logic
+    // from assert() exception logic
     name: name.value || '',
     language: LANGUAGE,
     // This is a file inside the project root, good enough for now
@@ -132,7 +134,7 @@ function getDefinitionForNodeDefinition(
   definition: TypeDefinitionNode,
 ): Definition {
   const name = definition.name;
-  invariant(name, 'Expected ASTNode to have a Name.');
+  assert(name, 'Expected ASTNode to have a Name.');
   return {
     path,
     position: getPosition(text, definition),

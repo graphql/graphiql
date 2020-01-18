@@ -1,7 +1,10 @@
 [ignore]
 .*/__mocks__/.*
 .*/__tests__/.*
+!*.flow.js
 .*/coverage/.*
+!packages/codemirror-graphql/.*
+!packages/codemirror-graphql/.*
 .*/dist/.*
 .*/resources/.*
 .*/node_modules/.*
