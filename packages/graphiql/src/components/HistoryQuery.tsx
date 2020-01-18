@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-type HistoryQueryProps = {
+export type HistoryQueryProps = {
   favorite?: boolean;
   favoriteSize?: number;
   handleEditLabel?: (

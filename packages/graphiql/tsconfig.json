@@ -9,7 +9,7 @@
     "baseUrl": ".",
     "noEmit": true,
     "strictPropertyInitialization": false,
-    "types": ["./types", "node"],
+    "types": ["./types", "node", "jest"],
     "lib": ["dom"]
   },
   "include": ["src"]

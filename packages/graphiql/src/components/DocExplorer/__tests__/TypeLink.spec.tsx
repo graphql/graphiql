@@ -36,7 +36,7 @@ describe('TypeLink', () => {
   it('should handle a click event', () => {
     const op = jest.fn();
     const { container } = render(<TypeLink type={listType} onClick={op} />);
-    fireEvent.click(container.querySelector('a'));
+    fireEvent.click(container.querySelector('a')!);
     expect(op.mock.calls.length).toEqual(1);
     expect(op.mock.calls[0][0]).toEqual(GraphQLString);
   });

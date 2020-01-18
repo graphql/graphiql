@@ -48,11 +48,11 @@ describe('TypeDoc', () => {
         onClickField={onClickField}
       />,
     );
-    fireEvent.click(container.querySelector('.type-name'));
+    fireEvent.click(container.querySelector('.type-name')!);
     expect(onClickType.mock.calls.length).toEqual(1);
     expect(onClickType.mock.calls[0][0]).toEqual(GraphQLString);
 
-    fireEvent.click(container.querySelector('.field-name'));
+    fireEvent.click(container.querySelector('.field-name')!);
     expect(onClickField.mock.calls.length).toEqual(1);
     expect(onClickField.mock.calls[0][0].name).toEqual('string');
     expect(onClickField.mock.calls[0][0].type).toEqual(GraphQLString);
@@ -70,7 +70,7 @@ describe('TypeDoc', () => {
     let cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(3);
 
-    fireEvent.click(container.querySelector('.show-btn'));
+    fireEvent.click(container.querySelector('.show-btn')!);
 
     cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(4);

@@ -7,7 +7,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
-import HistoryQuery from '../HistoryQuery';
+import HistoryQuery, { HistoryQueryProps } from '../HistoryQuery';
 import { mockOperationName1, mockQuery1, mockVariables1 } from './fixtures';
 
 const noOp = () => {};
@@ -21,7 +21,9 @@ const baseMockProps = {
   variables: mockVariables1,
 };
 
-function getMockProps(customProps) {
+function getMockProps(
+  customProps?: Partial<HistoryQueryProps>,
+): HistoryQueryProps {
   return {
     ...baseMockProps,
     ...customProps,
@@ -33,14 +35,14 @@ describe('HistoryQuery', () => {
     const otherMockProps = { operationName: mockOperationName1 };
     const props = getMockProps(otherMockProps);
     const { container } = render(<HistoryQuery {...props} />);
-    expect(container.querySelector('button.history-label').textContent).toBe(
+    expect(container.querySelector('button.history-label')!.textContent).toBe(
       mockOperationName1,
     );
   });
 
   it('renders a string version of the query if label or operation name are not provided', () => {
     const { container } = render(<HistoryQuery {...getMockProps()} />);
-    expect(container.querySelector('button.history-label').textContent).toBe(
+    expect(container.querySelector('button.history-label')!.textContent).toBe(
       mockQuery1
         .split('\n')
         .filter(line => line.indexOf('#') !== 0)
@@ -56,7 +58,7 @@ describe('HistoryQuery', () => {
     const { container } = render(
       <HistoryQuery {...getMockProps(otherMockProps)} />,
     );
-    fireEvent.click(container.querySelector('button.history-label'));
+    fireEvent.click(container.querySelector('button.history-label')!);
     expect(onSelectSpy).toHaveBeenCalledWith(
       mockQuery1,
       mockVariables1,
@@ -67,7 +69,7 @@ describe('HistoryQuery', () => {
 
   it('renders label input if the edit label button is clicked', () => {
     const { container } = render(<HistoryQuery {...getMockProps()} />);
-    fireEvent.click(container.querySelector('[aria-label="Edit label"]'));
+    fireEvent.click(container.querySelector('[aria-label="Edit label"]')!);
     expect(container.querySelectorAll('li.editable').length).toBe(1);
     expect(container.querySelectorAll('input').length).toBe(1);
     expect(container.querySelectorAll('button.history-label').length).toBe(0);
