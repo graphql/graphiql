@@ -11,28 +11,17 @@ import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 
-jest.mock('../GraphQLWatchman');
 jest.mock('../Logger');
 
-import { GraphQLWatchman } from '../GraphQLWatchman';
-import { GraphQLConfig } from 'graphql-config';
+import { DefinitionQueryResult } from 'graphql-language-service-types';
 
-import {
-  CompletionItem,
-  DefinitionQueryResult,
-} from 'graphql-language-service-types';
-
-import { CompletionList } from 'vscode-languageserver';
 import { Logger } from '../Logger';
 
 describe('MessageProcessor', () => {
-  const mockWatchmanClient = new GraphQLWatchman();
-
   const logger = new Logger();
-  const messageProcessor = new MessageProcessor(logger, mockWatchmanClient);
+  const messageProcessor = new MessageProcessor(logger);
 
   const queryDir = `${__dirname}/__queries__`;
-  const schemaPath = `${__dirname}/__schema__/StarWarsSchema.graphql`;
   const textDocumentTestString = `
   {
     hero(episode: NEWHOPE){
@@ -177,9 +166,7 @@ describe('MessageProcessor', () => {
     // Should throw because file has been deleted from cache
     return messageProcessor
       .handleCompletionRequest(params)
-      .then((result: CompletionItem | CompletionItem[] | CompletionList) =>
-        expect(result).toEqual(null),
-      )
+      .then(result => expect(result).toEqual(null))
       .catch(() => {});
   });
 
@@ -219,45 +206,6 @@ describe('MessageProcessor', () => {
 
     const result = await messageProcessor.handleDefinitionRequest(test);
     await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
-  });
-
-  it('loads configs without projects when watchman is present', async () => {
-    const config = new GraphQLConfig(
-      {
-        schemaPath,
-        includes: [`${queryDir}/*.graphql`],
-      },
-      'not/a/real/config',
-    );
-
-    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
-    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
-    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
-      'not/a/real',
-      undefined,
-    );
-  });
-
-  it('loads configs with projects when watchman is present', async () => {
-    const config = new GraphQLConfig(
-      {
-        schemaPath: '',
-        projects: {
-          foo: {
-            schemaPath,
-            includes: [`${queryDir}/*.graphql`],
-          },
-        },
-      },
-      'not/a/real/config',
-    );
-
-    await messageProcessor._subcribeWatchman(config, mockWatchmanClient);
-    await expect(mockWatchmanClient.subscribe).toBeCalledTimes(1);
-    await expect(mockWatchmanClient.subscribe).toBeCalledWith(
-      'not/a/real',
-      undefined,
-    );
   });
 
   it('getQueryAndRange finds queries in tagged templates', async () => {

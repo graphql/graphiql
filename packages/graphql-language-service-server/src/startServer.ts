@@ -8,8 +8,6 @@
  */
 
 import net from 'net';
-
-import { GraphQLWatchman } from './GraphQLWatchman';
 import { MessageProcessor } from './MessageProcessor';
 
 import {
@@ -111,7 +109,7 @@ function addHandlers(
   logger: Logger,
   configDir?: string,
 ): void {
-  const messageProcessor = new MessageProcessor(logger, new GraphQLWatchman());
+  const messageProcessor = new MessageProcessor(logger);
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {

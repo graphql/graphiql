@@ -2,7 +2,8 @@
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./esm"
+    "outDir": "./esm",
+    "composite": true
   },
   "references": [
     {

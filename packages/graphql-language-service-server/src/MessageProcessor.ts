@@ -18,17 +18,12 @@ import { FileChangeTypeKind } from 'graphql-language-service-types';
 import { extname, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { URL } from 'url';
-import {
-  findGraphQLConfigFile,
-  getGraphQLConfig,
-  GraphQLProjectConfig,
-  GraphQLConfig,
-} from 'graphql-config';
+import { findGraphQLConfigFile } from 'graphql-config';
 import { GraphQLLanguageService } from 'graphql-language-service-interface';
 
 import { Range, Position } from 'graphql-language-service-utils';
 
-import { CompletionParams } from 'vscode-languageserver-protocol';
+import { CompletionParams, FileEvent } from 'vscode-languageserver-protocol';
 
 import {
   Diagnostic,
@@ -52,7 +47,6 @@ import {
 import { getGraphQLCache } from './GraphQLCache';
 import { findGraphQLTags } from './findGraphQLTags';
 import { Logger } from './Logger';
-import { GraphQLWatchman } from './GraphQLWatchman';
 
 type CachedDocumentType = {
   version: number;
@@ -63,7 +57,6 @@ export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
-  _watchmanClient?: GraphQLWatchman | null;
 
   _isInitialized: boolean;
 
@@ -71,13 +64,12 @@ export class MessageProcessor {
 
   _logger: Logger;
 
-  constructor(logger: Logger, watchmanClient: GraphQLWatchman) {
+  constructor(logger: Logger) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
 
     this._logger = logger;
-    this._watchmanClient = watchmanClient;
   }
 
   async handleInitializeRequest(
@@ -110,10 +102,6 @@ export class MessageProcessor {
     }
 
     this._graphQLCache = await getGraphQLCache(rootPath);
-    const config = getGraphQLConfig(rootPath);
-    if (this._watchmanClient) {
-      this._subcribeWatchman(config, this._watchmanClient);
-    }
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
@@ -130,54 +118,6 @@ export class MessageProcessor {
     );
 
     return serverCapabilities;
-  }
-
-  // Use watchman to subscribe to project file changes only if watchman is
-  // installed. Otherwise, rely on LSP watched files did change events.
-  async _subcribeWatchman(
-    config: GraphQLConfig,
-    watchmanClient: GraphQLWatchman,
-  ) {
-    if (!watchmanClient) {
-      return;
-    }
-    try {
-      // If watchman isn't installed, `GraphQLWatchman.checkVersion` will throw
-      await watchmanClient.checkVersion();
-
-      // Otherwise, subcribe watchman according to project config(s).
-      const projectMap = config.getProjects();
-      let projectConfigs: GraphQLProjectConfig[] = projectMap
-        ? Object.values(projectMap)
-        : [];
-
-      // There can either be a single config or one or more project
-      // configs, but not both.
-      if (projectConfigs.length === 0) {
-        projectConfigs = [config.getProjectConfig()];
-      }
-
-      // For each project config, subscribe to the file changes and update the
-      // cache accordingly.
-      projectConfigs.forEach((projectConfig: GraphQLProjectConfig) => {
-        watchmanClient.subscribe(
-          projectConfig.configDir,
-          this._graphQLCache.handleWatchmanSubscribeEvent(
-            config.configDir,
-            projectConfig,
-          ),
-        );
-      });
-    } catch (err) {
-      // If checkVersion raises {type: "ENOENT"}, watchman is not available.
-      // But it's okay to proceed. We'll use LSP watched file change notifications
-      // instead. If any other kind of error occurs, rethrow it up the call stack.
-      if (err.code === 'ENOENT') {
-        this._watchmanClient = undefined;
-      } else {
-        throw err;
-      }
-    }
   }
 
   async handleDidOpenOrSaveNotification(
@@ -464,12 +404,12 @@ export class MessageProcessor {
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
   ): Promise<PublishDiagnosticsParams[] | null> {
-    if (!this._isInitialized || this._watchmanClient) {
+    if (!this._isInitialized) {
       return null;
     }
 
     return Promise.all(
-      params.changes.map(async change => {
+      params.changes.map(async (change: FileEvent) => {
         if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed

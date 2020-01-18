@@ -2,7 +2,7 @@
 import { jsx } from 'theme-ui';
 import List, { ListRow } from './List/List';
 import { SectionHeader, Explainer } from './Type';
-import { layout } from '../../.storybook/decorators';
+import { layout } from './themes/decorators';
 
 export default { title: 'Type', decorators: [layout] };
 

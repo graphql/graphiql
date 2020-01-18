@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "@babel/parser": "^7.4.5",
-    "fb-watchman": "^2.0.0",
     "glob": "^7.1.2",
     "graphql-config": "2.2.1",
     "graphql-language-service-interface": "^2.3.3",
@@ -46,7 +45,6 @@
     "vscode-languageserver": "^5.2.1"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3",
-    "@types/fb-watchman": "2.0.0"
+    "cross-env": "^6.0.3"
   }
 }

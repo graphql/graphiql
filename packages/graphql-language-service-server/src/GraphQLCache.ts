@@ -18,11 +18,9 @@ import {
   ObjectTypeInfo,
   Uri,
   GraphQLProjectConfig,
-  WatchmanSubscriptionResult,
 } from 'graphql-language-service-types';
 
 import fs from 'fs';
-import path from 'path';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
@@ -292,72 +290,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 
     return objectTypeDefinitions;
-  };
-
-  handleWatchmanSubscribeEvent = (
-    rootDir: string,
-    projectConfig: GraphQLProjectConfig,
-  ) => (result: WatchmanSubscriptionResult) => {
-    if (result.files && result.files.length > 0) {
-      const graphQLFileMap = this._graphQLFileListCache.get(rootDir);
-      result.files.forEach(async ({ name, exists, size, mtime }) => {
-        const filePath = path.join(result.root, result.subscription, name);
-        if (projectConfig.schemaPath && filePath === projectConfig.schemaPath) {
-          this._invalidateSchemaCacheForProject(projectConfig);
-        }
-
-        if (!graphQLFileMap) {
-          return;
-        }
-        // Prune the file using the input/excluded directories
-        if (!projectConfig.includesFile(name)) {
-          return;
-        }
-
-        // In the event of watchman recrawl (is_fresh_instance),
-        // watchman subscription returns a full set of files within the
-        // watched directory. After pruning with input/excluded directories,
-        // the file could have been created/modified.
-        // Using the cached size/mtime information, only cache the file if
-        // the file doesn't exist or the file exists and one of or both
-        // size/mtime is different.
-        if (result.is_fresh_instance && exists) {
-          const existingFile = graphQLFileMap.get(filePath);
-          // Same size/mtime means the file stayed the same
-          if (
-            existingFile &&
-            existingFile.size === size &&
-            existingFile.mtime === mtime
-          ) {
-            return;
-          }
-
-          const fileAndContent = await this.promiseToReadGraphQLFile(filePath);
-          graphQLFileMap.set(filePath, {
-            ...fileAndContent,
-            size,
-            mtime,
-          });
-          // Otherwise, create/update the cache with the updated file and
-          // content, or delete the cache if (!exists)
-        } else {
-          if (graphQLFileMap) {
-            this._graphQLFileListCache.set(
-              rootDir,
-              await this._updateGraphQLFileListCache(
-                graphQLFileMap,
-                { size, mtime },
-                filePath,
-                exists,
-              ),
-            );
-          }
-
-          this.updateFragmentDefinitionCache(rootDir, filePath, exists);
-          this.updateObjectTypeDefinitionCache(rootDir, filePath, exists);
-        }
-      });
-    }
   };
 
   _readFilesFromInputDirs = (

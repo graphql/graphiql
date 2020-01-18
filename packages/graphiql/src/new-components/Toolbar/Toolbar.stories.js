@@ -3,7 +3,7 @@ import Tabs from './Tabs';
 import React from 'react';
 import Toolbar from './Toolbar';
 import Content from './Content';
-import { layout } from '../../../.storybook/decorators';
+import { layout } from '../themes/decorators';
 
 export default { title: 'Toolbar', decorators: [layout] };
 

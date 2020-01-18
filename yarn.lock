@@ -3049,13 +3049,6 @@
   resolved "https://registry.npmjs.org/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
-"@types/fb-watchman@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/@types/fb-watchman/-/fb-watchman-2.0.0.tgz#ca60ded406baa8c81c65ac1f86763a5d00aa7c55"
-  integrity sha512-Ao2jlksPEUGCEXBvJz5e2MuDpYUtxXgtUk45cg0g5Mmy4f0j7bQuDlOlqBMgKGRl9dZAK4ZTzFtukuzj2mURlQ==
-  dependencies:
-    "@types/events" "*"
-
 "@types/fetch-mock@^7.3.2":
   version "7.3.2"
   resolved "https://registry.npmjs.org/@types/fetch-mock/-/fetch-mock-7.3.2.tgz#58805ba36a9357be92cc8c008dbfda937e9f7d8f"

@@ -9,7 +9,7 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -273,7 +273,7 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
   },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+  plugins: ['import', 'prefer-object-spread'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
@@ -302,18 +302,15 @@ module.exports = {
     // Rules for TypeScript only
     {
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
       rules: {
         'no-unused-vars': 'off',
       },
     },
     // Rules for Flow only
     {
-      files: [
-        'packages/codemirror-graphql/src/**/*.js',
-        'packages/codemirror-graphql/src/**/*.jsx',
-      ],
-      plugins: ['flowtype'],
+      files: ['packages/codemirror-graphql/src/**/*.js'],
+      parser: 'babel-eslint',
+      plugins: ['flowtype', 'babel'],
       rules: {
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
         'flowtype/boolean-style': 1,

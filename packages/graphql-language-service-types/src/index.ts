@@ -143,11 +143,6 @@ export interface GraphQLCache {
     appName?: string,
     queryHasExtensions?: boolean,
   ) => Promise<GraphQLSchema | null>;
-
-  handleWatchmanSubscribeEvent: (
-    rootDir: string,
-    projectConfig: GraphQLProjectConfig,
-  ) => (result: WatchmanSubscriptionResult) => void;
 }
 
 // online-parser related
@@ -282,19 +277,6 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type WatchmanSubscriptionResult = {
-  root: string;
-  subscription: string;
-  is_fresh_instance?: boolean;
-  files: {
-    name: string;
-    size: number;
-    mtime: number;
-    exists: boolean;
-    type?: 'f' | 'd' | 's';
-  }[];
-};
-
 export type CustomValidationRule = (
   context: ValidationContext,
 ) => Record<string, any>;
@@ -355,10 +337,6 @@ export type OutlineTree = {
 export type Outline = {
   outlineTrees: OutlineTree[];
 };
-
-export interface DidChangeWatchedFilesParams {
-  changes: FileEvent[];
-}
 
 export interface FileEvent {
   uri: string;

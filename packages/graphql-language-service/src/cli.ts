@@ -11,7 +11,6 @@ import yargs from 'yargs';
 import client from './client';
 
 import { Logger, startServer } from 'graphql-language-service-server';
-import watchman from 'fb-watchman';
 
 const { argv } = yargs
   .usage(
@@ -107,18 +106,6 @@ switch (command) {
       );
       process.exit(0);
     });
-    const watchmanClient = new watchman.Client();
-    watchmanClient.capabilityCheck(
-      { optional: [], required: [] },
-      (error, _res) => {
-        if (error) {
-          process.stderr.write(
-            `Cannot find installed watchman service with an error: ${error}`,
-          );
-          process.exit(0);
-        }
-      },
-    );
 
     const options: { [key: string]: any } = {};
     if (argv && argv.port) {

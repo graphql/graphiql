@@ -25,6 +25,7 @@ import {
   GraphQLProjectConfig,
   Uri,
   Position,
+  CustomValidationRule,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';
@@ -166,7 +167,9 @@ export class GraphQLLanguageService {
       /* eslint-disable no-implicit-coercion */
       const rulesPath = resolveFile(customRulesModulePath);
       if (rulesPath) {
-        const customValidationRules = await requireFile(rulesPath);
+        const customValidationRules: (
+          config: GraphQLConfig,
+        ) => CustomValidationRule[] = await requireFile(rulesPath);
         if (customValidationRules) {
           customRules = customValidationRules(this._graphQLConfig);
         }
