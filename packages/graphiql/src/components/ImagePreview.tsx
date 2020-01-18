@@ -8,7 +8,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-function tokenToURL(token) {
+function tokenToURL(token: any) {
   if (token.type !== 'string') {
     return null;
   }
@@ -26,12 +26,17 @@ function tokenToURL(token) {
   }
 }
 
-function isImageURL(url) {
+function isImageURL(url: URL) {
   return /(bmp|gif|jpeg|jpg|png|svg)$/.test(url.pathname);
 }
 
-export class ImagePreview extends React.Component {
-  static shouldRender(token) {
+type ImagePreviewProps = {
+  token: any;
+};
+
+export class ImagePreview extends React.Component<ImagePreviewProps> {
+  _node: HTMLImageElement | null;
+  static shouldRender(token: any) {
     const url = tokenToURL(token);
     return url ? isImageURL(url) : false;
   }
@@ -40,7 +45,7 @@ export class ImagePreview extends React.Component {
     token: PropTypes.any,
   };
 
-  constructor(props) {
+  constructor(props: ImagePreviewProps) {
     super(props);
   }
 
