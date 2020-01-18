@@ -49,7 +49,11 @@ type QueryHistoryProps = {
   variables?: string;
   operationName?: string;
   queryID?: string;
-  onSelectQuery?: () => void;
+  onSelectQuery?: (
+    query: string,
+    variables?: string,
+    operationName?: string,
+  ) => void;
   storage: StorageAPI;
 };
 
