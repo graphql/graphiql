@@ -17,7 +17,7 @@ import { OperationDefinitionNode } from 'graphql';
  */
 
 type ExecuteButtonProps = {
-  operations: OperationDefinitionNode[];
+  operations?: OperationDefinitionNode[];
   isRunning: boolean;
   onStop: () => void;
   onRun: (value?: string) => void;

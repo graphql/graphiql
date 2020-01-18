@@ -12,6 +12,7 @@ import React, {
   ReactPropTypes,
   PropsWithChildren,
   MouseEvent,
+  MouseEventHandler,
 } from 'react';
 import {
   buildClientSchema,
@@ -75,8 +76,8 @@ export type Maybe<T> = T | null | undefined;
 
 type FetcherParams = {
   query: string;
-  variables: string;
   operationName: string;
+  variables?: string;
 };
 type FetcherResult =
   | string
@@ -124,8 +125,8 @@ type GraphiQLState = {
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription: null; // TODO: find interface for this
-  variableToType?: VariableToType | null;
-  operations?: OperationDefinitionNode[] | null;
+  variableToType?: VariableToType;
+  operations?: OperationDefinitionNode[];
 };
 
 /**
@@ -582,11 +583,28 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
   }
 
+  // Export main windows/panes to be used separately if desired.
   static Logo = GraphiQLLogo;
   static Toolbar = GraphiQLToolbar;
   static Footer = GraphiQLFooter;
+  static QueryEditor = QueryEditor;
+  static VariableEditor = VariableEditor;
+  static ResultViewer = ResultViewer;
 
-  static Button: React.SFC;
+  // Add a button to the Toolbar.
+  static Button = ToolbarButton;
+  static ToolbarButton = ToolbarButton; // Don't break existing API.
+
+  // Add a group of buttons to the Toolbar
+  static Group = ToolbarGroup;
+
+  // Add a menu of items to the Toolbar.
+  static Menu = ToolbarMenu;
+  static MenuItem = ToolbarMenuItem;
+
+  // Add a select-option input to the Toolbar.
+  static Select = ToolbarSelect;
+  static SelectOption = ToolbarSelectOption;
 
   /**
    * Get the query editor CodeMirror instance.
@@ -729,15 +747,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             typeof result === 'string' ? result : GraphiQL.formatResult(result);
           this.setState({
             // Set schema to `null` to explicitly indicate that no schema exists.
-            schema: null,
+            schema: undefined,
             response: responseString,
           });
         }
       })
       .catch(error => {
         this.setState({
-          schema: null,
-          response: error ? GraphiQL.formatError(error) : null,
+          schema: undefined,
+          response: error ? GraphiQL.formatError(error) : undefined,
         });
       });
   }
@@ -769,7 +787,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : null,
+          response: error ? GraphiQL.formatError(error) : undefined,
         });
       });
     } else if (isObservable(fetch)) {
@@ -781,7 +799,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         error: error => {
           this.setState({
             isWaitingForResponse: false,
-            response: error ? GraphiQL.formatError(error) : null,
+            response: error ? GraphiQL.formatError(error) : undefined,
             subscription: null,
           });
         },
@@ -1074,7 +1092,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  private handleResizeStart = (downEvent: MouseEvent<Element, MouseEvent>) => {
+  private handleResizeStart: MouseEventHandler<HTMLDivElement> = downEvent => {
     if (!this._didClickDragBar(downEvent)) {
       return;
     }
@@ -1109,7 +1127,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ editorFlex: 1 });
   };
 
-  _didClickDragBar(event: MouseEvent<HTMLDivElement, DOMEvent>) {
+  _didClickDragBar(event: MouseEvent) {
     // Only for primary unmodified clicks
     if (event.button !== 0 || event.ctrlKey) {
       return false;
@@ -1130,9 +1148,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     return false;
   }
 
-  private handleDocsResizeStart = (
-    downEvent: MouseEvent<Element, MouseEvent>,
-  ) => {
+  private handleDocsResizeStart: MouseEventHandler<
+    HTMLDivElement
+  > = downEvent => {
     downEvent.preventDefault();
 
     const hadWidth = this.state.docExplorerWidth;
@@ -1178,9 +1196,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     });
   };
 
-  private handleVariableResizeStart = (
-    downEvent: MouseEvent<Element, MouseEvent>,
-  ) => {
+  private handleVariableResizeStart: MouseEventHandler<
+    HTMLDivElement
+  > = downEvent => {
     downEvent.preventDefault();
 
     let didMove = false;
@@ -1254,24 +1272,24 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Export main windows/panes to be used separately if desired.
-GraphiQL.QueryEditor = QueryEditor;
-GraphiQL.VariableEditor = VariableEditor;
-GraphiQL.ResultViewer = ResultViewer;
+// GraphiQL.QueryEditor = QueryEditor;
+// GraphiQL.VariableEditor = VariableEditor;
+// GraphiQL.ResultViewer = ResultViewer;
 
 // Add a button to the Toolbar.
-GraphiQL.Button = ToolbarButton;
-GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+// GraphiQL.Button = ToolbarButton;
+// GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
 
 // Add a group of buttons to the Toolbar
-GraphiQL.Group = ToolbarGroup;
+// GraphiQL.Group = ToolbarGroup;
 
 // Add a menu of items to the Toolbar.
-GraphiQL.Menu = ToolbarMenu;
-GraphiQL.MenuItem = ToolbarMenuItem;
+// GraphiQL.Menu = ToolbarMenu;
+// GraphiQL.MenuItem = ToolbarMenuItem;
 
 // Add a select-option input to the Toolbar.
-GraphiQL.Select = ToolbarSelect;
-GraphiQL.SelectOption = ToolbarSelectOption;
+// GraphiQL.Select = ToolbarSelect;
+// GraphiQL.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {

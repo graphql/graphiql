@@ -20,8 +20,8 @@ export type VariableToType = {
 };
 
 export type QueryFacts = {
-  variableToType: VariableToType | null;
-  operations: OperationDefinitionNode[];
+  variableToType?: VariableToType;
+  operations?: OperationDefinitionNode[];
 };
 
 /**
@@ -45,7 +45,9 @@ export default function getQueryFacts(
     return;
   }
 
-  const variableToType = schema ? collectVariables(schema, documentAST) : null;
+  const variableToType = schema
+    ? collectVariables(schema, documentAST)
+    : undefined;
 
   // Collect operations by their names.
   const operations: OperationDefinitionNode[] = [];
@@ -64,7 +66,7 @@ export default function getQueryFacts(
 export function collectVariables(
   schema: GraphQLSchema,
   documentAST: DocumentNode,
-): VariableToType | null {
+): VariableToType {
   const variableToType: {
     [variable: string]: GraphQLNamedType;
   } = Object.create(null);

@@ -13,15 +13,15 @@ import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 
 type VariableEditorProps = {
-  variableToType: { [variable: string]: GraphQLType };
-  value: string;
+  variableToType?: { [variable: string]: GraphQLType };
+  value?: string;
   onEdit: (value: string) => void;
-  readOnly: boolean;
+  readOnly?: boolean;
   onHintInformationRender: (value: string) => void;
   onPrettifyQuery: (value?: string) => void;
   onMergeQuery: (value?: string) => void;
   onRunQuery: (value?: string) => void;
-  editorTheme: string;
+  editorTheme?: string;
 };
 
 const something: CodeMirror.EditorConfiguration['extraKeys'] = null;
