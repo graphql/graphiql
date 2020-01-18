@@ -5,16 +5,18 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 
-type ImagePreviewType = Component & { shouldRender: (token: any) => void }; // TODO: remove any
+type ImagePreviewType = React.Component & {
+  shouldRender: (token: any) => void;
+}; // TODO: remove any
 
 type ResultViewerProps = {
   value?: string;
   editorTheme?: string;
-  ResultsTooltip?: JSX.Element;
+  ResultsTooltip?: React.Component;
   ImagePreview?: ImagePreviewType;
   registerRef: (node: HTMLElement) => void;
 };
@@ -30,7 +32,7 @@ type ResultViewerProps = {
  *
  */
 export class ResultViewer extends React.Component<ResultViewerProps, {}> {
-  viewer: CodeMirror.Editor | null = null;
+  viewer: CodeMirror.Editor;
   _node: HTMLElement | null = null;
 
   componentDidMount() {
@@ -53,8 +55,8 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}> {
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
-        (token, options, cm: CodeMirror.Editor, pos) => {
-          const infoElements: Component[] = [];
+        (token: any, _options: any, _cm: CodeMirror.Editor, pos: any) => {
+          const infoElements: JSX.Element[] = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);
           }

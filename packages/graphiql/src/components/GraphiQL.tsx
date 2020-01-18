@@ -11,6 +11,7 @@ import React, {
   FC,
   ReactPropTypes,
   PropsWithChildren,
+  MouseEvent,
 } from 'react';
 import {
   buildClientSchema,
@@ -50,6 +51,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { DOMEvent } from 'codemirror';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -102,19 +104,19 @@ type GraphiQLProps = {
   onToggleDocs?: () => void;
   getDefaultFieldNames?: () => void;
   editorTheme?: string;
-  onToggleHistory?: () => void;
+  onToggleHistory?: (historyPaneOpen: boolean) => void;
   ResultsTooltip?: any; // TODO: TYPE
   readOnly?: boolean;
   docExplorerOpen?: boolean;
 };
 
 type GraphiQLState = {
-  schema?: GraphQLSchema | null;
-  query: string | null;
-  variables: string | null;
+  schema?: GraphQLSchema;
+  query?: string;
+  variables?: string;
   operationName?: string;
   docExplorerOpen: boolean;
-  response?: string | null;
+  response?: string;
   editorFlex: number;
   variableEditorOpen: boolean;
   variableEditorHeight: number;
@@ -250,7 +252,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Only fetch schema via introspection if a schema has not been
     // provided, including if `null` was provided.
     if (this.state.schema === undefined) {
-      this._fetchSchema();
+      this.fetchSchema();
     }
 
     // Utility for keeping CodeMirror correctly sized.
@@ -258,7 +260,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     global.g = this;
   }
-  // todo: these values should be updated in a reducer imo
+  // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
     let nextSchema = this.state.schema;
@@ -283,9 +285,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       nextResponse = nextProps.response;
     }
     if (
-      nextSchema !== this.state.schema ||
-      nextQuery !== this.state.query ||
-      nextOperationName !== this.state.operationName
+      nextQuery &&
+      nextSchema &&
+      (nextSchema !== this.state.schema ||
+        nextQuery !== this.state.query ||
+        nextOperationName !== this.state.operationName)
     ) {
       const updatedQueryAttributes = this._updateQueryFacts(
         nextQuery,
@@ -324,7 +328,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             this.docExplorerComponent.reset();
           }
 
-          this._fetchSchema();
+          this.fetchSchema();
         }
       },
     );
@@ -510,7 +514,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 <div
                   className="variable-editor-title"
                   id="variable-editor-title"
-                  style={{ cursor: variableOpen ? 'row-resize' : 'n-resize' }}
+                  style={{
+                    cursor: variableOpen ? 'row-resize' : 'n-resize',
+                  }}
                   onMouseDown={this.handleVariableResizeStart}>
                   {'Query Variables'}
                 </div>
@@ -592,6 +598,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (this.queryEditorComponent) {
       return this.queryEditorComponent.getCodeMirror();
     }
+    // return null
   }
 
   /**
@@ -599,10 +606,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    *
    * @public
    */
-  getVariableEditor() {
+  public getVariableEditor() {
     if (this.variableEditorComponent) {
       return this.variableEditorComponent.getCodeMirror();
     }
+    return null;
   }
 
   /**
@@ -610,7 +618,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    *
    * @public
    */
-  refresh() {
+  public refresh() {
     if (this.queryEditorComponent) {
       this.queryEditorComponent.getCodeMirror().refresh();
     }
@@ -628,7 +636,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    *
    * @public
    */
-  autoCompleteLeafs() {
+  public autoCompleteLeafs() {
     const { insertions, result } = fillLeafs(
       this.state.schema,
       this.state.query,
@@ -668,7 +676,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   // Private methods
 
-  _fetchSchema() {
+  private fetchSchema() {
     const fetcher = this.props.fetcher;
 
     const fetch = observableToPromise(
@@ -922,7 +930,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   handleMergeQuery = () => {
-    const editor = this.getQueryEditor();
+    const editor = this.getQueryEditor() as CodeMirror.Editor;
     const query = editor.getValue();
 
     if (!query) {
@@ -933,7 +941,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     editor.setValue(print(mergeAst(ast)));
   };
 
-  handleEditQuery = debounce(100, value => {
+  handleEditQuery = debounce(100, (value: string) => {
     const queryFacts = this._updateQueryFacts(
       value,
       this.state.operationName,
@@ -945,7 +953,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       ...queryFacts,
     });
     if (this.props.onEditQuery) {
-      return this.props.onEditQuery(value);
+      return this.props.onEditQuery();
     }
   });
 
@@ -964,7 +972,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  _updateQueryFacts = (query, operationName, prevOperations, schema) => {
+  _updateQueryFacts = (
+    query: string,
+    operationName?: string,
+    prevOperations,
+    schema: GraphQLSchema,
+  ) => {
     const queryFacts = getQueryFacts(schema, query);
     if (queryFacts) {
       // Update operation name should any query names change.
@@ -1018,7 +1031,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this._runQueryAtCursor();
   };
 
-  _onClickHintInformation = event => {
+  _onClickHintInformation = (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (event.target.className === 'typeName') {
       const typeName = event.target.innerHTML;
       const schema = this.state.schema;
@@ -1047,13 +1060,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
-  handleSelectHistoryQuery = (query, variables, operationName) => {
-    this.handleEditQuery(query);
-    this.handleEditVariables(variables);
-    this.handleEditOperationName(operationName);
+  handleSelectHistoryQuery = (
+    _query: string,
+    variables?: string,
+    operationName?: string,
+  ) => {
+    this.handleEditQuery();
+
+    if (variables) {
+      this.handleEditVariables(variables);
+    }
+    if (operationName) {
+      this.handleEditOperationName(operationName);
+    }
   };
 
-  handleResizeStart = downEvent => {
+  private handleResizeStart = (downEvent: MouseEvent<Element, MouseEvent>) => {
     if (!this._didClickDragBar(downEvent)) {
       return;
     }
@@ -1062,7 +1084,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     const offset = downEvent.clientX - getLeft(downEvent.target);
 
-    let onMouseMove = moveEvent => {
+    let onMouseMove = (moveEvent: MouseEvent<Element, MouseEvent>) => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }
@@ -1088,12 +1110,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ editorFlex: 1 });
   };
 
-  _didClickDragBar(event) {
+  _didClickDragBar(event: MouseEvent<HTMLDivElement, DOMEvent>) {
     // Only for primary unmodified clicks
     if (event.button !== 0 || event.ctrlKey) {
       return false;
     }
-    let target = event.target;
+    let target = event.currentTarget;
     // We use codemirror's gutter as the drag bar.
     if (target.className.indexOf('CodeMirror-gutter') !== 0) {
       return false;
@@ -1109,13 +1131,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     return false;
   }
 
-  handleDocsResizeStart = downEvent => {
+  private handleDocsResizeStart = (
+    downEvent: MouseEvent<Element, MouseEvent>,
+  ) => {
     downEvent.preventDefault();
 
     const hadWidth = this.state.docExplorerWidth;
     const offset = downEvent.clientX - getLeft(downEvent.target);
 
-    let onMouseMove = moveEvent => {
+    let onMouseMove = (moveEvent: MouseEvent<Element, MouseEvent>) => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }
@@ -1149,13 +1173,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  handleDocsResetResize = () => {
+  private handleDocsResetResize = () => {
     this.setState({
       docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
     });
   };
 
-  handleVariableResizeStart = downEvent => {
+  private handleVariableResizeStart = (
+    downEvent: MouseEvent<Element, MouseEvent>,
+  ) => {
     downEvent.preventDefault();
 
     let didMove = false;
@@ -1163,7 +1189,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const hadHeight = this.state.variableEditorHeight;
     const offset = downEvent.clientY - getTop(downEvent.target);
 
-    let onMouseMove = moveEvent => {
+    let onMouseMove = (moveEvent: MouseEvent<Element, MouseEvent>) => {
       if (moveEvent.buttons === 0) {
         return onMouseUp();
       }

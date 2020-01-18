@@ -5,9 +5,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { MouseEventHandler } from 'react';
 import PropTypes from 'prop-types';
+import { DOMEvent } from 'codemirror';
 
+type ToolbarSelectProps = {
+  title?: string;
+  label?: string;
+  onSelect?: (selection: string) => void;
+};
+
+type ToolbarSelectState = {
+  visible: boolean;
+};
 /**
  * ToolbarSelect
  *
@@ -15,14 +25,13 @@ import PropTypes from 'prop-types';
  *
  */
 
-export class ToolbarSelect extends React.Component {
-  static propTypes = {
-    title: PropTypes.string,
-    label: PropTypes.string,
-    onSelect: PropTypes.func,
-  };
-
-  constructor(props) {
+export class ToolbarSelect extends React.Component<
+  ToolbarSelectProps,
+  ToolbarSelectState
+> {
+  private _node: HTMLAnchorElement | null;
+  private _listener: ((this: Document, ev: MouseEvent) => any) | null;
+  constructor(props: ToolbarSelectProps) {
     super(props);
     this.state = { visible: false };
   }
@@ -32,11 +41,14 @@ export class ToolbarSelect extends React.Component {
   }
 
   render() {
-    let selectedChild;
+    let selectedChild: React.ReactNode;
     const visible = this.state.visible;
     const optionChildren = React.Children.map(
       this.props.children,
       (child, i) => {
+        if (!child || typeof child !== 'object' || !('props' in child)) {
+          return null;
+        }
         if (!selectedChild || child.props.selected) {
           selectedChild = child;
         }
@@ -99,14 +111,25 @@ export class ToolbarSelect extends React.Component {
   };
 }
 
-export function ToolbarSelectOption({ onSelect, label, selected }) {
+type ToolbarSelectOptionProps = {
+  onSelect: MouseEventHandler<HTMLLIElement>;
+  label: string;
+  selected: boolean;
+  value?: any;
+};
+
+export function ToolbarSelectOption({
+  onSelect,
+  label,
+  selected,
+}: ToolbarSelectOptionProps) {
   return (
     <li
       onMouseOver={e => {
-        e.target.className = 'hover';
+        e.currentTarget.className = 'hover';
       }}
       onMouseOut={e => {
-        e.target.className = null;
+        e.currentTarget.className = '';
       }}
       onMouseDown={preventDefault}
       onMouseUp={onSelect}>
@@ -115,7 +138,7 @@ export function ToolbarSelectOption({ onSelect, label, selected }) {
         <svg width="13" height="13">
           <polygon
             points="4.851,10.462 0,5.611 2.314,3.297 4.851,5.835
-            10.686,0 13,2.314 4.851,10.462"
+    10.686,0 13,2.314 4.851,10.462"
           />
         </svg>
       )}
@@ -130,6 +153,6 @@ ToolbarSelectOption.propTypes = {
   value: PropTypes.any,
 };
 
-function preventDefault(e) {
+function preventDefault(e: any) {
   e.preventDefault();
 }

@@ -65,6 +65,7 @@
     "@strictsoftware/typedoc-plugin-monorepo": "^0.2.1",
     "@types/codemirror": "^0.0.82",
     "@types/jest": "^24.0.18",
+    "@types/node": "^13.1.7",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.3.0",
     "babel-eslint": "^10.0.1",

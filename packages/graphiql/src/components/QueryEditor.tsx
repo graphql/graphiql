@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import * as CodeMirror from 'codemirror';
+import * as CM from 'codemirror';
 import { GraphQLSchema, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
@@ -21,7 +21,7 @@ type QueryEditorProps = {
   value?: string;
   onEdit?: (value: string) => void;
   readOnly?: boolean;
-  onHintInformationRender?: () => void;
+  onHintInformationRender: (elem: HTMLDivElement) => void;
   onClickReference?: (reference: GraphQLType) => void;
   onCopyQuery?: () => void;
   onPrettifyQuery?: () => void;
@@ -45,7 +45,7 @@ type QueryEditorProps = {
  */
 export class QueryEditor extends React.Component<QueryEditorProps, {}> {
   cachedValue: string | undefined;
-  editor: (CodeMirror.Editor & { options: any }) | null;
+  editor: (CM.Editor & { options: any }) | null;
   ignoreChangeEvent: boolean;
 
   _node: HTMLElement | null = null;
@@ -81,7 +81,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
-    const editor: CodeMirror.Editor = (this.editor = CodeMirror(this._node, {
+    const editor: CM.Editor = (this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -118,14 +118,20 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
+          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Ctrl-Space': () =>
+          // @ts-ignore showHint method needs improvement on definatelytyped
+
           editor.showHint({ completeSingle: true, container: this._node }),
         'Alt-Space': () =>
+          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Space': () =>
+          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Alt-Space': () =>
+          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
 
         'Cmd-Enter': () => {
@@ -181,6 +187,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     if (editor) {
       editor.on('change', this._onEdit);
       editor.on('keyup', this._onKeyUp);
+      // @ts-ignore @TODO additional args for hasCompletion event
       editor.on('hasCompletion', this._onHasCompletion);
       editor.on('beforeChange', this._onBeforeChange);
     }
@@ -215,6 +222,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     if (this.editor) {
       this.editor.off('change', this._onEdit);
       this.editor.off('keyup', this._onKeyUp);
+      // @ts-ignore @TODO additional args for hasCompletion event
       this.editor.off('hasCompletion', this._onHasCompletion);
       this.editor = null;
     }
@@ -236,8 +244,8 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
    * Public API for retrieving the CodeMirror instance from this
    * React component.
    */
-  getCodeMirror() {
-    return this.editor;
+  getCodeMirror(): CM.Editor {
+    return this.editor as CM.Editor;
   }
 
   /**
@@ -247,7 +255,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
     return this._node && this._node.clientHeight;
   }
 
-  private _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
+  private _onKeyUp = (_cm: CM.Editor, event: KeyboardEvent) => {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && this.editor) {
       this.editor.execCommand('autocomplete');
     }
@@ -266,11 +274,11 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}> {
    * Render a custom UI for CodeMirror's hint which includes additional info
    * about the type and description for the selected context.
    */
-  private _onHasCompletion = (cm: CodeMirror.Editor, data: any) => {
+  private _onHasCompletion = (cm: CM.Editor, data: any) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
   };
 
-  private _onBeforeChange(_instance: CodeMirror.Editor, change: any) {
+  private _onBeforeChange(_instance: CM.Editor, change: any) {
     // The update function is only present on non-redo, non-undo events.
     if (change.origin === 'paste') {
       const text = change.text.map(normalizeWhitespace);

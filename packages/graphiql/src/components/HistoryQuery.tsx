@@ -6,22 +6,33 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
-export default class HistoryQuery extends React.Component {
-  static propTypes = {
-    favorite: PropTypes.bool,
-    favoriteSize: PropTypes.number,
-    handleEditLabel: PropTypes.func,
-    handleToggleFavorite: PropTypes.func,
-    operationName: PropTypes.string,
-    onSelect: PropTypes.func,
-    query: PropTypes.string,
-    variables: PropTypes.string,
-    label: PropTypes.string,
-  };
+type HistoryQueryProps = {
+  favorite?: boolean;
+  favoriteSize?: number;
+  handleEditLabel?: (
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: string,
+  ) => void;
+  handleToggleFavorite?: (
+    query: string,
+    variables: string,
+    operationName: string,
+    label: string,
+    favorite: string,
+  ) => void;
+  operationName?: string;
+  onSelect?: PropTypes.func;
+  query?: string;
+  variables?: string;
+  label?: string;
+};
 
-  constructor(props) {
+export default class HistoryQuery extends React.Component<HistoryQueryProps> {
+  constructor(props: HistoryQueryProps) {
     super(props);
     this.state = {
       editable: false,
