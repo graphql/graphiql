@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.0](https://github.com/graphql/graphiql/compare/graphiql@0.17.5...graphiql@1.0.0-alpha.0) (2020-01-18)
+
+### Bug Fixes
+
+- hmr, file resolution warnings ([69bf701](https://github.com/graphql/graphiql/commit/69bf701))
+- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
+- prefer displayName over type equality for children overrides ([e4cec0a](https://github.com/graphql/graphiql/commit/e4cec0a))
+- remove use of find dom node ([0b12323](https://github.com/graphql/graphiql/commit/0b12323))
+- screenshot/gif urls ([e3ea2fc](https://github.com/graphql/graphiql/commit/e3ea2fc))
+
+### Features
+
+- convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
+- **graphiql-theming:** Toolbar component ([#1203](https://github.com/graphql/graphiql/issues/1203)) by [@walaura](https://github.com/walaura) ([adb73f5](https://github.com/graphql/graphiql/commit/adb73f5))
+- [new-ui] Tabs & Tabbars ([#1198](https://github.com/graphql/graphiql/issues/1198)) ([033f971](https://github.com/graphql/graphiql/commit/033f971))
+- deprecate support for 15, support react 16 features ([#1107](https://github.com/graphql/graphiql/issues/1107)) ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
+- replace use of enzyme with react-testing-library ([#1144](https://github.com/graphql/graphiql/issues/1144)) by [@ryan-m-walker](https://github.com/ryan-m-walker) ([de73d6c](https://github.com/graphql/graphiql/commit/de73d6c))
+- storybook+theme-ui for the new design ([#1145](https://github.com/graphql/graphiql/issues/1145)) ([7f97c0c](https://github.com/graphql/graphiql/commit/7f97c0c))
+
+### BREAKING CHANGES
+
+- Deprecate support for React 15. Please use React 16.8 or greater for hooks support.
+  Co-authored-by: @ryan-m-walker, @acao
+  Reviewed-by: @benjie
+
 ## [0.17.5](https://github.com/graphql/graphiql/compare/graphiql@0.17.4...graphiql@0.17.5) (2019-12-09)
 
 **Note:** Version bump only for package graphiql
