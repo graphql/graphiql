@@ -7,4 +7,5 @@
 import 'regenerator-runtime/runtime';
 
 import { GraphiQL } from './components/GraphiQL';
+
 export default GraphiQL;

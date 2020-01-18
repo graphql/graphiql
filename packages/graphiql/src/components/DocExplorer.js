@@ -55,7 +55,7 @@ export class DocExplorer extends React.Component {
   }
 
   render() {
-    const schema = this.props.schema;
+    const { schema } = this.props;
     const navStack = this.state.navStack;
     const navItem = navStack[navStack.length - 1];
 

@@ -21,14 +21,15 @@
     }
   },
   "scripts": {
-    "build": "yarn run build-clean && yarn build-ts && yarn build-js",
+    "build": "yarn run build-clean && yarn build-ts-cjs && yarn build-js",
     "build-js": "lerna run build --scope codemirror-graphql",
-    "build-ts": "yarn run tsc",
+    "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
+    "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",
     "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
     "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo",
     "build-docs": "rimraf 'packages/graphiql/lsp' && typedoc 'packages'",
-    "build-bundles": "lerna run build-bundles",
+    "build-bundles": "yarn build-ts-esm && lerna run build-bundles",
     "tsc": "tsc --build",
     "test": "yarn build && yarn run testonly",
     "ci": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-validate",

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.4.0-alpha.0](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.3...graphql-language-service-utils@2.4.0-alpha.0) (2020-01-18)
+# [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.3...graphql-language-service-utils@2.4.0-alpha.1) (2020-01-18)
 
 ### Bug Fixes
 
