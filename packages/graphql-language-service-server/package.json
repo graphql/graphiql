@@ -23,18 +23,10 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
-  "scripts": {
-    "test": "node ../../resources/runTests.js",
-    "build": "yarn build-js && yarn build-flow",
-    "build-js": "rimraf dist && tsc",
-    "build-esm": "rimraf esm && tsc -p tsconfig.esm",
-    "build-flow": "node ../../resources/buildFlow.js"
-  },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "@babel/parser": "^7.4.5",
     "glob": "^7.1.2",
     "graphql-config": "2.2.1",
     "graphql-language-service-interface": "^2.3.3",
@@ -42,7 +34,8 @@
     "graphql-language-service-utils": "^2.3.3",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^4.0.0",
-    "vscode-languageserver": "^6.0.0"
+    "vscode-languageserver": "^5.2.1",
+    "@babel/parser": "^7.4.5"
   },
   "devDependencies": {
     "cross-env": "^6.0.3"

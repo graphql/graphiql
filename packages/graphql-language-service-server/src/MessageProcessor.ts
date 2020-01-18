@@ -7,18 +7,18 @@
  *
  */
 
-import {
-  CachedContent,
-  GraphQLCache,
-  Uri,
-} from 'graphql-language-service-types';
-
-import { FileChangeTypeKind } from 'graphql-language-service-types';
-
 import { extname, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { URL } from 'url';
 import { findGraphQLConfigFile } from 'graphql-config';
+
+import {
+  CachedContent,
+  GraphQLCache,
+  Uri,
+  FileChangeTypeKind,
+} from 'graphql-language-service-types';
+
 import { GraphQLLanguageService } from 'graphql-language-service-interface';
 
 import { Range, Position } from 'graphql-language-service-utils';
