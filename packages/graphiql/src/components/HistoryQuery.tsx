@@ -10,33 +10,43 @@ import React from 'react';
 export type HistoryQueryProps = {
   favorite?: boolean;
   favoriteSize?: number;
-  handleEditLabel?: (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: string,
+  handleEditLabel: (
+    query?: string,
+    variables?: string,
+    operationName?: string,
+    label?: string,
+    favorite?: boolean,
   ) => void;
-  handleToggleFavorite?: (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: string,
+  handleToggleFavorite: (
+    query?: string,
+    variables?: string,
+    operationName?: string,
+    label?: string,
+    favorite?: boolean,
   ) => void;
   operationName?: string;
-  onSelect?: PropTypes.func;
-  query?: string;
+  onSelect: (
+    query?: string,
+    variables?: string,
+    operationName?: string,
+    label?: string,
+  ) => void;
+  query: string;
   variables?: string;
   label?: string;
 };
 
-export default class HistoryQuery extends React.Component<HistoryQueryProps> {
+export default class HistoryQuery extends React.Component<
+  HistoryQueryProps,
+  { editable: boolean }
+> {
+  editField: HTMLInputElement | null;
   constructor(props: HistoryQueryProps) {
     super(props);
     this.state = {
       editable: false,
     };
+    this.editField = null;
   }
 
   render() {
@@ -54,7 +64,9 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
           <input
             type="text"
             defaultValue={this.props.label}
-            ref={c => (this.editField = c)}
+            ref={c => {
+              this.editField = c;
+            }}
             onBlur={this.handleFieldBlur.bind(this)}
             onKeyDown={this.handleFieldKeyDown.bind(this)}
             placeholder="Type a label"
@@ -81,8 +93,6 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
     );
   }
 
-  editField = null;
-
   handleClick() {
     this.props.onSelect(
       this.props.query,
@@ -92,7 +102,7 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
     );
   }
 
-  handleStarClick(e) {
+  handleStarClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
     this.props.handleToggleFavorite(
       this.props.query,
@@ -103,7 +113,7 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
     );
   }
 
-  handleFieldBlur(e) {
+  handleFieldBlur(e: React.FocusEvent<HTMLInputElement>) {
     e.stopPropagation();
     this.setState({ editable: false });
     this.props.handleEditLabel(
@@ -115,7 +125,7 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
     );
   }
 
-  handleFieldKeyDown(e) {
+  handleFieldKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.keyCode === 13) {
       e.stopPropagation();
       this.setState({ editable: false });
@@ -129,7 +139,7 @@ export default class HistoryQuery extends React.Component<HistoryQueryProps> {
     }
   }
 
-  handleEditClick(e) {
+  handleEditClick(e: React.MouseEvent) {
     e.stopPropagation();
     this.setState({ editable: true }, () => {
       if (this.editField) {

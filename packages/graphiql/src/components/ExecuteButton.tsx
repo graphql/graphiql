@@ -7,6 +7,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { OperationDefinitionNode } from 'graphql';
 
 /**
  * ExecuteButton
@@ -14,7 +15,23 @@ import PropTypes from 'prop-types';
  * What a nice round shiny button. Shows a drop-down when there are multiple
  * queries to run.
  */
-export class ExecuteButton extends React.Component {
+
+type ExecuteButtonProps = {
+  operations: OperationDefinitionNode[];
+  isRunning: boolean;
+  onStop: () => void;
+  onRun: (value?: string) => void;
+};
+
+type ExecuteButtonState = {
+  optionsOpen: boolean;
+  highlight: OperationDefinitionNode | null;
+};
+
+export class ExecuteButton extends React.Component<
+  ExecuteButtonProps,
+  ExecuteButtonState
+> {
   static propTypes = {
     onRun: PropTypes.func,
     onStop: PropTypes.func,
@@ -22,7 +39,7 @@ export class ExecuteButton extends React.Component {
     operations: PropTypes.array,
   };
 
-  constructor(props) {
+  constructor(props: ExecuteButtonProps) {
     super(props);
 
     this.state = {
@@ -100,24 +117,29 @@ export class ExecuteButton extends React.Component {
     }
   };
 
-  _onOptionSelected = operation => {
+  _onOptionSelected = (operation: OperationDefinitionNode) => {
     this.setState({ optionsOpen: false });
     this.props.onRun(operation.name && operation.name.value);
   };
 
-  _onOptionsOpen = downEvent => {
+  _onOptionsOpen = (
+    downEvent: React.MouseEvent<HTMLButtonElement, React.MouseEvent>,
+  ): void => {
     let initialPress = true;
     const downTarget = downEvent.target;
     this.setState({ highlight: null, optionsOpen: true });
 
-    let onMouseUp = upEvent => {
+    let onMouseUp: EventListener = (
+      _doc: Document,
+      upEvent: MouseEvent,
+    ): void => {
       if (initialPress && upEvent.target === downTarget) {
         initialPress = false;
       } else {
         document.removeEventListener('mouseup', onMouseUp);
         onMouseUp = null;
         const isOptionsMenuClicked =
-          downTarget.parentNode.compareDocumentPosition(upEvent.target) &
+          downTarget.parentNode.compareDocumentPosition(upEvent.target) &&
           Node.DOCUMENT_POSITION_CONTAINED_BY;
         if (!isOptionsMenuClicked) {
           // menu calls setState if it was clicked
