@@ -14,6 +14,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
 
+# [2.4.0-alpha.0](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.3...graphql-language-service-utils@2.4.0-alpha.0) (2020-01-18)
+
+### Bug Fixes
+
+- hmr, file resolution warnings ([69bf701](https://github.com/graphql/graphiql/commit/69bf701))
+- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
+
+### Features
+
+- convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
+
 ## [2.3.3](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.3.2...graphql-language-service-utils@2.3.3) (2019-12-09)
 
 ### Bug Fixes

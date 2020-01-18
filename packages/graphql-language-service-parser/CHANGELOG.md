@@ -10,6 +10,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - exclusion for nonbreakable whitespace chars ([#1091](https://github.com/graphql/graphiql/issues/1091)) ([91763dd](https://github.com/graphql/graphiql/commit/91763dd)), closes [graphql/graphql-language-service#220](https://github.com/graphql/graphql-language-service/issues/220)
 - linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
 
+## [1.5.3-alpha.0](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.5.2...graphql-language-service-parser@1.5.3-alpha.0) (2020-01-18)
+
+### Bug Fixes
+
+- exclusion for nonbreakable whitespace chars ([#1091](https://github.com/graphql/graphiql/issues/1091)) ([91763dd](https://github.com/graphql/graphiql/commit/91763dd)), closes [graphql/graphql-language-service#220](https://github.com/graphql/graphql-language-service/issues/220)
+- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
+
 ## [1.5.2](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.5.1...graphql-language-service-parser@1.5.2) (2019-12-09)
 
 ### Bug Fixes

@@ -14,6 +14,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
 
+# [0.12.0-alpha.0](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.6...codemirror-graphql@0.12.0-alpha.0) (2020-01-18)
+
+### Bug Fixes
+
+- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
+- screenshot/gif urls ([e3ea2fc](https://github.com/graphql/graphiql/commit/e3ea2fc))
+
+### Features
+
+- convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
+
 ## [0.11.6](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.11.5...codemirror-graphql@0.11.6) (2019-12-09)
 
 ### Bug Fixes
