@@ -10,10 +10,10 @@ import TypeLink from './TypeLink';
 import MarkdownContent from './MarkdownContent';
 import { GraphQLSchema } from 'graphql';
 
-interface SchemaDocProps {
+type SchemaDocProps = {
   schema: GraphQLSchema;
   onClickType: () => void;
-}
+};
 
 // Render the top level Schema
 export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {

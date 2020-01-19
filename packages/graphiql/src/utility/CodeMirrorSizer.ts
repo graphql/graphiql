@@ -2,8 +2,8 @@ import { Component } from 'react';
 import CodeMirror from 'codemirror';
 import Maybe from 'graphql/tsutils/Maybe';
 
-interface SizerComponent extends Component {
-  getClientHeight: () => number;
+export interface SizerComponent {
+  getClientHeight: () => number | null;
   getCodeMirror: () => CodeMirror.Editor;
 }
 
@@ -19,7 +19,7 @@ interface SizerComponent extends Component {
  * the related CodeMirror instance so that it is always correctly sized.
  */
 export default class CodeMirrorSizer {
-  sizes: number[] = [];
+  sizes: Array<number | null> = [];
 
   updateSizes(components: Array<Maybe<SizerComponent>>) {
     components.forEach((component, i) => {

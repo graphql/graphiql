@@ -7,14 +7,15 @@
 
 import React, { MouseEvent } from 'react';
 import { GraphQLList, GraphQLNonNull, GraphQLType } from 'graphql';
+import Maybe from 'graphql/tsutils/Maybe';
 
 type OnClickFunction = (
-  type: GraphQLType,
-  event?: MouseEvent<HTMLAnchorElement>,
+  type: Maybe<GraphQLType>,
+  event: MouseEvent<HTMLAnchorElement>,
 ) => void;
 
 type TypeLinkProps = {
-  type: GraphQLType;
+  type?: Maybe<GraphQLType>;
   onClick: OnClickFunction;
 };
 
@@ -28,7 +29,7 @@ export default class TypeLink extends React.Component<TypeLinkProps, {}> {
   }
 }
 
-function renderType(type: GraphQLType, onClick: OnClickFunction) {
+function renderType(type: Maybe<GraphQLType>, onClick: OnClickFunction) {
   if (type instanceof GraphQLNonNull) {
     return (
       <span>
@@ -54,7 +55,7 @@ function renderType(type: GraphQLType, onClick: OnClickFunction) {
         onClick(type, event);
       }}
       href="#">
-      {type.name}
+      {type?.name}
     </a>
   );
 }

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import React, { ReactNode, MouseEvent } from 'react';
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -14,14 +14,13 @@ import {
   GraphQLEnumType,
   GraphQLType,
   GraphQLEnumValue,
-  GraphQLField,
-  GraphQLInputField,
 } from 'graphql';
 
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
+import { FieldType } from './types';
 
 type TypeDocProps = {
   schema: GraphQLSchema;
@@ -193,9 +192,13 @@ export default class TypeDoc extends React.Component<
 
 type FieldProps = {
   type: GraphQLType;
-  field: GraphQLField | GraphQLInputField;
+  field: FieldType;
   onClickType: () => void;
-  onClickField: () => void;
+  onClickField: (
+    field: FieldType,
+    type: GraphQLType,
+    event: MouseEvent<HTMLAnchorElement>,
+  ) => void;
 };
 
 function Field({ type, field, onClickType, onClickField }: FieldProps) {
@@ -206,7 +209,8 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
         onClick={event => onClickField(field, type, event)}>
         {field.name}
       </a>
-      {field.args &&
+      {'args' in field &&
+        field.args &&
         field.args.length > 0 && [
           '(',
           <span key="args">
@@ -225,7 +229,7 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
           markdown={field.description}
         />
       )}
-      {field.deprecationReason && (
+      {'deprecationReason' in field && field.deprecationReason && (
         <MarkdownContent
           className="doc-deprecation"
           markdown={field.deprecationReason}

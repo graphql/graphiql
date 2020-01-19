@@ -5,8 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { MouseEventHandler } from 'react';
 import { OperationDefinitionNode } from 'graphql';
 
 /**
@@ -32,13 +31,6 @@ export class ExecuteButton extends React.Component<
   ExecuteButtonProps,
   ExecuteButtonState
 > {
-  static propTypes = {
-    onRun: PropTypes.func,
-    onStop: PropTypes.func,
-    isRunning: PropTypes.bool,
-    operations: PropTypes.array,
-  };
-
   constructor(props: ExecuteButtonProps) {
     super(props);
 
@@ -49,7 +41,7 @@ export class ExecuteButton extends React.Component<
   }
 
   render() {
-    const operations = this.props.operations;
+    const operations = this.props.operations || [];
     const optionsOpen = this.state.optionsOpen;
     const hasOptions = operations && operations.length > 1;
 
@@ -81,7 +73,7 @@ export class ExecuteButton extends React.Component<
 
     // Allow mouse down if there is no running query, there are options for
     // which operation to run, and the dropdown is currently closed.
-    let onMouseDown;
+    let onMouseDown: MouseEventHandler<HTMLButtonElement> = () => {};
     if (!this.props.isRunning && hasOptions && !optionsOpen) {
       onMouseDown = this._onOptionsOpen;
     }
@@ -122,21 +114,17 @@ export class ExecuteButton extends React.Component<
     this.props.onRun(operation.name && operation.name.value);
   };
 
-  _onOptionsOpen = (
-    downEvent: React.MouseEvent<HTMLButtonElement, React.MouseEvent>,
-  ): void => {
+  _onOptionsOpen: MouseEventHandler<HTMLButtonElement> = downEvent => {
     let initialPress = true;
-    const downTarget = downEvent.target;
+    const downTarget = downEvent.currentTarget;
     this.setState({ highlight: null, optionsOpen: true });
 
-    let onMouseUp: EventListener = (
-      _doc: Document,
-      upEvent: MouseEvent,
-    ): void => {
+    type MouseUpEventHandler = (upEvent: MouseEvent) => void;
+    let onMouseUp: MouseUpEventHandler | null = upEvent => {
       if (initialPress && upEvent.target === downTarget) {
         initialPress = false;
       } else {
-        document.removeEventListener('mouseup', onMouseUp);
+        document.removeEventListener('mouseup', onMouseUp!);
         onMouseUp = null;
         const isOptionsMenuClicked =
           downTarget.parentNode.compareDocumentPosition(upEvent.target) &&

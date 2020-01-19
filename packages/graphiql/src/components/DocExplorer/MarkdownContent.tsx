@@ -7,13 +7,14 @@
 
 import React from 'react';
 import MD from 'markdown-it';
+import Maybe from 'graphql/tsutils/Maybe';
 
 const md = new MD();
 
-interface MarkdownContentProps {
-  markdown?: string | null;
+type MarkdownContentProps = {
+  markdown?: Maybe<string>;
   className?: string;
-}
+};
 
 export default function MarkdownContent({
   markdown,

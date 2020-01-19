@@ -11,6 +11,7 @@ import * as React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
+import { SizerComponent } from 'src/utility/CodeMirrorSizer';
 
 type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
@@ -37,7 +38,8 @@ type VariableEditorProps = {
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class VariableEditor extends React.Component<VariableEditorProps> {
+export class VariableEditor extends React.Component<VariableEditorProps>
+  implements SizerComponent {
   editor: CM.Editor;
   cachedValue: string;
   _node: HTMLElement;

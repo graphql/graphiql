@@ -12,13 +12,13 @@ import TypeLink from './TypeLink';
 import { GraphQLField, GraphQLArgument } from 'graphql';
 
 type FieldDocProps = {
-  field: GraphQLField<{}, {}, {}>;
+  field?: GraphQLField<{}, {}, {}>;
   onClickType: () => void;
 };
 
 export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   let argsDef;
-  if (field.args && field.args.length > 0) {
+  if (field && field.args && field.args.length > 0) {
     argsDef = (
       <div className="doc-category">
         <div className="doc-category-title">{'arguments'}</div>
@@ -41,17 +41,17 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     <div>
       <MarkdownContent
         className="doc-type-description"
-        markdown={field.description || 'No Description'}
+        markdown={field?.description || 'No Description'}
       />
-      {field.deprecationReason && (
+      {field?.deprecationReason && (
         <MarkdownContent
           className="doc-deprecation"
-          markdown={field.deprecationReason}
+          markdown={field?.deprecationReason}
         />
       )}
       <div className="doc-category">
         <div className="doc-category-title">{'type'}</div>
-        <TypeLink type={field.type} onClick={onClickType} />
+        <TypeLink type={field?.type} onClick={onClickType} />
       </div>
       {argsDef}
     </div>

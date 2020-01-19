@@ -8,7 +8,11 @@
 import { parse } from 'graphql';
 import React from 'react';
 import QueryStore, { QueryStoreItem } from '../utility/QueryStore';
-import HistoryQuery from './HistoryQuery';
+import HistoryQuery, {
+  HandleEditLabelFn,
+  HandleToggleFavoriteFn,
+  HandleSelectQueryFn,
+} from './HistoryQuery';
 import StorageAPI from 'src/utility/StorageAPI';
 
 const MAX_QUERY_SIZE = 100000;
@@ -54,11 +58,7 @@ type QueryHistoryProps = {
   variables?: string;
   operationName?: string;
   queryID?: number;
-  onSelectQuery?: (
-    query: string,
-    variables?: string,
-    operationName?: string,
-  ) => void;
+  onSelectQuery: HandleSelectQueryFn;
   storage: StorageAPI;
 };
 
@@ -134,12 +134,12 @@ export class QueryHistory extends React.Component<
   };
 
   // Public API
-  toggleFavorite = (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: boolean,
+  toggleFavorite: HandleToggleFavoriteFn = (
+    query,
+    variables,
+    operationName,
+    label,
+    favorite,
   ) => {
     const item: QueryStoreItem = {
       query,
@@ -160,12 +160,12 @@ export class QueryHistory extends React.Component<
   };
 
   // Public API
-  editLabel = (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: boolean,
+  editLabel: HandleEditLabelFn = (
+    query,
+    variables,
+    operationName,
+    label,
+    favorite,
   ) => {
     const item = {
       query,

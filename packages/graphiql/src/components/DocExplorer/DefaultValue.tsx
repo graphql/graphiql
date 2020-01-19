@@ -6,7 +6,8 @@
  */
 
 import React from 'react';
-import { astFromValue, print, GraphQLArgument, ValueNode } from 'graphql';
+import { astFromValue, print, ValueNode } from 'graphql';
+import { FieldType } from './types';
 
 const printDefault = (ast?: ValueNode | null): string => {
   if (!ast) {
@@ -15,14 +16,17 @@ const printDefault = (ast?: ValueNode | null): string => {
   return print(ast);
 };
 
-export default function DefaultValue({ field }: { field: GraphQLArgument }) {
-  const { type, defaultValue } = field;
-  if (defaultValue !== undefined) {
+type DefaultValueProps = {
+  field: FieldType;
+};
+
+export default function DefaultValue({ field }: DefaultValueProps) {
+  if ('defaultValue' in field) {
     return (
       <span>
         {' = '}
         <span className="arg-default-value">
-          {printDefault(astFromValue(defaultValue, type))}
+          {printDefault(astFromValue(field.defaultValue, field.type))}
         </span>
       </span>
     );

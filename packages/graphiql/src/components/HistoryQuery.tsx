@@ -6,35 +6,39 @@
  */
 
 import React from 'react';
+import { QueryStoreItem } from 'src/utility/QueryStore';
+
+export type HandleEditLabelFn = (
+  query?: string,
+  variables?: string,
+  operationName?: string,
+  label?: string,
+  favorite?: boolean,
+) => void;
+
+export type HandleToggleFavoriteFn = (
+  query?: string,
+  variables?: string,
+  operationName?: string,
+  label?: string,
+  favorite?: boolean,
+) => void;
+
+export type HandleSelectQueryFn = (
+  query?: string,
+  variables?: string,
+  operationName?: string,
+  label?: string,
+) => void;
 
 export type HistoryQueryProps = {
   favorite?: boolean;
   favoriteSize?: number;
-  handleEditLabel: (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: boolean,
-  ) => void;
-  handleToggleFavorite: (
-    query: string,
-    variables: string,
-    operationName: string,
-    label: string,
-    favorite: boolean,
-  ) => void;
+  handleEditLabel: HandleEditLabelFn;
+  handleToggleFavorite: HandleToggleFavoriteFn;
   operationName?: string;
-  onSelect: (
-    query?: string,
-    variables?: string,
-    operationName?: string,
-  ) => // label?: string,
-  void;
-  query: string;
-  variables?: string;
-  label?: string;
-};
+  onSelect: HandleSelectQueryFn;
+} & QueryStoreItem;
 
 export default class HistoryQuery extends React.Component<
   HistoryQueryProps,
@@ -102,7 +106,7 @@ export default class HistoryQuery extends React.Component<
     );
   }
 
-  handleStarClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  handleStarClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     this.props.handleToggleFavorite(
       this.props.query,
@@ -133,13 +137,13 @@ export default class HistoryQuery extends React.Component<
         this.props.query,
         this.props.variables,
         this.props.operationName,
-        e.target.value,
+        e.currentTarget.value,
         this.props.favorite,
       );
     }
   }
 
-  handleEditClick(e: React.MouseEvent) {
+  handleEditClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     this.setState({ editable: true }, () => {
       if (this.editField) {

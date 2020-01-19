@@ -5,19 +5,29 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ChangeEventHandler } from 'react';
 
 import debounce from '../../utility/debounce';
 
-export default class SearchBox extends React.Component {
-  static propTypes = {
-    value: PropTypes.string,
-    placeholder: PropTypes.string,
-    onSearch: PropTypes.func,
-  };
+type OnSearchFn = (value: string) => void;
 
-  constructor(props) {
+type SearchBoxProps = {
+  value: string;
+  placeholder: string;
+  onSearch: OnSearchFn;
+};
+
+type SearchBoxState = {
+  value: string;
+};
+
+export default class SearchBox extends React.Component<
+  SearchBoxProps,
+  SearchBoxState
+> {
+  debouncedOnSearch: OnSearchFn;
+
+  constructor(props: SearchBoxProps) {
     super(props);
     this.state = { value: props.value || '' };
     this.debouncedOnSearch = debounce(200, this.props.onSearch);
@@ -48,8 +58,8 @@ export default class SearchBox extends React.Component {
     );
   }
 
-  handleChange = event => {
-    const value = event.target.value;
+  handleChange: ChangeEventHandler<HTMLInputElement> = event => {
+    const value = event.currentTarget.value;
     this.setState({ value });
     this.debouncedOnSearch(value);
   };

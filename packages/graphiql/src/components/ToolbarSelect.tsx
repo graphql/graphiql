@@ -41,7 +41,7 @@ export class ToolbarSelect extends React.Component<
   }
 
   render() {
-    let selectedChild: React.ReactNode;
+    let selectedChild: React.ReactElement;
     const visible = this.state.visible;
     const optionChildren = React.Children.map(
       this.props.children,
@@ -70,7 +70,7 @@ export class ToolbarSelect extends React.Component<
           this._node = node;
         }}
         title={this.props.title}>
-        {selectedChild.props.label}
+        {selectedChild?.props.label}
         <svg width="13" height="10">
           <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
           <path fill="#666" d="M 5 6 L 13 6 L 9 10 z" />

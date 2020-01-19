@@ -6,8 +6,7 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
-import { GraphQLSchema, isType } from 'graphql';
+import { GraphQLSchema, isType, GraphQLField } from 'graphql';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -15,9 +14,24 @@ import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 
-const initialNav = {
+type NavStackItem = {
+  name: string;
+  title: string;
+  search?: string;
+  def?: GraphQLField<{}, {}, {}>;
+};
+
+const initialNav: NavStackItem = {
   name: 'Schema',
   title: 'Documentation Explorer',
+};
+
+type DocExplorerProps = {
+  schema?: GraphQLSchema;
+};
+
+type DocExplorerState = {
+  navStack: NavStackItem[];
 };
 
 /**
@@ -36,18 +50,20 @@ const initialNav = {
  *     top bar. Typically this will be a "close" button for temporary explorer.
  *
  */
-export class DocExplorer extends React.Component {
-  static propTypes = {
-    schema: PropTypes.instanceOf(GraphQLSchema),
-  };
-
-  constructor() {
-    super();
+export class DocExplorer extends React.Component<
+  DocExplorerProps,
+  DocExplorerState
+> {
+  constructor(props: DocExplorerProps) {
+    super(props);
 
     this.state = { navStack: [initialNav] };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(
+    nextProps: DocExplorerProps,
+    nextState: DocExplorerState,
+  ) {
     return (
       this.props.schema !== nextProps.schema ||
       this.state.navStack !== nextState.navStack
@@ -174,7 +190,7 @@ export class DocExplorer extends React.Component {
   }
 
   // Public API
-  showSearch(search) {
+  showSearch(search: string) {
     const navStack = this.state.navStack.slice();
     const topNav = navStack[navStack.length - 1];
     navStack[navStack.length - 1] = { ...topNav, search };
@@ -195,7 +211,7 @@ export class DocExplorer extends React.Component {
     this.showDoc(typeOrField);
   };
 
-  handleSearch = value => {
+  handleSearch = (value: string) => {
     this.showSearch(value);
   };
 }

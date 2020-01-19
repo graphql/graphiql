@@ -34,8 +34,19 @@ type ImagePreviewProps = {
   token: any;
 };
 
-export class ImagePreview extends React.Component<ImagePreviewProps> {
+type ImagePreviewState = {
+  width: number | null;
+  height: number | null;
+  src: string | null;
+  mime: string | null;
+};
+
+export class ImagePreview extends React.Component<
+  ImagePreviewProps,
+  ImagePreviewState
+> {
   _node: HTMLImageElement | null;
+
   static shouldRender(token: any) {
     const url = tokenToURL(token);
     return url ? isImageURL(url) : false;
@@ -44,10 +55,6 @@ export class ImagePreview extends React.Component<ImagePreviewProps> {
   static propTypes = {
     token: PropTypes.any,
   };
-
-  constructor(props: ImagePreviewProps) {
-    super(props);
-  }
 
   state = {
     width: null,

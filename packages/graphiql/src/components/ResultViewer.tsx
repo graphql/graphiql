@@ -8,6 +8,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
+import { SizerComponent } from 'src/utility/CodeMirrorSizer';
 
 type ImagePreviewType = React.Component & {
   shouldRender: (token: any) => void;
@@ -31,7 +32,8 @@ type ResultViewerProps = {
  *   - value: The text of the editor.
  *
  */
-export class ResultViewer extends React.Component<ResultViewerProps, {}> {
+export class ResultViewer extends React.Component<ResultViewerProps, {}>
+  implements SizerComponent {
   viewer: CodeMirror.Editor;
   _node: HTMLElement | null = null;
 
