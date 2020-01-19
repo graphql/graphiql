@@ -5,20 +5,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 # [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.3.3...graphql-language-service-interface@2.4.0-alpha.1) (2020-01-18)
 
-### Bug Fixes
-
-- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
-
-### Features
-
-- convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))
-
-# [2.4.0-alpha.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.3.3...graphql-language-service-interface@2.4.0-alpha.0) (2020-01-18)
-
-### Bug Fixes
-
-- linting issues, trailingCommas: all ([#1099](https://github.com/graphql/graphiql/issues/1099)) ([de4005b](https://github.com/graphql/graphiql/commit/de4005b))
-
 ### Features
 
 - convert LSP Server to Typescript, remove watchman ([#1138](https://github.com/graphql/graphiql/issues/1138)) ([8e33dbb](https://github.com/graphql/graphiql/commit/8e33dbb))

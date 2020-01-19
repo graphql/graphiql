@@ -15,18 +15,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
   Co-authored-by: @ryan-m-walker, @acao
   Reviewed-by: @benjie
 
-# 1.0.0-alpha.0 (2020-01-18)
-
-### Features
-
-- deprecate support for 15, support react 16 features ([#1107](https://github.com/graphql/graphiql/issues/1107)) ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
-
-### BREAKING CHANGES
-
-- Deprecate support for React 15. Please use React 16.8 or greater for hooks support.
-  Co-authored-by: @ryan-m-walker, @acao
-  Reviewed-by: @benjie
-
 ## [0.0.10](https://github.com/graphql/graphiql/compare/graphiql-example-webpack@0.0.9...graphiql-example-webpack@0.0.10) (2019-12-09)
 
 **Note:** Version bump only for package graphiql-example-webpack

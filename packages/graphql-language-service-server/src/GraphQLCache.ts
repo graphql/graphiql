@@ -20,7 +20,7 @@ import {
   GraphQLProjectConfig,
 } from 'graphql-language-service-types';
 
-import fs from 'fs';
+import * as fs from 'fs';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 

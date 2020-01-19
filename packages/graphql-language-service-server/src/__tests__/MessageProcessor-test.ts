@@ -6,14 +6,14 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
+import { SymbolKind } from 'vscode-languageserver';
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
 
 jest.mock('../Logger');
 
-import { DefinitionQueryResult } from 'graphql-language-service-types';
+import { DefinitionQueryResult, Outline } from 'graphql-language-service-types';
 
 import { Logger } from '../Logger';
 
@@ -55,6 +55,34 @@ describe('MessageProcessor', () => {
       // @ts-ignore
       getDiagnostics: (query, uri) => {
         return [];
+      },
+      getDocumentSymbols: async (_query: string, uri: string) => {
+        return [
+          {
+            name: 'item',
+            kind: SymbolKind.Field,
+            location: {
+              uri,
+              range: {
+                start: { line: 1, character: 2 },
+                end: { line: 1, character: 4 },
+              },
+            },
+          },
+        ];
+      },
+      getOutline: async (_query: string): Promise<Outline> => {
+        return {
+          outlineTrees: [
+            {
+              representativeName: 'item',
+              kind: SymbolKind.Field,
+              startPosition: { line: 1, character: 2 },
+              endPosition: { line: 1, character: 4 },
+              children: [],
+            },
+          ],
+        };
       },
       getDefinition: async (
         _query,
@@ -119,6 +147,50 @@ describe('MessageProcessor', () => {
     expect(result).toEqual({
       items: [{ label: `${query} at ${uri}` }],
       isIncomplete: false,
+    });
+  });
+
+  it('runs document symbol requests', async () => {
+    const uri = `${queryDir}/test3.graphql`;
+    const validQuery = `
+  {
+    hero(episode: EMPIRE){
+      ...testFragment
+    }
+  }
+  `;
+
+    const newDocument = {
+      textDocument: {
+        text: validQuery,
+        uri,
+        version: 0,
+      },
+    };
+
+    messageProcessor._textDocumentCache.set(uri, {
+      version: 0,
+      contents: [
+        {
+          query: validQuery,
+          range: new Range(new Position(0, 0), new Position(0, 0)),
+        },
+      ],
+    });
+
+    const test = {
+      textDocument: newDocument.textDocument,
+    };
+
+    const result = await messageProcessor.handleDocumentSymbolRequest(test);
+
+    expect(result).not.toBeUndefined();
+    expect(result.length).toEqual(1);
+    expect(result[0].name).toEqual('item');
+    expect(result[0].kind).toEqual(SymbolKind.Field);
+    expect(result[0].location.range).toEqual({
+      start: { line: 1, character: 2 },
+      end: { line: 1, character: 4 },
     });
   });
 

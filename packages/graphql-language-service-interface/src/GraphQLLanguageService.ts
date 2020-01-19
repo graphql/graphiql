@@ -26,10 +26,17 @@ import {
   GraphQLProjectConfig,
   Uri,
   Position,
+  Outline,
+  OutlineTree,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';
-import { Hover, DiagnosticSeverity } from 'vscode-languageserver-types';
+import {
+  Hover,
+  DiagnosticSeverity,
+  SymbolInformation,
+  SymbolKind,
+} from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
@@ -40,6 +47,8 @@ import {
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
 } from './getDefinition';
+
+import { getOutline } from './getOutline';
 
 import {
   getASTNodeAtPosition,
@@ -67,6 +76,15 @@ const {
   NAMED_TYPE,
 } = Kind;
 
+const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
+  Field: SymbolKind.Field,
+  OperationDefinition: SymbolKind.Class,
+  FragmentDefinition: SymbolKind.Class,
+  FragmentSpread: SymbolKind.Struct,
+  ObjectType: SymbolKind.Class,
+  InputType: SymbolKind.Class,
+};
+
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
@@ -84,7 +102,7 @@ export class GraphQLLanguageService {
     throw Error(`No config found for uri: ${uri}`);
   }
 
-  async getDiagnostics(
+  public async getDiagnostics(
     query: string,
     uri: Uri,
     isRelayCompatMode?: boolean,
@@ -187,7 +205,7 @@ export class GraphQLLanguageService {
     return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
-  async getAutocompleteSuggestions(
+  public async getAutocompleteSuggestions(
     query: string,
     position: Position,
     filePath: Uri,
@@ -203,7 +221,7 @@ export class GraphQLLanguageService {
     return [];
   }
 
-  async getHoverInformation(
+  public async getHoverInformation(
     query: string,
     position: Position,
     filePath: Uri,
@@ -219,7 +237,7 @@ export class GraphQLLanguageService {
     return '';
   }
 
-  async getDefinition(
+  public async getDefinition(
     query: string,
     position: Position,
     filePath: Uri,
@@ -265,6 +283,53 @@ export class GraphQLLanguageService {
     }
     return null;
   }
+
+  public async getDocumentSymbols(
+    document: string,
+    filePath: Uri,
+  ): Promise<SymbolInformation[]> {
+    const outline = await this.getOutline(document);
+    if (!outline) {
+      return [];
+    }
+
+    const output: Array<SymbolInformation> = [];
+    const input = outline.outlineTrees.map((tree: OutlineTree) => [null, tree]);
+    while (input.length > 0) {
+      const res = input.pop();
+      if (!res) {
+        return [];
+      }
+      const [parent, tree] = res;
+      if (!tree) {
+        return [];
+      }
+      output.push({
+        // @ts-ignore
+        name: tree.representativeName,
+        kind: KIND_TO_SYMBOL_KIND[tree.kind],
+        location: {
+          uri: filePath,
+          range: {
+            start: tree.startPosition,
+            // @ts-ignore
+            end: tree.endPosition,
+          },
+        },
+        containerName: parent ? parent.representativeName : undefined,
+      });
+      input.push(...tree.children.map(child => [tree, child]));
+    }
+    return output;
+  }
+  //
+  // public async getReferences(
+  //   document: string,
+  //   position: Position,
+  //   filePath: Uri,
+  // ): Promise<Location[]> {
+  //
+  // }
 
   async _getDefinitionForNamedType(
     query: string,
@@ -350,5 +415,8 @@ export class GraphQLLanguageService {
     );
 
     return result;
+  }
+  async getOutline(query: string): Promise<Outline | null | undefined> {
+    return getOutline(query);
   }
 }

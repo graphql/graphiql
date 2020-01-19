@@ -17,6 +17,9 @@ import {
   GraphQLCache,
   Uri,
   FileChangeTypeKind,
+  // Outline,
+  // OutlineTree,
+  DefinitionQueryResult,
 } from 'graphql-language-service-types';
 
 import { GraphQLLanguageService } from 'graphql-language-service-interface';
@@ -46,6 +49,8 @@ import {
   InitializeParams,
   Range as RangeType,
   TextDocumentPositionParams,
+  DocumentSymbolParams,
+  SymbolInformation,
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
@@ -56,6 +61,13 @@ type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
 };
+
+// const KIND_TO_SYMBOL_KIND = {
+//   Field: SymbolKind.Field,
+//   OperationDefinition: SymbolKind.Class,
+//   FragmentDefinition: SymbolKind.Class,
+//   FragmentSpread: SymbolKind.Struct,
+// };
 
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
@@ -72,7 +84,6 @@ export class MessageProcessor {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
-
     this._logger = logger;
   }
 
@@ -87,6 +98,8 @@ export class MessageProcessor {
 
     const serverCapabilities: InitializeResult = {
       capabilities: {
+        workspaceSymbolProvider: true,
+        documentSymbolProvider: true,
         completionProvider: { resolveProvider: true },
         definitionProvider: true,
         textDocumentSync: 1,
@@ -127,7 +140,7 @@ export class MessageProcessor {
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
 
@@ -184,7 +197,7 @@ export class MessageProcessor {
   async handleDidChangeNotification(
     params: DidChangeTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
     // For every `textDocument/didChange` event, keep a cache of textDocuments
@@ -251,7 +264,7 @@ export class MessageProcessor {
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return;
     }
     // For every `textDocument/didClose` event, delete the cached entry.
@@ -304,7 +317,7 @@ export class MessageProcessor {
   async handleCompletionRequest(
     params: CompletionParams,
   ): Promise<CompletionList | Array<CompletionItem>> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return [];
     }
 
@@ -361,7 +374,7 @@ export class MessageProcessor {
   }
 
   async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || this._graphQLCache) {
       return { contents: [] };
     }
 
@@ -406,12 +419,16 @@ export class MessageProcessor {
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
+        if (!this._isInitialized || !this._graphQLCache) {
+          throw Error('No cache available for handleWatchedFilesChanged');
+        }
+
         if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
@@ -471,7 +488,7 @@ export class MessageProcessor {
     params: TextDocumentPositionParams,
     _token?: CancellationToken,
   ): Promise<Array<Location>> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return [];
     }
 
@@ -502,7 +519,7 @@ export class MessageProcessor {
     if (range) {
       position.line -= range.start.line;
     }
-    const result = await this._languageService.getDefinition(
+    const result: DefinitionQueryResult | null = await this._languageService.getDefinition(
       query,
       position,
       textDocument.uri,
@@ -538,6 +555,49 @@ export class MessageProcessor {
     );
     return formatted;
   }
+
+  async handleDocumentSymbolRequest(
+    params: DocumentSymbolParams,
+  ): Promise<Array<SymbolInformation>> {
+    if (!this._isInitialized) {
+      return [];
+    }
+
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` argument is required.');
+    }
+
+    const textDocument = params.textDocument;
+    const cachedDocument = this._getCachedDocument(textDocument.uri);
+    if (!cachedDocument) {
+      throw new Error('A cached document cannot be found.');
+    }
+    return this._languageService.getDocumentSymbols(
+      cachedDocument.contents[0].query,
+      textDocument.uri,
+    );
+  }
+
+  // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
+  //    if (!this._isInitialized) {
+  //      return [];
+  //    }
+
+  //    if (!params || !params.textDocument) {
+  //      throw new Error('`textDocument` argument is required.');
+  //    }
+
+  //    const textDocument = params.textDocument;
+  //    const cachedDocument = this._getCachedDocument(textDocument.uri);
+  //    if (!cachedDocument) {
+  //      throw new Error('A cached document cannot be found.');
+  //    }
+  //    return this._languageService.getReferences(
+  //      cachedDocument.contents[0].query,
+  //      params.position,
+  //      textDocument.uri,
+  //    );
+  // }
 
   _isRelayCompatMode(query: string): boolean {
     return (

@@ -10,8 +10,10 @@ import {
   Diagnostic as DiagnosticType,
   Position as PositionType,
   CompletionItem as CompletionItemType,
+  SymbolKind,
 } from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
+
 import {
   ASTNode,
   DocumentNode,
@@ -32,6 +34,8 @@ export type Maybe<T> = T | null | undefined;
 
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+
+export type Maybe<T> = null | T;
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
@@ -282,7 +286,7 @@ export type Diagnostic = DiagnosticType;
 
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
-  deprecationReason?: string;
+  deprecationReason?: Maybe<string>;
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
@@ -325,7 +329,7 @@ export type OutlineTree = {
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-
+  kind: SymbolKind;
   startPosition: Position;
   endPosition?: Position;
   children: OutlineTree[];

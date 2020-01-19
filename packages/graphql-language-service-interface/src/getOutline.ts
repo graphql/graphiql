@@ -89,6 +89,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
     representativeName: node.name,
     startPosition: offsetToPosition(docText, node.loc.start),
     endPosition: offsetToPosition(docText, node.loc.end),
+    kind: node.kind,
     children: node.selectionSet || [],
   });
 
