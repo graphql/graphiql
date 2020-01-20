@@ -31,9 +31,11 @@
 packages/graphiql/webpack
 packages/graphiql/storybook
 packages/graphiql/lsp
+packages/graphiql/*.html
 **/renderExample.js
 **/*.min.js
 **/coverage/
+.nyc_output/
 
 
 # codemirror's build artefacts are exported from the package root

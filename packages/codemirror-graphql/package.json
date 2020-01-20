@@ -37,8 +37,6 @@
     "mocha": "--full-trace --require resources/mochaBootload **/*-test.js"
   },
   "scripts": {
-    "lint": "eslint src",
-    "check": "flow check",
     "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
     "build-js": "babel src --root-mode upward --ignore **/__tests__/**,**/__mocks__/** --out-dir .",
     "build-esm": "cross-env ESM=true babel src --root-mode upward  --ignore **/__tests__/**,**/__mocks__/** --out-dir esm && node ../../resources/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",

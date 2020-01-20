@@ -10,7 +10,7 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{md,html,json,toml}": [
+    "*.{md,html,json}": [
       "prettier --write"
     ]
   },
@@ -21,18 +21,24 @@
     }
   },
   "scripts": {
-    "build": "yarn run build-clean && yarn build-ts-cjs && yarn build-js",
-    "build-js": "lerna run build --scope codemirror-graphql",
-    "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
-    "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",
-    "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm,bundle,cdn,webpack,storybook}' && lerna run build-clean --parallel",
+    "build": "yarn run build-clean && yarn build-ts-cjs && yarn build-babel",
+    "build-babel": "lerna run build --scope codemirror-graphql",
+    "build-ts": "yarn run tsc --clean && yarn run tsc",
+    "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json --clean && yarn run tsc resources/tsconfig.build.cjs.json",
+    "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json --clean && yarn run tsc resources/tsconfig.build.esm.json",
+    "build-clean": "yarn run tsc --clean && rimraf '{packages,examples}/**/{dist,esm}' && lerna run build-clean",
     "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo",
     "build-docs": "rimraf 'packages/graphiql/lsp' && typedoc 'packages'",
-    "build-bundles": "yarn build-ts-esm && lerna run build-bundles",
+    "prebuild-bundles": "yarn build-ts-esm && yarn build-babel && yarn build-bundles-clean",
+    "build-bundles": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles",
+    "build-bundles-min": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles-min",
+    "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}' && lerna run build-bundles-clean",
     "tsc": "tsc --build",
-    "test": "yarn build && yarn run testonly",
-    "ci": "yarn run lint && yarn run check && yarn run build && yarn run testonly && yarn build-bundles && yarn run e2e && yarn build-validate",
+    "test": "jest",
+    "test-mocha": "yarn workspace codemirror-graphql run test",
+    "test-all": "yarn test && yarn test-mocha",
+    "ci": "yarn lint && yarn run check && yarn test && yarn build-ts-cjs && yarn test-mocha && yarn build-bundles-min && yarn e2e && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
