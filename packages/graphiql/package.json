@@ -62,7 +62,7 @@
   "devDependencies": {
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
-    "@testing-library/jest-dom": "4.2.4",
+    "@testing-library/jest-dom": "5.0.0",
     "@testing-library/react": "9.4.0",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^6.0.3",
