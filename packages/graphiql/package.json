@@ -39,7 +39,6 @@
     "cypress-open": "yarn e2e-server 'cypress open'",
     "e2e": "yarn e2e-server 'cypress run'",
     "e2e-server": "start-server-and-test 'cross-env PORT=8080 node test/e2e-server' 'http-get://localhost:8080/graphql?query={test { id }}'",
-    "test": "node ../../resources/runTests",
     "storybook": "start-storybook"
   },
   "dependencies": {

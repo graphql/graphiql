@@ -27,12 +27,6 @@
     "node": ">= 9.7.3"
   },
   "engineStrict": true,
-  "scripts": {
-    "test": "node ../../resources/runTests.js",
-    "build": "yarn run build-ts && yarn run build-flow",
-    "build-ts": "tsc",
-    "build-flow": "node ../../resources/buildFlow.js"
-  },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
