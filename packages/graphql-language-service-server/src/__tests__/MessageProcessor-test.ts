@@ -208,56 +208,120 @@ describe('MessageProcessor', () => {
     await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
   });
 
-  it('getQueryAndRange finds queries in tagged templates', async () => {
-    const text = `
-// @flow
-import {gql} from 'react-apollo';
-import type {B} from 'B';
-import A from './A';
+  describe('getQueryRange', () => {
+    describe('js/ts', () => {
+      it('finds queries in tagged templates', async () => {
+        const text = `
+    // @flow
+    import {gql} from 'react-apollo';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = gql\`
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \${A.fragments.test}
+    \`
+    
+    export function Example(arg: string) {}`;
 
-const QUERY = gql\`
-query Test {
-  test {
-    value
-    ...FragmentsComment
-  }
-}
-\${A.fragments.test}
-\`
+        const contents = getQueryAndRange(text, 'test.js');
+        expect(contents[0].query).toEqual(`
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    `);
+      });
 
-export function Example(arg: string) {}`;
+      it('ignores non gql tagged templates', async () => {
+        const text = `
+    // @flow
+    import randomthing from 'package';
+    import type {B} from 'B';
+    import A from './A';
+    
+    const QUERY = randomthing\`
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    \${A.fragments.test}
+    \`
+    
+    export function Example(arg: string) {}`;
 
-    const contents = getQueryAndRange(text, 'test.js');
-    expect(contents[0].query).toEqual(`
-query Test {
-  test {
-    value
-    ...FragmentsComment
-  }
-}
-`);
-  });
+        const contents = getQueryAndRange(text, 'test.js');
+        expect(contents.length).toEqual(0);
+      });
+    });
+    describe('ReasonML', () => {
+      describe('ReasonRelay', () => {
+        it('finds queries in tagged templates', () => {
+          const text = `
+    let something = "something";
+    
+    module Query = [%relay.query
+      {|
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    |}
+  ];`;
 
-  it('getQueryAndRange ignores non gql tagged templates', async () => {
-    const text = `
-// @flow
-import randomthing from 'package';
-import type {B} from 'B';
-import A from './A';
+          const contents = getQueryAndRange(text, 'test.re');
 
-const QUERY = randomthing\`
-query Test {
-  test {
-    value
-    ...FragmentsComment
-  }
-}
-\${A.fragments.test}
-\`
+          console.log(contents);
 
-export function Example(arg: string) {}`;
+          expect(contents[0].query).toEqual(`
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    `);
+        });
+      });
 
-    const contents = getQueryAndRange(text, 'test.js');
-    expect(contents.length).toEqual(0);
+      describe('graphql_ppx', () => {
+        it('finds queries in tagged templates', () => {
+          const text = `
+    let something = "something";
+    
+    module Query = [%graphql
+      {|
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    |}
+  ];`;
+
+          const contents = getQueryAndRange(text, 'test.re');
+          expect(contents[0].query).toEqual(`
+    query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }
+    `);
+        });
+      });
+    });
   });
 });

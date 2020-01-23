@@ -45,8 +45,8 @@ import {
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
-import { findGraphQLTags } from './findGraphQLTags';
 import { Logger } from './Logger';
+import { getLanguageFromExtension } from './languages';
 
 type CachedDocumentType = {
   version: number;
@@ -619,30 +619,18 @@ export class MessageProcessor {
 // If .js file, either return the parsed query/range or null if GraphQL queries
 // are not found.
 export function getQueryAndRange(text: string, uri: string): CachedContent[] {
-  // Check if the text content includes a GraphQLV query.
+  // Check if the text content includes a GraphQL query.
   // If the text doesn't include GraphQL queries, do not proceed.
-  if (extname(uri) === '.js') {
-    if (
-      text.indexOf('graphql`') === -1 &&
-      text.indexOf('graphql.experimental`') === -1 &&
-      text.indexOf('gql`') === -1
-    ) {
-      return [];
-    }
-    const templates = findGraphQLTags(text);
-    return templates.map(({ template, range }) => ({ query: template, range }));
-  } else {
-    const query = text;
-    if (!query && query !== '') {
-      return [];
-    }
-    const lines = query.split('\n');
-    const range = new Range(
-      new Position(0, 0),
-      new Position(lines.length - 1, lines[lines.length - 1].length - 1),
-    );
-    return [{ query, range }];
+
+  const languageConfig = getLanguageFromExtension(extname(uri).slice(1));
+
+  if (!languageConfig || !languageConfig.fileFilter(text)) {
+    // Unsupported or doesnt contain operations
+    return [];
   }
+
+  const templates = languageConfig.extractSources(text);
+  return templates.map(({ template, range }) => ({ query: template, range }));
 }
 
 function processDiagnosticsMessage(

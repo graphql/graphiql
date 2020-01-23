@@ -13,6 +13,4 @@ export { MessageProcessor } from './MessageProcessor';
 
 export { default as startServer } from './startServer';
 
-export { findGraphQLTags } from './findGraphQLTags';
-
 export { Logger } from './Logger';
