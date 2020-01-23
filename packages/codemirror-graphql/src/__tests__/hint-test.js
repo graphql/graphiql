@@ -10,10 +10,28 @@
 import { expect } from 'chai';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import { isCompositeType } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLID,
+  GraphQLInt,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLString,
+  __Schema,
+  __Type,
+} from 'graphql';
 
 import '../hint';
-import { TestSchema } from './testSchema';
+import {
+  TestEnum,
+  TestInputObject,
+  TestSchema,
+  TestType,
+  TestUnion,
+  UnionFirst,
+  UnionSecond,
+} from './testSchema';
 
 function createEditorWithHint() {
   return CodeMirror(document.createElement('div'), {
@@ -48,6 +66,16 @@ function checkSuggestions(source, suggestions) {
   expect(titles).to.deep.equal(source);
 }
 
+function getExpectedSuggestions(list) {
+  return list.map(item => ({
+    text: item.text,
+    type: item.type,
+    description: item.description,
+    isDeprecated: item.isDeprecated,
+    deprecationReason: item.deprecationReason,
+  }));
+}
+
 describe('graphql-hint', () => {
   it('attaches a GraphQL hint function with correct mode/hint options', async () => {
     const editor = await createEditorWithHint();
@@ -58,37 +86,68 @@ describe('graphql-hint', () => {
 
   it('provides correct initial keywords', async () => {
     const suggestions = await getHintSuggestions('', { line: 0, ch: 0 });
-    const initialKeywords = [
-      'query',
-      'mutation',
-      'subscription',
-      'fragment',
-      '{',
+    const list = [
+      { text: 'query' },
+      { text: 'mutation' },
+      { text: 'subscription' },
+      { text: 'fragment' },
+      { text: '{' },
     ];
-    checkSuggestions(initialKeywords, suggestions.list);
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct field name suggestions', async () => {
     const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
-    const fieldConfig = TestSchema.getQueryType().getFields();
-    const fieldNames = Object.keys(fieldConfig).filter(
-      name => !fieldConfig[name].isDeprecated,
-    );
-    checkSuggestions(
-      fieldNames.concat(['__typename', '__schema', '__type']),
-      suggestions.list,
-    );
-
-    const fieldTypes = fieldNames.map(name => fieldConfig[name].type);
-    const expectedTypes = suggestions.list
-      .filter(
-        item =>
-          item.text !== '__schema' &&
-          item.text !== '__type' &&
-          item.text !== '__typename',
-      )
-      .map(item => item.type);
-    expect(fieldTypes).to.deep.equal(expectedTypes);
+    const list = [
+      {
+        text: 'test',
+        type: TestType,
+        isDeprecated: false,
+      },
+      {
+        text: 'union',
+        type: TestUnion,
+        isDeprecated: false,
+      },
+      {
+        text: 'first',
+        type: UnionFirst,
+        isDeprecated: false,
+      },
+      {
+        text: 'id',
+        type: GraphQLInt,
+        isDeprecated: false,
+      },
+      {
+        text: 'isTest',
+        type: GraphQLBoolean,
+        isDeprecated: false,
+      },
+      {
+        text: 'hasArgs',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        description: 'The name of the current Object type at runtime.',
+      },
+      {
+        text: '__schema',
+        type: GraphQLNonNull(__Schema),
+        description: 'Access the current type schema of this server.',
+      },
+      {
+        text: '__type',
+        type: __Type,
+        description: 'Request the type information of a single type.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct field name suggestions when using aliases', async () => {
@@ -96,11 +155,25 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 21,
     });
-    const fieldConfig = TestSchema.getType('First').getFields();
-    checkSuggestions(
-      [...Object.keys(fieldConfig), '__typename'],
-      suggestions.list,
-    );
+    const list = [
+      {
+        text: 'scalar',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
+        text: 'first',
+        type: TestType,
+        isDeprecated: false,
+      },
+      {
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        description: 'The name of the current Object type at runtime.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct field name suggestion indentation', async () => {
@@ -114,10 +187,80 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 12,
     });
-    const argumentNames = TestSchema.getQueryType()
-      .getFields()
-      .hasArgs.args.map(arg => arg.name);
-    checkSuggestions(argumentNames, suggestions.list);
+    const list = [
+      {
+        text: 'string',
+        type: GraphQLString,
+        description: null,
+      },
+      {
+        text: 'int',
+        type: GraphQLInt,
+        description: null,
+      },
+      {
+        text: 'float',
+        type: GraphQLFloat,
+        description: null,
+      },
+      {
+        text: 'boolean',
+        type: GraphQLBoolean,
+        description: null,
+      },
+      {
+        text: 'id',
+        type: GraphQLID,
+        description: null,
+      },
+      {
+        text: 'enum',
+        type: TestEnum,
+        description: null,
+      },
+      {
+        text: 'object',
+        type: TestInputObject,
+        description: null,
+      },
+      {
+        text: 'listString',
+        type: new GraphQLList(GraphQLString),
+        description: null,
+      },
+      {
+        text: 'listInt',
+        type: new GraphQLList(GraphQLInt),
+        description: null,
+      },
+      {
+        text: 'listFloat',
+        type: new GraphQLList(GraphQLFloat),
+        description: null,
+      },
+      {
+        text: 'listBoolean',
+        type: new GraphQLList(GraphQLBoolean),
+        description: null,
+      },
+      {
+        text: 'listID',
+        type: new GraphQLList(GraphQLID),
+        description: null,
+      },
+      {
+        text: 'listEnum',
+        type: new GraphQLList(TestEnum),
+        description: null,
+      },
+      {
+        text: 'listObject',
+        type: new GraphQLList(TestInputObject),
+        description: null,
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct argument suggestions when using aliases', async () => {
@@ -125,10 +268,80 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 23,
     });
-    const argumentNames = TestSchema.getQueryType()
-      .getFields()
-      .hasArgs.args.map(arg => arg.name);
-    checkSuggestions(argumentNames, suggestions.list);
+    const list = [
+      {
+        text: 'string',
+        type: GraphQLString,
+        description: null,
+      },
+      {
+        text: 'int',
+        type: GraphQLInt,
+        description: null,
+      },
+      {
+        text: 'float',
+        type: GraphQLFloat,
+        description: null,
+      },
+      {
+        text: 'boolean',
+        type: GraphQLBoolean,
+        description: null,
+      },
+      {
+        text: 'id',
+        type: GraphQLID,
+        description: null,
+      },
+      {
+        text: 'enum',
+        type: TestEnum,
+        description: null,
+      },
+      {
+        text: 'object',
+        type: TestInputObject,
+        description: null,
+      },
+      {
+        text: 'listString',
+        type: new GraphQLList(GraphQLString),
+        description: null,
+      },
+      {
+        text: 'listInt',
+        type: new GraphQLList(GraphQLInt),
+        description: null,
+      },
+      {
+        text: 'listFloat',
+        type: new GraphQLList(GraphQLFloat),
+        description: null,
+      },
+      {
+        text: 'listBoolean',
+        type: new GraphQLList(GraphQLBoolean),
+        description: null,
+      },
+      {
+        text: 'listID',
+        type: new GraphQLList(GraphQLID),
+        description: null,
+      },
+      {
+        text: 'listEnum',
+        type: new GraphQLList(TestEnum),
+        description: null,
+      },
+      {
+        text: 'listObject',
+        type: new GraphQLList(TestInputObject),
+        description: null,
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct directive suggestions', async () => {
@@ -136,8 +349,20 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 9,
     });
-    const directiveNames = ['include', 'skip'];
-    checkSuggestions(directiveNames, suggestions.list);
+    const list = [
+      {
+        text: 'include',
+        description:
+          'Directs the executor to include this field or fragment only when the `if` argument is true.',
+      },
+      {
+        text: 'skip',
+        description:
+          'Directs the executor to skip this field or fragment when the `if` argument is true.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct directive suggestions when using aliases', async () => {
@@ -145,8 +370,20 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 20,
     });
-    const directiveNames = ['include', 'skip'];
-    checkSuggestions(directiveNames, suggestions.list);
+    const list = [
+      {
+        text: 'include',
+        description:
+          'Directs the executor to include this field or fragment only when the `if` argument is true.',
+      },
+      {
+        text: 'skip',
+        description:
+          'Directs the executor to skip this field or fragment when the `if` argument is true.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct directive suggestions on definitions', async () => {
@@ -154,8 +391,14 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 11,
     });
-    const directiveNames = ['onAllDefs'];
-    checkSuggestions(directiveNames, suggestions.list);
+    const list = [
+      {
+        text: 'onAllDefs',
+        description: '',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct directive suggestions on args definitions', async () => {
@@ -163,8 +406,18 @@ describe('graphql-hint', () => {
       'type Type { field(arg: String @',
       { line: 0, ch: 31 },
     );
-    const directiveNames = ['onArg', 'onAllDefs'];
-    checkSuggestions(directiveNames, suggestions.list);
+    const list = [
+      {
+        text: 'onArg',
+        description: '',
+      },
+      {
+        text: 'onAllDefs',
+        description: '',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct typeCondition suggestions', async () => {
@@ -172,11 +425,22 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 17,
     });
-    const unionType = TestSchema.getQueryType().getFields().union.type;
-    const typeConditionNames = TestSchema.getPossibleTypes(unionType)
-      .map(type => type.name)
-      .concat(['TestInterface']);
-    checkSuggestions(typeConditionNames, suggestions.list);
+    const list = [
+      {
+        text: 'First',
+        description: '',
+      },
+      {
+        text: 'Second',
+        description: '',
+      },
+      {
+        text: 'TestInterface',
+        description: '',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct typeCondition suggestions on fragment', async () => {
@@ -184,12 +448,68 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 16,
     });
-    const typeMap = TestSchema.getTypeMap();
-    const typeConditionNames = Object.keys(typeMap).filter(typeName => {
-      const type = typeMap[typeName];
-      return isCompositeType(type);
-    });
-    checkSuggestions(typeConditionNames, suggestions.list);
+    const list = [
+      {
+        text: 'Test',
+        description: '',
+      },
+      {
+        text: 'TestUnion',
+        description: '',
+      },
+      {
+        text: 'First',
+        description: '',
+      },
+      {
+        text: 'TestInterface',
+        description: '',
+      },
+      {
+        text: 'Second',
+        description: '',
+      },
+      {
+        text: 'MutationType',
+        description: 'This is a simple mutation type',
+      },
+      {
+        text: 'SubscriptionType',
+        description: 'This is a simple subscription type',
+      },
+      {
+        text: '__Schema',
+        description:
+          'A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.',
+      },
+      {
+        text: '__Type',
+        description:
+          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name and description, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
+      },
+      {
+        text: '__Field',
+        description:
+          'Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.',
+      },
+      {
+        text: '__InputValue',
+        description:
+          'Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.',
+      },
+      {
+        text: '__EnumValue',
+        description:
+          'One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.',
+      },
+      {
+        text: '__Directive',
+        description:
+          "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct ENUM suggestions', async () => {
@@ -197,10 +517,25 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 17,
     });
-    const enumNames = TestSchema.getType('TestEnum')
-      .getValues()
-      .map(value => value.name);
-    checkSuggestions(enumNames, suggestions.list);
+    const list = [
+      {
+        text: 'RED',
+        type: TestEnum,
+        isDeprecated: false,
+      },
+      {
+        text: 'GREEN',
+        type: TestEnum,
+        isDeprecated: false,
+      },
+      {
+        text: 'BLUE',
+        type: TestEnum,
+        isDeprecated: false,
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct testInput suggestions', async () => {
@@ -208,10 +543,66 @@ describe('graphql-hint', () => {
       line: 0,
       ch: 21,
     });
-    const testInputNames = Object.keys(
-      TestSchema.getType('TestInput').getFields(),
-    );
-    checkSuggestions(testInputNames, suggestions.list);
+    const list = [
+      {
+        text: 'string',
+        type: GraphQLString,
+      },
+      {
+        text: 'int',
+        type: GraphQLInt,
+      },
+      {
+        text: 'float',
+        type: GraphQLFloat,
+      },
+      {
+        text: 'boolean',
+        type: GraphQLBoolean,
+      },
+      {
+        text: 'id',
+        type: GraphQLID,
+      },
+      {
+        text: 'enum',
+        type: TestEnum,
+      },
+      {
+        text: 'object',
+        type: TestInputObject,
+      },
+      {
+        text: 'listString',
+        type: new GraphQLList(GraphQLString),
+      },
+      {
+        text: 'listInt',
+        type: new GraphQLList(GraphQLInt),
+      },
+      {
+        text: 'listFloat',
+        type: new GraphQLList(GraphQLFloat),
+      },
+      {
+        text: 'listBoolean',
+        type: new GraphQLList(GraphQLBoolean),
+      },
+      {
+        text: 'listID',
+        type: new GraphQLList(GraphQLID),
+      },
+      {
+        text: 'listEnum',
+        type: new GraphQLList(TestEnum),
+      },
+      {
+        text: 'listObject',
+        type: new GraphQLList(TestInputObject),
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides fragment name suggestion', async () => {
@@ -219,7 +610,15 @@ describe('graphql-hint', () => {
       'fragment Foo on Test { id }  query { ...',
       { line: 0, ch: 40 },
     );
-    checkSuggestions(['Foo'], suggestions.list);
+    const list = [
+      {
+        text: 'Foo',
+        type: TestType,
+        description: 'fragment Foo on Test',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides fragment names for fragments defined lower', async () => {
@@ -227,7 +626,15 @@ describe('graphql-hint', () => {
       'query { ... } fragment Foo on Test { id }',
       { line: 0, ch: 11 },
     );
-    checkSuggestions(['Foo'], suggestions.list);
+    const list = [
+      {
+        text: 'Foo',
+        type: TestType,
+        description: 'fragment Foo on Test',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides only appropriate fragment names', async () => {
@@ -239,7 +646,25 @@ describe('graphql-hint', () => {
         'fragment Nrf on Test { id }',
       { line: 0, ch: 31 },
     );
-    checkSuggestions(['Bar', 'Baz', 'Qux'], suggestions.list);
+    const list = [
+      {
+        text: 'Bar',
+        type: UnionFirst,
+        description: 'fragment Bar on First',
+      },
+      {
+        text: 'Baz',
+        type: UnionSecond,
+        description: 'fragment Baz on Second',
+      },
+      {
+        text: 'Qux',
+        type: TestUnion,
+        description: 'fragment Qux on TestUnion',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct field name suggestion inside inline fragment', async () => {
@@ -247,9 +672,25 @@ describe('graphql-hint', () => {
       'fragment Foo on TestUnion { ... on First { ',
       { line: 0, ch: 43 },
     );
-    const fieldNames = Object.keys(TestSchema.getType('First').getFields());
-    fieldNames.push('__typename');
-    checkSuggestions(fieldNames, suggestions.list);
+    const list = [
+      {
+        text: 'scalar',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
+        text: 'first',
+        type: TestType,
+        isDeprecated: false,
+      },
+      {
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        description: 'The name of the current Object type at runtime.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
   it('provides correct field name suggestion inside typeless inline fragment', async () => {
@@ -257,8 +698,24 @@ describe('graphql-hint', () => {
       'fragment Foo on First { ... { ',
       { line: 0, ch: 30 },
     );
-    const fieldNames = Object.keys(TestSchema.getType('First').getFields());
-    fieldNames.push('__typename');
-    checkSuggestions(fieldNames, suggestions.list);
+    const list = [
+      {
+        text: 'scalar',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
+        text: 'first',
+        type: TestType,
+        isDeprecated: false,
+      },
+      {
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        description: 'The name of the current Object type at runtime.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 });
