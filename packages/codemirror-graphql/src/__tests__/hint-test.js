@@ -753,7 +753,9 @@ describe('graphql-hint', () => {
         'fragment Bar on First { name } ' +
         'fragment Baz on Second { name } ' +
         'fragment Qux on TestUnion { name } ' +
-        'fragment Nrf on Test { id }',
+        'fragment Nrf on Test { id } ' +
+        'fragment Quux on TestInputObject { string } ' +
+        'fragment Corge on Grault { garply }',
       { line: 0, ch: 31 },
     );
     const list = [
