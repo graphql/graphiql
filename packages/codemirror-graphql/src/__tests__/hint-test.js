@@ -97,6 +97,13 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
+  it('provides correct initial keywords after filtered', async () => {
+    const suggestions = await getHintSuggestions('q', { line: 0, ch: 1 });
+    const list = [{ text: '{' }, { text: 'query' }];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
   it('provides correct field name suggestions', async () => {
     const suggestions = await getHintSuggestions('{ ', { line: 0, ch: 2 });
     const list = [
@@ -144,6 +151,34 @@ describe('graphql-hint', () => {
         text: '__type',
         type: __Type,
         description: 'Request the type information of a single type.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides correct field name suggestions after filtered', async () => {
+    const suggestions = await getHintSuggestions('{ i', { line: 0, ch: 3 });
+    const list = [
+      {
+        text: 'id',
+        type: GraphQLInt,
+        isDeprecated: false,
+      },
+      {
+        text: 'isTest',
+        type: GraphQLBoolean,
+        isDeprecated: false,
+      },
+      {
+        text: 'union',
+        type: TestUnion,
+        isDeprecated: false,
+      },
+      {
+        text: 'first',
+        type: UnionFirst,
+        isDeprecated: false,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -263,6 +298,27 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
+  it('provides correct argument suggestions after fileterd', async () => {
+    const suggestions = await getHintSuggestions('{ hasArgs ( f', {
+      line: 0,
+      ch: 13,
+    });
+    const list = [
+      {
+        text: 'float',
+        type: GraphQLFloat,
+        description: null,
+      },
+      {
+        text: 'listFloat',
+        type: new GraphQLList(GraphQLFloat),
+        description: null,
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
   it('provides correct argument suggestions when using aliases', async () => {
     const suggestions = await getHintSuggestions('{ aliasTest: hasArgs ( ', {
       line: 0,
@@ -365,6 +421,22 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
+  it('provides correct directive suggestion after fileterd', async () => {
+    const suggestions = await getHintSuggestions('{ test (@s', {
+      line: 0,
+      ch: 10,
+    });
+    const list = [
+      {
+        text: 'skip',
+        description:
+          'Directs the executor to skip this field or fragment when the `if` argument is true.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
   it('provides correct directive suggestions when using aliases', async () => {
     const suggestions = await getHintSuggestions('{ aliasTest: test (@', {
       line: 0,
@@ -432,6 +504,25 @@ describe('graphql-hint', () => {
       },
       {
         text: 'Second',
+        description: '',
+      },
+      {
+        text: 'TestInterface',
+        description: '',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides correct typeCondition suggestions after filterd', async () => {
+    const suggestions = await getHintSuggestions('{ union { ... on F', {
+      line: 0,
+      ch: 18,
+    });
+    const list = [
+      {
+        text: 'First',
         description: '',
       },
       {
@@ -605,6 +696,25 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
+  it('provides correct object field suggestions after filtered', async () => {
+    const suggestions = await getHintSuggestions('{ hasArgs (object: { f', {
+      line: 0,
+      ch: 22,
+    });
+    const list = [
+      {
+        text: 'float',
+        type: GraphQLFloat,
+      },
+      {
+        text: 'listFloat',
+        type: new GraphQLList(GraphQLFloat),
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
   it('provides fragment name suggestion', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on Test { id }  query { ...',
@@ -717,5 +827,202 @@ describe('graphql-hint', () => {
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides correct boolean suggestions', async () => {
+    const suggestions1 = await getHintSuggestions('{ hasArgs(listBoolean: [ ', {
+      line: 0,
+      ch: 27,
+    });
+    const list1 = [
+      {
+        text: 'true',
+        type: GraphQLBoolean,
+        description: 'Not false.',
+      },
+      {
+        text: 'false',
+        type: GraphQLBoolean,
+        description: 'Not true.',
+      },
+    ];
+    const expectedSuggestions1 = getExpectedSuggestions(list1);
+    expect(suggestions1.list).to.deep.equal(expectedSuggestions1);
+
+    const suggestions2 = await getHintSuggestions(
+      '{ hasArgs(object: { boolean: t',
+      { line: 0, ch: 30 },
+    );
+    const list2 = [
+      {
+        text: 'true',
+        type: GraphQLBoolean,
+        description: 'Not false.',
+      },
+    ];
+    const expectedSuggestions2 = getExpectedSuggestions(list2);
+    expect(suggestions2.list).to.deep.equal(expectedSuggestions2);
+
+    const suggestions3 = await getHintSuggestions('{ hasArgs(boolean: f', {
+      line: 0,
+      ch: 20,
+    });
+    const list3 = [
+      {
+        text: 'false',
+        type: GraphQLBoolean,
+        description: 'Not true.',
+      },
+    ];
+    const expectedSuggestions3 = getExpectedSuggestions(list3);
+    expect(suggestions3.list).to.deep.equal(expectedSuggestions3);
+  });
+
+  it('provides correct variable type suggestions', async () => {
+    const suggestions = await getHintSuggestions('query($foo: ', {
+      line: 0,
+      ch: 12,
+    });
+    const list = [
+      {
+        text: 'String',
+        description:
+          'The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.',
+      },
+      {
+        text: 'Int',
+        description:
+          'The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.',
+      },
+      {
+        text: 'Boolean',
+        description: 'The `Boolean` scalar type represents `true` or `false`.',
+      },
+      {
+        text: 'Float',
+        description:
+          'The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).',
+      },
+      {
+        text: 'ID',
+        description:
+          'The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.',
+      },
+      { text: 'TestEnum' },
+      { text: 'TestInput' },
+      {
+        text: '__TypeKind',
+        description:
+          'An enum describing what kind of type a given `__Type` is.',
+      },
+      {
+        text: '__DirectiveLocation',
+        description:
+          'A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides correct variable type suggestions inside list type', async () => {
+    const suggestions = await getHintSuggestions('query($foo: [ ', {
+      line: 0,
+      ch: 14,
+    });
+    const list = [
+      {
+        text: 'String',
+        description:
+          'The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.',
+      },
+      {
+        text: 'Int',
+        description:
+          'The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.',
+      },
+      {
+        text: 'Boolean',
+        description: 'The `Boolean` scalar type represents `true` or `false`.',
+      },
+      {
+        text: 'Float',
+        description:
+          'The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).',
+      },
+      {
+        text: 'ID',
+        description:
+          'The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.',
+      },
+      { text: 'TestEnum' },
+      { text: 'TestInput' },
+      {
+        text: '__TypeKind',
+        description:
+          'An enum describing what kind of type a given `__Type` is.',
+      },
+      {
+        text: '__DirectiveLocation',
+        description:
+          'A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.',
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+  it('provides no suggestinos', async () => {
+    const list = [];
+    const expectedSuggestions = getExpectedSuggestions(list);
+
+    // kind is FragmentSpread, step is 2
+    const suggestions1 = await getHintSuggestions(
+      'fragment Foo on Test { id }  query { ...Foo ',
+      { line: 0, ch: 45 },
+    );
+    expect(suggestions1.list).to.deep.equal(expectedSuggestions);
+
+    // kind is ListType, step is 3
+    const suggestions2 = await getHintSuggestions('query($foo: [string] ', {
+      line: 0,
+      ch: 21,
+    });
+    expect(suggestions2.list).to.deep.equal(expectedSuggestions);
+
+    // kind is ListValue, step is 1
+    const suggestions3 = await getHintSuggestions(
+      '{ hasArgs(listString: ["foo" ',
+      {
+        line: 0,
+        ch: 29,
+      },
+    );
+    expect(suggestions3.list).to.deep.equal(expectedSuggestions);
+
+    // kind is VariableDefinition, step is 1
+    const suggestions4 = await getHintSuggestions('query($foo ', {
+      line: 0,
+      ch: 11,
+    });
+    expect(suggestions4.list).to.deep.equal(expectedSuggestions);
+
+    // kind is Argument, step is 1
+    const suggestions5 = await getHintSuggestions('{ hasArgs(string ', {
+      line: 0,
+      ch: 17,
+    });
+    expect(suggestions5.list).to.deep.equal(expectedSuggestions);
+
+    // kind is Argument, step is 2, and input type isn't GraphQLEnumType or GraphQLBoolean
+    const suggestions6 = await getHintSuggestions('{ hasArgs(string: ', {
+      line: 0,
+      ch: 18,
+    });
+    expect(suggestions6.list).to.deep.equal(expectedSuggestions);
+    const suggestions7 = await getHintSuggestions(
+      '{ hasArgs(object: { string ',
+      { line: 0, ch: 27 },
+    );
+    expect(suggestions7.list).to.deep.equal(expectedSuggestions);
   });
 });
