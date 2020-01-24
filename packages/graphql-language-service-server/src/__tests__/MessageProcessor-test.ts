@@ -209,10 +209,11 @@ describe('MessageProcessor', () => {
   });
 
   describe('getQueryRange', () => {
-    describe('js/ts', () => {
-      it('finds queries in tagged templates', async () => {
-        const text = `
-    // @flow
+    describe('JavaScript', () => {
+      function testExtension(ext: string) {
+        describe('Extension: ".' + ext + '"', () => {
+          it('finds queries in tagged templates', () => {
+            const text = `
     import {gql} from 'react-apollo';
     import type {B} from 'B';
     import A from './A';
@@ -229,8 +230,8 @@ describe('MessageProcessor', () => {
     
     export function Example(arg: string) {}`;
 
-        const contents = getQueryAndRange(text, 'test.js');
-        expect(contents[0].query).toEqual(`
+            const contents = getQueryAndRange(text, 'test.' + ext);
+            expect(contents[0].query).toEqual(`
     query Test {
       test {
         value
@@ -238,11 +239,10 @@ describe('MessageProcessor', () => {
       }
     }
     `);
-      });
+          });
 
-      it('ignores non gql tagged templates', async () => {
-        const text = `
-    // @flow
+          it('ignores non gql tagged templates', () => {
+            const text = `
     import randomthing from 'package';
     import type {B} from 'B';
     import A from './A';
@@ -259,10 +259,15 @@ describe('MessageProcessor', () => {
     
     export function Example(arg: string) {}`;
 
-        const contents = getQueryAndRange(text, 'test.js');
-        expect(contents.length).toEqual(0);
-      });
+            const contents = getQueryAndRange(text, 'test.' + ext);
+            expect(contents.length).toEqual(0);
+          });
+        });
+      }
+
+      ['js', 'ts', 'jsx', 'tsx', 'es6', 'mjs', 'esm.js'].forEach(testExtension);
     });
+
     describe('ReasonML', () => {
       describe('ReasonRelay', () => {
         it('finds queries in tagged templates', () => {
@@ -281,8 +286,6 @@ describe('MessageProcessor', () => {
   ];`;
 
           const contents = getQueryAndRange(text, 'test.re');
-
-          console.log(contents);
 
           expect(contents[0].query).toEqual(`
     query Test {
@@ -321,6 +324,37 @@ describe('MessageProcessor', () => {
     }
     `);
         });
+      });
+    });
+
+    describe('Raw GraphQL', () => {
+      const gqlText = `query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }`;
+
+      test('.graphql', () => {
+        const contents = getQueryAndRange(gqlText, 'test.graphql');
+
+        expect(contents[0].query).toEqual(`query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }`);
+      });
+
+      test('.gql', () => {
+        const contents = getQueryAndRange(gqlText, 'test.gql');
+
+        expect(contents[0].query).toEqual(`query Test {
+      test {
+        value
+        ...FragmentsComment
+      }
+    }`);
       });
     });
   });

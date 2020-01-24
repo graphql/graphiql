@@ -27,7 +27,7 @@ const reasonGraphQLTagsRegexp = new RegExp(
 const reasonExtractor = makeExtractTagsFromSource(reasonGraphQLTagsRegexp);
 
 const jsLanguages: LanguageConfig = {
-  extensions: ['js', 'jsx', 'ts', 'tsx'],
+  extensions: ['js', 'jsx', 'ts', 'tsx', 'mjs', 'es6'],
   fileFilter: (content: string) => jsFileFilter.test(content),
   extractSources: (content: string) =>
     jsExtractor(content).map(source => ({
@@ -37,7 +37,7 @@ const jsLanguages: LanguageConfig = {
 };
 
 const graphql: LanguageConfig = {
-  extensions: ['graphql'],
+  extensions: ['graphql', 'gql'],
   fileFilter: () => true,
   extractSources: (content: string) => {
     const lines = content.split('\n');
