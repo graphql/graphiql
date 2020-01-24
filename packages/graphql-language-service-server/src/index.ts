@@ -14,3 +14,7 @@ export { MessageProcessor } from './MessageProcessor';
 export { default as startServer } from './startServer';
 
 export { Logger } from './Logger';
+
+export { registerLanguage, LanguageConfig } from './languages';
+
+export { GraphQLSource } from './languageUtils';

@@ -55,11 +55,11 @@ const reasonML: LanguageConfig = {
   extractSources: reasonExtractor,
 };
 
-export const languages: ReadonlyArray<LanguageConfig> = [
-  jsLanguages,
-  graphql,
-  reasonML,
-];
+const languages: LanguageConfig[] = [jsLanguages, graphql, reasonML];
+
+export function registerLanguage(language: LanguageConfig): void {
+  languages.push(language);
+}
 
 export function getLanguageFromExtension(ext: string): LanguageConfig | void {
   return languages.find(language => language.extensions.find(e => e === ext));
