@@ -17,4 +17,4 @@ export { Logger } from './Logger';
 
 export { registerLanguage, LanguageConfig } from './languages';
 
-export { GraphQLSource } from './languageUtils';
+export { GraphQLSource, makeExtractTagsFromSource } from './languageUtils';
