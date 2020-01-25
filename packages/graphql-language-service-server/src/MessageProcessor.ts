@@ -47,6 +47,7 @@ import {
 import { getGraphQLCache } from './GraphQLCache';
 import { findGraphQLTags } from './findGraphQLTags';
 import { Logger } from './Logger';
+import { GraphQLConfig } from 'graphql-config';
 
 type CachedDocumentType = {
   version: number;
@@ -55,6 +56,7 @@ type CachedDocumentType = {
 
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
+  _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
 
@@ -64,12 +66,13 @@ export class MessageProcessor {
 
   _logger: Logger;
 
-  constructor(logger: Logger) {
+  constructor(logger: Logger, config?: GraphQLConfig) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
 
     this._logger = logger;
+    this._graphQLConfig = config;
   }
 
   async handleInitializeRequest(
@@ -101,7 +104,7 @@ export class MessageProcessor {
       );
     }
 
-    this._graphQLCache = await getGraphQLCache(rootPath);
+    this._graphQLCache = await getGraphQLCache(rootPath, this._graphQLConfig);
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {

@@ -54,8 +54,11 @@ const {
   DIRECTIVE_DEFINITION,
 } = Kind;
 
-export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
-  const graphQLConfig = await getGraphQLConfig(configDir);
+export async function getGraphQLCache(
+  configDir: Uri,
+  config?: GraphQLConfig,
+): Promise<GraphQLCache> {
+  const graphQLConfig = config || (await getGraphQLConfig(configDir));
   return new GraphQLCache(configDir, graphQLConfig);
 }
 
