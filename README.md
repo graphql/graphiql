@@ -54,7 +54,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 **The full [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
-## [Codemirorror GraphQL](packages/codemirror-graphql#readme)
+## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
