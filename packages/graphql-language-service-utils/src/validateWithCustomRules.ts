@@ -7,9 +7,8 @@
  *
  */
 
-import { CustomValidationRule } from 'graphql-language-service-types';
-
 import {
+  ValidationRule,
   DocumentNode,
   Kind,
   specifiedRules,
@@ -27,7 +26,7 @@ import { ExecutableDefinitions } from 'graphql/validation/rules/ExecutableDefini
 export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<GraphQLError> {
   const rules = specifiedRules.filter(rule => {

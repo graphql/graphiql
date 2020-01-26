@@ -14,6 +14,7 @@ import {
   OperationDefinitionNode,
   TypeDefinitionNode,
   NamedTypeNode,
+  ValidationRule,
 } from 'graphql';
 
 import {
@@ -25,7 +26,6 @@ import {
   GraphQLProjectConfig,
   Uri,
   Position,
-  CustomValidationRule,
 } from 'graphql-language-service-types';
 
 // import { Position } from 'graphql-language-service-utils';
@@ -169,7 +169,7 @@ export class GraphQLLanguageService {
       if (rulesPath) {
         const customValidationRules: (
           config: GraphQLConfig,
-        ) => CustomValidationRule[] = await requireFile(rulesPath);
+        ) => ValidationRule[] = await requireFile(rulesPath);
         if (customValidationRules) {
           customRules = customValidationRules(this._graphQLConfig);
         }
