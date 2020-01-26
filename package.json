@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@babel/cli": "7.7.7",
-    "@babel/core": "7.7.7",
+    "@babel/core": "7.8.3",
     "@babel/node": "7.8.3",
     "@babel/plugin-proposal-class-properties": "7.7.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
