@@ -9,8 +9,8 @@
 
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 
-import fs from 'fs';
-import os from 'os';
+import * as fs from 'fs';
+import * as os from 'os';
 import { join } from 'path';
 
 const SEVERITY: { [key: string]: string } = {

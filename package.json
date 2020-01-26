@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts-cjs && yarn build-babel",
-    "build-babel": "lerna run build --scope codemirror-graphql",
+    "build-babel": "yarn workspace codemirror-graphql run build",
     "build-ts": "yarn run tsc --clean && yarn run tsc",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json --clean && yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json --clean && yarn run tsc resources/tsconfig.build.esm.json",
@@ -37,7 +37,9 @@
     "test": "jest",
     "test-mocha": "yarn workspace codemirror-graphql run test",
     "test-all": "yarn test && yarn test-mocha",
-    "ci": "yarn lint && yarn run check && yarn test && yarn build && yarn test-mocha && yarn build-bundles && yarn e2e && yarn build-validate",
+    "ci": "yarn lint && yarn run check && yarn build && yarn test",
+    "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min && yarn e2e",
+    "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
@@ -51,11 +53,11 @@
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
     "lerna-publish": "lerna publish",
-    "prepublish": "yarn lint && yarn build && yarn build-bundles && yarn test-all && yarn e2e"
+    "prepublish": "./resources/prepublish.sh"
   },
   "devDependencies": {
     "@babel/cli": "7.7.7",
-    "@babel/core": "7.7.7",
+    "@babel/core": "7.8.3",
     "@babel/node": "7.8.3",
     "@babel/plugin-proposal-class-properties": "7.7.4",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
