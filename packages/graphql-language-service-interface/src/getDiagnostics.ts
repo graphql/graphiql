@@ -14,9 +14,8 @@ import {
   GraphQLSchema,
   Location,
   SourceLocation,
+  ValidationRule,
 } from 'graphql';
-
-import { CustomValidationRule } from 'graphql-language-service-types';
 
 import invariant from 'assert';
 import { findDeprecatedUsages, parse } from 'graphql';
@@ -41,7 +40,7 @@ export const SEVERITY = {
 export function getDiagnostics(
   query: string,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   let ast = null;
@@ -65,7 +64,7 @@ export function getDiagnostics(
 export function validateQuery(
   ast: DocumentNode,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   // We cannot validate the query unless a schema is provided.

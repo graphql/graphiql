@@ -19,7 +19,6 @@ import {
   NamedTypeNode,
   TypeDefinitionNode,
 } from 'graphql/language';
-import { ValidationContext } from 'graphql/validation';
 import {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -276,10 +275,6 @@ export type ObjectTypeInfo = {
   content: string;
   definition: TypeDefinitionNode;
 };
-
-export type CustomValidationRule = (
-  context: ValidationContext,
-) => Record<string, any>;
 
 export type Diagnostic = DiagnosticType;
 

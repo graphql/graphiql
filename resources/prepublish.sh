@@ -16,4 +16,4 @@ if [ "$CI" != true ]; then
   exit 1;
 fi;
 
-npm run build;
+yarn lint && yarn build && yarn build-bundles && yarn test-all && yarn e2e;

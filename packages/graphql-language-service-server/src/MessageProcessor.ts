@@ -23,7 +23,13 @@ import { GraphQLLanguageService } from 'graphql-language-service-interface';
 
 import { Range, Position } from 'graphql-language-service-utils';
 
-import { CompletionParams, FileEvent } from 'vscode-languageserver-protocol';
+import {
+  CompletionParams,
+  FileEvent,
+  VersionedTextDocumentIdentifier,
+  DidSaveTextDocumentParams,
+  DidOpenTextDocumentParams,
+} from 'vscode-languageserver-protocol';
 
 import {
   Diagnostic,
@@ -39,8 +45,6 @@ import {
   DidChangeWatchedFilesParams,
   InitializeParams,
   Range as RangeType,
-  VersionedTextDocumentIdentifier,
-  DidSaveTextDocumentParams,
   TextDocumentPositionParams,
 } from 'vscode-languageserver';
 
@@ -124,7 +128,7 @@ export class MessageProcessor {
   }
 
   async handleDidOpenOrSaveNotification(
-    params: DidSaveTextDocumentParams,
+    params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
     if (!this._isInitialized) {
       return null;
@@ -133,20 +137,18 @@ export class MessageProcessor {
     if (!params || !params.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
-
-    const { text, textDocument } = params;
+    const { textDocument } = params;
     const { uri } = textDocument;
 
     const diagnostics: Diagnostic[] = [];
 
     let contents: CachedContent[] = [];
-
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
-    if (text || text === '') {
+    if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = getQueryAndRange(text, uri);
+      contents = getQueryAndRange(textDocument.text, uri);
       this._invalidateCache(textDocument, uri, contents);
     } else {
       const cachedDocument = this._getCachedDocument(uri);
@@ -406,7 +408,7 @@ export class MessageProcessor {
 
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
-  ): Promise<PublishDiagnosticsParams[] | null> {
+  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
     if (!this._isInitialized) {
       return null;
     }
@@ -463,9 +465,7 @@ export class MessageProcessor {
             change.uri,
             false,
           );
-          return { uri: change.uri, diagnostics: [] };
         }
-        return { uri: change.uri, diagnostics: [] };
       }),
     );
   }
