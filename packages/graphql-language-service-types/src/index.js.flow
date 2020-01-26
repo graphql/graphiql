@@ -252,8 +252,6 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode,
 };
 
-export type CustomValidationRule = (context: ValidationContext) => Object;
-
 export type Diagnostic = {
   range: Range,
   severity?: number,
