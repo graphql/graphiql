@@ -10,7 +10,6 @@ import {
   Diagnostic as DiagnosticType,
   Position as PositionType,
   CompletionItem as CompletionItemType,
-  SymbolKind,
 } from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
 
@@ -20,6 +19,7 @@ import {
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  NameNode,
 } from 'graphql/language';
 import {
   GraphQLArgument,
@@ -320,7 +320,7 @@ export type TokenKind =
   | 'type';
 export type TextToken = {
   kind: TokenKind;
-  value: string | undefined;
+  value: string | NameNode;
 };
 
 export type TokenizedText = TextToken[];
@@ -329,7 +329,7 @@ export type OutlineTree = {
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-  kind: SymbolKind;
+  kind: string;
   startPosition: Position;
   endPosition?: Position;
   children: OutlineTree[];

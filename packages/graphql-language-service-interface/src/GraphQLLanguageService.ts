@@ -81,9 +81,26 @@ const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   OperationDefinition: SymbolKind.Class,
   FragmentDefinition: SymbolKind.Class,
   FragmentSpread: SymbolKind.Struct,
-  ObjectType: SymbolKind.Class,
-  InputType: SymbolKind.Class,
+  ObjectTypeDefinition: SymbolKind.Class,
+  EnumTypeDefinition: SymbolKind.Enum,
+  InputObjectTypeDefinition: SymbolKind.Class,
+  InputValueDefinition: SymbolKind.Field,
+  FieldDefinition: SymbolKind.Field,
+  InterfaceTypeDefinition: SymbolKind.Interface,
+  Document: SymbolKind.File,
+  FieldWithArguments: SymbolKind.Method,
 };
+
+function getKind(tree: OutlineTree) {
+  if (
+    tree.kind === 'FieldDefinition' &&
+    tree.children &&
+    tree.children.length > 0
+  ) {
+    return KIND_TO_SYMBOL_KIND.FieldWithArguments;
+  }
+  return KIND_TO_SYMBOL_KIND[tree.kind];
+}
 
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
@@ -295,6 +312,7 @@ export class GraphQLLanguageService {
 
     const output: Array<SymbolInformation> = [];
     const input = outline.outlineTrees.map((tree: OutlineTree) => [null, tree]);
+
     while (input.length > 0) {
       const res = input.pop();
       if (!res) {
@@ -304,10 +322,11 @@ export class GraphQLLanguageService {
       if (!tree) {
         return [];
       }
+
       output.push({
         // @ts-ignore
         name: tree.representativeName,
-        kind: KIND_TO_SYMBOL_KIND[tree.kind],
+        kind: getKind(tree),
         location: {
           uri: filePath,
           range: {

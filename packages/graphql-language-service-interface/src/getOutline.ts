@@ -22,7 +22,12 @@ import {
   FragmentDefinitionNode,
   SelectionSetNode,
   SelectionNode,
+  InterfaceTypeDefinitionNode,
+  ObjectTypeDefinitionNode,
+  EnumTypeDefinitionNode,
   DefinitionNode,
+  InputValueDefinitionNode,
+  FieldDefinitionNode,
 } from 'graphql';
 import { offsetToPosition, Position } from 'graphql-language-service-utils';
 
@@ -37,28 +42,39 @@ const OUTLINEABLE_KINDS = {
   FragmentDefinition: true,
   FragmentSpread: true,
   InlineFragment: true,
+  ObjectTypeDefinition: true,
+  InputObjectTypeDefinition: true,
+  InterfaceTypeDefinition: true,
+  EnumTypeDefinition: true,
+  InputValueDefinition: true,
+  FieldDefinition: true,
 };
 
-type OutlineTreeResult = {
-  representativeName: string;
-  startPosition: Position;
-  endPosition: Position;
-  children: SelectionSetNode[] | [];
-  tokenizedText: TextToken[];
-};
+export type OutlineableKinds = keyof typeof OUTLINEABLE_KINDS;
 
-type OutlineTreeConverterType = {
-  [name: string]: (
-    node: any,
-  ) =>
-    | OutlineTreeResult
-    | SelectionSetNode
-    | readonly DefinitionNode[]
-    | readonly SelectionNode[]
-    | string;
-};
+// type OutlineableNodes = FieldNode | OperationDefinitionNode | DocumentNode | SelectionSetNode | NameNode | FragmentDefinitionNode | FragmentSpreadNode |InlineFragmentNode | ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
 
-export function getOutline(queryText: string): Outline | null | undefined {
+type OutlineTreeResult =
+  | {
+      representativeName: string;
+      startPosition: Position;
+      endPosition: Position;
+      children: SelectionSetNode[] | [];
+      tokenizedText: TextToken[];
+    }
+  | string
+  | readonly DefinitionNode[]
+  | readonly SelectionNode[]
+  | FieldNode[]
+  | SelectionSetNode;
+
+type OutlineTreeConverterType = Partial<
+  {
+    [key in OutlineableKinds]: (node: any) => OutlineTreeResult;
+  }
+>;
+
+export function getOutline(queryText: string): Outline | null {
   let ast;
   try {
     ast = parse(queryText);
@@ -69,10 +85,8 @@ export function getOutline(queryText: string): Outline | null | undefined {
   const visitorFns = outlineTreeConverter(queryText);
   const outlineTrees = visit(ast, {
     leave(node) {
-      if (
-        OUTLINEABLE_KINDS.hasOwnProperty(node.kind) &&
-        visitorFns[node.kind]
-      ) {
+      if (visitorFns !== undefined && node.kind in visitorFns) {
+        // @ts-ignore
         return visitorFns[node.kind](node);
       }
       return null;
@@ -85,23 +99,22 @@ export function getOutline(queryText: string): Outline | null | undefined {
 function outlineTreeConverter(docText: string): OutlineTreeConverterType {
   // TODO: couldn't find a type that would work for all cases here,
   // however the inference is not broken by this at least
-  const meta = (node: any) => ({
-    representativeName: node.name,
-    startPosition: offsetToPosition(docText, node.loc.start),
-    endPosition: offsetToPosition(docText, node.loc.end),
-    kind: node.kind,
-    children: node.selectionSet || [],
-  });
+  const meta = (node: any) => {
+    return {
+      representativeName: node.name,
+      startPosition: offsetToPosition(docText, node.loc.start),
+      endPosition: offsetToPosition(docText, node.loc.end),
+      kind: node.kind,
+      children: node.selectionSet || node.fields || node.arguments || [],
+    };
+  };
 
   return {
     Field: (node: FieldNode) => {
       const tokenizedText = node.alias
-        ? [
-            buildToken('plain', (node.alias as unknown) as string),
-            buildToken('plain', ': '),
-          ]
+        ? [buildToken('plain', node.alias), buildToken('plain', ': ')]
         : [];
-      tokenizedText.push(buildToken('plain', (node.name as unknown) as string));
+      tokenizedText.push(buildToken('plain', node.name));
       return { tokenizedText, ...meta(node) };
     },
     OperationDefinition: (node: OperationDefinitionNode) => ({
@@ -123,24 +136,67 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       tokenizedText: [
         buildToken('keyword', 'fragment'),
         buildToken('whitespace', ' '),
-        buildToken('class-name', (node.name as unknown) as string),
+        buildToken('class-name', node.name),
       ],
       ...meta(node),
     }),
-
+    InterfaceTypeDefinition: (node: InterfaceTypeDefinitionNode) => ({
+      tokenizedText: [
+        buildToken('keyword', 'interface'),
+        buildToken('whitespace', ' '),
+        buildToken('class-name', node.name),
+      ],
+      ...meta(node),
+    }),
+    EnumTypeDefinition: (node: EnumTypeDefinitionNode) => ({
+      tokenizedText: [
+        buildToken('keyword', 'enum'),
+        buildToken('whitespace', ' '),
+        buildToken('class-name', node.name),
+      ],
+      ...meta(node),
+    }),
+    ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => ({
+      tokenizedText: [
+        buildToken('keyword', 'type'),
+        buildToken('whitespace', ' '),
+        buildToken('class-name', node.name),
+      ],
+      ...meta(node),
+    }),
+    InputObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => ({
+      tokenizedText: [
+        buildToken('keyword', 'input'),
+        buildToken('whitespace', ' '),
+        buildToken('class-name', node.name),
+      ],
+      ...meta(node),
+    }),
     FragmentSpread: (node: FragmentSpreadNode) => ({
       tokenizedText: [
         buildToken('plain', '...'),
-        buildToken('class-name', (node.name as unknown) as string),
+        buildToken('class-name', node.name),
       ],
       ...meta(node),
     }),
+    InputValueDefinition: (node: InputValueDefinitionNode) => {
+      return {
+        tokenizedText: [buildToken('plain', node.name)],
+        ...meta(node),
+      };
+    },
+    FieldDefinition: (node: FieldDefinitionNode) => {
+      return {
+        tokenizedText: [buildToken('plain', node.name)],
+        ...meta(node),
+      };
+    },
 
     InlineFragment: (node: InlineFragmentNode) => node.selectionSet,
   };
 }
 
-function buildToken(kind: TokenKind, value: string | undefined): TextToken {
+function buildToken(kind: TokenKind, value: string | NameNode): TextToken {
   return { kind, value };
 }
 
