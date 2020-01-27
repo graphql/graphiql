@@ -9,10 +9,11 @@ import React from 'react';
 import TypeLink from './TypeLink';
 import MarkdownContent from './MarkdownContent';
 import { GraphQLSchema } from 'graphql';
+import { OnClickTypeFunction } from './types';
 
 type SchemaDocProps = {
   schema: GraphQLSchema;
-  onClickType: () => void;
+  onClickType: OnClickTypeFunction;
 };
 
 // Render the top level Schema

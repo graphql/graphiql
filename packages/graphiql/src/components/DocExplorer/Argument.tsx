@@ -9,10 +9,11 @@ import React from 'react';
 import { GraphQLArgument } from 'graphql';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
+import { OnClickTypeFunction } from './types';
 
 type ArgumentProps = {
   arg: GraphQLArgument;
-  onClickType: () => void;
+  onClickType: OnClickTypeFunction;
   showDefaultValue?: boolean;
 };
 

@@ -114,7 +114,9 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       },
       jump: {
         schema: this.props.schema,
-        onClick: (reference: GraphQLType) =>
+        onClick: (
+          reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
+        ) =>
           this.props.onClickReference && this.props.onClickReference(reference),
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],

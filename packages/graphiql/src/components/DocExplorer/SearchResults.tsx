@@ -5,30 +5,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode, MouseEvent } from 'react';
-import {
-  GraphQLSchema,
-  GraphQLField,
-  GraphQLObjectType,
-  GraphQLInterfaceType,
-  GraphQLInputObjectType,
-  GraphQLInputField,
-  GraphQLType,
-} from 'graphql';
+import React, { ReactNode } from 'react';
+import { GraphQLSchema, GraphQLNamedType } from 'graphql';
 
 import Argument from './Argument';
 import TypeLink from './TypeLink';
+import { OnClickFieldFunction, OnClickTypeFunction } from './types';
 
 type SearchResultsProps = {
   schema: GraphQLSchema;
-  withinType: GraphQLType;
+  withinType?: GraphQLNamedType;
   searchValue: string;
-  onClickType: () => void;
-  onClickField: <TSource, TContext, TArgs>(
-    field: GraphQLField<TSource, TContext, TArgs> | GraphQLInputField,
-    type: GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType,
-    event: MouseEvent,
-  ) => void;
+  onClickType: OnClickTypeFunction;
+  onClickField: OnClickFieldFunction;
 };
 
 export default class SearchResults extends React.Component<

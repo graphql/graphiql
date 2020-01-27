@@ -41,7 +41,7 @@ export class ToolbarSelect extends React.Component<
   }
 
   render() {
-    let selectedChild: React.ReactElement;
+    let selectedChild: React.ReactNode;
     const visible = this.state.visible;
     const optionChildren = React.Children.map(
       this.props.children,

@@ -70,7 +70,6 @@ export default class QueryStore {
 
   fetchAll() {
     const raw = this.storage.get(this.key);
-    console.log({ raw });
     if (raw) {
       return JSON.parse(raw)[this.key] as Array<QueryStoreItem>;
     }

@@ -127,7 +127,10 @@ export class ExecuteButton extends React.Component<
         document.removeEventListener('mouseup', onMouseUp!);
         onMouseUp = null;
         const isOptionsMenuClicked =
-          downTarget.parentNode.compareDocumentPosition(upEvent.target) &&
+          upEvent.currentTarget &&
+          downTarget.parentNode?.compareDocumentPosition(
+            upEvent.currentTarget as Node,
+          ) &&
           Node.DOCUMENT_POSITION_CONTAINED_BY;
         if (!isOptionsMenuClicked) {
           // menu calls setState if it was clicked

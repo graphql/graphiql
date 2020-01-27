@@ -10,10 +10,11 @@ import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import { GraphQLField, GraphQLArgument } from 'graphql';
+import { OnClickTypeFunction } from './types';
 
 type FieldDocProps = {
   field?: GraphQLField<{}, {}, {}>;
-  onClickType: () => void;
+  onClickType: OnClickTypeFunction;
 };
 
 export default function FieldDoc({ field, onClickType }: FieldDocProps) {

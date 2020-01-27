@@ -12,7 +12,7 @@ import debounce from '../../utility/debounce';
 type OnSearchFn = (value: string) => void;
 
 type SearchBoxProps = {
-  value: string;
+  value?: string;
   placeholder: string;
   onSearch: OnSearchFn;
 };

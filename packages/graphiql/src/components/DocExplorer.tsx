@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { GraphQLSchema, isType, GraphQLField } from 'graphql';
+import { GraphQLSchema, isType, GraphQLNamedType } from 'graphql';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -16,9 +16,9 @@ import TypeDoc from './DocExplorer/TypeDoc';
 
 type NavStackItem = {
   name: string;
-  title: string;
+  title?: string;
   search?: string;
-  def?: GraphQLField<{}, {}, {}>;
+  def?: GraphQLNamedType;
 };
 
 const initialNav: NavStackItem = {
@@ -161,7 +161,7 @@ export class DocExplorer extends React.Component<
   }
 
   // Public API
-  showDoc(typeOrField) {
+  showDoc(typeOrField: GraphQLNamedType) {
     const navStack = this.state.navStack;
     const topNav = navStack[navStack.length - 1];
     if (topNav.def !== typeOrField) {
@@ -178,7 +178,7 @@ export class DocExplorer extends React.Component<
 
   // Public API
   showDocForReference(reference) {
-    if (reference.kind === 'Type') {
+    if (reference && reference.kind === 'Type') {
       this.showDoc(reference.type);
     } else if (reference.kind === 'Field') {
       this.showDoc(reference.field);

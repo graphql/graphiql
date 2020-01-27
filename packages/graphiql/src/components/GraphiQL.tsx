@@ -8,8 +8,6 @@
 import React, {
   ReactNode,
   ComponentType,
-  FC,
-  ReactPropTypes,
   PropsWithChildren,
   MouseEvent,
   MouseEventHandler,
@@ -47,13 +45,12 @@ import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
-import { mergeAst } from '../utility/mergeAst';
+import { mergeAST } from '../utility/mergeAst';
 import {
   introspectionQuery,
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
-import { DOMEvent } from 'codemirror';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -92,7 +89,7 @@ export type Fetcher = (
 type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
-  query?: string;
+  query: string;
   variables?: string;
   operationName?: string;
   response?: string;
@@ -103,7 +100,7 @@ type GraphiQLProps = {
   onEditQuery?: () => void;
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
-  onToggleDocs?: () => void;
+  onToggleDocs?: (docExplorerOpen: boolean) => void;
   getDefaultFieldNames?: () => void;
   editorTheme?: string;
   onToggleHistory?: (historyPaneOpen: boolean) => void;
@@ -165,7 +162,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   _queryHistory: Maybe<QueryHistory>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<QueryEditor>;
-  resultViewerElement: Maybe<ResultViewer>;
+  resultViewerElement: Maybe<HTMLElement>;
 
   constructor(props: GraphiQLProps) {
     super(props);
@@ -182,8 +179,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const query =
       props.query !== undefined
         ? props.query
-        : this._storage.get('query') !== null
-        ? this._storage.get('query')
+        : this._storage.get('query') !== undefined
+        ? (this._storage.get('query') as string)
         : props.defaultQuery !== undefined
         ? props.defaultQuery
         : defaultQuery;
@@ -201,10 +198,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const operationName =
       props.operationName !== undefined
         ? props.operationName
-        : getSelectedOperationName({
-            prevSelectedOperationName: this._storage.get('operationName'),
-            operations: queryFacts && queryFacts.operations,
-          });
+        : getSelectedOperationName(
+            undefined,
+            this._storage.get('operationName'),
+            queryFacts && queryFacts.operations,
+          );
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
@@ -959,7 +957,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
 
     const ast = parse(query);
-    editor.setValue(print(mergeAst(ast)));
+    editor.setValue(print(mergeAST(ast)));
   };
 
   handleEditQuery = debounce(100, (value: string) => {
@@ -980,7 +978,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleCopyQuery = () => {
     const editor = this.getQueryEditor();
-    const query = editor.getValue();
+    const query = editor && editor.getValue();
 
     if (!query) {
       return;
@@ -1010,7 +1008,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
       // Report changing of operationName if it changed.
       const onEditOperationName = this.props.onEditOperationName;
-      if (onEditOperationName && operationName !== updatedOperationName) {
+      if (
+        onEditOperationName &&
+        updatedOperationName &&
+        operationName !== updatedOperationName
+      ) {
         onEditOperationName(updatedOperationName);
       }
 
@@ -1035,7 +1037,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  handleHintInformationRender = elem => {
+  handleHintInformationRender = (elem: HTMLDivElement) => {
     elem.addEventListener('click', this._onClickHintInformation);
 
     let onRemoveFn;
@@ -1278,26 +1280,6 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
   );
 }
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
-
-// Export main windows/panes to be used separately if desired.
-// GraphiQL.QueryEditor = QueryEditor;
-// GraphiQL.VariableEditor = VariableEditor;
-// GraphiQL.ResultViewer = ResultViewer;
-
-// Add a button to the Toolbar.
-// GraphiQL.Button = ToolbarButton;
-// GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
-
-// Add a group of buttons to the Toolbar
-// GraphiQL.Group = ToolbarGroup;
-
-// Add a menu of items to the Toolbar.
-// GraphiQL.Menu = ToolbarMenu;
-// GraphiQL.MenuItem = ToolbarMenuItem;
-
-// Add a select-option input to the Toolbar.
-// GraphiQL.Select = ToolbarSelect;
-// GraphiQL.SelectOption = ToolbarSelectOption;
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
