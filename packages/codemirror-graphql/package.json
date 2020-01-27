@@ -57,7 +57,7 @@
     "chai": "4.1.1",
     "chai-subset": "1.6.0",
     "codemirror": "^5.28.0",
-    "cross-env": "^6.0.3",
+    "cross-env": "^7.0.0",
     "graphql": "^14.0.2",
     "jsdom": "^11.2.0",
     "mocha": "7.0.0",
