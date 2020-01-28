@@ -1,13 +1,14 @@
 name: Node.JS CI Merge
 on:
   pull_request:
+    types: [closed]
     branches: [master]
 jobs:
   cleanup-branch:
     name: delete branch on PR merge
-    runs-on: [ubuntu-16.04]
+    runs-on: self-hosted
     steps:
-     - uses: jessfraz/branch-cleanup-action@master
-       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NO_BRANCH_DELETED_EXIT_CODE: 0
+      - uses: jessfraz/branch-cleanup-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NO_BRANCH_DELETED_EXIT_CODE: 0
