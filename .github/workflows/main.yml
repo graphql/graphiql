@@ -7,4 +7,5 @@ jobs:
     steps:
      - uses: jessfraz/branch-cleanup-action@master
        env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NO_BRANCH_DELETED_EXIT_CODE: 0
