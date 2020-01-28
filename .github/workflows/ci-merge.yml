@@ -2,11 +2,10 @@ name: Node.JS CI Merge
 on:
   pull_request:
     types: [closed]
-    branches: [master]
 jobs:
   cleanup-branch:
     name: delete branch on PR merge
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: jessfraz/branch-cleanup-action@master
         env:
