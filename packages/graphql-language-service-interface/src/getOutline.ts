@@ -28,6 +28,7 @@ import {
   DefinitionNode,
   InputValueDefinitionNode,
   FieldDefinitionNode,
+  EnumValueDefinitionNode,
 } from 'graphql';
 import { offsetToPosition, Position } from 'graphql-language-service-utils';
 
@@ -46,6 +47,7 @@ const OUTLINEABLE_KINDS = {
   InputObjectTypeDefinition: true,
   InterfaceTypeDefinition: true,
   EnumTypeDefinition: true,
+  EnumValueDefinition: true,
   InputValueDefinition: true,
   FieldDefinition: true,
 };
@@ -105,7 +107,8 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       startPosition: offsetToPosition(docText, node.loc.start),
       endPosition: offsetToPosition(docText, node.loc.end),
       kind: node.kind,
-      children: node.selectionSet || node.fields || node.arguments || [],
+      children:
+        node.selectionSet || node.fields || node.values || node.arguments || [],
     };
   };
 
@@ -154,6 +157,10 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
         buildToken('whitespace', ' '),
         buildToken('class-name', node.name),
       ],
+      ...meta(node),
+    }),
+    EnumValueDefinition: (node: EnumValueDefinitionNode) => ({
+      tokenizedText: [buildToken('plain', node.name)],
       ...meta(node),
     }),
     ObjectTypeDefinition: (node: ObjectTypeDefinitionNode) => ({

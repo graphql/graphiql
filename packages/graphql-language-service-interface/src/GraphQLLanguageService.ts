@@ -83,6 +83,7 @@ const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   FragmentSpread: SymbolKind.Struct,
   ObjectTypeDefinition: SymbolKind.Class,
   EnumTypeDefinition: SymbolKind.Enum,
+  EnumValueDefinition: SymbolKind.EnumMember,
   InputObjectTypeDefinition: SymbolKind.Class,
   InputValueDefinition: SymbolKind.Field,
   FieldDefinition: SymbolKind.Field,
@@ -158,7 +159,7 @@ export class GraphQLLanguageService {
       const range = getRange(error.locations[0], query);
       return [
         {
-          severity: SEVERITY.ERROR as DiagnosticSeverity,
+          severity: SEVERITY.ERROR,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
@@ -285,7 +286,7 @@ export class GraphQLLanguageService {
           return getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
-            node as FragmentDefinitionNode | OperationDefinitionNode,
+            node,
           );
 
         case NAMED_TYPE:
@@ -371,7 +372,8 @@ export class GraphQLLanguageService {
         definition.kind === OBJECT_TYPE_DEFINITION ||
         definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
         definition.kind === ENUM_TYPE_DEFINITION ||
-        definition.kind === SCALAR_TYPE_DEFINITION,
+        definition.kind === SCALAR_TYPE_DEFINITION ||
+        definition.kind === INTERFACE_TYPE_DEFINITION
     );
 
     const typeCastedDefs = (localObjectTypeDefinitions as any) as Array<
