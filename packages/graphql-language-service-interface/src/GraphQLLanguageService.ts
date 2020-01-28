@@ -11,7 +11,6 @@ import {
   DocumentNode,
   FragmentSpreadNode,
   FragmentDefinitionNode,
-  OperationDefinitionNode,
   TypeDefinitionNode,
   NamedTypeNode,
   ValidationRule,
@@ -33,7 +32,6 @@ import {
 // import { Position } from 'graphql-language-service-utils';
 import {
   Hover,
-  DiagnosticSeverity,
   SymbolInformation,
   SymbolKind,
 } from 'vscode-languageserver-types';
