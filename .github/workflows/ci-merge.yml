@@ -1,6 +1,7 @@
 name: Node.JS CI Merge
 on:
   pull_request:
+    types: [closed]
     branches: [master]
 jobs:
   cleanup-branch:
