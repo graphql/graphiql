@@ -9,8 +9,7 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: yarn ci
   e2e:
-    runs-on: ubuntu-latest
-    name: cypress
+    runs-on: ubuntu-16.04
     steps:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
