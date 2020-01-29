@@ -35,7 +35,7 @@
     "graphql-language-service-utils": "^2.4.0-alpha.1",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^4.0.0",
-    "vscode-languageserver": "^5.2.1"
+    "vscode-languageserver": "^6.1.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.0"
