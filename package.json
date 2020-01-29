@@ -101,7 +101,7 @@
     "lerna": "^3.16.4",
     "lint-staged": "^10.0.0-beta.8",
     "mkdirp": "^0.5.1",
-    "mocha": "7.0.0",
+    "mocha": "7.0.1",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
