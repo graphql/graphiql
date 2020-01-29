@@ -95,7 +95,7 @@
     "flow-bin": "^0.101.0",
     "graphql": "^14.5.2",
     "husky": "^4.0.7",
-    "jest": "^24.8.0",
+    "jest": "^25.1.0",
     "jest-environment-jsdom": "^24.8.0",
     "jest-environment-jsdom-global": "^1.2.0",
     "lerna": "^3.16.4",
@@ -104,7 +104,7 @@
     "mocha": "7.0.0",
     "prettier": "^1.18.2",
     "rimraf": "^3.0.0",
-    "ts-jest": "^24.1.0",
+    "ts-jest": "^25.0.0",
     "typedoc": "^0.15.6",
     "typescript": "^3.6.3"
   }
