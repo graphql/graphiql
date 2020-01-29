@@ -90,7 +90,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.1.1",
     "eslint-plugin-prefer-object-spread": "1.2.1",
-    "eslint-plugin-react": "7.17.0",
+    "eslint-plugin-react": "7.18.0",
     "fetch-mock": "^6.0.0",
     "flow-bin": "^0.101.0",
     "graphql": "^14.5.2",
