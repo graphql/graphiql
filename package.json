@@ -56,7 +56,7 @@
     "prepublish": "./resources/prepublish.sh"
   },
   "devDependencies": {
-    "@babel/cli": "7.7.7",
+    "@babel/cli": "7.8.3",
     "@babel/core": "7.8.3",
     "@babel/node": "7.8.3",
     "@babel/plugin-proposal-class-properties": "7.7.4",
