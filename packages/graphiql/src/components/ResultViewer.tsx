@@ -5,20 +5,18 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { Component, FunctionComponent } from 'react';
+import * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from 'src/utility/CodeMirrorSizer';
-
-type ImagePreviewType = React.Component & {
-  shouldRender: (token: any) => void;
-}; // TODO: remove any
+import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
 
 type ResultViewerProps = {
   value?: string;
   editorTheme?: string;
-  ResultsTooltip?: React.Component;
-  ImagePreview?: ImagePreviewType;
+  ResultsTooltip?: typeof Component | FunctionComponent;
+  ImagePreview: typeof ImagePreviewComponent;
   registerRef: (node: HTMLElement) => void;
 };
 
@@ -34,7 +32,7 @@ type ResultViewerProps = {
  */
 export class ResultViewer extends React.Component<ResultViewerProps, {}>
   implements SizerComponent {
-  viewer: CodeMirror.Editor;
+  viewer: (CM.Editor & { options: any }) | null;
   _node: HTMLElement | null = null;
 
   componentDidMount() {
@@ -51,6 +49,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     require('codemirror-graphql/results/mode');
     const Tooltip = this.props.ResultsTooltip;
     const ImagePreview = this.props.ImagePreview;
+
     if (Tooltip || ImagePreview) {
       require('codemirror-graphql/utils/info-addon');
       const tooltipDiv = document.createElement('div');
@@ -133,7 +132,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
    * React component.
    */
   getCodeMirror() {
-    return this.viewer;
+    return this.viewer as CM.Editor;
   }
 
   /**

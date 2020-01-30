@@ -11,6 +11,8 @@ import React, {
   PropsWithChildren,
   MouseEvent,
   MouseEventHandler,
+  Component,
+  FunctionComponent,
 } from 'react';
 import {
   buildClientSchema,
@@ -104,7 +106,7 @@ type GraphiQLProps = {
   getDefaultFieldNames?: () => void;
   editorTheme?: string;
   onToggleHistory?: (historyPaneOpen: boolean) => void;
-  ResultsTooltip?: any; // TODO: TYPE
+  ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
 };

@@ -53,7 +53,7 @@ export default function onHasCompletion(
 
         // When CodeMirror attempts to remove the hint UI, we detect that it was
         // removed and in turn remove the information nodes.
-        let onRemoveFn: EventListener;
+        let onRemoveFn: EventListener | null;
         hintsUl.addEventListener(
           'DOMNodeRemoved',
           (onRemoveFn = (event: Event) => {

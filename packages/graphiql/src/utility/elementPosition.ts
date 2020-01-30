@@ -9,22 +9,22 @@
  * Utility functions to get a pixel distance from left/top of the window.
  */
 
-export function getLeft(initialElem) {
+export function getLeft(initialElem: HTMLElement) {
   let pt = 0;
   let elem = initialElem;
   while (elem.offsetParent) {
     pt += elem.offsetLeft;
-    elem = elem.offsetParent;
+    elem = elem.offsetParent as HTMLElement;
   }
   return pt;
 }
 
-export function getTop(initialElem) {
+export function getTop(initialElem: HTMLElement) {
   let pt = 0;
   let elem = initialElem;
   while (elem.offsetParent) {
     pt += elem.offsetTop;
-    elem = elem.offsetParent;
+    elem = elem.offsetParent as HTMLElement;
   }
   return pt;
 }

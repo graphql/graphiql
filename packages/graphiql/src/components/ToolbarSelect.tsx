@@ -7,7 +7,6 @@
 
 import React, { MouseEventHandler } from 'react';
 import PropTypes from 'prop-types';
-import { DOMEvent } from 'codemirror';
 
 type ToolbarSelectProps = {
   title?: string;

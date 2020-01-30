@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 
 function tokenToURL(token: any) {
   if (token.type !== 'string') {
-    return null;
+    return;
   }
 
   const value = token.string
@@ -22,7 +22,7 @@ function tokenToURL(token: any) {
     const location = window.location;
     return new URL(value, location.protocol + '//' + location.host);
   } catch (err) {
-    return null;
+    return;
   }
 }
 

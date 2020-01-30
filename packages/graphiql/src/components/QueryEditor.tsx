@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { FC } from 'react';
 import * as CM from 'codemirror';
 import { GraphQLSchema, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
@@ -248,7 +248,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
    * Public API for retrieving the CodeMirror instance from this
    * React component.
    */
-  getCodeMirror(): CM.Editor {
+  getCodeMirror() {
     return this.editor as CM.Editor;
   }
 

@@ -1,6 +1,14 @@
-import { DocumentNode, FragmentDefinitionNode, visit } from 'graphql';
+import {
+  DocumentNode,
+  FragmentDefinitionNode,
+  visit,
+  SelectionNode,
+} from 'graphql';
 
-export function uniqueBy(array: any[], iteratee: (item: any) => any) {
+export function uniqueBy(
+  array: readonly SelectionNode[],
+  iteratee: (item: any) => any,
+) {
   const FilteredMap = new Map();
   const result = [];
   for (const item of array) {

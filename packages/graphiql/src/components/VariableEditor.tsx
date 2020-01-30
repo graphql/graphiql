@@ -7,7 +7,7 @@
 import { GraphQLType } from 'graphql';
 import * as CM from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import * as React from 'react';
+import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
@@ -40,7 +40,7 @@ type VariableEditorProps = {
  */
 export class VariableEditor extends React.Component<VariableEditorProps>
   implements SizerComponent {
-  editor: CM.Editor;
+  editor: (CM.Editor & { options: any }) | null;
   cachedValue: string;
   _node: HTMLElement;
   ignoreChangeEvent: boolean;
@@ -99,22 +99,22 @@ export class VariableEditor extends React.Component<VariableEditorProps>
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
-          this.editor.showHint({
+          this.editor!.showHint({
             completeSingle: false,
             container: this._node,
           }),
         'Ctrl-Space': () =>
-          this.editor.showHint({
+          this.editor!.showHint({
             completeSingle: false,
             container: this._node,
           }),
         'Alt-Space': () =>
-          this.editor.showHint({
+          this.editor!.showHint({
             completeSingle: false,
             container: this._node,
           }),
         'Shift-Space': () =>
-          this.editor.showHint({
+          this.editor!.showHint({
             completeSingle: false,
             container: this._node,
           }),
@@ -201,7 +201,7 @@ export class VariableEditor extends React.Component<VariableEditorProps>
    * React component.
    */
   getCodeMirror() {
-    return this.editor;
+    return this.editor as CM.Editor;
   }
 
   /**

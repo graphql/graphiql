@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import CodeMirror from 'codemirror';
 import Maybe from 'graphql/tsutils/Maybe';
 
@@ -26,7 +25,10 @@ export default class CodeMirrorSizer {
       if (component) {
         const size = component.getClientHeight();
         if (i <= this.sizes.length && size !== this.sizes[i]) {
-          component.getCodeMirror().setSize(null, null); // TODO: added the args here. double check no effects. might be version issue
+          const editor = component.getCodeMirror();
+          if (editor) {
+            editor.setSize(null, null); // TODO: added the args here. double check no effects. might be version issue
+          }
         }
         this.sizes[i] = size;
       }
