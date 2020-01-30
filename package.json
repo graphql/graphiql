@@ -73,7 +73,7 @@
     "@commitlint/config-lerna-scopes": "^8.1.0",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.2.1",
     "@types/fetch-mock": "^7.3.2",
-    "@types/jest": "^24.0.18",
+    "@types/jest": "^25.1.1",
     "@typescript-eslint/parser": "^2.3.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",
