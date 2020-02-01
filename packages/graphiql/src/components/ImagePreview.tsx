@@ -89,7 +89,7 @@ export class ImagePreview extends React.Component<
           ref={node => {
             this._node = node;
           }}
-          src={tokenToURL(this.props.token)}
+          src={tokenToURL(this.props.token)?.href}
         />
         {dims}
       </div>
