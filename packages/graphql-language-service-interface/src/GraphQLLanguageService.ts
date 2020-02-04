@@ -286,7 +286,8 @@ export class GraphQLLanguageService {
       definition =>
         definition.kind === OBJECT_TYPE_DEFINITION ||
         definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === ENUM_TYPE_DEFINITION,
+        definition.kind === ENUM_TYPE_DEFINITION ||
+        definition.kind === SCALAR_TYPE_DEFINITION,
     );
 
     const typeCastedDefs = (localObjectTypeDefinitions as any) as Array<

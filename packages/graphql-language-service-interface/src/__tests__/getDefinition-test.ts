@@ -51,6 +51,45 @@ describe('getDefinition', () => {
     });
   });
 
+  describe('getDefinitionQueryResultForNamedType for scalar', () => {
+    it('returns correct Position', async () => {
+      const query = `type Query {
+        hero(episode: Episode): Json
+      }
+
+      type Episode {
+        id: ID!
+      }
+
+      scalar Json
+      `;
+      const parsedQuery = parse(query);
+      // @ts-ignore
+      const namedTypeDefinition = parsedQuery.definitions[0].fields[0].type;
+
+      const result = await getDefinitionQueryResultForNamedType(
+        query,
+        {
+          ...namedTypeDefinition,
+        },
+
+        [
+          {
+            // @ts-ignore
+            file: 'someFile',
+            content: query,
+            definition: {
+              ...namedTypeDefinition,
+            },
+          },
+        ],
+      );
+      expect(result.definitions.length).toEqual(1);
+      expect(result.definitions[0].position.line).toEqual(1);
+      expect(result.definitions[0].position.character).toEqual(32);
+    });
+  });
+
   describe('getDefinitionQueryResultForFragmentSpread', () => {
     it('returns correct Position', async () => {
       const query = `query A {
