@@ -25,8 +25,8 @@ export class ToolbarMenu extends React.Component<
   ToolbarMenuProps,
   ToolbarMenuState
 > {
-  private _node: HTMLAnchorElement;
-  private _listener: this['handleClick'] | null;
+  private _node: HTMLAnchorElement | null = null;
+  private _listener: this['handleClick'] | null = null;
 
   constructor(props: ToolbarMenuProps) {
     super(props);

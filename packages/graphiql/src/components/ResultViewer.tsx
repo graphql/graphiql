@@ -32,7 +32,7 @@ type ResultViewerProps = {
  */
 export class ResultViewer extends React.Component<ResultViewerProps, {}>
   implements SizerComponent {
-  viewer: (CM.Editor & { options: any }) | null;
+  viewer: (CM.Editor & { options: any }) | null = null;
   _node: HTMLElement | null = null;
 
   componentDidMount() {

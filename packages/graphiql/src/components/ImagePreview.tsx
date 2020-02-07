@@ -45,7 +45,7 @@ export class ImagePreview extends React.Component<
   ImagePreviewProps,
   ImagePreviewState
 > {
-  _node: HTMLImageElement | null;
+  _node: HTMLImageElement | null = null;
 
   static shouldRender(token: any) {
     const url = tokenToURL(token);

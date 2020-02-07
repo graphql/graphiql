@@ -47,7 +47,7 @@ type QueryEditorProps = {
 export class QueryEditor extends React.Component<QueryEditorProps, {}>
   implements SizerComponent {
   cachedValue: string | undefined;
-  editor: (CM.Editor & { options: any }) | null;
+  editor: (CM.Editor & { options: any }) | null = null;
   ignoreChangeEvent: boolean;
 
   _node: HTMLElement | null = null;

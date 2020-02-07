@@ -40,9 +40,9 @@ type VariableEditorProps = {
  */
 export class VariableEditor extends React.Component<VariableEditorProps>
   implements SizerComponent {
-  editor: (CM.Editor & { options: any }) | null;
+  editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
-  _node: HTMLElement;
+  _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean;
 
   constructor(props: VariableEditorProps) {

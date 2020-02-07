@@ -28,8 +28,8 @@ export class ToolbarSelect extends React.Component<
   ToolbarSelectProps,
   ToolbarSelectState
 > {
-  private _node: HTMLAnchorElement | null;
-  private _listener: ((this: Document, ev: MouseEvent) => any) | null;
+  private _node: HTMLAnchorElement | null = null;
+  private _listener: ((this: Document, ev: MouseEvent) => any) | null = null;
   constructor(props: ToolbarSelectProps) {
     super(props);
     this.state = { visible: false };
