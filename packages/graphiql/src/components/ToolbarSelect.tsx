@@ -107,7 +107,7 @@ export class ToolbarSelect extends React.Component<
     }
   }
 
-  handleClick(e) {
+  handleClick(e: MouseEvent) {
     if (this._node !== e.target) {
       preventDefault(e);
       this.setState({ visible: false });
@@ -115,7 +115,7 @@ export class ToolbarSelect extends React.Component<
     }
   }
 
-  handleOpen = e => {
+  handleOpen = (e: React.MouseEvent) => {
     preventDefault(e);
     this.setState({ visible: true });
     this._subscribe();

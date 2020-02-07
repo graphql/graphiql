@@ -124,7 +124,7 @@ type GraphiQLState = {
   historyPaneOpen: boolean;
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
-  subscription: null; // TODO: find interface for this
+  subscription?: Unsubscribable | null;
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
 };
@@ -763,7 +763,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
   }
 
-  _fetchQuery(query: string, variables: string, operationName: string, cb) {
+  _fetchQuery(
+    query: string,
+    variables: string,
+    operationName: string,
+    cb: (value: FetcherResult) => any,
+  ) {
     const fetcher = this.props.fetcher;
     let jsonVariables = null;
 
@@ -862,7 +867,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         editedQuery,
         variables,
         operationName,
-        result => {
+        (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
@@ -1042,7 +1047,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   handleHintInformationRender = (elem: HTMLDivElement) => {
     elem.addEventListener('click', this._onClickHintInformation);
 
-    let onRemoveFn;
+    let onRemoveFn: EventListener;
     elem.addEventListener(
       'DOMNodeRemoved',
       (onRemoveFn = () => {
@@ -1340,6 +1345,11 @@ type Unsubscribable = {
 };
 
 type Observable<T> = {
+  subscribe(opts: {
+    next: (value: T) => void;
+    error: (error: any) => void;
+    complete: () => void;
+  }): Unsubscribable;
   subscribe(
     next: (value: T) => void,
     error: null | undefined,
