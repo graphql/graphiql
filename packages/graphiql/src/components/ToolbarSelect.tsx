@@ -17,6 +17,18 @@ type ToolbarSelectProps = {
 type ToolbarSelectState = {
   visible: boolean;
 };
+
+type HasProps<T> = T extends { props: any } ? T : never;
+
+function hasProps<Child extends React.ReactNode>(
+  child: Child,
+): child is HasProps<Child> {
+  if (!child || typeof child !== 'object' || !('props' in child)) {
+    return false;
+  }
+  return true;
+}
+
 /**
  * ToolbarSelect
  *
@@ -40,12 +52,12 @@ export class ToolbarSelect extends React.Component<
   }
 
   render() {
-    let selectedChild: React.ReactNode;
+    let selectedChild: HasProps<React.ReactNode> | undefined;
     const visible = this.state.visible;
     const optionChildren = React.Children.map(
       this.props.children,
       (child, i) => {
-        if (!child || typeof child !== 'object' || !('props' in child)) {
+        if (!hasProps(child)) {
           return null;
         }
         if (!selectedChild || child.props.selected) {
