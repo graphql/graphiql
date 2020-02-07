@@ -1,5 +1,5 @@
-export namespace GraphiQL {
-  import { GraphQLType } from 'graphql';
+import { GraphQLType } from 'graphql';
 
+export namespace GraphiQL {
   export type GetDefaultFieldNamesFn = (type: GraphQLType) => string[];
 }
