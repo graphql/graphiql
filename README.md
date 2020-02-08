@@ -1,6 +1,6 @@
 # VSCode GraphQL
 
-💡**Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension would pick that up. 
+💡**Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension would pick that up.
 
 GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ecosystem](https://www.prisma.io/docs/graphql-ecosystem/) with VSCode for an awesome developer experience.
 
@@ -53,10 +53,10 @@ projects:
     includes: ["**/*.graphql"]
     extensions:
       codegen:
-      - generator: graphql-binding
-        language: typescript
-        output:
-          binding: src/generated/db.ts
+        - generator: graphql-binding
+          language: typescript
+          output:
+            binding: src/generated/db.ts
 ```
 
 Notice that `includes` key supports glob pattern and hence
@@ -106,7 +106,7 @@ Setup and logging for development are different for these language services as d
 
 ### B. Testing/logging TypeScript GraphQL Plugin Features
 
-1.  Clone [ts-graphql-plugin](https://github.com/divyenduz/ts-graphql-plugin) and go to its directory. 
+1.  Clone [ts-graphql-plugin](https://github.com/divyenduz/ts-graphql-plugin) and go to its directory.
 1.  `npm install` and `npm link`
 1.  Use `npm link @divyenduz/ts-graphql-plugin` in the folder that you have opened to test things in extension host - this is required for development
 1.  Switch to use workspace typescript - [this is required for development](https://github.com/Microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#testing-locally)
