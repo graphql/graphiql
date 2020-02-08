@@ -95,7 +95,7 @@ Setup and logging for development are different for these language services as d
 
 ### A. Testing/logging GraphQL Language Features
 
-1.  Clone the repository - https://github.com/prismagraphql/vscode-graphql
+1.  Clone the repository - https://github.com/prisma-labs/vscode-graphql
 1.  `npm install`
 1.  Open it in VSCode
 1.  Go to the debugging section and run the launch program "Extension"
