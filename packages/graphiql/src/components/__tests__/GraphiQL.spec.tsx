@@ -46,7 +46,7 @@ const wait = () =>
     .then(() => Promise.resolve())
     .then(() => Promise.resolve());
 
-const waitTime = timeout =>
+const waitTime = (timeout: number) =>
   new Promise(resolve => setTimeout(resolve, timeout));
 
 Object.defineProperty(window, 'localStorage', {
