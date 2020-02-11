@@ -116,8 +116,12 @@ function annotations(
     // @ts-ignore
     // https://github.com/microsoft/TypeScript/pull/32695
     const loc = error.locations[0];
-    const highlightLoc = getLocation(highlightNode);
-    const end = loc.column + (highlightLoc.end - highlightLoc.start);
+    let end = loc.line;
+    if (highlightNode) {
+      const highlightLoc = getLocation(highlightNode);
+      end = loc.column + (highlightLoc.end - highlightLoc.start);
+    }
+
     return {
       source: `GraphQL: ${type}`,
       message: error.message,
