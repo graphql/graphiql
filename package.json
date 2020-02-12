@@ -81,7 +81,7 @@
     "conventional-changelog-conventionalcommits": "^4.1.0",
     "copy": "^0.3.2",
     "cross-env": "^7.0.0",
-    "cypress": "^3.8.3",
+    "cypress": "^4.0.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-babel": "5.3.0",
