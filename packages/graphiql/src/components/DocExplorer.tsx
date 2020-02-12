@@ -93,7 +93,7 @@ export class DocExplorer extends React.Component<
       content = (
         <SearchResults
           searchValue={navItem.search}
-          withinType={navItem.def}
+          withinType={navItem.def as GraphQLNamedType}
           schema={schema}
           onClickType={this.handleClickType}
           onClickField={this.handleClickField}
@@ -114,7 +114,10 @@ export class DocExplorer extends React.Component<
       );
     } else {
       content = (
-        <FieldDoc field={navItem.def} onClickType={this.handleClickType} />
+        <FieldDoc
+          field={navItem.def as FieldType}
+          onClickType={this.handleClickType}
+        />
       );
     }
 
