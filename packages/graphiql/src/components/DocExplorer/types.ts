@@ -7,16 +7,16 @@ import {
   GraphQLInterfaceType,
   GraphQLInputObjectType,
   GraphQLType,
+  GraphQLNamedType,
 } from 'graphql';
-import Maybe from 'graphql/tsutils/Maybe';
 
 export type FieldType =
   | GraphQLField<{}, {}, {}>
   | GraphQLInputField
   | GraphQLArgument;
 
-export type OnClickFieldFunction = <TSource, TContext, TArgs>(
-  field: GraphQLField<TSource, TContext, TArgs> | GraphQLInputField,
+export type OnClickFieldFunction = (
+  field: FieldType,
   type?:
     | GraphQLObjectType
     | GraphQLInterfaceType
@@ -26,6 +26,10 @@ export type OnClickFieldFunction = <TSource, TContext, TArgs>(
 ) => void;
 
 export type OnClickTypeFunction = (
-  type: Maybe<GraphQLType>,
+  type: GraphQLNamedType,
   event?: MouseEvent<HTMLAnchorElement>,
 ) => void;
+
+export type OnClickFieldOrTypeFunction =
+  | OnClickFieldFunction
+  | OnClickTypeFunction;

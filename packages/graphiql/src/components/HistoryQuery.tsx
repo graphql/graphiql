@@ -58,7 +58,7 @@ export default class HistoryQuery extends React.Component<
       this.props.label ||
       this.props.operationName ||
       this.props.query
-        .split('\n')
+        ?.split('\n')
         .filter(line => line.indexOf('#') !== 0)
         .join('');
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';

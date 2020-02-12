@@ -9,17 +9,17 @@ import React from 'react';
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLField, GraphQLArgument } from 'graphql';
-import { OnClickTypeFunction } from './types';
+import { GraphQLArgument } from 'graphql';
+import { OnClickTypeFunction, FieldType } from './types';
 
 type FieldDocProps = {
-  field?: GraphQLField<{}, {}, {}>;
+  field?: FieldType;
   onClickType: OnClickTypeFunction;
 };
 
 export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   let argsDef;
-  if (field && field.args && field.args.length > 0) {
+  if (field && 'args' in field && field.args.length > 0) {
     argsDef = (
       <div className="doc-category">
         <div className="doc-category-title">{'arguments'}</div>
@@ -44,7 +44,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
         className="doc-type-description"
         markdown={field?.description || 'No Description'}
       />
-      {field?.deprecationReason && (
+      {field && 'deprecationReason' in field && (
         <MarkdownContent
           className="doc-deprecation"
           markdown={field?.deprecationReason}

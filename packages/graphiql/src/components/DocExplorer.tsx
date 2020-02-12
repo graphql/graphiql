@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { GraphQLSchema, isType, GraphQLNamedType } from 'graphql';
+import { FieldType } from './DocExplorer/types';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -18,7 +19,7 @@ type NavStackItem = {
   name: string;
   title?: string;
   search?: string;
-  def?: GraphQLNamedType;
+  def?: GraphQLNamedType | FieldType;
 };
 
 const initialNav: NavStackItem = {
@@ -54,6 +55,7 @@ export class DocExplorer extends React.Component<
   DocExplorerProps,
   DocExplorerState
 > {
+  // handleClickTypeOrField: OnClickTypeFunction | OnClickFieldFunction
   constructor(props: DocExplorerProps) {
     super(props);
 
@@ -93,34 +95,32 @@ export class DocExplorer extends React.Component<
           searchValue={navItem.search}
           withinType={navItem.def}
           schema={schema}
-          onClickType={this.handleClickTypeOrField}
-          onClickField={this.handleClickTypeOrField}
+          onClickType={this.handleClickType}
+          onClickField={this.handleClickField}
         />
       );
     } else if (navStack.length === 1) {
       content = (
-        <SchemaDoc schema={schema} onClickType={this.handleClickTypeOrField} />
+        <SchemaDoc schema={schema} onClickType={this.handleClickType} />
       );
     } else if (isType(navItem.def)) {
       content = (
         <TypeDoc
           schema={schema}
           type={navItem.def}
-          onClickType={this.handleClickTypeOrField}
-          onClickField={this.handleClickTypeOrField}
+          onClickType={this.handleClickType}
+          onClickField={this.handleClickField}
         />
       );
     } else {
       content = (
-        <FieldDoc
-          field={navItem.def}
-          onClickType={this.handleClickTypeOrField}
-        />
+        <FieldDoc field={navItem.def} onClickType={this.handleClickType} />
       );
     }
 
     const shouldSearchBoxAppear =
-      navStack.length === 1 || (isType(navItem.def) && navItem.def.getFields);
+      navStack.length === 1 ||
+      (isType(navItem.def) && 'getFields' in navItem.def);
 
     let prevName;
     if (navStack.length > 1) {
@@ -161,7 +161,7 @@ export class DocExplorer extends React.Component<
   }
 
   // Public API
-  showDoc(typeOrField: GraphQLNamedType) {
+  showDoc(typeOrField: GraphQLNamedType | FieldType) {
     const navStack = this.state.navStack;
     const topNav = navStack[navStack.length - 1];
     if (topNav.def !== typeOrField) {
@@ -177,7 +177,7 @@ export class DocExplorer extends React.Component<
   }
 
   // Public API
-  showDocForReference(reference) {
+  showDocForReference(reference: any) {
     if (reference && reference.kind === 'Type') {
       this.showDoc(reference.type);
     } else if (reference.kind === 'Field') {
@@ -207,8 +207,12 @@ export class DocExplorer extends React.Component<
     }
   };
 
-  handleClickTypeOrField = typeOrField => {
-    this.showDoc(typeOrField);
+  handleClickType = (type: GraphQLNamedType) => {
+    this.showDoc(type);
+  };
+
+  handleClickField = (field: FieldType) => {
+    this.showDoc(field);
   };
 
   handleSearch = (value: string) => {
