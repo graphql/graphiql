@@ -35,6 +35,6 @@
     "graphql-language-service-types": "^1.6.0-alpha.1"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23"
+    "@types/jest": "^25.1.2"
   }
 }
