@@ -6,7 +6,6 @@
  */
 
 import React, {
-  ReactNode,
   ComponentType,
   PropsWithChildren,
   MouseEventHandler,
@@ -37,14 +36,11 @@ import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
-import getQueryFacts, {
-  QueryFacts,
-  VariableToType,
-} from '../utility/getQueryFacts';
+import getQueryFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { fillLeafs } from '../utility/fillLeafs';
+import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 import { mergeAST } from '../utility/mergeAst';
 import {
@@ -95,7 +91,7 @@ type OnMouseUpFn = Maybe<() => void>;
 type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
-  query: string;
+  query?: string;
   variables?: string;
   operationName?: string;
   response?: string;
@@ -107,7 +103,7 @@ type GraphiQLProps = {
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
-  getDefaultFieldNames?: () => void;
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
   editorTheme?: string;
   onToggleHistory?: (historyPaneOpen: boolean) => void;
   ResultsTooltip?: typeof Component | FunctionComponent;
@@ -767,7 +763,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
   }
 
-  _fetchQuery(
+  private _fetchQuery(
     query: string,
     variables: string,
     operationName: string,
@@ -870,7 +866,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const subscription = this._fetchQuery(
         editedQuery as string,
         variables as string,
-        operationName,
+        operationName as string,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             this.setState({
@@ -901,7 +897,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  _runQueryAtCursor() {
+  private _runQueryAtCursor() {
     if (this.state.subscription) {
       this.handleStopQuery();
       return;
@@ -1002,7 +998,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  _updateQueryFacts = (
+  private _updateQueryFacts = (
     query: string,
     operationName?: string,
     prevOperations?: OperationDefinitionNode[],
@@ -1153,12 +1149,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ editorFlex: 1 });
   };
 
-  _didClickDragBar(event: React.MouseEvent) {
+  private _didClickDragBar(event: React.MouseEvent) {
     // Only for primary unmodified clicks
     if (event.button !== 0 || event.ctrlKey) {
       return false;
     }
-    let target = event.currentTarget;
+    let target = event.currentTarget || (event.target as Element);
     // We use codemirror's gutter as the drag bar.
     if (target.className.indexOf('CodeMirror-gutter') !== 0) {
       return false;
@@ -1169,7 +1165,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       if (target === resultWindow) {
         return true;
       }
-      target = target.parentNode;
+      target = target.parentNode as Element;
     }
     return false;
   }
@@ -1180,14 +1176,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     downEvent.preventDefault();
 
     const hadWidth = this.state.docExplorerWidth;
-    const offset = downEvent.clientX - getLeft(downEvent.target);
+    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
     let onMouseMove: OnMouseMoveFn = moveEvent => {
       if (moveEvent.buttons === 0) {
         return onMouseUp!();
       }
 
-      const app = this.graphiqlContainer;
+      const app = this.graphiqlContainer as HTMLElement;
       const cursorPos = moveEvent.clientX - getLeft(app) - offset;
       const docsSize = app.clientWidth - cursorPos;
 
@@ -1403,18 +1399,14 @@ function isObservable<T>(value: any): value is Observable<T> {
 
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(
-  child: ReactNode,
+  child: any,
   component: T,
 ): child is T {
   if (
     child &&
     typeof child === 'object' &&
-    child !== '{}' &&
     'type' in child &&
-    typeof child.type === 'object' &&
-    child?.type?.displayName &&
-    // typeof child.type === 'object' &&
-    // 'displayName' in child.type &&
+    'displayName' in child.type &&
     child.type.displayName === component.displayName
   ) {
     return true;

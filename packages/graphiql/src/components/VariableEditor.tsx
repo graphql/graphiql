@@ -11,7 +11,15 @@ import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from 'src/utility/CodeMirrorSizer';
+
+declare module CodeMirror {
+  export interface Editor extends CM.Editor {}
+  export interface ShowHintOptions {
+    completeSingle: boolean;
+    hint: CM.HintFunction | CM.AsyncHintFunction;
+    container: HTMLElement | null;
+  }
+}
 
 type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
@@ -38,13 +46,11 @@ type VariableEditorProps = {
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class VariableEditor extends React.Component<VariableEditorProps>
-  implements SizerComponent {
+export class VariableEditor extends React.Component<VariableEditorProps> {
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
-  _node: HTMLElement | null = null;
+  private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean;
-
   constructor(props: VariableEditorProps) {
     super(props);
 
@@ -102,22 +108,22 @@ export class VariableEditor extends React.Component<VariableEditorProps>
           this.editor!.showHint({
             completeSingle: false,
             container: this._node,
-          }),
+          } as CodeMirror.ShowHintOptions),
         'Ctrl-Space': () =>
           this.editor!.showHint({
             completeSingle: false,
             container: this._node,
-          }),
+          } as CodeMirror.ShowHintOptions),
         'Alt-Space': () =>
           this.editor!.showHint({
             completeSingle: false,
             container: this._node,
-          }),
+          } as CodeMirror.ShowHintOptions),
         'Shift-Space': () =>
           this.editor!.showHint({
             completeSingle: false,
             container: this._node,
-          }),
+          } as CodeMirror.ShowHintOptions),
         'Cmd-Enter': () => {
           if (this.props.onRunQuery) {
             this.props.onRunQuery();
@@ -238,7 +244,10 @@ export class VariableEditor extends React.Component<VariableEditorProps>
     }
   };
 
-  _onHasCompletion = (cm: CodeMirror.Editor, data: any) => {
-    onHasCompletion(cm, data, this.props.onHintInformationRender);
+  private _onHasCompletion = (
+    instance: CM.Editor,
+    changeObj?: CM.EditorChangeLinkedList,
+  ) => {
+    onHasCompletion(instance, changeObj, this.props.onHintInformationRender);
   };
 }

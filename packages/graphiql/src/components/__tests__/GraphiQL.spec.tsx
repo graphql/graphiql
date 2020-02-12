@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  *  Copyright (c) 2019 GraphQL Contributors.
  *
@@ -8,7 +10,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import { GraphiQL } from '../GraphiQL';
+import { GraphiQL, Fetcher } from '../GraphiQL';
 import { getMockStorage } from './helpers/storage';
 import { codeMirrorModules } from './helpers/codeMirror';
 import {
@@ -58,7 +60,7 @@ beforeEach(() => {
 });
 
 describe('GraphiQL', () => {
-  const noOpFetcher = () => {};
+  const noOpFetcher: Fetcher = () => {};
 
   it('should throw error without fetcher', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -112,7 +114,7 @@ describe('GraphiQL', () => {
   it('defaults to the built-in default query', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
     expect(
-      container.querySelector('.query-editor .mockCodeMirror').value,
+      container.querySelector('.query-editor .mockCodeMirror')?.value,
     ).toContain('# Welcome to GraphiQL');
   });
 
@@ -156,7 +158,7 @@ describe('GraphiQL', () => {
       <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
     expect(
-      container2.querySelector('[aria-label="Query Variables"]').style.height,
+      container2.querySelector('[aria-label="Query Variables"]')?.style.height,
     ).toEqual('200px');
 
     const { container: container3 } = render(
@@ -169,7 +171,7 @@ describe('GraphiQL', () => {
     const queryVariables3 = container3.querySelector(
       '[aria-label="Query Variables"]',
     );
-    expect(queryVariables3.style.height).toEqual('');
+    expect(queryVariables3?.style.height).toEqual('');
   });
 
   it('adds a history item when the execute query function button is clicked', () => {
@@ -470,7 +472,9 @@ describe('GraphiQL', () => {
     );
 
     fireEvent.click(getByLabelText(/Open Documentation Explorer/i));
-    const docExplorerResizer = container.querySelector('.docExplorerResizer');
+    const docExplorerResizer = container.querySelector(
+      '.docExplorerResizer',
+    ) as Element;
 
     fireEvent.mouseDown(docExplorerResizer, {
       clientX: 3,

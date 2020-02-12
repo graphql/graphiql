@@ -10,7 +10,9 @@
     "noEmit": true,
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
     "lib": ["dom"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

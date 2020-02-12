@@ -19,14 +19,14 @@ import {
   SelectionSetNode,
 } from 'graphql';
 
-import { GetDefaultFieldNamesFn } from '../types';
-
 import { Maybe } from '../components/GraphiQL';
 
 type Insertion = {
   index: number;
   string: string;
 };
+
+export type GetDefaultFieldNamesFn = (type: GraphQLType) => string[];
 
 /**
  * Given a document string which may not be valid due to terminal fields not

@@ -18,9 +18,9 @@ export interface SizerComponent {
  * the related CodeMirror instance so that it is always correctly sized.
  */
 export default class CodeMirrorSizer {
-  sizes: Array<number | null> = [];
+  public sizes: Array<number | null> = [];
 
-  updateSizes(components: Array<Maybe<SizerComponent>>) {
+  public updateSizes(components: Array<Maybe<SizerComponent>>) {
     components.forEach((component, i) => {
       if (component) {
         const size = component.getClientHeight();
