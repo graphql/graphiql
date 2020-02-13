@@ -10538,9 +10538,9 @@ jest-each@^25.1.0:
     pretty-format "^25.1.0"
 
 jest-environment-jsdom-global@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/jest-environment-jsdom-global/-/jest-environment-jsdom-global-1.2.0.tgz#dd5b16fe0a0566ee40010d8632be5adf5a5ccb65"
-  integrity sha512-41cDl0OxzmFY/cnW0COUN+lnt2N2ks1r3V4fAKOnlZ9xIrGy0PNPan+Bz8HP+uQy/8bGV6T7J4Oi7X+h43It6g==
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/jest-environment-jsdom-global/-/jest-environment-jsdom-global-1.2.1.tgz#392052d4d23ae6fada88b0513146e2e979a6aaaf"
+  integrity sha512-XK/ddDfv8rURHoyfZwmhePv1mof3XFlPvkGfywIYU5Ype4/S/SRA0KNAdma9CuLV/KI+1jQh5BrGM3AqpJ/jRA==
 
 jest-environment-jsdom@^24.9.0:
   version "24.9.0"
