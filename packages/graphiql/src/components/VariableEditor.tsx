@@ -47,6 +47,7 @@ type VariableEditorProps = {
  *
  */
 export class VariableEditor extends React.Component<VariableEditorProps> {
+  CodeMirror: any;
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
@@ -64,7 +65,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
+    this.CodeMirror = require('codemirror');
     require('codemirror/addon/hint/show-hint');
     require('codemirror/addon/edit/matchbrackets');
     require('codemirror/addon/edit/closebrackets');
@@ -79,7 +80,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     require('codemirror-graphql/variables/lint');
     require('codemirror-graphql/variables/mode');
 
-    const editor = (this.editor = CodeMirror(this._node, {
+    const editor = (this.editor = this.CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -156,7 +157,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   }
 
   componentDidUpdate(prevProps: VariableEditorProps) {
-    const CodeMirror = require('codemirror');
+    this.CodeMirror = require('codemirror');
     if (!this.editor) {
       return;
     }
@@ -168,7 +169,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     if (this.props.variableToType !== prevProps.variableToType) {
       this.editor.options.lint.variableToType = this.props.variableToType;
       this.editor.options.hintOptions.variableToType = this.props.variableToType;
-      CodeMirror.signal(this.editor, 'change', this.editor);
+      this.CodeMirror.signal(this.editor, 'change', this.editor);
     }
     if (
       this.props.value !== prevProps.value &&

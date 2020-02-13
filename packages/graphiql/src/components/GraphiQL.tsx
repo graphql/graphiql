@@ -28,7 +28,6 @@ import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
-import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -604,8 +603,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   static MenuItem = ToolbarMenuItem;
 
   // Add a select-option input to the Toolbar.
-  static Select = ToolbarSelect;
-  static SelectOption = ToolbarSelectOption;
+  // static Select = ToolbarSelect;
+  // static SelectOption = ToolbarSelectOption;
 
   /**
    * Get the query editor CodeMirror instance.
@@ -1403,10 +1402,7 @@ function isChildComponentType<T extends ComponentType>(
   component: T,
 ): child is T {
   if (
-    child &&
-    typeof child === 'object' &&
-    'type' in child &&
-    'displayName' in child.type &&
+    child?.type?.displayName &&
     child.type.displayName === component.displayName
   ) {
     return true;

@@ -106,19 +106,15 @@ function graphQLFetcher(graphQLParams) {
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 ReactDOM.render(
-  React.createElement(
-    GraphiQL,
-    {
-      fetcher: graphQLFetcher,
-      query: parameters.query,
-      variables: parameters.variables,
-      operationName: parameters.operationName,
-      onEditQuery: onEditQuery,
-      onEditVariables: onEditVariables,
-      defaultVariableEditorOpen: true,
-      onEditOperationName: onEditOperationName,
-    },
-    [React.cloneElement(GraphiQL.Logo)],
-  ),
+  React.createElement(GraphiQL, {
+    fetcher: graphQLFetcher,
+    query: parameters.query,
+    variables: parameters.variables,
+    operationName: parameters.operationName,
+    onEditQuery: onEditQuery,
+    onEditVariables: onEditVariables,
+    defaultVariableEditorOpen: true,
+    onEditOperationName: onEditOperationName,
+  }),
   document.getElementById('graphiql'),
 );

@@ -21,7 +21,7 @@
     }
   },
   "scripts": {
-    "build": "yarn run build-clean && yarn build-ts-cjs && yarn build-babel",
+    "build": "yarn run build-clean && yarn build-ts && yarn build-babel",
     "build-babel": "yarn workspace codemirror-graphql run build",
     "build-ts": "yarn run tsc --clean && yarn run tsc",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json --clean && yarn run tsc resources/tsconfig.build.cjs.json",
@@ -75,8 +75,8 @@
     "@types/fetch-mock": "^7.3.2",
     "@types/jest": "^25.1.1",
     "@typescript-eslint/parser": "^2.18.0",
-    "@types/codemirror": "^0.0.82",
-    "@types/node": "^13.1.7",
+    "@types/codemirror": "^0.0.84",
+    "@types/node": "^13.7.1",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "babel-eslint": "^10.0.1",
     "chai": "4.2.0",

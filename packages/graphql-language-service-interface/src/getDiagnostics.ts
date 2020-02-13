@@ -100,34 +100,41 @@ function annotations(
   error: GraphQLError,
   severity: DiagnosticSeverity,
   type: string,
-): Array<Diagnostic> {
+): Diagnostic[] {
   if (!error.nodes) {
     return [];
   }
-  return error.nodes.map(node => {
+  const highlightedNodes: Diagnostic[] = [];
+  error.nodes.forEach(node => {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node
         ? node.name
         : 'variable' in node
         ? node.variable
         : node;
+    if (highlightNode) {
+      invariant(
+        error.locations,
+        'GraphQL validation error requires locations.',
+      );
 
-    invariant(error.locations, 'GraphQL validation error requires locations.');
-    // @ts-ignore
-    // https://github.com/microsoft/TypeScript/pull/32695
-    const loc = error.locations[0];
-    const highlightLoc = getLocation(highlightNode);
-    const end = loc.column + (highlightLoc.end - highlightLoc.start);
-    return {
-      source: `GraphQL: ${type}`,
-      message: error.message,
-      severity,
-      range: new Range(
-        new Position(loc.line - 1, loc.column - 1),
-        new Position(loc.line - 1, end),
-      ),
-    };
+      // @ts-ignore
+      // https://github.com/microsoft/TypeScript/pull/32695
+      const loc = error.locations[0];
+      const highlightLoc = getLocation(highlightNode);
+      const end = loc.column + (highlightLoc.end - highlightLoc.start);
+      highlightedNodes.push({
+        source: `GraphQL: ${type}`,
+        message: error.message,
+        severity,
+        range: new Range(
+          new Position(loc.line - 1, loc.column - 1),
+          new Position(loc.line - 1, end),
+        ),
+      });
+    }
   });
+  return highlightedNodes;
 }
 
 export function getRange(location: SourceLocation, queryText: string): Range {

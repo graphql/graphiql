@@ -81,7 +81,7 @@ export class ToolbarMenu extends React.Component<
       this.setState({ visible: false });
       this._release();
     }
-  };
+  }
 
   handleOpen: MouseEventHandler<HTMLAnchorElement> = e => {
     preventDefault(e);

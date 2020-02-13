@@ -3310,10 +3310,17 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-"@types/codemirror@0.0.82", "@types/codemirror@^0.0.82":
+"@types/codemirror@0.0.82":
   version "0.0.82"
   resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.82.tgz#6d0c50036a023980318a6ed9f85ff5cc6b24172a"
   integrity sha512-EVlPrt1rB256CRTlhNCXXLYaN24n3qZNStM6dRWaV6sUYyJA1SC5hvDSCHEHDg1SB93X8TwAGWRjEVdmUWPHmQ==
+  dependencies:
+    "@types/tern" "*"
+
+"@types/codemirror@^0.0.84":
+  version "0.0.84"
+  resolved "https://registry.yarnpkg.com/@types/codemirror/-/codemirror-0.0.84.tgz#b0cfca79ccdfd45ffe1f737668276a31b3149ebd"
+  integrity sha512-W78ZhfHPGYoYGCpAcEa268QUU3CVMA8BwcybxUMhEs2v5Rj58/7lGeRh3P7tauWRnSg3Pyn5ymw2lt65AyrVUw==
   dependencies:
     "@types/tern" "*"
 
@@ -3421,10 +3428,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.27.tgz#d7506f73160ad30fcebbcf5b8b7d2d976e649e42"
   integrity sha512-odQFl/+B9idbdS0e8IxDl2ia/LP8KZLXhV3BUeI98TrZp0uoIzQPhGd+5EtzHmT0SMOIaPd7jfz6pOHLWTtl7A==
 
-"@types/node@^13.1.7":
-  version "13.1.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.1.7.tgz#db51d28b8dfacfe4fb2d0da88f5eb0a2eca00675"
-  integrity sha512-HU0q9GXazqiKwviVxg9SI/+t/nAsGkvLDkIdxz+ObejG2nX6Si00TeLqHMoS+a/1tjH7a8YpKVQwtgHuMQsldg==
+"@types/node@^13.7.1":
+  version "13.7.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.7.1.tgz#238eb34a66431b71d2aaddeaa7db166f25971a0d"
+  integrity sha512-Zq8gcQGmn4txQEJeiXo/KiLpon8TzAl0kmKH4zdWctPj05nWwp1ClMdAVEloqrQKfaC48PNLdgN/aVaLqUrluA==
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
