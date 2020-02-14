@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.get('/', function(req, res, next) {
-  res.render('index', { GRAPHQL_API: process.env.GRAPHQL_API || 'http://localhost:8080/graphiql' });
+  res.render('index', { GRAPHQL_API: process.env.GRAPHQL_API || 'http://localhost:8080/graphql' });
 });
 
 module.exports = app;
