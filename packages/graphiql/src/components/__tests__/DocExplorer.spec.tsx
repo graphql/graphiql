@@ -6,7 +6,6 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { DocExplorer } from '../DocExplorer';
 
 import { ExampleSchema } from './ExampleSchema';

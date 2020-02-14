@@ -31,7 +31,7 @@ export function uniqueBy(
 /**
  * Given a document AST, inline all named fragment definitions
  */
-export function mergeAST(documentAST: DocumentNode): DocumentNode {
+export default function mergeAST(documentAST: DocumentNode): DocumentNode {
   const fragmentDefinitions: {
     [key: string]: FragmentDefinitionNode;
   } = Object.create(null);

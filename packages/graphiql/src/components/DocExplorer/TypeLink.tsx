@@ -12,22 +12,18 @@ import {
   GraphQLType,
   GraphQLNamedType,
 } from 'graphql';
-import Maybe from 'graphql/tsutils/Maybe';
 import { OnClickTypeFunction } from './types';
+
+import { Maybe } from '../../types';
 
 type TypeLinkProps = {
   type?: Maybe<GraphQLType>;
-  onClick: OnClickTypeFunction;
+  onClick?: OnClickTypeFunction;
 };
 
-export default class TypeLink extends React.Component<TypeLinkProps> {
-  shouldComponentUpdate(nextProps: TypeLinkProps) {
-    return this.props.type !== nextProps.type;
-  }
-
-  render() {
-    return renderType(this.props.type, this.props.onClick);
-  }
+export default function TypeLink(props: TypeLinkProps) {
+  const onClick = props.onClick ? props.onClick : () => null;
+  return renderType(props.type, onClick);
 }
 
 function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {

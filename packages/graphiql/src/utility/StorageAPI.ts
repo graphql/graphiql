@@ -37,19 +37,20 @@ export default class StorageAPI {
       storage || (typeof window !== 'undefined' ? window.localStorage : null);
   }
 
-  get(name: string) {
+  get(name: string): string | null {
     if (this.storage) {
       const value = this.storage.getItem('graphiql:' + name);
       // Clean up any inadvertently saved null/undefined values.
       if (value === 'null' || value === 'undefined') {
         this.storage.removeItem('graphiql:' + name);
-        return;
+        return null;
       }
 
       if (value) {
         return value;
       }
     }
+    return null;
   }
 
   set(name: string, value: string) {

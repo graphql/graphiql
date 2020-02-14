@@ -7,7 +7,7 @@
 
 import { parse, print } from 'graphql';
 
-import { mergeAst } from '../mergeAst';
+import mergeAst from '../mergeAst';
 
 import { fixtures } from './mergeAst-fixture';
 

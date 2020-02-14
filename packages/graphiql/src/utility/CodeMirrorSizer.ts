@@ -1,5 +1,5 @@
 import CodeMirror from 'codemirror';
-import Maybe from 'graphql/tsutils/Maybe';
+import { Maybe } from '../types';
 
 export interface SizerComponent {
   getClientHeight: () => number | null;

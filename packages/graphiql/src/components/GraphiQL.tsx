@@ -41,7 +41,7 @@ import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
-import { mergeAST } from '../utility/mergeAst';
+import mergeAST from '../utility/mergeAst';
 import {
   introspectionQuery,
   introspectionQueryName,
@@ -180,7 +180,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const query =
       props.query !== undefined
         ? props.query
-        : this._storage.get('query') !== undefined
+        : this._storage.get('query')
         ? (this._storage.get('query') as string)
         : props.defaultQuery !== undefined
         ? props.defaultQuery
@@ -201,7 +201,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ? props.operationName
         : getSelectedOperationName(
             undefined,
-            this._storage.get('operationName'),
+            this._storage.get('operationName') as string,
             queryFacts && queryFacts.operations,
           );
 
@@ -223,7 +223,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.state = {
       schema: props.schema,
       query,
-      variables,
+      variables: variables as string,
       operationName,
       docExplorerOpen,
       response: props.response,
@@ -1113,14 +1113,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   };
 
-  private handleResizeStart: MouseEventHandler<HTMLDivElement> = downEvent => {
+  private handleResizeStart = (downEvent: React.MouseEvent) => {
     if (!this._didClickDragBar(downEvent)) {
       return;
     }
 
     downEvent.preventDefault();
 
-    const offset = downEvent.clientX - getLeft(downEvent.currentTarget);
+    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
     let onMouseMove: OnMouseMoveFn = moveEvent => {
       if (moveEvent.buttons === 0) {
@@ -1153,7 +1153,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (event.button !== 0 || event.ctrlKey) {
       return false;
     }
-    let target = event.currentTarget || (event.target as Element);
+    let target = event.target as Element;
     // We use codemirror's gutter as the drag bar.
     if (target.className.indexOf('CodeMirror-gutter') !== 0) {
       return false;

@@ -9,12 +9,16 @@ import QueryStore from '../QueryStore';
 import StorageAPI from '../StorageAPI';
 
 class StorageMock {
-  constructor(shouldThrow) {
+  shouldThrow: () => boolean;
+  count: number;
+  map: any;
+  storage: Storage;
+  constructor(shouldThrow: () => boolean) {
     this.shouldThrow = shouldThrow;
     this.map = {};
   }
 
-  set(key, value) {
+  set(key: string, value: string) {
     this.count++;
 
     if (this.shouldThrow()) {
@@ -34,7 +38,7 @@ class StorageMock {
     };
   }
 
-  get(key) {
+  get(key: string) {
     return this.map[key] || null;
   }
 }
@@ -45,7 +49,7 @@ describe('QueryStore', () => {
       const store = new QueryStore('normal', new StorageAPI());
 
       for (let i = 0; i < 100; i++) {
-        store.push(`item${i}`);
+        store.push({ query: `item${i}` });
       }
 
       expect(store.items.length).toBe(100);
@@ -56,12 +60,12 @@ describe('QueryStore', () => {
       const store = new QueryStore('normal', new StorageMock(() => i > 4));
 
       for (; i < 10; i++) {
-        store.push(`item${i}`);
+        store.push({ query: `item${i}` });
       }
 
       expect(store.items.length).toBe(5);
-      expect(store.items[0]).toBe('item0');
-      expect(store.items[4]).toBe('item4');
+      expect(store.items[0].query).toBe('item0');
+      expect(store.items[4].query).toBe('item4');
     });
   });
 
@@ -70,17 +74,17 @@ describe('QueryStore', () => {
       const store = new QueryStore('limited', new StorageAPI(), 20);
 
       for (let i = 0; i < 100; i++) {
-        store.push(`item${i}`);
+        store.push({ query: `item${i}` });
       }
 
       expect(store.items.length).toBe(20);
       // keeps the more recent items
-      expect(store.items[0]).toBe('item80');
-      expect(store.items[19]).toBe('item99');
+      expect(store.items[0].query).toBe('item80');
+      expect(store.items[19].query).toBe('item99');
     });
 
     it('tries to remove on quota error until it succeeds', () => {
-      let shouldThrow;
+      let shouldThrow: () => boolean;
       let retryCounter = 0;
       const store = new QueryStore(
         'normal',
@@ -93,55 +97,55 @@ describe('QueryStore', () => {
 
       for (let i = 0; i < 20; i++) {
         shouldThrow = () => false;
-        store.push(`item${i}`);
+        store.push({ query: `item${i}` });
       }
 
       expect(store.items.length).toBe(10);
       // keeps the more recent items
-      expect(store.items[0]).toBe('item10');
-      expect(store.items[9]).toBe('item19');
+      expect(store.items[0].query).toBe('item10');
+      expect(store.items[9].query).toBe('item19');
 
       // tries to add an item, succeeds on 3rd try
       retryCounter = 0;
       shouldThrow = () => retryCounter < 3;
-      store.push(`finalItem`);
+      store.push({ query: `finalItem` });
 
       expect(store.items.length).toBe(8);
-      expect(store.items[0]).toBe('item13');
-      expect(store.items[7]).toBe('finalItem');
+      expect(store.items[0].query).toBe('item13');
+      expect(store.items[7].query).toBe('finalItem');
     });
 
     it('tries to remove a maximum of 5 times', () => {
-      let shouldTrow;
+      let shouldThrow: () => boolean;
       let retryCounter = 0;
       const store = new QueryStore(
         'normal',
         new StorageMock(() => {
           retryCounter++;
-          return shouldTrow();
+          return shouldThrow();
         }),
         10,
       );
 
       for (let i = 0; i < 20; i++) {
-        shouldTrow = () => false;
-        store.push(`item${i}`);
+        shouldThrow = () => false;
+        store.push({ query: `item${i}` });
       }
 
       expect(store.items.length).toBe(10);
       // keeps the more recent items
-      expect(store.items[0]).toBe('item10');
-      expect(store.items[9]).toBe('item19');
+      expect(store.items[0].query).toBe('item10');
+      expect(store.items[9].query).toBe('item19');
 
       // tries to add an item, keeps failing
       retryCounter = 0;
-      shouldTrow = () => true;
-      store.push(`finalItem`);
+      shouldThrow = () => true;
+      store.push({ query: `finalItem` });
 
       expect(store.items.length).toBe(10);
       // kept the items
-      expect(store.items[0]).toBe('item10');
-      expect(store.items[9]).toBe('item19');
+      expect(store.items[0].query).toBe('item10');
+      expect(store.items[9].query).toBe('item19');
       // retried 5 times
       expect(retryCounter).toBe(5);
     });

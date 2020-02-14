@@ -8,3 +8,5 @@ export namespace GraphiQL {
 export namespace CodeMirror {
   export type ShowHintOptions = HintOptions & { container: HTMLElement | null };
 }
+
+export type Maybe<T> = T | null | undefined;

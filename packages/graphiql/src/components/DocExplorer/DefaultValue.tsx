@@ -21,7 +21,8 @@ type DefaultValueProps = {
 };
 
 export default function DefaultValue({ field }: DefaultValueProps) {
-  if ('defaultValue' in field) {
+  // field.defaultValue could be null or false, so be careful here!
+  if ('defaultValue' in field && field.defaultValue !== undefined) {
     return (
       <span>
         {' = '}

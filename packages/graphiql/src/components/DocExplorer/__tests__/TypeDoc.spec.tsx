@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 
 import { GraphQLString } from 'graphql';
 
@@ -23,6 +22,7 @@ import {
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {
     const { container } = render(
+      // @ts-ignore
       <TypeDoc
         schema={ExampleSchema}
         type={ExampleQuery}
@@ -61,6 +61,7 @@ describe('TypeDoc', () => {
 
   it('renders deprecated fields when you click to see them', () => {
     const { container } = render(
+      // @ts-ignore
       <TypeDoc
         schema={ExampleSchema}
         type={ExampleQuery}
@@ -84,6 +85,7 @@ describe('TypeDoc', () => {
 
   it('renders a Union type', () => {
     const { container } = render(
+      // @ts-ignore
       <TypeDoc schema={ExampleSchema} type={ExampleUnion} />,
     );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
@@ -93,6 +95,7 @@ describe('TypeDoc', () => {
 
   it('renders an Enum type', () => {
     const { container } = render(
+      // @ts-ignore
       <TypeDoc schema={ExampleSchema} type={ExampleEnum} />,
     );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
@@ -105,6 +108,7 @@ describe('TypeDoc', () => {
 
   it('shows deprecated enum values on click', () => {
     const { getByText, container } = render(
+      // @ts-ignore
       <TypeDoc schema={ExampleSchema} type={ExampleEnum} />,
     );
     const showBtn = getByText('Show deprecated values...');

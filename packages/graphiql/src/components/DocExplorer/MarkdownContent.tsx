@@ -7,7 +7,7 @@
 
 import React from 'react';
 import MD from 'markdown-it';
-import Maybe from 'graphql/tsutils/Maybe';
+import { Maybe } from '../../types';
 
 const md = new MD();
 

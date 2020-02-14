@@ -66,6 +66,7 @@
     "@types/codemirror": "0.0.82",
     "@types/markdown-it": "^0.0.9",
     "@types/node": "^13.7.1",
+    "@types/testing-library__jest-dom": "^5.0.1",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^7.0.0",
     "css-loader": "3.4.2",

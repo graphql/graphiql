@@ -27,9 +27,10 @@ import {
   GraphQLType,
 } from 'graphql/type/definition';
 import { GraphQLDirective } from 'graphql/type/directives';
-import Maybe from 'graphql/tsutils/Maybe';
 
-export { GraphQLConfig, GraphQLProjectConfig, Maybe };
+export type Maybe<T> = T | null | undefined;
+
+export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;

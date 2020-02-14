@@ -16,14 +16,14 @@ describe('StorageAPI', () => {
   });
 
   it('sets and gets a value correctly', () => {
-    let result = storage.set('key2', 'value');
+    const result = storage.set('key2', 'value');
     expect(result).toEqual({
       error: null,
       isQuotaError: false,
     });
 
-    result = storage.get('key2');
-    expect(result).toEqual('value');
+    const newResult = storage.get('key2');
+    expect(newResult).toEqual('value');
   });
 
   it('sets and removes a value correctly', () => {
@@ -33,14 +33,14 @@ describe('StorageAPI', () => {
       isQuotaError: false,
     });
 
-    result = storage.set('key3');
+    result = storage.set('key3', '');
     expect(result).toEqual({
       error: null,
       isQuotaError: false,
     });
 
-    result = storage.get('key3');
-    expect(result).toBeNull();
+    const getResult = storage.get('key3');
+    expect(getResult).toBeNull();
   });
 
   it('sets and overrides a value correctly', () => {
@@ -56,8 +56,8 @@ describe('StorageAPI', () => {
       isQuotaError: false,
     });
 
-    result = storage.get('key4');
-    expect(result).toEqual('value2');
+    const getResult = storage.get('key4');
+    expect(getResult).toEqual('value2');
   });
 
   it('cleans up `null` value', () => {
@@ -73,6 +73,7 @@ describe('StorageAPI', () => {
   });
 
   it('returns any error while setting a value', () => {
+    // @ts-ignore
     const throwingStorage = new StorageAPI({
       setItem: () => {
         throw new DOMException('Terrible Error');
@@ -86,6 +87,7 @@ describe('StorageAPI', () => {
   });
 
   it('returns isQuotaError to true if isQuotaError is thrown', () => {
+    // @ts-ignore
     const throwingStorage = new StorageAPI({
       setItem: () => {
         throw new DOMException('Terrible Error', 'QuotaExceededError');

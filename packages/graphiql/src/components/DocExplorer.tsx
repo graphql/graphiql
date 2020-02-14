@@ -28,7 +28,7 @@ const initialNav: NavStackItem = {
 };
 
 type DocExplorerProps = {
-  schema?: GraphQLSchema;
+  schema?: GraphQLSchema | null;
 };
 
 type DocExplorerState = {
