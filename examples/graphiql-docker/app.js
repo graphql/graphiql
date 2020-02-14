@@ -13,8 +13,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.get('/', function(req, res, next) {
   res.render('index', { GRAPHQL_API: process.env.GRAPHQL_API || 'http://localhost:8080/graphql' });
