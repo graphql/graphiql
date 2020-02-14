@@ -4,10 +4,22 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "react",
-    "allowJs": true,
+    "jsx": "preserve",
     "baseUrl": ".",
-    "noEmit": true
+    "strictPropertyInitialization": false,
+    "types": ["node", "jest"],
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
+    "lib": ["dom"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/dist/**.*",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js",
+    "**/*.stories.js",
+    "**/*.stories.ts"
+  ]
 }

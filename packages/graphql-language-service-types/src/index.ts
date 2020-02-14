@@ -28,6 +28,8 @@ import {
 } from 'graphql/type/definition';
 import { GraphQLDirective } from 'graphql/type/directives';
 
+export type Maybe<T> = T | null | undefined;
+
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
@@ -47,8 +49,8 @@ export interface CharacterStream {
   skipTo: (position: number) => void;
   match: (
     pattern: TokenPattern,
-    consume?: boolean | null | undefined,
-    caseFold?: boolean | null | undefined,
+    consume?: Maybe<boolean>,
+    caseFold?: Maybe<boolean>,
   ) => string[] | boolean;
   backUp: (num: number) => void;
   column: () => number;
@@ -114,7 +116,7 @@ export interface GraphQLCache {
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
+    fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
   ) => Promise<FragmentInfo[]>;
 
   getFragmentDependenciesForAST: (
@@ -209,11 +211,11 @@ export type RuleKind =
 export type State = {
   level: number;
   levels?: number[];
-  prevState: State | null | undefined;
-  rule: ParseRule | null | undefined;
-  kind: RuleKind | null | undefined;
-  name: string | null | undefined;
-  type: string | null | undefined;
+  prevState: Maybe<State>;
+  rule: Maybe<ParseRule>;
+  kind: Maybe<RuleKind>;
+  name: Maybe<string>;
+  type: Maybe<string>;
   step: number;
   needsSeperator: boolean;
   needsAdvance?: boolean;
@@ -247,15 +249,15 @@ export type ContextToken = {
 };
 
 export type AllTypeInfo = {
-  type: GraphQLType | null | undefined;
-  parentType: GraphQLType | null | undefined;
-  inputType: GraphQLType | null | undefined;
-  directiveDef: GraphQLDirective | null | undefined;
-  fieldDef: GraphQLField<any, any> | null | undefined;
-  enumValue: GraphQLEnumValue | null | undefined;
-  argDef: GraphQLArgument | null | undefined;
-  argDefs: GraphQLArgument[] | null | undefined;
-  objectFieldDefs: GraphQLInputFieldMap | null | undefined;
+  type: Maybe<GraphQLType>;
+  parentType: Maybe<GraphQLType>;
+  inputType: Maybe<GraphQLType>;
+  directiveDef: Maybe<GraphQLDirective>;
+  fieldDef: Maybe<GraphQLField<any, any>>;
+  enumValue: Maybe<GraphQLEnumValue>;
+  argDef: Maybe<GraphQLArgument>;
+  argDefs: Maybe<GraphQLArgument[]>;
+  objectFieldDefs: Maybe<GraphQLInputFieldMap>;
 };
 
 export type FragmentInfo = {

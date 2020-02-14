@@ -10,6 +10,7 @@
     "declarationMap": true,
     "removeComments": true,
     "strict": true,
+    "jsx": "react",
     "noImplicitAny": true,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
