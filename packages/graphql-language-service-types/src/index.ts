@@ -35,8 +35,6 @@ export type Maybe<T> = T | null | undefined;
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
-export type Maybe<T> = null | T;
-
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
 export interface CharacterStream {
