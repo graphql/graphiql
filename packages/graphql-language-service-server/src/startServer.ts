@@ -7,7 +7,7 @@
  *
  */
 
-import net from 'net';
+import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
 
 import {
@@ -35,6 +35,9 @@ import {
   PublishDiagnosticsNotification,
   DidChangeWatchedFilesNotification,
   ShutdownRequest,
+  DocumentSymbolRequest,
+  // WorkspaceSymbolRequest,
+  // ReferencesRequest,
 } from 'vscode-languageserver';
 
 import { Logger } from './Logger';
@@ -54,7 +57,7 @@ type Options = {
  * @param options {Options} server initialization methods
  * @returns {Promise<void>}
  */
-export default (async function startServer(options: Options): Promise<void> {
+export default async function startServer(options: Options): Promise<void> {
   const logger = new Logger();
 
   if (options && options.method) {
@@ -102,7 +105,7 @@ export default (async function startServer(options: Options): Promise<void> {
     addHandlers(connection, logger, options.configDir);
     connection.listen();
   }
-});
+}
 
 function addHandlers(
   connection: MessageConnection,
@@ -182,4 +185,13 @@ function addHandlers(
   connection.onNotification(DidChangeWatchedFilesNotification.type, params =>
     messageProcessor.handleWatchedFilesChangedNotification(params),
   );
+  connection.onRequest(DocumentSymbolRequest.type, params =>
+    messageProcessor.handleDocumentSymbolRequest(params),
+  );
+  // connection.onRequest(WorkspaceSymbolRequest.type, params =>
+  //   messageProcessor.handleWorkspaceSymbolRequest(params),
+  // );
+  // connection.onRequest(ReferencesRequest.type, params =>
+  //   messageProcessor.handleReferencesRequest(params),
+  // );
 }

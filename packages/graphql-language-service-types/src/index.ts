@@ -12,12 +12,14 @@ import {
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
+
 import {
   ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  NameNode,
 } from 'graphql/language';
 import {
   GraphQLArgument,
@@ -282,7 +284,7 @@ export type Diagnostic = DiagnosticType;
 
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
-  deprecationReason?: string;
+  deprecationReason?: Maybe<string>;
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
@@ -316,7 +318,7 @@ export type TokenKind =
   | 'type';
 export type TextToken = {
   kind: TokenKind;
-  value: string | undefined;
+  value: string | NameNode;
 };
 
 export type TokenizedText = TextToken[];
@@ -325,7 +327,7 @@ export type OutlineTree = {
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-
+  kind: string;
   startPosition: Position;
   endPosition?: Position;
   children: OutlineTree[];
