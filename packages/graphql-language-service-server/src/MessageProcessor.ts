@@ -7,18 +7,15 @@
  *
  */
 
-import { extname, dirname } from 'path';
+import { extname } from 'path';
 import { readFileSync } from 'fs';
 import { URL } from 'url';
-import { findGraphQLConfigFile } from 'graphql-config';
 
 import {
   CachedContent,
   GraphQLCache,
   Uri,
   FileChangeTypeKind,
-  // Outline,
-  // OutlineTree,
   DefinitionQueryResult,
 } from 'graphql-language-service-types';
 
@@ -107,11 +104,7 @@ export class MessageProcessor {
       },
     };
 
-    const rootPath = dirname(
-      findGraphQLConfigFile(
-        configDir ? configDir.trim() : (params.rootPath as string),
-      ),
-    );
+    const rootPath = configDir ? configDir.trim() : params.rootPath;
     if (!rootPath) {
       throw new Error(
         '`--configDir` option or `rootPath` argument is required.',
@@ -180,13 +173,15 @@ export class MessageProcessor {
       }),
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didOpen',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -249,13 +244,15 @@ export class MessageProcessor {
       }),
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didChange',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -280,13 +277,15 @@ export class MessageProcessor {
       this._textDocumentCache.delete(uri);
     }
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didClose',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -359,13 +358,15 @@ export class MessageProcessor {
       textDocument.uri,
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/completion',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(textDocument.uri),
+        projectName: project && project.name,
         fileName: textDocument.uri,
       }),
     );
@@ -456,13 +457,15 @@ export class MessageProcessor {
             )
           ).reduce((left, right) => left.concat(right));
 
+          const project = this._graphQLCache
+            .getGraphQLConfig()
+            .getProjectForFile(uri);
+
           this._logger.log(
             JSON.stringify({
               type: 'usage',
               messageType: 'workspace/didChangeWatchedFiles',
-              projectName: this._graphQLCache
-                .getGraphQLConfig()
-                .getProjectNameForFile(uri),
+              projectName: project && project.name,
               fileName: uri,
             }),
           );
@@ -470,12 +473,12 @@ export class MessageProcessor {
           return { uri, diagnostics };
         } else if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().configDir,
+            this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
           this._graphQLCache.updateObjectTypeDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().configDir,
+            this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
@@ -543,13 +546,15 @@ export class MessageProcessor {
         })
       : [];
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/definition',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(textDocument.uri),
+        projectName: project && project.name,
         fileName: textDocument.uri,
       }),
     );
@@ -610,7 +615,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
+    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,
@@ -623,7 +628,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
+    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,

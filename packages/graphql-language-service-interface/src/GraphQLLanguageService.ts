@@ -21,15 +21,13 @@ import {
   DefinitionQueryResult,
   Diagnostic,
   GraphQLCache,
-  GraphQLConfig,
-  GraphQLProjectConfig,
   Uri,
   Position,
   Outline,
   OutlineTree,
 } from 'graphql-language-service-types';
 
-// import { Position } from 'graphql-language-service-utils';
+import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 import {
   Hover,
   SymbolInformation,
@@ -111,7 +109,7 @@ export class GraphQLLanguageService {
   }
 
   getConfigForURI(uri: Uri) {
-    const config = this._graphQLConfig.getConfigForFile(uri);
+    const config = this._graphQLConfig.getProjectForFile(uri);
     if (config) {
       return config;
     }
@@ -127,7 +125,7 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
-    const { schemaPath, projectName, extensions } = projectConfig;
+    const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
       const queryAST = parse(query);
@@ -228,7 +226,7 @@ export class GraphQLLanguageService {
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {
@@ -244,7 +242,7 @@ export class GraphQLLanguageService {
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {
@@ -435,7 +433,7 @@ export class GraphQLLanguageService {
 
     return result;
   }
-  async getOutline(query: string): Promise<Outline | null | undefined> {
-    return getOutline(query);
+  async getOutline(documentText: string): Promise<Outline | null> {
+    return getOutline(documentText);
   }
 }

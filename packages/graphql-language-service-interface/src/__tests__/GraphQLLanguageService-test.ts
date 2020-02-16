@@ -8,8 +8,6 @@
  */
 
 import { join } from 'path';
-import * as fs from 'fs';
-import { buildSchema } from 'graphql';
 
 import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
@@ -17,24 +15,22 @@ import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service-utils';
 
 const MOCK_CONFIG = {
-  schemaPath: './__schema__/StarWarsSchema.graphql',
-  includes: ['./queries/**', '**/*.graphql'],
+  filepath: join(__dirname, '.graphqlrc.yml'),
+  config: {
+    schema: './__schema__/StarWarsSchema.graphql',
+    documents: ['./queries/**', '**/*.graphql'],
+  },
 };
 
 describe('GraphQLLanguageService', () => {
-  const mockCache: any = {
-    getSchema() {
-      const schemaSDL = fs.readFileSync(
-        join(__dirname, '__schema__/StarWarsSchema.graphql'),
-        'utf8',
-      );
-
-      const schemaJS = buildSchema(schemaSDL);
-      return new Promise((resolve, _reject) => resolve(schemaJS));
+  const mockCache = {
+    async getSchema() {
+      const config = this.getGraphQLConfig();
+      return config.getDefault()!.getSchema();
     },
 
     getGraphQLConfig() {
-      return new GraphQLConfig(MOCK_CONFIG, join(__dirname, '.graphqlconfig'));
+      return new GraphQLConfig(MOCK_CONFIG, []);
     },
 
     getObjectTypeDefinitions() {
@@ -78,7 +74,7 @@ describe('GraphQLLanguageService', () => {
 
   let languageService: GraphQLLanguageService;
   beforeEach(() => {
-    languageService = new GraphQLLanguageService(mockCache);
+    languageService = new GraphQLLanguageService(mockCache as any);
   });
 
   it('runs diagnostic service as expected', async () => {

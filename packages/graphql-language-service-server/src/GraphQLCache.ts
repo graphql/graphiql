@@ -11,13 +11,11 @@ import { ASTNode, DocumentNode, DefinitionNode } from 'graphql/language';
 import {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
-  GraphQLConfig as GraphQLConfigInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
   ObjectTypeInfo,
   Uri,
-  GraphQLProjectConfig,
 } from 'graphql-language-service-types';
 
 import * as fs from 'fs';
@@ -25,9 +23,9 @@ import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 
 import {
-  getGraphQLConfig,
+  loadConfig,
   GraphQLConfig,
-  GraphQLEndpoint,
+  GraphQLProjectConfig,
 } from 'graphql-config';
 import { getQueryAndRange } from './MessageProcessor';
 import stringToHash from './stringToHash';
@@ -54,8 +52,10 @@ const {
   DIRECTIVE_DEFINITION,
 } = Kind;
 
-export async function getGraphQLCache(configDir: Uri): Promise<GraphQLCache> {
-  const graphQLConfig = await getGraphQLConfig(configDir);
+export async function getGraphQLCache(
+  configDir: Uri,
+): Promise<GraphQLCacheInterface> {
+  const graphQLConfig = await loadConfig({ rootDir: configDir });
   return new GraphQLCache(configDir, graphQLConfig);
 }
 
@@ -78,7 +78,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._typeExtensionMap = new Map();
   }
 
-  getGraphQLConfig = (): GraphQLConfigInterface => this._graphQLConfig;
+  getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getFragmentDependencies = async (
     query: string,
@@ -159,17 +159,21 @@ export class GraphQLCache implements GraphQLCacheInterface {
   ): Promise<Map<string, FragmentInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
-    const rootDir = projectConfig.configDir;
+    const rootDir = projectConfig.dirpath;
     if (this._fragmentDefinitionsCache.has(rootDir)) {
       return this._fragmentDefinitionsCache.get(rootDir) || new Map();
     }
 
     const filesFromInputDirs = await this._readFilesFromInputDirs(
       rootDir,
-      projectConfig.includes,
+      projectConfig.include instanceof Array
+        ? projectConfig.include
+        : projectConfig.include
+        ? [projectConfig.include]
+        : [],
     );
     const list = filesFromInputDirs.filter(fileInfo =>
-      projectConfig.includesFile(fileInfo.filePath),
+      projectConfig.match(fileInfo.filePath),
     );
 
     const {
@@ -271,16 +275,20 @@ export class GraphQLCache implements GraphQLCacheInterface {
   ): Promise<Map<string, ObjectTypeInfo>> => {
     // This function may be called from other classes.
     // If then, check the cache first.
-    const rootDir = projectConfig.configDir;
+    const rootDir = projectConfig.dirpath;
     if (this._typeDefinitionsCache.has(rootDir)) {
       return this._typeDefinitionsCache.get(rootDir) || new Map();
     }
     const filesFromInputDirs = await this._readFilesFromInputDirs(
       rootDir,
-      projectConfig.includes,
+      projectConfig.include instanceof Array
+        ? projectConfig.include
+        : projectConfig.include
+        ? [projectConfig.include]
+        : [],
     );
     const list = filesFromInputDirs.filter(fileInfo =>
-      projectConfig.includesFile(fileInfo.filePath),
+      projectConfig.match(fileInfo.filePath),
     );
     const {
       objectTypeDefinitions,
@@ -589,44 +597,20 @@ export class GraphQLCache implements GraphQLCacheInterface {
     appName?: string,
     queryHasExtensions?: boolean | null,
   ): Promise<GraphQLSchema | null> => {
-    const projectConfig = this._graphQLConfig.getProjectConfig(appName);
+    const projectConfig = this._graphQLConfig.getProject(appName);
 
     if (!projectConfig) {
       return null;
     }
 
-    const schemaPath = projectConfig.schemaPath;
-    const endpointInfo = this._getDefaultEndpoint(projectConfig);
-    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
-      projectConfig,
-    );
+    const schemaPath = projectConfig.schema as string;
+    const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
 
     let schemaCacheKey = null;
     let schema = null;
 
-    if (endpointInfo && endpointKey) {
-      const { endpoint } = endpointInfo;
-      schemaCacheKey = endpointKey;
-
-      // Maybe use cache
-      if (this._schemaMap.has(schemaCacheKey)) {
-        schema = this._schemaMap.get(schemaCacheKey);
-        // @ts-ignore
-        return schema && queryHasExtensions
-          ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-          : schema;
-      }
-
-      // Read schema from network
-      try {
-        schema = await endpoint.resolveSchema();
-      } catch (failure) {
-        // Never mind
-      }
-    }
-
     if (!schema && schemaPath && schemaKey) {
-      schemaCacheKey = schemaKey;
+      schemaCacheKey = schemaKey as string;
 
       // Maybe use cache
       if (this._schemaMap.has(schemaCacheKey)) {
@@ -639,7 +623,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       }
 
       // Read from disk
-      schema = projectConfig.getSchema();
+      schema = await projectConfig.getSchema();
     }
 
     const customDirectives = projectConfig.extensions.customDirectives;
@@ -669,55 +653,18 @@ export class GraphQLCache implements GraphQLCacheInterface {
   };
 
   _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
-    const { endpointKey, schemaKey } = this._getSchemaCacheKeysForProject(
+    const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
-    );
-    endpointKey && this._schemaMap.delete(endpointKey);
+    ) as string;
     schemaKey && this._schemaMap.delete(schemaKey);
   }
 
-  _getSchemaCacheKeysForProject(projectConfig: GraphQLProjectConfig) {
-    const endpointInfo = this._getDefaultEndpoint(projectConfig);
-    const projectName = this._getProjectName(projectConfig);
-    return {
-      endpointKey: endpointInfo
-        ? `${endpointInfo.endpointName}:${projectName}`
-        : null,
-      schemaKey: projectConfig.schemaPath
-        ? `${projectConfig.schemaPath}:${projectName}`
-        : null,
-    };
+  _getSchemaCacheKeyForProject(projectConfig: GraphQLProjectConfig) {
+    return projectConfig.schema;
   }
 
   _getProjectName(projectConfig: GraphQLProjectConfig) {
-    return projectConfig || 'undefinedName';
-  }
-
-  _getDefaultEndpoint(
-    projectConfig: GraphQLProjectConfig,
-  ): { endpointName: string; endpoint: GraphQLEndpoint } | null {
-    // Jumping through hoops to get the default endpoint by name (needed for cache key)
-    const endpointsExtension = projectConfig.endpointsExtension;
-    if (!endpointsExtension) {
-      return null;
-    }
-    // not public but needed
-    // @ts-ignore
-    const defaultRawEndpoint = endpointsExtension.getRawEndpoint();
-    const rawEndpointsMap = endpointsExtension.getRawEndpointsMap();
-
-    const endpointName = Object.keys(rawEndpointsMap).find(
-      name => rawEndpointsMap[name] === defaultRawEndpoint,
-    );
-
-    if (!endpointName) {
-      return null;
-    }
-
-    return {
-      endpointName,
-      endpoint: endpointsExtension.getEndpoint(endpointName),
-    };
+    return projectConfig || 'default';
   }
 
   /**

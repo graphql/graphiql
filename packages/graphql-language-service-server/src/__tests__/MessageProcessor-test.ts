@@ -34,8 +34,8 @@ describe('MessageProcessor', () => {
       // @ts-ignore
       getGraphQLConfig() {
         return {
-          configDir: __dirname,
-          getProjectNameForFile() {
+          dirpath: __dirname,
+          getProjectForFile() {
             return null;
           },
         };
