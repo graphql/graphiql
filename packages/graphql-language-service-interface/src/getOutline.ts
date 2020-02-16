@@ -76,15 +76,15 @@ type OutlineTreeConverterType = Partial<
   }
 >;
 
-export function getOutline(queryText: string): Outline | null {
+export function getOutline(documentText: string): Outline | null {
   let ast;
   try {
-    ast = parse(queryText);
+    ast = parse(documentText);
   } catch (error) {
     return null;
   }
 
-  const visitorFns = outlineTreeConverter(queryText);
+  const visitorFns = outlineTreeConverter(documentText);
   const outlineTrees = visit(ast, {
     leave(node) {
       if (visitorFns !== undefined && node.kind in visitorFns) {

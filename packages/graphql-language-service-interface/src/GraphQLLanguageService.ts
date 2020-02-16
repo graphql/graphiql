@@ -433,7 +433,7 @@ export class GraphQLLanguageService {
 
     return result;
   }
-  async getOutline(query: string): Promise<Outline | null | undefined> {
-    return getOutline(query);
+  async getOutline(documentText: string): Promise<Outline | null> {
+    return getOutline(documentText);
   }
 }
