@@ -4,7 +4,7 @@ We've applied for some [google summer of code initiatves](https://github.com/gra
 
 Here's some information about some initiatives that are relevant to this repository:
 
-## Initiative 2) Plugins
+## Initiative 2) GraphiQL Plugins
 > **[original proposal](https://github.com/graphql/foundation/tree/master/mentorship/2020/gsoc#3-graphiql-plugins-medium)**
 
 ### Summary
