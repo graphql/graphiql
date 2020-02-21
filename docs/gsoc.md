@@ -7,7 +7,13 @@ Here's some information about some initiatives that are relevant to this reposit
 ## Initiative 2) Plugins
 > **[original proposal](https://github.com/graphql/foundation/tree/master/mentorship/2020/gsoc#3-graphiql-plugins-medium)**
 
+### Summary
 The plugin API for GraphiQL is currently in development.
+
+Mentees can check back here in a month or two here for links to a guide to creating plugins with the beta API, and a list of existing and new plugins that they can help with :smile:.
+
+### Plugin Roadmap
+
 We currently have both visual and plugin design proposals in the works:
 
 - https://github.com/graphql/graphiql/issues/829
@@ -23,9 +29,10 @@ most of the current work in progress can be described here:
 - Implement Redesign, Layout & Themeing System -  https://github.com/graphql/graphiql/projects/11
 - renderGraphiQL function and middlewares - https://github.com/graphql/graphiql/projects/8
 
-and more projects towards plugin API will be created once these are closed.
+More projects towards plugin API will be created once these are closed.
 
-## Initiative 3) Plugins
+
+## Initiative 3) Add streaming support and error recovery to reference GraphQL parser (medium/hard)
 *coming soon*
 
 ## General Background Information:
