@@ -13,7 +13,8 @@ We currently have both visual and plugin design proposals in the works:
 - https://github.com/graphql/graphiql/issues/829
 - https://github.com/graphql/graphiql/issues/978
 
-and are developing a storybook of components for folks to use when creating plugins
+and are developing a storybook of components for folks to use when creating plugins.
+
 we anticipate that within 1-2 months, people will be able to begin developing plugins as described in the proposal.
 
 most of the current work in progress can be described here:
