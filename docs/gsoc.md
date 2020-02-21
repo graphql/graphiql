@@ -4,7 +4,7 @@ We've applied for some [google summer of code initiatves](https://github.com/gra
 
 Here's some information about some initiatives that are relevant to this repository:
 
-## 3) Plugins
+## Initiative 2) Plugins
 > **[original proposal](https://github.com/graphql/foundation/tree/master/mentorship/2020/gsoc#3-graphiql-plugins-medium)**
 
 The plugin API for GraphiQL is currently in development.
@@ -24,6 +24,8 @@ most of the current work in progress can be described here:
 
 and more projects towards plugin API will be created once these are closed.
 
+## Initiative 3) Plugins
+*coming soon*
 
 ## General Background Information:
 
