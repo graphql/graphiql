@@ -31,7 +31,6 @@ describe('GraphQLCache', () => {
   let cache = new GraphQLCache(configDir, graphQLRC);
 
   beforeEach(async () => {
-    const configDir = __dirname;
     graphQLRC = await loadConfig({ rootDir: configDir });
     cache = new GraphQLCache(configDir, graphQLRC);
   });
