@@ -31,6 +31,6 @@ const languageService = new LanguageService({
 });
 ```
 
-### Methods
+## Advanced Usage
 
-We are working on restoring our typedoc which will provide much more info soon.
+See the [typedoc](https://graphiql-test.netlify.com/typedoc) for more API documentation

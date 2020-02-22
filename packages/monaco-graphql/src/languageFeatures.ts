@@ -249,7 +249,7 @@ export class DocumentFormattingAdapter
 }
 
 export class HoverAdapter implements monaco.languages.HoverProvider {
-  constructor(private _worker: WorkerAccessor) {}
+  constructor(private _worker: WorkerAccessor) { }
 
   async provideHover(
     model: editor.IReadOnlyModel,
@@ -271,5 +271,5 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
     return;
   }
 
-  dispose() {}
+  dispose() { }
 }

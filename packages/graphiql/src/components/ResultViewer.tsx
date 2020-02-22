@@ -5,37 +5,24 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component, FunctionComponent } from 'react';
+import React, { Component, FunctionComponent, useEffect } from 'react';
 import * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from '../utility/CodeMirrorSizer';
 import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
+import { useSessionContext } from '../state/GraphiQLSessionProvider';
 
 type ResultViewerProps = {
-  value?: string;
   editorTheme?: string;
   ResultsTooltip?: typeof Component | FunctionComponent;
   ImagePreview: typeof ImagePreviewComponent;
-  registerRef: (node: HTMLElement) => void;
 };
 
-/**
- * ResultViewer
- *
- * Maintains an instance of CodeMirror for viewing a GraphQL response.
- *
- * Props:
- *
- *   - value: The text of the editor.
- *
- */
-export class ResultViewer extends React.Component<ResultViewerProps, {}>
-  implements SizerComponent {
-  viewer: (CM.Editor & { options: any }) | null = null;
-  _node: HTMLElement | null = null;
-
-  componentDidMount() {
+export function ResultViewer(props: ResultViewerProps) {
+  const divRef = React.useRef<HTMLElement | null>(null);
+  const viewerRef = React.useRef<CM.Editor & { options: any }>();
+  const session = useSessionContext();
+  useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
     const CodeMirror = require('codemirror');
@@ -47,8 +34,8 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
-    const Tooltip = this.props.ResultsTooltip;
-    const ImagePreview = this.props.ImagePreview;
+    const Tooltip = props.ResultsTooltip;
+    const ImagePreview = props.ImagePreview;
 
     if (Tooltip || ImagePreview) {
       require('codemirror-graphql/utils/info-addon');
@@ -80,65 +67,35 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
       );
     }
 
-    this.viewer = CodeMirror(this._node, {
+    viewerRef.current = CodeMirror(divRef.current, {
       lineWrapping: true,
-      value: this.props.value || '',
+      value: session.results?.text ?? '',
       readOnly: true,
-      theme: this.props.editorTheme || 'graphiql',
+      theme: props.editorTheme || 'graphiql',
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {
         minFoldSize: 4,
       },
       gutters: ['CodeMirror-foldgutter'],
-      info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
+      info: Boolean(props.ResultsTooltip || props.ImagePreview),
       extraKeys: commonKeys,
     });
-  }
+  }, []);
 
-  shouldComponentUpdate(nextProps: ResultViewerProps) {
-    return this.props.value !== nextProps.value;
-  }
-
-  componentDidUpdate() {
-    if (this.viewer) {
-      this.viewer.setValue(this.props.value || '');
+  useEffect(() => {
+    if (session.results && viewerRef.current) {
+      viewerRef.current.setValue(session.results.text || '');
     }
-  }
+  }, [session.results, session.results.text]);
 
-  componentWillUnmount() {
-    this.viewer = null;
-  }
-
-  render() {
-    return (
-      <section
-        className="result-window"
-        aria-label="Result Window"
-        aria-live="polite"
-        aria-atomic="true"
-        ref={node => {
-          if (node) {
-            this.props.registerRef(node);
-            this._node = node;
-          }
-        }}
-      />
-    );
-  }
-
-  /**
-   * Public API for retrieving the CodeMirror instance from this
-   * React component.
-   */
-  getCodeMirror() {
-    return this.viewer as CM.Editor;
-  }
-
-  /**
-   * Public API for retrieving the DOM client height for this component.
-   */
-  getClientHeight() {
-    return this._node && this._node.clientHeight;
-  }
+  return (
+    <section
+      className="result-window"
+      aria-label="Result Window"
+      aria-live="polite"
+      aria-atomic="true"
+      ref={divRef}
+    />
+  );
 }
