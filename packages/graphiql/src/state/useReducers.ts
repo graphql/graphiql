@@ -26,32 +26,30 @@ export type Effects<S, AT, A> = {
 
 export type UseReducersArgs<S, AT, A> = {
   reducers: Reducer<S, AT, A>[];
-  init: (a: S) => S;
+  init: (args: Partial<S>) => S;
   effects?: Effects<S, AT, A>;
 };
 
-export type DispatchWithEffects<AT, Action> = (
-  action: ReducerAction<AT, Action>,
-) => void;
+export type DispatchWithEffects<AT, A> = (action: ReducerAction<AT, A>) => void;
 
-export function useReducers<State, ActionTypes, Action = ActionDefault>({
+export function useReducers<State, ActionTypes, Action>({
   reducers = [],
-  init = (): State => Object.create(null),
+  init = (args: Partial<State>): State => Object.create(args || null),
   effects,
 }: UseReducersArgs<State, ActionTypes, Action>): [
   State,
   DispatchWithEffects<ActionTypes, Action>,
 ] {
   const [state, dispatch] = useReducer<
-    ReactReducer<State, ActionDefault>,
+    ReactReducer<State, Action>,
     ActionTypes
   >(
-    function combineReducers(state: State, action: ActionDefault) {
+    function combineReducers(nextState: State, action: ActionDefault) {
       return reducers.reduce(function reduceReducer(s, r) {
         return r({ ...s, ...r }, { ...action, ...r }, init);
-      }, state);
+      }, nextState);
     },
-    init() as State,
+    init(),
     init,
   );
 

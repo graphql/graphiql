@@ -3,46 +3,29 @@ import { GraphQLSchema } from 'graphql';
 import {
   generateActionTypeMap,
   DispatchWithEffects,
-  ActionDefault,
   useReducers,
+  Reducer,
 } from './useReducers';
 import { defaultSchemaLoader } from './common';
 import { SchemaConfig } from './types';
 
-export const actionTypes = generateActionTypeMap([
-  'schema_changed',
-  'schema_requested',
-  'schema_succeeded',
-  'schema_errored',
-]);
-
-type AT = keyof typeof actionTypes;
-
-export type File = {
-  uri: string;
-  text?: string;
-};
-
-export type OperationParams = {
-  query: string;
-  variables: string;
-  operationName: string;
-};
+/**
+ * Initial State
+ */
 
 export type SchemaState = {
-  schema?: GraphQLSchema;
+  schema: GraphQLSchema | null;
   isLoading: boolean;
   hasError: boolean;
   error?: string;
   config: SchemaConfig;
 };
 
-export type SchemaContextValue = { state: SchemaState } & ProjectHandlers;
-
 export const initialReducerState: SchemaState = {
   isLoading: false,
   hasError: false,
   config: { uri: 'https://swapi-graphql.netlify.com/.netlify/functions/index' },
+  schema: null,
 };
 
 export const getInitialState = (
@@ -51,6 +34,12 @@ export const getInitialState = (
   ...initialReducerState,
   ...initialState,
 });
+
+/**
+ * Context
+ */
+
+export type SchemaContextValue = { state: SchemaState } & ProjectHandlers;
 
 export const SchemaContext = React.createContext<SchemaContextValue>({
   state: getInitialState(),
@@ -62,14 +51,31 @@ export const SchemaContext = React.createContext<SchemaContextValue>({
 
 export const useSchemaContext = () => React.useContext(SchemaContext);
 
-export type SchemaReducer<S = {}> = React.Reducer<
-  S & SchemaState,
-  React.ReducerAction<any>
->;
+/**
+ * Action Types & Reducers
+ */
+
+export const actionTypes = generateActionTypeMap([
+  'schema_changed',
+  'schema_requested',
+  'schema_succeeded',
+  'schema_errored',
+  'schema_reset',
+]);
+
+export type AT = keyof typeof actionTypes;
+
+export type SchemaAction = {
+  type: AT;
+  payload: { isLoading: boolean } & GraphQLSchema & SchemaConfig;
+};
+
+export type SchemaReducer = Reducer<SchemaState, AT, SchemaAction>;
 
 export const schemaReducer: SchemaReducer = (
-  state: SchemaState,
+  state,
   { type: actionType, payload },
+  init,
 ) => {
   switch (actionType) {
     case actionTypes.schema_changed: {
@@ -93,17 +99,18 @@ export const schemaReducer: SchemaReducer = (
       state.error = payload.toString();
       return state;
     }
+    case actionTypes.schema_reset: {
+      return init();
+    }
     default: {
       return state;
     }
   }
 };
 
-export type SchemaActions = {
-  type: AT;
-  error?: Error;
-  payload?: any;
-};
+/**
+ * Provider
+ */
 
 export type SchemaProviderProps = {
   config: SchemaConfig;
@@ -115,7 +122,7 @@ export type ProjectHandlers = {
   loadSchema: (state: SchemaState, config: SchemaConfig) => Promise<void>;
   loadCurrentSchema: (state: SchemaState) => Promise<void>;
   schemaLoader: typeof defaultSchemaLoader;
-  dispatch: DispatchWithEffects<AT, SchemaActions>;
+  dispatch: DispatchWithEffects<AT, SchemaAction>;
 };
 
 export function SchemaProvider({
@@ -125,8 +132,9 @@ export function SchemaProvider({
 }: SchemaProviderProps) {
   const [didMount, setDidMount] = React.useState(false);
   const [state, dispatch] = useReducers<
-    React.Reducer<SchemaState, ActionDefault>,
-    ActionDefault
+    SchemaState,
+    SchemaAction,
+    SchemaReducer
   >({
     reducers: [schemaReducer],
     init: args => ({
