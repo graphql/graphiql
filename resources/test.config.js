@@ -1,4 +1,3 @@
-/* global jsdom */
 /**
  *  Copyright (c) 2019 GraphQL Contributors.
  *
