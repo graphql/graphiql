@@ -1130,7 +1130,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const editorBar = this.editorBarComponent as HTMLElement;
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
-      this.setState({ editorFlex: leftSize / rightSize });
+      if (rightSize === 0) {
+        this.setState({ editorFlex: 10000 });
+      } else {
+        this.setState({ editorFlex: leftSize / rightSize });
+      }
     };
 
     let onMouseUp: OnMouseUpFn = () => {
