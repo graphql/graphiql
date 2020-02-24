@@ -62,6 +62,7 @@ export default class HistoryQuery extends React.Component<
         .filter(line => line.indexOf('#') !== 0)
         .join('');
     const starIcon = this.props.favorite ? '\u2605' : '\u2606';
+    const editIcon = '\u270e';
     return (
       <li className={this.state.editable ? 'editable' : undefined}>
         {this.state.editable ? (
@@ -83,13 +84,17 @@ export default class HistoryQuery extends React.Component<
           </button>
         )}
         <button
+          style={{ fontSize: '1.25rem' }}
           onClick={this.handleEditClick.bind(this)}
+          title="Edit label"
           aria-label="Edit label">
-          {'\u270e'}
+          {editIcon}
         </button>
         <button
+          style={{ fontSize: '1.25rem' }}
           className={this.props.favorite ? 'favorited' : undefined}
           onClick={this.handleStarClick.bind(this)}
+          title="Favorite"
           aria-label={this.props.favorite ? 'Remove favorite' : 'Add favorite'}>
           {starIcon}
         </button>
