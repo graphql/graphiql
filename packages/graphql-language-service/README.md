@@ -49,7 +49,7 @@ The graphql features we support are:
 
 ### Using the command-line interface
 
-The node executable contains several commands: `server` and a command-line language service methods (`lint`, `autocomplete`, `outline`).
+The node executable contains several commands: `server` and a command-line language service methods (`validate`, `autocomplete`, `outline`).
 
 Improving this list is a work-in-progress.
 
