@@ -54,6 +54,7 @@ export default class HistoryQuery extends React.Component<
   }
 
   render() {
+    const { favorite, label } = this.props;
     const displayName =
       this.props.label ||
       this.props.operationName ||
@@ -61,13 +62,13 @@ export default class HistoryQuery extends React.Component<
         ?.split('\n')
         .filter(line => line.indexOf('#') !== 0)
         .join('');
-    const starIcon = this.props.favorite ? '\u2605' : '\u2606';
+    const starIcon = favorite ? '\u2605' : '\u2606';
     return (
       <li className={this.state.editable ? 'editable' : undefined}>
         {this.state.editable ? (
           <input
             type="text"
-            defaultValue={this.props.label}
+            defaultValue={label}
             ref={c => {
               this.editField = c;
             }}
@@ -88,9 +89,9 @@ export default class HistoryQuery extends React.Component<
           {'\u270e'}
         </button>
         <button
-          className={this.props.favorite ? 'favorited' : undefined}
+          className={favorite ? 'favorited' : undefined}
           onClick={this.handleStarClick.bind(this)}
-          aria-label={this.props.favorite ? 'Remove favorite' : 'Add favorite'}>
+          aria-label={favorite ? 'Remove favorite' : 'Add favorite'}>
           {starIcon}
         </button>
       </li>
@@ -98,34 +99,34 @@ export default class HistoryQuery extends React.Component<
   }
 
   handleClick() {
-    this.props.onSelect(
-      this.props.query,
-      this.props.variables,
-      this.props.operationName,
-      this.props.label,
-    );
+    const { query, variables, operationName, label } = this.props;
+    this.props.onSelect(query, variables, operationName, label);
   }
 
   handleStarClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
+
+    const { query, variables, operationName, label, favorite } = this.props;
     this.props.handleToggleFavorite(
-      this.props.query,
-      this.props.variables,
-      this.props.operationName,
-      this.props.label,
-      this.props.favorite,
+      query,
+      variables,
+      operationName,
+      label,
+      favorite,
     );
   }
 
   handleFieldBlur(e: React.FocusEvent<HTMLInputElement>) {
     e.stopPropagation();
     this.setState({ editable: false });
+
+    const { query, variables, operationName, favorite } = this.props;
     this.props.handleEditLabel(
-      this.props.query,
-      this.props.variables,
-      this.props.operationName,
+      query,
+      variables,
+      operationName,
       e.target.value,
-      this.props.favorite,
+      favorite,
     );
   }
 
@@ -133,12 +134,14 @@ export default class HistoryQuery extends React.Component<
     if (e.keyCode === 13) {
       e.stopPropagation();
       this.setState({ editable: false });
+
+      const { query, variables, operationName, favorite } = this.props;
       this.props.handleEditLabel(
-        this.props.query,
-        this.props.variables,
-        this.props.operationName,
+        query,
+        variables,
+        operationName,
         e.currentTarget.value,
-        this.props.favorite,
+        favorite,
       );
     }
   }
