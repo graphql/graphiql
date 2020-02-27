@@ -102,7 +102,7 @@ function _getAutocompleteSuggestions(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write(error.stack + '\n');
+    process.stderr.write((error?.stack ?? String(error)) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
