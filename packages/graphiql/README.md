@@ -1,4 +1,5 @@
 # GraphiQL
+
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 1.0.0! Read more in [this issue](#1165)
 
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
@@ -214,7 +215,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 ## Full Usage Example
 
-> **Breaking Changes & Improvements:** using `window.GraphiQL.state` will no longer be possible in `1.0.0-rc.2`  Read more in [this issue](#1165)
+> **Breaking Changes & Improvements:** using `window.GraphiQL.state` will no longer be possible in `1.0.0-rc.2` Read more in [this issue](#1165)
 
 Here's a more complex react implementation. This would require webpack or a bundler.
 
