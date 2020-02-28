@@ -47,6 +47,10 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import {
+  MigrationContextProvider,
+  MigrationContext,
+} from 'src/state/MigrationContext';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -63,7 +67,7 @@ if (majorVersion < 16) {
 }
 
 declare namespace global {
-  export let g: GraphiQL;
+  export let g: GraphiQLInternals;
 }
 
 export type Maybe<T> = T | null | undefined;
@@ -134,21 +138,70 @@ type GraphiQLState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
-  /**
-   * Static Methods
-   */
-  static formatResult(result: any) {
-    return JSON.stringify(result, null, 2);
-  }
+export const GraphiQL: React.FC<GraphiQLProps> &
+  GraphiQLStaticProperties = props => {
+  return (
+    <MigrationContextProvider>
+      <GraphiQLInternals {...props} />
+    </MigrationContextProvider>
+  );
+};
 
-  static formatError(rawError: Error) {
-    const result = Array.isArray(rawError)
-      ? rawError.map(formatSingleError)
-      : formatSingleError(rawError);
-    return JSON.stringify(result, null, 2);
-  }
+interface GraphiQLStaticProperties {
+  formatResult: (result: any) => string;
+  formatError: (rawError: Error) => string;
+  Logo: typeof GraphiQLLogo;
+  Toolbar: typeof GraphiQLToolbar;
+  Footer: typeof GraphiQLFooter;
+  QueryEditor: typeof QueryEditor;
+  VariableEditor: typeof VariableEditor;
+  ResultViewer: typeof ResultViewer;
+  Button: typeof ToolbarButton;
+  ToolbarButton: typeof ToolbarButton;
+  Group: typeof ToolbarGroup;
+  Menu: typeof ToolbarMenu;
+  MenuItem: typeof ToolbarMenuItem;
+}
 
+GraphiQL.formatResult = (result: any) => {
+  return JSON.stringify(result, null, 2);
+};
+
+GraphiQL.formatError = (rawError: Error) => {
+  const result = Array.isArray(rawError)
+    ? rawError.map(formatSingleError)
+    : formatSingleError(rawError);
+  return JSON.stringify(result, null, 2);
+};
+
+// Export main windows/panes to be used separately if desired.
+GraphiQL.Logo = GraphiQLLogo;
+GraphiQL.Toolbar = GraphiQLToolbar;
+GraphiQL.Footer = GraphiQLFooter;
+GraphiQL.QueryEditor = QueryEditor;
+GraphiQL.VariableEditor = VariableEditor;
+GraphiQL.ResultViewer = ResultViewer;
+
+// Add a button to the Toolbar.
+GraphiQL.Button = ToolbarButton;
+GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+
+// Add a group of buttons to the Toolbar
+GraphiQL.Group = ToolbarGroup;
+
+// Add a menu of items to the Toolbar.
+GraphiQL.Menu = ToolbarMenu;
+GraphiQL.MenuItem = ToolbarMenuItem;
+
+// Add a select-option input to the Toolbar.
+// GraphiQL.Select = ToolbarSelect;
+// GraphiQL.SelectOption = ToolbarSelectOption;
+
+/**
+ * GraphiQL implementation details, intended to only be used via
+ * the GraphiQL component
+ */
+class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
@@ -582,29 +635,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       </div>
     );
   }
-
-  // Export main windows/panes to be used separately if desired.
-  static Logo = GraphiQLLogo;
-  static Toolbar = GraphiQLToolbar;
-  static Footer = GraphiQLFooter;
-  static QueryEditor = QueryEditor;
-  static VariableEditor = VariableEditor;
-  static ResultViewer = ResultViewer;
-
-  // Add a button to the Toolbar.
-  static Button = ToolbarButton;
-  static ToolbarButton = ToolbarButton; // Don't break existing API.
-
-  // Add a group of buttons to the Toolbar
-  static Group = ToolbarGroup;
-
-  // Add a menu of items to the Toolbar.
-  static Menu = ToolbarMenu;
-  static MenuItem = ToolbarMenuItem;
-
-  // Add a select-option input to the Toolbar.
-  // static Select = ToolbarSelect;
-  // static SelectOption = ToolbarSelectOption;
 
   /**
    * Get the query editor CodeMirror instance.
@@ -1265,6 +1295,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     document.addEventListener('mouseup', onMouseUp);
   };
 }
+
+GraphiQLInternals.contextType = MigrationContext;
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {

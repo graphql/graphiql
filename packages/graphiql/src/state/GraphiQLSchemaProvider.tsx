@@ -113,7 +113,7 @@ export const schemaReducer: SchemaReducer = (
  */
 
 export type SchemaProviderProps = {
-  config: SchemaConfig;
+  config?: SchemaConfig;
   schemaLoader?: typeof defaultSchemaLoader;
   children?: any;
 };
