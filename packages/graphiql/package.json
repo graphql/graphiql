@@ -62,7 +62,7 @@
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/jest-dom": "5.1.1",
-    "@testing-library/react": "9.4.0",
+    "@testing-library/react": "9.4.1",
     "@types/codemirror": "0.0.82",
     "@types/markdown-it": "^0.0.9",
     "@types/node": "^13.7.1",
