@@ -4,6 +4,7 @@
 
 > **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
+
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr)
 [![Code Coverage](https://img.shields.io/codecov/c/github/graphql/graphiql)](https://codecov.io/gh/graphql/graphiql)
@@ -29,6 +30,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 - examples of how to implement or extend GraphiQL.
 
 ## [GraphiQL](packages/graphiql#readme)
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](#1165)
 
 <!-- prettier-ignore -->
 > [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
