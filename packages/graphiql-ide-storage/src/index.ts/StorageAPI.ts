@@ -1,5 +1,4 @@
-
-const DEFAULT_NAMPESPACE = 'graphiql'
+const DEFAULT_NAMPESPACE = 'graphiql';
 
 export interface Storage {
   getItem: <T>(key: string) => Promise<T | string | null>;
@@ -26,9 +25,9 @@ function isQuotaError(storage: Storage, e: Error) {
 }
 
 function getLocalForage(namespace: string): Storage {
-  const localforage = require('localforage')
-  localforage.config({ name: namespace })
-  return localforage
+  const localforage = require('localforage');
+  localforage.config({ name: namespace });
+  return localforage;
 }
 
 export class StorageAPI {
@@ -36,9 +35,8 @@ export class StorageAPI {
   namespace: string;
 
   constructor(namespace: string = DEFAULT_NAMPESPACE, storage?: Storage) {
-
-    this.namespace = namespace
-    this.storage = storage || getLocalForage(namespace)
+    this.namespace = namespace;
+    this.storage = storage || getLocalForage(namespace);
   }
 
   async get<T>(name: string): Promise<T | string | null> {
