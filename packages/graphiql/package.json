@@ -42,6 +42,7 @@
     "storybook": "start-storybook"
   },
   "dependencies": {
+    "@graphql/graphiql-ide-storage": "^0.0.1",
     "@emotion/core": "^10.0.22",
     "@mdx-js/react": "^1.5.2",
     "codemirror": "^5.47.0",
