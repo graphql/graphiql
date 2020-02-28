@@ -133,22 +133,13 @@ type GraphiQLState = {
 };
 
 /**
- * Static methods accessible on the GraphiQL
- * component
- */
-interface GraphiQLStaticMethods {
-  formatResult: (result: any) => string;
-  formatError: (rawError: Error) => string;
-}
-
-/**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
  */
 export const GraphiQL: React.FC<GraphiQLProps> &
-  GraphiQLStaticMethods = props => {
+  GraphiQLStaticProperties = props => {
   return (
     <MigrationContextProvider>
       <GraphiQLInternals {...props} />
@@ -156,9 +147,21 @@ export const GraphiQL: React.FC<GraphiQLProps> &
   );
 };
 
-/**
- * GraphiQL static methods
- */
+interface GraphiQLStaticProperties {
+  formatResult: (result: any) => string;
+  formatError: (rawError: Error) => string;
+  Logo: typeof GraphiQLLogo;
+  Toolbar: typeof GraphiQLToolbar;
+  Footer: typeof GraphiQLFooter;
+  QueryEditor: typeof QueryEditor;
+  VariableEditor: typeof VariableEditor;
+  ResultViewer: typeof ResultViewer;
+  Button: typeof ToolbarButton;
+  ToolbarButton: typeof ToolbarButton;
+  Group: typeof ToolbarGroup;
+  Menu: typeof ToolbarMenu;
+  MenuItem: typeof ToolbarMenuItem;
+}
 
 GraphiQL.formatResult = (result: any) => {
   return JSON.stringify(result, null, 2);
@@ -170,6 +173,29 @@ GraphiQL.formatError = (rawError: Error) => {
     : formatSingleError(rawError);
   return JSON.stringify(result, null, 2);
 };
+
+// Export main windows/panes to be used separately if desired.
+GraphiQL.Logo = GraphiQLLogo;
+GraphiQL.Toolbar = GraphiQLToolbar;
+GraphiQL.Footer = GraphiQLFooter;
+GraphiQL.QueryEditor = QueryEditor;
+GraphiQL.VariableEditor = VariableEditor;
+GraphiQL.ResultViewer = ResultViewer;
+
+// Add a button to the Toolbar.
+GraphiQL.Button = ToolbarButton;
+GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+
+// Add a group of buttons to the Toolbar
+GraphiQL.Group = ToolbarGroup;
+
+// Add a menu of items to the Toolbar.
+GraphiQL.Menu = ToolbarMenu;
+GraphiQL.MenuItem = ToolbarMenuItem;
+
+// Add a select-option input to the Toolbar.
+// GraphiQL.Select = ToolbarSelect;
+// GraphiQL.SelectOption = ToolbarSelectOption;
 
 /**
  * GraphiQL implementation details, intended to only be used via
@@ -406,13 +432,13 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
     const children = React.Children.toArray(this.props.children);
 
     const logo = find(children, child =>
-      isChildComponentType(child, GraphiQLInternals.Logo),
-    ) || <GraphiQLInternals.Logo />;
+      isChildComponentType(child, GraphiQL.Logo),
+    ) || <GraphiQL.Logo />;
 
     const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQLInternals.Toolbar),
+      isChildComponentType(child, GraphiQL.Toolbar),
     ) || (
-      <GraphiQLInternals.Toolbar>
+      <GraphiQL.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
           title="Prettify Query (Shift-Ctrl-P)"
@@ -433,11 +459,11 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
-      </GraphiQLInternals.Toolbar>
+      </GraphiQL.Toolbar>
     );
 
     const footer = find(children, child =>
-      isChildComponentType(child, GraphiQLInternals.Footer),
+      isChildComponentType(child, GraphiQL.Footer),
     );
 
     const queryWrapStyle = {
@@ -609,29 +635,6 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
       </div>
     );
   }
-
-  // Export main windows/panes to be used separately if desired.
-  static Logo = GraphiQLLogo;
-  static Toolbar = GraphiQLToolbar;
-  static Footer = GraphiQLFooter;
-  static QueryEditor = QueryEditor;
-  static VariableEditor = VariableEditor;
-  static ResultViewer = ResultViewer;
-
-  // Add a button to the Toolbar.
-  static Button = ToolbarButton;
-  static ToolbarButton = ToolbarButton; // Don't break existing API.
-
-  // Add a group of buttons to the Toolbar
-  static Group = ToolbarGroup;
-
-  // Add a menu of items to the Toolbar.
-  static Menu = ToolbarMenu;
-  static MenuItem = ToolbarMenuItem;
-
-  // Add a select-option input to the Toolbar.
-  // static Select = ToolbarSelect;
-  // static SelectOption = ToolbarSelectOption;
 
   /**
    * Get the query editor CodeMirror instance.
@@ -897,7 +900,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQLInternals.formatResult(result),
+              response: GraphiQL.formatResult(result),
             });
           }
         },
