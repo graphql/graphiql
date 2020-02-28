@@ -47,6 +47,10 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import {
+  MigrationContextProvider,
+  MigrationContext,
+} from 'src/state/MigrationContext';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -63,7 +67,7 @@ if (majorVersion < 16) {
 }
 
 declare namespace global {
-  export let g: GraphiQL;
+  export let g: GraphiQLInternals;
 }
 
 export type Maybe<T> = T | null | undefined;
@@ -129,26 +133,49 @@ type GraphiQLState = {
 };
 
 /**
+ * Static methods accessible on the GraphiQL
+ * component
+ */
+interface GraphiQLStaticMethods {
+  formatResult: (result: any) => string;
+  formatError: (rawError: Error) => string;
+}
+
+/**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
-  /**
-   * Static Methods
-   */
-  static formatResult(result: any) {
-    return JSON.stringify(result, null, 2);
-  }
+export const GraphiQL: React.FC<GraphiQLProps> &
+  GraphiQLStaticMethods = props => {
+  return (
+    <MigrationContextProvider>
+      <GraphiQLInternals {...props} />
+    </MigrationContextProvider>
+  );
+};
 
-  static formatError(rawError: Error) {
-    const result = Array.isArray(rawError)
-      ? rawError.map(formatSingleError)
-      : formatSingleError(rawError);
-    return JSON.stringify(result, null, 2);
-  }
+/**
+ * GraphiQL static methods
+ */
 
+GraphiQL.formatResult = (result: any) => {
+  return JSON.stringify(result, null, 2);
+};
+
+GraphiQL.formatError = (rawError: Error) => {
+  const result = Array.isArray(rawError)
+    ? rawError.map(formatSingleError)
+    : formatSingleError(rawError);
+  return JSON.stringify(result, null, 2);
+};
+
+/**
+ * GraphiQL implementation details, intended to only be used via
+ * the GraphiQL component
+ */
+class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
@@ -379,13 +406,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const children = React.Children.toArray(this.props.children);
 
     const logo = find(children, child =>
-      isChildComponentType(child, GraphiQL.Logo),
-    ) || <GraphiQL.Logo />;
+      isChildComponentType(child, GraphiQLInternals.Logo),
+    ) || <GraphiQLInternals.Logo />;
 
     const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQL.Toolbar),
+      isChildComponentType(child, GraphiQLInternals.Toolbar),
     ) || (
-      <GraphiQL.Toolbar>
+      <GraphiQLInternals.Toolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
           title="Prettify Query (Shift-Ctrl-P)"
@@ -406,11 +433,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
-      </GraphiQL.Toolbar>
+      </GraphiQLInternals.Toolbar>
     );
 
     const footer = find(children, child =>
-      isChildComponentType(child, GraphiQL.Footer),
+      isChildComponentType(child, GraphiQLInternals.Footer),
     );
 
     const queryWrapStyle = {
@@ -870,7 +897,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response: GraphiQLInternals.formatResult(result),
             });
           }
         },
@@ -1265,6 +1292,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     document.addEventListener('mouseup', onMouseUp);
   };
 }
+
+GraphiQLInternals.contextType = MigrationContext;
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
