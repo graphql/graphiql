@@ -17,5 +17,10 @@
     "**/*-test.js",
     "**/*.stories.js",
     "**/*.stories.ts"
+  ],
+  "references": [
+    {
+      "path": "../graphiql-ide-storage"
+    }
   ]
 }

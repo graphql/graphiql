@@ -1,0 +1,9 @@
+{
+  "name": "@graphql/monaco-graphql",
+  "version": "0.0.1",
+  "dependencies": {
+    "monaco-editor": "0.20.0",
+    "monaco-editor-core": "0.20.0",
+    "graphql-language-service-interface": "2.4.0-alpha.1"
+  }
+}

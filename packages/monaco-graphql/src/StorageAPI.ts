@@ -1,14 +1,10 @@
-/**
- *  Copyright (c) 2019 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
+
+const DEFAULT_NAMPESPACE = 'graphiql'
 
 export interface Storage {
-  getItem: (key: string) => string | null;
-  removeItem: (key: string) => void;
-  setItem: (key: string, value: string) => void;
+  getItem: <T>(key: string) => Promise<T | string | null>;
+  removeItem: (key: string) => Promise<void>;
+  setItem: <T>(key: string, value: T | string) => Promise<void>;
   length: number;
 }
 
@@ -29,20 +25,28 @@ function isQuotaError(storage: Storage, e: Error) {
   );
 }
 
-export default class StorageAPI {
-  storage: Storage | null;
+function getLocalForage(namespace: string): Storage {
+  const localforage = require('localforage')
+  localforage.config({ name: namespace })
+  return localforage
+}
 
-  constructor(storage?: Storage) {
-    this.storage =
-      storage || (typeof window !== 'undefined' ? window.localStorage : null);
+export class StorageAPI {
+  storage: Storage | null;
+  namespace: string;
+
+  constructor(namespace: string = DEFAULT_NAMPESPACE, storage?: Storage) {
+
+    this.namespace = namespace
+    this.storage = storage || getLocalForage(namespace)
   }
 
-  get(name: string): string | null {
+  async get<T>(name: string): Promise<T | string | null> {
     if (this.storage) {
-      const value = this.storage.getItem('graphiql:' + name);
+      const value = await this.storage.getItem<T>(name);
       // Clean up any inadvertently saved null/undefined values.
       if (value === 'null' || value === 'undefined') {
-        this.storage.removeItem('graphiql:' + name);
+        await this.storage.removeItem(name);
         return null;
       }
 
@@ -53,22 +57,21 @@ export default class StorageAPI {
     return null;
   }
 
-  set(name: string, value: string) {
+  async set<T>(name: string, value: T | string) {
     let quotaError = false;
     let error = null;
 
     if (this.storage) {
-      const key = `graphiql:${name}`;
       if (value) {
         try {
-          this.storage.setItem(key, value);
+          await this.storage.setItem<T>(name, value);
         } catch (e) {
           error = e;
           quotaError = isQuotaError(this.storage, e);
         }
       } else {
         // Clean up by removing the item if there's no value to set
-        this.storage.removeItem(key);
+        await this.storage.removeItem(name);
       }
     }
 
