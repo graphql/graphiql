@@ -1,1 +1,1 @@
-export * from './StorageAPI'
+export * from './StorageAPI';
