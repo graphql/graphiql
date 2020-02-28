@@ -14,7 +14,7 @@ const AggregateContext: React.FC = ({ children }) => {
   const contexts = useRef({ schema: schemaContext }); // 2. add it to the migration's aggregate context
 
   return (
-    <MigrationContext.Provider value={contexts}>
+    <MigrationContext.Provider value={contexts.current}>
       {children}
     </MigrationContext.Provider>
   );
