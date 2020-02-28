@@ -8,6 +8,12 @@
     {
       "path": "../packages/graphiql/tsconfig.esm.json"
     },
+    // {
+    //   "path": "../packages/monaco-graphql/tsconfig.esm.json"
+    // },
+    {
+      "path": "../packages/graphiql-ide-storage/tsconfig.esm.json"
+    },
     {
       "path": "../packages/graphql-language-service-utils/tsconfig.esm.json"
     },
@@ -20,6 +26,9 @@
     {
       "path": "../packages/graphql-language-service-interface/tsconfig.esm.json"
     },
+    {
+      "path": "../packages/graphql-languageservice/tsconfig.esm.json"
+    }
     {
       "path": "../packages/graphql-language-service-server/tsconfig.esm.json"
     },

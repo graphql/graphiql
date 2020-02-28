@@ -69,7 +69,7 @@ type QueryHistoryState = {
 export class QueryHistory extends React.Component<
   QueryHistoryProps,
   QueryHistoryState
-> {
+  > {
   historyStore: QueryStore;
   favoriteStore: QueryStore;
 
