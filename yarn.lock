@@ -2980,12 +2980,12 @@
     util-deprecate "^1.0.2"
 
 "@strictsoftware/typedoc-plugin-monorepo@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@strictsoftware/typedoc-plugin-monorepo/-/typedoc-plugin-monorepo-0.2.1.tgz#09a39299ac4885803e1ce1778ddb7dfd64776606"
-  integrity sha512-VEfK9dCsBmxXGJcFUK0lBKRj1BtdVluy0i8sWa7pfIrQwTJEjMbpvMnx3qjNyl8aWZLtpvWMkEbr3WmXSkOZ2Q==
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@strictsoftware/typedoc-plugin-monorepo/-/typedoc-plugin-monorepo-0.2.2.tgz#18a203dbd13bbd0855e48b532d1f088ed729e9df"
+  integrity sha512-Djx+WA3/z2nc2ngQC52LAlORHG8zMQLb9BH4mQy7X69NKhAV0imiUxUVXeSkaFUxS7f79FAydYS4AxJYUhPnVA==
   dependencies:
     highlight.js "^9.15.6"
-    marked "^0.6.1"
+    marked "^0.8.0"
 
 "@styled-system/css@^5.0.16":
   version "5.1.4"
@@ -3433,15 +3433,6 @@
     regexpp "^3.0.0"
     tsutils "^3.17.1"
 
-"@typescript-eslint/experimental-utils@2.20.0":
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.20.0.tgz#3b6fa5a6b8885f126d5a4280e0d44f0f41e73e32"
-  integrity sha512-fEBy9xYrwG9hfBLFEwGW2lKwDRTmYzH3DwTmYbT+SMycmxAoPl0eGretnBFj/s+NfYBG63w/5c3lsvqqz5mYag==
-  dependencies:
-    "@types/json-schema" "^7.0.3"
-    "@typescript-eslint/typescript-estree" "2.20.0"
-    eslint-scope "^5.0.0"
-
 "@typescript-eslint/experimental-utils@2.21.0", "@typescript-eslint/experimental-utils@^2.5.0":
   version "2.21.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/experimental-utils/-/experimental-utils-2.21.0.tgz#71de390a3ec00b280b69138d80733406e6e86bfa"
@@ -3460,19 +3451,6 @@
     "@typescript-eslint/experimental-utils" "2.21.0"
     "@typescript-eslint/typescript-estree" "2.21.0"
     eslint-visitor-keys "^1.1.0"
-
-"@typescript-eslint/typescript-estree@2.20.0":
-  version "2.20.0"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-2.20.0.tgz#90a0f5598826b35b966ca83483b1a621b1a4d0c9"
-  integrity sha512-WlFk8QtI8pPaE7JGQGxU7nGcnk1ccKAJkhbVookv94ZcAef3m6oCE/jEDL6dGte3JcD7reKrA0o55XhBRiVT3A==
-  dependencies:
-    debug "^4.1.1"
-    eslint-visitor-keys "^1.1.0"
-    glob "^7.1.6"
-    is-glob "^4.0.1"
-    lodash "^4.17.15"
-    semver "^6.3.0"
-    tsutils "^3.17.1"
 
 "@typescript-eslint/typescript-estree@2.21.0":
   version "2.21.0"
@@ -11804,11 +11782,6 @@ markdown-to-jsx@^6.9.1, markdown-to-jsx@^6.9.3:
   dependencies:
     prop-types "^15.6.2"
     unquote "^1.1.0"
-
-marked@^0.6.1:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.3.tgz#79babad78af638ba4d522a9e715cdfdd2429e946"
-  integrity sha512-Fqa7eq+UaxfMriqzYLayfqAE40WN03jf+zHjT18/uXNuzjq3TY0XTbrAoPeqSJrAmPz11VuUA+kBPYOhHt9oOQ==
 
 marked@^0.8.0:
   version "0.8.0"
