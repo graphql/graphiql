@@ -26,8 +26,6 @@ import copyToClipboard from 'copy-to-clipboard';
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
-import { ToolbarGroup } from './ToolbarGroup';
-import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
@@ -50,7 +48,8 @@ import {
 import {
   MigrationContextProvider,
   MigrationContext,
-} from 'src/state/MigrationContext';
+} from '../state/MigrationContext';
+import { SchemaContext, SchemaProvider } from '../state/GraphiQLSchemaProvider';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -91,9 +90,14 @@ type OnMouseMoveFn = Maybe<
 >;
 type OnMouseUpFn = Maybe<() => void>;
 
+type Formatters = {
+  formatResult: (result: any) => string;
+  formatError: (rawError: Error) => string;
+};
+
 type GraphiQLProps = {
   fetcher: Fetcher;
-  schema?: GraphQLSchema;
+  schema: GraphQLSchema | null;
   query?: string;
   variables?: string;
   operationName?: string;
@@ -112,7 +116,9 @@ type GraphiQLProps = {
   ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
-};
+  formatResult?: (result: any) => string;
+  formatError?: (rawError: Error) => string;
+} & Partial<Formatters>;
 
 type GraphiQLState = {
   schema?: GraphQLSchema;
@@ -138,70 +144,45 @@ type GraphiQLState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export const GraphiQL: React.FC<GraphiQLProps> &
-  GraphiQLStaticProperties = props => {
+export const GraphiQL: React.FC<GraphiQLProps> = props => {
   return (
     <MigrationContextProvider>
-      <GraphiQLInternals {...props} />
+      <GraphiQLInternals
+        {...{
+          formatResult,
+          formatError,
+          ...props,
+        }}
+      />
     </MigrationContextProvider>
   );
 };
 
-interface GraphiQLStaticProperties {
-  formatResult: (result: any) => string;
-  formatError: (rawError: Error) => string;
-  Logo: typeof GraphiQLLogo;
-  Toolbar: typeof GraphiQLToolbar;
-  Footer: typeof GraphiQLFooter;
-  QueryEditor: typeof QueryEditor;
-  VariableEditor: typeof VariableEditor;
-  ResultViewer: typeof ResultViewer;
-  Button: typeof ToolbarButton;
-  ToolbarButton: typeof ToolbarButton;
-  Group: typeof ToolbarGroup;
-  Menu: typeof ToolbarMenu;
-  MenuItem: typeof ToolbarMenuItem;
-}
-
-GraphiQL.formatResult = (result: any) => {
+const formatResult = (result: any) => {
   return JSON.stringify(result, null, 2);
 };
 
-GraphiQL.formatError = (rawError: Error) => {
+const formatError = (rawError: Error) => {
   const result = Array.isArray(rawError)
     ? rawError.map(formatSingleError)
     : formatSingleError(rawError);
   return JSON.stringify(result, null, 2);
 };
 
-// Export main windows/panes to be used separately if desired.
-GraphiQL.Logo = GraphiQLLogo;
-GraphiQL.Toolbar = GraphiQLToolbar;
-GraphiQL.Footer = GraphiQLFooter;
-GraphiQL.QueryEditor = QueryEditor;
-GraphiQL.VariableEditor = VariableEditor;
-GraphiQL.ResultViewer = ResultViewer;
-
-// Add a button to the Toolbar.
-GraphiQL.Button = ToolbarButton;
-GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
-
-// Add a group of buttons to the Toolbar
-GraphiQL.Group = ToolbarGroup;
-
-// Add a menu of items to the Toolbar.
-GraphiQL.Menu = ToolbarMenu;
-GraphiQL.MenuItem = ToolbarMenuItem;
-
 // Add a select-option input to the Toolbar.
-// GraphiQL.Select = ToolbarSelect;
-// GraphiQL.SelectOption = ToolbarSelectOption;
+// GraphiQLSelect = ToolbarSelect;
+// GraphiQLSelectOption = ToolbarSelectOption;
+
+type GraphiQLInternalsProps = GraphiQLProps & Formatters;
 
 /**
  * GraphiQL implementation details, intended to only be used via
  * the GraphiQL component
  */
-class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
+class GraphiQLInternals extends React.Component<
+  GraphiQLProps & Formatters,
+  GraphiQLState
+> {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
@@ -215,12 +196,14 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
   variableEditorComponent: Maybe<VariableEditor>;
   _queryHistory: Maybe<QueryHistory>;
   editorBarComponent: Maybe<HTMLDivElement>;
-  queryEditorComponent: Maybe<QueryEditor>;
+  queryEditorComponent: Maybe<typeof QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;
 
-  constructor(props: GraphiQLProps) {
-    super(props);
-
+  constructor(
+    props: GraphiQLInternalsProps & Formatters,
+    context: typeof MigrationContext,
+  ) {
+    super(props, context);
     // Ensure props are correct
     if (typeof props.fetcher !== 'function') {
       throw new TypeError('GraphiQL requires a fetcher function.');
@@ -304,87 +287,13 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
   componentDidMount() {
     // Only fetch schema via introspection if a schema has not been
     // provided, including if `null` was provided.
-    if (this.state.schema === undefined) {
-      this.fetchSchema();
-    }
-
+    // if (this.context.schema === undefined) {
+    //   this.fetchSchema();
+    // }
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
 
     global.g = this;
-  }
-  // TODO: these values should be updated in a reducer imo
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
-    let nextSchema = this.state.schema;
-    let nextQuery = this.state.query;
-    let nextVariables = this.state.variables;
-    let nextOperationName = this.state.operationName;
-    let nextResponse = this.state.response;
-
-    if (nextProps.schema !== undefined) {
-      nextSchema = nextProps.schema;
-    }
-    if (nextProps.query !== undefined) {
-      nextQuery = nextProps.query;
-    }
-    if (nextProps.variables !== undefined) {
-      nextVariables = nextProps.variables;
-    }
-    if (nextProps.operationName !== undefined) {
-      nextOperationName = nextProps.operationName;
-    }
-    if (nextProps.response !== undefined) {
-      nextResponse = nextProps.response;
-    }
-    if (
-      nextQuery &&
-      nextSchema &&
-      (nextSchema !== this.state.schema ||
-        nextQuery !== this.state.query ||
-        nextOperationName !== this.state.operationName)
-    ) {
-      const updatedQueryAttributes = this._updateQueryFacts(
-        nextQuery,
-        nextOperationName,
-        this.state.operations,
-        nextSchema,
-      );
-
-      if (updatedQueryAttributes !== undefined) {
-        nextOperationName = updatedQueryAttributes.operationName;
-
-        this.setState(updatedQueryAttributes);
-      }
-    }
-
-    // If schema is not supplied via props and the fetcher changed, then
-    // remove the schema so fetchSchema() will be called with the new fetcher.
-    if (
-      nextProps.schema === undefined &&
-      nextProps.fetcher !== this.props.fetcher
-    ) {
-      nextSchema = undefined;
-    }
-
-    this.setState(
-      {
-        schema: nextSchema,
-        query: nextQuery,
-        variables: nextVariables,
-        operationName: nextOperationName,
-        response: nextResponse,
-      },
-      () => {
-        if (this.state.schema === undefined) {
-          if (this.docExplorerComponent) {
-            this.docExplorerComponent.reset();
-          }
-
-          this.fetchSchema();
-        }
-      },
-    );
   }
 
   componentDidUpdate() {
@@ -401,7 +310,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
     if (this.state.query) {
-      this._storage.set('query', this.state.query);
+      this._storage.set('query', this.context.operation.text);
     }
     if (this.state.variables) {
       this._storage.set('variables', this.state.variables);
@@ -430,15 +339,14 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
 
   render() {
     const children = React.Children.toArray(this.props.children);
-
     const logo = find(children, child =>
-      isChildComponentType(child, GraphiQL.Logo),
-    ) || <GraphiQL.Logo />;
+      isChildComponentType(child, GraphiQLLogo),
+    ) || <GraphiQLLogo />;
 
     const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQL.Toolbar),
+      isChildComponentType(child, GraphiQLToolbar),
     ) || (
-      <GraphiQL.Toolbar>
+      <GraphiQLToolbar>
         <ToolbarButton
           onClick={this.handlePrettifyQuery}
           title="Prettify Query (Shift-Ctrl-P)"
@@ -459,11 +367,11 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
-      </GraphiQL.Toolbar>
+      </GraphiQLToolbar>
     );
 
     const footer = find(children, child =>
-      isChildComponentType(child, GraphiQL.Footer),
+      isChildComponentType(child, GraphiQLFooter),
     );
 
     const queryWrapStyle = {
@@ -545,10 +453,6 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
-                schema={this.state.schema}
                 value={this.state.query}
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
@@ -574,9 +478,6 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
                   {'Query Variables'}
                 </div>
                 <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
                   value={this.state.variables}
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
@@ -602,7 +503,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
                 ref={c => {
                   this.resultComponent = c;
                 }}
-                value={this.state.response}
+                value={this.context?.results?.text}
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
                 ImagePreview={ImagePreview}
@@ -622,7 +523,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
               ref={c => {
                 this.docExplorerComponent = c;
               }}
-              schema={this.state.schema}>
+              schema={this.context.schema}>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleDocs}
@@ -685,8 +586,8 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
    */
   public autoCompleteLeafs() {
     const { insertions, result } = fillLeafs(
-      this.state.schema,
-      this.state.query,
+      this.context.schema,
+      this.context?.operation.text,
       this.props.getDefaultFieldNames,
     );
     if (insertions && insertions.length > 0) {
@@ -766,17 +667,22 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
         // If a schema was provided while this fetch was underway, then
         // satisfy the race condition by respecting the already
         // provided schema.
-        if (this.state.schema !== undefined) {
+        if (this.context.schema !== undefined) {
           return;
         }
 
         if (typeof result !== 'string' && result && result.data) {
           const schema = buildClientSchema(result.data);
-          const queryFacts = getQueryFacts(schema, this.state.query);
+          const queryFacts = getQueryFacts(
+            schema,
+            this.context?.operation?.text,
+          );
           this.setState({ schema, ...queryFacts });
         } else {
           const responseString =
-            typeof result === 'string' ? result : GraphiQL.formatResult(result);
+            typeof result === 'string' && result
+              ? result
+              : this.props.formatResult(result);
           this.setState({
             // Set schema to `null` to explicitly indicate that no schema exists.
             schema: undefined,
@@ -787,7 +693,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
       .catch(error => {
         this.setState({
           schema: undefined,
-          response: error ? GraphiQL.formatError(error) : undefined,
+          response: error ? this.props.formatError(error) : undefined,
         });
       });
   }
@@ -824,7 +730,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
       fetch.then(cb).catch(error => {
         this.setState({
           isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : undefined,
+          response: error ? formatError(error) : undefined,
         });
       });
     } else if (isObservable(fetch)) {
@@ -836,7 +742,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
         error: (error: Error) => {
           this.setState({
             isWaitingForResponse: false,
-            response: error ? GraphiQL.formatError(error) : undefined,
+            response: error ? this.props.formatError(error) : undefined,
             subscription: null,
           });
         },
@@ -869,7 +775,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query;
+    const editedQuery = this.autoCompleteLeafs() || this.context.operation.text;
     const variables = this.state.variables;
     let operationName = this.state.operationName;
 
@@ -900,7 +806,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response: this.props.formatResult(result),
             });
           }
         },
@@ -1001,7 +907,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.context.schema,
     );
     this.setState({
       query: value,
@@ -1099,7 +1005,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
       event.currentTarget.className === 'typeName'
     ) {
       const typeName = event.currentTarget.innerHTML;
-      const schema = this.state.schema;
+      const schema = this.context.schema;
       if (schema) {
         const type = schema.getType(typeName);
         if (type) {
@@ -1298,7 +1204,7 @@ class GraphiQLInternals extends React.Component<GraphiQLProps, GraphiQLState> {
 
 GraphiQLInternals.contextType = MigrationContext;
 
-// // Configure the UI by providing this Component as a child of GraphiQL.
+// // Configure the UI by providing this Component as a child of GraphiQL
 function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
   return (
     <div className="title">
@@ -1314,7 +1220,7 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
 }
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
-// Configure the UI by providing this Component as a child of GraphiQL.
+// Configure the UI by providing this Component as a child of GraphiQL
 function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
   return (
     <div className="toolbar" role="toolbar" aria-label="Editor Commands">
@@ -1324,7 +1230,7 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
 }
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
-// Configure the UI by providing this Component as a child of GraphiQL.
+// Configure the UI by providing this Component as a child of GraphiQL
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
@@ -1367,7 +1273,6 @@ const defaultQuery = `# Welcome to GraphiQL
 #
 #   Auto Complete:  Ctrl-Space (or just start typing)
 #
-
 `;
 
 // Duck-type promise detection.

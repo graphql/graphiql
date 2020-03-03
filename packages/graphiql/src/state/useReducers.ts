@@ -1,8 +1,8 @@
 import { useReducer, Reducer as ReactReducer } from 'react';
 
-export type ActionDefault = { payload?: any; [key: string]: any };
+export type ActionDefault = { payload?: any;[key: string]: any };
 
-export type Reducer<S, AT, A = ActionDefault> = (
+export type Reducer<S, AT, A> = (
   state: S,
   action: ReducerAction<AT, A>,
   initFunction: () => S,
@@ -21,12 +21,12 @@ export type Effect<S, AT, A> = ({
 }) => void | Promise<void>;
 
 export type Effects<S, AT, A> = {
-  [actionType: keyof AT]: Effect<S, AT, A>[];
+  [actionType: string]: Effect<S, AT, A>[];
 };
 
 export type UseReducersArgs<S, AT, A> = {
   reducers: Reducer<S, AT, A>[];
-  init: (args: Partial<S>) => S;
+  init: (args?: Partial<S>) => S;
   effects?: Effects<S, AT, A>;
 };
 
@@ -34,40 +34,27 @@ export type DispatchWithEffects<AT, A> = (action: ReducerAction<AT, A>) => void;
 
 export function useReducers<State, ActionTypes, Action>({
   reducers = [],
-  init = (args: Partial<State>): State => Object.create(args || null),
-  effects,
+  init = (args?) => Object.create(args || {}),
 }: UseReducersArgs<State, ActionTypes, Action>): [
-  State,
-  DispatchWithEffects<ActionTypes, Action>,
-] {
+    State,
+    DispatchWithEffects<ActionTypes, Action>,
+  ] {
+  const combineReducers: Reducer<State, ActionTypes, Action> = (nextState, action) => {
+    return reducers.reduce(function reduceReducer(s, r) {
+      return r({ ...s, ...r }, { ...action, ...r }, init);
+    }, nextState);
+  };
   const [state, dispatch] = useReducer<
     ReactReducer<State, Action>,
     ActionTypes
   >(
-    function combineReducers(nextState: State, action: ActionDefault) {
-      return reducers.reduce(function reduceReducer(s, r) {
-        return r({ ...s, ...r }, { ...action, ...r }, init);
-      }, nextState);
-    },
+    combineReducers as ReactReducer<State, Action>,
+    // @ts-ignore
     init(),
     init,
   );
 
-  const dispatchWithEffects: DispatchWithEffects<ActionTypes, Action> = async ({
-    type,
-    ...args
-  }) => {
-    const effectsForType = effects && effects[type];
-    await dispatch({ type, ...args });
-    if (effectsForType && Array.isArray(effectsForType)) {
-      const runEffects = effectsForType.map(async e =>
-        e({ state, action: args, dispatch }),
-      );
-      await Promise.all(runEffects).catch(e => console.error(e));
-    }
-  };
-
-  return [state, dispatchWithEffects];
+  return [state, dispatch];
 }
 
 export function generateActionTypeMap<T extends string>(

@@ -3,18 +3,18 @@ import {
   SchemaProvider,
   SchemaProviderProps,
 } from './GraphiQLSchemaProvider';
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
+import { SessionContext, SessionProvider } from './GraphiQLSessionProvider';
 
 export const MigrationContext = React.createContext({});
 
 // To add a new context...
 
 const AggregateContext: React.FC = ({ children }) => {
-  const schemaContext = useContext(SchemaContext); // 1. consume the context via useContext
-  const contexts = useRef({ schema: schemaContext }); // 2. add it to the migration's aggregate context
-
+  const schemaContext = useContext(SchemaContext);
+  const sessionContext = useContext(SessionContext);
   return (
-    <MigrationContext.Provider value={contexts.current}>
+    <MigrationContext.Provider value={{ ...schemaContext, ...sessionContext }}>
       {children}
     </MigrationContext.Provider>
   );
@@ -28,7 +28,9 @@ export const MigrationContextProvider: React.FC<SchemaProviderProps> = ({
   return (
     // 4. Wrap it around this section
     <SchemaProvider {...props}>
-      <AggregateContext>{children}</AggregateContext>
+      <SessionProvider sessionId={0} {...props}>
+        <AggregateContext>{children}</AggregateContext>
+      </SessionProvider>
     </SchemaProvider>
   );
 };

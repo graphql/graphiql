@@ -24,7 +24,7 @@ export type SchemaState = {
 export const initialReducerState: SchemaState = {
   isLoading: false,
   hasError: false,
-  config: { uri: 'https://swapi-graphql.netlify.com/.netlify/functions/index' },
+  config: { uri: 'http://localhost:8080/graphql' },
   schema: null,
 };
 
@@ -39,10 +39,10 @@ export const getInitialState = (
  * Context
  */
 
-export type SchemaContextValue = { state: SchemaState } & ProjectHandlers;
+export type SchemaContextValue = SchemaState & ProjectHandlers;
 
 export const SchemaContext = React.createContext<SchemaContextValue>({
-  state: getInitialState(),
+  ...getInitialState(),
   loadCurrentSchema: async () => undefined,
   loadSchema: async () => undefined,
   dispatch: async () => undefined,
@@ -130,12 +130,12 @@ export function SchemaProvider({
   config: userSchemaConfig = initialReducerState.config,
   ...props
 }: SchemaProviderProps) {
-  const [didMount, setDidMount] = React.useState(false);
   const [state, dispatch] = useReducers<
     SchemaState,
     SchemaAction,
     SchemaReducer
   >({
+    // @ts-ignore
     reducers: [schemaReducer],
     init: args => ({
       ...getInitialState({ config: userSchemaConfig }),
@@ -163,16 +163,13 @@ export function SchemaProvider({
   };
 
   React.useEffect(() => {
-    if (!didMount) {
-      (async () => loadCurrentSchema(state))();
-      setDidMount(true);
-    }
-  });
+    (async () => loadCurrentSchema(state))();
+  }, []);
 
   return (
     <SchemaContext.Provider
       value={{
-        state,
+        ...state,
         schemaLoader,
         loadCurrentSchema,
         loadSchema,

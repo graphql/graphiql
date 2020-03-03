@@ -71,6 +71,7 @@
     "cross-env": "^7.0.0",
     "css-loader": "3.4.2",
     "cssnano": "^4.1.10",
+    "error-overlay-webpack-plugin": "^0.4.1",
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "fork-ts-checker-webpack-plugin": "4.0.4",

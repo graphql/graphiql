@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -37,7 +38,7 @@ const resultConfig = {
     allowedHosts: ['local.example.com', 'graphiql.com'],
     before: require('../test/beforeDevServer'),
   },
-  devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
+  devtool: isDev ? 'cheap-module-source-map' : 'source-map',
   node: {
     fs: 'empty',
   },
@@ -129,6 +130,7 @@ if (process.env.ANALYZE) {
       openAnalyzer: false,
       reportFilename: rootPath('analyzer.html'),
     }),
+    new ErrorOverlayPlugin(),
   );
 }
 

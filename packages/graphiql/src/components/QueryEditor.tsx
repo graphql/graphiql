@@ -7,18 +7,21 @@
 
 import React from 'react';
 import * as CM from 'codemirror';
-import { GraphQLSchema, GraphQLType } from 'graphql';
+import { GraphQLType } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from 'src/utility/CodeMirrorSizer';
+import { SchemaContext } from '../state/GraphiQLSchemaProvider';
+import {
+  SessionContext,
+  useSessionContext,
+} from '../state/GraphiQLSessionProvider';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 type QueryEditorProps = {
-  schema?: GraphQLSchema;
   value?: string;
   onEdit?: (value: string) => void;
   readOnly?: boolean;
@@ -44,24 +47,46 @@ type QueryEditorProps = {
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class QueryEditor extends React.Component<QueryEditorProps, {}>
-  implements SizerComponent {
-  cachedValue: string | undefined;
-  editor: (CM.Editor & { options: any }) | null = null;
-  ignoreChangeEvent: boolean = false;
-
-  _node: HTMLElement | null = null;
-
-  constructor(props: QueryEditorProps) {
-    super(props);
-
-    // Keep a cached version of the value, this cache will be updated when the
-    // editor is updated, which can later be used to protect the editor from
-    // unnecessary updates during the update lifecycle.
-    this.cachedValue = props.value || '';
+export function QueryEditor(props: QueryEditorProps) {
+  const nodeRef = React.useRef(null);
+  const ignoreChangeEventRef = React.useRef(false);
+  const editorRef = React.useRef<(CM.Editor & { options?: any }) | null>(null);
+  const cachedValueRef = React.useRef(props.value ?? '');
+  const { schema } = React.useContext(SchemaContext);
+  const session = useSessionContext();
+  function _onKeyUp(_cm: CM.Editor, event: KeyboardEvent) {
+    if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && editorRef.current) {
+      editorRef.current.execCommand('autocomplete');
+    }
   }
 
-  componentDidMount() {
+  function _onEdit(editHandler) {
+    if (!ignoreChangeEventRef.current && editorRef.current) {
+      cachedValueRef.current = editorRef.current.getValue();
+      editHandler(cachedValueRef.current);
+    }
+  }
+
+  /**
+   * Render a custom UI for CodeMirror's hint which includes additional info
+   * about the type and description for the selected context.
+   */
+  function _onHasCompletion(
+    cm: CM.Editor,
+    data: CM.EditorChangeLinkedList,
+  ): void {
+    onHasCompletion(cm, data, props.onHintInformationRender);
+  }
+
+  function _onBeforeChange(_instance: CM.Editor, change: any) {
+    // The update function is only present on non-redo, non-undo events.
+    if (change.origin === 'paste') {
+      const text = change.text.map(normalizeWhitespace);
+      change.update(change.from, change.to, text);
+    }
+  }
+
+  React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
     const CodeMirror = require('codemirror');
@@ -83,210 +108,161 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
-    const editor: CM.Editor = (this.editor = CodeMirror(this._node, {
-      value: this.props.value || '',
+    const selectElement = nodeRef.current;
+
+    editorRef.current = new CodeMirror(selectElement, {
+      value: session?.operation?.text || '',
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql',
-      theme: this.props.editorTheme || 'graphiql',
+      theme: props.editorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,
       matchBrackets: true,
       showCursorWhenSelecting: true,
-      readOnly: this.props.readOnly ? 'nocursor' : false,
+      readOnly: props.readOnly ? 'nocursor' : false,
       foldGutter: {
         minFoldSize: 4,
       },
       lint: {
-        schema: this.props.schema,
+        schema,
       },
       hintOptions: {
-        schema: this.props.schema,
+        schema,
         closeOnUnfocus: false,
         completeSingle: false,
-        container: this._node,
+        container: selectElement,
       },
       info: {
-        schema: this.props.schema,
+        schema,
         renderDescription: (text: string) => md.render(text),
         onClick: (reference: GraphQLType) =>
-          this.props.onClickReference && this.props.onClickReference(reference),
+          props.onClickReference && props.onClickReference(reference),
       },
       jump: {
-        schema: this.props.schema,
+        schema,
         onClick: (
           reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
-        ) =>
-          this.props.onClickReference && this.props.onClickReference(reference),
+        ) => props.onClickReference && props.onClickReference(reference),
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
+          editorRef.current.showHint({
+            completeSingle: true,
+            container: selectElement,
+          }),
         'Ctrl-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
-
-          editor.showHint({ completeSingle: true, container: this._node }),
+          editorRef.current.showHint({
+            completeSingle: true,
+            container: selectElement,
+          }),
         'Alt-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
+          editorRef.current.showHint({
+            completeSingle: true,
+            container: selectElement,
+          }),
         'Shift-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
+          editorRef.current.showHint({
+            completeSingle: true,
+            container: selectElement,
+          }),
         'Shift-Alt-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
+          editorRef.current.showHint({
+            completeSingle: true,
+            container: selectElement,
+          }),
 
-        'Cmd-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
-        },
-        'Ctrl-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
-        },
+        'Cmd-Enter': () => session.executeOperation(session),
+        'Ctrl-Enter': () => session.executeOperation(session),
 
         'Shift-Ctrl-C': () => {
-          if (this.props.onCopyQuery) {
-            this.props.onCopyQuery();
+          if (props.onCopyQuery) {
+            props.onCopyQuery();
           }
         },
 
         'Shift-Ctrl-P': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
+          if (props.onPrettifyQuery) {
+            props.onPrettifyQuery();
           }
         },
 
         /* Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy */
-
         'Shift-Ctrl-F': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
+          if (props.onPrettifyQuery) {
+            props.onPrettifyQuery();
           }
         },
 
         'Shift-Ctrl-M': () => {
-          if (this.props.onMergeQuery) {
-            this.props.onMergeQuery();
+          if (props.onMergeQuery) {
+            props.onMergeQuery();
           }
         },
         ...commonKeys,
-        'Cmd-S': () => {
-          if (this.props.onRunQuery) {
-            // empty
-          }
-        },
-
-        'Ctrl-S': () => {
-          if (this.props.onRunQuery) {
-            // empty
-          }
-        },
+        'Cmd-S': () => {},
+        'Ctrl-S': () => {},
       },
-    }));
-    if (editor) {
-      editor.on('change', this._onEdit);
-      editor.on('keyup', this._onKeyUp);
+    });
+
+    const editHandler = () => _onEdit(session.changeOperation);
+    if (editorRef.current) {
+      editorRef.current.on('change', editHandler);
+      editorRef.current.on('keyup', _onKeyUp);
       // @ts-ignore @TODO additional args for hasCompletion event
-      editor.on('hasCompletion', this._onHasCompletion);
-      editor.on('beforeChange', this._onBeforeChange);
+      editorRef.current.on('hasCompletion', _onHasCompletion);
+      editorRef.current.on('beforeChange', _onBeforeChange);
     }
-  }
 
-  componentDidUpdate(prevProps: QueryEditorProps) {
+    return function cleanup() {
+      if (editorRef.current) {
+        editorRef.current.off('change', editHandler);
+        editorRef.current.off('keyup', _onKeyUp);
+        editorRef.current.off('hasCompletion', _onHasCompletion);
+        editorRef.current.off('beforeChange', _onBeforeChange);
+      }
+    };
+  }, []);
+
+  React.useEffect(() => {
     const CodeMirror = require('codemirror');
-
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
     // event loop.
-    this.ignoreChangeEvent = true;
-    if (this.props.schema !== prevProps.schema && this.editor) {
-      this.editor.options.lint.schema = this.props.schema;
-      this.editor.options.hintOptions.schema = this.props.schema;
-      this.editor.options.info.schema = this.props.schema;
-      this.editor.options.jump.schema = this.props.schema;
-      CodeMirror.signal(this.editor, 'change', this.editor);
+    ignoreChangeEventRef.current = true;
+    if (editorRef.current && editorRef.current.options.lint.schema !== schema) {
+      // on schmea change, update the underlying schemas
+      editorRef.current.options.lint.schema = schema;
+      editorRef.current.options.hintOptions.schema = schema;
+      editorRef.current.options.info.schema = schema;
+      editorRef.current.options.jump.schema = schema;
+      CodeMirror.signal(editorRef.current, 'change', editorRef.current);
     }
+
     if (
-      this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue &&
-      this.editor
+      session?.operation?.text !== cachedValueRef.current &&
+      editorRef.current
     ) {
-      this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value as string);
+      cachedValueRef.current = session?.operation?.text ?? '';
+      editorRef.current.setValue(session?.operation?.text ?? '');
     }
-    this.ignoreChangeEvent = false;
-  }
+    ignoreChangeEventRef.current = false;
+  }, [schema, session.operation]);
 
-  componentWillUnmount() {
-    if (this.editor) {
-      this.editor.off('change', this._onEdit);
-      this.editor.off('keyup', this._onKeyUp);
-      // @ts-ignore @TODO additional args for hasCompletion event
-      this.editor.off('hasCompletion', this._onHasCompletion);
-      this.editor = null;
-    }
-  }
-
-  render() {
-    return (
-      <section
-        className="query-editor"
-        aria-label="Query Editor"
-        ref={node => {
-          this._node = node;
-        }}
-      />
-    );
-  }
-
-  /**
-   * Public API for retrieving the CodeMirror instance from this
-   * React component.
-   */
-  getCodeMirror() {
-    return this.editor as CM.Editor;
-  }
-
-  /**
-   * Public API for retrieving the DOM client height for this component.
-   */
-  getClientHeight() {
-    return this._node && this._node.clientHeight;
-  }
-
-  private _onKeyUp = (_cm: CM.Editor, event: KeyboardEvent) => {
-    if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && this.editor) {
-      this.editor.execCommand('autocomplete');
-    }
-  };
-
-  private _onEdit = () => {
-    if (!this.ignoreChangeEvent && this.editor) {
-      this.cachedValue = this.editor.getValue();
-      if (this.props.onEdit) {
-        this.props.onEdit(this.cachedValue);
-      }
-    }
-  };
-
-  /**
-   * Render a custom UI for CodeMirror's hint which includes additional info
-   * about the type and description for the selected context.
-   */
-  private _onHasCompletion = (cm: CM.Editor, data: any) => {
-    onHasCompletion(cm, data, this.props.onHintInformationRender);
-  };
-
-  private _onBeforeChange(_instance: CM.Editor, change: any) {
-    // The update function is only present on non-redo, non-undo events.
-    if (change.origin === 'paste') {
-      const text = change.text.map(normalizeWhitespace);
-      change.update(change.from, change.to, text);
-    }
-  }
+  return (
+    <section className="query-editor" aria-label="Query Editor" ref={nodeRef} />
+  );
 }
+
+// /**
+//  * Public API for retrieving the DOM client height for this component.
+//  */
+// QueryEditor.getClientHeight = () => {
+//   return this._node && this._node.clientHeight;
+// };

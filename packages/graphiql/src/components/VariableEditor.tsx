@@ -46,12 +46,114 @@ type VariableEditorProps = {
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
+// export function __VariableEditor(props: VariableEditorProps) {
+//   const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
+//   const cachedValueRef = React.useRef<string>(props.value ?? '');
+//   const divRef = React.useRef();
+//   const ignoreChangeEventRef = React.useRef(true);
+
+//   React.useEffect(() => {
+//     // Lazily require to ensure requiring GraphiQL outside of a Browser context
+//     // does not produce an error.
+//     const CodeMirror = require('codemirror');
+//     require('codemirror/addon/hint/show-hint');
+//     require('codemirror/addon/edit/matchbrackets');
+//     require('codemirror/addon/edit/closebrackets');
+//     require('codemirror/addon/fold/brace-fold');
+//     require('codemirror/addon/fold/foldgutter');
+//     require('codemirror/addon/lint/lint');
+//     require('codemirror/addon/search/searchcursor');
+//     require('codemirror/addon/search/jump-to-line');
+//     require('codemirror/addon/dialog/dialog');
+//     require('codemirror/keymap/sublime');
+//     require('codemirror-graphql/variables/hint');
+//     require('codemirror-graphql/variables/lint');
+//     require('codemirror-graphql/variables/mode');
+
+//     const editor = (editorRef = CodeMirror(divRef.current, {
+//       value: this.props.value || '',
+//       lineNumbers: true,
+//       tabSize: 2,
+//       mode: 'graphql-variables',
+//       theme: this.props.editorTheme || 'graphiql',
+//       keyMap: 'sublime',
+//       autoCloseBrackets: true,
+//       matchBrackets: true,
+//       showCursorWhenSelecting: true,
+//       readOnly: this.props.readOnly ? 'nocursor' : false,
+//       foldGutter: {
+//         minFoldSize: 4,
+//       },
+//       lint: {
+//         variableToType: this.props.variableToType,
+//       },
+//       hintOptions: {
+//         variableToType: this.props.variableToType,
+//         closeOnUnfocus: false,
+//         completeSingle: false,
+//         container: this._node,
+//       },
+//       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+//       extraKeys: {
+//         'Cmd-Space': () =>
+//           this.editor!.showHint({
+//             completeSingle: false,
+//             container: this._node,
+//           } as CodeMirror.ShowHintOptions),
+//         'Ctrl-Space': () =>
+//           this.editor!.showHint({
+//             completeSingle: false,
+//             container: this._node,
+//           } as CodeMirror.ShowHintOptions),
+//         'Alt-Space': () =>
+//           this.editor!.showHint({
+//             completeSingle: false,
+//             container: this._node,
+//           } as CodeMirror.ShowHintOptions),
+//         'Shift-Space': () =>
+//           this.editor!.showHint({
+//             completeSingle: false,
+//             container: this._node,
+//           } as CodeMirror.ShowHintOptions),
+//         'Cmd-Enter': () => {
+//           if (this.props.onRunQuery) {
+//             this.props.onRunQuery();
+//           }
+//         },
+//         'Ctrl-Enter': () => {
+//           if (this.props.onRunQuery) {
+//             this.props.onRunQuery();
+//           }
+//         },
+//         'Shift-Ctrl-P': () => {
+//           if (this.props.onPrettifyQuery) {
+//             this.props.onPrettifyQuery();
+//           }
+//         },
+
+//         'Shift-Ctrl-M': () => {
+//           if (this.props.onMergeQuery) {
+//             this.props.onMergeQuery();
+//           }
+//         },
+
+//         ...commonKeys,
+//       },
+//     }));
+
+//     editor.on('change', this._onEdit);
+//     editor.on('keyup', this._onKeyUp);
+//     editor.on('hasCompletion', this._onHasCompletion);
+//   });
+// }
+
 export class VariableEditor extends React.Component<VariableEditorProps> {
   CodeMirror: any;
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean;
+
   constructor(props: VariableEditorProps) {
     super(props);
 
