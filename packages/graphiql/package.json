@@ -58,6 +58,11 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
   },
+  "peerDependenciesMeta": {
+    "prop-types": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
