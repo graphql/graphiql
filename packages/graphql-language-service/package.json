@@ -32,6 +32,6 @@
     "graphql-language-service-interface": "^2.4.0-alpha.1",
     "graphql-language-service-server": "^2.4.0-alpha.1",
     "graphql-language-service-utils": "^2.4.0-alpha.1",
-    "yargs": "^3.32.0 || ^7.0.0"
+    "yargs": "^15.2.0"
   }
 }
