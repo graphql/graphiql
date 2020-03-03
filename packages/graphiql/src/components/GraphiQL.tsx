@@ -406,6 +406,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        <ToolbarButton
+          onClick={this.handleClearQueryEditor}
+          title="Clear Query Editor (Shift-Ctrl-L)"
+          label="Clear"
+        />
       </GraphiQL.Toolbar>
     );
 
@@ -504,6 +509,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 onPrettifyQuery={this.handlePrettifyQuery}
                 onMergeQuery={this.handleMergeQuery}
                 onRunQuery={this.handleEditorRunQuery}
+                onClearQueryEditor={this.handleClearQueryEditor}
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
               />
@@ -994,6 +1000,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     if (this.props.onCopyQuery) {
       return this.props.onCopyQuery(query);
+    }
+  };
+
+  handleClearQueryEditor = () => {
+    const editor = this.getQueryEditor();
+    const query = editor && editor.getValue();
+    const variablesEditor = this.getVariableEditor();
+    const variables = variablesEditor && variablesEditor.getValue();
+
+    if (query) {
+      this.handleEditQuery('');
+    }
+    if (variables) {
+      this.handleEditVariables('');
     }
   };
 

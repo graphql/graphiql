@@ -28,6 +28,7 @@ type QueryEditorProps = {
   onPrettifyQuery?: () => void;
   onMergeQuery?: () => void;
   onRunQuery?: () => void;
+  onClearQueryEditor?: () => void;
   editorTheme?: string;
 };
 
@@ -152,6 +153,12 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
         'Shift-Ctrl-C': () => {
           if (this.props.onCopyQuery) {
             this.props.onCopyQuery();
+          }
+        },
+
+        'Shift-Ctrl-L': () => {
+          if (this.props.onClearQueryEditor) {
+            this.props.onClearQueryEditor();
           }
         },
 
