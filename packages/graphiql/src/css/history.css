@@ -25,7 +25,10 @@
 }
 
 .graphiql-container .history-contents li:hover button:not(.history-label),
-.graphiql-container .history-contents li:focus-within button:not(.history-label) {
+.graphiql-container
+  .history-contents
+  li:focus-within
+  button:not(.history-label) {
   display: inline-block;
 }
 
