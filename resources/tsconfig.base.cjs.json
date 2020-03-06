@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "esnext",
+    "target": "ES6",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
