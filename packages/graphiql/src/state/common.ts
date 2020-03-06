@@ -40,10 +40,6 @@ export const defaultFetcher = async (
       headers: { 'Content-Type': 'application/json', credentials: 'omit' },
     });
     return rawResult.text()
-    // if (result.errors && result.errors.length > 0) {
-    //   throw new Error(result.errors.map(({ message }) => message).join("\n"))
-    // }
-    // return result;
   } catch (err) {
     console.error(err);
     throw err;

@@ -5,20 +5,106 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component, FunctionComponent } from 'react';
+import React, { Component, FunctionComponent, useEffect } from 'react';
 import * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from 'src/utility/CodeMirrorSizer';
 import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
+import { useSessionContext } from '../state/GraphiQLSessionProvider';
 
 type ResultViewerProps = {
-  value?: string;
   editorTheme?: string;
   ResultsTooltip?: typeof Component | FunctionComponent;
   ImagePreview: typeof ImagePreviewComponent;
-  registerRef: (node: HTMLElement) => void;
 };
+
+export function ResultViewer(props: ResultViewerProps) {
+  const divRef = React.useRef<HTMLElement | null>(null);
+  const viewerRef = React.useRef<CM.Editor & { options: any }>();
+  const session = useSessionContext();
+  useEffect(() => {
+    // Lazily require to ensure requiring GraphiQL outside of a Browser context
+    // does not produce an error.
+    const CodeMirror = require('codemirror');
+    require('codemirror/addon/fold/foldgutter');
+    require('codemirror/addon/fold/brace-fold');
+    require('codemirror/addon/dialog/dialog');
+    require('codemirror/addon/search/search');
+    require('codemirror/addon/search/searchcursor');
+    require('codemirror/addon/search/jump-to-line');
+    require('codemirror/keymap/sublime');
+    require('codemirror-graphql/results/mode');
+    const Tooltip = props.ResultsTooltip;
+    const ImagePreview = props.ImagePreview;
+
+    if (Tooltip || ImagePreview) {
+      require('codemirror-graphql/utils/info-addon');
+      const tooltipDiv = document.createElement('div');
+      CodeMirror.registerHelper(
+        'info',
+        'graphql-results',
+        (token: any, _options: any, _cm: CodeMirror.Editor, pos: any) => {
+          const infoElements: JSX.Element[] = [];
+          if (Tooltip) {
+            infoElements.push(<Tooltip pos={pos} />);
+          }
+
+          if (
+            ImagePreview &&
+            typeof ImagePreview.shouldRender === 'function' &&
+            ImagePreview.shouldRender(token)
+          ) {
+            infoElements.push(<ImagePreview token={token} />);
+          }
+
+          if (!infoElements.length) {
+            ReactDOM.unmountComponentAtNode(tooltipDiv);
+            return null;
+          }
+          ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
+          return tooltipDiv;
+        },
+      );
+    }
+
+    viewerRef.current = CodeMirror(divRef.current, {
+      lineWrapping: true,
+      value: session.results?.formattedText ?? '',
+      readOnly: true,
+      theme: props.editorTheme || 'graphiql',
+      mode: 'graphql-results',
+      keyMap: 'sublime',
+      foldGutter: {
+        minFoldSize: 4,
+      },
+      gutters: ['CodeMirror-foldgutter'],
+      info: Boolean(props.ResultsTooltip || props.ImagePreview),
+      extraKeys: commonKeys,
+    });
+    // return () => {
+    //   divRef.current?.remove();
+    // };
+  }, []);
+
+  useEffect(() => {
+    console.log('session changed');
+    if (session.results && viewerRef.current) {
+      viewerRef.current.setValue(session.results.formattedText || '');
+      console.log('value', viewerRef.current?.getValue());
+    }
+  }, [session]);
+
+  return (
+    <section
+      className="result-window"
+      aria-label="Result Window"
+      aria-live="polite"
+      aria-atomic="true"
+      ref={divRef}
+    />
+  );
+}
 
 /**
  * ResultViewer
@@ -30,7 +116,7 @@ type ResultViewerProps = {
  *   - value: The text of the editor.
  *
  */
-export class ResultViewer extends React.Component<ResultViewerProps, {}>
+export class __ResultViewer extends React.Component<ResultViewerProps, {}>
   implements SizerComponent {
   viewer: (CM.Editor & { options: any }) | null = null;
   _node: HTMLElement | null = null;

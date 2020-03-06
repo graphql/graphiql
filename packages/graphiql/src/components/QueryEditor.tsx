@@ -13,16 +13,12 @@ import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { SchemaContext } from '../state/GraphiQLSchemaProvider';
-import {
-  SessionContext,
-  useSessionContext,
-} from '../state/GraphiQLSessionProvider';
+import { useSessionContext } from '../state/GraphiQLSessionProvider';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 type QueryEditorProps = {
-  value?: string;
   onEdit?: (value: string) => void;
   readOnly?: boolean;
   onHintInformationRender: (elem: HTMLDivElement) => void;
@@ -51,9 +47,10 @@ export function QueryEditor(props: QueryEditorProps) {
   const nodeRef = React.useRef(null);
   const ignoreChangeEventRef = React.useRef(false);
   const editorRef = React.useRef<(CM.Editor & { options?: any }) | null>(null);
-  const cachedValueRef = React.useRef(props.value ?? '');
-  const { schema } = React.useContext(SchemaContext);
   const session = useSessionContext();
+
+  const cachedValueRef = React.useRef(session.operation.text || '');
+  const { schema } = React.useContext(SchemaContext);
   function _onKeyUp(_cm: CM.Editor, event: KeyboardEvent) {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && editorRef.current) {
       editorRef.current.execCommand('autocomplete');
@@ -154,7 +151,8 @@ export function QueryEditor(props: QueryEditorProps) {
             container: selectElement,
           }),
         'Ctrl-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
+          // showHint method needs improvement on definatelytyped
+          // @ts-ignore
           editorRef.current.showHint({
             completeSingle: true,
             container: selectElement,

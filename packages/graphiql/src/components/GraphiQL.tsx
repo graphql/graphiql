@@ -49,7 +49,6 @@ import {
   MigrationContextProvider,
   MigrationContext,
 } from '../state/MigrationContext';
-import { SchemaContext, SchemaProvider } from '../state/GraphiQLSchemaProvider';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -121,9 +120,6 @@ type GraphiQLProps = {
 } & Partial<Formatters>;
 
 type GraphiQLState = {
-  schema?: GraphQLSchema;
-  query?: string;
-  variables?: string;
   operationName?: string;
   docExplorerOpen: boolean;
   response?: string;
@@ -238,7 +234,7 @@ class GraphiQLInternals extends React.Component<
         : getSelectedOperationName(
             undefined,
             this._storage.get('operationName') as string,
-            queryFacts && queryFacts.operations,
+            this.context.operations,
           );
 
     // prop can be supplied to open docExplorer initially
@@ -257,10 +253,6 @@ class GraphiQLInternals extends React.Component<
 
     // Initialize state
     this.state = {
-      schema: props.schema,
-      query,
-      variables: variables as string,
-      operationName,
       docExplorerOpen,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
@@ -309,11 +301,11 @@ class GraphiQLInternals extends React.Component<
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
-    if (this.state.query) {
+    if (this.context.operation.text) {
       this._storage.set('query', this.context.operation.text);
     }
-    if (this.state.variables) {
-      this._storage.set('variables', this.state.variables);
+    if (this.context.variables.text) {
+      this._storage.set('variables', this.context.variables.text);
     }
     if (this.state.operationName) {
       this._storage.set('operationName', this.state.operationName);
@@ -399,19 +391,14 @@ class GraphiQLInternals extends React.Component<
     };
 
     return (
-      <div
-        ref={n => {
-          this.graphiqlContainer = n;
-        }}
-        className="graphiql-container">
+      <div className="graphiql-container">
         <div className="historyPaneWrap" style={historyPaneStyle}>
           <QueryHistory
             ref={node => {
               this._queryHistory = node;
             }}
             operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
+            variables={this.context.variables.text}
             onSelectQuery={this.handleSelectHistoryQuery}
             storage={this._storage}
             queryID={this._editorQueryID}>
@@ -453,7 +440,6 @@ class GraphiQLInternals extends React.Component<
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                value={this.state.query}
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
@@ -478,7 +464,7 @@ class GraphiQLInternals extends React.Component<
                   {'Query Variables'}
                 </div>
                 <VariableEditor
-                  value={this.state.variables}
+                  value={this.context.variables.text}
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
@@ -497,13 +483,6 @@ class GraphiQLInternals extends React.Component<
                 </div>
               )}
               <ResultViewer
-                registerRef={n => {
-                  this.resultViewerElement = n;
-                }}
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.context?.results?.text}
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
                 ImagePreview={ImagePreview}
@@ -519,11 +498,7 @@ class GraphiQLInternals extends React.Component<
               onDoubleClick={this.handleDocsResetResize}
               onMouseDown={this.handleDocsResizeStart}
             />
-            <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
-              schema={this.context.schema}>
+            <DocExplorer schema={this.context.schema}>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleDocs}
