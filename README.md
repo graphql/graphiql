@@ -30,7 +30,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 ## [GraphiQL](packages/graphiql#readme)
 
-> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](#1165)
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
 <!-- prettier-ignore -->
 > [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
