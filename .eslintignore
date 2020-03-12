@@ -28,10 +28,26 @@
 **/flow-typed
 **/dist
 **/esm
-**/webpack
+packages/graphiql/webpack
+packages/graphiql/storybook
+packages/graphiql/lsp
+packages/graphiql/*.html
 **/renderExample.js
 **/*.min.js
+**/coverage/
+.nyc_output/
+
+
+# codemirror's build artefacts are exported from the package root
+**/codemirror-graphql/variables
+**/codemirror-graphql/utils
+**/codemirror-graphql/results
+**/codemirror-graphql/jump.*
+**/codemirror-graphql/mode.*
+**/codemirror-graphql/lint.*
+**/codemirror-graphql/info.*
+**/codemirror-graphql/hint.*
+
 
 # Vendored files
-/packages/codemirror-graphql/
 /packages/graphiql/test/vendor

@@ -6,16 +6,21 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
+import {
+  Diagnostic as DiagnosticType,
+  Position as PositionType,
+  CompletionItem as CompletionItemType,
+} from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
+
 import {
   ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  NameNode,
 } from 'graphql/language';
-import { ValidationContext } from 'graphql/validation';
 import {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -24,6 +29,8 @@ import {
   GraphQLType,
 } from 'graphql/type/definition';
 import { GraphQLDirective } from 'graphql/type/directives';
+
+export type Maybe<T> = T | null | undefined;
 
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -44,9 +51,9 @@ export interface CharacterStream {
   skipTo: (position: number) => void;
   match: (
     pattern: TokenPattern,
-    consume?: boolean | null | undefined,
-    caseFold?: boolean | null | undefined,
-  ) => Array<string> | boolean;
+    consume?: Maybe<boolean>,
+    caseFold?: Maybe<boolean>,
+  ) => string[] | boolean;
   backUp: (num: number) => void;
   column: () => number;
   indentation: () => number;
@@ -68,8 +75,8 @@ export type GraphQLProjectConfiguration = {
 
   // For multiple applications with overlapping files,
   // these configuration options may be helpful
-  includes?: Array<string>;
-  excludes?: Array<string>;
+  includes?: string[];
+  excludes?: string[];
 
   // If you'd like to specify any other configurations,
   // we provide a reserved namespace for it
@@ -85,13 +92,13 @@ export interface GraphQLCache {
 
   getObjectTypeDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo> | null | undefined,
-  ) => Promise<Array<ObjectTypeInfo>>;
+    fragmentDefinitions: Map<string, ObjectTypeInfo>,
+  ) => Promise<ObjectTypeInfo[]>;
 
   getObjectTypeDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<Array<ObjectTypeInfo>>;
+  ) => Promise<ObjectTypeInfo[]>;
 
   getObjectTypeDefinitions: (
     graphQLConfig: GraphQLProjectConfig,
@@ -100,24 +107,24 @@ export interface GraphQLCache {
   updateObjectTypeDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
-  ) => Promise<undefined>;
+    contents: CachedContent[],
+  ) => Promise<void>;
 
   updateObjectTypeDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
-  ) => Promise<Array<FragmentInfo>>;
+    fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
+  ) => Promise<FragmentInfo[]>;
 
   getFragmentDependenciesForAST: (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, FragmentInfo>,
-  ) => Promise<Array<FragmentInfo>>;
+  ) => Promise<FragmentInfo[]>;
 
   getFragmentDefinitions: (
     graphQLConfig: GraphQLProjectConfig,
@@ -126,32 +133,27 @@ export interface GraphQLCache {
   updateFragmentDefinition: (
     rootDir: Uri,
     filePath: Uri,
-    contents: Array<CachedContent>,
-  ) => Promise<undefined>;
+    contents: CachedContent[],
+  ) => Promise<void>;
 
   updateFragmentDefinitionCache: (
     rootDir: Uri,
     filePath: Uri,
     exists: boolean,
-  ) => Promise<undefined>;
+  ) => Promise<void>;
 
   getSchema: (
-    appName: string | null | undefined,
-    queryHasExtensions?: boolean | null | undefined,
-  ) => Promise<GraphQLSchema | null | undefined>;
-
-  handleWatchmanSubscribeEvent: (
-    rootDir: string,
-    projectConfig: GraphQLProjectConfig,
-  ) => (result: Object) => undefined;
+    appName?: string,
+    queryHasExtensions?: boolean,
+  ) => Promise<GraphQLSchema | null>;
 }
 
 // online-parser related
-export interface Position {
+export type Position = PositionType & {
   line: number;
   character: number;
-  lessThanOrEqualTo: (position: Position) => boolean;
-}
+  lessThanOrEqualTo?: (position: Position) => boolean;
+};
 
 export interface Range {
   start: Position;
@@ -161,7 +163,7 @@ export interface Range {
 
 export type CachedContent = {
   query: string;
-  range: Range | null | undefined;
+  range: Range | null;
 };
 
 export type RuleOrString = Rule | string;
@@ -210,12 +212,12 @@ export type RuleKind =
 
 export type State = {
   level: number;
-  levels?: Array<number>;
-  prevState: State | null | undefined;
-  rule: ParseRule | null | undefined;
-  kind: RuleKind | null | undefined;
-  name: string | null | undefined;
-  type: string | null | undefined;
+  levels?: number[];
+  prevState: Maybe<State>;
+  rule: Maybe<ParseRule>;
+  kind: Maybe<RuleKind>;
+  name: Maybe<string>;
+  type: Maybe<string>;
   step: number;
   needsSeperator: boolean;
   needsAdvance?: boolean;
@@ -234,7 +236,8 @@ export type GraphQLFileMetadata = {
 export type GraphQLFileInfo = {
   filePath: Uri;
   content: string;
-  asts: Array<DocumentNode>;
+  asts: DocumentNode[];
+  queries: CachedContent[];
   size: number;
   mtime: number;
 };
@@ -248,15 +251,15 @@ export type ContextToken = {
 };
 
 export type AllTypeInfo = {
-  type: GraphQLType | null | undefined;
-  parentType: GraphQLType | null | undefined;
-  inputType: GraphQLType | null | undefined;
-  directiveDef: GraphQLDirective | null | undefined;
-  fieldDef: GraphQLField<any, any> | null | undefined;
-  enumValue: GraphQLEnumValue | null | undefined;
-  argDef: GraphQLArgument | null | undefined;
-  argDefs: Array<GraphQLArgument> | null | undefined;
-  objectFieldDefs: GraphQLInputFieldMap | null | undefined;
+  type: Maybe<GraphQLType>;
+  parentType: Maybe<GraphQLType>;
+  inputType: Maybe<GraphQLType>;
+  directiveDef: Maybe<GraphQLDirective>;
+  fieldDef: Maybe<GraphQLField<any, any>>;
+  enumValue: Maybe<GraphQLEnumValue>;
+  argDef: Maybe<GraphQLArgument>;
+  argDefs: Maybe<GraphQLArgument[]>;
+  objectFieldDefs: Maybe<GraphQLInputFieldMap>;
 };
 
 export type FragmentInfo = {
@@ -277,27 +280,11 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type CustomValidationRule = (
-  context: ValidationContext,
-) => Record<string, any>;
+export type Diagnostic = DiagnosticType;
 
-export type Diagnostic = {
-  range: Range;
-  severity?: number;
-  code?: number | string;
-  source?: string;
-  message: string;
-};
-
-export type CompletionItem = {
-  label: string;
-  kind?: number;
-  detail?: string;
-  sortText?: string;
-  documentation?: string | null | undefined;
-  // GraphQL Deprecation information
-  isDeprecated?: boolean | null | undefined;
-  deprecationReason?: string | null | undefined;
+export type CompletionItem = CompletionItemType & {
+  isDeprecated?: boolean;
+  deprecationReason?: Maybe<string>;
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
@@ -309,13 +296,13 @@ export type Definition = {
   range?: Range;
   id?: string;
   name?: string;
-  language: string;
+  language?: string;
   projectRoot?: Uri;
 };
 
 export type DefinitionQueryResult = {
-  queryRange: Array<Range>;
-  definitions: Array<Definition>;
+  queryRange: Range[];
+  definitions: Definition[];
 };
 
 // Outline view
@@ -331,28 +318,24 @@ export type TokenKind =
   | 'type';
 export type TextToken = {
   kind: TokenKind;
-  value: string | undefined;
+  value: string | NameNode;
 };
 
-export type TokenizedText = Array<TextToken>;
+export type TokenizedText = TextToken[];
 export type OutlineTree = {
   // Must be one or the other. If both are present, tokenizedText is preferred.
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-
+  kind: string;
   startPosition: Position;
   endPosition?: Position;
-  children: Array<OutlineTree>;
+  children: OutlineTree[];
 };
 
 export type Outline = {
-  outlineTrees: Array<OutlineTree>;
+  outlineTrees: OutlineTree[];
 };
-
-export interface DidChangeWatchedFilesParams {
-  changes: FileEvent[];
-}
 
 export interface FileEvent {
   uri: string;

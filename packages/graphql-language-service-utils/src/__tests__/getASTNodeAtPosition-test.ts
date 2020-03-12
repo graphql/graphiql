@@ -25,7 +25,7 @@ describe('getASTNodeAtPosition', () => {
   it('gets the node at the beginning', () => {
     const point = new Position(2, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).not.toBeUndefined;
+    expect(node).not.toBeUndefined();
     if (node != null) {
       // @ts-ignore
       expect(node.name.value).toEqual('field');
@@ -35,7 +35,7 @@ describe('getASTNodeAtPosition', () => {
   it('does not find the node before the beginning', () => {
     const point = new Position(0, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).not.toBeUndefined;
+    expect(node).not.toBeUndefined();
     if (node != null) {
       expect(node.kind).toEqual('Document');
     }
@@ -44,7 +44,7 @@ describe('getASTNodeAtPosition', () => {
   it('gets the node at the end', () => {
     const point = new Position(2, 5);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).not.toBeUndefined;
+    expect(node).not.toBeUndefined();
     if (node != null) {
       // @ts-ignore
       expect(node.name.value).toEqual('field');
@@ -54,7 +54,7 @@ describe('getASTNodeAtPosition', () => {
   it('does not find the node after the end', () => {
     const point = new Position(4, 0);
     const node = getASTNodeAtPosition(doc, ast, point);
-    expect(node).not.toBeUndefined;
+    expect(node).not.toBeUndefined();
     if (node != null) {
       expect(node.kind).toEqual('Document');
     }

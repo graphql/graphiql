@@ -1,26 +1,30 @@
 # GraphQL Language Service
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg?style=flat-square)](https://npmjs.com/graphql-language-service)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
+![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 [![License](https://img.shields.io/npm/l/graphql-language-service.svg?style=flat-square)](LICENSE)
 
-_This is currently in technical preview. We welcome your feedback and suggestions._
+_We welcome your feedback and suggestions._
 
 GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
 Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
 
-Currently supported features include:
+Supported features include:
+
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
 - Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
 - Outline view support for queries
 
-
 ## Installation and Usage
 
 ### Dependencies
 
-GraphQL Language Service depends on [Watchman](https://facebook.github.io/watchman/) running on your machine. Follow [this installation guide](https://facebook.github.io/watchman/docs/install.html) to install Watchman.
+An LSP compatible client with it's own file watcher, that sends watch notifications to the server.
+
+**DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
 
 ### Installation
 
@@ -34,13 +38,18 @@ After pulling the latest changes from this repo, be sure to run `yarn run build`
 
 The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
 
-### GraphQL configuration file (`.graphqlconfig`)
+### GraphQL configuration file (`.graphqlrc.yml`)
 
-Check out [graphql-config](https://github.com/graphcool/graphql-config)
+Check out [graphql-config](https://graphql-config.com/docs/introduction)
+
+The graphql features we support are:
+
+- `customDirectives` - `['@myExampleDirective']`
+- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`;
 
 ### Using the command-line interface
 
-The node executable contains several commands: `server` and a command-line language service methods (`lint`, `autocomplete`, `outline`).
+The node executable contains several commands: `server` and a command-line language service methods (`validate`, `autocomplete`, `outline`).
 
 Improving this list is a work-in-progress.
 
@@ -71,7 +80,7 @@ Options:
                     autocomplete suggestions.
                     If omitted, the last column number will be used.
                                                                         [number]
-  -c, --configDir   Path to the .graphqlrc configuration file.
+  -c, --configDir   Path to the .graphqlrc.yml configuration file.
                     Walks up the directory tree from the provided config
                     directory, or the current working directory, until a
                     .graphqlrc is found or the root directory is found.
@@ -87,21 +96,23 @@ Commands: "server, validate, autocomplete, outline"
 
 GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
 
-The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlconfig` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
+The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlrc.yml` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
+
 ```
 ./application
 
   ./productA
-    .graphqlconfig
+    .graphqlrc.yml
     ProductAQuery.graphql
     ProductASchema.graphql
 
   ./productB
-    .graphqlconfig
+    .graphqlrc.yml
     ProductBQuery.graphql
     ProductBSchema.graphql
 ```
-A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlconfig` file, as illustrated in the directory structure above.
+
+A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc.yml` file, as illustrated in the directory structure above.
 
 The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
 
@@ -111,10 +122,10 @@ GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to
 
 For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
 
-|                     | Stream                       | IPC                               |
-| -------------------:|------------------------------|-----------------------------------|
-| Diagnostics         | `getDiagnostics`             | `textDocument/publishDiagnostics` |
-| Autocompletion      | `getAutocompleteSuggestions` | `textDocument/completion`         |
-| Outline             | `getOutline`                 | Not supported yet                 |
-| Go-to definition    | `getDefinition`              | Not supported yet                 |
-| File Events         | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
+|                  | Stream                       | IPC                                         |
+| ---------------: | ---------------------------- | ------------------------------------------- |
+|      Diagnostics | `getDiagnostics`             | `textDocument/publishDiagnostics`           |
+|   Autocompletion | `getAutocompleteSuggestions` | `textDocument/completion`                   |
+|          Outline | `getOutline`                 | Not supported yet                           |
+| Go-to definition | `getDefinition`              | Not supported yet                           |
+|      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |

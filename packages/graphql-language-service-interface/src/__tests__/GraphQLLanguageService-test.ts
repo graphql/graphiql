@@ -7,33 +7,30 @@
  *
  */
 
-import { Position } from 'graphql-language-service-types';
 import { join } from 'path';
-import * as fs from 'fs';
-import { buildSchema } from 'graphql';
 
 import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
+import { SymbolKind } from 'vscode-languageserver-protocol';
+import { Position } from 'graphql-language-service-utils';
 
 const MOCK_CONFIG = {
-  schemaPath: './__schema__/StarWarsSchema.graphql',
-  includes: ['./queries/**', '**/*.graphql'],
+  filepath: join(__dirname, '.graphqlrc.yml'),
+  config: {
+    schema: './__schema__/StarWarsSchema.graphql',
+    documents: ['./queries/**', '**/*.graphql'],
+  },
 };
 
 describe('GraphQLLanguageService', () => {
-  const mockCache: any = {
-    getSchema() {
-      const schemaSDL = fs.readFileSync(
-        join(__dirname, '__schema__/StarWarsSchema.graphql'),
-        'utf8',
-      );
-
-      const schemaJS = buildSchema(schemaSDL);
-      return new Promise((resolve, _reject) => resolve(schemaJS));
+  const mockCache = {
+    async getSchema() {
+      const config = this.getGraphQLConfig();
+      return config.getDefault()!.getSchema();
     },
 
     getGraphQLConfig() {
-      return new GraphQLConfig(MOCK_CONFIG, join(__dirname, '.graphqlconfig'));
+      return new GraphQLConfig(MOCK_CONFIG, []);
     },
 
     getObjectTypeDefinitions() {
@@ -77,7 +74,7 @@ describe('GraphQLLanguageService', () => {
 
   let languageService: GraphQLLanguageService;
   beforeEach(() => {
-    languageService = new GraphQLLanguageService(mockCache);
+    languageService = new GraphQLLanguageService(mockCache as any);
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -109,5 +106,30 @@ describe('GraphQLLanguageService', () => {
     expect(hoverInformation).toEqual(
       'String\n\nThe `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.',
     );
+  });
+
+  it('runs document symbol requests as expected', async () => {
+    const validQuery = `
+  query OperationExample {
+    item(episode: EMPIRE){
+      ...testFragment
+    }
+  }
+  `;
+
+    const result = await languageService.getDocumentSymbols(
+      validQuery,
+      'file://file.graphql',
+    );
+
+    expect(result).not.toBeUndefined();
+    expect(result.length).toEqual(3);
+    // expect(result[0].name).toEqual('item');
+    expect(result[1].name).toEqual('item');
+    expect(result[1].kind).toEqual(SymbolKind.Field);
+    expect(result[1].location.range.start.line).toEqual(2);
+    expect(result[1].location.range.start.character).toEqual(4);
+    expect(result[1].location.range.end.line).toEqual(4);
+    expect(result[1].location.range.end.character).toEqual(5);
   });
 });

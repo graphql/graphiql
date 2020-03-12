@@ -26,7 +26,8 @@ export const isIgnored = (ch: string) =>
   ch === ',' ||
   ch === '\n' ||
   ch === '\r' ||
-  ch === '\uFEFF';
+  ch === '\uFEFF' ||
+  ch === '\u00A0';
 
 /**
  * The lexer rules. These are exactly as described by the spec.

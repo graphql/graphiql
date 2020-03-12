@@ -4,6 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -18,9 +19,9 @@ const resultConfig = {
         'react-hot-loader/patch', // activate HMR for React
         'webpack-dev-server/client?http://localhost:8080', // bundle the client for webpack-dev-server and connect to the provided endpoint
         'webpack/hot/only-dev-server', // bundle the client for hot reloading, only- means to only hot reload for successful updates
-        './cdn.js', // the entry point of our app
+        './cdn.ts', // the entry point of our app
       ]
-    : './cdn.js',
+    : './cdn.ts',
   context: rootPath('src'),
   output: {
     path: rootPath(),
@@ -34,7 +35,9 @@ const resultConfig = {
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'graphiql.com'],
+    before: require('../test/beforeDevServer'),
   },
+  devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
   node: {
     fs: 'empty',
   },
@@ -55,9 +58,9 @@ const resultConfig = {
       // i think we need to add another rule for
       // codemirror-graphql esm.js files to load
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
-        exclude: /\.(ts|d\.ts|d\.ts\.map)$/,
+        exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
       },
       {
         test: /\.css$/,
@@ -92,9 +95,13 @@ const resultConfig = {
       filename: isDev ? 'graphiql.css' : 'graphiql.min.css',
       chunkFilename: '[id].css',
     }),
+    new ForkTsCheckerWebpackPlugin({
+      async: isDev,
+      tsconfig: rootPath('tsconfig.json'),
+    }),
   ],
   resolve: {
-    extensions: ['.mjs', '.js', '.json', '.jsx', '.css'],
+    extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],
     modules: [rootPath('node_modules'), rootPath('../', '../', 'node_modules')],
   },
 };

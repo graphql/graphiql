@@ -3,11 +3,12 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
+    "composite": true
   },
   "references": [
     {
       "path": "../graphql-language-service-types"
     }
   ],
-  "exclude": ["**/__tests__/**","**/*.spec.*"]
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

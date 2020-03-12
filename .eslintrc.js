@@ -9,28 +9,25 @@
 
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 7,
+    ecmaVersion: 6,
     sourceType: 'module',
     ecmaFeatures: {
-      globalReturn: true,
       jsx: true,
-      experimentalObjectRestSpread: true,
     },
   },
   settings: {
     react: {
       version: 'detect',
     },
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
   },
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
     atomtest: true,
     es6: true,
     node: true,
-    jest: true,
-    mocha: true,
     browser: true,
   },
 
@@ -262,35 +259,36 @@ module.exports = {
     'babel/object-curly-spacing': 0,
 
     // import (https://github.com/benmosher/eslint-plugin-import)
-    'import/no-unresolved': 1,
+    // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
-    'import/extensions': [
-      1,
-      {
-        json: 'always',
-      },
-    ],
-
-    // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-    'flowtype/boolean-style': 1,
-    'flowtype/define-flow-type': 1,
-    'flowtype/no-dupe-keys': 0,
-    'flowtype/no-primitive-constructor-types': 1,
-    'flowtype/no-weak-types': 0,
-    'flowtype/require-parameter-type': 0,
-    'flowtype/require-return-type': 0,
-    'flowtype/require-valid-file-annotation': 0,
-    'flowtype/require-variable-type': 0,
-    'flowtype/sort-keys': 0,
-    'flowtype/type-id-match': 0,
-    'flowtype/use-flow-type': 1,
-    'flowtype/valid-syntax': 0,
 
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
+
+    // react rules
+    'react/jsx-boolean-value': 'error',
+    'react/jsx-handler-names': 'error',
+    'react/jsx-key': 'error',
+    'react/jsx-no-duplicate-props': 'error',
+    'react/jsx-no-literals': 'error',
+    'react/jsx-no-undef': 'error',
+    'react/jsx-pascal-case': 'error',
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
+    'react/no-deprecated': 'error',
+    'react/no-did-mount-set-state': 'error',
+    'react/no-did-update-set-state': 'error',
+    'react/no-direct-mutation-state': 'error',
+    'react/no-string-refs': 'error',
+    'react/no-unknown-property': 'error',
+    'react/prop-types': 0,
+    'react/prefer-es6-class': 'error',
+    'react/prefer-stateless-function': 'error',
+    'react/react-in-jsx-scope': 'error',
+    'react/self-closing-comp': 'error',
   },
 
-  plugins: ['babel', 'import', 'flowtype', 'prefer-object-spread'],
+  plugins: ['import', 'prefer-object-spread', '@typescript-eslint'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
@@ -303,20 +301,34 @@ module.exports = {
         'cypress/globals': true,
       },
     },
+    {
+      files: ['packages/codemirror-graphql/**/*'],
+      env: {
+        mocha: true,
+      },
+    },
+    {
+      files: ['packages/{graphql-*,graphiql}/src/**'],
+      extends: ['plugin:jest/recommended'],
+      env: {
+        'jest/globals': true,
+      },
+    },
     // Rules for TypeScript only
     {
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
       rules: {
         'no-unused-vars': 'off',
       },
     },
-    // Rules for Flow only
+    // Rules for Babel & Flow only
     {
-      files: ['*.js', '*.jsx'],
+      files: ['packages/codemirror-graphql/src/**/*.js'],
+      parser: 'babel-eslint',
+      plugins: ['flowtype', 'babel'],
       rules: {
         // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-        'flowtype/boolean-style': 0, // prettier --list-different
+        'flowtype/boolean-style': 1,
         'flowtype/define-flow-type': 1,
         'flowtype/no-dupe-keys': 0,
         'flowtype/no-primitive-constructor-types': 1,

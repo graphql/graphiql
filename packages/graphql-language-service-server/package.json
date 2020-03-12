@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.3.3",
+  "version": "2.4.0-alpha.1",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -22,30 +22,22 @@
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "typings": "esm/index.d.ts",
-  "scripts": {
-    "test": "node ../../resources/runTests.js",
-    "build": "yarn build-js && yarn build-esm && yarn build-flow",
-    "build-js": "node ../../resources/buildJs.js",
-    "build-esm": "cross-env ESM=true babel src --root-mode upward --ignore **/__tests__/**,**/__mocks__/** --out-dir esm",
-    "build-flow": "node ../../resources/buildFlow.js"
-  },
+  "typings": "dist/index.d.ts",
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
     "@babel/parser": "^7.4.5",
-    "fb-watchman": "^2.0.0",
     "glob": "^7.1.2",
-    "graphql-config": "2.2.1",
-    "graphql-language-service-interface": "^2.3.3",
-    "graphql-language-service-types": "^1.5.2",
-    "graphql-language-service-utils": "^2.3.3",
+    "graphql-config": "3.0.0-alpha.17",
+    "graphql-language-service-interface": "^2.4.0-alpha.1",
+    "graphql-language-service-types": "^1.6.0-alpha.1",
+    "graphql-language-service-utils": "^2.4.0-alpha.1",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^4.0.0",
     "vscode-languageserver": "^5.2.1"
   },
   "devDependencies": {
-    "cross-env": "^6.0.3"
+    "cross-env": "^7.0.0"
   }
 }

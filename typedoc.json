@@ -1,0 +1,14 @@
+{
+  "name": "GraphQL Official LSP Documentation",
+  "theme": "default",
+  "mode": "modules",
+  "out": "packages/graphiql/lsp",
+  "exclude": "**/__tests__/**,*.spec.*,*-test.*,**/esm/**,**/dist/**",
+  "excludePrivate": true,
+  "excludeNotExported": true,
+  "external-modulemap": ".*/packages/([\\w\\-_]+)/",
+  "ignoreCompilerErrors": true,
+  "includeDeclarations": true,
+  "preserveConstEnums": true,
+  "readme": "./packages/graphql-language-service/README.md"
+}

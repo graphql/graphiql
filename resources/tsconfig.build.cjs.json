@@ -6,6 +6,9 @@
   "include": [],
   "references": [
     {
+      "path": "../packages/graphiql"
+    },
+    {
       "path": "../packages/graphql-language-service-utils"
     },
     {
@@ -16,6 +19,12 @@
     },
     {
       "path": "../packages/graphql-language-service-interface"
+    },
+    {
+      "path": "../packages/graphql-language-service-server"
+    },
+    {
+      "path": "../packages/graphql-language-service"
     }
   ]
 }

@@ -1,9 +1,12 @@
 # Contributing
 
-We want to make contributing to this project as easy and transparent as
-possible. Hopefully this document makes the process for contributing clear and
-answers any questions you may have. If not, feel free to open an
-[Issue](https://github.com/graphql/graphiql/issues).
+We welcome contributions and assistance! If you want to know where to start, check out our [Github Projects sorted by name](https://github.com/graphql/graphiql/projects?query=is%3Aopen+sort%3Aname-asc).
+
+If you want to add a new feature, note that GraphiQL is eventually going to support its own extension system, and we are rarely adding new features, so make sure you submit feature requests with that in mind.
+
+## Development
+
+To get setup for development, refer to [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 ## Issues
 
@@ -16,43 +19,47 @@ issue. The best way is to provide a reduced test case on jsFiddle or jsBin.
 All active development of this project happens on GitHub. We actively welcome
 your [pull requests](https://help.github.com/articles/creating-a-pull-request).
 
-### Considered Changes
-
-Since GraphiQL and related tools are used by a wide range of companies,
-individuals and other projects, changes which are of obvious benefit are
-prioritized and changes which are specific to only some usage of GraphiQL
-should first consider if they may use the existing customization hooks or if
-they should expose a new customization hook.
-
-### Getting Started
-
-1. Fork this repo by using the "Fork" button in the upper-right
-
-2. Check out your fork
-
-   ```sh
-   git clone git@github.com:yournamehere/graphiql.git
-   ```
-
-3. Install or Update all dependencies
-
-   ```sh
-   yarn
-   ```
-
-4. Get coding! If you've added code, add tests. If you've changed APIs, update
-   any relevant documentation or tests. Ensure your work is committed within a
-   feature branch.
-
-5. Ensure all tests pass
-
-   ```sh
-   yarn test
-   ```
-
 ## Commit Message Conventions
 
-Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatiblity with various git clients.
+Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatiblity with various git clients in mind.
+
+You will need to include a type prefix for all commit messages. For example:
+
+`git commit -m 'fix: fix window undefined error in result viewer'
+
+### Type Prefixes
+
+[a list of type prefixes](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#type-enum) is available:
+
+```js
+[
+  'build',
+  'ci',
+  'chore',
+  'docs',
+  'feat',
+  'fix',
+  'perf',
+  'refactor',
+  'revert',
+  'style',
+  'test',
+];
+```
+
+of these, `fix` and `feat` can trigger patch and minor version releases, reflexively. the rest are useful to help track activity.
+
+another commit message that can trigger a major version bump is this:
+
+```
+feat: introduce new `fooBar()` API, break `foo()` api
+
+- list changes
+
+BREAKING CHANGE: break `foo()` api
+```
+
+notice the nonbreaking spaces between header and footer.
 
 ## Releasing
 
