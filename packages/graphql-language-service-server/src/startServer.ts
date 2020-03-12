@@ -47,7 +47,7 @@ type Options = {
   // port for the LSP server to run on
   port?: number;
   // socket, streams, or node (ipc). if socket, port is required
-  method?: string;
+  method?: 'socket' | 'stream' | 'node';
   // the directory where graphql-config is found
   configDir?: string;
   // function to transform the graphql-config and add extensions dynamically
