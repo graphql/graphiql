@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.2.8",
+  "version": "0.2.11",
   "preview": true,
   "private": false,
   "license": "MIT",
@@ -128,7 +128,7 @@
   },
   "devDependencies": {
     "@types/capitalize": "1.0.1",
-    "@types/dotenv": "6.1.0",
+    "@types/dotenv": "6.1.1",
     "@types/graphql": "14.5.0",
     "@types/mocha": "5.2.7",
     "@types/node": "12.12.19",
