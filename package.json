@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.2.2",
+  "version": "0.2.7",
   "preview": true,
   "private": false,
   "license": "MIT",
@@ -121,7 +121,10 @@
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
-    "package": "vsce package"
+    "vsce:package": "vsce package",
+    "env:source": "export $(cat .envrc | xargs)",
+    "vsce:publish": "sh publish.sh",
+    "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
     "@types/capitalize": "1.0.1",
@@ -149,9 +152,9 @@
     "graphql-config": "2.2.1",
     "graphql-config-extension-prisma": "0.3.0",
     "graphql-language-service-server": "2.3.3",
-    "graphql-tag": "2.10.1",
+    "graphql-tag": "^2.10.3",
     "subscriptions-transport-ws": "0.9.16",
     "vscode-languageclient": "5.2.1",
-    "ws": "7.2.1"
+    "ws": "^7.2.3"
   }
 }

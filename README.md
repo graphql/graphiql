@@ -122,3 +122,4 @@ tail -f <absolute-path> | grep ts-graphql-plugin-log
 ## License
 
 MIT
+

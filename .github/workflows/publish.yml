@@ -1,0 +1,22 @@
+name: Automatic Publish
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  PAT: ${{ secrets.PAT }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  PRODUCTION: ${{ secrets.PRODUCTION }}
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Publish Extension as Patch
+        run: npm run vsce:publish
