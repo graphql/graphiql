@@ -19,12 +19,6 @@ type ExecuteButtonProps = {
   operations?: OperationDefinitionNode[];
   isRunning: boolean;
   onStop: () => void;
-  onRun: (value?: string) => void;
-};
-
-type ExecuteButtonState = {
-  optionsOpen: boolean;
-  highlight: OperationDefinitionNode | null;
 };
 
 export function ExecuteButton(props: ExecuteButtonProps) {

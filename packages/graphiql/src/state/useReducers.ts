@@ -1,6 +1,6 @@
 import { useReducer, Reducer as ReactReducer } from 'react';
 
-export type ActionDefault = { payload?: any;[key: string]: any };
+export type ActionDefault = { payload?: any; [key: string]: any };
 
 export type Reducer<S, AT, A> = (
   state: S,
@@ -36,10 +36,13 @@ export function useReducers<State, ActionTypes, Action>({
   reducers = [],
   init = (args?) => Object.create(args || {}),
 }: UseReducersArgs<State, ActionTypes, Action>): [
-    State,
-    DispatchWithEffects<ActionTypes, Action>,
-  ] {
-  const combineReducers: Reducer<State, ActionTypes, Action> = (nextState, action) => {
+  State,
+  DispatchWithEffects<ActionTypes, Action>,
+] {
+  const combineReducers: Reducer<State, ActionTypes, Action> = (
+    nextState,
+    action,
+  ) => {
     return reducers.reduce(function reduceReducer(s, r) {
       return r({ ...s, ...r }, { ...action, ...r }, init);
     }, nextState);

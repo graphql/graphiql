@@ -9,7 +9,6 @@ import React, { Component, FunctionComponent, useEffect } from 'react';
 import * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from 'src/utility/CodeMirrorSizer';
 import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
 
@@ -82,18 +81,13 @@ export function ResultViewer(props: ResultViewerProps) {
       info: Boolean(props.ResultsTooltip || props.ImagePreview),
       extraKeys: commonKeys,
     });
-    // return () => {
-    //   divRef.current?.remove();
-    // };
   }, []);
 
   useEffect(() => {
-    console.log('session changed');
     if (session.results && viewerRef.current) {
       viewerRef.current.setValue(session.results.formattedText || '');
-      console.log('value', viewerRef.current?.getValue());
     }
-  }, [session]);
+  }, [session.results.text]);
 
   return (
     <section
@@ -104,127 +98,4 @@ export function ResultViewer(props: ResultViewerProps) {
       ref={divRef}
     />
   );
-}
-
-/**
- * ResultViewer
- *
- * Maintains an instance of CodeMirror for viewing a GraphQL response.
- *
- * Props:
- *
- *   - value: The text of the editor.
- *
- */
-export class __ResultViewer extends React.Component<ResultViewerProps, {}>
-  implements SizerComponent {
-  viewer: (CM.Editor & { options: any }) | null = null;
-  _node: HTMLElement | null = null;
-
-  componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
-    // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/results/mode');
-    const Tooltip = this.props.ResultsTooltip;
-    const ImagePreview = this.props.ImagePreview;
-
-    if (Tooltip || ImagePreview) {
-      require('codemirror-graphql/utils/info-addon');
-      const tooltipDiv = document.createElement('div');
-      CodeMirror.registerHelper(
-        'info',
-        'graphql-results',
-        (token: any, _options: any, _cm: CodeMirror.Editor, pos: any) => {
-          const infoElements: JSX.Element[] = [];
-          if (Tooltip) {
-            infoElements.push(<Tooltip pos={pos} />);
-          }
-
-          if (
-            ImagePreview &&
-            typeof ImagePreview.shouldRender === 'function' &&
-            ImagePreview.shouldRender(token)
-          ) {
-            infoElements.push(<ImagePreview token={token} />);
-          }
-
-          if (!infoElements.length) {
-            ReactDOM.unmountComponentAtNode(tooltipDiv);
-            return null;
-          }
-          ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
-          return tooltipDiv;
-        },
-      );
-    }
-
-    this.viewer = CodeMirror(this._node, {
-      lineWrapping: true,
-      value: this.props.value || '',
-      readOnly: true,
-      theme: this.props.editorTheme || 'graphiql',
-      mode: 'graphql-results',
-      keyMap: 'sublime',
-      foldGutter: {
-        minFoldSize: 4,
-      },
-      gutters: ['CodeMirror-foldgutter'],
-      info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
-      extraKeys: commonKeys,
-    });
-  }
-
-  shouldComponentUpdate(nextProps: ResultViewerProps) {
-    return this.props.value !== nextProps.value;
-  }
-
-  componentDidUpdate() {
-    if (this.viewer) {
-      this.viewer.setValue(this.props.value || '');
-    }
-  }
-
-  componentWillUnmount() {
-    this.viewer = null;
-  }
-
-  render() {
-    return (
-      <section
-        className="result-window"
-        aria-label="Result Window"
-        aria-live="polite"
-        aria-atomic="true"
-        ref={node => {
-          if (node) {
-            this.props.registerRef(node);
-            this._node = node;
-          }
-        }}
-      />
-    );
-  }
-
-  /**
-   * Public API for retrieving the CodeMirror instance from this
-   * React component.
-   */
-  getCodeMirror() {
-    return this.viewer as CM.Editor;
-  }
-
-  /**
-   * Public API for retrieving the DOM client height for this component.
-   */
-  getClientHeight() {
-    return this._node && this._node.clientHeight;
-  }
 }

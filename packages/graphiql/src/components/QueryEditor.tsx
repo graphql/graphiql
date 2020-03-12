@@ -13,7 +13,10 @@ import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { SchemaContext } from '../state/GraphiQLSchemaProvider';
-import { useSessionContext } from '../state/GraphiQLSessionProvider';
+import {
+  useSessionContext,
+  SessionHandlers,
+} from '../state/GraphiQLSessionProvider';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -57,7 +60,7 @@ export function QueryEditor(props: QueryEditorProps) {
     }
   }
 
-  function _onEdit(editHandler) {
+  function _onEdit(editHandler: SessionHandlers['changeOperation']) {
     if (!ignoreChangeEventRef.current && editorRef.current) {
       cachedValueRef.current = editorRef.current.getValue();
       editHandler(cachedValueRef.current);
@@ -222,6 +225,7 @@ export function QueryEditor(props: QueryEditorProps) {
       if (editorRef.current) {
         editorRef.current.off('change', editHandler);
         editorRef.current.off('keyup', _onKeyUp);
+        // @ts-ignore
         editorRef.current.off('hasCompletion', _onHasCompletion);
         editorRef.current.off('beforeChange', _onBeforeChange);
       }
@@ -229,29 +233,27 @@ export function QueryEditor(props: QueryEditorProps) {
   }, []);
 
   React.useEffect(() => {
+    const editor = editorRef.current;
     const CodeMirror = require('codemirror');
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
     // event loop.
     ignoreChangeEventRef.current = true;
-    if (editorRef.current && editorRef.current.options.lint.schema !== schema) {
+    if (editor && editor.options.lint.schema !== schema) {
       // on schmea change, update the underlying schemas
-      editorRef.current.options.lint.schema = schema;
-      editorRef.current.options.hintOptions.schema = schema;
-      editorRef.current.options.info.schema = schema;
-      editorRef.current.options.jump.schema = schema;
-      CodeMirror.signal(editorRef.current, 'change', editorRef.current);
+      editor.options.lint.schema = schema;
+      editor.options.hintOptions.schema = schema;
+      editor.options.info.schema = schema;
+      editor.options.jump.schema = schema;
+      CodeMirror.signal(editor, 'change', editor);
     }
 
-    if (
-      session?.operation?.text !== cachedValueRef.current &&
-      editorRef.current
-    ) {
+    if (session?.operation?.text !== cachedValueRef.current && editor) {
       cachedValueRef.current = session?.operation?.text ?? '';
-      editorRef.current.setValue(session?.operation?.text ?? '');
+      editor.setValue(session?.operation?.text ?? '');
     }
     ignoreChangeEventRef.current = false;
-  }, [schema, session.operation]);
+  }, [schema, session.operation.text]);
 
   return (
     <section className="query-editor" aria-label="Query Editor" ref={nodeRef} />

@@ -34,12 +34,13 @@ export const defaultFetcher = async (
   schemaConfig: SchemaConfig,
 ): Promise<string> => {
   try {
+    console.log({ graphqlParams });
     const rawResult = await fetch(schemaConfig.uri, {
       method: 'post',
       body: JSON.stringify(graphqlParams),
       headers: { 'Content-Type': 'application/json', credentials: 'omit' },
     });
-    return rawResult.text()
+    return rawResult.text();
   } catch (err) {
     console.error(err);
     throw err;
