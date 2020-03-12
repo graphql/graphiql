@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -f ".envrc" ]; then
+    echo "Loading .envrc"
+    source .envrc
+else
+    echo "No .envrc"
+fi
+
 echo "============================"
 echo "PAT: $PAT"
 echo "PRODUCTION: $PRODUCTION"
