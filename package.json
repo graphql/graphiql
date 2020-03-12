@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.2.3",
+  "version": "0.2.8",
   "preview": true,
   "private": false,
   "license": "MIT",
@@ -12,9 +12,9 @@
   "icon": "assets/images/logo.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/prismagraphql/vscode-graphql"
+    "url": "https://github.com/prisma-labs/vscode-graphql"
   },
-  "homepage": "https://github.com/prismagraphql/vscode-graphql/blob/master/README.md",
+  "homepage": "https://github.com/prisma-labs/vscode-graphql/blob/master/README.md",
   "galleryBanner": {
     "color": "#032539",
     "theme": "dark"
@@ -122,7 +122,9 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "vsce:package": "vsce package",
-    "vsce:publish": "vsce publish"
+    "env:source": "export $(cat .envrc | xargs)",
+    "vsce:publish": "sh publish.sh",
+    "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
     "@types/capitalize": "1.0.1",
@@ -150,9 +152,9 @@
     "graphql-config": "2.2.1",
     "graphql-config-extension-prisma": "0.3.0",
     "graphql-language-service-server": "2.3.3",
-    "graphql-tag": "2.10.1",
+    "graphql-tag": "^2.10.3",
     "subscriptions-transport-ws": "0.9.16",
     "vscode-languageclient": "5.2.1",
-    "ws": "7.2.1"
+    "ws": "^7.2.3"
   }
 }
