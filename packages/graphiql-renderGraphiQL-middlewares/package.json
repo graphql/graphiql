@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "graphiql": "^0.17.5",
+    "isomorphic-fetch": "^2.2.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
   }

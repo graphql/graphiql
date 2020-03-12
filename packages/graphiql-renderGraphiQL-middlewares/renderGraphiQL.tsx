@@ -2,22 +2,26 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import GraphiQL from 'graphiql';
 import {
+  getFetcher,
   onEditQuery,
-  onEditVariables,
   locationQuery,
+  onEditVariables,
   queryParameters,
   otherParameters,
+  defaultOptions,
 } from './helper';
 
-let defaultOptions = {
-  results: '',
-  variables: { skip: 3, something: 'else', whoever: 'bobobbbbobb2' },
-  query: 'query { allFilms { id title }}',
-  url: 'https://swapi.graph.cool',
-  containerId: 'graphiql',
+const logger = console;
+
+type Options = {
+  url: string;
+  query: string;
+  variables: object;
+  result?: object;
+  fetcher?: (graphQLParams: any) => Promise<any>;
 };
 
-export default async function renderGraphiql(opts = {}) {
+export default async function renderGraphiql(opts: Options) {
   let options = { ...defaultOptions, ...opts };
   let url = options.url || '';
   let queryString = options.query;
@@ -31,27 +35,15 @@ export default async function renderGraphiql(opts = {}) {
   // Collect the URL parameters
   let parameters = queryParameters();
   let otherParams = otherParameters(parameters);
-  let fetchURL = url + locationQuery(otherParams).toString();
+  options.url = url + locationQuery(otherParams).toString();
 
-  function graphQLFetcher(graphQLParams) {
-    return fetch(fetchURL, {
-      method: 'post',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphQLParams),
-      credentials: 'include',
-    }).then(function(response) {
-      return response.json().then(function(res) {
-        return res;
-      });
-    });
+  if (!options.fetcher) {
+    options.fetcher = await getFetcher(options);
   }
 
   return ReactDOM.render(
     <GraphiQL
-      fetcher={graphQLFetcher}
+      fetcher={options.fetcher}
       onEditQuery={onEditQuery}
       onEditVariables={onEditVariables}
       query={queryString}
