@@ -10,12 +10,12 @@
 .graphiql-container .history-contents li {
   align-items: center;
   display: flex;
-  font-size: 12px;
+  font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: 0;
-  padding: 8px;
+  padding: 6px;
   border-bottom: 1px solid #e0e0e0;
 }
 
