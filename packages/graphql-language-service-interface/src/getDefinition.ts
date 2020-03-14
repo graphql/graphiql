@@ -55,8 +55,7 @@ export async function getDefinitionQueryResultForNamedType(
   );
 
   if (defNodes.length === 0) {
-    process.stderr.write(`Definition not found for GraphQL type ${name}`);
-    return { queryRange: [], definitions: [] };
+    throw Error(`Definition not found for GraphQL type ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
@@ -80,8 +79,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
   );
 
   if (defNodes.length === 0) {
-    process.stderr.write(`Definition not found for GraphQL fragment ${name}`);
-    return { queryRange: [], definitions: [] };
+    throw Error(`Definition not found for GraphQL fragment ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
