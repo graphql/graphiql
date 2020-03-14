@@ -80,8 +80,9 @@ For each transport, there is a slight difference in JSON message format, especia
 | ---------------: | ---------------------------- | ------------------------------------------- |
 |      Diagnostics | `getDiagnostics`             | `textDocument/publishDiagnostics`           |
 |   Autocompletion | `getAutocompleteSuggestions` | `textDocument/completion`                   |
-|          Outline | `getOutline`                 | Not supported yet                           |
-| Go-to definition | `getDefinition`              | Not supported yet                           |
+|          Outline | `getOutline`                 | `textDocument/outline`                      |
+| Document Symbols | `getDocumentSymbols`         | `textDocument/symbols`                      |
+| Go-to definition | `getDefinition`              | `textDocument/definition`                   |
 |      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
 
 #### startServer

@@ -310,6 +310,66 @@ query Test {
 `);
   });
 
+  it('getQueryAndRange finds queries in tagged templates using typescript', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = getQueryAndRange(text, 'test.ts');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('getQueryAndRange finds queries in tagged templates using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = getQueryAndRange(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
   it('getQueryAndRange ignores non gql tagged templates', async () => {
     const text = `
 // @flow

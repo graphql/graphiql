@@ -67,6 +67,9 @@ type CachedDocumentType = {
 //   FragmentSpread: SymbolKind.Struct,
 // };
 
+const SUPPORTED_EXTENSIONS = ['js', 'ts', 'jsx', 'tsx'];
+const SUPPORTED_EXTENSIONS_FORMATTED = SUPPORTED_EXTENSIONS.map(i => `.${i}`);
+
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
@@ -699,7 +702,8 @@ export class MessageProcessor {
 export function getQueryAndRange(text: string, uri: string): CachedContent[] {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
-  if (extname(uri) === '.js') {
+  const ext = extname(uri);
+  if (SUPPORTED_EXTENSIONS_FORMATTED.some(e => e === ext)) {
     if (
       text.indexOf('graphql`') === -1 &&
       text.indexOf('graphql.experimental`') === -1 &&
@@ -707,7 +711,7 @@ export function getQueryAndRange(text: string, uri: string): CachedContent[] {
     ) {
       return [];
     }
-    const templates = findGraphQLTags(text);
+    const templates = findGraphQLTags(text, ext);
     return templates.map(({ template, range }) => ({ query: template, range }));
   } else {
     const query = text;

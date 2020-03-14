@@ -16,7 +16,7 @@ import {
 
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { parse, ParserOptions } from '@babel/parser';
+import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -24,8 +24,24 @@ const PARSER_OPTIONS: ParserOptions = {
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
   sourceType: 'module',
-  plugins: [
-    'flow',
+  strictMode: false,
+};
+
+const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
+  createFragmentContainer: true,
+  createPaginationContainer: true,
+  createRefetchContainer: true,
+};
+
+type TagResult = { tag: string; template: string; range: Range };
+
+interface TagVisitiors {
+  [type: string]: (node: any) => void;
+}
+
+export function findGraphQLTags(text: string, ext: string): TagResult[] {
+  const result: TagResult[] = [];
+  const plugins: ParserPlugin[] = [
     'jsx',
     'doExpressions',
     'objectRestSpread',
@@ -47,24 +63,13 @@ const PARSER_OPTIONS: ParserOptions = {
     'throwExpressions',
     ['pipelineOperator', { proposal: 'minimal' }],
     'nullishCoalescingOperator',
-  ],
-  strictMode: false,
-};
-
-const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
-  createFragmentContainer: true,
-  createPaginationContainer: true,
-  createRefetchContainer: true,
-};
-
-type TagResult = { tag: string; template: string; range: Range };
-
-interface TagVisitiors {
-  [type: string]: (node: any) => void;
-}
-
-export function findGraphQLTags(text: string): TagResult[] {
-  const result: TagResult[] = [];
+  ];
+  if (ext === '.ts' || ext === '.tsx') {
+    plugins?.push('typescript');
+  } else {
+    plugins?.push('flow', 'flowComments');
+  }
+  PARSER_OPTIONS.plugins = plugins;
   const ast = parse(text, PARSER_OPTIONS);
 
   const visitors = {
