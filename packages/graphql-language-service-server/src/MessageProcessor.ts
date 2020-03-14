@@ -381,7 +381,7 @@ export class MessageProcessor {
   }
 
   async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
-    if (!this._isInitialized || this._graphQLCache) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return { contents: [] };
     }
 
