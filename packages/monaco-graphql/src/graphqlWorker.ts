@@ -1,39 +1,28 @@
 import * as monaco from 'monaco-editor';
 
-import Promise = monaco.Promise;
 import IWorkerContext = monaco.worker.IWorkerContext;
 
-import * as graphqlService from 'graphql-language-service';
+import * as graphqlService from 'graphql-languageservice';
 
-import { GraphQLLanguageService } from 'graphql-language-service-interface';
+import {
+  GraphQLLanguageService,
+  GraphQLCache,
+} from 'graphql-language-service-interface';
 import {
   Position,
   Diagnostic,
   CompletionItem,
 } from 'graphql-language-service-types';
 
-let defaultSchemaRequestService;
-
-if (typeof fetch !== 'undefined') {
-  defaultSchemaRequestService = function(url) {
-    return fetch(url).then(response => response.text());
-  };
-}
-
 export class GraphQLWorker {
   private _ctx: IWorkerContext;
   private _languageService: GraphQLLanguageService;
-  private _languageSettings: graphqlService.LanguageSettings;
   private _languageId: string;
 
   constructor(ctx: IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
-    this._languageSettings = createData.languageSettings;
     this._languageId = createData.languageId;
-    this._languageService = new GraphQLLanguageService(
-      new graphqlService.GraphQLCache(),
-    );
-    this._languageService.configure(this._languageSettings);
+    this._languageService = new GraphQLLanguageService(new GraphQLCache());
   }
 
   async doValidation(uri: string): Promise<Diagnostic[]> {
@@ -51,11 +40,7 @@ export class GraphQLWorker {
       uri,
     );
   }
-  async doResolve(
-    item: graphqlService.CompletionItem,
-  ): Promise<graphqlService.CompletionItem> {
-    return this._languageService.doResolve(item);
-  }
+
   async doHover(
     uri: string,
     position: graphqlService.Position,
@@ -73,7 +58,7 @@ export class GraphQLWorker {
     return Promise.resolve(textEdits);
   }
   async reloadSchema(uri: string): Promise<boolean> {
-    return this._languageService.getConfigForURI(uri);
+    return this._languageService.getConfigForURI(uri).getSchema();
   }
   async findDocumentSymbols(
     uri: string,
@@ -112,6 +97,6 @@ export interface ICreateData {
 export function create(
   ctx: IWorkerContext,
   createData: ICreateData,
-): JSONWorker {
-  return new JSONWorker(ctx, createData);
+): GraphQLWorker {
+  return new GraphQLWorker(ctx, createData);
 }

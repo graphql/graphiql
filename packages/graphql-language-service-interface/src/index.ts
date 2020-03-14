@@ -27,4 +27,5 @@ export { getDiagnostics, validateQuery } from './getDiagnostics';
 export { getOutline } from './getOutline';
 export { getHoverInformation } from './getHoverInformation';
 
-export { GraphQLLanguageService } from './GraphQLLanguageService';
+export * from './GraphQLLanguageService';
+export * from './GraphQLCache';
