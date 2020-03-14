@@ -27,7 +27,7 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-config';
-import { getQueryAndRange } from './MessageProcessor';
+import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 
@@ -796,7 +796,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         let queries: CachedContent[] = [];
         if (content.trim().length !== 0) {
           try {
-            queries = getQueryAndRange(content, filePath);
+            queries = parseDocument(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({

@@ -15,6 +15,7 @@ import {
 } from '@babel/types';
 
 import { Position, Range } from 'graphql-language-service-utils';
+import { DEFAULT_STABLE_TAGS } from './constants';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 
@@ -163,8 +164,6 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
   return result;
 }
 
-const IDENTIFIERS = { graphql: true, gql: true };
-
 const IGNORED_KEYS: { [key: string]: boolean } = {
   comments: true,
   end: true,
@@ -177,7 +176,10 @@ const IGNORED_KEYS: { [key: string]: boolean } = {
 };
 
 function getGraphQLTagName(tag: Expression): string | null {
-  if (tag.type === 'Identifier' && IDENTIFIERS.hasOwnProperty(tag.name)) {
+  if (
+    tag.type === 'Identifier' &&
+    DEFAULT_STABLE_TAGS.some(t => t === tag.name)
+  ) {
     return tag.name;
   } else if (
     tag.type === 'MemberExpression' &&

@@ -87,7 +87,7 @@ For each transport, there is a slight difference in JSON message format, especia
 
 #### startServer
 
-The GraphQL Language Server can be started with the following function:
+Initialize the GraphQL Language Server with the `startServer` function:
 
 ```ts
 import { startServer } from 'graphql-language-service-server';
@@ -105,3 +105,4 @@ await startServer({
 | method     | `false`                                           | socket, streams, or node (ipc)                                                    |
 | configDir  | `false`                                           | the directory where graphql-config is found                                       |
 | extensions | `false`                                           | array of functions to transform the graphql-config and add extensions dynamically |
+| parser     | `false`                                           | Customize _all_ file parsing by overriding the default `parseDocument` function   |
