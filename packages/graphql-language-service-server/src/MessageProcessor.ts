@@ -118,13 +118,6 @@ export class MessageProcessor {
     }
 
     this._graphQLCache = await getGraphQLCache(rootPath, this._extensions);
-    let config = this._graphQLCache.getGraphQLConfig();
-    if (this._extensions && this._extensions.length > 0) {
-      /* eslint-disable no-await-in-loop */
-      for (const extension of this._extensions) {
-        config = await extension(config);
-      }
-    }
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
