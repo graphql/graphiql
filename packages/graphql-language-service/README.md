@@ -1,4 +1,6 @@
-# GraphQL Language Service
+# graphql-language-service
+
+> Note: This package will soon be renamed to graphql-language-service-cli
 
 [![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
@@ -91,62 +93,3 @@ Options:
 At least one command is required.
 Commands: "server, validate, autocomplete, outline"
 ```
-
-## Architectural Overview
-
-GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
-
-The IDE server should launch a separate GraphQL server with its own child process for each `.graphqlrc.yml` file the IDE finds (using the nearest ancestor directory relative to the file currently being edited):
-
-```
-./application
-
-  ./productA
-    .graphqlrc.yml
-    ProductAQuery.graphql
-    ProductASchema.graphql
-
-  ./productB
-    .graphqlrc.yml
-    ProductBQuery.graphql
-    ProductBSchema.graphql
-```
-
-A separate GraphQL server should be instantiated for `ProductA` and `ProductB`, each with its own `.graphqlrc.yml` file, as illustrated in the directory structure above.
-
-The IDE server should manage the lifecycle of the GraphQL server. Ideally, the IDE server should spawn a child process for each of the GraphQL Language Service processes necessary, and gracefully exit the processes as the IDE closes. In case of errors or a sudden halt the GraphQL Language Service will close as the stream from the IDE closes.
-
-### Server Interface
-
-GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md) documentation.
-
-For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
-
-|                  | Stream                       | IPC                                         |
-| ---------------: | ---------------------------- | ------------------------------------------- |
-|      Diagnostics | `getDiagnostics`             | `textDocument/publishDiagnostics`           |
-|   Autocompletion | `getAutocompleteSuggestions` | `textDocument/completion`                   |
-|          Outline | `getOutline`                 | Not supported yet                           |
-| Go-to definition | `getDefinition`              | Not supported yet                           |
-|      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
-
-#### startServer
-
-The GraphQL Language Server can be started with the following function:
-
-```ts
-import { startServer } from 'graphql-language-service-server';
-
-await startServer({
-  method: 'node',
-});
-```
-
-`startServer` function takes the following parameters:
-
-| Parameter  | Required                                          | Description                                                                       |
-| ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------- |
-| port       | `true` when method is `socket`, `false` otherwise | port for the LSP server to run on                                                 |
-| method     | `false`                                           | socket, streams, or node (ipc)                                                    |
-| configDir  | `false`                                           | the directory where graphql-config is found                                       |
-| extensions | `false`                                           | array of functions to transform the graphql-config and add extensions dynamically |
