@@ -17,6 +17,7 @@ import {
   Uri,
   FileChangeTypeKind,
   DefinitionQueryResult,
+  GraphQLConfig,
 } from 'graphql-language-service-types';
 
 import { GraphQLLanguageService } from 'graphql-language-service-interface';
@@ -76,12 +77,17 @@ export class MessageProcessor {
   _willShutdown: boolean;
 
   _logger: Logger;
+  _extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
 
-  constructor(logger: Logger) {
+  constructor(
+    logger: Logger,
+    extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
     this._logger = logger;
+    this._extensions = extensions;
   }
 
   async handleInitializeRequest(
@@ -111,7 +117,7 @@ export class MessageProcessor {
       );
     }
 
-    this._graphQLCache = await getGraphQLCache(rootPath);
+    this._graphQLCache = await getGraphQLCache(rootPath, this._extensions);
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {

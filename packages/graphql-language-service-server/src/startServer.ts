@@ -9,6 +9,7 @@
 
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
+import { GraphQLConfig } from 'graphql-config';
 
 import {
   createMessageConnection,
@@ -49,7 +50,10 @@ type Options = {
   method?: 'socket' | 'stream' | 'node';
   // the directory where graphql-config is found
   configDir?: string;
+  // array of functions to transform the graphql-config and add extensions dynamically
+  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
 };
+('graphql-language-service-types');
 
 /**
  * startServer - initialize LSP server with options
@@ -86,7 +90,12 @@ export default async function startServer(options: Options): Promise<void> {
               process.exit(0);
             });
             const connection = createMessageConnection(reader, writer, logger);
-            addHandlers(connection, logger, options.configDir);
+            addHandlers(
+              connection,
+              logger,
+              options.configDir,
+              options.extensions,
+            );
             connection.listen();
           })
           .listen(port);
@@ -102,7 +111,7 @@ export default async function startServer(options: Options): Promise<void> {
         break;
     }
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(connection, logger, options.configDir);
+    addHandlers(connection, logger, options.configDir, options.extensions);
     connection.listen();
   }
 }
@@ -111,8 +120,9 @@ function addHandlers(
   connection: MessageConnection,
   logger: Logger,
   configDir?: string,
+  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
 ): void {
-  const messageProcessor = new MessageProcessor(logger);
+  const messageProcessor = new MessageProcessor(logger, extensions);
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
