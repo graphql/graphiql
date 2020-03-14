@@ -7,8 +7,6 @@
  *
  */
 
-export { GraphQLCache, getGraphQLCache } from './GraphQLCache';
-
 export { MessageProcessor } from './MessageProcessor';
 
 export { default as startServer } from './startServer';
