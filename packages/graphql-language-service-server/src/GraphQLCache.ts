@@ -58,7 +58,6 @@ export async function getGraphQLCache(
 ): Promise<GraphQLCacheInterface> {
   let graphQLConfig = await loadConfig({ rootDir: configDir });
   if (extensions && extensions.length > 0) {
-    /* eslint-disable no-await-in-loop */
     for (const extension of extensions) {
       graphQLConfig = await extension(graphQLConfig);
     }
