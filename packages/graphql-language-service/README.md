@@ -129,3 +129,24 @@ For each transport, there is a slight difference in JSON message format, especia
 |          Outline | `getOutline`                 | Not supported yet                           |
 | Go-to definition | `getDefinition`              | Not supported yet                           |
 |      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
+
+#### startServer
+
+The GraphQL Language Server can be started with the following function:
+
+```ts
+import { startServer } from 'graphql-language-service-server';
+
+await startServer({
+  method: 'node',
+});
+```
+
+`startServer` function takes the following parameters:
+
+| Parameter  | Required                                          | Description                                                                       |
+| ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------- |
+| port       | `true` when method is `socket`, `false` otherwise | port for the LSP server to run on                                                 |
+| method     | `false`                                           | socket, streams, or node (ipc)                                                    |
+| configDir  | `false`                                           | the directory where graphql-config is found                                       |
+| extensions | `false`                                           | array of functions to transform the graphql-config and add extensions dynamically |

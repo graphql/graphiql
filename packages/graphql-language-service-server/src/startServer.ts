@@ -50,7 +50,7 @@ type Options = {
   method?: 'socket' | 'stream' | 'node';
   // the directory where graphql-config is found
   configDir?: string;
-  // function to transform the graphql-config and add extensions dynamically
+  // array of functions to transform the graphql-config and add extensions dynamically
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
 };
 ('graphql-language-service-types');
