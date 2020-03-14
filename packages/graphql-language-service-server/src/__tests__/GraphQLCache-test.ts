@@ -19,7 +19,7 @@ import {
   FragmentDefinitionNode,
   TypeDefinitionNode,
 } from 'graphql';
-import { GraphQLCache } from '../GraphQLCache';
+import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { getQueryAndRange } from '../MessageProcessor';
 import { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service-types';
 
@@ -41,6 +41,22 @@ describe('GraphQLCache', () => {
 
   afterEach(() => {
     fetchMock.restore();
+  });
+
+  describe('getGraphQLCache', () => {
+    it('should apply extensions', async () => {
+      const extension = config => {
+        return {
+          ...config,
+          extension: 'extension-used', // Just adding a key to the config to demo extension usage
+        };
+      };
+      const extensions = [extension];
+      const cacheWithExtensions = await getGraphQLCache(configDir, extensions);
+      const config = cacheWithExtensions.getGraphQLConfig();
+      expect('extension' in config).toBe(true);
+      expect((config as any).extension).toBe('extension-used');
+    });
   });
 
   describe('getSchema', () => {
