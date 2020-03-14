@@ -19,6 +19,3 @@ export { getHoverInformation } from './getHoverInformation';
 
 export * from './GraphQLLanguageService';
 export * from './GraphQLCache';
-export * from './parseDocument';
-export * from './findGraphQLTags';
-export * from './stringToHash';

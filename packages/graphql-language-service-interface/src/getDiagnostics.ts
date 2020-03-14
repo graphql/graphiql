@@ -31,7 +31,6 @@ import {
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
 // this doesn't work without the 'as', kinda goofy
-
 export const SEVERITY = {
   Error: 'Error' as 'Error',
   Warning: 'Warning' as 'Warning',

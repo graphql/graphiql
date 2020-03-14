@@ -1,10 +1,11 @@
 import * as monaco from 'monaco-editor';
 
+import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
+
 import { WorkerManager } from './workerManager';
-import { JSONWorker } from './graphqlWorker';
+import { GraphQLWorker } from './graphqlWorker';
 import { LanguageServiceDefaultsImpl } from './monaco.contribution';
 import * as languageFeatures from './languageFeatures';
-import { createTokenizationSupport } from './tokenization';
 
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
@@ -18,7 +19,7 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
 
   const worker: languageFeatures.WorkerAccessor = (
     ...uris: Uri[]
-  ): Promise<JSONWorker> => {
+  ): Promise<GraphQLWorker> => {
     return client.getLanguageServiceWorker(...uris);
   };
 
@@ -67,41 +68,9 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
         ),
       );
     }
-    if (modeConfiguration.tokens) {
-      providers.push(
-        monaco.languages.setTokensProvider(
-          languageId,
-          createTokenizationSupport(true),
-        ),
-      );
-    }
-    if (modeConfiguration.colors) {
-      providers.push(
-        monaco.languages.registerColorProvider(
-          languageId,
-          new languageFeatures.DocumentColorAdapter(worker),
-        ),
-      );
-    }
-    if (modeConfiguration.foldingRanges) {
-      providers.push(
-        monaco.languages.registerFoldingRangeProvider(
-          languageId,
-          new languageFeatures.FoldingRangeAdapter(worker),
-        ),
-      );
-    }
     if (modeConfiguration.diagnostics) {
       providers.push(
         new languageFeatures.DiagnosticsAdapter(languageId, worker, defaults),
-      );
-    }
-    if (modeConfiguration.selectionRanges) {
-      providers.push(
-        monaco.languages.registerSelectionRangeProvider(
-          languageId,
-          new languageFeatures.SelectionRangeAdapter(worker),
-        ),
       );
     }
   }
@@ -111,12 +80,12 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
   disposables.push(
     monaco.languages.setLanguageConfiguration(
       defaults.languageId,
-      richEditConfiguration,
+      richLanguageConfig,
     ),
   );
 
   let modeConfiguration = defaults.modeConfiguration;
-  defaults.onDidChange(newDefaults => {
+  defaults.onDidChange((newDefaults: LanguageServiceDefaultsImpl) => {
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
       registerProviders();
@@ -138,22 +107,30 @@ function disposeAll(disposables: IDisposable[]) {
   }
 }
 
-const richEditConfiguration: monaco.languages.LanguageConfiguration = {
-  wordPattern: /(-?\d*\.\d\w*)|([^\[\{\]\}\:\"\,\s]+)/g,
-
+export const richLanguageConfig: IRichLanguageConfiguration = {
   comments: {
-    lineComment: '//',
-    blockComment: ['/*', '*/'],
+    lineComment: '#',
   },
-
   brackets: [
     ['{', '}'],
     ['[', ']'],
+    ['(', ')'],
   ],
-
   autoClosingPairs: [
-    { open: '{', close: '}', notIn: ['string'] },
-    { open: '[', close: ']', notIn: ['string'] },
-    { open: '"', close: '"', notIn: ['string'] },
+    { open: '{', close: '}' },
+    { open: '[', close: ']' },
+    { open: '(', close: ')' },
+    { open: '"""', close: '"""', notIn: ['string', 'comment'] },
+    { open: '"', close: '"', notIn: ['string', 'comment'] },
   ],
+  surroundingPairs: [
+    { open: '{', close: '}' },
+    { open: '[', close: ']' },
+    { open: '(', close: ')' },
+    { open: '"""', close: '"""' },
+    { open: '"', close: '"' },
+  ],
+  folding: {
+    offSide: true,
+  },
 };
