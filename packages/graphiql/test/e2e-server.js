@@ -8,7 +8,8 @@
 /* eslint-disable no-console */
 const express = require('express');
 const path = require('path');
-const graphqlHTTP = require('express-graphql');
+// const graphqlHTTP = require('express-graphql');
+const graphqlHTTP = require('express-graphql-multimode');
 const schema = require('./schema');
 
 const app = express();
