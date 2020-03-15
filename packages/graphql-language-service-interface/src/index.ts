@@ -23,7 +23,11 @@ export {
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
 
-export { getDiagnostics, validateQuery } from './getDiagnostics';
+export {
+  getDiagnostics,
+  validateQuery,
+  DIAGNOSTIC_SEVERITY as DiagnosticSeverity,
+} from './getDiagnostics';
 export { getOutline } from './getOutline';
 export { getHoverInformation } from './getHoverInformation';
 
