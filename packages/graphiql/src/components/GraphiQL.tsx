@@ -888,9 +888,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         operationName as string,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
+            console.log(typeof result);
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response:
+                typeof result === 'object'
+                  ? GraphiQL.formatResult(result)
+                  : result.toString(),
             });
           }
         },
