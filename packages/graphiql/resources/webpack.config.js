@@ -6,7 +6,8 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
-const isDev = process.env.NODE_ENV === 'development';
+// const isDev = process.env.NODE_ENV === 'development';
+const isDev = false;
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
 const relPath = (...args) => path.resolve(__dirname, ...args);

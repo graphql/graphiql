@@ -1,4 +1,6 @@
 {
+  "name": "graphiql-nauroz",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "workspaces": [

@@ -406,6 +406,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        <ToolbarButton
+          title="Handle XML Results"
+          onClick={this.handleXMLResults}
+          label="Handle XML"
+        />
+        <ToolbarButton
+          title="Handle JSON Results"
+          onClick={this.handleJSONResults}
+          label="Handle JSON"
+        />
       </GraphiQL.Toolbar>
     );
 
@@ -616,6 +626,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       return this.queryEditorComponent.getCodeMirror();
     }
     // return null
+  }
+
+  /*
+   * Get the viewer CodeMirror instance
+   */
+
+  getViewer() {
+    if (this.resultComponent) {
+      return this.resultComponent.viewer;
+    }
   }
 
   /**
@@ -1095,6 +1115,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.props.onToggleHistory(!this.state.historyPaneOpen);
     }
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+  };
+
+  handleJSONResults = () => {
+    const viewer = this.getViewer();
+    if (viewer) {
+      viewer.setOption('mode', 'graphql-results');
+    }
+    alert('Handling json result');
+  };
+
+  handleXMLResults = () => {
+    const viewer = this.getViewer();
+    if (viewer) {
+      viewer.setOption('mode', 'xml');
+    }
+    alert('Handling XML results');
   };
 
   handleSelectHistoryQuery = (
