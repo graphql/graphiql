@@ -1,4 +1,3 @@
-import * as monaco from 'monaco-editor';
 import * as mode from './graphqlMode';
 
 import Emitter = monaco.Emitter;
@@ -70,9 +69,10 @@ const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfigurat
   hovers: true,
   documentSymbols: true,
   tokens: true,
-  // colors: true,
-  // foldingRanges: true,
+  colors: false,
+  foldingRanges: false,
   diagnostics: true,
+  selectionRanges: false,
 };
 
 const graphqlDefaults = new LanguageServiceDefaultsImpl(

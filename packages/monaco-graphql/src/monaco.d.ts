@@ -13,6 +13,14 @@ declare module monaco.languages.graphql {
   }
   export interface DiagnosticsOptions {
     /**
+     * If set, the validator will be enabled and perform syntax validation as well as schema based validation.
+     */
+    readonly validate?: boolean;
+    /**
+     * If set, comments are tolerated. If set to false, syntax errors will be emitted for comments.
+     */
+    readonly allowComments?: boolean;
+    /**
      * A list of known schemas and/or associations of schemas to file names.
      */
     readonly schemas?: {
@@ -21,7 +29,7 @@ declare module monaco.languages.graphql {
        */
       readonly uri: string;
       /**
-       * A list of file names that are associated to the schema. The '*' wildcard can be used. For example '*.schema.graphql', 'package.graphql'
+       * A list of file names that are associated to the schema. The '*' wildcard can be used. For example '*.schema.json', 'package.json'
        */
       readonly fileMatch?: string[];
       /**
@@ -62,6 +70,16 @@ declare module monaco.languages.graphql {
     readonly documentSymbols?: boolean;
 
     /**
+     * Defines whether the built-in tokens provider is enabled.
+     */
+    readonly tokens?: boolean;
+
+    /**
+     * Defines whether the built-in color provider is enabled.
+     */
+    readonly colors?: boolean;
+
+    /**
      * Defines whether the built-in foldingRange provider is enabled.
      */
     readonly foldingRanges?: boolean;
@@ -76,6 +94,7 @@ declare module monaco.languages.graphql {
      */
     readonly selectionRanges?: boolean;
   }
+
   export interface LanguageServiceDefaults {
     readonly onDidChange: IEvent<LanguageServiceDefaults>;
     readonly diagnosticsOptions: DiagnosticsOptions;
