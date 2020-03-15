@@ -47,6 +47,8 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/keymap/sublime');
     require('codemirror-graphql/results/mode');
+    require('codemirror-graphql/results/modes/xml');
+
     const Tooltip = this.props.ResultsTooltip;
     const ImagePreview = this.props.ImagePreview;
 
@@ -56,6 +58,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
+        'xml',
         (token: any, _options: any, _cm: CodeMirror.Editor, pos: any) => {
           const infoElements: JSX.Element[] = [];
           if (Tooltip) {
@@ -83,8 +86,8 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     this.viewer = CodeMirror(this._node, {
       lineWrapping: true,
       value: this.props.value || '',
-      readOnly: true,
-      theme: this.props.editorTheme || 'graphiql',
+      // readOnly: true,
+      // theme: this.props.editorTheme || 'graphiql',
       mode: 'graphql-results',
       keyMap: 'sublime',
       foldGutter: {

@@ -1121,6 +1121,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const viewer = this.getViewer();
     if (viewer) {
       viewer.setOption('mode', 'graphql-results');
+      viewer.setOption('readOnly', false);
     }
     alert('Handling json result');
   };
