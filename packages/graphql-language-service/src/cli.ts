@@ -28,6 +28,7 @@ const { argv } = yargs
   .help('h')
   .alias('h', 'help')
   .strict()
+  .recommendCommands()
   .demandCommand(
     1,
     'At least one command is required.\n' +
