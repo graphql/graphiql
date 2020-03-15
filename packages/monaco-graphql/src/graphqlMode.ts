@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor-core';
 
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 
@@ -28,49 +28,12 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
 
     disposeAll(providers);
 
-    if (modeConfiguration.documentFormattingEdits) {
-      providers.push(
-        monaco.languages.registerDocumentFormattingEditProvider(
-          languageId,
-          new languageFeatures.DocumentFormattingEditProvider(worker),
-        ),
-      );
-    }
-    if (modeConfiguration.documentRangeFormattingEdits) {
-      providers.push(
-        monaco.languages.registerDocumentRangeFormattingEditProvider(
-          languageId,
-          new languageFeatures.DocumentRangeFormattingEditProvider(worker),
-        ),
-      );
-    }
     if (modeConfiguration.completionItems) {
       providers.push(
         monaco.languages.registerCompletionItemProvider(
           languageId,
           new languageFeatures.CompletionAdapter(worker),
         ),
-      );
-    }
-    if (modeConfiguration.hovers) {
-      providers.push(
-        monaco.languages.registerHoverProvider(
-          languageId,
-          new languageFeatures.HoverAdapter(worker),
-        ),
-      );
-    }
-    if (modeConfiguration.documentSymbols) {
-      providers.push(
-        monaco.languages.registerDocumentSymbolProvider(
-          languageId,
-          new languageFeatures.DocumentSymbolAdapter(worker),
-        ),
-      );
-    }
-    if (modeConfiguration.diagnostics) {
-      providers.push(
-        new languageFeatures.DiagnosticsAdapter(languageId, worker, defaults),
       );
     }
   }
