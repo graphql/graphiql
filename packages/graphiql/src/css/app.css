@@ -408,7 +408,6 @@ span.CodeMirror-selectedtext { background: none; }
 .graphiql-container .topBar {
   align-items: center;
   background: linear-gradient(#f7f7f7, #e2e2e2);
-  background : lightseagreen;
   border-bottom: 1px solid #d0d0d0;
   cursor: default;
   display: flex;

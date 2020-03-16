@@ -484,6 +484,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               />
               {toolbar}
             </div>
+
             {!this.state.docExplorerOpen && (
               <button
                 className="docExplorerShow"
@@ -493,6 +494,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               </button>
             )}
           </div>
+
+          <div className="topBarWrap">
+            <div className="topBar">
+              <span>
+                {' '}
+                {`Note:`}{' '}
+                <a href="https://www.npmjs.com/package/express-graphql-multimode">{`Express-Graphql-Multimode`}</a>{' '}
+                {`can send json as well as xml results. Change Response type from tobbar by cling Handle XML or JSON button. Choose Response Type: `}
+                <a href="mode/xml" style={{ marginLeft: '20px' }}>{`XML`}</a>{' '}
+                <a href="mode/json" style={{ marginLeft: '5px' }}>{`JSON`}</a>{' '}
+              </span>
+            </div>
+          </div>
+
           <div
             ref={n => {
               this.editorBarComponent = n;
@@ -888,7 +903,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         operationName as string,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            console.log(typeof result);
             this.setState({
               isWaitingForResponse: false,
               response:
@@ -1127,7 +1141,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       viewer.setOption('mode', 'graphql-results');
       viewer.setOption('readOnly', false);
     }
-    alert('Handling json result');
   };
 
   handleXMLResults = () => {
@@ -1135,7 +1148,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (viewer) {
       viewer.setOption('mode', 'xml');
     }
-    alert('Handling XML results');
   };
 
   handleSelectHistoryQuery = (
