@@ -12,14 +12,7 @@ import React, {
   Component,
   FunctionComponent,
 } from 'react';
-import {
-  GraphQLSchema,
-  parse,
-  print,
-  OperationDefinitionNode,
-  GraphQLType,
-} from 'graphql';
-import copyToClipboard from 'copy-to-clipboard';
+import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -36,7 +29,6 @@ import { VariableToType } from '../utility/getQueryFacts';
 import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
-import mergeAST from '../utility/mergeAst';
 
 import { SchemaProvider, SchemaContext } from '../state/GraphiQLSchemaProvider';
 import {
@@ -818,38 +810,6 @@ const formatSingleError = (error: Error) => ({
   message: error.message,
   stack: error.stack,
 });
-
-const defaultQuery = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that starts
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
-#
-#       Run Query:  Ctrl-Enter (or press the play button above)
-#
-#   Auto Complete:  Ctrl-Space (or just start typing)
-#
-`;
 
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(

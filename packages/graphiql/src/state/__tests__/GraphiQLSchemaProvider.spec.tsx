@@ -17,6 +17,8 @@ const configDir = path.join(
 const renderSchemaProvider = (props: SchemaProviderProps) =>
   renderProvider(SchemaProvider, SchemaContext, props);
 
+const wait = async (delay: number = 1000) => setTimeout(Promise.resolve, delay);
+
 describe('GraphiQLSchemaProvider', () => {
   beforeEach(() => {
     fetchMock.restore();
@@ -41,6 +43,7 @@ describe('GraphiQLSchemaProvider', () => {
     const provider = await renderSchemaProvider({
       config: { uri: 'https://example' },
     });
+    await wait(1000);
     const { schema, isLoading, error } = getProviderData(provider);
     expect(schema).toBeTruthy();
     expect(isLoading).toEqual(false);

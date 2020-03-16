@@ -12,7 +12,6 @@ import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
 import { useSchemaContext } from '../state/GraphiQLSchemaProvider';
-import getQueryFacts from '../utility/getQueryFacts';
 
 declare module CodeMirror {
   export interface Editor extends CM.Editor {}
