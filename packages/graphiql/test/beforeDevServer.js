@@ -10,15 +10,31 @@ const path = require('path');
 // const graphqlHTTP = require('express-graphql');
 const graphqlHTTP = require('express-graphql-multimode');
 const schema = require('./schema');
+const mode = { name: 'xml' };
 
 module.exports = function beforeDevServer(app, _server, _compiler) {
+  // list of available modes
+
+  const availModes = ['json', 'xml'];
+
+  // endpoint for toggling mode
+
+  app.get('/mode/:mode', (req, res) => {
+    const _mode = req.params.mode;
+    if (availModes.indexOf(_mode) != -1) {
+      mode.name = _mode;
+    }
+    res.redirect('/');
+  });
+
   // GraphQL Server
-  app.post('/graphql', graphqlHTTP({ schema }));
+  app.post('/graphql', graphqlHTTP({ schema, mode }));
 
   app.get(
     '/graphql',
     graphqlHTTP({
       schema,
+      mode,
     }),
   );
 
