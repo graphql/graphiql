@@ -1314,7 +1314,7 @@ const defaultQuery = `# Welcome to GraphiQL
 # typeaheads aware of the current GraphQL type schema and live syntax and
 # validation errors highlighted within the text.
 #
-# GraphQL queries typically start with a "{" character. Lines that starts
+# GraphQL queries typically start with a "{" character. Lines that start
 # with a # are ignored.
 #
 # An example GraphQL query might look like:
