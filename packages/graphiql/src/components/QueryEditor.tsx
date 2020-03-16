@@ -52,7 +52,7 @@ export function QueryEditor(props: QueryEditorProps) {
   const editorRef = React.useRef<(CM.Editor & { options?: any }) | null>(null);
   const session = useSessionContext();
 
-  const cachedValueRef = React.useRef(session.operation.text || '');
+  const cachedValueRef = React.useRef(session.operation.text ?? '');
   const { schema } = React.useContext(SchemaContext);
   function _onKeyUp(_cm: CM.Editor, event: KeyboardEvent) {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && editorRef.current) {
@@ -111,7 +111,7 @@ export function QueryEditor(props: QueryEditorProps) {
     const selectElement = nodeRef.current;
 
     editorRef.current = new CodeMirror(selectElement, {
-      value: session?.operation?.text || '',
+      value: session?.operation?.text ?? '',
       lineNumbers: true,
       tabSize: 2,
       mode: 'graphql',
