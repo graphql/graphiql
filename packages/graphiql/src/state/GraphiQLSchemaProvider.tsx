@@ -21,10 +21,18 @@ export type SchemaState = {
   config: SchemaConfig;
 };
 
+const isDev = window.location.hostname === 'localhost';
+
+const uri = isDev
+  ? 'http://localhost:8080/graphql'
+  : 'https://swapi-graphql.netlify.com/.netlify/functions/index';
+
 export const initialReducerState: SchemaState = {
   isLoading: false,
   hasError: false,
-  config: { uri: 'http://localhost:8080/graphql' },
+  config: {
+    uri,
+  },
   schema: null,
 };
 
