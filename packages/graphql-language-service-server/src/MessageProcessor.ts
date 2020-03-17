@@ -69,6 +69,7 @@ type CachedDocumentType = {
 
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
+  _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
 
@@ -82,12 +83,14 @@ export class MessageProcessor {
   constructor(
     logger: Logger,
     extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+    config?: GraphQLConfig,
   ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
     this._logger = logger;
     this._extensions = extensions;
+    this._graphQLConfig = config;
   }
 
   async handleInitializeRequest(
@@ -117,7 +120,11 @@ export class MessageProcessor {
       );
     }
 
-    this._graphQLCache = await getGraphQLCache(rootPath, this._extensions);
+    this._graphQLCache = await getGraphQLCache(
+      rootPath,
+      this._extensions,
+      this._graphQLConfig,
+    );
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
