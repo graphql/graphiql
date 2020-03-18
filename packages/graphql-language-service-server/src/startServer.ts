@@ -52,6 +52,8 @@ type Options = {
   configDir?: string;
   // array of functions to transform the graphql-config and add extensions dynamically
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  // pre-existing GraphQLConfig
+  config?: GraphQLConfig;
 };
 ('graphql-language-service-types');
 
@@ -100,6 +102,7 @@ export default async function startServer(options: Options): Promise<void> {
                 logger,
                 options.configDir,
                 options.extensions,
+                options.config,
               );
               connection.listen();
             })
@@ -116,7 +119,13 @@ export default async function startServer(options: Options): Promise<void> {
           break;
       }
       const connection = createMessageConnection(reader, writer, logger);
-      addHandlers(connection, logger, options.configDir, options.extensions);
+      addHandlers(
+        connection,
+        logger,
+        options.configDir,
+        options.extensions,
+        options.config,
+      );
       connection.listen();
     }
   } catch (err) {
@@ -129,8 +138,9 @@ function addHandlers(
   logger: Logger,
   configDir?: string,
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  config?: GraphQLConfig,
 ): void {
-  const messageProcessor = new MessageProcessor(logger, extensions);
+  const messageProcessor = new MessageProcessor(logger, extensions, config);
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
