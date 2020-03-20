@@ -20,7 +20,7 @@ import {
   TypeDefinitionNode,
 } from 'graphql';
 import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
-import { getQueryAndRange } from '../MessageProcessor';
+import { parseDocument } from '../parseDocument';
 import { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service-types';
 
 function wihtoutASTNode(definition: any) {
@@ -161,7 +161,7 @@ describe('GraphQLCache', () => {
         '    `,\n' +
         '  },\n' +
         '});';
-      const contents = getQueryAndRange(text, 'test.js');
+      const contents = parseDocument(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
         parse(contents[0].query),
         fragmentDefinitions,

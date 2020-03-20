@@ -7,7 +7,6 @@
  *
  */
 
-import { extname } from 'path';
 import { readFileSync } from 'fs';
 import { URL } from 'url';
 
@@ -52,7 +51,8 @@ import {
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
-import { findGraphQLTags } from './findGraphQLTags';
+import { parseDocument } from './parseDocument';
+
 import { Logger } from './Logger';
 
 type CachedDocumentType = {
@@ -60,37 +60,33 @@ type CachedDocumentType = {
   contents: CachedContent[];
 };
 
-// const KIND_TO_SYMBOL_KIND = {
-//   Field: SymbolKind.Field,
-//   OperationDefinition: SymbolKind.Class,
-//   FragmentDefinition: SymbolKind.Class,
-//   FragmentSpread: SymbolKind.Struct,
-// };
-
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
-
   _isInitialized: boolean;
-
   _willShutdown: boolean;
-
   _logger: Logger;
   _extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  _fileExtensions?: Array<string>;
+  _parser: typeof parseDocument;
 
   constructor(
     logger: Logger,
     extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
     config?: GraphQLConfig,
+    parser?: typeof parseDocument,
+    fileExtensions?: string[],
   ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
     this._logger = logger;
     this._extensions = extensions;
+    this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
+    this._parser = parser || parseDocument;
   }
 
   async handleInitializeRequest(
@@ -164,10 +160,11 @@ export class MessageProcessor {
     if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = getQueryAndRange(textDocument.text, uri);
+      contents = parseDocument(textDocument.text, uri, this._fileExtensions);
+
       this._invalidateCache(textDocument, uri, contents);
     } else {
-      const cachedDocument = this._getCachedDocument(uri);
+      const cachedDocument = this._getCachedDocument(textDocument.uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
       }
@@ -233,8 +230,11 @@ export class MessageProcessor {
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
-    const contents = getQueryAndRange(contentChange.text, uri);
-
+    const contents = parseDocument(
+      contentChange.text,
+      uri,
+      this._fileExtensions,
+    );
     // If it's a .graphql file, proceed normally and invalidate the cache.
     this._invalidateCache(textDocument, uri, contents);
 
@@ -449,7 +449,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
           const text: string = readFileSync(new URL(uri).pathname).toString();
-          const contents = getQueryAndRange(text, uri);
+          const contents = parseDocument(text, uri, this._fileExtensions);
 
           this._updateFragmentDefinition(uri, contents);
           this._updateObjectTypeDefinition(uri, contents);
@@ -660,7 +660,6 @@ export class MessageProcessor {
 
     return null;
   }
-
   _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
@@ -686,40 +685,6 @@ export class MessageProcessor {
         contents,
       });
     }
-  }
-}
-
-/**
- * Helper functions to perform requested services from client/server.
- */
-
-// Check the uri to determine the file type (JavaScript/GraphQL).
-// If .js file, either return the parsed query/range or null if GraphQL queries
-// are not found.
-export function getQueryAndRange(text: string, uri: string): CachedContent[] {
-  // Check if the text content includes a GraphQLV query.
-  // If the text doesn't include GraphQL queries, do not proceed.
-  if (extname(uri) === '.js') {
-    if (
-      text.indexOf('graphql`') === -1 &&
-      text.indexOf('graphql.experimental`') === -1 &&
-      text.indexOf('gql`') === -1
-    ) {
-      return [];
-    }
-    const templates = findGraphQLTags(text);
-    return templates.map(({ template, range }) => ({ query: template, range }));
-  } else {
-    const query = text;
-    if (!query && query !== '') {
-      return [];
-    }
-    const lines = query.split('\n');
-    const range = new Range(
-      new Position(0, 0),
-      new Position(lines.length - 1, lines[lines.length - 1].length - 1),
-    );
-    return [{ query, range }];
   }
 }
 

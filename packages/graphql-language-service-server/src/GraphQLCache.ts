@@ -27,7 +27,7 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-config';
-import { getQueryAndRange } from './MessageProcessor';
+import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 
@@ -59,7 +59,7 @@ export async function getGraphQLCache(
 ): Promise<GraphQLCacheInterface> {
   let graphQLConfig = config || (await loadConfig({ rootDir: configDir }));
   if (extensions && extensions.length > 0) {
-    for (const extension of extensions) {
+    for await (const extension of extensions) {
       graphQLConfig = await extension(graphQLConfig);
     }
   }
@@ -633,7 +633,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schema = await projectConfig.getSchema();
     }
 
-    const customDirectives = projectConfig.extensions.customDirectives;
+    const customDirectives = projectConfig?.extensions?.customDirectives;
     if (customDirectives && schema) {
       const directivesSDL = customDirectives.join('\n\n');
       schema = extendSchema(
@@ -796,7 +796,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         let queries: CachedContent[] = [];
         if (content.trim().length !== 0) {
           try {
-            queries = getQueryAndRange(content, filePath);
+            queries = parseDocument(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({
