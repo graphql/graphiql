@@ -158,9 +158,10 @@ export class MessageProcessor {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
       contents = parseDocument(textDocument.text, uri);
+
       this._invalidateCache(textDocument, uri, contents);
     } else {
-      const cachedDocument = this._getCachedDocument(uri);
+      const cachedDocument = this._getCachedDocument(textDocument.uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
       }
@@ -227,7 +228,6 @@ export class MessageProcessor {
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
     const contents = parseDocument(contentChange.text, uri);
-
     // If it's a .graphql file, proceed normally and invalidate the cache.
     this._invalidateCache(textDocument, uri, contents);
 
@@ -653,7 +653,6 @@ export class MessageProcessor {
 
     return null;
   }
-
   _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,

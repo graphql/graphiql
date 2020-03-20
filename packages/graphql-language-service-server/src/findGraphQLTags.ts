@@ -15,7 +15,6 @@ import {
 } from '@babel/types';
 
 import { Position, Range } from 'graphql-language-service-utils';
-import { DEFAULT_STABLE_TAGS } from './constants';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 
@@ -34,37 +33,44 @@ const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
   createRefetchContainer: true,
 };
 
+export const DEFAULT_STABLE_TAGS = ['graphql', 'gql'];
+export const DEFAULT_TAGS = [...DEFAULT_STABLE_TAGS, 'graphql.experimental'];
+
 type TagResult = { tag: string; template: string; range: Range };
 
 interface TagVisitiors {
   [type: string]: (node: any) => void;
 }
 
+const BABEL_PLUGINS: ParserPlugin[] = [
+  'jsx',
+  'doExpressions',
+  'objectRestSpread',
+  ['decorators', { decoratorsBeforeExport: false }],
+  'classProperties',
+  'classPrivateProperties',
+  'classPrivateMethods',
+  'exportDefaultFrom',
+  'exportNamespaceFrom',
+  'asyncGenerators',
+  'functionBind',
+  'functionSent',
+  'dynamicImport',
+  'numericSeparator',
+  'optionalChaining',
+  'importMeta',
+  'bigInt',
+  'optionalCatchBinding',
+  'throwExpressions',
+  ['pipelineOperator', { proposal: 'minimal' }],
+  'nullishCoalescingOperator',
+];
+
 export function findGraphQLTags(text: string, ext: string): TagResult[] {
   const result: TagResult[] = [];
-  const plugins: ParserPlugin[] = [
-    'jsx',
-    'doExpressions',
-    'objectRestSpread',
-    ['decorators', { decoratorsBeforeExport: false }],
-    'classProperties',
-    'classPrivateProperties',
-    'classPrivateMethods',
-    'exportDefaultFrom',
-    'exportNamespaceFrom',
-    'asyncGenerators',
-    'functionBind',
-    'functionSent',
-    'dynamicImport',
-    'numericSeparator',
-    'optionalChaining',
-    'importMeta',
-    'bigInt',
-    'optionalCatchBinding',
-    'throwExpressions',
-    ['pipelineOperator', { proposal: 'minimal' }],
-    'nullishCoalescingOperator',
-  ];
+
+  const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
+
   if (ext === '.ts' || ext === '.tsx') {
     plugins?.push('typescript');
   } else {

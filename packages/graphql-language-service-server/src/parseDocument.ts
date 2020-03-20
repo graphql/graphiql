@@ -2,8 +2,13 @@ import { extname } from 'path';
 import { CachedContent } from 'graphql-language-service-types';
 import { Range, Position } from 'graphql-language-service-utils';
 
-import { SUPPORTED_EXTENSIONS_FORMATTED, DEFAULT_TAGS } from './constants';
-import { findGraphQLTags } from './findGraphQLTags';
+import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
+
+export const SUPPORTED_EXTENSIONS = ['js', 'ts', 'jsx', 'tsx'];
+
+export const SUPPORTED_EXTENSIONS_FORMATTED = SUPPORTED_EXTENSIONS.map(
+  i => `.${i}`,
+);
 
 /**
  * Helper functions to perform requested services from client/server.
