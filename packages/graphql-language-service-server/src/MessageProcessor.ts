@@ -69,6 +69,7 @@ export class MessageProcessor {
   _willShutdown: boolean;
   _logger: Logger;
   _extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  _fileExtensions?: Array<string>;
   _parser: typeof parseDocument;
 
   constructor(
@@ -76,12 +77,14 @@ export class MessageProcessor {
     extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
     config?: GraphQLConfig,
     parser?: typeof parseDocument,
+    fileExtensions?: string[],
   ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
     this._logger = logger;
     this._extensions = extensions;
+    this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
     this._parser = parser || parseDocument;
   }
@@ -157,7 +160,7 @@ export class MessageProcessor {
     if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = parseDocument(textDocument.text, uri);
+      contents = parseDocument(textDocument.text, uri, this._fileExtensions);
 
       this._invalidateCache(textDocument, uri, contents);
     } else {
@@ -227,7 +230,11 @@ export class MessageProcessor {
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
-    const contents = parseDocument(contentChange.text, uri);
+    const contents = parseDocument(
+      contentChange.text,
+      uri,
+      this._fileExtensions,
+    );
     // If it's a .graphql file, proceed normally and invalidate the cache.
     this._invalidateCache(textDocument, uri, contents);
 
@@ -442,7 +449,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
           const text: string = readFileSync(new URL(uri).pathname).toString();
-          const contents = parseDocument(text, uri);
+          const contents = parseDocument(text, uri, this._fileExtensions);
 
           this._updateFragmentDefinition(uri, contents);
           this._updateObjectTypeDefinition(uri, contents);

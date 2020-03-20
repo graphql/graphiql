@@ -53,6 +53,7 @@ type Options = {
   configDir?: string;
   // array of functions to transform the graphql-config and add extensions dynamically
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  fileExtensions?: string[];
   // pre-existing GraphQLConfig
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
@@ -122,6 +123,8 @@ export default async function startServer(options: Options): Promise<void> {
       options.configDir,
       options?.extensions ?? [],
       options.config,
+      options.parser,
+      options.fileExtensions,
     );
     connection.listen();
   }
@@ -133,8 +136,16 @@ function addHandlers(
   configDir?: string,
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
   config?: GraphQLConfig,
+  parser?: typeof parseDocument,
+  fileExtensions?: string[],
 ): void {
-  const messageProcessor = new MessageProcessor(logger, extensions, config);
+  const messageProcessor = new MessageProcessor(
+    logger,
+    extensions,
+    config,
+    parser,
+    fileExtensions,
+  );
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {

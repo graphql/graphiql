@@ -16,6 +16,7 @@ Supported features include:
 - Autocomplete suggestions (**spec-compliant**)
 - Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
 - Outline view support for queries
+- Support for `gql` `graphql` and other template tags inside javascript, typescript, jsx and tsx files, and an interface to allow custom parsing of all files.
 
 ## Installation and Usage
 
@@ -41,10 +42,80 @@ The library includes a node executable file which you can find in `./node_module
 
 Check out [graphql-config](https://graphql-config.com/docs/introduction)
 
+#### `.graphqlrc` or `.graphqlrc.yml/yaml`
+
+```yaml
+schema: 'packages/api/src/schema.graphql'
+documents: 'packages/app/src/components/**/*.graphql'
+extensions:
+  customExtension:
+    foo: true
+```
+
+#### `.graphqlrc` or `.graphqlrc.json`
+
+```json
+{ "schema": "https://localhost:8000" }
+```
+
+#### `graphql.config.js` or `.graphqlrc.js`
+
+```js
+module.exports = { schema: 'https://localhost:8000' };
+```
+
+#### custom `loadConfig`
+
+use graphql config [`loadConfig`](https://graphql-config.com/docs/load-config) for further customization:
+
+```ts
+import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
+
+await startServer({
+  method: 'node',
+  config: loadConfig({
+     // myPlatform.config.js works now!
+    configName: 'myPlatform',
+    // or instead of configName, an exact path (relative from rootDir or absolute)
+    filePath: 'exact/path/to/config.js (also supports yml, json)'
+     // rootDir to look for config file(s), or for relative resolution for exact `filePath`. default process.cwd()
+    rootDir: '',
+  })
+});
+```
+
 The graphql features we support are:
 
 - `customDirectives` - `['@myExampleDirective']`
 - `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`;
+
+### Usage
+
+Initialize the GraphQL Language Server with the `startServer` function:
+
+```ts
+import { startServer } from 'graphql-language-service-server';
+
+await startServer({
+  method: 'node',
+});
+```
+
+If you are developing a service or extension, this is the LSP language server you want to run.
+
+When developing vscode extensions, just the above is enough to get started for your extension's `ServerOptions.run.module`, for example.
+
+`startServer` function takes the following parameters:
+
+| Parameter      | Required                                             | Description                                                                       |
+| -------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| port           | `true` when method is `socket`, `false` otherwise    | port for the LSP server to run on                                                 |
+| method         | `false`                                              | `socket`, `streams`, or `node` (ipc)                                              |
+| config         | `false`                                              | custom `graphql-config` instance from `loadConfig` (see example above)            |
+| configDir      | `false`                                              | the directory where graphql-config is found                                       |
+| extensions     | `false`                                              | array of functions to transform the graphql-config and add extensions dynamically |
+| parser         | `false`                                              | Customize _all_ file parsing by overriding the default `parseDocument` function   |
+| fileExtensions | `false`. defaults to `['.js', '.ts', '.tsx, '.jsx']` | Customize file extensions used by the default LSP parser                          |
 
 ## Architectural Overview
 
@@ -84,25 +155,3 @@ For each transport, there is a slight difference in JSON message format, especia
 | Document Symbols | `getDocumentSymbols`         | `textDocument/symbols`                      |
 | Go-to definition | `getDefinition`              | `textDocument/definition`                   |
 |      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
-
-#### startServer
-
-Initialize the GraphQL Language Server with the `startServer` function:
-
-```ts
-import { startServer } from 'graphql-language-service-server';
-
-await startServer({
-  method: 'node',
-});
-```
-
-`startServer` function takes the following parameters:
-
-| Parameter  | Required                                          | Description                                                                       |
-| ---------- | ------------------------------------------------- | --------------------------------------------------------------------------------- |
-| port       | `true` when method is `socket`, `false` otherwise | port for the LSP server to run on                                                 |
-| method     | `false`                                           | socket, streams, or node (ipc)                                                    |
-| configDir  | `false`                                           | the directory where graphql-config is found                                       |
-| extensions | `false`                                           | array of functions to transform the graphql-config and add extensions dynamically |
-| parser     | `false`                                           | Customize _all_ file parsing by overriding the default `parseDocument` function   |

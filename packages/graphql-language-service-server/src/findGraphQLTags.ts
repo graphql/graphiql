@@ -33,7 +33,7 @@ const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
   createRefetchContainer: true,
 };
 
-export const DEFAULT_STABLE_TAGS = ['graphql', 'gql'];
+const DEFAULT_STABLE_TAGS = ['graphql', 'gql'];
 export const DEFAULT_TAGS = [...DEFAULT_STABLE_TAGS, 'graphql.experimental'];
 
 type TagResult = { tag: string; template: string; range: Range };
