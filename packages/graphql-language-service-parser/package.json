@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.5.3-alpha.1",
+  "version": "1.6.0-alpha.1",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "graphql-config": "3.0.0-alpha.17",
-    "graphql-language-service-types": "^1.6.0-alpha.1"
+    "graphql-language-service-types": "^1.6.0-alpha.3"
   }
 }

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.2...graphql-language-service-types@1.6.0-alpha.3) (2020-03-20)
+
+**Note:** Version bump only for package graphql-language-service-types
+
+# [1.6.0-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.0...graphql-language-service-types@1.6.0-alpha.2) (2020-03-20)
+
+### Features
+
+- Symbol support for single document ([#1244](https://github.com/graphql/graphiql/issues/1244)) ([f729f9a](https://github.com/graphql/graphiql/commit/f729f9a3c20362f4515bf3037347a07cc3690b38))
+- use new GraphQL Config ([#1342](https://github.com/graphql/graphiql/issues/1342)) ([e45838f](https://github.com/graphql/graphiql/commit/e45838f5ba579e05b20f1a147ce431478ffad9aa))
+
 # [1.6.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.5.2...graphql-language-service-types@1.6.0-alpha.1) (2020-01-18)
 
 ### Features
