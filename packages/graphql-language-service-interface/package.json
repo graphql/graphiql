@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-interface",
-  "version": "2.4.0-alpha.1",
+  "version": "2.4.0-alpha.2",
   "description": "Interface to the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -28,8 +28,8 @@
   },
   "dependencies": {
     "graphql-config": "3.0.0-alpha.17",
-    "graphql-language-service-parser": "^1.5.3-alpha.1",
-    "graphql-language-service-types": "^1.6.0-alpha.1",
-    "graphql-language-service-utils": "^2.4.0-alpha.1"
+    "graphql-language-service-parser": "^1.6.0-alpha.0",
+    "graphql-language-service-types": "^1.6.0-alpha.2",
+    "graphql-language-service-utils": "^2.4.0-alpha.2"
   }
 }
