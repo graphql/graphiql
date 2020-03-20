@@ -9,7 +9,8 @@
 import { SymbolKind } from 'vscode-languageserver';
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
+import { MessageProcessor } from '../MessageProcessor';
+import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
@@ -280,7 +281,7 @@ describe('MessageProcessor', () => {
     await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
   });
 
-  it('getQueryAndRange finds queries in tagged templates', async () => {
+  it('parseDocument finds queries in tagged templates', async () => {
     const text = `
 // @flow
 import {gql} from 'react-apollo';
@@ -299,7 +300,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = getQueryAndRange(text, 'test.js');
+    const contents = parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
 query Test {
   test {
@@ -310,7 +311,67 @@ query Test {
 `);
   });
 
-  it('getQueryAndRange ignores non gql tagged templates', async () => {
+  it('parseDocument finds queries in tagged templates using typescript', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.ts');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('parseDocument finds queries in tagged templates using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = parseDocument(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
 // @flow
 import randomthing from 'package';
@@ -329,7 +390,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = getQueryAndRange(text, 'test.js');
+    const contents = parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 });

@@ -1,6 +1,6 @@
 {
   "name": "example-graphiql-webpack",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.3",
   "private": true,
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "14.5.8",
-    "react": "16.12.0"
+    "graphql": "14.6.0",
+    "react": "16.13.1"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.7.4",
