@@ -27,11 +27,11 @@
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "7.8.3",
+    "@babel/polyfill": "7.8.7",
     "graphql-config": "3.0.0-alpha.17",
     "graphql-language-service-interface": "^2.4.0-alpha.1",
     "graphql-language-service-server": "^2.4.0-alpha.1",
     "graphql-language-service-utils": "^2.4.0-alpha.1",
-    "yargs": "^15.2.0"
+    "yargs": "^15.3.1"
   }
 }
