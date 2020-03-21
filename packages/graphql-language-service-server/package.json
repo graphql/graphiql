@@ -29,7 +29,7 @@
   "dependencies": {
     "@babel/parser": "^7.9.0",
     "glob": "^7.1.2",
-    "graphql-config": "3.0.0-alpha.17",
+    "graphql-config": "3.0.0-alpha.23",
     "graphql-language-service-interface": "^2.4.0-alpha.3",
     "graphql-language-service-types": "^1.6.0-alpha.3",
     "graphql-language-service-utils": "^2.4.0-alpha.3",
