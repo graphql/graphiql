@@ -86,7 +86,7 @@ export class MessageProcessor {
     this._extensions = extensions;
     this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
-    this._parser = parser || parseDocument;
+    this._parser = parser ?? parseDocument;
   }
 
   async handleInitializeRequest(
@@ -118,9 +118,9 @@ export class MessageProcessor {
 
     this._graphQLCache = await getGraphQLCache(
       rootPath,
+      this._parser,
       this._extensions,
       this._graphQLConfig,
-      this._parser,
     );
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 

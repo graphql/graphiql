@@ -54,9 +54,9 @@ const {
 
 export async function getGraphQLCache(
   configDir: Uri,
+  parser: typeof parseDocument,
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
   config?: GraphQLConfig,
-  parser?: typeof parseDocument,
 ): Promise<GraphQLCacheInterface> {
   let graphQLConfig =
     config ?? ((await loadConfig({ rootDir: configDir })) as GraphQLConfig);
@@ -81,7 +81,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   constructor(
     configDir: Uri,
     graphQLConfig: GraphQLConfig,
-    parser?: typeof parseDocument,
+    parser: typeof parseDocument,
   ) {
     this._configDir = configDir;
     this._graphQLConfig = graphQLConfig;
@@ -90,7 +90,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
-    this._parser = parser || parseDocument;
+    this._parser = parser;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
