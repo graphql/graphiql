@@ -34,7 +34,7 @@ import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
-import { StorageAPI, Storage } from '@graphql/graphiql-ide-storage';
+import StorageAPI, { Storage } from '../utility/StorageAPI';
 import getQueryFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';

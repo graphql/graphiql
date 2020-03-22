@@ -4,7 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { StorageAPI } from '@graphql/graphiql-ide-storage';
+import StorageAPI from './StorageAPI';
 
 export type QueryStoreItem = {
   query?: string;

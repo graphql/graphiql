@@ -1,9 +1,14 @@
-const DEFAULT_NAMPESPACE = 'graphiql';
+/**
+ *  Copyright (c) 2019 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
 export interface Storage {
-  getItem: <T>(key: string) => Promise<T | string | null>;
-  removeItem: (key: string) => Promise<void>;
-  setItem: <T>(key: string, value: T | string) => Promise<void>;
+  getItem: (key: string) => string | null;
+  removeItem: (key: string) => void;
+  setItem: (key: string, value: string) => void;
   length: number;
 }
 
@@ -24,27 +29,20 @@ function isQuotaError(storage: Storage, e: Error) {
   );
 }
 
-function getLocalForage(namespace: string): Storage {
-  const localforage = require('localforage');
-  localforage.config({ name: namespace });
-  return localforage;
-}
-
-export class StorageAPI {
+export default class StorageAPI {
   storage: Storage | null;
-  namespace: string;
 
-  constructor(namespace: string = DEFAULT_NAMPESPACE, storage?: Storage) {
-    this.namespace = namespace;
-    this.storage = storage || getLocalForage(namespace);
+  constructor(storage?: Storage) {
+    this.storage =
+      storage || (typeof window !== 'undefined' ? window.localStorage : null);
   }
 
-  async get<T>(name: string): Promise<T | string | null> {
+  get(name: string): string | null {
     if (this.storage) {
-      const value = await this.storage.getItem<T>(name);
+      const value = this.storage.getItem('graphiql:' + name);
       // Clean up any inadvertently saved null/undefined values.
       if (value === 'null' || value === 'undefined') {
-        await this.storage.removeItem(name);
+        this.storage.removeItem('graphiql:' + name);
         return null;
       }
 
@@ -55,21 +53,22 @@ export class StorageAPI {
     return null;
   }
 
-  async set<T>(name: string, value: T | string) {
+  set(name: string, value: string) {
     let quotaError = false;
     let error = null;
 
     if (this.storage) {
+      const key = `graphiql:${name}`;
       if (value) {
         try {
-          await this.storage.setItem<T>(name, value);
+          this.storage.setItem(key, value);
         } catch (e) {
           error = e;
           quotaError = isQuotaError(this.storage, e);
         }
       } else {
         // Clean up by removing the item if there's no value to set
-        await this.storage.removeItem(name);
+        this.storage.removeItem(key);
       }
     }
 

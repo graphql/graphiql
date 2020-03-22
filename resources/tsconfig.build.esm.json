@@ -9,9 +9,6 @@
       "path": "../packages/graphiql/tsconfig.esm.json"
     },
     {
-      "path": "../packages/graphiql-ide-storage/tsconfig.esm.json"
-    },
-    {
       "path": "../packages/graphql-language-service-utils/tsconfig.esm.json"
     },
     {
