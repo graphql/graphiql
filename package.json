@@ -111,6 +111,7 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.2.0",
     "typedoc": "^0.15.1",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.3",
+    "js-yaml": "^3.13.1"
   }
 }

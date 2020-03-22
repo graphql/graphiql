@@ -47,6 +47,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { ToolbarSelect, ToolbarSelectOption } from './ToolbarSelect';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -126,6 +127,7 @@ type GraphiQLState = {
   subscription?: Unsubscribable | null;
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
+  resultsFormat?: string;
 };
 
 /**
@@ -406,6 +408,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        <ToolbarSelect>
+          <ToolbarSelectOption
+            onSelect={this.handleJSONResults}
+            label={`JSON`}
+            selected={this.state.resultsFormat === 'json'}
+          />
+          <ToolbarSelectOption
+            onSelect={this.handleYAMLResults}
+            label={`YAML`}
+            selected={this.state.resultsFormat === 'yaml'}
+          />
+        </ToolbarSelect>
       </GraphiQL.Toolbar>
     );
 
@@ -631,6 +645,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   }
 
   /**
+   * Get the result viewer CodeMirror instance.
+   *
+   * @public
+   */
+  public getResultViewer() {
+    if (this.resultComponent) {
+      return this.resultComponent.getCodeMirror();
+    }
+    return null;
+  }
+
+  /**
    * Refresh all CodeMirror instances.
    *
    * @public
@@ -824,6 +850,34 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
   }
 
+  getViewer() {
+    if (this.resultComponent) {
+      return this.resultComponent.viewer;
+    }
+  }
+
+  handleJSONResults = () => {
+    this.setState({ resultsFormat: 'json' });
+    const viewer = this.getViewer();
+    if (viewer) {
+      viewer.setOption('mode', 'graphql-results');
+    }
+    const editor = this.getResultViewer();
+    const editorContent = editor?.getValue() ?? '';
+    editorContent ? this.handleEditorRunQuery() : null;
+  };
+
+  handleYAMLResults = () => {
+    this.setState({ resultsFormat: 'yaml' });
+    const viewer = this.getViewer();
+    if (viewer) {
+      viewer.setOption('mode', 'yaml');
+    }
+    const editor = this.getResultViewer();
+    const editorContent = editor?.getValue() ?? '';
+    editorContent ? this.handleEditorRunQuery() : null;
+  };
+
   handleClickReference = (reference: GraphQLType) => {
     this.setState({ docExplorerOpen: true }, () => {
       if (this.docExplorerComponent) {
@@ -867,10 +921,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         variables as string,
         operationName as string,
         (result: FetcherResult) => {
+          const yaml = require('js-yaml');
           if (queryID === this._editorQueryID) {
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response:
+                this.state.resultsFormat === 'yaml'
+                  ? yaml.safeDump(result)
+                  : GraphiQL.formatResult(result),
             });
           }
         },
