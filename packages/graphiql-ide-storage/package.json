@@ -1,8 +1,0 @@
-{
-  "name": "@graphql/graphiql-ide-storage",
-  "version": "0.0.1",
-  "main": "dist/index.js",
-  "dependencies": {
-    "localforage": "^1.7.3"
-  }
-}
