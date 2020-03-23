@@ -25,6 +25,8 @@ import {
   Position,
   Outline,
   OutlineTree,
+  Token,
+  ContextToken,
 } from 'graphql-language-service-types';
 
 import { GraphQLCache } from './GraphQLCache';
@@ -242,12 +244,13 @@ export class GraphQLLanguageService {
     query: string,
     position: Position,
     filePath: Uri,
+    contextToken?: ContextToken,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this.getSchema(projectConfig.name);
 
     if (schema) {
-      return getAutocompleteSuggestions(schema, query, position);
+      return getAutocompleteSuggestions(schema, query, position, contextToken);
     }
     return [];
   }
