@@ -86,7 +86,7 @@ export class MessageProcessor {
     this._extensions = extensions;
     this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
-    this._parser = parser || parseDocument;
+    this._parser = parser ?? parseDocument;
   }
 
   async handleInitializeRequest(
@@ -118,6 +118,7 @@ export class MessageProcessor {
 
     this._graphQLCache = await getGraphQLCache(
       rootPath,
+      this._parser,
       this._extensions,
       this._graphQLConfig,
     );
@@ -160,7 +161,7 @@ export class MessageProcessor {
     if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = parseDocument(textDocument.text, uri, this._fileExtensions);
+      contents = this._parser(textDocument.text, uri, this._fileExtensions);
 
       this._invalidateCache(textDocument, uri, contents);
     } else {
@@ -230,7 +231,7 @@ export class MessageProcessor {
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
-    const contents = parseDocument(
+    const contents = this._parser(
       contentChange.text,
       uri,
       this._fileExtensions,
@@ -449,7 +450,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
           const text: string = readFileSync(new URL(uri).pathname).toString();
-          const contents = parseDocument(text, uri, this._fileExtensions);
+          const contents = this._parser(text, uri, this._fileExtensions);
 
           this._updateFragmentDefinition(uri, contents);
           this._updateObjectTypeDefinition(uri, contents);
