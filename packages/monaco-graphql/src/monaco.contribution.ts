@@ -1,7 +1,11 @@
+// / <reference path="./monaco.d.ts"/>
+
+import * as monacoEditor from 'monaco-editor-core';
+
 import * as mode from './graphqlMode';
 
-import Emitter = monaco.Emitter;
-import IEvent = monaco.IEvent;
+import Emitter = monacoEditor.Emitter;
+import IEvent = monacoEditor.IEvent;
 
 // --- JSON configuration and defaults ---------
 
@@ -10,7 +14,9 @@ export class LanguageServiceDefaultsImpl
   private _onDidChange = new Emitter<
     monaco.languages.graphql.LanguageServiceDefaults
   >();
+  // @ts-ignore
   private _diagnosticsOptions: monaco.languages.graphql.DiagnosticsOptions;
+  // @ts-ignore
   private _modeConfiguration: monaco.languages.graphql.ModeConfiguration;
   private _languageId: string;
 
@@ -82,12 +88,13 @@ const graphqlDefaults = new LanguageServiceDefaultsImpl(
 );
 
 // Export API
-function createAPI(): typeof monaco.languages.graphql {
+function createAPI() {
   return {
     graphqlDefaults,
   };
 }
-monaco.languages.graphql = createAPI();
+
+monacoEditor.languages.graphql = createAPI();
 
 // --- Registration to monaco editor ---
 
@@ -95,13 +102,13 @@ function getMode(): Promise<typeof mode> {
   return import('./graphqlMode');
 }
 
-monaco.languages.register({
+monacoEditor.languages.register({
   id: 'graphql',
   extensions: ['.graphql'],
   aliases: ['graphql'],
   mimetypes: ['application/graphql'],
 });
 
-monaco.languages.onLanguage('graphql', () => {
+monacoEditor.languages.onLanguage('graphql', () => {
   getMode().then(mode => mode.setupMode(graphqlDefaults));
 });

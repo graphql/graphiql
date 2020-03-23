@@ -1,3 +1,5 @@
+// / <reference path="../../../node_modules/monaco-editor-core/monaco.d.ts"/>
+
 declare module monaco.languages.graphql {
   export interface IDisposable {
     dispose(): void;

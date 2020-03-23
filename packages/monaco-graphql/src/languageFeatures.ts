@@ -43,16 +43,90 @@ function fromRange(range: IRange): graphqlService.Range | void {
   };
 }
 
-function toRange(range: graphqlService.Range): Range | void {
-  if (!range) {
-    return;
+export class DiagnosticsAdapter {
+  private _disposables: IDisposable[] = [];
+  private _listener: { [uri: string]: IDisposable } = Object.create(null);
+
+  constructor(
+    private _languageId: string,
+    private _worker: WorkerAccessor,
+    defaults: monaco.LanguageServiceDefaultsImpl,
+  ) {
+    const onModelAdd = (model: monaco.editor.IModel): void => {
+      const modeId = model.getModeId();
+      if (modeId !== this._languageId) {
+        return;
+      }
+
+      let handle: number;
+      this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
+        clearTimeout(handle);
+        handle = setTimeout(() => this._doValidate(model.uri, modeId), 500);
+      });
+
+      this._doValidate(model.uri, modeId);
+    };
+
+    const onModelRemoved = (model: monaco.editor.IModel): void => {
+      monaco.editor.setModelMarkers(model, this._languageId, []);
+      const uriStr = model.uri.toString();
+      const listener = this._listener[uriStr];
+      if (listener) {
+        listener.dispose();
+        delete this._listener[uriStr];
+      }
+    };
+
+    this._disposables.push(monaco.editor.onDidCreateModel(onModelAdd));
+    this._disposables.push(
+      monaco.editor.onWillDisposeModel(model => {
+        onModelRemoved(model);
+      }),
+    );
+    this._disposables.push(
+      monaco.editor.onDidChangeModelLanguage(event => {
+        onModelRemoved(event.model);
+        onModelAdd(event.model);
+      }),
+    );
+
+    this._disposables.push(
+      defaults.onDidChange(_ => {
+        monaco.editor.getModels().forEach(model => {
+          if (model.getModeId() === this._languageId) {
+            onModelRemoved(model);
+            onModelAdd(model);
+          }
+        });
+      }),
+    );
+
+    this._disposables.push({
+      dispose: () => {
+        for (const key in this._listener) {
+          this._listener[key].dispose();
+        }
+      },
+    });
+
+    monaco.editor.getModels().forEach(onModelAdd);
   }
-  return new Range(
-    range.start.line + 1,
-    range.start.character + 1,
-    range.end.line + 1,
-    range.end.character + 1,
-  );
+
+  public dispose(): void {
+    this._disposables.forEach(d => d && d.dispose());
+    this._disposables = [];
+  }
+
+  private async _doValidate(resource: Uri, languageId: string) {
+    const worker = await this._worker(resource);
+
+    const diagnostics = await worker.doValidation(resource.toString());
+    monaco.editor.setModelMarkers(
+      monaco.editor.getModel(resource) as monaco.editor.ITextModel,
+      languageId,
+      diagnostics,
+    );
+  }
 }
 
 export class CompletionAdapter
@@ -74,35 +148,11 @@ export class CompletionAdapter
 
     const completionItems = await worker.doComplete(
       resource.toString(),
-      fromPosition(position) as graphqlService.Position,
+      position,
     );
-    const wordInfo = model.getWordUntilPosition(position);
-    const wordRange = new Range(
-      position.lineNumber,
-      wordInfo.startColumn,
-      position.lineNumber,
-      wordInfo.endColumn,
-    );
-    const items: monaco.languages.CompletionItem[] = completionItems.map<
-      graphqlService.CompletionItem
-    >((entry: graphqlService.CompletionItem) => {
-      const item: monaco.languages.CompletionItem = {
-        label: entry.label,
-        insertText: entry.insertText || entry.label,
-        sortText: entry.sortText,
-        filterText: entry.filterText,
-        documentation: entry.documentation,
-        detail: entry.detail,
-        range: wordRange,
-        kind: entry.kind as monaco.languages.CompletionItemKind,
-      };
-
-      return item;
-    });
-
     return {
       incomplete: true,
-      suggestions: items,
+      suggestions: completionItems,
     };
   }
 }

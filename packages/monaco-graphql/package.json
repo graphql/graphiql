@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "dependencies": {
-    "graphql-languageservice": "^2.4.0-alpha.3"
+    "graphql-languageservice": "^2.4.0-alpha.3",
+    "graphql-language-service-utils": "^2.4.0-alpha.3"
   },
   "devDependencies": {
     "monaco-editor-core": "0.20.0"
