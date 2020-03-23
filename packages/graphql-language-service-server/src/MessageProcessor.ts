@@ -11,6 +11,18 @@ import { readFileSync } from 'fs';
 import { URL } from 'url';
 
 import {
+  CachedContent,
+  Uri,
+  FileChangeTypeKind,
+  DefinitionQueryResult,
+  GraphQLConfig,
+} from 'graphql-language-service-types';
+
+import { GraphQLLanguageService } from 'graphql-language-service-interface';
+
+import { Range, Position } from 'graphql-language-service-utils';
+
+import {
   CompletionParams,
   FileEvent,
   VersionedTextDocumentIdentifier,
@@ -38,18 +50,10 @@ import {
 } from 'vscode-languageserver';
 
 import {
-  GraphQLCache,
-  CachedContent,
-  Uri,
-  FileChangeTypeKind,
-  DefinitionQueryResult,
-  GraphQLConfig,
-  GraphQLLanguageService,
-  parseDocument,
   getGraphQLCache,
+  GraphQLCache,
+  parseDocument,
 } from 'graphql-languageservice';
-
-import { Range, Position } from 'graphql-language-service-utils';
 
 import { Logger } from './Logger';
 

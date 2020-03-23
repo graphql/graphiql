@@ -1,5 +1,6 @@
 import { GraphQLWorker } from './graphqlWorker';
 
+import * as monaco from 'monaco-editor-core';
 import * as graphqlService from 'graphql-languageservice';
 
 import Uri = monaco.Uri;
@@ -16,16 +17,16 @@ export interface WorkerAccessor {
 
 // --- completion ------
 
-function fromPosition(position: Position): graphqlService.Position {
+function fromPosition(position: Position): graphqlService.Position | void {
   if (!position) {
-    return void 0;
+    return;
   }
   return { character: position.column - 1, line: position.lineNumber - 1 };
 }
 
-function fromRange(range: IRange): graphqlService.Range {
+function fromRange(range: IRange): graphqlService.Range | void {
   if (!range) {
-    return void 0;
+    return;
   }
   return {
     start: {
@@ -42,9 +43,9 @@ function fromRange(range: IRange): graphqlService.Range {
   };
 }
 
-function toRange(range: graphqlService.Range): Range {
+function toRange(range: graphqlService.Range): Range | void {
   if (!range) {
-    return void 0;
+    return;
   }
   return new Range(
     range.start.line + 1,
@@ -73,7 +74,7 @@ export class CompletionAdapter
 
     const completionItems = await worker.doComplete(
       resource.toString(),
-      fromPosition(position),
+      fromPosition(position) as graphqlService.Position,
     );
     const wordInfo = model.getWordUntilPosition(position);
     const wordRange = new Range(
@@ -82,22 +83,22 @@ export class CompletionAdapter
       position.lineNumber,
       wordInfo.endColumn,
     );
-    const items: monaco.languages.CompletionItem[] = completionItems.map(
-      entry => {
-        const item: monaco.languages.CompletionItem = {
-          label: entry.label,
-          insertText: entry.insertText || entry.label,
-          sortText: entry.sortText,
-          filterText: entry.filterText,
-          documentation: entry.documentation,
-          detail: entry.detail,
-          range: wordRange,
-          kind: entry.kind,
-        };
+    const items: monaco.languages.CompletionItem[] = completionItems.map<
+      graphqlService.CompletionItem
+    >((entry: graphqlService.CompletionItem) => {
+      const item: monaco.languages.CompletionItem = {
+        label: entry.label,
+        insertText: entry.insertText || entry.label,
+        sortText: entry.sortText,
+        filterText: entry.filterText,
+        documentation: entry.documentation,
+        detail: entry.detail,
+        range: wordRange,
+        kind: entry.kind as monaco.languages.CompletionItemKind,
+      };
 
-        return item;
-      },
-    );
+      return item;
+    });
 
     return {
       incomplete: true,
