@@ -32,17 +32,17 @@ import {
   ParseRules as ParseRulesType,
 } from './Rules';
 import {
-  CharacterStream,
   State,
   Token,
   Rule,
   RuleKind,
+  CharacterStreamInterface,
 } from 'graphql-language-service-types';
 
 import { LexRules, ParseRules, isIgnored } from './Rules';
 
 type ParserOptions = {
-  eatWhitespace: (stream: CharacterStream) => boolean;
+  eatWhitespace: (stream: CharacterStreamInterface) => boolean;
   lexRules: typeof LexRulesType;
   parseRules: typeof ParseRulesType;
   editorConfig: { [name: string]: any };
@@ -57,7 +57,7 @@ export default function onlineParser(
   },
 ): {
   startState: () => State;
-  token: (stream: CharacterStream, state: State) => string;
+  token: (stream: CharacterStreamInterface, state: State) => string;
 } {
   return {
     startState() {
@@ -75,14 +75,14 @@ export default function onlineParser(
       pushRule(options.parseRules, initialState, 'Document');
       return initialState;
     },
-    token(stream: CharacterStream, state: State) {
+    token(stream: CharacterStreamInterface, state: State) {
       return getToken(stream, state, options);
     },
   };
 }
 
 function getToken(
-  stream: CharacterStream,
+  stream: CharacterStreamInterface,
   state: State,
   options: ParserOptions,
 ): string {
@@ -340,7 +340,7 @@ function unsuccessful(state: State): void {
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(
   lexRules: typeof LexRulesType,
-  stream: CharacterStream,
+  stream: CharacterStreamInterface,
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);
   for (let i = 0; i < kinds.length; i++) {

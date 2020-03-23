@@ -7,6 +7,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+import * as vscode from 'vscode-languageserver-protocol';
 
 import {
   FragmentDefinitionNode,
@@ -56,10 +57,8 @@ import {
 // TODO@acao,rebornix
 // Convert AST token kind to Monaco CompletionItemKind
 // Should we take `step` into account similar to how we resolve completion items?
-function toCompletionItemKind(
-  kind: string,
-): monaco.languages.CompletionItemKind {
-  const mItemKind = monaco.languages.CompletionItemKind;
+function toCompletionItemKind(kind: string): vscode.CompletionItemKind {
+  const lspKind = vscode.CompletionItemKind;
 
   switch (kind) {
     case 'Document':
@@ -77,7 +76,7 @@ function toCompletionItemKind(
     case 'FragmentSpread':
     case 'VariableDefinition':
     case 'Directive':
-      return mItemKind.Method;
+      return lspKind.Method;
   }
 }
 

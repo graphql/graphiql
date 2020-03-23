@@ -17,15 +17,6 @@
   "references": [
     {
       "path": "../graphql-languageservice"
-    },
-    {
-      "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphql-language-service-types"
-    },
-    {
-      "path": "../graphql-language-service-utils"
     }
   ],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]

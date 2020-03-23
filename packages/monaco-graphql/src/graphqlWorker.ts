@@ -1,26 +1,24 @@
+import * as monaco from 'monaco-editor-core';
+
 import IWorkerContext = monaco.worker.IWorkerContext;
 
 import * as graphqlService from 'graphql-languageservice';
 
-import {
-  GraphQLLanguageService,
-  GraphQLCache,
-} from 'graphql-language-service-interface';
-import {
-  Position,
-  Diagnostic,
-  CompletionItem,
-} from 'graphql-language-service-types';
+import { Diagnostic, CompletionItem } from 'graphql-language-service-types';
+
+import { Position } from 'graphql-language-service-utils';
 
 export class GraphQLWorker {
   private _ctx: IWorkerContext;
-  private _languageService: GraphQLLanguageService;
+  private _languageService: graphqlService.GraphQLLanguageService;
   private _languageId: string;
 
   constructor(ctx: IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     this._languageId = createData.languageId;
-    this._languageService = new GraphQLLanguageService(new GraphQLCache());
+    this._languageService = new graphqlService.GraphQLLanguageService(
+      new graphqlService.GraphQLCache(),
+    );
   }
 
   async doValidation(uri: string): Promise<Diagnostic[]> {
@@ -30,11 +28,18 @@ export class GraphQLWorker {
     }
     return Promise.resolve([]);
   }
-  async doComplete(uri: string, position: Position): Promise<CompletionItem[]> {
+  async doComplete(
+    uri: string,
+    position: monaco.Position,
+  ): Promise<CompletionItem[]> {
     const query = this._getQueryText(uri);
+    const graphQLPosition = new Position(
+      position.lineNumber - 1,
+      position.column - 1,
+    );
     return this._languageService.getAutocompleteSuggestions(
       query,
-      position,
+      graphQLPosition,
       uri,
     );
   }

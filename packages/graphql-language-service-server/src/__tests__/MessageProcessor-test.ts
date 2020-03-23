@@ -10,7 +10,7 @@ import { SymbolKind } from 'vscode-languageserver';
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor } from '../MessageProcessor';
-import { parseDocument } from '../parseDocument';
+import { parseDocument } from 'graphql-languageservice';
 
 jest.mock('../Logger');
 

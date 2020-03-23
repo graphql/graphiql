@@ -42,7 +42,7 @@ import {
 } from 'vscode-languageserver';
 
 import { Logger } from './Logger';
-import { parseDocument } from './parseDocument';
+import { parseDocument } from 'graphql-languageservice';
 
 type Options = {
   // port for the LSP server to run on

@@ -8,7 +8,7 @@
  */
 
 import {
-  CharacterStream,
+  CharacterStreamInterface as CharacterStream,
   State,
   Token,
   Rule,

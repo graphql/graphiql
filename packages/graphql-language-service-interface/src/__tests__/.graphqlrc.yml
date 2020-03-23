@@ -1,4 +1,3 @@
-schema: '__schema__/StarWarsSchema.graphql'
 projects:
   default:
     schema: '__schema__/StarWarsSchema.graphql'

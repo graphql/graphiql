@@ -11,10 +11,9 @@ import {
   Position as PositionType,
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-protocol';
-import { GraphQLSchema, KindEnum } from 'graphql';
+import { KindEnum } from 'graphql';
 
 import {
-  ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
@@ -37,7 +36,7 @@ import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
-export interface CharacterStream {
+export interface CharacterStreamInterface {
   getStartOfToken: () => number;
   getCurrentPosition: () => number;
   eol: () => boolean;
@@ -87,67 +86,6 @@ export type GraphQLConfigurationExtension = {
   [name: string]: unknown;
 };
 
-export interface GraphQLCache {
-  getGraphQLConfig: () => GraphQLConfig;
-
-  getObjectTypeDependencies: (
-    query: string,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<ObjectTypeInfo[]>;
-
-  getObjectTypeDependenciesForAST: (
-    parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, ObjectTypeInfo>,
-  ) => Promise<ObjectTypeInfo[]>;
-
-  getObjectTypeDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
-  ) => Promise<Map<string, ObjectTypeInfo>>;
-
-  updateObjectTypeDefinition: (
-    rootDir: Uri,
-    filePath: Uri,
-    contents: CachedContent[],
-  ) => Promise<void>;
-
-  updateObjectTypeDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
-  getFragmentDependencies: (
-    query: string,
-    fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
-  ) => Promise<FragmentInfo[]>;
-
-  getFragmentDependenciesForAST: (
-    parsedQuery: ASTNode,
-    fragmentDefinitions: Map<string, FragmentInfo>,
-  ) => Promise<FragmentInfo[]>;
-
-  getFragmentDefinitions: (
-    graphQLConfig: GraphQLProjectConfig,
-  ) => Promise<Map<string, FragmentInfo>>;
-
-  updateFragmentDefinition: (
-    rootDir: Uri,
-    filePath: Uri,
-    contents: CachedContent[],
-  ) => Promise<void>;
-
-  updateFragmentDefinitionCache: (
-    rootDir: Uri,
-    filePath: Uri,
-    exists: boolean,
-  ) => Promise<void>;
-
-  getSchema: (
-    appName?: string,
-    queryHasExtensions?: boolean,
-  ) => Promise<GraphQLSchema | null>;
-}
-
 // online-parser related
 export type Position = PositionType & {
   line: number;
@@ -170,7 +108,7 @@ export type RuleOrString = Rule | string;
 
 export type ParseRule =
   | RuleOrString[]
-  | ((token: Token, stream: CharacterStream) => string | null | void);
+  | ((token: Token, stream: CharacterStreamInterface) => string | null | void);
 
 export type Token = {
   kind: string;

@@ -1,8 +1,10 @@
 {
   "name": "@graphql/monaco-graphql",
   "version": "0.0.1",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
   "dependencies": {
-    "graphql-language-service-interface": "2.4.0-alpha.1"
+    "graphql-languageservice": "^2.4.0-alpha.3"
   },
   "devDependencies": {
     "monaco-editor-core": "0.20.0"
