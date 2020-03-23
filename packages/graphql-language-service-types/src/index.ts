@@ -59,33 +59,6 @@ export interface CharacterStreamInterface {
   current: () => string;
 }
 
-// Cache and config-related.
-export type GraphQLConfiguration = GraphQLProjectConfiguration & {
-  projects?: {
-    [projectName: string]: GraphQLProjectConfiguration;
-  };
-};
-
-export type GraphQLProjectConfiguration = {
-  // The name for this project configuration.
-  // If not supplied, the object key can be used for the project name.
-  name?: string;
-  schemaPath?: string; // a file with schema IDL
-
-  // For multiple applications with overlapping files,
-  // these configuration options may be helpful
-  includes?: string[];
-  excludes?: string[];
-
-  // If you'd like to specify any other configurations,
-  // we provide a reserved namespace for it
-  extensions?: GraphQLConfigurationExtension;
-};
-
-export type GraphQLConfigurationExtension = {
-  [name: string]: unknown;
-};
-
 // online-parser related
 export type Position = PositionType & {
   line: number;

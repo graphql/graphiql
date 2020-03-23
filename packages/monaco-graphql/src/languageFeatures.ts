@@ -1,12 +1,9 @@
 import { GraphQLWorker } from './graphqlWorker';
 
 import * as monaco from 'monaco-editor-core';
-import * as graphqlService from 'graphql-languageservice';
 
 import Uri = monaco.Uri;
 import Position = monaco.Position;
-import Range = monaco.Range;
-import IRange = monaco.IRange;
 import Thenable = monaco.Thenable;
 import CancellationToken = monaco.CancellationToken;
 import IDisposable = monaco.IDisposable;
@@ -17,44 +14,17 @@ export interface WorkerAccessor {
 
 // --- completion ------
 
-function fromPosition(position: Position): graphqlService.Position | void {
-  if (!position) {
-    return;
-  }
-  return { character: position.column - 1, line: position.lineNumber - 1 };
-}
-
-function fromRange(range: IRange): graphqlService.Range | void {
-  if (!range) {
-    return;
-  }
-  return {
-    start: {
-      line: range.startLineNumber - 1,
-      character: range.startColumn - 1,
-    },
-    end: { line: range.endLineNumber - 1, character: range.endColumn - 1 },
-    containsPosition: pos => {
-      return monaco.Range.containsPosition(range, {
-        lineNumber: pos.line,
-        column: pos.character,
-      });
-    },
-  };
-}
-
 export class DiagnosticsAdapter {
   private _disposables: IDisposable[] = [];
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
-    private _languageId: string,
+    private defaults: monaco.languages.graphql.LanguageServiceDefaultsImpl,
     private _worker: WorkerAccessor,
-    defaults: monaco.LanguageServiceDefaultsImpl,
   ) {
     const onModelAdd = (model: monaco.editor.IModel): void => {
       const modeId = model.getModeId();
-      if (modeId !== this._languageId) {
+      if (modeId !== this.defaults._languageId) {
         return;
       }
 
@@ -68,7 +38,7 @@ export class DiagnosticsAdapter {
     };
 
     const onModelRemoved = (model: monaco.editor.IModel): void => {
-      monaco.editor.setModelMarkers(model, this._languageId, []);
+      monaco.editor.setModelMarkers(model, this.defaults._languageId, []);
       const uriStr = model.uri.toString();
       const listener = this._listener[uriStr];
       if (listener) {
@@ -93,7 +63,7 @@ export class DiagnosticsAdapter {
     this._disposables.push(
       defaults.onDidChange(_ => {
         monaco.editor.getModels().forEach(model => {
-          if (model.getModeId() === this._languageId) {
+          if (model.getModeId() === this.defaults._languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }

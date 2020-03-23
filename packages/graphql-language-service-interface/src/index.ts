@@ -7,34 +7,15 @@
  *
  */
 
-export {
-  getDefinitionState,
-  getFieldDef,
-  forEachState,
-  objectValues,
-  hintList,
-} from './autocompleteUtils';
+export * from './autocompleteUtils';
 
-export {
-  canUseDirective,
-  getAutocompleteSuggestions,
-  getFragmentDefinitions,
-  getTypeInfo,
-} from './getAutocompleteSuggestions';
+export * from './getAutocompleteSuggestions';
 
-export {
-  LANGUAGE,
-  getDefinitionQueryResultForFragmentSpread,
-  getDefinitionQueryResultForDefinitionNode,
-} from './getDefinition';
+export * from './getDefinition';
 
-export {
-  getDiagnostics,
-  validateQuery,
-  DIAGNOSTIC_SEVERITY as DiagnosticSeverity,
-} from './getDiagnostics';
-export { getOutline } from './getOutline';
-export { getHoverInformation } from './getHoverInformation';
+export * from './getDiagnostics';
+export * from './getOutline';
+export * from './getHoverInformation';
 
 export * from './GraphQLLanguageService';
 export * from './GraphQLCache';
