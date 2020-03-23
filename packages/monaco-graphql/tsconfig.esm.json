@@ -1,6 +1,7 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
+    "module": "amd",
     "rootDir": "./src",
     "outDir": "./esm",
     "composite": true,

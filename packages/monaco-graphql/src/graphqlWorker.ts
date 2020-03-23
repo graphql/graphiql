@@ -7,46 +7,14 @@ import * as graphqlService from 'graphql-languageservice';
 
 import { Position } from 'graphql-language-service-utils';
 import { GraphQLSchema } from 'graphql';
-import { getRange } from 'graphql-language-service-interface/src/getDiagnostics';
+import { toMarkerData, toCompletion, toGraphQLPosition } from './utils';
 
-function toRange(range: graphqlService.Range): monaco.Range {
-  return new monaco.Range(
-    range.start.line + 1,
-    range.start.character + 1,
-    range.end.line + 1,
-    range.end.character + 1,
-  );
-}
+import {
+  getRange,
+  GraphQLLanguageService,
+} from 'graphql-language-service-interface';
 
-export function toMarkerData(
-  diagnostic: graphqlService.Diagnostic,
-): monaco.editor.IMarkerData {
-  return {
-    startLineNumber: diagnostic.range.start.line + 1,
-    endLineNumber: diagnostic.range.end.line + 1,
-    startColumn: diagnostic.range.start.character + 1,
-    endColumn: diagnostic.range.end.character + 1,
-    message: diagnostic.message,
-    severity: diagnostic.severity as monaco.MarkerSeverity,
-    code: (diagnostic.code as string) ?? undefined,
-  };
-}
-
-export function toCompletion(
-  entry: graphqlService.CompletionItem,
-  range: graphqlService.Range,
-): monaco.languages.CompletionItem {
-  return {
-    label: entry.label,
-    insertText: entry.insertText || entry.label,
-    sortText: entry.sortText,
-    filterText: entry.filterText,
-    documentation: entry.documentation,
-    detail: entry.detail,
-    range: toRange(range),
-    kind: entry.kind as monaco.languages.CompletionItemKind,
-  };
-}
+import { loadConfig, GraphQLConfig } from 'graphql-config';
 
 type callbackFnType = (
   stream: graphqlService.CharacterStream,
@@ -96,18 +64,28 @@ function runOnlineParser(
 
 export class GraphQLWorker {
   private _ctx: IWorkerContext;
-  private _languageService: graphqlService.GraphQLLanguageService;
+  private _languageService: graphqlService.GraphQLLanguageService | null;
   private _languageId: string;
   private _schema: GraphQLSchema | null;
 
   constructor(ctx: IWorkerContext, createData: ICreateData) {
-    const ls = new graphqlService.GraphQLLanguageService(
-      new graphqlService.GraphQLCache(),
-    );
     this._ctx = ctx;
     this._languageId = createData.languageId;
-    this._languageService = ls;
     this._schema = null;
+    this._languageService = null;
+  }
+  public async getLanguageService(): Promise<GraphQLLanguageService> {
+    if (this._languageService) {
+      return this._languageService;
+    }
+    const config = await loadConfig({ filepath: 'default/graphqlrc.yml' });
+    this._languageService = new graphqlService.GraphQLLanguageService(
+      new graphqlService.GraphQLCache(
+        'default/graphqlrc.yml',
+        config as GraphQLConfig,
+      ),
+    );
+    return this._languageService;
   }
 
   public getTokenAtPosition(
@@ -140,12 +118,10 @@ export class GraphQLWorker {
   }
 
   async doValidation(uri: string): Promise<monaco.editor.IMarkerData[]> {
+    const ls = await this.getLanguageService();
     const document = this._getQueryText(uri);
     if (document) {
-      const graphqlDiagnostics = await this._languageService.getDiagnostics(
-        document,
-        uri,
-      );
+      const graphqlDiagnostics = await ls.getDiagnostics(document, uri);
       return graphqlDiagnostics.map(toMarkerData);
     }
     return Promise.resolve([]);
@@ -154,14 +130,10 @@ export class GraphQLWorker {
     uri: string,
     position: monaco.Position,
   ): Promise<monaco.languages.CompletionItem[]> {
+    const ls = await this.getLanguageService();
     const document = this._getQueryText(uri);
-    const graphQLPosition = new Position(
-      position.lineNumber - 1,
-      position.column - 1,
-    );
-    graphQLPosition.setCharacter(position.column - 1);
-    graphQLPosition.line = position.lineNumber - 1;
-    const suggestions = await this._languageService.getAutocompleteSuggestions(
+    const graphQLPosition = toGraphQLPosition(position);
+    const suggestions = await ls.getAutocompleteSuggestions(
       document,
       graphQLPosition,
       uri,
@@ -183,10 +155,8 @@ export class GraphQLWorker {
     projectName?: string,
     queryHasExtensions?: boolean,
   ): Promise<GraphQLSchema | null> {
-    this._schema = await this._languageService.getSchema(
-      projectName,
-      queryHasExtensions,
-    );
+    const ls = await this.getLanguageService();
+    this._schema = await ls.getSchema(projectName, queryHasExtensions);
     return this._schema;
   }
 

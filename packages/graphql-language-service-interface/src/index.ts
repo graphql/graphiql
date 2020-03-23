@@ -16,7 +16,8 @@ export * from './getDefinition';
 export {
   getDiagnostics,
   validateQuery,
-  DIAGNOSTIC_SEVERITY as DiagnosticSeverity,
+  DIAGNOSTIC_SEVERITY,
+  SEVERITY
 } from './getDiagnostics';
 
 export { getOutline } from './getOutline';

@@ -65,16 +65,16 @@ const diagnosticDefault: Required<monaco.languages.graphql.DiagnosticsOptions> =
   validate: true,
   allowComments: true,
   schemas: [],
-  enableSchemaRequest: false,
+  enableSchemaRequest: true,
 };
 
 const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfiguration> = {
-  documentFormattingEdits: true,
-  documentRangeFormattingEdits: true,
+  documentFormattingEdits: false,
+  documentRangeFormattingEdits: false,
   completionItems: true,
-  hovers: true,
-  documentSymbols: true,
-  tokens: true,
+  hovers: false,
+  documentSymbols: false,
+  tokens: false,
   colors: false,
   foldingRanges: false,
   diagnostics: true,
@@ -110,5 +110,5 @@ monacoEditor.languages.register({
 });
 
 monacoEditor.languages.onLanguage('graphql', () => {
-  getMode().then(mode => mode.setupMode(graphqlDefaults));
+  getMode().then(thisMode => thisMode.setupMode(graphqlDefaults, 'graphql'));
 });

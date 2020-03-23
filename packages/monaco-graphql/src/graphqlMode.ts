@@ -10,7 +10,10 @@ import * as languageFeatures from './languageFeatures';
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
 
-export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
+export function setupMode(
+  defaults: LanguageServiceDefaultsImpl,
+  _modeId: string,
+): IDisposable {
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
 
@@ -36,6 +39,9 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
         ),
       );
     }
+    if (modeConfiguration.diagnostics) {
+      providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
+    }
   }
 
   registerProviders();
@@ -48,12 +54,14 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
   );
 
   let modeConfiguration = defaults.modeConfiguration;
-  defaults.onDidChange((newDefaults: LanguageServiceDefaultsImpl) => {
-    if (newDefaults.modeConfiguration !== modeConfiguration) {
-      modeConfiguration = newDefaults.modeConfiguration;
-      registerProviders();
-    }
-  });
+  defaults.onDidChange(
+    (newDefaults: monaco.languages.graphql.LanguageServiceDefaultsImpl) => {
+      if (newDefaults.modeConfiguration !== modeConfiguration) {
+        modeConfiguration = newDefaults.modeConfiguration;
+        registerProviders();
+      }
+    },
+  );
 
   disposables.push(asDisposable(providers));
 
