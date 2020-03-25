@@ -21,10 +21,5 @@
       "path": "../graphql-languageservice"
     }
   ],
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.*",
-    "**/node_modules/monaco-editor-core/**/*.d.ts",
-    "**/node_modules/jest-haste-map/**/*"
-  ]
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
 }

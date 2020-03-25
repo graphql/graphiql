@@ -53,6 +53,8 @@ export function setupMode(
     ),
   );
 
+  console.log('providers', providers);
+
   let modeConfiguration = defaults.modeConfiguration;
   defaults.onDidChange(
     // @ts-ignore

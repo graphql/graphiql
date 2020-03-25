@@ -13,6 +13,5 @@
       "path": "../graphql-languageservice"
     }
   ],
-  "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/*.spec.*"]
+  "include": ["src"]
 }

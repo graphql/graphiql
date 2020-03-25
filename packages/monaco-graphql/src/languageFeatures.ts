@@ -103,7 +103,7 @@ export class DiagnosticsAdapter {
 
 export class CompletionAdapter
   implements monaco.languages.CompletionItemProvider {
-  constructor(private _worker: WorkerAccessor) { }
+  constructor(private _worker: WorkerAccessor) {}
 
   public get triggerCharacters(): string[] {
     return [' ', ':'];

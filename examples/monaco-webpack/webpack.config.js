@@ -4,28 +4,25 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
-const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
 
 const relPath = (...args) => path.resolve(__dirname, ...args);
 const rootPath = (...args) => relPath(...args);
 
 const resultConfig = {
   mode: process.env.NODE_ENV,
-  entry: isHMR
-    ? [
-        'react-hot-loader/patch', // activate HMR for React
-        'webpack-dev-server/client?http://localhost:8080', // bundle the client for webpack-dev-server and connect to the provided endpoint
-        'webpack/hot/only-dev-server', // bundle the client for hot reloading, only- means to only hot reload for successful updates
-        './index.ts', // the entry point of our app
-      ]
-    : './index.ts',
+  entry: {
+    app: './index.ts',
+    'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+    'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
+    'graphql.worker': 'monaco-graphql/esm/graphql.worker',
+  },
   context: rootPath('src'),
   output: {
-    path: rootPath('build'),
-    filename: 'monaco-graphql.js',
+    path: rootPath('bundle'),
+    filename: '[name].js',
+    globalObject: 'this',
   },
   devServer: {
     hot: true,
@@ -36,6 +33,7 @@ const resultConfig = {
   devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
   node: {
     fs: 'empty',
+    module: 'empty',
   },
   module: {
     rules: [
@@ -77,16 +75,16 @@ const resultConfig = {
     }),
     new HtmlWebpackPlugin({
       template: relPath('src/index.html.ejs'),
-      inject: 'head',
       filename: 'index.html',
     }),
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
       tsconfig: rootPath('tsconfig.json'),
     }),
-    new MonacoWebpackPlugin({
-      languages: ['json', 'graphql'],
-    }),
+    // new MonacoWebpackPlugin({
+    //   languages: ['json', 'graphql'],
+    // }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   resolve: {
     extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],

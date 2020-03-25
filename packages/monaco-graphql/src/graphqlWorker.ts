@@ -1,6 +1,6 @@
 // / <reference path="../../../node_modules/monaco-editor-core/monaco.d.ts"/>
 import * as monaco from 'monaco-editor-core';
-import { GraphQLExtensionDeclaration } from 'graphql-config'
+// import { GraphQLExtensionDeclaration } from 'graphql-config'
 import IWorkerContext = monaco.worker.IWorkerContext;
 
 import * as graphqlService from 'graphql-languageservice';
@@ -14,19 +14,19 @@ import {
   GraphQLLanguageService,
 } from 'graphql-language-service-interface';
 
-import { loadConfig, GraphQLConfig } from 'graphql-config';
+import { GraphQLConfig, loadConfig } from 'graphql-config';
 
-import { BrowserLoader } from './BrowserLoader'
+// import { BrowserLoader } from './BrowserLoader'
 
-const BrowserConfigExtension: GraphQLExtensionDeclaration = api => {
-  api.loaders.schema.register(new BrowserLoader());
+// const BrowserConfigExtension: GraphQLExtensionDeclaration = api => {
+//   api.loaders.schema.register(new BrowserLoader());
 
-  api.loaders.documents.register(new BrowserLoader());
+//   api.loaders.documents.register(new BrowserLoader());
 
-  return {
-    name: 'graphiql',
-  };
-};
+//   return {
+//     name: 'graphiql',
+//   };
+// };
 
 type callbackFnType = (
   stream: graphqlService.CharacterStream,
@@ -85,13 +85,15 @@ export class GraphQLWorker {
     // this._languageId = createData.languageId;
     this._schema = null;
     this._languageService = null;
+    console.log('constructors');
   }
   public async getLanguageService(): Promise<GraphQLLanguageService> {
     if (this._languageService) {
       return this._languageService;
     }
     const config = await loadConfig({
-      filepath: 'default/graphqlrc.yml', extensions: [BrowserConfigExtension]
+      filepath: 'default/graphqlrc.yml',
+      // extensions: [BrowserConfigExtension]
     });
     this._languageService = new graphqlService.GraphQLLanguageService(
       new graphqlService.GraphQLCache(
@@ -109,16 +111,19 @@ export class GraphQLWorker {
     let styleAtCursor = null;
     let stateAtCursor = null;
     let stringAtCursor = null;
-    const token = runOnlineParser(documentString, (stream, state, style, index) => {
-      if (index === position.line) {
-        if (stream.getCurrentPosition() >= position.character) {
-          styleAtCursor = style;
-          stateAtCursor = { ...state };
-          stringAtCursor = stream.current();
-          return 'BREAK';
+    const token = runOnlineParser(
+      documentString,
+      (stream, state, style, index) => {
+        if (index === position.line) {
+          if (stream.getCurrentPosition() >= position.character) {
+            styleAtCursor = style;
+            stateAtCursor = { ...state };
+            stringAtCursor = stream.current();
+            return 'BREAK';
+          }
         }
-      }
-    });
+      },
+    );
 
     // Return the state/style of parsed token in case those at cursor aren't
     // available.
@@ -177,8 +182,8 @@ export class GraphQLWorker {
   private _getQueryText(uri: string): string {
     const models = this._ctx.getMirrorModels();
     const model = models.find(({ uri: modelUri }) => {
-      return modelUri.toString() === uri
-    })
+      return modelUri.toString() === uri;
+    });
     if (model) {
       return model.getValue();
     }

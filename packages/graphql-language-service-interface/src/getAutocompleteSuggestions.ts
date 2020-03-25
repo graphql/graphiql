@@ -7,7 +7,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import * as vscode from 'vscode-languageserver-protocol';
+import * as vscode from 'vscode-languageserver-types';
 
 import {
   FragmentDefinitionNode,
@@ -62,7 +62,6 @@ function toCompletionItemKind(kind: KindEnum): vscode.CompletionItemKind {
   const lspKind = vscode.CompletionItemKind;
 
   switch (kind) {
-
     case 'Document':
     case 'SelectionSet':
     case 'Field':
@@ -74,13 +73,12 @@ function toCompletionItemKind(kind: KindEnum): vscode.CompletionItemKind {
       return lspKind.Argument;
     case 'ObjectValue':
     case 'ObjectField':
+      return lspKind.Field;
     case 'Enum':
-      return lspKind.Enum
+      return lspKind.Enum;
     case 'EnumValue':
-      return lspKind.EnumMember
+      return lspKind.EnumMember;
     case 'EnumTypeExtension':
-    case 'ListValue':
-    case 'ListType':
     case 'TypeCondition':
     case 'NamedType':
     case 'FragmentSpread':
@@ -692,9 +690,9 @@ export function getTypeInfo(
         enumValue =
           enumType instanceof GraphQLEnumType
             ? find(
-              enumType.getValues(),
-              (val: GraphQLEnumValue) => val.value === state.name,
-            )
+                enumType.getValues(),
+                (val: GraphQLEnumValue) => val.value === state.name,
+              )
             : null;
         break;
       case 'ListValue':
