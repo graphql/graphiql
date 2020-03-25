@@ -149,7 +149,7 @@
     "capitalize": "1.0.0",
     "dotenv": "6.2.0",
     "graphql": "0.13.x",
-    "graphql-config": "2.2.1",
+    "graphql-config": "2.2.2",
     "graphql-config-extension-prisma": "0.3.0",
     "graphql-language-service-server": "2.3.3",
     "graphql-tag": "^2.10.3",
