@@ -2,15 +2,31 @@
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "module": "amd",
+    "moduleResolution": "node",
+    "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./esm",
-    "composite": true,
-    "baseUrl": "."
+    "target": "es6",
+    "lib": [
+      "dom",
+      "es5",
+      "es6",
+      "es2015",
+      "Es2016",
+      "ES2017",
+      "ES2018",
+      "ESNext"
+    ]
   },
   "references": [
     {
       "path": "../graphql-languageservice"
     }
   ],
-  "exclude": ["**/__tests__/**", "**/*.spec.*"]
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.*",
+    "**/node_modules/monaco-editor-core/**/*.d.ts",
+    "**/node_modules/jest-haste-map/**/*"
+  ]
 }

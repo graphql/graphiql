@@ -12,7 +12,8 @@
       "es5",
       "es2015.collection",
       "es2015.promise",
-      "es2015.iterable"
+      "es2015.iterable",
+      "es6"
     ]
   },
   "references": [
@@ -20,5 +21,10 @@
       "path": "../graphql-languageservice"
     }
   ],
-  "exclude": ["**/__tests__/**", "**/*.spec.*"]
+  "exclude": [
+    "**/__tests__/**",
+    "**/*.spec.*",
+    "**/node_modules/monaco-editor-core/**/*.d.ts",
+    "**/node_modules/jest-haste-map/**/*"
+  ]
 }

@@ -17,6 +17,7 @@ import {
   GraphQLCompositeType,
   GraphQLEnumValue,
   Kind,
+  KindEnum,
 } from 'graphql';
 
 import {
@@ -64,18 +65,27 @@ import {
 // TODO@acao,rebornix
 // Convert AST token kind to Monaco CompletionItemKind
 // Should we take `step` into account similar to how we resolve completion items?
-function toCompletionItemKind(kind: string): vscode.CompletionItemKind {
+function toCompletionItemKind(kind: KindEnum): vscode.CompletionItemKind {
   const lspKind = vscode.CompletionItemKind;
 
   switch (kind) {
+
     case 'Document':
     case 'SelectionSet':
     case 'Field':
+      return lspKind.Field;
     case 'AliasedField':
     case 'Arguments':
+      return lspKind.Field;
+    case 'Argument':
+      return lspKind.Argument;
     case 'ObjectValue':
     case 'ObjectField':
+    case 'Enum':
+      return lspKind.Enum
     case 'EnumValue':
+      return lspKind.EnumMember
+    case 'EnumTypeExtension':
     case 'ListValue':
     case 'ListType':
     case 'TypeCondition':
@@ -695,9 +705,9 @@ export function getTypeInfo(
         enumValue =
           enumType instanceof GraphQLEnumType
             ? find(
-                enumType.getValues(),
-                (val: GraphQLEnumValue) => val.value === state.name,
-              )
+              enumType.getValues(),
+              (val: GraphQLEnumValue) => val.value === state.name,
+            )
             : null;
         break;
       case 'ListValue':

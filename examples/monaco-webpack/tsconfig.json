@@ -1,0 +1,17 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "strictPropertyInitialization": false,
+    "types": ["node", "jest"],
+    "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
+    "lib": ["dom"]
+  },
+  "references": [{ "path": "../../packages/monaco-graphql" }],
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/build/**.*"]
+}
