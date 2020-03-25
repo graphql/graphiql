@@ -131,7 +131,7 @@
     "@types/dotenv": "6.1.1",
     "@types/graphql": "14.5.0",
     "@types/mocha": "5.2.7",
-    "@types/node": "12.12.30",
+    "@types/node": "12.12.31",
     "@types/ws": "6.0.4",
     "tslint": "5.20.1",
     "typescript": "3.8.3",
