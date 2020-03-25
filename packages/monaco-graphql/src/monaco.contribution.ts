@@ -94,6 +94,7 @@ function createAPI() {
   };
 }
 
+// @ts-ignore
 monacoEditor.languages.graphql = createAPI();
 
 // --- Registration to monaco editor ---

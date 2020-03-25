@@ -19,6 +19,7 @@ export class DiagnosticsAdapter {
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
+    // @ts-ignore
     private defaults: monaco.languages.graphql.LanguageServiceDefaultsImpl,
     private _worker: WorkerAccessor,
   ) {
@@ -31,6 +32,7 @@ export class DiagnosticsAdapter {
       let handle: number;
       this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
         clearTimeout(handle);
+        // @ts-ignore
         handle = setTimeout(() => this._doValidate(model.uri, modeId), 500);
       });
 
@@ -61,7 +63,7 @@ export class DiagnosticsAdapter {
     );
 
     this._disposables.push(
-      defaults.onDidChange(_ => {
+      defaults.onDidChange((_: any) => {
         monaco.editor.getModels().forEach(model => {
           if (model.getModeId() === this.defaults._languageId) {
             onModelRemoved(model);
@@ -101,7 +103,7 @@ export class DiagnosticsAdapter {
 
 export class CompletionAdapter
   implements monaco.languages.CompletionItemProvider {
-  constructor(private _worker: WorkerAccessor) {}
+  constructor(private _worker: WorkerAccessor) { }
 
   public get triggerCharacters(): string[] {
     return [' ', ':'];

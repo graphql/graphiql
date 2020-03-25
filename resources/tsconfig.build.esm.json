@@ -9,6 +9,9 @@
       "path": "../packages/graphiql/tsconfig.esm.json"
     },
     {
+      "path": "../packages/monaco-graphql/tsconfig.esm.json"
+    },
+    {
       "path": "../packages/graphql-language-service-utils/tsconfig.esm.json"
     },
     {

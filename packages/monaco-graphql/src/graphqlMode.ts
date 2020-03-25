@@ -55,6 +55,7 @@ export function setupMode(
 
   let modeConfiguration = defaults.modeConfiguration;
   defaults.onDidChange(
+    // @ts-ignore
     (newDefaults: monaco.languages.graphql.LanguageServiceDefaultsImpl) => {
       if (newDefaults.modeConfiguration !== modeConfiguration) {
         modeConfiguration = newDefaults.modeConfiguration;

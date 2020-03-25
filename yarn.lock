@@ -1398,6 +1398,15 @@
     graphql-tools-fork "9.0.1"
     lodash "4.17.15"
 
+"@graphql-toolkit/common@0.9.9":
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/@graphql-toolkit/common/-/common-0.9.9.tgz#56daf4ac85deada766418b91d421592cbf18dcf0"
+  integrity sha512-1ucXoQ5yczsu46l52wkmJgnaM8nw9CHUsJzOL4HoQsnvSVKieueRTx/Ef924G/fqQ1TtPyUal/+pPw4i9Sl+6A==
+  dependencies:
+    aggregate-error "3.0.1"
+    graphql-tools-fork "8.9.6"
+    lodash "4.17.15"
+
 "@graphql-toolkit/core@0.9.1-alpha-b002745.19+b002745":
   version "0.9.1-alpha-b002745.19"
   resolved "https://registry.yarnpkg.com/@graphql-toolkit/core/-/core-0.9.1-alpha-b002745.19.tgz#3711b214f0c79c731270a9c821d813dc3263b110"
@@ -1471,6 +1480,14 @@
   integrity sha512-OWf1jXs7ukYiFI0A51IB0BMZw2LC3GWqYxrjYAe1l2FKfBDLbSvfULR4DutZsIknnpNYh3duaXSK5IyGHVd/0w==
   dependencies:
     "@graphql-toolkit/common" "0.9.12"
+    tslib "1.11.1"
+
+"@graphql-toolkit/module-loader@0.9.9":
+  version "0.9.9"
+  resolved "https://registry.yarnpkg.com/@graphql-toolkit/module-loader/-/module-loader-0.9.9.tgz#31323b6a6f4246e487c2d5bd00138b42c0d3e912"
+  integrity sha512-zfsP4lPImUYBvfN0vi3BnUCJLni71gPsnzrKXflL1f+fp4EsDVkdP11KKXektpGSdpioUxx3fCpmmegfg5aCKg==
+  dependencies:
+    "@graphql-toolkit/common" "0.9.9"
     tslib "1.11.1"
 
 "@graphql-toolkit/schema-merging@0.9.1-alpha-b002745.19+b002745":
@@ -9057,6 +9074,7 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
 
+<<<<<<< HEAD
 "graphiql@file:packages/graphiql":
   version "1.0.0-alpha.4"
   dependencies:
@@ -9070,6 +9088,8 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3
     regenerator-runtime "^0.13.5"
     theme-ui "^0.3.1"
 
+=======
+>>>>>>> improvement: more work on monaco
 graphql-config@3.0.0-alpha.17:
   version "3.0.0-alpha.17"
   resolved "https://registry.yarnpkg.com/graphql-config/-/graphql-config-3.0.0-alpha.17.tgz#c671280101d81717aedf3edc6691760383597e98"
@@ -12640,10 +12660,22 @@ moment@2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-monaco-editor-core@0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/monaco-editor-core/-/monaco-editor-core-0.20.0.tgz#d5ce01307d298dbca6ab9194812812b32b50433f"
-  integrity sha512-4mdmfEejTvRZzrEIn70jqqNl3g15vnkRdTkJ8uMK4jiljntlwhiSc5vknZOLt1QM8za16C3tDrSl2mTL9ma2Sg==
+monaco-editor-core@^0.19.0:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor-core/-/monaco-editor-core-0.19.3.tgz#6d2b36f42f0f42be6def5604810fafc288c9cc3e"
+  integrity sha512-Fd6bTTaAxDAulh3q9Hordj80DSFZFGhjKX/Z3K/kElA9xkPyNwyaOjphYp8254nhUEKCk56TKP7qfRkUjjZF3w==
+
+monaco-editor-webpack-plugin@^1.8.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.9.0.tgz#5b547281b9f404057dc5d8c5722390df9ac90be6"
+  integrity sha512-tOiiToc94E1sb50BgZ8q8WK/bxus77SRrwCqIpAB5er3cpX78SULbEBY4YPOB8kDolOzKRt30WIHG/D6gz69Ww==
+  dependencies:
+    loader-utils "^1.2.3"
+
+monaco-editor@^0.19.0:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.19.3.tgz#1c994b3186c00650dbcd034d5370d46bf56c0663"
+  integrity sha512-2n1vJBVQF2Hhi7+r1mMeYsmlf18hjVb6E0v5SoMZyb4aeOmYPKun+CE3gYpiNA1KEvtSdaDHFBqH9d7Wd9vREg==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

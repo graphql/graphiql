@@ -102,3 +102,5 @@ declare module monaco.languages.graphql {
 
   export const graphqlDefaults: LanguageServiceDefaults;
 }
+
+declare module 'monaco-editor-core/esm/vs/editor/editor.worker';
