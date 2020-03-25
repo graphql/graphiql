@@ -31,11 +31,11 @@ export class BrowserLoader implements UniversalLoader {
     }
 
     try {
-      const configEl = document.getElementById('graphql-config')
+      const configEl = document.getElementById('graphql-config');
       if (!configEl) {
         const div = document.createElement('div');
-        div.id = 'graphql-config'
-        div.innerText = `{ "schema": "${options.schemaUrl}" }`
+        div.id = 'graphql-config';
+        div.innerText = `{ "schema": "${options.schemaUrl}" }`;
         document.body.appendChild(div);
         return JSON.parse(div.innerText);
       }

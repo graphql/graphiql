@@ -1,15 +1,16 @@
 {
   "name": "monaco-graphql",
   "version": "0.0.1",
-  "main": "dist/index.js",
-  "module": "esm/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/monaco.contribution.js",
+  "module": "esm/monaco.contribution.js",
+  "typings": "dist/monaco.contribution.d.ts",
   "dependencies": {
     "graphql-languageservice": "^2.4.0-alpha.3",
     "graphql-language-service-utils": "^2.4.0-alpha.3",
     "@graphql-toolkit/module-loader": "0.9.9"
   },
   "devDependencies": {
-    "monaco-editor-core": "^0.19.0"
+    "monaco-editor-core": "^0.19.0",
+    "vscode-languageserver-types": "3.15.1"
   }
 }

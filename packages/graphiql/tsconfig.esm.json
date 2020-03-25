@@ -17,6 +17,8 @@
     "**/*-test.ts",
     "**/*-test.js",
     "**/*.stories.js",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "esm",
+    "node_modules"
   ]
 }
