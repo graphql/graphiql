@@ -98,7 +98,7 @@ type GraphiQLProps = {
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
-  onEditQuery?: (query?: string) => void;
+  onEditQuery?: () => void;
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
@@ -978,7 +978,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       ...queryFacts,
     });
     if (this.props.onEditQuery) {
-      return this.props.onEditQuery(value);
+      return this.props.onEditQuery();
     }
   });
 
