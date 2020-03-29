@@ -76,18 +76,19 @@ const {
 } = Kind;
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
-  Field: SymbolKind.Field,
-  OperationDefinition: SymbolKind.Class,
-  FragmentDefinition: SymbolKind.Class,
-  FragmentSpread: SymbolKind.Struct,
-  ObjectTypeDefinition: SymbolKind.Class,
-  EnumTypeDefinition: SymbolKind.Enum,
-  EnumValueDefinition: SymbolKind.EnumMember,
-  InputObjectTypeDefinition: SymbolKind.Class,
-  InputValueDefinition: SymbolKind.Field,
-  FieldDefinition: SymbolKind.Field,
-  InterfaceTypeDefinition: SymbolKind.Interface,
-  Document: SymbolKind.File,
+  [Kind.FIELD]: SymbolKind.Field,
+  [Kind.OPERATION_DEFINITION]: SymbolKind.Class,
+  [Kind.FRAGMENT_DEFINITION]: SymbolKind.Class,
+  [Kind.FRAGMENT_SPREAD]: SymbolKind.Struct,
+  [Kind.OBJECT_TYPE_DEFINITION]: SymbolKind.Class,
+  [Kind.ENUM_TYPE_DEFINITION]: SymbolKind.Enum,
+  [Kind.ENUM_VALUE_DEFINITION]: SymbolKind.EnumMember,
+  [Kind.INPUT_OBJECT_TYPE_DEFINITION]: SymbolKind.Class,
+  [Kind.INPUT_VALUE_DEFINITION]: SymbolKind.Field,
+  [Kind.FIELD_DEFINITION]: SymbolKind.Field,
+  [Kind.INTERFACE_TYPE_DEFINITION]: SymbolKind.Interface,
+  [Kind.DOCUMENT]: SymbolKind.File,
+  // novel, for symbols only
   FieldWithArguments: SymbolKind.Method,
 };
 

@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const isDev = process.env.NODE_ENV === 'development';
 
 const relPath = (...args) => path.resolve(__dirname, ...args);
@@ -14,18 +14,19 @@ const resultConfig = {
   mode: process.env.NODE_ENV,
   entry: {
     app: './index.ts',
-    'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
-    'json.worker': 'monaco-editor/esm/vs/language/json/json.worker',
-    'graphql.worker': 'monaco-graphql/esm/graphql.worker',
+    // 'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
+    // 'json.worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
+    'graphql.worker': 'monaco-graphql/esm/graphql.worker.js',
+    graphqlWorker: 'monaco-graphql/esm/graphqlWorker.js',
   },
   context: rootPath('src'),
   output: {
     path: rootPath('bundle'),
     filename: '[name].js',
     globalObject: 'this',
+    libraryTarget: 'umd',
   },
   devServer: {
-    hot: true,
     // bypass simple localhost CORS restrictions by setting
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'monaco-graphql.com'],
@@ -51,6 +52,20 @@ const resultConfig = {
         test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
         exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
+      },
+      {
+        test: /graphql\.worker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          // options: { inline: true },
+        },
+      },
+      {
+        test: /graphqlWorker\.js$/,
+        use: {
+          loader: 'worker-loader',
+          // options: { inline: true },
+        },
       },
       {
         test: /\.css$/,
@@ -81,10 +96,10 @@ const resultConfig = {
       async: isDev,
       tsconfig: rootPath('tsconfig.json'),
     }),
-    // new MonacoWebpackPlugin({
-    //   languages: ['json', 'graphql'],
-    // }),
-    new webpack.HotModuleReplacementPlugin(),
+
+    new MonacoWebpackPlugin({
+      languages: ['json'],
+    }),
   ],
   resolve: {
     extensions: ['.mjs', '.js', '.json', '.jsx', '.css', '.ts', '.tsx'],

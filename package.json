@@ -55,7 +55,7 @@
     "lerna-publish": "lerna publish",
     "prepublish": "./resources/prepublish.sh"
   },
-  "devDependencies": {
+  "dependencies": {
     "@babel/cli": "7.8.4",
     "@babel/core": "7.8.4",
     "@babel/node": "7.8.4",

@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 import { LanguageServiceDefaultsImpl } from './monaco.contribution';
 import { GraphQLWorker } from './graphqlWorker';
 
@@ -14,7 +14,7 @@ export class WorkerManager {
   private _configChangeListener: IDisposable;
 
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
-  private _client: Promise<GraphQLWorker> | null;
+  private _client: GraphQLWorker | null;
 
   constructor(defaults: LanguageServiceDefaultsImpl) {
     this._defaults = defaults;
@@ -54,16 +54,15 @@ export class WorkerManager {
     }
   }
 
-  private _getClient(): Promise<GraphQLWorker> {
+  private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
 
     if (!this._client) {
       this._worker = monaco.editor.createWebWorker<GraphQLWorker>({
         // module that exports the create() method and returns a `GraphQLWorker` instance
-        moduleId: './graphqlWorker',
+        moduleId: 'graphqlWorker.js',
 
         label: this._defaults.languageId,
-
         // passed in to the create() method
         createData: {
           languageSettings: this._defaults.diagnosticsOptions,
@@ -72,22 +71,24 @@ export class WorkerManager {
             .enableSchemaRequest,
         },
       });
-
-      this._client = <Promise<GraphQLWorker>>(<any>this._worker.getProxy());
+      if (!this._worker) {
+        console.log('no worker');
+        this._client = null;
+      } else {
+        this._client = await this._worker.getProxy();
+        console.log({ client: this._client });
+      }
     }
 
-    return this._client;
+    return this._client as GraphQLWorker;
   }
 
-  getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
-    let _client: GraphQLWorker;
-    return this._getClient()
-      .then(client => {
-        _client = client;
-      })
-      .then(_ => {
-        return this._worker!.withSyncedResources(resources);
-      })
-      .then(_ => _client);
+  async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
+    console.log('getting client');
+    const client = await this._getClient();
+    console.log('based', client);
+    await this._worker!.withSyncedResources(resources);
+    console.log({ client });
+    return client;
   }
 }

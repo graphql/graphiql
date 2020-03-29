@@ -6,6 +6,7 @@ module.exports = {
       {
         // corejs: { version: 3, proposals: true },
         // useBuiltIns: 'usage',
+        modules: 'umd',
         targets: { browsers: ['last 2 chrome versions'] },
         bugfixes: true,
       },

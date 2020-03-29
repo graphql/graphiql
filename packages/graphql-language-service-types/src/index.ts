@@ -11,7 +11,7 @@ import {
   Position as PositionType,
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-protocol';
-import { KindEnum } from 'graphql';
+import { Kind } from 'graphql';
 
 import {
   DocumentNode,
@@ -33,6 +33,7 @@ export type Maybe<T> = T | null | undefined;
 
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+import { _Kind } from 'graphql/language/kinds';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
@@ -97,29 +98,63 @@ export type Rule = {
   ofRule?: Rule | string;
 };
 
-export type RuleKind =
-  | KindEnum
-  | 'AliasedField'
-  | 'Arguments'
-  | 'ShortQuery'
-  | 'Query'
-  | 'Mutation'
-  | 'Subscription'
-  | 'TypeCondition'
-  | 'Invalid'
-  | 'Comment'
-  | 'SchemaDef'
-  | 'ScalarDef'
-  | 'ObjectTypeDef'
-  | 'InterfaceDef'
-  | 'UnionDef'
-  | 'EnumDef'
-  | 'FieldDef'
-  | 'InputDef'
-  | 'InputValueDef'
-  | 'ArgumentsDef'
-  | 'ExtendDef'
-  | 'DirectiveDef';
+export const AdditionalRuleKinds: _AdditionalRuleKinds = {
+  ALIASED_FIELD: 'AliasedField',
+  ARGUMENTS: 'Arguments',
+  SHORT_QUERY: 'ShortQuery',
+  QUERY: 'Query',
+  MUTATION: 'Mutation',
+  SUBSCRIPTION: 'Subscription',
+  TYPE_CONDITION: 'TypeCondition',
+  INVALID: 'Invalid',
+  COMMENT: 'Comment',
+  SCHEMA_DEF: 'SchemaDef',
+  SCALAR_DEF: 'ScalarDef',
+  OBJECT_TYPE_DEF: 'ObjectTypeDef',
+  INTERFACE_DEF: 'InterfaceDef',
+  UNION_DEF: 'UnionDef',
+  ENUM_DEF: 'EnumDef',
+  FIELD_DEF: 'FieldDef',
+  INPUT_DEF: 'InputDef',
+  INPUT_VALUE_DEF: 'InputValueDef',
+  ARGUMENTS_DEF: 'ArgumentsDef',
+  EXTEND_DEF: 'ExtendDef',
+  DIRECTIVE_DEF: 'DirectiveDef',
+};
+
+export type _AdditionalRuleKinds = {
+  ALIASED_FIELD: 'AliasedField';
+  ARGUMENTS: 'Arguments';
+  SHORT_QUERY: 'ShortQuery';
+  QUERY: 'Query';
+  MUTATION: 'Mutation';
+  SUBSCRIPTION: 'Subscription';
+  TYPE_CONDITION: 'TypeCondition';
+  INVALID: 'Invalid';
+  COMMENT: 'Comment';
+  SCHEMA_DEF: 'SchemaDef';
+  SCALAR_DEF: 'ScalarDef';
+  OBJECT_TYPE_DEF: 'ObjectTypeDef';
+  INTERFACE_DEF: 'InterfaceDef';
+  UNION_DEF: 'UnionDef';
+  ENUM_DEF: 'EnumDef';
+  FIELD_DEF: 'FieldDef';
+  INPUT_DEF: 'InputDef';
+  INPUT_VALUE_DEF: 'InputValueDef';
+  ARGUMENTS_DEF: 'ArgumentsDef';
+  EXTEND_DEF: 'ExtendDef';
+  DIRECTIVE_DEF: 'DirectiveDef';
+};
+
+export const RuleKinds = {
+  ...Kind,
+  ...AdditionalRuleKinds,
+};
+
+export type _RuleKinds = _Kind & typeof AdditionalRuleKinds;
+
+export type RuleKind = _RuleKinds[keyof _RuleKinds];
+export type RuleKindEnum = RuleKind;
 
 export type State = {
   level: number;

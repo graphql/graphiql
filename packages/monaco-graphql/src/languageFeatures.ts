@@ -1,6 +1,6 @@
 import { GraphQLWorker } from './graphqlWorker';
 
-import * as monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 
 import Uri = monaco.Uri;
 import Position = monaco.Position;
@@ -23,6 +23,7 @@ export class DiagnosticsAdapter {
     private defaults: monaco.languages.graphql.LanguageServiceDefaultsImpl,
     private _worker: WorkerAccessor,
   ) {
+    this._worker = _worker;
     const onModelAdd = (model: monaco.editor.IModel): void => {
       const modeId = model.getModeId();
       if (modeId !== this.defaults._languageId) {
@@ -103,7 +104,9 @@ export class DiagnosticsAdapter {
 
 export class CompletionAdapter
   implements monaco.languages.CompletionItemProvider {
-  constructor(private _worker: WorkerAccessor) {}
+  constructor(private _worker: WorkerAccessor) {
+    // this._worker = _worker
+  }
 
   public get triggerCharacters(): string[] {
     return [' ', ':'];
@@ -115,16 +118,24 @@ export class CompletionAdapter
     _context: monaco.languages.CompletionContext,
     _token: CancellationToken,
   ): Promise<monaco.languages.CompletionList> {
-    const resource = model.uri;
-    const worker = await this._worker(resource);
-
-    const completionItems = await worker.doComplete(
-      resource.toString(),
-      position,
-    );
-    return {
-      incomplete: true,
-      suggestions: completionItems,
-    };
+    try {
+      const resource = model.uri;
+      console.log(this._worker);
+      const worker = await this._worker(model.uri);
+      console.log(worker);
+      // @ts-ignore
+      const completionItems = await worker.doComplete(
+        resource.toString(),
+        position,
+      );
+      console.log(completionItems);
+      return {
+        incomplete: true,
+        suggestions: completionItems,
+      };
+    } catch (err) {
+      console.error(`Error fetching completion items\n\n${err}`);
+      return { suggestions: [] };
+    }
   }
 }

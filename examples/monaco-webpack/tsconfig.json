@@ -9,7 +9,8 @@
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
-    "lib": ["dom"]
+    "lib": ["dom"],
+    "module": "umd"
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],

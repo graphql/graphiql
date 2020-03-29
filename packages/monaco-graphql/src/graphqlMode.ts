@@ -1,4 +1,4 @@
-import * as monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 
@@ -10,16 +10,13 @@ import * as languageFeatures from './languageFeatures';
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
 
-export function setupMode(
-  defaults: LanguageServiceDefaultsImpl,
-  _modeId: string,
-): IDisposable {
+export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
+  console.log('setupMode');
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
-
   const client = new WorkerManager(defaults);
+  // client.getLanguageServiceWorker()
   disposables.push(client);
-
   const worker: languageFeatures.WorkerAccessor = (
     ...uris: Uri[]
   ): Promise<GraphQLWorker> => {
@@ -28,7 +25,7 @@ export function setupMode(
 
   function registerProviders(): void {
     const { languageId, modeConfiguration } = defaults;
-
+    console.log('registering providers', defaults);
     disposeAll(providers);
 
     if (modeConfiguration.completionItems) {
@@ -43,19 +40,10 @@ export function setupMode(
       providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
     }
   }
-
   registerProviders();
 
-  disposables.push(
-    monaco.languages.setLanguageConfiguration(
-      defaults.languageId,
-      richLanguageConfig,
-    ),
-  );
-
-  console.log('providers', providers);
-
   let modeConfiguration = defaults.modeConfiguration;
+
   defaults.onDidChange(
     // @ts-ignore
     (newDefaults: monaco.languages.graphql.LanguageServiceDefaultsImpl) => {
