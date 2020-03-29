@@ -27,7 +27,6 @@ import {
   AllTypeInfo,
   Position,
   RuleKind,
-  RuleKinds,
 } from 'graphql-language-service-types';
 
 import {
@@ -62,38 +61,7 @@ import {
   objectValues,
 } from './autocompleteUtils';
 
-// TODO@acao,rebornix
-// Convert AST token kind to Monaco CompletionItemKind
-// Should we take `step` into account similar to how we resolve completion items?
-function toCompletionItemKind(kind: KindEnum): vscode.CompletionItemKind {
-  const lspKind = vscode.CompletionItemKind;
-
-  switch (kind) {
-    case 'Document':
-    case 'SelectionSet':
-    case 'Field':
-      return lspKind.Field;
-    case 'AliasedField':
-    case 'Arguments':
-      return lspKind.Field;
-    case 'Argument':
-      return lspKind.Argument;
-    case 'ObjectValue':
-    case 'ObjectField':
-      return lspKind.Field;
-    case 'Enum':
-      return lspKind.Enum;
-    case 'EnumValue':
-      return lspKind.EnumMember;
-    case 'EnumTypeExtension':
-    case 'TypeCondition':
-    case 'NamedType':
-    case 'FragmentSpread':
-    case 'VariableDefinition':
-    case 'Directive':
-      return lspKind.Method;
-  }
-}
+const { CompletionItemKind } = vscode;
 
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
@@ -117,27 +85,32 @@ export function getAutocompleteSuggestions(
 
   const kind = state.kind;
   const step = state.step;
-  const typeInfo = getTypeInfo(schema, token.state);
+  const typeInfo = getTypeInfo(schema, token);
+
   // Definition kinds
   if (kind === 'Document') {
     return hintList(token, [
-      { label: 'query', kind: toCompletionItemKind(kind) },
-      { label: 'mutation', kind: toCompletionItemKind(kind) },
-      { label: 'subscription', kind: toCompletionItemKind(kind) },
-      { label: 'fragment', kind: toCompletionItemKind(kind) },
-      { label: '{', kind: toCompletionItemKind(kind) },
+      { label: 'query', kind: CompletionItemKind.Function },
+      { label: 'mutation', kind: CompletionItemKind.Function },
+      { label: 'subscription', kind: CompletionItemKind.Function },
+      { label: 'fragment', kind: CompletionItemKind.Function },
+      { label: '{', kind: CompletionItemKind.Constructor },
     ]);
   }
 
   // Field names
-  if (kind === 'SelectionSet' || kind === 'Field' || kind === 'AliasedField') {
+  if (
+    kind === RuleKind.SELECTION_SET ||
+    kind === 'Field' ||
+    kind === 'AliasedField'
+  ) {
     return getSuggestionsForFieldNames(token, typeInfo, schema, kind);
   }
 
   // Argument names
   if (
-    kind === RuleKinds.ARGUMENTS ||
-    (kind === RuleKinds.ARGUMENT && step === 0)
+    kind === RuleKind.Arguments ||
+    (kind === RuleKind.ARGUMENT && step === 0)
   ) {
     const argDefs = typeInfo.argDefs;
     if (argDefs) {
@@ -147,7 +120,7 @@ export function getAutocompleteSuggestions(
           label: argDef.name,
           detail: String(argDef.type),
           documentation: argDef.description,
-          kind: toCompletionItemKind(kind),
+          kind: CompletionItemKind.Variable,
         })),
       );
     }
@@ -234,7 +207,7 @@ function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
-  kind: string,
+  kind: RuleKind.SelectionSet | RuleKind.Field | RuleKind.AliasedField,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
@@ -282,7 +255,7 @@ function getSuggestionsForInputValues(
           deprecated: value.isDeprecated,
           isDeprecated: value.isDeprecated,
           deprecationReason: value.deprecationReason,
-          kind: toCompletionItemKind(kind),
+          kind: CompletionItemKind.EnumMember,
         }),
       ),
     );
@@ -292,14 +265,14 @@ function getSuggestionsForInputValues(
         label: 'true',
         detail: String(GraphQLBoolean),
         documentation: 'Not false.',
-        kind: toCompletionItemKind(kind),
+        kind: CompletionItemKind.Variable,
       },
 
       {
         label: 'false',
         detail: String(GraphQLBoolean),
         documentation: 'Not true.',
-        kind: toCompletionItemKind(kind),
+        kind: CompletionItemKind.Variable,
       },
     ]);
   }
@@ -311,7 +284,7 @@ function getSuggestionsForFragmentTypeConditions(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
-  kind: string,
+  kind: Kind.TypeCondition | Kind.NamedType,
 ): Array<CompletionItem> {
   let possibleTypes: GraphQLType[];
   if (typeInfo.parentType) {

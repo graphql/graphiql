@@ -15,6 +15,7 @@ packages/graphiql/storybook
 packages/graphiql/lsp
 dist
 esm
+bundle
 cypress/screenshots
 node_modules/
 npm-debug.log

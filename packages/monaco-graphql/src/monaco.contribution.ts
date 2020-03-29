@@ -7,6 +7,7 @@ import * as mode from './graphqlMode';
 import Emitter = monaco.Emitter;
 import IEvent = monaco.IEvent;
 
+const LANGUAGE_ID = 'graphql';
 // --- JSON configuration and defaults ---------
 
 export class LanguageServiceDefaultsImpl
@@ -83,15 +84,24 @@ const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfigurat
   completionItems: true,
   hovers: false,
   documentSymbols: false,
-  tokens: true,
+  tokens: false,
   colors: false,
   foldingRanges: false,
-  diagnostics: true,
+  diagnostics: false,
   selectionRanges: false,
 };
 
+monaco.languages.register({
+  id: LANGUAGE_ID,
+  extensions: ['.graphql', '.gql'],
+  aliases: ['graphql'],
+  mimetypes: ['application/graphql', 'text/graphql'],
+});
+
+monaco.languages.setLanguageConfiguration(LANGUAGE_ID, mode.richLanguageConfig);
+
 const graphqlDefaults = new LanguageServiceDefaultsImpl(
-  'graphql',
+  LANGUAGE_ID,
   diagnosticDefault,
   modeConfigurationDefault,
 );
@@ -104,24 +114,17 @@ function createAPI() {
 }
 
 // @ts-ignore
-monaco.languages.graphql = createAPI();
+monaco.languages[LANGUAGE_ID] = createAPI();
 
-// --- Registration to monaco editor ---
+monaco.languages.onLanguage(LANGUAGE_ID, async () => {
+  const graphqlMode = await getMode();
+  // console.log('defaults', graphqlDefaults)
+  graphqlMode.setupMode(graphqlDefaults);
+});
+
+// // // --- Registration to monaco editor ---
 
 function getMode(): Promise<typeof mode> {
-  console.log('LOAD MODE');
+  console.log('get mode');
   return import('./graphqlMode');
 }
-
-monaco.languages.register({
-  id: 'graphql',
-  extensions: ['.graphql'],
-  aliases: ['graphql'],
-  mimetypes: ['application/graphql'],
-});
-
-monaco.languages.onLanguage('graphql', () => {
-  getMode()
-    .then(thisMode => thisMode.setupMode(graphqlDefaults, 'graphql'))
-    .catch(e => console.error(e));
-});

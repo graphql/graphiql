@@ -1,5 +1,5 @@
 // / <reference path="../../../node_modules/monaco-editor-core/monaco.d.ts"/>
-import * as monaco from 'monaco-editor-core';
+import * as monaco from 'monaco-editor';
 // import { GraphQLExtensionDeclaration } from 'graphql-config'
 import IWorkerContext = monaco.worker.IWorkerContext;
 
@@ -14,19 +14,24 @@ import {
   GraphQLLanguageService,
 } from 'graphql-language-service-interface';
 
-import { GraphQLConfig, loadConfig } from 'graphql-config';
-
+import {
+  GraphQLConfig,
+  loadConfig,
+  GraphQLExtensionDeclaration,
+} from 'graphql-config';
+import { UrlLoader } from '@graphql-toolkit/url-loader';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 // import { BrowserLoader } from './BrowserLoader'
 
-// const BrowserConfigExtension: GraphQLExtensionDeclaration = api => {
-//   api.loaders.schema.register(new BrowserLoader());
+const BrowserConfigExtension: GraphQLExtensionDeclaration = api => {
+  api.loaders.schema.register(new UrlLoader());
 
-//   api.loaders.documents.register(new BrowserLoader());
+  api.loaders.documents.register(new UrlLoader());
 
-//   return {
-//     name: 'graphiql',
-//   };
-// };
+  return {
+    name: 'graphiql',
+  };
+};
 
 type callbackFnType = (
   stream: graphqlService.CharacterStream,
@@ -77,15 +82,19 @@ function runOnlineParser(
 export class GraphQLWorker {
   private _ctx: IWorkerContext;
   private _languageService: graphqlService.GraphQLLanguageService | null;
-  // private _languageId: string;
+  // @ts-ignore
+  private _languageSettings: monaco.languages.graphql.LanguageSettings;
+  private _languageId: string;
   private _schema: GraphQLSchema | null;
 
-  constructor(ctx: IWorkerContext, _createData: ICreateData) {
+  constructor(ctx: IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     // this._languageId = createData.languageId;
     this._schema = null;
     this._languageService = null;
-    console.log('constructors');
+    this._languageId = createData.languageId;
+    // @ts-ignore
+    this._languageSettings = createData.languageSettings;
   }
   public async getLanguageService(): Promise<GraphQLLanguageService> {
     if (this._languageService) {
@@ -93,7 +102,7 @@ export class GraphQLWorker {
     }
     const config = await loadConfig({
       filepath: 'default/graphqlrc.yml',
-      // extensions: [BrowserConfigExtension]
+      extensions: [BrowserConfigExtension],
     });
     this._languageService = new graphqlService.GraphQLLanguageService(
       new graphqlService.GraphQLCache(
@@ -139,6 +148,7 @@ export class GraphQLWorker {
   async doValidation(uri: string): Promise<monaco.editor.IMarkerData[]> {
     const ls = await this.getLanguageService();
     const document = this._getQueryText(uri);
+
     if (document) {
       const graphqlDiagnostics = await ls.getDiagnostics(document, uri);
       return graphqlDiagnostics.map(toMarkerData);
@@ -149,15 +159,17 @@ export class GraphQLWorker {
     uri: string,
     position: monaco.Position,
   ): Promise<monaco.languages.CompletionItem[]> {
+    console.log('do compleat');
     const ls = await this.getLanguageService();
     const document = this._getQueryText(uri);
+    console.log(document);
     const graphQLPosition = toGraphQLPosition(position);
     const suggestions = await ls.getAutocompleteSuggestions(
       document,
       graphQLPosition,
       uri,
-      this.getTokenAtPosition(document, graphQLPosition),
     );
+    console.log({ suggestions });
 
     return suggestions.map(e =>
       toCompletion(
@@ -179,15 +191,22 @@ export class GraphQLWorker {
     return this._schema;
   }
 
-  private _getQueryText(uri: string): string {
+  private _getTextDocument(uri: string): TextDocument | null {
     const models = this._ctx.getMirrorModels();
-    const model = models.find(({ uri: modelUri }) => {
-      return modelUri.toString() === uri;
-    });
-    if (model) {
-      return model.getValue();
+    for (const model of models) {
+      if (model.uri.toString() === uri) {
+        return TextDocument.create(
+          uri,
+          this._languageId,
+          model.version,
+          model.getValue(),
+        );
+      }
     }
-    throw Error(`No GraphQL for uri:\n${uri}`);
+    return null;
+  }
+  private _getQueryText(uri: string): string {
+    return this._getTextDocument(uri)?.getText() as string;
   }
 }
 
@@ -200,5 +219,6 @@ export function create(
   ctx: IWorkerContext,
   createData: ICreateData,
 ): GraphQLWorker {
+  console.log('CREATE WORKER');
   return new GraphQLWorker(ctx, createData);
 }
