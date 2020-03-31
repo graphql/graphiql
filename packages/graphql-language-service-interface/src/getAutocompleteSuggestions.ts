@@ -7,7 +7,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import * as vscode from 'vscode-languageserver-types';
+import { CompletionItemKind } from 'vscode-languageserver-types';
 
 import {
   FragmentDefinitionNode,
@@ -27,6 +27,7 @@ import {
   AllTypeInfo,
   Position,
   RuleKind,
+  RuleKinds,
 } from 'graphql-language-service-types';
 
 import {
@@ -61,8 +62,6 @@ import {
   objectValues,
 } from './autocompleteUtils';
 
-const { CompletionItemKind } = vscode;
-
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
@@ -85,8 +84,7 @@ export function getAutocompleteSuggestions(
 
   const kind = state.kind;
   const step = state.step;
-  const typeInfo = getTypeInfo(schema, token);
-
+  const typeInfo = getTypeInfo(schema, token.state);
   // Definition kinds
   if (kind === 'Document') {
     return hintList(token, [
@@ -100,17 +98,17 @@ export function getAutocompleteSuggestions(
 
   // Field names
   if (
-    kind === RuleKind.SELECTION_SET ||
-    kind === 'Field' ||
-    kind === 'AliasedField'
+    kind === RuleKinds.SELECTION_SET ||
+    kind === RuleKinds.FIELD ||
+    kind === RuleKinds.ALIASED_FIELD
   ) {
     return getSuggestionsForFieldNames(token, typeInfo, schema, kind);
   }
 
   // Argument names
   if (
-    kind === RuleKind.Arguments ||
-    (kind === RuleKind.ARGUMENT && step === 0)
+    kind === RuleKinds.ARGUMENTS ||
+    (kind === RuleKinds.ARGUMENT && step === 0)
   ) {
     const argDefs = typeInfo.argDefs;
     if (argDefs) {
@@ -140,7 +138,7 @@ export function getAutocompleteSuggestions(
           label: field.name,
           detail: String(field.type),
           documentation: field.description,
-          kind: toCompletionItemKind(kind),
+          kind: completionKind,
         })),
       );
     }
@@ -230,7 +228,7 @@ function getSuggestionsForFieldNames(
         deprecated: field.isDeprecated,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
-        kind: toCompletionItemKind(kind),
+        kind: CompletionItemKind.Field,
       })),
     );
   }
@@ -316,7 +314,7 @@ function getSuggestionsForFragmentTypeConditions(
       return {
         label: String(type),
         documentation: (namedType && namedType.description) || '',
-        kind: toCompletionItemKind(kind),
+        kind: CompletionItemKind.Field,
       };
     }),
   );
@@ -360,7 +358,7 @@ function getSuggestionsForFragmentSpread(
       label: frag.name.value,
       detail: String(typeMap[frag.typeCondition.name.value]),
       documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
-      kind: toCompletionItemKind(kind),
+      kind: CompletionItemKind.Field,
     })),
   );
 }
@@ -410,7 +408,7 @@ function getSuggestionsForVariableDefinition(
     inputTypes.map((type: any) => ({
       label: type.name,
       documentation: type.description,
-      kind: toCompletionItemKind(kind),
+      kind: CompletionItemKind.Variable,
     })),
   );
 }
@@ -430,7 +428,7 @@ function getSuggestionsForDirective(
       directives.map(directive => ({
         label: directive.name,
         documentation: directive.description || '',
-        kind: toCompletionItemKind(kind),
+        kind: CompletionItemKind.Function,
       })),
     );
   }
