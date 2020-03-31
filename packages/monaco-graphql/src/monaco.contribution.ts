@@ -7,7 +7,10 @@ import * as mode from './graphqlMode';
 import Emitter = monaco.Emitter;
 import IEvent = monaco.IEvent;
 
-const LANGUAGE_ID = 'graphql';
+// @ts-ignore
+export { language as monarchLanguage } from 'monaco-languages/release/esm/graphql/graphql';
+
+export const LANGUAGE_ID = 'graphqlDev';
 // --- JSON configuration and defaults ---------
 
 export class LanguageServiceDefaultsImpl
@@ -87,7 +90,7 @@ const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfigurat
   tokens: false,
   colors: false,
   foldingRanges: false,
-  diagnostics: false,
+  diagnostics: true,
   selectionRanges: false,
 };
 
@@ -97,8 +100,6 @@ monaco.languages.register({
   aliases: ['graphql'],
   mimetypes: ['application/graphql', 'text/graphql'],
 });
-
-monaco.languages.setLanguageConfiguration(LANGUAGE_ID, mode.richLanguageConfig);
 
 const graphqlDefaults = new LanguageServiceDefaultsImpl(
   LANGUAGE_ID,
@@ -125,6 +126,5 @@ monaco.languages.onLanguage(LANGUAGE_ID, async () => {
 // // // --- Registration to monaco editor ---
 
 function getMode(): Promise<typeof mode> {
-  console.log('get mode');
   return import('./graphqlMode');
 }

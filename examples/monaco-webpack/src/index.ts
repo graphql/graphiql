@@ -1,26 +1,26 @@
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
 import 'regenerator-runtime/runtime';
 import 'monaco-graphql/esm/monaco.contribution';
 
+// NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
+// import shouldn't go through loader syntax.
 // @ts-ignore
-self.MonacoEnvironment = {
-  getWorkerUrl: (_moduleId: string, label: string) => {
+import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
+// @ts-ignore
+import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
+// @ts-ignore
+import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+
+// @ts-ignore
+window.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    if (label === 'graphqlDev') {
+      return new GraphQLWorker();
+    }
     if (label === 'json') {
-      return './json.worker.js';
+      return new JSONWorker();
     }
-    if (label === 'graphql') {
-      return './graphql.worker.js';
-    }
-    return './editor.worker.js';
-  },
-  getWorker: (_moduleId: string, label: string) => {
-    if (label === 'json') {
-      return new Worker('./json.worker.js');
-    }
-    if (label === 'graphql') {
-      return new Worker('./graphql.worker.js');
-    }
-    return new Worker('./editor.worker.js');
+    return new EditorWorker();
   },
 };
 
@@ -29,7 +29,20 @@ self.MonacoEnvironment = {
 //   language: "json"
 // });
 
-const model = monaco.editor.createModel(`query Example { id }`, 'graphql');
+const model = monaco.editor.createModel(
+  `
+query Example { 
+  id
+  allFilms {
+      film {
+          id
+      }
+  }
+}
+`,
+  'graphqlDev',
+  monaco.Uri.file('/1.graphql'),
+);
 
 monaco.editor.create(document.getElementById('root') as HTMLElement, {
   model,

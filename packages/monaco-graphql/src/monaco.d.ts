@@ -1,4 +1,4 @@
-// / <reference path="../../../node_modules/monaco-editor-core/monaco.d.ts"/>
+// / <reference path="../../../node_modules/monaco-editor/monaco.d.ts"/>
 
 declare module monaco.languages.graphql {
   export interface IDisposable {
@@ -103,4 +103,4 @@ declare module monaco.languages.graphql {
   export const graphqlDefaults: LanguageServiceDefaults;
 }
 
-// declare module 'monaco-editor-core/esm/vs/editor/editor.worker';
+// declare module ''monaco-editor-core/esm/vs/editor/editor.worker';

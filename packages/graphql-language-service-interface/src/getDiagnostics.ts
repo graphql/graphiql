@@ -30,7 +30,9 @@ import {
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
-export const DIAGNOSTIC_SEVERITY = {
+export type SeverityLabels = 'Error' | 'Warning' | 'Information' | 'Hint';
+
+export const DIAGNOSTIC_SEVERITY: { [key: string]: DiagnosticSeverity } = {
   Error: 1 as DiagnosticSeverity,
   Warning: 2 as DiagnosticSeverity,
   Information: 3 as DiagnosticSeverity,

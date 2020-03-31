@@ -8,9 +8,8 @@
  */
 import {
   Diagnostic as DiagnosticType,
-  Position as PositionType,
   CompletionItem as CompletionItemType,
-} from 'vscode-languageserver-protocol';
+} from 'vscode-languageserver-types';
 import { Kind } from 'graphql';
 
 import {
@@ -31,8 +30,9 @@ import { GraphQLDirective } from 'graphql/type/directives';
 
 export type Maybe<T> = T | null | undefined;
 
-export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+export { GraphQLConfig, GraphQLProjectConfig };
+
 import { _Kind } from 'graphql/language/kinds';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
@@ -61,7 +61,7 @@ export interface CharacterStreamInterface {
 }
 
 // online-parser related
-export type Position = PositionType & {
+export type Position = {
   line: number;
   character: number;
   lessThanOrEqualTo?: (position: Position) => boolean;

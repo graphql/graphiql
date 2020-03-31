@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor';
 import { LanguageServiceDefaultsImpl } from './monaco.contribution';
-import { GraphQLWorker } from './graphqlWorker';
+import { GraphQLWorker } from './graphql.worker';
 
 import IDisposable = monaco.IDisposable;
 import Uri = monaco.Uri;
@@ -60,7 +60,7 @@ export class WorkerManager {
     if (!this._client) {
       this._worker = monaco.editor.createWebWorker<GraphQLWorker>({
         // module that exports the create() method and returns a `GraphQLWorker` instance
-        moduleId: 'graphqlWorker.js',
+        moduleId: 'vs/language/graphql/graphqlWorker',
 
         label: this._defaults.languageId,
         // passed in to the create() method
@@ -71,24 +71,14 @@ export class WorkerManager {
             .enableSchemaRequest,
         },
       });
-      if (!this._worker) {
-        console.log('no worker');
-        this._client = null;
-      } else {
-        this._client = await this._worker.getProxy();
-        console.log({ client: this._client });
-      }
+      this._client = await this._worker.getProxy();
     }
-
     return this._client as GraphQLWorker;
   }
 
   async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
-    console.log('getting client');
     const client = await this._getClient();
-    console.log('based', client);
     await this._worker!.withSyncedResources(resources);
-    console.log({ client });
     return client;
   }
 }

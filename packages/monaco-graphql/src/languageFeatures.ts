@@ -1,4 +1,4 @@
-import { GraphQLWorker } from './graphqlWorker';
+import { GraphQLWorker } from './graphql.worker';
 
 import * as monaco from 'monaco-editor';
 
@@ -120,15 +120,12 @@ export class CompletionAdapter
   ): Promise<monaco.languages.CompletionList> {
     try {
       const resource = model.uri;
-      console.log(this._worker);
       const worker = await this._worker(model.uri);
-      console.log(worker);
       // @ts-ignore
       const completionItems = await worker.doComplete(
         resource.toString(),
         position,
       );
-      console.log(completionItems);
       return {
         incomplete: true,
         suggestions: completionItems,

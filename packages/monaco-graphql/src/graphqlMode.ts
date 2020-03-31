@@ -3,15 +3,18 @@ import * as monaco from 'monaco-editor';
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 
 import { WorkerManager } from './workerManager';
-import { GraphQLWorker } from './graphqlWorker';
-import { LanguageServiceDefaultsImpl } from './monaco.contribution';
+import { GraphQLWorker } from './graphql.worker';
+import {
+  LanguageServiceDefaultsImpl,
+  LANGUAGE_ID,
+  monarchLanguage,
+} from './monaco.contribution';
 import * as languageFeatures from './languageFeatures';
-
+// @ts-ignore
 import Uri = monaco.Uri;
 import IDisposable = monaco.IDisposable;
 
 export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
-  console.log('setupMode');
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
   const client = new WorkerManager(defaults);
@@ -24,14 +27,13 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
   };
 
   function registerProviders(): void {
-    const { languageId, modeConfiguration } = defaults;
-    console.log('registering providers', defaults);
+    const { modeConfiguration } = defaults;
     disposeAll(providers);
 
     if (modeConfiguration.completionItems) {
       providers.push(
         monaco.languages.registerCompletionItemProvider(
-          languageId,
+          defaults.languageId,
           new languageFeatures.CompletionAdapter(worker),
         ),
       );
@@ -96,3 +98,6 @@ export const richLanguageConfig: IRichLanguageConfiguration = {
     offSide: true,
   },
 };
+
+monaco.languages.setLanguageConfiguration(LANGUAGE_ID, richLanguageConfig);
+monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, monarchLanguage);
