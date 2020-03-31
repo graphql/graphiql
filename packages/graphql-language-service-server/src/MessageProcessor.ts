@@ -102,7 +102,10 @@ export class MessageProcessor {
       capabilities: {
         workspaceSymbolProvider: true,
         documentSymbolProvider: true,
-        completionProvider: { resolveProvider: true },
+        completionProvider: {
+          resolveProvider: true,
+          triggerCharacters: ['@'],
+        },
         definitionProvider: true,
         textDocumentSync: 1,
         hoverProvider: true,
