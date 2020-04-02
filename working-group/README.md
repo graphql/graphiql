@@ -8,7 +8,7 @@ This working group is focused on usage of the entire monorepo - GraphiQL and plu
 
 ## Monthly Working Group Meeting
 
-> **Second Tuesday of Every month at 16GMT/12EST** > [Google Calendar Event](https://calendar.google.com/event?action=TEMPLATE&tmeid=NHN2YjJwcGc5bGxvb3MycW1xbXA1aTU3bzRfMjAyMDA0MTRUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
+> **Second Tuesday of Every month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NHN2YjJwcGc5bGxvb3MycW1xbXA1aTU3bzRfMjAyMDA0MTRUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
 
 These are monthly sessions designed to work similarly to the official `graphql/graphql-wg` working group. The goal is decision making, setting specifications and navigating feature proposals for our shared graphql web and desktop IDE experiences as a community.
 
@@ -18,7 +18,7 @@ In the [`'agendas'`]('/agendas') directory you can introduce PRs to add yourself
 
 ## Rotating Working Sessions/Office Hours
 
-> **First and third saturday of the month at 16GMT/12EST** [Google Calendar Event](https://calendar.google.com/event?action=TEMPLATE&tmeid=NXYxZnEzdHBvcHNqaTNrZHA5cm1obmFldm1fMjAyMDA0MThUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
+> **First and third saturday of the month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NXYxZnEzdHBvcHNqaTNrZHA5cm1obmFldm1fMjAyMDA0MThUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
 
 For now just twice a month on saturdays, we will have a group working session where we collaborate on API and feature proposals, demonstrate contributions to the monorepo we're working on, improve documentation, or even pair on actual PRs whilst sharing the session on the zoom link.
 
