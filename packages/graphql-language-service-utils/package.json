@@ -31,7 +31,7 @@
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
   },
   "dependencies": {
-    "graphql-config": "3.0.0-alpha.23",
+    "graphql-config": "3.0.0-rc.0",
     "graphql-language-service-types": "^1.6.0-alpha.3"
   },
   "devDependencies": {
