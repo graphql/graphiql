@@ -143,3 +143,4 @@ Eventually we hope to move these to a repo that serves this purpose.
 - **Discord** [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr) - Most discussion outside of github happens on our [Discord Server](https://discord.gg/eNuu9Cb)
 - **Twitter** - [@GraphiQL](https://twitter.com/@GraphiQL) and [#GraphiQL](https://twitter.com/hashtag/GraphiQL)
 - **GitHub** - Create feature requests, discussions issues and bugs above
+- **Working Group** - Yes, you're invited! Monthly planning/decision making meetings, and working sessions every two weeks on zoom! [Learn more.]('working-group#readme')
