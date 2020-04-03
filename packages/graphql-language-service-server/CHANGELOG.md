@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.4.0-alpha.3...graphql-language-service-server@2.4.0-alpha.4) (2020-04-03)
+
+### Bug Fixes
+
+- make sure that custom parser is used if passed to process ([#1438](https://github.com/graphql/graphiql/issues/1438)) ([5e098a4](https://github.com/graphql/graphiql/commit/5e098a4a80a8e1cff4541ad34363ab2001fcda4a))
+
+### Features
+
+- make sure @ triggers directive completion automatically ([#1441](https://github.com/graphql/graphiql/issues/1441)) ([935220a](https://github.com/graphql/graphiql/commit/935220a68641b94af2598840b0ced3fd945f86dd))
+
 # [2.4.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.4.0-alpha.2...graphql-language-service-server@2.4.0-alpha.3) (2020-03-20)
 
 **Note:** Version bump only for package graphql-language-service-server

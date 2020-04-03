@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.3...graphiql@1.0.0-alpha.4) (2020-04-03)
+
+### Bug Fixes
+
+- fix query argument missing from onEditQuery call ([#1440](https://github.com/graphql/graphiql/issues/1440)) ([6c335a8](https://github.com/graphql/graphiql/commit/6c335a813f6101afded00c0e869c337a7ca44020))
+
 # [1.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.2...graphiql@1.0.0-alpha.3) (2020-03-20)
 
 **Note:** Version bump only for package graphiql
