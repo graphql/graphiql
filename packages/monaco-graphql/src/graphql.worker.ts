@@ -15,6 +15,7 @@ import {
   Diagnostic,
   getRange,
   getAutocompleteSuggestions,
+  getHoverInformation,
 } from 'graphql-languageservice';
 import introspectionQuery from './schema';
 
@@ -137,6 +138,24 @@ export class GraphQLWorker {
       ),
     );
   }
+
+  async doHover(
+    uri: string,
+    position: monaco.Position,
+  ) {
+    const document = this._getTextDocument(uri);
+    const graphQLPosition = toGraphQLPosition(position);
+
+    const hover = await getHoverInformation(
+      schema,
+      document,
+      // @ts-ignore
+      graphQLPosition
+    );
+
+    return hover;
+  }
+  
   private _getTextDocument(_uri: string): string {
     const models = this._ctx.getMirrorModels();
     if (models.length > 0) {

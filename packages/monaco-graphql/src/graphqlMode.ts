@@ -41,6 +41,8 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
     if (modeConfiguration.diagnostics) {
       providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
     }
+
+    providers.push(monaco.languages.registerHoverProvider(defaults.languageId, new languageFeatures.HoverAdapter(worker)));
   }
   registerProviders();
 
