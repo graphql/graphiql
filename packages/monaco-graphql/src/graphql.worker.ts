@@ -1,9 +1,8 @@
 import * as monaco from 'monaco-editor';
 import { buildClientSchema } from 'graphql';
 // @ts-ignore
-// import { Range as MonacoRange } from 'monaco-editor-core/esm/vs/editor/editor.api'
-// @ts-ignore
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
+import { Range } from 'graphql-language-service-types';
 
 export interface ICreateData {
   languageId: string;
@@ -14,7 +13,7 @@ export interface ICreateData {
 import {
   getDiagnostics,
   Diagnostic,
-  // getRange,
+  getRange,
   getAutocompleteSuggestions,
 } from 'graphql-languageservice';
 import introspectionQuery from './schema';
@@ -50,20 +49,14 @@ export type CompletionItem = monaco.languages.CompletionItem & {
   deprecationReason?: string | null;
 };
 
-// export interface Range {
-//   start: Position;
-//   end: Position;
-//   containsPosition: (position: Position) => boolean;
-// }
-
-// export function toRange(range: Range): monaco.IRange {
-//   return new MonacoRange(
-//     range.start.line + 1,
-//     range.start.character + 1,
-//     range.end.line + 1,
-//     range.end.character + 1,
-//   );
-// }
+export function toRange(range: Range): monaco.IRange {
+  return {
+    startLineNumber: range.start.line,
+    startColumn: range.start.character,
+    endLineNumber: range.end.line,
+    endColumn: range.end.character,
+  };
+}
 
 export function toGraphQLPosition(position: monaco.Position): Position {
   const pos = new Position(position.lineNumber - 1, position.column - 1);
@@ -72,22 +65,23 @@ export function toGraphQLPosition(position: monaco.Position): Position {
   return pos;
 }
 
-// export function toCompletion(
-//   entry: CompletionItem,
-//   range: Range,
-// ): monaco.languages.CompletionItem {
-//   // @ts-ignore
-//   return {
-//     label: entry.label,
-//     insertText: entry.insertText || entry.label as string,
-//     sortText: entry.sortText,
-//     filterText: entry.filterText,
-//     documentation: entry.documentation,
-//     detail: entry.detail,
-//     range: toRange(range),
-//     kind: entry.kind as monaco.languages.CompletionItemKind,
-//   };
-// }
+export function toCompletion(
+  entry: CompletionItem,
+  range: Range,
+): monaco.languages.CompletionItem {
+  // @ts-ignore
+  return {
+    label: entry.label,
+    insertText: entry.insertText || (entry.label as string),
+    sortText: entry.sortText,
+    filterText: entry.filterText,
+    documentation: entry.documentation,
+    detail: entry.detail,
+    range: toRange(range),
+    kind: entry.kind as monaco.languages.CompletionItemKind,
+  };
+}
+
 export function toMarkerData(
   diagnostic: Diagnostic,
 ): monaco.editor.IMarkerData {
@@ -131,20 +125,17 @@ export class GraphQLWorker {
       // @ts-ignore
       graphQLPosition,
     );
-    console.log({ suggestions });
 
-    return [];
-
-    // return suggestions.map((e: CompletionItem) =>
-    //   toCompletion(
-    //     e,
-    //     // @ts-ignore
-    //     getRange(
-    //       { column: graphQLPosition.character, line: graphQLPosition.line },
-    //       document,
-    //     ),
-    //   ),
-    // );
+    return suggestions.map((e: CompletionItem) =>
+      toCompletion(
+        e,
+        // @ts-ignore
+        getRange(
+          { column: graphQLPosition.character, line: graphQLPosition.line },
+          document,
+        ),
+      ),
+    );
   }
   private _getTextDocument(_uri: string): string {
     const models = this._ctx.getMirrorModels();
