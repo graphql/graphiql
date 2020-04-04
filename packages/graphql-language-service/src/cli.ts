@@ -22,15 +22,22 @@ const { argv } = yargs
       '    [-f | --file] {filePath}\n' +
       '    [-s | --schema] {schemaPath}\n' +
       '    [-m | --method] {method}\n' +
-      '    [-p | --port] {port}\n',
+      '    [-p | --port] {port}\n' +
+      '\n    At least one command is required.\n',
   )
   .help('h')
   .alias('h', 'help')
-  .demand(
+  .strict()
+  .recommendCommands()
+  .demandCommand(
     1,
     'At least one command is required.\n' +
       'Commands: "server, validate, autocomplete, outline"\n',
   )
+  .command('server', 'GraphQL language server service')
+  .command('validate', 'Validates the query')
+  .command('autocomplete', 'Get autocomplete suggestions')
+  .command('outline', 'Get outline')
   .option('t', {
     alias: 'text',
     describe:

@@ -12,14 +12,15 @@ import {
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-protocol';
 import { GraphQLSchema, KindEnum } from 'graphql';
+
 import {
   ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  NameNode,
 } from 'graphql/language';
-import { ValidationContext } from 'graphql/validation';
 import {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -28,6 +29,8 @@ import {
   GraphQLType,
 } from 'graphql/type/definition';
 import { GraphQLDirective } from 'graphql/type/directives';
+
+export type Maybe<T> = T | null | undefined;
 
 export { GraphQLConfig, GraphQLProjectConfig };
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -48,8 +51,8 @@ export interface CharacterStream {
   skipTo: (position: number) => void;
   match: (
     pattern: TokenPattern,
-    consume?: boolean | null | undefined,
-    caseFold?: boolean | null | undefined,
+    consume?: Maybe<boolean>,
+    caseFold?: Maybe<boolean>,
   ) => string[] | boolean;
   backUp: (num: number) => void;
   column: () => number;
@@ -115,7 +118,7 @@ export interface GraphQLCache {
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
+    fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
   ) => Promise<FragmentInfo[]>;
 
   getFragmentDependenciesForAST: (
@@ -210,11 +213,11 @@ export type RuleKind =
 export type State = {
   level: number;
   levels?: number[];
-  prevState: State | null | undefined;
-  rule: ParseRule | null | undefined;
-  kind: RuleKind | null | undefined;
-  name: string | null | undefined;
-  type: string | null | undefined;
+  prevState: Maybe<State>;
+  rule: Maybe<ParseRule>;
+  kind: Maybe<RuleKind>;
+  name: Maybe<string>;
+  type: Maybe<string>;
   step: number;
   needsSeperator: boolean;
   needsAdvance?: boolean;
@@ -258,15 +261,15 @@ export type ContextTokenForCodeMirror = {
 export type ContextTokenUnion = ContextToken | ContextTokenForCodeMirror;
 
 export type AllTypeInfo = {
-  type: GraphQLType | null | undefined;
-  parentType: GraphQLType | null | undefined;
-  inputType: GraphQLType | null | undefined;
-  directiveDef: GraphQLDirective | null | undefined;
-  fieldDef: GraphQLField<any, any> | null | undefined;
-  enumValue: GraphQLEnumValue | null | undefined;
-  argDef: GraphQLArgument | null | undefined;
-  argDefs: GraphQLArgument[] | null | undefined;
-  objectFieldDefs: GraphQLInputFieldMap | null | undefined;
+  type: Maybe<GraphQLType>;
+  parentType: Maybe<GraphQLType>;
+  inputType: Maybe<GraphQLType>;
+  directiveDef: Maybe<GraphQLDirective>;
+  fieldDef: Maybe<GraphQLField<any, any>>;
+  enumValue: Maybe<GraphQLEnumValue>;
+  argDef: Maybe<GraphQLArgument>;
+  argDefs: Maybe<GraphQLArgument[]>;
+  objectFieldDefs: Maybe<GraphQLInputFieldMap>;
 };
 
 export type FragmentInfo = {
@@ -287,10 +290,6 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type CustomValidationRule = (
-  context: ValidationContext,
-) => Record<string, any>;
-
 export type Diagnostic = DiagnosticType;
 
 export type CompletionItemBase = {
@@ -300,7 +299,7 @@ export type CompletionItemBase = {
 
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
-  deprecationReason?: string;
+  deprecationReason?: Maybe<string>;
 };
 
 export type CompletionItemForCodeMirror = {
@@ -342,7 +341,7 @@ export type TokenKind =
   | 'type';
 export type TextToken = {
   kind: TokenKind;
-  value: string | undefined;
+  value: string | NameNode;
 };
 
 export type TokenizedText = TextToken[];
@@ -351,7 +350,7 @@ export type OutlineTree = {
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-
+  kind: string;
   startPosition: Position;
   endPosition?: Position;
   children: OutlineTree[];

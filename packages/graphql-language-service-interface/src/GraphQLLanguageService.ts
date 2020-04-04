@@ -11,9 +11,9 @@ import {
   DocumentNode,
   FragmentSpreadNode,
   FragmentDefinitionNode,
-  OperationDefinitionNode,
   TypeDefinitionNode,
   NamedTypeNode,
+  ValidationRule,
 } from 'graphql';
 
 import {
@@ -21,15 +21,18 @@ import {
   DefinitionQueryResult,
   Diagnostic,
   GraphQLCache,
-  GraphQLConfig,
-  GraphQLProjectConfig,
   Uri,
   Position,
-  CustomValidationRule,
+  Outline,
+  OutlineTree,
 } from 'graphql-language-service-types';
 
-// import { Position } from 'graphql-language-service-utils';
-import { Hover, DiagnosticSeverity } from 'vscode-languageserver-types';
+import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+import {
+  Hover,
+  SymbolInformation,
+  SymbolKind,
+} from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
@@ -40,6 +43,8 @@ import {
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
 } from './getDefinition';
+
+import { getOutline } from './getOutline';
 
 import {
   getASTNodeAtPosition,
@@ -67,6 +72,33 @@ const {
   NAMED_TYPE,
 } = Kind;
 
+const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
+  Field: SymbolKind.Field,
+  OperationDefinition: SymbolKind.Class,
+  FragmentDefinition: SymbolKind.Class,
+  FragmentSpread: SymbolKind.Struct,
+  ObjectTypeDefinition: SymbolKind.Class,
+  EnumTypeDefinition: SymbolKind.Enum,
+  EnumValueDefinition: SymbolKind.EnumMember,
+  InputObjectTypeDefinition: SymbolKind.Class,
+  InputValueDefinition: SymbolKind.Field,
+  FieldDefinition: SymbolKind.Field,
+  InterfaceTypeDefinition: SymbolKind.Interface,
+  Document: SymbolKind.File,
+  FieldWithArguments: SymbolKind.Method,
+};
+
+function getKind(tree: OutlineTree) {
+  if (
+    tree.kind === 'FieldDefinition' &&
+    tree.children &&
+    tree.children.length > 0
+  ) {
+    return KIND_TO_SYMBOL_KIND.FieldWithArguments;
+  }
+  return KIND_TO_SYMBOL_KIND[tree.kind];
+}
+
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
@@ -77,14 +109,14 @@ export class GraphQLLanguageService {
   }
 
   getConfigForURI(uri: Uri) {
-    const config = this._graphQLConfig.getConfigForFile(uri);
+    const config = this._graphQLConfig.getProjectForFile(uri);
     if (config) {
       return config;
     }
     throw Error(`No config found for uri: ${uri}`);
   }
 
-  async getDiagnostics(
+  public async getDiagnostics(
     query: string,
     uri: Uri,
     isRelayCompatMode?: boolean,
@@ -93,7 +125,7 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
-    const { schemaPath, projectName, extensions } = projectConfig;
+    const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
       const queryAST = parse(query);
@@ -123,7 +155,7 @@ export class GraphQLLanguageService {
       const range = getRange(error.locations[0], query);
       return [
         {
-          severity: SEVERITY.ERROR as DiagnosticSeverity,
+          severity: SEVERITY.ERROR,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
@@ -169,7 +201,7 @@ export class GraphQLLanguageService {
       if (rulesPath) {
         const customValidationRules: (
           config: GraphQLConfig,
-        ) => CustomValidationRule[] = await requireFile(rulesPath);
+        ) => ValidationRule[] = await requireFile(rulesPath);
         if (customValidationRules) {
           customRules = customValidationRules(this._graphQLConfig);
         }
@@ -187,14 +219,14 @@ export class GraphQLLanguageService {
     return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
   }
 
-  async getAutocompleteSuggestions(
+  public async getAutocompleteSuggestions(
     query: string,
     position: Position,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {
@@ -203,14 +235,14 @@ export class GraphQLLanguageService {
     return [];
   }
 
-  async getHoverInformation(
+  public async getHoverInformation(
     query: string,
     position: Position,
     filePath: Uri,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
-      .getSchema(projectConfig.projectName)
+      .getSchema(projectConfig.name)
       .catch(() => null);
 
     if (schema) {
@@ -219,7 +251,7 @@ export class GraphQLLanguageService {
     return '';
   }
 
-  async getDefinition(
+  public async getDefinition(
     query: string,
     position: Position,
     filePath: Uri,
@@ -250,7 +282,7 @@ export class GraphQLLanguageService {
           return getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
-            node as FragmentDefinitionNode | OperationDefinitionNode,
+            node,
           );
 
         case NAMED_TYPE:
@@ -265,6 +297,55 @@ export class GraphQLLanguageService {
     }
     return null;
   }
+
+  public async getDocumentSymbols(
+    document: string,
+    filePath: Uri,
+  ): Promise<SymbolInformation[]> {
+    const outline = await this.getOutline(document);
+    if (!outline) {
+      return [];
+    }
+
+    const output: Array<SymbolInformation> = [];
+    const input = outline.outlineTrees.map((tree: OutlineTree) => [null, tree]);
+
+    while (input.length > 0) {
+      const res = input.pop();
+      if (!res) {
+        return [];
+      }
+      const [parent, tree] = res;
+      if (!tree) {
+        return [];
+      }
+
+      output.push({
+        // @ts-ignore
+        name: tree.representativeName,
+        kind: getKind(tree),
+        location: {
+          uri: filePath,
+          range: {
+            start: tree.startPosition,
+            // @ts-ignore
+            end: tree.endPosition,
+          },
+        },
+        containerName: parent ? parent.representativeName : undefined,
+      });
+      input.push(...tree.children.map(child => [tree, child]));
+    }
+    return output;
+  }
+  //
+  // public async getReferences(
+  //   document: string,
+  //   position: Position,
+  //   filePath: Uri,
+  // ): Promise<Location[]> {
+  //
+  // }
 
   async _getDefinitionForNamedType(
     query: string,
@@ -286,7 +367,9 @@ export class GraphQLLanguageService {
       definition =>
         definition.kind === OBJECT_TYPE_DEFINITION ||
         definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === ENUM_TYPE_DEFINITION,
+        definition.kind === ENUM_TYPE_DEFINITION ||
+        definition.kind === SCALAR_TYPE_DEFINITION ||
+        definition.kind === INTERFACE_TYPE_DEFINITION,
     );
 
     const typeCastedDefs = (localObjectTypeDefinitions as any) as Array<
@@ -349,5 +432,8 @@ export class GraphQLLanguageService {
     );
 
     return result;
+  }
+  async getOutline(documentText: string): Promise<Outline | null> {
+    return getOutline(documentText);
   }
 }

@@ -9,8 +9,8 @@
 
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
 
-import fs from 'fs';
-import os from 'os';
+import * as fs from 'fs';
+import * as os from 'os';
 import { join } from 'path';
 
 const SEVERITY: { [key: string]: string } = {
@@ -69,6 +69,10 @@ export class Logger implements VSCodeLogger {
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${message}\n\n`;
     // write to the file in tmpdir
     fs.appendFile(this._logFilePath, logMessage, _error => {});
+    // const processSt = (severity === SEVERITY.ERROR) ? process.stderr : process.stdout
+    process.stderr.write(logMessage, _err => {
+      // console.error(err);
+    });
   }
 }
 

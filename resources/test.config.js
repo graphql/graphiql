@@ -1,17 +1,13 @@
-/* global jsdom */
 /**
  *  Copyright (c) 2019 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+require('@testing-library/jest-dom/extend-expect');
 
-require('@babel/polyfill', {
-  rootMode: 'upward',
-});
-
-global.window = jsdom.window;
-global.document = jsdom.window.document;
+// global.window = jsdom.window;
+// global.document = jsdom.window.document;
 
 global.document.createRange = function() {
   return {

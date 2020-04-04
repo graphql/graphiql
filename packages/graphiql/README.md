@@ -1,5 +1,7 @@
 # GraphiQL
 
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
+
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
 ![npm downloads](https://img.shields.io/npm/dm/graphiql?label=npm%20downloads)
@@ -187,7 +189,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-### Children (dropped as of 0.18.0)
+### Children (dropped as of 1.0.0-rc.2)
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -213,7 +215,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 ## Full Usage Example
 
-> **All of these APIs demonstrated are soon to be deprecated**: Stay posted as the APIs change.
+> **Breaking Changes & Improvements:** using `window.GraphiQL.state` will no longer be possible in `1.0.0-rc.2` Read more in [this issue](#1165)
 
 Here's a more complex react implementation. This would require webpack or a bundler.
 

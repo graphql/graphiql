@@ -21,7 +21,7 @@ your [pull requests](https://help.github.com/articles/creating-a-pull-request).
 
 ## Commit Message Conventions
 
-Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatiblity with various git clients in mind.
+Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatibility with various git clients in mind.
 
 You will need to include a type prefix for all commit messages. For example:
 

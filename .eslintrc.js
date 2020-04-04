@@ -11,18 +11,17 @@ module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 7,
+    ecmaVersion: 6,
     sourceType: 'module',
     ecmaFeatures: {
-      globalReturn: true,
       jsx: true,
-      experimentalObjectRestSpread: true,
     },
   },
   settings: {
     react: {
       version: 'detect',
     },
+    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
   },
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
@@ -260,20 +259,36 @@ module.exports = {
     'babel/object-curly-spacing': 0,
 
     // import (https://github.com/benmosher/eslint-plugin-import)
-    'import/no-unresolved': 1,
+    // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
-    'import/extensions': [
-      1,
-      {
-        json: 'always',
-      },
-    ],
 
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
+
+    // react rules
+    'react/jsx-boolean-value': 'error',
+    'react/jsx-handler-names': 'error',
+    'react/jsx-key': 'error',
+    'react/jsx-no-duplicate-props': 'error',
+    'react/jsx-no-literals': 'error',
+    'react/jsx-no-undef': 'error',
+    'react/jsx-pascal-case': 'error',
+    'react/jsx-uses-react': 'error',
+    'react/jsx-uses-vars': 'error',
+    'react/no-deprecated': 'error',
+    'react/no-did-mount-set-state': 'error',
+    'react/no-did-update-set-state': 'error',
+    'react/no-direct-mutation-state': 'error',
+    'react/no-string-refs': 'error',
+    'react/no-unknown-property': 'error',
+    'react/prop-types': 0,
+    'react/prefer-es6-class': 'error',
+    'react/prefer-stateless-function': 'error',
+    'react/react-in-jsx-scope': 'error',
+    'react/self-closing-comp': 'error',
   },
 
-  plugins: ['import', 'prefer-object-spread'],
+  plugins: ['import', 'prefer-object-spread', '@typescript-eslint'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
@@ -306,7 +321,7 @@ module.exports = {
         'no-unused-vars': 'off',
       },
     },
-    // Rules for Flow only
+    // Rules for Babel & Flow only
     {
       files: ['packages/codemirror-graphql/src/**/*.js'],
       parser: 'babel-eslint',

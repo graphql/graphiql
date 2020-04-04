@@ -10,7 +10,6 @@
 
 import type {
   Outline,
-  CustomValidationRule,
   Diagnostic,
   ContextToken,
   ContextTokenUnion,
@@ -23,7 +22,7 @@ import type {
   TypeInfo,
   State,
 } from 'graphql-language-service-types';
-import type { GraphQLSchema } from 'graphql';
+import type { ValidationRule, GraphQLSchema } from 'graphql';
 import type { Hover } from 'vscode-languageserver-types';
 import { GraphQLDirective } from "graphql";
 import type { FragmentDefinitionNode } from "graphql";
@@ -32,7 +31,7 @@ declare export function getOutline(queryText: string): ?Outline;
 declare export function getDiagnostics(
   query: string,
   schema: ?GraphQLSchema,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic>;
 declare export function getAutocompleteSuggestions(

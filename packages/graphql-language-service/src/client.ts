@@ -102,7 +102,7 @@ function _getAutocompleteSuggestions(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write(error);
+    process.stderr.write((error?.stack ?? String(error)) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -131,7 +131,7 @@ function _getDiagnostics(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write(error);
+    process.stderr.write((error?.stack ?? String(error)) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -145,7 +145,7 @@ function _getOutline(queryText: string): EXIT_CODE {
       throw Error('Error parsing or no outline tree found');
     }
   } catch (error) {
-    process.stderr.write(error);
+    process.stderr.write((error?.stack ?? String(error)) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
   return GRAPHQL_SUCCESS_CODE;
