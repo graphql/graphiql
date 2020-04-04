@@ -52,10 +52,10 @@ export type CompletionItem = monaco.languages.CompletionItem & {
 
 export function toRange(range: Range): monaco.IRange {
   return {
-    startLineNumber: range.start.line,
-    startColumn: range.start.character,
-    endLineNumber: range.end.line,
-    endColumn: range.end.character,
+    startLineNumber: range.start.line + 1,
+    startColumn: range.start.character + 1,
+    endLineNumber: range.end.line + 1,
+    endColumn: range.end.character + 1,
   };
 }
 
@@ -132,7 +132,10 @@ export class GraphQLWorker {
         e,
         // @ts-ignore
         getRange(
-          { column: graphQLPosition.character, line: graphQLPosition.line },
+          {
+            column: graphQLPosition.character + 1,
+            line: graphQLPosition.line + 1,
+          },
           document,
         ),
       ),
