@@ -1,6 +1,10 @@
 import { GraphQLWorker } from './graphql.worker';
 
 import * as monaco from 'monaco-editor';
+import {
+  CompletionItem as lsCompletionItem,
+  CompletionItemKind as lsCompletionItemKind,
+} from 'vscode-languageserver-types';
 
 import Uri = monaco.Uri;
 import Position = monaco.Position;
@@ -102,6 +106,80 @@ export class DiagnosticsAdapter {
   }
 }
 
+const mKind = monaco.languages.CompletionItemKind;
+export function toCompletionItemKind(kind: lsCompletionItemKind) {
+  switch (kind) {
+    case lsCompletionItemKind.Text:
+      return mKind.Text;
+    case lsCompletionItemKind.Method:
+      return mKind.Method;
+    case lsCompletionItemKind.Function:
+      return mKind.Function;
+    case lsCompletionItemKind.Constructor:
+      return mKind.Constructor;
+    case lsCompletionItemKind.Field:
+      return mKind.Field;
+    case lsCompletionItemKind.Variable:
+      return mKind.Variable;
+    case lsCompletionItemKind.Class:
+      return mKind.Class;
+    case lsCompletionItemKind.Interface:
+      return mKind.Interface;
+    case lsCompletionItemKind.Module:
+      return mKind.Module;
+    case lsCompletionItemKind.Property:
+      return mKind.Property;
+    case lsCompletionItemKind.Unit:
+      return mKind.Unit;
+    case lsCompletionItemKind.Value:
+      return mKind.Value;
+    case lsCompletionItemKind.Enum:
+      return mKind.Enum;
+    case lsCompletionItemKind.Keyword:
+      return mKind.Keyword;
+    case lsCompletionItemKind.Snippet:
+      return mKind.Snippet;
+    case lsCompletionItemKind.Color:
+      return mKind.Color;
+    case lsCompletionItemKind.File:
+      return mKind.File;
+    case lsCompletionItemKind.Reference:
+      return mKind.Reference;
+    case lsCompletionItemKind.Folder:
+      return mKind.Folder;
+    case lsCompletionItemKind.EnumMember:
+      return mKind.EnumMember;
+    case lsCompletionItemKind.Constant:
+      return mKind.Constant;
+    case lsCompletionItemKind.Struct:
+      return mKind.Struct;
+    case lsCompletionItemKind.Event:
+      return mKind.Event;
+    case lsCompletionItemKind.Operator:
+      return mKind.Operator;
+    case lsCompletionItemKind.TypeParameter:
+      return mKind.TypeParameter;
+    default:
+      return mKind.Text;
+  }
+}
+
+export function toCompletion(
+  entry: lsCompletionItem & { range: monaco.IRange },
+): monaco.languages.CompletionItem {
+  // @ts-ignore
+  return {
+    label: entry.label,
+    insertText: entry.insertText || (entry.label as string),
+    sortText: entry.sortText,
+    filterText: entry.filterText,
+    documentation: entry.documentation,
+    detail: entry.detail,
+    range: entry.range,
+    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+  };
+}
+
 export class CompletionAdapter
   implements monaco.languages.CompletionItemProvider {
   constructor(private _worker: WorkerAccessor) {
@@ -128,7 +206,7 @@ export class CompletionAdapter
       );
       return {
         incomplete: true,
-        suggestions: completionItems,
+        suggestions: completionItems.map(toCompletion),
       };
     } catch (err) {
       console.error(`Error fetching completion items\n\n${err}`);

@@ -3,6 +3,7 @@ import { buildClientSchema } from 'graphql';
 // @ts-ignore
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 import { Range } from 'graphql-language-service-types';
+import { CompletionItem as lsCompletionItem } from 'vscode-languageserver-types';
 
 export interface ICreateData {
   languageId: string;
@@ -66,10 +67,7 @@ export function toGraphQLPosition(position: monaco.Position): Position {
   return pos;
 }
 
-export function toCompletion(
-  entry: CompletionItem,
-  range: Range,
-): monaco.languages.CompletionItem {
+export function toCompletion(entry: CompletionItem, range: Range) {
   // @ts-ignore
   return {
     label: entry.label,
@@ -79,7 +77,7 @@ export function toCompletion(
     documentation: entry.documentation,
     detail: entry.detail,
     range: toRange(range),
-    kind: entry.kind as monaco.languages.CompletionItemKind,
+    kind: entry.kind,
   };
 }
 
@@ -116,10 +114,9 @@ export class GraphQLWorker {
   async doComplete(
     uri: string,
     position: monaco.Position,
-  ): Promise<monaco.languages.CompletionItem[]> {
+  ): Promise<(lsCompletionItem & { range: monaco.IRange })[]> {
     const document = this._getTextDocument(uri);
     const graphQLPosition = toGraphQLPosition(position);
-    console.log({ graphQLPosition, schema, document });
     const suggestions = await getAutocompleteSuggestions(
       schema,
       document,
