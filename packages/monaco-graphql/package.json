@@ -1,6 +1,6 @@
 {
   "name": "monaco-graphql",
-  "version": "0.0.1",
+  "version": "2.3.4-alpha.4",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
   "typings": "dist/monaco.contribution.d.ts",

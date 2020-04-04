@@ -6,13 +6,13 @@
   "description": "A monaco example with webpack and typescript",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "build-demo": "yarn build && yarn copy-demo",
+    "build-demo": "yarn build",
     "copy-demo": "mkdirp ../../packages/graphiql/monaco && copy 'bundle/*' '../../packages/graphiql/monaco'",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
     "graphql": "14.6.0",
-    "monaco-graphql": "^0.0.1"
+    "monaco-graphql": "^2.3.4-alpha.4"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.7.4",
