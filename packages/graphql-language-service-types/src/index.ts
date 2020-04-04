@@ -250,6 +250,16 @@ export type ContextToken = {
   style: string;
 };
 
+export type ContextTokenForCodeMirror = {
+  start: number;
+  end: number;
+  string: string;
+  type: string | null;
+  state: State;
+};
+
+export type ContextTokenUnion = ContextToken | ContextTokenForCodeMirror;
+
 export type AllTypeInfo = {
   type: Maybe<GraphQLType>;
   parentType: Maybe<GraphQLType>;
@@ -282,9 +292,22 @@ export type ObjectTypeInfo = {
 
 export type Diagnostic = DiagnosticType;
 
+export type CompletionItemBase = {
+  label: string;
+  isDeprecated?: boolean;
+};
+
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
   deprecationReason?: Maybe<string>;
+};
+
+export type CompletionItemForCodeMirror = {
+  label: string;
+  type?: GraphQLType;
+  documentation: string | null | undefined;
+  isDeprecated?: boolean;
+  deprecationReason: string | null | undefined;
 };
 
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
