@@ -229,14 +229,10 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
+      console.log(hoverItem.range);
       return <monaco.languages.Hover>{
-        range: {
-          startLineNumber: position.lineNumber,
-          startColumn: position.column,
-          endLineNumber: position.lineNumber,
-          endColumn: position.column,
-        },
-        contents: [{ value: hoverItem }],
+        range: hoverItem.range,
+        contents: [{ value: hoverItem.content }],
       };
     }
 

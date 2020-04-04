@@ -17,6 +17,7 @@ import {
   getRange,
   getAutocompleteSuggestions,
   getHoverInformation,
+  getTokenRange,
 } from 'graphql-languageservice';
 import introspectionQuery from './schema';
 
@@ -150,7 +151,19 @@ export class GraphQLWorker {
       graphQLPosition,
     );
 
-    return hover;
+    return {
+      content: hover,
+      // @ts-ignore
+      range: toRange(
+        getTokenRange(
+          {
+            column: graphQLPosition.character + 1,
+            line: graphQLPosition.line + 1,
+          },
+          document,
+        ),
+      ),
+    };
   }
 
   private _getTextDocument(_uri: string): string {

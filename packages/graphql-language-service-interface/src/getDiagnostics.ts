@@ -149,6 +149,45 @@ function annotations(
   return highlightedNodes;
 }
 
+export function getTokenRange(
+  location: SourceLocation,
+  queryText: string,
+): Range {
+  const parser = onlineParser();
+  const state = parser.startState();
+  const lines = queryText.split('\n');
+
+  invariant(
+    lines.length >= location.line,
+    'Query text must have more lines than where the error happened',
+  );
+
+  let stream = null;
+
+  for (let i = 0; i < location.line; i++) {
+    stream = new CharacterStream(lines[i]);
+    while (!stream.eol()) {
+      parser.token(stream, state);
+
+      if (
+        i === location.line - 1 &&
+        location.column - 1 >= stream._start &&
+        location.column - 1 <= stream._pos
+      ) {
+        return new Range(
+          new Position(location.line - 1, stream._start),
+          new Position(location.line - 1, stream._pos),
+        );
+      }
+    }
+  }
+
+  return new Range(
+    new Position(location.line - 1, location.column - 1),
+    new Position(location.line - 1, location.column - 1),
+  );
+}
+
 export function getRange(location: SourceLocation, queryText: string): Range {
   const parser = onlineParser();
   const state = parser.startState();
