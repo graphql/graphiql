@@ -74,7 +74,7 @@
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "fork-ts-checker-webpack-plugin": "4.0.4",
-    "graphql": "^15.0.0-rc.2",
+    "graphql": "15.0.0",
     "html-webpack-plugin": "^3.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.8.0",
