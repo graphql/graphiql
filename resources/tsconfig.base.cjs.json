@@ -29,7 +29,6 @@
     "**/*.spec.js",
     "**/*-test.ts",
     "**/*-test.js",
-    "node_modules/**",
     "**/node_modules/**"
   ]
 }

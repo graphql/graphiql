@@ -48,7 +48,7 @@
     "lint": "yarn eslint && yarn lint-check && yarn pretty-check",
     "lint-fix": "yarn eslint --fix",
     "lint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
-    "check": "flow check --show-all-errors",
+    "check": "flow check --show-all-errors && yarn tsc --dry",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
