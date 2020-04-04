@@ -137,36 +137,34 @@ export class CompletionAdapter
   }
 }
 
-export class HoverAdapter 
-  implements monaco.languages.HoverProvider {
-
-  constructor(private _worker: WorkerAccessor) {
-  }
+export class HoverAdapter implements monaco.languages.HoverProvider {
+  constructor(private _worker: WorkerAccessor) {}
 
   async provideHover(
     model: monaco.editor.IReadOnlyModel,
     position: Position,
-    _token: CancellationToken): Promise<monaco.languages.Hover> {
+    _token: CancellationToken,
+  ): Promise<monaco.languages.Hover> {
     const resource = model.uri;
     const worker = await this._worker(model.uri);
     // @ts-ignore
-    const hoverItem = await worker.doHover(
-      resource.toString(),
-      position,
-    );
+    const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
       return <monaco.languages.Hover>{
-        range: { startLineNumber: position.lineNumber, startColumn: position.column, endLineNumber: position.lineNumber, endColumn: position.column },
-        contents: [{ value: hoverItem }]
+        range: {
+          startLineNumber: position.lineNumber,
+          startColumn: position.column,
+          endLineNumber: position.lineNumber,
+          endColumn: position.column,
+        },
+        contents: [{ value: hoverItem }],
       };
     }
 
     // @ts-ignore
     return;
   }
-  
-  dispose() {
-    
-  }
+
+  dispose() {}
 }

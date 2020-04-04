@@ -139,10 +139,7 @@ export class GraphQLWorker {
     );
   }
 
-  async doHover(
-    uri: string,
-    position: monaco.Position,
-  ) {
+  async doHover(uri: string, position: monaco.Position) {
     const document = this._getTextDocument(uri);
     const graphQLPosition = toGraphQLPosition(position);
 
@@ -150,12 +147,12 @@ export class GraphQLWorker {
       schema,
       document,
       // @ts-ignore
-      graphQLPosition
+      graphQLPosition,
     );
 
     return hover;
   }
-  
+
   private _getTextDocument(_uri: string): string {
     const models = this._ctx.getMirrorModels();
     if (models.length > 0) {

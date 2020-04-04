@@ -31,7 +31,7 @@ window.MonacoEnvironment = {
 
 const model = monaco.editor.createModel(
   `
-  query Example { 
+query Example { 
   allFilms {
       films {
           id
