@@ -64,10 +64,10 @@ export type SessionState = {
   results: File;
   operationLoading: boolean;
   operationErrors: string[] | null;
-  editors: { [key in EditorContexts]: CodeMirror.Editor };
+  editors: Partial<{ [key in EditorContexts]: CodeMirror.Editor }>;
   // diagnostics?: IMarkerData[];
   currentTabs?: { [pane: string]: number }; // maybe this could live in another context for each "pane"? within session context
-  operations: OperationDefinitionNode[];
+  // operations: OperationDefinitionNode[];
   subscription?: Unsubscribable | null;
   operationName?: string; // current operation name
-} & QueryFacts;
+}; // & QueryFacts;

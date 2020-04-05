@@ -210,10 +210,11 @@ export function VariableEditor(props: VariableEditorProps) {
     if (!editor) {
       return;
     }
-    if (session?.variableToType) {
-      editor.options.lint.variableToType = session.variableToType;
-      editor.options.hintOptions.variableToType = session.variableToType;
-    }
+    // TODO get query facts here instead
+    // if (session?.variableToType) {
+    //   editor.options.lint.variableToType = session.variableToType;
+    //   editor.options.hintOptions.variableToType = session.variableToType;
+    // }
   }, [session.operation.text, schema]);
 
   return <div className="codemirrorWrap" ref={divRef} />;
