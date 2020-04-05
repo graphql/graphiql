@@ -8,9 +8,18 @@ import { GraphQLParams, SessionState, EditorContexts } from './types';
 import { defaultFetcher } from './common';
 import { SchemaContext } from './GraphiQLSchemaProvider';
 import { GraphQLSchema } from 'graphql';
-import { Action, ActionTypes, SuccessPayload } from './actions';
+import {
+  SessionAction,
+  SessionActionTypes,
+  operationRequestAction,
+  operationSucceededAction,
+  variableChangedAction,
+  operationChangedAction,
+  editorLoadedAction,
+  operationErroredAction,
+} from './sessionActions';
 
-type Dispatcher = DispatchWithEffects<ActionTypes, Action>;
+type Dispatcher = DispatchWithEffects<SessionActionTypes, SessionAction>;
 
 export interface SessionHandlers {
   changeOperation: (operation: string) => void;
@@ -56,14 +65,14 @@ export const useSessionContext = (): SessionState & SessionHandlers =>
   React.useContext(SessionContext);
 
 export function getSessionReducer(schema: GraphQLSchema) {
-  return (state: SessionState, action: Action): SessionState => {
+  return (state: SessionState, action: SessionAction): SessionState => {
     switch (action.type) {
-      case ActionTypes.OperationRequested:
+      case SessionActionTypes.OperationRequested:
         return {
           ...state,
           operationLoading: true,
         };
-      case ActionTypes.EditorLoaded: {
+      case SessionActionTypes.EditorLoaded: {
         const { context, editor } = action.payload;
         return {
           ...state,
@@ -73,7 +82,7 @@ export function getSessionReducer(schema: GraphQLSchema) {
           },
         };
       }
-      case ActionTypes.OperationChanged: {
+      case SessionActionTypes.OperationChanged: {
         const { value } = action.payload;
         return {
           ...state,
@@ -84,7 +93,7 @@ export function getSessionReducer(schema: GraphQLSchema) {
           ...getQueryFacts(schema, value),
         };
       }
-      case ActionTypes.VariablesChanged: {
+      case SessionActionTypes.VariablesChanged: {
         const { value } = action.payload;
         return {
           ...state,
@@ -94,7 +103,7 @@ export function getSessionReducer(schema: GraphQLSchema) {
           },
         };
       }
-      case ActionTypes.OperationSucceeded: {
+      case SessionActionTypes.OperationSucceeded: {
         const { result } = action.payload;
         return {
           ...state,
@@ -105,7 +114,7 @@ export function getSessionReducer(schema: GraphQLSchema) {
           operationErrors: null,
         };
       }
-      case ActionTypes.OperationErrored: {
+      case SessionActionTypes.OperationErrored: {
         const { error } = action.payload;
         return {
           ...state,
@@ -134,39 +143,29 @@ export function SessionProvider({
 }: SessionProviderProps) {
   const schemaState = React.useContext(SchemaContext);
 
-  const [state, dispatch] = useReducers<SessionState, ActionTypes, Action>({
+  const [state, dispatch] = useReducers<
+    SessionState,
+    SessionActionTypes,
+    SessionAction
+  >({
     reducers: [getSessionReducer(schemaState.schema as GraphQLSchema)],
     init: () => initialState,
   });
 
   const operationError = (error: Error) =>
-    dispatch({
-      type: ActionTypes.OperationErrored,
-      payload: { error, sessionId },
-    });
+    dispatch(operationErroredAction(error, sessionId));
   const editorLoaded = (context: EditorContexts, editor: CodeMirror.Editor) => {
-    dispatch({
-      type: ActionTypes.EditorLoaded,
-      payload: { editor, context },
-    });
+    dispatch(editorLoadedAction(context, editor));
   };
   const changeOperation = (operationText: string) => {
-    dispatch({
-      type: ActionTypes.OperationChanged,
-      payload: { value: operationText, sessionId },
-    });
+    dispatch(operationChangedAction(operationText, sessionId));
   };
 
   const changeVariables = (variablesText: string) =>
-    dispatch({
-      type: ActionTypes.VariablesChanged,
-      payload: { value: variablesText, sessionId },
-    });
+    dispatch(variableChangedAction(variablesText, sessionId));
   const executeOperation = async (operationName?: string) => {
     try {
-      dispatch({
-        type: ActionTypes.OperationRequested,
-      });
+      dispatch(operationRequestAction());
 
       const fetchValues: GraphQLParams = {
         query: state.operation?.text ?? '',
@@ -178,10 +177,7 @@ export function SessionProvider({
         fetchValues.operationName = operationName as string;
       }
       const result = await fetcher(fetchValues, schemaState.config);
-      dispatch({
-        type: ActionTypes.OperationSucceeded,
-        payload: { sessionId, result } as SuccessPayload,
-      });
+      dispatch(operationSucceededAction(result as string, sessionId));
     } catch (err) {
       console.error(err.name, err.stack);
       operationError(err);
