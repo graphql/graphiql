@@ -18,6 +18,7 @@ import {
   editorLoadedAction,
   operationErroredAction,
 } from './sessionActions';
+import { observableToPromise } from 'src/utility/observableToPromise';
 
 type Dispatcher = DispatchWithEffects<SessionActionTypes, SessionAction>;
 
@@ -176,8 +177,10 @@ export function SessionProvider({
       if (operationName) {
         fetchValues.operationName = operationName as string;
       }
-      const result = await fetcher(fetchValues, schemaState.config);
-      dispatch(operationSucceededAction(result as string, sessionId));
+      const result = await observableToPromise(
+        fetcher(fetchValues, schemaState.config),
+      );
+      dispatch(operationSucceededAction(result, sessionId));
     } catch (err) {
       console.error(err.name, err.stack);
       operationError(err);

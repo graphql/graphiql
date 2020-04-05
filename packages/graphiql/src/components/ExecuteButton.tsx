@@ -21,7 +21,7 @@ type ExecuteButtonProps = {
 };
 
 export function ExecuteButton(props: ExecuteButtonProps) {
-  const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
   );
