@@ -179,8 +179,8 @@ export function QueryEditor(props: QueryEditorProps) {
             container: selectElement,
           }),
 
-        'Cmd-Enter': () => session.executeOperation(session),
-        'Ctrl-Enter': () => session.executeOperation(session),
+        'Cmd-Enter': () => session.executeOperation(),
+        'Ctrl-Enter': () => session.executeOperation(),
 
         'Shift-Ctrl-C': () => {
           if (props.onCopyQuery) {
