@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { GraphQLSchema } from 'graphql';
-import {
-  generateActionTypeMap,
-  DispatchWithEffects,
-  useReducers,
-  Reducer,
-} from './useReducers';
+import { DispatchWithEffects, useReducers, Reducer } from './useReducers';
 import { defaultSchemaLoader } from './common';
 import { SchemaConfig } from './types';
+import {
+  SchemaAction,
+  SchemaActionTypes,
+  schemaRequestedAction,
+  schemaSucceededAction,
+  schemaErroredAction,
+  schemaChangedAction,
+} from './schemaActions';
 
 /**
  * Initial State
@@ -16,7 +19,6 @@ import { SchemaConfig } from './types';
 export type SchemaState = {
   schema: GraphQLSchema | null;
   isLoading: boolean;
-  hasError: boolean;
   error?: string;
   config: SchemaConfig;
 };
@@ -29,7 +31,6 @@ const uri = isDev
 
 export const initialReducerState: SchemaState = {
   isLoading: false,
-  hasError: false,
   config: {
     uri,
   },
@@ -63,53 +64,43 @@ export const useSchemaContext = () => React.useContext(SchemaContext);
  * Action Types & Reducers
  */
 
-export const actionTypes = generateActionTypeMap([
-  'schema_changed',
-  'schema_requested',
-  'schema_succeeded',
-  'schema_errored',
-  'schema_reset',
-]);
-
-export type AT = keyof typeof actionTypes;
-
-export type SchemaAction = {
-  type: AT;
-  payload: { isLoading: boolean } & GraphQLSchema & SchemaConfig;
-};
-
-export type SchemaReducer = Reducer<SchemaState, AT, SchemaAction>;
+export type SchemaReducer = Reducer<
+  SchemaState,
+  SchemaActionTypes,
+  SchemaAction
+>;
 
 export const schemaReducer: SchemaReducer = (
   state,
-  { type: actionType, payload },
+  action,
   init,
-) => {
-  switch (actionType) {
-    case actionTypes.schema_changed: {
-      state.isLoading = true;
-      state.config = payload;
-      return state;
-    }
-    case actionTypes.schema_requested: {
-      state.isLoading = true;
-      return state;
-    }
-    case actionTypes.schema_succeeded: {
-      state.isLoading = false;
-      state.hasError = false;
-      state.schema = payload;
-      return state;
-    }
-    case actionTypes.schema_errored: {
-      state.isLoading = false;
-      state.hasError = true;
-      state.error = payload.toString();
-      return state;
-    }
-    case actionTypes.schema_reset: {
+): SchemaState => {
+  switch (action.type) {
+    case SchemaActionTypes.SchemaChanged:
+      return {
+        ...state,
+        isLoading: true,
+        config: action.payload,
+      };
+    case SchemaActionTypes.SchemaRequested:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case SchemaActionTypes.SchemaSucceeded:
+      return {
+        ...state,
+        isLoading: false,
+        schema: action.payload,
+      };
+    case SchemaActionTypes.SchemaErrored:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload.toString(),
+      };
+    case SchemaActionTypes.SchemaReset:
       return init();
-    }
     default: {
       return state;
     }
@@ -130,7 +121,7 @@ export type ProjectHandlers = {
   loadSchema: (state: SchemaState, config: SchemaConfig) => Promise<void>;
   loadCurrentSchema: (state: SchemaState) => Promise<void>;
   schemaLoader: typeof defaultSchemaLoader;
-  dispatch: DispatchWithEffects<AT, SchemaAction>;
+  dispatch: DispatchWithEffects<SchemaActionTypes, SchemaAction>;
 };
 
 export function SchemaProvider({
@@ -153,12 +144,14 @@ export function SchemaProvider({
 
   const loadCurrentSchema = async (currentState: SchemaState) => {
     const { config } = currentState;
-    dispatch({ type: actionTypes.schema_requested });
+    dispatch(schemaRequestedAction());
     try {
       const schema = await schemaLoader(config);
-      dispatch({ type: actionTypes.schema_succeeded, payload: schema });
+      if (schema) {
+        dispatch(schemaSucceededAction(schema));
+      }
     } catch (error) {
-      dispatch({ type: actionTypes.schema_errored, payload: error });
+      dispatch(schemaErroredAction(error));
     }
   };
 
@@ -166,7 +159,7 @@ export function SchemaProvider({
     currentState: SchemaState,
     config: SchemaConfig,
   ) => {
-    dispatch({ type: actionTypes.schema_changed, payload: { config } });
+    dispatch(schemaChangedAction(config));
     await loadCurrentSchema(currentState);
   };
 
