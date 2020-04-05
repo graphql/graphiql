@@ -50,7 +50,7 @@ export const schemaSucceededAction = (
 
 export type SchemaErroredAction = {
   type: SchemaActionTypes.SchemaErrored;
-  payload: Error; // Find if this is a specific type of error
+  payload: Error;
 };
 
 export const schemaErroredAction = (error: Error): SchemaErroredAction => ({
