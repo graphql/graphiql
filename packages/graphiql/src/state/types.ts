@@ -63,7 +63,7 @@ export type SessionState = {
   variables: File;
   results: File;
   operationLoading: boolean;
-  operationErrors: string[] | null;
+  operationErrors: Error[] | null;
   editors: { [key in EditorContexts]: CodeMirror.Editor };
   // diagnostics?: IMarkerData[];
   currentTabs?: { [pane: string]: number }; // maybe this could live in another context for each "pane"? within session context
