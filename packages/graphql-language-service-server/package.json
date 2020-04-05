@@ -24,12 +24,12 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
     "@babel/parser": "^7.9.0",
     "glob": "^7.1.2",
-    "graphql-config": "3.0.0-rc.0",
+    "graphql-config": "3.0.0-rc.2",
     "graphql-language-service-interface": "^2.4.0-alpha.4",
     "graphql-language-service-types": "^1.6.0-alpha.4",
     "graphql-language-service-utils": "^2.4.0-alpha.4",

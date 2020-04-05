@@ -84,7 +84,9 @@ describe('GraphQLLanguageService', () => {
     );
     expect(diagnostics.length).toEqual(1);
     const diagnostic = diagnostics[0];
-    expect(diagnostic.message).toEqual('Syntax Error: Unexpected Name "qeury"');
+    expect(diagnostic.message).toEqual(
+      'Syntax Error: Unexpected Name "qeury".',
+    );
   });
 
   it('runs definition service as expected', async () => {

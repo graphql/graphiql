@@ -24,11 +24,10 @@
     "graphql-language-service"
   ],
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "7.8.7",
-    "graphql-config": "3.0.0-rc.0",
     "graphql-language-service-interface": "^2.4.0-alpha.4",
     "graphql-language-service-server": "^2.4.0-alpha.4",
     "graphql-language-service-utils": "^2.4.0-alpha.4",
