@@ -152,10 +152,10 @@ export function VariableEditor(props: VariableEditorProps) {
             container: divRef.current,
           }),
         'Cmd-Enter': () => {
-          session.executeOperation(session);
+          session.executeOperation();
         },
         'Ctrl-Enter': () => {
-          session.executeOperation(session);
+          session.executeOperation();
         },
         'Shift-Ctrl-P': () => {
           if (props.onPrettifyQuery) {

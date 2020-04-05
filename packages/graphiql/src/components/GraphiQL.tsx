@@ -331,7 +331,6 @@ class GraphiQLInternals extends React.Component<
                 return (
                   <QueryHistory
                     onSelectQuery={(operation, variables, _opName) => {
-                      console.log(operation, variables);
                       if (operation) {
                         session.changeOperation(operation);
                       }
@@ -360,7 +359,6 @@ class GraphiQLInternals extends React.Component<
               <ExecuteButton
                 isRunning={Boolean(this.state.subscription)}
                 onStop={this.handleStopQuery}
-                operations={this.state.operations}
               />
               {toolbar}
             </div>

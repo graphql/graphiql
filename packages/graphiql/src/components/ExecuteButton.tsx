@@ -16,7 +16,6 @@ import { useSessionContext } from '../state/GraphiQLSessionProvider';
  */
 
 type ExecuteButtonProps = {
-  operations?: OperationDefinitionNode[];
   isRunning: boolean;
   onStop: () => void;
 };
@@ -27,10 +26,10 @@ export function ExecuteButton(props: ExecuteButtonProps) {
     null,
   );
   const session = useSessionContext();
-  const operations = props.operations ?? [];
+  const operations = session.operations ?? [];
   const hasOptions = operations && operations.length > 1;
 
-  let options = null;
+  let options: JSX.Element | null = null;
   if (hasOptions && optionsOpen) {
     options = (
       <ul className="execute-options">
@@ -46,7 +45,7 @@ export function ExecuteButton(props: ExecuteButtonProps) {
               onMouseOut={() => setHighlight(null)}
               onMouseUp={() => {
                 setOptionsOpen(false);
-                session.executeOperation(session, operation?.name?.value);
+                session.executeOperation(operation?.name?.value);
               }}>
               {opName}
             </li>
@@ -64,7 +63,7 @@ export function ExecuteButton(props: ExecuteButtonProps) {
       if (props.isRunning) {
         props.onStop();
       } else {
-        session.executeOperation(session);
+        session.executeOperation();
       }
     };
   }
