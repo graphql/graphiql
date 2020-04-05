@@ -31,6 +31,7 @@ import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 
 import { SchemaProvider, SchemaContext } from '../state/GraphiQLSchemaProvider';
+import { EditorProvider } from '../state/EditorProvider';
 import {
   SessionProvider,
   SessionContext,
@@ -381,15 +382,17 @@ class GraphiQLInternals extends React.Component<
             onDoubleClick={this.handleResetResize}
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-              />
+              <EditorProvider context="operation">
+                <QueryEditor
+                  onHintInformationRender={this.handleHintInformationRender}
+                  onClickReference={this.handleClickReference}
+                  onCopyQuery={this.handleCopyQuery}
+                  onPrettifyQuery={this.handlePrettifyQuery}
+                  onMergeQuery={this.handleMergeQuery}
+                  editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
+                />
+              </EditorProvider>
               <section
                 className="variable-editor"
                 style={variableStyle}
@@ -403,13 +406,15 @@ class GraphiQLInternals extends React.Component<
                   onMouseDown={this.handleVariableResizeStart}>
                   {'Query Variables'}
                 </div>
-                <VariableEditor
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                />
+                <EditorProvider context="variables">
+                  <VariableEditor
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                  />
+                </EditorProvider>
               </section>
             </div>
             <div className="resultWrap">
@@ -418,11 +423,13 @@ class GraphiQLInternals extends React.Component<
                   <div className="spinner" />
                 </div>
               )}
-              <ResultViewer
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
-              />
+              <EditorProvider context="results">
+                <ResultViewer
+                  editorTheme={this.props.editorTheme}
+                  ResultsTooltip={this.props.ResultsTooltip}
+                  ImagePreview={ImagePreview}
+                />
+              </EditorProvider>
               {footer}
             </div>
           </div>
