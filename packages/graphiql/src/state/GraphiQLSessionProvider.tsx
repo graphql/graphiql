@@ -119,7 +119,9 @@ export function getSessionReducer(schema: GraphQLSchema) {
         const { error } = action.payload;
         return {
           ...state,
-          operationErrors: [error.toString()],
+          operationErrors: state.operationErrors
+            ? [...state.operationErrors, error]
+            : [error],
         };
       }
       default: {

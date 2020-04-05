@@ -19,7 +19,7 @@ import {
 export type SchemaState = {
   schema: GraphQLSchema | null;
   isLoading: boolean;
-  error?: string;
+  errors: Error[] | null;
   config: SchemaConfig;
 };
 
@@ -35,6 +35,7 @@ export const initialReducerState: SchemaState = {
     uri,
   },
   schema: null,
+  errors: null,
 };
 
 export const getInitialState = (
@@ -97,7 +98,9 @@ export const schemaReducer: SchemaReducer = (
       return {
         ...state,
         isLoading: false,
-        error: action.payload.toString(),
+        errors: state.errors
+          ? [...state.errors, action.payload]
+          : [action.payload],
       };
     case SchemaActionTypes.SchemaReset:
       return init();
