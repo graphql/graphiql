@@ -12,6 +12,7 @@ import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
 import { useSchemaContext } from '../state/GraphiQLSchemaProvider';
+import useQueryFacts from '../hooks/useQueryFacts';
 
 declare module CodeMirror {
   export interface Editor extends CM.Editor {}
@@ -49,6 +50,7 @@ type VariableEditorProps = {
  */
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
+  const queryFacts = useQueryFacts();
   const { schema } = useSchemaContext();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
@@ -210,11 +212,11 @@ export function VariableEditor(props: VariableEditorProps) {
     if (!editor) {
       return;
     }
-    if (session?.variableToType) {
-      editor.options.lint.variableToType = session.variableToType;
-      editor.options.hintOptions.variableToType = session.variableToType;
+    if (queryFacts?.variableToType) {
+      editor.options.lint.variableToType = queryFacts.variableToType;
+      editor.options.hintOptions.variableToType = queryFacts.variableToType;
     }
-  }, [session.operation.text, schema]);
+  }, [queryFacts]);
 
   return <div className="codemirrorWrap" ref={divRef} />;
 }
