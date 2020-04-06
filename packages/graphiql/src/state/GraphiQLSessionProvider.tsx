@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { useReducers, DispatchWithEffects } from './useReducers';
 import { Fetcher } from './types';
-import getQueryFacts from '../utility/getQueryFacts';
 
 import { GraphQLParams, SessionState, EditorContexts } from './types';
 
 import { defaultFetcher } from './common';
 import { SchemaContext } from './GraphiQLSchemaProvider';
-import { GraphQLSchema } from 'graphql';
 import {
   SessionAction,
   SessionActionTypes,
@@ -18,7 +16,7 @@ import {
   editorLoadedAction,
   operationErroredAction,
 } from './sessionActions';
-import { observableToPromise } from 'src/utility/observableToPromise';
+import { observableToPromise } from '../utility/observableToPromise';
 
 type Dispatcher = DispatchWithEffects<SessionActionTypes, SessionAction>;
 
@@ -62,87 +60,86 @@ export const SessionContext = React.createContext<
   SessionState & SessionHandlers
 >(initialContextState);
 
-export const useSessionContext = (): SessionState & SessionHandlers =>
-  React.useContext(SessionContext);
+export const useSessionContext = () => React.useContext(SessionContext);
 
-export function getSessionReducer(schema: GraphQLSchema) {
-  return (state: SessionState, action: SessionAction): SessionState => {
-    switch (action.type) {
-      case SessionActionTypes.OperationRequested:
-        return {
-          ...state,
-          operationLoading: true,
-        };
-      case SessionActionTypes.EditorLoaded: {
-        const { context, editor } = action.payload;
-        return {
-          ...state,
-          editors: {
-            ...state.editors,
-            [context as EditorContexts]: editor,
-          },
-        };
-      }
-      case SessionActionTypes.OperationChanged: {
-        const { value } = action.payload;
-        return {
-          ...state,
-          operation: {
-            ...state.operation,
-            text: value,
-          },
-          ...getQueryFacts(schema, value),
-        };
-      }
-      case SessionActionTypes.VariablesChanged: {
-        const { value } = action.payload;
-        return {
-          ...state,
-          variables: {
-            ...state.variables,
-            text: value,
-          },
-        };
-      }
-      case SessionActionTypes.OperationSucceeded: {
-        const { result } = action.payload;
-        return {
-          ...state,
-          results: {
-            ...state.results,
-            text: result,
-          },
-          operationErrors: null,
-        };
-      }
-      case SessionActionTypes.OperationErrored: {
-        const { error } = action.payload;
-        return {
-          ...state,
-          operationErrors: state.operationErrors
-            ? [...state.operationErrors, error]
-            : [error],
-        };
-      }
-      default: {
-        return state;
-      }
+function sessionReducer(
+  state: SessionState,
+  action: SessionAction,
+): SessionState {
+  switch (action.type) {
+    case SessionActionTypes.OperationRequested:
+      return {
+        ...state,
+        operationLoading: true,
+      };
+    case SessionActionTypes.EditorLoaded: {
+      const { context, editor } = action.payload;
+      return {
+        ...state,
+        editors: {
+          ...state.editors,
+          [context as EditorContexts]: editor,
+        },
+      };
     }
-  };
+    case SessionActionTypes.OperationChanged: {
+      const { value } = action.payload;
+      return {
+        ...state,
+        operation: {
+          ...state.operation,
+          text: value,
+        },
+      };
+    }
+    case SessionActionTypes.VariablesChanged: {
+      const { value } = action.payload;
+      return {
+        ...state,
+        variables: {
+          ...state.variables,
+          text: value,
+        },
+      };
+    }
+    case SessionActionTypes.OperationSucceeded: {
+      const { result } = action.payload;
+      return {
+        ...state,
+        results: {
+          ...state.results,
+          text: result,
+        },
+        operationErrors: null,
+      };
+    }
+    case SessionActionTypes.OperationErrored: {
+      const { error } = action.payload;
+      return {
+        ...state,
+        operationErrors: state.operationErrors
+          ? [...state.operationErrors, error]
+          : [error],
+      };
+    }
+    default: {
+      return state;
+    }
+  }
 }
 
 export type SessionProviderProps = {
   sessionId: number;
   fetcher?: Fetcher;
   session?: SessionState;
-  children: any;
+  children: React.ReactNode;
 };
 
 export function SessionProvider({
   sessionId,
   fetcher = defaultFetcher,
   session,
-  ...props
+  children,
 }: SessionProviderProps) {
   const schemaState = React.useContext(SchemaContext);
 
@@ -151,43 +148,66 @@ export function SessionProvider({
     SessionActionTypes,
     SessionAction
   >({
-    reducers: [getSessionReducer(schemaState.schema as GraphQLSchema)],
+    reducers: [sessionReducer],
     init: () => initialState,
   });
 
-  const operationError = (error: Error) =>
-    dispatch(operationErroredAction(error, sessionId));
-  const editorLoaded = (context: EditorContexts, editor: CodeMirror.Editor) => {
-    dispatch(editorLoadedAction(context, editor));
-  };
-  const changeOperation = (operationText: string) => {
-    dispatch(operationChangedAction(operationText, sessionId));
-  };
+  const operationError = React.useCallback(
+    (error: Error) => dispatch(operationErroredAction(error, sessionId)),
+    [dispatch, sessionId],
+  );
 
-  const changeVariables = (variablesText: string) =>
-    dispatch(variableChangedAction(variablesText, sessionId));
-  const executeOperation = async (operationName?: string) => {
-    try {
-      dispatch(operationRequestAction());
+  const editorLoaded = React.useCallback(
+    (context: EditorContexts, editor: CodeMirror.Editor) =>
+      dispatch(editorLoadedAction(context, editor)),
+    [dispatch],
+  );
 
-      const fetchValues: GraphQLParams = {
-        query: state.operation?.text ?? '',
-      };
-      if (state.variables?.text) {
-        fetchValues.variables = state.variables.text as string;
+  const changeOperation = React.useCallback(
+    (operationText: string) =>
+      dispatch(operationChangedAction(operationText, sessionId)),
+    [dispatch, sessionId],
+  );
+
+  const changeVariables = React.useCallback(
+    (variablesText: string) =>
+      dispatch(variableChangedAction(variablesText, sessionId)),
+    [dispatch, sessionId],
+  );
+
+  const executeOperation = React.useCallback(
+    async (operationName?: string) => {
+      try {
+        dispatch(operationRequestAction());
+
+        const fetchValues: GraphQLParams = {
+          query: state.operation?.text ?? '',
+        };
+        if (state.variables?.text) {
+          fetchValues.variables = state.variables.text as string;
+        }
+        if (operationName) {
+          fetchValues.operationName = operationName as string;
+        }
+        const result = await observableToPromise(
+          fetcher(fetchValues, schemaState.config),
+        );
+        dispatch(operationSucceededAction(result, sessionId));
+      } catch (err) {
+        console.error(err.name, err.stack);
+        operationError(err);
       }
-      if (operationName) {
-        fetchValues.operationName = operationName as string;
-      }
-      const result = await observableToPromise(
-        fetcher(fetchValues, schemaState.config),
-      );
-      dispatch(operationSucceededAction(result, sessionId));
-    } catch (err) {
-      console.error(err.name, err.stack);
-      operationError(err);
-    }
-  };
+    },
+    [
+      dispatch,
+      fetcher,
+      operationError,
+      schemaState.config,
+      sessionId,
+      state.operation,
+      state.variables,
+    ],
+  );
 
   return (
     <SessionContext.Provider
@@ -201,7 +221,7 @@ export function SessionProvider({
         editorLoaded,
         dispatch,
       }}>
-      {props.children}
+      {children}
     </SessionContext.Provider>
   );
 }
