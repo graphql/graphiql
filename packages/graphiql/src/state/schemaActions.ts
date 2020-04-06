@@ -16,52 +16,40 @@ export type SchemaAction =
   | SchemaErroredAction
   | SchemaResetAction;
 
-export type SchemaChangedAction = {
-  type: SchemaActionTypes.SchemaChanged;
-  payload: SchemaConfig;
-};
+export const schemaChangedAction = (config: SchemaConfig) =>
+  ({
+    type: SchemaActionTypes.SchemaChanged,
+    payload: config,
+  } as const);
 
-export const schemaChangedAction = (
-  config: SchemaConfig,
-): SchemaChangedAction => ({
-  type: SchemaActionTypes.SchemaChanged,
-  payload: config,
-});
+export type SchemaChangedAction = ReturnType<typeof schemaChangedAction>;
 
-export type SchemaRequestedAction = {
-  type: SchemaActionTypes.SchemaRequested;
-};
+export const schemaRequestedAction = () =>
+  ({
+    type: SchemaActionTypes.SchemaRequested,
+  } as const);
 
-export const schemaRequestedAction = (): SchemaRequestedAction => ({
-  type: SchemaActionTypes.SchemaRequested,
-});
+export type SchemaRequestedAction = ReturnType<typeof schemaRequestedAction>;
 
-export type SchemaSucceededAction = {
-  type: SchemaActionTypes.SchemaSucceeded;
-  payload: GraphQLSchema;
-};
+export const schemaSucceededAction = (schema: GraphQLSchema) =>
+  ({
+    type: SchemaActionTypes.SchemaSucceeded,
+    payload: schema,
+  } as const);
 
-export const schemaSucceededAction = (
-  schema: GraphQLSchema,
-): SchemaSucceededAction => ({
-  type: SchemaActionTypes.SchemaSucceeded,
-  payload: schema,
-});
+export type SchemaSucceededAction = ReturnType<typeof schemaSucceededAction>;
 
-export type SchemaErroredAction = {
-  type: SchemaActionTypes.SchemaErrored;
-  payload: Error;
-};
+export const schemaErroredAction = (error: Error) =>
+  ({
+    type: SchemaActionTypes.SchemaErrored,
+    payload: error,
+  } as const);
 
-export const schemaErroredAction = (error: Error): SchemaErroredAction => ({
-  type: SchemaActionTypes.SchemaErrored,
-  payload: error,
-});
+export type SchemaErroredAction = ReturnType<typeof schemaErroredAction>;
 
-export type SchemaResetAction = {
-  type: SchemaActionTypes.SchemaReset;
-};
+export const schemaResetAction = () =>
+  ({
+    type: SchemaActionTypes.SchemaReset,
+  } as const);
 
-export const schemaResetAction = (): SchemaResetAction => ({
-  type: SchemaActionTypes.SchemaReset,
-});
+export type SchemaResetAction = ReturnType<typeof schemaResetAction>;

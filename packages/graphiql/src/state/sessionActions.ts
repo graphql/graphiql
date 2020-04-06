@@ -21,84 +21,62 @@ export type SessionAction =
   | OperationSucceededAction
   | OperationErroredAction;
 
-export type OperationRequestedAction = {
-  type: SessionActionTypes.OperationRequested;
-};
+export const operationRequestAction = () =>
+  ({
+    type: SessionActionTypes.OperationRequested,
+  } as const);
 
-export const operationRequestAction = (): OperationRequestedAction => ({
-  type: SessionActionTypes.OperationRequested,
-});
-
-export type EditorLoadedAction = {
-  type: SessionActionTypes.EditorLoaded;
-  payload: {
-    context: EditorContexts;
-    editor: CodeMirror.Editor;
-  };
-};
+export type OperationRequestedAction = ReturnType<
+  typeof operationRequestAction
+>;
 
 export const editorLoadedAction = (
   context: EditorContexts,
   editor: CodeMirror.Editor,
-): EditorLoadedAction => ({
-  type: SessionActionTypes.EditorLoaded,
-  payload: {
-    context,
-    editor,
-  },
-});
+) =>
+  ({
+    type: SessionActionTypes.EditorLoaded,
+    payload: {
+      context,
+      editor,
+    },
+  } as const);
 
-export type OperationChangedAction = {
-  type: SessionActionTypes.OperationChanged;
-  payload: ChangeValuePayload;
-};
+type EditorLoadedAction = ReturnType<typeof editorLoadedAction>;
 
-export const operationChangedAction = (
-  value: string,
-  sessionId: number,
-): OperationChangedAction => ({
-  type: SessionActionTypes.OperationChanged,
-  payload: { value, sessionId },
-});
+export const operationChangedAction = (value: string, sessionId: number) =>
+  ({
+    type: SessionActionTypes.OperationChanged,
+    payload: { value, sessionId },
+  } as const);
 
-export type VariablesChangedAction = {
-  type: SessionActionTypes.VariablesChanged;
-  payload: ChangeValuePayload;
-};
+export type OperationChangedAction = ReturnType<typeof operationChangedAction>;
 
-export const variableChangedAction = (
-  value: string,
-  sessionId: number,
-): VariablesChangedAction => ({
-  type: SessionActionTypes.VariablesChanged,
-  payload: { value, sessionId },
-});
+export const variableChangedAction = (value: string, sessionId: number) =>
+  ({
+    type: SessionActionTypes.VariablesChanged,
+    payload: { value, sessionId },
+  } as const);
 
-export type OperationSucceededAction = {
-  type: SessionActionTypes.OperationSucceeded;
-  payload: SuccessPayload;
-};
+export type VariablesChangedAction = ReturnType<typeof variableChangedAction>;
 
-export const operationSucceededAction = (
-  result: string,
-  sessionId: number,
-): OperationSucceededAction => ({
-  type: SessionActionTypes.OperationSucceeded,
-  payload: {
-    result,
-    sessionId,
-  },
-});
+export const operationSucceededAction = (result: string, sessionId: number) =>
+  ({
+    type: SessionActionTypes.OperationSucceeded,
+    payload: {
+      result,
+      sessionId,
+    },
+  } as const);
 
-export type OperationErroredAction = {
-  type: SessionActionTypes.OperationErrored;
-  payload: ErrorPayload;
-};
+export type OperationSucceededAction = ReturnType<
+  typeof operationSucceededAction
+>;
 
-export const operationErroredAction = (
-  error: Error,
-  sessionId: number,
-): OperationErroredAction => ({
-  type: SessionActionTypes.OperationErrored,
-  payload: { error, sessionId },
-});
+export const operationErroredAction = (error: Error, sessionId: number) =>
+  ({
+    type: SessionActionTypes.OperationErrored,
+    payload: { error, sessionId },
+  } as const);
+
+export type OperationErroredAction = ReturnType<typeof operationErroredAction>;
