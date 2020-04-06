@@ -26,6 +26,8 @@ import {
   State,
   AllTypeInfo,
   Position,
+  RuleKind,
+  RuleKinds,
 } from 'graphql-language-service-types';
 
 import {

@@ -77,7 +77,6 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(1);
     const error = errors[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'Syntax Error: Expected ":", found Name "id".',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);

@@ -9270,13 +9270,15 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.3.tgz#4a12ff1b60376ef09862c2093edd908328be8423"
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
 
-"graphiql@file:packages/graphiql":
-  version "1.0.0-alpha.8"
+graphiql@1.0.0-alpha.4:
+  version "1.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-1.0.0-alpha.4.tgz#57ce1a6387c942948fefa22df1871613490e1f33"
+  integrity sha512-fo6EnSyOxceM3uMPza4YxkkeapH7OvFh/fli7imugAQNJ4IA6nLXv3W41Wm+PvxbQYwjq6q4Njh+7KPKmzTTkQ==
   dependencies:
     "@emotion/core" "^10.0.28"
     "@mdx-js/react" "^1.5.2"
     codemirror "^5.52.2"
-    codemirror-graphql "^0.12.0-alpha.7"
+    codemirror-graphql "^0.12.0-alpha.4"
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
     markdown-it "^10.0.0"

@@ -7,29 +7,18 @@
  *
  */
 
-export {
-  getDefinitionState,
-  getFieldDef,
-  forEachState,
-  objectValues,
-  hintList,
-} from './autocompleteUtils';
+export * from './autocompleteUtils';
 
-export {
-  canUseDirective,
-  getAutocompleteSuggestions,
-  getFragmentDefinitions,
-  getTypeInfo,
-} from './getAutocompleteSuggestions';
+export * from './getAutocompleteSuggestions';
 
-export {
-  LANGUAGE,
-  getDefinitionQueryResultForFragmentSpread,
-  getDefinitionQueryResultForDefinitionNode,
-} from './getDefinition';
+export * from './getDefinition';
 
 export * from './getDiagnostics';
 export { getOutline } from './getOutline';
 export { getHoverInformation } from './getHoverInformation';
 
-export { GraphQLLanguageService } from './GraphQLLanguageService';
+export * from './GraphQLLanguageService';
+export * from './GraphQLCache';
+export * from './parseDocument';
+export * from './findGraphQLTags';
+export * from './stringToHash';

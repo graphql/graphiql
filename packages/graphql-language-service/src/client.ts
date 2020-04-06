@@ -16,10 +16,13 @@ import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getOutline,
-} from 'graphql-language-service-interface';
+  CompletionItem,
+  Diagnostic,
+} from 'graphql-languageservice';
+
 import { Position } from 'graphql-language-service-utils';
+
 import path from 'path';
-import { CompletionItem, Diagnostic } from 'graphql-language-service-types/src';
 
 const GRAPHQL_SUCCESS_CODE = 0;
 const GRAPHQL_FAILURE_CODE = 1;

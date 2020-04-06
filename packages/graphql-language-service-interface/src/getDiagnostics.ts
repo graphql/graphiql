@@ -95,8 +95,8 @@ export function validateQuery(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
-      );
+      annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+    );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
@@ -123,8 +123,8 @@ function annotations(
       node.kind !== 'Variable' && 'name' in node
         ? node.name
         : 'variable' in node
-        ? node.variable
-        : node;
+          ? node.variable
+          : node;
     if (highlightNode) {
       invariant(
         error.locations,

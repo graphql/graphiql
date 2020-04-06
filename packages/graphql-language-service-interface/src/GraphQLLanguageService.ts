@@ -14,6 +14,7 @@ import {
   TypeDefinitionNode,
   NamedTypeNode,
   ValidationRule,
+  GraphQLSchema,
 } from 'graphql';
 
 import {
@@ -24,8 +25,11 @@ import {
   Position,
   Outline,
   OutlineTree,
-  GraphQLCache,
 } from 'graphql-language-service-types';
+
+import { ContextToken } from 'graphql-language-service-parser'
+
+import { GraphQLCache } from './GraphQLCache';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 import {
@@ -99,10 +103,12 @@ function getKind(tree: OutlineTree) {
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
+  _project: GraphQLProjectConfig;
 
   constructor(cache: GraphQLCache) {
     this._graphQLCache = cache;
     this._graphQLConfig = cache.getGraphQLConfig();
+    this._project = this._graphQLConfig.getDefault();
   }
 
   getConfigForURI(uri: Uri) {
@@ -111,6 +117,23 @@ export class GraphQLLanguageService {
       return config;
     }
     throw Error(`No config found for uri: ${uri}`);
+  }
+  public async getSchema(
+    projectName?: string,
+    queryHasExtensions?: boolean,
+  ): Promise<GraphQLSchema | null> {
+    try {
+      const schema = projectName
+        ? await this._graphQLCache.getSchema(projectName, queryHasExtensions)
+        : await this._graphQLConfig.getDefault().getSchema();
+      return schema;
+    } catch (err) {
+      console.warn('no schema found');
+      return null;
+    }
+  }
+  public async getProject(projectName: string) {
+    this._project = this._graphQLConfig.getProject(projectName);
   }
 
   public async getDiagnostics(
@@ -175,7 +198,7 @@ export class GraphQLLanguageService {
     );
 
     const dependenciesSource = fragmentDependencies.reduce(
-      (prev, cur) => `${prev} ${print(cur.definition)}`,
+      (prev: any, cur: any) => `${prev} ${print(cur.definition)}`,
       '',
     );
 
@@ -221,12 +244,17 @@ export class GraphQLLanguageService {
     query: string,
     position: Position,
     filePath: Uri,
+    contextToken?: ContextToken,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
+<<<<<<< HEAD
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
+=======
+    const schema = await this.getSchema(projectConfig.name);
+>>>>>>> improvement: changes to LSP to prepare for monaco
 
     if (schema) {
-      return getAutocompleteSuggestions(schema, query, position);
+      return getAutocompleteSuggestions(schema, query, position, contextToken);
     }
     return [];
   }
@@ -237,7 +265,11 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
+<<<<<<< HEAD
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
+=======
+    const schema = await this.getSchema(projectConfig.name);
+>>>>>>> improvement: changes to LSP to prepare for monaco
 
     if (schema) {
       return getHoverInformation(schema, query, position);
@@ -315,15 +347,13 @@ export class GraphQLLanguageService {
       }
 
       output.push({
-        // @ts-ignore
-        name: tree.representativeName,
+        name: tree.representativeName as string,
         kind: getKind(tree),
         location: {
           uri: filePath,
           range: {
             start: tree.startPosition,
-            // @ts-ignore
-            end: tree.endPosition,
+            end: tree.endPosition as Position,
           },
         },
         containerName: parent ? parent.representativeName : undefined,
