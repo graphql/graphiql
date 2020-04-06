@@ -70,4 +70,4 @@ export type SessionState = {
   operations: OperationDefinitionNode[];
   subscription?: Unsubscribable | null;
   operationName?: string; // current operation name
-} & QueryFacts;
+};
