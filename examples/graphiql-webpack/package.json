@@ -1,6 +1,6 @@
 {
   "name": "example-graphiql-webpack",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "private": true,
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
