@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { GraphQLSchema } from 'graphql';
 import { DispatchWithEffects, useReducers, Reducer } from './useReducers';
 import { defaultSchemaLoader } from './common';
@@ -145,30 +145,28 @@ export function SchemaProvider({
     }),
   });
 
-  const loadCurrentSchema = async (currentState: SchemaState) => {
-    const { config } = currentState;
+  const loadCurrentSchema = useCallback(async () => {
     dispatch(schemaRequestedAction());
     try {
-      const schema = await schemaLoader(config);
+      const schema = await schemaLoader(state.config);
       if (schema) {
         dispatch(schemaSucceededAction(schema));
       }
     } catch (error) {
       dispatch(schemaErroredAction(error));
     }
-  };
+  }, [dispatch, schemaLoader, state.config]);
 
-  const loadSchema = async (
-    currentState: SchemaState,
-    config: SchemaConfig,
-  ) => {
-    dispatch(schemaChangedAction(config));
-    await loadCurrentSchema(currentState);
-  };
+  const setSchemaConfig = useCallback(
+    (config: SchemaConfig) => {
+      dispatch(schemaChangedAction(config));
+    },
+    [dispatch],
+  );
 
-  React.useEffect(() => {
-    (async () => loadCurrentSchema(state))();
-  }, []);
+  useEffect(() => {
+    loadCurrentSchema();
+  }, [loadCurrentSchema]);
 
   return (
     <SchemaContext.Provider
@@ -176,7 +174,7 @@ export function SchemaProvider({
         ...state,
         schemaLoader,
         loadCurrentSchema,
-        loadSchema,
+        setSchemaConfig,
         dispatch,
       }}>
       {props.children}
