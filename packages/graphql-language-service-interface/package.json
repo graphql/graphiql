@@ -26,9 +26,11 @@
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
+  "devDependencies": {
+    "graphql-language-service-types": "^1.6.0-alpha.5"
+  },
   "dependencies": {
     "graphql-language-service-parser": "^1.6.0-alpha.3",
-    "graphql-language-service-types": "^1.6.0-alpha.5",
     "graphql-language-service-utils": "^2.4.0-alpha.5"
   },
   "devDependencies": {

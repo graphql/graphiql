@@ -30,11 +30,13 @@ import {
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
-export const SEVERITY = {
-  ERROR: 1 as DiagnosticSeverity,
-  WARNING: 2 as DiagnosticSeverity,
-  INFORMATION: 3 as DiagnosticSeverity,
-  HINT: 4 as DiagnosticSeverity,
+export type SeverityLabels = 'Error' | 'Warning' | 'Information' | 'Hint';
+
+export const DIAGNOSTIC_SEVERITY: { [key: string]: DiagnosticSeverity } = {
+  Error: 1 as DiagnosticSeverity,
+  Warning: 2 as DiagnosticSeverity,
+  Information: 3 as DiagnosticSeverity,
+  Hint: 4 as DiagnosticSeverity,
 };
 
 export function getDiagnostics(
@@ -50,7 +52,7 @@ export function getDiagnostics(
     const range = getRange(error.locations[0], query);
     return [
       {
-        severity: SEVERITY.ERROR as DiagnosticSeverity,
+        severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
         message: error.message,
         source: 'GraphQL: Syntax',
         range,
@@ -74,7 +76,7 @@ export function validateQuery(
 
   const validationErrorAnnotations = mapCat(
     validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, SEVERITY.ERROR, 'Validation'),
+    error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
@@ -82,7 +84,7 @@ export function validateQuery(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, SEVERITY.WARNING, 'Deprecation'),
+        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
       );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);

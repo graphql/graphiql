@@ -30,9 +30,7 @@
     "@babel/parser": "^7.9.0",
     "glob": "^7.1.2",
     "graphql-config": "3.0.0-rc.2",
-    "graphql-language-service-interface": "^2.4.0-alpha.5",
-    "graphql-language-service-types": "^1.6.0-alpha.5",
-    "graphql-language-service-utils": "^2.4.0-alpha.5",
+    "graphql-languageservice": "^2.4.0-alpha.4",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
     "vscode-languageserver": "^6.1.1"

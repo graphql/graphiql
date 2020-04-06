@@ -12,7 +12,11 @@ import fs from 'fs';
 import { buildSchema, parse, GraphQLSchema } from 'graphql';
 import path from 'path';
 
-import { getDiagnostics, validateQuery, SEVERITY } from '../getDiagnostics';
+import {
+  getDiagnostics,
+  validateQuery,
+  DIAGNOSTIC_SEVERITY,
+} from '../getDiagnostics';
 
 describe('getDiagnostics', () => {
   let schema: GraphQLSchema;
@@ -30,7 +34,7 @@ describe('getDiagnostics', () => {
     expect(error.message).toEqual(
       'Cannot query field "title" on type "Query".',
     );
-    expect(error.severity).toEqual(SEVERITY.ERROR);
+    expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
     expect(error.source).toEqual('GraphQL: Validation');
   });
 
@@ -43,7 +47,7 @@ describe('getDiagnostics', () => {
       // eslint-disable-next-line no-useless-escape
       'The field "Query.deprecatedField" is deprecated. Use test instead.',
     );
-    expect(error.severity).toEqual(SEVERITY.WARNING);
+    expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Warning);
     expect(error.source).toEqual('GraphQL: Deprecation');
   });
 
@@ -73,10 +77,9 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(1);
     const error = errors[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'Syntax Error: Expected ":", found Name "id".',
     );
-    expect(error.severity).toEqual(SEVERITY.ERROR);
+    expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
     expect(error.source).toEqual('GraphQL: Syntax');
   });
 

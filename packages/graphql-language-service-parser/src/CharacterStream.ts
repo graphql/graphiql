@@ -20,7 +20,7 @@
 
 import {
   TokenPattern,
-  CharacterStream as CharacterStreamInterface,
+  CharacterStreamInterface,
 } from 'graphql-language-service-types';
 
 export default class CharacterStream implements CharacterStreamInterface {
