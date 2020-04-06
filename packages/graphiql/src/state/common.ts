@@ -34,7 +34,6 @@ export const defaultFetcher = async (
   schemaConfig: SchemaConfig,
 ): Promise<string> => {
   try {
-    console.log({ graphqlParams });
     const rawResult = await fetch(schemaConfig.uri, {
       method: 'post',
       body: JSON.stringify(graphqlParams),

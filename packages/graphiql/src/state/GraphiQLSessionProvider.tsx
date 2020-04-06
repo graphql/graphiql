@@ -18,7 +18,7 @@ import {
   editorLoadedAction,
   operationErroredAction,
 } from './sessionActions';
-import { observableToPromise } from 'src/utility/observableToPromise';
+import { observableToPromise } from '../utility/observableToPromise';
 
 type Dispatcher = DispatchWithEffects<SessionActionTypes, SessionAction>;
 
