@@ -55,24 +55,22 @@ export function ExecuteButton(props: ExecuteButtonProps) {
     );
   }
 
-  // Allow click event if there is a running query or if there are not options
-  // for which operation to run.
-  let onClick;
-  if (props.isRunning || !hasOptions) {
-    onClick = () => {
+  const onClick = () => {
+    // Allow click event if there is a running query or if there are not options
+    // for which operation to run.
+    if (props.isRunning || !hasOptions) {
       if (props.isRunning) {
         props.onStop();
       } else {
         session.executeOperation();
       }
-    };
-  }
+    }
+  };
 
-  // Allow mouse down if there is no running query, there are options for
-  // which operation to run, and the dropdown is currently closed.
-  let onMouseDown: MouseEventHandler<HTMLButtonElement> = () => {};
-  if (!props.isRunning && hasOptions && !optionsOpen) {
-    onMouseDown = downEvent => {
+  const onMouseDown: MouseEventHandler<HTMLButtonElement> = downEvent => {
+    // Allow mouse down if there is no running query, there are options for
+    // which operation to run, and the dropdown is currently closed.
+    if (!props.isRunning && hasOptions && !optionsOpen) {
       let initialPress = true;
       const downTarget = downEvent.currentTarget;
       setHighlight(null);
@@ -99,8 +97,8 @@ export function ExecuteButton(props: ExecuteButtonProps) {
       };
 
       document.addEventListener('mouseup', onMouseUp);
-    };
-  }
+    }
+  };
 
   const pathJSX = props.isRunning ? (
     <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" />
