@@ -41,8 +41,17 @@ if (status) {
   print(out);
   print(err);
   if (check) {
-    print(`\n${YELLOW}The files listed above are not correctly formatted.`);
-    print(`Try: ${INVERSE} yarn pretty ${RESET}`);
+    print(
+      `\n${YELLOW}Ooops! The files listed above are not correctly formatted.`,
+    );
+    print(
+      [
+        `Try: ${INVERSE} yarn format ${RESET},`,
+        `which executes eslint --fix and prettier in a specific order.`,
+        `If you are using prettier for vscode you can also enable "format on save".`,
+        `Learn more about contributing in DEVELOPMENT.md`,
+      ].join('\n'),
+    );
   }
 }
 if (error) {

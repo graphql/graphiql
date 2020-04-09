@@ -2,6 +2,7 @@
 *~
 .*.haste_cache.*
 .DS_Store
+.secrets
 npm-debug.log
 yarn-error.log
 

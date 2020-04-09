@@ -320,7 +320,7 @@ function getSuggestionsForFragmentSpread(
   );
 }
 
-function getFragmentDefinitions(
+export function getFragmentDefinitions(
   queryText: string,
 ): Array<FragmentDefinitionNode> {
   const fragmentDefs: FragmentDefinitionNode[] = [];
@@ -431,7 +431,7 @@ type callbackFnType = (
   index: number,
 ) => void | 'BREAK';
 
-function runOnlineParser(
+export function runOnlineParser(
   queryText: string,
   callback: callbackFnType,
 ): ContextToken {
@@ -470,7 +470,7 @@ function runOnlineParser(
   };
 }
 
-function canUseDirective(
+export function canUseDirective(
   state: State['prevState'],
   directive: GraphQLDirective,
 ): boolean {

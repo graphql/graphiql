@@ -67,7 +67,7 @@ type Formatters = {
   formatError: (rawError: Error) => string;
 };
 
-type GraphiQLProps = {
+export type GraphiQLProps = {
   fetcher: Fetcher;
   schema: GraphQLSchema | null;
   query?: string;
@@ -78,7 +78,7 @@ type GraphiQLProps = {
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
-  onEditQuery?: () => void;
+  onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
@@ -92,7 +92,7 @@ type GraphiQLProps = {
   formatError?: (rawError: Error) => string;
 } & Partial<Formatters>;
 
-type GraphiQLState = {
+export type GraphiQLState = {
   operationName?: string;
   docExplorerOpen: boolean;
   response?: string;

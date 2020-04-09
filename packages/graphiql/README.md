@@ -347,7 +347,7 @@ const schema = new GraphQLSchema({
       immediatelyChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: function(obj, { newNumber }) {
+        resolve: function (obj, { newNumber }) {
           return obj.immediatelyChangeTheNumber(newNumber);
         },
       },

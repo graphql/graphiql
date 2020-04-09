@@ -32,11 +32,11 @@ function wihtoutASTNode(definition: any) {
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
-  let cache = new GraphQLCache(configDir, graphQLRC);
+  let cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
 
   beforeEach(async () => {
     graphQLRC = await loadConfig({ rootDir: configDir });
-    cache = new GraphQLCache(configDir, graphQLRC);
+    cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
   });
 
   afterEach(() => {
@@ -52,7 +52,11 @@ describe('GraphQLCache', () => {
         };
       };
       const extensions = [extension];
-      const cacheWithExtensions = await getGraphQLCache(configDir, extensions);
+      const cacheWithExtensions = await getGraphQLCache(
+        configDir,
+        parseDocument,
+        extensions,
+      );
       const config = cacheWithExtensions.getGraphQLConfig();
       expect('extension' in config).toBe(true);
       expect((config as any).extension).toBe('extension-used');

@@ -3,9 +3,15 @@
   "theme": "default",
   "mode": "modules",
   "out": "packages/graphiql/lsp",
-  "exclude": "**/__tests__/**,*.spec.*,*-test.*,**/esm/**,**/dist/**",
-  "excludePrivate": true,
-  "excludeNotExported": true,
+  "inputFiles": [
+    "**/node_modules/vscode*/**",
+    "**/node_modules/@types/node/**",
+    "**/node_modules/@types/codemirror*/**",
+    "**/node_modules/monaco*/**"
+  ],
+  "exclude": "**/__tests__/**,*.spec.*,*-test.*,**/esm/**,**/dist/**,**/node_modules/**",
+  "excludePrivate": false,
+  "excludeNotExported": false,
   "external-modulemap": ".*/packages/([\\w\\-_]+)/",
   "ignoreCompilerErrors": true,
   "includeDeclarations": true,

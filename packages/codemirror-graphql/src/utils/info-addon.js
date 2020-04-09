@@ -50,19 +50,19 @@ function onMouseOver(cm, e) {
 
   const box = target.getBoundingClientRect();
 
-  const onMouseMove = function() {
+  const onMouseMove = function () {
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = setTimeout(onHover, hoverTime);
   };
 
-  const onMouseOut = function() {
+  const onMouseOut = function () {
     CodeMirror.off(document, 'mousemove', onMouseMove);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     clearTimeout(state.hoverTimeout);
     state.hoverTimeout = undefined;
   };
 
-  const onHover = function() {
+  const onHover = function () {
     CodeMirror.off(document, 'mousemove', onMouseMove);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);
     state.hoverTimeout = undefined;
@@ -138,16 +138,16 @@ function showPopup(cm, box, info) {
 
   let popupTimeout;
 
-  const onMouseOverPopup = function() {
+  const onMouseOverPopup = function () {
     clearTimeout(popupTimeout);
   };
 
-  const onMouseOut = function() {
+  const onMouseOut = function () {
     clearTimeout(popupTimeout);
     popupTimeout = setTimeout(hidePopup, 200);
   };
 
-  const hidePopup = function() {
+  const hidePopup = function () {
     CodeMirror.off(popup, 'mouseover', onMouseOverPopup);
     CodeMirror.off(popup, 'mouseout', onMouseOut);
     CodeMirror.off(cm.getWrapperElement(), 'mouseout', onMouseOut);

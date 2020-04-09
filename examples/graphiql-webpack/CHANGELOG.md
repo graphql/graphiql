@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.5](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.4...example-graphiql-webpack@1.0.0-alpha.5) (2020-04-06)
+
+### Features
+
+- upgrade to graphql@15.0.0 for [#1191](https://github.com/graphql/graphiql/issues/1191) ([#1204](https://github.com/graphql/graphiql/issues/1204)) ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
+
+# [1.0.0-alpha.4](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.3...example-graphiql-webpack@1.0.0-alpha.4) (2020-04-03)
+
+**Note:** Version bump only for package example-graphiql-webpack
+
 # [1.0.0-alpha.3](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.2...example-graphiql-webpack@1.0.0-alpha.3) (2020-03-20)
 
 **Note:** Version bump only for package example-graphiql-webpack

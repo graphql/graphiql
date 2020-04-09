@@ -8,4 +8,5 @@ import 'regenerator-runtime/runtime';
 
 import { GraphiQL } from './components/GraphiQL';
 
+export { GraphiQL };
 export default GraphiQL;

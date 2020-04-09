@@ -25,7 +25,7 @@ app.get(
 
 app.use(express.static(path.resolve(__dirname, '../')));
 
-app.listen(process.env.PORT || 0, function() {
+app.listen(process.env.PORT || 0, function () {
   const port = this.address().port;
 
   console.log(`Started on http://localhost:${port}/`);

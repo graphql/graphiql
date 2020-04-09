@@ -9,7 +9,6 @@
 .*/resources/.*
 .*/node_modules/.*
 .*/node_modules/conventional-changelog-core/*
-.*/node_modules/graphql/error/GraphQLError.js.flow
 !<PROJECT_ROOT>/node_modules/chai
 !<PROJECT_ROOT>/node_modules/mocha
 !<PROJECT_ROOT>/node_modules/graphql
@@ -29,6 +28,7 @@
 !<PROJECT_ROOT>/node_modules/nullthrows
 !<PROJECT_ROOT>/node_modules/fb-watchman
 !<PROJECT_ROOT>/node_modules/yargs
+<PROJECT_ROOT>/node_modules/graphql/error/GraphQLError.js.flow*
 
 [include]
 
@@ -38,3 +38,4 @@
 module.name_mapper='^graphql-language-\([^/]+\)$' -> '<PROJECT_ROOT>/packages/graphql-language-\1/src/index.js'
 module.name_mapper='graphiql' -> '<PROJECT_ROOT>/packages/graphiql/src/index.js'
 module.name_mapper='codemirror-graphql' -> '<PROJECT_ROOT>/packages/codemirror-graphql/src/index.js'
+esproposal.optional_chaining=enable

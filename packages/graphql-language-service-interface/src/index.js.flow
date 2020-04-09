@@ -12,14 +12,20 @@ import type {
   Outline,
   Diagnostic,
   ContextToken,
+  ContextTokenUnion,
   Position,
   DefinitionQueryResult,
   Uri,
   GraphQLCache,
   CompletionItem,
+  CompletionItemBase,
+  TypeInfo,
+  State,
 } from 'graphql-language-service-types';
 import type { ValidationRule, GraphQLSchema } from 'graphql';
 import type { Hover } from 'vscode-languageserver-types';
+import { GraphQLDirective } from "graphql";
+import type { FragmentDefinitionNode } from "graphql";
 
 declare export function getOutline(queryText: string): ?Outline;
 declare export function getDiagnostics(
@@ -61,3 +67,24 @@ declare export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Array<CompletionItem>>;
 }
+declare export function canUseDirective(
+  state: $PropertyType<State, "prevState">,
+  directive: GraphQLDirective
+): boolean;
+declare export function getDefinitionState(
+  tokenState: State
+): State | null | void;
+declare export function getFragmentDefinitions(
+  queryText: string
+): Array<FragmentDefinitionNode>;
+declare export function getTypeInfo(
+  schema: GraphQLSchema,
+  tokenState: State
+): TypeInfo;
+declare export function hintList<T: CompletionItemBase>(
+  token: ContextTokenUnion,
+  list: Array<T>
+): Array<T>;
+declare export function objectValues(object: {
+  [key: string]: any,
+}): Array<any>;
