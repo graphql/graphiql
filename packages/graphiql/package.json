@@ -61,11 +61,6 @@
   "devDependencies": {
     "@storybook/addon-storyshots": "^5.3.18",
     "@storybook/react": "^5.3.18",
-    "@testing-library/jest-dom": "^5.5.0",
-    "@types/codemirror": "^0.0.90",
-    "@types/markdown-it": "^0.0.9",
-    "@types/node": "^13.11.1",
-    "@types/testing-library__jest-dom": "^5.0.3",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^7.0.2",
     "css-loader": "3.5.1",
