@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "graphql-config": "3.0.0-rc.2",
-    "vscode-languageserver-types": "3.15.0"
+    "vscode-languageserver-types": "3.15.1"
   }
 }
