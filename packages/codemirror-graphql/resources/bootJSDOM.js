@@ -19,14 +19,14 @@ function bootJSDOM() {
   global.document = win.document;
   global.window = win;
 
-  global.document.createRange = function() {
+  global.document.createRange = function () {
     return {
-      setEnd: function() {},
-      setStart: function() {},
-      getClientRects: function() {
+      setEnd: function () {},
+      setStart: function () {},
+      getClientRects: function () {
         return { top: 0, bottom: 0, left: 0, right: 0 };
       },
-      getBoundingClientRect: function() {
+      getBoundingClientRect: function () {
         return { right: 0 };
       },
     };

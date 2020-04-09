@@ -13,10 +13,7 @@ function tokenToURL(token: any) {
     return;
   }
 
-  const value = token.string
-    .slice(1)
-    .slice(0, -1)
-    .trim();
+  const value = token.string.slice(1).slice(0, -1).trim();
 
   try {
     const location = window.location;

@@ -9,7 +9,7 @@ require('@testing-library/jest-dom/extend-expect');
 // global.window = jsdom.window;
 // global.document = jsdom.window.document;
 
-global.document.createRange = function() {
+global.document.createRange = function () {
   return {
     setEnd() {},
     setStart() {},
