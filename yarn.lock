@@ -3477,13 +3477,12 @@
     telejson "^3.2.0"
     util-deprecate "^1.0.2"
 
-"@strictsoftware/typedoc-plugin-monorepo@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@strictsoftware/typedoc-plugin-monorepo/-/typedoc-plugin-monorepo-0.2.1.tgz#09a39299ac4885803e1ce1778ddb7dfd64776606"
-  integrity sha512-VEfK9dCsBmxXGJcFUK0lBKRj1BtdVluy0i8sWa7pfIrQwTJEjMbpvMnx3qjNyl8aWZLtpvWMkEbr3WmXSkOZ2Q==
+"@strictsoftware/typedoc-plugin-monorepo@0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@strictsoftware/typedoc-plugin-monorepo/-/typedoc-plugin-monorepo-0.3.1.tgz#83a704bad2cf90a05f62f1c2587b0be09693a9a0"
+  integrity sha512-b7oolCeKZ40jyEfQrDd/Z216M5ZE4tRML0B0bV35tUIALoQsBBA7dz3Kr+X6DtbZA7FQmaqNGS6WAt7zxLL7wg==
   dependencies:
     highlight.js "^9.15.6"
-    marked "^0.6.1"
 
 "@styled-system/background@^5.1.2":
   version "5.1.2"
@@ -5682,13 +5681,6 @@ babel-runtime@^6.23.0, babel-runtime@^6.26.0:
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.11.0"
-
-backbone@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/backbone/-/backbone-1.4.0.tgz#54db4de9df7c3811c3f032f34749a4cd27f3bd12"
-  integrity sha512-RLmDrRXkVdouTg38jcgHhyQ/2zjg7a8E6sz2zxfz21Hh17xDJYUHBZimVIt5fUyS8vbfpeSmTL3gUjTEvUV3qQ==
-  dependencies:
-    underscore ">=1.8.3"
 
 balanced-match@^1.0.0:
   version "1.0.0"
@@ -9859,7 +9851,7 @@ handlebars@^4.4.0:
   optionalDependencies:
     uglify-js "^3.1.4"
 
-handlebars@^4.5.1:
+handlebars@^4.7.6:
   version "4.7.6"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.7.6.tgz#d4c05c1baf90e9945f77aa68a7a219aa4a7df74e"
   integrity sha512-1f2BACcBfiwAfStCKZNrUCgqNZkGsAT7UM3kkYtXuLo0KnaVfjKOyf7PRzB6++aK9STyT1Pd2ZCPe3EGOXleXA==
@@ -10010,7 +10002,7 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
 
-highlight.js@^9.15.6, highlight.js@^9.16.2:
+highlight.js@^9.15.6, highlight.js@^9.18.1:
   version "9.18.1"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.1.tgz#ed21aa001fe6252bb10a3d76d47573c6539fe13c"
   integrity sha512-OrVKYz70LHsnCgmbXctv/bfuvntIKDz177h0Co37DQ5jamGZLVmoCVMtjMtNZY3X9DrCcKfklHPNeA0uPZhSJg==
@@ -12022,11 +12014,6 @@ jest@^25.3.0:
     import-local "^3.0.2"
     jest-cli "^25.3.0"
 
-jquery@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.4.1.tgz#714f1f8d9dde4bdfa55764ba37ef214630d80ef2"
-  integrity sha512-36+AdBzCL+y6qjw5Tx7HgzeGCzC81MDDgaUP8ld2zhx58HdqXGoBd+tHdrBMiyjGQs0Hxs/MLZTu/eHNJJuWPw==
-
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -12847,15 +12834,10 @@ markdown-to-jsx@^6.9.1, markdown-to-jsx@^6.9.3:
     prop-types "^15.6.2"
     unquote "^1.1.0"
 
-marked@^0.6.1:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.3.tgz#79babad78af638ba4d522a9e715cdfdd2429e946"
-  integrity sha512-Fqa7eq+UaxfMriqzYLayfqAE40WN03jf+zHjT18/uXNuzjq3TY0XTbrAoPeqSJrAmPz11VuUA+kBPYOhHt9oOQ==
-
-marked@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.7.0.tgz#b64201f051d271b1edc10a04d1ae9b74bb8e5c0e"
-  integrity sha512-c+yYdCZJQrsRjTPhUx7VKkApw9bwDkNbHUKo1ovgcfDjb2kc8rLuRbIFyXL5WOEUwzSSKo3IXpph2K6DqB/KZg==
+marked@0.8.2:
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.8.2.tgz#4faad28d26ede351a7a1aaa5fec67915c869e355"
+  integrity sha512-EGwzEeCcLniFX51DhTpmTom+dSA/MG/OBUDjnWtHbEnjAH180VzUeAw+oE4+Zv+CoYBWyRlYOTR0N8SO9R1PVw==
 
 matched@^0.4.1:
   version "0.4.4"
@@ -18178,37 +18160,28 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typedoc-default-themes@^0.6.1:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.6.3.tgz#c214ce5bbcc6045558448a8fd422b90e3e9b6782"
-  integrity sha512-rouf0TcIA4M2nOQFfC7Zp4NEwoYiEX4vX/ZtudJWU9IHA29MPC+PPgSXYLPESkUo7FuB//GxigO3mk9Qe1xp3Q==
+typedoc-default-themes@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.10.0.tgz#f1a13a24c136967ebd0f127614c2955f9ebd5b26"
+  integrity sha512-FV3Fct86EXTuW8f6E7F4ntM/BrBD5u7E+b96MIfiDWh3S14V+b+nNO+XzL0pQTBzF7PT63qHuwhrEBUk8XuqKA==
   dependencies:
-    backbone "^1.4.0"
-    jquery "^3.4.1"
     lunr "^2.3.8"
-    underscore "^1.9.1"
 
-typedoc@0.15.1:
-  version "0.15.1"
-  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.15.1.tgz#9e2acfe9a36fb9891a30bb3382dd97a382a31a12"
-  integrity sha512-zm/rWq2seVqaop9isXc5jMK5vqOjPHni3/t9OVWmuZYKNbYdlxbtM10CbpuaLdHn7ry2HLtMx7IP236B/F6Xwg==
+typedoc@0.17.4:
+  version "0.17.4"
+  resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.17.4.tgz#1de11e2e5e741af20bcdd73b9525f8ad04b59863"
+  integrity sha512-4Lotef1l6lNU5Fulpux809WPlF9CkmcXfv5QFyanrjYlxMFxSdARRdsy8Jv1OU3z0vjR4JsvUQT0YpiPqztcOA==
   dependencies:
-    "@types/minimatch" "3.0.3"
     fs-extra "^8.1.0"
-    handlebars "^4.5.1"
-    highlight.js "^9.16.2"
+    handlebars "^4.7.6"
+    highlight.js "^9.18.1"
     lodash "^4.17.15"
-    marked "^0.7.0"
+    lunr "^2.3.8"
+    marked "0.8.2"
     minimatch "^3.0.0"
     progress "^2.0.3"
     shelljs "^0.8.3"
-    typedoc-default-themes "^0.6.1"
-    typescript "3.7.x"
-
-typescript@3.7.x:
-  version "3.7.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
-  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+    typedoc-default-themes "^0.10.0"
 
 typescript@3.8.3, typescript@^3.8.3:
   version "3.8.3"
@@ -18250,11 +18223,6 @@ unc-path-regex@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/unc-path-regex/-/unc-path-regex-0.1.2.tgz#e73dd3d7b0d7c5ed86fbac6b0ae7d8c6a69d50fa"
   integrity sha1-5z3T17DXxe2G+6xrCufYxqadUPo=
-
-underscore@>=1.8.3, underscore@^1.9.1:
-  version "1.9.2"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.2.tgz#0c8d6f536d6f378a5af264a72f7bec50feb7cf2f"
-  integrity sha512-D39qtimx0c1fI3ya1Lnhk3E9nONswSKhnffBI0gME9C99fYOkNi04xs8K6pePLhvl1frbDemkaBQ5ikWllR2HQ==
 
 unfetch@^4.1.0:
   version "4.1.0"

@@ -71,7 +71,7 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/config-lerna-scopes": "^8.3.4",
-    "@strictsoftware/typedoc-plugin-monorepo": "0.2.1",
+    "@strictsoftware/typedoc-plugin-monorepo": "0.3.1",
     "@testing-library/jest-dom": "^5.4.0",
     "@types/codemirror": "^0.0.90",
     "@types/fetch-mock": "^7.3.2",
@@ -110,7 +110,7 @@
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
-    "typedoc": "0.15.1",
+    "typedoc": "0.17.4",
     "typescript": "^3.8.3"
   }
 }
