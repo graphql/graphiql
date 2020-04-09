@@ -4,7 +4,6 @@ import { Fetcher } from './types';
 
 import { GraphQLParams, SessionState, EditorContexts } from './types';
 
-import { defaultFetcher } from './common';
 import { SchemaContext } from './GraphiQLSchemaProvider';
 import {
   SessionAction,
@@ -130,18 +129,18 @@ function sessionReducer(
 
 export type SessionProviderProps = {
   sessionId: number;
-  fetcher?: Fetcher;
+  fetcher: Fetcher;
   session?: SessionState;
   children: React.ReactNode;
 };
 
 export function SessionProvider({
   sessionId,
-  fetcher = defaultFetcher,
+  fetcher,
   session,
   children,
 }: SessionProviderProps) {
-  const schemaState = React.useContext(SchemaContext);
+  // const schemaState = React.useContext(SchemaContext);
 
   const [state, dispatch] = useReducers<
     SessionState,
@@ -189,10 +188,14 @@ export function SessionProvider({
         if (operationName) {
           fetchValues.operationName = operationName as string;
         }
-        const result = await observableToPromise(
-          fetcher(fetchValues, schemaState.config),
-        );
-        dispatch(operationSucceededAction(result, sessionId));
+        const result = await observableToPromise(fetcher(fetchValues));
+        console.log(result);
+        if (result && result.data) {
+          console.log('here');
+          dispatch(
+            operationSucceededAction(JSON.stringify(result.data), sessionId),
+          );
+        }
       } catch (err) {
         console.error(err.name, err.stack);
         operationError(err);
@@ -202,7 +205,6 @@ export function SessionProvider({
       dispatch,
       fetcher,
       operationError,
-      schemaState.config,
       sessionId,
       state.operation,
       state.variables,

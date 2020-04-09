@@ -1,5 +1,4 @@
-import { OperationDefinitionNode } from 'graphql';
-import { QueryFacts } from '../utility/getQueryFacts';
+import { OperationDefinitionNode, ExecutionResult } from 'graphql';
 
 export type FetcherParams = {
   query: string;
@@ -7,11 +6,10 @@ export type FetcherParams = {
   variables?: string;
 };
 
-export type FetcherResult = string;
+export type FetcherResult = ExecutionResult;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
-  schemaConfig: SchemaConfig,
 ) => Promise<FetcherResult> | Observable<FetcherResult>;
 
 // These type just taken from https://github.com/ReactiveX/rxjs/blob/master/src/internal/types.ts#L41
@@ -51,7 +49,7 @@ export type GraphQLParams = {
 };
 
 export type SchemaConfig = {
-  uri: string;
+  uri?: string;
   assumeValid?: boolean;
 };
 

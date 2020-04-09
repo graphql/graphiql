@@ -85,7 +85,7 @@ export function ResultViewer(props: ResultViewerProps) {
 
   useEffect(() => {
     if (session.results && viewerRef.current) {
-      viewerRef.current.setValue(session.results.formattedText || '');
+      viewerRef.current.setValue(session.results.text || '');
     }
   }, [session.results.text]);
 

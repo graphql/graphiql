@@ -36,6 +36,7 @@ import {
   SessionContext,
 } from '../state/GraphiQLSessionProvider';
 import { Fetcher, Unsubscribable } from '../state/types';
+import { getFetcher } from '../state/common';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -71,6 +72,7 @@ type GraphiQLProps = {
   fetcher: Fetcher;
   schema: GraphQLSchema | null;
   query?: string;
+  uri?: string;
   variables?: string;
   operationName?: string;
   response?: string;
@@ -114,9 +116,10 @@ type GraphiQLState = {
  * @see https://github.com/graphql/graphiql#usage
  */
 export const GraphiQL: React.FC<GraphiQLProps> = props => {
+  const fetcher = getFetcher(props.fetcher, props.uri);
   return (
-    <SchemaProvider {...props}>
-      <SessionProvider sessionId={0} {...props}>
+    <SchemaProvider fetcher={fetcher} {...props}>
+      <SessionProvider fetcher={fetcher} sessionId={0} {...props}>
         <GraphiQLInternals
           {...{
             formatResult,

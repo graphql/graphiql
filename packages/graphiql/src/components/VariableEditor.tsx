@@ -11,7 +11,6 @@ import React from 'react';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
-import { useSchemaContext } from '../state/GraphiQLSchemaProvider';
 import useQueryFacts from '../hooks/useQueryFacts';
 
 declare module CodeMirror {
@@ -51,7 +50,6 @@ type VariableEditorProps = {
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
   const queryFacts = useQueryFacts();
-  const { schema } = useSchemaContext();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
   const cachedValueRef = React.useRef<string>(props.value ?? '');
@@ -60,7 +58,7 @@ export function VariableEditor(props: VariableEditorProps) {
   React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
+    const _CodeMirror = require('codemirror');
     require('codemirror/addon/hint/show-hint');
     require('codemirror/addon/edit/matchbrackets');
     require('codemirror/addon/edit/closebrackets');
@@ -108,7 +106,7 @@ export function VariableEditor(props: VariableEditorProps) {
       onHasCompletion(instance, changeObj, props.onHintInformationRender);
     };
 
-    const editor = (editorRef.current = CodeMirror(divRef.current, {
+    const editor = (editorRef.current = _CodeMirror(divRef.current, {
       value: session.variables.text || '',
       lineNumbers: true,
       tabSize: 2,
