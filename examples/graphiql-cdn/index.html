@@ -63,8 +63,8 @@
             body: JSON.stringify(graphQLParams),
             credentials: 'include',
           },
-        ).then(function(response) {
-          return response.json().catch(function() {
+        ).then(function (response) {
+          return response.json().catch(function () {
             return response.text();
           });
         });

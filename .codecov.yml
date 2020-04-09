@@ -8,8 +8,8 @@ coverage:
   range: "30...100"
 
   status:
-    project: yes
-    patch: yes
+    project: no
+    patch: no
     changes: no
 
 flags:

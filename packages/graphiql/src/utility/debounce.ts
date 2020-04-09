@@ -14,7 +14,7 @@ export default function debounce<F extends (...args: any[]) => any>(
   fn: F,
 ) {
   let timeout: number | null;
-  return function(this: any, ...args: Parameters<F>) {
+  return function (this: any, ...args: Parameters<F>) {
     if (timeout) {
       window.clearTimeout(timeout);
     }
