@@ -54,14 +54,14 @@
     "graphql-language-service-parser": "^1.6.0-alpha.3"
   },
   "devDependencies": {
-    "chai": "4.1.1",
+    "chai": "4.2.0",
     "chai-subset": "1.6.0",
-    "codemirror": "^5.28.0",
-    "cross-env": "^7.0.0",
+    "codemirror": "^5.52.2",
+    "cross-env": "^7.0.2",
     "graphql": "15.0.0",
     "jsdom": "^16.1.0",
-    "mocha": "7.0.0",
-    "nyc": "^15.0.0",
+    "mocha": "7.1.1",
+    "nyc": "^15.0.1",
     "rimraf": "^3.0.0",
     "sane": "2.0.0"
   }
