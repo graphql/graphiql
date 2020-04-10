@@ -52,8 +52,7 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
-    "lerna-publish": "lerna publish",
-    "prepublish": "./resources/prepublish.sh"
+    "lerna-publish": "lerna publish"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
