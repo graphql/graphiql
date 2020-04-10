@@ -9,7 +9,6 @@ import {
   schemaRequestedAction,
   schemaSucceededAction,
   schemaErroredAction,
-  schemaChangedAction,
 } from './schemaActions';
 
 /**
@@ -46,10 +45,8 @@ export type SchemaContextValue = SchemaState & ProjectHandlers;
 
 export const SchemaContext = React.createContext<SchemaContextValue>({
   ...getInitialState(),
-  loadCurrentSchema: async () => undefined,
   loadSchema: async () => undefined,
   dispatch: async () => undefined,
-  // schemaLoader: defaultSchemaLoader,
 });
 
 export const useSchemaContext = () => React.useContext(SchemaContext);
@@ -109,8 +106,6 @@ export type SchemaProviderProps = {
 
 export type ProjectHandlers = {
   loadSchema: (state: SchemaState, config: SchemaConfig) => Promise<void>;
-  loadCurrentSchema: (state: SchemaState) => Promise<void>;
-  // schemaLoader: typeof defaultSchemaLoader;
   dispatch: DispatchWithEffects<SchemaActionTypes, SchemaAction>;
 };
 
@@ -119,12 +114,7 @@ export function SchemaProvider({
   config: userSchemaConfig = initialReducerState.config,
   ...props
 }: SchemaProviderProps) {
-  const [state, dispatch] = useReducers<
-    SchemaState,
-    SchemaAction,
-    SchemaReducer
-  >({
-    // @ts-ignore
+  const [state, dispatch] = useReducers({
     reducers: [schemaReducer],
     init: args => ({
       ...getInitialState({ config: userSchemaConfig }),
@@ -132,7 +122,7 @@ export function SchemaProvider({
     }),
   });
 
-  const loadCurrentSchema = useCallback(async () => {
+  const loadSchema = useCallback(async () => {
     dispatch(schemaRequestedAction());
     try {
       const schema = await fetchSchema(fetcher);
@@ -145,22 +135,14 @@ export function SchemaProvider({
     }
   }, [dispatch, fetcher]);
 
-  const loadSchema = useCallback(
-    (config: SchemaConfig) => {
-      dispatch(schemaChangedAction(config));
-    },
-    [dispatch],
-  );
-
   useEffect(() => {
-    loadCurrentSchema();
-  }, [loadCurrentSchema]);
+    loadSchema();
+  }, [loadSchema]);
 
   return (
     <SchemaContext.Provider
       value={{
         ...state,
-        loadCurrentSchema,
         loadSchema,
         dispatch,
       }}>
