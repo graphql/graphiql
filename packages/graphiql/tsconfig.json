@@ -4,11 +4,10 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "baseUrl": ".",
-    "strictPropertyInitialization": false,
-    "types": ["node", "jest"],
-    "lib": ["dom"]
+    "target": "es5",
+    "strictPropertyInitialization": false
   },
   "include": ["src"],
   "exclude": [
