@@ -4,6 +4,7 @@ const envConfig = {
   ignoreBrowserslistConfig: true,
   modules: 'commonjs',
   targets: { node: true },
+  bugfixes: true,
 };
 
 if (process.env.ESM) {
