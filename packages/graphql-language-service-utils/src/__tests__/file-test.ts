@@ -83,7 +83,11 @@ describe('requireFile', () => {
     expect(() =>
       requireFile(path.join(__dirname, '__fixtures__', 'packages')),
     ).toThrowError(
-      `Cannot find module '${__dirname}/__fixtures__/packages.json' from 'file.ts'`,
+      `Cannot find module '${path.join(
+        __dirname,
+        '__fixtures__',
+        'packages',
+      )}.json' from 'file.ts'`,
     );
   });
 });
