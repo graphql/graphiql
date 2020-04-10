@@ -52,7 +52,9 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
-    "lerna-publish": "lerna publish"
+    "lerna-publish": "lerna publish",
+    "watch": "yarn tsc --watch",
+    "start-graphiql": "yarn workspace graphiql dev"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
