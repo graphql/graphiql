@@ -25,12 +25,12 @@ const slots = { nav, explorer };
 
 export default { title: 'Layout' };
 
-export const withSlots = () => {
+export const WithSlots = () => {
   const Layout = useThemeLayout();
   return <Layout {...slots} />;
 };
 
-export const withManySidebars = () => {
+export const WithManySidebars = () => {
   const Layout = useThemeLayout();
   return (
     <Layout
@@ -68,7 +68,7 @@ export const withManySidebars = () => {
   );
 };
 
-export const withFullScreenPanel = () => {
+export const WithFullScreenPanel = () => {
   const Layout = useThemeLayout();
   return (
     <Layout
@@ -88,7 +88,7 @@ export const withFullScreenPanel = () => {
   );
 };
 
-export const withStringsOnly = () => {
+export const WithStringsOnly = () => {
   const Layout = useThemeLayout();
   return (
     <Layout

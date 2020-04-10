@@ -9,6 +9,7 @@
 
 const { spawnSync } = require('child_process');
 const { join } = require('path');
+const os = require('os');
 
 const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';
@@ -17,7 +18,12 @@ const YELLOW = '\x1b[33m';
 // Simple glob because we use .eslintignore to limit it
 const glob = '**/*.{js,ts,jsx,tsx,md,json5,json,html}';
 const root = join(__dirname, '..');
-const executable = join(root, 'node_modules', '.bin', 'prettier');
+const executable = join(
+  root,
+  'node_modules',
+  '.bin',
+  os.platform() !== 'win32' ? 'prettier' : 'prettier.cmd',
+);
 const ignorePath = ['--ignore-path', '.eslintignore'];
 const check = process.argv.indexOf('--check') !== -1;
 const mode = check ? '--list-different' : '--write';
@@ -28,6 +34,7 @@ const { stdout, stderr, status, error } = spawnSync(executable, [
   mode,
   glob,
 ]);
+
 const out = stdout.toString().trim();
 const err = stderr.toString().trim();
 

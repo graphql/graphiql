@@ -8315,6 +8315,11 @@ eslint-plugin-prefer-object-spread@1.2.1:
   resolved "https://registry.yarnpkg.com/eslint-plugin-prefer-object-spread/-/eslint-plugin-prefer-object-spread-1.2.1.tgz#27fb91853690cceb3ae6101d9c8aecc6a67a402c"
   integrity sha1-J/uRhTaQzOs65hAdnIrsxqZ6QCw=
 
+eslint-plugin-react-hooks@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-3.0.0.tgz#9e80c71846eb68dd29c3b21d832728aa66e5bd35"
+  integrity sha512-EjxTHxjLKIBWFgDJdhKKzLh5q+vjTFrqNZX36uIxWS4OfyXe5DawqPj3U5qeJ1ngLwatjzQnmR0Lz0J0YH3kxw==
+
 eslint-plugin-react@7.19.0:
   version "7.19.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.19.0.tgz#6d08f9673628aa69c5559d33489e855d83551666"
@@ -9811,16 +9816,6 @@ graphql-config@3.0.0-rc.2:
     globby "11.0.0"
     minimatch "3.0.4"
     tslib "^1.11.1"
-
-graphql-language-service-interface@^2.4.0-alpha.7:
-  version "2.4.0-alpha.7"
-  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-2.4.0-alpha.7.tgz#5458f1f17a79dde5b51dab0d21eda63dff48a918"
-  integrity sha512-X5jwTI4AlcKB/t9/hZBn9O69uG9WPbkFnZivhNfztzeudKV+cXHYR6behsR47bR2nzF3YEu7Nv+3HExXKQAlWg==
-  dependencies:
-    graphql-language-service-parser "^1.6.0-alpha.3"
-    graphql-language-service-types "^1.6.0-alpha.5"
-    graphql-language-service-utils "^2.4.0-alpha.6"
-    vscode-languageserver-types "^3.15.1"
 
 graphql-tools-fork@9.0.1:
   version "9.0.1"
