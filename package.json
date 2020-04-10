@@ -52,7 +52,7 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
-    "lerna-publish": "lerna publish",
+    "lerna-publish": "yarn ci && yarn ci-e2e && lerna publish",
     "watch": "yarn tsc --watch",
     "start-graphiql": "yarn workspace graphiql dev"
   },
