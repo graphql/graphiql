@@ -29,7 +29,8 @@
   "dependencies": {
     "graphql-language-service-parser": "^1.6.0-alpha.3",
     "graphql-language-service-types": "^1.6.0-alpha.5",
-    "graphql-language-service-utils": "^2.4.0-alpha.6"
+    "graphql-language-service-utils": "^2.4.0-alpha.6",
+    "vscode-languageserver-types": "^3.15.1"
   },
   "devDependencies": {
     "graphql-config": "3.0.0-rc.2"
