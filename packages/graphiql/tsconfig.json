@@ -4,8 +4,9 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "baseUrl": ".",
+    "target": "es5",
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],
     "lib": ["dom"]
