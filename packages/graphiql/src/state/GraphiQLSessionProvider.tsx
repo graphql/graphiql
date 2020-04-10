@@ -4,7 +4,6 @@ import { Fetcher } from './types';
 
 import { GraphQLParams, SessionState, EditorContexts } from './types';
 
-import { SchemaContext } from './GraphiQLSchemaProvider';
 import {
   SessionAction,
   SessionActionTypes,
@@ -189,11 +188,12 @@ export function SessionProvider({
           fetchValues.operationName = operationName as string;
         }
         const result = await observableToPromise(fetcher(fetchValues));
-        console.log(result);
         if (result && result.data) {
-          console.log('here');
           dispatch(
-            operationSucceededAction(JSON.stringify(result.data), sessionId),
+            operationSucceededAction(
+              JSON.stringify(result.data, null, 2),
+              sessionId,
+            ),
           );
         }
       } catch (err) {

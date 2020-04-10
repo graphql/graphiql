@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { GraphQLSchema } from 'graphql';
 import { DispatchWithEffects, useReducers, Reducer } from './useReducers';
-import { getDefaultFetcher, fetchSchema } from './common';
+import { fetchSchema } from './common';
 import { SchemaConfig, Fetcher } from './types';
 import {
   SchemaAction,

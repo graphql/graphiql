@@ -58,7 +58,7 @@ export function VariableEditor(props: VariableEditorProps) {
   React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const _CodeMirror = require('codemirror');
+    const CodeMirror = require('codemirror');
     require('codemirror/addon/hint/show-hint');
     require('codemirror/addon/edit/matchbrackets');
     require('codemirror/addon/edit/closebrackets');
@@ -106,7 +106,7 @@ export function VariableEditor(props: VariableEditorProps) {
       onHasCompletion(instance, changeObj, props.onHintInformationRender);
     };
 
-    const editor = (editorRef.current = _CodeMirror(divRef.current, {
+    const editor = (editorRef.current = CodeMirror(divRef.current, {
       value: session.variables.text || '',
       lineNumbers: true,
       tabSize: 2,

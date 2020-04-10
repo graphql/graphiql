@@ -253,7 +253,7 @@ export function QueryEditor(props: QueryEditorProps) {
       editor.setValue(session?.operation?.text ?? '');
     }
     ignoreChangeEventRef.current = false;
-  }, [schema, session.operation.text]);
+  }, [schema, session]);
 
   return (
     <section className="query-editor" aria-label="Query Editor" ref={nodeRef} />
