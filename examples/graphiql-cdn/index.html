@@ -15,6 +15,7 @@
         width: 100%;
         overflow: hidden;
       }
+
       #graphiql {
         height: 100vh;
       }
@@ -43,6 +44,7 @@
      -->
     <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
   </head>
+
   <body>
     <div id="graphiql">Loading...</div>
     <script
@@ -61,7 +63,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(graphQLParams),
-            credentials: 'include',
+            credentials: 'omit',
           },
         ).then(function (response) {
           return response.json().catch(function () {
