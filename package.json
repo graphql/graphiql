@@ -23,7 +23,7 @@
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts && yarn build-babel",
     "build-babel": "yarn workspace codemirror-graphql run build",
-    "build-ts": "yarn run tsc",
+    "build-ts": "yarn run tsc --force",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",
     "build-clean": "lerna run build-clean",
@@ -53,7 +53,8 @@
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
     "lerna-publish": "lerna publish",
-    "prepublish": "./resources/prepublish.sh"
+    "watch": "yarn tsc --watch",
+    "start-graphiql": "yarn workspace graphiql dev"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

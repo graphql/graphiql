@@ -24,6 +24,18 @@
    yarn run build
    ```
 
+   you can also use
+
+   ```sh
+   yarn run watch
+   ```
+
+   if you are focused on GraphiQL development, you can run
+
+   ```sh
+   yarn run start-graphiql
+   ```
+
 5. Get coding! If you've added code, add tests. If you've changed APIs, update
    any relevant documentation or tests. Ensure your work is committed within a
    feature branch.
@@ -54,10 +66,12 @@ to run tests for GraphiQL:
 
 1. `yarn` - install and link all packages
 2. `yarn build` - cleans first, then builds everything but webpack bundles - `tsc --build`, `babel` etc
-3. `yarn build-bundles` - builds webpack bundles that are used for releases
-4. `yarn build-demo` - builds demo projects for netlify; we run this on CI to make sure webpack can consume our project in a standalone project.
-5. `yarn test` - runs `jest`. so `yarn t --watch`
-6. `yarn format` - autoformats with eslint --fix and prettier
-7. `yarn lint` - checks for linting issues
-8. `yarn e2e` - runs cypress headlessly against the minified bundle and a local schema server, like in CI.
-9. `yarn jest` - runs global jest commands across the entire monorepo; try `yarn test --watch` or `yarn jtest DocExplorer` for example :D
+3. `yarn build-ts` - builds typescript using `--build` and `--force` flag.
+4. `yarn watch` - runs `tsc --build --watch`, for when you make cross-repository changes
+5. `yarn build-bundles` - builds webpack bundles that are used for releases
+6. `yarn build-demo` - builds demo projects for netlify; we run this on CI to make sure webpack can consume our project in a standalone project.
+7. `yarn test` - runs `jest`. so `yarn t --watch`
+8. `yarn format` - autoformats with eslint --fix and prettier
+9. `yarn lint` - checks for linting issues
+10. `yarn e2e` - runs cypress headlessly against the minified bundle and a local schema server, like in CI.
+11. `yarn jest` - runs global jest commands across the entire monorepo; try `yarn test --watch` or `yarn jtest DocExplorer` for example :D
