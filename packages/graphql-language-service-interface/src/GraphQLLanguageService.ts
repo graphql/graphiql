@@ -243,7 +243,9 @@ export class GraphQLLanguageService {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache
       .getSchema(projectConfig.name)
-      .catch(() => null);
+      .catch(e => {
+        throw e;
+      });
 
     if (schema) {
       return getHoverInformation(schema, query, position);

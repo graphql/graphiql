@@ -412,11 +412,17 @@ export class MessageProcessor {
     if (range) {
       position.line -= range.start.line;
     }
-    const result = await this._languageService.getHoverInformation(
-      query,
-      position,
-      textDocument.uri,
-    );
+
+    let result: Hover['contents'] = '';
+    try {
+      result = await this._languageService.getHoverInformation(
+        query,
+        position,
+        textDocument.uri,
+      );
+    } catch (e) {
+      throw new Error(`Error parsing the schema, ${e}`);
+    }
 
     return {
       contents: result,
