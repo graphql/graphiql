@@ -9702,12 +9702,12 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.3
   integrity sha512-a30VEBm4PEdx1dRB7MFK7BejejvCvBronbLjht+sHuGYj8PHs7M/5Z+rt5lw551vZ7yfTCj4Vuyy3mSJytDWRQ==
 
 "graphiql@file:packages/graphiql":
-  version "1.0.0-alpha.5"
+  version "1.0.0-alpha.7"
   dependencies:
     "@emotion/core" "^10.0.28"
     "@mdx-js/react" "^1.5.2"
     codemirror "^5.52.2"
-    codemirror-graphql "^0.12.0-alpha.5"
+    codemirror-graphql "^0.12.0-alpha.6"
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
     markdown-it "^10.0.0"
@@ -18509,7 +18509,7 @@ vscode-languageserver-types@3.15.0:
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.0.tgz#c45a23308ec0967135c483b759dfaf97978d9e0a"
   integrity sha512-AXteNagMhBWnZ6gNN0UB4HTiD/7TajgfHl6jaM6O7qz3zDJw0H3Jf83w05phihnBRCML+K6Ockh8f8bL0OObPw==
 
-vscode-languageserver-types@3.15.1:
+vscode-languageserver-types@3.15.1, vscode-languageserver-types@^3.15.1:
   version "3.15.1"
   resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.15.1.tgz#17be71d78d2f6236d414f0001ce1ef4d23e6b6de"
   integrity sha512-+a9MPUQrNGRrGU630OGbYVQ+11iOIovjCkqxajPa9w57Sd5ruK8WQNsslzpa0x/QJqC8kRc2DUxWjIFwoNm4ZQ==
