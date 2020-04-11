@@ -1,4 +1,5 @@
 import Layout from './Layout';
+import { Colors, Space, GraphiQLTheme } from '../index';
 
 const palette = {
   neutral: {
@@ -13,7 +14,7 @@ const palette = {
   },
 };
 
-const colors = {
+const colors: Colors = {
   text: palette.neutral[20],
   darkText: palette.neutral[70],
   background: palette.fuscia[90],
@@ -22,10 +23,10 @@ const colors = {
   border: palette.neutral[90],
 };
 
-const space = [0, 5, 10, 15, 20];
+const space: Space = [0, 5, 10, 15, 20];
 const fontSizes = [12, 16, 20];
 
-const theme = {
+const theme: GraphiQLTheme = {
   fonts: {
     body: 'system-ui, sans-serif',
     heading: '"Avenir Next", sans-serif',

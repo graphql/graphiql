@@ -2,11 +2,11 @@ import List, { ListRow } from '../List/List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
 import { layout } from '../themes/decorators';
+import { ReactNodeLike } from '../../types';
 
 export default { title: 'Tabbar', decorators: [layout] };
 
-// eslint-disable-next-line react/prop-types
-const ManagedTabs = ({ tabs }) => {
+const ManagedTabs = ({ tabs }: { tabs: Array<ReactNodeLike> }) => {
   const [active, setActive] = useState(0);
   return <Tabs active={active} tabs={tabs} onChange={setActive} />;
 };

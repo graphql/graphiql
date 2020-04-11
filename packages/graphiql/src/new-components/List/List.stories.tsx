@@ -8,7 +8,7 @@ const longText = Array(300)
   .fill('scroll')
   .map((c, i) => <div key={i}>{c}</div>);
 
-export const withFlexChild = () => (
+export const WithFlexChild = () => (
   <div style={{ height: '100vh', display: 'grid' }}>
     <List>
       <ListRow padding>
@@ -27,7 +27,7 @@ export const withFlexChild = () => (
   </div>
 );
 
-export const withStackedRows = () => (
+export const WithStackedRows = () => (
   <div style={{ height: '100vh', display: 'grid' }}>
     <List>
       <ListRow padding>{'Title'}</ListRow>

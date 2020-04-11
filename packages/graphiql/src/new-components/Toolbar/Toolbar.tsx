@@ -1,9 +1,17 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import PropTypes from 'prop-types';
 import WithDividers from './support/WithDividers';
+import { PropsWithChildren } from 'react';
+import { JustifyContentProperty } from 'csstype';
 
-const Toolbar = ({ children, justifyContent = 'space-between' }) => {
+export type ToolbarPropTypes = PropsWithChildren<{
+  justifyContent?: JustifyContentProperty;
+}>;
+
+const Toolbar = ({
+  children,
+  justifyContent = 'space-between',
+}: ToolbarPropTypes) => {
   const needsExtraPadding = !justifyContent.includes('space');
   return (
     <div
@@ -20,15 +28,6 @@ const Toolbar = ({ children, justifyContent = 'space-between' }) => {
       )}
     </div>
   );
-};
-Toolbar.propTypes = {
-  justifyContent: PropTypes.oneOf([
-    'space-between',
-    'space-around',
-    'flex-start',
-    'flex-end',
-    'center',
-  ]),
 };
 
 export default Toolbar;

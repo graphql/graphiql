@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
+import { PropsWithChildren } from 'react';
 
-const Item = ({ children }) => (
+const Item = ({ children }: PropsWithChildren<{}>) => (
   <button
     sx={{
       display: 'flex',

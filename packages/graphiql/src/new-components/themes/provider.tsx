@@ -34,14 +34,17 @@ const Reset = () => (
   />
 );
 
-const useThemeLayout = () => Layout;
+export function useThemeLayout() {
+  return Layout;
+}
 
-const Provider = ({ children }) => (
-  <ThemeProvider theme={theme}>
-    <Reset />
-    {children}
-  </ThemeProvider>
-);
+export function Provider({ children }: React.PropsWithChildren<{}>) {
+  return (
+    <ThemeProvider theme={theme}>
+      <Reset />
+      {children}
+    </ThemeProvider>
+  );
+}
 
-export { useThemeLayout };
 export default Provider;
