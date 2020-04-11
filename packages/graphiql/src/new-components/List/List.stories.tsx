@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import List, { ListRow } from './List';
+import List, { ListRow } from './index';
 
 export default { title: 'Lists' };
 

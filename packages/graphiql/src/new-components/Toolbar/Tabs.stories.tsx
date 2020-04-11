@@ -1,4 +1,4 @@
-import List, { ListRow } from '../List/List';
+import List, { ListRow } from '../List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
 import { layout } from '../themes/decorators';
