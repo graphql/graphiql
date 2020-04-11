@@ -208,9 +208,10 @@ export class GraphQLLanguageService {
       }
       /* eslint-enable no-implicit-coercion */
     }
-    const schema = await this._graphQLCache
-      .getSchema(projectName, queryHasExtensions)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(
+      projectName,
+      queryHasExtensions,
+    );
 
     if (!schema) {
       return [];
