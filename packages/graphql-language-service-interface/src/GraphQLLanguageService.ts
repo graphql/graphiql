@@ -125,6 +125,9 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
+    if (!projectConfig) {
+      return [];
+    }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {

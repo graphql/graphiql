@@ -44,10 +44,10 @@ import {
 import { Logger } from './Logger';
 import { parseDocument } from './parseDocument';
 
-type Options = {
-  // port for the LSP server to run on
+export type ServerOptions = {
+  // port for the LSP server to run on. required if using method socket
   port?: number;
-  // socket, streams, or node (ipc). if socket, port is required
+  // socket, streams, or node (ipc)
   method?: 'socket' | 'stream' | 'node';
   // the directory where graphql-config is found
   configDir?: string;
@@ -58,93 +58,106 @@ type Options = {
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
 };
-('graphql-language-service-types');
 
 /**
  * startServer - initialize LSP server with options
  *
- * @param options {Options} server initialization methods
+ * @param options {ServerOptions} server initialization methods
  * @returns {Promise<void>}
  */
-export default async function startServer(options: Options): Promise<void> {
+export default async function startServer(
+  options: ServerOptions,
+): Promise<void> {
   const logger = new Logger();
-
   if (options && options.method) {
     let reader;
     let writer;
-    let connection;
-    try {
-      switch (options.method) {
-        case 'socket':
-          // For socket connection, the message connection needs to be
-          // established before the server socket starts listening.
-          // Do that, and return at the end of this block.
-          if (!options.port) {
-            process.stderr.write(
-              '--port is required to establish socket connection.',
-            );
-            process.exit(1);
-          }
+    switch (options.method) {
+      case 'socket':
+        // For socket connection, the message connection needs to be
+        // established before the server socket starts listening.
+        // Do that, and return at the end of this block.
+        if (!options.port) {
+          process.stderr.write(
+            '--port is required to establish socket connection.',
+          );
+          process.exit(1);
+        }
 
-          const port = options.port;
-          const socket = net
-            .createServer(client => {
-              client.setEncoding('utf8');
-              reader = new SocketMessageReader(client);
-              writer = new SocketMessageWriter(client);
-              client.on('end', () => {
-                socket.close();
-                process.exit(0);
-              });
-              const connection = createMessageConnection(
-                reader,
-                writer,
-                logger,
-              );
-              addHandlers(
-                connection,
-                logger,
-                options.configDir,
-                options?.extensions ?? [],
-                options.config,
-              );
-              connection.listen();
-            })
-            .listen(port);
-          return;
-        case 'stream':
-          reader = new StreamMessageReader(process.stdin);
-          writer = new StreamMessageWriter(process.stdout);
-          break;
-        case 'node':
-        default:
-          reader = new IPCMessageReader(process);
-          writer = new IPCMessageWriter(process);
-          break;
-      }
-      connection = createMessageConnection(reader, writer, logger);
+        const port = options.port;
+        const socket = net
+          .createServer(client => {
+            client.setEncoding('utf8');
+            reader = new SocketMessageReader(client);
+            writer = new SocketMessageWriter(client);
+            client.on('end', () => {
+              socket.close();
+              process.exit(0);
+            });
+            const serverWithHandlers = initializeHandlers({
+              reader,
+              writer,
+              logger,
+              options,
+            });
+
+            serverWithHandlers.listen();
+          })
+          .listen(port);
+        return;
+      case 'stream':
+        reader = new StreamMessageReader(process.stdin);
+        writer = new StreamMessageWriter(process.stdout);
+        break;
+      case 'node':
+      default:
+        reader = new IPCMessageReader(process);
+        writer = new IPCMessageWriter(process);
+        break;
+    }
+
+    try {
+      const serverWithHandlers = initializeHandlers({
+        reader,
+        writer,
+        logger,
+        options,
+      });
+      return serverWithHandlers.listen();
     } catch (err) {
-      logger.error('There was an error initializing the server connection');
+      logger.error('There was a Graphql LSP handler exception:');
       logger.error(err);
-      process.exit(1);
     }
-    if (connection) {
-      try {
-        addHandlers(
-          connection,
-          logger,
-          options.configDir,
-          options?.extensions ?? [],
-          options.config,
-          options.parser,
-          options.fileExtensions,
-        );
-        connection.listen();
-      } catch (err) {
-        logger.error('There was a Graphql LSP handler exception:');
-        logger.error(err);
-      }
-    }
+  }
+}
+
+function initializeHandlers({
+  reader,
+  writer,
+  logger,
+  options = {},
+}: {
+  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
+  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
+  logger: Logger;
+  options: ServerOptions;
+}): MessageConnection {
+  try {
+    const connection = createMessageConnection(reader, writer, logger);
+    addHandlers(
+      connection,
+      logger,
+      options.configDir,
+      options?.extensions || [],
+      options.config,
+      options.parser,
+      options.fileExtensions,
+    );
+    return connection;
+  } catch (err) {
+    logger.error('There was an error initializing the server connection');
+    logger.error(err);
+    process.exit(1);
   }
 }
 
