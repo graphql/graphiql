@@ -32,7 +32,7 @@ import {
   ParseRules as ParseRulesType,
 } from './Rules';
 import {
-  CharacterStream,
+  CharacterStreamInterface as CharacterStream,
   State,
   Token,
   Rule,

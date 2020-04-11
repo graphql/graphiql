@@ -37,7 +37,7 @@ import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 
 export type TokenPattern = string | ((char: string) => boolean) | RegExp;
 
-export interface CharacterStream {
+export interface CharacterStreamInterface {
   getStartOfToken: () => number;
   getCurrentPosition: () => number;
   eol: () => boolean;
@@ -170,7 +170,7 @@ export type RuleOrString = Rule | string;
 
 export type ParseRule =
   | RuleOrString[]
-  | ((token: Token, stream: CharacterStream) => string | null | void);
+  | ((token: Token, stream: CharacterStreamInterface) => string | null | void);
 
 export type Token = {
   kind: string;
