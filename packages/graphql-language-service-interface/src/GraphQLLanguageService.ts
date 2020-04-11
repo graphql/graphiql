@@ -125,6 +125,9 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
+    if (!projectConfig) {
+      return [];
+    }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
@@ -208,9 +211,10 @@ export class GraphQLLanguageService {
       }
       /* eslint-enable no-implicit-coercion */
     }
-    const schema = await this._graphQLCache
-      .getSchema(projectName, queryHasExtensions)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(
+      projectName,
+      queryHasExtensions,
+    );
 
     if (!schema) {
       return [];
