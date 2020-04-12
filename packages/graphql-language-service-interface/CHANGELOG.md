@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.6...graphql-language-service-interface@2.4.0-alpha.7) (2020-04-10)
+
+### Bug Fixes
+
+- graphiql@1.0.0-alpha.7 has broken reference to vscode types ([#1479](https://github.com/graphql/graphiql/issues/1479)) ([43e7056](https://github.com/graphql/graphiql/commit/43e705682fc258d50b167791469712a17a152cea))
+
+# [2.4.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.5...graphql-language-service-interface@2.4.0-alpha.6) (2020-04-10)
+
+**Note:** Version bump only for package graphql-language-service-interface
+
 # [2.4.0-alpha.5](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.4...graphql-language-service-interface@2.4.0-alpha.5) (2020-04-06)
 
 ### Features

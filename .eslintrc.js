@@ -31,7 +31,12 @@ module.exports = {
     browser: true,
   },
 
-  extends: ['prettier', 'plugin:import/typescript', 'plugin:react/recommended', 'plugin:react-hooks/recommended'],
+  extends: [
+    'prettier',
+    'plugin:import/typescript',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+  ],
 
   globals: {
     atom: false,
