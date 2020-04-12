@@ -9,7 +9,7 @@ import React, { Component, FunctionComponent } from 'react';
 import * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from 'src/utility/CodeMirrorSizer';
+import { SizerComponent } from '../utility/CodeMirrorSizer';
 import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
 
 type ResultViewerProps = {
