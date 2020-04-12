@@ -13,4 +13,4 @@ export { Position, Range, locToRange, offsetToPosition } from './Range';
 
 export { validateWithCustomRules } from './validateWithCustomRules';
 
-export { requireFile, resolveFile } from './file';
+// export { requireFile, resolveFile } from './file';

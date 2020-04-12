@@ -46,11 +46,7 @@ import {
 
 import { getOutline } from './getOutline';
 
-import {
-  getASTNodeAtPosition,
-  requireFile,
-  resolveFile,
-} from 'graphql-language-service-utils';
+import { getASTNodeAtPosition } from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,
@@ -198,18 +194,10 @@ export class GraphQLLanguageService {
 
     // Check if there are custom validation rules to be used
     let customRules;
-    const customRulesModulePath = extensions.customValidationRules;
-    if (customRulesModulePath) {
-      /* eslint-disable no-implicit-coercion */
-      const rulesPath = resolveFile(customRulesModulePath);
-      if (rulesPath) {
-        const customValidationRules: (
-          config: GraphQLConfig,
-        ) => ValidationRule[] = await requireFile(rulesPath);
-        if (customValidationRules) {
-          customRules = customValidationRules(this._graphQLConfig);
-        }
-      }
+    const customValidationRules = extensions.customValidationRules;
+    if (customValidationRules) {
+      customRules = customValidationRules(this._graphQLConfig);
+
       /* eslint-enable no-implicit-coercion */
     }
     const schema = await this._graphQLCache.getSchema(
