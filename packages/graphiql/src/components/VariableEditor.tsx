@@ -11,7 +11,6 @@ import React from 'react';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
-import { useSchemaContext } from '../state/GraphiQLSchemaProvider';
 import useQueryFacts from '../hooks/useQueryFacts';
 
 declare module CodeMirror {
@@ -51,7 +50,6 @@ type VariableEditorProps = {
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
   const queryFacts = useQueryFacts();
-  const { schema } = useSchemaContext();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
   const cachedValueRef = React.useRef<string>(props.value ?? '');

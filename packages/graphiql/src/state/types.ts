@@ -1,5 +1,4 @@
 import { OperationDefinitionNode } from 'graphql';
-import { QueryFacts } from '../utility/getQueryFacts';
 
 export type FetcherParams = {
   query: string;
