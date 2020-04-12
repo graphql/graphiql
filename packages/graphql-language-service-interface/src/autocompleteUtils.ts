@@ -16,10 +16,10 @@ import {
 } from 'graphql/type/introspection';
 import {
   CompletionItemBase,
-  ContextTokenUnion,
-  State,
   AllTypeInfo,
 } from 'graphql-language-service-types';
+
+import { ContextTokenUnion, State } from 'graphql-language-service-parser';
 
 // Utility for returning the state representing the Definition this token state
 // is within, if any.

@@ -9,7 +9,7 @@
 
 // These functions help build matching rules for ParseRules.
 
-import { Rule, Token } from 'graphql-language-service-types';
+import { Rule, Token } from './types';
 
 // An optional rule.
 export function opt(ofRule: Rule | string): Rule {

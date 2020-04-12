@@ -20,11 +20,11 @@ import {
   CompletionItem,
   DefinitionQueryResult,
   Diagnostic,
-  GraphQLCache,
   Uri,
   Position,
   Outline,
   OutlineTree,
+  GraphQLCache,
 } from 'graphql-language-service-types';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -193,7 +193,7 @@ export class GraphQLLanguageService {
     }
 
     // Check if there are custom validation rules to be used
-    let customRules;
+    let customRules: ValidationRule[] | null = null;
     const customValidationRules = extensions.customValidationRules;
     if (customValidationRules) {
       customRules = customValidationRules(this._graphQLConfig);
@@ -209,7 +209,12 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
+    return validateQuery(
+      validationAst,
+      schema,
+      customRules as ValidationRule[],
+      isRelayCompatMode,
+    );
   }
 
   public async getAutocompleteSuggestions(

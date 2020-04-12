@@ -64,7 +64,7 @@ export function getDiagnostics(
 export function validateQuery(
   ast: DocumentNode,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<ValidationRule>,
+  customRules?: Array<ValidationRule> | null,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   // We cannot validate the query unless a schema is provided.
