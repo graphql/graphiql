@@ -20,11 +20,11 @@ import {
   CompletionItem,
   DefinitionQueryResult,
   Diagnostic,
-  GraphQLCache,
   Uri,
   Position,
   Outline,
   OutlineTree,
+  GraphQLCache,
 } from 'graphql-language-service-types';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -46,11 +46,7 @@ import {
 
 import { getOutline } from './getOutline';
 
-import {
-  getASTNodeAtPosition,
-  requireFile,
-  resolveFile,
-} from 'graphql-language-service-utils';
+import { getASTNodeAtPosition } from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,
@@ -197,19 +193,11 @@ export class GraphQLLanguageService {
     }
 
     // Check if there are custom validation rules to be used
-    let customRules;
-    const customRulesModulePath = extensions.customValidationRules;
-    if (customRulesModulePath) {
-      /* eslint-disable no-implicit-coercion */
-      const rulesPath = resolveFile(customRulesModulePath);
-      if (rulesPath) {
-        const customValidationRules: (
-          config: GraphQLConfig,
-        ) => ValidationRule[] = await requireFile(rulesPath);
-        if (customValidationRules) {
-          customRules = customValidationRules(this._graphQLConfig);
-        }
-      }
+    let customRules: ValidationRule[] | null = null;
+    const customValidationRules = extensions.customValidationRules;
+    if (customValidationRules) {
+      customRules = customValidationRules(this._graphQLConfig);
+
       /* eslint-enable no-implicit-coercion */
     }
     const schema = await this._graphQLCache.getSchema(
@@ -221,7 +209,12 @@ export class GraphQLLanguageService {
       return [];
     }
 
-    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
+    return validateQuery(
+      validationAst,
+      schema,
+      customRules as ValidationRule[],
+      isRelayCompatMode,
+    );
   }
 
   public async getAutocompleteSuggestions(

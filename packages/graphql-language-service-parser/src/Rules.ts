@@ -7,14 +7,8 @@
  *
  */
 
-import {
-  CharacterStreamInterface as CharacterStream,
-  State,
-  Token,
-  Rule,
-  RuleKind,
-  ParseRule,
-} from 'graphql-language-service-types';
+import { State, Token, Rule, RuleKind, ParseRule } from './types';
+import CharacterStream from './CharacterStream';
 import { opt, list, butNot, t, p } from './RuleHelpers';
 
 /**

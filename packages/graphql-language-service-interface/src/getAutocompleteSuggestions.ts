@@ -26,8 +26,6 @@ import {
   State,
   AllTypeInfo,
   Position,
-  RuleKind,
-  RuleKinds,
 } from 'graphql-language-service-types';
 
 import {
@@ -47,7 +45,12 @@ import {
   isInputType,
 } from 'graphql';
 
-import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
+import {
+  CharacterStream,
+  onlineParser,
+  RuleKind,
+  RuleKinds,
+} from 'graphql-language-service-parser';
 
 import {
   forEachState,
