@@ -12,18 +12,18 @@ const ListRow = ({
   flex = false,
   padding = false,
 }: ListRowPropTypes) => (
-    <div
-      sx={
-        {
-          overflow: 'auto',
-          flex: flex && '1 1 auto',
-          padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
-          minHeight: ({ spaces }) => spaces.rowMinHeight,
-        } as SxStyleProp
-      }>
-      {children}
-    </div>
-  );
+  <div
+    sx={
+      {
+        overflow: 'auto',
+        flex: flex && '1 1 auto',
+        padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
+        minHeight: ({ spaces }) => spaces.rowMinHeight,
+      } as SxStyleProp
+    }>
+    {children}
+  </div>
+);
 
 export type ListPropTypes = PropsWithChildren<{}>;
 
