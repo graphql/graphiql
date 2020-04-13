@@ -1,4 +1,5 @@
 import React from 'react';
+import { ReactNodeLike } from 'src/types';
 
 const styles = {
   maxWidth: '60em',
@@ -6,4 +7,6 @@ const styles = {
   border: '1px solid #eee',
 };
 
-export const layout = storyFn => <div style={styles}>{storyFn()}</div>;
+export const layout = (storyFn: () => ReactNodeLike) => (
+  <div style={styles}>{storyFn()}</div>
+);

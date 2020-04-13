@@ -1,24 +1,33 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import PropTypes from 'prop-types';
+import { jsx, SxStyleProp } from 'theme-ui';
+import { PropsWithChildren } from 'react';
 
-const ListRow = ({ children, flex = false, padding = false }) => (
-  <div
-    sx={{
-      overflow: 'auto',
-      flex: flex && '1 1 auto',
-      padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
-      minHeight: ({ spaces }) => spaces.rowMinHeight,
-    }}>
-    {children}
-  </div>
-);
-ListRow.propTypes = {
-  flex: PropTypes.bool,
-  padding: PropTypes.bool,
-};
+export type ListRowPropTypes = PropsWithChildren<{
+  flex?: boolean;
+  padding?: boolean;
+}>;
 
-const List = ({ children }) => (
+const ListRow = ({
+  children,
+  flex = false,
+  padding = false,
+}: ListRowPropTypes) => (
+    <div
+      sx={
+        {
+          overflow: 'auto',
+          flex: flex && '1 1 auto',
+          padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
+          minHeight: ({ spaces }) => spaces.rowMinHeight,
+        } as SxStyleProp
+      }>
+      {children}
+    </div>
+  );
+
+export type ListPropTypes = PropsWithChildren<{}>;
+
+const List = ({ children }: ListPropTypes) => (
   <div
     sx={{
       backgroundColor: 'cardBackground',
@@ -35,10 +44,6 @@ const List = ({ children }) => (
     {children}
   </div>
 );
-
-List.propTypes = {
-  mini: PropTypes.bool,
-};
 
 export default List;
 export { ListRow };
