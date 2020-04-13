@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import List, { ListRow } from './List/List';
+import List, { ListRow } from './List';
 import { SectionHeader, Explainer } from './Type';
 import { layout } from './themes/decorators';
 

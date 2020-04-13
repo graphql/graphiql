@@ -1,13 +1,12 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-
-import PropTypes from 'prop-types';
-import { PANEL_SIZES, LAYOUT_PROP_TYPES } from './../constants';
+import { jsx, SxStyleProp } from 'theme-ui';
+import { PropsWithChildren } from 'react';
+import { GraphiQLTheme, PanelSize, LayoutPropTypes } from '../types';
 
 const NAV_WIDTH = '6em';
 const CONTENT_MIN_WIDTH = '60em';
 
-const sizeInCSSUnits = (theme, size) => {
+function sizeInCSSUnits(theme: GraphiQLTheme, size: PanelSize) {
   switch (size) {
     case 'sidebar':
       return '10em';
@@ -16,27 +15,34 @@ const sizeInCSSUnits = (theme, size) => {
     default:
       return `calc(100vw - ${theme.space[2] * 3}px - ${NAV_WIDTH})`;
   }
-};
+}
 
-const Card = ({ children, size, transparent = false, innerSx }) => (
+type CardPropTypes = PropsWithChildren<{
+  size?: PanelSize;
+  transparent?: boolean;
+  innerSx?: SxStyleProp;
+}>;
+
+const Card = ({
+  children,
+  size,
+  transparent = false,
+  innerSx,
+}: CardPropTypes) => (
   <div
-    sx={{
-      display: 'grid',
-      backgroundColor: !transparent && 'cardBackground',
-      boxShadow: !transparent && 'card',
-      minWidth: size && (theme => sizeInCSSUnits(theme, size)),
-      gridTemplate: '100% / 100%',
-      ...innerSx,
-    }}>
+    sx={
+      {
+        display: 'grid',
+        backgroundColor: !transparent ? 'cardBackground' : undefined,
+        boxShadow: !transparent && 'card',
+        minWidth: size && (theme => sizeInCSSUnits(theme, size)),
+        gridTemplate: '100% / 100%',
+        ...(innerSx ?? {}),
+      } as SxStyleProp
+    }>
     {children}
   </div>
 );
-
-Card.propTypes = {
-  transparent: PropTypes.bool,
-  size: PropTypes.oneOf(PANEL_SIZES),
-  innerSx: PropTypes.object,
-};
 
 const gridBase = {
   display: 'grid',
@@ -46,8 +52,8 @@ const gridBase = {
   gap: 3,
 };
 
-const Layout = ({ nav, navPanels, explorer }) => {
-  const hasNavPanels = navPanels && navPanels.length > 0;
+const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
+  const hasNavPanels = (navPanels && navPanels?.length > 0) || false;
   return (
     <main
       sx={{
@@ -69,7 +75,7 @@ const Layout = ({ nav, navPanels, explorer }) => {
             gridArea: 'panels',
             ...gridBase,
           }}>
-          {navPanels.map(({ component, key, size }) => (
+          {navPanels!.map(({ component, key, size }) => (
             <Card key={key} size={size}>
               {component}
             </Card>
@@ -92,7 +98,5 @@ const Layout = ({ nav, navPanels, explorer }) => {
     </main>
   );
 };
-
-Layout.propTypes = LAYOUT_PROP_TYPES;
 
 export default Layout;

@@ -1,6 +1,6 @@
 import React from 'react';
 import Nav from './Nav';
-import List, { ListRow } from './List/List';
+import List, { ListRow } from './List';
 import { useThemeLayout } from './themes/provider';
 
 const explorer = {
