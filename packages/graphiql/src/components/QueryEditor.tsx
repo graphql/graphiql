@@ -108,9 +108,9 @@ export function QueryEditor(props: QueryEditorProps) {
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
-    const selectElement = nodeRef.current;
+    const editorEl = nodeRef.current;
 
-    editorRef.current = new CodeMirror(selectElement, {
+    editorRef.current = new CodeMirror(editorEl, {
       value: session?.operation?.text ?? '',
       lineNumbers: true,
       tabSize: 2,
@@ -131,7 +131,7 @@ export function QueryEditor(props: QueryEditorProps) {
         schema,
         closeOnUnfocus: false,
         completeSingle: false,
-        container: selectElement,
+        container: editorEl,
       },
       info: {
         schema,
@@ -151,36 +151,47 @@ export function QueryEditor(props: QueryEditorProps) {
           // @ts-ignore showHint method needs improvement on definatelytyped
           editorRef.current.showHint({
             completeSingle: true,
-            container: selectElement,
+            // @ts-ignore
+            container: editorEl,
           }),
         'Ctrl-Space': () =>
           // showHint method needs improvement on definatelytyped
           // @ts-ignore
           editorRef.current.showHint({
             completeSingle: true,
-            container: selectElement,
+            // @ts-ignore
+            container: editorEl,
           }),
         'Alt-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
           editorRef.current.showHint({
             completeSingle: true,
-            container: selectElement,
+            // @ts-ignore
+
+            container: editorEl,
           }),
         'Shift-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
           editorRef.current.showHint({
             completeSingle: true,
-            container: selectElement,
+            // @ts-ignore
+
+            container: editorEl,
           }),
         'Shift-Alt-Space': () =>
           // @ts-ignore showHint method needs improvement on definatelytyped
           editorRef.current.showHint({
             completeSingle: true,
-            container: selectElement,
+            // @ts-ignore
+
+            container: editorEl,
           }),
 
         'Cmd-Enter': () => session.executeOperation(),
-        'Ctrl-Enter': () => session.executeOperation(),
+        'Ctrl-Enter': () => {
+          console.log(session.operation.text);
+          session.executeOperation();
+        },
 
         'Shift-Ctrl-C': () => {
           if (props.onCopyQuery) {

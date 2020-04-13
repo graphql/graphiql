@@ -69,7 +69,7 @@ export function ResultViewer(props: ResultViewerProps) {
 
     viewerRef.current = CodeMirror(divRef.current, {
       lineWrapping: true,
-      value: session.results?.formattedText ?? '',
+      value: session.results?.text ?? '',
       readOnly: true,
       theme: props.editorTheme || 'graphiql',
       mode: 'graphql-results',
@@ -85,9 +85,9 @@ export function ResultViewer(props: ResultViewerProps) {
 
   useEffect(() => {
     if (session.results && viewerRef.current) {
-      viewerRef.current.setValue(session.results.formattedText || '');
+      viewerRef.current.setValue(session.results.text || '');
     }
-  }, [session.results.text]);
+  }, [session.results, session.results.text]);
 
   return (
     <section

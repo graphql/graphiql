@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useReducers, DispatchWithEffects } from './useReducers';
 import { Fetcher } from './types';
 
 import { GraphQLParams, SessionState, EditorContexts } from './types';
@@ -18,15 +17,14 @@ import {
 } from './sessionActions';
 import { observableToPromise } from '../utility/observableToPromise';
 
-type Dispatcher = DispatchWithEffects<SessionActionTypes, SessionAction>;
-
+export type SessionReducer = React.Reducer<SessionState, SessionAction>;
 export interface SessionHandlers {
   changeOperation: (operation: string) => void;
   changeVariables: (variables: string) => void;
   executeOperation: (operationName?: string) => Promise<void>;
   operationError: (error: Error) => void;
   editorLoaded: (context: EditorContexts, editor: CodeMirror.Editor) => void;
-  dispatch: Dispatcher;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 export const initialState: SessionState = {
@@ -62,10 +60,7 @@ export const SessionContext = React.createContext<
 
 export const useSessionContext = () => React.useContext(SessionContext);
 
-function sessionReducer(
-  state: SessionState,
-  action: SessionAction,
-): SessionState {
+const sessionReducer: SessionReducer = (state, action) => {
   switch (action.type) {
     case SessionActionTypes.OperationRequested:
       return {
@@ -108,7 +103,7 @@ function sessionReducer(
         ...state,
         results: {
           ...state.results,
-          text: result,
+          text: JSON.stringify(result, null, 2),
         },
         operationErrors: null,
       };
@@ -126,7 +121,7 @@ function sessionReducer(
       return state;
     }
   }
-}
+};
 
 export type SessionProviderProps = {
   sessionId: number;
@@ -143,14 +138,10 @@ export function SessionProvider({
 }: SessionProviderProps) {
   const schemaState = React.useContext(SchemaContext);
 
-  const [state, dispatch] = useReducers<
-    SessionState,
-    SessionActionTypes,
-    SessionAction
-  >({
-    reducers: [sessionReducer],
-    init: () => initialState,
-  });
+  const [state, dispatch] = React.useReducer<SessionReducer>(
+    sessionReducer,
+    initialState,
+  );
 
   const operationError = React.useCallback(
     (error: Error) => dispatch(operationErroredAction(error, sessionId)),
@@ -179,7 +170,6 @@ export function SessionProvider({
     async (operationName?: string) => {
       try {
         dispatch(operationRequestAction());
-
         const fetchValues: GraphQLParams = {
           query: state.operation?.text ?? '',
         };

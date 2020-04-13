@@ -7,6 +7,7 @@
 import React, { MouseEventHandler, useState } from 'react';
 import { OperationDefinitionNode } from 'graphql';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
+import useQueryFacts from '../hooks/useQueryFacts';
 
 /**
  * ExecuteButton
@@ -22,11 +23,12 @@ type ExecuteButtonProps = {
 
 export function ExecuteButton(props: ExecuteButtonProps) {
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const queryFacts = useQueryFacts();
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
   );
   const session = useSessionContext();
-  const operations = session.operations ?? [];
+  const operations = queryFacts?.operations ?? [];
   const hasOptions = operations && operations.length > 1;
 
   let options: JSX.Element | null = null;

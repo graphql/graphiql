@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { GraphQLSchema } from 'graphql';
-import { DispatchWithEffects, useReducers, Reducer } from './useReducers';
 import { defaultSchemaLoader } from './common';
 import { SchemaConfig } from './types';
 import {
@@ -9,7 +8,6 @@ import {
   schemaRequestedAction,
   schemaSucceededAction,
   schemaErroredAction,
-  schemaChangedAction,
 } from './schemaActions';
 
 /**
@@ -22,6 +20,8 @@ export type SchemaState = {
   errors: Error[] | null;
   config: SchemaConfig;
 };
+
+export type SchemaReducer = React.Reducer<SchemaState, SchemaAction>;
 
 const isDev = window.location.hostname === 'localhost';
 
@@ -54,7 +54,7 @@ export type SchemaContextValue = SchemaState & ProjectHandlers;
 export const SchemaContext = React.createContext<SchemaContextValue>({
   ...getInitialState(),
   loadCurrentSchema: async () => undefined,
-  loadSchema: async () => undefined,
+  // loadSchema: async () => undefined,
   dispatch: async () => undefined,
   schemaLoader: defaultSchemaLoader,
 });
@@ -65,17 +65,7 @@ export const useSchemaContext = () => React.useContext(SchemaContext);
  * Action Types & Reducers
  */
 
-export type SchemaReducer = Reducer<
-  SchemaState,
-  SchemaActionTypes,
-  SchemaAction
->;
-
-export const schemaReducer: SchemaReducer = (
-  state,
-  action,
-  init,
-): SchemaState => {
+export const schemaReducer: SchemaReducer = (state, action): SchemaState => {
   switch (action.type) {
     case SchemaActionTypes.SchemaChanged:
       return {
@@ -102,8 +92,6 @@ export const schemaReducer: SchemaReducer = (
           ? [...state.errors, action.payload]
           : [action.payload],
       };
-    case SchemaActionTypes.SchemaReset:
-      return init();
     default: {
       return state;
     }
@@ -121,10 +109,10 @@ export type SchemaProviderProps = {
 };
 
 export type ProjectHandlers = {
-  loadSchema: (state: SchemaState, config: SchemaConfig) => Promise<void>;
+  // loadSchema: (state: SchemaState, config: SchemaConfig) => Promise<void>;
   loadCurrentSchema: (state: SchemaState) => Promise<void>;
   schemaLoader: typeof defaultSchemaLoader;
-  dispatch: DispatchWithEffects<SchemaActionTypes, SchemaAction>;
+  dispatch: React.Dispatch<SchemaAction>;
 };
 
 export function SchemaProvider({
@@ -132,18 +120,10 @@ export function SchemaProvider({
   config: userSchemaConfig = initialReducerState.config,
   ...props
 }: SchemaProviderProps) {
-  const [state, dispatch] = useReducers<
-    SchemaState,
-    SchemaAction,
-    SchemaReducer
-  >({
-    // @ts-ignore
-    reducers: [schemaReducer],
-    init: args => ({
-      ...getInitialState({ config: userSchemaConfig }),
-      ...args,
-    }),
-  });
+  const [state, dispatch] = React.useReducer<SchemaReducer>(
+    schemaReducer,
+    getInitialState({ config: userSchemaConfig }),
+  );
 
   const loadCurrentSchema = useCallback(async () => {
     dispatch(schemaRequestedAction());
@@ -157,13 +137,6 @@ export function SchemaProvider({
     }
   }, [dispatch, schemaLoader, state.config]);
 
-  const loadSchema = useCallback(
-    (config: SchemaConfig) => {
-      dispatch(schemaChangedAction(config));
-    },
-    [dispatch],
-  );
-
   useEffect(() => {
     loadCurrentSchema();
   }, [loadCurrentSchema]);
@@ -174,7 +147,6 @@ export function SchemaProvider({
         ...state,
         schemaLoader,
         loadCurrentSchema,
-        loadSchema,
         dispatch,
       }}>
       {props.children}
