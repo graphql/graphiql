@@ -20,11 +20,8 @@ import {
   GraphQLField,
   GraphQLFieldConfig,
 } from 'graphql';
-import {
-  ContextToken,
-  AllTypeInfo,
-  Position,
-} from 'graphql-language-service-types';
+import { ContextToken } from 'graphql-language-service-parser';
+import { AllTypeInfo, Position } from 'graphql-language-service-types';
 
 import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';

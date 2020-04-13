@@ -20,11 +20,11 @@ import {
   CompletionItem,
   DefinitionQueryResult,
   Diagnostic,
-  GraphQLCache,
   Uri,
   Position,
   Outline,
   OutlineTree,
+  GraphQLCache,
 } from 'graphql-language-service-types';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -46,11 +46,7 @@ import {
 
 import { getOutline } from './getOutline';
 
-import {
-  getASTNodeAtPosition,
-  requireFile,
-  resolveFile,
-} from 'graphql-language-service-utils';
+import { getASTNodeAtPosition } from 'graphql-language-service-utils';
 
 const {
   FRAGMENT_DEFINITION,
@@ -73,18 +69,19 @@ const {
 } = Kind;
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
-  Field: SymbolKind.Field,
-  OperationDefinition: SymbolKind.Class,
-  FragmentDefinition: SymbolKind.Class,
-  FragmentSpread: SymbolKind.Struct,
-  ObjectTypeDefinition: SymbolKind.Class,
-  EnumTypeDefinition: SymbolKind.Enum,
-  EnumValueDefinition: SymbolKind.EnumMember,
-  InputObjectTypeDefinition: SymbolKind.Class,
-  InputValueDefinition: SymbolKind.Field,
-  FieldDefinition: SymbolKind.Field,
-  InterfaceTypeDefinition: SymbolKind.Interface,
-  Document: SymbolKind.File,
+  [Kind.FIELD]: SymbolKind.Field,
+  [Kind.OPERATION_DEFINITION]: SymbolKind.Class,
+  [Kind.FRAGMENT_DEFINITION]: SymbolKind.Class,
+  [Kind.FRAGMENT_SPREAD]: SymbolKind.Struct,
+  [Kind.OBJECT_TYPE_DEFINITION]: SymbolKind.Class,
+  [Kind.ENUM_TYPE_DEFINITION]: SymbolKind.Enum,
+  [Kind.ENUM_VALUE_DEFINITION]: SymbolKind.EnumMember,
+  [Kind.INPUT_OBJECT_TYPE_DEFINITION]: SymbolKind.Class,
+  [Kind.INPUT_VALUE_DEFINITION]: SymbolKind.Field,
+  [Kind.FIELD_DEFINITION]: SymbolKind.Field,
+  [Kind.INTERFACE_TYPE_DEFINITION]: SymbolKind.Interface,
+  [Kind.DOCUMENT]: SymbolKind.File,
+  // novel, for symbols only
   FieldWithArguments: SymbolKind.Method,
 };
 
@@ -125,6 +122,9 @@ export class GraphQLLanguageService {
     // schema/fragment definitions, even the project configuration.
     let queryHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
+    if (!projectConfig) {
+      return [];
+    }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
@@ -193,30 +193,28 @@ export class GraphQLLanguageService {
     }
 
     // Check if there are custom validation rules to be used
-    let customRules;
-    const customRulesModulePath = extensions.customValidationRules;
-    if (customRulesModulePath) {
-      /* eslint-disable no-implicit-coercion */
-      const rulesPath = resolveFile(customRulesModulePath);
-      if (rulesPath) {
-        const customValidationRules: (
-          config: GraphQLConfig,
-        ) => ValidationRule[] = await requireFile(rulesPath);
-        if (customValidationRules) {
-          customRules = customValidationRules(this._graphQLConfig);
-        }
-      }
+    let customRules: ValidationRule[] | null = null;
+    const customValidationRules = extensions.customValidationRules;
+    if (customValidationRules) {
+      customRules = customValidationRules(this._graphQLConfig);
+
       /* eslint-enable no-implicit-coercion */
     }
-    const schema = await this._graphQLCache
-      .getSchema(projectName, queryHasExtensions)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(
+      projectName,
+      queryHasExtensions,
+    );
 
     if (!schema) {
       return [];
     }
 
-    return validateQuery(validationAst, schema, customRules, isRelayCompatMode);
+    return validateQuery(
+      validationAst,
+      schema,
+      customRules as ValidationRule[],
+      isRelayCompatMode,
+    );
   }
 
   public async getAutocompleteSuggestions(

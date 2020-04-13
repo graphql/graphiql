@@ -44,10 +44,10 @@ import {
 import { Logger } from './Logger';
 import { parseDocument } from './parseDocument';
 
-type Options = {
-  // port for the LSP server to run on
+export type ServerOptions = {
+  // port for the LSP server to run on. required if using method socket
   port?: number;
-  // socket, streams, or node (ipc). if socket, port is required
+  // socket, streams, or node (ipc)
   method?: 'socket' | 'stream' | 'node';
   // the directory where graphql-config is found
   configDir?: string;
@@ -58,17 +58,17 @@ type Options = {
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
 };
-('graphql-language-service-types');
 
 /**
  * startServer - initialize LSP server with options
  *
- * @param options {Options} server initialization methods
+ * @param options {ServerOptions} server initialization methods
  * @returns {Promise<void>}
  */
-export default async function startServer(options: Options): Promise<void> {
+export default async function startServer(
+  options: ServerOptions,
+): Promise<void> {
   const logger = new Logger();
-
   if (options && options.method) {
     let reader;
     let writer;
@@ -94,15 +94,14 @@ export default async function startServer(options: Options): Promise<void> {
               socket.close();
               process.exit(0);
             });
-            const connection = createMessageConnection(reader, writer, logger);
-            addHandlers(
-              connection,
+            const serverWithHandlers = initializeHandlers({
+              reader,
+              writer,
               logger,
-              options.configDir,
-              options?.extensions ?? [],
-              options.config,
-            );
-            connection.listen();
+              options,
+            });
+
+            serverWithHandlers.listen();
           })
           .listen(port);
         return;
@@ -116,17 +115,49 @@ export default async function startServer(options: Options): Promise<void> {
         writer = new IPCMessageWriter(process);
         break;
     }
+
+    try {
+      const serverWithHandlers = initializeHandlers({
+        reader,
+        writer,
+        logger,
+        options,
+      });
+      return serverWithHandlers.listen();
+    } catch (err) {
+      logger.error('There was a Graphql LSP handler exception:');
+      logger.error(err);
+    }
+  }
+}
+
+function initializeHandlers({
+  reader,
+  writer,
+  logger,
+  options = {},
+}: {
+  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
+  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
+  logger: Logger;
+  options: ServerOptions;
+}): MessageConnection {
+  try {
     const connection = createMessageConnection(reader, writer, logger);
     addHandlers(
       connection,
       logger,
       options.configDir,
-      options?.extensions ?? [],
+      options?.extensions || [],
       options.config,
       options.parser,
       options.fileExtensions,
     );
-    connection.listen();
+    return connection;
+  } catch (err) {
+    logger.error('There was an error initializing the server connection');
+    logger.error(err);
+    process.exit(1);
   }
 }
 

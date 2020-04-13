@@ -84,10 +84,10 @@ await startServer({
 });
 ```
 
-The graphql features we support are:
+The graphql-config features we support are:
 
-- `customDirectives` - `['@myExampleDirective']`
-- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`;
+- `extensions.customDirectives` - for example `['@myExampleDirective']`
+- `extensions.customValidationRules` - a function that returns rules array with parameter `ValidationContext` from `graphql/validation`. The graphql config must load the module itself.
 
 ### Usage
 

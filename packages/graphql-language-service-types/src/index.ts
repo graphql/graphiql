@@ -8,13 +8,11 @@
  */
 import {
   Diagnostic as DiagnosticType,
-  Position as PositionType,
   CompletionItem as CompletionItemType,
-} from 'vscode-languageserver-protocol';
-import { GraphQLSchema, KindEnum } from 'graphql';
+} from 'vscode-languageserver-types';
+import { ASTNode, GraphQLSchema } from 'graphql';
 
 import {
-  ASTNode,
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
@@ -32,60 +30,12 @@ import { GraphQLDirective } from 'graphql/type/directives';
 
 export type Maybe<T> = T | null | undefined;
 
-export { GraphQLConfig, GraphQLProjectConfig };
-import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
-
-export type TokenPattern = string | ((char: string) => boolean) | RegExp;
-
-export interface CharacterStream {
-  getStartOfToken: () => number;
-  getCurrentPosition: () => number;
-  eol: () => boolean;
-  sol: () => boolean;
-  peek: () => string | null;
-  next: () => string;
-  eat: (pattern: TokenPattern) => string | undefined;
-  eatWhile: (match: TokenPattern) => boolean;
-  eatSpace: () => boolean;
-  skipToEnd: () => void;
-  skipTo: (position: number) => void;
-  match: (
-    pattern: TokenPattern,
-    consume?: Maybe<boolean>,
-    caseFold?: Maybe<boolean>,
-  ) => string[] | boolean;
-  backUp: (num: number) => void;
-  column: () => number;
-  indentation: () => number;
-  current: () => string;
-}
-
-// Cache and config-related.
-export type GraphQLConfiguration = GraphQLProjectConfiguration & {
-  projects?: {
-    [projectName: string]: GraphQLProjectConfiguration;
-  };
-};
-
-export type GraphQLProjectConfiguration = {
-  // The name for this project configuration.
-  // If not supplied, the object key can be used for the project name.
-  name?: string;
-  schemaPath?: string; // a file with schema IDL
-
-  // For multiple applications with overlapping files,
-  // these configuration options may be helpful
-  includes?: string[];
-  excludes?: string[];
-
-  // If you'd like to specify any other configurations,
-  // we provide a reserved namespace for it
-  extensions?: GraphQLConfigurationExtension;
-};
-
-export type GraphQLConfigurationExtension = {
-  [name: string]: unknown;
-};
+import {
+  GraphQLConfig,
+  GraphQLProjectConfig,
+  GraphQLExtensionDeclaration,
+} from 'graphql-config';
+export { GraphQLConfig, GraphQLProjectConfig, GraphQLExtensionDeclaration };
 
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;
@@ -149,7 +99,7 @@ export interface GraphQLCache {
 }
 
 // online-parser related
-export type Position = PositionType & {
+export type Position = {
   line: number;
   character: number;
   lessThanOrEqualTo?: (position: Position) => boolean;
@@ -164,64 +114,6 @@ export interface Range {
 export type CachedContent = {
   query: string;
   range: Range | null;
-};
-
-export type RuleOrString = Rule | string;
-
-export type ParseRule =
-  | RuleOrString[]
-  | ((token: Token, stream: CharacterStream) => string | null | void);
-
-export type Token = {
-  kind: string;
-  value: string;
-};
-
-export type Rule = {
-  style?: string;
-  match?: (token: Token) => boolean;
-  update?: (state: State, token: Token) => void;
-  separator?: string | Rule;
-  isList?: boolean;
-  ofRule?: Rule | string;
-};
-
-export type RuleKind =
-  | KindEnum
-  | 'AliasedField'
-  | 'Arguments'
-  | 'ShortQuery'
-  | 'Query'
-  | 'Mutation'
-  | 'Subscription'
-  | 'TypeCondition'
-  | 'Invalid'
-  | 'Comment'
-  | 'SchemaDef'
-  | 'ScalarDef'
-  | 'ObjectTypeDef'
-  | 'InterfaceDef'
-  | 'UnionDef'
-  | 'EnumDef'
-  | 'FieldDef'
-  | 'InputDef'
-  | 'InputValueDef'
-  | 'ArgumentsDef'
-  | 'ExtendDef'
-  | 'DirectiveDef';
-
-export type State = {
-  level: number;
-  levels?: number[];
-  prevState: Maybe<State>;
-  rule: Maybe<ParseRule>;
-  kind: Maybe<RuleKind>;
-  name: Maybe<string>;
-  type: Maybe<string>;
-  step: number;
-  needsSeperator: boolean;
-  needsAdvance?: boolean;
-  indentLevel?: number;
 };
 
 // GraphQL Language Service related types
@@ -241,24 +133,6 @@ export type GraphQLFileInfo = {
   size: number;
   mtime: number;
 };
-
-export type ContextToken = {
-  start: number;
-  end: number;
-  string: string;
-  state: State;
-  style: string;
-};
-
-export type ContextTokenForCodeMirror = {
-  start: number;
-  end: number;
-  string: string;
-  type: string | null;
-  state: State;
-};
-
-export type ContextTokenUnion = ContextToken | ContextTokenForCodeMirror;
 
 export type AllTypeInfo = {
   type: Maybe<GraphQLType>;

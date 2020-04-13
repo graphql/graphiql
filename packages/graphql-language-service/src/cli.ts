@@ -83,6 +83,7 @@ const { argv } = yargs
       'Can be one of: stream, node, socket.\n' +
       'Will default to use a node IPC channel for communication.\n',
     type: 'string',
+    default: 'node',
   })
   .option('p', {
     alias: 'port',

@@ -26,7 +26,7 @@ import { ExecutableDefinitions } from 'graphql/validation/rules/ExecutableDefini
 export function validateWithCustomRules(
   schema: GraphQLSchema,
   ast: DocumentNode,
-  customRules?: Array<ValidationRule>,
+  customRules?: Array<ValidationRule> | null,
   isRelayCompatMode?: boolean,
 ): Array<GraphQLError> {
   const rules = specifiedRules.filter(rule => {
