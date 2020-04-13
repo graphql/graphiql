@@ -1,5 +1,5 @@
 import Layout from './Layout';
-import { Colors, Space, GraphiQLTheme } from '../index';
+import { Colors, Space, GraphiQLTheme } from '../types';
 
 const palette = {
   neutral: {

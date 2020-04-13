@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, SxStyleProp } from 'theme-ui';
 import { PropsWithChildren } from 'react';
-import { GraphiQLTheme, PanelSize, LayoutPropTypes } from '../index';
+import { GraphiQLTheme, PanelSize, LayoutPropTypes } from '../types';
 
 const NAV_WIDTH = '6em';
 const CONTENT_MIN_WIDTH = '60em';
