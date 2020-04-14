@@ -28,7 +28,7 @@ export {
   getDefinitionQueryResultForDefinitionNode,
 } from './getDefinition';
 
-export { getDiagnostics, validateQuery } from './getDiagnostics';
+export * from './getDiagnostics';
 export { getOutline } from './getOutline';
 export { getHoverInformation } from './getHoverInformation';
 
