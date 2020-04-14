@@ -223,9 +223,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
-    const schema = await this._graphQLCache
-      .getSchema(projectConfig.name)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
       return getAutocompleteSuggestions(schema, query, position);
@@ -239,9 +237,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
-    const schema = await this._graphQLCache
-      .getSchema(projectConfig.name)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
       return getHoverInformation(schema, query, position);
