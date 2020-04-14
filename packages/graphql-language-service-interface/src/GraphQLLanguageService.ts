@@ -37,7 +37,7 @@ import {
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
 import { getHoverInformation } from './getHoverInformation';
-import { validateQuery, getRange, SEVERITY } from './getDiagnostics';
+import { validateQuery, getRange, DIAGNOSTIC_SEVERITY } from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
@@ -155,7 +155,7 @@ export class GraphQLLanguageService {
       const range = getRange(error.locations[0], query);
       return [
         {
-          severity: SEVERITY.ERROR,
+          severity: DIAGNOSTIC_SEVERITY.Error,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
