@@ -1,5 +1,9 @@
-// / <reference path="../../../node_modules/monaco-editor/monaco.d.ts"/>
-
+/**
+ *  Copyright (c) 2020 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 declare module monaco.languages.graphql {
   export interface IDisposable {
     dispose(): void;
@@ -17,14 +21,19 @@ declare module monaco.languages.graphql {
      * If set, comments are tolerated. If set to false, syntax errors will be emitted for comments.
      */
     readonly allowComments?: boolean;
+
+    /**
+     * we'll just use this for now
+     */
+    readonly schemaUri: string;
     /**
      * A list of known schemas and/or associations of schemas to file names.
      */
-    readonly schemas?: {
+    readonly schemas?: Array<{
       /**
        * The URI of the schema, which is also the identifier of the schema.
        */
-      readonly uri: string;
+      readonly uri?: string;
       /**
        * A list of file names that are associated to the schema. The '*' wildcard can be used. For example '*.schema.json', 'package.json'
        */
@@ -33,7 +42,7 @@ declare module monaco.languages.graphql {
        * The schema for the given URI.
        */
       readonly schema?: any;
-    }[];
+    }>;
     /**
      *  If set, the schema service would load schema content on-demand with 'fetch' if available
      */
@@ -100,7 +109,7 @@ declare module monaco.languages.graphql {
     setModeConfiguration(modeConfiguration: ModeConfiguration): void;
   }
 
-  export const graphqlDefaults: LanguageServiceDefaults;
+  // export const graphqlDefaults: LanguageServiceDefaults;
 }
 
 // declare module ''monaco-editor-core/esm/vs/editor/editor.worker';

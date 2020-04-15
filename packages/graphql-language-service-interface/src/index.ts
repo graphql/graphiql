@@ -13,18 +13,9 @@ export * from './getAutocompleteSuggestions';
 
 export * from './getDefinition';
 
-export {
-  getDiagnostics,
-  validateQuery,
-  DIAGNOSTIC_SEVERITY,
-  SEVERITY
-} from './getDiagnostics';
+export * from './getDiagnostics';
 
 export { getOutline } from './getOutline';
 export { getHoverInformation } from './getHoverInformation';
 
 export * from './GraphQLLanguageService';
-export * from './GraphQLCache';
-export * from './parseDocument';
-export * from './findGraphQLTags';
-export * from './stringToHash';

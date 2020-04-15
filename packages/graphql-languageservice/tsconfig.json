@@ -19,11 +19,6 @@
       "path": "../graphql-language-service-utils"
     }
   ],
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "**/__tests__/**",
-    "**/*.spec.*"
-  ]
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

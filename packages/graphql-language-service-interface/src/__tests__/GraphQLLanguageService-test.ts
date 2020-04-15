@@ -18,7 +18,7 @@ const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
   config: {
     schema: './__schema__/StarWarsSchema.graphql',
-    documents: ['./__queries__/**', '**/*.graphql'],
+    documents: ['./queries/**', '**/*.graphql'],
   },
 };
 

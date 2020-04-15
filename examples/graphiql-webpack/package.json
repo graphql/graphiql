@@ -11,7 +11,7 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
-    "graphiql": "1.0.0-alpha.5",
+    "graphiql": "file:../../packages/graphiql",
     "graphql": "15.0.0",
     "react": "16.13.1"
   },

@@ -12,6 +12,7 @@ import { URL } from 'url';
 
 import {
   CachedContent,
+  GraphQLCache,
   Uri,
   FileChangeTypeKind,
   DefinitionQueryResult,
@@ -49,11 +50,8 @@ import {
   SymbolInformation,
 } from 'vscode-languageserver';
 
-import {
-  getGraphQLCache,
-  GraphQLCache,
-  parseDocument,
-} from 'graphql-languageservice';
+import { getGraphQLCache } from './GraphQLCache';
+import { parseDocument } from './parseDocument';
 
 import { Logger } from './Logger';
 

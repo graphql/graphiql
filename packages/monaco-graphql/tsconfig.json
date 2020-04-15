@@ -14,7 +14,10 @@
       "es2015.promise",
       "es2015.iterable",
       "es6"
-    ]
+    ],
+    "paths": {
+      "*": ["*"]
+    }
   },
   "references": [
     {

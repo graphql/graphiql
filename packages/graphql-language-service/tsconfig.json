@@ -11,8 +11,15 @@
       "path": "../graphql-language-service-server"
     },
     {
-      "path": "../graphql-languageservice"
+      "path": "../graphql-language-service-interface"
+    },
+    {
+      "path": "../graphql-language-service-utils"
+    },
+    {
+      "path": "../graphql-language-service-types"
     }
   ],
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

@@ -9,9 +9,7 @@
     "target": "es5",
     "strictPropertyInitialization": false
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",

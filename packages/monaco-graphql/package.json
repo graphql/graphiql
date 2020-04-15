@@ -1,9 +1,20 @@
 {
   "name": "monaco-graphql",
-  "version": "2.3.4-alpha.4",
+  "description": "full service, official monaco mode for GraphQL",
+  "version": "2.3.4-alpha.5",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
-  "typings": "dist/monaco.contribution.d.ts",
+  "typings": "dist/typings/monaco.d.ts",
+  "contributors": [
+    {
+      "name": "Peng Lyu",
+      "url": "https://github.com/rebornix"
+    },
+    {
+      "name": "Rikki Schulte",
+      "url": "https://github.com/acao"
+    }
+  ],
   "dependencies": {
     "@graphql-toolkit/module-loader": "0.9.9",
     "graphql-language-service-utils": "^2.4.0-alpha.3",

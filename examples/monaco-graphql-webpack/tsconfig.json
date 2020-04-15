@@ -14,5 +14,5 @@
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/build/**.*"]
+  "exclude": ["**/__tests__/**", "**/build/**.*", "../../node_modules"]
 }

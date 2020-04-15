@@ -56,7 +56,7 @@
     "watch": "yarn tsc --watch",
     "start-graphiql": "yarn workspace graphiql dev"
   },
-  "dependencies": {
+  "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",

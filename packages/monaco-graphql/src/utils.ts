@@ -1,41 +1,58 @@
-import * as monaco from 'monaco-editor';
-import { Diagnostic } from 'graphql-languageservice';
-import {
-  Position as PositionType,
-  CompletionItem as CompletionItemType,
-} from 'vscode-languageserver-types';
+/**
+ *  Copyright (c) 2020 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
 
-export type CompletionItem = CompletionItemType & {
+import * as monaco from 'monaco-editor';
+import {
+  Range as GraphQLRange,
+  Position as GraphQLPosition,
+} from 'graphql-language-service-types';
+
+export interface ICreateData {
+  languageId: string;
+  enableSchemaRequest: boolean;
+  schemaUrl: String;
+}
+import {
+  Diagnostic,
+  CompletionItem as GraphQLCompletionItem,
+} from 'graphql-languageservice';
+
+export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
 };
 
-// online-parser related
-export type Position = PositionType & {
-  line: number;
-  character: number;
-  lessThanOrEqualTo?: (position: Position) => boolean;
-};
-
-export interface Range {
-  start: Position;
-  end: Position;
-  containsPosition: (position: Position) => boolean;
+export function toMonacoRange(range: GraphQLRange): monaco.IRange {
+  return {
+    startLineNumber: range.start.line + 1,
+    startColumn: range.start.character + 1,
+    endLineNumber: range.end.line + 1,
+    endColumn: range.end.character + 1,
+  };
 }
 
-export interface Range {
-  start: Position;
-  end: Position;
-  containsPosition: (position: Position) => boolean;
+export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
+  return { line: position.lineNumber - 1, character: position.column - 1 };
 }
 
-export function toRange(range: Range): monaco.IRange {
-  return new monaco.Range(
-    range.start.line + 1,
-    range.start.character + 1,
-    range.end.line + 1,
-    range.end.character + 1,
-  );
+export function toCompletion(
+  entry: GraphQLCompletionItem,
+  range: GraphQLRange,
+): GraphQLCompletionItem & { range: monaco.IRange } {
+  return {
+    label: entry.label,
+    insertText: entry.insertText || (entry.label as string),
+    sortText: entry.sortText,
+    filterText: entry.filterText,
+    documentation: entry.documentation,
+    detail: entry.detail,
+    range: toMonacoRange(range),
+    kind: entry.kind,
+  };
 }
 
 export function toMarkerData(
@@ -47,56 +64,7 @@ export function toMarkerData(
     startColumn: diagnostic.range.start.character + 1,
     endColumn: diagnostic.range.end.character + 1,
     message: diagnostic.message,
-    severity: diagnostic.severity as monaco.MarkerSeverity,
+    severity: 5 || (diagnostic.severity as monaco.MarkerSeverity),
     code: (diagnostic.code as string) || undefined,
   };
 }
-
-export function toCompletion(
-  entry: CompletionItem,
-  range: Range,
-): monaco.languages.CompletionItem {
-  return {
-    label: entry.label,
-    insertText: entry.insertText || entry.label,
-    sortText: entry.sortText,
-    filterText: entry.filterText,
-    documentation: entry.documentation,
-    detail: entry.detail,
-    range: toRange(range),
-    kind: entry.kind as monaco.languages.CompletionItemKind,
-  };
-}
-
-// export function toGraphQLPosition(position: monaco.Position): Position {
-//   return {
-//     line: position.lineNumber - 1,
-//     character: position.column - 1,
-//   };
-// }
-
-export function fromPosition(position: monaco.Position): Position | void {
-  if (!position) {
-    return;
-  }
-  return { character: position.column - 1, line: position.lineNumber - 1 };
-}
-
-// export function fromRange(range: monaco.IRange): Range | void {
-//   if (!range) {
-//     return;
-//   }
-//   return {
-//     start: {
-//       line: range.startLineNumber - 1,
-//       character: range.startColumn - 1,
-//     },
-//     end: { line: range.endLineNumber - 1, character: range.endColumn - 1 },
-//     containsPosition: pos => {
-//       return monaco.Range.containsPosition(range, {
-//         lineNumber: pos.line,
-//         column: pos.character,
-//       });
-//     },
-//   };
-// }

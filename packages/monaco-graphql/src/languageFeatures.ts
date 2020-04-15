@@ -1,17 +1,25 @@
+/**
+ *  Copyright (c) 2020 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import { GraphQLWorker } from './graphql.worker';
+import { LanguageServiceDefaultsImpl } from './defaults';
 
-import * as monaco from 'monaco-editor';
 import {
-  CompletionItem as lsCompletionItem,
-  CompletionItemKind as lsCompletionItemKind,
-} from 'vscode-languageserver-types';
-
-import Uri = monaco.Uri;
-import Position = monaco.Position;
-import Thenable = monaco.Thenable;
-import CancellationToken = monaco.CancellationToken;
-import IDisposable = monaco.IDisposable;
-
+  Uri,
+  Position,
+  Thenable,
+  CancellationToken,
+  IDisposable,
+  editor,
+  languages,
+  IRange,
+} from 'monaco-editor';
+import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
+import { CompletionItem as GraphQLCompletionItem } from 'graphql-languageservice';
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }
@@ -23,14 +31,13 @@ export class DiagnosticsAdapter {
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
-    // @ts-ignore
-    private defaults: monaco.languages.graphql.LanguageServiceDefaultsImpl,
+    private defaults: LanguageServiceDefaultsImpl,
     private _worker: WorkerAccessor,
   ) {
     this._worker = _worker;
-    const onModelAdd = (model: monaco.editor.IModel): void => {
+    const onModelAdd = (model: editor.IModel): void => {
       const modeId = model.getModeId();
-      if (modeId !== this.defaults._languageId) {
+      if (modeId !== this.defaults.languageId) {
         return;
       }
 
@@ -44,8 +51,8 @@ export class DiagnosticsAdapter {
       this._doValidate(model.uri, modeId);
     };
 
-    const onModelRemoved = (model: monaco.editor.IModel): void => {
-      monaco.editor.setModelMarkers(model, this.defaults._languageId, []);
+    const onModelRemoved = (model: editor.IModel): void => {
+      editor.setModelMarkers(model, this.defaults.languageId, []);
       const uriStr = model.uri.toString();
       const listener = this._listener[uriStr];
       if (listener) {
@@ -54,14 +61,14 @@ export class DiagnosticsAdapter {
       }
     };
 
-    this._disposables.push(monaco.editor.onDidCreateModel(onModelAdd));
+    this._disposables.push(editor.onDidCreateModel(onModelAdd));
     this._disposables.push(
-      monaco.editor.onWillDisposeModel(model => {
+      editor.onWillDisposeModel(model => {
         onModelRemoved(model);
       }),
     );
     this._disposables.push(
-      monaco.editor.onDidChangeModelLanguage(event => {
+      editor.onDidChangeModelLanguage(event => {
         onModelRemoved(event.model);
         onModelAdd(event.model);
       }),
@@ -69,8 +76,8 @@ export class DiagnosticsAdapter {
 
     this._disposables.push(
       defaults.onDidChange((_: any) => {
-        monaco.editor.getModels().forEach(model => {
-          if (model.getModeId() === this.defaults._languageId) {
+        editor.getModels().forEach(model => {
+          if (model.getModeId() === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }
@@ -86,7 +93,7 @@ export class DiagnosticsAdapter {
       },
     });
 
-    monaco.editor.getModels().forEach(onModelAdd);
+    editor.getModels().forEach(onModelAdd);
   }
 
   public dispose(): void {
@@ -98,15 +105,15 @@ export class DiagnosticsAdapter {
     const worker = await this._worker(resource);
 
     const diagnostics = await worker.doValidation(resource.toString());
-    monaco.editor.setModelMarkers(
-      monaco.editor.getModel(resource) as monaco.editor.ITextModel,
+    editor.setModelMarkers(
+      editor.getModel(resource) as editor.ITextModel,
       languageId,
       diagnostics,
     );
   }
 }
 
-const mKind = monaco.languages.CompletionItemKind;
+const mKind = languages.CompletionItemKind;
 export function toCompletionItemKind(kind: lsCompletionItemKind) {
   switch (kind) {
     case lsCompletionItemKind.Text:
@@ -165,9 +172,8 @@ export function toCompletionItemKind(kind: lsCompletionItemKind) {
 }
 
 export function toCompletion(
-  entry: lsCompletionItem & { range: monaco.IRange },
-): monaco.languages.CompletionItem {
-  // @ts-ignore
+  entry: GraphQLCompletionItem & { range: IRange },
+): languages.CompletionItem {
   return {
     label: entry.label,
     insertText: entry.insertText || (entry.label as string),
@@ -180,8 +186,7 @@ export function toCompletion(
   };
 }
 
-export class CompletionAdapter
-  implements monaco.languages.CompletionItemProvider {
+export class CompletionAdapter implements languages.CompletionItemProvider {
   constructor(private _worker: WorkerAccessor) {
     // this._worker = _worker
   }
@@ -191,15 +196,14 @@ export class CompletionAdapter
   }
 
   async provideCompletionItems(
-    model: monaco.editor.IReadOnlyModel,
+    model: editor.IReadOnlyModel,
     position: Position,
-    _context: monaco.languages.CompletionContext,
+    _context: languages.CompletionContext,
     _token: CancellationToken,
-  ): Promise<monaco.languages.CompletionList> {
+  ): Promise<languages.CompletionList> {
     try {
       const resource = model.uri;
       const worker = await this._worker(model.uri);
-      // @ts-ignore
       const completionItems = await worker.doComplete(
         resource.toString(),
         position,
@@ -215,22 +219,50 @@ export class CompletionAdapter
   }
 }
 
-export class HoverAdapter implements monaco.languages.HoverProvider {
+export class DocumentFormattingAdapter
+  implements languages.DocumentFormattingEditProvider {
+  constructor(
+    // private _defaults: LanguageServiceDefaultsImpl,
+    private _worker: WorkerAccessor,
+  ) {
+    // this._defaults = _defaults;
+    this._worker = _worker;
+  }
+  async provideDocumentFormattingEdits(
+    document: editor.ITextModel,
+    _options: languages.FormattingOptions,
+    _token: CancellationToken,
+  ) {
+    const worker = await this._worker(document.uri);
+    const text = document.getValue();
+
+    const formatted = await worker.doFormat(
+      text,
+      // this._defaults.modeConfiguration.formattingOptions,
+    );
+    return [
+      {
+        range: document.getFullModelRange(),
+        text: formatted,
+      },
+    ];
+  }
+}
+
+export class HoverAdapter implements languages.HoverProvider {
   constructor(private _worker: WorkerAccessor) {}
 
   async provideHover(
-    model: monaco.editor.IReadOnlyModel,
+    model: editor.IReadOnlyModel,
     position: Position,
     _token: CancellationToken,
-  ): Promise<monaco.languages.Hover> {
+  ): Promise<languages.Hover> {
     const resource = model.uri;
     const worker = await this._worker(model.uri);
-    // @ts-ignore
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
-      console.log(hoverItem.range);
-      return <monaco.languages.Hover>{
+      return <languages.Hover>{
         range: hoverItem.range,
         contents: [{ value: hoverItem.content }],
       };

@@ -11,5 +11,5 @@
     }
   ],
   "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

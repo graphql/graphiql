@@ -10,6 +10,7 @@
 import { ASTNode, DocumentNode, DefinitionNode } from 'graphql/language';
 import {
   CachedContent,
+  GraphQLCache as GraphQLCacheInterface,
   GraphQLFileMetadata,
   GraphQLFileInfo,
   FragmentInfo,
@@ -56,7 +57,7 @@ export async function getGraphQLCache(
   parser: typeof parseDocument,
   extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
   config?: GraphQLConfig,
-): Promise<GraphQLCache> {
+): Promise<GraphQLCacheInterface> {
   let graphQLConfig =
     config ?? ((await loadConfig({ rootDir: configDir })) as GraphQLConfig);
   if (extensions && extensions.length > 0) {
@@ -67,7 +68,7 @@ export async function getGraphQLCache(
   return new GraphQLCache(configDir, graphQLConfig, parser);
 }
 
-export class GraphQLCache {
+export class GraphQLCache implements GraphQLCacheInterface {
   _configDir: Uri;
   _graphQLFileListCache: Map<Uri, Map<string, GraphQLFileInfo>>;
   _graphQLConfig: GraphQLConfig;
@@ -678,7 +679,7 @@ export class GraphQLCache {
   }
 
   _getProjectName(projectConfig: GraphQLProjectConfig) {
-    return projectConfig;
+    return projectConfig || 'default';
   }
 
   /**

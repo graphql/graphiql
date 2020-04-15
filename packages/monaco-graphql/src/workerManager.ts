@@ -1,5 +1,12 @@
+/**
+ *  Copyright (c) 2020 GraphQL Contributors.
+ *
+ *  This source code is licensed under the MIT license found in the
+ *  LICENSE file in the root directory of this source tree.
+ */
+
 import * as monaco from 'monaco-editor';
-import { LanguageServiceDefaultsImpl } from './monaco.contribution';
+import { LanguageServiceDefaultsImpl } from './defaults';
 import { GraphQLWorker } from './graphql.worker';
 
 import IDisposable = monaco.IDisposable;
@@ -69,6 +76,7 @@ export class WorkerManager {
           languageId: this._defaults.languageId,
           enableSchemaRequest: this._defaults.diagnosticsOptions
             .enableSchemaRequest,
+          schemaUrl: this._defaults.diagnosticsOptions.schemaUri,
         },
       });
       this._client = await this._worker.getProxy();

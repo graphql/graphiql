@@ -1,8 +1,8 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+
 import 'regenerator-runtime/runtime';
 import 'monaco-graphql/esm/monaco.contribution';
-import * as prettierStandalone from 'prettier/standalone';
-import * as prettierGraphqlParser from 'prettier/parser-graphql';
+
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
@@ -13,6 +13,7 @@ import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.wo
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 const SCHEMA_URL = 'https://swapi-graphql.netlify.com/.netlify/functions/index';
+
 // @ts-ignore
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
@@ -26,11 +27,30 @@ window.MonacoEnvironment = {
   },
 };
 
+// const schemaInput = document.createElement('input');
+// schemaInput.type = 'text'
+
+// // @ts-ignore
+// schemaInput.value = SCHEMA_URL
+
+// schemaInput.onchange = (e) => {
+//   e.preventDefault()
+//   console.log(e.target.value)
+// }
+
+// const toolbar = document.getElementById('toolbar')
+// toolbar?.appendChild(schemaInput)
+
+const variablesModel = monaco.editor.createModel(
+  `{}`,
+  'json',
+  monaco.Uri.file('/1/variables.json'),
+);
+
 const resultsEditor = monaco.editor.create(
   document.getElementById('results') as HTMLElement,
   {
-    value: `{ }`,
-    language: 'json',
+    model: variablesModel,
   },
 );
 const variablesEditor = monaco.editor.create(
@@ -51,7 +71,7 @@ query Example {
 }
 `,
   'graphqlDev',
-  monaco.Uri.file('/1.graphql'),
+  monaco.Uri.file('/1/operation.graphql'),
 );
 
 const operationEditor = monaco.editor.create(
@@ -86,18 +106,14 @@ async function executeCurrentOp() {
   }
 }
 
-const opAction = {
-  id: 'run',
+const opAction: monaco.editor.IActionDescriptor = {
+  id: 'graphql-run',
   label: 'Run Operation',
+  contextMenuOrder: 0,
+  contextMenuGroupId: 'graphql',
   keybindings: [
     // eslint-disable-next-line no-bitwise
     monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-    // eslint-disable-next-line no-bitwise
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S,
-    // eslint-disable-next-line no-bitwise
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_R,
-    // eslint-disable-next-line no-bitwise
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_Q,
   ],
   run: executeCurrentOp,
 };
@@ -106,26 +122,16 @@ operationEditor.addAction(opAction);
 variablesEditor.addAction(opAction);
 resultsEditor.addAction(opAction);
 
-/**
- * Basic custom formatter/language functionality example
- */
-
-monaco.languages.registerDocumentFormattingEditProvider('graphqlDev', {
-  provideDocumentFormattingEdits: (
-    document: monaco.editor.ITextModel,
-    _options: monaco.languages.FormattingOptions,
-    _token: monaco.CancellationToken,
-  ) => {
-    const text = document.getValue();
-    const formatted = prettierStandalone.format(text, {
-      parser: 'graphql',
-      plugins: [prettierGraphqlParser],
-    });
-    return [
-      {
-        range: document.getFullModelRange(),
-        text: formatted,
-      },
-    ];
-  },
-});
+// add your own diagnostics? why not!
+// monaco.editor.setModelMarkers(
+//   model,
+//   'graphql',
+//   [{
+//     severity: 5,
+//     message: 'An example diagnostic error',
+//     startColumn: 2,
+//     startLineNumber: 4,
+//     endLineNumber: 4,
+//     endColumn: 0,
+//   }],
+// );

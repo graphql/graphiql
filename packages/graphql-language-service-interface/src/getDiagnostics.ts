@@ -31,6 +31,7 @@ import {
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
 // this doesn't work without the 'as', kinda goofy
+
 export const SEVERITY = {
   Error: 'Error' as 'Error',
   Warning: 'Warning' as 'Warning',
@@ -94,8 +95,8 @@ export function validateQuery(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-      annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
-    );
+        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+      );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
@@ -122,8 +123,8 @@ function annotations(
       node.kind !== 'Variable' && 'name' in node
         ? node.name
         : 'variable' in node
-          ? node.variable
-          : node;
+        ? node.variable
+        : node;
     if (highlightNode) {
       invariant(
         error.locations,
@@ -147,45 +148,6 @@ function annotations(
     }
   });
   return highlightedNodes;
-}
-
-export function getTokenRange(
-  location: SourceLocation,
-  queryText: string,
-): Range {
-  const parser = onlineParser();
-  const state = parser.startState();
-  const lines = queryText.split('\n');
-
-  invariant(
-    lines.length >= location.line,
-    'Query text must have more lines than where the error happened',
-  );
-
-  let stream = null;
-
-  for (let i = 0; i < location.line; i++) {
-    stream = new CharacterStream(lines[i]);
-    while (!stream.eol()) {
-      parser.token(stream, state);
-
-      if (
-        i === location.line - 1 &&
-        location.column - 1 >= stream._start &&
-        location.column - 1 <= stream._pos
-      ) {
-        return new Range(
-          new Position(location.line - 1, stream._start),
-          new Position(location.line - 1, stream._pos),
-        );
-      }
-    }
-  }
-
-  return new Range(
-    new Position(location.line - 1, location.column - 1),
-    new Position(location.line - 1, location.column - 1),
-  );
 }
 
 export function getRange(location: SourceLocation, queryText: string): Range {
