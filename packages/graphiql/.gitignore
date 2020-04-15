@@ -2,6 +2,7 @@ dist/
 esm/
 cdn/
 webpack/
+monaco/
 cdn.html
 analyzer.html
 /graphiql.*js
