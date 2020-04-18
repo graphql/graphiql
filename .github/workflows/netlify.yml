@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
-      - run: yarn build && yarn build-bundles && yarn build-demo
+      - run: yarn build-ts && yarn build-demo
 
       - name: Deploy to netlify
         uses: netlify/actions/cli@master
