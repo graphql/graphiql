@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.6...graphql-language-service@2.4.0-alpha.7) (2020-04-10)
+
+**Note:** Version bump only for package graphql-language-service
+
+# [2.4.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.5...graphql-language-service@2.4.0-alpha.6) (2020-04-10)
+
+**Note:** Version bump only for package graphql-language-service
+
+# [2.4.0-alpha.5](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.4...graphql-language-service@2.4.0-alpha.5) (2020-04-06)
+
+### Features
+
+- upgrade to graphql@15.0.0 for [#1191](https://github.com/graphql/graphiql/issues/1191) ([#1204](https://github.com/graphql/graphiql/issues/1204)) ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
+
+# [2.4.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.3...graphql-language-service@2.4.0-alpha.4) (2020-04-03)
+
+**Note:** Version bump only for package graphql-language-service
+
+# [2.4.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.2...graphql-language-service@2.4.0-alpha.3) (2020-03-20)
+
+**Note:** Version bump only for package graphql-language-service
+
+# [2.4.0-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.0...graphql-language-service@2.4.0-alpha.2) (2020-03-20)
+
+### Bug Fixes
+
+- error formatting, [#1319](https://github.com/graphql/graphiql/issues/1319) ([#1381](https://github.com/graphql/graphiql/issues/1381)) ([16509a4](https://github.com/graphql/graphiql/commit/16509a4278d523a7f0a96c846cc0f370d29a0700))
+
+### Features
+
+- **cli:** recommend matching commmands ([#1420](https://github.com/graphql/graphiql/issues/1420)) ([0fbae82](https://github.com/graphql/graphiql/commit/0fbae828ced2e8b95016268805654cde8322b076))
+- **graphql-config:** add graphql config extensions ([#1118](https://github.com/graphql/graphiql/issues/1118)) ([2a77e47](https://github.com/graphql/graphiql/commit/2a77e47719ec9181a00183a08ffa11287b8fd2f5))
+- capture unknown commands making use of the inhouse s… ([#1417](https://github.com/graphql/graphiql/issues/1417)) ([dd12a6b](https://github.com/graphql/graphiql/commit/dd12a6b903976ce8d35cf91d3c9606450f1c0990))
+- use new GraphQL Config ([#1342](https://github.com/graphql/graphiql/issues/1342)) ([e45838f](https://github.com/graphql/graphiql/commit/e45838f5ba579e05b20f1a147ce431478ffad9aa))
+
 # [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@2.3.4...graphql-language-service@2.4.0-alpha.1) (2020-01-18)
 
 ### Features

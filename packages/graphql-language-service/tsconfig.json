@@ -3,7 +3,8 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "target": "ES2017"
   },
   "references": [
     {
@@ -19,5 +20,6 @@
       "path": "../graphql-language-service-types"
     }
   ],
+  "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

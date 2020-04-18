@@ -19,8 +19,8 @@ import {
   FragmentDefinitionNode,
   TypeDefinitionNode,
 } from 'graphql';
-import { GraphQLCache } from '../GraphQLCache';
-import { getQueryAndRange } from '../MessageProcessor';
+import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
+import { parseDocument } from '../parseDocument';
 import { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service-types';
 
 function wihtoutASTNode(definition: any) {
@@ -32,15 +32,35 @@ function wihtoutASTNode(definition: any) {
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
-  let cache = new GraphQLCache(configDir, graphQLRC);
+  let cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
 
   beforeEach(async () => {
     graphQLRC = await loadConfig({ rootDir: configDir });
-    cache = new GraphQLCache(configDir, graphQLRC);
+    cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
   });
 
   afterEach(() => {
     fetchMock.restore();
+  });
+
+  describe('getGraphQLCache', () => {
+    it('should apply extensions', async () => {
+      const extension = config => {
+        return {
+          ...config,
+          extension: 'extension-used', // Just adding a key to the config to demo extension usage
+        };
+      };
+      const extensions = [extension];
+      const cacheWithExtensions = await getGraphQLCache(
+        configDir,
+        parseDocument,
+        extensions,
+      );
+      const config = cacheWithExtensions.getGraphQLConfig();
+      expect('extension' in config).toBe(true);
+      expect((config as any).extension).toBe('extension-used');
+    });
   });
 
   describe('getSchema', () => {
@@ -145,7 +165,7 @@ describe('GraphQLCache', () => {
         '    `,\n' +
         '  },\n' +
         '});';
-      const contents = getQueryAndRange(text, 'test.js');
+      const contents = parseDocument(text, 'test.js');
       const result = await cache.getFragmentDependenciesForAST(
         parse(contents[0].query),
         fragmentDefinitions,

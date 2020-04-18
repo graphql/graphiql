@@ -68,16 +68,18 @@ declare namespace global {
 
 export type Maybe<T> = T | null | undefined;
 
-type FetcherParams = {
+export type FetcherParams = {
   query: string;
   operationName: string;
   variables?: string;
 };
-type FetcherResult =
-  | string
+export type FetcherResult =
   | {
       data: IntrospectionQuery;
-    };
+    }
+  | string
+  | { data: any };
+
 export type Fetcher = (
   graphQLParams: FetcherParams,
 ) => Promise<FetcherResult> | Observable<FetcherResult>;
@@ -87,7 +89,7 @@ type OnMouseMoveFn = Maybe<
 >;
 type OnMouseUpFn = Maybe<() => void>;
 
-type GraphiQLProps = {
+export type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
   query?: string;
@@ -98,7 +100,7 @@ type GraphiQLProps = {
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
-  onEditQuery?: () => void;
+  onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
@@ -110,7 +112,7 @@ type GraphiQLProps = {
   docExplorerOpen?: boolean;
 };
 
-type GraphiQLState = {
+export type GraphiQLState = {
   schema?: GraphQLSchema;
   query?: string;
   variables?: string;
@@ -713,7 +715,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     fetch
       .then(result => {
-        if (typeof result !== 'string' && result.data) {
+        if (typeof result !== 'string' && 'data' in result) {
           return result;
         }
 
@@ -740,7 +742,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           return;
         }
 
-        if (typeof result !== 'string' && result && result.data) {
+        if (typeof result !== 'string' && 'data' in result) {
           const schema = buildClientSchema(result.data);
           const queryFacts = getQueryFacts(schema, this.state.query);
           this.setState({ schema, ...queryFacts });
@@ -978,7 +980,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       ...queryFacts,
     });
     if (this.props.onEditQuery) {
-      return this.props.onEditQuery();
+      return this.props.onEditQuery(value);
     }
   });
 
@@ -1314,7 +1316,7 @@ const defaultQuery = `# Welcome to GraphiQL
 # typeaheads aware of the current GraphQL type schema and live syntax and
 # validation errors highlighted within the text.
 #
-# GraphQL queries typically start with a "{" character. Lines that starts
+# GraphQL queries typically start with a "{" character. Lines that start
 # with a # are ignored.
 #
 # An example GraphQL query might look like:

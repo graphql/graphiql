@@ -30,11 +30,24 @@ import {
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
+// this doesn't work without the 'as', kinda goofy
+
 export const SEVERITY = {
-  ERROR: 1 as DiagnosticSeverity,
-  WARNING: 2 as DiagnosticSeverity,
-  INFORMATION: 3 as DiagnosticSeverity,
-  HINT: 4 as DiagnosticSeverity,
+  Error: 'Error' as 'Error',
+  Warning: 'Warning' as 'Warning',
+  Information: 'Information' as 'Information',
+  Hint: 'Hint' as 'Hint',
+};
+
+export type Severity = typeof SEVERITY;
+
+export type SeverityEnum = keyof Severity;
+
+export const DIAGNOSTIC_SEVERITY = {
+  [SEVERITY.Error]: 1 as DiagnosticSeverity,
+  [SEVERITY.Warning]: 2 as DiagnosticSeverity,
+  [SEVERITY.Information]: 3 as DiagnosticSeverity,
+  [SEVERITY.Hint]: 4 as DiagnosticSeverity,
 };
 
 export function getDiagnostics(
@@ -50,7 +63,7 @@ export function getDiagnostics(
     const range = getRange(error.locations[0], query);
     return [
       {
-        severity: SEVERITY.ERROR as DiagnosticSeverity,
+        severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
         message: error.message,
         source: 'GraphQL: Syntax',
         range,
@@ -64,7 +77,7 @@ export function getDiagnostics(
 export function validateQuery(
   ast: DocumentNode,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<ValidationRule>,
+  customRules?: Array<ValidationRule> | null,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   // We cannot validate the query unless a schema is provided.
@@ -74,7 +87,7 @@ export function validateQuery(
 
   const validationErrorAnnotations = mapCat(
     validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, SEVERITY.ERROR, 'Validation'),
+    error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
@@ -82,7 +95,7 @@ export function validateQuery(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, SEVERITY.WARNING, 'Deprecation'),
+        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
       );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);

@@ -27,7 +27,7 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-config';
-import { getQueryAndRange } from './MessageProcessor';
+import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 
@@ -54,9 +54,18 @@ const {
 
 export async function getGraphQLCache(
   configDir: Uri,
+  parser: typeof parseDocument,
+  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  config?: GraphQLConfig,
 ): Promise<GraphQLCacheInterface> {
-  const graphQLConfig = await loadConfig({ rootDir: configDir });
-  return new GraphQLCache(configDir, graphQLConfig);
+  let graphQLConfig =
+    config ?? ((await loadConfig({ rootDir: configDir })) as GraphQLConfig);
+  if (extensions && extensions.length > 0) {
+    for await (const extension of extensions) {
+      graphQLConfig = await extension(graphQLConfig);
+    }
+  }
+  return new GraphQLCache(configDir, graphQLConfig, parser);
 }
 
 export class GraphQLCache implements GraphQLCacheInterface {
@@ -67,8 +76,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _typeExtensionMap: Map<Uri, number>;
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
+  _parser: typeof parseDocument;
 
-  constructor(configDir: Uri, graphQLConfig: GraphQLConfig) {
+  constructor(
+    configDir: Uri,
+    graphQLConfig: GraphQLConfig,
+    parser: typeof parseDocument,
+  ) {
     this._configDir = configDir;
     this._graphQLConfig = graphQLConfig;
     this._graphQLFileListCache = new Map();
@@ -76,6 +90,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
+    this._parser = parser;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
@@ -626,7 +641,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schema = await projectConfig.getSchema();
     }
 
-    const customDirectives = projectConfig.extensions.customDirectives;
+    const customDirectives = projectConfig?.extensions?.customDirectives;
     if (customDirectives && schema) {
       const directivesSDL = customDirectives.join('\n\n');
       schema = extendSchema(
@@ -789,7 +804,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         let queries: CachedContent[] = [];
         if (content.trim().length !== 0) {
           try {
-            queries = getQueryAndRange(content, filePath);
+            queries = this._parser(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({

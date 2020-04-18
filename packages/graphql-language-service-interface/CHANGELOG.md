@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.6...graphql-language-service-interface@2.4.0-alpha.7) (2020-04-10)
+
+### Bug Fixes
+
+- graphiql@1.0.0-alpha.7 has broken reference to vscode types ([#1479](https://github.com/graphql/graphiql/issues/1479)) ([43e7056](https://github.com/graphql/graphiql/commit/43e705682fc258d50b167791469712a17a152cea))
+
+# [2.4.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.5...graphql-language-service-interface@2.4.0-alpha.6) (2020-04-10)
+
+**Note:** Version bump only for package graphql-language-service-interface
+
+# [2.4.0-alpha.5](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.4...graphql-language-service-interface@2.4.0-alpha.5) (2020-04-06)
+
+### Features
+
+- export more functions ([#1264](https://github.com/graphql/graphiql/issues/1264)) ([bd01fdd](https://github.com/graphql/graphiql/commit/bd01fdd95fddb74b416213cdea17c1e1872ca513))
+- upgrade to graphql@15.0.0 for [#1191](https://github.com/graphql/graphiql/issues/1191) ([#1204](https://github.com/graphql/graphiql/issues/1204)) ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
+
+# [2.4.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.3...graphql-language-service-interface@2.4.0-alpha.4) (2020-04-03)
+
+**Note:** Version bump only for package graphql-language-service-interface
+
+# [2.4.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.2...graphql-language-service-interface@2.4.0-alpha.3) (2020-03-20)
+
+**Note:** Version bump only for package graphql-language-service-interface
+
+# [2.4.0-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.0...graphql-language-service-interface@2.4.0-alpha.2) (2020-03-20)
+
+### Bug Fixes
+
+- restore error handling for server [#1306](https://github.com/graphql/graphiql/issues/1306) ([#1425](https://github.com/graphql/graphiql/issues/1425)) ([c12d975](https://github.com/graphql/graphiql/commit/c12d975027e4021bbea7ad54e7e0c19ac7943e6c))
+
+### Features
+
+- Symbol support for single document ([#1244](https://github.com/graphql/graphiql/issues/1244)) ([f729f9a](https://github.com/graphql/graphiql/commit/f729f9a3c20362f4515bf3037347a07cc3690b38))
+- use new GraphQL Config ([#1342](https://github.com/graphql/graphiql/issues/1342)) ([e45838f](https://github.com/graphql/graphiql/commit/e45838f5ba579e05b20f1a147ce431478ffad9aa))
+- **definition:** get scalar definition ([21a0624](https://github.com/graphql/graphiql/commit/21a062422c8c96eefcd5acff7c3536562f836ba2))
+
 # [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.3.3...graphql-language-service-interface@2.4.0-alpha.1) (2020-01-18)
 
 ### Features

@@ -13,13 +13,11 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { join } from 'path';
 
-const SEVERITY: { [key: string]: string } = {
-  ERROR: 'ERROR',
-  WARNING: 'WARNING',
-  INFO: 'INFO',
-  DEBUG: 'DEBUG',
-};
-
+import {
+  DIAGNOSTIC_SEVERITY,
+  SeverityEnum,
+  SEVERITY,
+} from 'graphql-language-service-interface';
 export class Logger implements VSCodeLogger {
   _logFilePath: string;
   _stream: fs.WriteStream | null;
@@ -46,29 +44,33 @@ export class Logger implements VSCodeLogger {
   }
 
   error(message: string): void {
-    this._log(message, 'ERROR');
+    this._log(message, SEVERITY.Error);
   }
 
   warn(message: string): void {
-    this._log(message, 'WARNING');
+    this._log(message, SEVERITY.Warning);
   }
 
   info(message: string): void {
-    this._log(message, 'INFO');
+    this._log(message, SEVERITY.Information);
   }
 
   log(message: string): void {
-    this._log(message, 'DEBUG');
+    this._log(message, SEVERITY.Hint);
   }
 
-  _log(message: string, severityKey: string = 'DEBUG'): void {
+  _log(message: string, severityKey: SeverityEnum): void {
     const timestamp = new Date().toLocaleString(undefined);
-    const severity = SEVERITY[severityKey];
+    const severity = DIAGNOSTIC_SEVERITY[severityKey];
     const pid = process.pid;
 
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${message}\n\n`;
     // write to the file in tmpdir
     fs.appendFile(this._logFilePath, logMessage, _error => {});
+    // const processSt = (severity === DIAGNOSTIC_SEVERITY.Error) ? process.stderr : process.stdout
+    process.stderr.write(logMessage, _err => {
+      // console.error(err);
+    });
   }
 }
 

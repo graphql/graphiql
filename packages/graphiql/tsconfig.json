@@ -4,12 +4,10 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "baseUrl": ".",
-    "strictPropertyInitialization": false,
-    "types": ["node", "jest"],
-    "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
-    "lib": ["dom"]
+    "target": "es5",
+    "strictPropertyInitialization": false
   },
   "include": ["src"],
   "exclude": [
@@ -20,6 +18,7 @@
     "**/*-test.ts",
     "**/*-test.js",
     "**/*.stories.js",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ]
 }

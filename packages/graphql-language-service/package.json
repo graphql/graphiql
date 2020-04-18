@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "2.4.0-alpha.1",
+  "version": "2.4.0-alpha.7",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -24,14 +24,13 @@
     "graphql-language-service"
   ],
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
-    "@babel/polyfill": "7.8.3",
-    "graphql-config": "3.0.0-alpha.17",
-    "graphql-language-service-interface": "^2.4.0-alpha.1",
-    "graphql-language-service-server": "^2.4.0-alpha.1",
-    "graphql-language-service-utils": "^2.4.0-alpha.1",
-    "yargs": "^15.2.0"
+    "@babel/polyfill": "7.8.7",
+    "graphql-language-service-interface": "^2.4.0-alpha.7",
+    "graphql-language-service-server": "^2.4.0-alpha.7",
+    "graphql-language-service-utils": "^2.4.0-alpha.6",
+    "yargs": "^15.3.1"
   }
 }
