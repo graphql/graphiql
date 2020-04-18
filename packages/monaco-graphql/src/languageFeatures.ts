@@ -213,7 +213,6 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
         suggestions: completionItems.map(toCompletion),
       };
     } catch (err) {
-      console.error(`Error fetching completion items\n\n${err}`);
       return { suggestions: [] };
     }
   }
