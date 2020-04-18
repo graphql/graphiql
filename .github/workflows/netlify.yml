@@ -14,8 +14,8 @@ jobs:
       - name: Deploy to netlify
         uses: netlify/actions/cli@master
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.STAGING_NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
         with:
-          args: deploy --dir=packages/graphiql --prod
-          secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'
+          args: deploy --dir=packages/graphiql/lsp --prod
+          secrets: '["AUTH_TOKEN", "SITE_ID"]'
