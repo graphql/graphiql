@@ -13,7 +13,7 @@ const App = () => (
     style={{ height: '100vh' }}
     fetcher={async graphQLParams => {
       const data = await fetch(
-        'https://swapi-graphql.netlify.com/.netlify/functions/index',
+        'https://swapi-graphql.netlify.app/.netlify/functions/index',
         {
           method: 'POST',
           headers: {
