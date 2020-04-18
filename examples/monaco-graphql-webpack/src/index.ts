@@ -12,7 +12,7 @@ import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.wo
 // @ts-ignore
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
-const SCHEMA_URL = 'https://swapi-graphql.netlify.com/.netlify/functions/index';
+const SCHEMA_URL = 'https://swapi-graphql.netlify.app/.netlify/functions/index';
 
 // @ts-ignore
 window.MonacoEnvironment = {

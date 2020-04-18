@@ -68,7 +68,7 @@ export const diagnosticDefault: Required<monaco.languages.graphql.DiagnosticsOpt
   allowComments: true,
   schemas: [],
   enableSchemaRequest: true,
-  schemaUri: 'https://swapi-graphql.netlify.com/.netlify/functions/index',
+  schemaUri: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 };
 
 export const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfiguration> = {
