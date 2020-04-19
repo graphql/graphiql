@@ -17,6 +17,7 @@ import {
   useSessionContext,
   SessionHandlers,
 } from '../state/GraphiQLSessionProvider';
+import useValueRef from '../hooks/useValueRef';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -52,8 +53,12 @@ export function QueryEditor(props: QueryEditorProps) {
   const editorRef = React.useRef<(CM.Editor & { options?: any }) | null>(null);
   const session = useSessionContext();
 
+  const propsRef = useValueRef(props);
+  const sessionRef = useValueRef(session);
+
   const cachedValueRef = React.useRef(session.operation.text ?? '');
   const { schema } = React.useContext(SchemaContext);
+
   function _onKeyUp(_cm: CM.Editor, event: KeyboardEvent) {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && editorRef.current) {
       editorRef.current.execCommand('autocomplete');
@@ -87,6 +92,10 @@ export function QueryEditor(props: QueryEditorProps) {
   }
 
   React.useEffect(() => {
+    const editorEl = nodeRef.current;
+    if (!editorEl) {
+      return;
+    }
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
     const CodeMirror = require('codemirror');
@@ -108,9 +117,7 @@ export function QueryEditor(props: QueryEditorProps) {
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
-    const editorEl = nodeRef.current;
-
-    editorRef.current = new CodeMirror(editorEl, {
+    const editor = new CodeMirror(editorEl, {
       value: session?.operation?.text ?? '',
       lineNumbers: true,
       tabSize: 2,
@@ -137,13 +144,16 @@ export function QueryEditor(props: QueryEditorProps) {
         schema,
         renderDescription: (text: string) => md.render(text),
         onClick: (reference: GraphQLType) =>
-          props.onClickReference && props.onClickReference(reference),
+          propsRef.current.onClickReference &&
+          propsRef.current.onClickReference(reference),
       },
       jump: {
         schema,
         onClick: (
           reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
-        ) => props.onClickReference && props.onClickReference(reference),
+        ) =>
+          propsRef.current.onClickReference &&
+          propsRef.current.onClickReference(reference),
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
@@ -187,34 +197,34 @@ export function QueryEditor(props: QueryEditorProps) {
             container: editorEl,
           }),
 
-        'Cmd-Enter': () => session.executeOperation(),
+        'Cmd-Enter': () => sessionRef.current?.executeOperation(),
         'Ctrl-Enter': () => {
-          console.log(session.operation.text);
+          console.log(sessionRef.current.operation.text);
           session.executeOperation();
         },
 
         'Shift-Ctrl-C': () => {
-          if (props.onCopyQuery) {
-            props.onCopyQuery();
+          if (propsRef.current.onCopyQuery) {
+            propsRef.current.onCopyQuery();
           }
         },
 
         'Shift-Ctrl-P': () => {
-          if (props.onPrettifyQuery) {
-            props.onPrettifyQuery();
+          if (propsRef.current.onPrettifyQuery) {
+            propsRef.current.onPrettifyQuery();
           }
         },
 
         /* Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy */
         'Shift-Ctrl-F': () => {
-          if (props.onPrettifyQuery) {
-            props.onPrettifyQuery();
+          if (propsRef.current.onPrettifyQuery) {
+            propsRef.current.onPrettifyQuery();
           }
         },
 
         'Shift-Ctrl-M': () => {
-          if (props.onMergeQuery) {
-            props.onMergeQuery();
+          if (propsRef.current.onMergeQuery) {
+            propsRef.current.onMergeQuery();
           }
         },
         ...commonKeys,
@@ -223,14 +233,14 @@ export function QueryEditor(props: QueryEditorProps) {
       },
     });
 
-    const editHandler = () => _onEdit(session.changeOperation);
-    if (editorRef.current) {
-      editorRef.current.on('change', editHandler);
-      editorRef.current.on('keyup', _onKeyUp);
-      // @ts-ignore @TODO additional args for hasCompletion event
-      editorRef.current.on('hasCompletion', _onHasCompletion);
-      editorRef.current.on('beforeChange', _onBeforeChange);
-    }
+    editorRef.current = editor;
+
+    const editHandler = () => _onEdit(sessionRef.current.changeOperation);
+    editor.on('change', editHandler);
+    editor.on('keyup', _onKeyUp);
+    // @ts-ignore @TODO additional args for hasCompletion event
+    editor.on('hasCompletion', _onHasCompletion);
+    editor.on('beforeChange', _onBeforeChange);
 
     return function cleanup() {
       if (editorRef.current) {
@@ -241,7 +251,7 @@ export function QueryEditor(props: QueryEditorProps) {
         editorRef.current.off('beforeChange', _onBeforeChange);
       }
     };
-  }, []);
+  });
 
   React.useEffect(() => {
     const editor = editorRef.current;

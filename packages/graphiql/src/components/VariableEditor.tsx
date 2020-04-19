@@ -12,6 +12,7 @@ import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { useSessionContext } from '../state/GraphiQLSessionProvider';
 import useQueryFacts from '../hooks/useQueryFacts';
+import useValueRef from '../hooks/useValueRef';
 
 declare module CodeMirror {
   export interface Editor extends CM.Editor {}
@@ -51,9 +52,21 @@ export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
   const queryFacts = useQueryFacts();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
-  const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
+  const editorRef = React.useRef<
+    | (CM.Editor & {
+        options: any;
+        showHint: (arg: {
+          completeSingle: boolean;
+          container: HTMLDivElement | null;
+        }) => void;
+      })
+    | null
+  >(null);
   const cachedValueRef = React.useRef<string>(props.value ?? '');
   const divRef = React.useRef<HTMLDivElement>(null);
+
+  const propsRef = useValueRef(props);
+  const sessionRef = useValueRef(session);
 
   React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
@@ -76,7 +89,7 @@ export function VariableEditor(props: VariableEditorProps) {
 
     const _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
       const code = event.keyCode;
-      if (!editor) {
+      if (!editorRef.current) {
         return;
       }
       if (
@@ -85,17 +98,17 @@ export function VariableEditor(props: VariableEditorProps) {
         (event.shiftKey && code === 189) || // underscore
         (event.shiftKey && code === 222) // "
       ) {
-        editor.execCommand('autocomplete');
+        editorRef.current.execCommand('autocomplete');
       }
     };
 
     const _onEdit = () => {
-      if (!editor) {
+      if (!editorRef.current) {
         return;
       }
       if (!ignoreChangeEvent) {
-        cachedValueRef.current = editor.getValue();
-        session.changeVariables(cachedValueRef.current);
+        cachedValueRef.current = editorRef.current.getValue();
+        sessionRef.current.changeVariables(cachedValueRef.current);
       }
     };
 
@@ -103,10 +116,14 @@ export function VariableEditor(props: VariableEditorProps) {
       instance: CM.Editor,
       changeObj?: CM.EditorChangeLinkedList,
     ) => {
-      onHasCompletion(instance, changeObj, props.onHintInformationRender);
+      onHasCompletion(
+        instance,
+        changeObj,
+        propsRef.current.onHintInformationRender,
+      );
     };
 
-    const editor = (editorRef.current = CodeMirror(divRef.current, {
+    const editor = CodeMirror(divRef.current, {
       value: session.variables.text || '',
       lineNumbers: true,
       tabSize: 2,
@@ -132,55 +149,58 @@ export function VariableEditor(props: VariableEditorProps) {
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
-          editor!.showHint({
+          editorRef.current?.showHint({
             completeSingle: false,
             container: divRef.current,
           }),
         'Ctrl-Space': () =>
-          editor!.showHint({
+          editorRef.current?.showHint({
             completeSingle: false,
             container: divRef.current,
           }),
         'Alt-Space': () =>
-          editor!.showHint({
+          editorRef.current?.showHint({
             completeSingle: false,
             container: divRef.current,
           }),
         'Shift-Space': () =>
-          editor!.showHint({
+          editorRef.current?.showHint({
             completeSingle: false,
             container: divRef.current,
           }),
         'Cmd-Enter': () => {
-          session.executeOperation();
+          sessionRef.current.executeOperation();
         },
         'Ctrl-Enter': () => {
-          session.executeOperation();
+          sessionRef.current.executeOperation();
         },
         'Shift-Ctrl-P': () => {
-          if (props.onPrettifyQuery) {
-            props.onPrettifyQuery();
+          if (propsRef.current.onPrettifyQuery) {
+            propsRef.current.onPrettifyQuery();
           }
         },
 
         'Shift-Ctrl-M': () => {
-          if (props.onMergeQuery) {
-            props.onMergeQuery();
+          if (propsRef.current.onMergeQuery) {
+            propsRef.current.onMergeQuery();
           }
         },
 
         ...commonKeys,
       },
-    }));
+    });
+    editorRef.current = editor;
 
     editor.on('change', _onEdit);
     editor.on('keyup', _onKeyUp);
     editor.on('hasCompletion', _onHasCompletion);
     return () => {
-      editor.off('change', _onEdit);
-      editor.off('keyup', _onKeyUp);
-      editor.off('hasCompletion', _onHasCompletion);
-      editorRef.current = null;
+      if (editorRef.current) {
+        editorRef.current!.off('change', _onEdit);
+        editorRef.current!.off('keyup', _onKeyUp);
+        editorRef.current!.off('hasCompletion', _onHasCompletion);
+        editorRef.current = null;
+      }
     };
   }, []);
 
@@ -203,7 +223,7 @@ export function VariableEditor(props: VariableEditorProps) {
     }
 
     setIgnoreChangeEvent(false);
-  }, [session.variables.text]);
+  }, [session.variables.text, editorRef.current]);
 
   React.useEffect(() => {
     const editor = editorRef.current;
@@ -214,7 +234,7 @@ export function VariableEditor(props: VariableEditorProps) {
       editor.options.lint.variableToType = queryFacts.variableToType;
       editor.options.hintOptions.variableToType = queryFacts.variableToType;
     }
-  }, [queryFacts]);
+  }, [queryFacts, editorRef.current]);
 
   return <div className="codemirrorWrap" ref={divRef} />;
 }
