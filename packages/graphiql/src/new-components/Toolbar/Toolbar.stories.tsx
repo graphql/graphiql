@@ -1,7 +1,7 @@
-import List, { ListRow } from '../List/List';
+import List, { ListRow } from '../List';
 import Tabs from './Tabs';
 import React from 'react';
-import Toolbar from './Toolbar';
+import Toolbar from './index';
 import Content from './Content';
 import { layout } from '../themes/decorators';
 

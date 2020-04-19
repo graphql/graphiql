@@ -46,6 +46,7 @@ module.exports = {
     '!**/test/**',
     '!**/examples/**',
     '!**/codemirror-graphql/**',
+    '!**/monaco-graphql/**',
     '!**/graphql-language-service-types/**',
     '!**/*.d.ts',
     '!**/types.ts',

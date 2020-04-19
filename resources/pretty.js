@@ -62,6 +62,6 @@ if (status) {
   }
 }
 if (error) {
-  print('error', error);
+  print(error);
 }
 process.exit(status != null ? status : 1);

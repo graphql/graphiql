@@ -37,7 +37,7 @@ import {
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
 import { getHoverInformation } from './getHoverInformation';
-import { validateQuery, getRange, SEVERITY } from './getDiagnostics';
+import { validateQuery, getRange, DIAGNOSTIC_SEVERITY } from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
@@ -155,7 +155,7 @@ export class GraphQLLanguageService {
       const range = getRange(error.locations[0], query);
       return [
         {
-          severity: SEVERITY.ERROR,
+          severity: DIAGNOSTIC_SEVERITY.Error,
           message: error.message,
           source: 'GraphQL: Syntax',
           range,
@@ -223,9 +223,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
-    const schema = await this._graphQLCache
-      .getSchema(projectConfig.name)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
       return getAutocompleteSuggestions(schema, query, position);
@@ -239,9 +237,7 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
-    const schema = await this._graphQLCache
-      .getSchema(projectConfig.name)
-      .catch(() => null);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
       return getHoverInformation(schema, query, position);

@@ -1,9 +1,14 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import PropTypes from 'prop-types';
 import WithDividers from './support/WithDividers';
+import { ReactNodeLike } from 'src/types';
 
-const Tab = ({ active, ...props }) => (
+export type TabProps = { active: boolean } & React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>;
+
+const Tab = ({ active, ...props }: TabProps) => (
   <button
     sx={{
       padding: ({ spaces }) => spaces.rowPadding,
@@ -22,27 +27,26 @@ const Tab = ({ active, ...props }) => (
     {...props}
   />
 );
-Tab.propTypes = { active: PropTypes.bool };
 
-const Tabs = ({ tabs, active, onChange }) => {
+export type TabsProps = {
+  tabs: ReactNodeLike[];
+  active: number;
+  onChange?: (idx: number) => void;
+};
+
+const Tabs = ({ tabs, active, onChange }: TabsProps) => {
   return (
     <WithDividers>
       {tabs.map((tab, index) => (
         <Tab
           key={index}
           active={active === index}
-          onClick={() => onChange(index)}>
+          onClick={() => onChange?.(index)}>
           {tab}
         </Tab>
       ))}
     </WithDividers>
   );
-};
-
-Tabs.propTypes = {
-  tabs: PropTypes.arrayOf(PropTypes.node).isRequired,
-  active: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired,
 };
 
 export default Tabs;

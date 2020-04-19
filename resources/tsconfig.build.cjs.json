@@ -9,6 +9,9 @@
       "path": "../packages/graphiql"
     },
     {
+      "path": "../packages/monaco-graphql"
+    },
+    {
       "path": "../packages/graphql-language-service-utils"
     },
     {
@@ -24,10 +27,10 @@
       "path": "../packages/graphql-language-service-server"
     },
     {
-      "path": "../packages/graphql-language-service"
+      "path": "../packages/graphql-languageservice"
     },
     {
-      "path": "../packages/graphql-languageservice"
+      "path": "../packages/graphql-language-service"
     }
   ]
 }

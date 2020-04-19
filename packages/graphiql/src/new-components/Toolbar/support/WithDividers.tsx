@@ -1,9 +1,10 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import PropTypes from 'prop-types';
-import { Children } from 'react';
+import { jsx, SxStyleProp } from 'theme-ui';
+import { Children, DetailedHTMLProps, HTMLAttributes } from 'react';
 
-const Divider = ({ innerSx }) => (
+export type DividerProps = { innerSx: SxStyleProp };
+
+const Divider = ({ innerSx }: DividerProps) => (
   <div
     data-is-divider
     aria-hidden
@@ -14,9 +15,17 @@ const Divider = ({ innerSx }) => (
     }}
   />
 );
-Divider.propTypes = { innerSx: PropTypes.object };
 
-const WithDividers = ({ children, padding = false, ...props }) => {
+export type WithDividersPropTypes = { padding?: boolean } & DetailedHTMLProps<
+  HTMLAttributes<HTMLUListElement>,
+  HTMLUListElement
+>;
+
+const WithDividers = ({
+  children,
+  padding = false,
+  ...props
+}: WithDividersPropTypes) => {
   return (
     <ul
       data-contains-divider
@@ -60,6 +69,5 @@ const WithDividers = ({ children, padding = false, ...props }) => {
     </ul>
   );
 };
-WithDividers.propTypes = { padding: PropTypes.bool };
 
 export default WithDividers;
