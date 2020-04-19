@@ -9,20 +9,18 @@ import React, {
   ComponentType,
   PropsWithChildren,
   MouseEventHandler,
-  Component,
-  FunctionComponent,
 } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
+import { SchemaConfig } from 'graphql-languageservice';
+
 import { ExecuteButton } from './ExecuteButton';
-import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
 import { VariableToType } from '../utility/getQueryFacts';
 
@@ -30,12 +28,17 @@ import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 
-import { SchemaProvider, SchemaContext } from '../state/GraphiQLSchemaProvider';
+import {
+  SchemaProvider,
+  SchemaContext,
+} from '../api/providers/GraphiQLSchemaProvider';
+import { EditorsProvider } from '../api/providers/GraphiQLEditorsProvider';
 import {
   SessionProvider,
   SessionContext,
-} from '../state/GraphiQLSessionProvider';
-import { Unsubscribable, Observable, Fetcher } from '../state/types';
+} from '../api/providers/GraphiQLSessionProvider';
+import { getFetcher } from '../api/common';
+import { Unsubscribable, Fetcher } from '../types';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -68,7 +71,9 @@ type OnMouseMoveFn = Maybe<
 type OnMouseUpFn = Maybe<() => void>;
 
 export type GraphiQLProps = {
-  fetcher: Fetcher;
+  uri: string;
+  fetcher?: Fetcher;
+  schemaConfig?: SchemaConfig;
   schema: GraphQLSchema | null;
   query?: string;
   variables?: string;
@@ -85,11 +90,13 @@ export type GraphiQLProps = {
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
   editorTheme?: string;
   onToggleHistory?: (historyPaneOpen: boolean) => void;
-  ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
   formatResult?: (result: any) => string;
   formatError?: (rawError: Error) => string;
+  variablesEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  operationEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  resultsEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
 } & Partial<Formatters>;
 
 export type GraphiQLState = {
@@ -117,19 +124,27 @@ export type GraphiQLState = {
  * @see https://github.com/graphql/graphiql#usage
  */
 export const GraphiQL: React.FC<GraphiQLProps> = props => {
+  if (!props.fetcher && !props.uri) {
+    throw Error('fetcher or uri property are required');
+  }
+  const fetcher = getFetcher(props);
   return (
-    <SchemaProvider {...props}>
-      <SessionProvider sessionId={0} {...props}>
-        <GraphiQLInternals
-          {...{
-            formatResult,
-            formatError,
-            ...props,
-          }}>
-          {props.children}
-        </GraphiQLInternals>
-      </SessionProvider>
-    </SchemaProvider>
+    <EditorsProvider>
+      <SchemaProvider
+        fetcher={fetcher}
+        config={{ uri: props.uri, ...props.schemaConfig }}>
+        <SessionProvider fetcher={fetcher} sessionId={0}>
+          <GraphiQLInternals
+            {...{
+              formatResult,
+              formatError,
+              ...props,
+            }}>
+            {props.children}
+          </GraphiQLInternals>
+        </SessionProvider>
+      </SchemaProvider>
+    </EditorsProvider>
   );
 };
 
@@ -161,9 +176,6 @@ class GraphiQLInternals extends React.Component<
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
-
-  codeMirrorSizer!: CodeMirrorSizer;
-
   // refs
   docExplorerComponent: Maybe<DocExplorer>;
   graphiqlContainer: Maybe<HTMLDivElement>;
@@ -229,7 +241,6 @@ class GraphiQLInternals extends React.Component<
     //   this.fetchSchema();
     // }
     // Utility for keeping CodeMirror correctly sized.
-    this.codeMirrorSizer = new CodeMirrorSizer();
 
     global.g = this;
   }
@@ -387,6 +398,7 @@ class GraphiQLInternals extends React.Component<
                 onClickReference={this.handleClickReference}
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
+                editorOptions={this.props.operationEditorOptions}
               />
               <section
                 className="variable-editor"
@@ -407,6 +419,7 @@ class GraphiQLInternals extends React.Component<
                   onMergeQuery={this.handleMergeQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
+                  editorOptions={this.props.variablesEditorOptions}
                 />
               </section>
             </div>
@@ -418,8 +431,7 @@ class GraphiQLInternals extends React.Component<
               )}
               <ResultViewer
                 editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
+                editorOptions={this.props.resultsEditorOptions}
               />
               {footer}
             </div>
@@ -658,10 +670,6 @@ class GraphiQLInternals extends React.Component<
       return false;
     }
     let target = event.target as Element;
-    // We use codemirror's gutter as the drag bar.
-    if (target.className.indexOf('CodeMirror-gutter') !== 0) {
-      return false;
-    }
     // Specifically the result window's drag bar.
     const resultWindow = this.resultViewerElement;
     while (target) {

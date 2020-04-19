@@ -10,7 +10,7 @@ module.exports = {
         bugfixes: true,
       },
     ],
-    require.resolve('@babel/preset-typescript'),
+    [require.resolve('@babel/preset-typescript'), {}],
   ],
   plugins: [
     require.resolve('@babel/plugin-syntax-dynamic-import'),

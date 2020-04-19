@@ -119,6 +119,7 @@ async function executeCurrentOp() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     });
+
     const resultText = await result.text();
     resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
   } catch (err) {

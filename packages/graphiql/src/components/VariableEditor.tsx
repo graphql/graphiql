@@ -5,26 +5,16 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { GraphQLType } from 'graphql';
-import * as CM from 'codemirror';
 
 import React from 'react';
-import onHasCompletion from '../utility/onHasCompletion';
-import commonKeys from '../utility/commonKeys';
-import { useSessionContext } from '../state/GraphiQLSessionProvider';
-import useQueryFacts from '../hooks/useQueryFacts';
 
-declare module CodeMirror {
-  export interface Editor extends CM.Editor {}
-  export interface ShowHintOptions {
-    completeSingle: boolean;
-    // we have to globally import for these types to work, which breaks SSR
-    // @ts-ignore
-    hint: CM.HintFunction | CM.AsyncHintFunction;
-    container: HTMLElement | null;
-  }
-}
+import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
+import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 
-type VariableEditorProps = {
+import type { EditorOptions } from '../types';
+// import useQueryFacts from '../api/hooks/useQueryFacts';
+
+export type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
   value?: string;
   readOnly?: boolean;
@@ -32,6 +22,7 @@ type VariableEditorProps = {
   onPrettifyQuery: (value?: string) => void;
   onMergeQuery: (value?: string) => void;
   editorTheme?: string;
+  editorOptions?: EditorOptions;
 };
 
 /**
@@ -49,139 +40,52 @@ type VariableEditorProps = {
  */
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
-  const queryFacts = useQueryFacts();
+  // const queryFacts = useQueryFacts();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
-  const editorRef = React.useRef<(CM.Editor & { options: any }) | null>(null);
+  const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const cachedValueRef = React.useRef<string>(props.value ?? '');
   const divRef = React.useRef<HTMLDivElement>(null);
+  const { loadEditor } = useEditorsContext();
+  // const variableToType = queryFacts?.variableToType
 
   React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
-    require('codemirror-graphql/variables/mode');
-    require('codemirror/addon/hint/show-hint');
 
-    const _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
-      const code = event.keyCode;
-      if (!editor) {
-        return;
-      }
-      if (
-        (code >= 65 && code <= 90) || // letters
-        (!event.shiftKey && code >= 48 && code <= 57) || // numbers
-        (event.shiftKey && code === 189) || // underscore
-        (event.shiftKey && code === 222) // "
-      ) {
-        editor.execCommand('autocomplete');
-      }
-    };
+    // might need this later
+    // const _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {
+    //   const code = event.keyCode;
+    //   if (!editor) {
+    //     return;
+    //   }
+    //   if (
+    //     (code >= 65 && code <= 90) || // letters
+    //     (!event.shiftKey && code >= 48 && code <= 57) || // numbers
+    //     (event.shiftKey && code === 189) || // underscore
+    //     (event.shiftKey && code === 222) // "
+    //   ) {
+    //     editor.execCommand('autocomplete');
+    //   }
+    // };
+    const editor = (editorRef.current = monaco.editor.create(
+      divRef.current as HTMLDivElement,
+      {
+        value: session?.variables?.text || '',
+        language: 'json',
+        theme: props?.editorTheme,
+        readOnly: props?.readOnly ?? false,
+        ...props.editorOptions,
+      },
+    ));
+    loadEditor('variables', editor);
 
-    const _onEdit = () => {
-      if (!editor) {
-        return;
-      }
+    editor.onDidChangeModelContent(() => {
       if (!ignoreChangeEvent) {
         cachedValueRef.current = editor.getValue();
         session.changeVariables(cachedValueRef.current);
       }
-    };
-
-    const _onHasCompletion = (
-      instance: CM.Editor,
-      changeObj?: CM.EditorChangeLinkedList,
-    ) => {
-      onHasCompletion(instance, changeObj, props.onHintInformationRender);
-    };
-
-    const editor = (editorRef.current = CodeMirror(divRef.current, {
-      value: session.variables.text || '',
-      lineNumbers: true,
-      tabSize: 2,
-      mode: 'graphql-variables',
-      theme: props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
-      autoCloseBrackets: true,
-      matchBrackets: true,
-      showCursorWhenSelecting: true,
-      readOnly: props.readOnly ? 'nocursor' : false,
-      foldGutter: {
-        minFoldSize: 4,
-      },
-      lint: {
-        variableToType: props.variableToType,
-      },
-      hintOptions: {
-        variableToType: props.variableToType,
-        closeOnUnfocus: false,
-        completeSingle: false,
-        container: divRef.current,
-      },
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Cmd-Space': () =>
-          editor!.showHint({
-            completeSingle: false,
-            container: divRef.current,
-          }),
-        'Ctrl-Space': () =>
-          editor!.showHint({
-            completeSingle: false,
-            container: divRef.current,
-          }),
-        'Alt-Space': () =>
-          editor!.showHint({
-            completeSingle: false,
-            container: divRef.current,
-          }),
-        'Shift-Space': () =>
-          editor!.showHint({
-            completeSingle: false,
-            container: divRef.current,
-          }),
-        'Cmd-Enter': () => {
-          session.executeOperation();
-        },
-        'Ctrl-Enter': () => {
-          session.executeOperation();
-        },
-        'Shift-Ctrl-P': () => {
-          if (props.onPrettifyQuery) {
-            props.onPrettifyQuery();
-          }
-        },
-
-        'Shift-Ctrl-M': () => {
-          if (props.onMergeQuery) {
-            props.onMergeQuery();
-          }
-        },
-
-        ...commonKeys,
-      },
-    }));
-
-    editor.on('change', _onEdit);
-    editor.on('keyup', _onKeyUp);
-    editor.on('hasCompletion', _onHasCompletion);
-    return () => {
-      editor.off('change', _onEdit);
-      editor.off('keyup', _onKeyUp);
-      editor.off('hasCompletion', _onHasCompletion);
-      editorRef.current = null;
-    };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
@@ -195,11 +99,9 @@ export function VariableEditor(props: VariableEditorProps) {
     // event loop.
     setIgnoreChangeEvent(true);
     if (session.variables.text !== cachedValueRef.current) {
-      const CodeMirror = require('codemirror');
       const thisValue = session.variables.text || '';
       cachedValueRef.current = thisValue;
       editor.setValue(thisValue);
-      CodeMirror.signal(editor, 'change', editor);
     }
 
     setIgnoreChangeEvent(false);
@@ -210,11 +112,22 @@ export function VariableEditor(props: VariableEditorProps) {
     if (!editor) {
       return;
     }
-    if (queryFacts?.variableToType) {
-      editor.options.lint.variableToType = queryFacts.variableToType;
-      editor.options.hintOptions.variableToType = queryFacts.variableToType;
+    if (props.editorOptions) {
+      editor.updateOptions(props.editorOptions);
     }
-  }, [queryFacts]);
+  }, [props.editorOptions]);
 
-  return <div className="codemirrorWrap" ref={divRef} />;
+  // TODO: for variables linting/etc
+  // React.useEffect(() => {
+  //   const editor = editorRef.current;
+  //   if (!editor) {
+  //     return;
+  //   }
+  //   if (queryFacts?.variableToType) {
+  //     // editor.options.lint.variableToType = queryFacts.variableToType;
+  //     // editor.options.hintOptions.variableToType = queryFacts.variableToType;
+  //   }
+  // }, [queryFacts, variableToType]);
+
+  return <div className="codemirrorWrap variables-editor" ref={divRef} />;
 }

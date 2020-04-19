@@ -1,10 +1,11 @@
+/* global monaco */
 import * as React from 'react';
-import { Fetcher } from './types';
+import { Fetcher } from '../../types';
 
-import { GraphQLParams, SessionState, EditorContexts } from './types';
+import { GraphQLParams, SessionState } from '../types';
 
-import { defaultFetcher } from './common';
 import { SchemaContext } from './GraphiQLSchemaProvider';
+import { EditorContext } from './GraphiQLEditorsProvider';
 import {
   SessionAction,
   SessionActionTypes,
@@ -12,10 +13,11 @@ import {
   operationSucceededAction,
   variableChangedAction,
   operationChangedAction,
-  editorLoadedAction,
   operationErroredAction,
-} from './sessionActions';
-import { observableToPromise } from '../utility/observableToPromise';
+} from '../actions/sessionActions';
+
+import { observableToPromise } from '../../utility/observableToPromise';
+// import { KeyMod, KeyCode } from 'monaco-editor';
 
 export type SessionReducer = React.Reducer<SessionState, SessionAction>;
 export interface SessionHandlers {
@@ -23,7 +25,6 @@ export interface SessionHandlers {
   changeVariables: (variables: string) => void;
   executeOperation: (operationName?: string) => Promise<void>;
   operationError: (error: Error) => void;
-  editorLoaded: (context: EditorContexts, editor: CodeMirror.Editor) => void;
   dispatch: React.Dispatch<SessionAction>;
 }
 
@@ -50,7 +51,6 @@ export const initialContextState: SessionState & SessionHandlers = {
   changeVariables: () => null,
   operationError: () => null,
   dispatch: () => null,
-  editorLoaded: () => null,
   ...initialState,
 };
 
@@ -67,16 +67,6 @@ const sessionReducer: SessionReducer = (state, action) => {
         ...state,
         operationLoading: true,
       };
-    case SessionActionTypes.EditorLoaded: {
-      const { context, editor } = action.payload;
-      return {
-        ...state,
-        editors: {
-          ...state.editors,
-          [context as EditorContexts]: editor,
-        },
-      };
-    }
     case SessionActionTypes.OperationChanged: {
       const { value } = action.payload;
       return {
@@ -125,18 +115,19 @@ const sessionReducer: SessionReducer = (state, action) => {
 
 export type SessionProviderProps = {
   sessionId: number;
-  fetcher?: Fetcher;
+  fetcher: Fetcher;
   session?: SessionState;
   children: React.ReactNode;
 };
 
 export function SessionProvider({
   sessionId,
-  fetcher = defaultFetcher,
+  fetcher,
   session,
   children,
 }: SessionProviderProps) {
   const schemaState = React.useContext(SchemaContext);
+  const editorsState = React.useContext(EditorContext);
 
   const [state, dispatch] = React.useReducer<SessionReducer>(
     sessionReducer,
@@ -146,12 +137,6 @@ export function SessionProvider({
   const operationError = React.useCallback(
     (error: Error) => dispatch(operationErroredAction(error, sessionId)),
     [dispatch, sessionId],
-  );
-
-  const editorLoaded = React.useCallback(
-    (context: EditorContexts, editor: CodeMirror.Editor) =>
-      dispatch(editorLoadedAction(context, editor)),
-    [dispatch],
   );
 
   const changeOperation = React.useCallback(
@@ -170,34 +155,50 @@ export function SessionProvider({
     async (operationName?: string) => {
       try {
         dispatch(operationRequestAction());
+        const { operation: op, variables: vars } = editorsState.editors;
+        const operation = op.editor.getValue();
+        const variables = vars.editor.getValue();
+
         const fetchValues: GraphQLParams = {
-          query: state.operation?.text ?? '',
+          query: operation ?? '',
         };
-        if (state.variables?.text) {
-          fetchValues.variables = state.variables.text as string;
+        if (variables && variables !== '{}') {
+          fetchValues.variables = variables;
         }
         if (operationName) {
           fetchValues.operationName = operationName as string;
         }
-        const result = await observableToPromise(
-          fetcher(fetchValues, schemaState.config),
-        );
+        const result = await observableToPromise(fetcher(fetchValues));
         dispatch(operationSucceededAction(result, sessionId));
       } catch (err) {
         console.error(err.name, err.stack);
         operationError(err);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       dispatch,
       fetcher,
       operationError,
       schemaState.config,
       sessionId,
-      state.operation,
-      state.variables,
+      editorsState.editors,
     ],
   );
+
+  React.useEffect(() => {
+    if (editorsState.editors.operation) {
+      editorsState.editors.operation.editor.addAction({
+        id: 'run-command',
+        label: 'Run Operation',
+        // eslint-disable-next-line no-bitwise
+        keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
+        run: async () => {
+          return executeOperation();
+        },
+      });
+    }
+  }, [editorsState.editors.operation, executeOperation]);
 
   return (
     <SessionContext.Provider
@@ -208,7 +209,6 @@ export function SessionProvider({
         changeOperation,
         changeVariables,
         operationError,
-        editorLoaded,
         dispatch,
       }}>
       {children}

@@ -12,11 +12,12 @@ import type {
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service-types';
 
+// @ts-ignore
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
 };
-
+// @ts-ignore
 export function toMonacoRange(range: GraphQLRange): monaco.IRange {
   return {
     startLineNumber: range.start.line + 1,
@@ -25,7 +26,7 @@ export function toMonacoRange(range: GraphQLRange): monaco.IRange {
     endColumn: range.end.character + 1,
   };
 }
-
+// @ts-ignore
 export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return { line: position.lineNumber - 1, character: position.column - 1 };
 }
@@ -33,6 +34,7 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range: GraphQLRange,
+  // @ts-ignore
 ): GraphQLCompletionItem & { range: monaco.IRange } {
   return {
     label: entry.label,
@@ -74,6 +76,7 @@ export function toCompletion(
 
 export function toMarkerData(
   diagnostic: Diagnostic,
+  // @ts-ignore
 ): monaco.editor.IMarkerData {
   return {
     startLineNumber: diagnostic.range.start.line + 1,

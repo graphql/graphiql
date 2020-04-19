@@ -7,7 +7,10 @@
     "jsx": "react",
     "baseUrl": ".",
     "target": "es5",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "paths": {
+      "src/*": ["*"]
+    }
   },
   "include": ["src"],
   "exclude": [
@@ -20,5 +23,13 @@
     "**/*.stories.js",
     "**/*.stories.ts",
     "**/*.stories.tsx"
+  ],
+  "references": [
+    {
+      "path": "../monaco-graphql"
+    },
+    {
+      "path": "../graphql-languageservice"
+    }
   ]
 }

@@ -1,4 +1,4 @@
-import { Maybe, ReactNodeLike } from 'src/types';
+import { Maybe, ReactNodeLike } from '../../types';
 
 export type Color = string;
 export type Colors = {

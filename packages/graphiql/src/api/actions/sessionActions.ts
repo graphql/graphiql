@@ -1,4 +1,4 @@
-import { EditorContexts } from './types';
+import { EditorContexts } from '../types';
 
 export enum SessionActionTypes {
   OperationRequested = 'OperationRequested',

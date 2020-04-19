@@ -69,6 +69,8 @@ function updateURL() {
   history.replaceState(null, null, newSearch);
 }
 
+const api = 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+
 // Defines a GraphQL fetcher using the fetch API. You're not required to
 // use fetch, and could instead implement graphQLFetcher however you like,
 // as long as it returns a Promise or Observable.
@@ -76,10 +78,11 @@ function graphQLFetcher(graphQLParams) {
   // When working locally, the example expects a GraphQL server at the path /graphql.
   // In a PR preview, it connects to the Star Wars API externally.
   // Change this to point wherever you host your GraphQL server.
-  const isDev = window.location.hostname.match(/localhost$/);
-  const api = isDev
-    ? '/graphql'
-    : 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+  // const isDev = window.location.hostname.match(/localhost$/);
+  // const api = isDev
+  //   ? '/graphql'
+  //   : 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+
   return fetch(api, {
     method: 'post',
     headers: {
@@ -100,13 +103,13 @@ function graphQLFetcher(graphQLParams) {
       }
     });
 }
-
 // Render <GraphiQL /> into the body.
 // See the README in the top level of this module to learn more about
 // how you can customize GraphiQL by providing different values or
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
+    uri: api,
     fetcher: graphQLFetcher,
     query: parameters.query,
     variables: parameters.variables,

@@ -6,8 +6,8 @@
  */
 import React, { MouseEventHandler, useState } from 'react';
 import { OperationDefinitionNode } from 'graphql';
-import { useSessionContext } from '../state/GraphiQLSessionProvider';
-import useQueryFacts from '../hooks/useQueryFacts';
+import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
+import useQueryFacts from '../api/hooks/useQueryFacts';
 
 /**
  * ExecuteButton

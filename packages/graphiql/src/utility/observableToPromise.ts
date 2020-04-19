@@ -1,4 +1,4 @@
-import { Observable } from 'src/state/types';
+import { Observable } from '../types';
 
 export function observableToPromise<T>(
   observable: Observable<T> | Promise<T>,

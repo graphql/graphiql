@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { QueryStoreItem } from 'src/utility/QueryStore';
+import { QueryStoreItem } from '../utility/QueryStore';
 
 export type HandleEditLabelFn = (
   query?: string,

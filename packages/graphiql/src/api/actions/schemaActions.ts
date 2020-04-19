@@ -1,4 +1,4 @@
-import { SchemaConfig } from './types';
+import { SchemaConfig } from '../../types';
 import { GraphQLSchema } from 'graphql';
 
 export enum SchemaActionTypes {
