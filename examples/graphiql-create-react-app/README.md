@@ -1,6 +1,6 @@
 ## GraphiQL `create-react-app` Example
 
-This example demonstrates how to transpile your own custom ES6 GraphiQL implementation bootstrapped with `create-react-app`, no config needed.
+This example demonstrates how to transpile your own custom ES6 and typescript GraphiQL implementation bootstrapped with `create-react-app`, no config needed.
 
 ### Setup
 
