@@ -1,0 +1,36 @@
+{
+  "name": "graphiql-parcel-example",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "GraphiQL Parcel Example",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "parcel src/index.html -p 8080",
+    "build": "parcel build src/index.html --public-url /"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.6",
+    "graphiql": "file:packages/graphiql",
+    "graphql": "15.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "typescript": "^3.4.4"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
