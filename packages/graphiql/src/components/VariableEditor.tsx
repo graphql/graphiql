@@ -11,7 +11,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import React from 'react';
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
-import useQueryFacts from '../api/hooks/useQueryFacts';
+// import useQueryFacts from '../api/hooks/useQueryFacts';
 
 type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
@@ -38,15 +38,13 @@ type VariableEditorProps = {
  */
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
-  const queryFacts = useQueryFacts();
+  // const queryFacts = useQueryFacts();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const cachedValueRef = React.useRef<string>(props.value ?? '');
   const divRef = React.useRef<HTMLDivElement>(null);
   const { loadEditor } = useEditorsContext();
-
-  const propsRef = useValueRef(props);
-  const sessionRef = useValueRef(session);
+  // const variableToType = queryFacts?.variableToType
 
   React.useEffect(() => {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
@@ -73,7 +71,7 @@ export function VariableEditor(props: VariableEditorProps) {
       {
         value: session?.variables?.text || '',
         language: 'json',
-        // theme: props?.editorTheme ?? 'graphiql',
+        theme: props?.editorTheme,
         readOnly: props?.readOnly ?? false,
       },
     ));
@@ -81,8 +79,8 @@ export function VariableEditor(props: VariableEditorProps) {
 
     editor.onDidChangeModelContent(() => {
       if (!ignoreChangeEvent) {
-        cachedValueRef.current = editorRef.current.getValue();
-        sessionRef.current.changeVariables(cachedValueRef.current);
+        cachedValueRef.current = editor.getValue();
+        session.changeVariables(cachedValueRef.current);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -105,18 +103,19 @@ export function VariableEditor(props: VariableEditorProps) {
     }
 
     setIgnoreChangeEvent(false);
-  }, [session.variables.text, editorRef.current]);
+  }, [session.variables.text]);
 
-  React.useEffect(() => {
-    const editor = editorRef.current;
-    if (!editor) {
-      return;
-    }
-    if (queryFacts?.variableToType) {
-      // editor.options.lint.variableToType = queryFacts.variableToType;
-      // editor.options.hintOptions.variableToType = queryFacts.variableToType;
-    }
-  }, [queryFacts, queryFacts.variableToType]);
+  // TODO: for variables linting/etc
+  // React.useEffect(() => {
+  //   const editor = editorRef.current;
+  //   if (!editor) {
+  //     return;
+  //   }
+  //   if (queryFacts?.variableToType) {
+  //     // editor.options.lint.variableToType = queryFacts.variableToType;
+  //     // editor.options.hintOptions.variableToType = queryFacts.variableToType;
+  //   }
+  // }, [queryFacts, variableToType]);
 
   return <div className="codemirrorWrap variables-editor" ref={divRef} />;
 }
