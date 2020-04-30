@@ -11,7 +11,7 @@ import { renderProvider, getProviderData } from './util';
 
 const configDir = path.join(
   __dirname,
-  '../../../../../packages/graphql-language-service-server/src/__tests__',
+  '../../../../../../packages/graphql-language-service-server/src/__tests__',
 );
 
 const renderSchemaProvider = (props: SchemaProviderProps) =>

@@ -1,3 +1,4 @@
+/* global monaco */
 /**
  *  Copyright (c) 2020 GraphQL Contributors.
  *
@@ -5,14 +6,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+// eslint-disable-next-line spaced-comment
+/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
+// eslint-disable-next-line spaced-comment
+/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+
 import * as mode from './graphqlMode';
 import {
   LanguageServiceDefaultsImpl,
-  diagnosticDefault,
+  schemaDefault,
+  formattingDefaults,
   modeConfigurationDefault,
 } from './defaults';
-
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 // @ts-ignore
 export { language as monarchLanguage } from 'monaco-languages/release/esm/graphql/graphql';
@@ -26,11 +32,12 @@ monaco.languages.register({
   mimetypes: ['application/graphql', 'text/graphql'],
 });
 
-const graphqlDefaults = new LanguageServiceDefaultsImpl(
-  LANGUAGE_ID,
-  diagnosticDefault,
-  modeConfigurationDefault,
-);
+const graphqlDefaults = new LanguageServiceDefaultsImpl({
+  languageId: LANGUAGE_ID,
+  schemaConfig: schemaDefault,
+  formattingOptions: formattingDefaults,
+  modeConfiguration: modeConfigurationDefault,
+});
 
 // Export API
 function createAPI() {

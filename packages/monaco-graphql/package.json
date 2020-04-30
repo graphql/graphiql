@@ -4,7 +4,7 @@
   "version": "2.3.4-alpha.5",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
-  "typings": "dist/typings/monaco.d.ts",
+  "typings": "src/typings/monaco.d.ts",
   "contributors": [
     {
       "name": "Peng Lyu",
@@ -16,11 +16,10 @@
     }
   ],
   "dependencies": {
-    "@graphql-toolkit/module-loader": "0.9.9",
     "graphql-language-service-utils": "^2.4.0-alpha.3",
     "graphql-languageservice": "^2.4.0-alpha.5",
-    "monaco-languages": "^1.10.0",
     "monaco-editor-core": "^0.20.0",
+    "monaco-languages": "^1.10.0",
     "vscode-languageserver-textdocument": "^1.0.1"
   },
   "devDependencies": {

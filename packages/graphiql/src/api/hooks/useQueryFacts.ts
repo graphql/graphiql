@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import getQueryFacts from '../utility/getQueryFacts';
+import getQueryFacts from '../../utility/getQueryFacts';
 import useSchema from './useSchema';
 import useOperation from './useOperation';
 

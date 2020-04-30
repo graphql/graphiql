@@ -6,11 +6,12 @@
  */
 
 import type { worker as WorkerNamespace } from 'monaco-editor';
+import 'regenerator-runtime/runtime';
 
 // @ts-ignore
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
-import { GraphQLWorker } from './GraphQLWorker';
+import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 
 self.onmessage = () => {
   try {
@@ -20,7 +21,6 @@ self.onmessage = () => {
         ctx: WorkerNamespace.IWorkerContext,
         createData: monaco.languages.graphql.ICreateData,
       ) => {
-        console.log({ createData });
         return new GraphQLWorker(ctx, createData);
       },
     );
