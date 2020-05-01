@@ -6,19 +6,21 @@
  */
 
 import React from 'react';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
 import { GraphQLType } from 'graphql';
+import type { EditorOptions } from '../types';
+
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 
-type QueryEditorProps = {
+export type QueryEditorProps = {
   onEdit?: (value: string) => void;
   readOnly?: boolean;
   onHintInformationRender: (elem: HTMLDivElement) => void;
   onClickReference?: (reference: GraphQLType) => void;
   editorTheme?: string;
   operation?: string;
-  editorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  editorOptions?: EditorOptions;
 };
 
 /**
@@ -92,6 +94,16 @@ export function QueryEditor(props: QueryEditorProps) {
     }
     setIgnoreChangeEvent(false);
   }, [session, session.operation, session.operation.text]);
+
+  React.useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) {
+      return;
+    }
+    if (props.editorOptions) {
+      editor.updateOptions(props.editorOptions);
+    }
+  }, [props.editorOptions]);
 
   return (
     <section className="query-editor" aria-label="Query Editor" ref={divRef} />

@@ -94,6 +94,9 @@ export type GraphiQLProps = {
   docExplorerOpen?: boolean;
   formatResult?: (result: any) => string;
   formatError?: (rawError: Error) => string;
+  variablesEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  operationEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  resultsEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
 } & Partial<Formatters>;
 
 export type GraphiQLState = {
@@ -390,11 +393,9 @@ class GraphiQLInternals extends React.Component<
               <QueryEditor
                 onHintInformationRender={this.handleHintInformationRender}
                 onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
+                editorOptions={this.props.operationEditorOptions}
               />
               <section
                 className="variable-editor"
@@ -415,6 +416,7 @@ class GraphiQLInternals extends React.Component<
                   onMergeQuery={this.handleMergeQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
+                  editorOptions={this.props.variablesEditorOptions}
                 />
               </section>
             </div>
@@ -424,7 +426,10 @@ class GraphiQLInternals extends React.Component<
                   <div className="spinner" />
                 </div>
               )}
-              <ResultViewer editorTheme={this.props.editorTheme} />
+              <ResultViewer
+                editorTheme={this.props.editorTheme}
+                editorOptions={this.props.resultsEditorOptions}
+              />
               {footer}
             </div>
           </div>

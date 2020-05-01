@@ -6,14 +6,15 @@
  */
 import { GraphQLType } from 'graphql';
 
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-
 import React from 'react';
+
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
+
+import type { EditorOptions } from '../types';
 // import useQueryFacts from '../api/hooks/useQueryFacts';
 
-type VariableEditorProps = {
+export type VariableEditorProps = {
   variableToType?: { [variable: string]: GraphQLType };
   value?: string;
   readOnly?: boolean;
@@ -21,6 +22,7 @@ type VariableEditorProps = {
   onPrettifyQuery: (value?: string) => void;
   onMergeQuery: (value?: string) => void;
   editorTheme?: string;
+  editorOptions?: EditorOptions;
 };
 
 /**
@@ -65,7 +67,6 @@ export function VariableEditor(props: VariableEditorProps) {
     //     editor.execCommand('autocomplete');
     //   }
     // };
-
     const editor = (editorRef.current = monaco.editor.create(
       divRef.current as HTMLDivElement,
       {
@@ -73,6 +74,7 @@ export function VariableEditor(props: VariableEditorProps) {
         language: 'json',
         theme: props?.editorTheme,
         readOnly: props?.readOnly ?? false,
+        ...props.editorOptions,
       },
     ));
     loadEditor('variables', editor);
@@ -104,6 +106,16 @@ export function VariableEditor(props: VariableEditorProps) {
 
     setIgnoreChangeEvent(false);
   }, [session.variables.text]);
+
+  React.useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) {
+      return;
+    }
+    if (props.editorOptions) {
+      editor.updateOptions(props.editorOptions);
+    }
+  }, [props.editorOptions]);
 
   // TODO: for variables linting/etc
   // React.useEffect(() => {

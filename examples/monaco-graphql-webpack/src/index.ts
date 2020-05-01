@@ -94,7 +94,7 @@ const operationEditor = monaco.editor.create(
   },
 );
 
-monaco.languages.graphql.graphqlDefaults.setSchemaUri(SCHEMA_URL);
+monaco.languages.graphql.graphqlDefaults.setSchemaConfig({ uri: SCHEMA_URL });
 
 /**
  * Basic Operation Exec Example
@@ -114,9 +114,6 @@ async function executeCurrentOp() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     });
-
-    const schema = await monaco.languages.graphql.getSchema();
-    console.log({ schema: await schema });
 
     const resultText = await result.text();
     resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));

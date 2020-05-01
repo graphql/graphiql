@@ -1,21 +1,15 @@
 import React, { useCallback } from 'react';
 
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-
 import {
   editorLoadedAction,
   EditorActionTypes,
   EditorAction,
 } from '../actions/editorActions';
 
-// @ts-ignore
 import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
-// @ts-ignore
 import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
-// @ts-ignore
 import GraphQLWorker from 'worker-loader!../../workers/graphql.worker';
 
-// @ts-ignore
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === 'graphqlDev') {
