@@ -23,7 +23,6 @@
     "vscode-languageserver-types": "3.15.1"
   },
   "peerDependencies": {
-    "monaco-editor": "^0.20.0",
-    "monaco-languages": "^1.10.0"
+    "monaco-editor": "^0.20.0"
   }
 }
