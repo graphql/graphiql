@@ -189,7 +189,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-### Children (dropped as of 1.0.0-rc.2)
+### Children (dropped as of 1.0.0-alpha.4)
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -212,6 +212,21 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
   `<GraphiQL.Menu>`, or `<GraphiQL.Select>`.
 
 - `<GraphiQL.Footer>`: Add a custom footer below GraphiQL Results.
+
+### Troubleshooting
+
+#### 1. `Module not found: Can't resolve 'graphql/validation/rules/KnownFragmentNames'`
+`graphiql@0.17.5` does not support `graphql@15.0.0`. you will need `graphql@1.0.0-alpha8` or later. Stable support will arrive soon!
+
+#### 2. Where is auth support?
+
+`GraphiQL` component supports a custom `fetcher` prop function that returns a promise for executing operations or fetching the introspection schema. This allows you to customize headers and other request properties for both executing operations and retrieving schema.
+
+An example flow could have a user login component that sits above GraphiQL component, and makes the GraphiQL component active when the user session has began. The auth token would be passed to the fetcher prop.
+
+#### 3. `Mode failed to advance stream`
+
+This is a nasty error that older implementations see. You'll need to be on `graphiql@0.15` or later, at least`graphql@0.17.5` is reccomended. You'll also need to clear the local storage entry for any domains where that error occured.
 
 ## Full Usage Example
 
