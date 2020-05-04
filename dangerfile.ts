@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { existsSync } from 'fs';
 // import { danger, fail, markdown, warn } from "danger"
 // Show Jest fails in the PR
 import jest from 'danger-plugin-jest';
@@ -10,11 +10,11 @@ import eslintConfig from './.eslintrc.js';
 yarn();
 
 // ESLint
-if (fs.existsSync('coverage/eslint/errors.json')) {
+if (existsSync('coverage/eslint/errors.json')) {
   eslint(eslintConfig);
 }
 
 // Jest Coverage
-if (fs.existsSync('coverage/jest/coverage-final.json')) {
+if (existsSync('coverage/jest/coverage-final.json')) {
   jest({ testResultsJsonPath: 'coverage/jest/coverage-final.json' });
 }
