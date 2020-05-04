@@ -4,6 +4,8 @@ jobs:
   test:
     name: Lint & Test
     runs-on: ubuntu-16.04
+    env:
+      DANGER_GITHUB_API_TOKEN: ${GITHUB_TOKEN}
     steps:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
