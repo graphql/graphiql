@@ -4,13 +4,10 @@ jobs:
   test:
     name: Lint & Test
     runs-on: ubuntu-16.04
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
       - run: yarn ci && node_modules/.bin/codecov
-      - uses: danger/danger-js@9.1.8
 
   e2e:
     name: Cypress
