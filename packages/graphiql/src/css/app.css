@@ -212,6 +212,11 @@
   width: 12px;
 }
 
+.result-window,
+.variables-editor {
+  height: 100%;
+}
+
 /* No `.graphiql-container` here so themes can overwrite */
 .result-window .CodeMirror {
   background: #f6f7f8;
