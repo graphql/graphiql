@@ -2,7 +2,7 @@ _work in progress_
 
 # What's in a theme?
 
-Themes export a `<Layout/>` component and a `theme-ui` theme. Smaller themes can just re-export the default layout component and more ambitious themes can provide their own `<Layout/>` and override how the application is renderer. This allows top level markup/layout customization beyond simple aesthetics.
+Themes export a `<Layout/>` component and a `theme-ui` theme. Smaller themes can just re-export the default layout component and more ambitious themes can provide their own `<Layout/>` and override how the application is rendered. This allows top level markup/layout customization beyond simple aesthetics.
 
 ## The theme-ui theme
 
@@ -10,11 +10,11 @@ Components that are not the Layout itself rely on the `theme-ui` constants for s
 
 ## The Layout component
 
-The Layout component takes a specific shape of `PropTypes` (defined in `themes/constants.js`) that helps it render all neccesary elements in place. It's meant to be a controlled component so a higher level router or whatnot in graphiql can actually shuffle the blocks around and drive decisions like routing.
+The Layout component takes a specific shape of `PropTypes` (defined in `themes/constants.js`) that helps it render all necessary elements in place. It's meant to be a controlled component so a higher level router or whatnot in graphiql can actually shuffle the blocks around and drive decisions like routing.
 
 # Using themes from graphiql/storybook
 
-`themes/provider.js` exports a context provider that must wrap the app, it also exports a `useThemeLayout` hook that returns the `<Layout/>` component. Currently this is shimmed to return the default theme any any event, but the userland api calls are ready for switching themes (read on:)
+`themes/provider.js` exports a context provider that must wrap the app, it also exports a `useThemeLayout` hook that returns the `<Layout/>` component. Currently this is shimmed to return the default theme in any event, but the userland api calls are ready for switching themes (read on:)
 
 ## Switching themes
 

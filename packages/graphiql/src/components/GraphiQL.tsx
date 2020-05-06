@@ -5,11 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
-  ComponentType,
-  PropsWithChildren,
-  MouseEventHandler,
-} from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import { SchemaConfig } from 'graphql-languageservice';
@@ -26,7 +22,6 @@ import { VariableToType } from '../utility/getQueryFacts';
 
 import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
-import { getLeft, getTop } from '../utility/elementPosition';
 
 import {
   SchemaProvider,
@@ -39,6 +34,7 @@ import {
 } from '../api/providers/GraphiQLSessionProvider';
 import { getFetcher } from '../api/common';
 import { Unsubscribable, Fetcher } from '../types';
+import { Provider, useThemeLayout } from '../new-components/themes/provider';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -64,11 +60,6 @@ type Formatters = {
 };
 
 export type Maybe<T> = T | null | undefined;
-
-type OnMouseMoveFn = Maybe<
-  (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
->;
-type OnMouseUpFn = Maybe<() => void>;
 
 export type GraphiQLProps = {
   uri: string;
@@ -276,191 +267,198 @@ class GraphiQLInternals extends React.Component<
   }
 
   render() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const Layout = useThemeLayout();
     const children = React.Children.toArray(this.props.children);
     const logo = find(children, child =>
       isChildComponentType(child, GraphiQLLogo),
     ) || <GraphiQLLogo />;
 
-    const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQLToolbar),
-    ) || (
-      <GraphiQLToolbar>
-        <ToolbarButton
-          onClick={this.handlePrettifyQuery}
-          title="Prettify Query (Shift-Ctrl-P)"
-          label="Prettify"
-        />
-        <ToolbarButton
-          onClick={this.handleMergeQuery}
-          title="Merge Query (Shift-Ctrl-M)"
-          label="Merge"
-        />
-        <ToolbarButton
-          onClick={this.handleCopyQuery}
-          title="Copy Query (Shift-Ctrl-C)"
-          label="Copy"
-        />
-        <ToolbarButton
-          onClick={this.handleToggleHistory}
-          title="Show History"
-          label="History"
-        />
-      </GraphiQLToolbar>
-    );
-
     const footer = find(children, child =>
       isChildComponentType(child, GraphiQLFooter),
     );
 
-    const queryWrapStyle = {
-      WebkitFlex: this.state.editorFlex,
-      flex: this.state.editorFlex,
-    };
+    // const queryWrapStyle = {
+    //   WebkitFlex: this.state.editorFlex,
+    //   flex: this.state.editorFlex,
+    // };
 
-    const docWrapStyle = {
-      display: 'block',
-      width: this.state.docExplorerWidth,
-    };
-    const docExplorerWrapClasses =
-      'docExplorerWrap' +
-      (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
+    // const variableOpen = this.state.variableEditorOpen;
+    // const variableStyle = {
+    //   height: variableOpen ? this.state.variableEditorHeight : undefined,
+    // };
 
-    const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'block' : 'none',
-      width: '230px',
-      zIndex: 7,
-    };
+    const operationEditor = (
+      // <div
+      //   ref={n => {
+      //     this.editorBarComponent = n;
+      //   }}
+      //   className="editorBar"
+      //   onDoubleClick={this.handleResetResize}
+      //   onMouseDown={this.handleResizeStart}>
+      //   <div className="queryWrap" style={queryWrapStyle}>
+      <QueryEditor
+        onHintInformationRender={this.handleHintInformationRender}
+        onClickReference={this.handleClickReference}
+        editorTheme={this.props.editorTheme}
+        readOnly={this.props.readOnly}
+        editorOptions={this.props.operationEditorOptions}
+      />
+      //   </div>
+      // </div>
+    );
 
-    const variableOpen = this.state.variableEditorOpen;
-    const variableStyle = {
-      height: variableOpen ? this.state.variableEditorHeight : undefined,
-    };
-
-    return (
-      <div className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          {this.state.historyPaneOpen && (
-            <SessionContext.Consumer>
-              {session => {
-                return (
-                  <QueryHistory
-                    onSelectQuery={(operation, variables, _opName) => {
-                      if (operation) {
-                        session.changeOperation(operation);
-                      }
-                      if (variables) {
-                        session.changeVariables(variables);
-                      }
-                    }}
-                    storage={this._storage}
-                    queryID={this._editorQueryID}>
-                    <button
-                      className="docExplorerHide"
-                      onClick={this.handleToggleHistory}
-                      aria-label="Close History">
-                      {'\u2715'}
-                    </button>
-                  </QueryHistory>
-                );
-              }}
-            </SessionContext.Consumer>
-          )}
+    const variables = (
+      <section
+        className="variable-editor"
+        // style={variableStyle}
+        aria-label="Query Variables">
+        <div
+          className="variable-editor-title"
+          id="variable-editor-title"
+          // style={{
+          //   cursor: variableOpen ? 'row-resize' : 'n-resize',
+          // }}
+          // onMouseDown={this.handleVariableResizeStart}
+        >
+          {'Query Variables'}
         </div>
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onStop={this.handleStopQuery}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}
-                aria-label="Open Documentation Explorer">
-                {'Docs'}
-              </button>
-            )}
-          </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-                editorOptions={this.props.operationEditorOptions}
-              />
-              <section
-                className="variable-editor"
-                style={variableStyle}
-                aria-label="Query Variables">
-                <div
-                  className="variable-editor-title"
-                  id="variable-editor-title"
-                  style={{
-                    cursor: variableOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
-                </div>
-                <VariableEditor
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                  editorOptions={this.props.variablesEditorOptions}
-                />
-              </section>
-            </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>
-              )}
-              <ResultViewer
-                editorTheme={this.props.editorTheme}
-                editorOptions={this.props.resultsEditorOptions}
-              />
-              {footer}
-            </div>
-          </div>
-        </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <SchemaContext.Consumer>
-              {({ schema }) => {
-                return (
-                  <DocExplorer schema={schema}>
-                    <button
-                      className="docExplorerHide"
-                      onClick={this.handleToggleDocs}
-                      aria-label="Close Documentation Explorer">
-                      {'\u2715'}
-                    </button>
-                  </DocExplorer>
-                );
-              }}
-            </SchemaContext.Consumer>
+        <VariableEditor
+          onHintInformationRender={this.handleHintInformationRender}
+          onPrettifyQuery={this.handlePrettifyQuery}
+          onMergeQuery={this.handleMergeQuery}
+          editorTheme={this.props.editorTheme}
+          readOnly={this.props.readOnly}
+          editorOptions={this.props.variablesEditorOptions}
+        />
+      </section>
+    );
+
+    const response = (
+      <div className="resultWrap">
+        {this.state.isWaitingForResponse && (
+          <div className="spinner-container">
+            <div className="spinner" />
           </div>
         )}
+        <ResultViewer
+          editorTheme={this.props.editorTheme}
+          editorOptions={this.props.resultsEditorOptions}
+        />
+        {footer}
       </div>
+    );
+
+    return (
+      <Provider>
+        <Layout
+          nav={
+            <>
+              <GraphiQLToolbar>
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onStop={this.handleStopQuery}
+                />
+                <ToolbarButton
+                  onClick={this.handlePrettifyQuery}
+                  title="Prettify Query (Shift-Ctrl-P)"
+                  label="Prettify"
+                />
+                <ToolbarButton
+                  onClick={this.handleMergeQuery}
+                  title="Merge Query (Shift-Ctrl-M)"
+                  label="Merge"
+                />
+                <ToolbarButton
+                  onClick={this.handleCopyQuery}
+                  title="Copy Query (Shift-Ctrl-C)"
+                  label="Copy"
+                />
+                <ToolbarButton
+                  onClick={this.handleToggleHistory}
+                  title="Show History"
+                  label="History"
+                />
+                <ToolbarButton
+                  onClick={this.handleToggleDocs}
+                  title="Open Documentation Explorer"
+                  label="Docs"
+                />
+              </GraphiQLToolbar>
+            </>
+          }
+          explorer={{
+            input: operationEditor,
+            response,
+            console: variables,
+          }}
+          navPanels={[
+            ...(this.state.docExplorerOpen
+              ? [
+                  {
+                    key: 'docs',
+                    size: 'sidebar' as const,
+                    component: (
+                      <SchemaContext.Consumer>
+                        {({ schema }) => {
+                          return (
+                            <DocExplorer schema={schema}>
+                              <button
+                                className="docExplorerHide"
+                                onClick={this.handleToggleDocs}
+                                aria-label="Close Documentation Explorer">
+                                {'\u2715'}
+                              </button>
+                            </DocExplorer>
+                          );
+                        }}
+                      </SchemaContext.Consumer>
+                    ),
+                  },
+                ]
+              : []),
+            ...(this.state.historyPaneOpen
+              ? [
+                  {
+                    key: 'history',
+                    size: 'sidebar' as const,
+                    component: (
+                      <SessionContext.Consumer>
+                        {session => {
+                          return (
+                            <QueryHistory
+                              onSelectQuery={(
+                                operation,
+                                variables,
+                                _opName,
+                              ) => {
+                                if (operation) {
+                                  session.changeOperation(operation);
+                                }
+                                if (variables) {
+                                  session.changeVariables(variables);
+                                }
+                              }}
+                              storage={this._storage}
+                              queryID={this._editorQueryID}>
+                              <button
+                                className="docExplorerHide"
+                                onClick={this.handleToggleHistory}
+                                aria-label="Close History">
+                                {'\u2715'}
+                              </button>
+                            </QueryHistory>
+                          );
+                        }}
+                      </SessionContext.Consumer>
+                    ),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      </Provider>
     );
   }
 
@@ -629,153 +627,153 @@ class GraphiQLInternals extends React.Component<
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
-  private handleResizeStart = (downEvent: React.MouseEvent) => {
-    if (!this._didClickDragBar(downEvent)) {
-      return;
-    }
+  // private handleResizeStart = (downEvent: React.MouseEvent) => {
+  //   if (!this._didClickDragBar(downEvent)) {
+  //     return;
+  //   }
 
-    downEvent.preventDefault();
+  //   downEvent.preventDefault();
 
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
+  //   const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
-      const rightSize = editorBar.clientWidth - leftSize;
-      this.setState({ editorFlex: leftSize / rightSize });
-    };
+  //     const editorBar = this.editorBarComponent as HTMLElement;
+  //     const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
+  //     const rightSize = editorBar.clientWidth - leftSize;
+  //     this.setState({ editorFlex: leftSize / rightSize });
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 
   handleResetResize = () => {
     this.setState({ editorFlex: 1 });
   };
 
-  private _didClickDragBar(event: React.MouseEvent) {
-    // Only for primary unmodified clicks
-    if (event.button !== 0 || event.ctrlKey) {
-      return false;
-    }
-    let target = event.target as Element;
-    // Specifically the result window's drag bar.
-    const resultWindow = this.resultViewerElement;
-    while (target) {
-      if (target === resultWindow) {
-        return true;
-      }
-      target = target.parentNode as Element;
-    }
-    return false;
-  }
+  // private _didClickDragBar(event: React.MouseEvent) {
+  //   // Only for primary unmodified clicks
+  //   if (event.button !== 0 || event.ctrlKey) {
+  //     return false;
+  //   }
+  //   let target = event.target as Element;
+  //   // Specifically the result window's drag bar.
+  //   const resultWindow = this.resultViewerElement;
+  //   while (target) {
+  //     if (target === resultWindow) {
+  //       return true;
+  //     }
+  //     target = target.parentNode as Element;
+  //   }
+  //   return false;
+  // }
 
-  private handleDocsResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
+  // private handleDocsResizeStart: MouseEventHandler<
+  //   HTMLDivElement
+  // > = downEvent => {
+  //   downEvent.preventDefault();
 
-    const hadWidth = this.state.docExplorerWidth;
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
+  //   const hadWidth = this.state.docExplorerWidth;
+  //   const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      const app = this.graphiqlContainer as HTMLElement;
-      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
-      const docsSize = app.clientWidth - cursorPos;
+  //     const app = this.graphiqlContainer as HTMLElement;
+  //     const cursorPos = moveEvent.clientX - getLeft(app) - offset;
+  //     const docsSize = app.clientWidth - cursorPos;
 
-      if (docsSize < 100) {
-        this.setState({ docExplorerOpen: false });
-      } else {
-        this.setState({
-          docExplorerOpen: true,
-          docExplorerWidth: Math.min(docsSize, 650),
-        });
-      }
-    };
+  //     if (docsSize < 100) {
+  //       this.setState({ docExplorerOpen: false });
+  //     } else {
+  //       this.setState({
+  //         docExplorerOpen: true,
+  //         docExplorerWidth: Math.min(docsSize, 650),
+  //       });
+  //     }
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!this.state.docExplorerOpen) {
-        this.setState({ docExplorerWidth: hadWidth });
-      }
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     if (!this.state.docExplorerOpen) {
+  //       this.setState({ docExplorerWidth: hadWidth });
+  //     }
 
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove!);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove!);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 
-  private handleDocsResetResize = () => {
-    this.setState({
-      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
-    });
-  };
+  // private handleDocsResetResize = () => {
+  //   this.setState({
+  //     docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
+  //   });
+  // };
 
-  private handleVariableResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
+  // private handleVariableResizeStart: MouseEventHandler<
+  //   HTMLDivElement
+  // > = downEvent => {
+  //   downEvent.preventDefault();
 
-    let didMove = false;
-    const wasOpen = this.state.variableEditorOpen;
-    const hadHeight = this.state.variableEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
+  //   let didMove = false;
+  //   const wasOpen = this.state.variableEditorOpen;
+  //   const hadHeight = this.state.variableEditorHeight;
+  //   const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      didMove = true;
+  //     didMove = true;
 
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          variableEditorOpen: false,
-          variableEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          variableEditorOpen: true,
-          variableEditorHeight: bottomSize,
-        });
-      }
-    };
+  //     const editorBar = this.editorBarComponent as HTMLElement;
+  //     const topSize = moveEvent.clientY - getTop(editorBar) - offset;
+  //     const bottomSize = editorBar.clientHeight - topSize;
+  //     if (bottomSize < 60) {
+  //       this.setState({
+  //         variableEditorOpen: false,
+  //         variableEditorHeight: hadHeight,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         variableEditorOpen: true,
+  //         variableEditorHeight: bottomSize,
+  //       });
+  //     }
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ variableEditorOpen: !wasOpen });
-      }
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     if (!didMove) {
+  //       this.setState({ variableEditorOpen: !wasOpen });
+  //     }
 
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL
