@@ -39,6 +39,7 @@ import {
 } from '../api/providers/GraphiQLSessionProvider';
 import { getFetcher } from '../api/common';
 import { Unsubscribable, Fetcher } from '../types';
+import { Provider, useThemeLayout } from '../new-components/themes/provider';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -273,37 +274,12 @@ class GraphiQLInternals extends React.Component<
   }
 
   render() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const Layout = useThemeLayout();
     const children = React.Children.toArray(this.props.children);
     const logo = find(children, child =>
       isChildComponentType(child, GraphiQLLogo),
     ) || <GraphiQLLogo />;
-
-    const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQLToolbar),
-    ) || (
-      <GraphiQLToolbar>
-        <ToolbarButton
-          onClick={this.handlePrettifyQuery}
-          title="Prettify Query (Shift-Ctrl-P)"
-          label="Prettify"
-        />
-        <ToolbarButton
-          onClick={this.handleMergeQuery}
-          title="Merge Query (Shift-Ctrl-M)"
-          label="Merge"
-        />
-        <ToolbarButton
-          onClick={this.handleCopyQuery}
-          title="Copy Query (Shift-Ctrl-C)"
-          label="Copy"
-        />
-        <ToolbarButton
-          onClick={this.handleToggleHistory}
-          title="Show History"
-          label="History"
-        />
-      </GraphiQLToolbar>
-    );
 
     const footer = find(children, child =>
       isChildComponentType(child, GraphiQLFooter),
@@ -314,150 +290,182 @@ class GraphiQLInternals extends React.Component<
       flex: this.state.editorFlex,
     };
 
-    const docWrapStyle = {
-      display: 'block',
-      width: this.state.docExplorerWidth,
-    };
-    const docExplorerWrapClasses =
-      'docExplorerWrap' +
-      (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-
-    const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'block' : 'none',
-      width: '230px',
-      zIndex: 7,
-    };
-
     const variableOpen = this.state.variableEditorOpen;
-    const variableStyle = {
-      height: variableOpen ? this.state.variableEditorHeight : undefined,
-    };
+    // const variableStyle = {
+    //   height: variableOpen ? this.state.variableEditorHeight : undefined,
+    // };
 
-    return (
-      <div className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          {this.state.historyPaneOpen && (
-            <SessionContext.Consumer>
-              {session => {
-                return (
-                  <QueryHistory
-                    onSelectQuery={(operation, variables, _opName) => {
-                      if (operation) {
-                        session.changeOperation(operation);
-                      }
-                      if (variables) {
-                        session.changeVariables(variables);
-                      }
-                    }}
-                    storage={this._storage}
-                    queryID={this._editorQueryID}>
-                    <button
-                      className="docExplorerHide"
-                      onClick={this.handleToggleHistory}
-                      aria-label="Close History">
-                      {'\u2715'}
-                    </button>
-                  </QueryHistory>
-                );
-              }}
-            </SessionContext.Consumer>
-          )}
+    const operationEditor = (
+      // <div
+      //   ref={n => {
+      //     this.editorBarComponent = n;
+      //   }}
+      //   className="editorBar"
+      //   onDoubleClick={this.handleResetResize}
+      //   onMouseDown={this.handleResizeStart}>
+      //   <div className="queryWrap" style={queryWrapStyle}>
+      <QueryEditor
+        onHintInformationRender={this.handleHintInformationRender}
+        onClickReference={this.handleClickReference}
+        editorTheme={this.props.editorTheme}
+        readOnly={this.props.readOnly}
+        editorOptions={this.props.operationEditorOptions}
+      />
+      //   </div>
+      // </div>
+    );
+
+    const variables = (
+      <section
+        className="variable-editor"
+        // style={variableStyle}
+        aria-label="Query Variables">
+        <div
+          className="variable-editor-title"
+          id="variable-editor-title"
+          // style={{
+          //   cursor: variableOpen ? 'row-resize' : 'n-resize',
+          // }}
+          // onMouseDown={this.handleVariableResizeStart}
+        >
+          {'Query Variables'}
         </div>
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onStop={this.handleStopQuery}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}
-                aria-label="Open Documentation Explorer">
-                {'Docs'}
-              </button>
-            )}
-          </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-                editorOptions={this.props.operationEditorOptions}
-              />
-              <section
-                className="variable-editor"
-                style={variableStyle}
-                aria-label="Query Variables">
-                <div
-                  className="variable-editor-title"
-                  id="variable-editor-title"
-                  style={{
-                    cursor: variableOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
-                </div>
-                <VariableEditor
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                  editorOptions={this.props.variablesEditorOptions}
-                />
-              </section>
-            </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>
-              )}
-              <ResultViewer
-                editorTheme={this.props.editorTheme}
-                editorOptions={this.props.resultsEditorOptions}
-              />
-              {footer}
-            </div>
-          </div>
-        </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <SchemaContext.Consumer>
-              {({ schema }) => {
-                return (
-                  <DocExplorer schema={schema}>
-                    <button
-                      className="docExplorerHide"
-                      onClick={this.handleToggleDocs}
-                      aria-label="Close Documentation Explorer">
-                      {'\u2715'}
-                    </button>
-                  </DocExplorer>
-                );
-              }}
-            </SchemaContext.Consumer>
+        <VariableEditor
+          onHintInformationRender={this.handleHintInformationRender}
+          onPrettifyQuery={this.handlePrettifyQuery}
+          onMergeQuery={this.handleMergeQuery}
+          editorTheme={this.props.editorTheme}
+          readOnly={this.props.readOnly}
+          editorOptions={this.props.variablesEditorOptions}
+        />
+      </section>
+    );
+
+    const response = (
+      <div className="resultWrap">
+        {this.state.isWaitingForResponse && (
+          <div className="spinner-container">
+            <div className="spinner" />
           </div>
         )}
+        <ResultViewer
+          editorTheme={this.props.editorTheme}
+          editorOptions={this.props.resultsEditorOptions}
+        />
+        {footer}
       </div>
+    );
+
+    return (
+      <Provider>
+        <Layout
+          nav={
+            <>
+              <GraphiQLToolbar>
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onStop={this.handleStopQuery}
+                />
+                <ToolbarButton
+                  onClick={this.handlePrettifyQuery}
+                  title="Prettify Query (Shift-Ctrl-P)"
+                  label="Prettify"
+                />
+                <ToolbarButton
+                  onClick={this.handleMergeQuery}
+                  title="Merge Query (Shift-Ctrl-M)"
+                  label="Merge"
+                />
+                <ToolbarButton
+                  onClick={this.handleCopyQuery}
+                  title="Copy Query (Shift-Ctrl-C)"
+                  label="Copy"
+                />
+                <ToolbarButton
+                  onClick={this.handleToggleHistory}
+                  title="Show History"
+                  label="History"
+                />
+                <ToolbarButton
+                  onClick={this.handleToggleDocs}
+                  title="Open Documentation Explorer"
+                  label="Docs"
+                />
+              </GraphiQLToolbar>
+            </>
+          }
+          explorer={{
+            input: operationEditor,
+            response,
+            console: variables,
+          }}
+          navPanels={[
+            ...(this.state.docExplorerOpen
+              ? [
+                  {
+                    key: 'docs',
+                    size: 'sidebar' as const,
+                    component: (
+                      <SchemaContext.Consumer>
+                        {({ schema }) => {
+                          return (
+                            <DocExplorer schema={schema}>
+                              <button
+                                className="docExplorerHide"
+                                onClick={this.handleToggleDocs}
+                                aria-label="Close Documentation Explorer">
+                                {'\u2715'}
+                              </button>
+                            </DocExplorer>
+                          );
+                        }}
+                      </SchemaContext.Consumer>
+                    ),
+                  },
+                ]
+              : []),
+            ...(this.state.historyPaneOpen
+              ? [
+                  {
+                    key: 'history',
+                    size: 'sidebar' as const,
+                    component: (
+                      <SessionContext.Consumer>
+                        {session => {
+                          return (
+                            <QueryHistory
+                              onSelectQuery={(
+                                operation,
+                                variables,
+                                _opName,
+                              ) => {
+                                if (operation) {
+                                  session.changeOperation(operation);
+                                }
+                                if (variables) {
+                                  session.changeVariables(variables);
+                                }
+                              }}
+                              storage={this._storage}
+                              queryID={this._editorQueryID}>
+                              <button
+                                className="docExplorerHide"
+                                onClick={this.handleToggleHistory}
+                                aria-label="Close History">
+                                {'\u2715'}
+                              </button>
+                            </QueryHistory>
+                          );
+                        }}
+                      </SessionContext.Consumer>
+                    ),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      </Provider>
     );
   }
 

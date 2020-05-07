@@ -63,6 +63,7 @@ export function QueryEditor(props: QueryEditorProps) {
         value: session?.operation?.text ?? '',
         language: 'graphqlDev',
         automaticLayout: true,
+        scrollBeyondLastLine: false,
         ...props.editorOptions,
       },
     ));

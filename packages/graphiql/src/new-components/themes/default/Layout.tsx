@@ -62,7 +62,7 @@ const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
         gridTemplate: hasNavPanels
           ? `'nav panels explorer' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
           : `'nav explorer' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,
-        height: '100vh',
+        height: '100%',
       }}>
       {nav && (
         <Card innerSx={{ gridArea: 'nav' }} transparent>
@@ -88,10 +88,10 @@ const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
             ...gridBase,
             gridArea: 'explorer',
             gridAutoRows: '1fr',
-            gridTemplateAreas: `'input response' 'console console'`,
+            gridTemplateAreas: `'input response' 'console response'`,
           }}>
-          <Card>{explorer.input}</Card>
-          <Card>{explorer.response}</Card>
+          <Card innerSx={{ gridArea: 'input' }}>{explorer.input}</Card>
+          <Card innerSx={{ gridArea: 'response' }}>{explorer.response}</Card>
           <Card innerSx={{ gridArea: 'console' }}>{explorer.console}</Card>
         </div>
       )}

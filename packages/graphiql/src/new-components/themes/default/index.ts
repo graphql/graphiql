@@ -8,7 +8,7 @@ const palette = {
     90: `rgba(0, 0, 0, 0.1)`,
     100: '#fff',
   },
-  fuscia: {
+  fuchsia: {
     90: 'rgba(254, 247, 252, 0.940177)',
     50: '#E535AB',
   },
@@ -17,9 +17,9 @@ const palette = {
 const colors: Colors = {
   text: palette.neutral[20],
   darkText: palette.neutral[70],
-  background: palette.fuscia[90],
+  background: palette.fuchsia[90],
   cardBackground: palette.neutral[100],
-  primary: palette.fuscia[50],
+  primary: palette.fuchsia[50],
   border: palette.neutral[90],
 };
 
