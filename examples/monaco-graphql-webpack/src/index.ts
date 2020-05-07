@@ -1,7 +1,4 @@
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+/* global monaco */
 
 import 'regenerator-runtime/runtime';
 import 'monaco-graphql/esm/monaco.contribution';
@@ -60,15 +57,15 @@ const resultsEditor = monaco.editor.create(
 const variablesEditor = monaco.editor.create(
   document.getElementById('variables') as HTMLElement,
   {
-    value: `{ }`,
-    language: 'json',
+    value: `{ "limit": 10 }`,
+    language: 'jsonc',
     automaticLayout: true,
   },
 );
 const model = monaco.editor.createModel(
   `
-query Example { 
-  launchesPast(limit: 10) {
+query Example($limit: Int) { 
+  launchesPast(limit: $limit) {
     mission_name
     # format me using the right click context menu
               launch_date_local

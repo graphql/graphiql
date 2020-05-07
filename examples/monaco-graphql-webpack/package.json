@@ -4,8 +4,9 @@
   "private": true,
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
+  "typings": "src/types.d.ts",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack",
+    "build": "cross-env NODE_ENV=production webpack-cli",
     "build-demo": "yarn build && yarn copy-demo",
     "copy-demo": "mkdirp ../../packages/graphiql/monaco && copy 'bundle/*' '../../packages/graphiql/monaco'",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
