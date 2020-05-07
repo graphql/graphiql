@@ -5,11 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
-  ComponentType,
-  PropsWithChildren,
-  MouseEventHandler,
-} from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import { SchemaConfig } from 'graphql-languageservice';
@@ -26,7 +22,6 @@ import { VariableToType } from '../utility/getQueryFacts';
 
 import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
-import { getLeft, getTop } from '../utility/elementPosition';
 
 import {
   SchemaProvider,
@@ -61,10 +56,11 @@ declare namespace global {
 
 export type Maybe<T> = T | null | undefined;
 
-type OnMouseMoveFn = Maybe<
-  (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
->;
-type OnMouseUpFn = Maybe<() => void>;
+// type OnMouseMoveFn = Maybe<
+//   (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
+// >;
+
+// type OnMouseUpFn = Maybe<() => void>;
 
 type Formatters = {
   formatResult: (result: any) => string;
@@ -285,12 +281,12 @@ class GraphiQLInternals extends React.Component<
       isChildComponentType(child, GraphiQLFooter),
     );
 
-    const queryWrapStyle = {
-      WebkitFlex: this.state.editorFlex,
-      flex: this.state.editorFlex,
-    };
+    // const queryWrapStyle = {
+    //   WebkitFlex: this.state.editorFlex,
+    //   flex: this.state.editorFlex,
+    // };
 
-    const variableOpen = this.state.variableEditorOpen;
+    // const variableOpen = this.state.variableEditorOpen;
     // const variableStyle = {
     //   height: variableOpen ? this.state.variableEditorHeight : undefined,
     // };
@@ -634,153 +630,153 @@ class GraphiQLInternals extends React.Component<
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
-  private handleResizeStart = (downEvent: React.MouseEvent) => {
-    if (!this._didClickDragBar(downEvent)) {
-      return;
-    }
+  // private handleResizeStart = (downEvent: React.MouseEvent) => {
+  //   if (!this._didClickDragBar(downEvent)) {
+  //     return;
+  //   }
 
-    downEvent.preventDefault();
+  //   downEvent.preventDefault();
 
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
+  //   const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
-      const rightSize = editorBar.clientWidth - leftSize;
-      this.setState({ editorFlex: leftSize / rightSize });
-    };
+  //     const editorBar = this.editorBarComponent as HTMLElement;
+  //     const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
+  //     const rightSize = editorBar.clientWidth - leftSize;
+  //     this.setState({ editorFlex: leftSize / rightSize });
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 
   handleResetResize = () => {
     this.setState({ editorFlex: 1 });
   };
 
-  private _didClickDragBar(event: React.MouseEvent) {
-    // Only for primary unmodified clicks
-    if (event.button !== 0 || event.ctrlKey) {
-      return false;
-    }
-    let target = event.target as Element;
-    // Specifically the result window's drag bar.
-    const resultWindow = this.resultViewerElement;
-    while (target) {
-      if (target === resultWindow) {
-        return true;
-      }
-      target = target.parentNode as Element;
-    }
-    return false;
-  }
+  // private _didClickDragBar(event: React.MouseEvent) {
+  //   // Only for primary unmodified clicks
+  //   if (event.button !== 0 || event.ctrlKey) {
+  //     return false;
+  //   }
+  //   let target = event.target as Element;
+  //   // Specifically the result window's drag bar.
+  //   const resultWindow = this.resultViewerElement;
+  //   while (target) {
+  //     if (target === resultWindow) {
+  //       return true;
+  //     }
+  //     target = target.parentNode as Element;
+  //   }
+  //   return false;
+  // }
 
-  private handleDocsResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
+  // private handleDocsResizeStart: MouseEventHandler<
+  //   HTMLDivElement
+  // > = downEvent => {
+  //   downEvent.preventDefault();
 
-    const hadWidth = this.state.docExplorerWidth;
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
+  //   const hadWidth = this.state.docExplorerWidth;
+  //   const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      const app = this.graphiqlContainer as HTMLElement;
-      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
-      const docsSize = app.clientWidth - cursorPos;
+  //     const app = this.graphiqlContainer as HTMLElement;
+  //     const cursorPos = moveEvent.clientX - getLeft(app) - offset;
+  //     const docsSize = app.clientWidth - cursorPos;
 
-      if (docsSize < 100) {
-        this.setState({ docExplorerOpen: false });
-      } else {
-        this.setState({
-          docExplorerOpen: true,
-          docExplorerWidth: Math.min(docsSize, 650),
-        });
-      }
-    };
+  //     if (docsSize < 100) {
+  //       this.setState({ docExplorerOpen: false });
+  //     } else {
+  //       this.setState({
+  //         docExplorerOpen: true,
+  //         docExplorerWidth: Math.min(docsSize, 650),
+  //       });
+  //     }
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!this.state.docExplorerOpen) {
-        this.setState({ docExplorerWidth: hadWidth });
-      }
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     if (!this.state.docExplorerOpen) {
+  //       this.setState({ docExplorerWidth: hadWidth });
+  //     }
 
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove!);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove!);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 
-  private handleDocsResetResize = () => {
-    this.setState({
-      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
-    });
-  };
+  // private handleDocsResetResize = () => {
+  //   this.setState({
+  //     docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
+  //   });
+  // };
 
-  private handleVariableResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
+  // private handleVariableResizeStart: MouseEventHandler<
+  //   HTMLDivElement
+  // > = downEvent => {
+  //   downEvent.preventDefault();
 
-    let didMove = false;
-    const wasOpen = this.state.variableEditorOpen;
-    const hadHeight = this.state.variableEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
+  //   let didMove = false;
+  //   const wasOpen = this.state.variableEditorOpen;
+  //   const hadHeight = this.state.variableEditorHeight;
+  //   const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+  //   let onMouseMove: OnMouseMoveFn = moveEvent => {
+  //     if (moveEvent.buttons === 0) {
+  //       return onMouseUp!();
+  //     }
 
-      didMove = true;
+  //     didMove = true;
 
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          variableEditorOpen: false,
-          variableEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          variableEditorOpen: true,
-          variableEditorHeight: bottomSize,
-        });
-      }
-    };
+  //     const editorBar = this.editorBarComponent as HTMLElement;
+  //     const topSize = moveEvent.clientY - getTop(editorBar) - offset;
+  //     const bottomSize = editorBar.clientHeight - topSize;
+  //     if (bottomSize < 60) {
+  //       this.setState({
+  //         variableEditorOpen: false,
+  //         variableEditorHeight: hadHeight,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         variableEditorOpen: true,
+  //         variableEditorHeight: bottomSize,
+  //       });
+  //     }
+  //   };
 
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ variableEditorOpen: !wasOpen });
-      }
+  //   let onMouseUp: OnMouseUpFn = () => {
+  //     if (!didMove) {
+  //       this.setState({ variableEditorOpen: !wasOpen });
+  //     }
 
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  //     document.removeEventListener('mousemove', onMouseMove!);
+  //     document.removeEventListener('mouseup', onMouseUp!);
+  //     onMouseMove = null;
+  //     onMouseUp = null;
+  //   };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  //   document.addEventListener('mousemove', onMouseMove);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // };
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL
