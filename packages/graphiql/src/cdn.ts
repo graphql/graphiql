@@ -6,11 +6,6 @@
  */
 import 'regenerator-runtime';
 
-import './css/app.css';
-
-import './css/doc-explorer.css';
-import './css/history.css';
-
 export default GraphiQL;
 import { GraphiQL } from './components/GraphiQL';
 

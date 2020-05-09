@@ -313,7 +313,7 @@ module.exports = {
       },
     },
     {
-      files: ['packages/{graphql-*,graphiql}/src/**'],
+      files: ['packages/{graphql-*,graphiql}/src/**', 'plugins/*/src/**'],
       extends: ['plugin:jest/recommended'],
       env: {
         'jest/globals': true,
@@ -357,7 +357,7 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/*.js', 'packages/*/resources/*.js'],
+      files: ['resources/*.js', '**/resources/*.js'],
       rules: {
         'no-console': 0,
         'no-await-in-loop': 0,

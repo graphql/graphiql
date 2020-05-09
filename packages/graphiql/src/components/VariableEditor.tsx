@@ -4,9 +4,14 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+
+/** @jsx jsx */
+import { jsx } from 'theme-ui';
 import { GraphQLType } from 'graphql';
 
 import React from 'react';
+
+import EditorWrapper from '../components/common/EditorWrapper';
 
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
@@ -74,6 +79,7 @@ export function VariableEditor(props: VariableEditorProps) {
         language: 'json',
         theme: props?.editorTheme,
         readOnly: props?.readOnly ?? false,
+        automaticLayout: true,
         ...props.editorOptions,
       },
     ));
@@ -129,5 +135,5 @@ export function VariableEditor(props: VariableEditorProps) {
   //   }
   // }, [queryFacts, variableToType]);
 
-  return <div className="codemirrorWrap variables-editor" ref={divRef} />;
+  return <EditorWrapper className="variables-editor" innerRef={divRef} />;
 }

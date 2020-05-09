@@ -17,6 +17,7 @@ module.exports = {
       'identity-obj-proxy',
     '\\.(css|less)$': 'identity-obj-proxy',
     '^graphql-language-([^/]+)': '<rootDir>/packages/graphql-language-$1/src',
+    '^@graphiql-plugins\\/([^/]+)': '<rootDir>/plugins/$1/src',
     '^codemirror-graphql\\/([^]+)':
       '<rootDir>/packages/codemirror-graphql/src/$1',
     '^example-([^/]+)': '<rootDir>/examples/$1/src',
