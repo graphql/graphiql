@@ -1,7 +1,9 @@
-import React from 'react';
-import Nav from './Nav';
+/** @jsx jsx */
+import { jsx } from 'theme-ui';
+import { Nav, NavItem } from './Nav';
 import List, { ListRow } from './List';
 import { useThemeLayout } from './themes/provider';
+import Logo from './Logo';
 
 const explorer = {
   input: (
@@ -20,7 +22,16 @@ const explorer = {
     </List>
   ),
 };
-const nav = <Nav />;
+const nav = (
+  <Nav>
+    <NavItem label="Schema">
+      <Logo size="1em" />
+    </NavItem>
+    <NavItem label="Pig’s nose">{'🐽'}</NavItem>
+    <NavItem label="Farmer">{'👨‍🌾'}</NavItem>
+    <NavItem label="Bee">{'🐝'}</NavItem>
+  </Nav>
+);
 const slots = { nav, explorer };
 
 export default { title: 'Layout' };

@@ -20,7 +20,7 @@ declare module monaco.languages.graphql {
     dispose(): void;
   }
 
-  export type SchemaConfig = SchemaConfiguration;
+  export type SchemaConfig = SchemaConfig;
 
   export interface IEvent<T> {
     (listener: (e: T) => any, thisArg?: any): IDisposable;

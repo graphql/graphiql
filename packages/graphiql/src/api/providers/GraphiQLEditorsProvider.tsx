@@ -40,7 +40,7 @@ export type EditorHandlers = {
   ) => void;
 };
 
-export const schemaReducer: EditorReducer = (state, action): EditorState => {
+export const editorReducer: EditorReducer = (state, action): EditorState => {
   switch (action.type) {
     case EditorActionTypes.EditorLoaded:
       return {
@@ -66,7 +66,7 @@ export const EditorContext = React.createContext<EditorState & EditorHandlers>({
 export const useEditorsContext = () => React.useContext(EditorContext);
 
 export function EditorsProvider(props: { children?: any }) {
-  const [state, dispatch] = React.useReducer<EditorReducer>(schemaReducer, {
+  const [state, dispatch] = React.useReducer<EditorReducer>(editorReducer, {
     editors: {},
   });
 

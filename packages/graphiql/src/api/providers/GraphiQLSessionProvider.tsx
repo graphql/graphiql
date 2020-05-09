@@ -14,6 +14,7 @@ import {
   variableChangedAction,
   operationChangedAction,
   operationErroredAction,
+  tabChangedAction,
 } from '../actions/sessionActions';
 
 import { observableToPromise } from '../../utility/observableToPromise';
@@ -23,6 +24,7 @@ export type SessionReducer = React.Reducer<SessionState, SessionAction>;
 export interface SessionHandlers {
   changeOperation: (operation: string) => void;
   changeVariables: (variables: string) => void;
+  changeTab: (pane: string, tabId: number) => void;
   executeOperation: (operationName?: string) => Promise<void>;
   operationError: (error: Error) => void;
   dispatch: React.Dispatch<SessionAction>;
@@ -49,6 +51,7 @@ export const initialContextState: SessionState & SessionHandlers = {
   executeOperation: async () => {},
   changeOperation: () => null,
   changeVariables: () => null,
+  changeTab: () => null,
   operationError: () => null,
   dispatch: () => null,
   ...initialState,
@@ -107,6 +110,16 @@ const sessionReducer: SessionReducer = (state, action) => {
           : [error],
       };
     }
+    case SessionActionTypes.TabChanged: {
+      const { pane, tabId } = action.payload;
+      return {
+        ...state,
+        currentTabs: {
+          ...state.currentTabs,
+          [pane]: tabId,
+        },
+      };
+    }
     default: {
       return state;
     }
@@ -149,6 +162,11 @@ export function SessionProvider({
     (variablesText: string) =>
       dispatch(variableChangedAction(variablesText, sessionId)),
     [dispatch, sessionId],
+  );
+
+  const changeTab = React.useCallback(
+    (pane: string, tabId: number) => dispatch(tabChangedAction(pane, tabId)),
+    [dispatch],
   );
 
   const executeOperation = React.useCallback(
@@ -208,6 +226,7 @@ export function SessionProvider({
         executeOperation,
         changeOperation,
         changeVariables,
+        changeTab,
         operationError,
         dispatch,
       }}>
