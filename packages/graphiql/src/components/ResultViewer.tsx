@@ -9,6 +9,8 @@ import React, { useEffect } from 'react';
 
 import type { EditorOptions } from '../types';
 
+import EditorWrapper from '../components/common/EditorWrapper';
+
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 
@@ -20,7 +22,7 @@ export type ResultViewerProps = {
 };
 
 export function ResultViewer(props: ResultViewerProps) {
-  const divRef = React.useRef<HTMLElement | null>(null);
+  const divRef = React.useRef<HTMLDivElement | null>(null);
   const viewerRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
   const session = useSessionContext();
   const { loadEditor } = useEditorsContext();
@@ -59,12 +61,12 @@ export function ResultViewer(props: ResultViewerProps) {
     }
   }, [props.editorOptions]);
   return (
-    <section
+    <EditorWrapper
       className="result-window"
       aria-label="Result Window"
       aria-live="polite"
       aria-atomic="true"
-      ref={divRef}
+      innerRef={divRef}
     />
   );
 }

@@ -1,7 +1,8 @@
 /** @jsx jsx */
-import { jsx, SxStyleProp } from 'theme-ui';
 import { PropsWithChildren } from 'react';
 import { GraphiQLTheme, PanelSize, LayoutPropTypes } from '../types';
+
+import { jsx, SxStyleProp } from 'theme-ui';
 
 const NAV_WIDTH = '6em';
 const CONTENT_MIN_WIDTH = '60em';
@@ -52,7 +53,7 @@ const gridBase = {
   gap: 3,
 };
 
-const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
+const Layout = ({ nav, navPanels, session }: LayoutPropTypes) => {
   const hasNavPanels = (navPanels && navPanels?.length > 0) || false;
   return (
     <main
@@ -60,8 +61,8 @@ const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
         ...gridBase,
         padding: 3,
         gridTemplate: hasNavPanels
-          ? `'nav panels explorer' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
-          : `'nav explorer' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,
+          ? `'nav panels session' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
+          : `'nav session' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,
         height: '100%',
       }}>
       {nav && (
@@ -82,17 +83,17 @@ const Layout = ({ nav, navPanels, explorer }: LayoutPropTypes) => {
           ))}
         </div>
       )}
-      {explorer && (
+      {session && (
         <div
           sx={{
             ...gridBase,
-            gridArea: 'explorer',
+            gridArea: 'session',
             gridAutoRows: '1fr',
-            gridTemplateAreas: `'input response' 'console response'`,
+            gridTemplateAreas: `'input response' 'console console'`,
           }}>
-          <Card innerSx={{ gridArea: 'input' }}>{explorer.input}</Card>
-          <Card innerSx={{ gridArea: 'response' }}>{explorer.response}</Card>
-          <Card innerSx={{ gridArea: 'console' }}>{explorer.console}</Card>
+          <Card innerSx={{ gridArea: 'input' }}>{session.input}</Card>
+          <Card innerSx={{ gridArea: 'response' }}>{session.response}</Card>
+          <Card innerSx={{ gridArea: 'console' }}>{session.console}</Card>
         </div>
       )}
     </main>

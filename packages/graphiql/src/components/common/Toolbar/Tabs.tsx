@@ -1,7 +1,8 @@
 /** @jsx jsx */
+import React from 'react';
 import { jsx } from 'theme-ui';
 import WithDividers from './support/WithDividers';
-import { ReactNodeLike } from '../../types';
+import { ReactNodeLike } from '../../../types';
 
 export type TabProps = { active: boolean } & React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -32,20 +33,24 @@ export type TabsProps = {
   tabs: ReactNodeLike[];
   active: number;
   onChange?: (idx: number) => void;
+  children?: ReactNodeLike[];
 };
 
-const Tabs = ({ tabs, active, onChange }: TabsProps) => {
+const Tabs = ({ tabs, active, onChange, children }: TabsProps) => {
   return (
-    <WithDividers>
-      {tabs.map((tab, index) => (
-        <Tab
-          key={index}
-          active={active === index}
-          onClick={() => onChange?.(index)}>
-          {tab}
-        </Tab>
-      ))}
-    </WithDividers>
+    <React.Fragment>
+      <WithDividers>
+        {tabs.map((tab, index) => (
+          <Tab
+            key={index}
+            active={active === index}
+            onClick={() => onChange?.(index)}>
+            {tab}
+          </Tab>
+        ))}
+      </WithDividers>
+      {children && children[active]}
+    </React.Fragment>
   );
 };
 

@@ -1,5 +1,5 @@
 /* global monaco */
-
+/** @jsx jsx */
 /**
  *  Copyright (c) 2019 GraphQL Contributors.
  *
@@ -8,9 +8,11 @@
  */
 
 import React from 'react';
-
+import { jsx } from 'theme-ui';
 import { GraphQLType } from 'graphql';
 import type { EditorOptions } from '../types';
+
+import EditorWrapper from '../components/common/EditorWrapper';
 
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
@@ -26,17 +28,9 @@ export type QueryEditorProps = {
 };
 
 /**
- * QueryEditor
+ * GraphQL Operation Editor
  *
- * Maintains an instance of CodeMirror responsible for editing a GraphQL query.
- *
- * Props:
- *
- *   - schema: A GraphQLSchema instance enabling editor linting and hinting.
- *   - value: The text of the editor.
- *   - onEdit: A function called when the editor changes, given the edited text.
- *   - readOnly: Turns the editor to read-only mode.
- *
+ * @param props {QueryEditorProps}
  */
 export function QueryEditor(props: QueryEditorProps) {
   const divRef = React.useRef<HTMLDivElement>(null);
@@ -65,7 +59,6 @@ export function QueryEditor(props: QueryEditorProps) {
         value: session?.operation?.text ?? '',
         language: 'graphqlDev',
         automaticLayout: true,
-        scrollBeyondLastLine: false,
         ...props.editorOptions,
       },
     ));
@@ -109,7 +102,12 @@ export function QueryEditor(props: QueryEditorProps) {
   }, [props.editorOptions]);
 
   return (
-    <section className="query-editor" aria-label="Query Editor" ref={divRef} />
+    <EditorWrapper
+      sx={{ height: '100%' }}
+      className="query-editor"
+      aria-label="Query Editor"
+      innerRef={divRef}
+    />
   );
 }
 

@@ -17,7 +17,7 @@ import {
   ExampleQuery,
   ExampleUnion,
   ExampleEnum,
-} from '../../__tests__/ExampleSchema';
+} from './ExampleSchema';
 
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {

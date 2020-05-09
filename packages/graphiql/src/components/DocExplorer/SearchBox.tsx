@@ -7,7 +7,7 @@
 
 import React, { ChangeEventHandler } from 'react';
 
-import debounce from '../../utility/debounce';
+import debounce from './../../utility/debounce';
 
 type OnSearchFn = (value: string) => void;
 

@@ -17,12 +17,10 @@
   ],
   "dependencies": {
     "graphql-language-service-utils": "^2.4.0-alpha.3",
-    "graphql-languageservice": "^2.4.0-alpha.5"
+    "graphql-languageservice": "^2.4.0-alpha.5",
+    "monaco-editor": "^0.20.0"
   },
   "devDependencies": {
     "vscode-languageserver-types": "3.15.1"
-  },
-  "peerDependencies": {
-    "monaco-editor": "^0.20.0"
   }
 }

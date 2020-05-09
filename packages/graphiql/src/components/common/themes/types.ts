@@ -1,4 +1,4 @@
-import { Maybe, ReactNodeLike } from '../../types';
+import { Maybe, ReactNodeLike } from '../../../types';
 
 export type Color = string;
 export type Colors = {
@@ -56,7 +56,7 @@ Layout components are divided into 3 areas:
 TODO: For the nav we can probably just pass a list oflinks instead of a component
 */
 export type LayoutPropTypes = {
-  explorer: {
+  session?: {
     input?: ReactNodeLike;
     response?: ReactNodeLike;
     console?: ReactNodeLike;
