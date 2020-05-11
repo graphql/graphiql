@@ -2,14 +2,18 @@
 import { jsx } from 'theme-ui';
 import { PropsWithChildren } from 'react';
 
-import Logo from './Logo';
+import { ReactNodeLike } from '../../types';
+
+interface NavProps {
+  children: Array<ReactNodeLike>;
+}
 
 interface NavItemProps {
   label: string;
   active?: boolean;
 }
 
-const NavItem = ({
+export const NavItem = ({
   active,
   label,
   children,
@@ -38,7 +42,7 @@ const NavItem = ({
   </button>
 );
 
-const Nav = () => {
+export const Nav = ({ children }: NavProps) => {
   return (
     <nav
       sx={{
@@ -47,14 +51,7 @@ const Nav = () => {
         gridAutoRows: '2em',
         fontSize: '3em',
       }}>
-      <NavItem label="Schema">
-        <Logo size="1em" />
-      </NavItem>
-      <NavItem label="Pig’s nose">{'🐽'}</NavItem>
-      <NavItem label="Farmer">{'👨‍🌾'}</NavItem>
-      <NavItem label="Bee">{'🐝'}</NavItem>
+      {children}
     </nav>
   );
 };
-
-export default Nav;
