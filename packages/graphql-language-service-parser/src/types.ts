@@ -68,9 +68,12 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   SCHEMA_DEF: 'SchemaDef',
   SCALAR_DEF: 'ScalarDef',
   OBJECT_TYPE_DEF: 'ObjectTypeDef',
+  OBJECT_VALUE: 'ObjectValue',
+  LIST_VALUE: 'ListValue',
   INTERFACE_DEF: 'InterfaceDef',
   UNION_DEF: 'UnionDef',
   ENUM_DEF: 'EnumDef',
+  ENUM_VALUE: 'EnumValue',
   FIELD_DEF: 'FieldDef',
   INPUT_DEF: 'InputDef',
   INPUT_VALUE_DEF: 'InputValueDef',
@@ -92,9 +95,12 @@ export type _AdditionalRuleKinds = {
   SCHEMA_DEF: 'SchemaDef';
   SCALAR_DEF: 'ScalarDef';
   OBJECT_TYPE_DEF: 'ObjectTypeDef';
+  OBJECT_VALUE: 'ObjectValue';
+  LIST_VALUE: 'ListValue';
   INTERFACE_DEF: 'InterfaceDef';
   UNION_DEF: 'UnionDef';
   ENUM_DEF: 'EnumDef';
+  ENUM_VALUE: 'EnumValue';
   FIELD_DEF: 'FieldDef';
   INPUT_DEF: 'InputDef';
   INPUT_VALUE_DEF: 'InputValueDef';

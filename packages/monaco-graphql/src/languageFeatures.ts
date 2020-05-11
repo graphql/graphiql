@@ -5,19 +5,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { GraphQLWorker } from './graphql.worker';
+import { GraphQLWorker } from './GraphQLWorker';
 import { LanguageServiceDefaultsImpl } from './defaults';
 
-import {
+import type {
   Uri,
   Position,
   Thenable,
   CancellationToken,
   IDisposable,
-  editor,
-  languages,
   IRange,
 } from 'monaco-editor';
+
+import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
 import { CompletionItem as GraphQLCompletionItem } from 'graphql-languageservice';
 export interface WorkerAccessor {
@@ -45,7 +45,7 @@ export class DiagnosticsAdapter {
       this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
         clearTimeout(handle);
         // @ts-ignore
-        handle = setTimeout(() => this._doValidate(model.uri, modeId), 500);
+        handle = setTimeout(() => this._doValidate(model.uri, modeId), 200);
       });
 
       this._doValidate(model.uri, modeId);
@@ -113,7 +113,7 @@ export class DiagnosticsAdapter {
   }
 }
 
-const mKind = languages.CompletionItemKind;
+const mKind = monaco.languages.CompletionItemKind;
 export function toCompletionItemKind(kind: lsCompletionItemKind) {
   switch (kind) {
     case lsCompletionItemKind.Text:
@@ -173,7 +173,7 @@ export function toCompletionItemKind(kind: lsCompletionItemKind) {
 
 export function toCompletion(
   entry: GraphQLCompletionItem & { range: IRange },
-): languages.CompletionItem {
+): monaco.languages.CompletionItem {
   return {
     label: entry.label,
     insertText: entry.insertText || (entry.label as string),
@@ -186,9 +186,10 @@ export function toCompletion(
   };
 }
 
-export class CompletionAdapter implements languages.CompletionItemProvider {
+export class CompletionAdapter
+  implements monaco.languages.CompletionItemProvider {
   constructor(private _worker: WorkerAccessor) {
-    // this._worker = _worker
+    this._worker = _worker;
   }
 
   public get triggerCharacters(): string[] {
@@ -198,9 +199,9 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
   async provideCompletionItems(
     model: editor.IReadOnlyModel,
     position: Position,
-    _context: languages.CompletionContext,
+    _context: monaco.languages.CompletionContext,
     _token: CancellationToken,
-  ): Promise<languages.CompletionList> {
+  ): Promise<monaco.languages.CompletionList> {
     try {
       const resource = model.uri;
       const worker = await this._worker(model.uri);
@@ -220,7 +221,7 @@ export class CompletionAdapter implements languages.CompletionItemProvider {
 }
 
 export class DocumentFormattingAdapter
-  implements languages.DocumentFormattingEditProvider {
+  implements monaco.languages.DocumentFormattingEditProvider {
   constructor(
     // private _defaults: LanguageServiceDefaultsImpl,
     private _worker: WorkerAccessor,
@@ -230,16 +231,13 @@ export class DocumentFormattingAdapter
   }
   async provideDocumentFormattingEdits(
     document: editor.ITextModel,
-    _options: languages.FormattingOptions,
+    _options: monaco.languages.FormattingOptions,
     _token: CancellationToken,
   ) {
     const worker = await this._worker(document.uri);
     const text = document.getValue();
 
-    const formatted = await worker.doFormat(
-      text,
-      // this._defaults.modeConfiguration.formattingOptions,
-    );
+    const formatted = await worker.doFormat(text);
     return [
       {
         range: document.getFullModelRange(),
@@ -249,20 +247,20 @@ export class DocumentFormattingAdapter
   }
 }
 
-export class HoverAdapter implements languages.HoverProvider {
+export class HoverAdapter implements monaco.languages.HoverProvider {
   constructor(private _worker: WorkerAccessor) {}
 
   async provideHover(
     model: editor.IReadOnlyModel,
     position: Position,
     _token: CancellationToken,
-  ): Promise<languages.Hover> {
+  ): Promise<monaco.languages.Hover> {
     const resource = model.uri;
     const worker = await this._worker(model.uri);
     const hoverItem = await worker.doHover(resource.toString(), position);
 
     if (hoverItem) {
-      return <languages.Hover>{
+      return <monaco.languages.Hover>{
         range: hoverItem.range,
         contents: [{ value: hoverItem.content }],
       };

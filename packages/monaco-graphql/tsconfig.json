@@ -24,5 +24,6 @@
       "path": "../graphql-languageservice"
     }
   ],
+  "include": ["./src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
 }

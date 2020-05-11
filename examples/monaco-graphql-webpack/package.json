@@ -4,8 +4,9 @@
   "private": true,
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
+  "typings": "src/types.d.ts",
   "scripts": {
-    "build": "cross-env NODE_ENV=production webpack ",
+    "build": "cross-env NODE_ENV=production webpack-cli",
     "build-demo": "yarn build && yarn copy-demo",
     "copy-demo": "mkdirp ../../packages/graphiql/monaco && copy 'bundle/*' '../../packages/graphiql/monaco'",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
@@ -28,9 +29,9 @@
     "monaco-editor-webpack-plugin": "^1.9.0",
     "react-dom": "^16.12.0",
     "style-loader": "^1.1.3",
-    "webpack": "4.42.1",
+    "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.1",
+    "webpack-dev-server": "^3.10.3",
     "worker-loader": "^2.0.0"
   }
 }

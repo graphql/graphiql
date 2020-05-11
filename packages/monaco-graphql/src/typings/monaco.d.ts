@@ -4,49 +4,35 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+
+// eslint-disable-next-line spaced-comment
+/// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
+
 declare module monaco.languages.graphql {
+  import type {
+    SchemaLoader,
+    SchemaConfig as SchemaConfiguration,
+  } from 'graphql-languageservice';
+
+  import type { GraphQLSchema } from 'graphql';
+  import type { Options as PrettierConfig } from 'prettier';
+
+  import { MonacoGraphQLApi } from '../api';
+
   export interface IDisposable {
     dispose(): void;
   }
 
+  export type SchemaConfig = SchemaConfiguration;
+
   export interface IEvent<T> {
     (listener: (e: T) => any, thisArg?: any): IDisposable;
   }
-  export interface DiagnosticsOptions {
-    /**
-     * If set, the validator will be enabled and perform syntax validation as well as schema based validation.
-     */
-    readonly validate?: boolean;
-    /**
-     * If set, comments are tolerated. If set to false, syntax errors will be emitted for comments.
-     */
-    readonly allowComments?: boolean;
 
-    /**
-     * we'll just use this for now
-     */
-    readonly schemaUri: string;
-    /**
-     * A list of known schemas and/or associations of schemas to file names.
-     */
-    readonly schemas?: Array<{
-      /**
-       * The URI of the schema, which is also the identifier of the schema.
-       */
-      readonly uri?: string;
-      /**
-       * A list of file names that are associated to the schema. The '*' wildcard can be used. For example '*.schema.json', 'package.json'
-       */
-      readonly fileMatch?: string[];
-      /**
-       * The schema for the given URI.
-       */
-      readonly schema?: any;
-    }>;
-    /**
-     *  If set, the schema service would load schema content on-demand with 'fetch' if available
-     */
-    readonly enableSchemaRequest?: boolean;
+  export type FilePointer = string | string[];
+
+  export interface FormattingOptions {
+    prettierConfig: PrettierConfig;
   }
 
   export interface ModeConfiguration {
@@ -101,13 +87,29 @@ declare module monaco.languages.graphql {
     readonly selectionRanges?: boolean;
   }
 
+  export interface ICreateData {
+    languageId: string;
+    enableSchemaRequest: boolean;
+    schemaConfig: SchemaConfig;
+    schemaLoader: () => Promise<GraphQLSchema>;
+    formattingOptions?: FormattingOptions;
+  }
+
   export interface LanguageServiceDefaults {
-    readonly onDidChange: IEvent<LanguageServiceDefaults>;
-    readonly diagnosticsOptions: DiagnosticsOptions;
+    readonly onDidChange: IEvent<
+      monaco.languages.graphql.LanguageServiceDefaults
+    >;
+    readonly schemaConfig: SchemaConfig;
+    readonly formattingOptions: FormattingOptions;
     readonly modeConfiguration: ModeConfiguration;
-    setDiagnosticsOptions(options: DiagnosticsOptions): void;
+    setSchemaConfig(options: SchemaConfig): void;
+    updateSchemaConfig(options: Partial<SchemaOptoons>): void;
+    setSchemaUri(schemaUri: string): void;
+    setFormattingOptions(formattingOptions: FormattingOptions): void;
     setModeConfiguration(modeConfiguration: ModeConfiguration): void;
   }
+
+  export interface api extends MonacoGraphQLApi {}
 
   // export const graphqlDefaults: LanguageServiceDefaults;
 }
