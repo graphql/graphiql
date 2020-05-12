@@ -1,3 +1,4 @@
+/* global monaco */
 /**
  *  Copyright (c) 2020 GraphQL Contributors.
  *
@@ -37,8 +38,6 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
   };
   // @ts-ignore
   monaco.languages.graphql.api = new MonacoGraphQLApi({ accessor: worker });
-  // @ts-ignore
-  console.log(monaco.languages.graphql.api.getSchema);
 
   monaco.languages.setLanguageConfiguration(languageId, richLanguageConfig);
   monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);
@@ -87,13 +86,11 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
   let { modeConfiguration, schemaConfig, formattingOptions } = defaults;
 
   defaults.onDidChange(newDefaults => {
-    console.log({ newDefaults });
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
       registerProviders();
     }
     if (newDefaults.schemaConfig !== schemaConfig) {
-      console.log('new schema opts');
       schemaConfig = newDefaults.schemaConfig;
       registerProviders();
     }

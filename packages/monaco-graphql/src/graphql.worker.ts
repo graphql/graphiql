@@ -14,13 +14,11 @@ import { GraphQLWorker } from './GraphQLWorker';
 
 self.onmessage = () => {
   try {
-    // ignore the first message
     worker.initialize(
       (
         ctx: WorkerNamespace.IWorkerContext,
         createData: monaco.languages.graphql.ICreateData,
       ) => {
-        console.log({ createData });
         return new GraphQLWorker(ctx, createData);
       },
     );
