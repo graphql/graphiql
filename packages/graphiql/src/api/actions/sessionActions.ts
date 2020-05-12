@@ -7,6 +7,7 @@ export enum SessionActionTypes {
   VariablesChanged = 'VariablesChanged',
   OperationSucceeded = 'OperationSucceeded',
   OperationErrored = 'OperationErrored',
+  TabChanged = 'TabChanged',
 }
 
 export type ErrorPayload = { error: Error; sessionId: number };
@@ -19,7 +20,8 @@ export type SessionAction =
   | OperationChangedAction
   | VariablesChangedAction
   | OperationSucceededAction
-  | OperationErroredAction;
+  | OperationErroredAction
+  | TabChangedAction;
 
 export const operationRequestAction = () =>
   ({
@@ -80,3 +82,11 @@ export const operationErroredAction = (error: Error, sessionId: number) =>
   } as const);
 
 export type OperationErroredAction = ReturnType<typeof operationErroredAction>;
+
+export const tabChangedAction = (pane: string, tabId: number) =>
+  ({
+    type: SessionActionTypes.TabChanged,
+    payload: { pane, tabId },
+  } as const);
+
+export type TabChangedAction = ReturnType<typeof tabChangedAction>;

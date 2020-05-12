@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ComponentType, PropsWithChildren, useState } from 'react';
+import React, { ComponentType, PropsWithChildren } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import { SchemaConfig } from 'graphql-languageservice';
@@ -291,21 +291,26 @@ class GraphiQLInternals extends React.Component<
     //   height: variableOpen ? this.state.variableEditorHeight : undefined,
     // };
 
-    // eslint-disable-next-line no-shadow
     const SessionTabs = ({
+      name,
       tabs,
       children: c,
     }: {
+      name: string;
       tabs: Array<ReactNodeLike>;
       children: Array<ReactNodeLike>;
-    }) => {
-      const [active, setActive] = useState(0);
-      return (
-        <Tabs active={active} tabs={tabs} onChange={setActive}>
-          {c}
-        </Tabs>
-      );
-    };
+    }) => (
+      <SessionContext.Consumer>
+        {session => (
+          <Tabs
+            active={session?.currentTabs?.[name] as number}
+            tabs={tabs}
+            onChange={tabId => session.changeTab(name, tabId)}>
+            {c}
+          </Tabs>
+        )}
+      </SessionContext.Consumer>
+    );
 
     const operationEditor = (
       // <div
@@ -316,8 +321,8 @@ class GraphiQLInternals extends React.Component<
       //   onDoubleClick={this.handleResetResize}
       //   onMouseDown={this.handleResizeStart}>
       //   <div className="queryWrap" style={queryWrapStyle}>
-      <section>
-        <SessionTabs tabs={[`Operation`, `Explorer`]}>
+      <section aria-label="Operation Editor">
+        <SessionTabs tabs={[`Operation`, `Explorer`]} name={`operation`}>
           <QueryEditor
             onHintInformationRender={this.handleHintInformationRender}
             onClickReference={this.handleClickReference}
@@ -332,7 +337,7 @@ class GraphiQLInternals extends React.Component<
 
     const variables = (
       <section aria-label="Query Variables">
-        <SessionTabs tabs={[`Variables`, `Console`]}>
+        <SessionTabs tabs={[`Variables`, `Console`]} name={`variables`}>
           <VariableEditor
             onHintInformationRender={this.handleHintInformationRender}
             onPrettifyQuery={this.handlePrettifyQuery}
@@ -348,7 +353,9 @@ class GraphiQLInternals extends React.Component<
 
     const response = (
       <section aria-label="Response Editor">
-        <SessionTabs tabs={[`Response`, `Extensions`, `Playground`]}>
+        <SessionTabs
+          tabs={[`Response`, `Extensions`, `Playground`]}
+          name={`results`}>
           <>
             {this.state.isWaitingForResponse && (
               <div className="spinner-container">
