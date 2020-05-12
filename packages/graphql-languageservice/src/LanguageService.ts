@@ -106,7 +106,12 @@ export class LanguageService {
     _uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => getDiagnostics(documentText, await this.getSchema(), customRules);
+  ) => {
+    if (!documentText || documentText.length < 1) {
+      return [];
+    }
+    return getDiagnostics(documentText, await this.getSchema(), customRules);
+  };
 
   public getHover = async (
     _uri: string,
