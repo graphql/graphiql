@@ -3,6 +3,11 @@
 import 'regenerator-runtime/runtime';
 import 'monaco-graphql/esm/monaco.contribution';
 
+// eslint-disable-next-line spaced-comment
+/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
+// eslint-disable-next-line spaced-comment
+/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
@@ -27,19 +32,22 @@ window.MonacoEnvironment = {
   },
 };
 
-// const schemaInput = document.createElement('input');
-// schemaInput.type = 'text'
+const schemaInput = document.createElement('input');
+schemaInput.type = 'text';
 
-// // @ts-ignore
-// schemaInput.value = SCHEMA_URL
+schemaInput.value = SCHEMA_URL;
 
-// schemaInput.onchange = (e) => {
-//   e.preventDefault()
-//   console.log(e.target.value)
-// }
+schemaInput.onkeyup = e => {
+  e.preventDefault();
+  // @ts-ignore
+  const val = e?.target?.value as string;
+  if (val && typeof val === 'string') {
+    monaco.languages.graphql.graphqlDefaults.setSchemaConfig({ uri: val });
+  }
+};
 
-// const toolbar = document.getElementById('toolbar')
-// toolbar?.appendChild(schemaInput)
+const toolbar = document.getElementById('toolbar');
+toolbar?.appendChild(schemaInput);
 
 const variablesModel = monaco.editor.createModel(
   `{}`,
@@ -91,7 +99,6 @@ const operationEditor = monaco.editor.create(
   },
 );
 
-// @ts-ignore
 monaco.languages.graphql.graphqlDefaults.setSchemaConfig({ uri: SCHEMA_URL });
 
 /**
@@ -149,3 +156,7 @@ resultsEditor.addAction(opAction);
 //     endColumn: 0,
 //   }],
 // );
+
+// operationEditor.onDidChangeModelContent(() => {
+//   // this is where
+// })

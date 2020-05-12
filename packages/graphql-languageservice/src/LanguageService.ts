@@ -16,12 +16,13 @@ import {
   defaultSchemaLoader,
   SchemaConfig,
   SchemaResponse,
-  buildSchemaFromResponse,
+  defaultSchemaBuilder,
 } from './schemaLoader';
 
-export type GraphQLLspConfig = {
+export type GraphQLLanguageConfig = {
   parser?: typeof parse;
   schemaLoader?: typeof defaultSchemaLoader;
+  schemaBuilder?: typeof defaultSchemaBuilder;
   schemaConfig: SchemaConfig;
 };
 
@@ -33,14 +34,23 @@ export class LanguageService {
   private _schemaLoader: (
     schemaConfig: SchemaConfig,
   ) => Promise<SchemaResponse | void> = defaultSchemaLoader;
+  private _schemaBuilder = defaultSchemaBuilder;
 
-  constructor({ parser, schemaLoader, schemaConfig }: GraphQLLspConfig) {
+  constructor({
+    parser,
+    schemaLoader,
+    schemaBuilder,
+    schemaConfig,
+  }: GraphQLLanguageConfig) {
     this._schemaConfig = schemaConfig;
     if (parser) {
       this._parser = parser;
     }
     if (schemaLoader) {
       this._schemaLoader = schemaLoader;
+    }
+    if (schemaBuilder) {
+      this._schemaBuilder = schemaBuilder;
     }
   }
 
@@ -74,7 +84,7 @@ export class LanguageService {
 
   public async loadSchema() {
     const schemaResponse = await this.loadSchemaResponse();
-    this._schema = buildSchemaFromResponse(
+    this._schema = this._schemaBuilder(
       schemaResponse,
       this._schemaConfig.buildSchemaOptions,
     ) as GraphQLSchema;

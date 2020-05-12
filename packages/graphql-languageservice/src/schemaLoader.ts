@@ -23,7 +23,7 @@ export const defaultSchemaLoader: SchemaLoader = async (
   schemaConfig: SchemaConfig,
 ): Promise<SchemaResponse> => {
   const { requestOpts, uri, introspectionOptions } = schemaConfig;
-  const rawResult = await fetch(uri, {
+  const fetchResult = await fetch(uri, {
     method: requestOpts?.method ?? 'post',
     body: JSON.stringify({
       query: getIntrospectionQuery(introspectionOptions),
@@ -35,11 +35,9 @@ export const defaultSchemaLoader: SchemaLoader = async (
     },
     ...requestOpts,
   });
-
   const introspectionResponse: {
     data: IntrospectionQuery;
-  } = await rawResult.json();
-
+  } = await fetchResult.json();
   return introspectionResponse?.data;
 };
 /**
@@ -47,7 +45,7 @@ export const defaultSchemaLoader: SchemaLoader = async (
  * @param response {DocumentNode | IntrospectionQuery} response from retrieving schema
  * @param buildSchemaOptions {BuildSchemaOptions} options for building schema
  */
-export function buildSchemaFromResponse(
+export function defaultSchemaBuilder(
   response: SchemaResponse,
   buildSchemaOptions?: BuildSchemaOptions,
 ) {

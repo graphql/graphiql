@@ -16,7 +16,7 @@ import {
   getRange,
   CompletionItem as GraphQLCompletionItem,
   LanguageService,
-  GraphQLLspConfig,
+  GraphQLLanguageConfig,
   SchemaResponse,
 } from 'graphql-languageservice';
 
@@ -45,7 +45,7 @@ export class GraphQLWorker {
     createData: monaco.languages.graphql.ICreateData,
   ) {
     this._ctx = ctx;
-    const serviceConfig: GraphQLLspConfig = {
+    const serviceConfig: GraphQLLanguageConfig = {
       schemaConfig: createData.schemaConfig,
     };
     // if you must, we have a nice default schema loader at home
@@ -91,7 +91,7 @@ export class GraphQLWorker {
         suggestion,
         getRange(
           {
-            column: graphQLPosition.character + 1,
+            column: graphQLPosition.character,
             line: graphQLPosition.line + 1,
           },
           document,

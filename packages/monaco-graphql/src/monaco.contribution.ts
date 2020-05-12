@@ -20,9 +20,6 @@ import {
 } from './defaults';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-// @ts-ignore
-export { language as monarchLanguage } from 'monaco-editor/esm/vs/basic-languages/graphql/graphql';
-
 export const LANGUAGE_ID = 'graphqlDev';
 
 monaco.languages.register({

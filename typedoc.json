@@ -2,19 +2,18 @@
   "name": "GraphQL Official LSP Documentation",
   "theme": "default",
   "mode": "modules",
-  "out": "packages/graphiql/lsp",
+  "out": "packages/graphiql/typedoc",
   "inputFiles": [
     "**/node_modules/vscode*/**",
     "**/node_modules/@types/node/**",
-    "**/node_modules/@types/codemirror*/**",
-    "**/node_modules/monaco*/**"
+    "**/node_modules/@types/codemirror*/**"
   ],
-  "exclude": "**/__tests__/**,*.spec.*,*-test.*,**/esm/**,**/dist/**,**/node_modules/**",
-  "excludePrivate": false,
-  "excludeNotExported": false,
+  "exclude": "**/__tests__/**,*.spec.*,**/*.stories.tsx,*-test.*,**/esm/**,**/dist/**,**/node_modules/**",
+  "excludePrivate": true,
+  "excludeNotExported": true,
   "external-modulemap": ".*/packages/([\\w\\-_]+)/",
   "ignoreCompilerErrors": true,
   "includeDeclarations": true,
   "preserveConstEnums": true,
-  "readme": "./packages/graphql-language-service/README.md"
+  "readme": "./README.md"
 }
