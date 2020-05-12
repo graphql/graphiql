@@ -67,7 +67,7 @@ export async function activate(context: ExtensionContext) {
   )
 
   const debugOptions = {
-    execArgv: ["--nolazy", "--debug=6009", "--inspect=localhost:6009"],
+    execArgv: ["--nolazy", "--inspect=localhost:6009"],
   }
 
   const combinedEnv = getEnvironment()
