@@ -9,10 +9,7 @@
 /// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
 
 declare module monaco.languages.graphql {
-  import type {
-    SchemaLoader,
-    SchemaConfig as SchemaConfiguration,
-  } from 'graphql-languageservice';
+  import type { SchemaLoader, SchemaConfig } from 'graphql-languageservice';
 
   import type { GraphQLSchema } from 'graphql';
   import type { Options as PrettierConfig } from 'prettier';
@@ -23,7 +20,7 @@ declare module monaco.languages.graphql {
     dispose(): void;
   }
 
-  export type SchemaConfig = SchemaConfiguration;
+  export type SchemaConfig = SchemaConfig;
 
   export interface IEvent<T> {
     (listener: (e: T) => any, thisArg?: any): IDisposable;
@@ -111,7 +108,7 @@ declare module monaco.languages.graphql {
 
   export interface api extends MonacoGraphQLApi {}
 
-  // export const graphqlDefaults: LanguageServiceDefaults;
+  export const graphqlDefaults: LanguageServiceDefaults;
 }
 
 // declare module ''monaco-editor-core/esm/vs/editor/editor.worker';
