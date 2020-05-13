@@ -8,6 +8,7 @@ import React, { MouseEventHandler, useState } from 'react';
 import { OperationDefinitionNode } from 'graphql';
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 import useQueryFacts from '../api/hooks/useQueryFacts';
+import { useTranslation } from 'react-i18next';
 
 /**
  * ExecuteButton
@@ -30,6 +31,7 @@ export function ExecuteButton(props: ExecuteButtonProps) {
   const session = useSessionContext();
   const operations = queryFacts?.operations ?? [];
   const hasOptions = operations && operations.length > 1;
+  const { t } = useTranslation('Toolbar');
 
   let options: JSX.Element | null = null;
   if (hasOptions && optionsOpen) {
@@ -115,7 +117,7 @@ export function ExecuteButton(props: ExecuteButtonProps) {
         className="execute-button"
         onMouseDown={onMouseDown}
         onClick={onClick}
-        title="Execute Query (Ctrl-Enter)">
+        title={t('Execute Query (Ctrl-Enter)')}>
         <svg width="34" height="34">
           {pathJSX}
         </svg>

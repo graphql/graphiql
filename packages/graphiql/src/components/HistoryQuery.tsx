@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { QueryStoreItem } from '../utility/QueryStore';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 export type HandleEditLabelFn = (
   query?: string,
@@ -38,9 +39,10 @@ export type HistoryQueryProps = {
   handleToggleFavorite: HandleToggleFavoriteFn;
   operationName?: string;
   onSelect: HandleSelectQueryFn;
-} & QueryStoreItem;
+} & QueryStoreItem &
+  WithTranslation;
 
-export default class HistoryQuery extends React.Component<
+class HistoryQuerySource extends React.Component<
   HistoryQueryProps,
   { editable: boolean }
 > {
@@ -54,6 +56,7 @@ export default class HistoryQuery extends React.Component<
   }
 
   render() {
+    const { t } = this.props;
     const displayName =
       this.props.label ||
       this.props.operationName ||
@@ -73,7 +76,7 @@ export default class HistoryQuery extends React.Component<
             }}
             onBlur={this.handleFieldBlur.bind(this)}
             onKeyDown={this.handleFieldKeyDown.bind(this)}
-            placeholder="Type a label"
+            placeholder={t('Type a label')}
           />
         ) : (
           <button
@@ -84,13 +87,15 @@ export default class HistoryQuery extends React.Component<
         )}
         <button
           onClick={this.handleEditClick.bind(this)}
-          aria-label="Edit label">
+          aria-label={t('Edit label')}>
           {'\u270e'}
         </button>
         <button
           className={this.props.favorite ? 'favorited' : undefined}
           onClick={this.handleStarClick.bind(this)}
-          aria-label={this.props.favorite ? 'Remove favorite' : 'Add favorite'}>
+          aria-label={
+            this.props.favorite ? t('Remove favorite') : t('Add favorite')
+          }>
           {starIcon}
         </button>
       </li>
@@ -152,3 +157,6 @@ export default class HistoryQuery extends React.Component<
     });
   }
 }
+
+const HistoryQuery = withTranslation('Toolbar')(HistoryQuerySource);
+export default HistoryQuery;

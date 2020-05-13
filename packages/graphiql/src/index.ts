@@ -10,6 +10,7 @@
 /// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
 
 import { GraphiQL } from './components/GraphiQL';
+import './i18n';
 
 export * from './api';
 export * from './components/common';
