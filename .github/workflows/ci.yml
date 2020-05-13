@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: bahmutov/npm-install@v1
-      - run: yarn ci && danger ci && node_modules/.bin/codecov
+      - run: yarn ci && yarn danger && node_modules/.bin/codecov
 
   e2e:
     name: Cypress

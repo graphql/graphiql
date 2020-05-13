@@ -41,6 +41,7 @@
     "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min && yarn e2e",
     "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
+    "danger": "danger ci",
     "e2e": "yarn workspace graphiql e2e",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "t": "yarn run testonly",
