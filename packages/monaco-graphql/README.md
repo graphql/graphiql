@@ -54,7 +54,7 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ## Advanced Usage
 
-### `moncao.languages.graphql.graphqlDefaults` ([typedoc](http://graphiql-test.netlify/typedoc/interfaces/monaco_graphql.monaco.languages.graphql.languageservicedefaults))
+### `monaco.languages.graphql.graphqlDefaults` ([typedoc](http://graphiql-test.netlify/typedoc/interfaces/monaco_graphql.monaco.languages.graphql.languageservicedefaults))
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
@@ -127,7 +127,7 @@ graphqlDefaults.setFormattingOptions({
 });
 ```
 
-### `moncao.languages.graphql.api` ([typedoc](http://graphiql-test.netlify/classes/monaco_graphql.monacographqlapi))
+### `monaco.languages.graphql.api` ([typedoc](http://graphiql-test.netlify/classes/monaco_graphql.monacographqlapi))
 
 #### `api.getSchema()`
 
