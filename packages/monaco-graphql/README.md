@@ -127,7 +127,7 @@ graphqlDefaults.setFormattingOptions({
 });
 ```
 
-### `monaco.languages.graphql.api` ([typedoc](http://graphiql-test.netlify/classes/monaco_graphql.monacographqlapi))
+### `monaco.languages.graphql.api` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.monacographqlapi))
 
 #### `api.getSchema()`
 
