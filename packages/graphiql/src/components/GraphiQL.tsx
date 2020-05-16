@@ -33,9 +33,12 @@ import {
   SessionContext,
 } from '../api/providers/GraphiQLSessionProvider';
 import { getFetcher } from '../api/common';
+
 import { Unsubscribable, Fetcher, ReactNodeLike } from '../types';
 import { Provider, useThemeLayout } from './common/themes/provider';
 import Tabs from './common/Toolbar/Tabs';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../i18n';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -117,26 +120,28 @@ export type GraphiQLState = {
  */
 export const GraphiQL: React.FC<GraphiQLProps> = props => {
   if (!props.fetcher && !props.uri) {
-    throw Error('fetcher or uri property are required');
+    throw Error(i18n.t('Errors:Fetcher or uri property are required'));
   }
   const fetcher = getFetcher(props);
   return (
-    <EditorsProvider>
-      <SchemaProvider
-        fetcher={fetcher}
-        config={{ uri: props.uri, ...props.schemaConfig }}>
-        <SessionProvider fetcher={fetcher} sessionId={0}>
-          <GraphiQLInternals
-            {...{
-              formatResult,
-              formatError,
-              ...props,
-            }}>
-            {props.children}
-          </GraphiQLInternals>
-        </SessionProvider>
-      </SchemaProvider>
-    </EditorsProvider>
+    <I18nextProvider i18n={i18n}>
+      <EditorsProvider>
+        <SchemaProvider
+          fetcher={fetcher}
+          config={{ uri: props.uri, ...props.schemaConfig }}>
+          <SessionProvider fetcher={fetcher} sessionId={0}>
+            <GraphiQLInternals
+              {...{
+                formatResult,
+                formatError,
+                ...props,
+              }}>
+              {props.children}
+            </GraphiQLInternals>
+          </SessionProvider>
+        </SchemaProvider>
+      </EditorsProvider>
+    </I18nextProvider>
   );
 };
 
@@ -172,7 +177,7 @@ class GraphiQLInternals extends React.Component<
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<typeof ResultViewer>;
   variableEditorComponent: Maybe<typeof VariableEditor>;
-  _queryHistory: Maybe<QueryHistory>;
+  _queryHistory: Maybe<typeof QueryHistory>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<typeof QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;

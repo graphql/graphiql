@@ -683,9 +683,9 @@ export function getTypeInfo(
         enumValue =
           enumType instanceof GraphQLEnumType
             ? find(
-              enumType.getValues(),
-              (val: GraphQLEnumValue) => val.value === state.name,
-            )
+                enumType.getValues(),
+                (val: GraphQLEnumValue) => val.value === state.name,
+              )
             : null;
         break;
       case RuleKinds.LIST_VALUE:

@@ -12,7 +12,7 @@
       "src/*": ["*"]
     }
   },
-  "include": ["src"],
+  "include": ["src/**/*.{js,jsx,tsx,ts,json}", ".storybook"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",

@@ -11,7 +11,7 @@
       "src/*": ["*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "src/**/*.json"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",
