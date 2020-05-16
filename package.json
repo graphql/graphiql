@@ -29,7 +29,7 @@
     "build-clean": "lerna run build-clean",
     "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo",
-    "build-docs": "rimraf 'packages/graphiql/lsp' && typedoc 'packages'",
+    "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",
     "build-bundles": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles",
     "prebuild-bundles": "yarn build-ts-esm && yarn build-bundles-clean",
     "build-bundles-clean": "rimraf '{packages,examples}/**/{bundle,cdn,webpack}' && lerna run build-bundles-clean",
@@ -72,7 +72,6 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/config-lerna-scopes": "^8.3.4",
-    "@strictsoftware/typedoc-plugin-monorepo": "0.3.1",
     "@testing-library/jest-dom": "^5.4.0",
     "@types/codemirror": "^0.0.90",
     "@types/fetch-mock": "^7.3.2",
@@ -115,5 +114,8 @@
     "ts-jest": "^25.3.1",
     "typedoc": "0.17.4",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@strictsoftware/typedoc-plugin-monorepo": "^0.3.1"
   }
 }

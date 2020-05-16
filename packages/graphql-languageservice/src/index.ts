@@ -6,6 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+export * from './schemaLoader';
 export * from './LanguageService';
 export * from 'graphql-language-service-interface';
 export * from 'graphql-language-service-parser';

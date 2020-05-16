@@ -5,21 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as monaco from 'monaco-editor';
-import {
+import type {
   Range as GraphQLRange,
   Position as GraphQLPosition,
-} from 'graphql-language-service-types';
-
-export interface ICreateData {
-  languageId: string;
-  enableSchemaRequest: boolean;
-  schemaUrl: String;
-}
-import {
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
-} from 'graphql-languageservice';
+} from 'graphql-language-service-types';
 
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
@@ -55,6 +46,32 @@ export function toCompletion(
   };
 }
 
+/**
+ * Monaco and Vscode have slightly different ideas of marker severity.
+ * for example, vscode has Error = 1, whereas monaco has Error = 8. this takes care of that
+ * @param severity {DiagnosticSeverity} optional vscode diagnostic severity to convert to monaco MarkerSeverity
+ * @returns {monaco.MarkerSeverity} the matching marker severity level on monaco's terms
+ */
+// export function toMonacoSeverity(severity?: Diagnostic['severity']): monaco.MarkerSeverity {
+//   switch (severity) {
+//     case 1: {
+//       return monaco.MarkerSeverity.Error
+//     }
+//     case 4: {
+//       return monaco.MarkerSeverity.Hint
+//     }
+//     case 3: {
+//       return monaco.MarkerSeverity.Info
+//     }
+//     case 2: {
+//       return monaco.MarkerSeverity.Warning
+//     }
+//     default: {
+//       return monaco.MarkerSeverity.Warning
+//     }
+//   }
+// }
+
 export function toMarkerData(
   diagnostic: Diagnostic,
 ): monaco.editor.IMarkerData {
@@ -62,9 +79,10 @@ export function toMarkerData(
     startLineNumber: diagnostic.range.start.line + 1,
     endLineNumber: diagnostic.range.end.line + 1,
     startColumn: diagnostic.range.start.character + 1,
-    endColumn: diagnostic.range.end.character + 1,
+    endColumn: diagnostic.range.end.character,
     message: diagnostic.message,
-    severity: 5 || (diagnostic.severity as monaco.MarkerSeverity),
+    severity: 5,
+    // severity: toMonacoSeverity(diagnostic.severity),
     code: (diagnostic.code as string) || undefined,
   };
 }

@@ -82,7 +82,7 @@ export function forEachState(
   }
 }
 
-export function objectValues(object: Record<string, any>): Array<any> {
+export function objectValues<T>(object: Record<string, T>): Array<T> {
   const keys = Object.keys(object);
   const len = keys.length;
   const values = new Array(len);

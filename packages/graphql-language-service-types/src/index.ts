@@ -6,36 +6,40 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import {
+import type {
   Diagnostic as DiagnosticType,
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-types';
-import { ASTNode, GraphQLSchema } from 'graphql';
+import type { ASTNode, GraphQLSchema } from 'graphql';
 
-import {
+import type {
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
   NameNode,
 } from 'graphql/language';
-import {
+import type {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputFieldMap,
   GraphQLType,
 } from 'graphql/type/definition';
-import { GraphQLDirective } from 'graphql/type/directives';
+import type { GraphQLDirective } from 'graphql/type/directives';
 
 export type Maybe<T> = T | null | undefined;
 
-import {
+import type {
   GraphQLConfig,
   GraphQLProjectConfig,
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
-export { GraphQLConfig, GraphQLProjectConfig, GraphQLExtensionDeclaration };
+export type {
+  GraphQLConfig,
+  GraphQLProjectConfig,
+  GraphQLExtensionDeclaration,
+};
 
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;

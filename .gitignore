@@ -12,7 +12,7 @@ coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 packages/graphiql/storybook
-packages/graphiql/lsp
+packages/graphiql/typedoc
 dist
 esm
 bundle

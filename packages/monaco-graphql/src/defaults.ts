@@ -5,31 +5,35 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as monacoEditor from 'monaco-editor';
+import { Emitter, IEvent } from 'monaco-editor';
 
 export class LanguageServiceDefaultsImpl
   implements monaco.languages.graphql.LanguageServiceDefaults {
-  // @ts-ignore
-  private _onDidChange = new monacoEditor.Emitter<
+  private _onDidChange = new Emitter<
     monaco.languages.graphql.LanguageServiceDefaults
   >();
-  private _diagnosticsOptions!: monaco.languages.graphql.DiagnosticsOptions;
+  private _schemaConfig!: monaco.languages.graphql.SchemaConfig;
+  private _formattingOptions!: monaco.languages.graphql.FormattingOptions;
   private _modeConfiguration!: monaco.languages.graphql.ModeConfiguration;
   private _languageId: string;
 
-  constructor(
-    languageId: string,
-    diagnosticsOptions: monaco.languages.graphql.DiagnosticsOptions,
-    modeConfiguration: monaco.languages.graphql.ModeConfiguration,
-  ) {
+  constructor({
+    languageId,
+    schemaConfig,
+    modeConfiguration,
+    formattingOptions,
+  }: {
+    languageId: string;
+    schemaConfig: monaco.languages.graphql.SchemaConfig;
+    modeConfiguration: monaco.languages.graphql.ModeConfiguration;
+    formattingOptions: monaco.languages.graphql.FormattingOptions;
+  }) {
     this._languageId = languageId;
-    this.setDiagnosticsOptions(diagnosticsOptions);
+    this.setSchemaConfig(schemaConfig);
     this.setModeConfiguration(modeConfiguration);
+    this.setFormattingOptions(formattingOptions);
   }
-  // @ts-ignore
-  get onDidChange(): monaco.IEvent<
-    monaco.languages.graphql.LanguageServiceDefaults
-  > {
+  get onDidChange(): IEvent<monaco.languages.graphql.LanguageServiceDefaults> {
     return this._onDidChange.event;
   }
 
@@ -39,20 +43,27 @@ export class LanguageServiceDefaultsImpl
   get modeConfiguration(): monaco.languages.graphql.ModeConfiguration {
     return this._modeConfiguration;
   }
-  get diagnosticsOptions(): monaco.languages.graphql.DiagnosticsOptions {
-    return this._diagnosticsOptions;
+  get schemaConfig(): monaco.languages.graphql.SchemaConfig {
+    return this._schemaConfig;
+  }
+  get formattingOptions(): monaco.languages.graphql.FormattingOptions {
+    return this._formattingOptions;
   }
 
-  setDiagnosticsOptions(
-    options: monaco.languages.graphql.DiagnosticsOptions,
+  setSchemaConfig(options: monaco.languages.graphql.SchemaConfig): void {
+    this._schemaConfig = options || Object.create(null);
+    this._onDidChange.fire(this);
+  }
+
+  updateSchemaConfig(
+    options: Partial<monaco.languages.graphql.SchemaConfig>,
   ): void {
-    this._diagnosticsOptions = options || Object.create(null);
+    this._schemaConfig = { ...this._schemaConfig, ...options };
     this._onDidChange.fire(this);
   }
 
   setSchemaUri(schemaUri: string): void {
-    this.setDiagnosticsOptions({ ...this.diagnosticsOptions, schemaUri });
-    this._onDidChange.fire(this);
+    this.setSchemaConfig({ ...this._schemaConfig, schema: schemaUri });
   }
 
   setModeConfiguration(
@@ -61,15 +72,14 @@ export class LanguageServiceDefaultsImpl
     this._modeConfiguration = modeConfiguration || Object.create(null);
     this._onDidChange.fire(this);
   }
-}
 
-export const diagnosticDefault: Required<monaco.languages.graphql.DiagnosticsOptions> = {
-  validate: true,
-  allowComments: true,
-  schemas: [],
-  enableSchemaRequest: true,
-  schemaUri: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
-};
+  setFormattingOptions(
+    formattingOptions: monaco.languages.graphql.FormattingOptions,
+  ): void {
+    this._formattingOptions = formattingOptions || Object.create(null);
+    this._onDidChange.fire(this);
+  }
+}
 
 export const modeConfigurationDefault: Required<monaco.languages.graphql.ModeConfiguration> = {
   documentFormattingEdits: true,
@@ -82,4 +92,17 @@ export const modeConfigurationDefault: Required<monaco.languages.graphql.ModeCon
   foldingRanges: false,
   diagnostics: true,
   selectionRanges: false,
+};
+
+export const schemaDefault: Required<monaco.languages.graphql.SchemaConfig> = {
+  schema: 'http://localhost:8000',
+  projects: [],
+  documents: ['**.graphql'],
+  schemaLoader: null,
+};
+
+export const formattingDefaults: Required<monaco.languages.graphql.FormattingOptions> = {
+  prettierConfig: {
+    tabsWidth: 5,
+  },
 };
