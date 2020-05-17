@@ -1,6 +1,6 @@
 /* global monaco */
 import * as React from 'react';
-import { Fetcher } from '../../types';
+import { Fetcher, FetcherResult } from '../../types';
 
 import { GraphQLParams, SessionState } from '../types';
 
@@ -186,7 +186,9 @@ export function SessionProvider({
         if (operationName) {
           fetchValues.operationName = operationName as string;
         }
-        const result = await observableToPromise(fetcher(fetchValues));
+        const result = await observableToPromise<FetcherResult>(
+          fetcher(fetchValues),
+        );
         dispatch(operationSucceededAction(result, sessionId));
       } catch (err) {
         console.error(err.name, err.stack);
@@ -209,6 +211,8 @@ export function SessionProvider({
       editorsState.editors.operation.editor.addAction({
         id: 'run-command',
         label: 'Run Operation',
+        contextMenuOrder: 0,
+        contextMenuGroupId: 'operation',
         // eslint-disable-next-line no-bitwise
         keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter],
         run: async () => {
