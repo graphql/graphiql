@@ -10221,6 +10221,7 @@ grapheme-breaker@^0.3.2:
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
     markdown-it "^10.0.0"
+    monaco-graphql "^0.1.0"
     regenerator-runtime "^0.13.5"
     theme-ui "^0.3.1"
 

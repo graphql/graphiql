@@ -50,7 +50,8 @@
     "entities": "^2.0.0",
     "markdown-it": "^10.0.0",
     "regenerator-runtime": "^0.13.5",
-    "theme-ui": "^0.3.1"
+    "theme-ui": "^0.3.1",
+    "monaco-graphql": "^0.1.0"
   },
   "peerDependencies": {
     "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0",

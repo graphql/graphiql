@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "graphql": "14.6.0",
-    "monaco-graphql": "^2.3.4-alpha.4",
+    "monaco-graphql": "^0.1.0",
     "prettier": "^2.0.2"
   },
   "devDependencies": {
