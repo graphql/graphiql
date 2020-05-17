@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.5...graphql-language-service-types@1.6.0-alpha.6) (2020-05-17)
+
+### Bug Fixes
+
+- remove problematic file resolution module from webpack sco… ([#1489](https://github.com/graphql/graphiql/issues/1489)) ([8dab038](https://github.com/graphql/graphiql/commit/8dab0385772f443f73b559e2c668080733168236))
+
+### Features
+
+- introduce proper vscode completion kinds ([#1488](https://github.com/graphql/graphiql/issues/1488)) ([f19aa0d](https://github.com/graphql/graphiql/commit/f19aa0ddde6109526c101c8a487f43bbb8238394))
+- monaco-graphql docs, api, improvements ([#1521](https://github.com/graphql/graphiql/issues/1521)) ([c79158c](https://github.com/graphql/graphiql/commit/c79158c72e976ab286e7ec3fded7f3e2d24e50d0))
+- new graphql-languageservice package ([#1485](https://github.com/graphql/graphiql/issues/1485)) ([6bb3ddd](https://github.com/graphql/graphiql/commit/6bb3dddf1f97db4bc193bb7fd9de1ada8d8c8ef9))
+
 # [1.6.0-alpha.5](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.4...graphql-language-service-types@1.6.0-alpha.5) (2020-04-06)
 
 ### Features

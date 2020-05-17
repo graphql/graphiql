@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.8](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.7...graphql-language-service@2.4.0-alpha.8) (2020-05-17)
+
+### Bug Fixes
+
+- repair CLI, handle all schema and LSP errors ([#1482](https://github.com/graphql/graphiql/issues/1482)) ([992f384](https://github.com/graphql/graphiql/commit/992f38494f20f5877bfd6ff54893854ac7a0eaa2))
+
 # [2.4.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.6...graphql-language-service@2.4.0-alpha.7) (2020-04-10)
 
 **Note:** Version bump only for package graphql-language-service

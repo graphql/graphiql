@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.4.0-alpha.6...graphql-language-service-utils@2.4.0-alpha.7) (2020-05-17)
+
+### Bug Fixes
+
+- remove problematic file resolution module from webpack sco… ([#1489](https://github.com/graphql/graphiql/issues/1489)) ([8dab038](https://github.com/graphql/graphiql/commit/8dab0385772f443f73b559e2c668080733168236))
+
 # [2.4.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.4.0-alpha.5...graphql-language-service-utils@2.4.0-alpha.6) (2020-04-10)
 
 **Note:** Version bump only for package graphql-language-service-utils
