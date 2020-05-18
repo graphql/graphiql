@@ -30,12 +30,9 @@ describe('GraphiQL On Initialization', () => {
   it('Renders without error', () => {
     const containers = [
       '#graphiql',
-      '.graphiql-container',
-      '.topBarWrap',
-      '.editorWrap',
-      '.queryWrap',
-      '.resultWrap',
-      '.variable-editor',
+      '.query-editor',
+      '.result-window',
+      '.variables-editor',
     ];
     cy.visit(`/?query=${testQuery}`);
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
@@ -46,13 +43,7 @@ describe('GraphiQL On Initialization', () => {
   });
 
   it('Toggles doc pane on', () => {
-    cy.get('.docExplorerShow').click();
+    cy.contains('.toolbar .toolbar-button', 'Docs').click();
     cy.get('.doc-explorer').should('be.visible');
-  });
-
-  it('Toggles doc pane back off', () => {
-    // there are two components with .docExplorerHide, one in query history
-    cy.get('.docExplorerWrap button.docExplorerHide').click();
-    cy.get('.doc-explorer').should('not.exist');
   });
 });
