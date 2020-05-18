@@ -12,7 +12,7 @@ import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
-import { SizerComponent } from 'src/utility/CodeMirrorSizer';
+import { SizerComponent } from '../utility/CodeMirrorSizer';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
