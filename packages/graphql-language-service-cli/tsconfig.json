@@ -4,17 +4,14 @@
     "composite": true,
     "rootDir": "./src",
     "outDir": "./dist",
-    "baseUrl": "./src"
+    "target": "ES2017"
   },
   "references": [
     {
-      "path": "../graphql-language-service-interface"
+      "path": "../graphql-language-service"
     },
     {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-types"
+      "path": "../graphql-language-service-server"
     },
     {
       "path": "../graphql-language-service-utils"

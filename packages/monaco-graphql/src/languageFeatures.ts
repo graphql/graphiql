@@ -20,7 +20,7 @@ import type {
 
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
-import { CompletionItem as GraphQLCompletionItem } from 'graphql-languageservice';
+import { CompletionItem as GraphQLCompletionItem } from 'graphql-language-service';
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }

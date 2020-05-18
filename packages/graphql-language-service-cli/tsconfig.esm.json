@@ -1,14 +1,16 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "target": "ES2017",
-    "composite": true,
     "rootDir": "./src",
-    "outDir": "./esm"
+    "outDir": "./esm",
+    "composite": true
   },
   "references": [
     {
       "path": "../graphql-language-service/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphql-language-service-server/tsconfig.esm.json"
     },
     {
       "path": "../graphql-language-service-utils/tsconfig.esm.json"

@@ -10212,12 +10212,12 @@ grapheme-breaker@^0.3.2:
     unicode-trie "^0.3.1"
 
 "graphiql@file:packages/graphiql":
-  version "1.0.0-alpha.8"
+  version "1.0.0-alpha.9"
   dependencies:
     "@emotion/core" "^10.0.28"
     "@mdx-js/react" "^1.5.2"
     codemirror "^5.52.2"
-    codemirror-graphql "^0.12.0-alpha.7"
+    codemirror-graphql "^0.12.0-alpha.8"
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
     markdown-it "^10.0.0"

@@ -8,7 +8,7 @@
  */
 
 import { ASTNode, DocumentNode, DefinitionNode } from 'graphql/language';
-import {
+import type {
   CachedContent,
   GraphQLCache as GraphQLCacheInterface,
   GraphQLFileMetadata,
@@ -16,7 +16,7 @@ import {
   FragmentInfo,
   ObjectTypeInfo,
   Uri,
-} from 'graphql-language-service-types';
+} from 'graphql-language-service';
 
 import * as fs from 'fs';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';

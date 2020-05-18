@@ -14,7 +14,7 @@ import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
-import { DefinitionQueryResult, Outline } from 'graphql-language-service-types';
+import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
 
