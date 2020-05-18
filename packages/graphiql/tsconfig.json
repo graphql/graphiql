@@ -5,7 +5,6 @@
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "baseUrl": ".",
     "target": "es5",
     "strictPropertyInitialization": false
   },
