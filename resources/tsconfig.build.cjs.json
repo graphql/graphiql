@@ -24,13 +24,13 @@
       "path": "../packages/graphql-language-service-interface"
     },
     {
+      "path": "../packages/graphql-language-service"
+    },
+    {
       "path": "../packages/graphql-language-service-server"
     },
     {
-      "path": "../packages/graphql-languageservice"
-    },
-    {
-      "path": "../packages/graphql-language-service"
+      "path": "../packages/graphql-language-service-cli"
     }
   ]
 }

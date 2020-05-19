@@ -9,7 +9,7 @@
 /// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
 
 declare module monaco.languages.graphql {
-  import type { SchemaLoader, SchemaConfig } from 'graphql-languageservice';
+  import type { SchemaLoader, SchemaConfig } from 'graphql-language-service';
 
   import type { GraphQLSchema } from 'graphql';
   import type { Options as PrettierConfig } from 'prettier';

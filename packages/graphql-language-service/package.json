@@ -1,36 +1,40 @@
 {
   "name": "graphql-language-service",
-  "version": "2.4.0-alpha.8",
-  "description": "An interface for building GraphQL language services for IDEs",
+  "version": "3.0.0-alpha.0",
+  "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
-    "Hyohyeon Jeong <asiandrummer@fb.com>",
-    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+    "GraphQL Contributors"
   ],
   "repository": "http://github.com/graphql/graphiql",
   "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-service"
-  },
-  "bin": {
-    "graphql": "./bin/graphql.js"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:languageservice"
   },
   "license": "MIT",
   "files": [
-    "bin",
-    "dist"
+    "dist",
+    "esm"
   ],
   "keywords": [
     "graphql",
-    "graphql-language-service"
+    "language service",
+    "LSP"
   ],
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "dist/index.d.ts",
+  "bin": {
+    "graphql": "./dist/temp-bin.js"
+  },
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
+    "graphql": "^0.13.0 || ^14.0.0 || ^15.0.0"
+  },
+  "devDependencies": {
+    "graphql-language-service-types": "^1.6.0-alpha.5"
   },
   "dependencies": {
-    "@babel/polyfill": "7.8.7",
+    "graphql-config": "3.0.0-rc.2",
     "graphql-language-service-interface": "^2.4.0-alpha.8",
-    "graphql-language-service-server": "^2.4.0-alpha.8",
-    "graphql-language-service-utils": "^2.4.0-alpha.7",
-    "yargs": "^15.3.1"
+    "graphql-language-service-types": "^1.6.0-alpha.6"
   }
 }

@@ -26,7 +26,7 @@
     "build-ts": "yarn run tsc --force",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",
-    "build-clean": "lerna run build-clean",
+    "build-clean": "rimraf '{packages,examples}/**/{dist,esm}' && lerna run build-clean",
     "build-validate": "lerna run build-validate",
     "build-demo": "lerna run build-demo",
     "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",

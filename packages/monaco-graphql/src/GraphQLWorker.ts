@@ -18,7 +18,7 @@ import {
   LanguageService,
   GraphQLLanguageConfig,
   SchemaResponse,
-} from 'graphql-languageservice';
+} from 'graphql-language-service';
 
 import {
   toGraphQLPosition,

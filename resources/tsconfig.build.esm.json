@@ -24,13 +24,10 @@
       "path": "../packages/graphql-language-service-interface/tsconfig.esm.json"
     },
     {
-      "path": "../packages/graphql-languageservice/tsconfig.esm.json"
+      "path": "../packages/graphql-language-service/tsconfig.esm.json"
     },
     {
       "path": "../packages/graphql-language-service-server/tsconfig.esm.json"
-    },
-    {
-      "path": "../packages/graphql-languageservice/tsconfig.esm.json"
     }
   ]
 }
