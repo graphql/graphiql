@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.5](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.4...example-monaco-graphql-webpack@1.0.0-alpha.5) (2020-05-19)
+
+**Note:** Version bump only for package example-monaco-graphql-webpack
+
 # 1.0.0-alpha.4 (2020-05-17)
 
 ### Features

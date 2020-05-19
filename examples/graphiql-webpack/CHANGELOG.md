@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.10](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.9...example-graphiql-webpack@1.0.0-alpha.10) (2020-05-19)
+
+**Note:** Version bump only for package example-graphiql-webpack
+
 # [1.0.0-alpha.9](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.8...example-graphiql-webpack@1.0.0-alpha.9) (2020-05-17)
 
 ### Features
