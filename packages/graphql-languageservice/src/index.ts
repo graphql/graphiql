@@ -7,7 +7,11 @@
  *
  */
 export * from './schemaLoader';
+export * from './queryExecutor';
 export * from './LanguageService';
+export * from './http/queryExecutor';
+export * from './http/schemaLoader';
+// export * from './http/HttpLanguageService';
 export * from 'graphql-language-service-interface';
 export * from 'graphql-language-service-parser';
 export * from 'graphql-language-service-types';

@@ -4,7 +4,14 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { parse, GraphQLSchema, ParseOptions, ValidationRule } from 'graphql';
+import {
+  parse,
+  GraphQLSchema,
+  ParseOptions,
+  ValidationRule,
+  BuildSchemaOptions,
+  IntrospectionOptions,
+} from 'graphql';
 import type { Position } from 'graphql-language-service-types';
 import {
   getAutocompleteSuggestions,
@@ -13,45 +20,41 @@ import {
 } from 'graphql-language-service-interface';
 
 import {
-  defaultSchemaLoader,
-  SchemaConfig,
+  SchemaLoader,
   SchemaResponse,
-  defaultSchemaBuilder,
+  buildSchemaFromResponse,
 } from './schemaLoader';
+import { QueryExecutorArgs, QueryExecutor, Json } from 'queryExecutor';
 
-export type GraphQLLanguageConfig = {
+export type GraphQLLspConfig = {
   parser?: typeof parse;
-  schemaLoader?: typeof defaultSchemaLoader;
-  schemaBuilder?: typeof defaultSchemaBuilder;
-  schemaConfig: SchemaConfig;
+  schemaLoader: SchemaLoader;
+  queryExecutor?: QueryExecutor;
+  buildSchemaOptions?: BuildSchemaOptions;
+  introspectionOptions?: IntrospectionOptions;
 };
 
 export class LanguageService {
   private _parser: typeof parse = parse;
   private _schema: GraphQLSchema | null = null;
-  private _schemaConfig: SchemaConfig;
   private _schemaResponse: SchemaResponse | null = null;
-  private _schemaLoader: (
-    schemaConfig: SchemaConfig,
-  ) => Promise<SchemaResponse | void> = defaultSchemaLoader;
-  private _schemaBuilder = defaultSchemaBuilder;
+  protected _schemaLoader: SchemaLoader;
+  protected _queryExecutor?: QueryExecutor;
+  private _buildSchemaOptions?: BuildSchemaOptions;
 
   constructor({
     parser,
     schemaLoader,
-    schemaBuilder,
-    schemaConfig,
-  }: GraphQLLanguageConfig) {
-    this._schemaConfig = schemaConfig;
+    queryExecutor,
+    buildSchemaOptions,
+  }: GraphQLLspConfig) {
     if (parser) {
       this._parser = parser;
     }
-    if (schemaLoader) {
-      this._schemaLoader = schemaLoader;
-    }
-    if (schemaBuilder) {
-      this._schemaBuilder = schemaBuilder;
-    }
+
+    this._schemaLoader = schemaLoader;
+    this._queryExecutor = queryExecutor;
+    this._buildSchemaOptions = buildSchemaOptions;
   }
 
   public get schema() {
@@ -73,22 +76,24 @@ export class LanguageService {
   }
 
   public async loadSchemaResponse(): Promise<SchemaResponse> {
-    if (!this._schemaConfig?.uri) {
-      throw new Error('uri missing');
-    }
-    this._schemaResponse = (await this._schemaLoader(
-      this._schemaConfig,
-    )) as SchemaResponse;
+    this._schemaResponse = (await this._schemaLoader()) as SchemaResponse;
     return this._schemaResponse;
   }
 
   public async loadSchema() {
     const schemaResponse = await this.loadSchemaResponse();
-    this._schema = this._schemaBuilder(
+    this._schema = buildSchemaFromResponse(
       schemaResponse,
-      this._schemaConfig.buildSchemaOptions,
+      this._buildSchemaOptions,
     ) as GraphQLSchema;
     return this._schema;
+  }
+
+  public async executeQuery(args: QueryExecutorArgs): Promise<Json> {
+    if (!this._queryExecutor) {
+      throw new Error('Query Executor Not Supplied');
+    }
+    return this._queryExecutor(args);
   }
 
   public async parse(text: string, options?: ParseOptions) {
@@ -106,12 +111,7 @@ export class LanguageService {
     _uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => {
-    if (!documentText || documentText.length < 1) {
-      return [];
-    }
-    return getDiagnostics(documentText, await this.getSchema(), customRules);
-  };
+  ) => getDiagnostics(documentText, await this.getSchema(), customRules);
 
   public getHover = async (
     _uri: string,
