@@ -24,7 +24,7 @@ Supported features include:
 
 ### Dependencies
 
-An LSP compatible client with it's own file watcher, that sends watch notifications to the server.
+An LSP-compatible client with a file watcher that sends watch notifications to the server.
 
 **DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
 
@@ -53,7 +53,7 @@ The graphql features we support are:
 
 ### Using the command-line interface
 
-The node executable contains several commands: `server` and a command-line language service methods (`validate`, `autocomplete`, `outline`).
+The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
 
 Improving this list is a work-in-progress.
 
