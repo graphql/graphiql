@@ -12,7 +12,7 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-service-cli"
   },
   "bin": {
-    "graphql": "./bin/graphql.js"
+    "graphql-lsp": "./bin/graphql.js"
   },
   "license": "MIT",
   "files": [

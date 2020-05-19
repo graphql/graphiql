@@ -1,6 +1,6 @@
 # graphql-language-service-cli
 
-> Note: As of 3.0.0, this package has been renamed from `graphql-language-service` to `graphql-language-service-cli`
+> Note: As of 3.0.0, this package has been renamed from `graphql-language-service` to `graphql-language-service-cli`. please now use the `graphql-lsp` bin, instead of the `graphql` binary.
 
 [![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)

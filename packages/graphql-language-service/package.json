@@ -23,6 +23,9 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
+  "bin": {
+    "graphql": "./dist/temp-bin.js"
+  },
   "peerDependencies": {
     "graphql": "^0.13.0 || ^14.0.0 || ^15.0.0"
   },

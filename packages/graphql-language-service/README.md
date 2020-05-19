@@ -1,6 +1,7 @@
-# `graphql-languageservice`
+# `graphql-language-service`
 
 > **Note**: Still mostly experimental, however it depends mostly on stable libraries.
+> **Migration Note**: As of 3.0.0, the LSP command line interface has been moved to [`graphql-language-service-cli`](../graphql-language-service-cli)
 
 ## Purpose
 
@@ -8,7 +9,7 @@ This package brings together all the dependencies for building out web or deskto
 
 It is named as such to match the convention of other vscode languageservices.
 
-It also provides a new `LanguageService` class as browser/web-worker runtime friendly alternative to the one that lives in `graphql-language-service-interface`, that utilizes the same underlying functions, meaning _most_ fixes and improvements from here on out will continue to be reflected by both implementations.
+It also provides a new `LanguageService` class as browser/web-worker runtime friendly alternative to the one that lives in [`graphql-language-service-interface`](../graphql-language-service-cli), that utilizes the same underlying functions, meaning _most_ fixes and improvements from here on out will continue to be reflected by both implementations.
 
 ## Usage
 
@@ -30,7 +31,3 @@ const languageService = new LanguageService({
   schemaConfig: { uri: 'https://my/schema' },
 });
 ```
-
-### Methods
-
-We are working on restoring our typedoc which will provide much more info soon.
