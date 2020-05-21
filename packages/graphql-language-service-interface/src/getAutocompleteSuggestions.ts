@@ -113,7 +113,7 @@ export function getAutocompleteSuggestions(
         argDefs.map(argDef => ({
           label: argDef.name,
           detail: String(argDef.type),
-          documentation: argDef.description || undefined,
+          documentation: argDef.description ?? undefined,
           kind: CompletionItemKind.Variable,
         })),
       );
@@ -136,7 +136,7 @@ export function getAutocompleteSuggestions(
         objectFields.map(field => ({
           label: field.name,
           detail: String(field.type),
-          documentation: field.description || undefined,
+          documentation: field.description ?? undefined,
           kind: completionKind,
         })),
       );
@@ -230,7 +230,7 @@ function getSuggestionsForFieldNames(
         sortText: String(index) + field.name,
         label: field.name,
         detail: String(field.type),
-        documentation: field.description || undefined,
+        documentation: field.description ?? undefined,
         deprecated: field.isDeprecated,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
@@ -255,7 +255,7 @@ function getSuggestionsForInputValues(
         (value: GraphQLEnumValue): CompletionItem => ({
           label: value.name,
           detail: String(namedInputType),
-          documentation: value.description || undefined,
+          documentation: value.description ?? undefined,
           deprecated: value.isDeprecated,
           isDeprecated: value.isDeprecated,
           deprecationReason: value.deprecationReason,
