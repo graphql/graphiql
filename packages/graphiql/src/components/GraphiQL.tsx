@@ -30,6 +30,7 @@ import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
+import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
@@ -72,6 +73,7 @@ export type FetcherParams = {
   query: string;
   operationName: string;
   variables?: string;
+  headers?: string;
 };
 export type FetcherResult =
   | {
@@ -94,14 +96,17 @@ export type GraphiQLProps = {
   schema?: GraphQLSchema;
   query?: string;
   variables?: string;
+  headers?: string;
   operationName?: string;
   response?: string;
   storage?: Storage;
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
+  defaultHeaderEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
+  onEditHeaders?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
@@ -116,12 +121,15 @@ export type GraphiQLState = {
   schema?: GraphQLSchema;
   query?: string;
   variables?: string;
+  headers?: string;
   operationName?: string;
   docExplorerOpen: boolean;
   response?: string;
   editorFlex: number;
   variableEditorOpen: boolean;
   variableEditorHeight: number;
+  headerEditorOpen: boolean;
+  headerEditorHeight: number;
   historyPaneOpen: boolean;
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
@@ -162,6 +170,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<ResultViewer>;
   variableEditorComponent: Maybe<VariableEditor>;
+  headerEditorComponent: Maybe<HeaderEditor>;
   _queryHistory: Maybe<QueryHistory>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<QueryEditor>;
@@ -197,6 +206,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ? props.variables
         : this._storage.get('variables');
 
+    // Determine the initial headers to display.
+    const headers =
+      props.headers !== undefined
+        ? props.headers
+        : this._storage.get('headers');
+
     // Determine the initial operationName to use.
     const operationName =
       props.operationName !== undefined
@@ -221,6 +236,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ? props.defaultVariableEditorOpen
         : Boolean(variables);
 
+    // initial header editor pane open
+    const headerEditorOpen =
+      props.defaultHeaderEditorOpen !== undefined
+        ? props.defaultHeaderEditorOpen
+        : Boolean(headers);
+
     // Initialize state
     this.state = {
       schema: props.schema,
@@ -233,6 +254,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       variableEditorOpen,
       variableEditorHeight:
         Number(this._storage.get('variableEditorHeight')) || 200,
+      headerEditorOpen,
+      headerEditorHeight:
+        Number(this._storage.get('headerEditorHeight')) || 200,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
@@ -268,6 +292,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
+    let nextHeaders = this.state.headers;
     let nextOperationName = this.state.operationName;
     let nextResponse = this.state.response;
 
@@ -279,6 +304,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
     if (nextProps.variables !== undefined) {
       nextVariables = nextProps.variables;
+    }
+    if (nextProps.headers !== undefined) {
+      nextHeaders = nextProps.headers;
     }
     if (nextProps.operationName !== undefined) {
       nextOperationName = nextProps.operationName;
@@ -321,6 +349,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         schema: nextSchema,
         query: nextQuery,
         variables: nextVariables,
+        headers: nextHeaders,
         operationName: nextOperationName,
         response: nextResponse,
       },
@@ -342,6 +371,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.codeMirrorSizer.updateSizes([
       this.queryEditorComponent,
       this.variableEditorComponent,
+      this.headerEditorComponent,
       this.resultComponent,
     ]);
   }
@@ -355,6 +385,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (this.state.variables) {
       this._storage.set('variables', this.state.variables);
     }
+    if (this.state.headers) {
+      this._storage.set('headers', this.state.headers);
+    }
     if (this.state.operationName) {
       this._storage.set('operationName', this.state.operationName);
     }
@@ -362,6 +395,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this._storage.set(
       'variableEditorHeight',
       JSON.stringify(this.state.variableEditorHeight),
+    );
+    this._storage.set(
+      'headerEditorHeight',
+      JSON.stringify(this.state.headerEditorHeight),
     );
     this._storage.set(
       'docExplorerWidth',
@@ -437,6 +474,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const variableOpen = this.state.variableEditorOpen;
     const variableStyle = {
       height: variableOpen ? this.state.variableEditorHeight : undefined,
+    };
+
+    const headerOpen = this.state.headerEditorOpen;
+    const headerStyle = {
+      height: headerOpen ? this.state.headerEditorHeight : undefined,
     };
 
     return (
@@ -537,6 +579,33 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   readOnly={this.props.readOnly}
                 />
               </section>
+              <section
+                className="header-editor"
+                style={headerStyle}
+                aria-label="Query Headers">
+                <div
+                  className="header-editor-title"
+                  id="header-editor-title"
+                  style={{
+                    cursor: headerOpen ? 'row-resize' : 'n-resize',
+                  }}
+                  onMouseDown={this.handleHeaderResizeStart}>
+                  {'Query Headers'}
+                </div>
+                <HeaderEditor
+                  ref={n => {
+                    this.headerEditorComponent = n;
+                  }}
+                  value={this.state.headers}
+                  onEdit={this.handleEditHeaders}
+                  onHintInformationRender={this.handleHintInformationRender}
+                  onPrettifyQuery={this.handlePrettifyQuery}
+                  onMergeQuery={this.handleMergeQuery}
+                  onRunQuery={this.handleEditorRunQuery}
+                  editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
+                />
+              </section>
             </div>
             <div className="resultWrap">
               {this.state.isWaitingForResponse && (
@@ -591,6 +660,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   static Footer = GraphiQLFooter;
   static QueryEditor = QueryEditor;
   static VariableEditor = VariableEditor;
+  static HeaderEditor = HeaderEditor;
   static ResultViewer = ResultViewer;
 
   // Add a button to the Toolbar.
@@ -643,6 +713,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
     if (this.variableEditorComponent) {
       this.variableEditorComponent.getCodeMirror().refresh();
+    }
+    if (this.headerEditorComponent) {
+      this.headerEditorComponent.getCodeMirror().refresh();
     }
     if (this.resultComponent) {
       this.resultComponent.getCodeMirror().refresh();
@@ -767,11 +840,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   private _fetchQuery(
     query: string,
     variables: string,
+    headers: string,
     operationName: string,
     cb: (value: FetcherResult) => any,
   ) {
     const fetcher = this.props.fetcher;
     let jsonVariables = null;
+    let jsonHeaders = null;
 
     try {
       jsonVariables =
@@ -784,9 +859,21 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       throw new Error('Variables are not a JSON object.');
     }
 
+    try {
+      jsonHeaders =
+        headers && headers.trim() !== '' ? JSON.parse(headers) : null;
+    } catch (error) {
+      throw new Error(`Headers are invalid JSON: ${error.message}.`);
+    }
+
+    if (typeof jsonHeaders !== 'object') {
+      throw new Error('Headers are not a JSON object.');
+    }
+
     const fetch = fetcher({
       query,
       variables: jsonVariables,
+      headers: jsonHeaders,
       operationName,
     });
 
@@ -843,6 +930,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // the current query from the editor.
     const editedQuery = this.autoCompleteLeafs() || this.state.query;
     const variables = this.state.variables;
+    const headers = this.state.headers;
     let operationName = this.state.operationName;
 
     // If an operation was explicitly provided, different from the current
@@ -867,6 +955,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const subscription = this._fetchQuery(
         editedQuery as string,
         variables as string,
+        headers as string,
         operationName as string,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
@@ -1035,6 +1124,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ variables: value });
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
+    }
+  };
+
+  handleEditHeaders = (value: string) => {
+    this.setState({ headers: value });
+    if (this.props.onEditHeaders) {
+      this.props.onEditHeaders(value);
     }
   };
 
@@ -1255,6 +1351,54 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     let onMouseUp: OnMouseUpFn = () => {
       if (!didMove) {
         this.setState({ variableEditorOpen: !wasOpen });
+      }
+
+      document.removeEventListener('mousemove', onMouseMove!);
+      document.removeEventListener('mouseup', onMouseUp!);
+      onMouseMove = null;
+      onMouseUp = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
+  private handleHeaderResizeStart: MouseEventHandler<
+    HTMLDivElement
+  > = downEvent => {
+    downEvent.preventDefault();
+
+    let didMove = false;
+    const wasOpen = this.state.headerEditorOpen;
+    const hadHeight = this.state.headerEditorHeight;
+    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
+
+    let onMouseMove: OnMouseMoveFn = moveEvent => {
+      if (moveEvent.buttons === 0) {
+        return onMouseUp!();
+      }
+
+      didMove = true;
+
+      const editorBar = this.editorBarComponent as HTMLElement;
+      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
+      const bottomSize = editorBar.clientHeight - topSize;
+      if (bottomSize < 60) {
+        this.setState({
+          headerEditorOpen: false,
+          headerEditorHeight: hadHeight,
+        });
+      } else {
+        this.setState({
+          headerEditorOpen: true,
+          headerEditorHeight: bottomSize,
+        });
+      }
+    };
+
+    let onMouseUp: OnMouseUpFn = () => {
+      if (!didMove) {
+        this.setState({ headerEditorOpen: !wasOpen });
       }
 
       document.removeEventListener('mousemove', onMouseMove!);
