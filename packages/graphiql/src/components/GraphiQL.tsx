@@ -709,6 +709,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   }
 
   /**
+   * Get the header editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getHeaderEditor() {
+    if (this.headerEditorComponent) {
+      return this.headerEditorComponent.getCodeMirror();
+    }
+    return null;
+  }
+
+  /**
    * Refresh all CodeMirror instances.
    *
    * @public
@@ -954,7 +966,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
 
       if (this._queryHistory) {
-        this._queryHistory.updateHistory(editedQuery, variables, operationName);
+        this._queryHistory.updateHistory(editedQuery, variables, headers, operationName);
       }
 
       // _fetchQuery may return a subscription.
@@ -1045,6 +1057,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       );
       if (prettifiedVariableEditorContent !== variableEditorContent) {
         variableEditor?.setValue(prettifiedVariableEditorContent);
+      }
+    } catch {
+      /* Parsing JSON failed, skip prettification */
+    }
+
+    const headerEditor = this.getHeaderEditor();
+    const headerEditorContent = headerEditor?.getValue() ?? '';
+
+    try {
+      const prettifiedHeaderEditorContent = JSON.stringify(
+        JSON.parse(headerEditorContent),
+        null,
+        2,
+      );
+      if (prettifiedHeaderEditorContent !== headerEditorContent) {
+        headerEditor?.setValue(prettifiedHeaderEditorContent);
       }
     } catch {
       /* Parsing JSON failed, skip prettification */
@@ -1201,16 +1229,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
-  handleToggleVariableEditor = () => {
-    if (typeof this.props.onToggleVariableEditor === 'function') {
-      this.props.onToggleVariableEditor(!this.state.variableEditorActive);
-    }
-    this.setState({ variableEditorActive: !this.state.variableEditorActive });
-  };
-
   handleSelectHistoryQuery = (
     query?: string,
     variables?: string,
+    headers?: string,
     operationName?: string,
   ) => {
     if (query) {
@@ -1218,6 +1240,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
     if (variables) {
       this.handleEditVariables(variables);
+    }
+    if (headers) {
+      this.handleEditHeaders(headers);
     }
     if (operationName) {
       this.handleEditOperationName(operationName);
