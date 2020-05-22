@@ -156,6 +156,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   _storage: StorageAPI;
 
   codeMirrorSizer!: CodeMirrorSizer;
+  // Ensure the component is mounted to execute async setState
   componentIsMounted: boolean;
 
   // refs
@@ -381,10 +382,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
   }
 
-  safeSetState = (
-    nextState: Partial<GraphiQLState> | any,
-    callback = () => {},
-  ) => {
+  // Use it when the state change is async
+  // TODO: Annotate correctly this function
+  safeSetState = (nextState: any, callback?: any) => {
     this.componentIsMounted && this.setState(nextState, callback);
   };
 
@@ -756,11 +756,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         if (typeof result !== 'string' && 'data' in result) {
           const schema = buildClientSchema(result.data);
           const queryFacts = getQueryFacts(schema, this.state.query);
-          this.setState({ schema, ...queryFacts });
+          this.safeSetState({ schema, ...queryFacts });
         } else {
           const responseString =
             typeof result === 'string' ? result : GraphiQL.formatResult(result);
-          this.setState({
+          this.safeSetState({
             // Set schema to `null` to explicitly indicate that no schema exists.
             schema: undefined,
             response: responseString,
@@ -768,7 +768,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         }
       })
       .catch(error => {
-        this.setState({
+        this.safeSetState({
           schema: undefined,
           response: error ? GraphiQL.formatError(error) : undefined,
         });
@@ -805,7 +805,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       // If fetcher returned a Promise, then call the callback when the promise
       // resolves, otherwise handle the error.
       fetch.then(cb).catch(error => {
-        this.setState({
+        this.safeSetState({
           isWaitingForResponse: false,
           response: error ? GraphiQL.formatError(error) : undefined,
         });
@@ -817,14 +817,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const subscription = fetch.subscribe({
         next: cb,
         error: (error: Error) => {
-          this.setState({
+          this.safeSetState({
             isWaitingForResponse: false,
             response: error ? GraphiQL.formatError(error) : undefined,
             subscription: null,
           });
         },
         complete: () => {
-          this.setState({
+          this.safeSetState({
             isWaitingForResponse: false,
             subscription: null,
           });
