@@ -101,13 +101,14 @@ export type GraphiQLProps = {
   response?: string;
   storage?: Storage;
   defaultQuery?: string;
-  defaultVariableEditorOpen?: boolean;
-  defaultHeaderEditorOpen?: boolean;
+  defaultExtraEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
   onEditHeaders?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
+  onToggleVariableEditor?: (variableEditorActive: boolean) => void;
+  onToggleHeaderEditor?: (headerEditorActive: boolean) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
   editorTheme?: string;
@@ -126,10 +127,10 @@ export type GraphiQLState = {
   docExplorerOpen: boolean;
   response?: string;
   editorFlex: number;
-  variableEditorOpen: boolean;
-  variableEditorHeight: number;
-  headerEditorOpen: boolean;
-  headerEditorHeight: number;
+  extraEditorOpen: boolean;
+  extraEditorHeight: number;
+  variableEditorActive: boolean;
+  headerEditorActive: boolean;
   historyPaneOpen: boolean;
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
@@ -230,17 +231,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
     }
 
-    // initial variable editor pane open
-    const variableEditorOpen =
-      props.defaultVariableEditorOpen !== undefined
-        ? props.defaultVariableEditorOpen
-        : Boolean(variables);
-
-    // initial header editor pane open
-    const headerEditorOpen =
-      props.defaultHeaderEditorOpen !== undefined
-        ? props.defaultHeaderEditorOpen
-        : Boolean(headers);
+    // initial extra editor pane open
+    const extraEditorOpen =
+      props.defaultExtraEditorOpen !== undefined
+        ? props.defaultExtraEditorOpen
+        : Boolean(variables || headers);
 
     // Initialize state
     this.state = {
@@ -251,12 +246,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       docExplorerOpen,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      variableEditorOpen,
-      variableEditorHeight:
-        Number(this._storage.get('variableEditorHeight')) || 200,
-      headerEditorOpen,
-      headerEditorHeight:
-        Number(this._storage.get('headerEditorHeight')) || 200,
+      extraEditorOpen,
+      extraEditorHeight: Number(this._storage.get('extraEditorHeight')) || 200,
+      variableEditorActive:
+        this._storage.get('variableEditorActive') === 'true',
+      headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
@@ -393,12 +387,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
     this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
     this._storage.set(
-      'variableEditorHeight',
-      JSON.stringify(this.state.variableEditorHeight),
+      'extraEditorHeight',
+      JSON.stringify(this.state.extraEditorHeight),
     );
     this._storage.set(
-      'headerEditorHeight',
-      JSON.stringify(this.state.headerEditorHeight),
+      'variableEditorActive',
+      JSON.stringify(this.state.variableEditorActive),
+    );
+    this._storage.set(
+      'headerEditorActive',
+      JSON.stringify(this.state.headerEditorActive),
     );
     this._storage.set(
       'docExplorerWidth',
@@ -471,15 +469,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       zIndex: 7,
     };
 
-    const variableOpen = this.state.variableEditorOpen;
-    const variableStyle = {
-      height: variableOpen ? this.state.variableEditorHeight : undefined,
+    const extraEditorOpen = this.state.extraEditorOpen;
+    const extraEditorStyle = {
+      height: extraEditorOpen ? this.state.extraEditorHeight : undefined,
     };
 
-    const headerOpen = this.state.headerEditorOpen;
-    const headerStyle = {
-      height: headerOpen ? this.state.headerEditorHeight : undefined,
-    };
+    const variableEditorActive = this.state.variableEditorActive;
+    const headerEditorActive = this.state.headerEditorActive;
 
     return (
       <div
@@ -552,59 +548,69 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 readOnly={this.props.readOnly}
               />
               <section
-                className="variable-editor"
-                style={variableStyle}
+                className="extra-editor"
+                style={extraEditorStyle}
                 aria-label="Query Variables">
                 <div
-                  className="variable-editor-title"
-                  id="variable-editor-title"
+                  className="extra-editor-title"
+                  id="extra-editor-title"
                   style={{
-                    cursor: variableOpen ? 'row-resize' : 'n-resize',
+                    cursor: extraEditorOpen ? 'row-resize' : 'n-resize',
                   }}
-                  onMouseDown={this.handleVariableResizeStart}>
-                  {'Query Variables'}
+                  onMouseDown={this.handleExtraEditorResizeStart}>
+                  <div
+                    style={{
+                      cursor: 'pointer',
+                      color: variableEditorActive ? 'red' : '#000',
+                      display: 'inline-block',
+                    }}
+                    onClick={this.handleOpenVariableEditorTab}
+                    onMouseDown={this.handleTabClickPropogation}>
+                    {'Query Variables'}
+                  </div>
+                  <div
+                    style={{
+                      cursor: 'pointer',
+                      color: headerEditorActive ? 'red' : '#000',
+                      display: 'inline-block',
+                      marginLeft: '20px',
+                    }}
+                    onClick={this.handleOpenHeaderEditorTab}
+                    onMouseDown={this.handleTabClickPropogation}>
+                    {'Query Headers'}
+                  </div>
                 </div>
-                <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                />
-              </section>
-              <section
-                className="header-editor"
-                style={headerStyle}
-                aria-label="Query Headers">
-                <div
-                  className="header-editor-title"
-                  id="header-editor-title"
-                  style={{
-                    cursor: headerOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleHeaderResizeStart}>
-                  {'Query Headers'}
-                </div>
-                <HeaderEditor
-                  ref={n => {
-                    this.headerEditorComponent = n;
-                  }}
-                  value={this.state.headers}
-                  onEdit={this.handleEditHeaders}
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                />
+                {variableEditorActive && (
+                  <VariableEditor
+                    ref={n => {
+                      this.variableEditorComponent = n;
+                    }}
+                    value={this.state.variables}
+                    variableToType={this.state.variableToType}
+                    onEdit={this.handleEditVariables}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                  />
+                )}
+                {headerEditorActive && (
+                  <HeaderEditor
+                    ref={n => {
+                      this.headerEditorComponent = n;
+                    }}
+                    value={this.state.headers}
+                    onEdit={this.handleEditHeaders}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                  />
+                )}
               </section>
             </div>
             <div className="resultWrap">
@@ -1195,6 +1201,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
+  handleToggleVariableEditor = () => {
+    if (typeof this.props.onToggleVariableEditor === 'function') {
+      this.props.onToggleVariableEditor(!this.state.variableEditorActive);
+    }
+    this.setState({ variableEditorActive: !this.state.variableEditorActive });
+  };
+
   handleSelectHistoryQuery = (
     query?: string,
     variables?: string,
@@ -1315,62 +1328,39 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     });
   };
 
-  private handleVariableResizeStart: MouseEventHandler<
+  private handleTabClickPropogation: MouseEventHandler<
     HTMLDivElement
   > = downEvent => {
     downEvent.preventDefault();
-
-    let didMove = false;
-    const wasOpen = this.state.variableEditorOpen;
-    const hadHeight = this.state.variableEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      didMove = true;
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          variableEditorOpen: false,
-          variableEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          variableEditorOpen: true,
-          variableEditorHeight: bottomSize,
-        });
-      }
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ variableEditorOpen: !wasOpen });
-      }
-
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    downEvent.stopPropagation();
   };
 
-  private handleHeaderResizeStart: MouseEventHandler<
+  private handleOpenHeaderEditorTab: MouseEventHandler<
+    HTMLDivElement
+  > = _clickEvent => {
+    this.setState({
+      headerEditorActive: true,
+      variableEditorActive: false,
+    });
+  };
+
+  private handleOpenVariableEditorTab: MouseEventHandler<
+    HTMLDivElement
+  > = _clickEvent => {
+    this.setState({
+      headerEditorActive: false,
+      variableEditorActive: true,
+    });
+  };
+
+  private handleExtraEditorResizeStart: MouseEventHandler<
     HTMLDivElement
   > = downEvent => {
     downEvent.preventDefault();
 
     let didMove = false;
-    const wasOpen = this.state.headerEditorOpen;
-    const hadHeight = this.state.headerEditorHeight;
+    const wasOpen = this.state.extraEditorOpen;
+    const hadHeight = this.state.extraEditorHeight;
     const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
 
     let onMouseMove: OnMouseMoveFn = moveEvent => {
@@ -1385,20 +1375,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {
         this.setState({
-          headerEditorOpen: false,
-          headerEditorHeight: hadHeight,
+          extraEditorOpen: false,
+          extraEditorHeight: hadHeight,
         });
       } else {
         this.setState({
-          headerEditorOpen: true,
-          headerEditorHeight: bottomSize,
+          extraEditorOpen: true,
+          extraEditorHeight: bottomSize,
         });
       }
     };
 
     let onMouseUp: OnMouseUpFn = () => {
       if (!didMove) {
-        this.setState({ headerEditorOpen: !wasOpen });
+        this.setState({ extraEditorOpen: !wasOpen });
       }
 
       document.removeEventListener('mousemove', onMouseMove!);
