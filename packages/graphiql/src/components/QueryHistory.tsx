@@ -50,9 +50,7 @@ const shouldSaveQuery = (
     if (variables && !lastQuerySaved.variables) {
       return false;
     }
-    if (
-      JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)
-    ) {
+    if (JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)) {
       return false;
     }
     if (headers && !lastQuerySaved.headers) {
@@ -129,7 +127,14 @@ export class QueryHistory extends React.Component<
     headers?: string,
     operationName?: string,
   ) => {
-    if (shouldSaveQuery(query, variables, headers, this.historyStore.fetchRecent())) {
+    if (
+      shouldSaveQuery(
+        query,
+        variables,
+        headers,
+        this.historyStore.fetchRecent(),
+      )
+    ) {
       this.historyStore.push({
         query,
         variables,
