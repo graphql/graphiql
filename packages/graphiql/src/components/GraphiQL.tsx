@@ -156,6 +156,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   _storage: StorageAPI;
 
   codeMirrorSizer!: CodeMirrorSizer;
+  componentIsMounted: boolean;
 
   // refs
   docExplorerComponent: Maybe<DocExplorer>;
@@ -177,6 +178,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
+    this.componentIsMounted = false;
 
     // Determine the initial query to display.
     const query =
@@ -251,6 +253,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   }
 
   componentDidMount() {
+    this.componentIsMounted = true;
     // Only fetch schema via introspection if a schema has not been
     // provided, including if `null` was provided.
     if (this.state.schema === undefined) {
@@ -349,6 +352,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
+    this.componentIsMounted = false;
     if (this.state.query) {
       this._storage.set('query', this.state.query);
     }
@@ -376,6 +380,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       JSON.stringify(this.state.historyPaneOpen),
     );
   }
+
+  safeSetState = (
+    nextState: Partial<GraphiQLState> | any,
+    callback = () => {},
+  ) => {
+    this.componentIsMounted && this.setState(nextState, callback);
+  };
 
   render() {
     const children = React.Children.toArray(this.props.children);
