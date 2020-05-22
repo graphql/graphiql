@@ -84,6 +84,7 @@ export type FetcherResult =
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
+  headers?: Object,
 ) => Promise<FetcherResult> | Observable<FetcherResult>;
 
 type OnMouseMoveFn = Maybe<
@@ -888,12 +889,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       throw new Error('Headers are not a JSON object.');
     }
 
-    const fetch = fetcher({
-      query,
-      variables: jsonVariables,
-      headers: jsonHeaders,
-      operationName,
-    });
+    const fetch = fetcher(
+      {
+        query,
+        variables: jsonVariables,
+        operationName,
+      },
+      jsonHeaders,
+    );
 
     if (isPromise(fetch)) {
       // If fetcher returned a Promise, then call the callback when the promise
@@ -966,7 +969,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
 
       if (this._queryHistory) {
-        this._queryHistory.updateHistory(editedQuery, variables, headers, operationName);
+        this._queryHistory.updateHistory(
+          editedQuery,
+          variables,
+          headers,
+          operationName,
+        );
       }
 
       // _fetchQuery may return a subscription.
