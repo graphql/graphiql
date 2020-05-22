@@ -551,7 +551,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               <section
                 className="extra-editor"
                 style={extraEditorStyle}
-                aria-label="Query Variables">
+                aria-label={
+                  variableEditorActive ? 'Query Variables' : 'Request Headers'
+                }>
                 <div
                   className="extra-editor-title"
                   id="extra-editor-title"
@@ -578,7 +580,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     }}
                     onClick={this.handleOpenHeaderEditorTab}
                     onMouseDown={this.handleTabClickPropogation}>
-                    {'Query Headers'}
+                    {'Request Headers'}
                   </div>
                 </div>
                 {variableEditorActive && (
