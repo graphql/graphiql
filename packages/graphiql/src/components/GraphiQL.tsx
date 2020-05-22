@@ -241,13 +241,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       subscription: null,
       ...queryFacts,
     };
-
-    // Subscribe to the browser window closing, treating it as an unmount.
-    if (typeof window === 'object') {
-      window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount(),
-      );
-    }
   }
 
   componentDidMount() {
@@ -315,7 +308,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     ) {
       nextSchema = undefined;
     }
-
+    this._storage.set('operationName', nextOperationName as string);
     this.setState(
       {
         schema: nextSchema,
@@ -344,37 +337,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.variableEditorComponent,
       this.resultComponent,
     ]);
-  }
-
-  // When the component is about to unmount, store any persistable state, such
-  // that when the component is remounted, it will use the last used values.
-  componentWillUnmount() {
-    if (this.state.query) {
-      this._storage.set('query', this.state.query);
-    }
-    if (this.state.variables) {
-      this._storage.set('variables', this.state.variables);
-    }
-    if (this.state.operationName) {
-      this._storage.set('operationName', this.state.operationName);
-    }
-    this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
-    this._storage.set(
-      'variableEditorHeight',
-      JSON.stringify(this.state.variableEditorHeight),
-    );
-    this._storage.set(
-      'docExplorerWidth',
-      JSON.stringify(this.state.docExplorerWidth),
-    );
-    this._storage.set(
-      'docExplorerOpen',
-      JSON.stringify(this.state.docExplorerOpen),
-    );
-    this._storage.set(
-      'historyPaneOpen',
-      JSON.stringify(this.state.historyPaneOpen),
-    );
   }
 
   render() {
@@ -832,6 +794,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         this.docExplorerComponent.showDocForReference(reference);
       }
     });
+    this._storage.set(
+      'docExplorerOpen',
+      JSON.stringify(this.state.docExplorerOpen),
+    );
   };
 
   handleRunQuery = (selectedOperationName?: string) => {
@@ -858,6 +824,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         response: undefined,
         operationName,
       });
+      this._storage.set('operationName', operationName as string);
 
       if (this._queryHistory) {
         this._queryHistory.updateHistory(editedQuery, variables, operationName);
@@ -979,6 +946,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       query: value,
       ...queryFacts,
     });
+    this._storage.set('query', value);
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value);
     }
@@ -1033,6 +1001,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleEditVariables = (value: string) => {
     this.setState({ variables: value });
+    this._storage.set('variables', value);
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
@@ -1080,6 +1049,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               this.docExplorerComponent.showDoc(type);
             }
           });
+          this._storage.set(
+            'docExplorerOpen',
+            JSON.stringify(this.state.docExplorerOpen),
+          );
         }
       }
     }
@@ -1090,6 +1063,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.props.onToggleDocs(!this.state.docExplorerOpen);
     }
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
+    this._storage.set(
+      'docExplorerOpen',
+      JSON.stringify(this.state.docExplorerOpen),
+    );
   };
 
   handleToggleHistory = () => {
@@ -1097,6 +1074,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.props.onToggleHistory(!this.state.historyPaneOpen);
     }
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+    this._storage.set(
+      'historyPaneOpen',
+      JSON.stringify(this.state.historyPaneOpen),
+    );
   };
 
   handleSelectHistoryQuery = (
@@ -1133,6 +1114,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
+      this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
     };
 
     let onMouseUp: OnMouseUpFn = () => {
@@ -1148,6 +1130,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleResetResize = () => {
     this.setState({ editorFlex: 1 });
+    this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
   };
 
   private _didClickDragBar(event: React.MouseEvent) {
@@ -1195,12 +1178,24 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           docExplorerOpen: true,
           docExplorerWidth: Math.min(docsSize, 650),
         });
+        this._storage.set(
+          'docExplorerWidth',
+          JSON.stringify(this.state.docExplorerWidth),
+        );
       }
+      this._storage.set(
+        'docExplorerOpen',
+        JSON.stringify(this.state.docExplorerOpen),
+      );
     };
 
     let onMouseUp: OnMouseUpFn = () => {
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerWidth: hadWidth });
+        this._storage.set(
+          'docExplorerWidth',
+          JSON.stringify(this.state.docExplorerWidth),
+        );
       }
 
       document.removeEventListener('mousemove', onMouseMove!);
@@ -1217,6 +1212,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({
       docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
     });
+    this._storage.set(
+      'docExplorerWidth',
+      JSON.stringify(this.state.docExplorerWidth),
+    );
   };
 
   private handleVariableResizeStart: MouseEventHandler<
@@ -1250,6 +1249,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           variableEditorHeight: bottomSize,
         });
       }
+      this._storage.set(
+        'variableEditorHeight',
+        JSON.stringify(this.state.variableEditorHeight),
+      );
     };
 
     let onMouseUp: OnMouseUpFn = () => {
