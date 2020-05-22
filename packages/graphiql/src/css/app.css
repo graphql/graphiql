@@ -162,7 +162,7 @@
 }
 
 .graphiql-container .variable-editor,
-.graphiql-container .extra-editor {
+.graphiql-container .secondary-editor {
   display: flex;
   flex-direction: column;
   height: 30px;
@@ -170,7 +170,7 @@
 }
 
 .graphiql-container .variable-editor-title,
-.graphiql-container .extra-editor-title {
+.graphiql-container .secondary-editor-title {
   background: #eeeeee;
   border-bottom: 1px solid #d6d6d6;
   border-top: 1px solid #e0e0e0;

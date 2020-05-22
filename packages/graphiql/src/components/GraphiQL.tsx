@@ -102,7 +102,7 @@ export type GraphiQLProps = {
   response?: string;
   storage?: Storage;
   defaultQuery?: string;
-  defaultExtraEditorOpen?: boolean;
+  defaultSecondaryEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
@@ -128,8 +128,8 @@ export type GraphiQLState = {
   docExplorerOpen: boolean;
   response?: string;
   editorFlex: number;
-  extraEditorOpen: boolean;
-  extraEditorHeight: number;
+  secondaryEditorOpen: boolean;
+  secondaryEditorHeight: number;
   variableEditorActive: boolean;
   headerEditorActive: boolean;
   historyPaneOpen: boolean;
@@ -232,10 +232,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
     }
 
-    // initial extra editor pane open
-    const extraEditorOpen =
-      props.defaultExtraEditorOpen !== undefined
-        ? props.defaultExtraEditorOpen
+    // initial secondary editor pane open
+    const secondaryEditorOpen =
+      props.defaultSecondaryEditorOpen !== undefined
+        ? props.defaultSecondaryEditorOpen
         : Boolean(variables || headers);
 
     // Initialize state
@@ -247,8 +247,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       docExplorerOpen,
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      extraEditorOpen,
-      extraEditorHeight: Number(this._storage.get('extraEditorHeight')) || 200,
+      secondaryEditorOpen,
+      secondaryEditorHeight: Number(this._storage.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
         this._storage.get('variableEditorActive') === 'true',
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
@@ -388,8 +388,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
     this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
     this._storage.set(
-      'extraEditorHeight',
-      JSON.stringify(this.state.extraEditorHeight),
+      'secondaryEditorHeight',
+      JSON.stringify(this.state.secondaryEditorHeight),
     );
     this._storage.set(
       'variableEditorActive',
@@ -470,9 +470,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       zIndex: 7,
     };
 
-    const extraEditorOpen = this.state.extraEditorOpen;
-    const extraEditorStyle = {
-      height: extraEditorOpen ? this.state.extraEditorHeight : undefined,
+    const secondaryEditorOpen = this.state.secondaryEditorOpen;
+    const secondaryEditorStyle = {
+      height: secondaryEditorOpen ? this.state.secondaryEditorHeight : undefined,
     };
 
     const variableEditorActive = this.state.variableEditorActive;
@@ -549,18 +549,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 readOnly={this.props.readOnly}
               />
               <section
-                className="extra-editor"
-                style={extraEditorStyle}
+                className="secondary-editor"
+                style={secondaryEditorStyle}
                 aria-label={
                   variableEditorActive ? 'Query Variables' : 'Request Headers'
                 }>
                 <div
-                  className="extra-editor-title"
-                  id="extra-editor-title"
+                  className="secondary-editor-title"
+                  id="secondary-editor-title"
                   style={{
-                    cursor: extraEditorOpen ? 'row-resize' : 'n-resize',
+                    cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
                   }}
-                  onMouseDown={this.handleExtraEditorResizeStart}>
+                  onMouseDown={this.handleSecondaryEditorResizeStart}>
                   <div
                     style={{
                       cursor: 'pointer',
@@ -1388,14 +1388,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     });
   };
 
-  private handleExtraEditorResizeStart: MouseEventHandler<
+  private handleSecondaryEditorResizeStart: MouseEventHandler<
     HTMLDivElement
   > = downEvent => {
     downEvent.preventDefault();
 
     let didMove = false;
-    const wasOpen = this.state.extraEditorOpen;
-    const hadHeight = this.state.extraEditorHeight;
+    const wasOpen = this.state.secondaryEditorOpen;
+    const hadHeight = this.state.secondaryEditorHeight;
     const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
 
     let onMouseMove: OnMouseMoveFn = moveEvent => {
@@ -1410,20 +1410,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const bottomSize = editorBar.clientHeight - topSize;
       if (bottomSize < 60) {
         this.setState({
-          extraEditorOpen: false,
-          extraEditorHeight: hadHeight,
+          secondaryEditorOpen: false,
+          secondaryEditorHeight: hadHeight,
         });
       } else {
         this.setState({
-          extraEditorOpen: true,
-          extraEditorHeight: bottomSize,
+          secondaryEditorOpen: true,
+          secondaryEditorHeight: bottomSize,
         });
       }
     };
 
     let onMouseUp: OnMouseUpFn = () => {
       if (!didMove) {
-        this.setState({ extraEditorOpen: !wasOpen });
+        this.setState({ secondaryEditorOpen: !wasOpen });
       }
 
       document.removeEventListener('mousemove', onMouseMove!);
