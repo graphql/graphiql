@@ -1001,7 +1001,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleEditVariables = (value: string) => {
     this.setState({ variables: value });
-    this._storage.set('variables', value);
+    debounce(500, () => this._storage.set('variables', value));
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
@@ -1049,9 +1049,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               this.docExplorerComponent.showDoc(type);
             }
           });
-          this._storage.set(
-            'docExplorerOpen',
-            JSON.stringify(this.state.docExplorerOpen),
+          debounce(500, () =>
+            this._storage.set(
+              'docExplorerOpen',
+              JSON.stringify(this.state.docExplorerOpen),
+            ),
           );
         }
       }
@@ -1114,7 +1116,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
-      this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
+      debounce(500, () =>
+        this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex)),
+      );
     };
 
     let onMouseUp: OnMouseUpFn = () => {
@@ -1178,9 +1182,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           docExplorerOpen: true,
           docExplorerWidth: Math.min(docsSize, 650),
         });
-        this._storage.set(
-          'docExplorerWidth',
-          JSON.stringify(this.state.docExplorerWidth),
+        debounce(500, () =>
+          this._storage.set(
+            'docExplorerWidth',
+            JSON.stringify(this.state.docExplorerWidth),
+          ),
         );
       }
       this._storage.set(
@@ -1192,9 +1198,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     let onMouseUp: OnMouseUpFn = () => {
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerWidth: hadWidth });
-        this._storage.set(
-          'docExplorerWidth',
-          JSON.stringify(this.state.docExplorerWidth),
+        debounce(500, () =>
+          this._storage.set(
+            'docExplorerWidth',
+            JSON.stringify(this.state.docExplorerWidth),
+          ),
         );
       }
 
@@ -1212,9 +1220,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({
       docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
     });
-    this._storage.set(
-      'docExplorerWidth',
-      JSON.stringify(this.state.docExplorerWidth),
+    debounce(500, () =>
+      this._storage.set(
+        'docExplorerWidth',
+        JSON.stringify(this.state.docExplorerWidth),
+      ),
     );
   };
 
@@ -1249,9 +1259,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           variableEditorHeight: bottomSize,
         });
       }
-      this._storage.set(
-        'variableEditorHeight',
-        JSON.stringify(this.state.variableEditorHeight),
+      debounce(500, () =>
+        this._storage.set(
+          'variableEditorHeight',
+          JSON.stringify(this.state.variableEditorHeight),
+        ),
       );
     };
 
