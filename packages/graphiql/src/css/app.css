@@ -161,7 +161,6 @@
   position: relative;
 }
 
-.graphiql-container .variable-editor,
 .graphiql-container .secondary-editor {
   display: flex;
   flex-direction: column;
@@ -169,7 +168,6 @@
   position: relative;
 }
 
-.graphiql-container .variable-editor-title,
 .graphiql-container .secondary-editor-title {
   background: #eeeeee;
   border-bottom: 1px solid #d6d6d6;

@@ -102,6 +102,7 @@ export type GraphiQLProps = {
   response?: string;
   storage?: Storage;
   defaultQuery?: string;
+  defaultVariableEditorOpen?: boolean;
   defaultSecondaryEditorOpen?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
@@ -233,10 +234,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
 
     // initial secondary editor pane open
-    const secondaryEditorOpen =
-      props.defaultSecondaryEditorOpen !== undefined
-        ? props.defaultSecondaryEditorOpen
-        : Boolean(variables || headers);
+    let secondaryEditorOpen;
+    if (props.defaultVariableEditorOpen !== undefined) {
+      secondaryEditorOpen = props.defaultVariableEditorOpen;
+    } else if (props.defaultSecondaryEditorOpen !== undefined) {
+      secondaryEditorOpen = props.defaultSecondaryEditorOpen;
+    } else {
+      secondaryEditorOpen = Boolean(variables || headers);
+    }
 
     // Initialize state
     this.state = {
@@ -549,14 +554,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 readOnly={this.props.readOnly}
               />
               <section
-                className="secondary-editor"
+                className="variable-editor secondary-editor"
                 style={secondaryEditorStyle}
                 aria-label={
                   variableEditorActive ? 'Query Variables' : 'Request Headers'
                 }>
                 <div
-                  className="secondary-editor-title"
-                  id="secondary-editor-title"
+                  className="secondary-editor-title variable-editor-title"
+                  id="secondary-editor-title variable-editor-title"
                   style={{
                     cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
                   }}
