@@ -75,8 +75,11 @@ export class WorkerManager {
         createData: {
           languageId: this._defaults.languageId,
           formattingOptions: this._defaults.formattingOptions,
-          schemaConfig: this._defaults.schemaConfig,
-        },
+          languageConfig: {
+            schemaConfig: this._defaults.schemaConfig,
+            schemaRaw: this._defaults.rawSchema,
+          },
+        } as monaco.languages.graphql.ICreateData,
       });
       try {
         this._client = await this._worker.getProxy();

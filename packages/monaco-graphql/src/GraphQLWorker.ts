@@ -16,7 +16,6 @@ import {
   getRange,
   CompletionItem as GraphQLCompletionItem,
   LanguageService,
-  GraphQLLanguageConfig,
   SchemaResponse,
 } from 'graphql-language-service';
 
@@ -45,14 +44,7 @@ export class GraphQLWorker {
     createData: monaco.languages.graphql.ICreateData,
   ) {
     this._ctx = ctx;
-    const serviceConfig: GraphQLLanguageConfig = {
-      schemaConfig: createData.schemaConfig,
-    };
-    // if you must, we have a nice default schema loader at home
-    if (createData.schemaLoader) {
-      serviceConfig.schemaLoader = createData.schemaLoader;
-    }
-    this._languageService = new LanguageService(serviceConfig);
+    this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
 

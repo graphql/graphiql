@@ -22,11 +22,15 @@ declare module monaco.languages.graphql {
     dispose(): void;
   }
 
-  export type SchemaConfig = SchemaConfiguration;
+  /**
+   * Either introspection JSON or an SDL string
+   */
 
   export interface IEvent<T> {
     (listener: (e: T) => any, thisArg?: any): IDisposable;
   }
+
+  export type SchemaConfig = SchemaConfiguration;
 
   export type FilePointer = string | string[];
 
@@ -87,9 +91,8 @@ declare module monaco.languages.graphql {
   export interface ICreateData {
     languageId: string;
     enableSchemaRequest: boolean;
-    schemaConfig: SchemaConfig;
-    schemaLoader: () => Promise<SchemaResponse>;
-    formattingOptions?: FormattingOptions;
+    formattingOptions: FormattingOptions;
+    languageConfig: GraphQLLanguageConfig;
   }
 
   export interface LanguageServiceDefaults {
@@ -97,8 +100,9 @@ declare module monaco.languages.graphql {
     readonly schemaConfig: SchemaConfig;
     readonly formattingOptions: FormattingOptions;
     readonly modeConfiguration: ModeConfiguration;
+    setSchema(schema: RawSchema): void;
     setSchemaConfig(options: SchemaConfig): void;
-    updateSchemaConfig(options: Partial<SchemaOptoons>): void;
+    updateSchemaConfig(options: Partial<SchemaConfiguration>): void;
     setSchemaUri(schemaUri: string): void;
     setFormattingOptions(formattingOptions: FormattingOptions): void;
     setModeConfiguration(modeConfiguration: ModeConfiguration): void;
@@ -106,5 +110,5 @@ declare module monaco.languages.graphql {
 
   export type api = MonacoGraphQLApi;
 
-  export const graphqlDefaults: LanguageServiceDefaults;
+  export type graphqlDefaults = LanguageServiceDefaults;
 }

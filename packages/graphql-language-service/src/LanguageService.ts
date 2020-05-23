@@ -4,7 +4,13 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { parse, GraphQLSchema, ParseOptions, ValidationRule } from 'graphql';
+import {
+  parse,
+  GraphQLSchema,
+  ParseOptions,
+  ValidationRule,
+  IntrospectionQuery,
+} from 'graphql';
 import type { Position } from 'graphql-language-service-types';
 import {
   getAutocompleteSuggestions,
@@ -19,11 +25,14 @@ import {
   defaultSchemaBuilder,
 } from './schemaLoader';
 
+export type RawSchema = IntrospectionQuery | string;
+
 export type GraphQLLanguageConfig = {
   parser?: typeof parse;
   schemaLoader?: typeof defaultSchemaLoader;
   schemaBuilder?: typeof defaultSchemaBuilder;
   schemaConfig: SchemaConfig;
+  rawSchema?: RawSchema;
 };
 
 export class LanguageService {
@@ -35,12 +44,13 @@ export class LanguageService {
     schemaConfig: SchemaConfig,
   ) => Promise<SchemaResponse | void> = defaultSchemaLoader;
   private _schemaBuilder = defaultSchemaBuilder;
-
+  private _rawSchema: RawSchema | null = null;
   constructor({
     parser,
     schemaLoader,
     schemaBuilder,
     schemaConfig,
+    rawSchema,
   }: GraphQLLanguageConfig) {
     this._schemaConfig = schemaConfig;
     if (parser) {
@@ -51,6 +61,9 @@ export class LanguageService {
     }
     if (schemaBuilder) {
       this._schemaBuilder = schemaBuilder;
+    }
+    if (rawSchema) {
+      this._rawSchema = rawSchema;
     }
   }
 
@@ -73,7 +86,7 @@ export class LanguageService {
   }
 
   public async loadSchemaResponse(): Promise<SchemaResponse> {
-    if (!this._schemaConfig?.uri) {
+    if (!this._rawSchema && !this._schemaConfig?.uri) {
       throw new Error('uri missing');
     }
     this._schemaResponse = (await this._schemaLoader(
@@ -83,6 +96,16 @@ export class LanguageService {
   }
 
   public async loadSchema() {
+    // no fetch needed if we have a raw schema
+    if (this._rawSchema) {
+      this._schema = this._schemaBuilder(
+        typeof this._rawSchema === 'string'
+          ? this._parser(this._rawSchema)
+          : this._rawSchema,
+        this._schemaConfig.buildSchemaOptions,
+      ) as GraphQLSchema;
+      return this._schema;
+    }
     const schemaResponse = await this.loadSchemaResponse();
     this._schema = this._schemaBuilder(
       schemaResponse,

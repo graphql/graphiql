@@ -6,6 +6,7 @@
  */
 
 import { Emitter, IEvent } from 'monaco-editor';
+import type { RawSchema, SchemaResponse } from 'graphql-language-service';
 
 export class LanguageServiceDefaultsImpl
   implements monaco.languages.graphql.LanguageServiceDefaults {
@@ -16,6 +17,8 @@ export class LanguageServiceDefaultsImpl
   private _formattingOptions!: monaco.languages.graphql.FormattingOptions;
   private _modeConfiguration!: monaco.languages.graphql.ModeConfiguration;
   private _languageId: string;
+  private _schema!: SchemaResponse;
+  private _rawSchema!: RawSchema;
 
   constructor({
     languageId,
@@ -49,6 +52,12 @@ export class LanguageServiceDefaultsImpl
   get formattingOptions(): monaco.languages.graphql.FormattingOptions {
     return this._formattingOptions;
   }
+  get schema(): SchemaResponse {
+    return this._schema;
+  }
+  get rawSchema(): RawSchema {
+    return this._rawSchema;
+  }
 
   setSchemaConfig(options: monaco.languages.graphql.SchemaConfig): void {
     this._schemaConfig = options || Object.create(null);
@@ -64,6 +73,11 @@ export class LanguageServiceDefaultsImpl
 
   setSchemaUri(schemaUri: string): void {
     this.setSchemaConfig({ ...this._schemaConfig, schema: schemaUri });
+  }
+
+  setSchema(schema: RawSchema) {
+    this._rawSchema = schema;
+    this._onDidChange.fire(this);
   }
 
   setModeConfiguration(

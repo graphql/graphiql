@@ -76,12 +76,22 @@ monaco.languages.graphql.graphqlDefaults.updateSchemaConfig({
 });
 ```
 
+#### `graphqlDefaults.setSchema()`
+
+Allows you to set the schema directly with either introspection JSON or an SDL string.
+
+```ts
+monaco.languages.graphql.graphqlDefaults.setSchema(
+  responseJson.data || mySchemaString,
+);
+```
+
 #### `graphqlDefaults.setSchemaConfig()`
 
 same as the above, except it overwrites the entire schema config
 
 ```ts
-monaco.languages.graphql.graphqlDefaults.updateSchemaConfig({
+monaco.languages.graphql.graphqlDefaults.setSchemaConfig({
   uri: 'https://my/schema',
   requestOptions: {
     headers: { Authorization: 'Bear Auth 2134' },

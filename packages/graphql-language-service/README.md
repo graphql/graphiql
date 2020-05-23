@@ -21,6 +21,7 @@ type GraphQLLanguageConfig = {
   schemaLoader?: typeof defaultSchemaLoader;
   schemaBuilder?: typeof defaultSchemaBuilder;
   schemaConfig: SchemaConfig;
+  rawSchema?: RawSchema;
 };
 ```
 
