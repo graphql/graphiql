@@ -6,10 +6,11 @@
  */
 
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
+/// <reference types='monaco-editor'/>
 
+/** GraphQL language types */
 declare module monaco.languages.graphql {
-  import type { SchemaLoader, SchemaConfig } from 'graphql-language-service';
+  import type { SchemaLoader, SchemaConfig as SchemaConfiguration } from 'graphql-language-service';
 
   import type { GraphQLSchema } from 'graphql';
   import type { Options as PrettierConfig } from 'prettier';

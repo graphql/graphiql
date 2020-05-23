@@ -4,9 +4,11 @@ import 'regenerator-runtime/runtime';
 import 'monaco-graphql/esm/monaco.contribution';
 
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
+/// <reference types='monaco-editor'/>
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+/// <reference types='monaco-graphql'/>
+
+monaco.languages.grap
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
