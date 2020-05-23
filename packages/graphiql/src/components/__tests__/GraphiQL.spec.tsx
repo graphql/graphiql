@@ -147,11 +147,11 @@ describe('GraphiQL', () => {
 
     expect(queryVariables.style.height).toEqual('');
 
-    const variableEditorTitle = container1.querySelector(
-      '#variable-editor-title',
+    const secondaryEditorTitle = container1.querySelector(
+      '#secondary-editor-title',
     );
-    fireEvent.mouseDown(variableEditorTitle);
-    fireEvent.mouseMove(variableEditorTitle);
+    fireEvent.mouseDown(secondaryEditorTitle);
+    fireEvent.mouseMove(secondaryEditorTitle);
     expect(queryVariables.style.height).toEqual('200px');
 
     const { container: container2 } = render(

@@ -568,7 +568,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 }>
                 <div
                   className="secondary-editor-title variable-editor-title"
-                  id="secondary-editor-title variable-editor-title"
+                  id="secondary-editor-title"
                   style={{
                     cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
                   }}
