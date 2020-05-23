@@ -31,6 +31,7 @@ type VariableEditorProps = {
   onMergeQuery: (value?: string) => void;
   onRunQuery: (value?: string) => void;
   editorTheme?: string;
+  active?: boolean;
 };
 
 /**
@@ -195,6 +196,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   render() {
     return (
       <div
+        style={{ display: this.props.active ? 'block' : 'none' }}
         className="codemirrorWrap"
         ref={node => {
           this._node = node as HTMLDivElement;

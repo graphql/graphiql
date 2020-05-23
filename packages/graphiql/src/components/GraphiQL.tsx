@@ -480,9 +480,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       height: secondaryEditorOpen ? this.state.secondaryEditorHeight : undefined,
     };
 
-    const variableEditorActive = this.state.variableEditorActive;
-    const headerEditorActive = this.state.headerEditorActive;
-
     return (
       <div
         ref={n => {
@@ -557,7 +554,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 className="variable-editor secondary-editor"
                 style={secondaryEditorStyle}
                 aria-label={
-                  variableEditorActive ? 'Query Variables' : 'Request Headers'
+                  this.state.variableEditorActive ? 'Query Variables' : 'Request Headers'
                 }>
                 <div
                   className="secondary-editor-title variable-editor-title"
@@ -569,7 +566,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   <div
                     style={{
                       cursor: 'pointer',
-                      color: variableEditorActive ? 'red' : '#000',
+                      color: this.state.variableEditorActive ? 'red' : '#000',
                       display: 'inline-block',
                     }}
                     onClick={this.handleOpenVariableEditorTab}
@@ -579,7 +576,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   <div
                     style={{
                       cursor: 'pointer',
-                      color: headerEditorActive ? 'red' : '#000',
+                      color: this.state.headerEditorActive ? 'red' : '#000',
                       display: 'inline-block',
                       marginLeft: '20px',
                     }}
@@ -588,37 +585,35 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     {'Request Headers'}
                   </div>
                 </div>
-                {variableEditorActive && (
-                  <VariableEditor
-                    ref={n => {
-                      this.variableEditorComponent = n;
-                    }}
-                    value={this.state.variables}
-                    variableToType={this.state.variableToType}
-                    onEdit={this.handleEditVariables}
-                    onHintInformationRender={this.handleHintInformationRender}
-                    onPrettifyQuery={this.handlePrettifyQuery}
-                    onMergeQuery={this.handleMergeQuery}
-                    onRunQuery={this.handleEditorRunQuery}
-                    editorTheme={this.props.editorTheme}
-                    readOnly={this.props.readOnly}
-                  />
-                )}
-                {headerEditorActive && (
-                  <HeaderEditor
-                    ref={n => {
-                      this.headerEditorComponent = n;
-                    }}
-                    value={this.state.headers}
-                    onEdit={this.handleEditHeaders}
-                    onHintInformationRender={this.handleHintInformationRender}
-                    onPrettifyQuery={this.handlePrettifyQuery}
-                    onMergeQuery={this.handleMergeQuery}
-                    onRunQuery={this.handleEditorRunQuery}
-                    editorTheme={this.props.editorTheme}
-                    readOnly={this.props.readOnly}
-                  />
-                )}
+                <VariableEditor
+                  ref={n => {
+                    this.variableEditorComponent = n;
+                  }}
+                  value={this.state.variables}
+                  variableToType={this.state.variableToType}
+                  onEdit={this.handleEditVariables}
+                  onHintInformationRender={this.handleHintInformationRender}
+                  onPrettifyQuery={this.handlePrettifyQuery}
+                  onMergeQuery={this.handleMergeQuery}
+                  onRunQuery={this.handleEditorRunQuery}
+                  editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
+                  active={this.state.variableEditorActive}
+                />
+                <HeaderEditor
+                  ref={n => {
+                    this.headerEditorComponent = n;
+                  }}
+                  value={this.state.headers}
+                  onEdit={this.handleEditHeaders}
+                  onHintInformationRender={this.handleHintInformationRender}
+                  onPrettifyQuery={this.handlePrettifyQuery}
+                  onMergeQuery={this.handleMergeQuery}
+                  onRunQuery={this.handleEditorRunQuery}
+                  editorTheme={this.props.editorTheme}
+                  readOnly={this.props.readOnly}
+                  active={this.state.headerEditorActive}
+                />
               </section>
             </div>
             <div className="resultWrap">

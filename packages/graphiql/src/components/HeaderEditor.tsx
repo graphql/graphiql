@@ -29,6 +29,7 @@ type HeaderEditorProps = {
   onMergeQuery: (value?: string) => void;
   onRunQuery: (value?: string) => void;
   editorTheme?: string;
+  active?: boolean;
 };
 
 /**
@@ -174,6 +175,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
   render() {
     return (
       <div
+        style={{ display: this.props.active ? 'block' : 'none' }}
         className="codemirrorWrap"
         ref={node => {
           this._node = node as HTMLDivElement;
