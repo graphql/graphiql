@@ -196,8 +196,13 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   render() {
     return (
       <div
-        style={{ display: this.props.active ? 'block' : 'none' }}
         className="codemirrorWrap"
+        // This horrible hack is necessary because a simple display none toggle
+        // causes one of the editors' gutters will break otherwise.
+        style={{
+          position: this.props.active ? 'relative' : 'absolute',
+          visibility: this.props.active ? 'visible' : 'hidden'
+        }}
         ref={node => {
           this._node = node as HTMLDivElement;
         }}
