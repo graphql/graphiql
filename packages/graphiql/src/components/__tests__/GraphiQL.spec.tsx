@@ -18,6 +18,7 @@ import {
   mockBadQuery,
   mockQuery2,
   mockVariables2,
+  mockHeaders1,
 } from './fixtures';
 
 codeMirrorModules.forEach(m => jest.mock(m, () => {}));
@@ -177,6 +178,7 @@ describe('GraphiQL', () => {
       <GraphiQL
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
         operationName={mockOperationName1}
         fetcher={noOpFetcher}
       />,
@@ -200,6 +202,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
@@ -213,6 +216,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
@@ -228,6 +232,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
@@ -255,6 +260,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');

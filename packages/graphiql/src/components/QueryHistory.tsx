@@ -45,15 +45,14 @@ const shouldSaveQuery = (
     if (
       JSON.stringify(variables) === JSON.stringify(lastQuerySaved.variables)
     ) {
-      return false;
+      if (JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)) {
+        return false;
+      }
+      if (headers && !lastQuerySaved.headers) {
+        return false;
+      }
     }
     if (variables && !lastQuerySaved.variables) {
-      return false;
-    }
-    if (JSON.stringify(headers) === JSON.stringify(lastQuerySaved.headers)) {
-      return false;
-    }
-    if (headers && !lastQuerySaved.headers) {
       return false;
     }
   }

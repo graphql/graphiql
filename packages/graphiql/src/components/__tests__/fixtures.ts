@@ -19,6 +19,8 @@ export const mockQuery2 = /* GraphQL */ `
 export const mockVariables1 = JSON.stringify({ string: 'string' });
 export const mockVariables2 = JSON.stringify({ string: 'string2' });
 
+export const mockHeaders1 = JSON.stringify({ foo: 'bar' });
+
 export const mockOperationName1 = 'Test';
 export const mockOperationName2 = 'Test2';
 
