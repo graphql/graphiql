@@ -179,6 +179,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
+
+    // Disable setState when the component is not mounted
     this.componentIsMounted = false;
 
     // Determine the initial query to display.
@@ -254,7 +256,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   }
 
   componentDidMount() {
+    // Allow async state changes
     this.componentIsMounted = true;
+
     // Only fetch schema via introspection if a schema has not been
     // provided, including if `null` was provided.
     if (this.state.schema === undefined) {
@@ -353,7 +357,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
   componentWillUnmount() {
+    // Deny async state changes
     this.componentIsMounted = false;
+
     if (this.state.query) {
       this._storage.set('query', this.state.query);
     }
@@ -384,7 +390,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   // Use it when the state change is async
   // TODO: Annotate correctly this function
-  safeSetState = (nextState: any, callback?: any) => {
+  safeSetState = (nextState: any, callback?: any): void => {
     this.componentIsMounted && this.setState(nextState, callback);
   };
 
