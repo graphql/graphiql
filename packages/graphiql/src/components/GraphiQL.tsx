@@ -110,8 +110,6 @@ export type GraphiQLProps = {
   onEditVariables?: (value: string) => void;
   onEditHeaders?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
-  onToggleVariableEditor?: (variableEditorActive: boolean) => void;
-  onToggleHeaderEditor?: (headerEditorActive: boolean) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
   editorTheme?: string;
