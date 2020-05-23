@@ -19,6 +19,7 @@ import {
   mockQuery2,
   mockVariables2,
   mockHeaders1,
+  mockHeaders2,
 } from './fixtures';
 
 codeMirrorModules.forEach(m => jest.mock(m, () => {}));
@@ -271,6 +272,33 @@ describe('GraphiQL', () => {
       container.querySelector('[aria-label="Query Variables"] .mockCodeMirror'),
       {
         target: { value: mockVariables2 },
+      },
+    );
+
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+  });
+
+  it('will save query if headers are different ', () => {
+    const { getByTitle, getByText, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+        headers={mockHeaders1}
+      />,
+    );
+    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+
+    fireEvent.click(getByText("Request Headers"));
+
+    fireEvent.change(
+      container.querySelector('[aria-label="Request Headers"] .mockCodeMirror'),
+      {
+        target: { value: mockHeaders2 },
       },
     );
 
