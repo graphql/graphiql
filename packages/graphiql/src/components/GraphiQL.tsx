@@ -104,6 +104,7 @@ export type GraphiQLProps = {
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
   defaultSecondaryEditorOpen?: boolean;
+  headerEditorEnabled?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
@@ -133,6 +134,7 @@ export type GraphiQLState = {
   secondaryEditorHeight: number;
   variableEditorActive: boolean;
   headerEditorActive: boolean;
+  headerEditorEnabled: boolean;
   historyPaneOpen: boolean;
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
@@ -243,11 +245,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       secondaryEditorOpen = Boolean(variables || headers);
     }
 
+    const headerEditorEnabled = props.headerEditorEnabled ?? true;
+
     // Initialize state
     this.state = {
       schema: props.schema,
       query,
       variables: variables as string,
+      headers: headers as string,
       operationName,
       docExplorerOpen,
       response: props.response,
@@ -257,6 +262,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       variableEditorActive:
         this._storage.get('variableEditorActive') === 'true',
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
+      headerEditorEnabled,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
@@ -573,17 +579,19 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     onMouseDown={this.handleTabClickPropogation}>
                     {'Query Variables'}
                   </div>
-                  <div
-                    style={{
-                      cursor: 'pointer',
-                      color: this.state.headerEditorActive ? 'red' : '#000',
-                      display: 'inline-block',
-                      marginLeft: '20px',
-                    }}
-                    onClick={this.handleOpenHeaderEditorTab}
-                    onMouseDown={this.handleTabClickPropogation}>
-                    {'Request Headers'}
-                  </div>
+                  {this.state.headerEditorEnabled && (
+                    <div
+                      style={{
+                        cursor: 'pointer',
+                        color: this.state.headerEditorActive ? 'red' : '#000',
+                        display: 'inline-block',
+                        marginLeft: '20px',
+                      }}
+                      onClick={this.handleOpenHeaderEditorTab}
+                      onMouseDown={this.handleTabClickPropogation}>
+                      {'Request Headers'}
+                    </div>
+                  )}
                 </div>
                 <VariableEditor
                   ref={n => {
@@ -600,20 +608,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   readOnly={this.props.readOnly}
                   active={this.state.variableEditorActive}
                 />
-                <HeaderEditor
-                  ref={n => {
-                    this.headerEditorComponent = n;
-                  }}
-                  value={this.state.headers}
-                  onEdit={this.handleEditHeaders}
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                  active={this.state.headerEditorActive}
-                />
+                {this.state.headerEditorEnabled && (
+                  <HeaderEditor
+                    ref={n => {
+                      this.headerEditorComponent = n;
+                    }}
+                    value={this.state.headers}
+                    onEdit={this.handleEditHeaders}
+                    onHintInformationRender={this.handleHintInformationRender}
+                    onPrettifyQuery={this.handlePrettifyQuery}
+                    onMergeQuery={this.handleMergeQuery}
+                    onRunQuery={this.handleEditorRunQuery}
+                    editorTheme={this.props.editorTheme}
+                    readOnly={this.props.readOnly}
+                    active={this.state.headerEditorActive}
+                  />
+                )}
               </section>
             </div>
             <div className="resultWrap">
@@ -1363,6 +1373,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     });
   };
 
+  // Prevent clicking on the tab button from propagating to the resizer.
   private handleTabClickPropogation: MouseEventHandler<
     HTMLDivElement
   > = downEvent => {
