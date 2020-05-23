@@ -256,9 +256,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       response: props.response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
       secondaryEditorOpen,
-      secondaryEditorHeight: Number(this._storage.get('secondaryEditorHeight')) || 200,
+      secondaryEditorHeight:
+        Number(this._storage.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
-        this._storage.get('variableEditorActive') === 'true' || (this._storage.get('headerEditorActive') !== 'true'),
+        this._storage.get('variableEditorActive') === 'true' ||
+        this._storage.get('headerEditorActive') !== 'true',
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       headerEditorEnabled,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
@@ -481,7 +483,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     const secondaryEditorOpen = this.state.secondaryEditorOpen;
     const secondaryEditorStyle = {
-      height: secondaryEditorOpen ? this.state.secondaryEditorHeight : undefined,
+      height: secondaryEditorOpen
+        ? this.state.secondaryEditorHeight
+        : undefined,
     };
 
     return (
@@ -558,7 +562,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 className="variable-editor secondary-editor"
                 style={secondaryEditorStyle}
                 aria-label={
-                  this.state.variableEditorActive ? 'Query Variables' : 'Request Headers'
+                  this.state.variableEditorActive
+                    ? 'Query Variables'
+                    : 'Request Headers'
                 }>
                 <div
                   className="secondary-editor-title variable-editor-title"

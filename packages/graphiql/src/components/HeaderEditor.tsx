@@ -180,7 +180,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
         // causes one of the editors' gutters to break otherwise.
         style={{
           position: this.props.active ? 'relative' : 'absolute',
-          visibility: this.props.active ? 'visible' : 'hidden'
+          visibility: this.props.active ? 'visible' : 'hidden',
         }}
         ref={node => {
           this._node = node as HTMLDivElement;
