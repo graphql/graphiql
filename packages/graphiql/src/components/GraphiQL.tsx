@@ -258,7 +258,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       secondaryEditorOpen,
       secondaryEditorHeight: Number(this._storage.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
-        this._storage.get('variableEditorActive') === 'true',
+        this._storage.get('variableEditorActive') === 'true' || (this._storage.get('headerEditorActive') !== 'true'),
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       headerEditorEnabled,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
