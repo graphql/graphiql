@@ -177,7 +177,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
       <div
         className="codemirrorWrap"
         // This horrible hack is necessary because a simple display none toggle
-        // causes one of the editors' gutters will break otherwise.
+        // causes one of the editors' gutters to break otherwise.
         style={{
           position: this.props.active ? 'relative' : 'absolute',
           visibility: this.props.active ? 'visible' : 'hidden'

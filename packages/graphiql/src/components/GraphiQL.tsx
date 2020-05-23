@@ -1376,6 +1376,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({
       headerEditorActive: true,
       variableEditorActive: false,
+      secondaryEditorOpen: true,
     });
   };
 
@@ -1385,6 +1386,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.setState({
       headerEditorActive: false,
       variableEditorActive: true,
+      secondaryEditorOpen: true,
     });
   };
 
