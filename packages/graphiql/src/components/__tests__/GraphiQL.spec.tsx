@@ -293,7 +293,7 @@ describe('GraphiQL', () => {
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);
 
-    fireEvent.click(getByText("Request Headers"));
+    fireEvent.click(getByText('Request Headers'));
 
     fireEvent.change(
       container.querySelector('[aria-label="Request Headers"] .mockCodeMirror'),

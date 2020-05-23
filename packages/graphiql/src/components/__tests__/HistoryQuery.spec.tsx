@@ -8,7 +8,12 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import HistoryQuery, { HistoryQueryProps } from '../HistoryQuery';
-import { mockOperationName1, mockQuery1, mockVariables1, mockHeaders1 } from './fixtures';
+import {
+  mockOperationName1,
+  mockQuery1,
+  mockVariables1,
+  mockHeaders1,
+} from './fixtures';
 
 const noOp = () => {};
 
@@ -19,7 +24,7 @@ const baseMockProps = {
   onSelect: noOp,
   query: mockQuery1,
   variables: mockVariables1,
-  headers: mockHeaders1
+  headers: mockHeaders1,
 };
 
 function getMockProps(
