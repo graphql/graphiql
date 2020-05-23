@@ -48,7 +48,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
-  ignoreChangeEvent: boolean;
+  ignoreChangeEvent: boolean = false;
   constructor(props: HeaderEditorProps) {
     super(props);
 
@@ -56,7 +56,6 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
-    this.ignoreChangeEvent = true;
   }
 
   componentDidMount() {
