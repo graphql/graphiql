@@ -30,8 +30,7 @@
     },
     "graphql-fragment-definition": {
       "name": "meta.fragment.graphql",
-      "begin":
-        "\\s*(?:(\\bfragment\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)?\\s*(?:(\\bon\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)))",
+      "begin": "\\s*(?:(\\bfragment\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)?\\s*(?:(\\bon\\b)\\s*([_A-Za-z][_0-9A-Za-z]*)))",
       "end": "(?<=})",
       "captures": {
         "1": { "name": "keyword.fragment.graphql" },
@@ -57,8 +56,7 @@
     },
     "graphql-type-interface": {
       "name": "meta.type.interface.graphql",
-      "begin":
-        "\\s*\\b(?:(extends?)?\\b\\s*\\b(type)|(interface)|(input))\\b\\s*([_A-Za-z][_0-9A-Za-z]*)?",
+      "begin": "\\s*\\b(?:(extends?)?\\b\\s*\\b(type)|(interface)|(input))\\b\\s*([_A-Za-z][_0-9A-Za-z]*)?",
       "end": "(?=.)",
       "applyEndPatternLast": 1,
       "captures": {
@@ -157,8 +155,7 @@
           "patterns": [
             {
               "begin": "\\s*([_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-              "end":
-                "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(})))|\\s*(,)",
+              "end": "(?=\\s*(([_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(})))|\\s*(,)",
               "beginCaptures": {
                 "1": { "name": "variable.arguments.graphql" }
               },
@@ -192,8 +189,7 @@
       ]
     },
     "graphql-comment": {
-      "comment":
-        "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
+      "comment": "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
       "name": "comment.line.graphql",
       "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
     },
@@ -224,8 +220,7 @@
       "comment": "variable: type = value,.... which may be a list",
       "name": "meta.variables.graphql",
       "begin": "\\s*(\\$?[_A-Za-z][_0-9A-Za-z]*)(?=\\s*\\(|:)",
-      "end":
-        "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)",
+      "end": "(?=\\s*((\\$?[_A-Za-z][_0-9A-Za-z]*)\\s*(\\(|:)|(}|\\))))|\\s*(,)",
       "beginCaptures": {
         "1": { "name": "variable.parameter.graphql" }
       },
@@ -288,7 +283,7 @@
     },
     "graphql-variable-assignment": {
       "begin": "\\s(=)",
-      "end": "(?=.)",
+      "end": "(?=[\n,)])",
       "applyEndPatternLast": 1,
       "beginCaptures": {
         "1": { "name": "punctuation.assignment.graphql" }
