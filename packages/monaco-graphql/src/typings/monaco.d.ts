@@ -6,16 +6,18 @@
  */
 
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
+/// <reference types='monaco-editor'/>
 
 declare module monaco.languages.graphql {
-  import type { SchemaLoader, SchemaConfig } from 'graphql-language-service';
+  import type {
+    SchemaLoader,
+    SchemaConfig as SchemaConfiguration,
+    SchemaResponse,
+  } from 'graphql-language-service';
 
-  import type { GraphQLSchema } from 'graphql';
   import type { Options as PrettierConfig } from 'prettier';
 
   import { MonacoGraphQLApi } from '../api';
-
   export interface IDisposable {
     dispose(): void;
   }
@@ -28,9 +30,7 @@ declare module monaco.languages.graphql {
 
   export type FilePointer = string | string[];
 
-  export interface FormattingOptions {
-    prettierConfig: PrettierConfig;
-  }
+  export type FormattingOptions = PrettierConfig;
 
   export interface ModeConfiguration {
     /**
@@ -88,14 +88,12 @@ declare module monaco.languages.graphql {
     languageId: string;
     enableSchemaRequest: boolean;
     schemaConfig: SchemaConfig;
-    schemaLoader: () => Promise<GraphQLSchema>;
+    schemaLoader: () => Promise<SchemaResponse>;
     formattingOptions?: FormattingOptions;
   }
 
   export interface LanguageServiceDefaults {
-    readonly onDidChange: IEvent<
-      monaco.languages.graphql.LanguageServiceDefaults
-    >;
+    readonly onDidChange: IEvent<LanguageServiceDefaults>;
     readonly schemaConfig: SchemaConfig;
     readonly formattingOptions: FormattingOptions;
     readonly modeConfiguration: ModeConfiguration;
