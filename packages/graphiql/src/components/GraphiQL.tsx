@@ -19,6 +19,7 @@ import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
 import { VariableToType } from '../utility/getQueryFacts';
+import debounce from '../utility/debounce';
 
 import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
@@ -110,6 +111,7 @@ export type GraphiQLState = {
   subscription?: Unsubscribable | null;
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
+  parameters?: any;
 };
 
 /**
@@ -326,6 +328,7 @@ class GraphiQLInternals extends React.Component<
       <section aria-label="Operation Editor">
         <SessionTabs tabs={[`Operation`, `Explorer`]} name={`operation`}>
           <QueryEditor
+            onEdit={this.handleEditQuery}
             onHintInformationRender={this.handleHintInformationRender}
             onClickReference={this.handleClickReference}
             editorTheme={this.props.editorTheme}
@@ -341,6 +344,7 @@ class GraphiQLInternals extends React.Component<
       <section aria-label="Query Variables">
         <SessionTabs tabs={[`Variables`, `Console`]} name={`variables`}>
           <VariableEditor
+            onEdit={this.handleEditVariables}
             onHintInformationRender={this.handleHintInformationRender}
             onPrettifyQuery={this.handlePrettifyQuery}
             onMergeQuery={this.handleMergeQuery}
@@ -520,6 +524,24 @@ class GraphiQLInternals extends React.Component<
     return result;
   }
 
+  updateURL = () => {
+    const newSearch =
+      '?' +
+      Object.keys(this.state.parameters)
+        .filter(function (key) {
+          return Boolean(this.state.parameters[key]);
+        })
+        .map(function (key) {
+          return (
+            encodeURIComponent(key) +
+            '=' +
+            encodeURIComponent(this.state.parameters[key])
+          );
+        })
+        .join('&');
+    window.history.replaceState(null, null, newSearch);
+  };
+
   handleClickReference = (_reference: GraphQLType) => {
     // this.setState({ docExplorerOpen: true }, () => {
     //   if (this.docExplorerComponent) {
@@ -582,11 +604,45 @@ class GraphiQLInternals extends React.Component<
     //   return this.props.onCopyQuery(query);
     // }
   };
+
+  handleEditQuery = debounce(100, (value: string) => {
+    if (this.props.onEditQuery) {
+      return this.props.onEditQuery(value);
+    }
+    this.setState({
+      parameters: {
+        query: value,
+        ...this.state.parameters,
+      },
+    });
+    this.updateURL();
+  });
+
+  handleEditVariables = debounce(100, (value: string) => {
+    if (this.props.onEditVariables) {
+      return this.props.onEditVariables(value);
+    }
+    this.setState({
+      parameters: {
+        variables: value,
+        ...this.state.parameters,
+      },
+    });
+    this.updateURL();
+  });
+
   handleEditOperationName = (operationName: string) => {
     const onEditOperationName = this.props.onEditOperationName;
     if (onEditOperationName) {
       onEditOperationName(operationName);
     }
+    this.setState({
+      parameters: {
+        operationName,
+        ...this.state.parameters,
+      },
+    });
+    this.updateURL();
   };
 
   handleHintInformationRender = (elem: HTMLDivElement) => {

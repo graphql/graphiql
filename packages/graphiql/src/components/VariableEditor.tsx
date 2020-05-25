@@ -20,6 +20,7 @@ import type { EditorOptions } from '../types';
 // import useQueryFacts from '../api/hooks/useQueryFacts';
 
 export type VariableEditorProps = {
+  onEdit?: (value: string) => void;
   variableToType?: { [variable: string]: GraphQLType };
   value?: string;
   readOnly?: boolean;
@@ -89,6 +90,7 @@ export function VariableEditor(props: VariableEditorProps) {
       if (!ignoreChangeEvent) {
         cachedValueRef.current = editor.getValue();
         session.changeVariables(cachedValueRef.current);
+        props.onEdit && props.onEdit(cachedValueRef.current);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
