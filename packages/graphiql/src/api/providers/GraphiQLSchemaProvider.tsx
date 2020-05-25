@@ -1,3 +1,4 @@
+/* global monaco */
 import React, { useCallback } from 'react';
 import { GraphQLSchema } from 'graphql';
 import { SchemaConfig, Fetcher } from '../../types';

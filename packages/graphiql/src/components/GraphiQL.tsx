@@ -24,14 +24,14 @@ import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 
 import {
-  SchemaProvider,
-  SchemaContext,
-} from '../api/providers/GraphiQLSchemaProvider';
-import { EditorsProvider } from '../api/providers/GraphiQLEditorsProvider';
-import {
+  BrowserProvider,
   SessionProvider,
   SessionContext,
-} from '../api/providers/GraphiQLSessionProvider';
+  SchemaProvider,
+  SchemaContext,
+  EditorsProvider,
+} from '../api';
+
 import { getFetcher } from '../api/common';
 
 import { Unsubscribable, Fetcher, ReactNodeLike } from '../types';
@@ -129,16 +129,18 @@ export const GraphiQL: React.FC<GraphiQLProps> = props => {
         <SchemaProvider
           fetcher={fetcher}
           config={{ uri: props.uri, ...props.schemaConfig }}>
-          <SessionProvider fetcher={fetcher} sessionId={0}>
-            <GraphiQLInternals
-              {...{
-                formatResult,
-                formatError,
-                ...props,
-              }}>
-              {props.children}
-            </GraphiQLInternals>
-          </SessionProvider>
+          <BrowserProvider>
+            <SessionProvider fetcher={fetcher} sessionId={0}>
+              <GraphiQLInternals
+                {...{
+                  formatResult,
+                  formatError,
+                  ...props,
+                }}>
+                {props.children}
+              </GraphiQLInternals>
+            </SessionProvider>
+          </BrowserProvider>
         </SchemaProvider>
       </EditorsProvider>
     </I18nextProvider>
@@ -237,7 +239,6 @@ class GraphiQLInternals extends React.Component<
     //   this.fetchSchema();
     // }
     // Utility for keeping CodeMirror correctly sized.
-
     global.g = this;
   }
   // When the component is about to unmount, store any persistable state, such
