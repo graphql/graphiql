@@ -61,6 +61,7 @@
     "start-graphiql": "yarn workspace graphiql dev"
   },
   "devDependencies": {
+    "@babel/plugin-transform-typescript": "7.9.6",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",

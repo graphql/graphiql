@@ -29,12 +29,7 @@ module.exports = {
     '!**/cypress/**',
   ],
   testEnvironment: require.resolve('jest-environment-jsdom'),
-  testPathIgnorePatterns: [
-    'node_modules',
-    'dist',
-    'codemirror-graphql',
-    'packages/graphiql',
-  ],
+  testPathIgnorePatterns: ['node_modules', 'dist', 'codemirror-graphql'],
   collectCoverageFrom: [
     '**/src/**/*.{js,jsx,ts,tsx}',
     '!**/src/**/*.stories.js*',
