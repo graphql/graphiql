@@ -932,7 +932,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         variables: jsonVariables,
         operationName,
       },
-      jsonHeaders,
+      { headers: jsonHeaders },
     );
 
     if (isPromise(fetch)) {
