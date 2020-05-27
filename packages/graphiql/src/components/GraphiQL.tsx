@@ -73,8 +73,12 @@ export type FetcherParams = {
   query: string;
   operationName: string;
   variables?: string;
-  headers?: string;
 };
+
+export type FetcherOpts = {
+  headers?: { [key: string]: any };
+};
+
 export type FetcherResult =
   | {
       data: IntrospectionQuery;
@@ -84,7 +88,7 @@ export type FetcherResult =
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
-  headers?: Object,
+  opts?: FetcherOpts,
 ) => Promise<FetcherResult> | Observable<FetcherResult>;
 
 type OnMouseMoveFn = Maybe<
