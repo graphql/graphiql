@@ -2,6 +2,10 @@
 
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
+> **[`graphiql@1.0.0`](https://github.com/graphql/graphiql/milestone/3)** is coming soon & will provide a stable release with react 16, graphql 15 support, fixes, and a headers tab
+
+> **[`graphiql@2.0.0-beta`](https://github.com/graphql/graphiql/issues/983)** is a much larger ongoing effort that introduces plugins, i18n, and so many more features after a substantial rewrite using modern react.
+
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
 ![npm downloads](https://img.shields.io/npm/dm/graphiql?label=npm%20downloads)
