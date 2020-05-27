@@ -18,6 +18,7 @@ declare module monaco.languages.graphql {
   import type { Options as PrettierConfig } from 'prettier';
 
   import { MonacoGraphQLApi } from '../api';
+
   export interface IDisposable {
     dispose(): void;
   }
@@ -87,18 +88,18 @@ declare module monaco.languages.graphql {
   export interface ICreateData {
     languageId: string;
     enableSchemaRequest: boolean;
-    schemaConfig: SchemaConfig;
+    schemaConfig: SchemaConfiguration;
     schemaLoader: () => Promise<SchemaResponse>;
     formattingOptions?: FormattingOptions;
   }
 
   export interface LanguageServiceDefaults {
     readonly onDidChange: IEvent<LanguageServiceDefaults>;
-    readonly schemaConfig: SchemaConfig;
+    readonly schemaConfig: SchemaConfiguration;
     readonly formattingOptions: FormattingOptions;
     readonly modeConfiguration: ModeConfiguration;
-    setSchemaConfig(options: SchemaConfig): void;
-    updateSchemaConfig(options: Partial<SchemaOptoons>): void;
+    setSchemaConfig(options: SchemaConfiguration): void;
+    updateSchemaConfig(options: Partial<SchemaConfiguration>): void;
     setSchemaUri(schemaUri: string): void;
     setFormattingOptions(formattingOptions: FormattingOptions): void;
     setModeConfiguration(modeConfiguration: ModeConfiguration): void;
