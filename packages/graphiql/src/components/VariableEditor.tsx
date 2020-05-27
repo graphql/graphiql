@@ -52,7 +52,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
-  ignoreChangeEvent: boolean;
+  ignoreChangeEvent: boolean = false;
   constructor(props: VariableEditorProps) {
     super(props);
 
@@ -60,7 +60,6 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     // editor is updated, which can later be used to protect the editor from
     // unnecessary updates during the update lifecycle.
     this.cachedValue = props.value || '';
-    this.ignoreChangeEvent = true;
   }
 
   componentDidMount() {

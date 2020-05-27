@@ -6,9 +6,9 @@
  */
 
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
+/// <reference types='monaco-editor'/>
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+/// <reference types='monaco-graphql'/>
 
 import type { worker, editor, Position, IRange } from 'monaco-editor';
 
