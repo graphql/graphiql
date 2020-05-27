@@ -597,7 +597,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   <div
                     style={{
                       cursor: 'pointer',
-                      color: this.state.variableEditorActive ? 'red' : '#000',
+                      color: this.state.variableEditorActive ? '#000' : 'gray',
                       display: 'inline-block',
                     }}
                     onClick={this.handleOpenVariableEditorTab}
@@ -608,7 +608,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     <div
                       style={{
                         cursor: 'pointer',
-                        color: this.state.headerEditorActive ? 'red' : '#000',
+                        color: this.state.headerEditorActive ? '#000' : 'gray',
                         display: 'inline-block',
                         marginLeft: '20px',
                       }}
