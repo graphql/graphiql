@@ -18,6 +18,8 @@ import {
   mockBadQuery,
   mockQuery2,
   mockVariables2,
+  mockHeaders1,
+  mockHeaders2,
 } from './fixtures';
 
 codeMirrorModules.forEach(m => jest.mock(m, () => {}));
@@ -145,11 +147,11 @@ describe('GraphiQL', () => {
 
     expect(queryVariables.style.height).toEqual('');
 
-    const variableEditorTitle = container1.querySelector(
-      '#variable-editor-title',
+    const secondaryEditorTitle = container1.querySelector(
+      '#secondary-editor-title',
     );
-    fireEvent.mouseDown(variableEditorTitle);
-    fireEvent.mouseMove(variableEditorTitle);
+    fireEvent.mouseDown(secondaryEditorTitle);
+    fireEvent.mouseMove(secondaryEditorTitle);
     expect(queryVariables.style.height).toEqual('200px');
 
     const { container: container2 } = render(
@@ -177,6 +179,7 @@ describe('GraphiQL', () => {
       <GraphiQL
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
         operationName={mockOperationName1}
         fetcher={noOpFetcher}
       />,
@@ -200,6 +203,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
@@ -213,6 +217,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
@@ -228,6 +233,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
@@ -255,6 +261,7 @@ describe('GraphiQL', () => {
         operationName={mockOperationName1}
         query={mockQuery1}
         variables={mockVariables1}
+        headers={mockHeaders1}
       />,
     );
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
@@ -265,6 +272,34 @@ describe('GraphiQL', () => {
       container.querySelector('[aria-label="Query Variables"] .mockCodeMirror'),
       {
         target: { value: mockVariables2 },
+      },
+    );
+
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+  });
+
+  it('will save query if headers are different ', () => {
+    const { getByTitle, getByText, container } = render(
+      <GraphiQL
+        fetcher={noOpFetcher}
+        operationName={mockOperationName1}
+        query={mockQuery1}
+        variables={mockVariables1}
+        headers={mockHeaders1}
+        headerEditorEnabled
+      />,
+    );
+    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(executeQueryButton);
+    expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+
+    fireEvent.click(getByText('Request Headers'));
+
+    fireEvent.change(
+      container.querySelector('[aria-label="Request Headers"] .mockCodeMirror'),
+      {
+        target: { value: mockHeaders2 },
       },
     );
 
