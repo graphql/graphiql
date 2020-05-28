@@ -27,6 +27,5 @@
   },
   "devDependencies": {
     "vscode-languageserver-types": "3.15.1"
-  },
-  "gitHead": "c1afc2eae6de740983d960e92d2df5e5f17270e8"
+  }
 }
