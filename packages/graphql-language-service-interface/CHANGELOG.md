@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0-alpha.9](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.8...graphql-language-service-interface@2.4.0-alpha.9) (2020-05-28)
+
+### Bug Fixes
+
+- remove [@ts-nocheck](https://github.com/ts-nocheck) and fix type errors ([#1541](https://github.com/graphql/graphiql/issues/1541)) ([1bb7b0e](https://github.com/graphql/graphiql/commit/1bb7b0e7f8f265a52092bae4dd93809e78ba3b83))
+
 # [2.4.0-alpha.8](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.7...graphql-language-service-interface@2.4.0-alpha.8) (2020-05-17)
 
 ### Bug Fixes

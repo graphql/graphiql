@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.11](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.10...graphiql@1.0.0-alpha.11) (2020-05-28)
+
+### Bug Fixes
+
+- Safe setState ([#1547](https://github.com/graphql/graphiql/issues/1547)) ([f85969c](https://github.com/graphql/graphiql/commit/f85969c7e77e8fd269e026be36cc5065d6d33237))
+- trigger edit variables on first render ([#1545](https://github.com/graphql/graphiql/issues/1545)) ([e54e1a8](https://github.com/graphql/graphiql/commit/e54e1a8691483f1d336231314130d9822481b3be))
+
+### Features
+
+- Add Headers Editor to GraphiQL ([#1543](https://github.com/graphql/graphiql/issues/1543)) ([3faa1ac](https://github.com/graphql/graphiql/commit/3faa1ac46514252e90abf2b2bda0841edf6115ea))
+
 # [1.0.0-alpha.10](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.9...graphiql@1.0.0-alpha.10) (2020-05-19)
 
 ### Bug Fixes
