@@ -15,6 +15,11 @@
       "url": "https://github.com/acao"
     }
   ],
+  "files": [
+    "dist",
+    "esm",
+    "src"
+  ],
   "dependencies": {
     "graphql-language-service": "^3.0.0-alpha.2",
     "graphql-language-service-utils": "^2.4.0-alpha.7",
@@ -22,5 +27,6 @@
   },
   "devDependencies": {
     "vscode-languageserver-types": "3.15.1"
-  }
+  },
+  "gitHead": "c1afc2eae6de740983d960e92d2df5e5f17270e8"
 }

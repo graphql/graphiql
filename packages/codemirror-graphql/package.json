@@ -64,5 +64,6 @@
     "nyc": "^15.0.1",
     "rimraf": "^3.0.0",
     "sane": "2.0.0"
-  }
+  },
+  "gitHead": "c1afc2eae6de740983d960e92d2df5e5f17270e8"
 }
