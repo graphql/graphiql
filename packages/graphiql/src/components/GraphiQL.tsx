@@ -252,7 +252,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       secondaryEditorOpen = Boolean(variables || headers);
     }
 
-    const headerEditorEnabled = props.headerEditorEnabled ?? true;
+    const headerEditorEnabled = props.headerEditorEnabled ?? false;
 
     // Initialize state
     this.state = {

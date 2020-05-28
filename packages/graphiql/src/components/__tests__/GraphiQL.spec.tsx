@@ -287,6 +287,7 @@ describe('GraphiQL', () => {
         query={mockQuery1}
         variables={mockVariables1}
         headers={mockHeaders1}
+        headerEditorEnabled
       />,
     );
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
