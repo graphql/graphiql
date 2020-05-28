@@ -36,6 +36,5 @@
     "graphql-config": "3.0.0-rc.2",
     "graphql-language-service-interface": "^2.4.0-alpha.9",
     "graphql-language-service-types": "^1.6.0-alpha.6"
-  },
-  "gitHead": "c1afc2eae6de740983d960e92d2df5e5f17270e8"
+  }
 }
