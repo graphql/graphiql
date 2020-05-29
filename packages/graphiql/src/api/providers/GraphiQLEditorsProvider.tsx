@@ -70,12 +70,12 @@ export function EditorsProvider(props: { children?: any }) {
     editors: {},
   });
 
-  const loadEditor = useCallback(
-    (editorKey: string, editor: monaco.editor.IStandaloneCodeEditor) => {
-      dispatch(editorLoadedAction(editorKey, editor));
-    },
-    [dispatch],
-  );
+  const loadEditor = (
+    editorKey: string,
+    editor: monaco.editor.IStandaloneCodeEditor,
+  ) => {
+    dispatch(editorLoadedAction(editorKey, editor));
+  };
 
   return (
     <EditorContext.Provider

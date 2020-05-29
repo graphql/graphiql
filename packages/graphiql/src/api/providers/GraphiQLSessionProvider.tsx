@@ -197,7 +197,6 @@ export function SessionProvider({
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      dispatch,
       fetcher,
       operationError,
       schemaState.config,

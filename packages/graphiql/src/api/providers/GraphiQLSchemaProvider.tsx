@@ -115,7 +115,7 @@ export function SchemaProvider({
     getInitialState({ config: userSchemaConfig }),
   );
 
-  const loadCurrentSchema = useCallback(async () => {
+  const loadCurrentSchema = async () => {
     dispatch(schemaRequestedAction());
     try {
       // @ts-ignore
@@ -130,7 +130,7 @@ export function SchemaProvider({
       console.error(error);
       dispatch(schemaErroredAction(error));
     }
-  }, [dispatch]);
+  };
 
   React.useEffect(() => {
     if (state.config) {
