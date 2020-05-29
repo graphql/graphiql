@@ -18,48 +18,58 @@ export class CustomStorage implements Storage {
     try {
       await this.storage.clear();
       if (onFinish) {
-        onFinish();
+        return onFinish();
       }
     } catch (error) {
       if (onError) {
-        onError(error);
+        return onError(error);
       }
     }
   }
-  getItem(key: string, onError?: OnErrorType): string | undefined {
+  async getItem(
+    key: string,
+    onError?: OnErrorType,
+  ): Promise<string | undefined> {
     if (isString(key)) {
       try {
-        const res = this.storage.getItem(key);
+        const res = await this.storage.getItem(key);
         return isJson(res) ? JSON.parse(res as string) : res;
       } catch (error) {
         if (onError) {
-          onError(error);
+          return onError(error);
         }
       }
     }
   }
 
-  getAllItems(keys: string[], onError?: OnErrorType): (string | undefined)[] {
+  async getAllItems(
+    keys: string[],
+    onError?: OnErrorType,
+  ): Promise<(string | undefined)[]> {
     const data: (string | undefined)[] = [];
-    keys.forEach(key => {
-      data.push(this.getItem(key));
-    });
+    await Promise.all(
+      keys.map(async key => {
+        data.push(await this.getItem(key));
+      }),
+    );
     return data;
   }
-  removeItem(key: string) {
+  async removeItem(key: string) {
     return this.storage.removeItem(key);
   }
-  removeManyItems(keys: string[]) {
-    keys.forEach(key => this.removeItem(key));
+  async removeManyItems(keys: string[]) {
+    keys.map(async key => await this.removeItem(key));
   }
-  saveManyItems(payload: { [key: string]: any }[]) {
-    payload.forEach(value => {
-      Object.keys(value).map(key => {
-        this.saveItem(key, value[key]);
-      });
-    });
+  async saveManyItems(payload: { [key: string]: any }[]) {
+    return Promise.all(
+      payload.map(value => {
+        Object.keys(value).map(async key => {
+          await this.saveItem(key, value[key]);
+        });
+      }),
+    );
   }
-  saveItem(
+  async saveItem(
     key: string,
     value: any,
     onFinish?: OnFinishType,
@@ -68,13 +78,13 @@ export class CustomStorage implements Storage {
     if (isString(key) && isString(value)) {
       try {
         value = isString(value) ? value : JSON.stringify(value);
-        this.storage.setItem(key, value);
+        await this.storage.setItem(key, value);
         if (onFinish) {
-          onFinish();
+          return onFinish();
         }
       } catch (error) {
         if (onError) {
-          onError(error);
+          return onError(error);
         }
       }
     }
