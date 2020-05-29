@@ -149,24 +149,24 @@ export function SessionProvider({
 
   const operationError = React.useCallback(
     (error: Error) => dispatch(operationErroredAction(error, sessionId)),
-    [dispatch, sessionId],
+    [sessionId],
   );
 
   const changeOperation = React.useCallback(
     (operationText: string) =>
       dispatch(operationChangedAction(operationText, sessionId)),
-    [dispatch, sessionId],
+    [sessionId],
   );
 
   const changeVariables = React.useCallback(
     (variablesText: string) =>
       dispatch(variableChangedAction(variablesText, sessionId)),
-    [dispatch, sessionId],
+    [sessionId],
   );
 
   const changeTab = React.useCallback(
     (pane: string, tabId: number) => dispatch(tabChangedAction(pane, tabId)),
-    [dispatch],
+    [],
   );
 
   const executeOperation = React.useCallback(
