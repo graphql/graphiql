@@ -7,6 +7,7 @@ import {
 } from './storage.interface';
 export class CustomStorage implements Storage {
   private storage: BaseStorage;
+  private maxSize: number = 0;
   constructor(storage: BaseStorage) {
     this.storage = storage;
   }
@@ -26,14 +27,18 @@ export class CustomStorage implements Storage {
       }
     }
   }
-  async getItem(
-    key: string,
-    onError?: OnErrorType,
-  ): Promise<string | undefined> {
+  async getItem(key: string, onError?: OnErrorType): Promise<any> {
     if (isString(key)) {
       try {
         const res = await this.storage.getItem(key);
-        return isJson(res) ? JSON.parse(res as string) : res;
+        if (isJson(res)) {
+          const parsed = JSON.parse(res as string);
+          if (Array.isArray(parsed) && this.maxSize) {
+            return parsed.slice(0, this.maxSize);
+          }
+          return parsed;
+        }
+        return res;
       } catch (error) {
         if (onError) {
           return onError(error);
@@ -69,13 +74,99 @@ export class CustomStorage implements Storage {
       }),
     );
   }
+  limit(limit: number) {
+    this.maxSize = limit;
+    return this;
+  }
+  async edit(
+    storageKey: string,
+    { key, payload }: { key: string; payload: any },
+  ) {
+    const item = await this.getItem(storageKey);
+    if (Array.isArray(item)) {
+      // array of objects.
+      item.forEach(v => {
+        if (v.hasOwnProperty(key)) {
+          v[key] = payload;
+        }
+      });
+    }
+    if (item instanceof Object && item.hasOwnProperty(key)) {
+      item[key] = payload;
+    }
+    this.saveItem(storageKey, item);
+  }
+  async contains(
+    storageKey: string,
+    callback: (value: any, key: string) => boolean,
+  ) {
+    const item = await this.getItem(storageKey);
+    let array = item;
+    if (!Array.isArray(item)) {
+      array = [];
+      Object.keys(item).forEach(value => array.push({ [value]: item[value] }));
+    }
+    return array.some((value: any, key: string) => callback(value, key));
+  }
+  async fetchLastItem(key: string) {
+    const item = await this.getItem(key);
+    if (Array.isArray(item)) {
+      return item[item.length - 1];
+    }
+  }
+  async deleteFromItem(keyStorage: string, payload: any) {
+    let item = await this.getItem(keyStorage);
+    if (!item) {
+      return;
+    }
+    if (Array.isArray(item)) {
+      item = item.filter(
+        value => JSON.stringify(value) !== JSON.stringify(payload),
+      );
+    }
+    if (
+      item instanceof Object &&
+      !(item instanceof Array) &&
+      item.hasOwnProperty(payload)
+    ) {
+      delete item[payload];
+    }
+    this.saveItem(keyStorage, item);
+  }
+  async push(
+    key: string,
+    value: any,
+    onFinish?: OnFinishType,
+    onError?: OnErrorType,
+  ) {
+    const item = await this.getItem(key);
+    if (!item) {
+      return;
+    }
+    if (Array.isArray(item)) {
+      value = JSON.stringify([...item, value]);
+    }
+    if (item instanceof Object && !(item instanceof Array)) {
+      value = JSON.stringify({ ...item, ...value });
+    }
+    try {
+      await this.saveItem(key, value);
+      if (onFinish) {
+        return onFinish();
+      }
+    } catch (error) {
+      if (onError) {
+        return onError(error);
+      }
+    }
+  }
   async saveItem(
     key: string,
     value: any,
     onFinish?: OnFinishType,
     onError?: OnErrorType,
   ) {
-    if (isString(key) && isString(value)) {
+    if (isString(key)) {
       try {
         value = isString(value) ? value : JSON.stringify(value);
         await this.storage.setItem(key, value);
