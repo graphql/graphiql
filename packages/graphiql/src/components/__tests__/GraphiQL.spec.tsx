@@ -141,9 +141,7 @@ describe('GraphiQL', () => {
     const { container: container1 } = render(
       <GraphiQL fetcher={noOpFetcher} />,
     );
-    const queryVariables = container1.querySelector(
-      '[aria-label="Query Variables"]',
-    );
+    const queryVariables = container1.querySelector('.variable-editor');
 
     expect(queryVariables.style.height).toEqual('');
 
@@ -168,9 +166,7 @@ describe('GraphiQL', () => {
         defaultVariableEditorOpen={false}
       />,
     );
-    const queryVariables3 = container3.querySelector(
-      '[aria-label="Query Variables"]',
-    );
+    const queryVariables3 = container3.querySelector('.variable-editor');
     expect(queryVariables3?.style.height).toEqual('');
   });
 

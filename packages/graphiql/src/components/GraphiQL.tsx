@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -269,7 +269,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         Number(this._storage.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
         this._storage.get('variableEditorActive') === 'true' ||
-        this._storage.get('headerEditorActive') !== 'true',
+        props.headerEditorEnabled
+          ? this._storage.get('headerEditorActive') !== 'true'
+          : secondaryEditorOpen && true,
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       headerEditorEnabled,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
