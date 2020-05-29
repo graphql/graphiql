@@ -26,16 +26,7 @@ module.exports = {
   ],
   env: {
     test: {
-      presets: [require.resolve('@babel/preset-react')],
-      plugins: [
-        require.resolve('babel-plugin-macros'),
-        [
-          require.resolve('@babel/plugin-transform-typescript'),
-          {
-            allowNamespaces: true,
-          },
-        ],
-      ],
+      plugins: [require.resolve('babel-plugin-macros')],
     },
     development: {
       compact: false,
