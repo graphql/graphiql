@@ -151,7 +151,7 @@ export function getAutocompleteSuggestions(
         argDefs.map(argDef => ({
           label: argDef.name,
           type: argDef.type,
-          documentation: argDef.description,
+          documentation: argDef.description ?? undefined,
         })),
       );
     }
@@ -168,7 +168,7 @@ export function getAutocompleteSuggestions(
         objectFields.map(field => ({
           label: field.name,
           type: field.type,
-          documentation: field.description,
+          documentation: field.description ?? undefined,
         })),
       );
     }
@@ -242,7 +242,7 @@ function getSuggestionsForFieldNames(
       fields.map(field => ({
         label: field.name,
         type: field.type,
-        documentation: field.description,
+        documentation: field.description ?? undefined,
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
       })),
@@ -263,7 +263,7 @@ function getSuggestionsForInputValues(
       values.map(value => ({
         label: value.name,
         type: namedInputType,
-        documentation: value.description,
+        documentation: value.description ?? undefined,
         isDeprecated: value.isDeprecated,
         deprecationReason: value.deprecationReason,
       })),
