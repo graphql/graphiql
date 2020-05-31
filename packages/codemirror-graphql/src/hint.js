@@ -106,7 +106,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
  */
-export function getAutocompleteSuggestions(
+function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   token: ContextTokenForCodeMirror,
