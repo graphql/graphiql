@@ -61,11 +61,6 @@ function getHintSuggestions(queryString, cursor) {
   });
 }
 
-function checkSuggestions(source, suggestions) {
-  const titles = suggestions.map(suggestion => suggestion.text);
-  expect(titles).to.deep.equal(source);
-}
-
 function getExpectedSuggestions(list) {
   return list.map(item => ({
     text: item.text,
