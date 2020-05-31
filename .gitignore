@@ -2,6 +2,7 @@
 *~
 .*.haste_cache.*
 .DS_Store
+.secrets
 npm-debug.log
 yarn-error.log
 
@@ -11,12 +12,17 @@ coverage/
 packages/**/dist/.gitignore
 packages/**/dist/.npmignore
 packages/graphiql/storybook
-packages/graphiql/lsp
+packages/graphiql/typedoc
 dist
 esm
+bundle
 cypress/screenshots
 node_modules/
 npm-debug.log
 lerna-debug.log
 **/tsconfig.tsbuildinfo
 **/*.tsbuildinfo
+
+.yarnrc
+yarn-1.18.0.js
+*.orig

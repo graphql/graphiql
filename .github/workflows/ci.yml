@@ -1,0 +1,18 @@
+name: Node.JS CI
+on: [push, pull_request]
+jobs:
+  test:
+    name: Lint & Test
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: bahmutov/npm-install@v1
+      - run: yarn ci && node_modules/.bin/codecov
+
+  e2e:
+    name: Cypress
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: bahmutov/npm-install@v1
+      - run: yarn ci-e2e

@@ -5,13 +5,14 @@
 > **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
 [![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
-[![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr)
+[![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/fHje6QG)
 [![Code Coverage](https://img.shields.io/codecov/c/github/graphql/graphiql)](https://codecov.io/gh/graphql/graphiql)
 ![GitHub top language](https://img.shields.io/github/languages/top/graphql/graphiql)
 ![GitHub language count](https://img.shields.io/github/languages/count/graphql/graphiql)
 [![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/graphql/graphiql)](https://snyk.io/test/github/graphql/graphiql)
 ![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/graphql/graphiql)
 ![LGTM Alerts](https://img.shields.io/lgtm/alerts/github/graphql/graphiql)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3887/badge)](https://bestpractices.coreinfrastructure.org/projects/3887)
 
 ## Overview
 
@@ -30,6 +31,8 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 ## [GraphiQL](packages/graphiql#readme)
 
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
+
 <!-- prettier-ignore -->
 > [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 > ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
@@ -44,7 +47,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
 
-**Learn more about [GraphiQL in packagages/graphiql/README.md](packages/graphiql#readme)**
+**Learn more about [GraphiQL in packages/graphiql/README.md](packages/graphiql#readme)**
 
 ### How To Setup/Implement GraphiQL
 
@@ -54,7 +57,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 **The full [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
-## [Codemirorror GraphQL](packages/codemirror-graphql#readme)
+## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
@@ -138,6 +141,7 @@ Eventually we hope to move these to a repo that serves this purpose.
 
 ## Community
 
-- **Discord** [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/RfY2dvr) - Most discussion outside of github happens on our [Discord Server](https://discord.gg/eNuu9Cb)
+- **Discord** [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/fHje6QG) - Most discussion outside of github happens on our [Discord Server](https://discord.gg/eNuu9Cb)
 - **Twitter** - [@GraphiQL](https://twitter.com/@GraphiQL) and [#GraphiQL](https://twitter.com/hashtag/GraphiQL)
 - **GitHub** - Create feature requests, discussions issues and bugs above
+- **Working Group** - Yes, you're invited! Monthly planning/decision making meetings, and working sessions every two weeks on zoom! [Learn more.](working-group#readme)

@@ -14,14 +14,7 @@ const rootPath = (...args) => relPath('../', ...args);
 
 const resultConfig = {
   mode: process.env.NODE_ENV,
-  entry: isHMR
-    ? [
-        'react-hot-loader/patch', // activate HMR for React
-        'webpack-dev-server/client?http://localhost:8080', // bundle the client for webpack-dev-server and connect to the provided endpoint
-        'webpack/hot/only-dev-server', // bundle the client for hot reloading, only- means to only hot reload for successful updates
-        './cdn.js', // the entry point of our app
-      ]
-    : './cdn.js',
+  entry: './cdn.ts',
   context: rootPath('src'),
   output: {
     path: rootPath(),
@@ -40,6 +33,7 @@ const resultConfig = {
   devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
   node: {
     fs: 'empty',
+    module: 'empty',
   },
   externals: {
     react: 'React',
@@ -60,7 +54,7 @@ const resultConfig = {
       {
         test: /\.(js|jsx|ts|tsx)$/,
         use: [{ loader: 'babel-loader' }],
-        exclude: /\.(d\.ts|d\.ts\.map)$/,
+        exclude: /\.(d\.ts|d\.ts\.map|spec\.tsx)$/,
       },
       {
         test: /\.css$/,

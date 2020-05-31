@@ -17,11 +17,7 @@
  *        is supplied.
  *
  */
-
-import {
-  TokenPattern,
-  CharacterStream as CharacterStreamInterface,
-} from 'graphql-language-service-types';
+import { TokenPattern, CharacterStreamInterface } from './types';
 
 export default class CharacterStream implements CharacterStreamInterface {
   _start: number;

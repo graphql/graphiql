@@ -6,82 +6,39 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import {
+import type {
   Diagnostic as DiagnosticType,
-  Position as PositionType,
   CompletionItem as CompletionItemType,
-} from 'vscode-languageserver-protocol';
-import { GraphQLSchema, KindEnum } from 'graphql';
-import {
-  ASTNode,
+} from 'vscode-languageserver-types';
+import type { ASTNode, GraphQLSchema } from 'graphql';
+
+import type {
   DocumentNode,
   FragmentDefinitionNode,
   NamedTypeNode,
   TypeDefinitionNode,
+  NameNode,
 } from 'graphql/language';
-import { ValidationContext } from 'graphql/validation';
-import {
+import type {
   GraphQLArgument,
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputFieldMap,
   GraphQLType,
 } from 'graphql/type/definition';
-import { GraphQLDirective } from 'graphql/type/directives';
+import type { GraphQLDirective } from 'graphql/type/directives';
 
-export { GraphQLConfig, GraphQLProjectConfig };
-import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+export type Maybe<T> = T | null | undefined;
 
-export type TokenPattern = string | ((char: string) => boolean) | RegExp;
-
-export interface CharacterStream {
-  getStartOfToken: () => number;
-  getCurrentPosition: () => number;
-  eol: () => boolean;
-  sol: () => boolean;
-  peek: () => string | null;
-  next: () => string;
-  eat: (pattern: TokenPattern) => string | undefined;
-  eatWhile: (match: TokenPattern) => boolean;
-  eatSpace: () => boolean;
-  skipToEnd: () => void;
-  skipTo: (position: number) => void;
-  match: (
-    pattern: TokenPattern,
-    consume?: boolean | null | undefined,
-    caseFold?: boolean | null | undefined,
-  ) => string[] | boolean;
-  backUp: (num: number) => void;
-  column: () => number;
-  indentation: () => number;
-  current: () => string;
-}
-
-// Cache and config-related.
-export type GraphQLConfiguration = GraphQLProjectConfiguration & {
-  projects?: {
-    [projectName: string]: GraphQLProjectConfiguration;
-  };
-};
-
-export type GraphQLProjectConfiguration = {
-  // The name for this project configuration.
-  // If not supplied, the object key can be used for the project name.
-  name?: string;
-  schemaPath?: string; // a file with schema IDL
-
-  // For multiple applications with overlapping files,
-  // these configuration options may be helpful
-  includes?: string[];
-  excludes?: string[];
-
-  // If you'd like to specify any other configurations,
-  // we provide a reserved namespace for it
-  extensions?: GraphQLConfigurationExtension;
-};
-
-export type GraphQLConfigurationExtension = {
-  [name: string]: unknown;
+import type {
+  GraphQLConfig,
+  GraphQLProjectConfig,
+  GraphQLExtensionDeclaration,
+} from 'graphql-config';
+export type {
+  GraphQLConfig,
+  GraphQLProjectConfig,
+  GraphQLExtensionDeclaration,
 };
 
 export interface GraphQLCache {
@@ -115,7 +72,7 @@ export interface GraphQLCache {
 
   getFragmentDependencies: (
     query: string,
-    fragmentDefinitions: Map<string, FragmentInfo> | null | undefined,
+    fragmentDefinitions: Maybe<Map<string, FragmentInfo>>,
   ) => Promise<FragmentInfo[]>;
 
   getFragmentDependenciesForAST: (
@@ -146,7 +103,7 @@ export interface GraphQLCache {
 }
 
 // online-parser related
-export type Position = PositionType & {
+export type Position = {
   line: number;
   character: number;
   lessThanOrEqualTo?: (position: Position) => boolean;
@@ -161,64 +118,6 @@ export interface Range {
 export type CachedContent = {
   query: string;
   range: Range | null;
-};
-
-export type RuleOrString = Rule | string;
-
-export type ParseRule =
-  | RuleOrString[]
-  | ((token: Token, stream: CharacterStream) => string | null | void);
-
-export type Token = {
-  kind: string;
-  value: string;
-};
-
-export type Rule = {
-  style?: string;
-  match?: (token: Token) => boolean;
-  update?: (state: State, token: Token) => void;
-  separator?: string | Rule;
-  isList?: boolean;
-  ofRule?: Rule | string;
-};
-
-export type RuleKind =
-  | KindEnum
-  | 'AliasedField'
-  | 'Arguments'
-  | 'ShortQuery'
-  | 'Query'
-  | 'Mutation'
-  | 'Subscription'
-  | 'TypeCondition'
-  | 'Invalid'
-  | 'Comment'
-  | 'SchemaDef'
-  | 'ScalarDef'
-  | 'ObjectTypeDef'
-  | 'InterfaceDef'
-  | 'UnionDef'
-  | 'EnumDef'
-  | 'FieldDef'
-  | 'InputDef'
-  | 'InputValueDef'
-  | 'ArgumentsDef'
-  | 'ExtendDef'
-  | 'DirectiveDef';
-
-export type State = {
-  level: number;
-  levels?: number[];
-  prevState: State | null | undefined;
-  rule: ParseRule | null | undefined;
-  kind: RuleKind | null | undefined;
-  name: string | null | undefined;
-  type: string | null | undefined;
-  step: number;
-  needsSeperator: boolean;
-  needsAdvance?: boolean;
-  indentLevel?: number;
 };
 
 // GraphQL Language Service related types
@@ -239,34 +138,16 @@ export type GraphQLFileInfo = {
   mtime: number;
 };
 
-export type ContextToken = {
-  start: number;
-  end: number;
-  string: string;
-  state: State;
-  style: string;
-};
-
-export type ContextTokenForCodeMirror = {
-  start: number;
-  end: number;
-  string: string;
-  type: string | null;
-  state: State;
-};
-
-export type ContextTokenUnion = ContextToken | ContextTokenForCodeMirror;
-
 export type AllTypeInfo = {
-  type: GraphQLType | null | undefined;
-  parentType: GraphQLType | null | undefined;
-  inputType: GraphQLType | null | undefined;
-  directiveDef: GraphQLDirective | null | undefined;
-  fieldDef: GraphQLField<any, any> | null | undefined;
-  enumValue: GraphQLEnumValue | null | undefined;
-  argDef: GraphQLArgument | null | undefined;
-  argDefs: GraphQLArgument[] | null | undefined;
-  objectFieldDefs: GraphQLInputFieldMap | null | undefined;
+  type: Maybe<GraphQLType>;
+  parentType: Maybe<GraphQLType>;
+  inputType: Maybe<GraphQLType>;
+  directiveDef: Maybe<GraphQLDirective>;
+  fieldDef: Maybe<GraphQLField<any, any>>;
+  enumValue: Maybe<GraphQLEnumValue>;
+  argDef: Maybe<GraphQLArgument>;
+  argDefs: Maybe<GraphQLArgument[]>;
+  objectFieldDefs: Maybe<GraphQLInputFieldMap>;
 };
 
 export type FragmentInfo = {
@@ -287,10 +168,6 @@ export type ObjectTypeInfo = {
   definition: TypeDefinitionNode;
 };
 
-export type CustomValidationRule = (
-  context: ValidationContext,
-) => Record<string, any>;
-
 export type Diagnostic = DiagnosticType;
 
 export type CompletionItemBase = {
@@ -300,17 +177,9 @@ export type CompletionItemBase = {
 
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
-  deprecationReason?: string;
+  documentation?: string | null;
+  deprecationReason?: string | null;
 };
-
-export type CompletionItemForCodeMirror = {
-  label: string;
-  type?: GraphQLType;
-  documentation: string | null | undefined;
-  isDeprecated?: boolean;
-  deprecationReason: string | null | undefined;
-};
-
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
 // Definitions/hyperlink
@@ -342,7 +211,7 @@ export type TokenKind =
   | 'type';
 export type TextToken = {
   kind: TokenKind;
-  value: string | undefined;
+  value: string | NameNode;
 };
 
 export type TokenizedText = TextToken[];
@@ -351,7 +220,7 @@ export type OutlineTree = {
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-
+  kind: string;
   startPosition: Position;
   endPosition?: Position;
   children: OutlineTree[];

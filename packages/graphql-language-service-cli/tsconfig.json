@@ -1,0 +1,22 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "target": "ES2018"
+  },
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    },
+    {
+      "path": "../graphql-language-service-server"
+    },
+    {
+      "path": "../graphql-language-service-utils"
+    }
+  ],
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
+}

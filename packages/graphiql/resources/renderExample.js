@@ -13,7 +13,7 @@ var parameters = {};
 search
   .substr(1)
   .split('&')
-  .forEach(function(entry) {
+  .forEach(function (entry) {
     var eq = entry.indexOf('=');
     if (eq >= 0) {
       parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
@@ -36,6 +36,20 @@ if (parameters.variables) {
   }
 }
 
+// If headers was provided, try to format it.
+if (parameters.headers) {
+  try {
+    parameters.headers = JSON.stringify(
+      JSON.parse(parameters.headers),
+      null,
+      2,
+    );
+  } catch (e) {
+    // Do nothing, we want to display the invalid JSON as a string, rather
+    // than present an error.
+  }
+}
+
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery) {
@@ -48,6 +62,11 @@ function onEditVariables(newVariables) {
   updateURL();
 }
 
+function onEditHeaders(newHeaders) {
+  parameters.headers = newHeaders;
+  updateURL();
+}
+
 function onEditOperationName(newOperationName) {
   parameters.operationName = newOperationName;
   updateURL();
@@ -57,10 +76,10 @@ function updateURL() {
   var newSearch =
     '?' +
     Object.keys(parameters)
-      .filter(function(key) {
+      .filter(function (key) {
         return Boolean(parameters[key]);
       })
-      .map(function(key) {
+      .map(function (key) {
         return (
           encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key])
         );
@@ -72,27 +91,37 @@ function updateURL() {
 // Defines a GraphQL fetcher using the fetch API. You're not required to
 // use fetch, and could instead implement graphQLFetcher however you like,
 // as long as it returns a Promise or Observable.
-function graphQLFetcher(graphQLParams) {
+function graphQLFetcher(graphQLParams, opts = { headers: {} }) {
   // When working locally, the example expects a GraphQL server at the path /graphql.
   // In a PR preview, it connects to the Star Wars API externally.
   // Change this to point wherever you host your GraphQL server.
   const isDev = window.location.hostname.match(/localhost$/);
   const api = isDev
     ? '/graphql'
-    : 'https://swapi-graphql.netlify.com/.netlify/functions/index';
+    : 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+
+  let headers = opts.headers;
+  // Convert headers to an object.
+  if (typeof headers === 'string') {
+    headers = JSON.parse(opts.headers);
+  }
+
   return fetch(api, {
     method: 'post',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: Object.assign(
+      {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      headers,
+    ),
     body: JSON.stringify(graphQLParams),
     credentials: 'omit',
   })
-    .then(function(response) {
+    .then(function (response) {
       return response.text();
     })
-    .then(function(responseBody) {
+    .then(function (responseBody) {
       try {
         return JSON.parse(responseBody);
       } catch (error) {
@@ -110,11 +139,14 @@ ReactDOM.render(
     fetcher: graphQLFetcher,
     query: parameters.query,
     variables: parameters.variables,
+    headers: parameters.headers,
     operationName: parameters.operationName,
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
+    onEditHeaders: onEditHeaders,
     defaultVariableEditorOpen: true,
     onEditOperationName: onEditOperationName,
+    headerEditorEnabled: true,
   }),
   document.getElementById('graphiql'),
 );

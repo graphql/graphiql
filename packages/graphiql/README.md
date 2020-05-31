@@ -1,5 +1,11 @@
 # GraphiQL
 
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
+
+> **[`graphiql@1.0.0`](https://github.com/graphql/graphiql/milestone/3)** is coming soon & will provide a stable release with react 16, graphql 15 support, fixes, and a headers tab
+
+> **[`graphiql@2.0.0-beta`](https://github.com/graphql/graphiql/issues/983)** is a much larger ongoing effort that introduces plugins, i18n, and so many more features after a substantial rewrite using modern react.
+
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
 ![npm downloads](https://img.shields.io/npm/dm/graphiql?label=npm%20downloads)
@@ -161,6 +167,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
 
+- `headers`: an optional GraphQL string to use as the initial displayed request headers, if `undefined` is provided, the stored headers will be used.
+
 - `operationName`: an optional name of which GraphQL operation should be executed.
 
 - `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
@@ -169,11 +177,15 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
 
-- `defaultVariableEditorOpen`: an optional boolean that sets whether or not to show the variables pane on startup. If not defined, it will be based off whether or not variables are present.
+- `defaultVariableEditorOpen`: an optional boolean that sets whether or not to show the variables pane on startup. If not defined, it will be based off whether or not variables are present. (**deprecated** in favor of `defaultSecondaryEditorOpen`)
+
+- `defaultSecondaryEditorOpen`: an optional boolean that sets whether or not to show the variables/headers pane on startup. If not defined, it will be based off whether or not variables and/or headers are present.
 
 - `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
 
 - `onEditVariables`: an optional function which will be called when the Query variable editor changes. The argument to the function will be the variables string.
+
+- `onEditHeaders`: an optional function which will be called when the request headers editor changes. The argument to the function will be the headers string.
 
 - `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
 
@@ -187,7 +199,9 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
 
-### Children (dropped as of 0.18.0)
+- `headerEditorEnabled`: an optional boolean which enables the header editor when `true`. Defaults to `false`.
+
+### Children (dropped as of 1.0.0-rc.2)
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
 
@@ -213,7 +227,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 ## Full Usage Example
 
-> **All of these APIs demonstrated are soon to be deprecated**: Stay posted as the APIs change.
+> **Breaking Changes & Improvements:** using `window.GraphiQL.state` will no longer be possible in `1.0.0-rc.2` Read more in [this issue](#1165)
 
 Here's a more complex react implementation. This would require webpack or a bundler.
 
@@ -230,6 +244,7 @@ class CustomGraphiQL extends React.Component {
       // GraphQL artifacts
       query: '',
       variables: '',
+      headers: '',
       response: '',
 
       // GraphQL Schema
@@ -246,6 +261,7 @@ class CustomGraphiQL extends React.Component {
       // Custom Event Handlers
       onEditQuery: null,
       onEditVariables: null,
+      onEditHeaders: null,
       onEditOperationName: null,
 
       // GraphiQL automatically fills in leaf nodes when the query
@@ -345,7 +361,7 @@ const schema = new GraphQLSchema({
       immediatelyChangeTheNumber: {
         type: numberHolderType,
         args: { newNumber: { type: GraphQLInt } },
-        resolve: function(obj, { newNumber }) {
+        resolve: function (obj, { newNumber }) {
           return obj.immediatelyChangeTheNumber(newNumber);
         },
       },

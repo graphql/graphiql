@@ -6,14 +6,15 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
+import { SymbolKind } from 'vscode-languageserver';
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { MessageProcessor, getQueryAndRange } from '../MessageProcessor';
+import { MessageProcessor } from '../MessageProcessor';
+import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
-import { DefinitionQueryResult } from 'graphql-language-service-types';
+import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
 
@@ -34,8 +35,8 @@ describe('MessageProcessor', () => {
       // @ts-ignore
       getGraphQLConfig() {
         return {
-          configDir: __dirname,
-          getProjectNameForFile() {
+          dirpath: __dirname,
+          getProjectForFile() {
             return null;
           },
         };
@@ -55,6 +56,34 @@ describe('MessageProcessor', () => {
       // @ts-ignore
       getDiagnostics: (query, uri) => {
         return [];
+      },
+      getDocumentSymbols: async (_query: string, uri: string) => {
+        return [
+          {
+            name: 'item',
+            kind: SymbolKind.Field,
+            location: {
+              uri,
+              range: {
+                start: { line: 1, character: 2 },
+                end: { line: 1, character: 4 },
+              },
+            },
+          },
+        ];
+      },
+      getOutline: async (_query: string): Promise<Outline> => {
+        return {
+          outlineTrees: [
+            {
+              representativeName: 'item',
+              kind: 'Field',
+              startPosition: { line: 1, character: 2 },
+              endPosition: { line: 1, character: 4 },
+              children: [],
+            },
+          ],
+        };
       },
       getDefinition: async (
         _query,
@@ -119,6 +148,50 @@ describe('MessageProcessor', () => {
     expect(result).toEqual({
       items: [{ label: `${query} at ${uri}` }],
       isIncomplete: false,
+    });
+  });
+
+  it('runs document symbol requests', async () => {
+    const uri = `${queryDir}/test3.graphql`;
+    const validQuery = `
+  {
+    hero(episode: EMPIRE){
+      ...testFragment
+    }
+  }
+  `;
+
+    const newDocument = {
+      textDocument: {
+        text: validQuery,
+        uri,
+        version: 0,
+      },
+    };
+
+    messageProcessor._textDocumentCache.set(uri, {
+      version: 0,
+      contents: [
+        {
+          query: validQuery,
+          range: new Range(new Position(0, 0), new Position(0, 0)),
+        },
+      ],
+    });
+
+    const test = {
+      textDocument: newDocument.textDocument,
+    };
+
+    const result = await messageProcessor.handleDocumentSymbolRequest(test);
+
+    expect(result).not.toBeUndefined();
+    expect(result.length).toEqual(1);
+    expect(result[0].name).toEqual('item');
+    expect(result[0].kind).toEqual(SymbolKind.Field);
+    expect(result[0].location.range).toEqual({
+      start: { line: 1, character: 2 },
+      end: { line: 1, character: 4 },
     });
   });
 
@@ -208,7 +281,7 @@ describe('MessageProcessor', () => {
     await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
   });
 
-  it('getQueryAndRange finds queries in tagged templates', async () => {
+  it('parseDocument finds queries in tagged templates', async () => {
     const text = `
 // @flow
 import {gql} from 'react-apollo';
@@ -227,7 +300,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = getQueryAndRange(text, 'test.js');
+    const contents = parseDocument(text, 'test.js');
     expect(contents[0].query).toEqual(`
 query Test {
   test {
@@ -238,7 +311,67 @@ query Test {
 `);
   });
 
-  it('getQueryAndRange ignores non gql tagged templates', async () => {
+  it('parseDocument finds queries in tagged templates using typescript', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.ts');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('parseDocument finds queries in tagged templates using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = parseDocument(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
 // @flow
 import randomthing from 'package';
@@ -257,7 +390,7 @@ query Test {
 
 export function Example(arg: string) {}`;
 
-    const contents = getQueryAndRange(text, 'test.js');
+    const contents = parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
   });
 });

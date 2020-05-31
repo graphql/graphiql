@@ -28,9 +28,14 @@
 **/flow-typed
 **/dist
 **/esm
+**/bundle
+**/typedoc
+**/monaco
+**/webpack
 packages/graphiql/webpack
 packages/graphiql/storybook
 packages/graphiql/lsp
+packages/graphiql/monaco  
 packages/graphiql/*.html
 **/renderExample.js
 **/*.min.js

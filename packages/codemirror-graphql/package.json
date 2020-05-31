@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "0.12.0-alpha.1",
+  "version": "0.12.0-alpha.9",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -47,21 +47,21 @@
   },
   "peerDependencies": {
     "codemirror": "^5.26.0",
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.4.0-alpha.1",
-    "graphql-language-service-parser": "^1.5.3-alpha.1"
+    "graphql-language-service-interface": "^2.4.0-alpha.9",
+    "graphql-language-service-parser": "^1.6.0-alpha.4"
   },
   "devDependencies": {
-    "chai": "4.1.1",
+    "chai": "4.2.0",
     "chai-subset": "1.6.0",
-    "codemirror": "^5.28.0",
-    "cross-env": "^6.0.3",
-    "graphql": "^14.0.2",
-    "jsdom": "^11.2.0",
-    "mocha": "7.0.0",
-    "nyc": "^15.0.0",
+    "codemirror": "^5.52.2",
+    "cross-env": "^7.0.2",
+    "graphql": "15.0.0",
+    "jsdom": "^16.1.0",
+    "mocha": "7.1.1",
+    "nyc": "^15.0.1",
     "rimraf": "^3.0.0",
     "sane": "2.0.0"
   }

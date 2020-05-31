@@ -1,21 +1,19 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2018",
     "composite": true,
     "rootDir": "./src",
     "outDir": "./esm"
   },
   "references": [
     {
-      "path": "../graphql-language-service-types"
+      "path": "../graphql-language-service/tsconfig.esm.json"
     },
     {
-      "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphql-language-service-utils"
+      "path": "../graphql-language-service-utils/tsconfig.esm.json"
     }
   ],
+  "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

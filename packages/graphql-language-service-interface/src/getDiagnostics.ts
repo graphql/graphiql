@@ -14,9 +14,8 @@ import {
   GraphQLSchema,
   Location,
   SourceLocation,
+  ValidationRule,
 } from 'graphql';
-
-import { CustomValidationRule } from 'graphql-language-service-types';
 
 import invariant from 'assert';
 import { findDeprecatedUsages, parse } from 'graphql';
@@ -31,17 +30,30 @@ import {
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
+// this doesn't work without the 'as', kinda goofy
+
 export const SEVERITY = {
-  ERROR: 1 as DiagnosticSeverity,
-  WARNING: 2 as DiagnosticSeverity,
-  INFORMATION: 3 as DiagnosticSeverity,
-  HINT: 4 as DiagnosticSeverity,
+  Error: 'Error' as 'Error',
+  Warning: 'Warning' as 'Warning',
+  Information: 'Information' as 'Information',
+  Hint: 'Hint' as 'Hint',
+};
+
+export type Severity = typeof SEVERITY;
+
+export type SeverityEnum = keyof Severity;
+
+export const DIAGNOSTIC_SEVERITY = {
+  [SEVERITY.Error]: 1 as DiagnosticSeverity,
+  [SEVERITY.Warning]: 2 as DiagnosticSeverity,
+  [SEVERITY.Information]: 3 as DiagnosticSeverity,
+  [SEVERITY.Hint]: 4 as DiagnosticSeverity,
 };
 
 export function getDiagnostics(
   query: string,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   let ast = null;
@@ -51,7 +63,7 @@ export function getDiagnostics(
     const range = getRange(error.locations[0], query);
     return [
       {
-        severity: SEVERITY.ERROR as DiagnosticSeverity,
+        severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
         message: error.message,
         source: 'GraphQL: Syntax',
         range,
@@ -65,7 +77,7 @@ export function getDiagnostics(
 export function validateQuery(
   ast: DocumentNode,
   schema: GraphQLSchema | null | undefined = null,
-  customRules?: Array<CustomValidationRule>,
+  customRules?: Array<ValidationRule> | null,
   isRelayCompatMode?: boolean,
 ): Array<Diagnostic> {
   // We cannot validate the query unless a schema is provided.
@@ -75,7 +87,7 @@ export function validateQuery(
 
   const validationErrorAnnotations = mapCat(
     validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, SEVERITY.ERROR, 'Validation'),
+    error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
   // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
@@ -83,7 +95,7 @@ export function validateQuery(
   const deprecationWarningAnnotations = !findDeprecatedUsages
     ? []
     : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, SEVERITY.WARNING, 'Deprecation'),
+        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
       );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
@@ -101,34 +113,41 @@ function annotations(
   error: GraphQLError,
   severity: DiagnosticSeverity,
   type: string,
-): Array<Diagnostic> {
+): Diagnostic[] {
   if (!error.nodes) {
     return [];
   }
-  return error.nodes.map(node => {
+  const highlightedNodes: Diagnostic[] = [];
+  error.nodes.forEach(node => {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node
         ? node.name
         : 'variable' in node
         ? node.variable
         : node;
+    if (highlightNode) {
+      invariant(
+        error.locations,
+        'GraphQL validation error requires locations.',
+      );
 
-    invariant(error.locations, 'GraphQL validation error requires locations.');
-    // @ts-ignore
-    // https://github.com/microsoft/TypeScript/pull/32695
-    const loc = error.locations[0];
-    const highlightLoc = getLocation(highlightNode);
-    const end = loc.column + (highlightLoc.end - highlightLoc.start);
-    return {
-      source: `GraphQL: ${type}`,
-      message: error.message,
-      severity,
-      range: new Range(
-        new Position(loc.line - 1, loc.column - 1),
-        new Position(loc.line - 1, end),
-      ),
-    };
+      // @ts-ignore
+      // https://github.com/microsoft/TypeScript/pull/32695
+      const loc = error.locations[0];
+      const highlightLoc = getLocation(highlightNode);
+      const end = loc.column + (highlightLoc.end - highlightLoc.start);
+      highlightedNodes.push({
+        source: `GraphQL: ${type}`,
+        message: error.message,
+        severity,
+        range: new Range(
+          new Position(loc.line - 1, loc.column - 1),
+          new Position(loc.line - 1, end),
+        ),
+      });
+    }
   });
+  return highlightedNodes;
 }
 
 export function getRange(location: SourceLocation, queryText: string): Range {

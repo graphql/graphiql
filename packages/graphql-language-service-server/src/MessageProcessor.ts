@@ -7,23 +7,31 @@
  *
  */
 
-import { extname, dirname } from 'path';
 import { readFileSync } from 'fs';
 import { URL } from 'url';
-import { findGraphQLConfigFile } from 'graphql-config';
 
-import {
+import type {
   CachedContent,
   GraphQLCache,
   Uri,
-  FileChangeTypeKind,
-} from 'graphql-language-service-types';
+  DefinitionQueryResult,
+  GraphQLConfig,
+} from 'graphql-language-service';
 
-import { GraphQLLanguageService } from 'graphql-language-service-interface';
+import {
+  GraphQLLanguageService,
+  FileChangeTypeKind,
+} from 'graphql-language-service';
 
 import { Range, Position } from 'graphql-language-service-utils';
 
-import { CompletionParams, FileEvent } from 'vscode-languageserver-protocol';
+import {
+  CompletionParams,
+  FileEvent,
+  VersionedTextDocumentIdentifier,
+  DidSaveTextDocumentParams,
+  DidOpenTextDocumentParams,
+} from 'vscode-languageserver-protocol';
 
 import {
   Diagnostic,
@@ -39,13 +47,14 @@ import {
   DidChangeWatchedFilesParams,
   InitializeParams,
   Range as RangeType,
-  VersionedTextDocumentIdentifier,
-  DidSaveTextDocumentParams,
   TextDocumentPositionParams,
+  DocumentSymbolParams,
+  SymbolInformation,
 } from 'vscode-languageserver';
 
 import { getGraphQLCache } from './GraphQLCache';
-import { findGraphQLTags } from './findGraphQLTags';
+import { parseDocument } from './parseDocument';
+
 import { Logger } from './Logger';
 
 type CachedDocumentType = {
@@ -55,21 +64,31 @@ type CachedDocumentType = {
 
 export class MessageProcessor {
   _graphQLCache!: GraphQLCache;
+  _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
-
   _isInitialized: boolean;
-
   _willShutdown: boolean;
-
   _logger: Logger;
+  _extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  _fileExtensions?: Array<string>;
+  _parser: typeof parseDocument;
 
-  constructor(logger: Logger) {
+  constructor(
+    logger: Logger,
+    extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+    config?: GraphQLConfig,
+    parser?: typeof parseDocument,
+    fileExtensions?: string[],
+  ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
-
     this._logger = logger;
+    this._extensions = extensions;
+    this._fileExtensions = fileExtensions;
+    this._graphQLConfig = config;
+    this._parser = parser ?? parseDocument;
   }
 
   async handleInitializeRequest(
@@ -83,25 +102,31 @@ export class MessageProcessor {
 
     const serverCapabilities: InitializeResult = {
       capabilities: {
-        completionProvider: { resolveProvider: true },
+        workspaceSymbolProvider: true,
+        documentSymbolProvider: true,
+        completionProvider: {
+          resolveProvider: true,
+          triggerCharacters: ['@'],
+        },
         definitionProvider: true,
         textDocumentSync: 1,
         hoverProvider: true,
       },
     };
 
-    const rootPath = dirname(
-      findGraphQLConfigFile(
-        configDir ? configDir.trim() : (params.rootPath as string),
-      ),
-    );
+    const rootPath = configDir ? configDir.trim() : params.rootPath;
     if (!rootPath) {
       throw new Error(
         '`--configDir` option or `rootPath` argument is required.',
       );
     }
 
-    this._graphQLCache = await getGraphQLCache(rootPath);
+    this._graphQLCache = await getGraphQLCache(
+      rootPath,
+      this._parser,
+      this._extensions,
+      this._graphQLConfig,
+    );
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
@@ -121,32 +146,31 @@ export class MessageProcessor {
   }
 
   async handleDidOpenOrSaveNotification(
-    params: DidSaveTextDocumentParams,
+    params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
 
     if (!params || !params.textDocument) {
       throw new Error('`textDocument` argument is required.');
     }
-
-    const { text, textDocument } = params;
+    const { textDocument } = params;
     const { uri } = textDocument;
 
     const diagnostics: Diagnostic[] = [];
 
     let contents: CachedContent[] = [];
-
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
-    if (text || text === '') {
+    if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = getQueryAndRange(text, uri);
+      contents = this._parser(textDocument.text, uri, this._fileExtensions);
+
       this._invalidateCache(textDocument, uri, contents);
     } else {
-      const cachedDocument = this._getCachedDocument(uri);
+      const cachedDocument = this._getCachedDocument(textDocument.uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
       }
@@ -165,13 +189,15 @@ export class MessageProcessor {
       }),
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didOpen',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -182,7 +208,7 @@ export class MessageProcessor {
   async handleDidChangeNotification(
     params: DidChangeTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
     // For every `textDocument/didChange` event, keep a cache of textDocuments
@@ -210,8 +236,11 @@ export class MessageProcessor {
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
-    const contents = getQueryAndRange(contentChange.text, uri);
-
+    const contents = this._parser(
+      contentChange.text,
+      uri,
+      this._fileExtensions,
+    );
     // If it's a .graphql file, proceed normally and invalidate the cache.
     this._invalidateCache(textDocument, uri, contents);
 
@@ -234,13 +263,15 @@ export class MessageProcessor {
       }),
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didChange',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -249,7 +280,7 @@ export class MessageProcessor {
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return;
     }
     // For every `textDocument/didClose` event, delete the cached entry.
@@ -265,13 +296,15 @@ export class MessageProcessor {
       this._textDocumentCache.delete(uri);
     }
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didClose',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(uri),
+        projectName: project && project.name,
         fileName: uri,
       }),
     );
@@ -302,7 +335,7 @@ export class MessageProcessor {
   async handleCompletionRequest(
     params: CompletionParams,
   ): Promise<CompletionList | Array<CompletionItem>> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return [];
     }
 
@@ -344,13 +377,15 @@ export class MessageProcessor {
       textDocument.uri,
     );
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/completion',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(textDocument.uri),
+        projectName: project && project.name,
         fileName: textDocument.uri,
       }),
     );
@@ -359,7 +394,7 @@ export class MessageProcessor {
   }
 
   async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return { contents: [] };
     }
 
@@ -403,20 +438,24 @@ export class MessageProcessor {
 
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
-  ): Promise<PublishDiagnosticsParams[] | null> {
-    if (!this._isInitialized) {
+  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
+    if (!this._isInitialized || !this._graphQLCache) {
       return null;
     }
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
+        if (!this._isInitialized || !this._graphQLCache) {
+          throw Error('No cache available for handleWatchedFilesChanged');
+        }
+
         if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
         ) {
           const uri = change.uri;
           const text: string = readFileSync(new URL(uri).pathname).toString();
-          const contents = getQueryAndRange(text, uri);
+          const contents = this._parser(text, uri, this._fileExtensions);
 
           this._updateFragmentDefinition(uri, contents);
           this._updateObjectTypeDefinition(uri, contents);
@@ -437,13 +476,15 @@ export class MessageProcessor {
             )
           ).reduce((left, right) => left.concat(right));
 
+          const project = this._graphQLCache
+            .getGraphQLConfig()
+            .getProjectForFile(uri);
+
           this._logger.log(
             JSON.stringify({
               type: 'usage',
               messageType: 'workspace/didChangeWatchedFiles',
-              projectName: this._graphQLCache
-                .getGraphQLConfig()
-                .getProjectNameForFile(uri),
+              projectName: project && project.name,
               fileName: uri,
             }),
           );
@@ -451,18 +492,16 @@ export class MessageProcessor {
           return { uri, diagnostics };
         } else if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().configDir,
+            this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
           this._graphQLCache.updateObjectTypeDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().configDir,
+            this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
             false,
           );
-          return { uri: change.uri, diagnostics: [] };
         }
-        return { uri: change.uri, diagnostics: [] };
       }),
     );
   }
@@ -471,7 +510,7 @@ export class MessageProcessor {
     params: TextDocumentPositionParams,
     _token?: CancellationToken,
   ): Promise<Array<Location>> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return [];
     }
 
@@ -502,7 +541,7 @@ export class MessageProcessor {
     if (range) {
       position.line -= range.start.line;
     }
-    const result = await this._languageService.getDefinition(
+    const result: DefinitionQueryResult | null = await this._languageService.getDefinition(
       query,
       position,
       textDocument.uri,
@@ -526,18 +565,63 @@ export class MessageProcessor {
         })
       : [];
 
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+
     this._logger.log(
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/definition',
-        projectName: this._graphQLCache
-          .getGraphQLConfig()
-          .getProjectNameForFile(textDocument.uri),
+        projectName: project && project.name,
         fileName: textDocument.uri,
       }),
     );
     return formatted;
   }
+
+  async handleDocumentSymbolRequest(
+    params: DocumentSymbolParams,
+  ): Promise<Array<SymbolInformation>> {
+    if (!this._isInitialized) {
+      return [];
+    }
+
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` argument is required.');
+    }
+
+    const textDocument = params.textDocument;
+    const cachedDocument = this._getCachedDocument(textDocument.uri);
+    if (!cachedDocument) {
+      throw new Error('A cached document cannot be found.');
+    }
+    return this._languageService.getDocumentSymbols(
+      cachedDocument.contents[0].query,
+      textDocument.uri,
+    );
+  }
+
+  // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
+  //    if (!this._isInitialized) {
+  //      return [];
+  //    }
+
+  //    if (!params || !params.textDocument) {
+  //      throw new Error('`textDocument` argument is required.');
+  //    }
+
+  //    const textDocument = params.textDocument;
+  //    const cachedDocument = this._getCachedDocument(textDocument.uri);
+  //    if (!cachedDocument) {
+  //      throw new Error('A cached document cannot be found.');
+  //    }
+  //    return this._languageService.getReferences(
+  //      cachedDocument.contents[0].query,
+  //      params.position,
+  //      textDocument.uri,
+  //    );
+  // }
 
   _isRelayCompatMode(query: string): boolean {
     return (
@@ -550,7 +634,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
+    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,
@@ -563,7 +647,7 @@ export class MessageProcessor {
     uri: Uri,
     contents: CachedContent[],
   ): Promise<void> {
-    const rootDir = this._graphQLCache.getGraphQLConfig().configDir;
+    const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
     await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,
@@ -582,7 +666,6 @@ export class MessageProcessor {
 
     return null;
   }
-
   _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
@@ -608,40 +691,6 @@ export class MessageProcessor {
         contents,
       });
     }
-  }
-}
-
-/**
- * Helper functions to perform requested services from client/server.
- */
-
-// Check the uri to determine the file type (JavaScript/GraphQL).
-// If .js file, either return the parsed query/range or null if GraphQL queries
-// are not found.
-export function getQueryAndRange(text: string, uri: string): CachedContent[] {
-  // Check if the text content includes a GraphQLV query.
-  // If the text doesn't include GraphQL queries, do not proceed.
-  if (extname(uri) === '.js') {
-    if (
-      text.indexOf('graphql`') === -1 &&
-      text.indexOf('graphql.experimental`') === -1 &&
-      text.indexOf('gql`') === -1
-    ) {
-      return [];
-    }
-    const templates = findGraphQLTags(text);
-    return templates.map(({ template, range }) => ({ query: template, range }));
-  } else {
-    const query = text;
-    if (!query && query !== '') {
-      return [];
-    }
-    const lines = query.split('\n');
-    const range = new Range(
-      new Position(0, 0),
-      new Position(lines.length - 1, lines[lines.length - 1].length - 1),
-    );
-    return [{ query, range }];
   }
 }
 

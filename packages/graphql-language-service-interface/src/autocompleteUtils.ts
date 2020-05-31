@@ -16,10 +16,10 @@ import {
 } from 'graphql/type/introspection';
 import {
   CompletionItemBase,
-  ContextTokenUnion,
-  State,
   AllTypeInfo,
 } from 'graphql-language-service-types';
+
+import { ContextTokenUnion, State } from 'graphql-language-service-parser';
 
 // Utility for returning the state representing the Definition this token state
 // is within, if any.
@@ -82,7 +82,7 @@ export function forEachState(
   }
 }
 
-export function objectValues(object: Record<string, any>): Array<any> {
+export function objectValues<T>(object: Record<string, T>): Array<T> {
   const keys = Object.keys(object);
   const len = keys.length;
   const values = new Array(len);

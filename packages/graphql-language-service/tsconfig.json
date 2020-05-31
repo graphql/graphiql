@@ -3,21 +3,23 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "./src",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "baseUrl": "./src"
   },
   "references": [
-    {
-      "path": "../graphql-language-service-server"
-    },
     {
       "path": "../graphql-language-service-interface"
     },
     {
-      "path": "../graphql-language-service-utils"
+      "path": "../graphql-language-service-parser"
     },
     {
       "path": "../graphql-language-service-types"
+    },
+    {
+      "path": "../graphql-language-service-utils"
     }
   ],
+  "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

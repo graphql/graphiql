@@ -16,7 +16,7 @@ import {
 
 import { Position, Range } from 'graphql-language-service-utils';
 
-import { parse, ParserOptions } from '@babel/parser';
+import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -24,30 +24,6 @@ const PARSER_OPTIONS: ParserOptions = {
   allowReturnOutsideFunction: true,
   allowSuperOutsideMethod: true,
   sourceType: 'module',
-  plugins: [
-    'flow',
-    'jsx',
-    'doExpressions',
-    'objectRestSpread',
-    ['decorators', { decoratorsBeforeExport: false }],
-    'classProperties',
-    'classPrivateProperties',
-    'classPrivateMethods',
-    'exportDefaultFrom',
-    'exportNamespaceFrom',
-    'asyncGenerators',
-    'functionBind',
-    'functionSent',
-    'dynamicImport',
-    'numericSeparator',
-    'optionalChaining',
-    'importMeta',
-    'bigInt',
-    'optionalCatchBinding',
-    'throwExpressions',
-    ['pipelineOperator', { proposal: 'minimal' }],
-    'nullishCoalescingOperator',
-  ],
   strictMode: false,
 };
 
@@ -57,14 +33,50 @@ const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
   createRefetchContainer: true,
 };
 
+const DEFAULT_STABLE_TAGS = ['graphql', 'gql'];
+export const DEFAULT_TAGS = [...DEFAULT_STABLE_TAGS, 'graphql.experimental'];
+
 type TagResult = { tag: string; template: string; range: Range };
 
 interface TagVisitiors {
   [type: string]: (node: any) => void;
 }
 
-export function findGraphQLTags(text: string): TagResult[] {
+const BABEL_PLUGINS: ParserPlugin[] = [
+  'jsx',
+  'doExpressions',
+  'objectRestSpread',
+  ['decorators', { decoratorsBeforeExport: false }],
+  'classProperties',
+  'classPrivateProperties',
+  'classPrivateMethods',
+  'exportDefaultFrom',
+  'exportNamespaceFrom',
+  'asyncGenerators',
+  'functionBind',
+  'functionSent',
+  'dynamicImport',
+  'numericSeparator',
+  'optionalChaining',
+  'importMeta',
+  'bigInt',
+  'optionalCatchBinding',
+  'throwExpressions',
+  ['pipelineOperator', { proposal: 'minimal' }],
+  'nullishCoalescingOperator',
+];
+
+export function findGraphQLTags(text: string, ext: string): TagResult[] {
   const result: TagResult[] = [];
+
+  const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
+
+  if (ext === '.ts' || ext === '.tsx') {
+    plugins?.push('typescript');
+  } else {
+    plugins?.push('flow', 'flowComments');
+  }
+  PARSER_OPTIONS.plugins = plugins;
   const ast = parse(text, PARSER_OPTIONS);
 
   const visitors = {
@@ -158,8 +170,6 @@ export function findGraphQLTags(text: string): TagResult[] {
   return result;
 }
 
-const IDENTIFIERS = { graphql: true, gql: true };
-
 const IGNORED_KEYS: { [key: string]: boolean } = {
   comments: true,
   end: true,
@@ -172,7 +182,10 @@ const IGNORED_KEYS: { [key: string]: boolean } = {
 };
 
 function getGraphQLTagName(tag: Expression): string | null {
-  if (tag.type === 'Identifier' && IDENTIFIERS.hasOwnProperty(tag.name)) {
+  if (
+    tag.type === 'Identifier' &&
+    DEFAULT_STABLE_TAGS.some(t => t === tag.name)
+  ) {
     return tag.name;
   } else if (
     tag.type === 'MemberExpression' &&

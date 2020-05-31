@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-utils",
-  "version": "2.4.0-alpha.1",
+  "version": "2.4.0-alpha.7",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -23,18 +23,13 @@
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
-  "engines": {
-    "node": ">= 9.7.3"
-  },
-  "engineStrict": true,
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0"
+    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
   },
   "dependencies": {
-    "graphql-config": "2.2.1",
-    "graphql-language-service-types": "^1.6.0-alpha.1"
+    "graphql-language-service-types": "^1.6.0-alpha.6"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23"
+    "@types/jest": "^25.2.1"
   }
 }

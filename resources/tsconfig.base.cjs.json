@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "esnext",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -10,11 +10,13 @@
     "declarationMap": true,
     "removeComments": true,
     "strict": true,
+    "jsx": "react",
     "noImplicitAny": true,
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "lib": ["dom", "es2017", "esnext"],
     "types": ["node", "jest"],
@@ -26,6 +28,7 @@
     "**/*.spec.ts",
     "**/*.spec.js",
     "**/*-test.ts",
-    "**/*-test.js"
+    "**/*-test.js",
+    "**/node_modules/**"
   ]
 }
