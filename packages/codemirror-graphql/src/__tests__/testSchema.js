@@ -29,7 +29,7 @@ import {
 
 // Test Schema
 
-const TestEnum = new GraphQLEnumType({
+export const TestEnum = new GraphQLEnumType({
   name: 'TestEnum',
   values: {
     RED: {},
@@ -38,7 +38,7 @@ const TestEnum = new GraphQLEnumType({
   },
 });
 
-const TestInputObject = new GraphQLInputObjectType({
+export const TestInputObject = new GraphQLInputObjectType({
   name: 'TestInput',
   fields: () => ({
     string: { type: GraphQLString },
@@ -70,7 +70,7 @@ const TestInterface = new GraphQLInterfaceType({
   },
 });
 
-const UnionFirst = new GraphQLObjectType({
+export const UnionFirst = new GraphQLObjectType({
   name: 'First',
   interfaces: [TestInterface],
   fields: () => ({
@@ -85,7 +85,7 @@ const UnionFirst = new GraphQLObjectType({
   }),
 });
 
-const UnionSecond = new GraphQLObjectType({
+export const UnionSecond = new GraphQLObjectType({
   name: 'Second',
   fields: () => ({
     second: {
@@ -95,7 +95,7 @@ const UnionSecond = new GraphQLObjectType({
   }),
 });
 
-const TestUnion = new GraphQLUnionType({
+export const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [UnionFirst, UnionSecond],
   resolveType() {
@@ -103,7 +103,7 @@ const TestUnion = new GraphQLUnionType({
   },
 });
 
-const TestType = new GraphQLObjectType({
+export const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
     test: {
