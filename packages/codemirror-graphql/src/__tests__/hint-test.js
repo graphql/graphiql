@@ -61,11 +61,6 @@ function getHintSuggestions(queryString, cursor) {
   });
 }
 
-function checkSuggestions(source, suggestions) {
-  const titles = suggestions.map(suggestion => suggestion.text);
-  expect(titles).to.deep.equal(source);
-}
-
 function getExpectedSuggestions(list) {
   return list.map(item => ({
     text: item.text,
@@ -141,16 +136,19 @@ describe('graphql-hint', () => {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
       },
       {
         text: '__schema',
         type: GraphQLNonNull(__Schema),
         description: 'Access the current type schema of this server.',
+        isDeprecated: false,
       },
       {
         text: '__type',
         type: __Type,
         description: 'Request the type information of a single type.',
+        isDeprecated: false,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -205,6 +203,7 @@ describe('graphql-hint', () => {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -226,72 +225,58 @@ describe('graphql-hint', () => {
       {
         text: 'string',
         type: GraphQLString,
-        description: null,
       },
       {
         text: 'int',
         type: GraphQLInt,
-        description: null,
       },
       {
         text: 'float',
         type: GraphQLFloat,
-        description: null,
       },
       {
         text: 'boolean',
         type: GraphQLBoolean,
-        description: null,
       },
       {
         text: 'id',
         type: GraphQLID,
-        description: null,
       },
       {
         text: 'enum',
         type: TestEnum,
-        description: null,
       },
       {
         text: 'object',
         type: TestInputObject,
-        description: null,
       },
       {
         text: 'listString',
         type: new GraphQLList(GraphQLString),
-        description: null,
       },
       {
         text: 'listInt',
         type: new GraphQLList(GraphQLInt),
-        description: null,
       },
       {
         text: 'listFloat',
         type: new GraphQLList(GraphQLFloat),
-        description: null,
       },
       {
         text: 'listBoolean',
         type: new GraphQLList(GraphQLBoolean),
-        description: null,
       },
       {
         text: 'listID',
         type: new GraphQLList(GraphQLID),
-        description: null,
       },
       {
         text: 'listEnum',
         type: new GraphQLList(TestEnum),
-        description: null,
       },
       {
         text: 'listObject',
         type: new GraphQLList(TestInputObject),
-        description: null,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -307,12 +292,10 @@ describe('graphql-hint', () => {
       {
         text: 'float',
         type: GraphQLFloat,
-        description: null,
       },
       {
         text: 'listFloat',
         type: new GraphQLList(GraphQLFloat),
-        description: null,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -328,72 +311,58 @@ describe('graphql-hint', () => {
       {
         text: 'string',
         type: GraphQLString,
-        description: null,
       },
       {
         text: 'int',
         type: GraphQLInt,
-        description: null,
       },
       {
         text: 'float',
         type: GraphQLFloat,
-        description: null,
       },
       {
         text: 'boolean',
         type: GraphQLBoolean,
-        description: null,
       },
       {
         text: 'id',
         type: GraphQLID,
-        description: null,
       },
       {
         text: 'enum',
         type: TestEnum,
-        description: null,
       },
       {
         text: 'object',
         type: TestInputObject,
-        description: null,
       },
       {
         text: 'listString',
         type: new GraphQLList(GraphQLString),
-        description: null,
       },
       {
         text: 'listInt',
         type: new GraphQLList(GraphQLInt),
-        description: null,
       },
       {
         text: 'listFloat',
         type: new GraphQLList(GraphQLFloat),
-        description: null,
       },
       {
         text: 'listBoolean',
         type: new GraphQLList(GraphQLBoolean),
-        description: null,
       },
       {
         text: 'listID',
         type: new GraphQLList(GraphQLID),
-        description: null,
       },
       {
         text: 'listEnum',
         type: new GraphQLList(TestEnum),
-        description: null,
       },
       {
         text: 'listObject',
         type: new GraphQLList(TestInputObject),
-        description: null,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -799,6 +768,7 @@ describe('graphql-hint', () => {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
@@ -825,6 +795,7 @@ describe('graphql-hint', () => {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
