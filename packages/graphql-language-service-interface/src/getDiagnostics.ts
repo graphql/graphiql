@@ -120,9 +120,9 @@ function annotations(
   const highlightedNodes: Diagnostic[] = [];
   error.nodes.forEach(node => {
     const highlightNode =
-      node.kind !== 'Variable' && 'name' in node
+      node.kind !== 'Variable' && node.name
         ? node.name
-        : 'variable' in node
+        : node.variable
         ? node.variable
         : node;
     if (highlightNode) {
