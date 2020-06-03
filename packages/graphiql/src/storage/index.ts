@@ -6,18 +6,29 @@ import {
   OnErrorType,
 } from './storage.interface';
 export class CustomStorage implements Storage {
-  private storage: BaseStorage;
+  private static storage: BaseStorage | null;
+  private static instance: CustomStorage;
   private maxSize: number = 0;
-  constructor(storage: BaseStorage) {
-    this.storage = storage;
+  private constructor(storage: BaseStorage) {
+    CustomStorage.storage = storage;
   }
-  setStorage(storage: BaseStorage): CustomStorage {
-    this.storage = storage;
-    return this;
+  static getInstance(storage: BaseStorage = null): CustomStorage {
+    if (!storage && !CustomStorage.instance) {
+      throw new Error('storage is not set yet.');
+    }
+    if (CustomStorage.instance) {
+      return CustomStorage.instance;
+    }
+    CustomStorage.instance = this.constructor(storage);
+    return CustomStorage.instance;
+  }
+  static setStorage(storage: BaseStorage): CustomStorage {
+    CustomStorage.storage = storage;
+    return CustomStorage.getInstance();
   }
   async clear(onFinish?: OnFinishType, onError?: OnErrorType): Promise<void> {
     try {
-      await this.storage.clear();
+      await CustomStorage.storage.clear();
       if (onFinish) {
         return onFinish();
       }
@@ -30,7 +41,7 @@ export class CustomStorage implements Storage {
   async getItem(key: string, onError?: OnErrorType): Promise<any> {
     if (isString(key)) {
       try {
-        const res = await this.storage.getItem(key);
+        const res = await CustomStorage.storage.getItem(key);
         if (isJson(res)) {
           const parsed = JSON.parse(res as string);
           if (Array.isArray(parsed) && this.maxSize) {
@@ -60,7 +71,7 @@ export class CustomStorage implements Storage {
     return data;
   }
   async removeItem(key: string) {
-    return this.storage.removeItem(key);
+    return CustomStorage.storage.removeItem(key);
   }
   async removeManyItems(keys: string[]) {
     keys.map(async key => await this.removeItem(key));
@@ -169,7 +180,7 @@ export class CustomStorage implements Storage {
     if (isString(key)) {
       try {
         value = isString(value) ? value : JSON.stringify(value);
-        await this.storage.setItem(key, value);
+        await CustomStorage.storage.setItem(key, value);
         if (onFinish) {
           return onFinish();
         }
@@ -181,5 +192,6 @@ export class CustomStorage implements Storage {
     }
   }
 }
-
-export default new CustomStorage(localStorage);
+const storage = CustomStorage.getInstance();
+Object.freeze(storage);
+export default storage;
