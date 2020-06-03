@@ -1,6 +1,6 @@
 import { CustomStorage } from './index';
 describe('storage test suite', () => {
-  const storage = new CustomStorage(localStorage);
+  const storage = CustomStorage.getInstance(localStorage);
   beforeEach(() => {
     storage.clear();
     storage.limit(0);

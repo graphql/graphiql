@@ -6,20 +6,19 @@ import {
   OnErrorType,
 } from './storage.interface';
 export class CustomStorage implements Storage {
-  private static storage: BaseStorage | null;
+  private static storage: BaseStorage;
   private static instance: CustomStorage;
   private maxSize: number = 0;
   private constructor(storage: BaseStorage) {
     CustomStorage.storage = storage;
   }
-  static getInstance(storage: BaseStorage = null): CustomStorage {
+  static getInstance(storage?: BaseStorage): CustomStorage {
     if (!storage && !CustomStorage.instance) {
-      throw new Error('storage is not set yet.');
+      throw new Error('storage is not defined yet.');
     }
-    if (CustomStorage.instance) {
-      return CustomStorage.instance;
+    if (!CustomStorage.instance) {
+      CustomStorage.instance = new CustomStorage(storage as BaseStorage);
     }
-    CustomStorage.instance = this.constructor(storage);
     return CustomStorage.instance;
   }
   static setStorage(storage: BaseStorage): CustomStorage {
@@ -192,6 +191,5 @@ export class CustomStorage implements Storage {
     }
   }
 }
-const storage = CustomStorage.getInstance();
-Object.freeze(storage);
+const storage = CustomStorage.getInstance(localStorage);
 export default storage;
