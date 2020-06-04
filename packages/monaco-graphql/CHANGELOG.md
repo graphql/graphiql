@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.4](https://github.com/graphql/graphiql/compare/monaco-graphql@0.1.3...monaco-graphql@0.1.4) (2020-06-04)
+
+**Note:** Version bump only for package monaco-graphql
+
 ## [0.1.3](https://github.com/graphql/graphiql/compare/monaco-graphql@0.1.2...monaco-graphql@0.1.3) (2020-06-04)
 
 ### Bug Fixes
