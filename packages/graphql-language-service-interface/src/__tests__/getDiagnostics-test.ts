@@ -44,22 +44,7 @@ describe('getDiagnostics', () => {
         return {
           Document(node) {
             for (const definition of node.definitions) {
-              // console.log(`definition:`, definition) //this is what the definition looks like:
-              // as you can see, the definition.name === undefined
-              // definition: {
-              //         kind: 'OperationDefinition',
-              //           operation: 'query',
-              //             name: undefined,
-              //               variableDefinitions: [],
-              //                 directives: [],
-              //                   selectionSet:
-              //         {
-              //           kind: 'SelectionSet',
-              //             selections: [[Object]],
-              //               loc: { start: 0, end: 17 }
-              //         },
-              //   loc: { start: 0, end: 17 }
-              // }
+              // add a custom error to every definition
               validationContext.reportError(
                 new GraphQLError(`This is a custom error.`, definition),
               );
