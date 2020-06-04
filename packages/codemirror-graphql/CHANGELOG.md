@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0-alpha.11](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.0-alpha.10...codemirror-graphql@0.12.0-alpha.11) (2020-06-04)
+
+**Note:** Version bump only for package codemirror-graphql
+
+# [0.12.0-alpha.10](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.0-alpha.9...codemirror-graphql@0.12.0-alpha.10) (2020-06-04)
+
+### Bug Fixes
+
+- cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
+- make list type and non-nullable type available ([#902](https://github.com/graphql/graphiql/issues/902)) ([cea837f](https://github.com/graphql/graphiql/commit/cea837ff77c36dadb01b4302282821b00d7f5f2f))
+
+# [0.12.0-alpha.9](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.0-alpha.8...codemirror-graphql@0.12.0-alpha.9) (2020-05-28)
+
+**Note:** Version bump only for package codemirror-graphql
+
 # [0.12.0-alpha.8](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.0-alpha.7...codemirror-graphql@0.12.0-alpha.8) (2020-05-17)
 
 **Note:** Version bump only for package codemirror-graphql

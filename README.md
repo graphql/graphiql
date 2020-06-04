@@ -13,7 +13,6 @@
 ![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/graphql/graphiql)
 ![LGTM Alerts](https://img.shields.io/lgtm/alerts/github/graphql/graphiql)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3887/badge)](https://bestpractices.coreinfrastructure.org/projects/3887)
-or by embedding this in your HTML:
 
 ## Overview
 

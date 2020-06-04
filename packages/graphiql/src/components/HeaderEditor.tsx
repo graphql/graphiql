@@ -4,7 +4,6 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { GraphQLType } from 'graphql';
 import * as CM from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import React from 'react';
@@ -21,8 +20,7 @@ declare module CodeMirror {
   }
 }
 
-type VariableEditorProps = {
-  variableToType?: { [variable: string]: GraphQLType };
+type HeaderEditorProps = {
   value?: string;
   onEdit: (value: string) => void;
   readOnly?: boolean;
@@ -35,25 +33,24 @@ type VariableEditorProps = {
 };
 
 /**
- * VariableEditor
+ * HeaderEditor
  *
- * An instance of CodeMirror for editing variables defined in QueryEditor.
+ * An instance of CodeMirror for editing headers to be passed with the GraphQL request.
  *
  * Props:
  *
- *   - variableToType: A mapping of variable name to GraphQLType.
  *   - value: The text of the editor.
  *   - onEdit: A function called when the editor changes, given the edited text.
  *   - readOnly: Turns the editor to read-only mode.
  *
  */
-export class VariableEditor extends React.Component<VariableEditorProps> {
+export class HeaderEditor extends React.Component<HeaderEditorProps> {
   CodeMirror: any;
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean = false;
-  constructor(props: VariableEditorProps) {
+  constructor(props: HeaderEditorProps) {
     super(props);
 
     // Keep a cached version of the value, this cache will be updated when the
@@ -76,15 +73,12 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/addon/dialog/dialog');
     require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
-    require('codemirror-graphql/variables/mode');
 
     const editor = (this.editor = this.CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
-      mode: 'graphql-variables',
+      mode: 'graphql-headers',
       theme: this.props.editorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,
@@ -93,15 +87,6 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
       readOnly: this.props.readOnly ? 'nocursor' : false,
       foldGutter: {
         minFoldSize: 4,
-      },
-      lint: {
-        variableToType: this.props.variableToType,
-      },
-      hintOptions: {
-        variableToType: this.props.variableToType,
-        closeOnUnfocus: false,
-        completeSingle: false,
-        container: this._node,
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
@@ -156,7 +141,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentDidUpdate(prevProps: VariableEditorProps) {
+  componentDidUpdate(prevProps: HeaderEditorProps) {
     this.CodeMirror = require('codemirror');
     if (!this.editor) {
       return;
@@ -166,11 +151,6 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     // user-input changes which could otherwise result in an infinite
     // event loop.
     this.ignoreChangeEvent = true;
-    if (this.props.variableToType !== prevProps.variableToType) {
-      this.editor.options.lint.variableToType = this.props.variableToType;
-      this.editor.options.hintOptions.variableToType = this.props.variableToType;
-      this.CodeMirror.signal(this.editor, 'change', this.editor);
-    }
     if (
       this.props.value !== prevProps.value &&
       this.props.value !== this.cachedValue

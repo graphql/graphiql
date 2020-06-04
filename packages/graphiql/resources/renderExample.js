@@ -36,6 +36,20 @@ if (parameters.variables) {
   }
 }
 
+// If headers was provided, try to format it.
+if (parameters.headers) {
+  try {
+    parameters.headers = JSON.stringify(
+      JSON.parse(parameters.headers),
+      null,
+      2,
+    );
+  } catch (e) {
+    // Do nothing, we want to display the invalid JSON as a string, rather
+    // than present an error.
+  }
+}
+
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery) {
@@ -45,6 +59,11 @@ function onEditQuery(newQuery) {
 
 function onEditVariables(newVariables) {
   parameters.variables = newVariables;
+  updateURL();
+}
+
+function onEditHeaders(newHeaders) {
+  parameters.headers = newHeaders;
   updateURL();
 }
 
@@ -72,7 +91,7 @@ function updateURL() {
 // Defines a GraphQL fetcher using the fetch API. You're not required to
 // use fetch, and could instead implement graphQLFetcher however you like,
 // as long as it returns a Promise or Observable.
-function graphQLFetcher(graphQLParams) {
+function graphQLFetcher(graphQLParams, opts = { headers: {} }) {
   // When working locally, the example expects a GraphQL server at the path /graphql.
   // In a PR preview, it connects to the Star Wars API externally.
   // Change this to point wherever you host your GraphQL server.
@@ -80,12 +99,22 @@ function graphQLFetcher(graphQLParams) {
   const api = isDev
     ? '/graphql'
     : 'https://swapi-graphql.netlify.app/.netlify/functions/index';
+
+  let headers = opts.headers;
+  // Convert headers to an object.
+  if (typeof headers === 'string') {
+    headers = JSON.parse(opts.headers);
+  }
+
   return fetch(api, {
     method: 'post',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
+    headers: Object.assign(
+      {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      headers,
+    ),
     body: JSON.stringify(graphQLParams),
     credentials: 'omit',
   })
@@ -110,11 +139,14 @@ ReactDOM.render(
     fetcher: graphQLFetcher,
     query: parameters.query,
     variables: parameters.variables,
+    headers: parameters.headers,
     operationName: parameters.operationName,
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
+    onEditHeaders: onEditHeaders,
     defaultVariableEditorOpen: true,
     onEditOperationName: onEditOperationName,
+    headerEditorEnabled: true,
   }),
   document.getElementById('graphiql'),
 );

@@ -6,12 +6,15 @@
  */
 
 // eslint-disable-next-line spaced-comment
-/// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
+/// <reference types='monaco-editor'/>
 
 declare module monaco.languages.graphql {
-  import type { SchemaLoader, SchemaConfig } from 'graphql-language-service';
+  import type {
+    SchemaLoader,
+    SchemaConfig as SchemaConfiguration,
+    SchemaResponse,
+  } from 'graphql-language-service';
 
-  import type { GraphQLSchema } from 'graphql';
   import type { Options as PrettierConfig } from 'prettier';
 
   import { MonacoGraphQLApi } from '../api';
@@ -28,9 +31,7 @@ declare module monaco.languages.graphql {
 
   export type FilePointer = string | string[];
 
-  export interface FormattingOptions {
-    prettierConfig: PrettierConfig;
-  }
+  export type FormattingOptions = PrettierConfig;
 
   export interface ModeConfiguration {
     /**
@@ -87,20 +88,18 @@ declare module monaco.languages.graphql {
   export interface ICreateData {
     languageId: string;
     enableSchemaRequest: boolean;
-    schemaConfig: SchemaConfig;
-    schemaLoader: () => Promise<GraphQLSchema>;
+    schemaConfig: SchemaConfiguration;
+    schemaLoader: () => Promise<SchemaResponse>;
     formattingOptions?: FormattingOptions;
   }
 
   export interface LanguageServiceDefaults {
-    readonly onDidChange: IEvent<
-      monaco.languages.graphql.LanguageServiceDefaults
-    >;
-    readonly schemaConfig: SchemaConfig;
+    readonly onDidChange: IEvent<LanguageServiceDefaults>;
+    readonly schemaConfig: SchemaConfiguration;
     readonly formattingOptions: FormattingOptions;
     readonly modeConfiguration: ModeConfiguration;
-    setSchemaConfig(options: SchemaConfig): void;
-    updateSchemaConfig(options: Partial<SchemaOptoons>): void;
+    setSchemaConfig(options: SchemaConfiguration): void;
+    updateSchemaConfig(options: Partial<SchemaConfiguration>): void;
     setSchemaUri(schemaUri: string): void;
     setFormattingOptions(formattingOptions: FormattingOptions): void;
     setModeConfiguration(modeConfiguration: ModeConfiguration): void;

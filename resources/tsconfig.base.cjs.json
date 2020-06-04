@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "esnext",
+    "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -10,7 +10,6 @@
     "declarationMap": true,
     "removeComments": true,
     "strict": true,
-    "skipLibCheck": true,
     "jsx": "react",
     "noImplicitAny": true,
     "noImplicitReturns": false,
