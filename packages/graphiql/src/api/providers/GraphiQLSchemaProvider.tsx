@@ -131,7 +131,7 @@ export function SchemaProvider({
       console.error(error);
       dispatch(schemaErroredAction(error));
     }
-  }, [dispatch]);
+  }, []);
 
   React.useEffect(() => {
     if (state.config) {

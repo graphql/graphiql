@@ -74,7 +74,7 @@ export function EditorsProvider(props: { children?: any }) {
     (editorKey: string, editor: monaco.editor.IStandaloneCodeEditor) => {
       dispatch(editorLoadedAction(editorKey, editor));
     },
-    [dispatch],
+    [],
   );
 
   return (
