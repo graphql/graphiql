@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.12](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.11...graphiql@1.0.0-alpha.12) (2020-06-04)
+
+### Bug Fixes
+
+- cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
+- display variable editor when headers are not enabled ([ce7b2e2](https://github.com/graphql/graphiql/commit/ce7b2e2b45d530b61e916112e864074cf3a6ddc7))
+
 # [1.0.0-alpha.11](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.10...graphiql@1.0.0-alpha.11) (2020-05-28)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/graphql/graphiql/compare/monaco-graphql@0.1.2...monaco-graphql@0.1.3) (2020-06-04)
+
+### Bug Fixes
+
+- cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
+
 ## [0.1.2](https://github.com/graphql/graphiql/compare/monaco-graphql@0.1.1...monaco-graphql@0.1.2) (2020-05-28)
 
 **Note:** Version bump only for package monaco-graphql

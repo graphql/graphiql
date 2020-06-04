@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [3.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.0.0-alpha.3...graphql-language-service-cli@3.0.0-alpha.4) (2020-06-04)
+
+### Bug Fixes
+
+- cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
+
 # [3.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.0.0-alpha.2...graphql-language-service-cli@3.0.0-alpha.3) (2020-05-28)
 
 **Note:** Version bump only for package graphql-language-service-cli

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0-alpha.7](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.6...graphql-language-service-types@1.6.0-alpha.7) (2020-06-04)
+
+### Bug Fixes
+
+- make list type and non-nullable type available ([#902](https://github.com/graphql/graphiql/issues/902)) ([cea837f](https://github.com/graphql/graphiql/commit/cea837ff77c36dadb01b4302282821b00d7f5f2f))
+
 # [1.6.0-alpha.6](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.5...graphql-language-service-types@1.6.0-alpha.6) (2020-05-17)
 
 ### Bug Fixes
