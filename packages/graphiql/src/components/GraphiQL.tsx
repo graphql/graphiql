@@ -1456,8 +1456,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
       debounce(500, () =>
         this._storage.set(
-          'variableEditorHeight',
-          JSON.stringify(this.state.variableEditorHeight),
+          'secondaryEditorHeight',
+          JSON.stringify(this.state.secondaryEditorHeight),
         ),
       );
     };
