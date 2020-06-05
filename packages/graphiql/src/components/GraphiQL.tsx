@@ -1157,7 +1157,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleEditVariables = (value: string) => {
     this.setState({ variables: value });
-    debounce(500, () => this._storage.set('variables', value));
+    debounce(500, () => this._storage.set('variables', value))();
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
@@ -1217,7 +1217,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               'docExplorerOpen',
               JSON.stringify(this.state.docExplorerOpen),
             ),
-          );
+          )();
         }
       }
     }
@@ -1285,7 +1285,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.setState({ editorFlex: leftSize / rightSize });
       debounce(500, () =>
         this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex)),
-      );
+      )();
     };
 
     let onMouseUp: OnMouseUpFn = () => {
@@ -1354,7 +1354,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             'docExplorerWidth',
             JSON.stringify(this.state.docExplorerWidth),
           ),
-        );
+        )();
       }
       this._storage.set(
         'docExplorerOpen',
@@ -1370,7 +1370,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             'docExplorerWidth',
             JSON.stringify(this.state.docExplorerWidth),
           ),
-        );
+        )();
       }
 
       document.removeEventListener('mousemove', onMouseMove!);
@@ -1392,7 +1392,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         'docExplorerWidth',
         JSON.stringify(this.state.docExplorerWidth),
       ),
-    );
+    )();
   };
 
   // Prevent clicking on the tab button from propagating to the resizer.
@@ -1459,7 +1459,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           'secondaryEditorHeight',
           JSON.stringify(this.state.secondaryEditorHeight),
         ),
-      );
+      )();
     };
 
     let onMouseUp: OnMouseUpFn = () => {
