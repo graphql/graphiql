@@ -5,6 +5,7 @@ import {
   OnFinishType,
   OnErrorType,
 } from './storage.interface';
+
 export class CustomStorage implements Storage {
   private static storage: BaseStorage;
   private static instance: CustomStorage;
@@ -24,6 +25,10 @@ export class CustomStorage implements Storage {
   static setStorage(storage: BaseStorage): CustomStorage {
     CustomStorage.storage = storage;
     return CustomStorage.getInstance();
+  }
+  async getAll() {
+    const namespaces = await this.getItem('namespaces');
+    return this.getAllItems(namespaces);
   }
   async clear(onFinish?: OnFinishType, onError?: OnErrorType): Promise<void> {
     try {
@@ -139,7 +144,8 @@ export class CustomStorage implements Storage {
       !(item instanceof Array) &&
       item.hasOwnProperty(payload)
     ) {
-      delete item[payload];
+      const { [payload]: value, ...rest } = item;
+      item = rest;
     }
     this.saveItem(keyStorage, item);
   }
@@ -154,7 +160,10 @@ export class CustomStorage implements Storage {
       return;
     }
     if (Array.isArray(item)) {
-      value = JSON.stringify([...item, value]);
+      const hasItem = item.some(v => v === value);
+      if (!hasItem) {
+        value = JSON.stringify([...item, value]);
+      }
     }
     if (item instanceof Object && !(item instanceof Array)) {
       value = JSON.stringify({ ...item, ...value });
