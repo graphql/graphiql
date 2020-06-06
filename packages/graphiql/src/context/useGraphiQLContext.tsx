@@ -32,6 +32,10 @@ export const baseReducer = (namespace?: string) => <
   const { type, payload, persist } = action;
   const nextState = { ...state, [type]: payload };
   if (persist && namespace) {
+    // if persist and the namespace are available.
+    // we will get the item by its namespace then we will merge the data with the only pieces we wish to update via the type and payload.
+    // with that done, we won't update all of the state, with the current status of the context's state, but we will sync whatever we want
+    // to persist at our state when enabling the persist flag.
     storage.getItem(namespace).then(async data => {
       if (!data) {
         data = {};
@@ -49,7 +53,6 @@ export const useBaseReducer = <T extends Record<string, any>>(
   return useReducer(baseReducer(namespace), initialState);
 };
 
-// we need a state wrapper, that decides whether to retrieve the data from the original context's value, or the persisted storage.
 export const BaseProvider = <T extends Record<string, any>>({
   children,
   initialState,
@@ -70,15 +73,16 @@ export const BaseProvider = <T extends Record<string, any>>({
     }
 
     const data = await storage.getItem(namespace);
+    // push the namespace to the namespaces, to know which keys at the localstorage belongs to graphiql.
+    // if the namespace exists, the push method won't push it.
     await storage.push('namespaces', namespace);
 
     // if the local storage has the data with the key of namespace, we set the initial state of the context with
     // the value of the local storage instead of the passed initial state to assure persistency.
     if (data) {
       dispatch(data);
-      return;
     }
-  }, [namespace, initialState]);
+  }, [namespace]);
   // if the current namespace at the storage api exists with a data, and we are trying to instantiate the context.
   // it means that we are refreshing the context, and we are setting up the initial state. therefore, we will replace the initial state
   // with the state that's provided by the storage api.
@@ -115,16 +119,21 @@ export const BaseProvider = <T extends Record<string, any>>({
 
 export const useGraphiQLStorage = (namespace?: string | string[]) => {
   const [state, setState] = useState();
+  const memoizedSetState = useCallback(value => setState(value), [setState]);
   useEffect(() => {
+    // if there is no namespace, we will get all of the graphql modules from local storage
+    // using the getAll method which will fetch all of the namespaces and then getAllItems with these namespaces that we saved earlier.
     if (!namespace) {
-      setState(async () => await storage.getAll());
+      memoizedSetState(async () => storage.getAll());
     }
+    // if the namespace is array, we will fetch all of the items with the related of each namespace.
     if (Array.isArray(namespace)) {
-      setState(async () => await storage.getAllItems(namespace));
+      memoizedSetState(async () => storage.getAllItems(namespace));
       return;
     }
-    setState(async () => await storage.getItem(namespace));
-  }, [setState]);
+    // otherwise, we will fetch a single item by its namespace.
+    memoizedSetState(async () => storage.getItem(namespace));
+  }, [memoizedSetState]);
   return state;
 };
 export const useBaseState = () => {
