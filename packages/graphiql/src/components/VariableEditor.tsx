@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import { GraphQLType } from 'graphql';
-import * as CM from 'codemirror';
+import type * as CM from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 

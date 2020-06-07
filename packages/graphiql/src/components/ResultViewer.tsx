@@ -6,7 +6,7 @@
  */
 
 import React, { Component, FunctionComponent } from 'react';
-import * as CM from 'codemirror';
+import type * as CM from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from '../utility/CodeMirrorSizer';

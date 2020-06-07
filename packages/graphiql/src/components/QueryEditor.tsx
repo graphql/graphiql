@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import * as CM from 'codemirror';
+import type * as CM from 'codemirror';
 import { GraphQLSchema, GraphQLType } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
