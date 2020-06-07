@@ -4,7 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import * as CM from 'codemirror';
+import type * as CM from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 
