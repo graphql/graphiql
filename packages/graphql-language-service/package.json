@@ -27,13 +27,12 @@
     "graphql": "./dist/temp-bin.js"
   },
   "peerDependencies": {
-    "graphql": "^0.13.0 || ^14.0.0 || ^15.0.0"
+    "graphql": "^14.0.0 || ^15.0.0"
   },
   "devDependencies": {
     "graphql-language-service-types": "^1.6.0-alpha.5"
   },
   "dependencies": {
-    "graphql-config": "3.0.0-rc.2",
     "graphql-language-service-interface": "^2.4.0-alpha.11",
     "graphql-language-service-types": "^1.6.0-alpha.8"
   }
