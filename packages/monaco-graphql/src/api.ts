@@ -5,10 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { SchemaConfig } from 'graphql-language-service';
-import { FormattingOptions, ModeConfiguration } from './typings';
-import { WorkerAccessor } from './languageFeatures';
-import { Emitter, IEvent } from 'monaco-editor';
+import type { SchemaConfig, RawSchema } from 'graphql-language-service';
+import type { FormattingOptions, ModeConfiguration } from './typings';
+import type { WorkerAccessor } from './languageFeatures';
+import type { IEvent } from 'monaco-editor';
+
+import { Emitter } from 'monaco-editor';
 
 export class LanguageServiceAPI {
   private _onDidChange = new Emitter<LanguageServiceAPI>();
@@ -35,58 +37,62 @@ export class LanguageServiceAPI {
     this.setModeConfiguration(modeConfiguration);
     this.setFormattingOptions(formattingOptions);
   }
-  get onDidChange(): IEvent<LanguageServiceAPI> {
+  public get onDidChange(): IEvent<LanguageServiceAPI> {
     return this._onDidChange.event;
   }
 
-  get languageId(): string {
+  public get languageId(): string {
     return this._languageId;
   }
-  get modeConfiguration(): ModeConfiguration {
+  public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
-  get schemaConfig(): SchemaConfig {
+  public get schemaConfig(): SchemaConfig {
     return this._schemaConfig;
   }
-  get formattingOptions(): FormattingOptions {
+  public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
   }
-  get worker(): WorkerAccessor {
+  public get worker(): WorkerAccessor {
     return this._worker as WorkerAccessor;
   }
   setWorker(worker: WorkerAccessor) {
     this._worker = worker;
   }
 
-  getSchema = async () => {
+  public getSchema = async () => {
     const langWorker = await this.worker();
     return langWorker.getSchemaResponse();
   };
-  parse = async (graphqlString: string) => {
+  public setSchema = async (schema: RawSchema) => {
+    const langWorker = await this.worker();
+    return langWorker.setSchema(schema);
+  };
+  public parse = async (graphqlString: string) => {
     const langWorker = await this.worker();
     return langWorker.doParse(graphqlString);
   };
 
-  setSchemaConfig(options: SchemaConfig): void {
+  public setSchemaConfig(options: SchemaConfig): void {
     this._schemaConfig = options || Object.create(null);
     this._onDidChange.fire(this);
   }
 
-  updateSchemaConfig(options: Partial<SchemaConfig>): void {
+  public updateSchemaConfig(options: Partial<SchemaConfig>): void {
     this._schemaConfig = { ...this._schemaConfig, ...options };
     this._onDidChange.fire(this);
   }
 
-  setSchemaUri(schemaUri: string): void {
+  public setSchemaUri(schemaUri: string): void {
     this.setSchemaConfig({ ...this._schemaConfig, uri: schemaUri });
   }
 
-  setModeConfiguration(modeConfiguration: ModeConfiguration): void {
+  public setModeConfiguration(modeConfiguration: ModeConfiguration): void {
     this._modeConfiguration = modeConfiguration || Object.create(null);
     this._onDidChange.fire(this);
   }
 
-  setFormattingOptions(formattingOptions: FormattingOptions): void {
+  public setFormattingOptions(formattingOptions: FormattingOptions): void {
     this._formattingOptions = formattingOptions || Object.create(null);
     this._onDidChange.fire(this);
   }

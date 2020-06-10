@@ -12,6 +12,8 @@ import {
   getHoverInformation,
 } from 'graphql-language-service-interface';
 
+import { RawSchema } from './types';
+
 import {
   defaultSchemaLoader,
   SchemaConfig,
@@ -23,6 +25,8 @@ export type GraphQLLanguageConfig = {
   parser?: typeof parse;
   schemaLoader?: typeof defaultSchemaLoader;
   schemaBuilder?: typeof defaultSchemaBuilder;
+  rawSchema?: RawSchema;
+  parseOptions?: ParseOptions;
   schemaConfig: SchemaConfig;
 };
 
@@ -35,12 +39,15 @@ export class LanguageService {
     schemaConfig: SchemaConfig,
   ) => Promise<SchemaResponse | void> = defaultSchemaLoader;
   private _schemaBuilder = defaultSchemaBuilder;
-
+  private _rawSchema: RawSchema | null = null;
+  private _parseOptions: ParseOptions | undefined = undefined;
   constructor({
     parser,
     schemaLoader,
     schemaBuilder,
     schemaConfig,
+    rawSchema,
+    parseOptions,
   }: GraphQLLanguageConfig) {
     this._schemaConfig = schemaConfig;
     if (parser) {
@@ -52,11 +59,21 @@ export class LanguageService {
     if (schemaBuilder) {
       this._schemaBuilder = schemaBuilder;
     }
+    if (rawSchema) {
+      this._rawSchema = rawSchema;
+    }
+    if (parseOptions) {
+      this._parseOptions = parseOptions;
+    }
   }
 
   public get schema() {
     return this._schema as GraphQLSchema;
   }
+  /**
+   * setSchema statically, ignoring URI
+   * @param schema: {RawSchema}
+   */
 
   public async getSchema() {
     if (this.schema) {
@@ -65,7 +82,12 @@ export class LanguageService {
     return this.loadSchema();
   }
 
-  public async getSchemaResponse() {
+  public async setSchema(schema: RawSchema): Promise<GraphQLSchema> {
+    this._rawSchema = schema;
+    return this.loadSchema();
+  }
+
+  public async getSchemaResponse(): Promise<SchemaResponse> {
     if (this._schemaResponse) {
       return this._schemaResponse;
     }
@@ -73,6 +95,11 @@ export class LanguageService {
   }
 
   public async loadSchemaResponse(): Promise<SchemaResponse> {
+    if (this._rawSchema) {
+      return typeof this._rawSchema === 'string'
+        ? this.parse(this._rawSchema)
+        : this._rawSchema;
+    }
     if (!this._schemaConfig?.uri) {
       throw new Error('uri missing');
     }
@@ -92,7 +119,7 @@ export class LanguageService {
   }
 
   public async parse(text: string, options?: ParseOptions) {
-    return this._parser(text, options);
+    return this._parser(text, options || this._parseOptions);
   }
 
   public getCompletion = async (

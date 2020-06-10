@@ -3,9 +3,6 @@
 import 'regenerator-runtime/runtime';
 import { api as GraphQLAPI } from 'monaco-graphql/esm/monaco.contribution';
 
-// eslint-disable-next-line spaced-comment
-/// <reference types='monaco-editor'/>
-
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
@@ -94,6 +91,9 @@ const operationEditor = monaco.editor.create(
   {
     model,
     automaticLayout: true,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
   },
 );
 
@@ -103,9 +103,7 @@ GraphQLAPI.setFormattingOptions({
   },
 });
 
-GraphQLAPI.setSchemaConfig({
-  uri: SCHEMA_URL,
-});
+GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
 
 /**
  * Basic Operation Exec Example

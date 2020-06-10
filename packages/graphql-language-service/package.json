@@ -22,7 +22,7 @@
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "bin": {
     "graphql": "./dist/temp-bin.js"
   },

@@ -9,12 +9,13 @@ import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, editor, Position, IRange } from 'monaco-editor';
 
-import {
-  getRange,
-  CompletionItem as GraphQLCompletionItem,
-  LanguageService,
-  GraphQLLanguageConfig,
+import { getRange, LanguageService } from 'graphql-language-service';
+
+import type {
+  RawSchema,
   SchemaResponse,
+  GraphQLLanguageConfig,
+  CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
 
 import {
@@ -50,6 +51,10 @@ export class GraphQLWorker {
 
   async getSchemaResponse(_uri?: string): Promise<SchemaResponse> {
     return this._languageService.getSchemaResponse();
+  }
+
+  async setSchema(schema: RawSchema): Promise<GraphQLSchema> {
+    return this._languageService.setSchema(schema);
   }
 
   async loadSchema(_uri?: string): Promise<GraphQLSchema> {
