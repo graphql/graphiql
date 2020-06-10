@@ -4,7 +4,7 @@
   "version": "0.1.4",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
-  "typings": "dist/monaco.contribution.d.ts",
+  "types": "dist/monaco.contribution.d.ts",
   "contributors": [
     {
       "name": "Peng Lyu",

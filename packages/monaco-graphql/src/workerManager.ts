@@ -76,7 +76,9 @@ export class WorkerManager {
         createData: {
           languageId: this._defaults.languageId,
           formattingOptions: this._defaults.formattingOptions,
-          schemaConfig: this._defaults.schemaConfig,
+          languageConfig: {
+            schemaConfig: this._defaults.schemaConfig,
+          },
         } as ICreateData,
       });
       try {

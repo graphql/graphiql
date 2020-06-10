@@ -1,7 +1,10 @@
 /* global monaco */
 
 import 'regenerator-runtime/runtime';
-import { api as GraphQLAPI } from 'monaco-graphql/esm/monaco.contribution';
+
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+import { api as GraphQLAPI } from 'monaco-graphql';
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.

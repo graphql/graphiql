@@ -1,6 +1,6 @@
 import type {
   SchemaConfig as SchemaConfiguration,
-  SchemaResponse,
+  GraphQLLanguageConfig,
 } from 'graphql-language-service';
 
 import type { Options as PrettierConfig } from 'prettier';
@@ -74,7 +74,6 @@ export interface ModeConfiguration {
 export interface ICreateData {
   languageId: string;
   enableSchemaRequest: boolean;
-  schemaConfig: SchemaConfiguration;
-  schemaLoader: () => Promise<SchemaResponse>;
   formattingOptions?: FormattingOptions;
+  languageConfig: GraphQLLanguageConfig;
 }

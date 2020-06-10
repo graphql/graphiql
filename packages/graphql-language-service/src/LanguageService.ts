@@ -70,10 +70,6 @@ export class LanguageService {
   public get schema() {
     return this._schema as GraphQLSchema;
   }
-  /**
-   * setSchema statically, ignoring URI
-   * @param schema: {RawSchema}
-   */
 
   public async getSchema() {
     if (this.schema) {
@@ -82,6 +78,10 @@ export class LanguageService {
     return this.loadSchema();
   }
 
+  /**
+   * setSchema statically, ignoring URI
+   * @param schema {RawSchema}
+   */
   public async setSchema(schema: RawSchema): Promise<GraphQLSchema> {
     this._rawSchema = schema;
     return this.loadSchema();

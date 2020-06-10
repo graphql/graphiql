@@ -14,7 +14,6 @@ import { getRange, LanguageService } from 'graphql-language-service';
 import type {
   RawSchema,
   SchemaResponse,
-  GraphQLLanguageConfig,
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
 
@@ -38,14 +37,8 @@ export class GraphQLWorker {
   private _formattingOptions: FormattingOptions | undefined;
   constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
-    const serviceConfig: GraphQLLanguageConfig = {
-      schemaConfig: createData.schemaConfig,
-    };
     // if you must, we have a nice default schema loader at home
-    if (createData.schemaLoader) {
-      serviceConfig.schemaLoader = createData.schemaLoader;
-    }
-    this._languageService = new LanguageService(serviceConfig);
+    this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
 
@@ -53,8 +46,8 @@ export class GraphQLWorker {
     return this._languageService.getSchemaResponse();
   }
 
-  async setSchema(schema: RawSchema): Promise<GraphQLSchema> {
-    return this._languageService.setSchema(schema);
+  async setSchema(schema: RawSchema): Promise<void> {
+    await this._languageService.setSchema(schema);
   }
 
   async loadSchema(_uri?: string): Promise<GraphQLSchema> {

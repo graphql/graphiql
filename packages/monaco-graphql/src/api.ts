@@ -5,12 +5,24 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import type { SchemaConfig, RawSchema } from 'graphql-language-service';
+import type {
+  SchemaConfig,
+  RawSchema,
+  SchemaResponse,
+} from 'graphql-language-service';
 import type { FormattingOptions, ModeConfiguration } from './typings';
 import type { WorkerAccessor } from './languageFeatures';
 import type { IEvent } from 'monaco-editor';
 
 import { Emitter } from 'monaco-editor';
+import { DocumentNode } from 'graphql';
+
+export type LanguageServiceAPIOptions = {
+  languageId: string;
+  schemaConfig: SchemaConfig;
+  modeConfiguration: ModeConfiguration;
+  formattingOptions: FormattingOptions;
+};
 
 export class LanguageServiceAPI {
   private _onDidChange = new Emitter<LanguageServiceAPI>();
@@ -25,12 +37,7 @@ export class LanguageServiceAPI {
     schemaConfig,
     modeConfiguration,
     formattingOptions,
-  }: {
-    languageId: string;
-    schemaConfig: SchemaConfig;
-    modeConfiguration: ModeConfiguration;
-    formattingOptions: FormattingOptions;
-  }) {
+  }: LanguageServiceAPIOptions) {
     this._worker = null;
     this._languageId = languageId;
     this.setSchemaConfig(schemaConfig);
@@ -60,18 +67,19 @@ export class LanguageServiceAPI {
     this._worker = worker;
   }
 
-  public getSchema = async () => {
+  public async getSchema(): Promise<SchemaResponse> {
     const langWorker = await this.worker();
     return langWorker.getSchemaResponse();
-  };
-  public setSchema = async (schema: RawSchema) => {
+  }
+  public async setSchema(schema: RawSchema): Promise<void> {
     const langWorker = await this.worker();
-    return langWorker.setSchema(schema);
-  };
-  public parse = async (graphqlString: string) => {
+    await langWorker.setSchema(schema);
+    this._onDidChange.fire(this);
+  }
+  public async parse(graphqlString: string): Promise<DocumentNode> {
     const langWorker = await this.worker();
     return langWorker.doParse(graphqlString);
-  };
+  }
 
   public setSchemaConfig(options: SchemaConfig): void {
     this._schemaConfig = options || Object.create(null);

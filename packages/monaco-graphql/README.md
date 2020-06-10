@@ -52,7 +52,7 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ## Advanced Usage
 
-### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/interfaces/monaco_graphql.api.languageserviceapi))
+### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
@@ -70,7 +70,9 @@ invoking these will cause the webworker to reload language services
 
 ```ts
 GraphQLAPI.updateSchemaConfig({
-  uri: '',
+  requestOptions: {
+    headers: { Authorization: 'Bear Auth 2134' },
+  },
 });
 ```
 
@@ -93,6 +95,15 @@ You can also just change the schema uri directly!
 
 ```ts
 GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
+```
+
+#### `GraphQLAPI.setSchema()`
+
+With either an AST string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
+We can't use a programattic `GraphQLSchema` instance, since this needs to be used by the webworker.
+
+```ts
+GraphQLAPI.setSchema(rawSchema);
 ```
 
 #### `GraphQLAPI.setModeConfiguration()`
@@ -141,6 +152,8 @@ more examples coming soon!
 
 If you want to pass a custom parser and/or schema fetching module, it is supported, however the setup is a bit more complicated.
 
+You can add any `LanguageServiceConfig` configuration options you like here to `languageConfig` as below.
+
 This is because we can't pass non-static configuration to the existing worker programatically, so you must import these and build the worker custom with those functions. Part of the (worthwile) cost of crossing runtimes!
 
 you'll want to create your own `mygraphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
@@ -161,7 +174,7 @@ self.onmessage = () => {
         ctx: WorkerNamespace.IWorkerContext,
         createData: monaco.languages.graphql.ICreateData,
       ) => {
-        createData.schemaLoader = mySchemaLoader;
+        createData.languageConfig.schemaLoader = mySchemaLoader;
         return new GraphQLWorker(ctx, createData);
       },
     );
@@ -194,7 +207,7 @@ window.MonacoEnvironment = {
 If you are familiar with Codemirror/Atom-era terminology and features, here's some gotchas:
 
 - "hinting" => "code completion" in LSP terminology
-- "linting" => "diagnostics" " "
+- "linting" => "diagnostics" in lsp terminology
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
 - you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
