@@ -5,10 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line spaced-comment
-/// <reference types='monaco-editor'/>
-// eslint-disable-next-line spaced-comment
-/// <reference types='monaco-graphql'/>
+import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, editor, Position, IRange } from 'monaco-editor';
 
@@ -37,13 +34,8 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
 export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;
-  private _formattingOptions:
-    | monaco.languages.graphql.FormattingOptions
-    | undefined;
-  constructor(
-    ctx: worker.IWorkerContext,
-    createData: monaco.languages.graphql.ICreateData,
-  ) {
+  private _formattingOptions: FormattingOptions | undefined;
+  constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     const serviceConfig: GraphQLLanguageConfig = {
       schemaConfig: createData.schemaConfig,

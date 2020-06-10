@@ -7,7 +7,7 @@
  */
 
 import { GraphQLWorker } from './GraphQLWorker';
-import { LanguageServiceDefaultsImpl } from './defaults';
+import type { LanguageServiceAPI } from './api';
 
 import type {
   Uri,
@@ -32,7 +32,7 @@ export class DiagnosticsAdapter {
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
-    private defaults: LanguageServiceDefaultsImpl,
+    private defaults: LanguageServiceAPI,
     private _worker: WorkerAccessor,
   ) {
     this._worker = _worker;
@@ -224,7 +224,7 @@ export class CompletionAdapter
 export class DocumentFormattingAdapter
   implements monaco.languages.DocumentFormattingEditProvider {
   constructor(
-    // private _defaults: LanguageServiceDefaultsImpl,
+    // private _defaults: LanguageServiceAPIImpl,
     private _worker: WorkerAccessor,
   ) {
     // this._defaults = _defaults;

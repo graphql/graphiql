@@ -6,6 +6,7 @@
  */
 
 import type { worker as WorkerNamespace } from 'monaco-editor';
+import { ICreateData } from './typings';
 
 // @ts-ignore
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
@@ -15,10 +16,7 @@ import { GraphQLWorker } from './GraphQLWorker';
 self.onmessage = () => {
   try {
     worker.initialize(
-      (
-        ctx: WorkerNamespace.IWorkerContext,
-        createData: monaco.languages.graphql.ICreateData,
-      ) => {
+      (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) => {
         return new GraphQLWorker(ctx, createData);
       },
     );
