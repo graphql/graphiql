@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.11...graphql-language-service-interface@2.4.0) (2020-06-11)
+
+### Bug Fixes
+
+- highlightNode xxx in xxx syntax to revert back to simple dot notation for checking of existence ([#1566](https://github.com/graphql/graphiql/issues/1566)) ([cc7fbfe](https://github.com/graphql/graphiql/commit/cc7fbfe89d65943f23f58187c3fa3bdf0d4bbf1d))
+
+# [2.4.0-alpha.11](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.10...graphql-language-service-interface@2.4.0-alpha.11) (2020-06-04)
+
+**Note:** Version bump only for package graphql-language-service-interface
+
+# [2.4.0-alpha.10](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.9...graphql-language-service-interface@2.4.0-alpha.10) (2020-06-04)
+
+### Bug Fixes
+
+- cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
+
+# [2.4.0-alpha.9](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.8...graphql-language-service-interface@2.4.0-alpha.9) (2020-05-28)
+
+### Bug Fixes
+
+- remove [@ts-nocheck](https://github.com/ts-nocheck) and fix type errors ([#1541](https://github.com/graphql/graphiql/issues/1541)) ([1bb7b0e](https://github.com/graphql/graphiql/commit/1bb7b0e7f8f265a52092bae4dd93809e78ba3b83))
+
 # [2.4.0-alpha.8](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.7...graphql-language-service-interface@2.4.0-alpha.8) (2020-05-17)
 
 ### Bug Fixes

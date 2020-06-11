@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -8,7 +8,7 @@
 import React, { ComponentType, PropsWithChildren } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
-import { SchemaConfig } from 'graphql-languageservice';
+import type { SchemaConfig } from 'graphql-language-service';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
@@ -40,8 +40,6 @@ import Tabs from './common/Toolbar/Tabs';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 
-const DEFAULT_DOC_EXPLORER_WIDTH = 350;
-
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
@@ -72,14 +70,18 @@ export type GraphiQLProps = {
   schema: GraphQLSchema | null;
   query?: string;
   variables?: string;
+  headers?: string;
   operationName?: string;
   response?: string;
   storage?: Storage;
   defaultQuery?: string;
   defaultVariableEditorOpen?: boolean;
+  defaultSecondaryEditorOpen?: boolean;
+  headerEditorEnabled?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
+  onEditHeaders?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
   onToggleDocs?: (docExplorerOpen: boolean) => void;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
@@ -98,14 +100,9 @@ export type GraphiQLState = {
   schema?: GraphQLSchema;
   query?: string;
   variables?: string;
+  headers?: string;
   operationName?: string;
-  docExplorerOpen: boolean;
   response?: string;
-  editorFlex: number;
-  variableEditorOpen: boolean;
-  variableEditorHeight: number;
-  historyPaneOpen: boolean;
-  docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription?: Unsubscribable | null;
   variableToType?: VariableToType;
@@ -192,45 +189,17 @@ class GraphiQLInternals extends React.Component<
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
 
-    // prop can be supplied to open docExplorer initially
-    let docExplorerOpen = props.docExplorerOpen || false;
-
-    // but then local storage state overrides it
-    if (this._storage.get('docExplorerOpen')) {
-      docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
-    }
-
-    // initial variable editor pane open
-    const variableEditorOpen =
-      props.defaultVariableEditorOpen !== undefined
-        ? props.defaultVariableEditorOpen
-        : Boolean(props.variables);
-
     // Initialize state
     this.state = {
-      docExplorerOpen,
       response: props.response,
-      editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      variableEditorOpen,
-      variableEditorHeight:
-        Number(this._storage.get('variableEditorHeight')) || 200,
-      historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
-      docExplorerWidth:
-        Number(this._storage.get('docExplorerWidth')) ||
-        DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
     };
-
-    // Subscribe to the browser window closing, treating it as an unmount.
-    if (typeof window === 'object') {
-      window.addEventListener('beforeunload', () =>
-        this.componentWillUnmount(),
-      );
-    }
   }
 
   componentDidMount() {
+    // Allow async state changes
+
     // Only fetch schema via introspection if a schema has not been
     // provided, including if `null` was provided.
     // if (this.context.schema === undefined) {
@@ -242,34 +211,6 @@ class GraphiQLInternals extends React.Component<
   }
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
-  componentWillUnmount() {
-    if (this.context?.operation?.text) {
-      this._storage.set('query', this.context.operation.text);
-    }
-    if (this.context?.variables?.text) {
-      this._storage.set('variables', this.context.variables.text);
-    }
-    if (this.state.operationName) {
-      this._storage.set('operationName', this.state.operationName);
-    }
-    this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
-    this._storage.set(
-      'variableEditorHeight',
-      JSON.stringify(this.state.variableEditorHeight),
-    );
-    this._storage.set(
-      'docExplorerWidth',
-      JSON.stringify(this.state.docExplorerWidth),
-    );
-    this._storage.set(
-      'docExplorerOpen',
-      JSON.stringify(this.state.docExplorerOpen),
-    );
-    this._storage.set(
-      'historyPaneOpen',
-      JSON.stringify(this.state.historyPaneOpen),
-    );
-  }
 
   render() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -385,7 +326,7 @@ class GraphiQLInternals extends React.Component<
                 {logo}
                 <ExecuteButton
                   isRunning={Boolean(this.state.subscription)}
-                  onStop={this.handleStopQuery}
+                  onStop={() => null}
                 />
                 <ToolbarButton
                   onClick={this.handlePrettifyQuery}
@@ -403,12 +344,12 @@ class GraphiQLInternals extends React.Component<
                   label="Copy"
                 />
                 <ToolbarButton
-                  onClick={this.handleToggleHistory}
+                  onClick={() => null}
                   title="Show History"
                   label="History"
                 />
                 <ToolbarButton
-                  onClick={this.handleToggleDocs}
+                  onClick={() => null}
                   title="Open Documentation Explorer"
                   label="Docs"
                 />
@@ -421,7 +362,8 @@ class GraphiQLInternals extends React.Component<
             console: variables,
           }}
           navPanels={[
-            ...(this.state.docExplorerOpen
+            // TODO: rewrite this for plugin API
+            ...(true
               ? [
                   {
                     key: 'docs',
@@ -434,7 +376,9 @@ class GraphiQLInternals extends React.Component<
                   },
                 ]
               : []),
-            ...(this.state.historyPaneOpen
+            // TODO: rewrite this for plugin API
+
+            ...(true
               ? [
                   {
                     key: 'history',
@@ -456,7 +400,7 @@ class GraphiQLInternals extends React.Component<
                               queryID={this._editorQueryID}>
                               <button
                                 className="docExplorerHide"
-                                onClick={this.handleToggleHistory}
+                                onClick={() => null}
                                 aria-label="Close History">
                                 {'\u2715'}
                               </button>
@@ -528,16 +472,16 @@ class GraphiQLInternals extends React.Component<
     // });
   };
 
-  handleStopQuery = () => {
-    const subscription = this.state.subscription;
-    this.setState({
-      isWaitingForResponse: false,
-      subscription: null,
-    });
-    if (subscription) {
-      subscription.unsubscribe();
-    }
-  };
+  // handleStopQuery = () => {
+  //   const subscription = this.state.subscription;
+  //   this.setState({
+  //     isWaitingForResponse: false,
+  //     subscription: null,
+  //   });
+  //   if (subscription) {
+  //     subscription.unsubscribe();
+  //   }
+  // };
 
   handlePrettifyQuery = () => {
     // const editor = this.getQueryEditor();
@@ -625,19 +569,27 @@ class GraphiQLInternals extends React.Component<
     }
   };
 
-  handleToggleDocs = () => {
-    if (typeof this.props.onToggleDocs === 'function') {
-      this.props.onToggleDocs(!this.state.docExplorerOpen);
-    }
-    this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
-  };
+  // handleToggleDocs = () => {
+  //   if (typeof this.props.onToggleDocs === 'function') {
+  //     this.props.onToggleDocs(!this.state.docExplorerOpen);
+  //   }
+  //   this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
+  //   this._storage.set(
+  //     'docExplorerOpen',
+  //     JSON.stringify(this.state.docExplorerOpen),
+  //   );
+  // };
 
-  handleToggleHistory = () => {
-    if (typeof this.props.onToggleHistory === 'function') {
-      this.props.onToggleHistory(!this.state.historyPaneOpen);
-    }
-    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
-  };
+  // handleToggleHistory = () => {
+  //   if (typeof this.props.onToggleHistory === 'function') {
+  //     this.props.onToggleHistory(!this.state.historyPaneOpen);
+  //   }
+  //   this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+  //   this._storage.set(
+  //     'historyPaneOpen',
+  //     JSON.stringify(this.state.historyPaneOpen),
+  //   );
+  // };
 
   // private handleResizeStart = (downEvent: React.MouseEvent) => {
   //   if (!this._didClickDragBar(downEvent)) {
@@ -670,9 +622,10 @@ class GraphiQLInternals extends React.Component<
   //   document.addEventListener('mouseup', onMouseUp);
   // };
 
-  handleResetResize = () => {
-    this.setState({ editorFlex: 1 });
-  };
+  // handleResetResize = () => {
+  //   this.setState({ editorFlex: 1 });
+  //   this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
+  // };
 
   // private _didClickDragBar(event: React.MouseEvent) {
   //   // Only for primary unmodified clicks

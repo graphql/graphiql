@@ -33,7 +33,7 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
 
 export function toCompletion(
   entry: GraphQLCompletionItem,
-  range: GraphQLRange,
+  range?: GraphQLRange,
   // @ts-ignore
 ): GraphQLCompletionItem & { range: monaco.IRange } {
   return {
@@ -43,7 +43,8 @@ export function toCompletion(
     filterText: entry.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
-    range: toMonacoRange(range),
+    // @ts-ignore
+    range: range ? toMonacoRange(range) : undefined,
     kind: entry.kind,
   };
 }

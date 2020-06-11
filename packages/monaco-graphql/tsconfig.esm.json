@@ -23,7 +23,7 @@
   },
   "references": [
     {
-      "path": "../graphql-languageservice"
+      "path": "../graphql-language-service"
     }
   ],
   "include": ["src"],

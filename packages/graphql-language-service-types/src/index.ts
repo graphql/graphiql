@@ -177,17 +177,9 @@ export type CompletionItemBase = {
 
 export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
-  deprecationReason?: Maybe<string>;
+  documentation?: string | null;
+  deprecationReason?: string | null;
 };
-
-export type CompletionItemForCodeMirror = {
-  label: string;
-  type?: GraphQLType;
-  documentation: string | null | undefined;
-  isDeprecated?: boolean;
-  deprecationReason: string | null | undefined;
-};
-
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
 // Definitions/hyperlink

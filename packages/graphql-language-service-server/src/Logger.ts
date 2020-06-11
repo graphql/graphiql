@@ -17,7 +17,7 @@ import {
   DIAGNOSTIC_SEVERITY,
   SeverityEnum,
   SEVERITY,
-} from 'graphql-language-service-interface';
+} from 'graphql-language-service';
 export class Logger implements VSCodeLogger {
   _logFilePath: string;
   _stream: fs.WriteStream | null;

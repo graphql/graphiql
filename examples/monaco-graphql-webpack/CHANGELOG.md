@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.8...example-monaco-graphql-webpack@1.0.0) (2020-06-11)
+
+### Features
+
+- standalone monaco API ([#1575](https://github.com/graphql/graphiql/issues/1575)) ([954aa3d](https://github.com/graphql/graphiql/commit/954aa3d7159fd26bba9650824e0f668e417ca64f))
+
+# [1.0.0-alpha.8](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.7...example-monaco-graphql-webpack@1.0.0-alpha.8) (2020-06-04)
+
+**Note:** Version bump only for package example-monaco-graphql-webpack
+
+# [1.0.0-alpha.7](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.6...example-monaco-graphql-webpack@1.0.0-alpha.7) (2020-06-04)
+
+**Note:** Version bump only for package example-monaco-graphql-webpack
+
+# [1.0.0-alpha.6](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.5...example-monaco-graphql-webpack@1.0.0-alpha.6) (2020-05-28)
+
+**Note:** Version bump only for package example-monaco-graphql-webpack
+
+# [1.0.0-alpha.5](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.4...example-monaco-graphql-webpack@1.0.0-alpha.5) (2020-05-19)
+
+**Note:** Version bump only for package example-monaco-graphql-webpack
+
 # 1.0.0-alpha.4 (2020-05-17)
 
 ### Features

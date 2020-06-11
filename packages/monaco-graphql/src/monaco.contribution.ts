@@ -6,19 +6,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
-
 import * as mode from './graphqlMode';
 import {
-  LanguageServiceDefaultsImpl,
+  LanguageServiceAPI,
   schemaDefault,
   formattingDefaults,
   modeConfigurationDefault,
-} from './defaults';
+} from './api';
+
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+export * from './typings';
 
 export const LANGUAGE_ID = 'graphqlDev';
 
@@ -29,26 +27,16 @@ monaco.languages.register({
   mimetypes: ['application/graphql', 'text/graphql'],
 });
 
-const graphqlDefaults = new LanguageServiceDefaultsImpl({
+export const api = new LanguageServiceAPI({
   languageId: LANGUAGE_ID,
   schemaConfig: schemaDefault,
   formattingOptions: formattingDefaults,
   modeConfiguration: modeConfigurationDefault,
 });
 
-// Export API
-function createAPI() {
-  return {
-    graphqlDefaults,
-  };
-}
-
-// @ts-ignore
-monaco.languages.graphql = createAPI();
-
 monaco.languages.onLanguage(LANGUAGE_ID, async () => {
   const graphqlMode = await getMode();
-  graphqlMode.setupMode(graphqlDefaults);
+  graphqlMode.setupMode(api);
 });
 
 function getMode(): Promise<typeof mode> {

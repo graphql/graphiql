@@ -1,12 +1,10 @@
 /* global monaco */
 
 import 'regenerator-runtime/runtime';
-import 'monaco-graphql/esm/monaco.contribution';
 
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+import { api as GraphQLAPI } from 'monaco-graphql';
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
@@ -42,7 +40,7 @@ schemaInput.onkeyup = e => {
   // @ts-ignore
   const val = e?.target?.value as string;
   if (val && typeof val === 'string') {
-    monaco.languages.graphql.graphqlDefaults.setSchemaConfig({ uri: val });
+    GraphQLAPI.setSchemaConfig({ uri: val });
   }
 };
 
@@ -96,10 +94,19 @@ const operationEditor = monaco.editor.create(
   {
     model,
     automaticLayout: true,
+    formatOnPaste: true,
+    formatOnType: true,
+    folding: true,
   },
 );
 
-monaco.languages.graphql.graphqlDefaults.setSchemaConfig({ uri: SCHEMA_URL });
+GraphQLAPI.setFormattingOptions({
+  prettierConfig: {
+    printWidth: 120,
+  },
+});
+
+GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
 
 /**
  * Basic Operation Exec Example
@@ -114,7 +121,7 @@ async function executeCurrentOp() {
     if (parsedVariables && Object.keys(parsedVariables).length) {
       body.variables = variables;
     }
-    const result = await fetch(SCHEMA_URL, {
+    const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),

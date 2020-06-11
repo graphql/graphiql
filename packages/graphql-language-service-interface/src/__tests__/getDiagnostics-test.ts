@@ -9,7 +9,7 @@
  */
 
 import fs from 'fs';
-import { buildSchema, parse, GraphQLSchema } from 'graphql';
+import { buildSchema, parse, GraphQLSchema, GraphQLError } from 'graphql';
 import path from 'path';
 
 import {
@@ -34,6 +34,27 @@ describe('getDiagnostics', () => {
     expect(error.message).toEqual(
       'Cannot query field "title" on type "Query".',
     );
+    expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
+    expect(error.source).toEqual('GraphQL: Validation');
+  });
+
+  it('catches multi root validation errors without breaking (with a custom validation function that always throws errors)', () => {
+    const error = validateQuery(parse('{ hero { name } } { seq }'), schema, [
+      validationContext => {
+        return {
+          Document(node) {
+            for (const definition of node.definitions) {
+              // add a custom error to every definition
+              validationContext.reportError(
+                new GraphQLError(`This is a custom error.`, definition),
+              );
+            }
+            return false;
+          },
+        };
+      },
+    ])[0];
+    expect(error.message).toEqual('This is a custom error.');
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);
     expect(error.source).toEqual('GraphQL: Validation');
   });

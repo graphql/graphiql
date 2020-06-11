@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.4.0-alpha.8",
+  "version": "2.4.0",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -18,21 +18,22 @@
     "esm"
   ],
   "keywords": [
-    "graphql"
+    "graphql",
+    "language server",
+    "LSP"
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0"
+    "graphql": "^14.0.0 || ^15.0.0"
   },
   "dependencies": {
     "@babel/parser": "^7.9.0",
     "glob": "^7.1.2",
-    "graphql-config": "3.0.0-rc.2",
-    "graphql-language-service-interface": "^2.4.0-alpha.8",
-    "graphql-language-service-types": "^1.6.0-alpha.6",
-    "graphql-language-service-utils": "^2.4.0-alpha.7",
+    "graphql-config": "^3.0.2",
+    "graphql-language-service": "^3.0.0",
+    "graphql-language-service-utils": "^2.4.0",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
     "vscode-languageserver": "^6.1.1"

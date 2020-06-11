@@ -27,7 +27,7 @@
       "path": "../monaco-graphql/tsconfig.esm.json"
     },
     {
-      "path": "../graphql-languageservice/tsconfig.esm.json"
+      "path": "../graphql-language-service/tsconfig.esm.json"
     }
   ]
 }

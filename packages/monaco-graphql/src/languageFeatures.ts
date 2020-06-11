@@ -7,7 +7,7 @@
  */
 
 import { GraphQLWorker } from './GraphQLWorker';
-import { LanguageServiceDefaultsImpl } from './defaults';
+import type { LanguageServiceAPI } from './api';
 
 import type {
   Uri,
@@ -20,7 +20,7 @@ import type {
 
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
-import { CompletionItem as GraphQLCompletionItem } from 'graphql-languageservice';
+import { CompletionItem as GraphQLCompletionItem } from 'graphql-language-service';
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }
@@ -32,7 +32,7 @@ export class DiagnosticsAdapter {
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
-    private defaults: LanguageServiceDefaultsImpl,
+    private defaults: LanguageServiceAPI,
     private _worker: WorkerAccessor,
   ) {
     this._worker = _worker;
@@ -224,7 +224,7 @@ export class CompletionAdapter
 export class DocumentFormattingAdapter
   implements monaco.languages.DocumentFormattingEditProvider {
   constructor(
-    // private _defaults: LanguageServiceDefaultsImpl,
+    // private _defaults: LanguageServiceAPIImpl,
     private _worker: WorkerAccessor,
   ) {
     // this._defaults = _defaults;

@@ -11,12 +11,7 @@ const rootPath = (...args) => relPath(...args);
 
 const resultConfig = {
   mode: process.env.NODE_ENV,
-  entry: {
-    app: './index.ts',
-    'editor.worker': 'monaco-editor/esm/vs/editor/editor.worker.js',
-    // 'json.worker': 'monaco-editor/esm/vs/language/json/json.worker.js',
-    'graphql.worker': 'monaco-graphql/esm/graphql.worker.js',
-  },
+  entry: './index.ts',
   context: rootPath('src'),
   output: {
     path: rootPath('bundle'),

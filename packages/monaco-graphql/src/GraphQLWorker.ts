@@ -5,20 +5,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../node_modules/monaco-editor/monaco.d.ts'/>
-// eslint-disable-next-line spaced-comment
-/// <reference path='../../../packages/monaco-graphql/src/typings/monaco.d.ts'/>
+import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, editor, Position, IRange } from 'monaco-editor';
 
-import {
-  getRange,
-  CompletionItem as GraphQLCompletionItem,
-  LanguageService,
-  GraphQLLanguageConfig,
+import { getRange, LanguageService } from 'graphql-language-service';
+
+import type {
+  RawSchema,
   SchemaResponse,
-} from 'graphql-languageservice';
+  CompletionItem as GraphQLCompletionItem,
+} from 'graphql-language-service';
 
 import {
   toGraphQLPosition,
@@ -37,27 +34,20 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
 export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;
-  private _formattingOptions:
-    | monaco.languages.graphql.FormattingOptions
-    | undefined;
-  constructor(
-    ctx: worker.IWorkerContext,
-    createData: monaco.languages.graphql.ICreateData,
-  ) {
+  private _formattingOptions: FormattingOptions | undefined;
+  constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
-    const serviceConfig: GraphQLLanguageConfig = {
-      schemaConfig: createData.schemaConfig,
-    };
     // if you must, we have a nice default schema loader at home
-    if (createData.schemaLoader) {
-      serviceConfig.schemaLoader = createData.schemaLoader;
-    }
-    this._languageService = new LanguageService(serviceConfig);
+    this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
 
   async getSchemaResponse(_uri?: string): Promise<SchemaResponse> {
     return this._languageService.getSchemaResponse();
+  }
+
+  async setSchema(schema: RawSchema): Promise<void> {
+    await this._languageService.setSchema(schema);
   }
 
   async loadSchema(_uri?: string): Promise<GraphQLSchema> {
@@ -85,19 +75,7 @@ export class GraphQLWorker {
       document,
       graphQLPosition,
     );
-
-    return suggestions.map(suggestion =>
-      toCompletion(
-        suggestion,
-        getRange(
-          {
-            column: graphQLPosition.character,
-            line: graphQLPosition.line + 1,
-          },
-          document,
-        ),
-      ),
-    );
+    return suggestions.map(suggestion => toCompletion(suggestion));
   }
 
   async doHover(uri: string, position: Position) {

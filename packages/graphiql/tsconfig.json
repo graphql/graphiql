@@ -5,7 +5,6 @@
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "baseUrl": ".",
     "target": "es5",
     "strictPropertyInitialization": false,
     "paths": {
@@ -29,7 +28,7 @@
       "path": "../monaco-graphql"
     },
     {
-      "path": "../graphql-languageservice"
+      "path": "../graphql-language-service"
     }
   ]
 }

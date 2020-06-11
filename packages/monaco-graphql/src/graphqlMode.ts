@@ -16,16 +16,14 @@ import { GraphQLWorker } from './GraphQLWorker';
 // @ts-ignore
 import { language as monarchLanguage } from 'monaco-editor/esm/vs/basic-languages/graphql/graphql';
 
-import { LanguageServiceDefaultsImpl } from './defaults';
+import { LanguageServiceAPI } from './api';
 import * as languageFeatures from './languageFeatures';
-import { MonacoGraphQLApi } from './api';
 
-export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
+export function setupMode(defaults: LanguageServiceAPI): IDisposable {
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
   const client = new WorkerManager(defaults);
   const { languageId } = defaults;
-  // client.getLanguageServiceWorker()
   disposables.push(client);
   const worker: languageFeatures.WorkerAccessor = (
     ...uris: Uri[]
@@ -36,8 +34,7 @@ export function setupMode(defaults: LanguageServiceDefaultsImpl): IDisposable {
       throw Error('Error fetching graphql language service worker');
     }
   };
-  // @ts-ignore
-  monaco.languages.graphql.api = new MonacoGraphQLApi({ accessor: worker });
+  defaults.setWorker(worker);
 
   monaco.languages.setLanguageConfiguration(languageId, richLanguageConfig);
   monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);

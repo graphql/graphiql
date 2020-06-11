@@ -10,16 +10,18 @@
 import { readFileSync } from 'fs';
 import { URL } from 'url';
 
-import {
+import type {
   CachedContent,
   GraphQLCache,
   Uri,
-  FileChangeTypeKind,
   DefinitionQueryResult,
   GraphQLConfig,
-} from 'graphql-language-service-types';
+} from 'graphql-language-service';
 
-import { GraphQLLanguageService } from 'graphql-language-service-interface';
+import {
+  GraphQLLanguageService,
+  FileChangeTypeKind,
+} from 'graphql-language-service';
 
 import { Range, Position } from 'graphql-language-service-utils';
 

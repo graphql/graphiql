@@ -12,6 +12,7 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 export type HandleEditLabelFn = (
   query?: string,
   variables?: string,
+  headers?: string,
   operationName?: string,
   label?: string,
   favorite?: boolean,
@@ -20,6 +21,7 @@ export type HandleEditLabelFn = (
 export type HandleToggleFavoriteFn = (
   query?: string,
   variables?: string,
+  headers?: string,
   operationName?: string,
   label?: string,
   favorite?: boolean,
@@ -28,6 +30,7 @@ export type HandleToggleFavoriteFn = (
 export type HandleSelectQueryFn = (
   query?: string,
   variables?: string,
+  headers?: string,
   operationName?: string,
   label?: string,
 ) => void;
@@ -106,6 +109,7 @@ class HistoryQuerySource extends React.Component<
     this.props.onSelect(
       this.props.query,
       this.props.variables,
+      this.props.headers,
       this.props.operationName,
       this.props.label,
     );
@@ -116,6 +120,7 @@ class HistoryQuerySource extends React.Component<
     this.props.handleToggleFavorite(
       this.props.query,
       this.props.variables,
+      this.props.headers,
       this.props.operationName,
       this.props.label,
       this.props.favorite,
@@ -128,6 +133,7 @@ class HistoryQuerySource extends React.Component<
     this.props.handleEditLabel(
       this.props.query,
       this.props.variables,
+      this.props.headers,
       this.props.operationName,
       e.target.value,
       this.props.favorite,
@@ -141,6 +147,7 @@ class HistoryQuerySource extends React.Component<
       this.props.handleEditLabel(
         this.props.query,
         this.props.variables,
+        this.props.headers,
         this.props.operationName,
         e.currentTarget.value,
         this.props.favorite,

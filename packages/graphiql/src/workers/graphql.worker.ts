@@ -11,16 +11,15 @@ import 'regenerator-runtime/runtime';
 // @ts-ignore
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
+import type { ICreateData } from 'monaco-graphql/esm/typings';
+
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 
 self.onmessage = () => {
   try {
     // ignore the first message
     worker.initialize(
-      (
-        ctx: WorkerNamespace.IWorkerContext,
-        createData: monaco.languages.graphql.ICreateData,
-      ) => {
+      (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) => {
         return new GraphQLWorker(ctx, createData);
       },
     );

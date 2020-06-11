@@ -2,6 +2,6 @@
   "extends": "./tsconfig.base.cjs.json",
   "compilerOptions": {
     "module": "esnext",
-    "target": "esnext"
+    "target": "es5"
   }
 }

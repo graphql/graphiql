@@ -9,6 +9,7 @@ import StorageAPI from './StorageAPI';
 export type QueryStoreItem = {
   query?: string;
   variables?: string;
+  headers?: string;
   operationName?: string;
   label?: string;
   favorite?: boolean;
@@ -34,6 +35,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.headers === item.headers &&
         x.operationName === item.operationName,
     );
   }
@@ -43,6 +45,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.headers === item.headers &&
         x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
@@ -56,6 +59,7 @@ export default class QueryStore {
       x =>
         x.query === item.query &&
         x.variables === item.variables &&
+        x.headers === item.headers &&
         x.operationName === item.operationName,
     );
     if (itemIndex !== -1) {
