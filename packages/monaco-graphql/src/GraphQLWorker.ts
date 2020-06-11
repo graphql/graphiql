@@ -5,19 +5,16 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line spaced-comment
-/// <reference types='monaco-editor'/>
-// eslint-disable-next-line spaced-comment
-/// <reference types='monaco-graphql'/>
+import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, editor, Position, IRange } from 'monaco-editor';
 
-import {
-  getRange,
-  CompletionItem as GraphQLCompletionItem,
-  LanguageService,
-  GraphQLLanguageConfig,
+import { getRange, LanguageService } from 'graphql-language-service';
+
+import type {
+  RawSchema,
   SchemaResponse,
+  CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
 
 import {
@@ -37,27 +34,20 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
 export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;
-  private _formattingOptions:
-    | monaco.languages.graphql.FormattingOptions
-    | undefined;
-  constructor(
-    ctx: worker.IWorkerContext,
-    createData: monaco.languages.graphql.ICreateData,
-  ) {
+  private _formattingOptions: FormattingOptions | undefined;
+  constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
-    const serviceConfig: GraphQLLanguageConfig = {
-      schemaConfig: createData.schemaConfig,
-    };
     // if you must, we have a nice default schema loader at home
-    if (createData.schemaLoader) {
-      serviceConfig.schemaLoader = createData.schemaLoader;
-    }
-    this._languageService = new LanguageService(serviceConfig);
+    this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
 
   async getSchemaResponse(_uri?: string): Promise<SchemaResponse> {
     return this._languageService.getSchemaResponse();
+  }
+
+  async setSchema(schema: RawSchema): Promise<void> {
+    await this._languageService.setSchema(schema);
   }
 
   async loadSchema(_uri?: string): Promise<GraphQLSchema> {

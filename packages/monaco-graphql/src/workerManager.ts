@@ -7,16 +7,17 @@
  */
 
 import { editor as monacoEditor } from 'monaco-editor/esm/vs/editor/editor.api';
-import { LanguageServiceDefaultsImpl } from './defaults';
+import { LanguageServiceAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
 
 import IDisposable = monaco.IDisposable;
 import Uri = monaco.Uri;
+import { ICreateData } from './typings';
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 
 export class WorkerManager {
-  private _defaults: LanguageServiceDefaultsImpl;
+  private _defaults: LanguageServiceAPI;
   private _idleCheckInterval: number;
   private _lastUsedTime: number;
   private _configChangeListener: IDisposable;
@@ -24,7 +25,7 @@ export class WorkerManager {
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
   private _client: GraphQLWorker | null;
 
-  constructor(defaults: LanguageServiceDefaultsImpl) {
+  constructor(defaults: LanguageServiceAPI) {
     this._defaults = defaults;
     this._worker = null;
     this._idleCheckInterval = (setInterval(
@@ -75,8 +76,10 @@ export class WorkerManager {
         createData: {
           languageId: this._defaults.languageId,
           formattingOptions: this._defaults.formattingOptions,
-          schemaConfig: this._defaults.schemaConfig,
-        },
+          languageConfig: {
+            schemaConfig: this._defaults.schemaConfig,
+          },
+        } as ICreateData,
       });
       try {
         this._client = await this._worker.getProxy();

@@ -27,7 +27,7 @@ yarn add monaco-graphql
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import 'monaco-graphql/esm/monaco.contribution';
+import { api as GraphQLAPI } from 'monaco-graphql/esm/monaco.contribution';
 
 import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
@@ -45,16 +45,14 @@ monaco.editor.create(document.getElementById('someElementId'), {
   language: 'graphqlDev',
 });
 
-monaco.languages.graphql.graphqlDefaults.setSchemaUri(
-  'https://localhost:1234/graphql',
-);
+GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 ```
 
 This will cover the basics, making an HTTP POST with the default `introspectionQuery()` operation. To customize the entire fetcher, see [advanced customization]() below
 
 ## Advanced Usage
 
-### `monaco.languages.graphql.graphqlDefaults` ([typedoc](http://graphiql-test.netlify/typedoc/interfaces/monaco_graphql.monaco.languages.graphql.languageservicedefaults))
+### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
@@ -65,23 +63,25 @@ verbs prefixes for methods are meaningful:
 - `set...` means to force re-write the whole settings entry for that method
 - `update...` means a shallow merge of the object/value you pass with the rest of the existing settings
 
-#### `graphqlDefaults.updateSchemaConfig()`
+#### `GraphQLAPI.updateSchemaConfig()`
 
 set schema `uri` (required) as well as `requestOptions`, `buildSchemaConfig` and `introspectionOptions`, with a shallow merge.
 invoking these will cause the webworker to reload language services
 
 ```ts
-monaco.languages.graphql.graphqlDefaults.updateSchemaConfig({
-  uri: '',
+GraphQLAPI.updateSchemaConfig({
+  requestOptions: {
+    headers: { Authorization: 'Bear Auth 2134' },
+  },
 });
 ```
 
-#### `graphqlDefaults.setSchemaConfig()`
+#### `GraphQLAPI.setSchemaConfig()`
 
 same as the above, except it overwrites the entire schema config
 
 ```ts
-monaco.languages.graphql.graphqlDefaults.updateSchemaConfig({
+GraphQLAPI.updateSchemaConfig({
   uri: 'https://my/schema',
   requestOptions: {
     headers: { Authorization: 'Bear Auth 2134' },
@@ -89,22 +89,29 @@ monaco.languages.graphql.graphqlDefaults.updateSchemaConfig({
 });
 ```
 
-#### `graphqlDefaults.setSchemaUri()`
+#### `GraphQLAPI.setSchemaUri()`
 
 You can also just change the schema uri directly!
 
 ```ts
-monaco.languages.graphql.graphqlDefaults.setSchemaUri(
-  'https://localhost:1234/graphql',
-);
+GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 ```
 
-#### `graphqlDefaults.setModeConfiguration()`
+#### `GraphQLAPI.setSchema()`
+
+With either an AST string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
+We can't use a programattic `GraphQLSchema` instance, since this needs to be used by the webworker.
+
+```ts
+GraphQLAPI.setSchema(rawSchema);
+```
+
+#### `GraphQLAPI.setModeConfiguration()`
 
 This is where you can toggle monaco language features. all are enabled by default.
 
 ```ts
-monaco.languages.graphql.graphqlDefaults.setModeConfiguration({
+GraphQLAPI.setModeConfiguration({
   documentFormattingEdits: true;
   completionItems: true;
   hovers: true;
@@ -113,7 +120,7 @@ monaco.languages.graphql.graphqlDefaults.setModeConfiguration({
 })
 ```
 
-#### `graphqlDefaults.setFormattingOptions()`
+#### `GraphQLAPI.setFormattingOptions()`
 
 this accepts an object `{ prettierConfig: prettier.Options }`, which accepts [any prettier option](https://prettier.io/docs/en/options.html).
 it will not re-load the schema or language features, however the new prettier options will take effect.
@@ -121,19 +128,17 @@ it will not re-load the schema or language features, however the new prettier op
 this method overwrites the previous configuration, and will only accept static values that can be passed between the main/worker process boundary.
 
 ```ts
-graphqlDefaults.setFormattingOptions({
+GraphQLAPI.setFormattingOptions({
   // if you wanna be like that
   prettierOptions: { tabWidth: 2, useTabs: true },
 });
 ```
 
-### `monaco.languages.graphql.api` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.monacographqlapi))
-
-#### `api.getSchema()`
+#### `GraphQLAPI.getSchema()`
 
 Returns either an AST `DocumentNode` or `IntrospectionQuery` result json using default or provided `schemaLoader`
 
-### `api.parse()`
+### `GraphQLAPI.parse()`
 
 parse graphql from string using webworkers (less render-blocking/multi-threaded CPU/etc)
 
@@ -146,6 +151,8 @@ more examples coming soon!
 ## Custom Webworker (for passing non-static config to worker)
 
 If you want to pass a custom parser and/or schema fetching module, it is supported, however the setup is a bit more complicated.
+
+You can add any `LanguageServiceConfig` configuration options you like here to `languageConfig` as below.
 
 This is because we can't pass non-static configuration to the existing worker programatically, so you must import these and build the worker custom with those functions. Part of the (worthwile) cost of crossing runtimes!
 
@@ -167,7 +174,7 @@ self.onmessage = () => {
         ctx: WorkerNamespace.IWorkerContext,
         createData: monaco.languages.graphql.ICreateData,
       ) => {
-        createData.schemaLoader = mySchemaLoader;
+        createData.languageConfig.schemaLoader = mySchemaLoader;
         return new GraphQLWorker(ctx, createData);
       },
     );
@@ -200,7 +207,7 @@ window.MonacoEnvironment = {
 If you are familiar with Codemirror/Atom-era terminology and features, here's some gotchas:
 
 - "hinting" => "code completion" in LSP terminology
-- "linting" => "diagnostics" " "
+- "linting" => "diagnostics" in lsp terminology
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
 - you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
