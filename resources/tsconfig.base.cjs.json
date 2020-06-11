@@ -5,6 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

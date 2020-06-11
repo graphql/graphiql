@@ -10,6 +10,7 @@ fi
 
 babel src --ignore __tests__ --out-dir dist/
 ESM=true babel src --ignore __tests__ --out-dir esm/
+cp -rf src/locales dist/
 echo "Bundling graphiql.js..."
 browserify -g browserify-shim -s GraphiQL dist/index.js > graphiql.js
 echo "Bundling graphiql.min.js..."

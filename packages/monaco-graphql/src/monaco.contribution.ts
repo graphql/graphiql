@@ -16,6 +16,8 @@ import {
 
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
+export * from './typings';
+
 export const LANGUAGE_ID = 'graphqlDev';
 
 monaco.languages.register({
