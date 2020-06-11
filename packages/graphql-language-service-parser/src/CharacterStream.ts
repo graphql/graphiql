@@ -152,7 +152,7 @@ export default class CharacterStream implements CharacterStreamInterface {
   indentation = (): number => {
     const match = this._sourceText.match(/\s*/);
     let indent = 0;
-    if (match && match.length === 0) {
+    if (match && match.length !== 0) {
       const whitespaces = match[0];
       let pos = 0;
       while (whitespaces.length > pos) {
