@@ -1165,6 +1165,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleEditHeaders = (value: string) => {
     this.setState({ headers: value });
+    debounce(500, () => this._storage.set('headers', value))();
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }
