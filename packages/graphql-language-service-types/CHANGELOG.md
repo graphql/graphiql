@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.8...graphql-language-service-types@1.6.0) (2020-06-11)
+
+**Note:** Version bump only for package graphql-language-service-types
+
 # [1.6.0-alpha.8](https://github.com/graphql/graphiql/compare/graphql-language-service-types@1.6.0-alpha.7...graphql-language-service-types@1.6.0-alpha.8) (2020-06-04)
 
 **Note:** Version bump only for package graphql-language-service-types

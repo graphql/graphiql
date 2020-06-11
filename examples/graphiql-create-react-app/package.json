@@ -1,6 +1,6 @@
 {
   "name": "example-graphiql-create-react-app",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "dependencies": {
     "@types/react": "^16.9.34",

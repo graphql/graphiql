@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.4.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.11...graphql-language-service-interface@2.4.0) (2020-06-11)
+
+### Bug Fixes
+
+- highlightNode xxx in xxx syntax to revert back to simple dot notation for checking of existence ([#1566](https://github.com/graphql/graphiql/issues/1566)) ([cc7fbfe](https://github.com/graphql/graphiql/commit/cc7fbfe89d65943f23f58187c3fa3bdf0d4bbf1d))
+
 # [2.4.0-alpha.11](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.0-alpha.10...graphql-language-service-interface@2.4.0-alpha.11) (2020-06-04)
 
 **Note:** Version bump only for package graphql-language-service-interface
