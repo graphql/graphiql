@@ -4,9 +4,10 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+/// <reference path="../../node_modules/@types/codemirror/addon/hint/show-hint.d.ts" />
+
 import { GraphQLType } from 'graphql';
 import type * as CM from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
