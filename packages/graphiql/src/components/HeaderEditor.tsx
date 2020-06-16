@@ -5,7 +5,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import type * as CM from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
