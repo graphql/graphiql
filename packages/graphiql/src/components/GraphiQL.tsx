@@ -77,6 +77,7 @@ export type FetcherParams = {
 
 export type FetcherOpts = {
   headers?: { [key: string]: any };
+  shouldPersistHeaders: boolean;
 };
 
 export type FetcherResult =
@@ -109,6 +110,7 @@ export type GraphiQLProps = {
   defaultVariableEditorOpen?: boolean;
   defaultSecondaryEditorOpen?: boolean;
   headerEditorEnabled?: boolean;
+  shouldPersistHeaders?: boolean;
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
@@ -137,6 +139,7 @@ export type GraphiQLState = {
   variableEditorActive: boolean;
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
+  shouldPersistHeaders: boolean;
   historyPaneOpen: boolean;
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
@@ -253,6 +256,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
 
     const headerEditorEnabled = props.headerEditorEnabled ?? false;
+    const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
 
     // Initialize state
     this.state = {
@@ -274,6 +278,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           : secondaryEditorOpen && true,
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       headerEditorEnabled,
+      shouldPersistHeaders,
       historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
         Number(this._storage.get('docExplorerWidth')) ||
@@ -848,6 +853,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     variables: string,
     headers: string,
     operationName: string,
+    shouldPersistHeaders: boolean,
     cb: (value: FetcherResult) => any,
   ) {
     const fetcher = this.props.fetcher;
@@ -882,7 +888,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         variables: jsonVariables,
         operationName,
       },
-      { headers: jsonHeaders },
+      { headers: jsonHeaders, shouldPersistHeaders },
     );
 
     if (isPromise(fetch)) {
@@ -943,6 +949,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const editedQuery = this.autoCompleteLeafs() || this.state.query;
     const variables = this.state.variables;
     const headers = this.state.headers;
+    const shouldPersistHeaders = this.state.shouldPersistHeaders;
     let operationName = this.state.operationName;
 
     // If an operation was explicitly provided, different from the current
@@ -975,6 +982,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         variables as string,
         headers as string,
         operationName as string,
+        shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             this.setState({
@@ -1165,6 +1173,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   handleEditHeaders = (value: string) => {
     this.setState({ headers: value });
+    this.props.shouldPersistHeaders &&
+      debounce(500, () => this._storage.set('headers', value))();
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }
