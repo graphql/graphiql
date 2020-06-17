@@ -299,6 +299,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     global.g = this;
   }
+  UNSAFE_componentWillMount() {
+    this.componentIsMounted = false;
+  }
   // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
