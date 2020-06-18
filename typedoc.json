@@ -5,8 +5,7 @@
   "out": "packages/graphiql/typedoc",
   "inputFiles": [
     "**/node_modules/vscode*/**",
-    "**/node_modules/@types/node/**",
-    "**/node_modules/@types/codemirror*/**"
+    "**/node_modules/@types/node/**"
   ],
   "exclude": "**/__tests__/**,*.spec.*,**/*.stories.tsx,*-test.*,**/esm/**,**/dist/**,**/node_modules/**",
   "excludePrivate": true,
