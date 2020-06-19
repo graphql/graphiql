@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/graphql/graphiql/compare/graphiql@1.0.1...graphiql@1.0.2) (2020-06-19)
+
+**Note:** Version bump only for package graphiql
+
 ## [1.0.1](https://github.com/graphql/graphiql/compare/graphiql@1.0.0...graphiql@1.0.1) (2020-06-17)
 
 ### Bug Fixes
