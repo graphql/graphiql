@@ -1,5 +1,5 @@
 /* eslint-disable jest/expect-expect, jest/no-export */
-import onlineParser from '../onlineParser';
+import OnlineParser from '../onlineParser';
 import CharacterStream from '../CharacterStream';
 
 const tokenTypeMap = {
@@ -17,10 +17,11 @@ const typesMap = {
   String: { value: `"abc"`, kind: 'StringValue', valueType: 'String' },
   Boolean: { value: 'true', kind: 'BooleanValue', valueType: 'Boolean' },
   Enum: { value: 'ADMIN', kind: 'EnumValue', valueType: 'Enum' },
+  Null: { value: 'null', kind: 'NullValue', valueType: 'Null' },
 };
 
 export const getUtils = source => {
-  const parser = onlineParser();
+  const parser = OnlineParser();
   const stream = new CharacterStream(source);
   const state = parser.startState();
 
@@ -46,8 +47,17 @@ export const getUtils = source => {
     property(pattern, options = {}) {
       this.token({ pattern, type: 'property', kind: options.kind });
     },
+    qualifier(pattern, options = {}) {
+      this.token({ pattern, type: 'qualifier', kind: options.kind });
+    },
+    variable(pattern, options = {}) {
+      this.token({ pattern, type: 'variable', kind: options.kind });
+    },
     meta(pattern, options = {}) {
       this.token({ pattern, type: 'meta', kind: options.kind });
+    },
+    def(pattern, options = {}) {
+      this.token({ pattern, type: 'def', kind: options.kind });
     },
     punctuation(pattern, options = {}) {
       this.token({ pattern, type: 'punctuation', kind: options.kind });
@@ -79,4 +89,54 @@ export const performForEachType = (source, test) => {
 
     test(utils, { type, value, kind, valueType });
   });
+};
+
+export const expectVarsDef = ({ t, stream }, { onKind, vars = [] }) => {
+  t.punctuation(/\(/, { kind: 'VariableDefinitions' });
+
+  vars.forEach(variable => {
+    t.variable('$', { kind: 'Variable' });
+    t.variable(variable.name);
+    t.punctuation(':', { kind: 'VariableDefinition' });
+    t.name(variable.type, { kind: 'NamedType' });
+
+    stream.eatWhile(/(,|\s)/);
+  });
+
+  t.punctuation(/\)/, { kind: onKind });
+};
+
+export const expectArgs = ({ t, stream }, { onKind, args = [] }) => {
+  t.punctuation(/\(/, { kind: 'Arguments' });
+
+  args.forEach(arg => {
+    t.attribute(arg.name, { kind: 'Argument' });
+    t.punctuation(':');
+    if (arg.isVariable) {
+      t.variable('$', { kind: 'Variable' });
+      t.variable(arg.value);
+    } else {
+      if (arg.isList) {
+        t.punctuation(/\[/, { kind: 'ListValue' });
+      }
+      t.value(arg.valueType, arg.value, { kind: arg.kind });
+      if (arg.isList) {
+        t.punctuation(/\]/, { kind: 'Arguments' });
+      }
+    }
+
+    stream.eatWhile(/(,|\s)/);
+  });
+
+  t.punctuation(/\)/, { kind: onKind });
+};
+
+export const expectDirective = (utils, { name, onKind, args = [] }) => {
+  const { t, stream } = utils;
+  t.meta('@', { kind: 'Directive' });
+  t.meta(name);
+
+  if (args.length) {
+    expectArgs(utils, { onKind, args });
+  }
 };
