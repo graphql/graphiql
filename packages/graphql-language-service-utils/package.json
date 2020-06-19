@@ -8,7 +8,7 @@
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
   "repository": "http://github.com/graphql/graphiql",
-  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service-utils#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-utils#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphql-language-service/issues?q=issue+label:language-utils"
   },
