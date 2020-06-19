@@ -53,7 +53,8 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ## Advanced Usage
 
-### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))
+~### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))~
+(Typedoc build is temporarily broken, see the ['last working typedoc build'](https://5ee2586531b6070008b2c313--graphiql-test.netlify.app/typedoc/modules/monaco_graphql.html), which is still accurate.
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
