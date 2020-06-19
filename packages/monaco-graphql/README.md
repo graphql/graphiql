@@ -2,7 +2,7 @@
 
 GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want (or even vanilla - see [the webpack example](../../examples/monaco-graphql-webpack/)).
 
-> **NOTE:** This is still in pre-release state. Helping out with this project will help advance GraphiQL and many other GraphQL IDE projects. `codemirror-graphql` still has some more nuanced features
+> **NOTE:** This is in pre-release state. Helping out with this project will help advance GraphiQL and many other GraphQL IDE projects. `codemirror-graphql` has more features, such as JSON variables validation, and is more stable.
 
 It provides the following features while editing GraphQL files:
 
@@ -43,12 +43,13 @@ window.MonacoEnvironment = {
 monaco.editor.create(document.getElementById('someElementId'), {
   value: 'query { }',
   language: 'graphqlDev',
+  formatOnPaste: true,
 });
 
 GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 ```
 
-This will cover the basics, making an HTTP POST with the default `introspectionQuery()` operation. To customize the entire fetcher, see [advanced customization]() below
+This will cover the basics, making an HTTP POST with the default `introspectionQuery()` operation. To customize the entire fetcher, see [advanced customization]() below. For more customization options, see the [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 
 ## Advanced Usage
 
@@ -112,12 +113,12 @@ This is where you can toggle monaco language features. all are enabled by defaul
 
 ```ts
 GraphQLAPI.setModeConfiguration({
-  documentFormattingEdits: true;
-  completionItems: true;
-  hovers: true;
-  documentSymbols: true;
-  diagnostics: true;
-})
+  documentFormattingEdits: true,
+  completionItems: true,
+  hovers: true,
+  documentSymbols: true,
+  diagnostics: true,
+});
 ```
 
 #### `GraphQLAPI.setFormattingOptions()`
@@ -211,6 +212,8 @@ If you are familiar with Codemirror/Atom-era terminology and features, here's so
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
 - you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
+- [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
+- [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples) repository is great for tips on implementing with different bundlers, runtimes, etc
 
 ## TODO
 
