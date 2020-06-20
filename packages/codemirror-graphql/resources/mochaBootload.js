@@ -48,7 +48,7 @@ global.document.createRange = function () {
 propagateToGlobal(win);
 
 // from mocha-jsdom
-// https://github.com/rstacruz/mocha-jsdom/blob/master/index.js#L80
+// https://github.com/rstacruz/mocha-jsdom/blob/main/index.js#L80
 function propagateToGlobal(window) {
   for (const key in window) {
     if (!window.hasOwnProperty(key)) {

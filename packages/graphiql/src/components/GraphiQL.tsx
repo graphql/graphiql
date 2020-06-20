@@ -47,7 +47,7 @@ if (majorVersion < 16) {
     [
       'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
       'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',
-      'https://github.com/graphql/graphiql/blob/master/examples/graphiql-cdn/index.html#L49',
+      'https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/index.html#L49',
     ].join('\n'),
   );
 }

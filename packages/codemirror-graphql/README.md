@@ -7,7 +7,7 @@
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema.
 
-![Demo .gif of GraphQL Codemirror Mode](https://raw.githubusercontent.com/graphql/graphiql/master/packages/codemirror-graphql/resources/example.gif)
+![Demo .gif of GraphQL Codemirror Mode](https://raw.githubusercontent.com/graphql/graphiql/main/packages/codemirror-graphql/resources/example.gif)
 
 ### Getting Started
 

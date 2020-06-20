@@ -9,7 +9,7 @@
 
 /**
  * Ported from codemirror-graphql
- * https://github.com/graphql/codemirror-graphql/blob/master/src/info.js
+ * https://github.com/graphql/blob/main/packages/codemirror-graphql/src/info.js
  */
 
 import {

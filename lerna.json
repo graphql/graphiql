@@ -5,7 +5,7 @@
   "version": "independent",
   "command": {
     "publish": {
-      "allowBranch": ["master"],
+      "allowBranch": ["main"],
       "preDistTag": "next",
       "distTag": "latest",
       "conventionalCommits": true

@@ -4,7 +4,7 @@
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/graphql-language-service-server.svg?style=flat-square)](LICENSE)
 
-Server process backing the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service).
+Server process backing the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service).
 
 GraphQL Language Service Server provides an interface for building GraphQL language services for IDEs.
 
@@ -143,7 +143,7 @@ The IDE server should manage the lifecycle of the GraphQL server. Ideally, the I
 
 ### Server Interface
 
-GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/master/protocol.md) documentation.
+GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/main/protocol.md) documentation.
 
 For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
 

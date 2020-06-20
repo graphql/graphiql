@@ -2,6 +2,8 @@
   command = "yarn build && yarn build-bundles && yarn build-demo"
   publish = "packages/graphiql"
 
+[context.production]
+  command = "echo main"
 
 [context.deploy-preview] 
   # ignore changes on each push, but don't ignore above for the merge context

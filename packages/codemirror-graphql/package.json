@@ -7,7 +7,7 @@
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)",
     "Angel Gomez Salazar <agomezs@fb.com>"
   ],
-  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/codemirror-graphql#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql#readme",
   "repository": "https://github.com/graphql/graphiql",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
