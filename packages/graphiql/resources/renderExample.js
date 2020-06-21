@@ -104,7 +104,7 @@ function graphQLFetcher(graphQLParams, opts = { headers: {} }) {
   let headers = opts.headers;
   // Convert headers to an object.
   if (typeof headers === 'string') {
-    headers = JSON.parse(opts.headers);
+    headers = JSON.parse(headers);
   }
 
   return fetch(api, {

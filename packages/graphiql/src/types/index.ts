@@ -61,6 +61,8 @@ export type EditorOptions = monaco.editor.IEditorOptions &
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
+  // TODO: Define this as an object with a `headers` property.
+  opts: any,
 ) => Promise<FetcherResult> | Observable<FetcherResult>;
 
 export type ReactNodeLike =

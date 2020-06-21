@@ -14,6 +14,7 @@ import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
+import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
@@ -92,6 +93,7 @@ export type GraphiQLProps = {
   formatResult?: (result: any) => string;
   formatError?: (rawError: Error) => string;
   variablesEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  headersEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   operationEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   resultsEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
 } & Partial<Formatters>;
@@ -174,6 +176,7 @@ class GraphiQLInternals extends React.Component<
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<typeof ResultViewer>;
   variableEditorComponent: Maybe<typeof VariableEditor>;
+  headerEditorComponent: Maybe<typeof HeaderEditor>;
   _queryHistory: Maybe<typeof QueryHistory>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<typeof QueryEditor>;
@@ -278,9 +281,13 @@ class GraphiQLInternals extends React.Component<
       </section>
     );
 
+    // Include the 'Headers' if the headers editor is enabled.
+    const variablesTabs = this.props.headerEditorEnabled
+      ? [`Variables`, `Headers`, `Console`]
+      : [`Variables`, `Console`];
     const variables = (
       <section aria-label="Query Variables">
-        <SessionTabs tabs={[`Variables`, `Console`]} name={`variables`}>
+        <SessionTabs tabs={variablesTabs} name={`variables`}>
           <VariableEditor
             onHintInformationRender={this.handleHintInformationRender}
             onPrettifyQuery={this.handlePrettifyQuery}
@@ -289,6 +296,16 @@ class GraphiQLInternals extends React.Component<
             readOnly={this.props.readOnly}
             editorOptions={this.props.variablesEditorOptions}
           />
+          {this.props.headerEditorEnabled && (
+            <HeaderEditor
+              onHintInformationRender={this.handleHintInformationRender}
+              onPrettifyQuery={this.handlePrettifyQuery}
+              onMergeQuery={this.handleMergeQuery}
+              editorTheme={this.props.editorTheme}
+              readOnly={this.props.readOnly}
+              editorOptions={this.props.headersEditorOptions}
+            />
+          )}
           <div>{`Console`}</div>
         </SessionTabs>
       </section>
@@ -388,12 +405,20 @@ class GraphiQLInternals extends React.Component<
                         {session => {
                           return (
                             <QueryHistory
-                              onSelectQuery={(operation, vars, _opName) => {
+                              onSelectQuery={(
+                                operation,
+                                vars,
+                                headers,
+                                _opName,
+                              ) => {
                                 if (operation) {
                                   session.changeOperation(operation);
                                 }
                                 if (vars) {
                                   session.changeVariables(vars);
+                                }
+                                if (headers) {
+                                  session.changeHeaders(headers);
                                 }
                               }}
                               storage={this._storage}

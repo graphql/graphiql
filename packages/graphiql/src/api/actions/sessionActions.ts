@@ -5,6 +5,7 @@ export enum SessionActionTypes {
   EditorLoaded = 'EditorLoaded',
   OperationChanged = 'OperationChanged',
   VariablesChanged = 'VariablesChanged',
+  HeadersChanged = 'HeadersChanged',
   OperationSucceeded = 'OperationSucceeded',
   OperationErrored = 'OperationErrored',
   TabChanged = 'TabChanged',
@@ -19,6 +20,7 @@ export type SessionAction =
   | EditorLoadedAction
   | OperationChangedAction
   | VariablesChangedAction
+  | HeadersChangedAction
   | OperationSucceededAction
   | OperationErroredAction
   | TabChangedAction;
@@ -61,6 +63,14 @@ export const variableChangedAction = (value: string, sessionId: number) =>
   } as const);
 
 export type VariablesChangedAction = ReturnType<typeof variableChangedAction>;
+
+export const headerChangedAction = (value: string, sessionId: number) =>
+  ({
+    type: SessionActionTypes.HeadersChanged,
+    payload: { value, sessionId },
+  } as const);
+
+export type HeadersChangedAction = ReturnType<typeof headerChangedAction>;
 
 export const operationSucceededAction = (result: string, sessionId: number) =>
   ({

@@ -12,6 +12,7 @@ import {
   operationRequestAction,
   operationSucceededAction,
   variableChangedAction,
+  headerChangedAction,
   operationChangedAction,
   operationErroredAction,
   tabChangedAction,
@@ -24,6 +25,7 @@ export type SessionReducer = React.Reducer<SessionState, SessionAction>;
 export interface SessionHandlers {
   changeOperation: (operation: string) => void;
   changeVariables: (variables: string) => void;
+  changeHeaders: (headers: string) => void;
   changeTab: (pane: string, tabId: number) => void;
   executeOperation: (operationName?: string) => Promise<void>;
   operationError: (error: Error) => void;
@@ -34,6 +36,7 @@ export const initialState: SessionState = {
   sessionId: 0,
   operation: { uri: 'graphql://graphiql/operations/0.graphql' },
   variables: { uri: 'graphql://graphiql/variables/0.graphql' },
+  headers: { uri: 'graphql://graphiql/variables/1.graphql' },
   results: { uri: 'graphql://graphiql/results/0.graphql' },
   currentTabs: {
     operation: 0,
@@ -51,6 +54,7 @@ export const initialContextState: SessionState & SessionHandlers = {
   executeOperation: async () => {},
   changeOperation: () => null,
   changeVariables: () => null,
+  changeHeaders: () => null,
   changeTab: () => null,
   operationError: () => null,
   dispatch: () => null,
@@ -86,6 +90,16 @@ const sessionReducer: SessionReducer = (state, action) => {
         ...state,
         variables: {
           ...state.variables,
+          text: value,
+        },
+      };
+    }
+    case SessionActionTypes.HeadersChanged: {
+      const { value } = action.payload;
+      return {
+        ...state,
+        headers: {
+          ...state.headers,
           text: value,
         },
       };
@@ -164,6 +178,12 @@ export function SessionProvider({
     [sessionId],
   );
 
+  const changeHeaders = React.useCallback(
+    (headersText: string) =>
+      dispatch(headerChangedAction(headersText, sessionId)),
+    [sessionId],
+  );
+
   const changeTab = React.useCallback(
     (pane: string, tabId: number) => dispatch(tabChangedAction(pane, tabId)),
     [],
@@ -173,9 +193,14 @@ export function SessionProvider({
     async (operationName?: string) => {
       try {
         dispatch(operationRequestAction());
-        const { operation: op, variables: vars } = editorsState.editors;
+        const {
+          operation: op,
+          variables: vars,
+          headers: hdrs,
+        } = editorsState.editors;
         const operation = op.editor.getValue();
         const variables = vars.editor.getValue();
+        const headers = hdrs.editor.getValue();
 
         const fetchValues: GraphQLParams = {
           query: operation ?? '',
@@ -187,7 +212,7 @@ export function SessionProvider({
           fetchValues.operationName = operationName as string;
         }
         const result = await observableToPromise<FetcherResult>(
-          fetcher(fetchValues),
+          fetcher(fetchValues, { headers }),
         );
         dispatch(operationSucceededAction(result, sessionId));
       } catch (err) {
@@ -229,6 +254,7 @@ export function SessionProvider({
         executeOperation,
         changeOperation,
         changeVariables,
+        changeHeaders,
         changeTab,
         operationError,
         dispatch,

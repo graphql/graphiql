@@ -21,6 +21,7 @@ export type SessionState = {
   sessionId: number;
   operation: File;
   variables: File;
+  headers: File;
   results: File;
   operationLoading: boolean;
   operationErrors: Error[] | null;
