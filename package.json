@@ -53,7 +53,7 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "format": "yarn eslint --fix && yarn pretty",
-    "prepublish": "./resources/prepublish.sh",
+    "prepublishOnly": "./resources/prepublish.sh",
     "dev-graphiql": "yarn workspace graphiql run dev",
     "dev-lsp": "echo no-op",
     "lerna-publish": "yarn ci && yarn ci-e2e && lerna publish",

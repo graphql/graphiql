@@ -7,7 +7,6 @@
 
 import React from 'react';
 import MD from 'markdown-it';
-import { Maybe } from '../../types';
 
 const md = new MD();
 

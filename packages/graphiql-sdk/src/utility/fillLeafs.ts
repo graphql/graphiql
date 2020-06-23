@@ -19,7 +19,7 @@ import {
   SelectionSetNode,
 } from 'graphql';
 
-import { Maybe } from '../components/GraphiQL';
+import { Maybe } from '../types';
 
 type Insertion = {
   index: number;

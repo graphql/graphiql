@@ -8,8 +8,6 @@
 import { GraphiQL } from './components/GraphiQL';
 import './i18n';
 
-export * from './api';
-export * from './components/common';
 
 export { GraphiQL };
 export default GraphiQL;

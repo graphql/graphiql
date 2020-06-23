@@ -6,7 +6,7 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql/tsconfig.esm.json"
+      "path": "../packages/graphiql-sdk/tsconfig.esm.json"
     },
     {
       "path": "../packages/monaco-graphql/tsconfig.esm.json"

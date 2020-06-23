@@ -6,7 +6,7 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-import { DocExplorer } from '../DocExplorer';
+import DocExplorer from '../DocExplorer';
 
 import { ExampleSchema } from './ExampleSchema';
 

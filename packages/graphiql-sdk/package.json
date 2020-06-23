@@ -1,0 +1,64 @@
+{
+  "name": "@graphiql/sdk",
+  "version": "0.0.1",
+  "description": "An SDK for GraphiQL plugins, or rolling your own GraphiQL IDE using react",
+  "contributors": [
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "http://github.com/graphql/graphiql",
+  "homepage": "http://github.com/graphql/graphiql/tree/main/packages/graphiql-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-sdk"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "types": "esm/index.d.ts",
+  "scripts": {
+    "webpack": "webpack --config resources/webpack.config.js",
+    "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
+    "build": "yarn tsc",
+    "build-demo": "build-storybook -o ./storybook",
+    "storybook": "start-storybook"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@mdx-js/react": "^1.5.2",
+    "codemirror": "^5.52.2",
+    "entities": "^2.0.0",
+    "markdown-it": "^10.0.0",
+    "monaco-graphql": "^0.2.0",
+    "graphql-language-service": "^2.4.0-alpha.7",
+    "i18next": "^19.4.4",
+    "i18next-browser-languagedetector": "^4.1.1",
+    "monaco-editor": "^0.20.0",
+    "react-i18next": "^11.4.0",
+    "theme-ui": "^0.3.1",
+    "@theme-ui/core": "^0.4.0-alpha.1"
+  },
+  "peerDependencies": {
+    "graphql": "^14.0.0 || ^15.0.0",
+    "prop-types": ">=15.5.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-storyshots": "^5.2.8",
+    "@storybook/react": "^5.2.8",
+    "@testing-library/jest-dom": "5.1.1",
+    "@testing-library/react": "9.4.1",
+    "@types/codemirror": "0.0.82",
+    "@types/markdown-it": "^0.0.9",
+    "@types/node": "^13.7.1",
+    "@types/testing-library__jest-dom": "^5.0.1",
+    "graphql": "15.0.0",
+    "jest": "^24.8.0",
+    "jsdom": "16.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-hot-loader": "^4.12.20",
+    "react-test-renderer": "^16.13.1",
+    "typescript": "3.8.3"
+  }
+}

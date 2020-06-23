@@ -12,9 +12,6 @@ import {
   GraphQLType,
   GraphQLNamedType,
 } from 'graphql';
-import { OnClickTypeFunction } from './types';
-
-import { Maybe } from '../../types';
 
 type TypeLinkProps = {
   type?: Maybe<GraphQLType>;

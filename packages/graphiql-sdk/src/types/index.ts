@@ -2,11 +2,7 @@
 // eslint-disable-next-line spaced-comment
 /// <reference path='../../../../node_modules/monaco-editor/monaco.d.ts'/>
 
-import { GraphQLType } from 'graphql';
-
-export namespace GraphiQL {
-  export type GetDefaultFieldNamesFn = (type: GraphQLType) => string[];
-}
+export * from './plugin'
 
 export type Maybe<T> = T | null | undefined;
 

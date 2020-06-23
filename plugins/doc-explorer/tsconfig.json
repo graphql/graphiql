@@ -1,0 +1,19 @@
+{
+  "extends": "../../resources/tsconfig.base.cjs.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "*": ["*"]
+    },
+    "types": []
+  },
+  "references": [
+    {
+      "path": "../../packages/graphiql-sdk"
+    }
+  ],
+  "include": ["./src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
+}

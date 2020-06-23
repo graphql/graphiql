@@ -6,7 +6,7 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql"
+      "path": "../packages/graphiql-sdk"
     },
     {
       "path": "../packages/monaco-graphql"

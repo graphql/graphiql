@@ -10,12 +10,12 @@
 import React from 'react';
 import { jsx } from 'theme-ui';
 import { GraphQLType } from 'graphql';
-import type { EditorOptions } from '../types';
+import type { EditorOptions } from '../../types';
 
-import EditorWrapper from '../components/common/EditorWrapper';
+import EditorWrapper from '../common/EditorWrapper';
 
-import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
-import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
+import { useSessionContext } from '../../api/providers/GraphiQLSessionProvider';
+import { useEditorsContext } from '../../api/providers/GraphiQLEditorsProvider';
 
 export type QueryEditorProps = {
   onEdit?: (value: string) => void;

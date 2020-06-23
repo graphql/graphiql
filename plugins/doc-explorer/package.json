@@ -1,0 +1,45 @@
+{
+  "name": "@graphiql/plugin-doc-explorer",
+  "version": "0.0.1",
+  "description": "Official GraphiQL Doc Explorer Plugin",
+  "contributors": [
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "http://github.com/graphql/graphiql",
+  "homepage": "http://github.com/graphql/graphiql/tree/main/plugins/doc-explorer#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-sdk"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "types": "esm/types.js",
+  "dependencies": {
+    "markdown-it": "^10.0.0",
+    "@graphiql/sdk": "^0.0.1"
+  },
+  "peerDependencies": {
+    "graphql": "^14.0.0 || ^15.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-storyshots": "^5.2.8",
+    "@storybook/react": "^5.2.8",
+    "@testing-library/jest-dom": "5.1.1",
+    "@testing-library/react": "9.4.1",
+    "@types/codemirror": "0.0.82",
+    "@types/markdown-it": "^0.0.9",
+    "@types/node": "^13.7.1",
+    "@types/testing-library__jest-dom": "^5.0.1",
+    "graphql": "15.0.0",
+    "jest": "^24.8.0",
+    "jsdom": "16.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-hot-loader": "^4.12.20",
+    "react-test-renderer": "^16.13.1",
+    "typescript": "3.8.3"
+  }
+}

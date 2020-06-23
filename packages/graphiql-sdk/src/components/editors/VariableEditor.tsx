@@ -11,12 +11,12 @@ import { GraphQLType } from 'graphql';
 
 import React from 'react';
 
-import EditorWrapper from '../components/common/EditorWrapper';
+import EditorWrapper from '../common/EditorWrapper';
 
-import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
-import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
+import { useEditorsContext } from '../../api/providers/GraphiQLEditorsProvider';
+import { useSessionContext } from '../../api/providers/GraphiQLSessionProvider';
 
-import type { EditorOptions } from '../types';
+import type { EditorOptions } from '../../types';
 // import useQueryFacts from '../api/hooks/useQueryFacts';
 
 export type VariableEditorProps = {

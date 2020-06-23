@@ -7,12 +7,12 @@
 
 import React, { useEffect } from 'react';
 
-import type { EditorOptions } from '../types';
+import type { EditorOptions } from '../../types';
 
-import EditorWrapper from '../components/common/EditorWrapper';
+import EditorWrapper from '../../components/common/EditorWrapper';
 
-import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
-import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
+import { useSessionContext } from '../../api/providers/GraphiQLSessionProvider';
+import { useEditorsContext } from '../../api/providers/GraphiQLEditorsProvider';
 
 export type ResultViewerProps = {
   editorTheme?: string;

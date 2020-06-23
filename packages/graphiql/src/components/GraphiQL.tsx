@@ -12,7 +12,7 @@ import type { SchemaConfig } from 'graphql-language-service';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
-import { QueryEditor } from './QueryEditor';
+import { QueryEditor } from '@graphiql/sdk';
 import { VariableEditor } from './VariableEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';

@@ -1,0 +1,15 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "references": [
+    {
+      "path": "../../packages/graphiql-sdk/tsconfig.esm.json"
+    }
+  ],
+  "include": ["./src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*", "dist", "esm", "node_modules"]
+}
