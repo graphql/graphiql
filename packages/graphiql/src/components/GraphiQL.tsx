@@ -787,11 +787,24 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   private fetchSchema() {
     const fetcher = this.props.fetcher;
 
+    const fetcherOpts: FetcherOpts = {
+      shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
+    };
+    if (this.state.headers && this.state.headers.trim().length > 2) {
+      fetcherOpts.headers = JSON.parse(this.state.headers);
+      // if state is not present, but props are
+    } else if (this.props.headers) {
+      fetcherOpts.headers = JSON.parse(this.props.headers);
+    }
+
     const fetch = observableToPromise(
-      fetcher({
-        query: introspectionQuery,
-        operationName: introspectionQueryName,
-      }),
+      fetcher(
+        {
+          query: introspectionQuery,
+          operationName: introspectionQueryName,
+        },
+        fetcherOpts,
+      ),
     );
     if (!isPromise(fetch)) {
       this.setState({
@@ -809,10 +822,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = observableToPromise(
-          fetcher({
-            query: introspectionQuerySansSubscriptions,
-            operationName: introspectionQueryName,
-          }),
+          fetcher(
+            {
+              query: introspectionQuerySansSubscriptions,
+              operationName: introspectionQueryName,
+            },
+            fetcherOpts,
+          ),
         );
         if (!isPromise(fetch)) {
           throw new Error(
