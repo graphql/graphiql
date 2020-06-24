@@ -16,20 +16,24 @@ import {
   getNamedType,
   visit,
   visitWithTypeInfo,
-} from "graphql";
+  ASTKindToNode,
+  Visitor,
+  ASTNode,
+} from 'graphql';
 
 export function uniqueBy<T>(
   array: readonly SelectionNode[],
-  iteratee: (item: FieldNode) => T
+  iteratee: (item: FieldNode) => T,
 ) {
   const FilteredMap = new Map<T, FieldNode>();
   const result: SelectionNode[] = [];
   for (const item of array) {
-    if (item.kind === "Field") {
+    if (item.kind === 'Field') {
       const uniqueValue = iteratee(item);
       const existing = FilteredMap.get(uniqueValue);
       if (item.directives && item.directives.length) {
         // Cannot inline fields with directives (yet)
+        const itemClone = { ...item };
         result.push(itemClone);
       } else if (existing && existing.selectionSet && item.selectionSet) {
         // Merge the selection sets
@@ -53,18 +57,20 @@ export function inlineRelevantFragmentSpreads(
   fragmentDefinitions: {
     [key: string]: FragmentDefinitionNode | undefined;
   },
-  selectionSetType: GraphQLOutputType,
-  selections: readonly SelectionNode[]
+  selections: readonly SelectionNode[],
+  selectionSetType?: GraphQLOutputType,
 ): readonly SelectionNode[] {
-  const selectionSetTypeName = getNamedType(selectionSetType).name;
+  const selectionSetTypeName = selectionSetType
+    ? getNamedType(selectionSetType).name
+    : null;
   const outputSelections = [];
   for (let selection of selections) {
-    if (selection.kind === "FragmentSpread") {
+    if (selection.kind === 'FragmentSpread') {
       const fragmentDefinition = fragmentDefinitions[selection.name.value];
       if (fragmentDefinition) {
         const { typeCondition, directives, selectionSet } = fragmentDefinition;
         selection = {
-          kind: "InlineFragment",
+          kind: 'InlineFragment',
           typeCondition,
           directives,
           selectionSet,
@@ -72,7 +78,7 @@ export function inlineRelevantFragmentSpreads(
       }
     }
     if (
-      selection.kind === "InlineFragment" &&
+      selection.kind === 'InlineFragment' &&
       // Cannot inline if there are directives
       (!selection.directives || selection.directives?.length === 0)
     ) {
@@ -83,9 +89,9 @@ export function inlineRelevantFragmentSpreads(
         outputSelections.push(
           ...inlineRelevantFragmentSpreads(
             fragmentDefinitions,
+            selection.selectionSet.selections,
             selectionSetType,
-            selection.selectionSet.selections
-          )
+          ),
         );
         continue;
       }
@@ -100,46 +106,49 @@ export function inlineRelevantFragmentSpreads(
  */
 export default function mergeAST(
   documentAST: DocumentNode,
-  schema: GraphQLSchema
+  schema?: GraphQLSchema,
 ): DocumentNode {
-  const typeInfo = new TypeInfo(schema);
+  // If we're given the schema, we can simplify even further by resolving object
+  // types vs unions/interfaces
+  const typeInfo = schema ? new TypeInfo(schema) : null;
+
   const fragmentDefinitions: {
     [key: string]: FragmentDefinitionNode | undefined;
   } = Object.create(null);
 
   for (const definition of documentAST.definitions) {
-    if (definition.kind === "FragmentDefinition") {
+    if (definition.kind === 'FragmentDefinition') {
       fragmentDefinitions[definition.name.value] = definition;
     }
   }
 
+  const visitors: Visitor<ASTKindToNode, ASTNode> = {
+    SelectionSet(node) {
+      const selectionSetType = typeInfo ? typeInfo.getParentType() : null;
+      let { selections } = node;
+
+      selections = inlineRelevantFragmentSpreads(
+        fragmentDefinitions,
+        selections,
+        selectionSetType,
+      );
+
+      selections = uniqueBy(selections, selection =>
+        selection.alias ? selection.alias.value : selection.name.value,
+      );
+
+      return {
+        ...node,
+        selections,
+      };
+    },
+    FragmentDefinition() {
+      return null;
+    },
+  };
+
   return visit(
     documentAST,
-    visitWithTypeInfo(typeInfo, {
-      SelectionSet(node) {
-        const selectionSetType = typeInfo.getParentType();
-        let { selections } = node;
-
-        if (selectionSetType) {
-          selections = inlineRelevantFragmentSpreads(
-            fragmentDefinitions,
-            selectionSetType,
-            selections
-          );
-        }
-
-        selections = uniqueBy(selections, selection =>
-          selection.alias ? selection.alias.value : selection.name.value
-        );
-
-        return {
-          ...node,
-          selections,
-        };
-      },
-      FragmentDefinition() {
-        return null;
-      },
-    })
+    typeInfo ? visitWithTypeInfo(typeInfo, visitors) : visitors,
   );
 }
