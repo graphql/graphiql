@@ -64,8 +64,18 @@ export function inlineRelevantFragmentSpreads(
     ? getNamedType(selectionSetType).name
     : null;
   const outputSelections = [];
+  const seenSpreads = [];
   for (let selection of selections) {
     if (selection.kind === 'FragmentSpread') {
+      const fragmentName = selection.name.value;
+      if (!selection.directives || selection.directives.length === 0) {
+        if (seenSpreads.indexOf(fragmentName) >= 0) {
+          /* It's a duplicate - skip it! */
+          continue;
+        } else {
+          seenSpreads.push(fragmentName);
+        }
+      }
       const fragmentDefinition = fragmentDefinitions[selection.name.value];
       if (fragmentDefinition) {
         const { typeCondition, directives, selectionSet } = fragmentDefinition;
