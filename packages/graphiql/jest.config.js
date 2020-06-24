@@ -3,6 +3,8 @@ const base = require('../../jest.config.base')(__dirname);
 module.exports = {
   ...base,
 
-  // All tests disabled currently
-  testMatch: ['nothing'],
+  testMatch: [
+    // All other tests disabled currently
+    '**/src/utility/__tests__/*[-.](spec|test).[jt]s?(x)',
+  ],
 };
