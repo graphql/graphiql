@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.2...graphiql@1.0.3) (2020-06-24)
+
+### Bug Fixes
+
+- headers tab - highlighting and schema fetch ([#1593](https://github.com/graphql/graphiql/issues/1593)) ([0d050ca](https://github.com/graphql/graphiql/commit/0d050caeb5278799f2b1c206d0c61f3ac768e7cd))
+
 ## [1.0.2](https://github.com/graphql/graphiql/compare/graphiql@1.0.1...graphiql@1.0.2) (2020-06-19)
 
 **Note:** Version bump only for package graphiql

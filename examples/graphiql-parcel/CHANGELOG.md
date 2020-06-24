@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.8](https://github.com/graphql/graphiql/compare/graphiql-parcel-example@1.1.7...graphiql-parcel-example@1.1.8) (2020-06-24)
+
+**Note:** Version bump only for package graphiql-parcel-example
+
 ## [1.1.7](https://github.com/graphql/graphiql/compare/graphiql-parcel-example@1.1.6...graphiql-parcel-example@1.1.7) (2020-06-19)
 
 **Note:** Version bump only for package graphiql-parcel-example
