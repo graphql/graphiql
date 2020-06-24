@@ -102,7 +102,7 @@ GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 
 #### `GraphQLAPI.setSchema()`
 
-With either an AST string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
+With either a [`RawSchema`](https://5ee2586531b6070008b2c313--graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#rawschema-2) - an SDL string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
 We can't use a programattic `GraphQLSchema` instance, since this needs to be used by the webworker.
 
 ```ts
