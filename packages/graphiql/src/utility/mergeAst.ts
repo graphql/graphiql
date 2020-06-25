@@ -20,6 +20,7 @@ import {
   Visitor,
   ASTNode,
 } from 'graphql';
+import Maybe from 'graphql/tsutils/Maybe';
 
 export function uniqueBy<T>(
   array: readonly SelectionNode[],
@@ -58,7 +59,7 @@ export function inlineRelevantFragmentSpreads(
     [key: string]: FragmentDefinitionNode | undefined;
   },
   selections: readonly SelectionNode[],
-  selectionSetType?: GraphQLOutputType,
+  selectionSetType?: Maybe<GraphQLOutputType>,
 ): readonly SelectionNode[] {
   const selectionSetTypeName = selectionSetType
     ? getNamedType(selectionSetType).name
