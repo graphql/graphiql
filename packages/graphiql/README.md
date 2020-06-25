@@ -199,6 +199,8 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `headerEditorEnabled`: an optional boolean which enables the header editor when `true`. Defaults to `false`.
 
+- `shouldPersistHeaders`: an optional boolean which enables to persist headers to storage when `true`. Defaults to `false`
+
 ### Children (dropped as of 1.0.0-rc.2)
 
 - `<GraphiQL.Logo>`: Replace the GraphiQL logo with your own.
