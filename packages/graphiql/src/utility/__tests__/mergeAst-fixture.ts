@@ -16,6 +16,10 @@ export const fixtures = [
       query Test {
         id
       }`,
+    mergedQueryWithSchema: `
+      query Test {
+        id
+      }`,
   },
   {
     desc: 'inlines simple nested fragment',
@@ -32,6 +36,10 @@ export const fixtures = [
         ...on Test {
           id
         }
+      }`,
+    mergedQueryWithSchema: `
+      query Test {
+        id
       }`,
   },
   {
@@ -61,6 +69,10 @@ export const fixtures = [
             }
           }
         }
+      }`,
+    mergedQueryWithSchema: `
+      query Test {
+        id
       }`,
   },
   {
@@ -95,6 +107,10 @@ export const fixtures = [
           id
         }
       }`,
+    mergedQueryWithSchema: `
+      query Test {
+        id
+      }`,
   },
   {
     desc: 'removes duplicate fragment spreads',
@@ -112,6 +128,10 @@ export const fixtures = [
         ...on Test {
           id
         }
+      }`,
+    mergedQueryWithSchema: `
+      query Test {
+        id
       }`,
   },
 ];
