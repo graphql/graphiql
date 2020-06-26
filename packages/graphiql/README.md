@@ -167,7 +167,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
 
-- `headers`: an optional GraphQL string to use as the initial displayed request headers, if `undefined` is provided, the stored headers will be used.
+- `headers`: an optional GraphQL string to use as the initial displayed request headers. if not defined, it will default to the stored headers if `shouldPersistHeaders` is enabled.
 
 - `operationName`: an optional name of which GraphQL operation should be executed.
 
