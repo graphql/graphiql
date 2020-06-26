@@ -4,7 +4,7 @@
 
 > **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
-[![Build Status](https://travis-ci.org/graphql/graphiql.svg?branch=master)](https://travis-ci.org/graphql/graphiql)
+[![Build Status](https://github.com/graphql/graphiql/actions?query=workflow%3A%22Node.JS+CI%22)](https://img.shields.io/github/workflow/status/graphql/graphiql)
 [![Discord](https://img.shields.io/discord/586999333447270440.svg)](https://discord.gg/fHje6QG)
 [![Code Coverage](https://img.shields.io/codecov/c/github/graphql/graphiql)](https://codecov.io/gh/graphql/graphiql)
 ![GitHub top language](https://img.shields.io/github/languages/top/graphql/graphiql)
@@ -29,6 +29,18 @@ The purpose of this monorepo is to give the GraphQL Community:
 - an example of how to use this ecosystem with GraphiQL.
 - examples of how to implement or extend GraphiQL.
 
+### Latest Stable Ecosystem
+
+`graphiql@1.0.x` and ecosystem are organized as below. Any further changes to `graphiql@1.0.x` are made against `1.0.0` branch
+
+![Diagram of the current Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/curent-ecosystem.jpg)
+
+### Proposed Ecosystem
+
+As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain an sdk and plugins.
+
+![Diagram of the proposed Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/proposed-ecosystem.jpg)
+
 ## [GraphiQL](packages/graphiql#readme)
 
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
@@ -41,13 +53,13 @@ The purpose of this monorepo is to give the GraphQL Community:
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 
-![https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.jpg](https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.jpg)
+![Screenshot of GraphiQL with Doc Explorer Open](https://raw.githubusercontent.com/graphql/graphiql/main/packages/graphiql/resources/graphiql.jpg)
 
-_/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the master branch.
+_/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the `main` branch.
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
 
-**Learn more about [GraphiQL in packages/graphiql/README.md](packages/graphiql#readme)**
+**Learn more about [GraphiQL in `packages/graphiql/README.md`](packages/graphiql#readme)**
 
 ### How To Setup/Implement GraphiQL
 
@@ -55,7 +67,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 (This example shows that GraphiQL works with `create-react-app` without requiring additional configuration)
 
-**The full [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
+**The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
 ## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
 
@@ -64,7 +76,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 ![npm downloads](https://img.shields.io/npm/dm/codemirror-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 
-![https://raw.githubusercontent.com/graphql/graphiql/master/packages/codemirror-graphql/resources/example.gifg](https://raw.githubusercontent.com/graphql/graphiql/master/packages/codemirror-graphql/resources/example.gif)
+![Animated Codemirror GraphQL Completion Example](https://raw.githubusercontent.com/graphql/graphiql/main/packages/codemirror-graphql/resources/example.gif)
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and typeahead hinter powered by your GraphQL Schema
 
@@ -124,14 +136,6 @@ To get setup for local development of this monorepo, refer to [DEVELOPMENT.md](.
 
 This is an open source project, and we welcome contributions. Please see
 [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
-
-## Initiatives
-
-Lots of activity lately! These things are in progress currently:
-
-- making web and IDE services 100% [LSP](https://langserver.org) specification complete
-- a monaco editor mode
-- extensions and themes to make GraphiQL a multipurpose tool for building GraphQL IDEs
 
 ### Fielding Proposals!
 
