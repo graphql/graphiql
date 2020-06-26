@@ -33,7 +33,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 `graphiql@1.0.x` and ecosystem are organized as below. Any further changes to `graphiql@1.0.x` are made against `1.0.0` branch
 
-![Diagram of the current Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/curent-ecosystem.jpg)
+![Diagram of the current Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/current-ecosystem.jpg)
 
 ### Proposed Ecosystem
 
