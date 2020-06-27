@@ -53,9 +53,7 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ## Advanced Usage
 
-### `GraphQLAPI` ~([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))~
-
-> Typedoc build is temporarily broken, see the ['last working typedoc build'](https://5ee2586531b6070008b2c313--graphiql-test.netlify.app/typedoc/classes/monaco_graphql.languageserviceapi.html), which is still accurate.
+### `GraphQLAPI` ([typedoc](http://graphiql-test.netlify/typedoc/classes/monaco_graphql.languageserviceapi.html))
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
@@ -102,7 +100,7 @@ GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 
 #### `GraphQLAPI.setSchema()`
 
-With either a [`RawSchema`](https://5ee2586531b6070008b2c313--graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#rawschema-2) - an SDL string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
+With either a [`RawSchema`](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#rawschema-2) - an SDL string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
 We can't use a programattic `GraphQLSchema` instance, since this needs to be used by the webworker.
 
 ```ts
