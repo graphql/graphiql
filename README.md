@@ -22,7 +22,7 @@ Whether you want a simple GraphiQL IDE instance for your server, or a more advan
 
 The purpose of this monorepo is to give the GraphQL Community:
 
-- a to-specification official language service (see: [API Docs](https://graphiql-test.netlify.com/typedoc))
+- a to-specification official language service (see: [API Docs](https://graphiql-test.netlify.app/typedoc))
 - a comprehensive LSP server and CLI service for use with IDEs
 - a codemirror mode
 - a monaco mode (in the works)
