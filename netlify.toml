@@ -1,5 +1,5 @@
 [build]
-  command = "yarn build && yarn build-bundles && yarn build-demo && yarn build-docs"
+  command = "yarn build && yarn build-bundles && yarn build-docs"
   publish = "packages/graphiql"
 
 
