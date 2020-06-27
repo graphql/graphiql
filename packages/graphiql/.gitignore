@@ -16,3 +16,4 @@ test/pid
 renderGraphiql.js
 cypress/screenshots
 .awcache
+typedoc

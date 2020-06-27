@@ -2,9 +2,6 @@
   command = "yarn build && yarn build-bundles && yarn build-docs"
   publish = "packages/graphiql"
 
-[context.production]
-  command = "echo main"
-
 [context.deploy-preview] 
   # ignore changes on each push, but don't ignore above for the merge context
   ignore = "ignore = git diff --quiet HEAD^ HEAD packages/graphql-language-service/ packages/graphql-language-service-server/ '**/*.md'"
