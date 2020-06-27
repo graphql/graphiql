@@ -13,7 +13,6 @@ example/yarn.lock
 example/graphiql.js
 example/graphiql.css
 test/pid
-/*.html
 renderGraphiql.js
 cypress/screenshots
 .awcache
