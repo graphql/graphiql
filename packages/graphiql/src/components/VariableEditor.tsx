@@ -4,6 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+// eslint-disable-next-line spaced-comment
 /// <reference path="../../node_modules/@types/codemirror/addon/hint/show-hint.d.ts" />
 
 import { GraphQLType } from 'graphql';
@@ -49,7 +50,7 @@ type VariableEditorProps = {
  *
  */
 export class VariableEditor extends React.Component<VariableEditorProps> {
-  CodeMirror: any;
+  CodeMirror: typeof CM.default | null = null;
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
@@ -63,102 +64,96 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
     this.cachedValue = props.value || '';
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { default: CodeMirrorModule } = await import('codemirror');
+    this.CodeMirror = CodeMirrorModule;
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    this.CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
-    require('codemirror-graphql/variables/mode');
+    await this.loadCodeMirrorModules();
 
-    const editor = (this.editor = this.CodeMirror(this._node, {
-      value: this.props.value || '',
-      lineNumbers: true,
-      tabSize: 2,
-      mode: 'graphql-variables',
-      theme: this.props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
-      autoCloseBrackets: true,
-      matchBrackets: true,
-      showCursorWhenSelecting: true,
-      readOnly: this.props.readOnly ? 'nocursor' : false,
-      foldGutter: {
-        minFoldSize: 4,
-      },
-      lint: {
-        variableToType: this.props.variableToType,
-      },
-      hintOptions: {
-        variableToType: this.props.variableToType,
-        closeOnUnfocus: false,
-        completeSingle: false,
-        container: this._node,
-      },
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Cmd-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Ctrl-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Alt-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Shift-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Cmd-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
+    const editor = (this.editor = CodeMirrorModule(
+      // @ts-ignore
+      this._node as HTMLElement,
+      {
+        value: this.props.value || '',
+        lineNumbers: true,
+        tabSize: 2,
+        mode: 'graphql-variables',
+        theme: this.props.editorTheme || 'graphiql',
+        keyMap: 'sublime',
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        readOnly: this.props.readOnly ? 'nocursor' : false,
+        foldGutter: {
+          minFoldSize: 4,
         },
-        'Ctrl-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
+        lint: {
+          variableToType: this.props.variableToType,
         },
-        'Shift-Ctrl-P': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
-          }
+        hintOptions: {
+          variableToType: this.props.variableToType,
+          closeOnUnfocus: false,
+          completeSingle: false,
+          container: this._node,
         },
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+          'Cmd-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Ctrl-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Alt-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Shift-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Cmd-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+          'Ctrl-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+          'Shift-Ctrl-P': () => {
+            if (this.props.onPrettifyQuery) {
+              this.props.onPrettifyQuery();
+            }
+          },
 
-        'Shift-Ctrl-M': () => {
-          if (this.props.onMergeQuery) {
-            this.props.onMergeQuery();
-          }
-        },
+          'Shift-Ctrl-M': () => {
+            if (this.props.onMergeQuery) {
+              this.props.onMergeQuery();
+            }
+          },
 
-        ...commonKeys,
+          ...commonKeys,
+        },
       },
-    }));
+    ) as CM.Editor & { options: any });
 
     editor.on('change', this._onEdit);
     editor.on('keyup', this._onKeyUp);
     editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentDidUpdate(prevProps: VariableEditorProps) {
-    this.CodeMirror = require('codemirror');
+  async componentDidUpdate(prevProps: VariableEditorProps) {
+    const { default: CodeMirrorModule } = await import('codemirror');
+    this.CodeMirror = CodeMirrorModule;
     if (!this.editor) {
       return;
     }
@@ -208,6 +203,36 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
         }}
       />
     );
+  }
+
+  async loadCodeMirrorModules() {
+    return Promise.all([
+      import('codemirror/addon/hint/show-hint'),
+      import('codemirror/addon/comment/comment'),
+      import('codemirror/addon/edit/matchbrackets'),
+      import('codemirror/addon/edit/closebrackets'),
+      // @ts-ignore
+      import('codemirror/addon/fold/foldgutter'),
+      // @ts-ignore
+      import('codemirror/addon/fold/brace-fold'),
+      // @ts-ignore
+      import('codemirror/addon/search/search'),
+      import('codemirror/addon/search/searchcursor'),
+      // @ts-ignore
+      import('codemirror/addon/search/jump-to-line'),
+      // @ts-ignore
+      import('codemirror/addon/dialog/dialog'),
+      // @ts-ignore
+      import('codemirror/addon/lint/lint'),
+      // @ts-ignore
+      import('codemirror/keymap/sublime'),
+      // @ts-ignore
+      import('codemirror-graphql/variables/hint'),
+      // @ts-ignore
+      import('codemirror-graphql/variables/lint'),
+      // @ts-ignore
+      import('codemirror-graphql/variables/mode'),
+    ]);
   }
 
   /**

@@ -35,23 +35,16 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
   viewer: (CM.Editor & { options: any }) | null = null;
   _node: HTMLElement | null = null;
 
-  componentDidMount() {
+  async componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/results/mode');
+    const { default: CodeMirror } = await import('codemirror');
+    await this.loadCodemirrorModules();
+
     const Tooltip = this.props.ResultsTooltip;
     const ImagePreview = this.props.ImagePreview;
 
     if (Tooltip || ImagePreview) {
-      require('codemirror-graphql/utils/info-addon');
       const tooltipDiv = document.createElement('div');
       CodeMirror.registerHelper(
         'info',
@@ -80,20 +73,45 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
       );
     }
 
-    this.viewer = CodeMirror(this._node, {
-      lineWrapping: true,
-      value: this.props.value || '',
-      readOnly: true,
-      theme: this.props.editorTheme || 'graphiql',
-      mode: 'graphql-results',
-      keyMap: 'sublime',
-      foldGutter: {
-        minFoldSize: 4,
+    this.viewer = CodeMirror(
+      // @ts-ignore
+      this._node,
+      {
+        lineWrapping: true,
+        value: this.props.value || '',
+        readOnly: true,
+        theme: this.props.editorTheme || 'graphiql',
+        mode: 'graphql-results',
+        keyMap: 'sublime',
+        foldGutter: {
+          minFoldSize: 4,
+        },
+        gutters: ['CodeMirror-foldgutter'],
+        info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
+        extraKeys: commonKeys,
       },
-      gutters: ['CodeMirror-foldgutter'],
-      info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
-      extraKeys: commonKeys,
-    });
+    ) as CM.Editor & { options: any };
+  }
+  async loadCodemirrorModules() {
+    return Promise.all([
+      // @ts-ignore
+      import('codemirror/addon/fold/foldgutter'),
+      // @ts-ignore
+      import('codemirror/addon/fold/brace-fold'),
+      // @ts-ignore
+      import('codemirror/addon/dialog/dialog'),
+      // @ts-ignore
+      import('codemirror/addon/search/search'),
+      import('codemirror/addon/search/searchcursor'),
+      // @ts-ignore
+      import('codemirror/addon/search/jump-to-line'),
+      // @ts-ignore
+      import('codemirror/keymap/sublime'),
+      // @ts-ignore
+      import('codemirror-graphql/results/mode'),
+      // @ts-ignore
+      import('codemirror-graphql/utils/info-addon'),
+    ]);
   }
 
   shouldComponentUpdate(nextProps: ResultViewerProps) {

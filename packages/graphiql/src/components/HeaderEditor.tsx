@@ -44,7 +44,7 @@ type HeaderEditorProps = {
  *
  */
 export class HeaderEditor extends React.Component<HeaderEditorProps> {
-  CodeMirror: any;
+  CodeMirror: typeof CM.default | null = null;
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
@@ -58,91 +58,86 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
     this.cachedValue = props.value || '';
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const { default: CodeMirrorModule } = await import('codemirror');
+    await this.loadCodemirrorModules();
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    this.CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/mode/javascript/javascript');
-    require('codemirror/keymap/sublime');
+    this.CodeMirror = CodeMirrorModule;
 
-    const editor = (this.editor = this.CodeMirror(this._node, {
-      value: this.props.value || '',
-      lineNumbers: true,
-      tabSize: 2,
-      mode: { name: 'javascript', json: true },
-      theme: this.props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
-      autoCloseBrackets: true,
-      matchBrackets: true,
-      showCursorWhenSelecting: true,
-      readOnly: this.props.readOnly ? 'nocursor' : false,
-      foldGutter: {
-        minFoldSize: 4,
+    const editor = (this.editor = this.CodeMirror(
+      // @ts-ignore
+      this._node,
+      {
+        value: this.props.value || '',
+        lineNumbers: true,
+        tabSize: 2,
+        mode: { name: 'javascript', json: true },
+        theme: this.props.editorTheme || 'graphiql',
+        keyMap: 'sublime',
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        readOnly: this.props.readOnly ? 'nocursor' : false,
+        foldGutter: {
+          minFoldSize: 4,
+        },
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+          'Cmd-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Ctrl-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Alt-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Shift-Space': () =>
+            this.editor!.showHint({
+              completeSingle: false,
+              container: this._node,
+            } as CodeMirror.ShowHintOptions),
+          'Cmd-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+          'Ctrl-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+          'Shift-Ctrl-P': () => {
+            if (this.props.onPrettifyQuery) {
+              this.props.onPrettifyQuery();
+            }
+          },
+
+          'Shift-Ctrl-M': () => {
+            if (this.props.onMergeQuery) {
+              this.props.onMergeQuery();
+            }
+          },
+
+          ...commonKeys,
+        },
       },
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Cmd-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Ctrl-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Alt-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Shift-Space': () =>
-          this.editor!.showHint({
-            completeSingle: false,
-            container: this._node,
-          } as CodeMirror.ShowHintOptions),
-        'Cmd-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
-        },
-        'Ctrl-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
-        },
-        'Shift-Ctrl-P': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
-          }
-        },
-
-        'Shift-Ctrl-M': () => {
-          if (this.props.onMergeQuery) {
-            this.props.onMergeQuery();
-          }
-        },
-
-        ...commonKeys,
-      },
-    }));
+    ) as CM.Editor & { options: any });
 
     editor.on('change', this._onEdit);
     editor.on('keyup', this._onKeyUp);
     editor.on('hasCompletion', this._onHasCompletion);
   }
 
-  componentDidUpdate(prevProps: HeaderEditorProps) {
-    this.CodeMirror = require('codemirror');
+  async componentDidUpdate(prevProps: HeaderEditorProps) {
+    this.CodeMirror = (await import('codemirror')).default;
     if (!this.editor) {
       return;
     }
@@ -187,6 +182,28 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
         }}
       />
     );
+  }
+  async loadCodemirrorModules() {
+    return Promise.all([
+      import('codemirror/addon/hint/show-hint'),
+      import('codemirror/addon/edit/matchbrackets'),
+      import('codemirror/addon/edit/closebrackets'),
+      // @ts-ignore
+      import('codemirror/addon/fold/brace-fold'),
+      // @ts-ignore
+      import('codemirror/addon/fold/foldgutter'),
+      // @ts-ignore
+      import('codemirror/addon/lint/lint'),
+      import('codemirror/addon/search/searchcursor'),
+      // @ts-ignore
+      import('codemirror/addon/search/jump-to-line'),
+      // @ts-ignore
+      import('codemirror/addon/dialog/dialog'),
+      // @ts-ignore
+      import('codemirror/mode/javascript/javascript'),
+      // @ts-ignore
+      import('codemirror/keymap/sublime'),
+    ]);
   }
 
   /**

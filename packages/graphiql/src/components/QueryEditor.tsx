@@ -61,133 +61,123 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     this.cachedValue = props.value || '';
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/comment/comment');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/hint');
-    require('codemirror-graphql/lint');
-    require('codemirror-graphql/info');
-    require('codemirror-graphql/jump');
-    require('codemirror-graphql/mode');
+    const { default: CodeMirror } = await import('codemirror');
+    await this.loadCodeMirrorModules();
 
-    const editor: CM.Editor = (this.editor = CodeMirror(this._node, {
-      value: this.props.value || '',
-      lineNumbers: true,
-      tabSize: 2,
-      mode: 'graphql',
-      theme: this.props.editorTheme || 'graphiql',
-      keyMap: 'sublime',
-      autoCloseBrackets: true,
-      matchBrackets: true,
-      showCursorWhenSelecting: true,
-      readOnly: this.props.readOnly ? 'nocursor' : false,
-      foldGutter: {
-        minFoldSize: 4,
-      },
-      lint: {
-        schema: this.props.schema,
-      },
-      hintOptions: {
-        schema: this.props.schema,
-        closeOnUnfocus: false,
-        completeSingle: false,
-        container: this._node,
-      },
-      info: {
-        schema: this.props.schema,
-        renderDescription: (text: string) => md.render(text),
-        onClick: (reference: GraphQLType) =>
-          this.props.onClickReference && this.props.onClickReference(reference),
-      },
-      jump: {
-        schema: this.props.schema,
-        onClick: (
-          reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
-        ) =>
-          this.props.onClickReference && this.props.onClickReference(reference),
-      },
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-      extraKeys: {
-        'Cmd-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
-        'Ctrl-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-
-          editor.showHint({ completeSingle: true, container: this._node }),
-        'Alt-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
-        'Shift-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
-        'Shift-Alt-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-          editor.showHint({ completeSingle: true, container: this._node }),
-
-        'Cmd-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
+    const editor: CM.Editor = (this.editor = CodeMirror(
+      // @ts-ignore
+      this._node as HTMLElement,
+      {
+        value: this.props.value || '',
+        lineNumbers: true,
+        tabSize: 2,
+        mode: 'graphql',
+        theme: this.props.editorTheme || 'graphiql',
+        keyMap: 'sublime',
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        readOnly: this.props.readOnly ? 'nocursor' : false,
+        foldGutter: {
+          minFoldSize: 4,
         },
-        'Ctrl-Enter': () => {
-          if (this.props.onRunQuery) {
-            this.props.onRunQuery();
-          }
+        lint: {
+          schema: this.props.schema,
         },
-
-        'Shift-Ctrl-C': () => {
-          if (this.props.onCopyQuery) {
-            this.props.onCopyQuery();
-          }
+        hintOptions: {
+          schema: this.props.schema,
+          closeOnUnfocus: false,
+          completeSingle: false,
+          container: this._node,
         },
-
-        'Shift-Ctrl-P': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
-          }
+        info: {
+          schema: this.props.schema,
+          renderDescription: (text: string) => md.render(text),
+          onClick: (reference: GraphQLType) =>
+            this.props.onClickReference &&
+            this.props.onClickReference(reference),
         },
-
-        /* Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy */
-
-        'Shift-Ctrl-F': () => {
-          if (this.props.onPrettifyQuery) {
-            this.props.onPrettifyQuery();
-          }
+        jump: {
+          schema: this.props.schema,
+          onClick: (
+            reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
+          ) =>
+            this.props.onClickReference &&
+            this.props.onClickReference(reference),
         },
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        extraKeys: {
+          'Cmd-Space': () =>
+            // @ts-ignore showHint method needs improvement on definatelytyped
+            editor.showHint({ completeSingle: true, container: this._node }),
+          'Ctrl-Space': () =>
+            // @ts-ignore showHint method needs improvement on definatelytyped
 
-        'Shift-Ctrl-M': () => {
-          if (this.props.onMergeQuery) {
-            this.props.onMergeQuery();
-          }
-        },
-        ...commonKeys,
-        'Cmd-S': () => {
-          if (this.props.onRunQuery) {
-            // empty
-          }
-        },
+            editor.showHint({ completeSingle: true, container: this._node }),
+          'Alt-Space': () =>
+            // @ts-ignore showHint method needs improvement on definatelytyped
+            editor.showHint({ completeSingle: true, container: this._node }),
+          'Shift-Space': () =>
+            // @ts-ignore showHint method needs improvement on definatelytyped
+            editor.showHint({ completeSingle: true, container: this._node }),
+          'Shift-Alt-Space': () =>
+            // @ts-ignore showHint method needs improvement on definatelytyped
+            editor.showHint({ completeSingle: true, container: this._node }),
 
-        'Ctrl-S': () => {
-          if (this.props.onRunQuery) {
-            // empty
-          }
+          'Cmd-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+          'Ctrl-Enter': () => {
+            if (this.props.onRunQuery) {
+              this.props.onRunQuery();
+            }
+          },
+
+          'Shift-Ctrl-C': () => {
+            if (this.props.onCopyQuery) {
+              this.props.onCopyQuery();
+            }
+          },
+
+          'Shift-Ctrl-P': () => {
+            if (this.props.onPrettifyQuery) {
+              this.props.onPrettifyQuery();
+            }
+          },
+
+          /* Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy */
+
+          'Shift-Ctrl-F': () => {
+            if (this.props.onPrettifyQuery) {
+              this.props.onPrettifyQuery();
+            }
+          },
+
+          'Shift-Ctrl-M': () => {
+            if (this.props.onMergeQuery) {
+              this.props.onMergeQuery();
+            }
+          },
+          ...commonKeys,
+          'Cmd-S': () => {
+            if (this.props.onRunQuery) {
+              // empty
+            }
+          },
+
+          'Ctrl-S': () => {
+            if (this.props.onRunQuery) {
+              // empty
+            }
+          },
         },
       },
-    }));
+    ) as CM.Editor & { options: any });
     if (editor) {
       editor.on('change', this._onEdit);
       editor.on('keyup', this._onKeyUp);
@@ -197,8 +187,8 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     }
   }
 
-  componentDidUpdate(prevProps: QueryEditorProps) {
-    const CodeMirror = require('codemirror');
+  async componentDidUpdate(prevProps: QueryEditorProps) {
+    const { default: CodeMirror } = await import('codemirror');
 
     // Ensure the changes caused by this update are not interpretted as
     // user-input changes which could otherwise result in an infinite
@@ -242,6 +232,40 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
         }}
       />
     );
+  }
+
+  async loadCodeMirrorModules() {
+    return Promise.all([
+      import('codemirror/addon/hint/show-hint'),
+      import('codemirror/addon/comment/comment'),
+      import('codemirror/addon/edit/matchbrackets'),
+      import('codemirror/addon/edit/closebrackets'),
+      // @ts-ignore
+      import('codemirror/addon/fold/foldgutter'),
+      // @ts-ignore
+      import('codemirror/addon/fold/brace-fold'),
+      // @ts-ignore
+      import('codemirror/addon/search/search'),
+      import('codemirror/addon/search/searchcursor'),
+      // @ts-ignore
+      import('codemirror/addon/search/jump-to-line'),
+      // @ts-ignore
+      import('codemirror/addon/dialog/dialog'),
+      // @ts-ignore
+      import('codemirror/addon/lint/lint'),
+      // @ts-ignore
+      import('codemirror/keymap/sublime'),
+      // @ts-ignore
+      import('codemirror-graphql/hint'),
+      // @ts-ignore
+      import('codemirror-graphql/lint'),
+      // @ts-ignore
+      import('codemirror-graphql/info'),
+      // @ts-ignore
+      import('codemirror-graphql/jump'),
+      // @ts-ignore
+      import('codemirror-graphql/mode'),
+    ]);
   }
 
   /**
