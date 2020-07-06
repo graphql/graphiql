@@ -33,7 +33,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ec
 
 ## Usage
 
-1. [Install watchman](https://facebook.github.io/watchman/docs/install.html).
+1. [Install watchman](https://facebook.github.io/watchman/docs/install).
 2. Install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql).
 
 **This extension requires a valid `.graphqlconfig` or `.graphqlconfig.yml` file in the project root.** You can read more about that [here](https://github.com/kamilkisiela/graphql-config/tree/legacy#graphql-config).
