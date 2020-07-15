@@ -181,11 +181,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     const filesFromInputDirs = await this._readFilesFromInputDirs(
       rootDir,
-      projectConfig.include instanceof Array
-        ? projectConfig.include
-        : projectConfig.include
-        ? [projectConfig.include]
-        : [],
+      projectConfig.documents,
     );
     const list = filesFromInputDirs.filter(fileInfo =>
       projectConfig.match(fileInfo.filePath),
@@ -296,11 +292,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
     const filesFromInputDirs = await this._readFilesFromInputDirs(
       rootDir,
-      projectConfig.include instanceof Array
-        ? projectConfig.include
-        : projectConfig.include
-        ? [projectConfig.include]
-        : [],
+      projectConfig.documents,
     );
     const list = filesFromInputDirs.filter(fileInfo =>
       projectConfig.match(fileInfo.filePath),
@@ -317,21 +309,24 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
   _readFilesFromInputDirs = (
     rootDir: string,
-    includes: string[],
+    documents: GraphQLProjectConfig['documents'],
   ): Promise<Array<GraphQLFileMetadata>> => {
     let pattern: string;
 
-    if (includes.length === 0) {
+    if (!documents || documents.length === 0) {
       return Promise.resolve([]);
     }
 
     // See https://github.com/graphql/graphql-language-service/issues/221
     // for details on why special handling is required here for the
-    // includes.length === 1 case.
-    if (includes.length === 1) {
-      pattern = includes[0];
+    // documents.length === 1 case.
+    if (typeof documents === 'string') {
+      pattern = documents;
+    } else if (documents.length === 1) {
+      // @ts-ignore
+      pattern = documents[0];
     } else {
-      pattern = `{${includes.join(',')}}`;
+      pattern = `{${documents.join(',')}}`;
     }
 
     return new Promise((resolve, reject) => {
