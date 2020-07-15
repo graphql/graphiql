@@ -189,9 +189,38 @@
       ]
     },
     "graphql-comment": {
-      "comment": "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
-      "name": "comment.line.graphql",
-      "match": "#(?=([^\"]*\"[^\"]*\")*[^\"]*$).*$"
+      "patterns": [
+        {
+          "comment": "need to prefix comment space with a scope else Atom's reflow cmd doesn't work",
+          "name": "comment.line.graphql.js",
+          "match": "(\\s*)(#).*",
+          "captures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.graphql"
+            }
+          }
+        },
+        {
+          "name": "comment.line.graphql.js",
+          "begin": "(\"\"\")",
+          "end": "(\"\"\")",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.graphql"
+            }
+          }
+        },
+        {
+          "name": "comment.line.graphql.js",
+          "begin": "(\")",
+          "end": "(\")",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.whitespace.comment.leading.graphql"
+            }
+          }
+        }
+      ]
     },
     "graphql-description-singleline": {
       "name": "comment.line.number-sign.graphql",
@@ -334,6 +363,67 @@
         { "include": "#graphql-arguments" },
         { "include": "#literal-quasi-embedded" },
         { "include": "#graphql-skip-newlines" }
+      ]
+    },
+    "graphql-directive-definition": {
+      "begin": "\\s*(\\bdirective\\b)\\s*(@[_A-Za-z][_0-9A-Za-z]*)",
+      "end": "(?=.)",
+      "applyEndPatternLast": 1,
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.directive.graphql"
+        },
+        "2": {
+          "name": "entity.name.function.directive.graphql"
+        },
+        "3": { "name": "keyword.on.graphql" },
+        "4": { "name": "support.type.graphql" }
+      },
+      "patterns": [
+        {
+          "include": "#graphql-variable-definitions"
+        },
+        {
+          "begin": "\\s*(\\bon\\b)\\s*([_A-Za-z]*)",
+          "end": "(?=.)",
+          "applyEndPatternLast": 1,
+          "beginCaptures": {
+            "1": {
+              "name": "keyword.on.graphql"
+            },
+            "2": {
+              "name": "support.type.location.graphql"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#graphql-skip-newlines"
+            },
+            {
+              "include": "#graphql-comment"
+            },
+            {
+              "include": "#literal-quasi-embedded"
+            },
+            {
+              "match": "\\s*(\\|)\\s*([_A-Za-z]*)",
+              "captures": {
+                "2": {
+                  "name": "support.type.location.graphql"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "include": "#graphql-skip-newlines"
+        },
+        {
+          "include": "#graphql-comment"
+        },
+        {
+          "include": "#literal-quasi-embedded"
+        }
       ]
     },
     "graphql-selection-set": {
