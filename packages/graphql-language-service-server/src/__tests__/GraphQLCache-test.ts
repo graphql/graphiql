@@ -185,25 +185,25 @@ describe('GraphQLCache', () => {
   });
 
   describe('getFragmentDefinitions', () => {
-    it('it caches fragments found through single glob in `includes`', async () => {
+    it('it caches fragments found through single glob in `documents`', async () => {
       const config = graphQLRC.getProject('testSingularIncludesGlob');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
-    it('it caches fragments found through multiple globs in `includes`', async () => {
+    it('it caches fragments found through multiple globs in `documents`', async () => {
       const config = graphQLRC.getProject('testMultipleIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
-    it('handles empty includes', async () => {
+    it('handles empty documents', async () => {
       const config = graphQLRC.getProject('testNoIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();
     });
 
-    it('handles non-existent includes', async () => {
+    it('handles non-existent documents', async () => {
       const config = graphQLRC.getProject('testBadIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();

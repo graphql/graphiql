@@ -1,8 +1,8 @@
 projects:
   testWithSchema:
-    schema: 
-    - __schema__/StarWarsSchema.graphql
-    - "directive @customDirective on FRAGMENT_SPREAD"
+    schema:
+      - __schema__/StarWarsSchema.graphql
+      - 'directive @customDirective on FRAGMENT_SPREAD'
   testWithEndpoint:
     schema: https://example.com/graphql
   testWithEndpointAndSchema:
@@ -10,21 +10,21 @@ projects:
       - __schema__/StarWarsSchema.graphql
       - https://example.com/graphql
   testWithoutSchema:
-    schema: ""
+    schema: ''
   testWithCustomDirectives:
-    schema: 
+    schema:
       - __schema__/StarWarsSchema.graphql
-      - "directive @customDirective on FIELD"
+      - 'directive @customDirective on FIELD'
   testSingularIncludesGlob:
     schema: __schema__/StarWarsSchema.graphql
-    include: __queries__/*.graphql
+    documents: __queries__/*.graphql
   testMultipleIncludes:
     schema: __schema__/StarWarsSchema.graphql
-    include: 
+    documents:
       - __queries__/*.graphql
       - __fragments__/*.graphql
   testNoIncludes:
     schema: __schema__/StarWarsSchema.graphql
   testBadIncludes:
     schema: __schema__/StarWarsSchema.graphql
-    include: nope.nopeql
+    documents: nope.nopeql
