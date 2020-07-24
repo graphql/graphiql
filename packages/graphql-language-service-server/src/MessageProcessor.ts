@@ -6,16 +6,16 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { URL } from 'url';
-
-import type {
+import * as path from 'path';
+import {
   CachedContent,
   GraphQLCache,
   Uri,
   DefinitionQueryResult,
   GraphQLConfig,
+  GraphQLProjectConfig,
 } from 'graphql-language-service';
 
 import {
@@ -25,7 +25,7 @@ import {
 
 import { Range, Position } from 'graphql-language-service-utils';
 
-import {
+import type {
   CompletionParams,
   FileEvent,
   VersionedTextDocumentIdentifier,
@@ -33,7 +33,7 @@ import {
   DidOpenTextDocumentParams,
 } from 'vscode-languageserver-protocol';
 
-import {
+import type {
   Diagnostic,
   CompletionItem,
   CompletionList,
@@ -51,6 +51,8 @@ import {
   DocumentSymbolParams,
   SymbolInformation,
 } from 'vscode-languageserver';
+
+import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { getGraphQLCache } from './GraphQLCache';
 import { parseDocument } from './parseDocument';
@@ -141,6 +143,9 @@ export class MessageProcessor {
         messageType: 'initialize',
       }),
     );
+    const config = this._graphQLCache.getGraphQLConfig();
+
+    await this._cacheAllProjectFiles(config);
 
     return serverCapabilities;
   }
@@ -161,6 +166,7 @@ export class MessageProcessor {
     const diagnostics: Diagnostic[] = [];
 
     let contents: CachedContent[] = [];
+
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
     if ('text' in textDocument && textDocument.text) {
@@ -168,7 +174,7 @@ export class MessageProcessor {
       // Only run the below function if text is passed in.
       contents = this._parser(textDocument.text, uri, this._fileExtensions);
 
-      this._invalidateCache(textDocument, uri, contents);
+      await this._invalidateCache(textDocument, uri, contents);
     } else {
       const cachedDocument = this._getCachedDocument(textDocument.uri);
       if (cachedDocument) {
@@ -242,15 +248,15 @@ export class MessageProcessor {
       this._fileExtensions,
     );
     // If it's a .graphql file, proceed normally and invalidate the cache.
-    this._invalidateCache(textDocument, uri, contents);
+    await this._invalidateCache(textDocument, uri, contents);
 
     const cachedDocument = this._getCachedDocument(uri);
     if (!cachedDocument) {
       return null;
     }
 
-    this._updateFragmentDefinition(uri, contents);
-    this._updateObjectTypeDefinition(uri, contents);
+    await this._updateFragmentDefinition(uri, contents);
+    await this._updateObjectTypeDefinition(uri, contents);
 
     // Send the diagnostics onChange as well
     const diagnostics: Diagnostic[] = [];
@@ -536,7 +542,12 @@ export class MessageProcessor {
     if (!found) {
       return [];
     }
-
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+    if (project) {
+      await this._cacheSchemaFilesforProject(project);
+    }
     const { query, range } = found;
     if (range) {
       position.line -= range.start.line;
@@ -564,10 +575,6 @@ export class MessageProcessor {
           };
         })
       : [];
-
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(textDocument.uri);
 
     this._logger.log(
       JSON.stringify({
@@ -623,6 +630,89 @@ export class MessageProcessor {
   //    );
   // }
 
+  // async handleWorkspaceSymbolRequest(
+  //   _params: WorkspaceSymbolParams,
+  // ): Promise<SymbolInformation[]> {
+  //   const project = await this._graphQLCache.getGraphQLConfig().getDefault()
+  //   await this._cacheSchemaFilesforProject(project)
+  //   return [];
+  // }
+  async _cacheSchema(
+    uri: UnnormalizedTypeDefPointer,
+    project: GraphQLProjectConfig,
+  ) {
+    uri = uri.toString();
+    const isURIValid = existsSync(uri);
+    const schemaUri = 'file://' + path.join(project.dirpath, uri);
+    let version = 1;
+    if (isURIValid) {
+      const schemaDocument = this._getCachedDocument(schemaUri);
+
+      if (schemaDocument) {
+        version = schemaDocument.version++;
+      }
+      const schemaText = readFileSync(uri, { encoding: 'utf-8' });
+      const contents = this._parser(
+        schemaText,
+        schemaUri,
+        this._fileExtensions,
+      );
+
+      await this._updateObjectTypeDefinition(schemaUri, contents);
+      await this._invalidateCache(
+        { version, uri: schemaUri },
+        schemaUri,
+        contents,
+      );
+    }
+  }
+  async _cacheSchemaFilesforProject(project: GraphQLProjectConfig) {
+    const schema = project?.schema;
+    if (schema) {
+      if (Array.isArray(schema)) {
+        Promise.all(
+          schema.map(
+            async (uri: UnnormalizedTypeDefPointer) =>
+              await this._cacheSchema(uri, project),
+          ),
+        );
+      } else {
+        await this._cacheSchema(schema.toString(), project);
+      }
+    }
+  }
+  async _cacheDocumentFilesforProject(project: GraphQLProjectConfig) {
+    const documents = await project.getDocuments();
+    return Promise.all(
+      documents.map(async document => {
+        if (!document.location || !document.rawSDL) {
+          return;
+        }
+        const uri = 'file://' + path.join(project.dirpath, document.location);
+        const contents = this._parser(
+          document.rawSDL,
+          uri,
+          this._fileExtensions,
+        );
+
+        await this._updateObjectTypeDefinition(uri, contents);
+        await this._updateFragmentDefinition(uri, contents);
+        await this._invalidateCache({ version: 1, uri }, uri, contents);
+      }),
+    );
+  }
+  async _cacheAllProjectFiles(config: GraphQLConfig) {
+    const projects = config?.projects;
+    if (projects && config) {
+      Promise.all(
+        Object.keys(projects).map(async projectName => {
+          const project = await config.getProject(projectName);
+          await this._cacheSchemaFilesforProject(project);
+          await this._cacheDocumentFilesforProject(project);
+        }),
+      );
+    }
+  }
   _isRelayCompatMode(query: string): boolean {
     return (
       query.indexOf('RelayCompat') !== -1 ||
@@ -666,16 +756,17 @@ export class MessageProcessor {
 
     return null;
   }
-  _invalidateCache(
+  async _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
     contents: CachedContent[],
-  ): void {
+  ): Promise<void> {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (
         cachedDocument &&
-        textDocument.version &&
+        textDocument &&
+        textDocument?.version &&
         cachedDocument.version < textDocument.version
       ) {
         // Current server capabilities specify the full sync of the contents.
@@ -685,12 +776,13 @@ export class MessageProcessor {
           contents,
         });
       }
-    } else if (textDocument.version) {
+    } else if (textDocument?.version) {
       this._textDocumentCache.set(uri, {
         version: textDocument.version,
         contents,
       });
     }
+    return;
   }
 }
 

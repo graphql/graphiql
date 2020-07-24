@@ -194,7 +194,7 @@ export class GraphQLLanguageService {
 
     // Check if there are custom validation rules to be used
     let customRules: ValidationRule[] | null = null;
-    const customValidationRules = extensions.customValidationRules;
+    const customValidationRules = extensions?.customValidationRules;
     if (customValidationRules) {
       customRules = customValidationRules(this._graphQLConfig);
 

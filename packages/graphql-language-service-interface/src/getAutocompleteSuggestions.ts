@@ -101,7 +101,7 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.FIELD ||
     kind === RuleKinds.ALIASED_FIELD
   ) {
-    return getSuggestionsForFieldNames(token, typeInfo, schema, kind);
+    return getSuggestionsForFieldNames(token, typeInfo, schema, kind, cursor);
   }
 
   // Argument names
@@ -215,9 +215,9 @@ export function getAutocompleteSuggestions(
 
   // Variable definition types
   if (
-    (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
-    (kind === RuleKinds.LIST_TYPE && step === 1) ||
-    (kind === RuleKinds.NAMED_TYPE &&
+    (kind === 'VariableDefinition' && step === 2) ||
+    (kind === 'ListType' && step === 1) ||
+    (kind === 'NamedType' &&
       state.prevState &&
       (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
         state.prevState.kind === RuleKinds.LIST_TYPE ||
@@ -241,6 +241,7 @@ function getSuggestionsForFieldNames(
   schema: GraphQLSchema,
   // kind: RuleKind.SelectionSet | RuleKind.Field | RuleKind.AliasedField,
   _kind: string,
+  _cursor: Position,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
@@ -255,22 +256,38 @@ function getSuggestionsForFieldNames(
     if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
+
     if (parentType === schema.getQueryType()) {
       fields.push(SchemaMetaFieldDef, TypeMetaFieldDef);
     }
+
     return hintList(
       token,
-      fields.map<CompletionItem>((field, index) => ({
-        // This will sort the fields in the same order they are listed in the schema
-        sortText: String(index) + field.name,
-        label: field.name,
-        detail: String(field.type),
-        documentation: field.description ?? undefined,
-        deprecated: field.isDeprecated,
-        isDeprecated: field.isDeprecated,
-        deprecationReason: field.deprecationReason,
-        kind: CompletionItemKind.Field,
-      })),
+      fields.map<CompletionItem>((field, index) => {
+        const result: CompletionItem = {
+          // This will sort the fields in the same order they are listed in the schema
+          sortText: String(index) + field.name,
+          label: field.name,
+          detail: String(field.type),
+          documentation: field.description ?? undefined,
+          deprecated: field.isDeprecated,
+          isDeprecated: field.isDeprecated,
+          deprecationReason: field.deprecationReason,
+          kind: CompletionItemKind.Field,
+        };
+        // TODO: automatically expand selection sets
+        // if (
+        //   isListType(field.type) ||
+        //   isObjectType(field.type) ||
+        //   isInputObjectType(field.type)
+        // ) {
+        //   console.log('compound type');
+        //   // field.type.getFields()
+        //   result.insertText = result.label + ' {\n}';
+        //   // result.command = { title: 'Move Line Up', command: '' };
+        // }
+        return result;
+      }),
     );
   }
   return [];
