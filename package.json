@@ -106,6 +106,10 @@
         "title": "VSCode GraphQL - Is Debugging?"
       },
       {
+        "command": "extension.restart",
+        "title": "VSCode GraphQL - Restart"
+      },
+      {
         "command": "extension.contentProvider",
         "title": "Execute GraphQL Operations"
       }

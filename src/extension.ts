@@ -168,6 +168,11 @@ export async function activate(context: ExtensionContext) {
     },
   )
   context.subscriptions.push(commandContentProvider)
+
+  commands.registerCommand("extension.restart", async () => {
+    await client.stop()
+    await client.start()
+  })
 }
 
 export function deactivate() {
