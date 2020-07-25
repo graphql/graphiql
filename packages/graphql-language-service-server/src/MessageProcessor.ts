@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { URL } from 'url';
 import * as path from 'path';
 import {
@@ -58,6 +58,8 @@ import { getGraphQLCache } from './GraphQLCache';
 import { parseDocument } from './parseDocument';
 
 import { Logger } from './Logger';
+import { printSchema } from 'graphql';
+import { tmpdir } from 'os';
 
 type CachedDocumentType = {
   version: number;
@@ -75,6 +77,9 @@ export class MessageProcessor {
   _extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
   _fileExtensions?: Array<string>;
   _parser: typeof parseDocument;
+  _tmpDir: string;
+  _tmpUriBase: string;
+  _tmpDirBase: string;
 
   constructor(
     logger: Logger,
@@ -82,6 +87,7 @@ export class MessageProcessor {
     config?: GraphQLConfig,
     parser?: typeof parseDocument,
     fileExtensions?: string[],
+    tmpDir?: string,
   ) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
@@ -91,6 +97,12 @@ export class MessageProcessor {
     this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
     this._parser = parser ?? parseDocument;
+    this._tmpDir = tmpDir || tmpdir();
+    this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
+    this._tmpUriBase = path.join('file://', this._tmpDirBase);
+    if (!existsSync(this._tmpDirBase)) {
+      mkdirSync(this._tmpDirBase);
+    }
   }
 
   async handleInitializeRequest(
@@ -463,8 +475,8 @@ export class MessageProcessor {
           const text: string = readFileSync(new URL(uri).pathname).toString();
           const contents = this._parser(text, uri, this._fileExtensions);
 
-          this._updateFragmentDefinition(uri, contents);
-          this._updateObjectTypeDefinition(uri, contents);
+          await this._updateFragmentDefinition(uri, contents);
+          await this._updateObjectTypeDefinition(uri, contents);
 
           const diagnostics = (
             await Promise.all(
@@ -525,7 +537,12 @@ export class MessageProcessor {
     }
     const textDocument = params.textDocument;
     const position = params.position;
-
+    const project = this._graphQLCache
+      .getGraphQLConfig()
+      .getProjectForFile(textDocument.uri);
+    if (project) {
+      await this._cacheSchemaFilesForProject(project);
+    }
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
       throw new Error(`${textDocument.uri} is not available.`);
@@ -542,12 +559,7 @@ export class MessageProcessor {
     if (!found) {
       return [];
     }
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(textDocument.uri);
-    if (project) {
-      await this._cacheSchemaFilesforProject(project);
-    }
+
     const { query, range } = found;
     if (range) {
       position.line -= range.start.line;
@@ -634,72 +646,143 @@ export class MessageProcessor {
   //   _params: WorkspaceSymbolParams,
   // ): Promise<SymbolInformation[]> {
   //   const project = await this._graphQLCache.getGraphQLConfig().getDefault()
-  //   await this._cacheSchemaFilesforProject(project)
+  //   await this._cacheSchemaFilesForProject(project)
   //   return [];
   // }
-  async _cacheSchema(
+
+  async _cacheSchemaText(uri: string, text: string, version: number) {
+    try {
+      const contents = this._parser(text, uri, this._fileExtensions);
+      if (contents.length > 0) {
+        await this._updateObjectTypeDefinition(uri, contents);
+        await this._invalidateCache({ version, uri }, uri, contents);
+      }
+    } catch (err) {
+      this._logger.error(err);
+    }
+  }
+  async _cacheSchemaFile(
     uri: UnnormalizedTypeDefPointer,
     project: GraphQLProjectConfig,
   ) {
     uri = uri.toString();
-    const isURIValid = existsSync(uri);
-    const schemaUri = 'file://' + path.join(project.dirpath, uri);
+
+    const isFileUri = existsSync(uri);
+
     let version = 1;
-    if (isURIValid) {
+    if (isFileUri) {
+      const schemaUri = 'file://' + path.join(project.dirpath, uri);
       const schemaDocument = this._getCachedDocument(schemaUri);
 
       if (schemaDocument) {
         version = schemaDocument.version++;
       }
       const schemaText = readFileSync(uri, { encoding: 'utf-8' });
-      const contents = this._parser(
-        schemaText,
-        schemaUri,
-        this._fileExtensions,
-      );
-
-      await this._updateObjectTypeDefinition(schemaUri, contents);
-      await this._invalidateCache(
-        { version, uri: schemaUri },
-        schemaUri,
-        contents,
-      );
+      this._cacheSchemaText(schemaUri, schemaText, version);
     }
   }
-  async _cacheSchemaFilesforProject(project: GraphQLProjectConfig) {
+  _getTmpProjectPath(project: GraphQLProjectConfig, protocol: boolean = true) {
+    const baseDir = this._graphQLCache.getGraphQLConfig().dirpath;
+    const baseName = path.basename(baseDir);
+    const basePath = path.join(this._tmpDirBase, baseName);
+    if (!existsSync(basePath)) {
+      mkdirSync(basePath);
+      mkdirSync(path.join(basePath, 'projects'));
+    }
+    const projectTmpPath = path.resolve(
+      path.join(basePath, 'projects', project.name),
+    );
+    if (!existsSync(projectTmpPath)) {
+      mkdirSync(projectTmpPath);
+    }
+    return protocol ? 'file://' + projectTmpPath : projectTmpPath;
+  }
+  async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
-    if (schema) {
-      if (Array.isArray(schema)) {
-        Promise.all(
-          schema.map(
-            async (uri: UnnormalizedTypeDefPointer) =>
-              await this._cacheSchema(uri, project),
-          ),
-        );
-      } else {
-        await this._cacheSchema(schema.toString(), project);
+    const hasConfig = project.hasExtension('vscode');
+    let cacheSchemaFiles = false;
+    let cacheConfigSchema = true;
+    if (hasConfig) {
+      const config = project.extensions.vscode;
+      if (config?.cacheConfigSchema) {
+        cacheConfigSchema = config.cacheConfigSchema;
+      }
+      if (config?.cacheSchemaFiles) {
+        cacheSchemaFiles = config.cacheSchemaFiles;
+      }
+    }
+    if (cacheConfigSchema) {
+      await this._cacheConfigSchema(project);
+    }
+    if (cacheSchemaFiles) {
+      if (schema) {
+        if (Array.isArray(schema)) {
+          Promise.all(
+            schema.map(async (uri: UnnormalizedTypeDefPointer) => {
+              if (cacheSchemaFiles) {
+                await this._cacheSchemaFile(uri, project);
+              }
+            }),
+          );
+        } else {
+          const uri = schema.toString();
+          if (cacheSchemaFiles) {
+            await this._cacheSchemaFile(uri, project);
+          }
+        }
       }
     }
   }
-  async _cacheDocumentFilesforProject(project: GraphQLProjectConfig) {
-    const documents = await project.getDocuments();
-    return Promise.all(
-      documents.map(async document => {
-        if (!document.location || !document.rawSDL) {
-          return;
-        }
-        const uri = 'file://' + path.join(project.dirpath, document.location);
-        const contents = this._parser(
-          document.rawSDL,
-          uri,
-          this._fileExtensions,
-        );
+  async _cacheConfigSchema(project: GraphQLProjectConfig) {
+    try {
+      const schema = await project.getSchema();
+      const schemaText = printSchema(schema, {
+        commentDescriptions: true,
+      });
+      const uri = path.join(this._getTmpProjectPath(project), 'schema.graphql');
+      const fsPath = path.join(
+        this._getTmpProjectPath(project, false),
+        'schema.graphql',
+      );
 
-        await this._updateObjectTypeDefinition(uri, contents);
-        await this._updateFragmentDefinition(uri, contents);
-        await this._invalidateCache({ version: 1, uri }, uri, contents);
-      }),
-    );
+      writeFileSync(fsPath, schemaText, {
+        encoding: 'utf-8',
+      });
+      const schemaDocument = this._getCachedDocument(uri);
+
+      if (!schemaDocument) {
+        await this._cacheSchemaText(uri, schemaText, 1);
+      }
+    } catch (err) {
+      this._logger.error(err);
+    }
+  }
+  async _cacheDocumentFilesforProject(project: GraphQLProjectConfig) {
+    try {
+      const documents = await project.getDocuments();
+      return Promise.all(
+        documents.map(async document => {
+          if (!document.location || !document.rawSDL) {
+            return;
+          }
+          const uri = 'file://' + path.join(project.dirpath, document.location);
+          const contents = this._parser(
+            document.rawSDL,
+            uri,
+            this._fileExtensions,
+          );
+
+          await this._updateObjectTypeDefinition(uri, contents);
+          await this._updateFragmentDefinition(uri, contents);
+          await this._invalidateCache({ version: 1, uri }, uri, contents);
+        }),
+      );
+    } catch (err) {
+      this._logger.error(
+        `invalid/unknown file in graphql config documents entry:\n '${project.documents}'`,
+      );
+      this._logger.error(err);
+    }
   }
   async _cacheAllProjectFiles(config: GraphQLConfig) {
     const projects = config?.projects;
@@ -707,7 +790,7 @@ export class MessageProcessor {
       Promise.all(
         Object.keys(projects).map(async projectName => {
           const project = await config.getProject(projectName);
-          await this._cacheSchemaFilesforProject(project);
+          await this._cacheSchemaFilesForProject(project);
           await this._cacheDocumentFilesforProject(project);
         }),
       );
@@ -760,7 +843,7 @@ export class MessageProcessor {
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
     contents: CachedContent[],
-  ): Promise<void> {
+  ): Promise<Map<string, CachedDocumentType> | null> {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (
@@ -771,18 +854,18 @@ export class MessageProcessor {
       ) {
         // Current server capabilities specify the full sync of the contents.
         // Therefore always overwrite the entire content.
-        this._textDocumentCache.set(uri, {
+        return this._textDocumentCache.set(uri, {
           version: textDocument.version,
           contents,
         });
       }
     } else if (textDocument?.version) {
-      this._textDocumentCache.set(uri, {
+      return this._textDocumentCache.set(uri, {
         version: textDocument.version,
         contents,
       });
     }
-    return;
+    return null;
   }
 }
 

@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
+import * as os from 'os';
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
 import { GraphQLConfig } from 'graphql-config';
@@ -37,6 +37,7 @@ import {
   DidChangeWatchedFilesNotification,
   ShutdownRequest,
   DocumentSymbolRequest,
+  PublishDiagnosticsParams,
   // WorkspaceSymbolRequest,
   // ReferencesRequest,
 } from 'vscode-languageserver';
@@ -57,6 +58,7 @@ export type ServerOptions = {
   // pre-existing GraphQLConfig
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
+  tmpDir?: string;
 };
 
 /**
@@ -68,7 +70,12 @@ export type ServerOptions = {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  const logger = new Logger();
+  const tmpDir = options.tmpDir;
+  if (!tmpDir) {
+    options.tmpDir = os.tmpdir();
+  }
+  const logger = new Logger(options.tmpDir as string);
+
   if (options && options.method) {
     let reader;
     let writer;
@@ -152,12 +159,25 @@ function initializeHandlers({
       options.config,
       options.parser,
       options.fileExtensions,
+      options.tmpDir,
     );
     return connection;
   } catch (err) {
     logger.error('There was an error initializing the server connection');
     logger.error(err);
     process.exit(1);
+  }
+}
+
+function reportDiagnostics(
+  diagnostics: PublishDiagnosticsParams | null,
+  connection: MessageConnection,
+) {
+  if (diagnostics) {
+    connection.sendNotification(
+      PublishDiagnosticsNotification.type,
+      diagnostics,
+    );
   }
 }
 
@@ -169,6 +189,7 @@ function addHandlers(
   config?: GraphQLConfig,
   parser?: typeof parseDocument,
   fileExtensions?: string[],
+  tmpDir?: string,
 ): void {
   const messageProcessor = new MessageProcessor(
     logger,
@@ -176,6 +197,7 @@ function addHandlers(
     config,
     parser,
     fileExtensions,
+    tmpDir,
   );
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
@@ -183,12 +205,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
   connection.onNotification(
@@ -197,12 +214,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
   connection.onNotification(
@@ -211,12 +223,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidChangeNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
 
