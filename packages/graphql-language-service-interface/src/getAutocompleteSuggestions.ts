@@ -212,14 +212,11 @@ export function getAutocompleteSuggestions(
       kind,
     );
   }
-  if (kind === 'VariableDefinition') {
-    console.log('VARIABLE DEF', kind, token);
-  }
   // Variable definition types
   if (
-    (kind === 'VariableDefinition' && step === 2) ||
-    (kind === 'ListType' && step === 1) ||
-    (kind === 'NamedType' &&
+    (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
+    (kind === RuleKinds.LIST_TYPE && step === 1) ||
+    (kind === RuleKinds.NAMED_TYPE &&
       state.prevState &&
       (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
         state.prevState.kind === RuleKinds.LIST_TYPE ||
