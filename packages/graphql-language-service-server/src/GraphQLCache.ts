@@ -30,6 +30,7 @@ import {
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
+import { GraphQLExtensionDeclaration } from 'graphql-config/extension';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -55,17 +56,23 @@ const {
 export async function getGraphQLCache(
   configDir: Uri,
   parser: typeof parseDocument,
-  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  extensions: GraphQLExtensionDeclaration[] = [],
   config?: GraphQLConfig,
+  fileExtensions: string[] = [],
+  // loadConfigOptions?: Parameters<typeof loadConfig>,
 ): Promise<GraphQLCacheInterface> {
-  let graphQLConfig =
-    config ?? ((await loadConfig({ rootDir: configDir })) as GraphQLConfig);
-  if (extensions && extensions.length > 0) {
-    for await (const extension of extensions) {
-      graphQLConfig = await extension(graphQLConfig);
-    }
-  }
-  return new GraphQLCache(configDir, graphQLConfig, parser);
+  const graphQLConfig =
+    config ??
+    (await loadConfig({
+      rootDir: configDir,
+      extensions,
+    }));
+  return new GraphQLCache(
+    configDir,
+    graphQLConfig as GraphQLConfig,
+    parser,
+    fileExtensions,
+  );
 }
 
 export class GraphQLCache implements GraphQLCacheInterface {
@@ -77,11 +84,13 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
+  _fileExtensions: string[];
 
   constructor(
     configDir: Uri,
     graphQLConfig: GraphQLConfig,
     parser: typeof parseDocument,
+    fileExtensions: string[],
   ) {
     this._configDir = configDir;
     this._graphQLConfig = graphQLConfig;
@@ -91,6 +100,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
     this._parser = parser;
+    this._fileExtensions = fileExtensions;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
@@ -363,9 +373,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               // so we have to force this here
               // becase glob's DefinatelyTyped doesn't use fs.Stats here though
               // the docs indicate that is what's there :shrug:
-              const cacheEntry: fs.Stats = globResult.statCache[
-                filePath
-              ] as fs.Stats;
+              const cacheEntry = globResult.statCache[filePath] as fs.Stats;
               return {
                 filePath,
                 mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
@@ -799,7 +807,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         let queries: CachedContent[] = [];
         if (content.trim().length !== 0) {
           try {
-            queries = this._parser(content, filePath);
+            queries = this._parser(content, filePath, this._fileExtensions);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({

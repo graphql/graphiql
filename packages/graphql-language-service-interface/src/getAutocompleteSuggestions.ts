@@ -212,7 +212,9 @@ export function getAutocompleteSuggestions(
       kind,
     );
   }
-
+  if (kind === 'VariableDefinition') {
+    console.log('VARIABLE DEF', kind, token);
+  }
   // Variable definition types
   if (
     (kind === 'VariableDefinition' && step === 2) ||

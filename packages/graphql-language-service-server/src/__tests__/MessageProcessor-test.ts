@@ -6,6 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
 import { Position, Range } from 'graphql-language-service-utils';
 
@@ -14,12 +15,22 @@ import { parseDocument } from '../parseDocument';
 
 jest.mock('../Logger');
 
-import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
+import { GraphQLCache } from '../GraphQLCache';
+
+import { loadConfig } from 'graphql-config';
+
+import type {
+  DefinitionQueryResult,
+  Outline,
+  GraphQLConfig,
+  GraphQLProjectConfig,
+} from 'graphql-language-service';
 
 import { Logger } from '../Logger';
 
+const baseConfig = { dirpath: __dirname };
 describe('MessageProcessor', () => {
-  const logger = new Logger();
+  const logger = new Logger(tmpdir());
   const messageProcessor = new MessageProcessor(logger);
 
   const queryDir = `${__dirname}/__queries__`;
@@ -30,24 +41,16 @@ describe('MessageProcessor', () => {
   }
   `;
 
-  beforeEach(() => {
-    messageProcessor._graphQLCache = {
-      // @ts-ignore
-      getGraphQLConfig() {
-        return {
-          dirpath: __dirname,
-          getProjectForFile() {
-            return null;
-          },
-        };
-      },
-      // @ts-ignore
-      updateFragmentDefinition() {},
-      // @ts-ignore
-      updateObjectTypeDefinition() {},
-      // @ts-ignore
-      handleWatchmanSubscribeEvent() {},
-    };
+  beforeEach(async () => {
+    const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
+    // @ts-ignore
+    // loadConfig.mockRestore();
+    messageProcessor._graphQLCache = new GraphQLCache(
+      __dirname,
+      gqlConfig,
+      parseDocument,
+      ['ts', 'js', 'graphql'],
+    );
     messageProcessor._languageService = {
       // @ts-ignore
       getAutocompleteSuggestions: (query, position, uri) => {
@@ -117,12 +120,13 @@ describe('MessageProcessor', () => {
     const { capabilities } = await messageProcessor.handleInitializeRequest(
       // @ts-ignore
       {
-        rootUri: __dirname,
+        rootPath: __dirname,
       },
       null,
       __dirname,
     );
     expect(capabilities.definitionProvider).toEqual(true);
+    expect(capabilities.workspaceSymbolProvider).toEqual(true);
     expect(capabilities.completionProvider.resolveProvider).toEqual(true);
     expect(capabilities.textDocumentSync).toEqual(1);
   });
