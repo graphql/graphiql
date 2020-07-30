@@ -186,7 +186,8 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.NAMED_TYPE &&
       state.prevState &&
       (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
-        state.prevState.kind === RuleKinds.LIST_TYPE))
+        state.prevState.kind === RuleKinds.LIST_TYPE ||
+        state.prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
