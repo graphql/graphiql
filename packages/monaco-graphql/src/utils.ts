@@ -38,7 +38,11 @@ export function toCompletion(
 ): GraphQLCompletionItem & { range: monaco.IRange } {
   return {
     label: entry.label,
-    insertText: entry.insertText || (entry.label as string),
+    // TODO: when adding variables to getAutocompleteSuggestions, we appended the $.
+    // this appears to cause an issue in monaco, but not vscode
+    insertText:
+      entry.insertText ||
+      (!entry.label.startsWith('$') ? entry.label : entry.label.substring(1)),
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,

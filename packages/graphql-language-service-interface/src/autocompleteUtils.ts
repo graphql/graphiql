@@ -115,19 +115,17 @@ function filterAndSortList<T extends CompletionItemBase>(
     entry,
   }));
 
-  const conciseMatches = filterNonEmpty(
+  return filterNonEmpty(
     filterNonEmpty(byProximity, pair => pair.proximity <= 2),
     pair => !pair.entry.isDeprecated,
-  );
-
-  const sortedMatches = conciseMatches.sort(
-    (a, b) =>
-      (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
-      a.proximity - b.proximity ||
-      a.entry.label.length - b.entry.label.length,
-  );
-
-  return sortedMatches.map(pair => pair.entry);
+  )
+    .sort(
+      (a, b) =>
+        (a.entry.isDeprecated ? 1 : 0) - (b.entry.isDeprecated ? 1 : 0) ||
+        a.proximity - b.proximity ||
+        a.entry.label.length - b.entry.label.length,
+    )
+    .map(pair => pair.entry);
 }
 
 // Filters the array by the predicate, unless it results in an empty array,
