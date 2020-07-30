@@ -40,7 +40,12 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   }
 
   let directivesDef;
-  if(field && 'astNode' in field && 'directives' in field.astNode && field.astNode.directives.length > 0) {
+  if (
+    field &&
+    'astNode' in field &&
+    'directives' in field.astNode &&
+    field.astNode.directives.length > 0
+  ) {
     directivesDef = (
       <div className="doc-category">
         <div className="doc-category-title">{'directives'}</div>

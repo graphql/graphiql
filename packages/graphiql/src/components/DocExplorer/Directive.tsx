@@ -18,10 +18,7 @@ type DirectiveProps = {
   onClickType: OnClickTypeFunction;
 };
 
-export default function Directive({
-  directive,
-  onClickType,
-}: DirectiveProps) {
+export default function Directive({ directive, onClickType }: DirectiveProps) {
   let argsDef;
   if (directive && 'arguments' in directive && directive.arguments.length > 0) {
     argsDef = (
@@ -44,7 +41,8 @@ export default function Directive({
 
   return (
     <span className="arg">
-      {'@'}<span className="arg-name">{directive.name}</span>
+      {'@'}
+      <span className="arg-name">{directive.name}</span>
       {argsDef}
     </span>
   );
