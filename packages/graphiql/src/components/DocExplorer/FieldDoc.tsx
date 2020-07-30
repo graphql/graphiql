@@ -52,7 +52,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
         {field.astNode.directives.map((directive: DirectiveNode) => (
           <div key={directive.name} className="doc-category-item">
             <div>
-              <Directive directive={directive} />
+              <Directive directive={directive} onClickType={onClickType} />
             </div>
           </div>
         ))}
