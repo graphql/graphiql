@@ -7,13 +7,11 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/runmode/runmode';
-import '../mode';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import '../mode';
 
 describe('graphql-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
@@ -28,18 +26,13 @@ describe('graphql-mode', () => {
       }
     });
 
-    expect(tokens).to.deep.equal(['query', 'name', '{', '}']);
-    expect(styles).to.deep.equal([
-      'keyword',
-      'def',
-      'punctuation',
-      'punctuation',
-    ]);
+    expect(tokens).toEqual(['query', 'name', '{', '}']);
+    expect(styles).toEqual(['keyword', 'def', 'punctuation', 'punctuation']);
   });
 
   it('parses Relay-style anonymous FragmentDefinitions', () => {
     CodeMirror.runMode('fragment on Test { id }', 'graphql', (token, style) =>
-      expect(style).to.not.equal('invalidchar'),
+      expect(style).not.toBe('invalidchar'),
     );
   });
 
@@ -47,30 +40,30 @@ describe('graphql-mode', () => {
     CodeMirror.runMode(
       '{ ... on OptionalType { name } }',
       'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar'),
+      (token, style) => expect(style).not.toBe('invalidchar'),
     );
 
     CodeMirror.runMode('{ ... { name } }', 'graphql', (token, style) =>
-      expect(style).to.not.equal('invalidchar'),
+      expect(style).not.toBe('invalidchar'),
     );
 
     CodeMirror.runMode(
       '{ ... @optionalDirective { name } }',
       'graphql',
-      (token, style) => expect(style).to.not.equal('invalidchar'),
+      (token, style) => expect(style).not.toBe('invalidchar'),
     );
   });
 
   it('returns "invalidchar" message when there is no matching token', () => {
     CodeMirror.runMode('qauery name', 'graphql', (token, style) => {
       if (token.trim()) {
-        expect(style).to.equal('invalidchar');
+        expect(style).toBe('invalidchar');
       }
     });
 
     CodeMirror.runMode('query %', 'graphql', (token, style) => {
       if (token === '%') {
-        expect(style).to.equal('invalidchar');
+        expect(style).toBe('invalidchar');
       }
     });
   });
@@ -81,7 +74,7 @@ describe('graphql-mode', () => {
     });
 
     CodeMirror.runMode(kitchenSink, 'graphql', (token, style) => {
-      expect(style).to.not.equal('invalidchar');
+      expect(style).not.toBe('invalidchar');
     });
   });
 
@@ -92,13 +85,13 @@ describe('graphql-mode', () => {
     );
 
     CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {
-      expect(style).to.not.equal('invalidchar');
+      expect(style).not.toBe('invalidchar');
     });
   });
 
   it('parses anonymous operations without invalidchar', () => {
     CodeMirror.runMode('{ id }', 'graphql', (token, style) => {
-      expect(style).to.not.equal('invalidchar');
+      expect(style).not.toBe('invalidchar');
     });
 
     CodeMirror.runMode(
@@ -109,7 +102,7 @@ describe('graphql-mode', () => {
     `,
       'graphql',
       (token, style) => {
-        expect(style).to.not.equal('invalidchar');
+        expect(style).not.toBe('invalidchar');
       },
     );
 
@@ -123,7 +116,7 @@ describe('graphql-mode', () => {
     `,
       'graphql',
       (token, style) => {
-        expect(style).to.not.equal('invalidchar');
+        expect(style).not.toBe('invalidchar');
       },
     );
   });
