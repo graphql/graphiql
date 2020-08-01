@@ -7,7 +7,6 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import {
@@ -21,7 +20,6 @@ import {
   __Schema,
   __Type,
 } from 'graphql';
-
 import '../hint';
 import {
   TestEnum,
@@ -46,6 +44,7 @@ function createEditorWithHint() {
 
 function getHintSuggestions(queryString, cursor) {
   const editor = createEditorWithHint();
+
   return new Promise(resolve => {
     const graphqlHint = CodeMirror.hint.graphql;
     CodeMirror.hint.graphql = (cm, options) => {
@@ -72,11 +71,9 @@ function getExpectedSuggestions(list) {
 }
 
 describe('graphql-hint', () => {
-  it('attaches a GraphQL hint function with correct mode/hint options', async () => {
-    const editor = await createEditorWithHint();
-    expect(editor.getHelpers(editor.getCursor(), 'hint')).to.not.have.lengthOf(
-      0,
-    );
+  it('attaches a GraphQL hint function with correct mode/hint options', () => {
+    const editor = createEditorWithHint();
+    expect(editor.getHelpers(editor.getCursor(), 'hint')).not.toHaveLength(0);
   });
 
   it('provides correct initial keywords', async () => {
@@ -89,14 +86,14 @@ describe('graphql-hint', () => {
       { text: '{' },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct initial keywords after filtered', async () => {
     const suggestions = await getHintSuggestions('q', { line: 0, ch: 1 });
     const list = [{ text: '{' }, { text: 'query' }];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestions', async () => {
@@ -152,7 +149,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestions after filtered', async () => {
@@ -180,7 +177,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestions when using aliases', async () => {
@@ -207,13 +204,13 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestion indentation', async () => {
     const suggestions = await getHintSuggestions('{\n  ', { line: 1, ch: 2 });
-    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).toEqual({ line: 1, ch: 2, sticky: null });
   });
 
   it('provides correct argument suggestions', async () => {
@@ -280,7 +277,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct argument suggestions after fileterd', async () => {
@@ -299,7 +296,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct argument suggestions when using aliases', async () => {
@@ -366,7 +363,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct directive suggestions', async () => {
@@ -387,7 +384,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct directive suggestion after fileterd', async () => {
@@ -403,7 +400,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct directive suggestions when using aliases', async () => {
@@ -424,7 +421,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct directive suggestions on definitions', async () => {
@@ -439,7 +436,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct directive suggestions on args definitions', async () => {
@@ -458,7 +455,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct typeCondition suggestions', async () => {
@@ -481,7 +478,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct typeCondition suggestions after filterd', async () => {
@@ -500,7 +497,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct typeCondition suggestions on fragment', async () => {
@@ -569,7 +566,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct ENUM suggestions', async () => {
@@ -595,7 +592,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct testInput suggestions', async () => {
@@ -662,7 +659,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct object field suggestions after filtered', async () => {
@@ -681,7 +678,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides fragment name suggestion', async () => {
@@ -697,7 +694,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides fragment names for fragments defined lower', async () => {
@@ -713,7 +710,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides only appropriate fragment names', async () => {
@@ -745,7 +742,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestion inside inline fragment', async () => {
@@ -772,7 +769,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct field name suggestion inside typeless inline fragment', async () => {
@@ -799,7 +796,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct boolean suggestions', async () => {
@@ -820,7 +817,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions1 = getExpectedSuggestions(list1);
-    expect(suggestions1.list).to.deep.equal(expectedSuggestions1);
+    expect(suggestions1.list).toEqual(expectedSuggestions1);
 
     const suggestions2 = await getHintSuggestions(
       '{ hasArgs(object: { boolean: t',
@@ -834,7 +831,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions2 = getExpectedSuggestions(list2);
-    expect(suggestions2.list).to.deep.equal(expectedSuggestions2);
+    expect(suggestions2.list).toEqual(expectedSuggestions2);
 
     const suggestions3 = await getHintSuggestions('{ hasArgs(boolean: f', {
       line: 0,
@@ -848,7 +845,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions3 = getExpectedSuggestions(list3);
-    expect(suggestions3.list).to.deep.equal(expectedSuggestions3);
+    expect(suggestions3.list).toEqual(expectedSuggestions3);
   });
 
   it('provides correct variable type suggestions', async () => {
@@ -895,7 +892,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
 
   it('provides correct variable type suggestions inside list type', async () => {
@@ -942,7 +939,7 @@ describe('graphql-hint', () => {
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
-    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions.list).toEqual(expectedSuggestions);
   });
   it('provides no suggestinos', async () => {
     const list = [];
@@ -953,14 +950,14 @@ describe('graphql-hint', () => {
       'fragment Foo on Test { id }  query { ...Foo ',
       { line: 0, ch: 45 },
     );
-    expect(suggestions1.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions1.list).toEqual(expectedSuggestions);
 
     // kind is ListType, step is 3
     const suggestions2 = await getHintSuggestions('query($foo: [string] ', {
       line: 0,
       ch: 21,
     });
-    expect(suggestions2.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions2.list).toEqual(expectedSuggestions);
 
     // kind is ListValue, step is 1
     const suggestions3 = await getHintSuggestions(
@@ -970,32 +967,32 @@ describe('graphql-hint', () => {
         ch: 29,
       },
     );
-    expect(suggestions3.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions3.list).toEqual(expectedSuggestions);
 
     // kind is VariableDefinition, step is 1
     const suggestions4 = await getHintSuggestions('query($foo ', {
       line: 0,
       ch: 11,
     });
-    expect(suggestions4.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions4.list).toEqual(expectedSuggestions);
 
     // kind is Argument, step is 1
     const suggestions5 = await getHintSuggestions('{ hasArgs(string ', {
       line: 0,
       ch: 17,
     });
-    expect(suggestions5.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions5.list).toEqual(expectedSuggestions);
 
     // kind is Argument, step is 2, and input type isn't GraphQLEnumType or GraphQLBoolean
     const suggestions6 = await getHintSuggestions('{ hasArgs(string: ', {
       line: 0,
       ch: 18,
     });
-    expect(suggestions6.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions6.list).toEqual(expectedSuggestions);
     const suggestions7 = await getHintSuggestions(
       '{ hasArgs(object: { string ',
       { line: 0, ch: 27 },
     );
-    expect(suggestions7.list).to.deep.equal(expectedSuggestions);
+    expect(suggestions7.list).toEqual(expectedSuggestions);
   });
 });

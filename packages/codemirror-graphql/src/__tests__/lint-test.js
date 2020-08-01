@@ -7,13 +7,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
-import '../lint';
-import { TestSchema } from './testSchema';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import '../lint';
+import { TestSchema } from './testSchema';
 
 function createEditorWithLint(lintConfig) {
   return CodeMirror(document.createElement('div'), {
@@ -43,9 +42,7 @@ function printLintErrors(queryString) {
 describe('graphql-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
     const editor = createEditorWithLint();
-    expect(editor.getHelpers(editor.getCursor(), 'lint')).to.not.have.lengthOf(
-      0,
-    );
+    expect(editor.getHelpers(editor.getCursor(), 'lint')).not.toHaveLength(0);
   });
 
   const kitchenSink = readFileSync(join(__dirname, '/kitchen-sink.graphql'), {
@@ -54,6 +51,6 @@ describe('graphql-lint', () => {
 
   it('returns no syntactic/validation errors after parsing kitchen-sink query', async () => {
     const errors = await printLintErrors(kitchenSink);
-    expect(errors).to.have.lengthOf(0);
+    expect(errors).toHaveLength(0);
   });
 });

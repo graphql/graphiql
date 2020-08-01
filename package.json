@@ -80,7 +80,7 @@
     "@testing-library/jest-dom": "^5.4.0",
     "@types/codemirror": "^0.0.90",
     "@types/fetch-mock": "^7.3.2",
-    "@types/jest": "^25.2.1",
+    "@types/jest": "^26.0.8",
     "@types/node": "^13.11.1",
     "@types/prettier": "^2.0.0",
     "@types/theme-ui": "^0.3.1",

@@ -6,17 +6,14 @@
  *  LICENSE file in the root directory of this source tree. An additional grant
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
-
-import { expect } from 'chai';
-
 import jsonParse from '../jsonParse';
 
 describe('jsonParse', () => {
   function checkEscapedString(str, key, value) {
     const ast = jsonParse(str);
-    expect(ast.kind).to.equal('Object');
-    expect(ast.members[0].key).to.deep.equal(key);
-    expect(ast.members[0].value).to.deep.equal(value);
+    expect(ast.kind).toBe('Object');
+    expect(ast.members[0].key).toStrictEqual(key);
+    expect(ast.members[0].value).toStrictEqual(value);
   }
 
   it('correctly parses escaped strings', () => {

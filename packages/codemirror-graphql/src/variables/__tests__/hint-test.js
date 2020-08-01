@@ -7,15 +7,12 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import { parse } from 'graphql';
-
-import '../hint';
 import collectVariables from '../../utils/collectVariables';
 import { TestSchema } from '../../__tests__/testSchema';
+import '../hint';
 
 function createEditorWithHint(query) {
   return CodeMirror(document.createElement('div'), {
@@ -47,15 +44,13 @@ function getHintSuggestions(query, variables, cursor) {
 
 function checkSuggestions(source, suggestions) {
   const titles = suggestions.map(suggestion => suggestion.text);
-  expect(titles).to.deep.equal(source);
+  expect(titles).toEqual(source);
 }
 
 describe('graphql-variables-hint', () => {
-  it('attaches a GraphQL hint function with correct mode/hint options', async () => {
-    const editor = await createEditorWithHint('{ f }');
-    expect(editor.getHelpers(editor.getCursor(), 'hint')).to.not.have.lengthOf(
-      0,
-    );
+  it('attaches a GraphQL hint function with correct mode/hint options', () => {
+    const editor = createEditorWithHint('{ f }');
+    expect(editor.getHelpers(editor.getCursor(), 'hint')).not.toHavelength(0);
   });
 
   it('provides correct initial token', async () => {
@@ -79,8 +74,8 @@ describe('graphql-variables-hint', () => {
       '{\n  ',
       { line: 1, ch: 2 },
     );
-    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).toEqual({ line: 1, ch: 2, sticky: null });
   });
 
   it('provides correct variable completion', async () => {
@@ -90,8 +85,8 @@ describe('graphql-variables-hint', () => {
       { line: 1, ch: 4 },
     );
     checkSuggestions(['"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 1, ch: 4, sticky: null });
+    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).toEqual({ line: 1, ch: 4, sticky: null });
   });
 
   it('provides correct variable completion with open quote', async () => {
@@ -101,8 +96,8 @@ describe('graphql-variables-hint', () => {
       { line: 1, ch: 4 },
     );
     checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 1, ch: 3, sticky: null });
+    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions.to).toEqual({ line: 1, ch: 3, sticky: null });
   });
 
   it('provides correct Enum suggestions', async () => {
@@ -138,8 +133,8 @@ describe('graphql-variables-hint', () => {
       Object.keys(TestInput.getFields()).map(name => `"${name}": `),
       suggestions.list,
     );
-    expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 2, ch: 4, sticky: null });
+    expect(suggestions.from).toEqual({ line: 2, ch: 4, sticky: null });
+    expect(suggestions.to).toEqual({ line: 2, ch: 4, sticky: null });
   });
 
   it('provides correct Input Object field completion', async () => {
@@ -149,8 +144,8 @@ describe('graphql-variables-hint', () => {
       { line: 2, ch: 8 },
     );
     checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions.list);
-    expect(suggestions.from).to.deep.equal({ line: 2, ch: 4, sticky: null });
-    expect(suggestions.to).to.deep.equal({ line: 2, ch: 8, sticky: null });
+    expect(suggestions.from).toEqual({ line: 2, ch: 4, sticky: null });
+    expect(suggestions.to).toEqual({ line: 2, ch: 8, sticky: null });
   });
 
   it('provides correct Input Object field value completion', async () => {
