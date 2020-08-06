@@ -1,7 +1,6 @@
 {
   "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
-    "module": "amd",
     "moduleResolution": "node",
     "baseUrl": ".",
     "rootDir": "./src",

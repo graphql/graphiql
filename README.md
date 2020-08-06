@@ -128,6 +128,29 @@ An online immutable parser for [GraphQL](http://graphql.org/), designed to be us
 
 Utilities to support the [GraphQL Language Service](packages/graphql-language-service#readme).
 
+## Browser & Runtime Support
+
+Many of these packages need to work in multiple environments.
+
+By default, all typescript packages target `es6`.
+
+`graphql-language-service-server` and `graphql-language-service-cli` are made for the node runtime, so they target `es2017`
+
+`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserlistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `rengenerator-runtime` or special babel configuration.
+
+### [`.browserslistrc`](./.browserlistrc):
+
+```
+last 2 versions
+Firefox ESR
+not dead
+not IE 11
+not ios 10
+maintained node versions
+```
+
+To be clear, we do _not_ support Internet Explorer or older versions of evergreen browsers.
+
 ## Development
 
 To get setup for local development of this monorepo, refer to [DEVELOPMENT.md](./DEVELOPMENT.md)
