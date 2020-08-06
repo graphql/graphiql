@@ -2,6 +2,7 @@
   "name": "graphiql",
   "version": "2.0.0-alpha.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
+  "private": true,
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
