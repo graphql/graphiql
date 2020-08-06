@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0...example-monaco-graphql-webpack@1.1.0) (2020-08-06)
+
+### Features
+
+- [RFC] GraphiQL rewrite for monaco editor, react context and redesign, i18n ([#1523](https://github.com/graphql/graphiql/issues/1523)) ([ad730cd](https://github.com/graphql/graphiql/commit/ad730cdc2e3cb7216d821a01725c60475989ee20))
+
 # [1.0.0](https://github.com/graphql/graphiql/compare/example-monaco-graphql-webpack@1.0.0-alpha.8...example-monaco-graphql-webpack@1.0.0) (2020-06-11)
 
 ### Features

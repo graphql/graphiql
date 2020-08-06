@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "private": true,
   "contributors": [
@@ -44,18 +44,18 @@
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@mdx-js/react": "^1.5.2",
+    "@theme-ui/core": "^0.4.0-alpha.1",
     "codemirror": "^5.52.2",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
-    "markdown-it": "^10.0.0",
-    "monaco-graphql": "^0.2.0",
     "graphql-language-service": "^2.4.0-alpha.7",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.1.1",
+    "markdown-it": "^10.0.0",
     "monaco-editor": "^0.20.0",
+    "monaco-graphql": "^0.3.0",
     "react-i18next": "^11.4.0",
-    "theme-ui": "^0.3.1",
-    "@theme-ui/core": "^0.4.0-alpha.1"
+    "theme-ui": "^0.3.1"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
