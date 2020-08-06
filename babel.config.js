@@ -1,20 +1,18 @@
 // for ESM don't transpile modules
 
 const envConfig = {
-  ignoreBrowserslistConfig: true,
   modules: 'commonjs',
-  targets: { node: true },
-  bugfixes: true,
 };
 
 if (process.env.ESM) {
   envConfig.modules = false;
+  envConfig.targets = { node: true };
+  envConfig.bugfixes = true;
 }
 
 if (process.env.CDN) {
-  envConfig.modules = 'amd';
+  envConfig.modules = 'umd';
   envConfig.targets = null;
-  envConfig.ignoreBrowserslistConfig = false;
 }
 
 module.exports = {
@@ -32,8 +30,5 @@ module.exports = {
       compact: false,
     },
   },
-  plugins: [
-    require.resolve('@babel/plugin-proposal-class-properties'),
-    require.resolve('@babel/plugin-syntax-dynamic-import'),
-  ],
+  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
 };
