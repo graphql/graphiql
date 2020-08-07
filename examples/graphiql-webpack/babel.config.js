@@ -10,8 +10,5 @@ module.exports = {
     ],
     require.resolve('@babel/preset-react'),
   ],
-  plugins: [
-    require.resolve('@babel/plugin-syntax-dynamic-import'),
-    require.resolve('@babel/plugin-proposal-class-properties'),
-  ],
+  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
 };

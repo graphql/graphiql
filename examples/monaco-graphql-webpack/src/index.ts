@@ -1,7 +1,5 @@
 /* global monaco */
 
-import 'regenerator-runtime/runtime';
-
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { api as GraphQLAPI } from 'monaco-graphql';

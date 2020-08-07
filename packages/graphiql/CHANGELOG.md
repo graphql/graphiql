@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphiql@1.0.0...graphiql@2.0.0-alpha.1) (2020-08-06)
+
+### Features
+
+- **merge:** make fragment merging type-aware ([#1542](https://github.com/graphql/graphiql/issues/1542)) ([a62a4ec](https://github.com/graphql/graphiql/commit/a62a4ecb56fd1eccfa43b3a7f88aaabe46d043fb))
+- [RFC] GraphiQL rewrite for monaco editor, react context and redesign, i18n ([#1523](https://github.com/graphql/graphiql/issues/1523)) ([ad730cd](https://github.com/graphql/graphiql/commit/ad730cdc2e3cb7216d821a01725c60475989ee20))
+
 # [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
 
 ### Bug Fixes

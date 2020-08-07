@@ -1,7 +1,8 @@
 {
   "name": "graphiql",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-alpha.1",
   "description": "An graphical interactive in-browser GraphQL IDE.",
+  "private": true,
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
@@ -28,11 +29,11 @@
     "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
     "build-cjs": "tsc",
     "build-esm": "tsc --project ./tsconfig.esm.json",
-    "build-clean": "rimraf webpack *.html bundle",
+    "build-clean": "rimraf webpack bundle monaco",
     "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
     "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn webpack -d --bail && copy 'resources/renderExample.js' bundle/dev/",
     "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack -p --bail && copy 'resources/renderExample.js' bundle/dist/",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
+    "build-bundles-clean": "rimraf 'graphiql.*{js,css}'",
     "build-demo": "build-storybook -o ./storybook",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
     "cypress-open": "yarn e2e-server 'cypress open'",
@@ -43,19 +44,18 @@
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@mdx-js/react": "^1.5.2",
+    "@theme-ui/core": "^0.4.0-alpha.1",
     "codemirror": "^5.52.2",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
-    "markdown-it": "^10.0.0",
-    "monaco-graphql": "^0.2.0",
     "graphql-language-service": "^2.4.0-alpha.7",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.1.1",
+    "markdown-it": "^10.0.0",
     "monaco-editor": "^0.20.0",
+    "monaco-graphql": "^0.3.0",
     "react-i18next": "^11.4.0",
-    "regenerator-runtime": "^0.13.5",
-    "theme-ui": "^0.3.1",
-    "@theme-ui/core": "^0.4.0-alpha.1"
+    "theme-ui": "^0.3.1"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",

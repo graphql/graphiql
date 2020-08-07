@@ -24,7 +24,7 @@ const resultConfig = {
   output: {
     path: isDev ? rootPath('bundle/dev') : rootPath('bundle/dist'),
     // library: 'GraphiQL',
-    libraryTarget: 'umd',
+    libraryTarget: 'window',
     // libraryExport: 'default',
     filename: '[name].js',
     globalObject: 'this',

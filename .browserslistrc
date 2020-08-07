@@ -1,5 +1,6 @@
-ie 11
-ios 10
-last 2 chrome versions
-last 2 edge versions
-last 2 firefox versions
+last 2 versions
+Firefox ESR
+not dead
+not IE 11
+not ios 10
+maintained node versions
