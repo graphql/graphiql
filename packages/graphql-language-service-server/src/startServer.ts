@@ -6,7 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import * as os from 'os';
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
 import {
@@ -76,11 +75,7 @@ export type ServerOptions = {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  const tmpDir = options.tmpDir;
-  if (!tmpDir) {
-    options.tmpDir = os.tmpdir();
-  }
-  const logger = new Logger(options.tmpDir as string);
+  const logger = new Logger(options.tmpDir);
 
   if (options && options.method) {
     let reader;
