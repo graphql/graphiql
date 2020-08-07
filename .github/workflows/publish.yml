@@ -9,6 +9,7 @@ env:
   PAT: ${{ secrets.PAT }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   PRODUCTION: ${{ secrets.PRODUCTION }}
+  OPEN_VSX_ACCESS_TOKEN: ${{ secrets.OPEN_VSX_ACCESS_TOKEN }}
 
 jobs:
   publish:
@@ -18,5 +19,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: npm install
-      - name: Publish Extension as Patch
+      - name: Publish Extension as Patch to marketplace
         run: npm run vsce:publish
+      - name: Publish Extension as Patch to open-vsx
+        run: npx ovsx publish -p "$OPEN_VSX_ACCESS_TOKEN"
