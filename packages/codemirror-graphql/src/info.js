@@ -99,6 +99,18 @@ function renderQualifiedField(into, typeInfo, options) {
     text(into, '.');
   }
   text(into, fieldName, 'field-name', options, getFieldReference(typeInfo));
+  renderAstDirectivesForField(into, typeInfo, options);
+}
+
+function renderAstDirectivesForField(into, typeInfo, options) {
+  const field = typeInfo.fieldDef;
+  const directives = [];
+  if (field && field.astNode && field.astNode.directives) {
+    directives = field.astNode.directives.map((d, _i, _a) => `@${d.name.value}`);
+  }
+  if (directives.length > 0) {
+    text(into, directives.join(' '), 'directive-names', options);
+  }
 }
 
 function renderDirective(into, typeInfo, options) {
