@@ -104,9 +104,11 @@ function renderQualifiedField(into, typeInfo, options) {
 
 function renderAstDirectivesForField(into, typeInfo, options) {
   const field = typeInfo.fieldDef;
-  const directives = [];
+  let directives = [];
   if (field && field.astNode && field.astNode.directives) {
-    directives = field.astNode.directives.map((d, _i, _a) => `@${d.name.value}`);
+    directives = field.astNode.directives.map(
+      (d, _i, _a) => `@${d.name.value}`,
+    );
   }
   if (directives.length > 0) {
     text(into, directives.join(' '), 'directive-names', options);
