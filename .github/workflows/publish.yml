@@ -22,4 +22,4 @@ jobs:
       - name: Publish Extension as Patch to marketplace
         run: npm run vsce:publish
       - name: Publish Extension as Patch to open-vsx
-        run: npx ovsx publish -p "$OPEN_VSX_ACCESS_TOKEN"
+        run: ovsx publish -p "$OPEN_VSX_ACCESS_TOKEN"

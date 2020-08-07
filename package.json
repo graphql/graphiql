@@ -142,7 +142,6 @@
     "typescript": "3.8.3",
     "vsce": "1.75.0",
     "vscode": "1.1.36",
-    "npx": "10.2.2",
     "ovsx": "0.1.0-next.dacd2fd"
   },
   "dependencies": {
