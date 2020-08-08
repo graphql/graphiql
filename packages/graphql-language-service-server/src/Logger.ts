@@ -22,8 +22,8 @@ export class Logger implements VSCodeLogger {
   _logFilePath: string;
   _stream: fs.WriteStream | null;
 
-  constructor() {
-    const dir = join(os.tmpdir(), 'graphql-language-service-logs');
+  constructor(tmpDir?: string) {
+    const dir = join(tmpDir || os.tmpdir(), 'graphql-language-service-logs');
     try {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);

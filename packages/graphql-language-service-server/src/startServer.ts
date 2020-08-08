@@ -6,10 +6,13 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
-import { GraphQLConfig } from 'graphql-config';
+import {
+  GraphQLConfig,
+  loadConfig,
+  GraphQLExtensionDeclaration,
+} from 'graphql-config';
 
 import {
   createMessageConnection,
@@ -37,7 +40,8 @@ import {
   DidChangeWatchedFilesNotification,
   ShutdownRequest,
   DocumentSymbolRequest,
-  // WorkspaceSymbolRequest,
+  PublishDiagnosticsParams,
+  WorkspaceSymbolRequest,
   // ReferencesRequest,
 } from 'vscode-languageserver';
 
@@ -49,14 +53,17 @@ export type ServerOptions = {
   port?: number;
   // socket, streams, or node (ipc)
   method?: 'socket' | 'stream' | 'node';
-  // the directory where graphql-config is found
+  // (deprecated: use loadConfigOptions.baseDir now) the directory where graphql-config is found
   configDir?: string;
+  loadConfigOptions?: Parameters<typeof loadConfig>;
   // array of functions to transform the graphql-config and add extensions dynamically
-  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>;
+  extensions?: GraphQLExtensionDeclaration[];
+  // allowed file extensions, used by the parser
   fileExtensions?: string[];
   // pre-existing GraphQLConfig
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
+  tmpDir?: string;
 };
 
 /**
@@ -68,7 +75,8 @@ export type ServerOptions = {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  const logger = new Logger();
+  const logger = new Logger(options.tmpDir);
+
   if (options && options.method) {
     let reader;
     let writer;
@@ -152,6 +160,8 @@ function initializeHandlers({
       options.config,
       options.parser,
       options.fileExtensions,
+      options.tmpDir,
+      options.loadConfigOptions,
     );
     return connection;
   } catch (err) {
@@ -161,14 +171,28 @@ function initializeHandlers({
   }
 }
 
+function reportDiagnostics(
+  diagnostics: PublishDiagnosticsParams | null,
+  connection: MessageConnection,
+) {
+  if (diagnostics) {
+    connection.sendNotification(
+      PublishDiagnosticsNotification.type,
+      diagnostics,
+    );
+  }
+}
+
 function addHandlers(
   connection: MessageConnection,
   logger: Logger,
   configDir?: string,
-  extensions?: Array<(config: GraphQLConfig) => GraphQLConfig>,
+  extensions?: GraphQLExtensionDeclaration[],
   config?: GraphQLConfig,
   parser?: typeof parseDocument,
   fileExtensions?: string[],
+  tmpDir?: string,
+  loadConfigOptions?: Parameters<typeof loadConfig>,
 ): void {
   const messageProcessor = new MessageProcessor(
     logger,
@@ -176,6 +200,8 @@ function addHandlers(
     config,
     parser,
     fileExtensions,
+    tmpDir,
+    loadConfigOptions,
   );
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
@@ -183,12 +209,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
   connection.onNotification(
@@ -197,12 +218,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
   connection.onNotification(
@@ -211,12 +227,7 @@ function addHandlers(
       const diagnostics = await messageProcessor.handleDidChangeNotification(
         params,
       );
-      if (diagnostics) {
-        connection.sendNotification(
-          PublishDiagnosticsNotification.type,
-          diagnostics,
-        );
-      }
+      reportDiagnostics(diagnostics, connection);
     },
   );
 
@@ -252,9 +263,9 @@ function addHandlers(
   connection.onRequest(DocumentSymbolRequest.type, params =>
     messageProcessor.handleDocumentSymbolRequest(params),
   );
-  // connection.onRequest(WorkspaceSymbolRequest.type, params =>
-  //   messageProcessor.handleWorkspaceSymbolRequest(params),
-  // );
+  connection.onRequest(WorkspaceSymbolRequest.type, params =>
+    messageProcessor.handleWorkspaceSymbolRequest(params),
+  );
   // connection.onRequest(ReferencesRequest.type, params =>
   //   messageProcessor.handleReferencesRequest(params),
   // );
