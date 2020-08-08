@@ -1,13 +1,14 @@
 {
   "name": "graphiql",
-  "version": "1.0.0",
+  "version": "2.0.0-alpha.1",
   "description": "An graphical interactive in-browser GraphQL IDE.",
+  "private": true,
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
   "repository": "http://github.com/graphql/graphiql",
-  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "homepage": "http://github.com/graphql/graphiql/tree/main/packages/graphiql#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
   },
@@ -28,13 +29,12 @@
     "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
     "build-cjs": "tsc",
     "build-esm": "tsc --project ./tsconfig.esm.json",
-    "build-clean": "rimraf esm dist webpack *.html",
+    "build-clean": "rimraf webpack bundle monaco",
     "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
-    "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn webpack -d --bail",
-    "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack -p --bail",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
+    "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn webpack -d --bail && copy 'resources/renderExample.js' bundle/dev/",
+    "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 yarn webpack -p --bail && copy 'resources/renderExample.js' bundle/dist/",
+    "build-bundles-clean": "rimraf 'graphiql.*{js,css}'",
     "build-demo": "build-storybook -o ./storybook",
-    "check": "tsc --noEmit",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config resources/webpack.config.js",
     "cypress-open": "yarn e2e-server 'cypress open'",
     "e2e": "yarn e2e-server 'cypress run'",
@@ -44,13 +44,17 @@
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@mdx-js/react": "^1.5.2",
+    "@theme-ui/core": "^0.4.0-alpha.1",
     "codemirror": "^5.52.2",
-    "codemirror-graphql": "^0.12.0",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
+    "graphql-language-service": "^2.4.0-alpha.7",
+    "i18next": "^19.4.4",
+    "i18next-browser-languagedetector": "^4.1.1",
     "markdown-it": "^10.0.0",
-    "monaco-graphql": "^0.2.0",
-    "regenerator-runtime": "^0.13.5",
+    "monaco-editor": "^0.20.0",
+    "monaco-graphql": "^0.3.0",
+    "react-i18next": "^11.4.0",
     "theme-ui": "^0.3.1"
   },
   "peerDependencies": {
@@ -71,8 +75,9 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^7.0.0",
-    "css-loader": "3.4.2",
+    "css-loader": "^3.5.1",
     "cssnano": "^4.1.10",
+    "error-overlay-webpack-plugin": "^0.4.1",
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "fork-ts-checker-webpack-plugin": "4.1.3",
@@ -82,6 +87,7 @@
     "jest": "^24.8.0",
     "jsdom": "16.2.0",
     "mini-css-extract-plugin": "^0.9.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
@@ -95,11 +101,12 @@
     "serve": "^11.3.0",
     "start-server-and-test": "^1.10.11",
     "style-loader": "^1.1.3",
-    "ts-loader": "^6.2.2",
+    "ts-loader": "^7.0.0",
     "typescript": "3.8.3",
     "webpack": "4.42.1",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "worker-loader": "^2.0.0"
   }
 }

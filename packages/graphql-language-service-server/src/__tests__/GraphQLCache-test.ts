@@ -12,7 +12,7 @@ jest.mock('cross-fetch', () => ({
 }));
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
-import { loadConfig } from 'graphql-config';
+import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import fetchMock from 'fetch-mock';
 import {
   introspectionFromSchema,
@@ -29,14 +29,26 @@ function wihtoutASTNode(definition: any) {
   return result;
 }
 
+const fileExtensions = ['js', 'ts', 'graphql'];
+
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
-  let cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
+  let cache = new GraphQLCache(
+    configDir,
+    graphQLRC,
+    parseDocument,
+    fileExtensions,
+  );
 
   beforeEach(async () => {
     graphQLRC = await loadConfig({ rootDir: configDir });
-    cache = new GraphQLCache(configDir, graphQLRC, parseDocument);
+    cache = new GraphQLCache(
+      configDir,
+      graphQLRC,
+      parseDocument,
+      fileExtensions,
+    );
   });
 
   afterEach(() => {
@@ -45,10 +57,9 @@ describe('GraphQLCache', () => {
 
   describe('getGraphQLCache', () => {
     it('should apply extensions', async () => {
-      const extension = config => {
+      const extension: GraphQLExtensionDeclaration = config => {
         return {
-          ...config,
-          extension: 'extension-used', // Just adding a key to the config to demo extension usage
+          name: 'extension-used', // Just adding a key to the config to demo extension usage
         };
       };
       const extensions = [extension];
@@ -58,8 +69,11 @@ describe('GraphQLCache', () => {
         extensions,
       );
       const config = cacheWithExtensions.getGraphQLConfig();
-      expect('extension' in config).toBe(true);
-      expect((config as any).extension).toBe('extension-used');
+      expect('extensions' in config).toBe(true);
+      expect(config.extensions.has('extension-used')).toBeTruthy();
+      expect(config.extensions.get('extension-used')).toEqual({
+        name: 'extension-used',
+      });
     });
   });
 
@@ -185,25 +199,25 @@ describe('GraphQLCache', () => {
   });
 
   describe('getFragmentDefinitions', () => {
-    it('it caches fragments found through single glob in `includes`', async () => {
+    it('it caches fragments found through single glob in `documents`', async () => {
       const config = graphQLRC.getProject('testSingularIncludesGlob');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
-    it('it caches fragments found through multiple globs in `includes`', async () => {
+    it('it caches fragments found through multiple globs in `documents`', async () => {
       const config = graphQLRC.getProject('testMultipleIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
-    it('handles empty includes', async () => {
+    it('handles empty documents', async () => {
       const config = graphQLRC.getProject('testNoIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();
     });
 
-    it('handles non-existent includes', async () => {
+    it('handles non-existent documents', async () => {
       const config = graphQLRC.getProject('testBadIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).toBeUndefined();

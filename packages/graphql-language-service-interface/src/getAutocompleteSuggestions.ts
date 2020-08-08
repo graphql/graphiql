@@ -17,6 +17,10 @@ import {
   GraphQLEnumValue,
   GraphQLField,
   GraphQLFieldMap,
+  parse,
+  visit,
+  VariableDefinitionNode,
+  GraphQLNamedType,
 } from 'graphql';
 
 import {
@@ -57,7 +61,6 @@ import {
   hintList,
   objectValues,
 } from './autocompleteUtils';
-
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
@@ -150,7 +153,38 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.OBJECT_FIELD && step === 2) ||
     (kind === RuleKinds.ARGUMENT && step === 2)
   ) {
-    return getSuggestionsForInputValues(token, typeInfo, kind);
+    return getSuggestionsForInputValues(token, typeInfo, kind as string);
+  }
+
+  // complete for all variables available in the query
+  if (kind === RuleKinds.VARIABLE && step === 1) {
+    const queryVariables: VariableDefinitionNode[] = [];
+    visit(
+      parse(queryText, {
+        allowLegacySDLEmptyFields: true,
+        allowLegacySDLImplementsInterfaces: true,
+      }),
+      {
+        VariableDefinition(node) {
+          queryVariables.push(node);
+        },
+      },
+    );
+
+    return hintList(
+      token,
+      queryVariables.map(
+        variableDef =>
+          ({
+            label: `$${variableDef.variable.name.value}`,
+            kind: CompletionItemKind.Variable,
+            detail:
+              'name' in variableDef.type
+                ? variableDef.type.name.value
+                : 'Variable',
+          } as CompletionItem),
+      ),
+    );
   }
 
   // Fragment type conditions
@@ -186,7 +220,8 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.NAMED_TYPE &&
       state.prevState &&
       (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
-        state.prevState.kind === RuleKinds.LIST_TYPE))
+        state.prevState.kind === RuleKinds.LIST_TYPE ||
+        state.prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
@@ -416,9 +451,9 @@ function getSuggestionsForVariableDefinition(
   return hintList(
     token,
     // TODO: couldn't get Exclude<> working here
-    inputTypes.map((type: any) => ({
+    inputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
-      documentation: type.description,
+      documentation: type.description as string,
       kind: CompletionItemKind.Variable,
     })),
   );

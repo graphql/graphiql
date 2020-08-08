@@ -1,7 +1,5 @@
 /* global monaco */
 
-import 'regenerator-runtime/runtime';
-
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { api as GraphQLAPI } from 'monaco-graphql';
@@ -138,7 +136,7 @@ const opAction: monaco.editor.IActionDescriptor = {
   id: 'graphql-run',
   label: 'Run Operation',
   contextMenuOrder: 0,
-  contextMenuGroupId: 'graphql',
+  contextMenuGroupId: 'operation',
   keybindings: [
     // eslint-disable-next-line no-bitwise
     monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,

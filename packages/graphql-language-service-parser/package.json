@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -8,7 +8,7 @@
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
   "repository": "http://github.com/graphql/graphiql",
-  "homepage": "https://github.com/graphql/graphiql/tree/master/packages/graphql-language-service-parser#readme",
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-parser#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-parser"
   },

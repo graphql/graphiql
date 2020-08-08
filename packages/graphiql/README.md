@@ -2,9 +2,7 @@
 
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
-> **[`graphiql@1.0.0`](https://github.com/graphql/graphiql/milestone/3)** is coming soon & will provide a stable release with react 16, graphql 15 support, fixes, and a headers tab
-
-> **[`graphiql@2.0.0-beta`](https://github.com/graphql/graphiql/issues/983)** is a much larger ongoing effort that introduces plugins, i18n, and so many more features after a substantial rewrite using modern react.
+> **[`graphiql@2.0.0-beta`](https://github.com/graphql/graphiql/issues/983)** is a much larger ongoing effort that introduces plugins, i18n, and so many more features after a substantial rewrite using modern react. The code here represents 2.0.0-alpha.x releases, but the API will become more stable by 2.0.0-beta
 
 [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
 ![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
@@ -16,7 +14,7 @@
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
-[![](https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.jpg)](http://graphql.org/swapi-graphql)
+[![](https://raw.githubusercontent.com/graphql/graphiql/main/packages/graphiql/resources/graphiql.jpg)](http://graphql.org/swapi-graphql)
 
 ## Features
 
@@ -33,7 +31,7 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 
 ## Demos
 
-We have a few demos of `master` branch via the default netlify build (the same URL paths apply to deploy previews on PRs):
+We have a few demos of `main` branch via the default netlify build (the same URL paths apply to deploy previews on PRs):
 
 1. [`graphiql.min.js` demo](https://graphiql-test.netlify.com/) - the min.js bundle for the current ref
 2. [`graphiql.js` demo](https://graphiql-test.netlify.com/dev) - development build is nice for react inspector, debugging, etc
@@ -267,7 +265,7 @@ class CustomGraphiQL extends React.Component {
       // GraphiQL automatically fills in leaf nodes when the query
       // does not provide them. Change this if your GraphQL Definitions
       // should behave differently than what's defined here:
-      // (https://github.com/graphql/graphiql/blob/master/src/utility/fillLeafs.js#L75)
+      // (https://github.com/graphql/graphiql/blob/main/src/utility/fillLeafs.js#L75)
       getDefaultFieldNames: null
     };
   }
@@ -381,7 +379,7 @@ mutation TestMutation {
 }
 ```
 
-Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/master/src/execution/__tests__/mutations-test.js).
+Read more in [this mutation test in `graphql-js`](https://github.com/graphql/graphql-js/blob/main/src/execution/__tests__/mutations-test.js).
 
 [Relay](https://relay.dev/) has another good example using a common pattern for composing mutations. Given the following GraphQL Type Definitions,
 

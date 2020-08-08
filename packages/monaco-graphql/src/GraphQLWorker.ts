@@ -75,19 +75,7 @@ export class GraphQLWorker {
       document,
       graphQLPosition,
     );
-
-    return suggestions.map(suggestion =>
-      toCompletion(
-        suggestion,
-        getRange(
-          {
-            column: graphQLPosition.character,
-            line: graphQLPosition.line + 1,
-          },
-          document,
-        ),
-      ),
-    );
+    return suggestions.map(suggestion => toCompletion(suggestion));
   }
 
   async doHover(uri: string, position: Position) {
