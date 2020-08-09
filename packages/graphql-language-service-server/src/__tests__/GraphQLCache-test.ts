@@ -34,21 +34,19 @@ const fileExtensions = ['js', 'ts', 'graphql'];
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
-  let cache = new GraphQLCache(
+  let cache = new GraphQLCache({
     configDir,
-    graphQLRC,
-    parseDocument,
-    fileExtensions,
-  );
+    config: graphQLRC,
+    parser: parseDocument,
+  });
 
   beforeEach(async () => {
     graphQLRC = await loadConfig({ rootDir: configDir });
-    cache = new GraphQLCache(
+    cache = new GraphQLCache({
       configDir,
-      graphQLRC,
-      parseDocument,
-      fileExtensions,
-    );
+      config: graphQLRC,
+      parser: parseDocument,
+    });
   });
 
   afterEach(() => {
@@ -63,11 +61,10 @@ describe('GraphQLCache', () => {
         };
       };
       const extensions = [extension];
-      const cacheWithExtensions = await getGraphQLCache(
-        configDir,
-        parseDocument,
-        extensions,
-      );
+      const cacheWithExtensions = await getGraphQLCache({
+        loadConfigOptions: { rootDir: configDir, extensions },
+        parser: parseDocument,
+      });
       const config = cacheWithExtensions.getGraphQLConfig();
       expect('extensions' in config).toBe(true);
       expect(config.extensions.has('extension-used')).toBeTruthy();

@@ -64,6 +64,8 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'throwExpressions',
   ['pipelineOperator', { proposal: 'minimal' }],
   'nullishCoalescingOperator',
+  'topLevelAwait',
+  'logicalAssignment',
 ];
 
 export function findGraphQLTags(text: string, ext: string): TagResult[] {

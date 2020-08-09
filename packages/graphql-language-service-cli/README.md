@@ -2,8 +2,8 @@
 
 > Note: As of 3.0.0, this package has been renamed from `graphql-language-service` to `graphql-language-service-cli`. please now use the `graphql-lsp` bin, instead of the `graphql` binary.
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-cli.svg)](https://npmjs.com/graphql-language-service-cli)
+![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-vli?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 [![License](https://img.shields.io/npm/l/graphql-language-service.svg?style=flat-square)](LICENSE)
 
@@ -11,14 +11,17 @@ _We welcome your feedback and suggestions._
 
 GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
 
-Partial support for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place, with more to come in the future.
+Almost 100% for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place
 
 Supported features include:
 
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
 - Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
-- Outline view support for queries
+- Outline view support for queries and SDL
+- Symbols support across the workspace
+
+see more information at [`graphql-language-service-server`](https://npmjs.com/graphql-language-service-server)
 
 ## Installation and Usage
 
@@ -27,6 +30,8 @@ Supported features include:
 An LSP-compatible client with a file watcher that sends watch notifications to the server.
 
 **DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
+
+Only node 9 or greater, and npm or yarn are required dependencies.
 
 ### Installation
 
@@ -42,20 +47,22 @@ with `npm`:
 npm i -g graphql-language-service-cli
 ```
 
+either will install the `graphql-lsp` bin globally
+
 ### GraphQL configuration file (`.graphqlrc.yml`)
 
 Check out [graphql-config](https://graphql-config.com/docs/introduction)
 
-The graphql features we support are:
+The custom graphql language configurations are:
 
 - `customDirectives` - `['@myExampleDirective']`
-- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`;
+- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`
 
 ### Using the command-line interface
 
-The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
+`graphql-lsp server --schema=localhost:3000`
 
-Improving this list is a work-in-progress.
+The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
 
 ```
 

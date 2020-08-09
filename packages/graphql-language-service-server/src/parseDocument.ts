@@ -4,11 +4,9 @@ import { Range, Position } from 'graphql-language-service-utils';
 
 import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
 
-const DEFAULT_SUPPORTED_EXTENSIONS = ['js', 'ts', 'jsx', 'tsx'];
+export const DEFAULT_SUPPORTED_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx'];
 
-const DEFAULT_SUPPORTED_EXTENSIONS_FORMATTED = DEFAULT_SUPPORTED_EXTENSIONS.map(
-  i => `.${i}`,
-);
+export const DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS = ['.graphql'];
 
 /**
  * Helper functions to perform requested services from client/server.
@@ -20,7 +18,8 @@ const DEFAULT_SUPPORTED_EXTENSIONS_FORMATTED = DEFAULT_SUPPORTED_EXTENSIONS.map(
 export function parseDocument(
   text: string,
   uri: string,
-  fileExtensions: string[] = DEFAULT_SUPPORTED_EXTENSIONS_FORMATTED,
+  fileExtensions: string[] = DEFAULT_SUPPORTED_EXTENSIONS,
+  graphQLFileExtensions: string[] = DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
 ): CachedContent[] {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
@@ -31,7 +30,8 @@ export function parseDocument(
     }
     const templates = findGraphQLTags(text, ext);
     return templates.map(({ template, range }) => ({ query: template, range }));
-  } else {
+  }
+  if (graphQLFileExtensions.some(e => e === ext)) {
     const query = text;
     if (!query && query !== '') {
       return [];
@@ -43,4 +43,5 @@ export function parseDocument(
     );
     return [{ query, range }];
   }
+  return [{ query: text, range: null }];
 }

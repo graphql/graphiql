@@ -30,7 +30,7 @@ import {
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
-import { GraphQLExtensionDeclaration } from 'graphql-config/extension';
+import { LoadConfigOptions } from './types';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -53,26 +53,26 @@ const {
   DIRECTIVE_DEFINITION,
 } = Kind;
 
-export async function getGraphQLCache(
-  configDir: Uri,
-  parser: typeof parseDocument,
-  extensions: GraphQLExtensionDeclaration[] = [],
-  config?: GraphQLConfig,
-  fileExtensions: string[] = [],
-  // loadConfigOptions?: Parameters<typeof loadConfig>,
-): Promise<GraphQLCacheInterface> {
-  const graphQLConfig =
-    config ??
-    (await loadConfig({
-      rootDir: configDir,
-      extensions,
-    }));
-  return new GraphQLCache(
-    configDir,
-    graphQLConfig as GraphQLConfig,
+export async function getGraphQLCache({
+  parser,
+  loadConfigOptions,
+  config,
+}: {
+  parser: typeof parseDocument;
+  loadConfigOptions: LoadConfigOptions;
+  config?: GraphQLConfig;
+}): Promise<GraphQLCacheInterface> {
+  let graphQLConfig;
+  if (config) {
+    graphQLConfig = config;
+  } else {
+    graphQLConfig = await loadConfig(loadConfigOptions);
+  }
+  return new GraphQLCache({
+    configDir: loadConfigOptions.rootDir as string,
+    config: graphQLConfig as GraphQLConfig,
     parser,
-    fileExtensions,
-  );
+  });
 }
 
 export class GraphQLCache implements GraphQLCacheInterface {
@@ -84,23 +84,24 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
-  _fileExtensions: string[];
 
-  constructor(
-    configDir: Uri,
-    graphQLConfig: GraphQLConfig,
-    parser: typeof parseDocument,
-    fileExtensions: string[],
-  ) {
+  constructor({
+    configDir,
+    config,
+    parser,
+  }: {
+    configDir: Uri;
+    config: GraphQLConfig;
+    parser: typeof parseDocument;
+  }) {
     this._configDir = configDir;
-    this._graphQLConfig = graphQLConfig;
+    this._graphQLConfig = config;
     this._graphQLFileListCache = new Map();
     this._schemaMap = new Map();
     this._fragmentDefinitionsCache = new Map();
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
     this._parser = parser;
-    this._fileExtensions = fileExtensions;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
@@ -807,7 +808,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
         let queries: CachedContent[] = [];
         if (content.trim().length !== 0) {
           try {
-            queries = this._parser(content, filePath, this._fileExtensions);
+            queries = this._parser(content, filePath);
             if (queries.length === 0) {
               // still resolve with an empty ast
               resolve({
