@@ -10,6 +10,7 @@
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },
         { "include": "#graphql-fragment-definition" },
+        { "include": "#graphql-directive-definition" },
         { "include": "#graphql-type-interface" },
         { "include": "#graphql-enum" },
         { "include": "#graphql-scalar" },
