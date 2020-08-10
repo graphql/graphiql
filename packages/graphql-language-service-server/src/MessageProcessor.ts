@@ -13,7 +13,6 @@ import {
   CachedContent,
   GraphQLCache,
   Uri,
-  DefinitionQueryResult,
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-language-service';
@@ -61,7 +60,8 @@ import { parseDocument } from './parseDocument';
 import { Logger } from './Logger';
 import { printSchema } from 'graphql';
 import { tmpdir } from 'os';
-import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
+import { GraphQLExtensionDeclaration } from 'graphql-config';
+import type { LoadConfigOptions } from './types';
 
 type CachedDocumentType = {
   version: number;
@@ -77,36 +77,50 @@ export class MessageProcessor {
   _willShutdown: boolean;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
-  _fileExtensions?: Array<string>;
-  _parser: typeof parseDocument;
+  _parser: (text: string, uri: string) => CachedContent[];
   _tmpDir: string;
   _tmpUriBase: string;
   _tmpDirBase: string;
-  _loadConfigOptions?: Parameters<typeof loadConfig>;
+  _loadConfigOptions: LoadConfigOptions;
+  _schemaCacheInit: boolean = false;
 
-  constructor(
-    logger: Logger,
-    extensions?: GraphQLExtensionDeclaration[],
-    config?: GraphQLConfig,
-    parser?: typeof parseDocument,
-    fileExtensions?: string[],
-    tmpDir?: string,
-    loadConfigOptions?: Parameters<typeof loadConfig>,
-  ) {
+  constructor({
+    logger,
+    fileExtensions,
+    graphqlFileExtensions,
+    loadConfigOptions,
+    config,
+    parser,
+    tmpDir,
+  }: {
+    logger: Logger;
+    fileExtensions: string[];
+    graphqlFileExtensions: string[];
+    loadConfigOptions: LoadConfigOptions;
+    config?: GraphQLConfig;
+    parser?: typeof parseDocument;
+    tmpDir?: string;
+  }) {
     this._textDocumentCache = new Map();
     this._isInitialized = false;
     this._willShutdown = false;
     this._logger = logger;
-    this._extensions = extensions;
-    this._fileExtensions = fileExtensions;
     this._graphQLConfig = config;
-    this._parser = parser ?? parseDocument;
+    this._parser = (text, uri) => {
+      const p = parser ?? parseDocument;
+      return p(text, uri, fileExtensions, graphqlFileExtensions);
+    };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     this._tmpUriBase = path.join('file://', this._tmpDirBase);
-    if (loadConfigOptions) {
-      this._loadConfigOptions = loadConfigOptions;
+    this._loadConfigOptions = loadConfigOptions;
+    if (
+      loadConfigOptions.extensions &&
+      loadConfigOptions.extensions?.length > 0
+    ) {
+      this._extensions = loadConfigOptions.extensions;
     }
+
     if (!existsSync(this._tmpDirBase)) {
       mkdirSync(this._tmpDirBase);
     }
@@ -141,14 +155,11 @@ export class MessageProcessor {
         '`--configDir` option or `rootPath` argument is required.',
       );
     }
-    this._graphQLCache = await getGraphQLCache(
-      rootPath,
-      this._parser,
-      this._extensions,
-      this._graphQLConfig,
-      this._fileExtensions,
-      // this._loadConfigOptions,
-    );
+    this._graphQLCache = await getGraphQLCache({
+      parser: this._parser,
+      loadConfigOptions: this._loadConfigOptions,
+      config: this._graphQLConfig,
+    });
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
 
     if (!serverCapabilities) {
@@ -191,7 +202,7 @@ export class MessageProcessor {
     if ('text' in textDocument && textDocument.text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = this._parser(textDocument.text, uri, this._fileExtensions);
+      contents = this._parser(textDocument.text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
@@ -261,11 +272,7 @@ export class MessageProcessor {
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
-    const contents = this._parser(
-      contentChange.text,
-      uri,
-      this._fileExtensions,
-    );
+    const contents = this._parser(contentChange.text, uri);
     // If it's a .graphql file, proceed normally and invalidate the cache.
     await this._invalidateCache(textDocument, uri, contents);
 
@@ -480,7 +487,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
           const text: string = readFileSync(new URL(uri).pathname).toString();
-          const contents = this._parser(text, uri, this._fileExtensions);
+          const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
@@ -499,7 +506,7 @@ export class MessageProcessor {
                 }
               }),
             )
-          ).reduce((left, right) => left.concat(right));
+          ).reduce((left, right) => left.concat(right), []);
 
           const project = this._graphQLCache
             .getGraphQLConfig()
@@ -552,7 +559,7 @@ export class MessageProcessor {
     }
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      throw new Error(`${textDocument.uri} is not available.`);
+      return [];
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -571,11 +578,13 @@ export class MessageProcessor {
     if (range) {
       position.line -= range.start.line;
     }
-    const result: DefinitionQueryResult | null = await this._languageService.getDefinition(
+
+    const result = await this._languageService.getDefinition(
       query,
       position,
       textDocument.uri,
     );
+
     const formatted = result
       ? result.definitions.map(res => {
           const defRange = res.range as Range;
@@ -587,9 +596,9 @@ export class MessageProcessor {
             // Remove the below hack once the usage of URI is sorted out in related
             // libraries.
             uri:
-              res.path.indexOf('file://') === 0
+              res.path.indexOf('file:///') === 0
                 ? res.path
-                : `file://${res.path}`,
+                : `file://${path.resolve(res.path)}`,
             range: defRange,
           };
         })
@@ -619,7 +628,7 @@ export class MessageProcessor {
 
     const textDocument = params.textDocument;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
-    if (!cachedDocument) {
+    if (!cachedDocument || !cachedDocument.contents[0]) {
       throw new Error('A cached document cannot be found.');
     }
     return this._languageService.getDocumentSymbols(
@@ -654,36 +663,41 @@ export class MessageProcessor {
   ): Promise<Array<SymbolInformation>> {
     // const config = await this._graphQLCache.getGraphQLConfig();
     // await this._cacheAllProjectFiles(config);
-    const documents = Array.from(this._textDocumentCache);
-    let symbols: SymbolInformation[] = [];
-    await Promise.all(
-      documents.map(async ([uri]) => {
-        const cachedDocument = this._getCachedDocument(uri);
-        if (!cachedDocument) {
-          throw new Error('A cached document cannot be found.');
-        }
-        const docSymbols = await this._languageService.getDocumentSymbols(
-          cachedDocument.contents[0].query,
-          uri,
-        );
-        symbols.push(...docSymbols);
-      }),
-    );
+
     if (params.query !== '') {
-      symbols = symbols.filter(
+      const documents = this._getTextDocuments();
+      const symbols: SymbolInformation[] = [];
+      await Promise.all(
+        documents.map(async ([uri]) => {
+          const cachedDocument = this._getCachedDocument(uri);
+          if (!cachedDocument) {
+            console.error('A cached document cannot be found.');
+            return [];
+          }
+          const docSymbols = await this._languageService.getDocumentSymbols(
+            cachedDocument.contents[0].query,
+            uri,
+          );
+          symbols.push(...docSymbols);
+        }),
+      );
+      return symbols.filter(
         symbol => symbol?.name && symbol.name.includes(params.query),
       );
     }
 
-    return symbols;
+    return [];
+  }
+  _getTextDocuments() {
+    return Array.from(this._textDocumentCache);
   }
 
   async _cacheSchemaText(uri: string, text: string, version: number) {
     try {
-      const contents = this._parser(text, uri, this._fileExtensions);
+      const contents = this._parser(text, uri);
       if (contents.length > 0) {
-        await this._updateObjectTypeDefinition(uri, contents);
         await this._invalidateCache({ version, uri }, uri, contents);
+        await this._updateObjectTypeDefinition(uri, contents);
       }
     } catch (err) {
       this._logger.error(err);
@@ -712,6 +726,7 @@ export class MessageProcessor {
   _getTmpProjectPath(
     project: GraphQLProjectConfig,
     prependWithProtocol: boolean = true,
+    appendPath?: string,
   ) {
     const baseDir = this._graphQLCache.getGraphQLConfig().dirpath;
     const baseName = path.basename(baseDir);
@@ -721,7 +736,7 @@ export class MessageProcessor {
       mkdirSync(path.join(basePath, 'projects'));
     }
     const projectTmpPath = path.resolve(
-      path.join(basePath, 'projects', project.name),
+      path.join(basePath, 'projects', project.name, appendPath || ''),
     );
     if (!existsSync(projectTmpPath)) {
       mkdirSync(projectTmpPath);
@@ -773,13 +788,12 @@ export class MessageProcessor {
           commentDescriptions: true,
         });
         // file:// protocol path
-        const uri = path.join(
-          this._getTmpProjectPath(project),
-          'schema.graphql',
-        );
+        const uri = this._getTmpProjectPath(project, true, 'schema.graphql');
+
         // no file:// protocol for fs.writeFileSync()
-        const fsPath = path.join(
-          this._getTmpProjectPath(project, false),
+        const fsPath = this._getTmpProjectPath(
+          project,
+          false,
           'schema.graphql',
         );
 
@@ -792,10 +806,7 @@ export class MessageProcessor {
           await this._cacheSchemaText(uri, schemaText, 1);
         }
         // do we have a change in the getSchema result? if so, update schema cache
-        if (
-          cachedSchemaDoc &&
-          schemaText !== cachedSchemaDoc.contents[0].query
-        ) {
+        if (cachedSchemaDoc) {
           writeFileSync(fsPath, schemaText, {
             encoding: 'utf-8',
           });
@@ -828,12 +839,10 @@ export class MessageProcessor {
           // build full system URI path with protocol
           const uri = 'file://' + path.join(project.dirpath, document.location);
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
-          const contents = this._parser(
-            document.rawSDL,
-            uri,
-            this._fileExtensions,
-          );
-
+          const contents = this._parser(document.rawSDL, uri);
+          if (!contents[0] || !contents[0].query) {
+            return;
+          }
           await this._updateObjectTypeDefinition(uri, contents);
           await this._updateFragmentDefinition(uri, contents);
           await this._invalidateCache({ version: 1, uri }, uri, contents);

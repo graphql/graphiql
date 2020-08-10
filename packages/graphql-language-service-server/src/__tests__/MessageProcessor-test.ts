@@ -19,19 +19,19 @@ import { GraphQLCache } from '../GraphQLCache';
 
 import { loadConfig } from 'graphql-config';
 
-import type {
-  DefinitionQueryResult,
-  Outline,
-  GraphQLConfig,
-  GraphQLProjectConfig,
-} from 'graphql-language-service';
+import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
 
 const baseConfig = { dirpath: __dirname };
 describe('MessageProcessor', () => {
   const logger = new Logger(tmpdir());
-  const messageProcessor = new MessageProcessor(logger);
+  const messageProcessor = new MessageProcessor({
+    logger,
+    fileExtensions: ['js'],
+    graphqlFileExtensions: ['graphql'],
+    loadConfigOptions: { rootDir: __dirname },
+  });
 
   const queryDir = `${__dirname}/__queries__`;
   const textDocumentTestString = `
@@ -43,14 +43,12 @@ describe('MessageProcessor', () => {
 
   beforeEach(async () => {
     const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
-    // @ts-ignore
     // loadConfig.mockRestore();
-    messageProcessor._graphQLCache = new GraphQLCache(
-      __dirname,
-      gqlConfig,
-      parseDocument,
-      ['ts', 'js', 'graphql'],
-    );
+    messageProcessor._graphQLCache = new GraphQLCache({
+      configDir: __dirname,
+      config: gqlConfig,
+      parser: parseDocument,
+    });
     messageProcessor._languageService = {
       // @ts-ignore
       getAutocompleteSuggestions: (query, position, uri) => {

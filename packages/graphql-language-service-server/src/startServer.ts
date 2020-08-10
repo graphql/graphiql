@@ -8,11 +8,7 @@
  */
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
-import {
-  GraphQLConfig,
-  loadConfig,
-  GraphQLExtensionDeclaration,
-} from 'graphql-config';
+import { GraphQLConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 
 import {
   createMessageConnection,
@@ -46,24 +42,99 @@ import {
 } from 'vscode-languageserver';
 
 import { Logger } from './Logger';
-import { parseDocument } from './parseDocument';
+import {
+  parseDocument,
+  DEFAULT_SUPPORTED_EXTENSIONS,
+  DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+} from './parseDocument';
+import { LoadConfigOptions } from './types';
 
-export type ServerOptions = {
-  // port for the LSP server to run on. required if using method socket
+export interface ServerOptions {
+  /**
+   * port for the LSP server to run on. required if using method socket
+   */
   port?: number;
-  // socket, streams, or node (ipc)
+  /**
+   * socket, streams, or node (ipc). `node` by default.
+   */
   method?: 'socket' | 'stream' | 'node';
-  // (deprecated: use loadConfigOptions.baseDir now) the directory where graphql-config is found
+  /**
+   * `LoadConfigOptions` from `graphql-config@3` to use when we `loadConfig()`
+   * uses process.cwd() by default for `rootDir` option.
+   * you can also pass explicit `filepath`, add extensions, etc
+   */
+  loadConfigOptions?: LoadConfigOptions;
+  /**
+   * (deprecated: use loadConfigOptions.rootDir now) the directory where graphql-config is found
+   */
   configDir?: string;
-  loadConfigOptions?: Parameters<typeof loadConfig>;
-  // array of functions to transform the graphql-config and add extensions dynamically
+  /**
+   * (deprecated: use loadConfigOptions.extensions now) array of functions to transform the graphql-config and add extensions dynamically
+   */
   extensions?: GraphQLExtensionDeclaration[];
-  // allowed file extensions, used by the parser
+  /**
+   * default: ['.js', '.jsx', '.tsx', '.ts', '.mjs']
+   * allowed file extensions for embedded graphql, used by the parser.
+   * note that with vscode, this is also controlled by manifest and client configurations.
+   * do not put full-file graphql extensions here!
+   */
   fileExtensions?: string[];
-  // pre-existing GraphQLConfig
+  /**
+   * default: ['graphql'] - allowed file extensions for graphql, used by the parser
+   */
+  graphqlFileExtensions?: string[];
+  /**
+   * pre-existing GraphQLConfig primitive, to override `loadConfigOptions` and related deprecated fields
+   */
   config?: GraphQLConfig;
+  /**
+   * custom, multi-language parser used by the LSP server.
+   * detects extension from uri and decides how to parse it.
+   * uses graphql.parse() by default
+   * response format is designed to assist with developing LSP tooling around embedded language support
+   */
   parser?: typeof parseDocument;
+  /**
+   * the temporary directory that the server writes to for logs and cacheing schema
+   */
   tmpDir?: string;
+}
+
+/**
+ * Make loadConfigOptions
+ */
+export type MappedServerOptions = Omit<ServerOptions, 'loadConfigOptions'> & {
+  loadConfigOptions: Omit<LoadConfigOptions, 'rootDir'> & { rootDir: string };
+};
+
+/**
+ * Legacy mappings for < 2.5.0
+ * @param options {ServerOptions}
+ */
+const buildOptions = (options: ServerOptions): MappedServerOptions => {
+  const serverOptions = { ...options } as MappedServerOptions;
+  if (serverOptions.loadConfigOptions) {
+    const { extensions } = serverOptions.loadConfigOptions;
+    if (!serverOptions.loadConfigOptions.rootDir) {
+      if (serverOptions.configDir) {
+        serverOptions.loadConfigOptions.rootDir = serverOptions.configDir;
+      } else {
+        serverOptions.loadConfigOptions.rootDir = process.cwd();
+      }
+    }
+    if (serverOptions.extensions) {
+      serverOptions.loadConfigOptions.extensions = [
+        ...serverOptions.extensions,
+        ...(extensions || []),
+      ];
+    }
+  } else {
+    serverOptions.loadConfigOptions = {
+      rootDir: options.configDir || process.cwd(),
+      extensions: [],
+    };
+  }
+  return serverOptions;
 };
 
 /**
@@ -78,6 +149,7 @@ export default async function startServer(
   const logger = new Logger(options.tmpDir);
 
   if (options && options.method) {
+    const finalOptions = buildOptions(options);
     let reader;
     let writer;
     switch (options.method) {
@@ -106,7 +178,7 @@ export default async function startServer(
               reader,
               writer,
               logger,
-              options,
+              options: finalOptions,
             });
 
             serverWithHandlers.listen();
@@ -129,7 +201,7 @@ export default async function startServer(
         reader,
         writer,
         logger,
-        options,
+        options: finalOptions,
       });
       return serverWithHandlers.listen();
     } catch (err) {
@@ -139,30 +211,22 @@ export default async function startServer(
   }
 }
 
+type InitializerParams = {
+  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
+  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
+  logger: Logger;
+  options: MappedServerOptions;
+};
+
 function initializeHandlers({
   reader,
   writer,
   logger,
-  options = {},
-}: {
-  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
-  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
-  logger: Logger;
-  options: ServerOptions;
-}): MessageConnection {
+  options,
+}: InitializerParams): MessageConnection {
   try {
     const connection = createMessageConnection(reader, writer, logger);
-    addHandlers(
-      connection,
-      logger,
-      options.configDir,
-      options?.extensions || [],
-      options.config,
-      options.parser,
-      options.fileExtensions,
-      options.tmpDir,
-      options.loadConfigOptions,
-    );
+    addHandlers({ connection, logger, ...options });
     return connection;
   } catch (err) {
     logger.error('There was an error initializing the server connection');
@@ -183,26 +247,43 @@ function reportDiagnostics(
   }
 }
 
-function addHandlers(
-  connection: MessageConnection,
-  logger: Logger,
-  configDir?: string,
-  extensions?: GraphQLExtensionDeclaration[],
-  config?: GraphQLConfig,
-  parser?: typeof parseDocument,
-  fileExtensions?: string[],
-  tmpDir?: string,
-  loadConfigOptions?: Parameters<typeof loadConfig>,
-): void {
-  const messageProcessor = new MessageProcessor(
+type HandlerOptions = {
+  connection: MessageConnection;
+  logger: Logger;
+  config?: GraphQLConfig;
+  parser?: typeof parseDocument;
+  fileExtensions?: string[];
+  graphqlFileExtensions?: string[];
+  tmpDir?: string;
+  loadConfigOptions: LoadConfigOptions;
+};
+
+/**
+ * take the resultant message connection, and attach the matching `MessageProcessor` instance event handlers
+ * similar to languageFeatures.ts in monaco language modes
+ *
+ * @param options {HandlerOptions}
+ */
+function addHandlers({
+  connection,
+  logger,
+  config,
+  parser,
+  fileExtensions,
+  graphqlFileExtensions,
+  tmpDir,
+  loadConfigOptions,
+}: HandlerOptions): void {
+  const messageProcessor = new MessageProcessor({
     logger,
-    extensions,
     config,
     parser,
-    fileExtensions,
+    fileExtensions: fileExtensions || DEFAULT_SUPPORTED_EXTENSIONS,
+    graphqlFileExtensions:
+      graphqlFileExtensions || DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
     tmpDir,
     loadConfigOptions,
-  );
+  });
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
@@ -245,7 +326,11 @@ function addHandlers(
   connection.onNotification('$/cancelRequest', () => ({}));
 
   connection.onRequest(InitializeRequest.type, (params, token) =>
-    messageProcessor.handleInitializeRequest(params, token, configDir),
+    messageProcessor.handleInitializeRequest(
+      params,
+      token,
+      loadConfigOptions.rootDir,
+    ),
   );
   connection.onRequest(CompletionRequest.type, params =>
     messageProcessor.handleCompletionRequest(params),

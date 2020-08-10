@@ -11,7 +11,6 @@ import yargs from 'yargs';
 import client from './client';
 
 import { Logger, startServer } from 'graphql-language-service-server';
-import { tmpdir } from 'os';
 
 const { argv } = yargs
   .usage(
@@ -104,7 +103,8 @@ const { argv } = yargs
 const command = argv._.pop();
 
 if (!command) {
-  throw Error('no command supplied');
+  process.stdout.write('no command supplied');
+  process.exit(0);
 }
 
 switch (command) {
@@ -129,7 +129,7 @@ switch (command) {
     try {
       startServer(options);
     } catch (error) {
-      const logger = new Logger(tmpdir());
+      const logger = new Logger();
       logger.error(error);
     }
     break;

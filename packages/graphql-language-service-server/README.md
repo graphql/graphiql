@@ -42,17 +42,20 @@ The library includes a node executable file which you can find in `./node_module
 
 Check out [graphql-config](https://graphql-config.com/docs/introduction)
 
-#### `.graphqlrc` or `.graphqlrc.yml/yaml`
+#### `.graphqlrc` or `.graphqlrc.yml/yaml` or `graphql.config.yml`
 
 ```yaml
 schema: 'packages/api/src/schema.graphql'
-documents: 'packages/app/src/components/**/*.graphql'
+documents: 'packages/app/src/components/**/*.{tsx,ts}'
 extensions:
+  endpoints:
+    example:
+      url: 'http://localhost:8000'
   customExtension:
     foo: true
 ```
 
-#### `.graphqlrc` or `.graphqlrc.json`
+#### `.graphqlrc` or `.graphqlrc.json` or `graphql.config.json`
 
 ```json
 { "schema": "https://localhost:8000" }
@@ -64,7 +67,7 @@ extensions:
 module.exports = { schema: 'https://localhost:8000' };
 ```
 
-#### custom `loadConfig`
+#### custom `startServer`
 
 use graphql config [`loadConfig`](https://graphql-config.com/docs/load-config) for further customization:
 
@@ -73,14 +76,20 @@ import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
 
 await startServer({
   method: 'node',
-  config: loadConfig({
-     // myPlatform.config.js works now!
+  // or instead of configName, an exact path (relative from rootDir or absolute)
+
+  // deprecated for: loadConfigOptions.rootDir. root directory for graphql config file(s), or for relative resolution for exact `filePath`. default process.cwd()
+  // configDir: '',
+  loadConfigOptions: {
+    // any of the options for graphql-config@3 `loadConfig()`
+
+    // rootDir is same as `configDir` before, the path where the graphql config file would be found by cosmic-config
+    rootDir: 'config/',
+    // or - the relative or absolute path to your file
+    filePath: 'exact/path/to/config.js (also supports yml, json)',
+    // myPlatform.config.js/json/yaml works now!
     configName: 'myPlatform',
-    // or instead of configName, an exact path (relative from rootDir or absolute)
-    filePath: 'exact/path/to/config.js (also supports yml, json)'
-     // rootDir to look for config file(s), or for relative resolution for exact `filePath`. default process.cwd()
-    rootDir: '',
-  })
+  },
 });
 ```
 
