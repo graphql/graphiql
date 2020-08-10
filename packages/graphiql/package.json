@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "private": true,
   "contributors": [
@@ -53,7 +53,7 @@
     "i18next-browser-languagedetector": "^4.1.1",
     "markdown-it": "^10.0.0",
     "monaco-editor": "^0.20.0",
-    "monaco-graphql": "^0.3.0",
+    "monaco-graphql": "^0.3.1-alpha.0",
     "react-i18next": "^11.4.0",
     "theme-ui": "^0.3.1"
   },
