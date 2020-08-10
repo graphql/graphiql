@@ -1,9 +1,12 @@
 name: Automatic Publish
 
 on:
-  push:
-    branches:
-      - master
+  workflow_run:
+    workflows: ["Automatic Release"]
+    branches: [master]
+    types: 
+      - completed
+  workflow_dispatch
 
 env:
   PAT: ${{ secrets.PAT }}
@@ -13,13 +16,12 @@ env:
 
 jobs:
   publish:
+    if: endsWith(github.ref, '/master')
     name: Publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: npm install
-      - name: Publish Extension as Patch to marketplace
-        run: npm run vsce:publish
       - name: Publish Extension as Patch to open-vsx
         run: node_modules/.bin/ovsx publish -p "$OPEN_VSX_ACCESS_TOKEN"

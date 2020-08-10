@@ -1,0 +1,28 @@
+name: Automatic Publish to Marketplace
+
+on:
+  workflow_run:
+    workflows: ["Automatic Release"]
+    branches: [master]
+    types: 
+      - completed
+  workflow_dispatch
+
+env:
+  PAT: ${{ secrets.PAT }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  PRODUCTION: ${{ secrets.PRODUCTION }}
+  OPEN_VSX_ACCESS_TOKEN: ${{ secrets.OPEN_VSX_ACCESS_TOKEN }}
+
+jobs:
+  publish:
+    if: endsWith(github.ref, '/master')
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Publish Extension as Patch to marketplace
+        run: |
+          ./node_modules/.bin/vsce publish --pat $PAT
