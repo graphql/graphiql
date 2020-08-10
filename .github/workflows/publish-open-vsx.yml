@@ -9,9 +9,7 @@ on:
   workflow_dispatch
 
 env:
-  PAT: ${{ secrets.PAT }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
-  PRODUCTION: ${{ secrets.PRODUCTION }}
   OPEN_VSX_ACCESS_TOKEN: ${{ secrets.OPEN_VSX_ACCESS_TOKEN }}
 
 jobs:
