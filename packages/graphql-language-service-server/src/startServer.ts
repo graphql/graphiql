@@ -50,30 +50,56 @@ import {
 import { LoadConfigOptions } from './types';
 
 export interface ServerOptions {
-  // port for the LSP server to run on. required if using method socket
+  /**
+   * port for the LSP server to run on. required if using method socket
+   */
   port?: number;
-  // socket, streams, or node (ipc)
+  /**
+   * socket, streams, or node (ipc). `node` by default.
+   */
   method?: 'socket' | 'stream' | 'node';
-  // `LoadConfigOptions` from `graphql-config@3` to use when we `loadConfig()`
+  /**
+   * `LoadConfigOptions` from `graphql-config@3` to use when we `loadConfig()`
+   * uses process.cwd() by default for `rootDir` option.
+   * you can also pass explicit `filepath`, add extensions, etc
+   */
   loadConfigOptions?: LoadConfigOptions;
-  // (deprecated: use loadConfigOptions.rootDir now) the directory where graphql-config is found
+  /**
+   * (deprecated: use loadConfigOptions.rootDir now) the directory where graphql-config is found
+   */
   configDir?: string;
-  // (deprecated: use loadConfigOptions.extensions now) array of functions to transform the graphql-config and add extensions dynamically
+  /**
+   * (deprecated: use loadConfigOptions.extensions now) array of functions to transform the graphql-config and add extensions dynamically
+   */
   extensions?: GraphQLExtensionDeclaration[];
-  // default: ['.js', '.jsx', '.tsx', '.ts', '.mjs']
-  // allowed file extensions for embedded graphql, used by the parser.
-  // note that with vscode, this is also controlled by manifest and client configurations.
-  // do not put full-file graphql extensions here!
+  /**
+   * default: ['.js', '.jsx', '.tsx', '.ts', '.mjs']
+   * allowed file extensions for embedded graphql, used by the parser.
+   * note that with vscode, this is also controlled by manifest and client configurations.
+   * do not put full-file graphql extensions here!
+   */
   fileExtensions?: string[];
-  // default: ['graphql'] - allowed file extensions for graphql, used by the parser
+  /**
+   * default: ['graphql'] - allowed file extensions for graphql, used by the parser
+   */
   graphqlFileExtensions?: string[];
-  // pre-existing GraphQLConfig primitive, to override `loadConfigOptions` and related deprecated fields
+  /**
+   * pre-existing GraphQLConfig primitive, to override `loadConfigOptions` and related deprecated fields
+   */
   config?: GraphQLConfig;
-  // custom parser
+  /**
+   * custom, multi-language parser used by the LSP server.
+   * detects extension from uri and decides how to parse it.
+   * uses graphql.parse() by default
+   * response format is designed to assist with developing LSP tooling around embedded language support
+   */
   parser?: typeof parseDocument;
-  // the temporary directory that the server writes to for logs and cacheing schema
+  /**
+   * the temporary directory that the server writes to for logs and cacheing schema
+   */
   tmpDir?: string;
 }
+
 /**
  * Make loadConfigOptions
  */
@@ -185,17 +211,19 @@ export default async function startServer(
   }
 }
 
+type InitializerParams = {
+  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
+  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
+  logger: Logger;
+  options: MappedServerOptions;
+};
+
 function initializeHandlers({
   reader,
   writer,
   logger,
   options,
-}: {
-  reader: SocketMessageReader | StreamMessageReader | IPCMessageReader;
-  writer: SocketMessageWriter | StreamMessageWriter | IPCMessageWriter;
-  logger: Logger;
-  options: MappedServerOptions;
-}): MessageConnection {
+}: InitializerParams): MessageConnection {
   try {
     const connection = createMessageConnection(reader, writer, logger);
     addHandlers({ connection, logger, ...options });
@@ -219,6 +247,23 @@ function reportDiagnostics(
   }
 }
 
+type HandlerOptions = {
+  connection: MessageConnection;
+  logger: Logger;
+  config?: GraphQLConfig;
+  parser?: typeof parseDocument;
+  fileExtensions?: string[];
+  graphqlFileExtensions?: string[];
+  tmpDir?: string;
+  loadConfigOptions: LoadConfigOptions;
+};
+
+/**
+ * take the resultant message connection, and attach the matching `MessageProcessor` instance event handlers
+ * similar to languageFeatures.ts in monaco language modes
+ *
+ * @param options {HandlerOptions}
+ */
 function addHandlers({
   connection,
   logger,
@@ -228,16 +273,7 @@ function addHandlers({
   graphqlFileExtensions,
   tmpDir,
   loadConfigOptions,
-}: {
-  connection: MessageConnection;
-  logger: Logger;
-  config?: GraphQLConfig;
-  parser?: typeof parseDocument;
-  fileExtensions?: string[];
-  graphqlFileExtensions?: string[];
-  tmpDir?: string;
-  loadConfigOptions: LoadConfigOptions;
-}): void {
+}: HandlerOptions): void {
   const messageProcessor = new MessageProcessor({
     logger,
     config,
