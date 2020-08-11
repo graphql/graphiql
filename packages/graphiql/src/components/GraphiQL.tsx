@@ -1615,16 +1615,16 @@ function observableToPromise<T>(
     return observable;
   }
   return new Promise((resolve, reject) => {
-    const subscription = observable.subscribe(
-      v => {
+    const subscription = observable.subscribe({
+      next: v => {
         resolve(v);
         subscription.unsubscribe();
       },
-      reject,
-      () => {
+      error: reject,
+      complete: () => {
         reject(new Error('no value resolved'));
       },
-    );
+    });
   });
 }
 
