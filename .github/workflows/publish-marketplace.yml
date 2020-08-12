@@ -4,9 +4,9 @@ on:
   workflow_run:
     workflows: ["Automatic Release"]
     branches: [master]
-    types: 
+    types:
       - completed
-  workflow_dispatch
+  workflow_dispatch:
 
 env:
   PAT: ${{ secrets.PAT }}
