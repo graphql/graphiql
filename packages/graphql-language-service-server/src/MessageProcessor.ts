@@ -6,7 +6,9 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+
+import mkdirp from 'mkdirp';
+import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
 import { URL } from 'url';
 import * as path from 'path';
 import {
@@ -62,6 +64,9 @@ import { printSchema } from 'graphql';
 import { tmpdir } from 'os';
 import { GraphQLExtensionDeclaration } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
+import { promisify } from 'util';
+
+const writeFileAsync = promisify(writeFile);
 
 type CachedDocumentType = {
   version: number;
@@ -122,7 +127,7 @@ export class MessageProcessor {
     }
 
     if (!existsSync(this._tmpDirBase)) {
-      mkdirSync(this._tmpDirBase);
+      mkdirp(this._tmpDirBase);
     }
   }
 
@@ -731,17 +736,17 @@ export class MessageProcessor {
     const baseDir = this._graphQLCache.getGraphQLConfig().dirpath;
     const baseName = path.basename(baseDir);
     const basePath = path.join(this._tmpDirBase, baseName);
-    if (!existsSync(basePath)) {
-      mkdirSync(basePath);
-      mkdirSync(path.join(basePath, 'projects'));
-    }
-    const projectTmpPath = path.resolve(
-      path.join(basePath, 'projects', project.name, appendPath || ''),
-    );
+    let projectTmpPath = path.join(basePath, 'projects', project.name);
     if (!existsSync(projectTmpPath)) {
-      mkdirSync(projectTmpPath);
+      mkdirp(projectTmpPath);
     }
-    return prependWithProtocol ? 'file://' + projectTmpPath : projectTmpPath;
+    if (appendPath) {
+      projectTmpPath = path.join(projectTmpPath, appendPath);
+    }
+    if (prependWithProtocol) {
+      projectTmpPath = `file://${projectTmpPath}`;
+    }
+    return projectTmpPath;
   }
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
@@ -800,7 +805,8 @@ export class MessageProcessor {
         const cachedSchemaDoc = this._getCachedDocument(uri);
 
         if (!cachedSchemaDoc) {
-          writeFileSync(fsPath, schemaText, {
+          console.log({ fsPath });
+          await writeFileAsync(fsPath, schemaText, {
             encoding: 'utf-8',
           });
           await this._cacheSchemaText(uri, schemaText, 1);

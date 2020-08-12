@@ -24,7 +24,7 @@
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "typings": "dist/index.d.ts",
+  "typings": "esm/index.d.ts",
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0"
   },
@@ -36,9 +36,11 @@
     "graphql-language-service-utils": "^2.4.1",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
-    "vscode-languageserver": "^6.1.1"
+    "vscode-languageserver": "^6.1.1",
+    "mkdirp": "^1.0.4"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2"
+    "cross-env": "^7.0.2",
+    "@types/mkdirp": "^1.0.1"
   }
 }
