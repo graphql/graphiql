@@ -1,8 +1,8 @@
-name: Automatic Publish
+name: Automatic Publish to open-vsx.org
 
 on:
   workflow_run:
-    workflows: ["Automatic Release"]
+    workflows: ["automatic-release"]
     branches: [master]
     types: 
       - completed

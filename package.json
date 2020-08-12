@@ -147,8 +147,8 @@
   "dependencies": {
     "@divyenduz/ts-graphql-plugin": "0.1.0",
     "apollo-cache-inmemory": "1.6.5",
-    "apollo-client": "2.6.8",
-    "apollo-link": "1.2.13",
+    "apollo-client": "2.6.10",
+    "apollo-link": "1.2.14",
     "apollo-link-http": "1.5.16",
     "apollo-link-ws": "1.0.19",
     "babel-polyfill": "6.26.0",

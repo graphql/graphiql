@@ -2,7 +2,7 @@ name: Automatic Publish to Marketplace
 
 on:
   workflow_run:
-    workflows: ["Automatic Release"]
+    workflows: ["automatic-release"]
     branches: [master]
     types:
       - completed
