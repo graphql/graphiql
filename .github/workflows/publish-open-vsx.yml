@@ -6,7 +6,7 @@ on:
     branches: [master]
     types: 
       - completed
-  workflow_dispatch
+  workflow_dispatch:
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
