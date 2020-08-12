@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.5.0-alpha.0",
+  "version": "2.5.0-alpha.1",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -34,13 +34,13 @@
     "graphql-config": "^3.0.3",
     "graphql-language-service": "^3.0.2-alpha.0",
     "graphql-language-service-utils": "^2.4.1",
+    "mkdirp": "^1.0.4",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
-    "vscode-languageserver": "^6.1.1",
-    "mkdirp": "^1.0.4"
+    "vscode-languageserver": "^6.1.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.2",
-    "@types/mkdirp": "^1.0.1"
+    "@types/mkdirp": "^1.0.1",
+    "cross-env": "^7.0.2"
   }
 }
