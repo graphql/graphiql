@@ -1,10 +1,15 @@
 {
-  "extends": ["config:base"],
+  "extends": [
+    "config:base"
+  ],
   "docker": {
     "enabled": false
   },
   "automerge": true,
   "major": {
+    "automerge": false
+  },
+  "minor": {
     "automerge": false
   },
   "semanticCommits": true
