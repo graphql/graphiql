@@ -31,6 +31,8 @@ export class LanguageServiceAPI {
   private _modeConfiguration!: ModeConfiguration;
   private _languageId: string;
   private _worker: WorkerAccessor | null;
+  private _workerPromise: Promise<WorkerAccessor>;
+  private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => {};
 
   constructor({
     languageId,
@@ -39,6 +41,9 @@ export class LanguageServiceAPI {
     formattingOptions,
   }: LanguageServiceAPIOptions) {
     this._worker = null;
+    this._workerPromise = new Promise((resolve) => {
+      this._resolveWorkerPromise = resolve;
+    });
     this._languageId = languageId;
     this.setSchemaConfig(schemaConfig);
     this.setModeConfiguration(modeConfiguration);
@@ -60,24 +65,28 @@ export class LanguageServiceAPI {
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
   }
-  public get worker(): WorkerAccessor {
-    return this._worker as WorkerAccessor;
+  public get worker(): Promise<WorkerAccessor> {
+    if (this._worker) {
+      return Promise.resolve(this._worker);
+    }
+    return this._workerPromise
   }
   setWorker(worker: WorkerAccessor) {
     this._worker = worker;
+    this._resolveWorkerPromise(worker);
   }
 
   public async getSchema(): Promise<SchemaResponse> {
-    const langWorker = await this.worker();
+    const langWorker = await (await this.worker)();
     return langWorker.getSchemaResponse();
   }
   public async setSchema(schema: RawSchema): Promise<void> {
-    const langWorker = await this.worker();
+    const langWorker = await (await this.worker)();
     await langWorker.setSchema(schema);
     this._onDidChange.fire(this);
   }
   public async parse(graphqlString: string): Promise<DocumentNode> {
-    const langWorker = await this.worker();
+    const langWorker = await (await this.worker)();
     return langWorker.doParse(graphqlString);
   }
 

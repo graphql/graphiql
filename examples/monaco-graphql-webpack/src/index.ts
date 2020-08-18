@@ -45,6 +45,42 @@ schemaInput.onkeyup = e => {
 const toolbar = document.getElementById('toolbar');
 toolbar?.appendChild(schemaInput);
 
+function setRawSchema() {
+  GraphQLAPI.setSchema(`# Enumeration type for a level of priority
+  enum Priority {
+    LOW
+    MEDIUM
+    HIGH
+  }
+
+  # Our main todo type
+  type Todo {
+    id: ID!
+    name: String!
+    description: String
+    priority: Priority!
+  }
+
+  type Query {
+    # Get one todo item
+    todo(id: ID!): Todo
+    # Get all todo items
+    allTodos: [Todo!]!
+  }
+
+  type Mutation {
+    addTodo(name: String!, priority: Priority = LOW): Todo!
+    removeTodo(id: ID!): Todo!
+  }
+
+  schema {
+    query: Query
+    mutation: Mutation
+  }`);
+}
+
+setRawSchema();
+
 const variablesModel = monaco.editor.createModel(
   `{}`,
   'json',
@@ -68,7 +104,7 @@ const variablesEditor = monaco.editor.create(
 );
 const model = monaco.editor.createModel(
   `
-query Example($limit: Int) { 
+query Example($limit: Int) {
   launchesPast(limit: $limit) {
     mission_name
     # format me using the right click context menu
