@@ -28,10 +28,73 @@ window.MonacoEnvironment = {
   },
 };
 
+const schemas = {
+  remote: {
+    op: `
+query Example($limit: Int) {
+  launchesPast(limit: $limit) {
+    mission_name
+    # format me using the right click context menu
+              launch_date_local
+    launch_site {
+      site_name_long
+    }
+    links {
+      article_link
+      video_link
+    }
+  }
+}
+  `,
+    variables: `{ "limit": 10 }`,
+    load: ({ op, variables }: { op: string; variables: string }) => {
+      GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
+      variablesEditor.setValue(variables);
+      operationEditor.setValue(op);
+    },
+  },
+  local: {
+    op: `query Example {
+  allTodos {
+    id
+    name
+  }
+}`,
+    load: ({ op }: { op: string }) => {
+      setRawSchema();
+      variablesEditor.setValue('{}');
+      operationEditor.setValue(op);
+    },
+  },
+};
+
+const THEME = 'vs-dark';
+
 const schemaInput = document.createElement('input');
 schemaInput.type = 'text';
 
 schemaInput.value = SCHEMA_URL;
+
+const selectEl = document.createElement('select');
+
+selectEl.onchange = e => {
+  e.preventDefault();
+  const type = selectEl.value as 'local' | 'remote';
+  if (schemas[type]) {
+    // @ts-ignore
+    schemas[type].load(schemas[type]);
+  }
+};
+
+const createOption = (label: string, value: string) => {
+  const el = document.createElement('option');
+  el.label = label;
+  el.value = value;
+  return el;
+};
+
+selectEl.appendChild(createOption('Remote', 'remote'));
+selectEl.appendChild(createOption('Local', 'local'));
 
 schemaInput.onkeyup = e => {
   e.preventDefault();
@@ -44,9 +107,10 @@ schemaInput.onkeyup = e => {
 
 const toolbar = document.getElementById('toolbar');
 toolbar?.appendChild(schemaInput);
+toolbar?.appendChild(selectEl);
 
-function setRawSchema() {
-  GraphQLAPI.setSchema(`# Enumeration type for a level of priority
+async function setRawSchema() {
+  await GraphQLAPI.setSchema(`# Enumeration type for a level of priority
   enum Priority {
     LOW
     MEDIUM
@@ -79,8 +143,6 @@ function setRawSchema() {
   }`);
 }
 
-setRawSchema();
-
 const variablesModel = monaco.editor.createModel(
   `{}`,
   'json',
@@ -92,6 +154,7 @@ const resultsEditor = monaco.editor.create(
   {
     model: variablesModel,
     automaticLayout: true,
+    theme: THEME,
   },
 );
 const variablesEditor = monaco.editor.create(
@@ -100,6 +163,7 @@ const variablesEditor = monaco.editor.create(
     value: `{ "limit": 10 }`,
     language: 'json',
     automaticLayout: true,
+    theme: THEME,
   },
 );
 const model = monaco.editor.createModel(
@@ -131,6 +195,7 @@ const operationEditor = monaco.editor.create(
     formatOnPaste: true,
     formatOnType: true,
     folding: true,
+    theme: THEME,
   },
 );
 
@@ -139,8 +204,6 @@ GraphQLAPI.setFormattingOptions({
     printWidth: 120,
   },
 });
-
-GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
 
 /**
  * Basic Operation Exec Example
@@ -184,6 +247,17 @@ operationEditor.addAction(opAction);
 variablesEditor.addAction(opAction);
 resultsEditor.addAction(opAction);
 
+/**
+ * load local schema by default
+ */
+
+let initialSchema = false;
+
+if (!initialSchema) {
+  schemas.remote.load(schemas.remote);
+  initialSchema = true;
+}
+
 // add your own diagnostics? why not!
 // monaco.editor.setModelMarkers(
 //   model,
@@ -197,7 +271,3 @@ resultsEditor.addAction(opAction);
 //     endColumn: 0,
 //   }],
 // );
-
-// operationEditor.onDidChangeModelContent(() => {
-//   // this is where
-// })

@@ -34,6 +34,7 @@ export function setupMode(defaults: LanguageServiceAPI): IDisposable {
       throw Error('Error fetching graphql language service worker');
     }
   };
+
   defaults.setWorker(worker);
 
   monaco.languages.setLanguageConfiguration(languageId, richLanguageConfig);
@@ -83,6 +84,9 @@ export function setupMode(defaults: LanguageServiceAPI): IDisposable {
   let { modeConfiguration, schemaConfig, formattingOptions } = defaults;
 
   defaults.onDidChange(newDefaults => {
+    if (defaults.schemaString !== newDefaults.schemaString) {
+      registerProviders();
+    }
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
       registerProviders();

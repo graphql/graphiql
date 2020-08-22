@@ -9,7 +9,7 @@ import {
 } from 'graphql';
 
 export type SchemaConfig = {
-  uri: string;
+  uri?: string;
   requestOpts?: RequestInit;
   introspectionOptions?: IntrospectionOptions;
   buildSchemaOptions?: BuildSchemaOptions;
@@ -17,12 +17,17 @@ export type SchemaConfig = {
 
 export type SchemaResponse = IntrospectionQuery | DocumentNode;
 
-export type SchemaLoader = (config: SchemaConfig) => Promise<SchemaResponse>;
+export type SchemaLoader = (
+  config: SchemaConfig,
+) => Promise<SchemaResponse | null>;
 
 export const defaultSchemaLoader: SchemaLoader = async (
   schemaConfig: SchemaConfig,
-): Promise<SchemaResponse> => {
+): Promise<SchemaResponse | null> => {
   const { requestOpts, uri, introspectionOptions } = schemaConfig;
+  if (!uri) {
+    return null;
+  }
   const fetchResult = await fetch(uri, {
     method: requestOpts?.method ?? 'post',
     body: JSON.stringify({
