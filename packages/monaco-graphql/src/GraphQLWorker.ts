@@ -12,7 +12,6 @@ import type { worker, editor, Position, IRange } from 'monaco-editor';
 import { getRange, LanguageService } from 'graphql-language-service';
 
 import type {
-  RawSchema,
   SchemaResponse,
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
@@ -37,20 +36,19 @@ export class GraphQLWorker {
   private _formattingOptions: FormattingOptions | undefined;
   constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
-    // if you must, we have a nice default schema loader at home
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
   }
 
-  async getSchemaResponse(_uri?: string): Promise<SchemaResponse> {
+  async getSchemaResponse(_uri?: string): Promise<SchemaResponse | null> {
     return this._languageService.getSchemaResponse();
   }
 
-  async setSchema(schema: RawSchema): Promise<void> {
+  async setSchema(schema: string): Promise<void> {
     await this._languageService.setSchema(schema);
   }
 
-  async loadSchema(_uri?: string): Promise<GraphQLSchema> {
+  async loadSchema(_uri?: string): Promise<GraphQLSchema | null> {
     return this._languageService.getSchema();
   }
 

@@ -12,8 +12,6 @@ import {
   getHoverInformation,
 } from 'graphql-language-service-interface';
 
-import { RawSchema } from './types';
-
 import {
   defaultSchemaLoader,
   SchemaConfig,
@@ -25,7 +23,7 @@ export type GraphQLLanguageConfig = {
   parser?: typeof parse;
   schemaLoader?: typeof defaultSchemaLoader;
   schemaBuilder?: typeof defaultSchemaBuilder;
-  rawSchema?: RawSchema;
+  schemaString?: string;
   parseOptions?: ParseOptions;
   schemaConfig: SchemaConfig;
 };
@@ -37,16 +35,16 @@ export class LanguageService {
   private _schemaResponse: SchemaResponse | null = null;
   private _schemaLoader: (
     schemaConfig: SchemaConfig,
-  ) => Promise<SchemaResponse | void> = defaultSchemaLoader;
+  ) => Promise<SchemaResponse | null> = defaultSchemaLoader;
   private _schemaBuilder = defaultSchemaBuilder;
-  private _rawSchema: RawSchema | null = null;
+  private _schemaString: string | null = null;
   private _parseOptions: ParseOptions | undefined = undefined;
   constructor({
     parser,
     schemaLoader,
     schemaBuilder,
     schemaConfig,
-    rawSchema,
+    schemaString,
     parseOptions,
   }: GraphQLLanguageConfig) {
     this._schemaConfig = schemaConfig;
@@ -59,8 +57,8 @@ export class LanguageService {
     if (schemaBuilder) {
       this._schemaBuilder = schemaBuilder;
     }
-    if (rawSchema) {
-      this._rawSchema = rawSchema;
+    if (schemaString) {
+      this._schemaString = schemaString;
     }
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -80,28 +78,28 @@ export class LanguageService {
 
   /**
    * setSchema statically, ignoring URI
-   * @param schema {RawSchema}
+   * @param schema {schemaString}
    */
-  public async setSchema(schema: RawSchema): Promise<GraphQLSchema> {
-    this._rawSchema = schema;
-    return this.loadSchema();
+  public async setSchema(schema: string): Promise<void> {
+    this._schemaString = schema;
+    await this.loadSchema();
   }
 
-  public async getSchemaResponse(): Promise<SchemaResponse> {
+  public async getSchemaResponse(): Promise<SchemaResponse | null> {
     if (this._schemaResponse) {
       return this._schemaResponse;
     }
     return this.loadSchemaResponse();
   }
 
-  public async loadSchemaResponse(): Promise<SchemaResponse> {
-    if (this._rawSchema) {
-      return typeof this._rawSchema === 'string'
-        ? this.parse(this._rawSchema)
-        : this._rawSchema;
+  public async loadSchemaResponse(): Promise<SchemaResponse | null> {
+    if (this._schemaString) {
+      return typeof this._schemaString === 'string'
+        ? this.parse(this._schemaString)
+        : this._schemaString;
     }
     if (!this._schemaConfig?.uri) {
-      throw new Error('uri missing');
+      return null;
     }
     this._schemaResponse = (await this._schemaLoader(
       this._schemaConfig,
@@ -111,11 +109,15 @@ export class LanguageService {
 
   public async loadSchema() {
     const schemaResponse = await this.loadSchemaResponse();
-    this._schema = this._schemaBuilder(
-      schemaResponse,
-      this._schemaConfig.buildSchemaOptions,
-    ) as GraphQLSchema;
-    return this._schema;
+    if (schemaResponse) {
+      this._schema = this._schemaBuilder(
+        schemaResponse,
+        this._schemaConfig.buildSchemaOptions,
+      ) as GraphQLSchema;
+      return this._schema;
+    } else {
+      return null;
+    }
   }
 
   public async parse(text: string, options?: ParseOptions) {
@@ -126,23 +128,34 @@ export class LanguageService {
     _uri: string,
     documentText: string,
     position: Position,
-  ) =>
-    getAutocompleteSuggestions(await this.getSchema(), documentText, position);
+  ) => {
+    const schema = await this.getSchema();
+    if (!schema) {
+      return [];
+    }
+    return getAutocompleteSuggestions(schema, documentText, position);
+  };
 
   public getDiagnostics = async (
     _uri: string,
     documentText: string,
     customRules?: ValidationRule[],
   ) => {
-    if (!documentText || documentText.length < 1) {
+    const schema = await this.getSchema();
+    if (!documentText || documentText.length < 1 || !schema) {
       return [];
     }
-    return getDiagnostics(documentText, await this.getSchema(), customRules);
+    return getDiagnostics(documentText, schema, customRules);
   };
 
   public getHover = async (
     _uri: string,
     documentText: string,
     position: Position,
-  ) => getHoverInformation(await this.getSchema(), documentText, position);
+  ) =>
+    getHoverInformation(
+      (await this.getSchema()) as GraphQLSchema,
+      documentText,
+      position,
+    );
 }

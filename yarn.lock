@@ -10264,7 +10264,7 @@ grapheme-breaker@^0.3.2:
     unicode-trie "^0.3.1"
 
 "graphiql@file:packages/graphiql":
-  version "2.0.0-alpha.2"
+  version "2.0.0-alpha.3"
   dependencies:
     "@emotion/core" "^10.0.28"
     "@mdx-js/react" "^1.5.2"
@@ -10277,7 +10277,7 @@ grapheme-breaker@^0.3.2:
     i18next-browser-languagedetector "^4.1.1"
     markdown-it "^10.0.0"
     monaco-editor "^0.20.0"
-    monaco-graphql "^0.3.1-alpha.0"
+    monaco-graphql "^0.3.1-alpha.1"
     react-i18next "^11.4.0"
     theme-ui "^0.3.1"
 
