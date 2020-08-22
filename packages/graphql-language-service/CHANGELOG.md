@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.2-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.2-alpha.1...graphql-language-service@3.0.2-alpha.2) (2020-08-22)
+
+### Bug Fixes
+
+- improve setSchema & schema loading, allow primitive schema ([#1648](https://github.com/graphql/graphiql/issues/1648)) ([975f29e](https://github.com/graphql/graphiql/commit/975f29ed6e21c7354c42ed778dfd1b52287f70c6))
+
 ## [3.0.2-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.2-alpha.0...graphql-language-service@3.0.2-alpha.1) (2020-08-12)
 
 **Note:** Version bump only for package graphql-language-service

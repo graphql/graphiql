@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.5.0-alpha.2",
+  "version": "2.5.0-alpha.3",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -32,7 +32,7 @@
     "@babel/parser": "^7.9.0",
     "glob": "^7.1.2",
     "graphql-config": "^3.0.3",
-    "graphql-language-service": "^3.0.2-alpha.1",
+    "graphql-language-service": "^3.0.2-alpha.2",
     "graphql-language-service-utils": "^2.4.1",
     "mkdirp": "^1.0.4",
     "nullthrows": "^1.0.0",
