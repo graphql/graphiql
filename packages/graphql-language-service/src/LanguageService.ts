@@ -128,26 +128,24 @@ export class LanguageService {
     _uri: string,
     documentText: string,
     position: Position,
-  ) =>
-    getAutocompleteSuggestions(
-      (await this.getSchema()) as GraphQLSchema,
-      documentText,
-      position,
-    );
+  ) => {
+    const schema = await this.getSchema();
+    if (!schema) {
+      return [];
+    }
+    return getAutocompleteSuggestions(schema, documentText, position);
+  };
 
   public getDiagnostics = async (
     _uri: string,
     documentText: string,
     customRules?: ValidationRule[],
   ) => {
-    if (!documentText || documentText.length < 1) {
+    const schema = await this.getSchema();
+    if (!documentText || documentText.length < 1 || !schema) {
       return [];
     }
-    return getDiagnostics(
-      documentText,
-      (await this.getSchema()) as GraphQLSchema,
-      customRules,
-    );
+    return getDiagnostics(documentText, schema, customRules);
   };
 
   public getHover = async (
