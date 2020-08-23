@@ -17,6 +17,7 @@ import {
   LanguageClientOptions,
   ServerOptions,
   TransportKind,
+  RevealOutputChannelOn,
 } from "vscode-languageclient"
 
 import statusBarItem, { initStatusBar } from "./status"
@@ -95,6 +96,7 @@ export async function activate(context: ExtensionContext) {
     },
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
+    revealOutputChannelOn: RevealOutputChannelOn.Never,
     initializationFailedHandler: CustomInitializationFailedHandler(
       outputChannel,
     ),
