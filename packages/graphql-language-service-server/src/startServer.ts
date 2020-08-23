@@ -9,12 +9,9 @@
 import * as net from 'net';
 import { MessageProcessor } from './MessageProcessor';
 import { GraphQLConfig, GraphQLExtensionDeclaration } from 'graphql-config';
-
 import {
-  createMessageConnection,
   IPCMessageReader,
   IPCMessageWriter,
-  MessageConnection,
   SocketMessageReader,
   SocketMessageWriter,
   StreamMessageReader,
@@ -38,7 +35,8 @@ import {
   DocumentSymbolRequest,
   PublishDiagnosticsParams,
   WorkspaceSymbolRequest,
-  // ReferencesRequest,
+  createConnection,
+  IConnection,
 } from 'vscode-languageserver';
 
 import { Logger } from './Logger';
@@ -54,6 +52,10 @@ export interface ServerOptions {
    * port for the LSP server to run on. required if using method socket
    */
   port?: number;
+  /**
+   * hostname if using socker
+   */
+  hostname?: string;
   /**
    * socket, streams, or node (ipc). `node` by default.
    */
@@ -165,6 +167,7 @@ export default async function startServer(
         }
 
         const port = options.port;
+        const hostname = options.hostname;
         const socket = net
           .createServer(client => {
             client.setEncoding('utf8');
@@ -174,16 +177,16 @@ export default async function startServer(
               socket.close();
               process.exit(0);
             });
-            const serverWithHandlers = initializeHandlers({
+            return initializeHandlers({
               reader,
               writer,
               logger,
               options: finalOptions,
+            }).then(s => {
+              s.listen();
             });
-
-            serverWithHandlers.listen();
           })
-          .listen(port);
+          .listen(port, hostname);
         return;
       case 'stream':
         reader = new StreamMessageReader(process.stdin);
@@ -197,13 +200,13 @@ export default async function startServer(
     }
 
     try {
-      const serverWithHandlers = initializeHandlers({
+      const serverWithHandlers = await initializeHandlers({
         reader,
         writer,
         logger,
         options: finalOptions,
       });
-      return serverWithHandlers.listen();
+      serverWithHandlers.listen();
     } catch (err) {
       logger.error('There was a Graphql LSP handler exception:');
       logger.error(err);
@@ -218,15 +221,16 @@ type InitializerParams = {
   options: MappedServerOptions;
 };
 
-function initializeHandlers({
+async function initializeHandlers({
   reader,
   writer,
   logger,
   options,
-}: InitializerParams): MessageConnection {
+}: InitializerParams): Promise<IConnection> {
   try {
-    const connection = createMessageConnection(reader, writer, logger);
-    addHandlers({ connection, logger, ...options });
+    const connection = createConnection(reader, writer);
+
+    await addHandlers({ connection, logger, ...options });
     return connection;
   } catch (err) {
     logger.error('There was an error initializing the server connection');
@@ -237,7 +241,7 @@ function initializeHandlers({
 
 function reportDiagnostics(
   diagnostics: PublishDiagnosticsParams | null,
-  connection: MessageConnection,
+  connection: IConnection,
 ) {
   if (diagnostics) {
     connection.sendNotification(
@@ -248,7 +252,7 @@ function reportDiagnostics(
 }
 
 type HandlerOptions = {
-  connection: MessageConnection;
+  connection: IConnection;
   logger: Logger;
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
@@ -264,7 +268,7 @@ type HandlerOptions = {
  *
  * @param options {HandlerOptions}
  */
-function addHandlers({
+async function addHandlers({
   connection,
   logger,
   config,
@@ -273,7 +277,7 @@ function addHandlers({
   graphqlFileExtensions,
   tmpDir,
   loadConfigOptions,
-}: HandlerOptions): void {
+}: HandlerOptions): Promise<void> {
   const messageProcessor = new MessageProcessor({
     logger,
     config,
@@ -283,7 +287,10 @@ function addHandlers({
       graphqlFileExtensions || DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
     tmpDir,
     loadConfigOptions,
+    connection,
   });
+  messageProcessor.connection = connection;
+
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
@@ -332,22 +339,29 @@ function addHandlers({
       loadConfigOptions.rootDir,
     ),
   );
+
   connection.onRequest(CompletionRequest.type, params =>
     messageProcessor.handleCompletionRequest(params),
   );
+
   connection.onRequest(CompletionResolveRequest.type, item => item);
+
   connection.onRequest(DefinitionRequest.type, params =>
     messageProcessor.handleDefinitionRequest(params),
   );
+
   connection.onRequest(HoverRequest.type, params =>
     messageProcessor.handleHoverRequest(params),
   );
+
   connection.onNotification(DidChangeWatchedFilesNotification.type, params =>
     messageProcessor.handleWatchedFilesChangedNotification(params),
   );
+
   connection.onRequest(DocumentSymbolRequest.type, params =>
     messageProcessor.handleDocumentSymbolRequest(params),
   );
+
   connection.onRequest(WorkspaceSymbolRequest.type, params =>
     messageProcessor.handleWorkspaceSymbolRequest(params),
   );
