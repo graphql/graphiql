@@ -1,6 +1,8 @@
 # VSCode GraphQL
+🆕 **New Insiders Extenion in Testing!:** We have a 0.3.0 version in development! Many bugs fixed, and new features. See our instructions for setting it up and helping us test it [here](https://github.com/prisma-labs/vscode-graphql/issues/181)
 
 💡**Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension would pick that up.
+
 
 GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ecosystem](https://www.prisma.io/docs/graphql-ecosystem/) with VSCode for an awesome developer experience.
 
