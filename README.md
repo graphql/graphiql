@@ -1,12 +1,11 @@
 # VSCode GraphQL
-🆕 **New Insiders Extenion in Testing!:** We have a 0.3.0 version in development! Many bugs fixed, and new features. See our instructions for setting it up and helping us test it [here](https://github.com/prisma-labs/vscode-graphql/issues/181)
 
-💡**Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension would pick that up.
-
-
-GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ecosystem](https://www.prisma.io/docs/graphql-ecosystem/) with VSCode for an awesome developer experience.
+GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
+
+> 🆕 **New Insiders Extenion in Testing!:** We have a 0.3.0 version in development! Many bugs fixed, and new features. See our instructions for setting it up and helping us test it [here](https://github.com/prisma-labs/vscode-graphql/issues/181)
+> 💡 **Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension will pick that up.
 
 ## Features
 
@@ -15,7 +14,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the [GraphQL Ec
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
-- Support [`graphql-config`](https://github.com/prismagraphql/graphql-config) files with one project and multiple projects
+- Support [`graphql-config`](https://graphql-config.com/) files with one project and multiple projects
 
 ### `.graphql`, `.gql` file extension support
 
