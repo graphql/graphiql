@@ -1,12 +1,15 @@
 {
   "name": "vscode-graphql",
-  "version": "0.2.38",
+  "version": "0.3.0",
   "preview": true,
   "private": false,
   "license": "MIT",
   "displayName": "GraphQL",
   "keywords": [
-    "multi-root ready"
+    "multi-root ready",
+    "graphql",
+    "lsp",
+    "graph"
   ],
   "description": "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
   "icon": "assets/images/logo.png",
@@ -33,9 +36,9 @@
     "onCommand:extension.isDebugging",
     "onCommand:extension.contentProvider",
     "onLanguage:graphql",
-    "workspaceContains:**/.graphqlconfig",
-    "workspaceContains:**/.graphqlconfig.yml",
-    "workspaceContains:**/.graphqlconfig.yaml"
+    "workspaceContains:**/.graphqlrc",
+    "workspaceContains:**/.graphqlrc.{json,yaml,yml,js}",
+    "workspaceContains:**/graphql.config.{json,yaml,yml,js}"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -97,6 +100,41 @@
           ],
           "default": "off",
           "description": "Enable tracing for language server"
+        },
+        "vscode-graphql.showExecCodelens": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Show codelens to execute operations inline",
+          "default": true
+        },
+        "graphql-config.load.rootDir": {
+          "type": [
+            "string"
+          ],
+          "description": "Base dir for graphql config loadConfig()",
+          "default": null
+        },
+        "graphql-config.load.filePath": {
+          "type": [
+            "string"
+          ],
+          "description": "filePath for graphql config loadConfig()",
+          "default": null
+        },
+        "graphql-config.load.legacy": {
+          "type": [
+            "boolean"
+          ],
+          "description": "legacy mode for graphql config v2 config",
+          "default": null
+        },
+        "graphql-config.load.configName": {
+          "type": [
+            "string"
+          ],
+          "description": "optional <configName>.config.js instead of default `graphql`",
+          "default": null
         }
       }
     },
@@ -113,11 +151,6 @@
         "command": "extension.contentProvider",
         "title": "Execute GraphQL Operations"
       }
-    ],
-    "typescriptServerPlugins": [
-      {
-        "name": "@divyenduz/ts-graphql-plugin"
-      }
     ]
   },
   "scripts": {
@@ -132,35 +165,42 @@
     "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
-    "@types/capitalize": "1.0.1",
-    "@types/dotenv": "6.1.1",
-    "@types/graphql": "14.5.0",
+    "@types/capitalize": "^2.0.0",
+    "@types/dotenv": "^8.2.0",
     "@types/mocha": "5.2.7",
     "@types/node": "12.12.34",
     "@types/ws": "6.0.4",
     "tslint": "5.20.1",
-    "typescript": "3.8.3",
-    "vsce": "1.75.0",
-    "vscode": "1.1.36",
-    "ovsx": "0.1.0-next.dacd2fd"
+    "typescript": "3.9.7",
+    "vsce": "^1.78.0",
+    "vscode": "^1.1.37"
   },
   "dependencies": {
-    "@divyenduz/ts-graphql-plugin": "0.1.0",
-    "apollo-cache-inmemory": "1.6.5",
+    "@graphql-tools/url-loader": "^6.0.19-alpha-edce0415.0",
+    "@graphql-tools/wrap": "^6.0.19-alpha-edce0415.0",
+    "apollo-cache-inmemory": "1.6.6",
     "apollo-client": "2.6.10",
     "apollo-link": "1.2.14",
-    "apollo-link-http": "1.5.16",
-    "apollo-link-ws": "1.0.19",
+    "apollo-link-error": "^1.1.13",
+    "apollo-link-http": "1.5.17",
+    "apollo-link-ws": "1.0.20",
     "babel-polyfill": "6.26.0",
-    "capitalize": "1.0.0",
-    "dotenv": "6.2.0",
-    "graphql": "0.12.x",
-    "graphql-config": "2.2.2",
-    "graphql-config-extension-prisma": "0.3.0",
-    "graphql-language-service-server": "2.3.3",
-    "graphql-tag": "^2.10.3",
-    "subscriptions-transport-ws": "0.9.16",
+    "capitalize": "^2.0.3",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.3.0",
+    "graphql-config": "^3.0.3",
+    "graphql-language-service-server": "^2.5.0-alpha.4",
+    "graphql-tag": "^2.11.0",
+    "node-fetch": "^2.6.0",
+    "ovsx": "0.1.0-next.dacd2fd",
+    "subscriptions-transport-ws": "^0.9.17",
     "vscode-languageclient": "5.2.1",
-    "ws": "^7.2.3"
+    "ws": "^7.3.1"
+  },
+  "resolutions": {
+    "graphql": "^15.3.0",
+    "graphql-config": "^3.0.3",
+    "@graphql-tools/wrap": "6.0.19-alpha-edce0415.0",
+    "@graphql-tools/url-loader": "6.0.19-alpha-edce0415.0"
   }
 }

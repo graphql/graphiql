@@ -1,20 +1,31 @@
-import { TextDocument, Position, OutputChannel } from "vscode"
+import { Position, OutputChannel, TextDocument } from "vscode"
 import {
   visit,
   parse,
-  DocumentNode,
   VariableDefinitionNode,
+  FragmentDefinitionNode,
   NamedTypeNode,
   ListTypeNode,
   OperationDefinitionNode,
   print,
 } from "graphql"
+import { GraphQLProjectConfig } from "graphql-config"
+import { ASTNode, DocumentNode } from "graphql/language"
+
+export type FragmentInfo = {
+  filePath?: string
+  content: string
+  definition: FragmentDefinitionNode
+}
+
+import nullthrows from "nullthrows"
 
 export class SourceHelper {
   private outputChannel: OutputChannel
-
+  private fragmentDefinitions: Map<string, FragmentInfo>
   constructor(outputChannel: OutputChannel) {
     this.outputChannel = outputChannel
+    this.fragmentDefinitions = new Map()
   }
 
   getTypeForVariableDefinitionNode(
@@ -23,11 +34,11 @@ export class SourceHelper {
     let namedTypeNode: NamedTypeNode | null = null
     let isList = false
     visit(node, {
-      ListType(node: ListTypeNode) {
+      ListType(_listNode: ListTypeNode) {
         isList = true
       },
-      NamedType(node: NamedTypeNode) {
-        namedTypeNode = node
+      NamedType(namedNode: NamedTypeNode) {
+        namedTypeNode = namedNode
       },
     })
     if (isList) {
@@ -42,8 +53,42 @@ export class SourceHelper {
       return "String"
     }
   }
+  validate(value: string, type: GraphQLScalarType) {
+    try {
+      if (type === "Int") {
+        if (parseInt(value)) {
+          return null
+        }
+      }
+      if (type === "Float") {
+        if (parseFloat(value)) {
+          return null
+        }
+      }
+      if (type === "Boolean") {
+        if (value === "true" || value === "false") {
+          return null
+        }
+      }
+      if (type === "String") {
+        if (value.length && !Array.isArray(value)) {
+          return null
+        }
+      } else {
+        try {
+          const result = JSON.parse(value)
+          if (result) {
+            return null
+          }
+        } catch (err) {}
+      }
+    } catch {
+      return `${value} is not a valid ${type}`
+    }
+    return `${value} is not a valid ${type}`
+  }
 
-  typeCast(value, type: GraphQLScalarType) {
+  typeCast(value: string, type: GraphQLScalarType) {
     if (type === "Int") {
       return parseInt(value)
     }
@@ -73,18 +118,47 @@ export class SourceHelper {
       return value
     }
   }
+  async getFragmentDefinitions(
+    projectConfig: GraphQLProjectConfig,
+  ): Promise<Map<string, FragmentInfo>> {
+    const sources = await projectConfig.getDocuments()
+    const fragmentDefinitions = this.fragmentDefinitions
+
+    sources.forEach(source => {
+      visit(source.document as DocumentNode, {
+        FragmentDefinition(node) {
+          const existingDef = fragmentDefinitions.get(node.name.value)
+          const newVal = print(node)
+          if (existingDef && existingDef.content !== newVal) {
+            fragmentDefinitions.set(node.name.value, {
+              definition: node,
+              content: newVal,
+              filePath: source.location,
+            })
+          } else if (!existingDef) {
+            fragmentDefinitions.set(node.name.value, {
+              definition: node,
+              content: newVal,
+              filePath: source.location,
+            })
+          }
+        },
+      })
+    })
+    return fragmentDefinitions
+  }
 
   extractAllTemplateLiterals(
     document: TextDocument,
     tags: string[] = ["gql"],
   ): ExtractedTemplateLiteral[] {
     const text = document.getText()
-    const documents: any[] = []
+    const documents: ExtractedTemplateLiteral[] = []
 
-    if (document.languageId === 'graphql') {
-      const text = document.getText();
-      processGraphQLString(text, 0);
-      return documents;
+    if (document.languageId === "graphql") {
+      const text = document.getText()
+      processGraphQLString(text, 0)
+      return documents
     }
 
     tags.forEach(tag => {
@@ -101,24 +175,26 @@ export class SourceHelper {
           continue
         }
         try {
-          processGraphQLString(contents, result.index + 4);
-        } catch (e) { }
+          processGraphQLString(contents, result.index + 4)
+        } catch (e) {}
       }
     })
-    return documents;
+    return documents
 
     function processGraphQLString(text: string, offset: number) {
       try {
-        const ast = parse(text);
-        const operations = ast.definitions.filter(def => def.kind === 'OperationDefinition')
+        const ast = parse(text)
+        const operations = ast.definitions.filter(
+          def => def.kind === "OperationDefinition",
+        )
         operations.forEach((op: any) => {
           const filteredAst = {
             ...ast,
             definitions: ast.definitions.filter(def => {
-              if (def.kind === 'OperationDefinition' && def !== op) {
-                return false;
+              if (def.kind === "OperationDefinition" && def !== op) {
+                return false
               }
-              return true;
+              return true
             }),
           }
           const content = print(filteredAst)
@@ -127,14 +203,13 @@ export class SourceHelper {
             uri: document.uri.path,
             position: document.positionAt(op.loc.start + offset),
             definition: op,
-            ast: filteredAst
+            ast: filteredAst,
           })
         })
-      } catch (e) { }
+      } catch (e) {}
     }
   }
 }
-
 
 export type GraphQLScalarType = "String" | "Float" | "Int" | "Boolean" | string
 export type GraphQLScalarTSType = string | number | boolean
@@ -145,4 +220,78 @@ export interface ExtractedTemplateLiteral {
   position: Position
   ast: DocumentNode
   definition: OperationDefinitionNode
+}
+
+export const getFragmentDependencies = async (
+  query: string,
+  fragmentDefinitions?: Map<string, FragmentInfo> | null,
+): Promise<FragmentInfo[]> => {
+  // If there isn't context for fragment references,
+  // return an empty array.
+  if (!fragmentDefinitions) {
+    return []
+  }
+  // If the query cannot be parsed, validations cannot happen yet.
+  // Return an empty array.
+  let parsedQuery
+  try {
+    parsedQuery = parse(query, {
+      allowLegacySDLImplementsInterfaces: true,
+      allowLegacySDLEmptyFields: true,
+    })
+  } catch (error) {
+    return []
+  }
+  return getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions)
+}
+
+export const getFragmentDependenciesForAST = async (
+  parsedQuery: ASTNode,
+  fragmentDefinitions: Map<string, FragmentInfo>,
+): Promise<FragmentInfo[]> => {
+  if (!fragmentDefinitions) {
+    return []
+  }
+
+  const existingFrags = new Map()
+  const referencedFragNames = new Set<string>()
+
+  visit(parsedQuery, {
+    FragmentDefinition(node) {
+      existingFrags.set(node.name.value, true)
+    },
+    FragmentSpread(node) {
+      if (!referencedFragNames.has(node.name.value)) {
+        referencedFragNames.add(node.name.value)
+      }
+    },
+  })
+
+  const asts = new Set<FragmentInfo>()
+  referencedFragNames.forEach(name => {
+    if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
+      asts.add(nullthrows(fragmentDefinitions.get(name)))
+    }
+  })
+
+  const referencedFragments: FragmentInfo[] = []
+
+  asts.forEach(ast => {
+    visit(ast.definition, {
+      FragmentSpread(node) {
+        if (
+          !referencedFragNames.has(node.name.value) &&
+          fragmentDefinitions.get(node.name.value)
+        ) {
+          asts.add(nullthrows(fragmentDefinitions.get(node.name.value)))
+          referencedFragNames.add(node.name.value)
+        }
+      },
+    })
+    if (!existingFrags.has(ast.definition.name.value)) {
+      referencedFragments.push(ast)
+    }
+  })
+
+  return referencedFragments
 }

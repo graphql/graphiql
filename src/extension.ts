@@ -1,7 +1,5 @@
 "use strict"
 import * as path from "path"
-import * as dotenv from "dotenv"
-import * as fs from "fs"
 import {
   workspace,
   ExtensionContext,
@@ -34,31 +32,13 @@ function getConfig() {
   )
 }
 
-function getEnvironment() {
-  if (workspace.workspaceFolders === undefined) {
-    return process.env
-  }
-
-  let workspaceEnv = {}
-  workspace.workspaceFolders.forEach(folder => {
-    const envPath = `${folder.uri.fsPath}/.env`
-    if (fs.existsSync(envPath)) {
-      workspaceEnv = {
-        ...workspaceEnv,
-        ...dotenv.parse(fs.readFileSync(envPath)),
-      }
-    }
-  })
-
-  return { ...workspaceEnv, ...process.env }
-}
-
 export async function activate(context: ExtensionContext) {
   let outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Language Server",
   )
   const config = getConfig()
   const { debug } = config
+
   if (debug) {
     console.log('Extension "vscode-graphql" is now active!')
   }
@@ -71,18 +51,15 @@ export async function activate(context: ExtensionContext) {
     execArgv: ["--nolazy", "--inspect=localhost:6009"],
   }
 
-  const combinedEnv = getEnvironment()
-
   let serverOptions: ServerOptions = {
     run: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: { env: combinedEnv },
     },
     debug: {
       module: serverModule,
       transport: TransportKind.ipc,
-      options: { ...(debug ? debugOptions : {}), env: combinedEnv },
+      options: { ...(debug ? debugOptions : {}) },
     },
   }
 
@@ -90,9 +67,14 @@ export async function activate(context: ExtensionContext) {
     documentSelector: [
       { scheme: "file", language: "graphql" },
       { scheme: "file", language: "javascript" },
+      { scheme: "file", language: "javascriptreact" },
+      { scheme: "file", language: "typescript" },
+      { scheme: "file", language: "typescriptreact" },
     ],
     synchronize: {
-      fileEvents: workspace.createFileSystemWatcher("**/*.{graphql,gql,js}"),
+      fileEvents: workspace.createFileSystemWatcher(
+        "**/*.{graphql,gql,js,jsx,ts,tsx}",
+      ),
     },
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
@@ -127,18 +109,33 @@ export async function activate(context: ExtensionContext) {
     initStatusBar(statusBarItem, client, window.activeTextEditor)
   })
 
-  context.subscriptions.push(
-    languages.registerCodeLensProvider(
-      [
-        "javascript",
-        "typescript",
-        "javascriptreact",
-        "typescriptreact",
-        "graphql",
-      ],
-      new GraphQLCodeLensProvider(outputChannel),
-    ),
-  )
+  const settings = workspace.getConfiguration("vscode-graphql")
+
+  const registerCodeLens = () => {
+    context.subscriptions.push(
+      languages.registerCodeLensProvider(
+        [
+          "javascript",
+          "typescript",
+          "javascriptreact",
+          "typescriptreact",
+          "graphql",
+        ],
+        new GraphQLCodeLensProvider(outputChannel),
+      ),
+    )
+  }
+
+  if (settings.showExecCodelens) {
+    registerCodeLens()
+  }
+
+  workspace.onDidChangeConfiguration(() => {
+    const newSettings = workspace.getConfiguration("vscode-graphql")
+    if (newSettings.showExecCodeLens) {
+      registerCodeLens()
+    }
+  })
 
   const commandContentProvider = commands.registerCommand(
     "extension.contentProvider",
@@ -157,7 +154,6 @@ export async function activate(context: ExtensionContext) {
         outputChannel,
         literal,
         panel,
-        combinedEnv,
       )
       const registration = workspace.registerTextDocumentContentProvider(
         "graphql",
