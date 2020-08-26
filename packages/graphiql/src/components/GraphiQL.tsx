@@ -1256,22 +1256,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (typeof this.props.onToggleDocs === 'function') {
       this.props.onToggleDocs(!this.state.docExplorerOpen);
     }
-    this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
     this._storage.set(
       'docExplorerOpen',
-      JSON.stringify(this.state.docExplorerOpen),
+      JSON.stringify(!this.state.docExplorerOpen),
     );
+    this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   };
 
   handleToggleHistory = () => {
     if (typeof this.props.onToggleHistory === 'function') {
       this.props.onToggleHistory(!this.state.historyPaneOpen);
     }
-    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
     this._storage.set(
       'historyPaneOpen',
-      JSON.stringify(this.state.historyPaneOpen),
+      JSON.stringify(!this.state.historyPaneOpen),
     );
+    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
   };
 
   handleSelectHistoryQuery = (
