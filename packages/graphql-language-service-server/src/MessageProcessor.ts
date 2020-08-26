@@ -640,8 +640,9 @@ export class MessageProcessor {
         },
       },
     );
+
     const formatted = result
-      ? result?.definitions?.map(res => {
+      ? result.definitions.map(res => {
           const defRange = res.range as Range;
 
           if (parentRange && res.name) {
@@ -650,13 +651,14 @@ export class MessageProcessor {
               path.extname(textDocument.uri),
             );
             if (isInline && isEmbedded) {
+              const vOffset = parentRange.start.line;
               defRange.setStart(
-                (defRange.start.line += parentRange.start.line),
-                parentRange.start.character,
+                (defRange.start.line += vOffset),
+                defRange.start.character,
               );
               defRange.setEnd(
-                (defRange.end.line += parentRange.end.line),
-                parentRange.end.character,
+                (defRange.end.line += vOffset),
+                defRange.end.character,
               );
             }
           }

@@ -289,7 +289,6 @@ async function addHandlers({
     loadConfigOptions,
     connection,
   });
-  messageProcessor.connection = connection;
 
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
