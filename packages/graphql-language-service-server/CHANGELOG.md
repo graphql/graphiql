@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.0-alpha.3...graphql-language-service-server@2.5.0-alpha.4) (2020-08-26)
+
+### Features
+
+- custom config baseDir, embedded fragment def offsets ([#1651](https://github.com/graphql/graphiql/issues/1651)) ([e8dc958](https://github.com/graphql/graphiql/commit/e8dc958b46544022fe58b498ca5eef572f54afe0))
+
 # [2.5.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.0-alpha.2...graphql-language-service-server@2.5.0-alpha.3) (2020-08-22)
 
 **Note:** Version bump only for package graphql-language-service-server

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.0.0-alpha.5](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.4...graphiql@2.0.0-alpha.5) (2020-08-26)
+
+### Bug Fixes
+
+- **docs:** webpack example links ([#1649](https://github.com/graphql/graphiql/issues/1649)) ([f779aa3](https://github.com/graphql/graphiql/commit/f779aa31794752901547828dad1f8fd572140f00))
+
 # [2.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.3...graphiql@2.0.0-alpha.4) (2020-08-22)
 
 **Note:** Version bump only for package graphiql
