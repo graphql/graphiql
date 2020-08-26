@@ -641,7 +641,7 @@ export class MessageProcessor {
       },
     );
     const formatted = result
-      ? result.definitions.map(res => {
+      ? result?.definitions?.map(res => {
           const defRange = res.range as Range;
 
           if (parentRange && res.name) {
