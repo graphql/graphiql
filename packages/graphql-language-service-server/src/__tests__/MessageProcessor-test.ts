@@ -24,9 +24,12 @@ import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 import { Logger } from '../Logger';
 
 const baseConfig = { dirpath: __dirname };
+
 describe('MessageProcessor', () => {
   const logger = new Logger(tmpdir());
   const messageProcessor = new MessageProcessor({
+    // @ts-ignore
+    connection: {},
     logger,
     fileExtensions: ['js'],
     graphqlFileExtensions: ['graphql'],
@@ -103,6 +106,17 @@ describe('MessageProcessor', () => {
       },
     };
   });
+  // @ts-ignore
+  messageProcessor._connection = {
+    // @ts-ignore
+    get workspace() {
+      return {
+        getConfiguration: async () => {
+          return [{}];
+        },
+      };
+    },
+  };
 
   const initialDocument = {
     textDocument: {
@@ -247,6 +261,7 @@ describe('MessageProcessor', () => {
 
   // modified to work with jest.mock() of WatchmanClient
   it('runs definition requests', async () => {
+    jest.setTimeout(10000);
     const validQuery = `
   {
     hero(episode: EMPIRE){
