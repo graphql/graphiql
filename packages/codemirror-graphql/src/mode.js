@@ -8,12 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import {
-  LexRules,
-  ParseRules,
-  isIgnored,
-  onlineParser,
-} from 'graphql-language-service-parser';
+import { GraphqlParser } from 'graphql-language-service-parser';
 
 /**
  * The GraphQL mode is defined as a tokenizer along with a list of rules, each
@@ -36,16 +31,11 @@ import {
  * which contains the relevant information to produce valuable typeaheads.
  */
 CodeMirror.defineMode('graphql', config => {
-  const parser = onlineParser({
-    eatWhitespace: stream => stream.eatWhile(isIgnored),
-    lexRules: LexRules,
-    parseRules: ParseRules,
-    editorConfig: { tabSize: config.tabSize },
-  });
+  const parser = new GraphqlParser({ tabSize: config.tabSize });
 
   return {
     config,
-    startState: parser.startState,
+    startState: GraphqlParser.startState,
     token: parser.token,
     indent,
     electricInput: /^\s*[})\]]/,
@@ -55,6 +45,7 @@ CodeMirror.defineMode('graphql', config => {
       pairs: '()[]{}""',
       explode: '()[]{}',
     },
+    copyState: GraphqlParser.copyState,
   };
 });
 
@@ -65,7 +56,6 @@ function indent(state, textAfter) {
   const level =
     !levels || levels.length === 0
       ? state.indentLevel
-      : levels[levels.length - 1] -
-        (this.electricInput.test(textAfter) ? 1 : 0);
+      : levels[levels.length - 1] - (this.electricInput.test(textAfter) ? 1 : 0);
   return level * this.config.indentUnit;
 }
