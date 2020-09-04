@@ -10264,7 +10264,7 @@ grapheme-breaker@^0.3.2:
     unicode-trie "^0.3.1"
 
 "graphiql@file:packages/graphiql":
-  version "2.0.0-alpha.3"
+  version "2.0.0-alpha.5"
   dependencies:
     "@emotion/core" "^10.0.28"
     "@mdx-js/react" "^1.5.2"
@@ -10277,7 +10277,7 @@ grapheme-breaker@^0.3.2:
     i18next-browser-languagedetector "^4.1.1"
     markdown-it "^10.0.0"
     monaco-editor "^0.20.0"
-    monaco-graphql "^0.3.1-alpha.1"
+    monaco-graphql "^0.3.1-alpha.2"
     react-i18next "^11.4.0"
     theme-ui "^0.3.1"
 
@@ -13505,9 +13505,9 @@ markdown-it@^10.0.0:
     uc.micro "^1.0.5"
 
 markdown-to-jsx@^6.9.1, markdown-to-jsx@^6.9.3:
-  version "6.11.1"
-  resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-6.11.1.tgz#3931612cfffaa5fd6610ecf2a4055eccccb98fa8"
-  integrity sha512-FdtDAv8d9/tjyHxdCvWZxxOgK2icwzBkTq/dPk+XlQ2B+DYDcwE89FWGzT92erXQ0CQR/bQbpNK3loNYhYL70g==
+  version "6.11.4"
+  resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-6.11.4.tgz#b4528b1ab668aef7fe61c1535c27e837819392c5"
+  integrity sha512-3lRCD5Sh+tfA52iGgfs/XZiw33f7fFX9Bn55aNnVNUd2GzLDkOWyKYYD8Yju2B1Vn+feiEdgJs8T6Tg0xNokPw==
   dependencies:
     prop-types "^15.6.2"
     unquote "^1.1.0"
