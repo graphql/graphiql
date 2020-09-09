@@ -14,7 +14,7 @@ declare module CodeMirror {
   export interface Editor extends CM.Editor {}
   export interface ShowHintOptions {
     completeSingle: boolean;
-    hint: CM.HintFunction | CM.AsyncHintFunction;
+    hint: any;
     container: HTMLElement | null;
   }
 }
@@ -45,7 +45,7 @@ type HeaderEditorProps = {
  */
 export class HeaderEditor extends React.Component<HeaderEditorProps> {
   CodeMirror: any;
-  editor: (CM.Editor & { options: any }) | null = null;
+  editor: (CM.Editor & { options: any; showHint: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean = false;
