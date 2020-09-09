@@ -108,8 +108,8 @@ export default class TypeDoc extends React.Component<
         </div>
       );
 
-      const deprecatedFields = fields.filter(field =>
-        'isDeprecated' in field ? field.isDeprecated : true,
+      const deprecatedFields = fields.filter(
+        field => 'isDeprecated' in field && field.isDeprecated,
       );
       if (deprecatedFields.length > 0) {
         deprecatedFieldsDef = (

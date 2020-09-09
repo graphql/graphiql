@@ -3,30 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-# [2.0.0-alpha.5](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.4...graphiql@2.0.0-alpha.5) (2020-08-26)
+## [1.0.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.2...graphiql@1.0.3) (2020-06-24)
 
 ### Bug Fixes
 
-- **docs:** webpack example links ([#1649](https://github.com/graphql/graphiql/issues/1649)) ([f779aa3](https://github.com/graphql/graphiql/commit/f779aa31794752901547828dad1f8fd572140f00))
+- headers tab - highlighting and schema fetch ([#1593](https://github.com/graphql/graphiql/issues/1593)) ([0d050ca](https://github.com/graphql/graphiql/commit/0d050caeb5278799f2b1c206d0c61f3ac768e7cd))
 
-# [2.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.3...graphiql@2.0.0-alpha.4) (2020-08-22)
-
-**Note:** Version bump only for package graphiql
-
-# [2.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.2...graphiql@2.0.0-alpha.3) (2020-08-12)
+## [1.0.2](https://github.com/graphql/graphiql/compare/graphiql@1.0.1...graphiql@1.0.2) (2020-06-19)
 
 **Note:** Version bump only for package graphiql
 
-# [2.0.0-alpha.2](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.1...graphiql@2.0.0-alpha.2) (2020-08-10)
+## [1.0.1](https://github.com/graphql/graphiql/compare/graphiql@1.0.0...graphiql@1.0.1) (2020-06-17)
 
-**Note:** Version bump only for package graphiql
+### Bug Fixes
 
-# [2.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphiql@1.0.0...graphiql@2.0.0-alpha.1) (2020-08-06)
-
-### Features
-
-- **merge:** make fragment merging type-aware ([#1542](https://github.com/graphql/graphiql/issues/1542)) ([a62a4ec](https://github.com/graphql/graphiql/commit/a62a4ecb56fd1eccfa43b3a7f88aaabe46d043fb))
-- [RFC] GraphiQL rewrite for monaco editor, react context and redesign, i18n ([#1523](https://github.com/graphql/graphiql/issues/1523)) ([ad730cd](https://github.com/graphql/graphiql/commit/ad730cdc2e3cb7216d821a01725c60475989ee20))
+- more server side rendering fixes ([#1581](https://github.com/graphql/graphiql/issues/1581)) ([881a19f](https://github.com/graphql/graphiql/commit/881a19fbd5fbe5f65678de8074e593be7deb2ede)), closes [#1573](https://github.com/graphql/graphiql/issues/1573)
+- network cancellation for 1.0 ([#1582](https://github.com/graphql/graphiql/issues/1582)) ([ad3cc0d](https://github.com/graphql/graphiql/commit/ad3cc0d1567ea49ff5677d4cd8524e5e072b605e))
+- Set headers to localstorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
 
 # [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
 

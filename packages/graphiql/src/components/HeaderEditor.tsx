@@ -5,7 +5,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import type * as CM from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
@@ -72,13 +71,14 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
     require('codemirror/addon/search/searchcursor');
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/addon/dialog/dialog');
+    require('codemirror/mode/javascript/javascript');
     require('codemirror/keymap/sublime');
 
     const editor = (this.editor = this.CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
-      mode: 'graphql-headers',
+      mode: { name: 'javascript', json: true },
       theme: this.props.editorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,

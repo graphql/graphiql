@@ -30,6 +30,33 @@ const exampleObject = new GraphQLObjectType({
         },
       },
     },
+    stringWithDirective: {
+      name: 'stringWithDirective',
+      type: GraphQLString,
+      astNode: {
+        kind: 'FieldDefinition',
+        name: {
+          kind: 'Name',
+          value: 'stringWithDirective',
+        },
+        type: {
+          kind: 'NamedType',
+          name: {
+            kind: 'Name',
+            value: 'GraphQLString',
+          },
+        },
+        directives: [
+          {
+            kind: 'Directive',
+            name: {
+              kind: 'Name',
+              value: 'development',
+            },
+          },
+        ],
+      },
+    },
   },
 });
 
@@ -87,6 +114,19 @@ describe('FieldDoc', () => {
     expect(container.querySelectorAll('.arg')).toHaveLength(1);
     expect(container.querySelector('.arg')).toHaveTextContent(
       'stringArg: String',
+    );
+  });
+
+  it('should render a string field with directives', () => {
+    const { container } = render(
+      <FieldDoc
+        field={exampleObject.getFields().stringWithDirective}
+        onClickType={jest.fn()}
+      />,
+    );
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('#development')).toHaveTextContent(
+      '@development',
     );
   });
 });

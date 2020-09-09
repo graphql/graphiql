@@ -14,7 +14,6 @@ import HistoryQuery, {
   HandleSelectQueryFn,
 } from './HistoryQuery';
 import StorageAPI from '../utility/StorageAPI';
-import { WithTranslation, withTranslation } from 'react-i18next';
 
 const MAX_QUERY_SIZE = 100000;
 const MAX_HISTORY_LENGTH = 20;
@@ -68,13 +67,13 @@ type QueryHistoryProps = {
   queryID?: number;
   onSelectQuery: HandleSelectQueryFn;
   storage: StorageAPI;
-} & WithTranslation;
+};
 
 type QueryHistoryState = {
   queries: Array<QueryStoreItem>;
 };
 
-export class QueryHistorySource extends React.Component<
+export class QueryHistory extends React.Component<
   QueryHistoryProps,
   QueryHistoryState
 > {
@@ -97,7 +96,6 @@ export class QueryHistorySource extends React.Component<
   }
 
   render() {
-    const { t } = this.props;
     const queries = this.state.queries.slice().reverse();
     const queryNodes = queries.map((query, i) => {
       return (
@@ -111,9 +109,9 @@ export class QueryHistorySource extends React.Component<
       );
     });
     return (
-      <section aria-label={t('History')}>
+      <section aria-label="History">
         <div className="history-title-bar">
-          <div className="history-title">{t('History')}</div>
+          <div className="history-title">{'History'}</div>
           <div className="doc-explorer-rhs">{this.props.children}</div>
         </div>
         <ul className="history-contents">{queryNodes}</ul>
@@ -205,5 +203,3 @@ export class QueryHistorySource extends React.Component<
     });
   };
 }
-
-export const QueryHistory = withTranslation('Toolbar')(QueryHistorySource);

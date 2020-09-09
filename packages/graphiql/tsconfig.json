@@ -6,12 +6,9 @@
     "composite": true,
     "jsx": "react",
     "target": "es5",
-    "strictPropertyInitialization": false,
-    "paths": {
-      "src/*": ["*"]
-    }
+    "strictPropertyInitialization": false
   },
-  "include": ["src/**/*.{js,jsx,tsx,ts,json}", ".storybook"],
+  "include": ["src"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",
@@ -22,13 +19,5 @@
     "**/*.stories.js",
     "**/*.stories.ts",
     "**/*.stories.tsx"
-  ],
-  "references": [
-    {
-      "path": "../monaco-graphql"
-    },
-    {
-      "path": "../graphql-language-service"
-    }
   ]
 }
