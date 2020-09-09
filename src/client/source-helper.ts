@@ -55,32 +55,31 @@ export class SourceHelper {
   }
   validate(value: string, type: GraphQLScalarType) {
     try {
-      if (type === "Int") {
-        if (parseInt(value)) {
-          return null
-        }
-      }
-      if (type === "Float") {
-        if (parseFloat(value)) {
-          return null
-        }
-      }
-      if (type === "Boolean") {
-        if (value === "true" || value === "false") {
-          return null
-        }
-      }
-      if (type === "String") {
-        if (value.length && !Array.isArray(value)) {
-          return null
-        }
-      } else {
-        try {
-          const result = JSON.parse(value)
-          if (result) {
+      switch (type) {
+        case "Int":
+          if (parseInt(value)) {
             return null
           }
-        } catch (err) {}
+          break;
+        case "Float":
+          if (parseFloat(value)) {
+            return null
+          }
+          break;
+        case "Boolean":
+          if (value === "true" || value === "false") {
+            return null
+          }
+          break;
+        case "String":
+          if (value.length && !Array.isArray(value)) {
+            return null
+          }
+          break;
+        default:
+          // For scalar types, it is impossible to know what data type they
+          // should be. Therefore we don't do any validation.
+          return null;
       }
     } catch {
       return `${value} is not a valid ${type}`
