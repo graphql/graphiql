@@ -6,12 +6,9 @@
     "composite": false,
     "jsx": "react",
     "baseUrl": ".",
-    "target": "es5",
-    "paths": {
-      "src/*": ["*"]
-    }
+    "target": "es5"
   },
-  "include": ["src", "src/**/*.json"],
+  "include": ["src"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",
@@ -21,13 +18,5 @@
     "**/*-test.js",
     "**/*.stories.js",
     "**/*.stories.ts"
-  ],
-  "references": [
-    {
-      "path": "../monaco-graphql/tsconfig.esm.json"
-    },
-    {
-      "path": "../graphql-language-service/tsconfig.esm.json"
-    }
   ]
 }

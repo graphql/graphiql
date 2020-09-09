@@ -1,7 +1,0 @@
-{
-  "Fetcher or uri property are required": "требуется свойство Сборщик или uri",
-  "Fetcher did not return a Promise for introspection": "Сборщик не вернул Promise для самоанализа",
-  "Variables are invalid JSON": "Переменные несоответствуют JSON спецификации",
-  "Variables are not a JSON object": "Переменные не являются JSON объектом",
-  "no value resolved": "значение не разрешено."
-}
