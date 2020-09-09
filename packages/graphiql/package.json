@@ -42,16 +42,11 @@
     "storybook": "start-storybook"
   },
   "dependencies": {
-    "@emotion/core": "^10.0.28",
-    "@mdx-js/react": "^1.5.2",
-    "codemirror": "^5.52.2",
+    "codemirror": "^5.54.0",
     "codemirror-graphql": "^0.12.0",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
-    "markdown-it": "^10.0.0",
-    "monaco-graphql": "^0.2.0",
-    "regenerator-runtime": "^0.13.5",
-    "theme-ui": "^0.3.1"
+    "markdown-it": "^10.0.0"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
@@ -60,8 +55,6 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
-    "@storybook/addon-storyshots": "^5.2.8",
-    "@storybook/react": "^5.2.8",
     "@testing-library/jest-dom": "5.1.1",
     "@testing-library/react": "9.4.1",
     "@types/codemirror": "0.0.82",
