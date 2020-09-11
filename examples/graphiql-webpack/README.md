@@ -11,4 +11,4 @@ It appears `create-react-app` supports all the language features we require.
 ### Setup
 
 1. `yarn` and `yarn build` at the root of this repository, if you have not already.
-2. `yarn start` from this folder to start webpack dev server
+2. `yarn` and `yarn start` from this folder to start webpack dev server
