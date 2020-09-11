@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 2.0.0-alpha.6 (2020-09-11)
+
+**Note:** Version bump only for package graphiql-2-rfc-context
+
 # [2.0.0-alpha.5](https://github.com/graphql/graphiql/compare/graphiql@2.0.0-alpha.4...graphiql@2.0.0-alpha.5) (2020-08-26)
 
 ### Bug Fixes
