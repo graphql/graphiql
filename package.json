@@ -2,7 +2,7 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "packages"
+    "packages/*"
   ],
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
