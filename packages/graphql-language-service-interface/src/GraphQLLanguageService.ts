@@ -240,7 +240,7 @@ export class GraphQLLanguageService {
         query,
         position,
         undefined,
-        fragmentInfo,
+        fragmentInfo.map(({ definition }) => definition),
       );
     }
     return [];
