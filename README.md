@@ -64,22 +64,34 @@ the file needs to be placed at the project root by default, but you can configur
 
 Previous versions of this extension support `graphql-config@2` format, which follows [legacy configuration patterns](https://github.com/kamilkisiela/graphql-config/tree/legacy#usage)
 
-To support language features like "go-to definition" across multiple files, please include `documents` key in the graphql-config default or /per project (this was `includes` in 2.0). For example:
+To support language features like "go-to definition" across multiple files, please include `documents` key in the graphql-config default or /per project (this was `include` in 2.0).
+
+## Configuration Examples
+
+### Simple Example
+
+```js
+// graphqlrc.yml
+schema: "schema.graphql"
+documents: "src/**/*.{graphql,js,ts,jsx,tsx"
+```
+
+### Advanced Example
 
 ```js
 // graphql.config.js
 module.exports = {
-  schema: ["src/schema.graphql", "my/directives.graphql"],
-  documents: ["**/*.{graphql,js,ts,jsx,tsx}", "my/fragments.graphql"],
-  extensions: {
-    endpoints: {
-      default: {
-        url: "http://localhost:8000",
-        headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+  projects: {
+    app: {
+      schema: ["src/schema.graphql", "directives.graphql"],
+      documents: ["**/*.{graphql,js,ts,jsx,tsx}", "my/fragments.graphql"],
+      endpoints: {
+        default: {
+          url: "http://localhost:8000",
+          headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+        },
       },
     },
-  },
-  projects: {
     db: {
       schema: "src/generated/db.graphql",
       documents: ["src/db/**/*.graphql", "my/fragments.graphql"],
@@ -118,6 +130,14 @@ Add this to your settings:
 ```json
 "vscode-graphql.useSchemaFileDefinition": true,
 ```
+
+### The extension fails with errors about duplicate types
+
+Make sure that you aren't including schema files in the `documents` blob
+
+### The extension fails with errors about missing scalars, directives, etc
+
+Make sure that your `schema` pointers refer to a complete schema!
 
 ### In JSX and TSX files I see completion items I don't need
 
@@ -198,7 +218,8 @@ const myQuery = `
 
 ## Known Issues
 
-- template replacement inside grap
+- template replacement inside a graphql string [will break graphql parsing](https://github.com/prisma-labs/vscode-graphql/issues/137). If you want to help improve partial parsing support, you can contribute to the parser efforts in [`graphql`](https://github.com/graphql/graphql-js) reference implementation. You can now re-use fragments across your project source, if you include the files in `documents`.
+- the output channel occasionally shows "definition not found" when you first start the language service, but once the definition cache is built for each project, definition lookup will work. so if a "peek definition" fails when you first start, just try clicking it again.
 
 ## Development
 
