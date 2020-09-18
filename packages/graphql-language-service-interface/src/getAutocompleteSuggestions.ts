@@ -27,6 +27,7 @@ import {
   CompletionItem,
   AllTypeInfo,
   Position,
+  FragmentInfo,
 } from 'graphql-language-service-types';
 
 import {
@@ -70,6 +71,7 @@ export function getAutocompleteSuggestions(
   queryText: string,
   cursor: Position,
   contextToken?: ContextToken,
+  fragmentDefs?: FragmentInfo[],
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -209,7 +211,7 @@ export function getAutocompleteSuggestions(
       typeInfo,
       schema,
       queryText,
-      kind,
+      fragmentDefs,
     );
   }
 
@@ -367,11 +369,15 @@ function getSuggestionsForFragmentSpread(
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
   queryText: string,
-  _kind: string,
+  fragmentDefs?: FragmentInfo[],
 ): Array<CompletionItem> {
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
   const fragments = getFragmentDefinitions(queryText);
+
+  if (fragmentDefs) {
+    fragments.push(...fragmentDefs.map(info => info.definition));
+  }
 
   // Filter down to only the fragments which may exist here.
   const relevantFrags = fragments.filter(

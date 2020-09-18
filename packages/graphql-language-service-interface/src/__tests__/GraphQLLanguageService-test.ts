@@ -33,6 +33,10 @@ describe('GraphQLLanguageService', () => {
       return new GraphQLConfig(MOCK_CONFIG, []);
     },
 
+    getProjectForFile(uri: string) {
+      return this.getGraphQLConfig().getProjectForFile(uri);
+    },
+
     getObjectTypeDefinitions() {
       return {
         Episode: {

@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import Benchmark from 'benchmark';
 import { parse } from 'graphql';
-import { onlineParser, CharacterStream } from '../';
+import { onlineParser, CharacterStream } from '../src';
 
 interface IStats {
   mean: number;

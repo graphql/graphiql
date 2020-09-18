@@ -39,6 +39,6 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "benchmark": "ts-node src/benchmark/index.ts"
+    "benchmark": "ts-node benchmark/index.ts"
   }
 }
