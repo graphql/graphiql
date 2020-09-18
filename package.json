@@ -47,7 +47,8 @@
         "id": "graphql",
         "extensions": [
           ".gql",
-          ".graphql"
+          ".graphql",
+          ".graphqls"
         ],
         "aliases": [
           "GraphQL",

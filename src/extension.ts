@@ -73,7 +73,7 @@ export async function activate(context: ExtensionContext) {
     ],
     synchronize: {
       fileEvents: workspace.createFileSystemWatcher(
-        "**/*.{graphql,gql,js,jsx,ts,tsx}",
+        "**/*.{graphql,graphqls,gql,js,jsx,ts,tsx}",
       ),
     },
     outputChannel: outputChannel,
