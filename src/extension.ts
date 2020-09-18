@@ -96,7 +96,7 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(disposableClient)
 
   const commandIsDebugging = commands.registerCommand(
-    "extension.isDebugging",
+    "vscode-graphql.isDebugging",
     () => {
       outputChannel.appendLine(`is in debug mode: ${!!debug}`)
     },
@@ -138,7 +138,7 @@ export async function activate(context: ExtensionContext) {
   })
 
   const commandContentProvider = commands.registerCommand(
-    "extension.contentProvider",
+    "vscode-graphql.contentProvider",
     async (literal: ExtractedTemplateLiteral) => {
       const uri = Uri.parse("graphql://authority/graphql")
 
@@ -167,7 +167,7 @@ export async function activate(context: ExtensionContext) {
   )
   context.subscriptions.push(commandContentProvider)
 
-  commands.registerCommand("extension.restart", async () => {
+  commands.registerCommand("vscode-graphql.restart", async () => {
     await client.stop()
     await client.start()
   })

@@ -36,7 +36,7 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
         ),
         {
           title: `Execute ${capitalize(literal.definition.operation)}`,
-          command: "extension.contentProvider",
+          command: "vscode-graphql.contentProvider",
           arguments: [literal],
         },
       )

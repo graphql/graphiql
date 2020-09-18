@@ -61,9 +61,11 @@ graphql.config.yml
 graphql property in package.json
 ```
 
+the file needs to be placed at the project root by default, but you can configure paths per project. see the FAQ below for details.
+
 Previous versions of this extension support `graphql-config@2` format, which follows [legacy configuration patterns](https://github.com/kamilkisiela/graphql-config/tree/legacy#usage)
 
-To support language features like "go-to definition" across multiple files, please include `documents` key in the graphql-config default or /per project (this was `includes` in 2.0). For example,
+To support language features like "go-to definition" across multiple files, please include `documents` key in the graphql-config default or /per project (this was `includes` in 2.0). For example:
 
 ```js
 // graphql.config.js
@@ -92,6 +94,12 @@ module.exports = {
             },
           },
         ],
+        endpoints: {
+          default: {
+            url: "http://localhost:8080",
+            headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+          },
+        },
       },
     },
   },
@@ -100,27 +108,98 @@ module.exports = {
 
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` is also valid.
 
-If you want to use a [workspace version of TypeScript](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions) however, you must manually install the plugin along side the version of TypeScript in your workspace:
+## Frequently Asked Questions
 
-```bash
-npm install --save-dev @divyenduz/ts-graphql-plugin
-```
+### Go to definition is using `generated_schema.graphql`, not my schema source files
 
-Then add a `plugins` section to your [`tsconfig.json`](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or [`jsconfig.json`](https://code.visualstudio.com/Docs/languages/javascript#_javascript-project-jsconfigjson)
+Ah yes, this is now the default behavior used by most users, who do not have source SDL files.
+If you're using an "SDL first" methodology, such as with apollo, you'll want to enable `useSchemaFileDefinition`.
+Add this to your settings:
 
 ```json
-{
-  "compilerOptions": {
-    "plugins": [
-      {
-        "name": "@divyenduz/ts-graphql-plugin"
-      }
-    ]
+"vscode-graphql.useSchemaFileDefinition": true,
+```
+
+### In JSX and TSX files I see completion items I don't need
+
+The way vscode lets you filter these out is [on the user end](https://github.com/microsoft/vscode/issues/45039)
+
+So you'll need to add something like this to your global vscode settings:
+
+```json
+"[typescriptreact]": {
+  "editor.suggest.filteredTypes": {
+    "snippet": false
+  }
+},
+"[javascriptreact]": {
+  "editor.suggest.filteredTypes": {
+    "snippet": false
   }
 }
 ```
 
-Finally, run the `Select TypeScript version` command in VS Code to switch to use the workspace version of TypeScript for VS Code's JavaScript and TypeScript language support. You can find more information about managing typescript versions [in the VS Code documentation](https://code.visualstudio.com/Docs/languages/typescript#_using-newer-typescript-versions).
+### "Execute Query/Mutation/Subscription" always fails
+
+The best way to make "execute <op type>" codelens work is to add endpoints config to the global graphql config or the project config.
+
+The config example above shows how to configure endpoints.
+
+If there is an issue with execution that has to do with your server, the error response should show now in the results panel
+
+### My graphql config file is not at the root
+
+Good news, we have configs for this now!
+
+You can search a folder for any of the matching config file names listed above:
+
+```json
+"graphql-config.load.baseDir": "./config"
+```
+
+Or a specific filepath:
+
+```json
+"graphql-config.load.filePath": "./config/my-graphql-config.js"
+```
+
+Or a different `configName` that allows different formats:
+
+```json
+"graphql-config.load.baseDir": "./config",
+"graphql-config.load.configName": "acme"
+```
+
+which would search for `./config/.acmerc`, `.config/.acmerc.js`, `.config/acme.config.json`, etc matching the config paths above
+
+If you have multiple projects, you need to define one top-level config that defines all project configs using `projects`
+
+### How do I highlight an embedded graphql string
+
+If you aren't using a template tag function, and just want to use a plain string, you can use an inline `#graphql` comment:
+
+```ts
+const myQuery = `#graphql
+  query {
+    something
+  }
+`
+```
+
+or
+
+```ts
+const myQuery = `
+  #graphql
+  query {
+    something
+  }
+`
+```
+
+## Known Issues
+
+- template replacement inside grap
 
 ## Development
 

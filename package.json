@@ -108,6 +108,12 @@
           "description": "Show codelens to execute operations inline",
           "default": true
         },
+        "vscode-graphql.useSchemaFileDefinition": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions"
+        },
         "graphql-config.load.rootDir": {
           "type": [
             "string"
@@ -189,7 +195,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
     "graphql-config": "^3.0.3",
-    "graphql-language-service-server": "^2.5.0-alpha.4",
+    "graphql-language-service-server": "^2.5.0",
     "graphql-tag": "^2.11.0",
     "node-fetch": "^2.6.0",
     "ovsx": "0.1.0-next.dacd2fd",
