@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.2](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2-alpha.2...codemirror-graphql@0.12.2) (2020-09-18)
+
+**Note:** Version bump only for package codemirror-graphql
+
 ## [0.12.2-alpha.2](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2-alpha.1...codemirror-graphql@0.12.2-alpha.2) (2020-09-11)
 
 **Note:** Version bump only for package codemirror-graphql

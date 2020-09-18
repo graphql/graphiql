@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.4](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.6.3...graphql-language-service-parser@1.6.4) (2020-09-18)
+
+**Note:** Version bump only for package graphql-language-service-parser
+
 ## [1.6.3](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.6.2...graphql-language-service-parser@1.6.3) (2020-09-11)
 
 **Note:** Version bump only for package graphql-language-service-parser

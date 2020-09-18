@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "3.0.2-alpha.3",
+  "version": "3.0.2",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"
@@ -33,7 +33,7 @@
     "graphql-language-service-types": "^1.6.0-alpha.5"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.4.2-alpha.2",
-    "graphql-language-service-types": "^1.6.2"
+    "graphql-language-service-interface": "^2.4.2",
+    "graphql-language-service-types": "^1.6.3"
   }
 }
