@@ -106,7 +106,7 @@ export class GraphQLLanguageService {
   }
 
   getConfigForURI(uri: Uri) {
-    const config = this._graphQLConfig.getProjectForFile(uri);
+    const config = this._graphQLCache.getProjectForFile(uri);
     if (config) {
       return config;
     }
@@ -226,9 +226,22 @@ export class GraphQLLanguageService {
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
+    const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
+      projectConfig,
+    );
+
+    const fragmentInfo = Array.from(fragmentDefinitions).map(
+      ([, info]) => info,
+    );
 
     if (schema) {
-      return getAutocompleteSuggestions(schema, query, position);
+      return getAutocompleteSuggestions(
+        schema,
+        query,
+        position,
+        undefined,
+        fragmentInfo,
+      );
     }
     return [];
   }

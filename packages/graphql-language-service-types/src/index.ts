@@ -44,6 +44,8 @@ export type {
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;
 
+  getProjectForFile: (uri: string) => GraphQLProjectConfig;
+
   getObjectTypeDependencies: (
     query: string,
     fragmentDefinitions: Map<string, ObjectTypeInfo>,
