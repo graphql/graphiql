@@ -174,7 +174,7 @@ export class MessageProcessor {
 
     this._rootPath = configDir
       ? configDir.trim()
-      : params.rootPath || this._rootPath;
+      : params.rootUri || this._rootPath;
     if (!this._rootPath) {
       this._logger.warn(
         'no rootPath configured in extension or server, defaulting to cwd',
@@ -201,37 +201,44 @@ export class MessageProcessor {
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
      */
-    if (!this._isInitialized || !this._graphQLCache) {
-      if (!this._settings) {
-        const settings = await this._connection.workspace.getConfiguration({
-          section: 'graphql-config',
-        });
-        const vscodeSettings = await this._connection.workspace.getConfiguration(
-          {
-            section: 'vscode-graphql',
-          },
-        );
-        this._settings = { ...settings, ...vscodeSettings };
-        const rootDir = this._settings.rootDir || this._rootPath;
-        this._rootPath = rootDir;
-        this._loadConfigOptions.rootDir = rootDir;
+    try {
+      if (!this._isInitialized || !this._graphQLCache) {
+        if (!this._settings) {
+          const settings = await this._connection.workspace.getConfiguration({
+            section: 'graphql-config',
+          });
+          const vscodeSettings = await this._connection.workspace.getConfiguration(
+            {
+              section: 'vscode-graphql',
+            },
+          );
+          this._settings = { ...settings, ...vscodeSettings };
+          const rootDir = this._settings.rootDir || this._rootPath;
+          this._rootPath = rootDir;
+          this._loadConfigOptions.rootDir = rootDir;
 
-        this._graphQLCache = await getGraphQLCache({
-          parser: this._parser,
-          loadConfigOptions: this._loadConfigOptions,
-          config: this._graphQLConfig,
-        });
-        this._languageService = new GraphQLLanguageService(this._graphQLCache);
-        if (this._graphQLCache?.getGraphQLConfig) {
-          const config = this._graphQLCache.getGraphQLConfig();
-          await this._cacheAllProjectFiles(config);
+          this._graphQLCache = await getGraphQLCache({
+            parser: this._parser,
+            loadConfigOptions: this._loadConfigOptions,
+            config: this._graphQLConfig,
+          });
+          this._languageService = new GraphQLLanguageService(
+            this._graphQLCache,
+          );
+          if (this._graphQLCache?.getGraphQLConfig) {
+            const config = this._graphQLCache.getGraphQLConfig();
+            await this._cacheAllProjectFiles(config);
+          }
+
+          this._isInitialized = true;
+        } else {
+          return null;
         }
-
-        this._isInitialized = true;
-      } else {
-        return null;
       }
+    } catch (err) {
+      this._logger.error(err);
     }
+
     // Here, we set the workspace settings in memory,
     // and re-initialize the language service when a different
     // root path is detected.
