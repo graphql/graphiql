@@ -68,7 +68,7 @@ The node executable contains several commands: `server` and the command-line lan
 
 GraphQL Language Service Command-Line Interface.
 
-Usage: bin/graphql.js <command> <file>
+Usage: graphql-lsp <command> <file>
 
 [-h | --help][-c | --configdir] {configDir}
 [-t | --text] {textBuffer}
