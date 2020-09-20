@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.2](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.1...graphql-language-service-server@2.5.2) (2020-09-20)
+
+### Bug Fixes
+
+- re-introduce allowed extensions ([#1668](https://github.com/graphql/graphiql/issues/1668)) ([eedd575](https://github.com/graphql/graphiql/commit/eedd5753751857bd5837dd8be8602bf7fadb5517))
+
 ## [2.5.1](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.0...graphql-language-service-server@2.5.1) (2020-09-20)
 
 ### Bug Fixes
