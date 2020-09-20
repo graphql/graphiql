@@ -6,7 +6,20 @@ import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
 
 export const DEFAULT_SUPPORTED_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx'];
 
-export const DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS = ['.graphql'];
+/**
+ * .graphql is the officially reccomended extension for graphql files
+ *
+ * .gql and .graphqls are included for compatibility for commonly used extensions
+ *
+ * GQL is a registered trademark of Google, and refers to Google Query Language.
+ * GraphQL Foundation does *not* recommend using this extension or acronym for
+ * referring to GraphQL.
+ */
+export const DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS = [
+  '.graphql',
+  '.graphqls',
+  '.gql',
+];
 
 /**
  * Helper functions to perform requested services from client/server.
