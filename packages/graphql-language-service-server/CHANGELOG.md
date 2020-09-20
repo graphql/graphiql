@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.0...graphql-language-service-server@2.5.1) (2020-09-20)
+
+### Bug Fixes
+
+- better error handling when the config isn't present ([#1667](https://github.com/graphql/graphiql/issues/1667)) ([f414300](https://github.com/graphql/graphiql/commit/f4143008f93a8849dfa4caae948d2eceb299a141))
+
 # [2.5.0](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.0-alpha.5...graphql-language-service-server@2.5.0) (2020-09-18)
 
 **Note:** Version bump only for package graphql-language-service-server
