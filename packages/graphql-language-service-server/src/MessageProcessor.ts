@@ -236,7 +236,7 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
-      this._logger.error(err);
+      this._logger.warn(err);
     }
 
     // Here, we set the workspace settings in memory,
