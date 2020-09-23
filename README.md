@@ -4,9 +4,11 @@ GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Eco
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
 
-> 💡 **Note:** This extension no longer supports `.prisma` files. If you are using this extension with Prisma 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension will pick that up.
+> 💡 **Note:** This extension no longer supports `.prisma` files. If you are using this extension with GraphQL 1, please rename your datamodel from `datamodel.prisma` to `datamodel.graphql` and this extension will pick that up.
 
 ## Features
+
+Lots of new improvements happening! We now have a [`CHANGELOG.md`](https://github.com/graphql/vscode-graphql/blob/master/CHANGELOG.md#change-log)
 
 ### General features
 
@@ -16,6 +18,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Eco
 - execute query/mutation/subscription operation, embedded or in graphql files
 - pre-load schema and document defintitions
 - Support [`graphql-config`](https://graphql-config.com/) files with one project and multiple projects
+- the language service re-starts on changes to vscode settings and/or graphql config!
 
 ### `.graphql`, `.gql` file extension support
 
@@ -39,7 +42,7 @@ GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Eco
 
 ## Usage
 
-Install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=Prisma.vscode-graphql).
+Install the [VSCode GraphQL Extension](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql).
 
 (Watchman is no longer required, you can uninstall it now)
 
@@ -218,14 +221,14 @@ const myQuery = `
 
 ## Known Issues
 
-- template replacement inside a graphql string [will break graphql parsing](https://github.com/prisma-labs/vscode-graphql/issues/137). If you want to help improve partial parsing support, you can contribute to the parser efforts in [`graphql`](https://github.com/graphql/graphql-js) reference implementation. You can now re-use fragments across your project source, if you include the files in `documents`.
+- template replacement inside a graphql string [will break graphql parsing](https://github.com/graphql/vscode-graphql/issues/137). If you want to help improve partial parsing support, you can contribute to the parser efforts in [`graphql`](https://github.com/graphql/graphql-js) reference implementation. You can now re-use fragments across your project source, if you include the files in `documents`.
 - the output channel occasionally shows "definition not found" when you first start the language service, but once the definition cache is built for each project, definition lookup will work. so if a "peek definition" fails when you first start, just try clicking it again.
 
 ## Development
 
 This plugin uses the [GraphQL language server](https://github.com/graphql/graphql-language-service-server)
 
-1.  Clone the repository - https://github.com/prisma-labs/vscode-graphql
+1.  Clone the repository - https://github.com/graphql/vscode-graphql
 1.  `npm install`
 1.  Open it in VSCode
 1.  Go to the debugging section and run the launch program "Extension"

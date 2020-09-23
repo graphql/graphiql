@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 
+# 0.3.8
+
+- require `dotenv` in the server runtime (for loading graphql config values), and allow a `graphql-config.dotEnvPath` configuration to specify specific paths
+- reload server on workspace configuration changes
+- reload severside `graphql-config` and language service on config file changes. definitions cache/etc will be rebuilt
+  - note: client not configured to reload on graphql config changes yet (i.e endpoints)
+- accept all `graphql-config.loadConfig()` options
+
 # 0.3.7
 
 - update underlying `graphql-language-service-server` to allow .gql, .graphqls extensions
