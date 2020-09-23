@@ -364,7 +364,8 @@ async function addHandlers({
   connection.onRequest(WorkspaceSymbolRequest.type, params =>
     messageProcessor.handleWorkspaceSymbolRequest(params),
   );
-  // connection.onRequest(ReferencesRequest.type, params =>
-  //   messageProcessor.handleReferencesRequest(params),
-  // );
+
+  connection.onDidChangeConfiguration(
+    messageProcessor.handleDidChangeConfiguration,
+  );
 }

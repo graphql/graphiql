@@ -31,6 +31,7 @@ import type {
   VersionedTextDocumentIdentifier,
   DidSaveTextDocumentParams,
   DidOpenTextDocumentParams,
+  DidChangeConfigurationParams,
 } from 'vscode-languageserver-protocol';
 
 import type {
@@ -52,6 +53,7 @@ import type {
   SymbolInformation,
   WorkspaceSymbolParams,
   IConnection,
+  DidChangeConfigurationRegistrationOptions,
 } from 'vscode-languageserver';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
@@ -67,6 +69,9 @@ import type { LoadConfigOptions } from './types';
 import { promisify } from 'util';
 
 const writeFileAsync = promisify(writeFile);
+
+// import dotenv config as early as possible for graphql-config cjs pattern
+require('dotenv').config();
 
 type CachedDocumentType = {
   version: number;
@@ -194,6 +199,42 @@ export class MessageProcessor {
     return serverCapabilities;
   }
 
+  async _updateGraphQLConfig() {
+    const settings = await this._connection.workspace.getConfiguration({
+      section: 'graphql-config',
+    });
+    const vscodeSettings = await this._connection.workspace.getConfiguration({
+      section: 'vscode-graphql',
+    });
+    if (settings.dotEnvPath) {
+      require('dotenv').config({ path: settings.dotEnvPath });
+    }
+    this._settings = { ...settings, ...vscodeSettings };
+    const rootDir = this._settings?.load?.rootDir || this._rootPath;
+    this._rootPath = rootDir;
+    this._loadConfigOptions = {
+      ...Object.keys(this._settings?.load).reduce((agg, key) => {
+        const value = this._settings.load[key];
+        if (value === undefined || value === null) {
+          delete agg[key];
+        }
+        return agg;
+      }, this._settings.load),
+      rootDir,
+    };
+
+    this._graphQLCache = await getGraphQLCache({
+      parser: this._parser,
+      loadConfigOptions: this._loadConfigOptions,
+      config: this._graphQLConfig,
+    });
+    this._languageService = new GraphQLLanguageService(this._graphQLCache);
+    if (this._graphQLCache?.getGraphQLConfig) {
+      const config = this._graphQLCache.getGraphQLConfig();
+      await this._cacheAllProjectFiles(config);
+    }
+  }
+
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
@@ -204,32 +245,7 @@ export class MessageProcessor {
     try {
       if (!this._isInitialized || !this._graphQLCache) {
         if (!this._settings) {
-          const settings = await this._connection.workspace.getConfiguration({
-            section: 'graphql-config',
-          });
-          const vscodeSettings = await this._connection.workspace.getConfiguration(
-            {
-              section: 'vscode-graphql',
-            },
-          );
-          this._settings = { ...settings, ...vscodeSettings };
-          const rootDir = this._settings.rootDir || this._rootPath;
-          this._rootPath = rootDir;
-          this._loadConfigOptions.rootDir = rootDir;
-
-          this._graphQLCache = await getGraphQLCache({
-            parser: this._parser,
-            loadConfigOptions: this._loadConfigOptions,
-            config: this._graphQLConfig,
-          });
-          this._languageService = new GraphQLLanguageService(
-            this._graphQLCache,
-          );
-          if (this._graphQLCache?.getGraphQLConfig) {
-            const config = this._graphQLCache.getGraphQLConfig();
-            await this._cacheAllProjectFiles(config);
-          }
-
+          await this._updateGraphQLConfig();
           this._isInitialized = true;
         } else {
           return null;
@@ -335,6 +351,7 @@ export class MessageProcessor {
     await this._invalidateCache(textDocument, uri, contents);
 
     const cachedDocument = this._getCachedDocument(uri);
+
     if (!cachedDocument) {
       return null;
     }
@@ -365,6 +382,18 @@ export class MessageProcessor {
     );
 
     return { uri, diagnostics };
+  }
+  async handleDidChangeConfiguration(
+    _params?: DidChangeConfigurationParams,
+  ): Promise<DidChangeConfigurationRegistrationOptions> {
+    await this._updateGraphQLConfig();
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'workspace/didChangeConfiguration',
+      }),
+    );
+    return {};
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
@@ -524,13 +553,24 @@ export class MessageProcessor {
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
     if (!this._isInitialized || !this._graphQLCache) {
+      console.log('not yet initialized');
       return null;
     }
+    console.log({ params });
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
         if (!this._isInitialized || !this._graphQLCache) {
           throw Error('No cache available for handleWatchedFilesChanged');
+        }
+        // update when graphql config changes!
+        if (
+          ['graphql.config', 'graphqlrc', this._settings.load.fileName].some(
+            v => change.uri.match(v)?.length,
+          )
+        ) {
+          console.log('updating graphql config');
+          this._updateGraphQLConfig();
         }
 
         if (
@@ -538,6 +578,7 @@ export class MessageProcessor {
           change.type === FileChangeTypeKind.Changed
         ) {
           const uri = change.uri;
+
           const text: string = readFileSync(new URL(uri).pathname).toString();
           const contents = this._parser(text, uri);
 
@@ -842,7 +883,7 @@ export class MessageProcessor {
       config?.useSchemaFileDefinitions ??
       this?._settings?.useSchemaFileDefinitions ??
       false;
-
+    console.log({ useSchemaFileDefinitions });
     if (!useSchemaFileDefinitions) {
       await this._cacheConfigSchema(project);
     } else {

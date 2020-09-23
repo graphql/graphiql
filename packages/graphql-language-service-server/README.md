@@ -28,19 +28,47 @@ An LSP compatible client with it's own file watcher, that sends watch notificati
 
 ### Installation
 
+```bash
+npm install --save graphql-language-service-server
+# or
+yarn add graphql-language-service-server
 ```
-git clone git@github.com:graphql/graphql-language-servic-server.git
-cd {path/to/your/repo}
-npm install ../graphql-language-service-server
+
+We also provide a CLI interface to this server, see [`graphql-language-service-cli`](../graphql-language-service-cli/)
+
+### Usage
+
+Initialize the GraphQL Language Server with the `startServer` function:
+
+```ts
+import { startServer } from 'graphql-language-service-server';
+
+await startServer({
+  method: 'node',
+});
 ```
 
-After pulling the latest changes from this repo, be sure to run `yarn run build` to transform the `src/` directory and generate the `dist/` directory.
+If you are developing a service or extension, this is the LSP language server you want to run.
 
-The library includes a node executable file which you can find in `./node_modules/.bin/graphql.js` after installation.
+When developing vscode extensions, just the above is enough to get started for your extension's `ServerOptions.run.module`, for example.
 
-### GraphQL configuration file (`.graphqlrc.yml`)
+`startServer` function takes the following parameters:
 
-Check out [graphql-config](https://graphql-config.com/docs/introduction)
+| Parameter      | Required                                             | Description                                                                       |
+| -------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
+| port           | `true` when method is `socket`, `false` otherwise    | port for the LSP server to run on                                                 |
+| method         | `false`                                              | `socket`, `streams`, or `node` (ipc)                                              |
+| config         | `false`                                              | custom `graphql-config` instance from `loadConfig` (see example above)            |
+| configDir      | `false`                                              | the directory where graphql-config is found                                       |
+| extensions     | `false`                                              | array of functions to transform the graphql-config and add extensions dynamically |
+| parser         | `false`                                              | Customize _all_ file parsing by overriding the default `parseDocument` function   |
+| fileExtensions | `false`. defaults to `['.js', '.ts', '.tsx, '.jsx']` | Customize file extensions used by the default LSP parser                          |
+
+### GraphQL configuration file
+
+You _must_ provide a graphql config file
+
+Check out [graphql-config](https://graphql-config.com/docs/introduction) to learn the many ways you can define your graphql config
 
 #### `.graphqlrc` or `.graphqlrc.yml/yaml` or `graphql.config.yml`
 
@@ -95,38 +123,41 @@ await startServer({
 
 The graphql-config features we support are:
 
-- `extensions.customDirectives` - for example `['@myExampleDirective']`
-- `extensions.customValidationRules` - a function that returns rules array with parameter `ValidationContext` from `graphql/validation`. The graphql config must load the module itself.
-
-### Usage
-
-Initialize the GraphQL Language Server with the `startServer` function:
-
-```ts
-import { startServer } from 'graphql-language-service-server';
-
-await startServer({
-  method: 'node',
-});
+```js
+module.exports = {
+  extensions: {
+    // add customDirectives *legacy*. you can now provide multiple schema pointers to config.schema/project.schema, including inline strings
+    "customDirectives": ["@myExampleDirective"],
+     // a function that returns rules array with parameter `ValidationContext` from `graphql/validation`
+    "customValidationRules": require('./config/customValidationRules')
+    "languageService": {
+      // should the language service read from source files? if false, it generates a schema from the project/config schema
+      useSchemaFileDefinitions: false
+    }
+  }
+}
 ```
 
-If you are developing a service or extension, this is the LSP language server you want to run.
+we also load `require('dotenv').config()`, so you can use process.env variables from local `.env` files!
 
-When developing vscode extensions, just the above is enough to get started for your extension's `ServerOptions.run.module`, for example.
+### Workspace Configuration
 
-`startServer` function takes the following parameters:
+The LSP Server reads config by sending `workspace/configuration` method when it initializes.
 
-| Parameter      | Required                                             | Description                                                                       |
-| -------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| port           | `true` when method is `socket`, `false` otherwise    | port for the LSP server to run on                                                 |
-| method         | `false`                                              | `socket`, `streams`, or `node` (ipc)                                              |
-| config         | `false`                                              | custom `graphql-config` instance from `loadConfig` (see example above)            |
-| configDir      | `false`                                              | the directory where graphql-config is found                                       |
-| extensions     | `false`                                              | array of functions to transform the graphql-config and add extensions dynamically |
-| parser         | `false`                                              | Customize _all_ file parsing by overriding the default `parseDocument` function   |
-| fileExtensions | `false`. defaults to `['.js', '.ts', '.tsx, '.jsx']` | Customize file extensions used by the default LSP parser                          |
+| Parameter                                | Default                         | Description                                                                                            |
+| ---------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `graphql-config.load.baseDir`            | workspace root or process.cwd() | the path where graphql config looks for config files                                                   |
+| `graphql-config.load.filePath`           | `null`                          | exact filepath of the config file.                                                                     |
+| `graphql-config.load.configName`         | `graphql`                       | config name prefix instead of `graphql`                                                                |
+| `graphql-config.load.legacy`             | `true`                          | backwards compatibility with `graphql-config@2`                                                        |
+| `graphql-config.dotEnvPath`              | `null`                          | backwards compatibility with `graphql-config@2`                                                        |
+| `vsode-graphql.useSchemaFileDefinitions` | `false`                         | whether the LSP server will use source files, or generate an SDL from `config.schema`/`project.schema` |
 
-## Architectural Overview
+all the `graphql-config.load.*` configuration values come from static `loadConfig()` options in graphql config.
+
+(more coming soon!)
+
+### Architectural Overview
 
 GraphQL Language Service currently communicates via Stream transport with the IDE server. GraphQL server will receive/send RPC messages to perform language service features, while caching the necessary GraphQL artifacts such as fragment definitions, GraphQL schemas etc. More about the server interface and RPC message format below.
 
@@ -156,11 +187,13 @@ GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to
 
 For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
 
-|                  | Stream                       | IPC                                         |
-| ---------------: | ---------------------------- | ------------------------------------------- |
-|      Diagnostics | `getDiagnostics`             | `textDocument/publishDiagnostics`           |
-|   Autocompletion | `getAutocompleteSuggestions` | `textDocument/completion`                   |
-|          Outline | `getOutline`                 | `textDocument/outline`                      |
-| Document Symbols | `getDocumentSymbols`         | `textDocument/symbols`                      |
-| Go-to definition | `getDefinition`              | `textDocument/definition`                   |
-|      File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
+|                      | Stream                       | IPC                                         |
+| -------------------: | ---------------------------- | ------------------------------------------- |
+|          Diagnostics | `getDiagnostics`             | `textDocument/publishDiagnostics`           |
+|       Autocompletion | `getAutocompleteSuggestions` | `textDocument/completion`                   |
+|              Outline | `getOutline`                 | `textDocument/outline`                      |
+|     Document Symbols | `getDocumentSymbols`         | `textDocument/symbols`                      |
+|    Workspace Symbols | `getWorkspaceSymbols`        | `workspace/symbols`                         |
+|     Go-to definition | `getDefinition`              | `textDocument/definition`                   |
+| Workspace Definition | `getWorkspaceDefinition`     | `workspace/definition`                      |
+|          File Events | Not supported yet            | `didOpen/didClose/didSave/didChange` events |
