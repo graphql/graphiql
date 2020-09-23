@@ -15,14 +15,14 @@
   "icon": "assets/images/logo.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/prisma-labs/vscode-graphql"
+    "url": "https://github.com/graphql/vscode-graphql"
   },
-  "homepage": "https://github.com/prisma-labs/vscode-graphql/blob/master/README.md",
+  "homepage": "https://github.com/graphql/vscode-graphql/blob/master/README.md",
   "galleryBanner": {
     "color": "#032539",
     "theme": "dark"
   },
-  "publisher": "Prisma",
+  "publisher": "GraphQL",
   "engines": {
     "vscode": "^1.32.0"
   },
@@ -119,8 +119,7 @@
           "type": [
             "string"
           ],
-          "description": "Base dir for graphql config loadConfig()",
-          "default": null
+          "description": "Base dir for graphql config loadConfig()"
         },
         "graphql-config.load.filePath": {
           "type": [
@@ -142,20 +141,27 @@
           ],
           "description": "optional <configName>.config.js instead of default `graphql`",
           "default": null
+        },
+        "graphql-config.dotEnvPath": {
+          "type": [
+            "string"
+          ],
+          "description": "optional .env load path, if not the default",
+          "default": null
         }
       }
     },
     "commands": [
       {
-        "command": "extension.isDebugging",
+        "command": "vscode-graphql.isDebugging",
         "title": "VSCode GraphQL - Is Debugging?"
       },
       {
-        "command": "extension.restart",
-        "title": "VSCode GraphQL - Restart"
+        "command": "vscode-graphql.restart",
+        "title": "VSCode GraphQL - Manual Restart"
       },
       {
-        "command": "extension.contentProvider",
+        "command": "vscode-graphql.contentProvider",
         "title": "Execute GraphQL Operations"
       }
     ]
@@ -196,7 +202,7 @@
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
     "graphql-config": "^3.0.3",
-    "graphql-language-service-server": "^2.5.2",
+    "graphql-language-service-server": "^2.5.3",
     "graphql-tag": "^2.11.0",
     "node-fetch": "^2.6.0",
     "ovsx": "0.1.0-next.dacd2fd",
