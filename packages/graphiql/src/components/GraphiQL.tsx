@@ -23,6 +23,7 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 
+import { BatchExecuteButton } from './BatchExecuteButton';
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
@@ -123,6 +124,7 @@ export type GraphiQLProps = {
   ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
+  runMultipleQueries?: boolean;
 };
 
 export type GraphiQLState = {
@@ -502,12 +504,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           <div className="topBarWrap">
             <div className="topBar">
               {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
+              {!this.props.runMultipleQueries && (
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunQuery}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+              )}
+              {this.props.runMultipleQueries && (
+                <BatchExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunMultipleQueries}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+              )}
               {toolbar}
             </div>
             {!this.state.docExplorerOpen && (
@@ -1009,10 +1021,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         operationName as string,
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
-          if (queryID === this._editorQueryID) {
+          if (
+            queryID === this._editorQueryID ||
+            this.props.runMultipleQueries
+          ) {
+            const responsesSoFar = JSON.parse(
+              this.state.response != undefined ? this.state.response : '{}',
+            );
+            responsesSoFar[selectedOperationName + 'Data'] = result;
+
             this.setState({
               isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
+              response: this.props.runMultipleQueries
+                ? GraphiQL.formatResult(responsesSoFar)
+                : GraphiQL.formatResult(result),
             });
           }
         },
@@ -1020,11 +1042,23 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
       this.setState({ subscription });
     } catch (error) {
+      const responsesSoFar = JSON.parse(
+        this.state.response != undefined ? this.state.response : '{}',
+      );
+      responsesSoFar[selectedOperationName + 'Response'] = error.message;
       this.setState({
         isWaitingForResponse: false,
-        response: error.message,
+        response: this.props.runMultipleQueries
+          ? GraphiQL.formatResult(responsesSoFar)
+          : GraphiQL.formatResult(error.message),
       });
     }
+  };
+
+  handleRunMultipleQueries = (selectedOperationNames?: Array<string>) => {
+    selectedOperationNames?.map(selectedOperationName => {
+      this.handleRunQuery(selectedOperationName);
+    });
   };
 
   handleStopQuery = () => {
