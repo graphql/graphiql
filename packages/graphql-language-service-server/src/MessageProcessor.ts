@@ -553,10 +553,8 @@ export class MessageProcessor {
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
     if (!this._isInitialized || !this._graphQLCache) {
-      console.log('not yet initialized');
       return null;
     }
-    console.log({ params });
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
@@ -569,7 +567,7 @@ export class MessageProcessor {
             v => change.uri.match(v)?.length,
           )
         ) {
-          console.log('updating graphql config');
+          this._logger.info('updating graphql config');
           this._updateGraphQLConfig();
         }
 
@@ -668,11 +666,17 @@ export class MessageProcessor {
       position.line -= parentRange.start.line;
     }
 
-    const result = await this._languageService.getDefinition(
-      query,
-      position,
-      textDocument.uri,
-    );
+    let result = null;
+
+    try {
+      result = await this._languageService.getDefinition(
+        query,
+        position,
+        textDocument.uri,
+      );
+    } catch (err) {
+      // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
+    }
 
     const inlineFragments: string[] = [];
 
@@ -793,7 +797,6 @@ export class MessageProcessor {
         documents.map(async ([uri]) => {
           const cachedDocument = this._getCachedDocument(uri);
           if (!cachedDocument) {
-            console.error('A cached document cannot be found.');
             return [];
           }
           const docSymbols = await this._languageService.getDocumentSymbols(
@@ -880,10 +883,9 @@ export class MessageProcessor {
      * The default temporary schema file seems preferrable until we have graphql source maps
      */
     const useSchemaFileDefinitions =
-      config?.useSchemaFileDefinitions ??
-      this?._settings?.useSchemaFileDefinitions ??
+      (config?.useSchemaFileDefinitions ??
+        this?._settings?.useSchemaFileDefinitions) ||
       false;
-    console.log({ useSchemaFileDefinitions });
     if (!useSchemaFileDefinitions) {
       await this._cacheConfigSchema(project);
     } else {
