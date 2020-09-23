@@ -127,11 +127,30 @@ Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` i
 ### Go to definition is using `generated_schema.graphql`, not my schema source files
 
 Ah yes, this is now the default behavior used by most users, who do not have source SDL files.
-If you're using an "SDL first" methodology, such as with apollo, you'll want to enable `useSchemaFileDefinition`.
+If you're using an "SDL first" methodology, such as with apollo, you'll want to enable `useSchemaFileDefinitions`.
 Add this to your settings:
 
 ```json
-"vscode-graphql.useSchemaFileDefinition": true,
+"vscode-graphql.useSchemaFileDefinitions": true,
+```
+
+you can also use graphql config if you need to mix and match these settings:
+
+```yml
+projects:
+  project1:
+    schema: project1/schema/schema.graphql
+    documents: project1/queries/**/*.{graphql,tsx,jsx,ts,js}
+    extensions:
+      languageService:
+        useSchemaFileDefinitions: true
+  project2:
+    schema: https://api.spacex.land/graphql/
+    documents: project2/queries.graphql
+    extensions:
+      endpoints:
+        default:
+          url: https://api.spacex.land/graphql/
 ```
 
 ### The extension fails with errors about duplicate types
