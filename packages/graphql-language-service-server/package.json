@@ -35,6 +35,7 @@
     "graphql-language-service": "^3.0.2",
     "graphql-language-service-utils": "^2.4.3",
     "mkdirp": "^1.0.4",
+    "dotenv": "8.2.0",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
     "vscode-languageserver": "^6.1.1"
