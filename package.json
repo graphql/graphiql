@@ -33,8 +33,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.isDebugging",
-    "onCommand:extension.contentProvider",
+    "onCommand:vscode-graphql.isDebugging",
+    "onCommand:vscode-graphql.contentProvider",
     "onLanguage:graphql",
     "workspaceContains:**/.graphqlrc",
     "workspaceContains:**/.graphqlrc.{json,yaml,yml,js}",
