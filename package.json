@@ -19,6 +19,9 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
+  "engines": {
+    "npm": "please_use_yarn_instead"
+  },
   "scripts": {
     "build": "yarn run build-clean && yarn build-ts && yarn build-babel",
     "build-babel": "yarn workspace codemirror-graphql run build",
