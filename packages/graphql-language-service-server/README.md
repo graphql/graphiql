@@ -68,7 +68,7 @@ When developing vscode extensions, just the above is enough to get started for y
 
 You _must_ provide a graphql config file
 
-Check out [graphql-config](https://graphql-config.com/docs/introduction) to learn the many ways you can define your graphql config
+Check out [graphql-config](https://graphql-config.com/introduction) to learn the many ways you can define your graphql config
 
 #### `.graphqlrc` or `.graphqlrc.yml/yaml` or `graphql.config.yml`
 
@@ -97,7 +97,7 @@ module.exports = { schema: 'https://localhost:8000' };
 
 #### custom `startServer`
 
-use graphql config [`loadConfig`](https://graphql-config.com/docs/load-config) for further customization:
+use graphql config [`loadConfig`](https://graphql-config.com/load-config) for further customization:
 
 ```ts
 import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
@@ -183,7 +183,7 @@ The IDE server should manage the lifecycle of the GraphQL server. Ideally, the I
 
 ### Server Interface
 
-GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://github.com/Microsoft/language-server-protocol/blob/main/protocol.md) documentation.
+GraphQL Language Server uses [JSON-RPC](http://www.jsonrpc.org/specification) to communicate with the IDE servers. Microsoft's language server currently supports two communication transports: Stream (stdio) and IPC. For IPC transport, the reference guide to be used for development is [the language server protocol](https://microsoft.github.io/language-server-protocol/specification) documentation.
 
 For each transport, there is a slight difference in JSON message format, especially in how the methods to be invoked are defined - below are the currently supported methods for each transport (will be updated as progress is made):
 
