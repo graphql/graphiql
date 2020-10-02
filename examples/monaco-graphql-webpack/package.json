@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "graphql": "14.6.0",
-    "monaco-graphql": "file:../../packages/graphiql",
+    "monaco-graphql": "file:../../packages/monaco-graphql",
     "prettier": "^2.0.2"
   },
   "devDependencies": {
@@ -20,9 +20,11 @@
     "@babel/plugin-syntax-dynamic-import": "7.8.3",
     "@babel/preset-env": "7.9.5",
     "@types/prettier": "^2.0.0",
+    "acorn": "^8.0.3",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.0",
     "css-loader": "^3.5.1",
+    "file-loader": "^6.1.0",
     "html-webpack-plugin": "^4.2.0",
     "monaco-editor": "^0.20.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
