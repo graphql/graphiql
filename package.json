@@ -118,6 +118,8 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
     "typedoc": "0.17.7",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "whatwg-url": "^8.4.0",
+    "jsdom": "^16.4.0"
   }
 }
