@@ -275,7 +275,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         this._storage.get('variableEditorActive') === 'true' ||
         props.headerEditorEnabled
           ? this._storage.get('headerEditorActive') !== 'true'
-          : secondaryEditorOpen && true,
+          : true,
       headerEditorActive: this._storage.get('headerEditorActive') === 'true',
       headerEditorEnabled,
       shouldPersistHeaders,

@@ -144,7 +144,7 @@ ReactDOM.render(
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,
-    defaultVariableEditorOpen: true,
+    defaultSecondaryEditorOpen: true,
     onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
   }),
