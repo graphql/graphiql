@@ -34,6 +34,7 @@ import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
+  isInterfaceType,
 } from 'graphql';
 import type {
   GraphQLField,
@@ -225,7 +226,7 @@ function getSuggestionsForFieldNames(
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
     const fields: GraphQLField<*, *>[] =
-      isObjectType(parentType) && 'getFields' in parentType
+      isObjectType(parentType) || isInterfaceType(parentType)
         ? objectValues((parentType.getFields(): any))
         : [];
     if (isCompositeType(parentType)) {

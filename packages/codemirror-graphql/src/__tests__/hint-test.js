@@ -998,4 +998,22 @@ describe('graphql-hint', () => {
     );
     expect(suggestions7.list).to.deep.equal(expectedSuggestions);
   });
+  it('provides correct field name suggestions for an interface type', async () => {
+    const suggestions = await getHintSuggestions(
+      '{ first { ... on TestInterface { ',
+      {
+        line: 0,
+        ch: 33,
+      },
+    );
+    const list = [
+      {
+        text: 'scalar',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
 });
