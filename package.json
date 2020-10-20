@@ -88,7 +88,6 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.3.0",
     "chai": "4.2.0",
-    "codecov": "^3.6.5",
     "conventional-changelog-conventionalcommits": "^4.2.3",
     "copy": "^0.3.2",
     "cross-env": "^7.0.2",
