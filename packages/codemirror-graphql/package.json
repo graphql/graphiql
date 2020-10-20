@@ -33,9 +33,6 @@
     "variables",
     "results"
   ],
-  "options": {
-    "mocha": "--full-trace --require resources/mochaBootload **/*-test.js"
-  },
   "scripts": {
     "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
     "build-js": "babel src --root-mode upward --ignore **/__tests__/**,**/__mocks__/** --out-dir .",
@@ -43,7 +40,7 @@
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow} && rimraf esm results utils variables coverage __tests__",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "nyc --require @babel/polyfill --reporter lcov --reporter text mocha $npm_package_options_mocha"
+    "test": "mocha --require resources/mochaBootload **/*-test.js"
   },
   "peerDependencies": {
     "codemirror": "^5.54.0",
