@@ -37,7 +37,7 @@
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && lerna run build-bundles-clean",
     "tsc": "tsc --build",
     "test": "jest",
-    "test-mocha": "mocha --require packages/codemirror-graphql/resources/mochaBootload packages/codemirror-graphql/**/*-test.js",
+    "test-mocha": "nyc --reporter=lcov mocha --require packages/codemirror-graphql/resources/mochaBootload packages/codemirror-graphql/**/*-test.js",
     "test-all": "yarn test --coverage && yarn test-mocha",
     "ci": "yarn lint && yarn run check && yarn build && yarn test-all",
     "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min",

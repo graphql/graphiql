@@ -9,6 +9,8 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - run: yarn ci
       - uses: codecov/codecov-action@v1
+        with:
+          directory: coverage
 
   e2e:
     name: Cypress
