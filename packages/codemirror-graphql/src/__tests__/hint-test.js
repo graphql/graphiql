@@ -1012,7 +1012,15 @@ describe('graphql-hint', () => {
         type: GraphQLString,
         isDeprecated: false,
       },
+      {
+        description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        deprecationReason: undefined,
+      },
     ];
+
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });

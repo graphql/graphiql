@@ -37,9 +37,9 @@
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && lerna run build-bundles-clean",
     "tsc": "tsc --build",
     "test": "jest",
-    "test-mocha": "yarn workspace codemirror-graphql run test",
-    "test-all": "yarn test && yarn test-mocha",
-    "ci": "yarn lint && yarn run check && yarn build && yarn test",
+    "test-mocha": "nyc --reporter=lcov --reporter=text-summary mocha --require packages/codemirror-graphql/resources/mochaBootload packages/codemirror-graphql/**/*-test.js",
+    "test-all": "yarn test --coverage && yarn test-mocha",
+    "ci": "yarn lint && yarn run check && yarn build && yarn test-all",
     "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min",
     "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
@@ -88,7 +88,6 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.3.0",
     "chai": "4.2.0",
-    "codecov": "^3.6.5",
     "conventional-changelog-conventionalcommits": "^4.2.3",
     "copy": "^0.3.2",
     "cross-env": "^7.0.2",
@@ -118,6 +117,8 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
     "typedoc": "0.17.7",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "whatwg-url": "^8.4.0",
+    "jsdom": "^16.4.0"
   }
 }
