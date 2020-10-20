@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.6](https://github.com/graphql/graphiql/compare/graphiql@1.0.5...graphiql@1.0.6) (2020-10-20)
+
+### Bug Fixes
+
+- enable variable editor when header editor is not enabled ([#1682](https://github.com/graphql/graphiql/issues/1682)) ([205fbad](https://github.com/graphql/graphiql/commit/205fbad84806d175d66a6f5598e0a0f521129a16))
+
 ## [1.0.5](https://github.com/graphql/graphiql/compare/graphiql@1.0.4...graphiql@1.0.5) (2020-09-18)
 
 **Note:** Version bump only for package graphiql
