@@ -123,6 +123,7 @@ export type GraphiQLProps = {
   ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
+  additionalToolbarContent?: React.ReactElement;
 };
 
 export type GraphiQLState = {
@@ -440,6 +441,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        {this.props.additionalToolbarContent != null
+          ? this.props.additionalToolbarContent
+          : null}
       </GraphiQL.Toolbar>
     );
 
