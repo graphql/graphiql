@@ -1121,7 +1121,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
 
     const ast = parse(query);
-    editor.setValue(print(mergeAST(ast)));
+    editor.setValue(print(mergeAST(ast, this.state.schema)));
   };
 
   handleEditQuery = debounce(100, (value: string) => {
