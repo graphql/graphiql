@@ -8,21 +8,24 @@
  */
 
 import { Logger as VSCodeLogger } from 'vscode-jsonrpc';
+import { DiagnosticSeverity } from 'vscode-languageserver';
 
 import * as fs from 'fs';
 import * as os from 'os';
 import { join } from 'path';
+import { Socket } from 'net';
 
 import {
   DIAGNOSTIC_SEVERITY,
   SeverityEnum,
   SEVERITY,
 } from 'graphql-language-service';
+
 export class Logger implements VSCodeLogger {
   _logFilePath: string;
-  _stream: fs.WriteStream | null;
+  _stderrOnly: boolean;
 
-  constructor(tmpDir?: string) {
+  constructor(tmpDir?: string, stderrOnly?: boolean) {
     const dir = join(tmpDir || os.tmpdir(), 'graphql-language-service-logs');
     try {
       if (!fs.existsSync(dir)) {
@@ -40,7 +43,7 @@ export class Logger implements VSCodeLogger {
       }-${getDateString()}.log`,
     );
 
-    this._stream = null;
+    this._stderrOnly = stderrOnly || false;
   }
 
   error(message: string): void {
@@ -64,14 +67,21 @@ export class Logger implements VSCodeLogger {
     const severity = DIAGNOSTIC_SEVERITY[severityKey];
     const pid = process.pid;
 
-    const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${message}\n\n`;
+    const stringMessage = String(message).trim();
+    const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${stringMessage}\n`;
     // write to the file in tmpdir
     fs.appendFile(this._logFilePath, logMessage, _error => {});
-    const processSt =
-      severity === DIAGNOSTIC_SEVERITY.Error ? process.stderr : process.stdout;
-    processSt.write(logMessage, err => {
-      console.error(err);
+    this._getOutputStream(severity).write(logMessage, err => {
+      err && console.error(err);
     });
+  }
+
+  _getOutputStream(severity: DiagnosticSeverity): Socket {
+    if (this._stderrOnly || severity === DIAGNOSTIC_SEVERITY.Error) {
+      return process.stderr;
+    }
+
+    return process.stdout;
   }
 }
 
