@@ -206,14 +206,14 @@ export class MessageProcessor {
     const vscodeSettings = await this._connection.workspace.getConfiguration({
       section: 'vscode-graphql',
     });
-    if (settings.dotEnvPath) {
+    if (settings?.dotEnvPath) {
       require('dotenv').config({ path: settings.dotEnvPath });
     }
     this._settings = { ...settings, ...vscodeSettings };
     const rootDir = this._settings?.load?.rootDir || this._rootPath;
     this._rootPath = rootDir;
     this._loadConfigOptions = {
-      ...Object.keys(this._settings?.load).reduce((agg, key) => {
+      ...Object.keys(this._settings.load || []).reduce((agg, key) => {
         const value = this._settings.load[key];
         if (value === undefined || value === null) {
           delete agg[key];
