@@ -147,6 +147,7 @@ ReactDOM.render(
     defaultSecondaryEditorOpen: true,
     onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
+    runMultipleQueries: true,
   }),
   document.getElementById('graphiql'),
 );
