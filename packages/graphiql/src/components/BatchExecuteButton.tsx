@@ -10,7 +10,7 @@ import { OperationDefinitionNode } from 'graphql';
 /**
  * BatchBatchExecuteButton
  *
- * What a nice round shiny button. Shows a drop-down checkbox when there are multiple
+ * What a nice round shiny button. Shows an additional 'Execute All' option when there are multiple
  * queries to run.
  */
 

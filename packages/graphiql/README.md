@@ -203,7 +203,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `shouldPersistHeaders`: an optional boolean which enables to persist headers to storage when `true`. Defaults to `false`.
 
-- `runMultipleQueries`: an optional boolean which enables to run multiple queries when `true`. The actual response of each query is returned as `data` object within the `yourQueryNameData` object. Defaults to `false`.
+- [`runMultipleQueries`](http://spec.graphql.org/): an optional boolean which enables to run multiple queries when `true`. The actual response of each query is returned as `data` object within the `yourQueryNameData` object. Defaults to `false`.
 
 ### Children (dropped as of 1.0.0-rc.2)
 
