@@ -15,6 +15,7 @@ Lots of new improvements happening! We now have a [`CHANGELOG.md`](https://githu
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
+- Load the extension inside `gql`/`graphql` fenced code blocks in markdown files
 - execute query/mutation/subscription operation, embedded or in graphql files
 - pre-load schema and document defintitions
 - Support [`graphql-config`](https://graphql-config.com/) files with one project and multiple projects
