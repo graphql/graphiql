@@ -89,12 +89,14 @@ module.exports = {
     app: {
       schema: ["src/schema.graphql", "directives.graphql"],
       documents: ["**/*.{graphql,js,ts,jsx,tsx}", "my/fragments.graphql"],
-      endpoints: {
-        default: {
-          url: "http://localhost:8000",
-          headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+      extensions: {
+        endpoints: {
+          default: {
+            url: "http://localhost:8000",
+            headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+          },
         },
-      },
+      }
     },
     db: {
       schema: "src/generated/db.graphql",
