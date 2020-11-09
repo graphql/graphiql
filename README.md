@@ -77,7 +77,7 @@ To support language features like "go-to definition" across multiple files, plea
 ```js
 // .graphqlrc.yml
 schema: "schema.graphql"
-documents: "src/**/*.{graphql,js,ts,jsx,tsx"
+documents: "src/**/*.{graphql,js,ts,jsx,tsx}"
 ```
 
 ### Advanced Example
