@@ -264,12 +264,18 @@ query name {
     expect(testSuggestions('{ test @', new Position(0, 8))).toEqual([
       { label: 'include' },
       { label: 'skip' },
+      { label: 'stream' },
       { label: 'test' },
     ]);
 
     expect(
       testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
-    ).toEqual([{ label: 'include' }, { label: 'skip' }, { label: 'test' }]);
+    ).toEqual([
+      { label: 'include' },
+      { label: 'skip' },
+      { label: 'stream' },
+      { label: 'test' },
+    ]);
 
     expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
   });
@@ -320,5 +326,9 @@ query name {
   it('provides correct directive suggestions on args definitions', () =>
     expect(
       testSuggestions('type Type { field(arg: String @', new Position(0, 31)),
-    ).toEqual([{ label: 'onAllDefs' }, { label: 'onArg' }]));
+    ).toEqual([
+      { label: 'deprecated' },
+      { label: 'onAllDefs' },
+      { label: 'onArg' },
+    ]));
 });
