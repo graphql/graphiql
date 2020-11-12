@@ -10,6 +10,7 @@
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
 import { URL } from 'url';
+import { platform } from 'process';
 import * as path from 'path';
 import {
   CachedContent,
@@ -67,6 +68,16 @@ import { tmpdir } from 'os';
 import { GraphQLExtensionDeclaration } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
 import { promisify } from 'util';
+
+// It would be far better to use nodes native url.fileURLToPath but
+// its not supported before node v10.12.0.
+function fileURLToPath(url:URL) {  
+  const path = decodeURIComponent(url.pathname); 
+  if(platform == 'win32'){    
+    return path.replace(/^\//,"");
+  }
+  return path;
+}
 
 const writeFileAsync = promisify(writeFile);
 
@@ -577,7 +588,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text: string = readFileSync(new URL(uri).pathname).toString();
+          const text: string = readFileSync(fileURLToPath(new URL(uri))).toString();
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
@@ -1017,7 +1028,7 @@ export class MessageProcessor {
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,
-      new URL(uri).pathname,
+      fileURLToPath(new URL(uri)),
       contents,
     );
   }
@@ -1030,7 +1041,7 @@ export class MessageProcessor {
 
     await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,
-      new URL(uri).pathname,
+      fileURLToPath(new URL(uri)),
       contents,
     );
   }
