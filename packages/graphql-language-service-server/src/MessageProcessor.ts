@@ -71,10 +71,10 @@ import { promisify } from 'util';
 
 // It would be far better to use nodes native url.fileURLToPath but
 // its not supported before node v10.12.0.
-function fileURLToPath(url:URL) {  
-  const path = decodeURIComponent(url.pathname); 
-  if(platform == 'win32'){    
-    return path.replace(/^\//,"");
+function fileURLToPath(url: URL) {
+  const path = decodeURIComponent(url.pathname);
+  if (platform === 'win32') {
+    return path.replace(/^\//, '');
   }
   return path;
 }
@@ -588,7 +588,9 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text: string = readFileSync(fileURLToPath(new URL(uri))).toString();
+          const text: string = readFileSync(
+            fileURLToPath(new URL(uri)),
+          ).toString();
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
