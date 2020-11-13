@@ -70,7 +70,9 @@ export class Logger implements VSCodeLogger {
     const processSt =
       severity === DIAGNOSTIC_SEVERITY.Error ? process.stderr : process.stdout;
     processSt.write(logMessage, err => {
-      console.error(err);
+      if (err) {
+        console.error(err);
+      }
     });
   }
 }
