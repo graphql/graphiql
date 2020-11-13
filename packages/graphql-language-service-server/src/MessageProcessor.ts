@@ -9,7 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { URL, fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
