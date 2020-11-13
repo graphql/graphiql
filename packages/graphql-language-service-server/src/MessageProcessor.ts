@@ -577,9 +577,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text: string = readFileSync(
-            fileURLToPath(new URL(uri)),
-          ).toString();
+          const text: string = readFileSync(fileURLToPath(uri)).toString();
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
@@ -1019,7 +1017,7 @@ export class MessageProcessor {
 
     await this._graphQLCache.updateFragmentDefinition(
       rootDir,
-      fileURLToPath(new URL(uri)),
+      fileURLToPath(uri),
       contents,
     );
   }
@@ -1032,7 +1030,7 @@ export class MessageProcessor {
 
     await this._graphQLCache.updateObjectTypeDefinition(
       rootDir,
-      fileURLToPath(new URL(uri)),
+      fileURLToPath(uri),
       contents,
     );
   }
