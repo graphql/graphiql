@@ -203,7 +203,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 - `shouldPersistHeaders`: an optional boolean which enables to persist headers to storage when `true`. Defaults to `false`
 
-- `additionalToolbarContent`: if you want to keep the default toolbar content (Prettify, Merge Button etc.) while adding additional items pass any react element to this property. E.g. you could add multiple GraphiQL.Button elements by wrapping them inside a react fragment. Defaults to `null`
+- `toolbar.additionalContent`: if you want to keep the default toolbar content (Prettify, Merge Button etc.) while adding additional items pass any react element to this property. E.g. you could add multiple GraphiQL.Button elements by wrapping them inside a react fragment. Defaults to `null`
 
 ### Children (dropped as of 1.0.0-rc.2)
 
