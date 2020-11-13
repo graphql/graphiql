@@ -9,8 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { URL } from 'url';
-import { platform } from 'process';
+import { URL, fileURLToPath } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
@@ -68,16 +67,6 @@ import { tmpdir } from 'os';
 import { GraphQLExtensionDeclaration } from 'graphql-config';
 import type { LoadConfigOptions } from './types';
 import { promisify } from 'util';
-
-// It would be far better to use nodes native url.fileURLToPath but
-// its not supported before node v10.12.0.
-function fileURLToPath(url: URL) {
-  const path = decodeURIComponent(url.pathname);
-  if (platform === 'win32') {
-    return path.replace(/^\//, '');
-  }
-  return path;
-}
 
 const writeFileAsync = promisify(writeFile);
 
