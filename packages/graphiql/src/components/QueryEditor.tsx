@@ -7,7 +7,7 @@
 
 import React from 'react';
 import type * as CM from 'codemirror';
-import { GraphQLSchema, GraphQLType } from 'graphql';
+import { GraphQLSchema, GraphQLType, ValidationRule } from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
@@ -19,6 +19,7 @@ const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 type QueryEditorProps = {
   schema?: GraphQLSchema;
+  validationRules?: ValidationRule[];
   value?: string;
   onEdit?: (value: string) => void;
   readOnly?: boolean;
@@ -99,6 +100,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       },
       lint: {
         schema: this.props.schema,
+        validationRules: this.props.validationRules ?? null,
       },
       hintOptions: {
         schema: this.props.schema,
