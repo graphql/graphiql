@@ -1,5 +1,7 @@
 # VSCode GraphQL
 
+> **Note:** The primary maintainer @acao is on hiatus until December 2020
+
 GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
