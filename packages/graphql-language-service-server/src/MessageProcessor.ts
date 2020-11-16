@@ -9,7 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
@@ -128,7 +128,7 @@ export class MessageProcessor {
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = path.join('file://', this._tmpDirBase);
+    this._tmpUriBase = pathToFileURL(this._tmpDirBase).toString();
     this._loadConfigOptions = loadConfigOptions;
     if (
       loadConfigOptions.extensions &&
@@ -838,7 +838,9 @@ export class MessageProcessor {
     const isFileUri = existsSync(uri);
     let version = 1;
     if (isFileUri) {
-      const schemaUri = 'file://' + path.join(project.dirpath, uri);
+      const schemaUri = pathToFileURL(
+        path.join(project.dirpath, uri),
+      ).toString();
       const schemaDocument = this._getCachedDocument(schemaUri);
 
       if (schemaDocument) {
@@ -864,7 +866,7 @@ export class MessageProcessor {
       projectTmpPath = path.join(projectTmpPath, appendPath);
     }
     if (prependWithProtocol) {
-      return `file://${path.resolve(projectTmpPath)}`;
+      return pathToFileURL(path.resolve(projectTmpPath)).toString();
     } else {
       return path.resolve(projectTmpPath);
     }
@@ -968,7 +970,9 @@ export class MessageProcessor {
             return;
           }
           // build full system URI path with protocol
-          const uri = 'file://' + path.join(project.dirpath, document.location);
+          const uri = pathToFileURL(
+            path.join(project.dirpath, document.location),
+          ).toString();
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
           if (!contents[0] || !contents[0].query) {
