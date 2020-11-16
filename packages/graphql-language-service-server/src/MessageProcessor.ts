@@ -577,7 +577,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text: string = readFileSync(fileURLToPath(uri)).toString();
+          const text = readFileSync(fileURLToPath(uri), { encoding: 'utf8' });
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
