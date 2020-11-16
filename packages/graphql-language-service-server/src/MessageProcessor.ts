@@ -1019,11 +1019,7 @@ export class MessageProcessor {
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
-    await this._graphQLCache.updateFragmentDefinition(
-      rootDir,
-      fileURLToPath(uri),
-      contents,
-    );
+    await this._graphQLCache.updateFragmentDefinition(rootDir, uri, contents);
   }
 
   async _updateObjectTypeDefinition(
@@ -1032,11 +1028,7 @@ export class MessageProcessor {
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
-    await this._graphQLCache.updateObjectTypeDefinition(
-      rootDir,
-      fileURLToPath(uri),
-      contents,
-    );
+    await this._graphQLCache.updateObjectTypeDefinition(rootDir, uri, contents);
   }
 
   _getCachedDocument(uri: string): CachedDocumentType | null {
