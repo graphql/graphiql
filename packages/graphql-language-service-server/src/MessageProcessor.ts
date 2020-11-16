@@ -713,18 +713,8 @@ export class MessageProcessor {
               );
             }
           }
-
           return {
-            // TODO: fix this hack!
-            // URI is being misused all over this library - there's a link that
-            // defines how an URI should be structured:
-            // https://tools.ietf.org/html/rfc3986
-            // Remove the below hack once the usage of URI is sorted out in related
-            // libraries.
-            uri:
-              res.path.indexOf('file:///') === 0
-                ? res.path
-                : `file://${path.resolve(res.path)}`,
+            uri: res.path,
             range: defRange,
           } as Location;
         })
@@ -871,6 +861,7 @@ export class MessageProcessor {
       return path.resolve(projectTmpPath);
     }
   }
+
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
     const config = project?.extensions?.languageService;
@@ -969,10 +960,15 @@ export class MessageProcessor {
           if (!document.location || !document.rawSDL) {
             return;
           }
+
+          let filePath = document.location;
+          if (!path.isAbsolute(filePath)) {
+            filePath = path.join(project.dirpath, document.location);
+          }
+
           // build full system URI path with protocol
-          const uri = pathToFileURL(
-            path.join(project.dirpath, document.location),
-          ).toString();
+          const uri = pathToFileURL(filePath).toString();
+
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
           if (!contents[0] || !contents[0].query) {
