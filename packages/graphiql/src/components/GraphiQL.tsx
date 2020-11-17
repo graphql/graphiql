@@ -97,6 +97,10 @@ type OnMouseMoveFn = Maybe<
 >;
 type OnMouseUpFn = Maybe<() => void>;
 
+export type GraphiQLToolbarConfig = {
+  additionalContent?: React.ReactNode;
+};
+
 export type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
@@ -123,6 +127,7 @@ export type GraphiQLProps = {
   ResultsTooltip?: typeof Component | FunctionComponent;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
+  toolbar?: GraphiQLToolbarConfig;
 };
 
 export type GraphiQLState = {
@@ -440,6 +445,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        {this.props.toolbar?.additionalContent
+          ? this.props.toolbar.additionalContent
+          : null}
       </GraphiQL.Toolbar>
     );
 
