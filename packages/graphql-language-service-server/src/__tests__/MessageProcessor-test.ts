@@ -22,6 +22,7 @@ import { loadConfig } from 'graphql-config';
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
+import { pathToFileURL } from 'url';
 
 const baseConfig = { dirpath: __dirname };
 
@@ -36,7 +37,7 @@ describe('MessageProcessor', () => {
     loadConfigOptions: { rootDir: __dirname },
   });
 
-  const queryDir = `${__dirname}/__queries__`;
+  const queryDir = pathToFileURL(`${__dirname}/__queries__`);
   const textDocumentTestString = `
   {
     hero(episode: NEWHOPE){
@@ -212,7 +213,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly changes the file cache with the didChange handler', async () => {
-    const uri = `file://${queryDir}/test.graphql`;
+    const uri = `${queryDir}/test.graphql`;
     messageProcessor._textDocumentCache.set(uri, {
       version: 1,
       contents: [
@@ -295,7 +296,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    await expect(result[0].uri).toEqual(`file://${queryDir}/test3.graphql`);
+    await expect(result[0].uri).toEqual(`${queryDir}/test3.graphql`);
   });
 
   it('parseDocument finds queries in tagged templates', async () => {
