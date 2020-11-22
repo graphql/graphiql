@@ -29,6 +29,9 @@
 !<PROJECT_ROOT>/node_modules/fb-watchman
 !<PROJECT_ROOT>/node_modules/yargs
 <PROJECT_ROOT>/node_modules/graphql/error/GraphQLError.js.flow*
+<PROJECT_ROOT>/node_modules/graphql/validation/rules/PossibleTypeExtensionsRule.js.flow
+<PROJECT_ROOT>/node_modules/graphql/validation/rules/custom/NoDeprecatedCustomRule.js.flow
+<PROJECT_ROOT>/node_modules/graphql/polyfills/symbols.js.flow
 
 [include]
 
