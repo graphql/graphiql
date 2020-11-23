@@ -94,7 +94,9 @@ export function validateQuery(
   // Note: we still want to support older versions that don't have NoDeprecated
   const deprecationWarningAnnotations =
     !NoDeprecatedCustomRule && findDeprecatedUsages
-      ? findDeprecatedUsages(schema, ast)
+      ? mapCat(findDeprecatedUsages(schema, ast), error =>
+          annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+        )
       : mapCat(validate(schema, ast, [NoDeprecatedCustomRule]), error =>
           annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
         );
