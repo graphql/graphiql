@@ -261,21 +261,21 @@ query name {
   });
 
   it('provides correct directive suggestions', () => {
+    expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual([
+      { label: 'include' },
+      { label: 'skip' },
+      { label: 'test' },
+    ]);
+
     expect(testSuggestions('{ test @', new Position(0, 8))).toEqual([
       { label: 'include' },
       { label: 'skip' },
-      { label: 'stream' },
       { label: 'test' },
     ]);
 
     expect(
       testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
-    ).toEqual([
-      { label: 'include' },
-      { label: 'skip' },
-      { label: 'stream' },
-      { label: 'test' },
-    ]);
+    ).toEqual([{ label: 'include' }, { label: 'skip' }, { label: 'test' }]);
 
     expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
   });
