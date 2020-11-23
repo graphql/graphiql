@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -43,6 +43,8 @@ export type {
 
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;
+
+  getProjectForFile: (uri: string) => GraphQLProjectConfig;
 
   getObjectTypeDependencies: (
     query: string,

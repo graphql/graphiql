@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -70,6 +70,7 @@ export function getAutocompleteSuggestions(
   queryText: string,
   cursor: Position,
   contextToken?: ContextToken,
+  fragmentDefs?: FragmentDefinitionNode[],
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -209,7 +210,7 @@ export function getAutocompleteSuggestions(
       typeInfo,
       schema,
       queryText,
-      kind,
+      fragmentDefs,
     );
   }
 
@@ -367,11 +368,15 @@ function getSuggestionsForFragmentSpread(
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
   queryText: string,
-  _kind: string,
+  fragmentDefs?: FragmentDefinitionNode[],
 ): Array<CompletionItem> {
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
   const fragments = getFragmentDefinitions(queryText);
+
+  if (fragmentDefs) {
+    fragments.push(...fragmentDefs);
+  }
 
   // Filter down to only the fragments which may exist here.
   const relevantFrags = fragments.filter(

@@ -1,14 +1,8 @@
 module.exports = {
-  sourceMaps: true,
   presets: [
-    [
-      require.resolve('@babel/preset-env'),
-      {
-        targets: { browsers: ['last 2 chrome versions'] },
-        bugfixes: true,
-      },
-    ],
-    [require.resolve('@babel/preset-typescript'), {}],
+    require.resolve('@babel/preset-env'),
+    require.resolve('@babel/preset-typescript'),
+    require.resolve('@babel/preset-react'),
   ],
   plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
 };

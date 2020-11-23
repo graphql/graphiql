@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -261,6 +261,12 @@ query name {
   });
 
   it('provides correct directive suggestions', () => {
+    expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual([
+      { label: 'include' },
+      { label: 'skip' },
+      { label: 'test' },
+    ]);
+
     expect(testSuggestions('{ test @', new Position(0, 8))).toEqual([
       { label: 'include' },
       { label: 'skip' },
@@ -320,5 +326,9 @@ query name {
   it('provides correct directive suggestions on args definitions', () =>
     expect(
       testSuggestions('type Type { field(arg: String @', new Position(0, 31)),
-    ).toEqual([{ label: 'onAllDefs' }, { label: 'onArg' }]));
+    ).toEqual([
+      { label: 'deprecated' },
+      { label: 'onAllDefs' },
+      { label: 'onArg' },
+    ]));
 });

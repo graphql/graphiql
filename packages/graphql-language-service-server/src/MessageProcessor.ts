@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -13,7 +13,6 @@ import { URL } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
-  GraphQLCache,
   Uri,
   GraphQLConfig,
   GraphQLProjectConfig,
@@ -32,6 +31,7 @@ import type {
   VersionedTextDocumentIdentifier,
   DidSaveTextDocumentParams,
   DidOpenTextDocumentParams,
+  DidChangeConfigurationParams,
 } from 'vscode-languageserver-protocol';
 
 import type {
@@ -53,11 +53,12 @@ import type {
   SymbolInformation,
   WorkspaceSymbolParams,
   IConnection,
+  DidChangeConfigurationRegistrationOptions,
 } from 'vscode-languageserver';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
-import { getGraphQLCache } from './GraphQLCache';
+import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
 import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 
 import { Logger } from './Logger';
@@ -68,6 +69,9 @@ import type { LoadConfigOptions } from './types';
 import { promisify } from 'util';
 
 const writeFileAsync = promisify(writeFile);
+
+// import dotenv config as early as possible for graphql-config cjs pattern
+require('dotenv').config();
 
 type CachedDocumentType = {
   version: number;
@@ -91,6 +95,7 @@ export class MessageProcessor {
   _loadConfigOptions: LoadConfigOptions;
   _schemaCacheInit: boolean = false;
   _rootPath: string = process.cwd();
+  _settings: any;
 
   constructor({
     logger,
@@ -174,26 +179,15 @@ export class MessageProcessor {
 
     this._rootPath = configDir
       ? configDir.trim()
-      : params.rootPath || this._rootPath;
+      : params.rootUri || this._rootPath;
     if (!this._rootPath) {
       this._logger.warn(
         'no rootPath configured in extension or server, defaulting to cwd',
       );
     }
-    this._loadConfigOptions.rootDir = this._rootPath;
-
-    this._graphQLCache = await getGraphQLCache({
-      parser: this._parser,
-      loadConfigOptions: this._loadConfigOptions,
-      config: this._graphQLConfig,
-    });
-    this._languageService = new GraphQLLanguageService(this._graphQLCache);
-
     if (!serverCapabilities) {
       throw new Error('GraphQL Language Server is not initialized.');
     }
-
-    this._isInitialized = true;
 
     this._logger.log(
       JSON.stringify({
@@ -201,33 +195,71 @@ export class MessageProcessor {
         messageType: 'initialize',
       }),
     );
-    const config = this._graphQLCache.getGraphQLConfig();
-    await this._cacheAllProjectFiles(config);
 
     return serverCapabilities;
+  }
+
+  async _updateGraphQLConfig() {
+    const settings = await this._connection.workspace.getConfiguration({
+      section: 'graphql-config',
+    });
+    const vscodeSettings = await this._connection.workspace.getConfiguration({
+      section: 'vscode-graphql',
+    });
+    if (settings?.dotEnvPath) {
+      require('dotenv').config({ path: settings.dotEnvPath });
+    }
+    this._settings = { ...settings, ...vscodeSettings };
+    const rootDir = this._settings?.load?.rootDir || this._rootPath;
+    this._rootPath = rootDir;
+    this._loadConfigOptions = {
+      ...Object.keys(this._settings.load || []).reduce((agg, key) => {
+        const value = this._settings.load[key];
+        if (value === undefined || value === null) {
+          delete agg[key];
+        }
+        return agg;
+      }, this._settings.load),
+      rootDir,
+    };
+
+    this._graphQLCache = await getGraphQLCache({
+      parser: this._parser,
+      loadConfigOptions: this._loadConfigOptions,
+      config: this._graphQLConfig,
+    });
+    this._languageService = new GraphQLLanguageService(this._graphQLCache);
+    if (this._graphQLCache?.getGraphQLConfig) {
+      const config = this._graphQLCache.getGraphQLConfig();
+      await this._cacheAllProjectFiles(config);
+    }
   }
 
   async handleDidOpenOrSaveNotification(
     params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized || !this._graphQLCache) {
-      return null;
+    /**
+     * Initialize the LSP server when the first file is opened or saved,
+     * so that we can access the user settings for config rootDir, etc
+     */
+    try {
+      if (!this._isInitialized || !this._graphQLCache) {
+        if (!this._settings) {
+          await this._updateGraphQLConfig();
+          this._isInitialized = true;
+        } else {
+          return null;
+        }
+      }
+    } catch (err) {
+      this._logger.error(err);
     }
 
-    const settings = await this._connection.workspace.getConfiguration({
-      section: 'graphql-config',
-    });
-    if (settings.rootDir && settings.rootDir !== this._rootPath) {
-      this._rootPath = settings.rootDir;
-      this._loadConfigOptions.rootDir = settings.rootDir;
-
-      this._graphQLCache = await getGraphQLCache({
-        parser: this._parser,
-        loadConfigOptions: this._loadConfigOptions,
-        config: this._graphQLConfig,
-      });
-      this._languageService = new GraphQLLanguageService(this._graphQLCache);
-    }
+    // Here, we set the workspace settings in memory,
+    // and re-initialize the language service when a different
+    // root path is detected.
+    // We aren't able to use initialization event for this
+    // and the config change event is after the fact.
 
     if (!params || !params.textDocument) {
       throw new Error('`textDocument` argument is required.');
@@ -253,32 +285,32 @@ export class MessageProcessor {
         contents = cachedDocument.contents;
       }
     }
+    if (this._isInitialized && this._graphQLCache) {
+      await Promise.all(
+        contents.map(async ({ query, range }) => {
+          const results = await this._languageService.getDiagnostics(
+            query,
+            uri,
+            this._isRelayCompatMode(query) ? false : true,
+          );
+          if (results && results.length > 0) {
+            diagnostics.push(
+              ...processDiagnosticsMessage(results, query, range),
+            );
+          }
+        }),
+      );
+      const project = this._graphQLCache.getProjectForFile(uri);
 
-    await Promise.all(
-      contents.map(async ({ query, range }) => {
-        const results = await this._languageService.getDiagnostics(
-          query,
-          uri,
-          this._isRelayCompatMode(query) ? false : true,
-        );
-        if (results && results.length > 0) {
-          diagnostics.push(...processDiagnosticsMessage(results, query, range));
-        }
-      }),
-    );
-
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(uri);
-
-    this._logger.log(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'textDocument/didOpen',
-        projectName: project && project.name,
-        fileName: uri,
-      }),
-    );
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'textDocument/didOpen',
+          projectName: project && project.name,
+          fileName: uri,
+        }),
+      );
+    }
 
     return { uri, diagnostics };
   }
@@ -319,6 +351,7 @@ export class MessageProcessor {
     await this._invalidateCache(textDocument, uri, contents);
 
     const cachedDocument = this._getCachedDocument(uri);
+
     if (!cachedDocument) {
       return null;
     }
@@ -337,9 +370,7 @@ export class MessageProcessor {
       }),
     );
 
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(uri);
+    const project = this._graphQLCache.getProjectForFile(uri);
 
     this._logger.log(
       JSON.stringify({
@@ -351,6 +382,18 @@ export class MessageProcessor {
     );
 
     return { uri, diagnostics };
+  }
+  async handleDidChangeConfiguration(
+    _params?: DidChangeConfigurationParams,
+  ): Promise<DidChangeConfigurationRegistrationOptions> {
+    await this._updateGraphQLConfig();
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'workspace/didChangeConfiguration',
+      }),
+    );
+    return {};
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
@@ -370,9 +413,7 @@ export class MessageProcessor {
       this._textDocumentCache.delete(uri);
     }
 
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(uri);
+    const project = this._graphQLCache.getProjectForFile(uri);
 
     this._logger.log(
       JSON.stringify({
@@ -451,9 +492,7 @@ export class MessageProcessor {
       textDocument.uri,
     );
 
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(textDocument.uri);
+    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
 
     this._logger.log(
       JSON.stringify({
@@ -522,12 +561,22 @@ export class MessageProcessor {
         if (!this._isInitialized || !this._graphQLCache) {
           throw Error('No cache available for handleWatchedFilesChanged');
         }
+        // update when graphql config changes!
+        if (
+          ['graphql.config', 'graphqlrc', this._settings.load.fileName].some(
+            v => change.uri.match(v)?.length,
+          )
+        ) {
+          this._logger.info('updating graphql config');
+          this._updateGraphQLConfig();
+        }
 
         if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
         ) {
           const uri = change.uri;
+
           const text: string = readFileSync(new URL(uri).pathname).toString();
           const contents = this._parser(text, uri);
 
@@ -550,9 +599,7 @@ export class MessageProcessor {
             )
           ).reduce((left, right) => left.concat(right), []);
 
-          const project = this._graphQLCache
-            .getGraphQLConfig()
-            .getProjectForFile(uri);
+          const project = this._graphQLCache.getProjectForFile(uri);
 
           this._logger.log(
             JSON.stringify({
@@ -593,9 +640,7 @@ export class MessageProcessor {
     }
     const textDocument = params.textDocument;
     const position = params.position;
-    const project = this._graphQLCache
-      .getGraphQLConfig()
-      .getProjectForFile(textDocument.uri);
+    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     if (project) {
       await this._cacheSchemaFilesForProject(project);
     }
@@ -621,11 +666,17 @@ export class MessageProcessor {
       position.line -= parentRange.start.line;
     }
 
-    const result = await this._languageService.getDefinition(
-      query,
-      position,
-      textDocument.uri,
-    );
+    let result = null;
+
+    try {
+      result = await this._languageService.getDefinition(
+        query,
+        position,
+        textDocument.uri,
+      );
+    } catch (err) {
+      // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
+    }
 
     const inlineFragments: string[] = [];
 
@@ -746,7 +797,6 @@ export class MessageProcessor {
         documents.map(async ([uri]) => {
           const cachedDocument = this._getCachedDocument(uri);
           if (!cachedDocument) {
-            console.error('A cached document cannot be found.');
             return [];
           }
           const docSymbols = await this._languageService.getDocumentSymbols(
@@ -786,7 +836,6 @@ export class MessageProcessor {
     uri = uri.toString();
 
     const isFileUri = existsSync(uri);
-
     let version = 1;
     if (isFileUri) {
       const schemaUri = 'file://' + path.join(project.dirpath, uri);
@@ -822,7 +871,7 @@ export class MessageProcessor {
   }
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
-    const config = project?.extensions?.vscode;
+    const config = project?.extensions?.languageService;
     /**
      * By default, let's only cache the full graphql config schema.
      * This allows us to rely on graphql-config's schema building features
@@ -833,13 +882,13 @@ export class MessageProcessor {
      *
      * The default temporary schema file seems preferrable until we have graphql source maps
      */
-    const cacheSchemaFiles = config?.cacheSchemaFiles || false;
-    const cacheConfigSchema = config?.cacheConfigSchema || true;
-
-    if (cacheConfigSchema) {
+    const useSchemaFileDefinitions =
+      (config?.useSchemaFileDefinitions ??
+        this?._settings?.useSchemaFileDefinitions) ||
+      false;
+    if (!useSchemaFileDefinitions) {
       await this._cacheConfigSchema(project);
-    }
-    if (cacheSchemaFiles && schema) {
+    } else {
       if (Array.isArray(schema)) {
         Promise.all(
           schema.map(async (uri: UnnormalizedTypeDefPointer) => {

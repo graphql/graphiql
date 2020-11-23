@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.5](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.4...graphql-language-service-cli@3.1.5) (2020-10-20)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+## [3.1.4](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.3...graphql-language-service-cli@3.1.4) (2020-09-23)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+## [3.1.3](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.2...graphql-language-service-cli@3.1.3) (2020-09-23)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+## [3.1.2](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.1...graphql-language-service-cli@3.1.2) (2020-09-20)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+## [3.1.1](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.0...graphql-language-service-cli@3.1.1) (2020-09-20)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+# [3.1.0](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.0-alpha.5...graphql-language-service-cli@3.1.0) (2020-09-18)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
+# [3.1.0-alpha.5](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.0-alpha.4...graphql-language-service-cli@3.1.0-alpha.5) (2020-09-11)
+
+**Note:** Version bump only for package graphql-language-service-cli
+
 # [3.1.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.0-alpha.3...graphql-language-service-cli@3.1.0-alpha.4) (2020-08-26)
 
 **Note:** Version bump only for package graphql-language-service-cli

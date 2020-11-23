@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -148,9 +148,10 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  const logger = new Logger(options.tmpDir);
-
   if (options && options.method) {
+    const stderrOnly = options.method === 'stream';
+    const logger = new Logger(options.tmpDir, stderrOnly);
+
     const finalOptions = buildOptions(options);
     let reader;
     let writer;
@@ -364,7 +365,8 @@ async function addHandlers({
   connection.onRequest(WorkspaceSymbolRequest.type, params =>
     messageProcessor.handleWorkspaceSymbolRequest(params),
   );
-  // connection.onRequest(ReferencesRequest.type, params =>
-  //   messageProcessor.handleReferencesRequest(params),
-  // );
+
+  connection.onDidChangeConfiguration(
+    messageProcessor.handleDidChangeConfiguration,
+  );
 }

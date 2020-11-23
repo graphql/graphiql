@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -13,12 +13,13 @@ import {
   GraphQLError,
   GraphQLSchema,
   Location,
+  NoDeprecatedCustomRule,
   SourceLocation,
   ValidationRule,
 } from 'graphql';
 
 import invariant from 'assert';
-import { findDeprecatedUsages, parse } from 'graphql';
+import { findDeprecatedUsages, parse, validate } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 
@@ -90,20 +91,22 @@ export function validateQuery(
     error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
-  // Note: findDeprecatedUsages was added in graphql@0.9.0, but we want to
-  // support older versions of graphql-js.
-  const deprecationWarningAnnotations = !findDeprecatedUsages
-    ? []
-    : mapCat(findDeprecatedUsages(schema, ast), error =>
-        annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
-      );
+  // Note: we still want to support older versions that don't have NoDeprecated
+  const deprecationWarningAnnotations =
+    !NoDeprecatedCustomRule && findDeprecatedUsages
+      ? mapCat(findDeprecatedUsages(schema, ast), error =>
+          annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+        )
+      : mapCat(validate(schema, ast, [NoDeprecatedCustomRule]), error =>
+          annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+        );
 
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
 // General utility for map-cating (aka flat-mapping).
 function mapCat<T>(
-  array: Array<T>,
+  array: ReadonlyArray<T>,
   mapper: (item: T) => Array<any>,
 ): Array<any> {
   return Array.prototype.concat.apply([], array.map(mapper));

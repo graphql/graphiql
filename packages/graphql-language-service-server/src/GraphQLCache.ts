@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -61,7 +61,7 @@ export async function getGraphQLCache({
   parser: typeof parseDocument;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
-}): Promise<GraphQLCacheInterface> {
+}): Promise<GraphQLCache> {
   let graphQLConfig = config;
   if (!graphQLConfig) {
     graphQLConfig = await loadConfig(loadConfigOptions);
@@ -103,6 +103,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
+
+  getProjectForFile = (uri: string): GraphQLProjectConfig => {
+    return this._graphQLConfig.getProjectForFile(uri.replace('file://', ''));
+  };
 
   getFragmentDependencies = async (
     query: string,

@@ -1,11 +1,10 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
 import type * as CM from 'codemirror';
-import 'codemirror/addon/hint/show-hint';
 import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
@@ -15,7 +14,7 @@ declare module CodeMirror {
   export interface Editor extends CM.Editor {}
   export interface ShowHintOptions {
     completeSingle: boolean;
-    hint: CM.HintFunction | CM.AsyncHintFunction;
+    hint: any;
     container: HTMLElement | null;
   }
 }
@@ -46,7 +45,7 @@ type HeaderEditorProps = {
  */
 export class HeaderEditor extends React.Component<HeaderEditorProps> {
   CodeMirror: any;
-  editor: (CM.Editor & { options: any }) | null = null;
+  editor: (CM.Editor & { options: any; showHint: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean = false;
@@ -72,13 +71,14 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
     require('codemirror/addon/search/searchcursor');
     require('codemirror/addon/search/jump-to-line');
     require('codemirror/addon/dialog/dialog');
+    require('codemirror/mode/javascript/javascript');
     require('codemirror/keymap/sublime');
 
     const editor = (this.editor = this.CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
-      mode: 'graphql-headers',
+      mode: { name: 'javascript', json: true },
       theme: this.props.editorTheme || 'graphiql',
       keyMap: 'sublime',
       autoCloseBrackets: true,

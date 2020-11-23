@@ -11,6 +11,9 @@
 # Now un-ignore source code, tests, configuration, etc
 !/{packages,examples}/*/{src,cypress,resources}/**
 
+# CRA example has its own eslint config
+examples/graphiql-create-react-app
+
 !.eslintrc.js
 !babel.config.js
 #

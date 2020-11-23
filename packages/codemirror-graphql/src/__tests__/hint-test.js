@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the BSD-style license found in the
@@ -449,6 +449,11 @@ describe('graphql-hint', () => {
     );
     const list = [
       {
+        text: 'deprecated',
+        description:
+          'Marks an element of a GraphQL schema as no longer supported.',
+      },
+      {
         text: 'onArg',
         description: '',
       },
@@ -545,7 +550,7 @@ describe('graphql-hint', () => {
       {
         text: '__Type',
         description:
-          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name and description, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
+          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
       },
       {
         text: '__Field',
@@ -997,5 +1002,31 @@ describe('graphql-hint', () => {
       { line: 0, ch: 27 },
     );
     expect(suggestions7.list).to.deep.equal(expectedSuggestions);
+  });
+  it('provides correct field name suggestions for an interface type', async () => {
+    const suggestions = await getHintSuggestions(
+      '{ first { ... on TestInterface { ',
+      {
+        line: 0,
+        ch: 33,
+      },
+    );
+    const list = [
+      {
+        text: 'scalar',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
+        description: 'The name of the current Object type at runtime.',
+        isDeprecated: false,
+        text: '__typename',
+        type: GraphQLNonNull(GraphQLString),
+        deprecationReason: undefined,
+      },
+    ];
+
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 });

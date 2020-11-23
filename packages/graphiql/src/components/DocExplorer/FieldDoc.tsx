@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -7,9 +7,10 @@
 
 import React from 'react';
 import Argument from './Argument';
+import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLArgument } from 'graphql';
+import { GraphQLArgument, DirectiveNode } from 'graphql';
 import { OnClickTypeFunction, FieldType } from './types';
 
 type FieldDocProps = {
@@ -38,6 +39,27 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     );
   }
 
+  let directivesDef;
+  if (
+    field &&
+    field.astNode &&
+    field.astNode.directives &&
+    field.astNode.directives.length > 0
+  ) {
+    directivesDef = (
+      <div className="doc-category">
+        <div className="doc-category-title">{'directives'}</div>
+        {field.astNode.directives.map((directive: DirectiveNode) => (
+          <div key={directive.name.value} className="doc-category-item">
+            <div>
+              <Directive directive={directive} />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div>
       <MarkdownContent
@@ -55,6 +77,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
         <TypeLink type={field?.type} onClick={onClickType} />
       </div>
       {argsDef}
+      {directivesDef}
     </div>
   );
 }

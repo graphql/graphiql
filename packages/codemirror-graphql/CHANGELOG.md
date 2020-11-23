@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.3](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2...codemirror-graphql@0.12.3) (2020-10-20)
+
+### Bug Fixes
+
+- **codemirror-graphql:** give interface field name suggestions ([#1695](https://github.com/graphql/graphiql/issues/1695)) ([669b301](https://github.com/graphql/graphiql/commit/669b3013fc679eca7c4e5c8ed6b0cd2fb2dbf2dc))
+
+## [0.12.2](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2-alpha.2...codemirror-graphql@0.12.2) (2020-09-18)
+
+**Note:** Version bump only for package codemirror-graphql
+
+## [0.12.2-alpha.2](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2-alpha.1...codemirror-graphql@0.12.2-alpha.2) (2020-09-11)
+
+**Note:** Version bump only for package codemirror-graphql
+
 ## [0.12.2-alpha.1](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.2-alpha.0...codemirror-graphql@0.12.2-alpha.1) (2020-08-12)
 
 **Note:** Version bump only for package codemirror-graphql

@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "0.12.2-alpha.1",
+  "version": "0.12.3",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -33,9 +33,6 @@
     "variables",
     "results"
   ],
-  "options": {
-    "mocha": "--full-trace --require resources/mochaBootload **/*-test.js"
-  },
   "scripts": {
     "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
     "build-js": "babel src --root-mode upward --ignore **/__tests__/**,**/__mocks__/** --out-dir .",
@@ -43,22 +40,22 @@
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow} && rimraf esm results utils variables coverage __tests__",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "nyc --require @babel/polyfill --reporter lcov --reporter text mocha $npm_package_options_mocha"
+    "test": "mocha --require resources/mochaBootload **/*-test.js"
   },
   "peerDependencies": {
     "codemirror": "^5.54.0",
     "graphql": "^14.0.0 || ^15.0.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.4.2-alpha.1",
-    "graphql-language-service-parser": "^1.6.2"
+    "graphql-language-service-interface": "^2.4.2",
+    "graphql-language-service-parser": "^1.6.4"
   },
   "devDependencies": {
     "chai": "4.2.0",
     "chai-subset": "1.6.0",
     "codemirror": "^5.52.2",
     "cross-env": "^7.0.2",
-    "graphql": "15.0.0",
+    "graphql": "15.4.0",
     "jsdom": "^16.1.0",
     "mocha": "7.1.1",
     "nyc": "^15.0.1",

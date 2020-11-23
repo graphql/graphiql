@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -33,7 +33,7 @@ const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
   createRefetchContainer: true,
 };
 
-const DEFAULT_STABLE_TAGS = ['graphql', 'gql'];
+const DEFAULT_STABLE_TAGS = ['graphql', 'graphqls', 'gql'];
 export const DEFAULT_TAGS = [...DEFAULT_STABLE_TAGS, 'graphql.experimental'];
 
 type TagResult = { tag: string; template: string; range: Range };

@@ -1,0 +1,4 @@
+.CodeMirror-jump-token {
+  text-decoration: underline;
+  cursor: pointer;
+}

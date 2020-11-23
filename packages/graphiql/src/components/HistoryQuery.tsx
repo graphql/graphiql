@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { QueryStoreItem } from '../utility/QueryStore';
-import { WithTranslation, withTranslation } from 'react-i18next';
 
 export type HandleEditLabelFn = (
   query?: string,
@@ -42,10 +41,9 @@ export type HistoryQueryProps = {
   handleToggleFavorite: HandleToggleFavoriteFn;
   operationName?: string;
   onSelect: HandleSelectQueryFn;
-} & QueryStoreItem &
-  WithTranslation;
+} & QueryStoreItem;
 
-class HistoryQuerySource extends React.Component<
+export default class HistoryQuery extends React.Component<
   HistoryQueryProps,
   { editable: boolean }
 > {
@@ -59,7 +57,6 @@ class HistoryQuerySource extends React.Component<
   }
 
   render() {
-    const { t } = this.props;
     const displayName =
       this.props.label ||
       this.props.operationName ||
@@ -79,7 +76,7 @@ class HistoryQuerySource extends React.Component<
             }}
             onBlur={this.handleFieldBlur.bind(this)}
             onKeyDown={this.handleFieldKeyDown.bind(this)}
-            placeholder={t('Type a label')}
+            placeholder="Type a label"
           />
         ) : (
           <button
@@ -90,15 +87,13 @@ class HistoryQuerySource extends React.Component<
         )}
         <button
           onClick={this.handleEditClick.bind(this)}
-          aria-label={t('Edit label')}>
+          aria-label="Edit label">
           {'\u270e'}
         </button>
         <button
           className={this.props.favorite ? 'favorited' : undefined}
           onClick={this.handleStarClick.bind(this)}
-          aria-label={
-            this.props.favorite ? t('Remove favorite') : t('Add favorite')
-          }>
+          aria-label={this.props.favorite ? 'Remove favorite' : 'Add favorite'}>
           {starIcon}
         </button>
       </li>
@@ -164,6 +159,3 @@ class HistoryQuerySource extends React.Component<
     });
   }
 }
-
-const HistoryQuery = withTranslation('Toolbar')(HistoryQuerySource);
-export default HistoryQuery;

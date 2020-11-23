@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -28,6 +28,33 @@ const exampleObject = new GraphQLObjectType({
           name: 'stringArg',
           type: GraphQLString,
         },
+      },
+    },
+    stringWithDirective: {
+      name: 'stringWithDirective',
+      type: GraphQLString,
+      astNode: {
+        kind: 'FieldDefinition',
+        name: {
+          kind: 'Name',
+          value: 'stringWithDirective',
+        },
+        type: {
+          kind: 'NamedType',
+          name: {
+            kind: 'Name',
+            value: 'GraphQLString',
+          },
+        },
+        directives: [
+          {
+            kind: 'Directive',
+            name: {
+              kind: 'Name',
+              value: 'development',
+            },
+          },
+        ],
       },
     },
   },
@@ -87,6 +114,19 @@ describe('FieldDoc', () => {
     expect(container.querySelectorAll('.arg')).toHaveLength(1);
     expect(container.querySelector('.arg')).toHaveTextContent(
       'stringArg: String',
+    );
+  });
+
+  it('should render a string field with directives', () => {
+    const { container } = render(
+      <FieldDoc
+        field={exampleObject.getFields().stringWithDirective}
+        onClickType={jest.fn()}
+      />,
+    );
+    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(container.querySelector('#development')).toHaveTextContent(
+      '@development',
     );
   });
 });

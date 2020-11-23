@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2019 GraphQL Contributors
+ *  Copyright (c) 2020 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the
@@ -15,7 +15,7 @@ import { Logger, startServer } from 'graphql-language-service-server';
 const { argv } = yargs
   .usage(
     'GraphQL Language Service Command-Line Interface.\n' +
-      'Usage: $0 <command> <file>\n' +
+      'Usage: graphql-lsp <command> <file>\n' +
       '    [-h | --help]\n' +
       '    [-c | --configDir] {configDir}\n' +
       '    [-t | --text] {textBuffer}\n' +
