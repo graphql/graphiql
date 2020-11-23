@@ -20,7 +20,8 @@ import {
   Visitor,
   ASTNode,
 } from 'graphql';
-import Maybe from 'graphql/tsutils/Maybe';
+
+type Maybe<T> = null | T;
 
 export function uniqueBy<T>(
   array: readonly SelectionNode[],
