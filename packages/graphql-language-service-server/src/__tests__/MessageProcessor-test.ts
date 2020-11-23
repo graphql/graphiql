@@ -37,7 +37,7 @@ describe('MessageProcessor', () => {
     loadConfigOptions: { rootDir: __dirname },
   });
 
-  const queryDir = pathToFileURL(`${__dirname}/__queries__`);
+  const queryPathUri = pathToFileURL(`${__dirname}/__queries__`);
   const textDocumentTestString = `
   {
     hero(episode: NEWHOPE){
@@ -122,7 +122,7 @@ describe('MessageProcessor', () => {
   const initialDocument = {
     textDocument: {
       text: textDocumentTestString,
-      uri: `${queryDir}/test.graphql`,
+      uri: `${queryPathUri}/test.graphql`,
       version: 0,
     },
   };
@@ -145,7 +145,7 @@ describe('MessageProcessor', () => {
   });
 
   it('runs completion requests properly', async () => {
-    const uri = `${queryDir}/test2.graphql`;
+    const uri = `${queryPathUri}/test2.graphql`;
     const query = 'test';
     messageProcessor._textDocumentCache.set(uri, {
       version: 0,
@@ -169,7 +169,7 @@ describe('MessageProcessor', () => {
   });
 
   it('runs document symbol requests', async () => {
-    const uri = `${queryDir}/test3.graphql`;
+    const uri = `${queryPathUri}/test3.graphql`;
     const validQuery = `
   {
     hero(episode: EMPIRE){
@@ -213,7 +213,7 @@ describe('MessageProcessor', () => {
   });
 
   it('properly changes the file cache with the didChange handler', async () => {
-    const uri = `${queryDir}/test.graphql`;
+    const uri = `${queryPathUri}/test.graphql`;
     messageProcessor._textDocumentCache.set(uri, {
       version: 1,
       contents: [
@@ -274,7 +274,7 @@ describe('MessageProcessor', () => {
     const newDocument = {
       textDocument: {
         text: validQuery,
-        uri: `${queryDir}/test3.graphql`,
+        uri: `${queryPathUri}/test3.graphql`,
         version: 1,
       },
     };
@@ -296,7 +296,7 @@ describe('MessageProcessor', () => {
     };
 
     const result = await messageProcessor.handleDefinitionRequest(test);
-    await expect(result[0].uri).toEqual(`${queryDir}/test3.graphql`);
+    await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
 
   it('parseDocument finds queries in tagged templates', async () => {
