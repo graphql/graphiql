@@ -28,9 +28,14 @@ import {
 } from 'graphql-language-service-types';
 
 import { locToRange, offsetToPosition } from 'graphql-language-service-utils';
-import assert from 'assert';
 
 export const LANGUAGE = 'GraphQL';
+
+function assert(value: any, message: string) {
+  if (!value) {
+    throw new Error(message);
+  }
+}
 
 function getRange(text: string, node: ASTNode): Range {
   const location = node.loc as Location;
