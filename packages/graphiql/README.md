@@ -157,53 +157,37 @@ ReactDOM.render(<GraphiQL fetcher={graphQLFetcher} />, document.body);
 
 GraphiQL supports customization in UI and behavior by accepting React props and children.
 
+<span id="props"> </span>
+
 ### Props
 
-- `fetcher`: a function which accepts GraphQL-HTTP parameters and returns a Promise or Observable which resolves to the GraphQL parsed JSON response.
+For more details on props, see the [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops)
 
-- `schema`: a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.
-
-- `query`: an optional GraphQL string to use as the initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used.
-
-- `variables`: an optional GraphQL string to use as the initial displayed query variables, if `undefined` is provided, the stored variables will be used.
-
-- `headers`: an optional GraphQL string to use as the initial displayed request headers. if not defined, it will default to the stored headers if `shouldPersistHeaders` is enabled.
-
-- `operationName`: an optional name of which GraphQL operation should be executed.
-
-- `response`: an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query.
-
-- `storage`: an instance of [Storage][] GraphiQL will use to persist state. Default: `window.localStorage`.
-
-- `defaultQuery`: an optional GraphQL string to use when no query is provided and no stored query exists from a previous session. If `undefined` is provided, GraphiQL will use its own default query.
-
-- `defaultVariableEditorOpen`: an optional boolean that sets whether or not to show the variables pane on startup. If not defined, it will be based off whether or not variables are present. (**deprecated** in favor of `defaultSecondaryEditorOpen`)
-
-- `defaultSecondaryEditorOpen`: an optional boolean that sets whether or not to show the variables/headers pane on startup. If not defined, it will be based off whether or not variables and/or headers are present.
-
-- `onEditQuery`: an optional function which will be called when the Query editor changes. The argument to the function will be the query string.
-
-- `onEditVariables`: an optional function which will be called when the Query variable editor changes. The argument to the function will be the variables string.
-
-- `onEditHeaders`: an optional function which will be called when the request headers editor changes. The argument to the function will be the headers string.
-
-- `onEditOperationName`: an optional function which will be called when the operation name to be executed changes.
-
-- `onToggleDocs`: an optional function which will be called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.
-
-- `getDefaultFieldNames`: an optional function used to provide default fields to non-leaf fields which invalidly lack a selection set. Accepts a GraphQLType instance and returns an array of field names. If not provided, a default behavior will be used.
-
-- `editorTheme`: an optional string naming a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. Defaults to the `graphiql` theme. See below for full usage.
-
-- `readOnly`: an optional boolean which when `true` will make the `QueryEditor` and `Variables` panes readOnly.
-
-- `docExplorerOpen`: an optional boolean which when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. If the user has toggled the doc explorer on/off following this, however, the persisted UI state will override this default flag.
-
-- `headerEditorEnabled`: an optional boolean which enables the header editor when `true`. Defaults to `false`.
-
-- `shouldPersistHeaders`: an optional boolean which enables to persist headers to storage when `true`. Defaults to `false`
-
-- `toolbar.additionalContent`: if you want to keep the default toolbar content (Prettify, Merge Button etc.) while adding additional items pass any react element to this property. E.g. you could add multiple GraphiQL.Button elements by wrapping them inside a react fragment. Defaults to `null`
+| Prop                         | Type                                                                                          | Description                                                                                                                                                                                     | Default                       |
+| ---------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `fetcher`                    | [`Fetcher function`](https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#fetcher) | **Required.** a function which accepts GraphQL-HTTP parameters and returns a Promise or Observable which resolves to the GraphQL parsed JSON response.                                          |                               |
+| `schema`                     | `GraphQLSchema`                                                                               | a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.                       |
+| `query`                      | `string`                                                                                      | initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used. You can also set this value at runtime to override the current operation editor state.    |
+| `variables`                  | `string`                                                                                      | initial displayed query variables, if `undefined` is provided, the stored variables will be used.                                                                                               |
+| `headers`                    | `string`                                                                                      | initial displayed request headers. if not defined, it will default to the stored headers if `shouldPersistHeaders` is enabled.                                                                  |
+| `operationName`              | `string`                                                                                      | an optional name of which GraphQL operation should be executed.                                                                                                                                 |
+| `response`                   | `string`                                                                                      | an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query. |
+| `storage`                    | [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html)       | an object that matches `window.localStorage` signature that GraphiQL will use to persist state.                                                                                                 | `window.localStorage`         |
+| `defaultQuery`               | `string`                                                                                      | Provides default query if no user state is present.                                                                                                                                             | default graphiql help text    |
+| `defaultVariableEditorOpen`  | `boolean`                                                                                     | sets whether or not to show the variables pane on startup. overridden by user state (**deprecated** in favor of `defaultSecondaryEditorOpen`)                                                   |
+| `defaultSecondaryEditorOpen` | `boolean`                                                                                     | sets whether or not to show the variables/headers pane on startup. If not defined, it will be based off whether or not variables and/or headers are present.                                    |
+| `getDefaultFieldNames`       | `Function`                                                                                    | an optional function used to provide default field values for incomplete queries                                                                                                                | `defaultGetDefaultFieldNames` |
+| `editorTheme`                | `string`                                                                                      | an optional string naming a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. See below for full usage.                                               | `graphiql`                    |
+| `readOnly`                   | `boolean`                                                                                     | when `true` will make the `QueryEditor` and `Variables` panes readOnly.                                                                                                                         |
+| `docExplorerOpen`            | `boolean`                                                                                     | when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. Overridden by user's toggle state                                                       |
+| `headerEditorEnabled`        | `boolean`                                                                                     | an optional boolean which enables the header editor when `true`.                                                                                                                                | `false`                       |
+| `shouldPersistHeaders`       | `boolean`                                                                                     | an optional boolean which enables to persist headers to storage when `true`                                                                                                                     | `false`                       |
+| `toolbar.additionalContent`  | `Component[]`                                                                                 | pass additional toolbar react components inside a fragment                                                                                                                                      | `null`                        |
+| `onEditQuery`                | `Function`                                                                                    | called when the Query editor changes. The argument to the function will be the query string.                                                                                                    |
+| `onEditVariables`            | `Function`                                                                                    | called when the Query variable editor changes. The argument to the function will be the variables string.                                                                                       |
+| `onEditHeaders`              | `Function`                                                                                    | called when the request headers editor changes. The argument to the function will be the headers string.                                                                                        |
+| `onEditOperationName`        | `Function`                                                                                    | called when the operation name to be executed changes.                                                                                                                                          |
+| `onToggleDocs`               | `Function`                                                                                    | called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.                                                                   |
 
 ### Children (dropped as of 1.0.0-rc.2)
 
