@@ -64,9 +64,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 ### How To Setup/Implement GraphiQL
 
-[![Edit graphiql-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/graphiql-example-nhzvc)
-
-(This example shows that GraphiQL works with `create-react-app` without requiring additional configuration)
+[![Edit graphiql-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/graphiql-js-next-example-qsh7h?file=/src/index.js)
 
 **The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 

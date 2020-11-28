@@ -63,6 +63,7 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
+    "file-loader": "6.2.0",
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/jest-dom": "5.1.1",
