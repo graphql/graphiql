@@ -43,7 +43,13 @@ export function ResultViewer(props: ResultViewerProps) {
     loadEditor('results', viewer);
     props.onMouseUp && viewer.onMouseUp(props.onMouseUp);
     props.onRenderResults && viewer.onDidChangeModel(props.onRenderResults);
-  }, []);
+  }, [
+    loadEditor,
+    props.editorTheme,
+    props.onMouseUp,
+    props.onRenderResults,
+    session.results,
+  ]);
 
   useEffect(() => {
     if (viewerRef.current) {

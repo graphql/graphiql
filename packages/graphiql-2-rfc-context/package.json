@@ -63,6 +63,7 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
+    "file-loader": "6.2.0",
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/jest-dom": "5.1.1",
@@ -79,7 +80,7 @@
     "express": "4.17.1",
     "express-graphql": "0.9.0",
     "fork-ts-checker-webpack-plugin": "4.1.3",
-    "graphql": "15.0.0",
+    "graphql": "^15.4.0",
     "html-webpack-plugin": "^4.0.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^24.8.0",

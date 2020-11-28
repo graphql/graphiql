@@ -66,7 +66,7 @@ describe('getDiagnostics', () => {
     )[0];
     expect(error.message).toEqual(
       // eslint-disable-next-line no-useless-escape
-      'The field "Query.deprecatedField" is deprecated. Use test instead.',
+      'The field Query.deprecatedField is deprecated. Use test instead.',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Warning);
     expect(error.source).toEqual('GraphQL: Deprecation');

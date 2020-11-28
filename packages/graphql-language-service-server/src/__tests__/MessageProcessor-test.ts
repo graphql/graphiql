@@ -107,13 +107,15 @@ describe('MessageProcessor', () => {
       },
     };
   });
+
+  let getConfigurationReturnValue = {};
   // @ts-ignore
   messageProcessor._connection = {
     // @ts-ignore
     get workspace() {
       return {
         getConfiguration: async () => {
-          return [{}];
+          return [getConfigurationReturnValue];
         },
       };
     },
@@ -245,6 +247,15 @@ describe('MessageProcessor', () => {
     });
     // Query fixed, no more errors
     expect(result.diagnostics.length).toEqual(0);
+  });
+
+  it('does not crash on null value returned in response to workspace configuration', async () => {
+    const previousConfigurationValue = getConfigurationReturnValue;
+    getConfigurationReturnValue = null;
+    await expect(
+      messageProcessor.handleDidChangeConfiguration(),
+    ).resolves.toStrictEqual({});
+    getConfigurationReturnValue = previousConfigurationValue;
   });
 
   it('properly removes from the file cache with the didClose handler', async () => {

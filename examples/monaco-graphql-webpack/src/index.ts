@@ -1,5 +1,3 @@
-/* global monaco */
-
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { api as GraphQLAPI } from 'monaco-graphql';
@@ -28,9 +26,7 @@ window.MonacoEnvironment = {
   },
 };
 
-const schemas = {
-  remote: {
-    op: `
+const op = `
 query Example($limit: Int) {
   launchesPast(limit: $limit) {
     mission_name
@@ -45,28 +41,8 @@ query Example($limit: Int) {
     }
   }
 }
-  `,
-    variables: `{ "limit": 10 }`,
-    load: ({ op, variables }: { op: string; variables: string }) => {
-      GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
-      variablesEditor.setValue(variables);
-      operationEditor.setValue(op);
-    },
-  },
-  local: {
-    op: `query Example {
-  allTodos {
-    id
-    name
-  }
-}`,
-    load: ({ op }: { op: string }) => {
-      setRawSchema();
-      variablesEditor.setValue('{}');
-      operationEditor.setValue(op);
-    },
-  },
-};
+  `;
+const variables = `{ "limit": 10 }`;
 
 const THEME = 'vs-dark';
 
@@ -75,26 +51,13 @@ schemaInput.type = 'text';
 
 schemaInput.value = SCHEMA_URL;
 
-const selectEl = document.createElement('select');
+const button = document.createElement('button');
 
-selectEl.onchange = e => {
-  e.preventDefault();
-  const type = selectEl.value as 'local' | 'remote';
-  if (schemas[type]) {
-    // @ts-ignore
-    schemas[type].load(schemas[type]);
-  }
-};
+button.id = 'button';
+button.innerText = 'Run';
 
-const createOption = (label: string, value: string) => {
-  const el = document.createElement('option');
-  el.label = label;
-  el.value = value;
-  return el;
-};
-
-selectEl.appendChild(createOption('Remote', 'remote'));
-selectEl.appendChild(createOption('Local', 'local'));
+button.onclick = () => executeCurrentOp();
+button.ontouchend = () => executeCurrentOp();
 
 schemaInput.onkeyup = e => {
   e.preventDefault();
@@ -107,41 +70,7 @@ schemaInput.onkeyup = e => {
 
 const toolbar = document.getElementById('toolbar');
 toolbar?.appendChild(schemaInput);
-toolbar?.appendChild(selectEl);
-
-async function setRawSchema() {
-  await GraphQLAPI.setSchema(`# Enumeration type for a level of priority
-  enum Priority {
-    LOW
-    MEDIUM
-    HIGH
-  }
-
-  # Our main todo type
-  type Todo {
-    id: ID!
-    name: String!
-    description: String
-    priority: Priority!
-  }
-
-  type Query {
-    # Get one todo item
-    todo(id: ID!): Todo
-    # Get all todo items
-    allTodos: [Todo!]!
-  }
-
-  type Mutation {
-    addTodo(name: String!, priority: Priority = LOW): Todo!
-    removeTodo(id: ID!): Todo!
-  }
-
-  schema {
-    query: Query
-    mutation: Mutation
-  }`);
-}
+toolbar?.appendChild(button);
 
 const variablesModel = monaco.editor.createModel(
   `{}`,
@@ -243,6 +172,9 @@ const opAction: monaco.editor.IActionDescriptor = {
   run: executeCurrentOp,
 };
 
+variablesEditor.setValue(variables);
+operationEditor.setValue(op);
+
 operationEditor.addAction(opAction);
 variablesEditor.addAction(opAction);
 resultsEditor.addAction(opAction);
@@ -254,7 +186,7 @@ resultsEditor.addAction(opAction);
 let initialSchema = false;
 
 if (!initialSchema) {
-  schemas.remote.load(schemas.remote);
+  GraphQLAPI.setSchemaConfig({ uri: SCHEMA_URL });
   initialSchema = true;
 }
 

@@ -25,7 +25,7 @@ Our commit messages are linted by `commitlint` following the angular changelog c
 
 You will need to include a type prefix for all commit messages. For example:
 
-`git commit -m 'fix: fix window undefined error in result viewer'
+`git commit -m 'fix: fix window undefined error in result viewer'`
 
 ### Type Prefixes
 
