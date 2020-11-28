@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.4.3](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.2...graphql-language-service-interface@2.4.3) (2020-11-28)
+
+### Bug Fixes
+
+- remove assert module dependency ([2855dc5](https://github.com/graphql/graphiql/commit/2855dc513d03dd260607572e2fe76b22dcd16271))
+
 ## [2.4.2](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.2-alpha.2...graphql-language-service-interface@2.4.2) (2020-09-18)
 
 **Note:** Version bump only for package graphql-language-service-interface

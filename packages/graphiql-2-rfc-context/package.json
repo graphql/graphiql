@@ -1,6 +1,6 @@
 {
   "name": "graphiql-2-rfc-context",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "private": true,
   "contributors": [
@@ -47,12 +47,12 @@
     "@theme-ui/core": "^0.4.0-alpha.1",
     "copy-to-clipboard": "^3.2.0",
     "entities": "^2.0.0",
-    "graphql-language-service": "^3.0.2",
+    "graphql-language-service": "^3.0.3",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.1.1",
     "markdown-it": "^10.0.0",
     "monaco-editor": "^0.20.0",
-    "monaco-graphql": "^0.3.1",
+    "monaco-graphql": "^0.3.2",
     "react-i18next": "^11.4.0",
     "theme-ui": "^0.3.1"
   },
@@ -63,7 +63,6 @@
     "react-dom": "^16.8.0"
   },
   "devDependencies": {
-    "file-loader": "6.2.0",
     "@storybook/addon-storyshots": "^5.2.8",
     "@storybook/react": "^5.2.8",
     "@testing-library/jest-dom": "5.1.1",
@@ -79,6 +78,7 @@
     "error-overlay-webpack-plugin": "^0.4.1",
     "express": "4.17.1",
     "express-graphql": "0.9.0",
+    "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "4.1.3",
     "graphql": "^15.4.0",
     "html-webpack-plugin": "^4.0.4",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.6...graphiql@1.1.0) (2020-11-28)
+
+### Bug Fixes
+
+- improve props in GraphiQL readme ([b9b2c8d](https://github.com/graphql/graphiql/commit/b9b2c8d8bde6064a4cdcb01911b024602fcdbe9f))
+
+### Features
+
+- **graphiql:** add prop for adding toolbar content while preserving the default buttons ([ea81056](https://github.com/graphql/graphiql/commit/ea81056e09b0a95e1536c79fab27e027739808c4))
+- deeper fragment merging ([238d0b5](https://github.com/graphql/graphiql/commit/238d0b5e52cfa9354757c9d52050692d152aae21))
+
 ## [1.0.6](https://github.com/graphql/graphiql/compare/graphiql@1.0.5...graphiql@1.0.6) (2020-10-20)
 
 ### Bug Fixes

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.6](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.5...graphql-language-service-server@2.5.6) (2020-11-28)
+
+### Bug Fixes
+
+- crash on receiving an LSP message in "stream" mode ([1238075](https://github.com/graphql/graphiql/commit/1238075c5bbd18b09f493c0018da5e4b24e8e615)), closes [#1708](https://github.com/graphql/graphiql/issues/1708)
+- languageserver filepath on Windows ([#1715](https://github.com/graphql/graphiql/issues/1715)) ([d2feff9](https://github.com/graphql/graphiql/commit/d2feff92aba979fb52fd0e5846776be223fbf11e))
+
 ## [2.5.5](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.4...graphql-language-service-server@2.5.5) (2020-10-20)
 
 **Note:** Version bump only for package graphql-language-service-server
