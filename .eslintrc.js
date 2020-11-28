@@ -29,6 +29,7 @@ module.exports = {
     es6: true,
     node: true,
     browser: true,
+    jest: true,
   },
 
   extends: [
@@ -42,6 +43,7 @@ module.exports = {
     atom: false,
     document: false,
     window: false,
+    monaco: true,
     Map: true,
     Set: true,
   },
