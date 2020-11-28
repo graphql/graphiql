@@ -1,5 +1,3 @@
-/* global monaco */
-
 /**
  *  Copyright (c) 2020 GraphQL Contributors.
  *

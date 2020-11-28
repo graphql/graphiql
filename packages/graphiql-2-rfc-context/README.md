@@ -1,9 +1,10 @@
 # GraphiQL 2.x - React Context RFC Proposal
 
 This effort was merge to master in spring of 2020, and then moved to this workspace for the time being until we address some of the issues
+
 ## Features
 
-- hooks rewrite for react 16. *gets rid of deprecated methods*
+- hooks rewrite for react 16. _gets rid of deprecated methods_
 - swap out codemirror for monaco
 - partial re-themeing with new component library and a customizeable`theme-ui`
 - context implementation
@@ -14,7 +15,6 @@ This effort was merge to master in spring of 2020, and then moved to this worksp
 The choice to use React context for editor session state proved less than ideal.
 
 So, the challenge is to take this and run with it, rewrite it to use a state management approach that makes more sense and is pluggable
-
 
 ## Ideal Proposal
 
