@@ -71,12 +71,8 @@ export class Logger implements VSCodeLogger {
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${stringMessage}\n`;
     // write to the file in tmpdir
     fs.appendFile(this._logFilePath, logMessage, _error => {});
-    const processSt =
-      severity === DIAGNOSTIC_SEVERITY.Error ? process.stderr : process.stdout;
-    processSt.write(logMessage, err => {
-      if (err) {
-        console.error(err);
-      }
+    this._getOutputStream(severity).write(logMessage, err => {
+      err && console.error(err);
     });
   }
 
