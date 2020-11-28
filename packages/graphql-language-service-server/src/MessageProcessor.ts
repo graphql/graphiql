@@ -9,7 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { URL } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
@@ -128,7 +128,7 @@ export class MessageProcessor {
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = path.join('file://', this._tmpDirBase);
+    this._tmpUriBase = pathToFileURL(this._tmpDirBase).toString();
     this._loadConfigOptions = loadConfigOptions;
     if (
       loadConfigOptions.extensions &&
@@ -577,7 +577,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text: string = readFileSync(new URL(uri).pathname).toString();
+          const text = readFileSync(fileURLToPath(uri), { encoding: 'utf8' });
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
@@ -713,18 +713,8 @@ export class MessageProcessor {
               );
             }
           }
-
           return {
-            // TODO: fix this hack!
-            // URI is being misused all over this library - there's a link that
-            // defines how an URI should be structured:
-            // https://tools.ietf.org/html/rfc3986
-            // Remove the below hack once the usage of URI is sorted out in related
-            // libraries.
-            uri:
-              res.path.indexOf('file:///') === 0
-                ? res.path
-                : `file://${path.resolve(res.path)}`,
+            uri: res.path,
             range: defRange,
           } as Location;
         })
@@ -838,7 +828,9 @@ export class MessageProcessor {
     const isFileUri = existsSync(uri);
     let version = 1;
     if (isFileUri) {
-      const schemaUri = 'file://' + path.join(project.dirpath, uri);
+      const schemaUri = pathToFileURL(
+        path.join(project.dirpath, uri),
+      ).toString();
       const schemaDocument = this._getCachedDocument(schemaUri);
 
       if (schemaDocument) {
@@ -864,11 +856,12 @@ export class MessageProcessor {
       projectTmpPath = path.join(projectTmpPath, appendPath);
     }
     if (prependWithProtocol) {
-      return `file://${path.resolve(projectTmpPath)}`;
+      return pathToFileURL(path.resolve(projectTmpPath)).toString();
     } else {
       return path.resolve(projectTmpPath);
     }
   }
+
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
     const config = project?.extensions?.languageService;
@@ -967,8 +960,15 @@ export class MessageProcessor {
           if (!document.location || !document.rawSDL) {
             return;
           }
+
+          let filePath = document.location;
+          if (!path.isAbsolute(filePath)) {
+            filePath = path.join(project.dirpath, document.location);
+          }
+
           // build full system URI path with protocol
-          const uri = 'file://' + path.join(project.dirpath, document.location);
+          const uri = pathToFileURL(filePath).toString();
+
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
           if (!contents[0] || !contents[0].query) {
@@ -1015,11 +1015,7 @@ export class MessageProcessor {
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
-    await this._graphQLCache.updateFragmentDefinition(
-      rootDir,
-      new URL(uri).pathname,
-      contents,
-    );
+    await this._graphQLCache.updateFragmentDefinition(rootDir, uri, contents);
   }
 
   async _updateObjectTypeDefinition(
@@ -1028,11 +1024,7 @@ export class MessageProcessor {
   ): Promise<void> {
     const rootDir = this._graphQLCache.getGraphQLConfig().dirpath;
 
-    await this._graphQLCache.updateObjectTypeDefinition(
-      rootDir,
-      new URL(uri).pathname,
-      contents,
-    );
+    await this._graphQLCache.updateObjectTypeDefinition(rootDir, uri, contents);
   }
 
   _getCachedDocument(uri: string): CachedDocumentType | null {
