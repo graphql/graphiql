@@ -31,15 +31,21 @@ _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the liv
 - Supports full [GraphQL Language Specification](https://github.com/graphql/graphql-wg):
   - Queries, Mutations, Subscriptions, Fragments, Unions, directives, multiple operations per query, etc
 
-## Demos
+## Live Demos
 
 We have a few demos of `master` branch via the default netlify build (the same URL paths apply to deploy previews on PRs):
 
 1. [`graphiql.min.js` demo](https://graphiql-test.netlify.com/) - the min.js bundle for the current ref
 2. [`graphiql.js` demo](https://graphiql-test.netlify.com/dev) - development build is nice for react inspector, debugging, etc
-3. [webpack example](https://graphiql-test.netlify.com/webpack) - Demonstration of webpack usage from `examples/graphiql-webpack`
-4. [cdn example](https://graphiql-test.netlify.com/cdn) - Demonstration of usage of our @latest CDN package release. Similar to 1) but for the last actual npm release.
-5. [bundle analyzer for graphiql.min.js](https://graphiql-test.netlify.com/analyzer)
+3. [bundle analyzer for graphiql.min.js](https://graphiql-test.netlify.com/analyzer)
+
+## Examples
+
+- [`Unpkg (CDN)`](../../examples/graphiql-cdn/) - a single html file using cdn assets and a script tag
+- [`Webpack`](../../examples/graphiql-webpack/) - a starter for webpack
+- [`Create React App`](../../examples/graphiql-create-react-app) - an example using [Create React App](https://create-react-app.dev/)
+- [`Parcel`](../../examples/graphiql-parcel) - an example using [Parcel](https://parceljs.org/)
+- `Rollup` - TODO
 
 ## Getting started
 
