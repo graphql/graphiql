@@ -33,8 +33,8 @@ const TYPE = {
  */
 CodeMirror.registerHelper('lint', 'graphql', (text, options) => {
   const schema = options.schema;
-  const validationsRules = options.validationsRules;
-  const rawResults = getDiagnostics(text, schema, validationsRules);
+  const validationRules = options.validationRules;
+  const rawResults = getDiagnostics(text, schema, validationRules);
 
   const results = rawResults.map(error => ({
     message: error.message,
