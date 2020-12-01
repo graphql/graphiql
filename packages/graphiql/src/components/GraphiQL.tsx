@@ -987,7 +987,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         unsubscribe: () => fetch[Symbol.asyncIterator]().return?.(),
       };
     } else {
-      throw new Error('Fetcher did not return Promise or Observable.');
+      throw new Error(
+        'Fetcher did not return Promise, Observable or AsyncIterable.',
+      );
     }
   }
 
