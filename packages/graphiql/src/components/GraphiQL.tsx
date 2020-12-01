@@ -91,7 +91,7 @@ export type FetcherResult =
 export type FetcherReturnType =
   | Promise<FetcherResult>
   | Observable<FetcherResult>
-  | AsyncIterableIterator<FetcherResult>;
+  | AsyncIterable<FetcherResult>;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
