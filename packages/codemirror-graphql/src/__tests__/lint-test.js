@@ -14,6 +14,7 @@ import '../lint';
 import { TestSchema } from './testSchema';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { GraphQLError } from 'graphql';
 
 function createEditorWithLint(lintConfig) {
   return CodeMirror(document.createElement('div'), {
@@ -22,9 +23,10 @@ function createEditorWithLint(lintConfig) {
   });
 }
 
-function printLintErrors(queryString) {
+function printLintErrors(queryString, configOverrides = {}) {
   const editor = createEditorWithLint({
     schema: TestSchema,
+    ...configOverrides,
   });
 
   return new Promise(resolve => {
@@ -55,5 +57,21 @@ describe('graphql-lint', () => {
   it('returns no syntactic/validation errors after parsing kitchen-sink query', async () => {
     const errors = await printLintErrors(kitchenSink);
     expect(errors).to.have.lengthOf(0);
+  });
+
+  it('returns a validation error for a invalid query', async () => {
+    const noMutationOperationRule = context => ({
+      OperationDefinition(node) {
+        if (node.operation === 'mutation') {
+          context.reportError(new GraphQLError('I like turtles.', node));
+        }
+        return false;
+      },
+    });
+    const errors = await printLintErrors(kitchenSink, {
+      validationRules: [noMutationOperationRule],
+    });
+    expect(errors).to.have.lengthOf(1);
+    expect(errors[0].message).equal('I like turtles.');
   });
 });

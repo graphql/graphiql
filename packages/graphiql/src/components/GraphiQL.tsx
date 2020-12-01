@@ -20,6 +20,7 @@ import {
   OperationDefinitionNode,
   IntrospectionQuery,
   GraphQLType,
+  ValidationRule,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 
@@ -104,6 +105,7 @@ export type GraphiQLToolbarConfig = {
 export type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
+  validationRules?: ValidationRule[];
   query?: string;
   variables?: string;
   headers?: string;
@@ -540,6 +542,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   this.queryEditorComponent = n;
                 }}
                 schema={this.state.schema}
+                validationRules={this.props.validationRules}
                 value={this.state.query}
                 onEdit={this.handleEditQuery}
                 onHintInformationRender={this.handleHintInformationRender}
