@@ -1681,19 +1681,30 @@ function isObservable<T>(value: any): value is Observable<T> {
 
 function isAsyncIterable(input: unknown): input is AsyncIterable<unknown> {
   return (
-    typeof input === 'object' && input !== null && Symbol.asyncIterator in input
+    typeof input === 'object'
+    && input !== null
+    && (
+      // Some browsers still don't have Symbol.asyncIterator implemented (iOS Safari)
+      // That means every custom AsyncIterable must be built using a AsyncGeneratorFunction (async function * () {})
+      (input as any)[Symbol.toStringTag] === "AsyncGenerator"
+      || Symbol.asyncIterator in input
+    )
   );
 }
 
-function asyncIterableToPromise<T>(input: AsyncIterable<T>): Promise<T> {
+function asyncIterableToPromise<T>(input: AsyncIterable<T> | AsyncIterableIterator<T>): Promise<T> {
   return new Promise((resolve, reject) => {
-    const iterator = input[Symbol.asyncIterator]();
-    iterator
-      .next()
+    // Also support AsyncGenerator on Safari iOS.
+    // As mentioned in the isAsyncIterable function there is no Symbol.asyncIterator available
+    // so every AsyncIterable must be implemented using AsyncGenerator.
+    const iteratorReturn = ("return" in input ? input : input[Symbol.asyncIterator]()).return?.bind(input);
+    const iteratorNext = ("next" in input ? input : input[Symbol.asyncIterator]()).next.bind(input);
+
+    iteratorNext()
       .then(result => {
         resolve(result.value);
         // ensure cleanup
-        iterator.return?.();
+        iteratorReturn?.();
       })
       .catch(err => {
         reject(err);
