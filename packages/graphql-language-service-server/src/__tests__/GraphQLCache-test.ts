@@ -111,9 +111,8 @@ describe('GraphQLCache', () => {
       const schema = (await cache.getSchema(
         'testWithCustomDirectives',
       )) as GraphQLSchema;
-      expect(
-        wihtoutASTNode(schema.getDirective('customDirective')),
-      ).toMatchObject(
+      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+        // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
           description: undefined,
@@ -126,9 +125,8 @@ describe('GraphQLCache', () => {
 
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = (await cache.getSchema('testWithSchema')) as GraphQLSchema;
-      expect(
-        wihtoutASTNode(schema.getDirective('customDirective')),
-      ).toMatchObject(
+      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+        // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
           description: undefined,
