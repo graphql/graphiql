@@ -117,8 +117,7 @@ describe('GraphQLCache', () => {
         expect.objectContaining({
           args: [],
           description: undefined,
-          // TODO: failing now that tests are doing deep comparison
-          // isRepeatable: false,
+          isRepeatable: false,
           locations: ['FIELD'],
           name: 'customDirective',
         }),
@@ -133,8 +132,7 @@ describe('GraphQLCache', () => {
         expect.objectContaining({
           args: [],
           description: undefined,
-          // TODO: failing now that tests are doing deep comparison
-          // isRepeatable: false,
+          isRepeatable: false,
           locations: ['FRAGMENT_SPREAD'],
           name: 'customDirective',
         }),
