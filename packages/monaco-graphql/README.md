@@ -85,7 +85,7 @@ GraphQLAPI.updateSchemaConfig({
 same as the above, except it overwrites the entire schema config
 
 ```ts
-GraphQLAPI.updateSchemaConfig({
+GraphQLAPI.setSchemaConfig({
   uri: 'https://my/schema',
   requestOptions: {
     headers: { Authorization: 'Bear Auth 2134' },
