@@ -51,7 +51,7 @@ describe('GraphiQL Prettify', () => {
 
     cy.window().then(w => {
       cy.assertHasValues({
-        query: prettifiedQuery,
+        query: brokenQuery,
         variables: prettifiedVariables,
       });
     });
