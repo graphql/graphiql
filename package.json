@@ -122,5 +122,12 @@
     "typedoc": "0.17.7",
     "typescript": "^3.9.5",
     "whatwg-url": "^8.4.0"
+  },
+  "nyc": {
+    "report-dir": "coverage",
+    "reporter": [
+      "text",
+      "lcov"
+    ]
   }
 }
