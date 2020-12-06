@@ -75,6 +75,7 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/config-lerna-scopes": "^8.3.4",
+    "@cypress/webpack-preprocessor": "^5.5.0",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.3.1",
     "@testing-library/jest-dom": "^5.4.0",
     "@types/codemirror": "^0.0.90",
@@ -109,6 +110,7 @@
     "jest": "^25.3.0",
     "jest-environment-jsdom": "^25.3.0",
     "jest-environment-jsdom-global": "^2.0.2",
+    "jsdom": "^16.4.0",
     "lerna": "^3.20.2",
     "lint-staged": "^10.1.2",
     "mkdirp": "^1.0.4",
@@ -118,7 +120,6 @@
     "ts-jest": "^25.3.1",
     "typedoc": "0.17.7",
     "typescript": "^3.9.5",
-    "whatwg-url": "^8.4.0",
-    "jsdom": "^16.4.0"
+    "whatwg-url": "^8.4.0"
   }
 }

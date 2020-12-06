@@ -24,10 +24,10 @@ describe('GraphiQL Prettify', () => {
     cy.clickPrettify();
 
     cy.window().then(w => {
-      cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
-        prettifiedVariables,
-      );
+      cy.assertHasValues({
+        query: prettifiedQuery,
+        variables: prettifiedVariables,
+      });
     });
   });
 
@@ -37,10 +37,10 @@ describe('GraphiQL Prettify', () => {
     cy.clickPrettify();
 
     cy.window().then(w => {
-      cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
-        prettifiedVariables,
-      );
+      cy.assertHasValues({
+        query: prettifiedQuery,
+        variables: prettifiedVariables,
+      });
     });
   });
 
@@ -50,10 +50,10 @@ describe('GraphiQL Prettify', () => {
     cy.clickPrettify();
 
     cy.window().then(w => {
-      cy.expect(w.g.getQueryEditor().getValue()).to.equal(brokenQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(
-        prettifiedVariables,
-      );
+      cy.assertHasValues({
+        query: prettifiedQuery,
+        variables: prettifiedVariables,
+      });
     });
   });
 
@@ -63,8 +63,10 @@ describe('GraphiQL Prettify', () => {
     cy.clickPrettify();
 
     cy.window().then(w => {
-      cy.expect(w.g.getQueryEditor().getValue()).to.equal(prettifiedQuery);
-      cy.expect(w.g.getVariableEditor().getValue()).to.equal(brokenVariables);
+      cy.assertHasValues({
+        query: prettifiedQuery,
+        variables: brokenVariables,
+      });
     });
   });
 });

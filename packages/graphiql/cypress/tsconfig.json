@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "typeRoots": ["./support"],
+    "lib": ["DOM", "ESNext"],
+    "types": ["cypress"],
+    "outDir": "dist"
+  },
+  "include": ["**/*.ts"]
+}

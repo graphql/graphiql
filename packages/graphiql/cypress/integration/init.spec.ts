@@ -44,15 +44,4 @@ describe('GraphiQL On Initialization', () => {
   it('Executes a GraphQL query over HTTP that has the expected result', () => {
     cy.assertQueryResult({ query: testQuery }, mockSuccess);
   });
-
-  it('Toggles doc pane on', () => {
-    cy.get('.docExplorerShow').click();
-    cy.get('.doc-explorer').should('be.visible');
-  });
-
-  it('Toggles doc pane back off', () => {
-    // there are two components with .docExplorerHide, one in query history
-    cy.get('.docExplorerWrap button.docExplorerHide').click();
-    cy.get('.doc-explorer').should('not.exist');
-  });
 });

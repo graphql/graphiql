@@ -50,6 +50,9 @@ if (parameters.headers) {
   }
 }
 
+if (parameters.headersEditor) {
+}
+
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery) {
