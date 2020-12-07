@@ -40,7 +40,7 @@
     "test-mocha": "nyc --reporter=lcov --reporter=text-summary mocha --require packages/codemirror-graphql/resources/mochaBootload packages/codemirror-graphql/**/*-test.js",
     "test-all": "yarn test --coverage && yarn test-mocha",
     "ci": "yarn lint && yarn run check && yarn build && yarn test-all",
-    "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min",
+    "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min && yarn run e2e",
     "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
@@ -75,6 +75,8 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@commitlint/config-lerna-scopes": "^8.3.4",
+    "@cypress/code-coverage": "^3.8.5",
+    "@cypress/webpack-preprocessor": "^5.5.0",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.3.1",
     "@testing-library/jest-dom": "^5.4.0",
     "@types/codemirror": "^0.0.90",
@@ -109,6 +111,7 @@
     "jest": "^25.3.0",
     "jest-environment-jsdom": "^25.3.0",
     "jest-environment-jsdom-global": "^2.0.2",
+    "jsdom": "^16.4.0",
     "lerna": "^3.20.2",
     "lint-staged": "^10.1.2",
     "mkdirp": "^1.0.4",
@@ -118,7 +121,6 @@
     "ts-jest": "^25.3.1",
     "typedoc": "0.17.7",
     "typescript": "^3.9.5",
-    "whatwg-url": "^8.4.0",
-    "jsdom": "^16.4.0"
+    "whatwg-url": "^8.4.0"
   }
 }

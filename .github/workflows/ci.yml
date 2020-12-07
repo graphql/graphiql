@@ -19,3 +19,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: bahmutov/npm-install@v1
       - run: yarn ci-e2e
+      - uses: codecov/codecov-action@v1
+        with:
+          directory: .nyc_output

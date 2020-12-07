@@ -145,7 +145,7 @@ export default class SearchResults extends React.Component<
     }
 
     return (
-      <div>
+      <div className="doc-search-items">
         {matchedWithin}
         {matchedTypes}
         {matchedFields}
