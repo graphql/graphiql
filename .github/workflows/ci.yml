@@ -21,4 +21,4 @@ jobs:
       - run: yarn ci-e2e
       - uses: codecov/codecov-action@v1
         with:
-          directory: coverage
+          directory: .nyc_output
