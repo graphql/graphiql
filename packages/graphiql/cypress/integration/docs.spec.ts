@@ -61,14 +61,15 @@ describe('GraphiQL DocExplorer - search', () => {
       'have.text',
       'Subscribe to the test type\n',
     );
-    if (cy.get('.doc-explorer-back')) {
-      cy.get('.doc-explorer-back').click();
-    }
   });
 
   it('Allows clearing the search', () => {
+    cy.visit(`/`);
+    cy.get('.docExplorerShow').click();
+    cy.get('label.search-box input').type('test');
     cy.get('.search-box-clear').click();
     cy.get('.doc-category-title').should('have.text', 'root types');
+    cy.get('label.search-box input').should('have.value', '');
   });
 });
 
