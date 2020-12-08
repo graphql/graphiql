@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.2.0](https://github.com/graphql/graphiql/compare/graphiql@1.1.0...graphiql@1.2.0) (2020-12-08)
+
+### Features
+
+- add AsyncIterable support to fetcher function ([#1724](https://github.com/graphql/graphiql/issues/1724)) ([a568af3](https://github.com/graphql/graphiql/commit/a568af3674404b8a15055792c2c35128b2bd711c))
+- provide validation rules via props ([#1716](https://github.com/graphql/graphiql/issues/1716)) ([0c5785c](https://github.com/graphql/graphiql/commit/0c5785c82adbd4affb25300ae2d128b42c9b81fe))
+
 # [1.1.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.6...graphiql@1.1.0) (2020-11-28)
 
 ### Bug Fixes

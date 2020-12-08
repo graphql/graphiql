@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/graphql/graphiql/compare/monaco-graphql@0.3.2...monaco-graphql@0.3.3) (2020-12-08)
+
+### Bug Fixes
+
+- GraphQLAPI.setSchemaConfig README example ([#1726](https://github.com/graphql/graphiql/issues/1726)) ([01a1ff7](https://github.com/graphql/graphiql/commit/01a1ff74b0568229318339f9b026d99c117bd218))
+
 ## [0.3.2](https://github.com/graphql/graphiql/compare/monaco-graphql@0.3.1...monaco-graphql@0.3.2) (2020-11-28)
 
 **Note:** Version bump only for package monaco-graphql

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.4...codemirror-graphql@0.13.0) (2020-12-08)
+
+### Features
+
+- provide validation rules via props ([#1716](https://github.com/graphql/graphiql/issues/1716)) ([0c5785c](https://github.com/graphql/graphiql/commit/0c5785c82adbd4affb25300ae2d128b42c9b81fe))
+
 ## [0.12.4](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.12.3...codemirror-graphql@0.12.4) (2020-11-28)
 
 **Note:** Version bump only for package codemirror-graphql

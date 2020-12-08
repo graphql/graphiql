@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "0.12.4",
+  "version": "0.13.0",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -47,7 +47,7 @@
     "graphql": "^14.0.0 || ^15.0.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.4.3",
+    "graphql-language-service-interface": "^2.5.0",
     "graphql-language-service-parser": "^1.6.5"
   },
   "devDependencies": {

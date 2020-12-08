@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.5.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.3...graphql-language-service-interface@2.5.0) (2020-12-08)
+
+### Bug Fixes
+
+- dont use new deprecation rule yet ([8f0a4ac](https://github.com/graphql/graphiql/commit/8f0a4ac3331785994e4fe2d98637af0359314359))
+
+### Features
+
+- provide validation rules via props ([#1716](https://github.com/graphql/graphiql/issues/1716)) ([0c5785c](https://github.com/graphql/graphiql/commit/0c5785c82adbd4affb25300ae2d128b42c9b81fe))
+
 ## [2.4.3](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.2...graphql-language-service-interface@2.4.3) (2020-11-28)
 
 ### Bug Fixes
