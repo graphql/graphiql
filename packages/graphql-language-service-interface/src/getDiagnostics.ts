@@ -13,13 +13,12 @@ import {
   GraphQLError,
   GraphQLSchema,
   Location,
-  NoDeprecatedCustomRule,
   SourceLocation,
   ValidationRule,
 } from 'graphql';
 
 import invariant from 'assert';
-import { findDeprecatedUsages, parse, validate } from 'graphql';
+import { findDeprecatedUsages, parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 
@@ -91,16 +90,11 @@ export function validateQuery(
     error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
-  // Note: we still want to support older versions that don't have NoDeprecated
-  const deprecationWarningAnnotations =
-    !NoDeprecatedCustomRule && findDeprecatedUsages
-      ? mapCat(findDeprecatedUsages(schema, ast), error =>
-          annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
-        )
-      : mapCat(validate(schema, ast, [NoDeprecatedCustomRule]), error =>
-          annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
-        );
-
+  // TODO: detect if > graphql@15.2.0, and use the new rule for this.
+  const deprecationWarningAnnotations = mapCat(
+    findDeprecatedUsages(schema, ast),
+    error => annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+  );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
