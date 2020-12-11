@@ -28,7 +28,7 @@ export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {
       <MarkdownContent
         className="doc-type-description"
         markdown={
-          'A GraphQL schema provides a root type for each kind of operation.'
+          schema.description || 'A GraphQL schema provides a root type for each kind of operation.'
         }
       />
       <div className="doc-category">
