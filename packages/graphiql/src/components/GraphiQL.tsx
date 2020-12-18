@@ -88,10 +88,11 @@ export type FetcherResult =
   | string
   | { data: any };
 
-export type FetcherReturnType =
-  | Promise<FetcherResult>
-  | Observable<FetcherResult>
-  | AsyncIterable<FetcherResult>;
+type MaybePromise<T> = T | Promise<T>;
+
+export type FetcherReturnType = MaybePromise<
+  FetcherResult | Observable<FetcherResult> | AsyncIterable<FetcherResult>
+>;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
@@ -890,14 +891,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
   }
 
-  private _fetchQuery(
+  private async _fetchQuery(
     query: string,
     variables: string,
     headers: string,
     operationName: string,
     shouldPersistHeaders: boolean,
     cb: (value: FetcherResult) => any,
-  ) {
+  ): Promise<null | Unsubscribable> {
     const fetcher = this.props.fetcher;
     let jsonVariables = null;
     let jsonHeaders = null;
@@ -933,64 +934,66 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       { headers: jsonHeaders, shouldPersistHeaders },
     );
 
-    if (isPromise(fetch)) {
-      // If fetcher returned a Promise, then call the callback when the promise
-      // resolves, otherwise handle the error.
-      fetch.then(cb).catch(error => {
+    return Promise.resolve<
+      FetcherResult | AsyncIterable<FetcherResult> | Observable<FetcherResult>
+    >(fetch)
+      .then(value => {
+        if (isObservable(value)) {
+          // If the fetcher returned an Observable, then subscribe to it, calling
+          // the callback on each next value, and handling both errors and the
+          // completion of the Observable. Returns a Subscription object.
+          const subscription = value.subscribe({
+            next: cb,
+            error: (error: Error) => {
+              this.safeSetState({
+                isWaitingForResponse: false,
+                response: error ? GraphiQL.formatError(error) : undefined,
+                subscription: null,
+              });
+            },
+            complete: () => {
+              this.safeSetState({
+                isWaitingForResponse: false,
+                subscription: null,
+              });
+            },
+          });
+
+          return subscription;
+        } else if (isAsyncIterable(value)) {
+          (async () => {
+            try {
+              for await (const result of value) {
+                cb(result);
+              }
+              this.safeSetState({
+                isWaitingForResponse: false,
+                subscription: null,
+              });
+            } catch (error) {
+              this.safeSetState({
+                isWaitingForResponse: false,
+                response: error ? GraphiQL.formatError(error) : undefined,
+                subscription: null,
+              });
+            }
+          })();
+
+          return {
+            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+          };
+        } else {
+          cb(value);
+          return null;
+        }
+      })
+      .catch(error => {
         this.safeSetState({
           isWaitingForResponse: false,
           response: error ? GraphiQL.formatError(error) : undefined,
         });
+        return null;
       });
-    } else if (isObservable(fetch)) {
-      // If the fetcher returned an Observable, then subscribe to it, calling
-      // the callback on each next value, and handling both errors and the
-      // completion of the Observable. Returns a Subscription object.
-      const subscription = fetch.subscribe({
-        next: cb,
-        error: (error: Error) => {
-          this.safeSetState({
-            isWaitingForResponse: false,
-            response: error ? GraphiQL.formatError(error) : undefined,
-            subscription: null,
-          });
-        },
-        complete: () => {
-          this.safeSetState({
-            isWaitingForResponse: false,
-            subscription: null,
-          });
-        },
-      });
-
-      return subscription;
-    } else if (isAsyncIterable(fetch)) {
-      (async () => {
-        try {
-          for await (const result of fetch) {
-            cb(result);
-          }
-          this.safeSetState({
-            isWaitingForResponse: false,
-            subscription: null,
-          });
-        } catch (error) {
-          this.safeSetState({
-            isWaitingForResponse: false,
-            response: error ? GraphiQL.formatError(error) : undefined,
-            subscription: null,
-          });
-        }
-      })();
-
-      return {
-        unsubscribe: () => fetch[Symbol.asyncIterator]().return?.(),
-      };
-    } else {
-      throw new Error(
-        'Fetcher did not return Promise, Observable or AsyncIterable.',
-      );
-    }
   }
 
   handleClickReference = (reference: GraphQLType) => {
@@ -1005,7 +1008,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
   };
 
-  handleRunQuery = (selectedOperationName?: string) => {
+  handleRunQuery = async (selectedOperationName?: string) => {
     this._editorQueryID++;
     const queryID = this._editorQueryID;
 
@@ -1043,7 +1046,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
 
       // _fetchQuery may return a subscription.
-      const subscription = this._fetchQuery(
+      const subscription = await this._fetchQuery(
         editedQuery as string,
         variables as string,
         headers as string,
@@ -1721,12 +1724,14 @@ function asyncIterableToPromise<T>(
 function fetcherReturnToPromise(
   fetcherResult: FetcherReturnType,
 ): Promise<FetcherResult> {
-  if (isAsyncIterable(fetcherResult)) {
-    return asyncIterableToPromise(fetcherResult);
-  } else if (isObservable(fetcherResult)) {
-    return observableToPromise(fetcherResult);
-  }
-  return fetcherResult;
+  return Promise.resolve(fetcherResult).then(fetcherResult => {
+    if (isAsyncIterable(fetcherResult)) {
+      return asyncIterableToPromise(fetcherResult);
+    } else if (isObservable(fetcherResult)) {
+      return observableToPromise(fetcherResult);
+    }
+    return fetcherResult;
+  });
 }
 
 // Determines if the React child is of the same type of the provided React component
