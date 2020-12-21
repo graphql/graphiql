@@ -88,11 +88,11 @@ export type FetcherResult =
   | string
   | { data: any };
 
-type MaybePromise<T> = T | Promise<T>;
+export type MaybePromise<T> = T | Promise<T>;
 
-export type FetcherReturnType = MaybePromise<
-  FetcherResult | Observable<FetcherResult> | AsyncIterable<FetcherResult>
->;
+export type SyncFetcherResult = FetcherResult | Observable<FetcherResult> | AsyncIterable<FetcherResult>
+
+export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
@@ -935,7 +935,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     );
 
     return Promise.resolve<
-      FetcherResult | AsyncIterable<FetcherResult> | Observable<FetcherResult>
+      SyncFetcherResult
     >(fetch)
       .then(value => {
         if (isObservable(value)) {
