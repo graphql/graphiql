@@ -51,7 +51,7 @@ export const DIAGNOSTIC_SEVERITY = {
 
 const invariant = (
   condition: any,
-  message: string | number,
+  message: string,
 ): asserts condition => {
   if (!condition) {
     throw new Error(message);
