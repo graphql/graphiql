@@ -17,7 +17,6 @@ import {
   ValidationRule,
 } from 'graphql';
 
-import invariant from 'assert';
 import { findDeprecatedUsages, parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
@@ -49,6 +48,15 @@ export const DIAGNOSTIC_SEVERITY = {
   [SEVERITY.Information]: 3 as DiagnosticSeverity,
   [SEVERITY.Hint]: 4 as DiagnosticSeverity,
 };
+
+const invariant = (
+  condition: any,
+  message: string | number,
+): asserts condition => {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
 
 export function getDiagnostics(
   query: string,
