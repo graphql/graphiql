@@ -217,10 +217,12 @@ query name {
   it('provides correct typeCondition suggestions on fragment', () => {
     const result = testSuggestions('fragment Foo on {}', new Position(0, 16));
     expect(result.filter(({ label }) => !label.startsWith('__'))).toEqual([
+      { label: 'AnotherInterface' },
       { label: 'Character' },
       { label: 'Droid' },
       { label: 'Human' },
       { label: 'Query' },
+      { label: 'TestInterface' },
       { label: 'TestType' },
     ]);
   });
@@ -330,5 +332,49 @@ query name {
       { label: 'deprecated' },
       { label: 'onAllDefs' },
       { label: 'onArg' },
+    ]));
+
+  it('provides correct interface suggestions when extending with an interface', () =>
+    expect(
+      testSuggestions('type Type implements ', new Position(0, 20)),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+
+  it('provides correct interface suggestions when extending a type with multiple interfaces', () =>
+    expect(
+      testSuggestions(
+        'type Type implements TestInterface & ',
+        new Position(0, 37),
+      ),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides correct interface suggestions when extending an interface with multiple interfaces', () =>
+    expect(
+      testSuggestions(
+        'interface Type implements TestInterface & ',
+        new Position(0, 44),
+      ),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides correct interface suggestions when extending an interface with an inline interface', () =>
+    expect(
+      testSuggestions(
+        'interface A { id: String }\ninterface MyInterface implements ',
+        new Position(1, 33),
+      ),
+    ).toEqual([
+      { label: 'A' },
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
     ]));
 });

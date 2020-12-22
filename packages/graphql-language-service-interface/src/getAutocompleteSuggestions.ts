@@ -21,6 +21,8 @@ import {
   visit,
   VariableDefinitionNode,
   GraphQLNamedType,
+  isInterfaceType,
+  GraphQLInterfaceType,
 } from 'graphql';
 
 import {
@@ -84,6 +86,7 @@ export function getAutocompleteSuggestions(
 
   const kind = state.kind;
   const step = state.step;
+
   const typeInfo = getTypeInfo(schema, token.state);
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
@@ -96,13 +99,17 @@ export function getAutocompleteSuggestions(
     ]);
   }
 
+  if (kind === RuleKinds.IMPLEMENTS) {
+    return getSuggestionsForImplements(token, state, schema, queryText);
+  }
+
   // Field names
   if (
     kind === RuleKinds.SELECTION_SET ||
     kind === RuleKinds.FIELD ||
     kind === RuleKinds.ALIASED_FIELD
   ) {
-    return getSuggestionsForFieldNames(token, typeInfo, schema, kind);
+    return getSuggestionsForFieldNames(token, typeInfo, schema);
   }
 
   // Argument names
@@ -154,7 +161,7 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.OBJECT_FIELD && step === 2) ||
     (kind === RuleKinds.ARGUMENT && step === 2)
   ) {
-    return getSuggestionsForInputValues(token, typeInfo, kind as string);
+    return getSuggestionsForInputValues(token, typeInfo);
   }
 
   // complete for all variables available in the query
@@ -240,8 +247,6 @@ function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
   schema: GraphQLSchema,
-  // kind: RuleKind.SelectionSet | RuleKind.Field | RuleKind.AliasedField,
-  _kind: string,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
@@ -280,7 +285,6 @@ function getSuggestionsForFieldNames(
 function getSuggestionsForInputValues(
   token: ContextToken,
   typeInfo: AllTypeInfo,
-  _kind: string,
 ): CompletionItem[] {
   const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
   if (namedInputType instanceof GraphQLEnumType) {
@@ -317,6 +321,56 @@ function getSuggestionsForInputValues(
     ]);
   }
 
+  return [];
+}
+
+function getSuggestionsForImplements(
+  token: ContextToken,
+  tokenState: State,
+  schema: GraphQLSchema,
+  documentText: string,
+): Array<CompletionItem> {
+  // exit empty if we need an &
+
+  if (tokenState.needsSeperator) {
+    return [];
+  }
+  // gather inline interfaces so we can reference them.
+  // we don't know if they're part of the schema yet,
+  // but if they're defined in the same file that's a good sign
+  const inlineInterfaces: Set<string> = new Set();
+  runOnlineParser(documentText, (_, state: State) => {
+    const value = state.name || state.type;
+    if (
+      (state.kind === RuleKinds.INTERFACE_DEF ||
+        state.kind === RuleKinds.INTERFACE_TYPE_DEFINITION) &&
+      value
+    ) {
+      inlineInterfaces.add(<string>value);
+    }
+  });
+  const typeMap = schema.getTypeMap();
+  const possibleTypes = objectValues(typeMap).filter(isInterfaceType);
+  const possibleInterfaces = possibleTypes.concat(
+    [...inlineInterfaces]
+      .filter(v => v !== tokenState.prevState?.name)
+      .map(name => ({ name } as GraphQLInterfaceType)),
+  );
+
+  return hintList(
+    token,
+    possibleInterfaces.map(type => {
+      const result = {
+        label: type.name,
+        kind: CompletionItemKind.Interface,
+      } as CompletionItem;
+      if (type?.description) {
+        result.detail = type.description;
+      }
+
+      return result;
+    }),
+  );
   return [];
 }
 
@@ -676,6 +730,14 @@ export function getTypeInfo(
         break;
       case RuleKinds.DIRECTIVE:
         directiveDef = state.name ? schema.getDirective(state.name) : null;
+        break;
+      case RuleKinds.IMPLEMENTS:
+        if (state.type) {
+          type = schema.getType(state.type);
+        }
+        if (state.prevState?.name) {
+          parentType = schema.getType(state.prevState.name as string);
+        }
         break;
       case RuleKinds.ARGUMENTS:
         if (!state.prevState) {

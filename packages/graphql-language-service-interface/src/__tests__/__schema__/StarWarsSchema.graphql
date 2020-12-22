@@ -51,8 +51,16 @@ input InputType {
   value: Int = 42
 }
 
-type TestType {
-  testField: String
+interface TestInterface {
+  testField: String!
+}
+
+interface AnotherInterface implements TestInterface {
+  testField: String!
+}
+
+type TestType implements TestInterface & AnotherInterface {
+  testField: String!
 }
 
 type Query {

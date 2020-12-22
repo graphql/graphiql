@@ -1,6 +1,7 @@
 /* eslint-disable jest/expect-expect, jest/no-export */
 import OnlineParser from '../onlineParser';
 import CharacterStream from '../CharacterStream';
+import { RuleKind } from '../types';
 
 const tokenTypeMap = {
   Number: 'number',
@@ -20,6 +21,49 @@ const typesMap = {
   Null: { value: 'null', kind: 'NullValue', valueType: 'Null' },
 };
 
+type TokenAssertArgs = {
+  pattern: string;
+  kind?: RuleKind;
+  type: RuleKind;
+  eatSpace: boolean;
+};
+
+type SimpleRules =
+  | 'keyword'
+  | 'name'
+  | 'property'
+  | 'qualifier'
+  | 'variable'
+  | 'meta'
+  | 'def'
+  | 'punctuation'
+  | 'attribute';
+
+type SimpleRuleAssertOptions = {
+  kind?: RuleKind | string;
+};
+
+type SimpleRule = (
+  pattern: string | RegExp,
+  options?: SimpleRuleAssertOptions,
+) => void;
+
+type IAssertRules = {
+  [name in SimpleRules]: SimpleRule;
+} & {
+  token: (args: TokenAssertArgs) => void;
+  value: (
+    kind: RuleKind | string,
+    pattern: string,
+    options?: { kind?: RuleKind | string },
+  ) => void;
+  eol: (eatSpace?: boolean) => void;
+};
+
+type Utils = { t: IAssertRules; stream?: CharacterStream };
+
+type Args = { name?: string; onKind?: RuleKind; args?: any[]; vars?: any[] };
+
 export const getUtils = source => {
   const parser = OnlineParser();
   const stream = new CharacterStream(source);
@@ -28,8 +72,11 @@ export const getUtils = source => {
   const token = (_stream = stream, _state = state) =>
     parser.token(_stream, _state);
 
-  const t = {
-    token({ pattern, type, kind = state.kind, eatSpace = true }, fn = token) {
+  const t: IAssertRules = {
+    token(
+      { pattern, type, kind = state.kind, eatSpace = true }: TokenAssertArgs,
+      fn = token,
+    ) {
       if (eatSpace) {
         stream.eatSpace();
       }
@@ -65,7 +112,7 @@ export const getUtils = source => {
     attribute(pattern, options = {}) {
       this.token({ pattern, type: 'attribute', kind: options.kind });
     },
-    value(kind, pattern, options = {}) {
+    value(kind, pattern, options) {
       this.token({ pattern, type: tokenTypeMap[kind], kind: options.kind });
     },
     eol(eatSpace = true) {
@@ -91,7 +138,10 @@ export const performForEachType = (source, test) => {
   });
 };
 
-export const expectVarsDef = ({ t, stream }, { onKind, vars = [] }) => {
+export const expectVarsDef = (
+  { t, stream }: Utils,
+  { onKind, vars = [] }: Args,
+) => {
   t.punctuation(/\(/, { kind: 'VariableDefinitions' });
 
   vars.forEach(variable => {
@@ -106,7 +156,10 @@ export const expectVarsDef = ({ t, stream }, { onKind, vars = [] }) => {
   t.punctuation(/\)/, { kind: onKind });
 };
 
-export const expectArgs = ({ t, stream }, { onKind, args = [] }) => {
+export const expectArgs = (
+  { t, stream }: Utils,
+  { onKind, args = [] }: Args,
+) => {
   t.punctuation(/\(/, { kind: 'Arguments' });
 
   args.forEach(arg => {
@@ -131,7 +184,10 @@ export const expectArgs = ({ t, stream }, { onKind, args = [] }) => {
   t.punctuation(/\)/, { kind: onKind });
 };
 
-export const expectDirective = (utils, { name, onKind, args = [] }) => {
+export const expectDirective = (
+  utils: Utils,
+  { name, onKind, args = [] }: Args,
+) => {
   const { t, stream } = utils;
   t.meta('@', { kind: 'Directive' });
   t.meta(name);

@@ -11,7 +11,7 @@ import {
 describe('onlineParser', () => {
   describe('.startState', () => {
     it('initializes state correctly', () => {
-      const parser = new OnlineParser();
+      const parser = OnlineParser();
 
       expect(parser.startState()).toEqual({
         level: 0,
@@ -336,7 +336,7 @@ describe('onlineParser', () => {
     });
 
     it('parses query with inline fragment', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(`
         query SomeQuery {
           someField {
             ... on SomeType {
@@ -370,7 +370,7 @@ describe('onlineParser', () => {
     });
 
     it('parses query with fragment spread', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(`
         query SomeQuery {
           someField {
             ...SomeFragment @someDirective
@@ -580,7 +580,7 @@ describe('onlineParser', () => {
     });
 
     it('parses mutation with inline fragment', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(`
         mutation SomeMutation {
           someMutation {
             ... on SomeType {
@@ -614,7 +614,7 @@ describe('onlineParser', () => {
     });
 
     it('parses mutation with fragment spread', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(`
         mutation SomeMutation {
           someMutation {
             ...SomeFragment @someDirective
@@ -905,7 +905,7 @@ describe('onlineParser', () => {
         t.eol();
       });
 
-      it('with implementing an interface', () => {
+      it('with an object implementing an interface', () => {
         const { t } = getUtils(`type SomeType implements SomeInterface`);
 
         t.keyword('type', { kind: 'ObjectTypeDef' });
@@ -913,6 +913,22 @@ describe('onlineParser', () => {
         t.keyword('implements', { kind: 'Implements' });
         t.name('SomeInterface', { kind: 'NamedType' });
 
+        t.eol();
+      });
+
+      it('with an object type implementing multiple interfaces', () => {
+        const { t } = getUtils(
+          `type SomeType implements SomeInterface & AnotherInterface & YetAnotherInterface`,
+        );
+
+        t.keyword('type', { kind: 'ObjectTypeDef' });
+        t.name('SomeType');
+        t.keyword('implements', { kind: 'Implements' });
+        t.name('SomeInterface', { kind: 'NamedType' });
+        t.punctuation('&', { kind: 'Implements' });
+        t.name('AnotherInterface', { kind: 'NamedType' });
+        t.punctuation('&', { kind: 'Implements' });
+        t.name('YetAnotherInterface', { kind: 'NamedType' });
         t.eol();
       });
 
@@ -978,6 +994,22 @@ describe('onlineParser', () => {
         t.eol();
       });
 
+      it('implementing multiple interfaces', () => {
+        const { t } = getUtils(
+          `interface AnInterface implements SomeInterface & AnotherInterface & YetAnotherInterface`,
+        );
+
+        t.keyword('interface', { kind: 'InterfaceDef' });
+        t.name('AnInterface');
+        t.keyword('implements', { kind: 'Implements' });
+        t.name('SomeInterface', { kind: 'NamedType' });
+        t.punctuation('&', { kind: 'Implements' });
+        t.name('AnotherInterface', { kind: 'NamedType' });
+        t.punctuation('&', { kind: 'Implements' });
+        t.name('YetAnotherInterface', { kind: 'NamedType' });
+        t.eol();
+      });
+
       performForEachType(
         `interface SomeInterface @someDirective(someArg: __VALUE__)`,
         ({ t, stream }, fill) => {
@@ -1021,7 +1053,7 @@ describe('onlineParser', () => {
       });
 
       it('with an argument', () => {
-        const { t, streams } = getUtils(`
+        const { t } = getUtils(`
           type SomeType {
             someField(someArg: AnotherType): [SomeAnotherType!]!
           }
