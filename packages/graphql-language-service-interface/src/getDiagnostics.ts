@@ -49,14 +49,11 @@ export const DIAGNOSTIC_SEVERITY = {
   [SEVERITY.Hint]: 4 as DiagnosticSeverity,
 };
 
-const invariant = (
-  condition: any,
-  message: string,
-) => {
+const invariant = (condition: any, message: string) => {
   if (!condition) {
     throw new Error(message);
   }
-}
+};
 
 export function getDiagnostics(
   query: string,
