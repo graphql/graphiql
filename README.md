@@ -68,6 +68,17 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 **The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
+## [Monaco GraphQL](packages/monaco-graphql#readme)
+
+[![NPM](https://img.shields.io/npm/v/monaco-graphql.svg)](https://npmjs.com/monaco-graphql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![npm downloads](https://img.shields.io/npm/dm/monaco-graphql?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/monaco-graphql)
+
+Provides monaco editor with a powerful, schema-driven graphql language mode.
+
+See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using github API
+
 ## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)

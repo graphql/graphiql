@@ -130,7 +130,7 @@ export class LanguageService {
     position: Position,
   ) => {
     const schema = await this.getSchema();
-    if (!schema) {
+    if (!documentText || documentText.length < 1 || !schema) {
       return [];
     }
     return getAutocompleteSuggestions(schema, documentText, position);
