@@ -37,6 +37,7 @@ module.exports = dir => {
       '!**/test/**',
       '!**/examples/**',
       '!**/codemirror-graphql/**',
+      '!**/graphiql-2-rfc-context/**',
       '!**/graphql-language-service-types/**',
       '!**/*rfc*/**',
       '!**/*.d.ts',

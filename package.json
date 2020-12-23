@@ -2,7 +2,8 @@
   "private": true,
   "license": "MIT",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/*"
   ],
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
@@ -59,7 +60,8 @@
     "dev-lsp": "echo no-op",
     "lerna-publish": "yarn ci && yarn ci-e2e && lerna publish",
     "watch": "yarn tsc --watch",
-    "start-graphiql": "yarn workspace graphiql dev"
+    "start-graphiql": "yarn workspace graphiql dev",
+    "start-monaco": "yarn workspace example-monaco-graphql-webpack start"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

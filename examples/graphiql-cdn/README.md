@@ -1,6 +1,6 @@
 # GraphiQL CDN Example
 
-This example uses the CDN bundles to show the most simple example possible for CDN.
+This example uses the CDN bundles to show the most simple example possible. It uses the latest version published on npm, via unpkg
 
 ### Setup
 

@@ -5,7 +5,7 @@
   "version": "independent",
   "ignoreChanges": [
     "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
-    "**/examples"
+    "**/examples/**"
   ],
   "command": {
     "publish": {
@@ -17,7 +17,11 @@
     "version": {
       "message": "chore(release): publish",
       "conventionalCommits": true,
-      "createRelease": "github"
+      "createRelease": "github",
+      "ignoreChanges": [
+        "'__tests__' '**/*.spec.js' '**/*.spec.js' '**/*.spec.ts'",
+        "**/examples/**"
+      ]
     }
   }
 }

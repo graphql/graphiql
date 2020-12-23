@@ -54,13 +54,24 @@ First, you'll need to `yarn build` all the packages from the root.
 
 Then, you can run these commands:
 
-- `yarn workspace graphiql dev` will launch webpack dev server for graphiql from the root
-- `yarn workspace graphiql storybook` will launch graphiql storybook from the root
+- `yarn start-graphiql` will launch webpack dev server for graphiql from the root
+- `yarn start-monaco` will launch webpack dev server for the monaco editor example with github API from the root. this is the fastest way to test changes to `graphql-language-service-interface`, parser, etc.
 
-to run tests for GraphiQL:
+if you want these commands to watch for changes to dependent packages in the repo, then `yarn build --watch` is what you want to run alongside either of these.
 
-- `yarn jest graphiql` will run all tests for graphiql
-- `yarn jest --watch` will watch all changes in the monorepo
+**Run tests for GraphiQL:**
+
+- `yarn test graphiql` will run all tests for graphiql. you can also run tests from a workspace, but most tooling is at the root.
+- `yarn test --watch` will run jest with --watch
+- `yarn e2e` at the root will run the end to end suite. you can just run `ci e2e` if everything is already built
+
+**fix CI issues with linting**
+
+if you have prettier or eslint --fix able issues you see in CI, use yarn format:
+
+`yarn format`
+
+if you see typescript build issues, do a `yarn build` locally and make sure the whole project references tree builds. changing interfaces can end up breaking their implementations.
 
 ### All Commands
 
