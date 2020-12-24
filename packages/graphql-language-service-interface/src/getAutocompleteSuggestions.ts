@@ -99,7 +99,11 @@ export function getAutocompleteSuggestions(
     ]);
   }
 
-  if (kind === RuleKinds.IMPLEMENTS) {
+  if (
+    kind === RuleKinds.IMPLEMENTS ||
+    (kind === RuleKinds.NAMED_TYPE &&
+      state?.prevState?.kind === RuleKinds.IMPLEMENTS)
+  ) {
     return getSuggestionsForImplements(token, state, schema, queryText);
   }
 

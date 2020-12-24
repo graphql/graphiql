@@ -365,6 +365,26 @@ query name {
       { label: 'Character' },
       { label: 'TestInterface' },
     ]));
+
+  it('provides filtered interface suggestions when extending an interface', () =>
+    expect(
+      testSuggestions(
+        'interface Type implements TestInterface & Ch',
+        new Position(0, 44),
+      ),
+    ).toEqual([
+      {
+        label: 'Character',
+      },
+    ]));
+
+  it('provides no interface suggestions when extending an interface and an & or { is required', () =>
+    expect(
+      testSuggestions(
+        'interface Type implements TestInterface ',
+        new Position(0, 40),
+      ),
+    ).toEqual([]));
   it('provides correct interface suggestions when extending an interface with an inline interface', () =>
     expect(
       testSuggestions(
