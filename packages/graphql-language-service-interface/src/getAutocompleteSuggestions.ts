@@ -102,7 +102,7 @@ export function getAutocompleteSuggestions(
   if (
     kind === RuleKinds.IMPLEMENTS ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state?.prevState?.kind === RuleKinds.IMPLEMENTS)
+      state.prevState?.kind === RuleKinds.IMPLEMENTS)
   ) {
     return getSuggestionsForImplements(token, state, schema, queryText);
   }
@@ -335,7 +335,6 @@ function getSuggestionsForImplements(
   documentText: string,
 ): Array<CompletionItem> {
   // exit empty if we need an &
-
   if (tokenState.needsSeperator) {
     return [];
   }
@@ -344,19 +343,15 @@ function getSuggestionsForImplements(
   // but if they're defined in the same file that's a good sign
   const inlineInterfaces: Set<string> = new Set();
   runOnlineParser(documentText, (_, state: State) => {
-    const value = state.name || state.type;
-    if (
-      (state.kind === RuleKinds.INTERFACE_DEF ||
-        state.kind === RuleKinds.INTERFACE_TYPE_DEFINITION) &&
-      value
-    ) {
-      inlineInterfaces.add(<string>value);
+    if (state.name && state.kind === RuleKinds.INTERFACE_DEF) {
+      inlineInterfaces.add(<string>state.name);
     }
   });
   const typeMap = schema.getTypeMap();
-  const possibleTypes = objectValues(typeMap).filter(isInterfaceType);
-  const possibleInterfaces = possibleTypes.concat(
+  const schemaInterfaces = objectValues(typeMap).filter(isInterfaceType);
+  const possibleInterfaces = schemaInterfaces.concat(
     [...inlineInterfaces]
+      // don't show the interface we're extending
       .filter(v => v !== tokenState.prevState?.name)
       .map(name => ({ name } as GraphQLInterfaceType)),
   );
@@ -369,13 +364,20 @@ function getSuggestionsForImplements(
         kind: CompletionItemKind.Interface,
       } as CompletionItem;
       if (type?.description) {
-        result.detail = type.description;
+        result.documentation = type.description;
       }
+      // TODO: should we report what an interface implements in suggestion.details?
+      // result.detail = 'Interface'
+      // const interfaces = type.astNode?.interfaces;
+      // if (interfaces && interfaces.length > 0) {
+      //   result.detail += ` (implements ${interfaces
+      //     .map(i => i.name.value)
+      //     .join(' & ')})`;
+      // }
 
       return result;
     }),
   );
-  return [];
 }
 
 function getSuggestionsForFragmentTypeConditions(
@@ -410,7 +412,7 @@ function getSuggestionsForFragmentTypeConditions(
   }
   return hintList(
     token,
-    possibleTypes.map((type: GraphQLType) => {
+    possibleTypes.map(type => {
       const namedType = getNamedType(type);
       return {
         label: String(type),
@@ -735,14 +737,10 @@ export function getTypeInfo(
       case RuleKinds.DIRECTIVE:
         directiveDef = state.name ? schema.getDirective(state.name) : null;
         break;
-      case RuleKinds.IMPLEMENTS:
-        if (state.type) {
-          type = schema.getType(state.type);
-        }
-        if (state.prevState?.name) {
-          parentType = schema.getType(state.prevState.name as string);
-        }
-        break;
+      // TODO: here is where we can begin to solve the issue of completion for the interface
+      // you're extending
+      // case RuleKinds.IMPLEMENTS:
+      // break;
       case RuleKinds.ARGUMENTS:
         if (!state.prevState) {
           argDefs = null;

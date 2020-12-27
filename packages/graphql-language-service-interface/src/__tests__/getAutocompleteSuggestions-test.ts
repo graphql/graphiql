@@ -38,12 +38,13 @@ describe('getAutocompleteSuggestions', () => {
       )
       .sort((a, b) => a.label.localeCompare(b.label))
       .map(suggestion => {
-        const response = { label: suggestion.label };
+        const response = { label: suggestion.label } as CompletionItem;
         if (suggestion.detail) {
-          Object.assign(response, {
-            detail: String(suggestion.detail),
-          });
+          response.detail = String(suggestion.detail);
         }
+        // if(suggestion.documentation) {
+        //   response.documentation = String(suggestion.documentation)
+        // }
         return response;
       });
   }
@@ -357,34 +358,39 @@ query name {
   it('provides correct interface suggestions when extending an interface with multiple interfaces', () =>
     expect(
       testSuggestions(
-        'interface Type implements TestInterface & ',
-        new Position(0, 44),
+        'interface IExample implements TestInterface & ',
+        new Position(0, 46),
       ),
     ).toEqual([
       { label: 'AnotherInterface' },
       { label: 'Character' },
       { label: 'TestInterface' },
     ]));
-
-  it('provides filtered interface suggestions when extending an interface', () =>
+  it('provides filtered interface suggestions when extending an interface with multiple interfaces', () =>
+    expect(
+      testSuggestions('interface IExample implements I', new Position(0, 48)),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      // TODO: this shouldn't be here - must find way to
+      // track base interface name so we can filter it from inline suggestions
+      // on NamedType kind
+      { label: 'IExample' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides no interface suggestions when using implements and there are no & or { characters present', () =>
     expect(
       testSuggestions(
-        'interface Type implements TestInterface & Ch',
+        'interface IExample implements TestInterface ',
         new Position(0, 44),
       ),
-    ).toEqual([
-      {
-        label: 'Character',
-      },
-    ]));
-
-  it('provides no interface suggestions when extending an interface and an & or { is required', () =>
+    ).toEqual([]));
+  it('provides fragment completion after a list of interfaces to extend', () =>
     expect(
       testSuggestions(
-        'interface Type implements TestInterface ',
-        new Position(0, 40),
+        'interface IExample implements TestInterface & AnotherInterface @f',
+        new Position(0, 65),
       ),
-    ).toEqual([]));
+    ).toEqual([{ label: 'onAllDefs' }]));
   it('provides correct interface suggestions when extending an interface with an inline interface', () =>
     expect(
       testSuggestions(
