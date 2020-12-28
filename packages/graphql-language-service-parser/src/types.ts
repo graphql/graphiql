@@ -79,6 +79,7 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   ARGUMENTS_DEF: 'ArgumentsDef',
   EXTEND_DEF: 'ExtendDef',
   DIRECTIVE_DEF: 'DirectiveDef',
+  IMPLEMENTS: 'Implements',
 };
 
 export type _AdditionalRuleKinds = {
@@ -106,6 +107,7 @@ export type _AdditionalRuleKinds = {
   ARGUMENTS_DEF: 'ArgumentsDef';
   EXTEND_DEF: 'ExtendDef';
   DIRECTIVE_DEF: 'DirectiveDef';
+  IMPLEMENTS: 'Implements';
 };
 
 export const RuleKinds = {

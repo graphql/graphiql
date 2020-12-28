@@ -162,7 +162,7 @@ function getToken(
 
     // Seperator between list elements if necessary.
     if (state.needsSeperator) {
-      expected = expected && expected.separator;
+      expected = expected && expected?.separator;
     }
 
     if (expected) {

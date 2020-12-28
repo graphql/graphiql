@@ -31,7 +31,7 @@ export const LexRules = {
   Name: /^[_A-Za-z][_0-9A-Za-z]*/,
 
   // All Punctuation used in GraphQL
-  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|@|\[|]|\{|\||\})/,
+  Punctuation: /^(?:!|\$|\(|\)|\.\.\.|:|=|&|@|\[|]|\{|\||\})/,
 
   // Combines the IntValue and FloatValue tokens.
   Number: /^-?(?:0|(?:[1-9][0-9]*))(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?/,
@@ -173,6 +173,8 @@ export const ParseRules: { [name: string]: ParseRule } = {
             return 'ObjectValue';
           case '$':
             return 'Variable';
+          case '&':
+            return 'NamedType';
         }
 
         return null;
@@ -205,6 +207,25 @@ export const ParseRules: { [name: string]: ParseRule } = {
   NonNullType: ['NamedType', opt(p('!'))],
   NamedType: [type('atom')],
   Directive: [p('@', 'meta'), name('meta'), opt('Arguments')],
+  DirectiveDef: [
+    word('directive'),
+    p('@', 'meta'),
+    name('meta'),
+    opt('ArgumentsDef'),
+    word('on'),
+    list('DirectiveLocation', p('|')),
+  ],
+  InterfaceDef: [
+    word('interface'),
+    name('atom'),
+    opt('Implements'),
+    list('Directive'),
+    p('{'),
+    list('FieldDef'),
+    p('}'),
+  ],
+  Implements: [word('implements'), list('NamedType', p('&'))],
+  DirectiveLocation: [name('string-2')],
   // GraphQL schema language
   SchemaDef: [
     word('schema'),
@@ -226,7 +247,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
     p('}'),
   ],
 
-  Implements: [word('implements'), list('NamedType')],
   FieldDef: [
     name('property'),
     opt('ArgumentsDef'),
@@ -242,15 +262,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
     'Type',
     opt('DefaultValue'),
     list('Directive'),
-  ],
-
-  InterfaceDef: [
-    word('interface'),
-    name('atom'),
-    list('Directive'),
-    p('{'),
-    list('FieldDef'),
-    p('}'),
   ],
 
   UnionDef: [
@@ -281,16 +292,6 @@ export const ParseRules: { [name: string]: ParseRule } = {
     p('}'),
   ],
   ExtendDef: [word('extend'), 'ObjectTypeDef'],
-  DirectiveDef: [
-    word('directive'),
-    p('@', 'meta'),
-    name('meta'),
-    opt('ArgumentsDef'),
-    word('on'),
-    list('DirectiveLocation', p('|')),
-  ],
-
-  DirectiveLocation: [name('string-2')],
 };
 
 // A keyword Token.

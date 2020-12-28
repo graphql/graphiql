@@ -20,9 +20,9 @@
 import { TokenPattern, CharacterStreamInterface } from './types';
 
 export default class CharacterStream implements CharacterStreamInterface {
-  _start: number;
-  _pos: number;
-  _sourceText: string;
+  private _start: number;
+  private _pos: number;
+  private _sourceText: string;
 
   constructor(sourceText: string) {
     this._start = 0;
@@ -30,11 +30,11 @@ export default class CharacterStream implements CharacterStreamInterface {
     this._sourceText = sourceText;
   }
 
-  getStartOfToken = (): number => this._start;
+  public getStartOfToken = (): number => this._start;
 
-  getCurrentPosition = (): number => this._pos;
+  public getCurrentPosition = (): number => this._pos;
 
-  _testNextCharacter(pattern: TokenPattern): boolean {
+  private _testNextCharacter(pattern: TokenPattern): boolean {
     const character = this._sourceText.charAt(this._pos);
     let isMatched = false;
     if (typeof pattern === 'string') {
@@ -48,23 +48,23 @@ export default class CharacterStream implements CharacterStreamInterface {
     return isMatched;
   }
 
-  eol = (): boolean => this._sourceText.length === this._pos;
+  public eol = (): boolean => this._sourceText.length === this._pos;
 
-  sol = (): boolean => this._pos === 0;
+  public sol = (): boolean => this._pos === 0;
 
-  peek = (): string | null => {
+  public peek = (): string | null => {
     return this._sourceText.charAt(this._pos)
       ? this._sourceText.charAt(this._pos)
       : null;
   };
 
-  next = (): string => {
+  public next = (): string => {
     const char = this._sourceText.charAt(this._pos);
     this._pos++;
     return char;
   };
 
-  eat = (pattern: TokenPattern): string | undefined => {
+  public eat = (pattern: TokenPattern): string | undefined => {
     const isMatched = this._testNextCharacter(pattern);
     if (isMatched) {
       this._start = this._pos;
@@ -74,7 +74,7 @@ export default class CharacterStream implements CharacterStreamInterface {
     return undefined;
   };
 
-  eatWhile = (match: TokenPattern): boolean => {
+  public eatWhile = (match: TokenPattern): boolean => {
     let isMatched = this._testNextCharacter(match);
     let didEat = false;
 
@@ -93,17 +93,17 @@ export default class CharacterStream implements CharacterStreamInterface {
     return didEat;
   };
 
-  eatSpace = (): boolean => this.eatWhile(/[\s\u00a0]/);
+  public eatSpace = (): boolean => this.eatWhile(/[\s\u00a0]/);
 
-  skipToEnd = (): void => {
+  public skipToEnd = (): void => {
     this._pos = this._sourceText.length;
   };
 
-  skipTo = (position: number): void => {
+  public skipTo = (position: number): void => {
     this._pos = position;
   };
 
-  match = (
+  public match = (
     pattern: TokenPattern,
     consume: boolean | null | undefined = true,
     caseFold: boolean | null | undefined = false,
@@ -143,13 +143,13 @@ export default class CharacterStream implements CharacterStreamInterface {
     return false;
   };
 
-  backUp = (num: number): void => {
+  public backUp = (num: number): void => {
     this._pos -= num;
   };
 
-  column = (): number => this._pos;
+  public column = (): number => this._pos;
 
-  indentation = (): number => {
+  public indentation = (): number => {
     const match = this._sourceText.match(/\s*/);
     let indent = 0;
     if (match && match.length !== 0) {
@@ -168,5 +168,5 @@ export default class CharacterStream implements CharacterStreamInterface {
     return indent;
   };
 
-  current = (): string => this._sourceText.slice(this._start, this._pos);
+  public current = (): string => this._sourceText.slice(this._start, this._pos);
 }

@@ -38,12 +38,13 @@ describe('getAutocompleteSuggestions', () => {
       )
       .sort((a, b) => a.label.localeCompare(b.label))
       .map(suggestion => {
-        const response = { label: suggestion.label };
+        const response = { label: suggestion.label } as CompletionItem;
         if (suggestion.detail) {
-          Object.assign(response, {
-            detail: String(suggestion.detail),
-          });
+          response.detail = String(suggestion.detail);
         }
+        // if(suggestion.documentation) {
+        //   response.documentation = String(suggestion.documentation)
+        // }
         return response;
       });
   }
@@ -217,10 +218,12 @@ query name {
   it('provides correct typeCondition suggestions on fragment', () => {
     const result = testSuggestions('fragment Foo on {}', new Position(0, 16));
     expect(result.filter(({ label }) => !label.startsWith('__'))).toEqual([
+      { label: 'AnotherInterface' },
       { label: 'Character' },
       { label: 'Droid' },
       { label: 'Human' },
       { label: 'Query' },
+      { label: 'TestInterface' },
       { label: 'TestType' },
     ]);
   });
@@ -330,5 +333,74 @@ query name {
       { label: 'deprecated' },
       { label: 'onAllDefs' },
       { label: 'onArg' },
+    ]));
+
+  it('provides correct interface suggestions when extending with an interface', () =>
+    expect(
+      testSuggestions('type Type implements ', new Position(0, 20)),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+
+  it('provides correct interface suggestions when extending a type with multiple interfaces', () =>
+    expect(
+      testSuggestions(
+        'type Type implements TestInterface & ',
+        new Position(0, 37),
+      ),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides correct interface suggestions when extending an interface with multiple interfaces', () =>
+    expect(
+      testSuggestions(
+        'interface IExample implements TestInterface & ',
+        new Position(0, 46),
+      ),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides filtered interface suggestions when extending an interface with multiple interfaces', () =>
+    expect(
+      testSuggestions('interface IExample implements I', new Position(0, 48)),
+    ).toEqual([
+      { label: 'AnotherInterface' },
+      // TODO: this shouldn't be here - must find way to
+      // track base interface name so we can filter it from inline suggestions
+      // on NamedType kind
+      { label: 'IExample' },
+      { label: 'TestInterface' },
+    ]));
+  it('provides no interface suggestions when using implements and there are no & or { characters present', () =>
+    expect(
+      testSuggestions(
+        'interface IExample implements TestInterface ',
+        new Position(0, 44),
+      ),
+    ).toEqual([]));
+  it('provides fragment completion after a list of interfaces to extend', () =>
+    expect(
+      testSuggestions(
+        'interface IExample implements TestInterface & AnotherInterface @f',
+        new Position(0, 65),
+      ),
+    ).toEqual([{ label: 'onAllDefs' }]));
+  it('provides correct interface suggestions when extending an interface with an inline interface', () =>
+    expect(
+      testSuggestions(
+        'interface A { id: String }\ninterface MyInterface implements ',
+        new Position(1, 33),
+      ),
+    ).toEqual([
+      { label: 'A' },
+      { label: 'AnotherInterface' },
+      { label: 'Character' },
+      { label: 'TestInterface' },
     ]));
 });
