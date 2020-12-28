@@ -1,6 +1,6 @@
 {
   "name": "example-monaco-graphql-webpack",
-  "version": "1.1.1-alpha.2",
+  "version": "1.1.1-alpha.3",
   "private": true,
   "license": "MIT",
   "description": "A simple monaco example with webpack and typescript",
@@ -16,14 +16,14 @@
     "prettier": "^2.0.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/node": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-syntax-dynamic-import": "7.8.3",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/node": "^7.8.7",
     "@types/prettier": "^2.0.0",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.0",

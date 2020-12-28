@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.7.0](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.6.5...graphql-language-service-parser@1.7.0) (2020-12-28)
+
+### Features
+
+- interfaces implementing interfaces for the LSP ([#1742](https://github.com/graphql/graphiql/issues/1742)) ([c4cba85](https://github.com/graphql/graphiql/commit/c4cba85e869105f5363ebcb3826b4cf7b7e62c00))
+
 ## [1.6.5](https://github.com/graphql/graphiql/compare/graphql-language-service-parser@1.6.4...graphql-language-service-parser@1.6.5) (2020-11-28)
 
 **Note:** Version bump only for package graphql-language-service-parser

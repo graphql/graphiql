@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [2.6.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.5.0...graphql-language-service-interface@2.6.0) (2020-12-28)
+
+### Features
+
+- interfaces implementing interfaces for the LSP ([#1742](https://github.com/graphql/graphiql/issues/1742)) ([c4cba85](https://github.com/graphql/graphiql/commit/c4cba85e869105f5363ebcb3826b4cf7b7e62c00))
+
 # [2.5.0](https://github.com/graphql/graphiql/compare/graphql-language-service-interface@2.4.3...graphql-language-service-interface@2.5.0) (2020-12-08)
 
 ### Bug Fixes
