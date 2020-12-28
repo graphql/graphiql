@@ -130,6 +130,7 @@ export function getAutocompleteSuggestions(
           detail: String(argDef.type),
           documentation: argDef.description ?? undefined,
           kind: CompletionItemKind.Variable,
+          type: argDef.type,
         })),
       );
     }
@@ -153,6 +154,7 @@ export function getAutocompleteSuggestions(
           detail: String(field.type),
           documentation: field.description ?? undefined,
           kind: completionKind,
+          type: field.type,
         })),
       );
     }
@@ -280,6 +282,7 @@ function getSuggestionsForFieldNames(
         isDeprecated: field.isDeprecated,
         deprecationReason: field.deprecationReason,
         kind: CompletionItemKind.Field,
+        type: field.type,
       })),
     );
   }
@@ -289,23 +292,22 @@ function getSuggestionsForFieldNames(
 function getSuggestionsForInputValues(
   token: ContextToken,
   typeInfo: AllTypeInfo,
-): CompletionItem[] {
+): Array<CompletionItem> {
   const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
   if (namedInputType instanceof GraphQLEnumType) {
     const values: GraphQLEnumValue[] = namedInputType.getValues();
     return hintList(
       token,
-      values.map(
-        (value: GraphQLEnumValue): CompletionItem => ({
-          label: value.name,
-          detail: String(namedInputType),
-          documentation: value.description ?? undefined,
-          deprecated: value.isDeprecated,
-          isDeprecated: value.isDeprecated,
-          deprecationReason: value.deprecationReason,
-          kind: CompletionItemKind.EnumMember,
-        }),
-      ),
+      values.map<CompletionItem>((value: GraphQLEnumValue) => ({
+        label: value.name,
+        detail: String(namedInputType),
+        documentation: value.description ?? undefined,
+        deprecated: value.isDeprecated,
+        isDeprecated: value.isDeprecated,
+        deprecationReason: value.deprecationReason,
+        kind: CompletionItemKind.EnumMember,
+        type: namedInputType,
+      })),
     );
   } else if (namedInputType === GraphQLBoolean) {
     return hintList(token, [
@@ -314,13 +316,14 @@ function getSuggestionsForInputValues(
         detail: String(GraphQLBoolean),
         documentation: 'Not false.',
         kind: CompletionItemKind.Variable,
+        type: GraphQLBoolean,
       },
-
       {
         label: 'false',
         detail: String(GraphQLBoolean),
         documentation: 'Not true.',
         kind: CompletionItemKind.Variable,
+        type: GraphQLBoolean,
       },
     ]);
   }
@@ -362,6 +365,7 @@ function getSuggestionsForImplements(
       const result = {
         label: type.name,
         kind: CompletionItemKind.Interface,
+        type,
       } as CompletionItem;
       if (type?.description) {
         result.documentation = type.description;
@@ -466,6 +470,7 @@ function getSuggestionsForFragmentSpread(
       detail: String(typeMap[frag.typeCondition.name.value]),
       documentation: `fragment ${frag.name.value} on ${frag.typeCondition.name.value}`,
       kind: CompletionItemKind.Field,
+      type: typeMap[frag.typeCondition.name.value],
     })),
   );
 }

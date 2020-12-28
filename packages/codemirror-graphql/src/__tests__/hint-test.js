@@ -200,6 +200,11 @@ describe('graphql-hint', () => {
         isDeprecated: false,
       },
       {
+        text: 'example',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
@@ -283,7 +288,7 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
-  it('provides correct argument suggestions after fileterd', async () => {
+  it('provides correct argument suggestions after filtered', async () => {
     const suggestions = await getHintSuggestions('{ hasArgs ( f', {
       line: 0,
       ch: 13,
@@ -390,7 +395,7 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
-  it('provides correct directive suggestion after fileterd', async () => {
+  it('provides correct directive suggestion after filtered', async () => {
     const suggestions = await getHintSuggestions('{ test (@s', {
       line: 0,
       ch: 10,
@@ -466,6 +471,55 @@ describe('graphql-hint', () => {
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
+  it('provides interface suggestions for type when using implements keyword', async () => {
+    const suggestions = await getHintSuggestions('type Type implements ', {
+      line: 0,
+      ch: 21,
+    });
+    const list = [
+      {
+        text: 'TestInterface',
+        type: TestSchema.getType('TestInterface'),
+      },
+      {
+        text: 'AnotherTestInterface',
+        type: TestSchema.getType('AnotherTestInterface'),
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides interface suggestions for interface when using implements keyword', async () => {
+    const suggestions = await getHintSuggestions(
+      'interface MyInt implements An',
+      { line: 0, ch: 29 },
+    );
+    const list = [
+      {
+        text: 'AnotherTestInterface',
+        type: TestSchema.getType('AnotherTestInterface'),
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
+  it('provides interface suggestions for interface when using implements keyword and multiple interfaces', async () => {
+    const suggestions = await getHintSuggestions(
+      'interface MyInt implements AnotherTestInterface & An',
+      { line: 0, ch: 51 },
+    );
+    const list = [
+      {
+        text: 'AnotherTestInterface',
+        type: TestSchema.getType('AnotherTestInterface'),
+      },
+    ];
+    const expectedSuggestions = getExpectedSuggestions(list);
+    expect(suggestions.list).to.deep.equal(expectedSuggestions);
+  });
+
   it('provides correct typeCondition suggestions', async () => {
     const suggestions = await getHintSuggestions('{ union { ... on ', {
       line: 0,
@@ -484,12 +538,16 @@ describe('graphql-hint', () => {
         text: 'TestInterface',
         description: '',
       },
+      {
+        text: 'AnotherTestInterface',
+        description: '',
+      },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 
-  it('provides correct typeCondition suggestions after filterd', async () => {
+  it('provides correct typeCondition suggestions after filtered', async () => {
     const suggestions = await getHintSuggestions('{ union { ... on F', {
       line: 0,
       ch: 18,
@@ -501,6 +559,10 @@ describe('graphql-hint', () => {
       },
       {
         text: 'TestInterface',
+        description: '',
+      },
+      {
+        text: 'AnotherTestInterface',
         description: '',
       },
     ];
@@ -528,6 +590,10 @@ describe('graphql-hint', () => {
       },
       {
         text: 'TestInterface',
+        description: '',
+      },
+      {
+        text: 'AnotherTestInterface',
         description: '',
       },
       {
@@ -707,7 +773,7 @@ describe('graphql-hint', () => {
 
   it('provides fragment names for fragments defined lower', async () => {
     const suggestions = await getHintSuggestions(
-      'query { ... } fragment Foo on Test { id }',
+      'query { ... }\nfragment Foo on Test { id }',
       { line: 0, ch: 11 },
     );
     const list = [
@@ -770,6 +836,11 @@ describe('graphql-hint', () => {
         isDeprecated: false,
       },
       {
+        text: 'example',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
@@ -797,13 +868,20 @@ describe('graphql-hint', () => {
         isDeprecated: false,
       },
       {
+        text: 'example',
+        type: GraphQLString,
+        isDeprecated: false,
+      },
+      {
         text: '__typename',
         type: GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
     ];
+
     const expectedSuggestions = getExpectedSuggestions(list);
+
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
   });
 

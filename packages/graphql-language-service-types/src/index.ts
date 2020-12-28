@@ -181,6 +181,7 @@ export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
   documentation?: string | null;
   deprecationReason?: string | null;
+  type?: GraphQLType;
 };
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 

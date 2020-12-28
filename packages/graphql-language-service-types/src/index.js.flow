@@ -278,6 +278,7 @@ export type CompletionItem = {
   // GraphQL Deprecation information
   isDeprecated?: ?boolean,
   deprecationReason?: ?string,
+  type?: GraphQLType
 };
 
 export type CompletionItemBase = {
