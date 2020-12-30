@@ -190,6 +190,36 @@ query name {
     expect(result).toEqual([{ label: 'id', detail: 'String!' }]);
   });
 
+  it('provides correct input type suggestions', () => {
+    const result = testSuggestions(
+      'query($exampleVariable: ) { ',
+      new Position(0, 24),
+    );
+    expect(result).toEqual([
+      { label: '__DirectiveLocation' },
+      { label: '__TypeKind' },
+      { label: 'Boolean' },
+      { label: 'Episode' },
+      { label: 'InputType' },
+      { label: 'Int' },
+      { label: 'String' },
+    ]);
+  });
+
+  it('provides filtered input type suggestions', () => {
+    const result = testSuggestions(
+      'query($exampleVariable: In) { ',
+      new Position(0, 26),
+    );
+    expect(result).toEqual([
+      { label: '__DirectiveLocation' },
+      { label: '__TypeKind' },
+      { label: 'InputType' },
+      { label: 'Int' },
+      { label: 'String' },
+    ]);
+  });
+
   it('provides correct typeCondition suggestions', () => {
     const suggestionsOnQuery = testSuggestions('{ ... on ', new Position(0, 9));
     expect(
@@ -231,6 +261,27 @@ query name {
   it('provides correct ENUM suggestions', () => {
     const result = testSuggestions('{ hero(episode: ', new Position(0, 16));
     expect(result).toEqual([
+      { label: 'EMPIRE', detail: 'Episode' },
+      { label: 'JEDI', detail: 'Episode' },
+      { label: 'NEWHOPE', detail: 'Episode' },
+    ]);
+  });
+
+  it('provides correct suggestions when autocompleting for declared variable while typing', () => {
+    const result = testSuggestions(
+      'query($id: String, $ep: Episode!){ hero(episode: $ }',
+      new Position(0, 51),
+    );
+    expect(result).toEqual([{ label: '$ep', detail: 'Episode' }]);
+  });
+
+  it('provides correct suggestions when autocompleting for declared variable', () => {
+    const result = testSuggestions(
+      'query($id: String!, $episode: Episode!){ hero(episode: ',
+      new Position(0, 55),
+    );
+    expect(result).toEqual([
+      { label: '$episode', detail: 'Episode' },
       { label: 'EMPIRE', detail: 'Episode' },
       { label: 'JEDI', detail: 'Episode' },
       { label: 'NEWHOPE', detail: 'Episode' },
@@ -368,15 +419,11 @@ query name {
     ]));
   it('provides filtered interface suggestions when extending an interface with multiple interfaces', () =>
     expect(
-      testSuggestions('interface IExample implements I', new Position(0, 48)),
-    ).toEqual([
-      { label: 'AnotherInterface' },
-      // TODO: this shouldn't be here - must find way to
-      // track base interface name so we can filter it from inline suggestions
-      // on NamedType kind
-      { label: 'IExample' },
-      { label: 'TestInterface' },
-    ]));
+      testSuggestions(
+        'interface IExample implements TestInterface & Inter',
+        new Position(0, 48),
+      ),
+    ).toEqual([{ label: 'AnotherInterface' }, { label: 'TestInterface' }]));
   it('provides no interface suggestions when using implements and there are no & or { characters present', () =>
     expect(
       testSuggestions(
