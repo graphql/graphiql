@@ -29,14 +29,10 @@ import 'codemirror-graphql/mode';
 CodeMirror.fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
-    // (required) a GraphQLSchema primitive
     schema: myGraphQLSchema,
   },
   hintOptions: {
-    // (required) a GraphQLSchema primitive
     schema: myGraphQLSchema,
-    // (optional) a list of FragmentDefinitionNodes to be available for hinting
-    fragments: fragments,
   },
 });
 ```

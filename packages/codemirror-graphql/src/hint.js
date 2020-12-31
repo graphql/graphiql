@@ -52,8 +52,8 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     editor.getValue(),
     position,
     token,
-    options.fragments,
   );
+
   const results = {
     list: rawResults.map(item => ({
       text: item.label,
