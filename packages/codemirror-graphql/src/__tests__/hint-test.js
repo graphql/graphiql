@@ -507,13 +507,13 @@ describe('graphql-hint', () => {
 
   it('provides interface suggestions for interface when using implements keyword and multiple interfaces', async () => {
     const suggestions = await getHintSuggestions(
-      'interface MyInt implements AnotherTestInterface & An',
+      'interface MyInt implements AnotherTestInterface & T',
       { line: 0, ch: 51 },
     );
     const list = [
       {
-        text: 'AnotherTestInterface',
-        type: TestSchema.getType('AnotherTestInterface'),
+        text: 'TestInterface',
+        type: TestSchema.getType('TestInterface'),
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
