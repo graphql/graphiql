@@ -25,6 +25,7 @@ import type {
   GraphQLField,
   GraphQLInputFieldMap,
   GraphQLInterfaceType,
+  GraphQLObjectType,
   GraphQLType,
 } from 'graphql/type/definition';
 import type { GraphQLDirective } from 'graphql/type/directives';
@@ -152,6 +153,7 @@ export type AllTypeInfo = {
   argDefs: Maybe<GraphQLArgument[]>;
   objectFieldDefs: Maybe<GraphQLInputFieldMap>;
   interfaceDef: Maybe<GraphQLInterfaceType>;
+  objectTypeDef: Maybe<GraphQLObjectType>;
 };
 
 export type FragmentInfo = {

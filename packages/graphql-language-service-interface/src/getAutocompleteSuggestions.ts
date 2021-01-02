@@ -20,6 +20,7 @@ import {
   GraphQLNamedType,
   isInterfaceType,
   GraphQLInterfaceType,
+  GraphQLObjectType,
 } from 'graphql';
 
 import {
@@ -359,23 +360,43 @@ function getSuggestionsForImplements(
         state.kind === RuleKinds.NAMED_TYPE &&
         state.prevState?.kind === RuleKinds.IMPLEMENTS
       ) {
-        if (typeInfo.interfaceDef) {
-          const existingType = typeInfo.interfaceDef
+        const { interfaceDef, objectTypeDef } = typeInfo;
+        if (interfaceDef) {
+          const existingType = interfaceDef
             ?.getInterfaces()
             .find(({ name }) => name === state.name);
           if (existingType) {
             return;
           }
           const type = schema.getType(state.name);
-          const interfaceConfig = typeInfo.interfaceDef?.toConfig()!;
-          typeInfo.interfaceDef = new GraphQLInterfaceType({
-            ...interfaceConfig,
-            interfaces: [
-              ...interfaceConfig.interfaces,
-              (type as GraphQLInterfaceType) ||
-                new GraphQLInterfaceType({ name: state.name, fields: {} }),
-            ],
-          });
+          const interfaceConfig = interfaceDef?.toConfig()!;
+          if (typeInfo.interfaceDef) {
+            typeInfo.interfaceDef = new GraphQLInterfaceType({
+              ...interfaceConfig,
+              interfaces: [
+                ...interfaceConfig.interfaces,
+                (type as GraphQLInterfaceType) ||
+                  new GraphQLInterfaceType({ name: state.name, fields: {} }),
+              ],
+            });
+          } else if (objectTypeDef) {
+            const existingType = objectTypeDef
+              ?.getInterfaces()
+              .find(({ name }) => name === state.name);
+            if (existingType) {
+              return;
+            }
+            const type = schema.getType(state.name);
+            const objectTypeConfig = objectTypeDef?.toConfig()!;
+            typeInfo.objectTypeDef = new GraphQLObjectType({
+              ...objectTypeConfig,
+              interfaces: [
+                ...objectTypeConfig.interfaces,
+                (type as GraphQLInterfaceType) ||
+                  new GraphQLInterfaceType({ name: state.name, fields: {} }),
+              ],
+            });
+          }
         }
       }
     }
@@ -795,6 +816,7 @@ export function getTypeInfo(
   let enumValue: AllTypeInfo['enumValue'];
   let fieldDef: AllTypeInfo['fieldDef'];
   let inputType: AllTypeInfo['inputType'];
+  let objectTypeDef: AllTypeInfo['objectTypeDef'];
   let objectFieldDefs: AllTypeInfo['objectFieldDefs'];
   let parentType: AllTypeInfo['parentType'];
   let type: AllTypeInfo['type'];
@@ -838,7 +860,20 @@ export function getTypeInfo(
 
       case RuleKinds.INTERFACE_DEF:
         if (state.name) {
+          objectTypeDef = null;
           interfaceDef = new GraphQLInterfaceType({
+            name: state.name,
+            interfaces: [],
+            fields: {},
+          });
+        }
+
+        break;
+
+      case RuleKinds.OBJECT_TYPE_DEF:
+        if (state.name) {
+          interfaceDef = null;
+          objectTypeDef = new GraphQLObjectType({
             name: state.name,
             interfaces: [],
             fields: {},
@@ -941,6 +976,7 @@ export function getTypeInfo(
     parentType,
     type,
     interfaceDef,
+    objectTypeDef,
   };
 }
 
