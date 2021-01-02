@@ -412,18 +412,14 @@ query name {
         'interface IExample implements TestInterface & ',
         new Position(0, 46),
       ),
-    ).toEqual([
-      { label: 'AnotherInterface' },
-      { label: 'Character' },
-      { label: 'TestInterface' },
-    ]));
+    ).toEqual([{ label: 'AnotherInterface' }, { label: 'Character' }]));
   it('provides filtered interface suggestions when extending an interface with multiple interfaces', () =>
     expect(
       testSuggestions(
         'interface IExample implements TestInterface & Inter',
         new Position(0, 48),
       ),
-    ).toEqual([{ label: 'AnotherInterface' }, { label: 'TestInterface' }]));
+    ).toEqual([{ label: 'AnotherInterface' }]));
   it('provides no interface suggestions when using implements and there are no & or { characters present', () =>
     expect(
       testSuggestions(

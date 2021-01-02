@@ -343,26 +343,57 @@ function getSuggestionsForImplements(
 
   const schemaInterfaces = objectValues(typeMap).filter(isInterfaceType);
   const schemaInterfaceNames = schemaInterfaces.map(({ name }) => name);
-  // gather inline interfaces so we can reference them.
-  // we don't know if they're part of the schema yet,
-  // but if they're defined in the same file that's a good sign
   const inlineInterfaces: Set<string> = new Set();
   runOnlineParser(documentText, (_, state: State) => {
-    if (
-      state.name &&
-      state.kind === RuleKinds.INTERFACE_DEF &&
-      !schemaInterfaceNames.includes(state.name)
-    ) {
-      inlineInterfaces.add(<string>state.name);
+    if (state.name) {
+      // gather inline interface definitions
+      if (
+        state.kind === RuleKinds.INTERFACE_DEF &&
+        !schemaInterfaceNames.includes(state.name)
+      ) {
+        inlineInterfaces.add(<string>state.name);
+      }
+      // gather the other interfaces the current type/interface definition implements
+      // so we can filter them out below
+      if (
+        state.kind === RuleKinds.NAMED_TYPE &&
+        state.prevState?.kind === RuleKinds.IMPLEMENTS
+      ) {
+        if (typeInfo.interfaceDef) {
+          const existingType = typeInfo.interfaceDef
+            ?.getInterfaces()
+            .find(({ name }) => name === state.name);
+          if (existingType) {
+            return;
+          }
+          const type = schema.getType(state.name);
+          const interfaceConfig = typeInfo.interfaceDef?.toConfig()!;
+          typeInfo.interfaceDef = new GraphQLInterfaceType({
+            ...interfaceConfig,
+            interfaces: [
+              ...interfaceConfig.interfaces,
+              (type as GraphQLInterfaceType) ||
+                new GraphQLInterfaceType({ name: state.name, fields: {} }),
+            ],
+          });
+        }
+      }
     }
   });
 
-  const possibleInterfaces = schemaInterfaces.concat(
-    [...inlineInterfaces]
-      // don't show the name of the interface we're extending
-      .filter(v => v !== typeInfo.interfaceDef?.name)
-      .map(name => ({ name } as GraphQLInterfaceType)),
-  );
+  const siblingInterfaces = typeInfo.interfaceDef?.getInterfaces() || [];
+  const siblingInterfaceNames = siblingInterfaces.map(({ name }) => name);
+
+  // TODO: we should be using schema.getPossibleTypes() here, but
+  const possibleInterfaces = schemaInterfaces
+    .concat(
+      [...inlineInterfaces].map(name => ({ name } as GraphQLInterfaceType)),
+    )
+    .filter(
+      ({ name }) =>
+        name !== typeInfo.interfaceDef?.name &&
+        !siblingInterfaceNames.includes(name),
+    );
 
   return hintList(
     token,
@@ -375,7 +406,7 @@ function getSuggestionsForImplements(
       if (type?.description) {
         result.documentation = type.description;
       }
-      // TODO: should we report what an interface implements in suggestion.detail?
+      // TODO: should we report what an interface implements in CompletionItem.detail?
       // result.detail = 'Interface'
       // const interfaces = type.astNode?.interfaces;
       // if (interfaces && interfaces.length > 0) {
@@ -502,7 +533,7 @@ export function getVariableCompletions(
 ): CompletionItem[] {
   let variableName: null | string;
   let variableType: GraphQLInputObjectType | undefined | null;
-  const definitions: Record<string, any> = {};
+  const definitions: Record<string, any> = Object.create({});
   runOnlineParser(queryText, (_, state: State) => {
     if (state.kind === RuleKinds.VARIABLE && state.name) {
       variableName = state.name;
@@ -813,6 +844,7 @@ export function getTypeInfo(
             fields: {},
           });
         }
+
         break;
       case RuleKinds.ARGUMENTS: {
         if (!state.prevState) {
@@ -894,9 +926,6 @@ export function getTypeInfo(
         //  here to eliminate them from the completion list
         // because "type A extends B & C &" should not show completion options for B & C still.
 
-        // if(state.prevState?.kind === RuleKinds.IMPLEMENTS) {
-        //   interfaceDef?.addInterface(new GraphQLInterfaceType({ name: state.name}))
-        // }
         break;
     }
   });
