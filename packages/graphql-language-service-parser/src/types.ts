@@ -80,6 +80,8 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   EXTEND_DEF: 'ExtendDef',
   DIRECTIVE_DEF: 'DirectiveDef',
   IMPLEMENTS: 'Implements',
+  VARIABLE_DEFINITIONS: 'VariableDefinitions',
+  TYPE: 'Type',
 };
 
 export type _AdditionalRuleKinds = {
@@ -108,6 +110,8 @@ export type _AdditionalRuleKinds = {
   EXTEND_DEF: 'ExtendDef';
   DIRECTIVE_DEF: 'DirectiveDef';
   IMPLEMENTS: 'Implements';
+  VARIABLE_DEFINITIONS: 'VariableDefinitions';
+  TYPE: 'Type';
 };
 
 export const RuleKinds = {

@@ -24,6 +24,8 @@ import type {
   GraphQLEnumValue,
   GraphQLField,
   GraphQLInputFieldMap,
+  GraphQLInterfaceType,
+  GraphQLObjectType,
   GraphQLType,
 } from 'graphql/type/definition';
 import type { GraphQLDirective } from 'graphql/type/directives';
@@ -150,6 +152,8 @@ export type AllTypeInfo = {
   argDef: Maybe<GraphQLArgument>;
   argDefs: Maybe<GraphQLArgument[]>;
   objectFieldDefs: Maybe<GraphQLInputFieldMap>;
+  interfaceDef: Maybe<GraphQLInterfaceType>;
+  objectTypeDef: Maybe<GraphQLObjectType>;
 };
 
 export type FragmentInfo = {
@@ -181,6 +185,7 @@ export type CompletionItem = CompletionItemType & {
   isDeprecated?: boolean;
   documentation?: string | null;
   deprecationReason?: string | null;
+  type?: GraphQLType;
 };
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 

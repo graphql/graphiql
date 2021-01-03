@@ -70,9 +70,20 @@ const TestInterface = new GraphQLInterfaceType({
   },
 });
 
+const AnotherTestInterface = new GraphQLInterfaceType({
+  name: 'AnotherTestInterface',
+  resolveType: () => UnionFirst,
+  fields: {
+    example: {
+      type: GraphQLString,
+      resolve: () => ({}),
+    },
+  },
+});
+
 export const UnionFirst = new GraphQLObjectType({
   name: 'First',
-  interfaces: [TestInterface],
+  interfaces: [TestInterface, AnotherTestInterface],
   fields: () => ({
     scalar: {
       type: GraphQLString,
@@ -80,6 +91,10 @@ export const UnionFirst = new GraphQLObjectType({
     },
     first: {
       type: TestType,
+      resolve: () => ({}),
+    },
+    example: {
+      type: GraphQLString,
       resolve: () => ({}),
     },
   }),
