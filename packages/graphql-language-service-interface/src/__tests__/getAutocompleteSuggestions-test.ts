@@ -401,11 +401,7 @@ query name {
         'type Type implements TestInterface & ',
         new Position(0, 37),
       ),
-    ).toEqual([
-      { label: 'AnotherInterface' },
-      { label: 'Character' },
-      { label: 'TestInterface' },
-    ]));
+    ).toEqual([{ label: 'AnotherInterface' }, { label: 'Character' }]));
   it('provides correct interface suggestions when extending an interface with multiple interfaces', () =>
     expect(
       testSuggestions(

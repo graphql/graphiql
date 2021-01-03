@@ -360,49 +360,48 @@ function getSuggestionsForImplements(
         state.kind === RuleKinds.NAMED_TYPE &&
         state.prevState?.kind === RuleKinds.IMPLEMENTS
       ) {
-        const { interfaceDef, objectTypeDef } = typeInfo;
-        if (interfaceDef) {
-          const existingType = interfaceDef
+        if (typeInfo.interfaceDef) {
+          const existingType = typeInfo.interfaceDef
             ?.getInterfaces()
             .find(({ name }) => name === state.name);
           if (existingType) {
             return;
           }
           const type = schema.getType(state.name);
-          const interfaceConfig = interfaceDef?.toConfig()!;
-          if (typeInfo.interfaceDef) {
-            typeInfo.interfaceDef = new GraphQLInterfaceType({
-              ...interfaceConfig,
-              interfaces: [
-                ...interfaceConfig.interfaces,
-                (type as GraphQLInterfaceType) ||
-                  new GraphQLInterfaceType({ name: state.name, fields: {} }),
-              ],
-            });
-          } else if (objectTypeDef) {
-            const existingType = objectTypeDef
-              ?.getInterfaces()
-              .find(({ name }) => name === state.name);
-            if (existingType) {
-              return;
-            }
-            const type = schema.getType(state.name);
-            const objectTypeConfig = objectTypeDef?.toConfig()!;
-            typeInfo.objectTypeDef = new GraphQLObjectType({
-              ...objectTypeConfig,
-              interfaces: [
-                ...objectTypeConfig.interfaces,
-                (type as GraphQLInterfaceType) ||
-                  new GraphQLInterfaceType({ name: state.name, fields: {} }),
-              ],
-            });
+          const interfaceConfig = typeInfo.interfaceDef?.toConfig()!;
+          typeInfo.interfaceDef = new GraphQLInterfaceType({
+            ...interfaceConfig,
+            interfaces: [
+              ...interfaceConfig.interfaces,
+              (type as GraphQLInterfaceType) ||
+                new GraphQLInterfaceType({ name: state.name, fields: {} }),
+            ],
+          });
+        } else if (typeInfo.objectTypeDef) {
+          const existingType = typeInfo.objectTypeDef
+            ?.getInterfaces()
+            .find(({ name }) => name === state.name);
+          if (existingType) {
+            return;
           }
+          const type = schema.getType(state.name);
+          const objectTypeConfig = typeInfo.objectTypeDef?.toConfig()!;
+          typeInfo.objectTypeDef = new GraphQLObjectType({
+            ...objectTypeConfig,
+            interfaces: [
+              ...objectTypeConfig.interfaces,
+              (type as GraphQLInterfaceType) ||
+                new GraphQLInterfaceType({ name: state.name, fields: {} }),
+            ],
+          });
         }
       }
     }
   });
 
-  const siblingInterfaces = typeInfo.interfaceDef?.getInterfaces() || [];
+  const currentTypeToExtend = typeInfo.interfaceDef || typeInfo.objectTypeDef;
+
+  const siblingInterfaces = currentTypeToExtend?.getInterfaces() || [];
   const siblingInterfaceNames = siblingInterfaces.map(({ name }) => name);
 
   // TODO: we should be using schema.getPossibleTypes() here, but
@@ -412,7 +411,7 @@ function getSuggestionsForImplements(
     )
     .filter(
       ({ name }) =>
-        name !== typeInfo.interfaceDef?.name &&
+        name !== currentTypeToExtend?.name &&
         !siblingInterfaceNames.includes(name),
     );
 
