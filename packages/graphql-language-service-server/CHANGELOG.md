@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.9](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.8...graphql-language-service-server@2.5.9) (2021-01-03)
+
+**Note:** Version bump only for package graphql-language-service-server
+
 ## [2.5.8](https://github.com/graphql/graphiql/compare/graphql-language-service-server@2.5.7...graphql-language-service-server@2.5.8) (2020-12-28)
 
 **Note:** Version bump only for package graphql-language-service-server
