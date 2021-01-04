@@ -90,7 +90,10 @@ export type FetcherResult =
 
 export type MaybePromise<T> = T | Promise<T>;
 
-export type SyncFetcherResult = FetcherResult | Observable<FetcherResult> | AsyncIterable<FetcherResult>
+export type SyncFetcherResult =
+  | FetcherResult
+  | Observable<FetcherResult>
+  | AsyncIterable<FetcherResult>;
 
 export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
 
@@ -934,9 +937,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       { headers: jsonHeaders, shouldPersistHeaders },
     );
 
-    return Promise.resolve<
-      SyncFetcherResult
-    >(fetch)
+    return Promise.resolve<SyncFetcherResult>(fetch)
       .then(value => {
         if (isObservable(value)) {
           // If the fetcher returned an Observable, then subscribe to it, calling
