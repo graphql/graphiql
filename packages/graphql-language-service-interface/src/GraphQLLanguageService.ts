@@ -231,7 +231,7 @@ export class GraphQLLanguageService {
     );
 
     const fragmentInfo = Array.from(fragmentDefinitions).map(
-      ([, info]) => info,
+      ([, info]) => info.definition,
     );
 
     if (schema) {
@@ -240,7 +240,7 @@ export class GraphQLLanguageService {
         query,
         position,
         undefined,
-        fragmentInfo.map(({ definition }) => definition),
+        fragmentInfo,
       );
     }
     return [];

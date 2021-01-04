@@ -12,7 +12,12 @@ import type { WorkerAccessor } from './languageFeatures';
 import type { IEvent } from 'monaco-editor';
 
 import { Emitter } from 'monaco-editor';
-import { DocumentNode, GraphQLSchema, printSchema } from 'graphql';
+import {
+  DocumentNode,
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  printSchema,
+} from 'graphql';
 
 export type LanguageServiceAPIOptions = {
   languageId: string;
@@ -31,6 +36,10 @@ export class LanguageServiceAPI {
   private _workerPromise: Promise<WorkerAccessor>;
   private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => {};
   private _schemaString: string | null = null;
+  private _externalFragmentDefinitions:
+    | string
+    | FragmentDefinitionNode[]
+    | null = null;
 
   constructor({
     languageId,
@@ -48,6 +57,7 @@ export class LanguageServiceAPI {
     }
     this.setModeConfiguration(modeConfiguration);
     this.setFormattingOptions(formattingOptions);
+    this.setFormattingOptions(formattingOptions);
   }
   public get onDidChange(): IEvent<LanguageServiceAPI> {
     return this._onDidChange.event;
@@ -64,6 +74,9 @@ export class LanguageServiceAPI {
   }
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
+  }
+  public get externalFragmentDefinitions() {
+    return this._externalFragmentDefinitions;
   }
   public get hasSchema() {
     return Boolean(this._schemaString);
@@ -113,8 +126,13 @@ export class LanguageServiceAPI {
 
   public updateSchemaConfig(options: Partial<SchemaConfig>): void {
     this._schemaConfig = { ...this._schemaConfig, ...options };
-
     this._onDidChange.fire(this);
+  }
+
+  public setExternalFragmentDefinitions(
+    externalFragmentDefinitions: string | FragmentDefinitionNode[],
+  ) {
+    this._externalFragmentDefinitions = externalFragmentDefinitions;
   }
 
   public setSchemaUri(schemaUri: string): void {

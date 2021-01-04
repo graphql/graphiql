@@ -52,6 +52,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     editor.getValue(),
     position,
     token,
+    options.externalFragmentDefinitions || undefined,
   );
 
   const results = {

@@ -7,7 +7,14 @@
 
 import React from 'react';
 import type * as CM from 'codemirror';
-import { GraphQLSchema, GraphQLType, ValidationRule } from 'graphql';
+import {
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  GraphQLType,
+  ValidationRule,
+  visit,
+  parse,
+} from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
@@ -30,8 +37,18 @@ type QueryEditorProps = {
   onMergeQuery?: () => void;
   onRunQuery?: () => void;
   editorTheme?: string;
+  externalFragments?: string | FragmentDefinitionNode[];
 };
 
+function gatherFragmentDefinitions(graphqlString: string) {
+  const definitions: FragmentDefinitionNode[] = [];
+  visit(parse(graphqlString), {
+    FragmentDefinition(node) {
+      definitions.push(node);
+    },
+  });
+  return definitions;
+}
 /**
  * QueryEditor
  *
@@ -84,6 +101,27 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     require('codemirror-graphql/jump');
     require('codemirror-graphql/mode');
 
+    const hintOptions: {
+      schema?: GraphQLSchema;
+      externalFragmentDefinitions?: FragmentDefinitionNode[];
+      closeOnUnfocus: boolean;
+      completeSingle: boolean;
+      container: any;
+    } = {
+      schema: this.props.schema,
+      closeOnUnfocus: false,
+      completeSingle: false,
+      container: this._node,
+    };
+
+    if (this.props.externalFragments) {
+      hintOptions.externalFragmentDefinitions = Array.isArray(
+        this.props?.externalFragments,
+      )
+        ? this.props.externalFragments
+        : gatherFragmentDefinitions(this.props.externalFragments);
+    }
+
     const editor: CM.Editor = (this.editor = CodeMirror(this._node, {
       value: this.props.value || '',
       lineNumbers: true,
@@ -102,12 +140,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
         schema: this.props.schema,
         validationRules: this.props.validationRules ?? null,
       },
-      hintOptions: {
-        schema: this.props.schema,
-        closeOnUnfocus: false,
-        completeSingle: false,
-        container: this._node,
-      },
+      hintOptions,
       info: {
         schema: this.props.schema,
         renderDescription: (text: string) => md.render(text),

@@ -21,6 +21,7 @@ import {
   IntrospectionQuery,
   GraphQLType,
   ValidationRule,
+  FragmentDefinitionNode,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 
@@ -122,6 +123,7 @@ export type GraphiQLProps = {
   defaultSecondaryEditorOpen?: boolean;
   headerEditorEnabled?: boolean;
   shouldPersistHeaders?: boolean;
+  externalFragments?: string | FragmentDefinitionNode[];
   onCopyQuery?: (query?: string) => void;
   onEditQuery?: (query?: string) => void;
   onEditVariables?: (value: string) => void;
@@ -558,6 +560,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 onRunQuery={this.handleEditorRunQuery}
                 editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
+                externalFragments={this.props.externalFragments}
               />
               <section
                 className="variable-editor secondary-editor"

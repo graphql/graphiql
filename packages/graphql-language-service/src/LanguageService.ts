@@ -4,7 +4,14 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { parse, GraphQLSchema, ParseOptions, ValidationRule } from 'graphql';
+import {
+  parse,
+  GraphQLSchema,
+  ParseOptions,
+  ValidationRule,
+  FragmentDefinitionNode,
+  visit,
+} from 'graphql';
 import type { Position } from 'graphql-language-service-types';
 import {
   getAutocompleteSuggestions,
@@ -26,6 +33,7 @@ export type GraphQLLanguageConfig = {
   schemaString?: string;
   parseOptions?: ParseOptions;
   schemaConfig: SchemaConfig;
+  exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
 };
 
 export class LanguageService {
@@ -39,6 +47,10 @@ export class LanguageService {
   private _schemaBuilder = defaultSchemaBuilder;
   private _schemaString: string | null = null;
   private _parseOptions: ParseOptions | undefined = undefined;
+  private _exteralFragmentDefinitionNodes:
+    | FragmentDefinitionNode[]
+    | null = null;
+  private _exteralFragmentDefinitionsString: string | null = null;
   constructor({
     parser,
     schemaLoader,
@@ -46,6 +58,7 @@ export class LanguageService {
     schemaConfig,
     schemaString,
     parseOptions,
+    exteralFragmentDefinitions,
   }: GraphQLLanguageConfig) {
     this._schemaConfig = schemaConfig;
     if (parser) {
@@ -63,6 +76,13 @@ export class LanguageService {
     if (parseOptions) {
       this._parseOptions = parseOptions;
     }
+    if (exteralFragmentDefinitions) {
+      if (Array.isArray(exteralFragmentDefinitions)) {
+        this._exteralFragmentDefinitionNodes = exteralFragmentDefinitions;
+      } else {
+        this._exteralFragmentDefinitionsString = exteralFragmentDefinitions;
+      }
+    }
   }
 
   public get schema() {
@@ -74,6 +94,31 @@ export class LanguageService {
       return this.schema;
     }
     return this.loadSchema();
+  }
+
+  public async getExternalFragmentDefinitions(): Promise<
+    FragmentDefinitionNode[]
+  > {
+    if (
+      !this._exteralFragmentDefinitionNodes &&
+      this._exteralFragmentDefinitionsString
+    ) {
+      const definitionNodes: FragmentDefinitionNode[] = [];
+      try {
+        visit(await this._parser(this._exteralFragmentDefinitionsString), {
+          FragmentDefinition(node) {
+            definitionNodes.push(node);
+          },
+        });
+      } catch (err) {
+        throw Error(
+          `Failed parsing exteralFragmentDefinitions string:\n${this._exteralFragmentDefinitionsString}`,
+        );
+      }
+
+      this._exteralFragmentDefinitionNodes = definitionNodes;
+    }
+    return this._exteralFragmentDefinitionNodes as FragmentDefinitionNode[];
   }
 
   /**
@@ -133,7 +178,13 @@ export class LanguageService {
     if (!documentText || documentText.length < 1 || !schema) {
       return [];
     }
-    return getAutocompleteSuggestions(schema, documentText, position);
+    return getAutocompleteSuggestions(
+      schema,
+      documentText,
+      position,
+      undefined,
+      await this.getExternalFragmentDefinitions(),
+    );
   };
 
   public getDiagnostics = async (

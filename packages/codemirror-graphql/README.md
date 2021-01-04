@@ -37,5 +37,47 @@ CodeMirror.fromTextArea(myTextarea, {
 });
 ```
 
+## External Fragments Example
+
+If you want to have autcompletion for external fragment definitions, there's a new configuration setting available
+
+```ts
+import { parse, visit } from 'graphql';
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/lint/lint';
+import 'codemirror-graphql/hint';
+import 'codemirror-graphql/lint';
+import 'codemirror-graphql/mode';
+
+const externalFragmentsExample = `
+  fragment MyFragment on Example {
+    id: ID!
+    name: String!
+  }
+   fragment AnotherFragment on Example {
+    id: ID!
+    title: String!
+  }
+`;
+
+const fragmentDefinitions = visit(parse(externalFragmentsExample), {
+  FragmentDefinition(node) {
+    return node;
+  },
+});
+
+CodeMirror.fromTextArea(myTextarea, {
+  mode: 'graphql',
+  lint: {
+    schema: myGraphQLSchema,
+  },
+  hintOptions: {
+    schema: myGraphQLSchema,
+    externalFragmentDefinitions: fragmentDefinitions,
+  },
+});
+```
+
 Build for the web with [webpack](http://webpack.github.io/) or
 [browserify](http://browserify.org/).
