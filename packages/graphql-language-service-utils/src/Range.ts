@@ -8,15 +8,12 @@
  */
 
 import { Location } from 'graphql/language';
-import {
-  Range as RangeInterface,
-  Position as PositionInterface,
-} from 'graphql-language-service-types';
+import { IRange, IPosition } from 'graphql-language-service-types';
 
-export class Range implements RangeInterface {
-  start: PositionInterface;
-  end: PositionInterface;
-  constructor(start: PositionInterface, end: PositionInterface) {
+export class Range implements IRange {
+  start: IPosition;
+  end: IPosition;
+  constructor(start: IPosition, end: IPosition) {
     this.start = start;
     this.end = end;
   }
@@ -29,7 +26,7 @@ export class Range implements RangeInterface {
     this.end = new Position(line, character);
   }
 
-  containsPosition = (position: PositionInterface): boolean => {
+  containsPosition = (position: IPosition): boolean => {
     if (this.start.line === position.line) {
       return this.start.character <= position.character;
     } else if (this.end.line === position.line) {
@@ -40,7 +37,7 @@ export class Range implements RangeInterface {
   };
 }
 
-export class Position implements PositionInterface {
+export class Position implements IPosition {
   line: number;
   character: number;
   constructor(line: number, character: number) {
@@ -56,7 +53,7 @@ export class Position implements PositionInterface {
     this.character = character;
   }
 
-  lessThanOrEqualTo = (position: PositionInterface): boolean =>
+  lessThanOrEqualTo = (position: IPosition): boolean =>
     this.line < position.line ||
     (this.line === position.line && this.character <= position.character);
 }

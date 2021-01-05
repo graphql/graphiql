@@ -7,7 +7,7 @@
  */
 
 import { parse } from 'graphql';
-import { Position } from '../Range';
+import { IPosition } from '../Range';
 import { getASTNodeAtPosition, pointToOffset } from '../getASTNodeAtPosition';
 
 const doc = `

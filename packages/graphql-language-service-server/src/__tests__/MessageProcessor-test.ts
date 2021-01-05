@@ -8,7 +8,7 @@
  */
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
-import { Position, Range } from 'graphql-language-service-utils';
+import { Position, IRange } from 'graphql-language-service-utils';
 
 import { MessageProcessor } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';

@@ -29,6 +29,8 @@ import {
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
 
+import { IRange } from 'graphql-language-service-types';
+
 // this doesn't work without the 'as', kinda goofy
 
 export const SEVERITY = {
@@ -152,7 +154,7 @@ function annotations(
   return highlightedNodes;
 }
 
-export function getRange(location: SourceLocation, queryText: string): Range {
+export function getRange(location: SourceLocation, queryText: string): IRange {
   const parser = onlineParser();
   const state = parser.startState();
   const lines = queryText.split('\n');

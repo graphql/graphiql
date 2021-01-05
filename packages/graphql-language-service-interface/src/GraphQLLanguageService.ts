@@ -18,10 +18,9 @@ import {
 
 import {
   CompletionItem,
-  DefinitionQueryResult,
   Diagnostic,
   Uri,
-  Position,
+  IPosition,
   Outline,
   OutlineTree,
   GraphQLCache,
@@ -42,6 +41,7 @@ import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
+  DefinitionQueryResult,
 } from './getDefinition';
 
 import { getOutline } from './getOutline';
@@ -221,7 +221,7 @@ export class GraphQLLanguageService {
 
   public async getAutocompleteSuggestions(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
@@ -248,7 +248,7 @@ export class GraphQLLanguageService {
 
   public async getHoverInformation(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
@@ -262,7 +262,7 @@ export class GraphQLLanguageService {
 
   public async getDefinition(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<DefinitionQueryResult | null> {
     const projectConfig = this.getConfigForURI(filePath);

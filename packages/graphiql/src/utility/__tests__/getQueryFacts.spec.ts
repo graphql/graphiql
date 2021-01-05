@@ -16,7 +16,7 @@ import {
   parse,
 } from 'graphql';
 
-import { collectVariables } from '../getQueryFacts';
+import { collectVariables } from '../getOperationFacts';
 
 describe('collectVariables', () => {
   const TestType = new GraphQLObjectType({

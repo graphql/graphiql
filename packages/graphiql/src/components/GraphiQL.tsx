@@ -17,13 +17,16 @@ import {
   GraphQLSchema,
   parse,
   print,
+  visit,
   OperationDefinitionNode,
   IntrospectionQuery,
   GraphQLType,
   ValidationRule,
   FragmentDefinitionNode,
+  DocumentNode,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
+import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -38,7 +41,7 @@ import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
-import getQueryFacts, { VariableToType } from '../utility/getQueryFacts';
+import getOperationFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
@@ -80,6 +83,7 @@ export type FetcherParams = {
 export type FetcherOpts = {
   headers?: { [key: string]: any };
   shouldPersistHeaders: boolean;
+  documentAST?: DocumentNode;
 };
 
 export type FetcherResult =
@@ -125,7 +129,7 @@ export type GraphiQLProps = {
   shouldPersistHeaders?: boolean;
   externalFragments?: string | FragmentDefinitionNode[];
   onCopyQuery?: (query?: string) => void;
-  onEditQuery?: (query?: string) => void;
+  onEditQuery?: (query?: string, documentAST?: DocumentNode) => void;
   onEditVariables?: (value: string) => void;
   onEditHeaders?: (value: string) => void;
   onEditOperationName?: (operationName: string) => void;
@@ -160,6 +164,7 @@ export type GraphiQLState = {
   subscription?: Unsubscribable | null;
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
+  documentAST?: DocumentNode;
 };
 
 /**
@@ -227,8 +232,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         : defaultQuery;
 
     // Get the initial query facts.
-    const queryFacts = getQueryFacts(props.schema, query);
-
+    const queryFacts = getOperationFacts(props.schema, query);
     // Determine the initial variables to display.
     const variables =
       props.variables !== undefined
@@ -814,6 +818,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     const fetcherOpts: FetcherOpts = {
       shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
+      documentAST: this.state.documentAST,
     };
     if (this.state.headers && this.state.headers.trim().length > 2) {
       fetcherOpts.headers = JSON.parse(this.state.headers);
@@ -873,7 +878,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
         if (typeof result !== 'string' && 'data' in result) {
           const schema = buildClientSchema(result.data);
-          const queryFacts = getQueryFacts(schema, this.state.query);
+          const queryFacts = getOperationFacts(schema, this.state.query);
           this.safeSetState({ schema, ...queryFacts });
         } else {
           const responseString =
@@ -926,6 +931,38 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     if (typeof jsonHeaders !== 'object') {
       throw new Error('Headers are not a JSON object.');
     }
+    // TODO: memoize this
+    if (this.props.externalFragments) {
+      const externalFragments = new Map<string, FragmentDefinitionNode>();
+
+      if (Array.isArray(this.props.externalFragments)) {
+        this.props.externalFragments.forEach(def => {
+          externalFragments.set(def.name.value, def);
+        });
+      } else {
+        visit(
+          parse(this.props.externalFragments, {
+            experimentalFragmentVariables: true,
+          }),
+          {
+            FragmentDefinition(def) {
+              externalFragments.set(def.name.value, def);
+            },
+          },
+        );
+      }
+      const fragmentDependencies = getFragmentDependenciesForAST(
+        this.state.documentAST!,
+        externalFragments,
+      );
+      if (fragmentDependencies.length > 0) {
+        query +=
+          '\n' +
+          fragmentDependencies
+            .map((node: FragmentDefinitionNode) => print(node))
+            .join('\n');
+      }
+    }
 
     const fetch = fetcher(
       {
@@ -933,7 +970,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         variables: jsonVariables,
         operationName,
       },
-      { headers: jsonHeaders, shouldPersistHeaders },
+      {
+        headers: jsonHeaders,
+        shouldPersistHeaders,
+        documentAST: this.state.documentAST,
+      },
     );
 
     if (isPromise(fetch)) {
@@ -1117,7 +1158,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   handlePrettifyQuery = () => {
     const editor = this.getQueryEditor();
     const editorContent = editor?.getValue() ?? '';
-    const prettifiedEditorContent = print(parse(editorContent));
+    const prettifiedEditorContent = print(
+      parse(editorContent, { experimentalFragmentVariables: true }),
+    );
 
     if (prettifiedEditorContent !== editorContent) {
       editor?.setValue(prettifiedEditorContent);
@@ -1164,7 +1207,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       return;
     }
 
-    const ast = parse(query);
+    const ast = this.state.documentAST!;
     editor.setValue(print(mergeAST(ast, this.state.schema)));
   };
 
@@ -1181,7 +1224,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     });
     this._storage.set('query', value);
     if (this.props.onEditQuery) {
-      return this.props.onEditQuery(value);
+      return this.props.onEditQuery(value, queryFacts?.documentAST);
     }
   });
 
@@ -1206,7 +1249,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     prevOperations?: OperationDefinitionNode[],
     schema?: GraphQLSchema,
   ) => {
-    const queryFacts = getQueryFacts(schema, query);
+    const queryFacts = getOperationFacts(schema, query);
     if (queryFacts) {
       // Update operation name should any query names change.
       const updatedOperationName = getSelectedOperationName(

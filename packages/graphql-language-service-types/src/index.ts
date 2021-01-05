@@ -107,21 +107,24 @@ export interface GraphQLCache {
 }
 
 // online-parser related
-export type Position = {
+export interface IPosition {
   line: number;
   character: number;
-  lessThanOrEqualTo?: (position: Position) => boolean;
-};
-
-export interface Range {
-  start: Position;
-  end: Position;
-  containsPosition: (position: Position) => boolean;
+  setLine(line: number): void;
+  setCharacter(character: number): void;
+  lessThanOrEqualTo(position: IPosition): boolean;
 }
 
+export interface IRange {
+  start: IPosition;
+  end: IPosition;
+  setEnd(line: number, character: number): void;
+  setStart(line: number, character: number): void;
+  containsPosition(position: IPosition): boolean;
+}
 export type CachedContent = {
   query: string;
-  range: Range | null;
+  range: IRange | null;
 };
 
 // GraphQL Language Service related types
@@ -192,17 +195,12 @@ export type CompletionItem = CompletionItemType & {
 // Definitions/hyperlink
 export type Definition = {
   path: Uri;
-  position: Position;
-  range?: Range;
+  position: IPosition;
+  range?: IRange;
   id?: string;
   name?: string;
   language?: string;
   projectRoot?: Uri;
-};
-
-export type DefinitionQueryResult = {
-  queryRange: Range[];
-  definitions: Definition[];
 };
 
 // Outline view
@@ -228,8 +226,8 @@ export type OutlineTree = {
   tokenizedText?: TokenizedText;
   representativeName?: string;
   kind: string;
-  startPosition: Position;
-  endPosition?: Position;
+  startPosition: IPosition;
+  endPosition?: IPosition;
   children: OutlineTree[];
 };
 

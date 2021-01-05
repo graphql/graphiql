@@ -29,14 +29,14 @@ const offsetRangeStart = new Position(1, 2);
 const offsetRangeEnd = new Position(1, 5);
 
 describe('Position', () => {
-  it('constructs a Position object', () => {
+  it('constructs a IPosition object', () => {
     const pos = new Position(3, 5);
     expect(pos).not.toBeUndefined();
     expect(pos.character).toEqual(5);
     expect(pos.line).toEqual(3);
   });
 
-  it('compares Position objects', () => {
+  it('compares IPosition objects', () => {
     const posA = new Position(1, 2);
     const posB = new Position(2, 2);
     const posC = new Position(2, 3);
@@ -57,7 +57,7 @@ describe('Range', () => {
     range = new Range(start, end);
   });
 
-  it('constructs a Range object', () => {
+  it('constructs a IRange object', () => {
     expect(range).not.toBeUndefined();
     expect(range.start).toEqual(start);
     expect(range.end).toEqual(end);

@@ -18,5 +18,10 @@
     "**/*-test.js",
     "**/*.stories.js",
     "**/*.stories.ts"
+  ],
+  "references": [
+    {
+      "path": "../graphql-language-service/tsconfig.esm.json"
+    }
   ]
 }

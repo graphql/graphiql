@@ -26,7 +26,7 @@ import {
 import {
   CompletionItem,
   AllTypeInfo,
-  Position,
+  IPosition,
 } from 'graphql-language-service-types';
 
 import {
@@ -70,7 +70,7 @@ import {
 export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
-  cursor: Position,
+  cursor: IPosition,
   contextToken?: ContextToken,
   fragmentDefs?: FragmentDefinitionNode[],
 ): Array<CompletionItem> {
@@ -665,7 +665,7 @@ function getSuggestionsForDirective(
 
 export function getTokenAtPosition(
   queryText: string,
-  cursor: Position,
+  cursor: IPosition,
 ): ContextToken {
   let styleAtCursor = null;
   let stateAtCursor = null;

@@ -13,6 +13,7 @@ import {
   OperationDefinitionNode,
   NamedTypeNode,
   GraphQLNamedType,
+  visit,
 } from 'graphql';
 
 export type VariableToType = {
@@ -22,15 +23,16 @@ export type VariableToType = {
 export type QueryFacts = {
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
+  documentAST?: DocumentNode;
 };
 
 /**
- * Provided previous "queryFacts", a GraphQL schema, and a query document
+ * Provided previous "operationFacts", a GraphQL schema, and a query document
  * string, return a set of facts about that query useful for GraphiQL features.
  *
  * If the query cannot be parsed, returns undefined.
  */
-export default function getQueryFacts(
+export default function getOperationFacts(
   schema?: GraphQLSchema,
   documentStr?: string | null,
 ): QueryFacts | undefined {
@@ -40,7 +42,9 @@ export default function getQueryFacts(
 
   let documentAST: DocumentNode;
   try {
-    documentAST = parse(documentStr);
+    documentAST = parse(documentStr, {
+      experimentalFragmentVariables: true,
+    });
   } catch {
     return;
   }
@@ -51,14 +55,20 @@ export default function getQueryFacts(
 
   // Collect operations by their names.
   const operations: OperationDefinitionNode[] = [];
-  documentAST.definitions.forEach(def => {
-    if (def.kind === 'OperationDefinition') {
-      operations.push(def);
-    }
+
+  visit(documentAST, {
+    OperationDefinition(node) {
+      operations.push(node);
+    },
   });
 
-  return { variableToType, operations };
+  return { variableToType, operations, documentAST };
 }
+
+/**
+ * as a nod to folks who were clever enough to import this utility on their
+ */
+export const getQueryFacts = getOperationFacts;
 
 /**
  * Provided a schema and a document, produces a `variableToType` Object.

@@ -12,7 +12,7 @@ import {
   FragmentDefinitionNode,
   visit,
 } from 'graphql';
-import type { Position } from 'graphql-language-service-types';
+import type { IPosition } from 'graphql-language-service-types';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -172,7 +172,7 @@ export class LanguageService {
   public getCompletion = async (
     _uri: string,
     documentText: string,
-    position: Position,
+    position: IPosition,
   ) => {
     const schema = await this.getSchema();
     if (!documentText || documentText.length < 1 || !schema) {
@@ -202,7 +202,7 @@ export class LanguageService {
   public getHover = async (
     _uri: string,
     documentText: string,
-    position: Position,
+    position: IPosition,
   ) =>
     getHoverInformation(
       (await this.getSchema()) as GraphQLSchema,

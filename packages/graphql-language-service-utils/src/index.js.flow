@@ -10,18 +10,18 @@
 
 import type { Location } from 'graphql/language';
 import type {
-  Range as RangeInterface,
-  Position as PositionInterface,
+  IRange as RangeInterface,
+  IPosition as PositionInterface,
 } from 'graphql-language-service-types';
 
 declare export function getASTNodeAtPosition(): void;
-declare export class Position implements PositionInterface {
+declare export class IPosition implements PositionInterface {
   line: number;
   character: number;
   constructor(row: number, column: number): Position;
   lessThanOrEqualTo: (position: PositionInterface) => boolean;
 }
-declare export class Range implements RangeInterface {
+declare export class IRange implements RangeInterface {
   start: PositionInterface;
   end: PositionInterface;
   constructor(start: Position, end: Position): Range;

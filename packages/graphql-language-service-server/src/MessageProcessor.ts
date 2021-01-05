@@ -16,14 +16,12 @@ import {
   Uri,
   GraphQLConfig,
   GraphQLProjectConfig,
-} from 'graphql-language-service';
-
-import {
   GraphQLLanguageService,
   FileChangeTypeKind,
+  Range,
+  Position,
+  IPosition,
 } from 'graphql-language-service';
-
-import { Range, Position } from 'graphql-language-service-utils';
 
 import type {
   CompletionParams,
@@ -48,6 +46,7 @@ import type {
   DidChangeWatchedFilesParams,
   InitializeParams,
   Range as RangeType,
+  Position as VscodePosition,
   TextDocumentPositionParams,
   DocumentSymbolParams,
   SymbolInformation,
@@ -77,6 +76,9 @@ type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
 };
+function toPosition(position: VscodePosition): IPosition {
+  return new Position(position.line, position.character);
+}
 
 export class MessageProcessor {
   _connection: IConnection;
@@ -471,7 +473,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(position)) {
+      if (currentRange && currentRange.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -488,7 +490,7 @@ export class MessageProcessor {
     }
     const result = await this._languageService.getAutocompleteSuggestions(
       query,
-      position,
+      toPosition(position),
       textDocument.uri,
     );
 
@@ -523,7 +525,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(position)) {
+      if (currentRange && currentRange.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -540,7 +542,7 @@ export class MessageProcessor {
     }
     const result = await this._languageService.getHoverInformation(
       query,
-      position,
+      toPosition(position),
       textDocument.uri,
     );
 
@@ -651,7 +653,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(position)) {
+      if (currentRange && currentRange.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -671,7 +673,7 @@ export class MessageProcessor {
     try {
       result = await this._languageService.getDefinition(
         query,
-        position,
+        toPosition(position),
         textDocument.uri,
       );
     } catch (err) {

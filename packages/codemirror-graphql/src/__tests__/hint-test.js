@@ -40,6 +40,7 @@ function createEditorWithHint() {
       schema: TestSchema,
       closeOnUnfocus: false,
       completeSingle: false,
+      externalFragments: [],
     },
   });
 }

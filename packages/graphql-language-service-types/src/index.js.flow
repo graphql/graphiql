@@ -148,13 +148,13 @@ export interface GraphQLCache {
 }
 
 // online-parser related
-export interface Position {
+export interface IPosition {
   line: number;
   character: number;
   lessThanOrEqualTo: (position: Position) => boolean;
 }
 
-export interface Range {
+export interface IRange {
   start: Position;
   end: Position;
   containsPosition: (position: Position) => boolean;
