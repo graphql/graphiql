@@ -16,6 +16,7 @@ import {
   GraphQLError,
   ValidationContext,
   ASTVisitor,
+  FragmentDefinitionNode,
 } from 'graphql';
 import path from 'path';
 
@@ -144,6 +145,24 @@ describe('getDiagnostics', () => {
       [],
       false,
       'fragment HeroGuy on Human { id }',
+    );
+    expect(errors).toHaveLength(0);
+  });
+  it('validates with external fragments as array', () => {
+    const externalFragments = parse(`
+      fragment Person on Human {
+        name
+      }
+      fragment Person2 on Human {
+        name
+      }
+    `).definitions as FragmentDefinitionNode[];
+    const errors = getDiagnostics(
+      `query hero { hero { ...Person ...Person2 } }`,
+      schema,
+      [],
+      false,
+      externalFragments,
     );
     expect(errors).toHaveLength(0);
   });
