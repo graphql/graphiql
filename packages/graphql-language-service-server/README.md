@@ -4,6 +4,8 @@
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/graphql-language-service-server.svg?style=flat-square)](LICENSE)
 
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html)
+
 Server process backing the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service).
 
 GraphQL Language Service Server provides an interface for building GraphQL language services for IDEs.
