@@ -45,7 +45,6 @@ CodeMirror.fromTextArea(myTextarea, {
 If you want to have autcompletion for external fragment definitions, there's a new configuration setting available
 
 ```ts
-import { parse, visit } from 'graphql';
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
@@ -53,7 +52,7 @@ import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
 
-const externalFragmentsExample = `
+const externalFragments = `
   fragment MyFragment on Example {
     id: ID!
     name: String!
@@ -64,12 +63,6 @@ const externalFragmentsExample = `
   }
 `;
 
-const fragmentDefinitions = visit(parse(externalFragmentsExample), {
-  FragmentDefinition(node) {
-    return node;
-  },
-});
-
 CodeMirror.fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
@@ -77,12 +70,16 @@ CodeMirror.fromTextArea(myTextarea, {
   },
   hintOptions: {
     schema: myGraphQLSchema,
-    externalFragmentDefinitions: fragmentDefinitions,
+    // here we use a string, but
+    // you can also provide an array of FragmentDefinitionNodes
+    externalFragments,
   },
 });
 ```
 
 ### Custom Validation Rules
+
+If you want to show custom validation, you can do that too!
 
 ```js
 import type { ValidationContext, SDLValidationContext } from 'graphql';
@@ -99,8 +96,8 @@ const ExampleRule = (context: ValidationContext | SDLValidationContext) => {
   const schema = context.getSchema();
   const document = context.getDocument();
   // do stuff
-  if (containsSomethingWeDontWant(document, schema)) {
-    context.reportError('Nope not here');
+  if (operationContainsCondition(document, schema)) {
+    context.reportError('this contains the condition, oops!');
   }
 };
 
