@@ -10,11 +10,13 @@
 import {
   ASTNode,
   DocumentNode,
+  FragmentDefinitionNode,
   GraphQLError,
   GraphQLSchema,
   Location,
   SourceLocation,
   ValidationRule,
+  print,
 } from 'graphql';
 
 import { findDeprecatedUsages, parse } from 'graphql';
@@ -62,8 +64,22 @@ export function getDiagnostics(
   schema: GraphQLSchema | null | undefined = null,
   customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
+  externalFragments?: FragmentDefinitionNode[] | string,
 ): Array<Diagnostic> {
   let ast = null;
+  if (externalFragments) {
+    if (typeof externalFragments === 'string') {
+      query += '\n\n' + externalFragments;
+    } else {
+      query +=
+        '\n\n' +
+        externalFragments.reduce((agg, node) => {
+          agg += print(node) + '\n\n';
+          return agg;
+        }, '');
+    }
+  }
+
   try {
     ast = parse(query);
   } catch (error) {

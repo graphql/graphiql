@@ -493,7 +493,7 @@ function getSuggestionsForFragmentSpread(
   const defState = getDefinitionState(token.state);
   const fragments = getFragmentDefinitions(queryText);
 
-  if (fragmentDefs) {
+  if (fragmentDefs && fragmentDefs.length > 0) {
     fragments.push(...fragmentDefs);
   }
 

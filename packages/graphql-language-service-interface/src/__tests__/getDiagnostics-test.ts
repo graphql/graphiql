@@ -136,4 +136,15 @@ describe('getDiagnostics', () => {
     expect(errors).toHaveLength(1);
     expect(errors[0].message).toEqual('No query allowed.');
   });
+
+  it('validates with external fragments', () => {
+    const errors = getDiagnostics(
+      `query hero { hero { ...HeroGuy } }`,
+      schema,
+      [],
+      false,
+      'fragment HeroGuy on Human { id }',
+    );
+    expect(errors).toHaveLength(0);
+  });
 });

@@ -8,7 +8,7 @@
  */
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
-import { Position, IRange } from 'graphql-language-service-utils';
+import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';
@@ -83,8 +83,8 @@ describe('MessageProcessor', () => {
             {
               representativeName: 'item',
               kind: 'Field',
-              startPosition: { line: 1, character: 2 },
-              endPosition: { line: 1, character: 4 },
+              startPosition: new Position(1, 2),
+              endPosition: new Position(1, 4),
               children: [],
             },
           ],

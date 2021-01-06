@@ -19,6 +19,8 @@ CodeMirror helpers install themselves to the global CodeMirror when they
 are imported.
 
 ```js
+import type { ValidationContext, SDLValidationContext } from 'graphql';
+
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/lint/lint';
@@ -30,6 +32,7 @@ CodeMirror.fromTextArea(myTextarea, {
   mode: 'graphql',
   lint: {
     schema: myGraphQLSchema,
+    validationRules: [ExampleRule],
   },
   hintOptions: {
     schema: myGraphQLSchema,
@@ -75,6 +78,40 @@ CodeMirror.fromTextArea(myTextarea, {
   hintOptions: {
     schema: myGraphQLSchema,
     externalFragmentDefinitions: fragmentDefinitions,
+  },
+});
+```
+
+### Custom Validation Rules
+
+```js
+import type { ValidationContext, SDLValidationContext } from 'graphql';
+
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/lint/lint';
+import 'codemirror-graphql/hint';
+import 'codemirror-graphql/lint';
+import 'codemirror-graphql/mode';
+
+const ExampleRule = (context: ValidationContext | SDLValidationContext) => {
+  // your custom rules here
+  const schema = context.getSchema();
+  const document = context.getDocument();
+  // do stuff
+  if (containsSomethingWeDontWant(document, schema)) {
+    context.reportError('Nope not here');
+  }
+};
+
+CodeMirror.fromTextArea(myTextarea, {
+  mode: 'graphql',
+  lint: {
+    schema: myGraphQLSchema,
+    validationRules: [ExampleRule],
+  },
+  hintOptions: {
+    schema: myGraphQLSchema,
   },
 });
 ```
