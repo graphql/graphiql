@@ -13,7 +13,7 @@ import type {
   Diagnostic,
   ContextToken,
   ContextTokenUnion,
-  Position,
+  IPosition,
   DefinitionQueryResult,
   Uri,
   GraphQLCache,
@@ -33,19 +33,23 @@ declare export function getDiagnostics(
   schema: ?GraphQLSchema,
   customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
+  externalFragments?: Array<FragmentDefinitionNode> | string
 ): Array<Diagnostic>;
+
 declare export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
-  cursor: Position,
+  cursor: IPosition,
   contextToken?: ContextToken,
+  externalFragments?: Array<FragmentDefinitionNode>
 ): Array<CompletionItem>;
+
 declare export class GraphQLLanguageService {
   constructor(cache: GraphQLCache): GraphQLLanguageService;
 
   getDefinition(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<?DefinitionQueryResult>;
 
@@ -57,13 +61,13 @@ declare export class GraphQLLanguageService {
 
   getHoverInformation(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<Hover.contents>;
 
   getAutocompleteSuggestions(
     query: string,
-    position: Position,
+    position: IPosition,
     filePath: Uri,
   ): Promise<Array<CompletionItem>>;
 }

@@ -151,13 +151,13 @@ export interface GraphQLCache {
 export interface IPosition {
   line: number;
   character: number;
-  lessThanOrEqualTo: (position: Position) => boolean;
+  lessThanOrEqualTo: (position: IPosition) => boolean;
 }
 
 export interface IRange {
-  start: Position;
-  end: Position;
-  containsPosition: (position: Position) => boolean;
+  start: IPosition;
+  end: IPosition;
+  containsPosition: (position: IPosition) => boolean;
 }
 
 export type CachedContent = {
