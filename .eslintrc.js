@@ -268,6 +268,7 @@ module.exports = {
     // import (https://github.com/benmosher/eslint-plugin-import)
     // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
+    'import/no-extraneous-dependencies': 1,
 
     // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
     'prefer-object-spread/prefer-object-spread': 1,
