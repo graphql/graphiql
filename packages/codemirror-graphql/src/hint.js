@@ -13,7 +13,6 @@
 import CodeMirror from 'codemirror';
 import { getAutocompleteSuggestions } from 'graphql-language-service-interface';
 import { Position } from 'graphql-language-service-utils';
-import { getFragmentDefinitions } from './utils/getFragmentDefinitions';
 /**
  * Registers a "hint" helper for CodeMirror.
  *
@@ -52,9 +51,7 @@ CodeMirror.registerHelper('hint', 'graphql', (editor, options) => {
     editor.getValue(),
     position,
     token,
-    Array.isArray(options.externalFragments)
-      ? options.externalFragments
-      : getFragmentDefinitions(options.externalFragments),
+    options.externalFragments,
   );
 
   const results = {

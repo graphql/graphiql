@@ -44,6 +44,8 @@ import {
   isAbstractType,
   isCompositeType,
   isInputType,
+  visit,
+  parse,
 } from 'graphql';
 
 import {
@@ -63,6 +65,24 @@ import {
   hintList,
   objectValues,
 } from './autocompleteUtils';
+
+const collectFragmentDefs = (op: string | undefined) => {
+  const externalFragments: FragmentDefinitionNode[] = [];
+  if (op) {
+    visit(
+      parse(op, {
+        experimentalFragmentVariables: true,
+      }),
+      {
+        FragmentDefinition(def) {
+          externalFragments.push(def);
+        },
+      },
+    );
+  }
+  return externalFragments;
+};
+
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
@@ -72,7 +92,7 @@ export function getAutocompleteSuggestions(
   queryText: string,
   cursor: IPosition,
   contextToken?: ContextToken,
-  fragmentDefs?: FragmentDefinitionNode[],
+  fragmentDefs?: FragmentDefinitionNode[] | string,
 ): Array<CompletionItem> {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -207,7 +227,9 @@ export function getAutocompleteSuggestions(
       typeInfo,
       schema,
       queryText,
-      fragmentDefs,
+      Array.isArray(fragmentDefs)
+        ? fragmentDefs
+        : collectFragmentDefs(fragmentDefs),
     );
   }
 
@@ -489,6 +511,9 @@ function getSuggestionsForFragmentSpread(
   queryText: string,
   fragmentDefs?: FragmentDefinitionNode[],
 ): Array<CompletionItem> {
+  if (!queryText) {
+    return [];
+  }
   const typeMap = schema.getTypeMap();
   const defState = getDefinitionState(token.state);
   const fragments = getFragmentDefinitions(queryText);
