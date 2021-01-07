@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/graphql/graphiql/compare/monaco-graphql@0.3.5...monaco-graphql@0.4.0) (2021-01-07)
+
+### Features
+
+- implied or external fragments, for [#612](https://github.com/graphql/graphiql/issues/612) ([#1750](https://github.com/graphql/graphiql/issues/1750)) ([cfed265](https://github.com/graphql/graphiql/commit/cfed265e3cf31875b39ea517781a217fcdfcadc2))
+
 ## [0.3.5](https://github.com/graphql/graphiql/compare/monaco-graphql@0.3.4...monaco-graphql@0.3.5) (2021-01-03)
 
 **Note:** Version bump only for package monaco-graphql

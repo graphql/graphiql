@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.3.0](https://github.com/graphql/graphiql/compare/graphiql@1.2.2...graphiql@1.3.0) (2021-01-07)
+
+### Features
+
+- also support fetcher functions that return Promise<Observable> or Promise ([#1739](https://github.com/graphql/graphiql/issues/1739)) ([a804f3c](https://github.com/graphql/graphiql/commit/a804f3c011e7cafb4f8a48a1ba101b875be3540d))
+- implied or external fragments, for [#612](https://github.com/graphql/graphiql/issues/612) ([#1750](https://github.com/graphql/graphiql/issues/1750)) ([cfed265](https://github.com/graphql/graphiql/commit/cfed265e3cf31875b39ea517781a217fcdfcadc2))
+
 ## [1.2.2](https://github.com/graphql/graphiql/compare/graphiql@1.2.1...graphiql@1.2.2) (2021-01-03)
 
 **Note:** Version bump only for package graphiql
