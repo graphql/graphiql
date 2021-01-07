@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.1.1-alpha.8](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.1.1-alpha.7...example-graphiql-webpack@1.1.1-alpha.8) (2021-01-07)
+
+**Note:** Version bump only for package example-graphiql-webpack
+
 ## [1.1.1-alpha.7](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.1.1-alpha.6...example-graphiql-webpack@1.1.1-alpha.7) (2021-01-07)
 
 **Note:** Version bump only for package example-graphiql-webpack

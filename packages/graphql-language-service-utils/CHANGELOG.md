@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.5.1](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.5.0...graphql-language-service-utils@2.5.1) (2021-01-07)
+
+### Bug Fixes
+
+- add missing nullthrows dependency to utils ([#1753](https://github.com/graphql/graphiql/issues/1753)) ([40e75a1](https://github.com/graphql/graphiql/commit/40e75a18b8fbc392c6d14e294ce9b6804b67f103))
+
 # [2.5.0](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.4.4...graphql-language-service-utils@2.5.0) (2021-01-07)
 
 ### Features
