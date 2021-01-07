@@ -79,10 +79,10 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ### Custom Validation Rules
 
-If you want to show custom validation, you can do that too!
+If you want to show custom validation, you can do that too! It uses the `ValidationRule` interface.
 
 ```js
-import type { ValidationContext, SDLValidationContext } from 'graphql';
+import type { ValidationRule } from 'graphql';
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
@@ -91,14 +91,17 @@ import 'codemirror-graphql/hint';
 import 'codemirror-graphql/lint';
 import 'codemirror-graphql/mode';
 
-const ExampleRule = (context: ValidationContext | SDLValidationContext) => {
+const ExampleRule: ValidationRule = context => {
   // your custom rules here
   const schema = context.getSchema();
   const document = context.getDocument();
-  // do stuff
-  if (operationContainsCondition(document, schema)) {
-    context.reportError('this contains the condition, oops!');
-  }
+  return {
+    NamedType(node) {
+      if (node.name.value !== node.name.value.toLowercase()) {
+        context.reportError('only lowercase type names allowed!');
+      }
+    },
+  };
 };
 
 CodeMirror.fromTextArea(myTextarea, {
