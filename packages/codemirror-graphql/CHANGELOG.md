@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.15.0...codemirror-graphql@0.15.1) (2021-01-07)
+
+### Bug Fixes
+
+- bug with externalFragments in codemirror ([#1751](https://github.com/graphql/graphiql/issues/1751)) ([f423e61](https://github.com/graphql/graphiql/commit/f423e615330bf8529f4068889d6760501b732527))
+
 # [0.15.0](https://github.com/graphql/graphiql/compare/codemirror-graphql@0.14.0...codemirror-graphql@0.15.0) (2021-01-07)
 
 ### Features
