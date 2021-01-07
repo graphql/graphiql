@@ -6,6 +6,8 @@
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 [![License](https://img.shields.io/npm/l/graphql-language-service-interface.svg?style=flat-square)](LICENSE)
 
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_interface.html)
+
 LSP Language Service written in Typescript used by [GraphQL Language Service Server](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server) and [Codemirror GraphQL](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql).
 
 This provides the Official [Language Server Protocol](https://langserver.org) compliant GraphQL language service to be used by an IDE plugin, a browser application or desktop application.

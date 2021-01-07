@@ -10,7 +10,12 @@
 import { CompletionItem } from 'graphql-language-service-types';
 
 import fs from 'fs';
-import { buildSchema, GraphQLSchema } from 'graphql';
+import {
+  buildSchema,
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  parse,
+} from 'graphql';
 import { Position } from 'graphql-language-service-utils';
 import path from 'path';
 
@@ -31,8 +36,15 @@ describe('getAutocompleteSuggestions', () => {
   function testSuggestions(
     query: string,
     point: Position,
+    externalFragments?: FragmentDefinitionNode[],
   ): Array<CompletionItem> {
-    return getAutocompleteSuggestions(schema, query, point)
+    return getAutocompleteSuggestions(
+      schema,
+      query,
+      point,
+      null,
+      externalFragments,
+    )
       .filter(
         field => !['__schema', '__type'].some(name => name === field.label),
       )
@@ -312,6 +324,28 @@ query name {
         new Position(0, 62),
       ),
     ).toEqual([{ label: 'Foo', detail: 'Human' }]);
+  });
+
+  it('provides correct fragment name suggestions for external fragments', () => {
+    const externalFragments = parse(`
+      fragment CharacterDetails on Human {
+        name
+      }
+      fragment CharacterDetails2 on Human {
+        name
+      }
+    `).definitions as FragmentDefinitionNode[];
+
+    const result = testSuggestions(
+      'query { human(id: "1") { ... }}',
+      new Position(0, 28),
+      externalFragments,
+    );
+
+    expect(result).toEqual([
+      { label: 'CharacterDetails', detail: 'Human' },
+      { label: 'CharacterDetails2', detail: 'Human' },
+    ]);
   });
 
   it('provides correct directive suggestions', () => {

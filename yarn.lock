@@ -12632,12 +12632,13 @@ grapheme-breaker@^0.3.2:
     unicode-trie "^0.3.1"
 
 "graphiql@file:packages/graphiql":
-  version "1.2.1"
+  version "1.2.2"
   dependencies:
     codemirror "^5.54.0"
-    codemirror-graphql "^0.13.1"
+    codemirror-graphql "^0.14.0"
     copy-to-clipboard "^3.2.0"
     entities "^2.0.0"
+    graphql-language-service "^3.0.2"
     markdown-it "^10.0.0"
 
 graphql-config@^3.0.2, graphql-config@^3.0.3:
@@ -16553,10 +16554,10 @@ monaco-editor@^0.20.0:
   integrity sha512-hkvf4EtPJRMQlPC3UbMoRs0vTAFAYdzFQ+gpMb8A+9znae1c43q8Mab9iVsgTcg/4PNiLGGn3SlDIa8uvK1FIQ==
 
 "monaco-graphql@file:packages/monaco-graphql":
-  version "0.3.4"
+  version "0.3.5"
   dependencies:
-    graphql-language-service "^3.0.5"
-    graphql-language-service-utils "^2.4.3"
+    graphql-language-service "^3.0.6"
+    graphql-language-service-utils "^2.4.4"
     monaco-editor "^0.20.0"
 
 move-concurrently@^1.0.1:

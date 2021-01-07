@@ -13,6 +13,7 @@ import {
   OperationDefinitionNode,
   NamedTypeNode,
   GraphQLNamedType,
+  Kind,
 } from 'graphql';
 
 export type VariableToType = {
@@ -30,7 +31,7 @@ export type QueryFacts = {
  *
  * If the query cannot be parsed, returns undefined.
  */
-export default function getQueryFacts(
+export default function getOperationFacts(
   schema?: GraphQLSchema,
   documentStr?: string | null,
 ): QueryFacts | undefined {
@@ -52,7 +53,7 @@ export default function getQueryFacts(
   // Collect operations by their names.
   const operations: OperationDefinitionNode[] = [];
   documentAST.definitions.forEach(def => {
-    if (def.kind === 'OperationDefinition') {
+    if (def.kind === Kind.OPERATION_DEFINITION) {
       operations.push(def);
     }
   });
@@ -71,7 +72,7 @@ export function collectVariables(
     [variable: string]: GraphQLNamedType;
   } = Object.create(null);
   documentAST.definitions.forEach(definition => {
-    if (definition.kind === 'OperationDefinition') {
+    if (definition.kind === Kind.OPERATION_DEFINITION) {
       const variableDefinitions = definition.variableDefinitions;
       if (variableDefinitions) {
         variableDefinitions.forEach(({ variable, type }) => {

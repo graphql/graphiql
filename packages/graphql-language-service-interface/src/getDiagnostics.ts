@@ -10,11 +10,13 @@
 import {
   ASTNode,
   DocumentNode,
+  FragmentDefinitionNode,
   GraphQLError,
   GraphQLSchema,
   Location,
   SourceLocation,
   ValidationRule,
+  print,
 } from 'graphql';
 
 import { findDeprecatedUsages, parse } from 'graphql';
@@ -28,6 +30,8 @@ import {
 } from 'graphql-language-service-utils';
 
 import { DiagnosticSeverity, Diagnostic } from 'vscode-languageserver-types';
+
+import { IRange } from 'graphql-language-service-types';
 
 // this doesn't work without the 'as', kinda goofy
 
@@ -60,8 +64,22 @@ export function getDiagnostics(
   schema: GraphQLSchema | null | undefined = null,
   customRules?: Array<ValidationRule>,
   isRelayCompatMode?: boolean,
+  externalFragments?: FragmentDefinitionNode[] | string,
 ): Array<Diagnostic> {
   let ast = null;
+  if (externalFragments) {
+    if (typeof externalFragments === 'string') {
+      query += '\n\n' + externalFragments;
+    } else {
+      query +=
+        '\n\n' +
+        externalFragments.reduce((agg, node) => {
+          agg += print(node) + '\n\n';
+          return agg;
+        }, '');
+    }
+  }
+
   try {
     ast = parse(query);
   } catch (error) {
@@ -152,7 +170,7 @@ function annotations(
   return highlightedNodes;
 }
 
-export function getRange(location: SourceLocation, queryText: string): Range {
+export function getRange(location: SourceLocation, queryText: string): IRange {
   const parser = onlineParser();
   const state = parser.startState();
   const lines = queryText.split('\n');

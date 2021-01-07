@@ -19,15 +19,22 @@ import {
 
 import {
   Definition,
-  DefinitionQueryResult,
   FragmentInfo,
-  Position,
-  Range,
   Uri,
   ObjectTypeInfo,
 } from 'graphql-language-service-types';
 
-import { locToRange, offsetToPosition } from 'graphql-language-service-utils';
+import {
+  locToRange,
+  offsetToPosition,
+  Range,
+  Position,
+} from 'graphql-language-service-utils';
+
+export type DefinitionQueryResult = {
+  queryRange: Range[];
+  definitions: Definition[];
+};
 
 export const LANGUAGE = 'GraphQL';
 
@@ -40,7 +47,7 @@ function assert(value: any, message: string) {
 function getRange(text: string, node: ASTNode): Range {
   const location = node.loc as Location;
   assert(location, 'Expected ASTNode to have a location.');
-  return locToRange(text, location);
+  return locToRange(text, location) as Range;
 }
 
 function getPosition(text: string, node: ASTNode): Position {

@@ -6,11 +6,13 @@
  */
 
 import type {
-  Range as GraphQLRange,
-  Position as GraphQLPosition,
+  IRange as GraphQLRange,
+  IPosition as GraphQLPosition,
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
-} from 'graphql-language-service-types';
+} from 'graphql-language-service';
+
+import { Position } from 'graphql-language-service';
 
 // @ts-ignore
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
@@ -26,9 +28,10 @@ export function toMonacoRange(range: GraphQLRange): monaco.IRange {
     endColumn: range.end.character + 1,
   };
 }
+
 // @ts-ignore
 export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
-  return { line: position.lineNumber - 1, character: position.column - 1 };
+  return new Position(position.lineNumber - 1, position.column - 1);
 }
 
 export function toCompletion(

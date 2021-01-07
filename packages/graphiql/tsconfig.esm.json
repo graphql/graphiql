@@ -18,5 +18,13 @@
     "**/*-test.js",
     "**/*.stories.js",
     "**/*.stories.ts"
+  ],
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    },
+    {
+      "path": "../graphql-language-service-utils"
+    }
   ]
 }

@@ -7,7 +7,12 @@
 
 import React from 'react';
 import type * as CM from 'codemirror';
-import { GraphQLSchema, GraphQLType, ValidationRule } from 'graphql';
+import {
+  FragmentDefinitionNode,
+  GraphQLSchema,
+  GraphQLType,
+  ValidationRule,
+} from 'graphql';
 import MD from 'markdown-it';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
@@ -30,6 +35,7 @@ type QueryEditorProps = {
   onMergeQuery?: () => void;
   onRunQuery?: () => void;
   editorTheme?: string;
+  externalFragments?: string | FragmentDefinitionNode[];
 };
 
 /**
@@ -101,12 +107,15 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       lint: {
         schema: this.props.schema,
         validationRules: this.props.validationRules ?? null,
+        // linting accepts string or FragmentDefinitionNode[]
+        externalFragments: this.props?.externalFragments,
       },
       hintOptions: {
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
         container: this._node,
+        externalFragments: this.props?.externalFragments,
       },
       info: {
         schema: this.props.schema,

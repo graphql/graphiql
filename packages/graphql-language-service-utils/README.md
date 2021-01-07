@@ -4,4 +4,6 @@
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-utils?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/graphql-language-service-utils.svg?style=flat-square)](LICENSE)
 
-Utilities to support the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service).
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_utils.html)
+
+Utilities to support the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service) and the rest of the language ecosystem.

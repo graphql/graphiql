@@ -40,6 +40,7 @@ function createEditorWithHint() {
       schema: TestSchema,
       closeOnUnfocus: false,
       completeSingle: false,
+      externalFragments: 'fragment Example on Test { id }',
     },
   });
 }
@@ -766,6 +767,11 @@ describe('graphql-hint', () => {
         type: TestType,
         description: 'fragment Foo on Test',
       },
+      {
+        text: 'Example',
+        type: TestType,
+        description: 'fragment Example on Test',
+      },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions.list).to.deep.equal(expectedSuggestions);
@@ -781,6 +787,11 @@ describe('graphql-hint', () => {
         text: 'Foo',
         type: TestType,
         description: 'fragment Foo on Test',
+      },
+      {
+        text: 'Example',
+        type: TestType,
+        description: 'fragment Example on Test',
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);

@@ -78,6 +78,8 @@ export class WorkerManager {
           languageConfig: {
             schemaString: this._defaults.schemaString,
             schemaConfig: this._defaults.schemaConfig,
+            exteralFragmentDefinitions: this._defaults
+              .externalFragmentDefinitions,
           },
         } as ICreateData,
       });

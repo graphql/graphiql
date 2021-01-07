@@ -2,10 +2,13 @@
 
 GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want, or none!
 
-- [webpack example](../../examples/monaco-graphql-webpack/) using plain javascript
-- [live demo](https://monaco-graphql.netlify.com)of the monaco webpack example
+- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) using plain javascript
+- [graphiql 2.x RFC example](https://github.com/graphql/graphiql/tree/main/packages/graphiql-2-rfc-context/) using react 16
+- [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example (prompts for github access token!)
 
-> **NOTE:** This is in pre-release state. Helping out with this project will help advance GraphiQL and many other GraphQL IDE projects. `codemirror-graphql` has more features, such as JSON variables validation, and is more stable.
+> **NOTE:** This is in pre-release state as we build towards GraphiQL 2.0.x. [`codemirror-graphql`](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql) has more features (such as JSON variables validation) and is more stable.
+
+## Features
 
 It provides the following features while editing GraphQL files:
 
@@ -14,8 +17,9 @@ It provides the following features while editing GraphQL files:
 - Validation (schema driven)
 - Formatting - using prettier
 - Syntax Highlighting
-- Configurable schema loading (or custom)
+- Configurable schema loading (or custom) - only handles a single schema currently
 - Configurable formatting options
+- Providing external fragments
 
 ## Usage
 
@@ -137,6 +141,12 @@ GraphQLAPI.setFormattingOptions({
   prettierOptions: { tabWidth: 2, useTabs: true },
 });
 ```
+
+#### `GraphQLAPI.setExternalFragmentDefintions()`
+
+Append external fragments to be used by autocomplete and other language features.
+
+This accepts either a string that contains fragment definitions, or `TypeDefinitionNode[]`
 
 #### `GraphQLAPI.getSchema()`
 
