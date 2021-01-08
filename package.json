@@ -121,7 +121,7 @@
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
-    "typedoc": "0.17.7",
+    "typedoc": "^0.19.0",
     "typescript": "^3.9.5",
     "whatwg-url": "^8.4.0"
   }
