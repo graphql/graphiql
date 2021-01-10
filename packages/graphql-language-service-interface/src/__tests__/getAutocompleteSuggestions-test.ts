@@ -483,4 +483,38 @@ query name {
       { label: 'Character' },
       { label: 'TestInterface' },
     ]));
+
+  it('provides correct types suggestions when typing a typename after a field', () => {
+    expect(testSuggestions('type Book { id: I', new Position(0, 18))).toEqual([
+      { label: '__DirectiveLocation' },
+      { label: '__TypeKind' },
+      { label: 'Episode' },
+      { label: 'InputType' },
+      { label: 'Int' },
+      { label: 'String' },
+    ]);
+  });
+  it('provides correct types suggestions when typing a field and colon', () => {
+    expect(testSuggestions('type Book { id:', new Position(0, 16))).toEqual([
+      { label: '__Directive' },
+      { label: '__DirectiveLocation' },
+      { label: '__EnumValue' },
+      { label: '__Field' },
+      { label: '__InputValue' },
+      { label: '__Schema' },
+      { label: '__Type' },
+      { label: '__TypeKind' },
+      { label: 'AnotherInterface' },
+      { label: 'Boolean' },
+      { label: 'Character' },
+      { label: 'Droid' },
+      { label: 'Episode' },
+      { label: 'Human' },
+      { label: 'Int' },
+      { label: 'Query' },
+      { label: 'String' },
+      { label: 'TestInterface' },
+      { label: 'TestType' },
+    ]);
+  });
 });

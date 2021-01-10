@@ -22,6 +22,7 @@ import {
   isInterfaceType,
   GraphQLInterfaceType,
   GraphQLObjectType,
+  isOutputType,
 } from 'graphql';
 
 import {
@@ -110,6 +111,7 @@ export function getAutocompleteSuggestions(
   const step = state.step;
 
   const typeInfo = getTypeInfo(schema, token.state);
+
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
     return hintList(token, [
@@ -246,6 +248,11 @@ export function getAutocompleteSuggestions(
         state.prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
+  }
+
+  // Field definition
+  if (kind === RuleKinds.FIELD_DEF && step === 3) {
+    return getSuggestionsForFieldDefinition(token, schema, kind);
   }
 
   // Directive names
@@ -661,6 +668,24 @@ function getSuggestionsForVariableDefinition(
     token,
     // TODO: couldn't get Exclude<> working here
     inputTypes.map((type: GraphQLNamedType) => ({
+      label: type.name,
+      documentation: type.description as string,
+      kind: CompletionItemKind.Variable,
+    })),
+  );
+}
+
+function getSuggestionsForFieldDefinition(
+  token: ContextToken,
+  schema: GraphQLSchema,
+  _kind: string,
+): Array<CompletionItem> {
+  const outputTypeMap = schema.getTypeMap();
+  const outputTypes = objectValues(outputTypeMap).filter(isOutputType);
+  return hintList(
+    token,
+    // TODO: couldn't get Exclude<> working here
+    outputTypes.map((type: GraphQLNamedType) => ({
       label: type.name,
       documentation: type.description as string,
       kind: CompletionItemKind.Variable,
