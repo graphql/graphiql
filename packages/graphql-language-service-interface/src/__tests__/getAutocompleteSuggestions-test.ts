@@ -517,4 +517,17 @@ query name {
       { label: 'TestType' },
     ]);
   });
+  it('provides correct input types suggestions when typing a field and colon', () => {
+    expect(
+      testSuggestions('input BookInput { id:', new Position(0, 22)),
+    ).toEqual([
+      { label: '__DirectiveLocation' },
+      { label: '__TypeKind' },
+      { label: 'Boolean' },
+      { label: 'Episode' },
+      { label: 'InputType' },
+      { label: 'Int' },
+      { label: 'String' },
+    ]);
+  });
 });

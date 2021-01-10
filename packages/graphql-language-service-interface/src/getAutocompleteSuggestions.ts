@@ -250,6 +250,11 @@ export function getAutocompleteSuggestions(
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
 
+  // Input value definition
+  if (kind === RuleKinds.INPUT_VALUE_DEF && step === 2) {
+    return getSuggestionsForVariableDefinition(token, schema, kind);
+  }
+
   // Field definition
   if (kind === RuleKinds.FIELD_DEF && step === 3) {
     return getSuggestionsForFieldDefinition(token, schema, kind);
