@@ -170,6 +170,27 @@ To get setup for local development of this monorepo, refer to [DEVELOPMENT.md](.
 This is an open source project, and we welcome contributions. Please see
 [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute.
 
+## Maintainers
+
+Maintainers of this repository regulary review PRs and issues and help advance the GraphiQL roadmap
+
+### Alumni
+
+Originally this was three seperate repositories
+
+- [@leebyron](https://github.com/leebyron) - original author of all libraries
+- [@asiandrummer](https://github.com/asiandrummer) - original creator of GraphiQL
+- [@wincent](https://github.com/wincent) - early co-author and maintainer
+- [@lostplan](https://github.com/lostplan) - maintained the language service ecosystem until about 2017
+- [@IvanGoncharov](https://github.com/ivangoncharov) - 
+
+### Active
+
+- [@acao](https://github.com/acao)
+- [@benjie](https://github.com/benjie)
+- [@imolorhe](https://github.com/imolorhe)
+- [@yoshiakis](https://github.com/yoshiakis)
+
 ### Fielding Proposals!
 
 The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scaleable, interoperable and extensible.
