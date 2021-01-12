@@ -1707,16 +1707,16 @@ type Observable<T> = {
 // Duck-type Observable.take(1).toPromise()
 function observableToPromise<T>(observable: Observable<T>): Promise<T> {
   return new Promise((resolve, reject) => {
-    const subscription = observable.subscribe(
-      v => {
+    const subscription = observable.subscribe({
+      next: v => {
         resolve(v);
         subscription.unsubscribe();
       },
-      reject,
-      () => {
+      error: reject,
+      complete: () => {
         reject(new Error('no value resolved'));
       },
-    );
+    });
   });
 }
 
