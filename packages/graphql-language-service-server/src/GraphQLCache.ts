@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2020 GraphQL Contributors
+ *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
  *
  *  This source code is licensed under the license found in the

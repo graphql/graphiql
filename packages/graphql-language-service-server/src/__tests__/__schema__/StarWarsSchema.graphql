@@ -1,4 +1,4 @@
-# Copyright (c) 2020 GraphQL Contributors
+# Copyright (c) 2021 GraphQL Contributors
 
 schema {
   query: Query
