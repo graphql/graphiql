@@ -6,9 +6,6 @@
  */
 require('@testing-library/jest-dom/extend-expect');
 
-// global.window = jsdom.window;
-// global.document = jsdom.window.document;
-
 global.document.createRange = function () {
   return {
     setEnd() {},
@@ -21,24 +18,6 @@ global.document.createRange = function () {
     },
   };
 };
-
-// take all properties of the window object and also attach it to the
-// mocha global object
-propagateToGlobal(document.window);
-
-// from mocha-jsdom
-// https://github.com/rstacruz/mocha-jsdom/blob/master/index.js#L80
-function propagateToGlobal(window) {
-  for (const key in window) {
-    if (!window.hasOwnProperty(key)) {
-      continue;
-    }
-    if (key in global) {
-      continue;
-    }
-    global[key] = window[key];
-  }
-}
 
 process.on('unhandledRejection', error => {
   console.error('Unhandled Promise Rejection:');
