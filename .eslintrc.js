@@ -310,15 +310,8 @@ module.exports = {
       },
     },
     {
-      files: ['packages/codemirror-graphql/**/*'],
-      env: {
-        mocha: true,
-      },
-    },
-    {
       files: [
-        'packages/{graphql-*,graphiql}/src/**',
-        'plugins/*/src/**',
+        'packages/{*graphql-*,graphiql}/src/**',
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
       ],
       extends: ['plugin:jest/recommended'],

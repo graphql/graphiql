@@ -10,7 +10,6 @@
 .*/node_modules/.*
 .*/node_modules/conventional-changelog-core/*
 !<PROJECT_ROOT>/node_modules/chai
-!<PROJECT_ROOT>/node_modules/mocha
 !<PROJECT_ROOT>/node_modules/graphql
 !<PROJECT_ROOT>/node_modules/iterall
 !<PROJECT_ROOT>/node_modules/codemirror
