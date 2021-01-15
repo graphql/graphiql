@@ -40,7 +40,7 @@
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow} && rimraf esm results utils variables coverage __tests__",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
-    "test": "mocha --require resources/mochaBootload **/*-test.js"
+    "test": "jest"
   },
   "peerDependencies": {
     "codemirror": "^5.54.0",
@@ -51,13 +51,10 @@
     "graphql-language-service-parser": "^1.9.0"
   },
   "devDependencies": {
-    "chai": "4.2.0",
-    "chai-subset": "1.6.0",
     "codemirror": "^5.52.2",
     "cross-env": "^7.0.2",
     "graphql": "15.4.0",
     "jsdom": "^16.1.0",
-    "mocha": "7.1.1",
     "nyc": "^15.0.1",
     "rimraf": "^3.0.0",
     "sane": "2.0.0"

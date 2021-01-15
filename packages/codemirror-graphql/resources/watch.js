@@ -136,14 +136,15 @@ function parseFiles(filepaths) {
 function runTests(filepaths) {
   console.log('\nRunning Tests');
 
-  return exec(
-    'mocha',
-    ['--reporter', 'progress', '--require', 'resources/mocha-bootload'].concat(
-      allTests(filepaths)
-        ? filepaths.map(srcPath)
-        : ['src/**/__tests__/**/*.js'],
-    ),
-  ).catch(() => false);
+  // TODO: If this is necessary in watch mode, then consider a jest alternative
+  // return exec(
+  //   'mocha',
+  //   ['--reporter', 'progress', '--require', 'resources/mocha-bootload'].concat(
+  //     allTests(filepaths)
+  //       ? filepaths.map(srcPath)
+  //       : ['src/**/__tests__/**/*.js'],
+  //   ),
+  // ).catch(() => false);
 }
 
 function lintFiles(filepaths) {

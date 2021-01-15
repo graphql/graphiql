@@ -7,15 +7,13 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { expect } from 'chai';
-
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { parse } from 'graphql';
-
-import '../lint';
 import collectVariables from '../../utils/collectVariables';
 import { TestSchema } from '../../__tests__/testSchema';
+import '../lint';
+import '../mode';
 
 function createEditorWithLint(lintConfig) {
   return CodeMirror(document.createElement('div'), {
@@ -45,13 +43,11 @@ function printLintErrors(query, variables) {
 describe('graphql-variables-lint', () => {
   it('attaches a GraphQL lint function with correct mode/lint options', () => {
     const editor = createEditorWithLint();
-    expect(editor.getHelpers(editor.getCursor(), 'lint')).to.not.have.lengthOf(
-      0,
-    );
+    expect(editor.getHelpers(editor.getCursor(), 'lint')).not.toHaveLength(0);
   });
 
   it('catches syntax errors', async () => {
-    expect((await printLintErrors(null, '{ foo: "bar" }'))[0].message).to.equal(
+    expect((await printLintErrors(null, '{ foo: "bar" }'))[0].message).toBe(
       'Expected String but found `foo`.',
     );
   });
@@ -62,7 +58,7 @@ describe('graphql-variables-lint', () => {
       ' { "foo": "NaN" }',
     );
 
-    expect(errors[0]).to.deep.equal({
+    expect(errors[0]).toEqual({
       message: 'Expected value of type "Int".',
       severity: 'error',
       type: 'validation',
@@ -77,7 +73,7 @@ describe('graphql-variables-lint', () => {
       ' { "food": "NaN" }',
     );
 
-    expect(errors[0]).to.deep.equal({
+    expect(errors[0]).toEqual({
       message: 'Variable "$food" does not appear in any GraphQL query.',
       severity: 'error',
       type: 'validation',
@@ -88,6 +84,6 @@ describe('graphql-variables-lint', () => {
 
   it('reports nothing when not configured', async () => {
     const errors = await printLintErrors(null, ' { "foo": "NaN" }');
-    expect(errors.length).to.equal(0);
+    expect(errors.length).toBe(0);
   });
 });
