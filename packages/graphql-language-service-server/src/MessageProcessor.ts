@@ -215,8 +215,8 @@ export class MessageProcessor {
     const rootDir = this._settings?.load?.rootDir || this._rootPath;
     this._rootPath = rootDir;
     this._loadConfigOptions = {
-      ...Object.keys(this._settings.load || []).reduce((agg, key) => {
-        const value = this._settings.load[key];
+      ...Object.keys(this._settings?.load || []).reduce((agg, key) => {
+        const value = this._settings?.load[key];
         if (value === undefined || value === null) {
           delete agg[key];
         }

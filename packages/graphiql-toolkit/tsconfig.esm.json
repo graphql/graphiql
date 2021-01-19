@@ -1,11 +1,10 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "target": "es5",
     "strictPropertyInitialization": false
   },
   "include": ["src"],
@@ -19,22 +18,5 @@
     "**/*.stories.js",
     "**/*.stories.ts",
     "**/*.stories.tsx"
-  ],
-  "references": [
-    {
-      "path": "../graphql-language-service"
-    },
-    {
-      "path": "../graphql-language-service-utils"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphiql-toolkit"
-    }
   ]
 }

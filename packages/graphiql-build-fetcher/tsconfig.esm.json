@@ -1,0 +1,27 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "composite": true,
+    "jsx": "react",
+    "strictPropertyInitialization": false,
+    "module": "ESNext",
+    "target": "ESNext"
+  },
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/dist/**.*",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js",
+    "**/*.stories.js",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
+  ],
+  "references": [{
+    "path": "../graphiql-toolkit"
+  }]
+}

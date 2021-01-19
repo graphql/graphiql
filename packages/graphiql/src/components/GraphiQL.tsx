@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2021 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -19,14 +19,13 @@ import {
   print,
   visit,
   OperationDefinitionNode,
-  IntrospectionQuery,
   GraphQLType,
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
-import { getFragmentDependenciesForAST } from 'graphql-language-service';
+import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -54,6 +53,16 @@ import {
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
+import type {
+  Fetcher,
+  FetcherResult,
+  FetcherReturnType,
+  FetcherOpts,
+  SyncFetcherResult,
+  Observable,
+  Unsubscribable,
+} from '@graphiql/toolkit';
+
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
@@ -73,39 +82,6 @@ declare namespace global {
 }
 
 export type Maybe<T> = T | null | undefined;
-
-export type FetcherParams = {
-  query: string;
-  operationName: string;
-  variables?: any;
-};
-
-export type FetcherOpts = {
-  headers?: { [key: string]: any };
-  shouldPersistHeaders: boolean;
-  documentAST?: DocumentNode;
-};
-
-export type FetcherResult =
-  | {
-      data: IntrospectionQuery;
-    }
-  | string
-  | { data: any };
-
-export type MaybePromise<T> = T | Promise<T>;
-
-export type SyncFetcherResult =
-  | FetcherResult
-  | Observable<FetcherResult>
-  | AsyncIterable<FetcherResult>;
-
-export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
-
-export type Fetcher = (
-  graphQLParams: FetcherParams,
-  opts?: FetcherOpts,
-) => FetcherReturnType;
 
 type OnMouseMoveFn = Maybe<
   (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
@@ -1680,29 +1656,6 @@ const defaultQuery = `# Welcome to GraphiQL
 function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
   return typeof value === 'object' && typeof value.then === 'function';
 }
-
-// These type just taken from https://github.com/ReactiveX/rxjs/blob/master/src/internal/types.ts#L41
-type Unsubscribable = {
-  unsubscribe: () => void;
-};
-
-type Observable<T> = {
-  subscribe(opts: {
-    next: (value: T) => void;
-    error: (error: any) => void;
-    complete: () => void;
-  }): Unsubscribable;
-  subscribe(
-    next: (value: T) => void,
-    error: null | undefined,
-    complete: () => void,
-  ): Unsubscribable;
-  subscribe(
-    next?: (value: T) => void,
-    error?: (error: any) => void,
-    complete?: () => void,
-  ): Unsubscribable;
-};
 
 // Duck-type Observable.take(1).toPromise()
 function observableToPromise<T>(observable: Observable<T>): Promise<T> {
