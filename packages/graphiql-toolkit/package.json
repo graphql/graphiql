@@ -13,8 +13,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "scripts": {
-  },
+  "scripts": {},
   "peerDependencies": {
     "graphql": "^15.0.0"
   }

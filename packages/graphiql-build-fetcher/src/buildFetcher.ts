@@ -1,4 +1,4 @@
-import type { Client } from 'graphql-ws'
+import type { Client } from 'graphql-ws';
 import type { Fetcher } from '@graphiql/toolkit';
 import type { BuildFetcherOptions } from './types';
 
@@ -10,9 +10,6 @@ import {
   createWebsocketsFetcher,
 } from './lib';
 
-
-
-
 /**
  * build a GraphiQL fetcher that is:
  * - backwards compatible
@@ -23,7 +20,7 @@ import {
  */
 export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
   // hoist the wsClient to global scope, so that we can unsubscribe/re-subscribe
-// even when the function is re-invoked.
+  // even when the function is re-invoked.
   let wsClient: Client | null = null;
 
   let httpFetch;
@@ -39,7 +36,6 @@ export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
   if (!httpFetch) {
     throw Error('No valid fetcher implementation available');
   }
-
 
   let wsFetcher: Fetcher | null = null;
 
@@ -57,7 +53,7 @@ export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
   if (wsClient) {
     wsFetcher = createWebsocketsFetcher(wsClient);
   } else if (options.subscriptionsUrl) {
-    throw Error("subscriptions client failed to initialize")
+    throw Error('subscriptions client failed to initialize');
   }
 
   const simpleFetcher = createSimpleFetcher(options, httpFetch);

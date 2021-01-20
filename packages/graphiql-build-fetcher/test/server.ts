@@ -62,18 +62,18 @@ try {
     server,
     path: '/graphql',
   });
-  const port = process.env.PORT || 3000
+  const port = process.env.PORT || 3000;
   server.listen(port, () => {
     useServer(
       {
         schema,
         execute,
         subscribe,
-        connectionInitWaitTimeout: 2000
+        connectionInitWaitTimeout: 2000,
       },
       wsServer,
     );
-    console.log(`listening on ${port}`)
+    console.log(`listening on ${port}`);
   });
 } catch (err) {
   console.error(err);

@@ -6,6 +6,7 @@
     "composite": true,
     "jsx": "react",
     "target": "es5",
+    "baseUrl": ".",
     "strictPropertyInitialization": false
   },
   "include": ["src"],

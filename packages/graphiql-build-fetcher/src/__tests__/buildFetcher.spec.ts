@@ -17,13 +17,13 @@ import {
 } from '../lib';
 import { createClient } from 'graphql-ws';
 
-const exampleWithSubscripton =  /* GraphQL */ `
-subscription Example {
-  example
-}
-query SomethingElse {
-  example
-}
+const exampleWithSubscripton = /* GraphQL */ `
+  subscription Example {
+    example
+  }
+  query SomethingElse {
+    example
+  }
 `;
 
 const exampleWithSubscriptonNode = parse(exampleWithSubscripton);
@@ -44,7 +44,6 @@ describe('buildGraphiQLFetcher', () => {
     expect(createMultipartFetcher.mock.calls).toEqual([
       [{ enableMultipart: true, url: serverURL }],
     ]);
-
   });
   it('returns fetcher without websocket client or multipart', () => {
     createWebsocketsClient.mockReturnValue(true);

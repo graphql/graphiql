@@ -5,7 +5,8 @@
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": [

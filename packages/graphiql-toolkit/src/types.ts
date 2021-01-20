@@ -1,7 +1,4 @@
-import type {
-  DocumentNode,
-  IntrospectionQuery
-} from 'graphql'
+import type { DocumentNode, IntrospectionQuery } from 'graphql';
 
 export type Observable<T> = {
   subscribe(opts: {
@@ -25,7 +22,6 @@ export type Observable<T> = {
 export type Unsubscribable = {
   unsubscribe: () => void;
 };
-
 
 export type FetcherParams = {
   query: string;

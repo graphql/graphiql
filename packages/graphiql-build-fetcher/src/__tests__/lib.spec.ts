@@ -1,18 +1,15 @@
 import { parse } from 'graphql';
 import { isSubcriptionWithName, createWebsocketsClient } from '../lib';
 
-import "isomorphic-fetch"
+import 'isomorphic-fetch';
 
+jest.mock('graphql-ws');
 
-jest.mock('graphql-ws')
+jest.mock('graphql-transport-ws');
 
-jest.mock("graphql-transport-ws")
+import { createClient } from 'graphql-ws';
 
-
-
-import { createClient } from "graphql-ws"
-
-import { createClient as  createLegacyClient } from "graphql-transport-ws"
+import { createClient as createLegacyClient } from 'graphql-transport-ws';
 
 const exampleWithSubscripton = /* GraphQL */ parse(`
   subscription Example {
@@ -44,14 +41,14 @@ describe('isSubcriptionWithName', () => {
 describe('createWebsocketsClient', () => {
   afterEach(() => {
     // @ts-ignore
-    createClient.mockRestore()
-  })
+    createClient.mockRestore();
+  });
   it('creates a websockets client using provided url', () => {
     createWebsocketsClient({
       url: 'https://example.com',
       subscriptionsUrl: 'wss://example.com',
     });
     // @ts-ignore
-    expect(createClient.mock.calls[0][0]).toEqual({"url": "wss://example.com"})
+    expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
 });

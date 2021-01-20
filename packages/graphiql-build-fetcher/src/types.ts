@@ -1,4 +1,4 @@
-import type { Client } from "graphql-ws"
+import type { Client } from 'graphql-ws';
 
 /**
  * Options for creating a sinple, spec-compliant GraphiQL fetcher
@@ -19,7 +19,7 @@ export interface BuildFetcherOptions {
   wsClient?: Client;
   /**
    * Headers you can provide statically.
-   * 
+   *
    * If you enable the headers editor and the user provides
    * A header you set statically here, it will be overriden by their value.
    */

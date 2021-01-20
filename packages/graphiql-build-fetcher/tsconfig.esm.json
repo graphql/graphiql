@@ -21,7 +21,9 @@
     "**/*.stories.ts",
     "**/*.stories.tsx"
   ],
-  "references": [{
-    "path": "../graphiql-toolkit"
-  }]
+  "references": [
+    {
+      "path": "../graphiql-toolkit"
+    }
+  ]
 }

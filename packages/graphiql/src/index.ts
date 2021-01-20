@@ -16,10 +16,7 @@ export default GraphiQL;
 /**
  * Definitions
  */
-export type {
- 
-  GraphiQLProps,
-} from './components/GraphiQL';
+export type { GraphiQLProps } from './components/GraphiQL';
 
 export type {
   Fetcher,
@@ -29,7 +26,7 @@ export type {
   FetcherReturnType,
   SyncFetcherResult,
   Observable,
-} from '@graphiql/toolkit'
+} from '@graphiql/toolkit';
 /**
  * Components
  */
