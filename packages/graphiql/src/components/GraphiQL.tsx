@@ -1472,6 +1472,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         if (typeof this.props.onToggleDocs === 'function') {
           this.props.onToggleDocs(!this.state.docExplorerOpen);
         }
+        this._storage.set(
+          'docExplorerOpen',
+          JSON.stringify(this.state.docExplorerOpen),
+        );
         this.setState({ docExplorerOpen: false });
       } else {
         this.setState({
