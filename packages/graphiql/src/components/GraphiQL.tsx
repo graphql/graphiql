@@ -1066,6 +1066,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
+      const totalResponse = { data: {} };
+
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
         editedQuery as string,
@@ -1075,10 +1077,34 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            this.setState({
-              isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
-            });
+            if (Array.isArray(result)) {
+              // for `IncrementalDelivery`
+              // https://github.com/graphql/graphql-over-http/blob/master/rfcs/IncrementalDelivery.md
+              // TODO: types
+              const response = result.reduce((result, increment) => {
+                if (increment.errors) {
+                  result.errors = [...result?.errors, ...increment?.errors];
+                }
+                if (increment.path) {
+                  const [path, index] = increment.path;
+                  const data = result?.data[path] || [];
+                  data[index] = increment.data;
+                  result.data = { ...result?.data, [path]: data };
+                } else {
+                  result.data = { ...result?.data, ...increment.data };
+                }
+                return result;
+              }, totalResponse);
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(response),
+              });
+            } else {
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(result),
+              });
+            }
           }
         },
       );
@@ -1711,6 +1737,7 @@ function asyncIterableToPromise<T>(
 
     iteratorNext()
       .then(result => {
+        console.log(result.value);
         resolve(result.value);
         // ensure cleanup
         iteratorReturn?.();

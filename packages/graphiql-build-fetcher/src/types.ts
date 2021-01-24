@@ -1,4 +1,7 @@
 import type { Client } from 'graphql-ws';
+import type { SubscriptionClient } from 'subscriptions-transport-ws';
+
+export type WebsocketsClient = Client | SubscriptionClient;
 
 /**
  * Options for creating a sinple, spec-compliant GraphiQL fetcher
@@ -11,9 +14,9 @@ export interface BuildFetcherOptions {
   /**
    * url for websocket subscription requests
    */
-  subscriptionsUrl?: string;
+  subscriptionUrl?: string;
   /**
-   * wsClient implementation that matches `ws-graphql` signature,
+   * `wsClient` implementation that matches `ws-graphql` signature,
    * whether via `createClient()` itself or another client.
    */
   wsClient?: Client;
@@ -28,7 +31,7 @@ export interface BuildFetcherOptions {
    * You can disable the usage of the `fetch-multipart-graphql` library
    * entirely, defaulting to a simple fetch POST implementation.
    */
-  enableMultipart?: boolean;
+  enableIncrementalDelivery?: boolean;
   /**
    * The fetch implementation, in case the user needs to override this for SSR
    * or other purposes. this does not override the `fetch-multipart-graphql`

@@ -1,16 +1,16 @@
 import { DocumentNode, visit } from 'graphql';
 import fetchMultipart from 'fetch-multipart-graphql';
 import { createClient, Client } from 'graphql-ws';
-import { createClient as createLegacyClient } from 'graphql-transport-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { makeAsyncIterableIteratorFromSink } from '@n1ru4l/push-pull-async-iterable-iterator';
 
-import type { BuildFetcherOptions } from './';
 import type {
   Fetcher,
   FetcherResult,
   FetcherParams,
   FetcherOpts,
 } from '@graphiql/toolkit';
+import type { BuildFetcherOptions } from './types';
 
 /**
  * Returns true if the name matches a subscription in the AST
@@ -34,41 +34,6 @@ export const isSubcriptionWithName = (
     },
   });
   return isSubcription;
-};
-
-/**
- * create a websockets client, following
- * `graphql-ws` Client signature
- *
- * @param options
- * @returns {Client | null}
- */
-export const createWebsocketsClient = (
-  options: BuildFetcherOptions,
-): Client | null => {
-  let wsClient: Client | null = null;
-  try {
-    try {
-      // TODO: defaults?
-      wsClient = createClient({
-        url: options.subscriptionsUrl!,
-      });
-      if (!wsClient) {
-        wsClient = createLegacyClient({
-          url: options.subscriptionsUrl!,
-        });
-      }
-    } catch (err) {
-      wsClient = createLegacyClient({
-        url: options.subscriptionsUrl!,
-      });
-    }
-  } catch (err) {
-    throw Error(
-      `Error creating websocket client for:\n${options.subscriptionsUrl}`,
-    );
-  }
-  return wsClient;
 };
 
 /**
@@ -98,19 +63,58 @@ export const createSimpleFetcher = (
   return data.json();
 };
 
+export const createWebsocketsFetcherFromUrl = (url: string) => {
+  let wsClient: Client | null = null;
+  let legacyClient: SubscriptionClient | null = null;
+  if (url) {
+    try {
+      try {
+        // TODO: defaults?
+        wsClient = createClient({
+          url,
+        });
+        if (!wsClient) {
+          legacyClient = new SubscriptionClient(url);
+        }
+      } catch (err) {
+        legacyClient = new SubscriptionClient(url);
+      }
+    } catch (err) {
+      console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
+    }
+  }
+
+  if (wsClient) {
+    return createWebsocketsFetcherFromClient(wsClient);
+  } else if (legacyClient) {
+    return createLegacyWebsocketsFetcher(legacyClient);
+  } else if (url) {
+    throw Error('subscriptions client failed to initialize');
+  }
+};
+
 /**
  * Create ws/s fetcher using provided wsClient implementation
  *
  * @param wsClient {Client}
  * @returns {Fetcher}
  */
-export const createWebsocketsFetcher = (wsClient: Client) => (
+export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
 ) =>
   makeAsyncIterableIteratorFromSink<FetcherResult>(sink =>
     wsClient!.subscribe(graphQLParams, sink),
   );
 
+export const createLegacyWebsocketsFetcher = (
+  legacyWsClient: SubscriptionClient,
+) => (graphQLParams: FetcherParams) => {
+  const observable = legacyWsClient.request(graphQLParams);
+  return makeAsyncIterableIteratorFromSink<FetcherResult>(
+    // @ts-ignore
+    sink => observable.subscribe(sink).unsubscribe,
+  );
+};
 /**
  * create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`
@@ -133,9 +137,8 @@ export const createMultipartFetcher = (
         ...fetcherOpts?.headers,
       },
       onNext: parts => {
-        // Introspection is broken if we return a array instead of a single item.
-        // TODO: This should be addressed inside GraphiQL
-        sink.next(parts[0]);
+        // @ts-ignore
+        sink.next(parts);
       },
       onError: sink.error,
       onComplete: sink.complete,

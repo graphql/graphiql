@@ -31,16 +31,17 @@ export type FetcherParams = {
 
 export type FetcherOpts = {
   headers?: { [key: string]: any };
-  shouldPersistHeaders: boolean;
+  shouldPersistHeaders?: boolean;
   documentAST?: DocumentNode;
 };
 
 export type FetcherResult =
   | {
       data: IntrospectionQuery;
+      errors?: Array<any>;
     }
   | string
-  | { data: any };
+  | { data?: any; errors?: Array<any> };
 
 export type MaybePromise<T> = T | Promise<T>;
 

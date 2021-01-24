@@ -9,20 +9,29 @@ import {
   GraphQLString,
   subscribe,
   GraphQLSchema,
+  GraphQLList,
 } from 'graphql';
 
 const wait = (timeout: number = 200) =>
   new Promise(res => setTimeout(res, timeout));
 
+const Greeting = new GraphQLObjectType({
+  name: 'Greeting',
+  fields: {
+    name: {
+      type: GraphQLString,
+    },
+  },
+});
+
 const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {
     streamExample: {
-      type: GraphQLString,
+      type: new GraphQLList(Greeting),
       resolve: async function* sayHiInFiveLanguages() {
         for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-          yield { greetings: hi };
-          await wait(500);
+          yield { name: hi };
         }
       },
     },
@@ -36,7 +45,7 @@ const Subscription = new GraphQLObjectType({
       type: GraphQLString,
       subscribe: async function* sayHiInFiveLanguages() {
         for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-          yield { greetings: hi };
+          yield hi;
           await wait(500);
         }
       },
@@ -62,14 +71,15 @@ try {
     server,
     path: '/graphql',
   });
-  const port = process.env.PORT || 3000;
-  server.listen(port, () => {
+
+  const port = process.env.PORT || 3005;
+
+  app.listen(port, () => {
     useServer(
       {
         schema,
         execute,
         subscribe,
-        connectionInitWaitTimeout: 2000,
       },
       wsServer,
     );

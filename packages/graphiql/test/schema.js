@@ -128,6 +128,17 @@ const TestUnion = new GraphQLUnionType({
   },
 });
 
+const Greeting = new GraphQLObjectType({
+  name: 'Greeting',
+  fields: {
+    text: {
+      type: GraphQLString,
+    },
+  },
+});
+
+const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
+
 const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
@@ -135,6 +146,15 @@ const TestType = new GraphQLObjectType({
       type: TestType,
       description: '`test` field from `Test` type.',
       resolve: () => ({}),
+    },
+    streamable: {
+      type: new GraphQLList(Greeting),
+      resolve: async function* sayHiInFiveLanguages() {
+        for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
+          await sleep(800);
+          yield { text: hi };
+        }
+      },
     },
     longDescriptionType: {
       type: TestType,

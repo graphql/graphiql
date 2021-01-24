@@ -7,11 +7,10 @@ jest.mock('../lib');
 
 jest.mock('graphql-ws');
 
-jest.mock('graphql-transport-ws');
+jest.mock('subscriptions-transport-ws');
 
 import {
-  createWebsocketsClient,
-  createWebsocketsFetcher,
+  createWebsocketsFetcherFromUrl,
   createMultipartFetcher,
   createSimpleFetcher,
 } from '../lib';
@@ -31,60 +30,80 @@ const exampleWithSubscriptonNode = parse(exampleWithSubscripton);
 const serverURL = 'http://localhost:3000/graphql';
 const wssURL = 'ws://localhost:3000/graphql';
 
-const exampleIntrospectionJson = parse(getIntrospectionQuery());
+const exampleIntrospectionDocument = parse(getIntrospectionQuery());
 
 describe('buildGraphiQLFetcher', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
   it('returns fetcher without websocket client by default', async () => {
-    createWebsocketsClient.mockReturnValue(true);
+    createWebsocketsFetcherFromUrl.mockReturnValue(true);
     const fetcher = buildGraphiQLFetcher({ url: serverURL });
-    expect(createWebsocketsClient.mock.calls).toEqual([]);
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([
-      [{ enableMultipart: true, url: serverURL }],
+      [{ enableIncrementalDelivery: true, url: serverURL }],
     ]);
   });
+
+  it('returns simple fetcher for introspection', async () => {
+    createSimpleFetcher.mockReturnValue(async () => 'hey!');
+    const fetcher = buildGraphiQLFetcher({ url: serverURL });
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
+    expect(createMultipartFetcher.mock.calls).toEqual([
+      [{ enableIncrementalDelivery: true, url: serverURL }],
+    ]);
+    expect(createSimpleFetcher.mock.calls).toEqual([
+      [{ enableIncrementalDelivery: true, url: serverURL }, fetch],
+    ]);
+    const res = await fetcher(
+      { query: getIntrospectionQuery(), operationName: 'IntrospectionQuery' },
+      {
+        documentAST: exampleIntrospectionDocument,
+        shouldPersistHeaders: false,
+      },
+    );
+    expect(res).toEqual('hey!');
+  });
   it('returns fetcher without websocket client or multipart', () => {
-    createWebsocketsClient.mockReturnValue(true);
-    buildGraphiQLFetcher({ url: serverURL, enableMultipart: false });
-    expect(createWebsocketsClient.mock.calls).toEqual([]);
+    createWebsocketsFetcherFromUrl.mockReturnValue(true);
+    buildGraphiQLFetcher({ url: serverURL, enableIncrementalDelivery: false });
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([]);
     expect(createSimpleFetcher.mock.calls).toEqual([
-      [{ enableMultipart: false, url: serverURL }, fetch],
+      [{ enableIncrementalDelivery: false, url: serverURL }, fetch],
     ]);
   });
   it('returns fetcher with websocket client', () => {
-    createWebsocketsClient.mockReturnValue('Client1');
+    createWebsocketsFetcherFromUrl.mockReturnValue('Client1');
 
     const args = {
       url: serverURL,
-      subscriptionsUrl: wssURL,
-      enableMultipart: true,
+      subscriptionUrl: wssURL,
+      enableIncrementalDelivery: true,
     };
 
     buildGraphiQLFetcher(args);
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args]]);
-    expect(createWebsocketsClient.mock.calls).toEqual([[args]]);
-    expect(createWebsocketsFetcher.mock.calls).toEqual([['Client1']]);
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([
+      [args.subscriptionUrl],
+    ]);
   });
 
   it('returns fetcher with custom wsClient', () => {
     createClient.mockReturnValue('WSClient');
-    createWebsocketsFetcher.mockReturnValue('CustomWSSFetcher');
+    createWebsocketsFetcherFromUrl.mockReturnValue('CustomWSSFetcher');
 
     const wsClient = createClient({ url: wssURL });
     const args = {
       url: serverURL,
       wsClient,
-      enableMultipart: true,
+      enableIncrementalDelivery: true,
     };
 
     buildGraphiQLFetcher(args);
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args]]);
-    expect(createWebsocketsClient.mock.calls).toEqual([]);
-    expect(createWebsocketsFetcher.mock.calls).toEqual([['WSClient']]);
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
   });
 });

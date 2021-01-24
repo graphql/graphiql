@@ -47,7 +47,7 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 
 #### HTTP/Multipart & Websockets
 
-Just by providing the `subscriptionsUrl`, you can generate a `graphql-ws` client
+Just by providing the `subscriptionUrl`, you can generate a `graphql-ws` client
 
 ```ts
 import * as React from 'react';
@@ -57,11 +57,11 @@ import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
-const subscriptionsUrl = 'wss://myschema.com/graphql';
+const subscriptionUrl = 'wss://myschema.com/graphql';
 
 const fetcher = buildGraphiQLFetcher({
   url,
-  subscriptionsUrl,
+  subscriptionUrl,
 });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
@@ -77,13 +77,13 @@ You can further customize the `wsClient` implementation below
 
 This is url used for all `HTTP` requests, and for schema introspection.
 
-#### `subscriptionsUrl`
+#### `subscriptionUrl`
 
 This generates a `graphql-ws` client.
 
 #### `wsClient`
 
-provide your own subscriptions client. bypasses `subscriptionsUrl`. In theory, this could be any client using any transport, as long as it matches `graphql-ws` `Client` signature.
+provide your own subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `graphql-ws` `Client` signature.
 
 #### `headers`
 
@@ -97,7 +97,7 @@ Pass a custom fetch implementation such as `isomorphic-feth`
 
 #### Custom `wsClient` Example
 
-Just by providing the `subscriptionsUrl`
+Just by providing the `subscriptionUrl`
 
 ```ts
 import * as React from 'react';
@@ -108,12 +108,12 @@ import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
-const subscriptionsUrl = 'wss://myschema.com/graphql';
+const subscriptionUrl = 'wss://myschema.com/graphql';
 
 const fetcher = buildGraphiQLFetcher({
   url,
   wsClient: createClient({
-    url: subscriptionsUrl,
+    url: subscriptionUrl,
     keepAlive: 2000,
   }),
 });

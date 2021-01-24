@@ -1,4 +1,3 @@
-import type { Client } from 'graphql-ws';
 import type { Fetcher } from '@graphiql/toolkit';
 import type { BuildFetcherOptions } from './types';
 
@@ -6,8 +5,8 @@ import {
   createMultipartFetcher,
   createSimpleFetcher,
   isSubcriptionWithName,
-  createWebsocketsClient,
-  createWebsocketsFetcher,
+  createWebsocketsFetcherFromUrl,
+  createWebsocketsFetcherFromClient,
 } from './lib';
 
 /**
@@ -19,16 +18,16 @@ import {
  * @returns {Fetcher}
  */
 export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
-  // hoist the wsClient to global scope, so that we can unsubscribe/re-subscribe
-  // even when the function is re-invoked.
-  let wsClient: Client | null = null;
-
   let httpFetch;
+  let wsFetcher: null | Fetcher | void = null;
   if (typeof window !== null && window?.fetch) {
     httpFetch = window.fetch;
   }
-  if (options?.enableMultipart === null || options.enableMultipart !== false) {
-    options.enableMultipart = true;
+  if (
+    options?.enableIncrementalDelivery === null ||
+    options.enableIncrementalDelivery !== false
+  ) {
+    options.enableIncrementalDelivery = true;
   }
   if (options.fetch) {
     httpFetch = options.fetch;
@@ -37,28 +36,16 @@ export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
     throw Error('No valid fetcher implementation available');
   }
 
-  let wsFetcher: Fetcher | null = null;
-
-  // user provided wsClient
-  if (options.wsClient) {
-    wsClient = options.wsClient;
-  }
-
-  // if there's no user provided wsClient,
-  // and a subscriptionsUrl us present, then generate one
-  if (!wsClient && options.subscriptionsUrl) {
-    wsClient = createWebsocketsClient(options);
-  }
-
-  if (wsClient) {
-    wsFetcher = createWebsocketsFetcher(wsClient);
-  } else if (options.subscriptionsUrl) {
-    throw Error('subscriptions client failed to initialize');
-  }
-
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
-  const httpFetcher = options.enableMultipart
+  if (options.subscriptionUrl) {
+    wsFetcher = createWebsocketsFetcherFromUrl(options.subscriptionUrl);
+  }
+  if (options.wsClient) {
+    wsFetcher = createWebsocketsFetcherFromClient(options.wsClient);
+  }
+
+  const httpFetcher = options.enableIncrementalDelivery
     ? createMultipartFetcher(options)
     : simpleFetcher;
 
@@ -73,10 +60,14 @@ export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
     if (isSubscription) {
       if (!wsFetcher) {
         throw Error(
-          'GraphiQL buildFetcher did not successfully build a wsFetcher',
+          `Your GraphiQL buildFetcher is not properly configured for websocket subscriptions yet. ${
+            options.subscriptionUrl
+              ? `Provided URL ${options.subscriptionUrl} failed`
+              : `Try providing options.subscriptionUrl or options.wsClient first.`
+          }`,
         );
       }
-      return wsFetcher(graphQLParams, opts);
+      return wsFetcher(graphQLParams);
     }
     return httpFetcher(graphQLParams, opts);
   };

@@ -16,9 +16,14 @@
   "scripts": {
     "server": "ts-node test/server.ts"
   },
+  "workspaces": {
+    "nohoist": [
+      "graphql"
+    ]
+  },
   "dependencies": {
     "graphql-ws": "^4.1.0",
-    "graphql-transport-ws": "^1.9.0",
+    "subscriptions-transport-ws": "^0.9.18",
     "fetch-multipart-graphql": "^3.0.0",
     "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
     "@graphiql/toolkit": "^0.0.1"
@@ -28,6 +33,10 @@
     "express": "^4.17.1",
     "express-graphql": "experimental-stream-defer",
     "ws": "^7.4.2",
-    "ts-node": "^9.1.1"
+    "ts-node": "^9.1.1",
+    "graphql": "experimental-stream-defer"
+  },
+  "resolutions": {
+    "graphql": "experimental-stream-defer"
   }
 }

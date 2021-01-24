@@ -7,7 +7,7 @@
 
 const express = require('express');
 const path = require('path');
-const graphqlHTTP = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema');
 
 module.exports = function beforeDevServer(app, _server, _compiler) {

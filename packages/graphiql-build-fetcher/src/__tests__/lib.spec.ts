@@ -1,15 +1,15 @@
 import { parse } from 'graphql';
-import { isSubcriptionWithName, createWebsocketsClient } from '../lib';
+import { isSubcriptionWithName, createWebsocketsFetcherFromUrl } from '../lib';
 
 import 'isomorphic-fetch';
 
 jest.mock('graphql-ws');
 
-jest.mock('graphql-transport-ws');
+jest.mock('subscriptions-transport-ws');
 
 import { createClient } from 'graphql-ws';
 
-import { createClient as createLegacyClient } from 'graphql-transport-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const exampleWithSubscripton = /* GraphQL */ parse(`
   subscription Example {
@@ -38,17 +38,24 @@ describe('isSubcriptionWithName', () => {
   });
 });
 
-describe('createWebsocketsClient', () => {
+describe('createWebsocketsFetcherFromUrl', () => {
   afterEach(() => {
-    // @ts-ignore
-    createClient.mockRestore();
+    jest.resetAllMocks();
   });
+
   it('creates a websockets client using provided url', () => {
-    createWebsocketsClient({
-      url: 'https://example.com',
-      subscriptionsUrl: 'wss://example.com',
-    });
+    createClient.mockReturnValue(true);
+    createWebsocketsFetcherFromUrl('wss://example.com');
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
+    expect(SubscriptionClient.mock.calls).toEqual([]);
+  });
+
+  it('creates a websockets client using provided url that fails to legacy client', async () => {
+    createClient.mockReturnValue(false);
+    await createWebsocketsFetcherFromUrl('wss://example.com');
+    // @ts-ignore
+    expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
+    expect(SubscriptionClient.mock.calls[0][0]).toEqual('wss://example.com');
   });
 });
