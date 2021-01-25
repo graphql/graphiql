@@ -99,7 +99,7 @@ const api = isDev
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
-    fetcher: GraphiQL.buildFetcher({ url: api }),
+    fetcher: GraphiQL.createFetcher({ url: api }),
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,

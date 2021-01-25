@@ -86,7 +86,7 @@ export default class TypeDoc extends React.Component<
     // InputObject and Object
     let fieldsDef;
     let deprecatedFieldsDef;
-    if ('getFields' in type) {
+    if (type && 'getFields' in type) {
       const fieldMap = type.getFields();
       const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
       fieldsDef = (

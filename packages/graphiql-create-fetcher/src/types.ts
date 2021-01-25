@@ -6,7 +6,7 @@ export type WebsocketsClient = Client | SubscriptionClient;
 /**
  * Options for creating a sinple, spec-compliant GraphiQL fetcher
  */
-export interface BuildFetcherOptions {
+export interface CreateFetcherOptions {
   /**
    * url for HTTP(S) requests. required!
    */

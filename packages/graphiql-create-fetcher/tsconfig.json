@@ -1,13 +1,12 @@
 {
-  "extends": "../../resources/tsconfig.base.esm.json",
+  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "strictPropertyInitialization": false,
-    "module": "ESNext",
-    "target": "ESNext"
+    "target": "es5",
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": [

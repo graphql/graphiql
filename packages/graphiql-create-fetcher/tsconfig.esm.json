@@ -3,16 +3,12 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./esm",
-    "composite": false,
+    "composite": true,
     "jsx": "react",
-    "baseUrl": ".",
-    "target": "ES5",
-    "module": "CommonJS",
-    "lib": ["DOM", "ESNext"]
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": [
-    "node_modules",
     "**/__tests__/**",
     "**/dist/**.*",
     "**/*.spec.ts",
@@ -20,7 +16,8 @@
     "**/*-test.ts",
     "**/*-test.js",
     "**/*.stories.js",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ],
   "references": [
     {

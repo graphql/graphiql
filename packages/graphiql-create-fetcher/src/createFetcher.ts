@@ -1,10 +1,10 @@
 import type { Fetcher } from '@graphiql/toolkit';
-import type { BuildFetcherOptions } from './types';
+import type { CreateFetcherOptions } from './types';
 
 import {
   createMultipartFetcher,
   createSimpleFetcher,
-  isSubcriptionWithName,
+  isSubscriptionWithName,
   createWebsocketsFetcherFromUrl,
   createWebsocketsFetcherFromClient,
 } from './lib';
@@ -14,10 +14,10 @@ import {
  * - backwards compatible
  * - optionally supports graphql-ws or `
  *
- * @param options {BuildFetcherOptions}
+ * @param options {CreateFetcherOptions}
  * @returns {Fetcher}
  */
-export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
+export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   let httpFetch;
   let wsFetcher: null | Fetcher | void = null;
   if (typeof window !== null && window?.fetch) {
@@ -53,14 +53,14 @@ export function buildGraphiQLFetcher(options: BuildFetcherOptions): Fetcher {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
       return simpleFetcher(graphQLParams, opts);
     }
-    const isSubscription = isSubcriptionWithName(
+    const isSubscription = isSubscriptionWithName(
       opts?.documentAST!,
       graphQLParams.operationName,
     );
     if (isSubscription) {
       if (!wsFetcher) {
         throw Error(
-          `Your GraphiQL buildFetcher is not properly configured for websocket subscriptions yet. ${
+          `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
             options.subscriptionUrl
               ? `Provided URL ${options.subscriptionUrl} failed`
               : `Try providing options.subscriptionUrl or options.wsClient first.`

@@ -1,5 +1,5 @@
 import { parse } from 'graphql';
-import { isSubcriptionWithName, createWebsocketsFetcherFromUrl } from '../lib';
+import { isSubscriptionWithName, createWebsocketsFetcherFromUrl } from '../lib';
 
 import 'isomorphic-fetch';
 
@@ -23,17 +23,17 @@ const exampleWithSubscripton = /* GraphQL */ parse(`
 describe('isSubcriptionWithName', () => {
   it('detects when the subscription is present', () => {
     expect(
-      isSubcriptionWithName(exampleWithSubscripton, 'Example'),
+      isSubscriptionWithName(exampleWithSubscripton, 'Example'),
     ).toBeTruthy();
   });
   it('detects when the specified operation is not a subscription', () => {
     expect(
-      isSubcriptionWithName(exampleWithSubscripton, 'SomethingElse'),
+      isSubscriptionWithName(exampleWithSubscripton, 'SomethingElse'),
     ).toBeFalsy();
   });
   it('detects when the operation is not present', () => {
     expect(
-      isSubcriptionWithName(exampleWithSubscripton, 'NotPresent'),
+      isSubscriptionWithName(exampleWithSubscripton, 'NotPresent'),
     ).toBeFalsy();
   });
 });

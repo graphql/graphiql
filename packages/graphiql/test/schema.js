@@ -150,8 +150,22 @@ const TestType = new GraphQLObjectType({
     streamable: {
       type: new GraphQLList(Greeting),
       resolve: async function* sayHiInFiveLanguages() {
-        for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-          await sleep(800);
+        let i = 0;
+        for (const hi of [
+          'Hi',
+          '你好',
+          'Hola',
+          'سلام',
+          'Bonjour',
+          '안녕',
+          'Ciao',
+          'हेलो',
+          'Здорово',
+        ]) {
+          if (i > 2) {
+            await sleep(400);
+          }
+          i++;
           yield { text: hi };
         }
       },

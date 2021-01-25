@@ -1066,7 +1066,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
-      const totalResponse = { data: {} };
+      const totalResponse: FetcherResult = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1080,14 +1080,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             if (Array.isArray(result)) {
               // for `IncrementalDelivery`
               // https://github.com/graphql/graphql-over-http/blob/master/rfcs/IncrementalDelivery.md
-              // TODO: types
+              // TODO: typescript types
               const response = result.reduce((result, increment) => {
                 if (increment.errors) {
-                  result.errors = [...result?.errors, ...increment?.errors];
+                  result.errors = [
+                    ...(result?.errors || []),
+                    ...increment?.errors,
+                  ];
                 }
                 if (increment.path) {
                   const [path, index] = increment.path;
                   const data = result?.data[path] || [];
+                  // place them at the exact index. this matters a lot
                   data[index] = increment.data;
                   result.data = { ...result?.data, [path]: data };
                 } else {

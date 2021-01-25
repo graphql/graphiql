@@ -10,7 +10,7 @@ import type {
   FetcherParams,
   FetcherOpts,
 } from '@graphiql/toolkit';
-import type { BuildFetcherOptions } from './types';
+import type { CreateFetcherOptions } from './types';
 
 /**
  * Returns true if the name matches a subscription in the AST
@@ -19,33 +19,33 @@ import type { BuildFetcherOptions } from './types';
  * @param name the operation name to lookup
  * @returns {boolean}
  */
-export const isSubcriptionWithName = (
+export const isSubscriptionWithName = (
   document: DocumentNode,
   name: string,
 ): boolean => {
-  let isSubcription = false;
+  let isSubscription = false;
   visit(document, {
     OperationDefinition(node) {
       if (name === node.name?.value) {
         if (node.operation === 'subscription') {
-          isSubcription = true;
+          isSubscription = true;
         }
       }
     },
   });
-  return isSubcription;
+  return isSubscription;
 };
 
 /**
  * create a simple HTTP/S fetcher using a fetch implementation where
  * multipart is not needed
  *
- * @param options {BuildFetcherOptions}
+ * @param options {CreateFetcherOptions}
  * @param httpFetch {typeof fetch}
  * @returns {Fetcher}
  */
 export const createSimpleFetcher = (
-  options: BuildFetcherOptions,
+  options: CreateFetcherOptions,
   httpFetch: typeof fetch,
 ): Fetcher => async (
   graphQLParams: FetcherParams,
@@ -119,11 +119,11 @@ export const createLegacyWebsocketsFetcher = (
  * create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`
  *
- * @param options {BuildFetcherOptions}
+ * @param options {CreateFetcherOptions}
  * @returns {Fetcher}
  */
 export const createMultipartFetcher = (
-  options: BuildFetcherOptions,
+  options: CreateFetcherOptions,
 ): Fetcher => async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) =>
   makeAsyncIterableIteratorFromSink<FetcherResult>(sink => {
     fetchMultipart<FetcherResult>(options.url, {

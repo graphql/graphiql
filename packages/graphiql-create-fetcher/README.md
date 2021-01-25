@@ -1,4 +1,4 @@
-## `@graphiql/build-fetcher`
+## `@graphiql/create-fetcher`
 
 a utility for generating a full-featured fetcher for GraphiQL.
 
@@ -8,18 +8,18 @@ under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws)
 
 [`graphiql`](https://npmjs.com/package/graphiql) and thus `react` and `react-dom` should already be installed.
 
-you'll need to install `@graphiql/build-fetcher`
+you'll need to install `@graphiql/create-fetcher`
 
 npm
 
 ```bash
-npm install --save @graphiql/build-fetcher
+npm install --save @graphiql/create-fetcher
 ```
 
 yarn
 
 ```bash
-yarn add @graphiql/build-fetcher
+yarn add @graphiql/create-fetcher
 ```
 
 ### Getting Started
@@ -34,11 +34,11 @@ Here's a simple example. In this case, a websocket client isn't even initialized
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
-import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
-const fetcher = buildGraphiQLFetcher({ url });
+const fetcher = createGraphiQLFetcher({ url });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
@@ -53,13 +53,13 @@ Just by providing the `subscriptionUrl`, you can generate a `graphql-ws` client
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
-import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
 const subscriptionUrl = 'wss://myschema.com/graphql';
 
-const fetcher = buildGraphiQLFetcher({
+const fetcher = createGraphiQLFetcher({
   url,
   subscriptionUrl,
 });
@@ -104,13 +104,13 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
 import { createClient } from 'graphql-ws';
-import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
 const subscriptionUrl = 'wss://myschema.com/graphql';
 
-const fetcher = buildGraphiQLFetcher({
+const fetcher = createGraphiQLFetcher({
   url,
   wsClient: createClient({
     url: subscriptionUrl,
@@ -132,11 +132,11 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
 import { fetch } from 'isomorphic-fetch';
-import { buildGraphiQLFetcher } from '@graphiql/build-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
 
 const url = 'https://myschema.com/graphql';
 
-const fetcher = buildGraphiQLFetcher({
+const fetcher = createGraphiQLFetcher({
   url,
   fetch,
 });

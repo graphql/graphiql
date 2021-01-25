@@ -1,5 +1,5 @@
 import { parse, getIntrospectionQuery } from 'graphql';
-import { buildGraphiQLFetcher } from '../buildFetcher';
+import { createGraphiQLFetcher } from '../createFetcher';
 
 import 'isomorphic-fetch';
 
@@ -32,13 +32,13 @@ const wssURL = 'ws://localhost:3000/graphql';
 
 const exampleIntrospectionDocument = parse(getIntrospectionQuery());
 
-describe('buildGraphiQLFetcher', () => {
+describe('createGraphiQLFetcher', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
   it('returns fetcher without websocket client by default', async () => {
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
-    const fetcher = buildGraphiQLFetcher({ url: serverURL });
+    const fetcher = createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([
       [{ enableIncrementalDelivery: true, url: serverURL }],
@@ -47,7 +47,7 @@ describe('buildGraphiQLFetcher', () => {
 
   it('returns simple fetcher for introspection', async () => {
     createSimpleFetcher.mockReturnValue(async () => 'hey!');
-    const fetcher = buildGraphiQLFetcher({ url: serverURL });
+    const fetcher = createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([
       [{ enableIncrementalDelivery: true, url: serverURL }],
@@ -66,7 +66,7 @@ describe('buildGraphiQLFetcher', () => {
   });
   it('returns fetcher without websocket client or multipart', () => {
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
-    buildGraphiQLFetcher({ url: serverURL, enableIncrementalDelivery: false });
+    createGraphiQLFetcher({ url: serverURL, enableIncrementalDelivery: false });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([]);
     expect(createSimpleFetcher.mock.calls).toEqual([
@@ -82,7 +82,7 @@ describe('buildGraphiQLFetcher', () => {
       enableIncrementalDelivery: true,
     };
 
-    buildGraphiQLFetcher(args);
+    createGraphiQLFetcher(args);
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args]]);
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([
@@ -101,7 +101,7 @@ describe('buildGraphiQLFetcher', () => {
       enableIncrementalDelivery: true,
     };
 
-    buildGraphiQLFetcher(args);
+    createGraphiQLFetcher(args);
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args]]);
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);

@@ -22,6 +22,9 @@
   ],
   "references": [
     {
+      "path": "../graphiql-create-fetcher"
+    },
+    {
       "path": "../graphql-language-service"
     },
     {
@@ -32,9 +35,6 @@
     },
     {
       "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphiql-toolkit"
     }
   ]
 }

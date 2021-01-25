@@ -6,7 +6,7 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-build-fetcher"
+      "path": "../packages/graphiql-create-fetcher"
     },
     {
       "path": "../packages/graphiql-toolkit"

@@ -31,7 +31,11 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
-    assertQueryResult(op: Op, expectedResult: MockResult): Chainable<Element>;
+    assertQueryResult(
+      op: Op,
+      expectedResult: MockResult,
+      timeout?: number,
+    ): Chainable<Element>;
   }
 }
 
@@ -66,14 +70,13 @@ Cypress.Commands.add('assertHasValues', ({ query, variables }) => {
   });
 });
 
-Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
+Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
-  cy.wait(200);
+  cy.wait(timeout);
   cy.window().then(w => {
     // @ts-ignore
-    expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
-      mockSuccess,
-    );
+    const value = w.g.resultComponent.viewer.getValue();
+    expect(value).to.deep.equal(JSON.stringify(mockSuccess, null, 2));
   });
 });

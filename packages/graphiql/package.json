@@ -14,6 +14,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "esm/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "esm",
@@ -48,14 +49,14 @@
     "entities": "^2.0.0",
     "graphql-language-service": "^3.1.2",
     "markdown-it": "^10.0.0",
-    "@graphiql/toolkit": "^0.0.1"
+    "@graphiql/toolkit": "^0.0.1",
+    "@graphiql/create-fetcher": "^0.0.1"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
     "prop-types": ">=15.5.0",
     "react": "^16.8.0",
-    "react-dom": "^16.8.0",
-    "@graphiql/build-fetcher": "^0.0.1"
+    "react-dom": "^16.8.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "5.1.1",
@@ -65,7 +66,6 @@
     "@types/node": "^13.7.1",
     "@types/testing-library__jest-dom": "^5.0.1",
     "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
-    "@graphiql/build-fetcher": "^0.0.1",
     "babel-loader": "^8.1.0",
     "babel-plugin-macros": "^2.8.0",
     "cross-env": "^7.0.0",
