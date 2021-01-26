@@ -243,7 +243,8 @@
 
 .graphiql-container .search-box {
   border-bottom: 1px solid #d3d6db;
-  display: block;
+  display: flex;
+  align-items: center;
   font-size: 14px;
   margin: -15px -15px 12px 0;
   position: relative;
@@ -253,8 +254,6 @@
   cursor: pointer;
   display: block;
   font-size: 24px;
-  position: absolute;
-  top: -2px;
   transform: rotate(-45deg);
   user-select: none;
 }
@@ -268,7 +267,6 @@
   padding: 1px 5px 2px;
   position: absolute;
   right: 3px;
-  top: 8px;
   user-select: none;
   border: 0;
 }
