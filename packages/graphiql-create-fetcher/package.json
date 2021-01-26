@@ -21,7 +21,7 @@
   "dependencies": {
     "graphql-ws": "^4.1.0",
     "subscriptions-transport-ws": "^0.9.18",
-    "fetch-multipart-graphql": "^3.0.0",
+    "meros": "^1.0.0",
     "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
     "@graphiql/toolkit": "^0.0.1"
   },

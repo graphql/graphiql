@@ -43,12 +43,12 @@ export type FetcherResult =
   | string
   | { data?: any; errors?: Array<any>; hasNext?: boolean }
   // for IncrementalDelivery
-  | Array<{
+  | {
       data?: any;
       errors?: any[];
       path?: [string, number];
       hasNext: boolean;
-    }>;
+    };
 
 export type MaybePromise<T> = T | Promise<T>;
 
