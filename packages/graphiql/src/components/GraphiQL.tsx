@@ -26,6 +26,8 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
+// @ts-expect-error sadly no types
+import dset from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -61,6 +63,8 @@ import type {
   SyncFetcherResult,
   Observable,
   Unsubscribable,
+  IncrementalDeliveryResult,
+  FetcherResultObject,
 } from '@graphiql/toolkit';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
@@ -1066,6 +1070,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
+      const isIncrementalDelivery = (
+        result: FetcherResult,
+      ): result is IncrementalDeliveryResult => {
+        // @ts-ignore
+        return typeof result === 'object' && 'hasNext' in result;
+      };
+
+      const totalResponse: FetcherResultObject = { data: {} };
+
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
         editedQuery as string,
@@ -1075,10 +1088,42 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            this.setState({
-              isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
-            });
+            if (isIncrementalDelivery(result)) {
+              // @ts-ignore
+              totalResponse.hasNext = result.hasNext;
+
+              if (result.errors) {
+                // We dont care about "index" here, just concat.
+                totalResponse.errors = [
+                  ...(totalResponse?.errors || []),
+                  ...result?.errors,
+                ];
+              }
+
+              if (result.path) {
+                const pathKey = result.path.map(String).join('.');
+                if (!('data' in result)) {
+                  throw new Error(
+                    `Expected part to contain a data property, but got ${result}`,
+                  );
+                }
+                dset(totalResponse.data, pathKey, result.data);
+              } else if ('data' in result) {
+                // If there is no path, we don't know what to do with the payload,
+                // so we just set it.
+                totalResponse.data = result.data;
+              }
+
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(totalResponse),
+              });
+            } else {
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(result),
+              });
+            }
           }
         },
       );
@@ -1711,7 +1756,6 @@ function asyncIterableToPromise<T>(
 
     iteratorNext()
       .then(result => {
-        console.log(result.value);
         resolve(result.value);
         // ensure cleanup
         iteratorReturn?.();

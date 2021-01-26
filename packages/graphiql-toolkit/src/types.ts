@@ -35,20 +35,23 @@ export type FetcherOpts = {
   documentAST?: DocumentNode;
 };
 
-export type FetcherResult =
+export type IncrementalDeliveryResult = {
+  data?: any;
+  errors?: any[];
+  path?: [string, number];
+  hasNext: boolean;
+};
+
+export type FetcherResultObject =
   | {
       data: IntrospectionQuery;
       errors?: Array<any>;
     }
-  | string
   | { data?: any; errors?: Array<any>; hasNext?: boolean }
   // for IncrementalDelivery
-  | {
-      data?: any;
-      errors?: any[];
-      path?: [string, number];
-      hasNext: boolean;
-    };
+  | IncrementalDeliveryResult;
+
+export type FetcherResult = FetcherResultObject | string;
 
 export type MaybePromise<T> = T | Promise<T>;
 

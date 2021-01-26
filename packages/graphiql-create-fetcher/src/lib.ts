@@ -12,6 +12,7 @@ import type {
   FetcherResult,
   FetcherParams,
   FetcherOpts,
+  IncrementalDeliveryResult,
 } from '@graphiql/toolkit';
 import type { CreateFetcherOptions } from './types';
 
@@ -141,17 +142,13 @@ export const createMultipartFetcher = (
         // the static provided headers
         ...fetcherOpts?.headers,
       },
-    }).then(response => {
-      // TODO: Can we make this payload type-safe?
-      return meros(response);
-    });
+    }).then(response => meros<IncrementalDeliveryResult>(response));
 
     // Follows the same as createSimpleFetcher above, in that we simply return it as json.
     if (!isAsyncIterable(response)) {
-      yield response.json();
+      return yield response.json();
     }
 
-    // @ts-expect-error come on TypeScript flow analyse, I've already checked that you are an AsyncIterator
     for await (const part of response) {
       if (!part.json) {
         throw new Error(
@@ -160,7 +157,4 @@ export const createMultipartFetcher = (
       }
       yield part.body;
     }
-
-    // @ts-expect-error as state above, this is an AsyncIterable.
-    return () => response.return?.();
   };
