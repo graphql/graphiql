@@ -12,7 +12,7 @@ import type {
   FetcherResult,
   FetcherParams,
   FetcherOpts,
-  IncrementalDeliveryResult,
+  FetcherResultPayload,
 } from '@graphiql/toolkit';
 import type { CreateFetcherOptions } from './types';
 
@@ -142,7 +142,9 @@ export const createMultipartFetcher = (
         // the static provided headers
         ...fetcherOpts?.headers,
       },
-    }).then(response => meros<IncrementalDeliveryResult>(response));
+    }).then(response =>
+      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response),
+    );
 
     // Follows the same as createSimpleFetcher above, in that we simply return it as json.
     if (!isAsyncIterable(response)) {

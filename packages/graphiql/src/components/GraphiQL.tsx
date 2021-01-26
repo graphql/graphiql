@@ -63,8 +63,7 @@ import type {
   SyncFetcherResult,
   Observable,
   Unsubscribable,
-  IncrementalDeliveryResult,
-  FetcherResultObject,
+  FetcherResultPayload,
 } from '@graphiql/toolkit';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
@@ -1070,14 +1069,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
-      const isIncrementalDelivery = (
-        result: FetcherResult,
-      ): result is IncrementalDeliveryResult => {
-        // @ts-ignore
-        return typeof result === 'object' && 'hasNext' in result;
-      };
-
-      const totalResponse: FetcherResultObject = { data: {} };
+      const totalResponse: FetcherResultPayload = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1088,10 +1080,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            if (isIncrementalDelivery(result)) {
-              // @ts-ignore
-              totalResponse.hasNext = result.hasNext;
-
+            if (
+              typeof result === 'object' &&
+              result !== null &&
+              'hasNext' in result
+            ) {
               if (result.errors) {
                 // We dont care about "index" here, just concat.
                 totalResponse.errors = [
@@ -1100,8 +1093,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 ];
               }
 
-              if (result.path) {
-                const pathKey = result.path.map(String).join('.');
+              totalResponse.hasNext = result.hasNext;
+
+              if ('path' in result) {
+                const pathKey = result.path!.map(String).join('.');
                 if (!('data' in result)) {
                   throw new Error(
                     `Expected part to contain a data property, but got ${result}`,
