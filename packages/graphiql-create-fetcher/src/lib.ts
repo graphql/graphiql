@@ -152,7 +152,7 @@ export const createMultipartFetcher = (
     }
 
     // @ts-expect-error come on TypeScript flow analyse, I've already checked that you are an AsyncIterator
-    for (const part of response) {
+    for await (const part of response) {
       if (!part.json) {
         throw new Error(
           `Expected multipart to be of json type, but got\n\nHeaders: ${part.headers}\n\nBody:${part.body}`,
