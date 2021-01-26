@@ -1,6 +1,6 @@
 const testStreamQuery = /* GraphQL */ `
-  {
-    streamable @stream(initialCount: 2) {
+  query StreamQuery($delay: Int) {
+    streamable(delay: $delay) @stream(initialCount: 2) {
       text
     }
   }
@@ -19,10 +19,13 @@ const mockStreamSuccess = {
         text: 'Hola',
       },
       {
-        text: 'سلام',
+        text: 'أهلاً',
       },
       {
         text: 'Bonjour',
+      },
+      {
+        text: 'سلام',
       },
       {
         text: '안녕',
@@ -41,8 +44,22 @@ const mockStreamSuccess = {
 };
 
 describe('IncrementalDelivery support via fetcher', () => {
-  it('Executes a GraphQL query over HTTP that has the expected result', () => {
+  it('Expects slower streams to resolve in several increments', () => {
+    const delay = 100;
+    const timeout = mockStreamSuccess.data.streamable.length * (delay * 1.5);
+
     cy.visit(`/?query=${testStreamQuery}`);
-    cy.assertQueryResult({ query: testStreamQuery }, mockStreamSuccess, 3000);
+    cy.assertQueryResult(
+      { query: testStreamQuery, variables: { delay } },
+      mockStreamSuccess,
+      timeout,
+    );
+  });
+  it('Expects a quick stream to resolve in a single increment', () => {
+    cy.visit(`/?query=${testStreamQuery}`);
+    cy.assertQueryResult(
+      { query: testStreamQuery, variables: { delay: 0 } },
+      mockStreamSuccess,
+    );
   });
 });

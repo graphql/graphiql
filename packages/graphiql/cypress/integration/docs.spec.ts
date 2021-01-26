@@ -51,6 +51,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Type fields link to their own docs entry', () => {
     cy.get('label.search-box input').type('test');
+    cy.pause();
     cy.get('.doc-search-items>.doc-category-item')
       .last()
       .find('a:nth-child(2)')

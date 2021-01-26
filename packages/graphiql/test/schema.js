@@ -149,21 +149,30 @@ const TestType = new GraphQLObjectType({
     },
     streamable: {
       type: new GraphQLList(Greeting),
-      resolve: async function* sayHiInFiveLanguages() {
+      args: {
+        delay: {
+          description:
+            'delay in milleseconds for subsequent results, for demonstration purposes',
+          type: GraphQLInt,
+          defaultValue: 400,
+        },
+      },
+      resolve: async function* sayHiInSomeLanguages(_value, args) {
         let i = 0;
         for (const hi of [
           'Hi',
           '你好',
           'Hola',
-          'سلام',
+          'أهلاً',
           'Bonjour',
+          'سلام',
           '안녕',
           'Ciao',
           'हेलो',
           'Здорово',
         ]) {
           if (i > 2) {
-            await sleep(400);
+            await sleep(args.delay);
           }
           i++;
           yield { text: hi };
@@ -206,7 +215,7 @@ const TestType = new GraphQLObjectType({
     },
     hasArgs: {
       type: GraphQLString,
-      resolve(value, args) {
+      resolve(_value, args) {
         return JSON.stringify(args);
       },
       args: {
