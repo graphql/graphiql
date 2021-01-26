@@ -1096,13 +1096,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               totalResponse.hasNext = result.hasNext;
 
               if ('path' in result) {
-                const pathKey = result.path!.map(String).join('.');
                 if (!('data' in result)) {
                   throw new Error(
                     `Expected part to contain a data property, but got ${result}`,
                   );
                 }
-                dset(totalResponse.data, pathKey, result.data);
+                dset(totalResponse.data, result.path!, result.data);
               } else if ('data' in result) {
                 // If there is no path, we don't know what to do with the payload,
                 // so we just set it.
