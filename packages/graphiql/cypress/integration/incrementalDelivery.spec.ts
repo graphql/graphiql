@@ -41,6 +41,7 @@ const mockStreamSuccess = {
       },
     ],
   },
+  hasNext: false,
 };
 
 describe('IncrementalDelivery support via fetcher', () => {
