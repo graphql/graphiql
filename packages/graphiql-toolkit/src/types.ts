@@ -46,7 +46,7 @@ export type FetcherResultPayload =
   | {
       data?: any;
       errors?: any[];
-      path?: [string, number];
+      path?: (string | number)[];
       hasNext: boolean;
     };
 

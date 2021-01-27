@@ -26,7 +26,6 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-// @ts-expect-error sadly no types
 import dset from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
@@ -1101,7 +1100,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     `Expected part to contain a data property, but got ${result}`,
                   );
                 }
-                dset(totalResponse.data, result.path!, result.data);
+                dset(totalResponse.data, result.path!.map(String), result.data);
               } else if ('data' in result) {
                 // If there is no path, we don't know what to do with the payload,
                 // so we just set it.
