@@ -26,6 +26,7 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
+import { dset } from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -61,6 +62,7 @@ import type {
   SyncFetcherResult,
   Observable,
   Unsubscribable,
+  FetcherResultPayload,
 } from '@graphiql/toolkit';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
@@ -1066,7 +1068,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
-      const totalResponse: FetcherResult = { data: {} };
+      const totalResponse: FetcherResultPayload = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1077,31 +1079,37 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            if (Array.isArray(result)) {
-              // for `IncrementalDelivery`
-              // https://github.com/graphql/graphql-over-http/blob/master/rfcs/IncrementalDelivery.md
-              // TODO: typescript types
-              const response = result.reduce((result, increment) => {
-                if (increment.errors) {
-                  result.errors = [
-                    ...(result?.errors || []),
-                    ...increment?.errors,
-                  ];
+            if (
+              typeof result === 'object' &&
+              result !== null &&
+              'hasNext' in result
+            ) {
+              if (result.errors) {
+                // We dont care about "index" here, just concat.
+                totalResponse.errors = [
+                  ...(totalResponse?.errors || []),
+                  ...result?.errors,
+                ];
+              }
+
+              totalResponse.hasNext = result.hasNext;
+
+              if ('path' in result) {
+                if (!('data' in result)) {
+                  throw new Error(
+                    `Expected part to contain a data property, but got ${result}`,
+                  );
                 }
-                if (increment.path) {
-                  const [path, index] = increment.path;
-                  const data = result?.data[path] || [];
-                  // place them at the exact index. this matters a lot
-                  data[index] = increment.data;
-                  result.data = { ...result?.data, [path]: data };
-                } else {
-                  result.data = { ...result?.data, ...increment.data };
-                }
-                return result;
-              }, totalResponse);
+                dset(totalResponse.data, result.path!.map(String), result.data);
+              } else if ('data' in result) {
+                // If there is no path, we don't know what to do with the payload,
+                // so we just set it.
+                totalResponse.data = result.data;
+              }
+
               this.setState({
                 isWaitingForResponse: false,
-                response: GraphiQL.formatResult(response),
+                response: GraphiQL.formatResult(totalResponse),
               });
             } else {
               this.setState({
@@ -1741,7 +1749,6 @@ function asyncIterableToPromise<T>(
 
     iteratorNext()
       .then(result => {
-        console.log(result.value);
         resolve(result.value);
         // ensure cleanup
         iteratorReturn?.();

@@ -2,7 +2,7 @@
 
 a utility for generating a full-featured fetcher for GraphiQL.
 
-under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws) and [`fetch-multipart-graphql`](https://www.npmjs.com/package/fetch-multipart-graphql) to follow the [GraphQL over HTTP Working Group Spec](https://github.com/graphql/graphql-over-http) both accepted and advanced proposals.
+under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws) and [`meros`](https://www.npmjs.com/package/meros) to follow the [GraphQL over HTTP Working Group Spec](https://github.com/graphql/graphql-over-http) both accepted and advanced proposals.
 
 ### Setup
 

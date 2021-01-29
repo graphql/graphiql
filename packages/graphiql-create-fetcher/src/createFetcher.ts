@@ -46,7 +46,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   }
 
   const httpFetcher = options.enableIncrementalDelivery
-    ? createMultipartFetcher(options)
+    ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
 
   return (graphQLParams, opts) => {

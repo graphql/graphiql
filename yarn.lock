@@ -10040,6 +10040,11 @@ dotenv@^6.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
 
+dset@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/dset/-/dset-3.0.0.tgz#b49ef4a6a092c2c5328618eca2ccf6885fafb431"
+  integrity sha512-pp0B9VgLwMem6bfSDJujcXa41swmXkhWICL1jwC7WbD/NaxXPCXO0Z1sOrVshIQaD4D/pi5lDS7NCt6qIytWaA==
+
 duplexer2@~0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.1.4.tgz#8b12dab878c0d69e3e7891051662a32fc6bddcc1"
@@ -11149,11 +11154,6 @@ fetch-mock@6.5.2:
     glob-to-regexp "^0.4.0"
     path-to-regexp "^2.2.1"
 
-fetch-multipart-graphql@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/fetch-multipart-graphql/-/fetch-multipart-graphql-3.0.0.tgz#61c9c1623beb4a7330e86ee72e6906148cd20acf"
-  integrity sha512-asrZG9CMaRUJmzqU+jqyBp52IB3MEzO38bhrPVB73BNAZ8ShBYgQUPOR9d/kYO4dfIrJIki/sTjeNYbUGuqOzQ==
-
 figgy-pudding@^3.4.1, figgy-pudding@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.2.tgz#b4eee8148abb01dcf1d1ac34367d59e12fa61d6e"
@@ -12121,6 +12121,7 @@ grapheme-breaker@^0.3.2:
     codemirror "^5.54.0"
     codemirror-graphql "^0.15.2"
     copy-to-clipboard "^3.2.0"
+    dset "^3.0.0"
     entities "^2.0.0"
     graphql-language-service "^3.1.2"
     markdown-it "^10.0.0"
@@ -15592,6 +15593,11 @@ merge@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
   integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
+
+meros@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/meros/-/meros-1.0.0.tgz#cb1fc818a60afc56bd86c577a9758b4510b3f027"
+  integrity sha512-gGhudbEI/7Z/5Mc3Mh2VsxWTm0byUB7O34azwchvvDRZ3oaxt5RaN80tF9mwN+plfi2JKDeIQQfJJWwuWmgqBQ==
 
 methods@~1.1.2:
   version "1.1.2"

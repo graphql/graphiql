@@ -1,14 +1,18 @@
 import { DocumentNode, visit } from 'graphql';
-import fetchMultipart from 'fetch-multipart-graphql';
+import { meros } from 'meros';
 import { createClient, Client } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
-import { makeAsyncIterableIteratorFromSink } from '@n1ru4l/push-pull-async-iterable-iterator';
+import {
+  isAsyncIterable,
+  makeAsyncIterableIteratorFromSink,
+} from '@n1ru4l/push-pull-async-iterable-iterator';
 
 import type {
   Fetcher,
   FetcherResult,
   FetcherParams,
   FetcherOpts,
+  FetcherResultPayload,
 } from '@graphiql/toolkit';
 import type { CreateFetcherOptions } from './types';
 
@@ -124,24 +128,35 @@ export const createLegacyWebsocketsFetcher = (
  */
 export const createMultipartFetcher = (
   options: CreateFetcherOptions,
-): Fetcher => async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) =>
-  makeAsyncIterableIteratorFromSink<FetcherResult>(sink => {
-    fetchMultipart<FetcherResult>(options.url, {
+  httpFetch: typeof fetch,
+): Fetcher =>
+  async function* (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) {
+    const response = await httpFetch(options.url, {
       method: 'POST',
       body: JSON.stringify(graphQLParams),
       headers: {
         'content-type': 'application/json',
+        accept: 'application/json, multipart/mixed',
         ...options.headers,
         // allow user-defined headers to override
         // the static provided headers
         ...fetcherOpts?.headers,
       },
-      onNext: parts => {
-        // @ts-ignore
-        sink.next(parts);
-      },
-      onError: sink.error,
-      onComplete: sink.complete,
-    });
-    return () => undefined;
-  });
+    }).then(response =>
+      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response),
+    );
+
+    // Follows the same as createSimpleFetcher above, in that we simply return it as json.
+    if (!isAsyncIterable(response)) {
+      return yield response.json();
+    }
+
+    for await (const part of response) {
+      if (!part.json) {
+        throw new Error(
+          `Expected multipart to be of json type, but got\n\nHeaders: ${part.headers}\n\nBody:${part.body}`,
+        );
+      }
+      yield part.body;
+    }
+  };
