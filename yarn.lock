@@ -10040,10 +10040,10 @@ dotenv@^6.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
 
-dset@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/dset/-/dset-2.1.0.tgz#cd1e99e55cf32366d8f144f906c42f7fb3bf431e"
-  integrity sha512-hlQYwNEdW7Qf8zxysy+yN1E8C/SxRst3Z9n+IvXOR35D9bPVwNHhnL8ZBeoZjvinuGrlvGg6pAMDwhmjqFDgjA==
+dset@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/dset/-/dset-3.0.0.tgz#b49ef4a6a092c2c5328618eca2ccf6885fafb431"
+  integrity sha512-pp0B9VgLwMem6bfSDJujcXa41swmXkhWICL1jwC7WbD/NaxXPCXO0Z1sOrVshIQaD4D/pi5lDS7NCt6qIytWaA==
 
 duplexer2@~0.1.4:
   version "0.1.4"
@@ -12121,7 +12121,7 @@ grapheme-breaker@^0.3.2:
     codemirror "^5.54.0"
     codemirror-graphql "^0.15.2"
     copy-to-clipboard "^3.2.0"
-    dset "^2.1.0"
+    dset "^3.0.0"
     entities "^2.0.0"
     graphql-language-service "^3.1.2"
     markdown-it "^10.0.0"

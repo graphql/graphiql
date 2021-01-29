@@ -26,7 +26,7 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-import dset from 'dset';
+import { dset } from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
