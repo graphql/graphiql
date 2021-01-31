@@ -192,7 +192,17 @@ export const ParseRules: { [name: string]: ParseRule } = {
     }
   },
   NumberValue: [t('Number', 'number')],
-  StringValue: [t('String', 'string')],
+  StringValue: [
+    {
+      style: 'string',
+      match: token => token.kind === 'String',
+      update(state: State, token: Token) {
+        if (token.value.startsWith('"""')) {
+          state.inBlockstring = !token.value.slice(3).endsWith('"""');
+        }
+      },
+    },
+  ],
   BooleanValue: [t('Name', 'builtin')],
   NullValue: [t('Name', 'keyword')],
   EnumValue: [name('string-2')],
