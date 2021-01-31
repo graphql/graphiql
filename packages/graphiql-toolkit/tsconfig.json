@@ -6,6 +6,7 @@
     "composite": true,
     "jsx": "react",
     "target": "es5",
+    "baseUrl": ".",
     "strictPropertyInitialization": false
   },
   "include": ["src"],
@@ -19,22 +20,5 @@
     "**/*.stories.js",
     "**/*.stories.ts",
     "**/*.stories.tsx"
-  ],
-  "references": [
-    {
-      "path": "../graphiql-create-fetcher"
-    },
-    {
-      "path": "../graphql-language-service"
-    },
-    {
-      "path": "../graphql-language-service-utils"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-interface"
-    }
   ]
 }

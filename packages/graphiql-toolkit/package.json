@@ -1,0 +1,25 @@
+{
+  "name": "@graphiql/toolkit",
+  "version": "0.0.1",
+  "description": "Utility to build a fetcher for GraphiQL",
+  "contributors": [
+    "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/graphql/graphiql.git"
+  },
+  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {},
+  "keywords": [
+    "graphql",
+    "graphiql"
+  ]
+}

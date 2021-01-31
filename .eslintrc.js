@@ -30,6 +30,7 @@ module.exports = {
     node: true,
     browser: true,
     jest: true,
+    'jest/globals': true,
   },
 
   extends: [
@@ -294,6 +295,9 @@ module.exports = {
     'react/prefer-stateless-function': 'error',
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
+    'react/display-name': 'warn',
+    // Jest rules
+    'jest/no-conditional-expect': 0,
   },
 
   plugins: ['import', 'prefer-object-spread', '@typescript-eslint'],
@@ -310,13 +314,17 @@ module.exports = {
       },
     },
     {
+      excludedFiles: ['**/cypress/**/*.{js,ts}'],
       files: [
-        'packages/{*graphql-*,graphiql}/src/**',
         '**/__{tests,mocks}__/*.{js,jsx,ts,tsx}',
+        '**/*.spec.{ts,js.jsx.tsx}',
       ],
       extends: ['plugin:jest/recommended'],
       env: {
         'jest/globals': true,
+      },
+      rules: {
+        'jest/no-conditional-expect': 0,
       },
     },
     // Rules for TypeScript only
@@ -324,28 +332,6 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       rules: {
         'no-unused-vars': 'off',
-      },
-    },
-    // Rules for Babel & Flow only
-    {
-      files: ['packages/codemirror-graphql/src/**/*.js'],
-      parser: 'babel-eslint',
-      plugins: ['flowtype', 'babel'],
-      rules: {
-        // flowtype (https://github.com/gajus/eslint-plugin-flowtype)
-        'flowtype/boolean-style': 1,
-        'flowtype/define-flow-type': 1,
-        'flowtype/no-dupe-keys': 0,
-        'flowtype/no-primitive-constructor-types': 1,
-        'flowtype/no-weak-types': 0,
-        'flowtype/require-parameter-type': 0,
-        'flowtype/require-return-type': 0,
-        'flowtype/require-valid-file-annotation': 0,
-        'flowtype/require-variable-type': 0,
-        'flowtype/sort-keys': 0,
-        'flowtype/type-id-match': 0,
-        'flowtype/use-flow-type': 1,
-        'flowtype/valid-syntax': 0,
       },
     },
     {

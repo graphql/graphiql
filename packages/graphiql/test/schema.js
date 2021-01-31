@@ -128,6 +128,45 @@ const TestUnion = new GraphQLUnionType({
   },
 });
 
+const Greeting = new GraphQLObjectType({
+  name: 'Greeting',
+  fields: {
+    text: {
+      type: GraphQLString,
+    },
+  },
+});
+
+const delayArgument = (defaultValue = 400) => ({
+  description:
+    'delay in milleseconds for subsequent results, for demonstration purposes',
+  type: GraphQLInt,
+  defaultValue,
+});
+
+const DeferrableObject = new GraphQLObjectType({
+  name: 'Deferrable',
+  fields: {
+    normalString: {
+      type: GraphQLString,
+      resolve: () => `Nice`,
+    },
+    deferredString: {
+      args: {
+        delay: delayArgument(600),
+      },
+      type: GraphQLString,
+      resolve: async function lazilyReturnValue(_value, args) {
+        const seconds = args.delay / 1000;
+        await sleep(args.delay);
+        return `Oops, this took ${seconds} seconds longer than I thought it would!`;
+      },
+    },
+  },
+});
+
+const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
+
 const TestType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
@@ -135,6 +174,37 @@ const TestType = new GraphQLObjectType({
       type: TestType,
       description: '`test` field from `Test` type.',
       resolve: () => ({}),
+    },
+    deferrable: {
+      type: DeferrableObject,
+      resolve: () => ({}),
+    },
+    streamable: {
+      type: new GraphQLList(Greeting),
+      args: {
+        delay: delayArgument(300),
+      },
+      resolve: async function* sayHiInSomeLanguages(_value, args) {
+        let i = 0;
+        for (const hi of [
+          'Hi',
+          '你好',
+          'Hola',
+          'أهلاً',
+          'Bonjour',
+          'سلام',
+          '안녕',
+          'Ciao',
+          'हेलो',
+          'Здорово',
+        ]) {
+          if (i > 2) {
+            await sleep(args.delay);
+          }
+          i++;
+          yield { text: hi };
+        }
+      },
     },
     longDescriptionType: {
       type: TestType,
@@ -172,7 +242,7 @@ const TestType = new GraphQLObjectType({
     },
     hasArgs: {
       type: GraphQLString,
-      resolve(value, args) {
+      resolve(_value, args) {
         return JSON.stringify(args);
       },
       args: {

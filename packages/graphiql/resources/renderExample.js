@@ -1,10 +1,13 @@
 /**
- * This GraphiQL example illustrates how to use some of GraphiQL's props
- * in order to enable reading and updating the URL parameters, making
- * link sharing of queries a little bit easier.
+ * UMD GraphiQL Example
  *
- * This is only one example of this kind of feature, GraphiQL exposes
- * various React params to enable interesting integrations.
+ * This is a simple example that provides a primitive query string parser on top of GraphiQL props
+ * It assumes a global umd GraphiQL, which would be provided by an index.html in the default example
+ *
+ * It is used by:
+ * - the netlify demo
+ * - end to end tests
+ * - webpack dev server
  */
 
 // Parse the search string to get url parameters.
@@ -88,47 +91,8 @@ function updateURL() {
   history.replaceState(null, null, newSearch);
 }
 
-// Defines a GraphQL fetcher using the fetch API. You're not required to
-// use fetch, and could instead implement graphQLFetcher however you like,
-// as long as it returns a Promise or Observable.
-function graphQLFetcher(graphQLParams, opts = { headers: {} }) {
-  // When working locally, the example expects a GraphQL server at the path /graphql.
-  // In a PR preview, it connects to the Star Wars API externally.
-  // Change this to point wherever you host your GraphQL server.
-  const isDev = window.location.hostname.match(/localhost$/);
-  const api = isDev
-    ? '/graphql'
-    : 'https://swapi-graphql.netlify.app/.netlify/functions/index';
-
-  let headers = opts.headers;
-  // Convert headers to an object.
-  if (typeof headers === 'string') {
-    headers = JSON.parse(opts.headers);
-  }
-
-  return fetch(api, {
-    method: 'post',
-    headers: Object.assign(
-      {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      headers,
-    ),
-    body: JSON.stringify(graphQLParams),
-    credentials: 'omit',
-  })
-    .then(function (response) {
-      return response.text();
-    })
-    .then(function (responseBody) {
-      try {
-        return JSON.parse(responseBody);
-      } catch (error) {
-        return responseBody;
-      }
-    });
-}
+const isDev = window.location.hostname.match(/localhost$/);
+const api = isDev ? '/graphql' : '/.netlify/functions/schema-demo';
 
 // Render <GraphiQL /> into the body.
 // See the README in the top level of this module to learn more about
@@ -136,7 +100,7 @@ function graphQLFetcher(graphQLParams, opts = { headers: {} }) {
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
-    fetcher: graphQLFetcher,
+    fetcher: GraphiQL.createFetcher({ url: api }),
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,
@@ -147,6 +111,7 @@ ReactDOM.render(
     defaultSecondaryEditorOpen: true,
     onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
+    shouldPersistHeaders: true,
   }),
   document.getElementById('graphiql'),
 );

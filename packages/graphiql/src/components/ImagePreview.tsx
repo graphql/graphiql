@@ -6,7 +6,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 function tokenToURL(token: any) {
   if (token.type !== 'string') {
@@ -48,10 +47,6 @@ export class ImagePreview extends React.Component<
     const url = tokenToURL(token);
     return url ? isImageURL(url) : false;
   }
-
-  static propTypes = {
-    token: PropTypes.any,
-  };
 
   state = {
     width: null,

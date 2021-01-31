@@ -11,7 +11,7 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
-    "graphql": "14.6.0",
+    "graphql": "experimental-stream-defer",
     "monaco-graphql": "file:../../packages/monaco-graphql",
     "prettier": "^2.0.2"
   },

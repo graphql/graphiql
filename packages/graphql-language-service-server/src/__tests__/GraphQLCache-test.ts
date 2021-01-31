@@ -192,13 +192,13 @@ describe('GraphQLCache', () => {
   });
 
   describe('getFragmentDefinitions', () => {
-    it('it caches fragments found through single glob in `documents`', async () => {
+    it('caches fragments found through single glob in `documents`', async () => {
       const config = graphQLRC.getProject('testSingularIncludesGlob');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();
     });
 
-    it('it caches fragments found through multiple globs in `documents`', async () => {
+    it('caches fragments found through multiple globs in `documents`', async () => {
       const config = graphQLRC.getProject('testMultipleIncludes');
       const fragmentDefinitions = await cache.getFragmentDefinitions(config);
       expect(fragmentDefinitions.get('testFragment')).not.toBeUndefined();

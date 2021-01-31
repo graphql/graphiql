@@ -133,8 +133,7 @@ export const performForEachType = (source, test) => {
     const utils = getUtils(
       source.replace(/__VALUE__/g, value).replace(/__TYPE__/g, type),
     );
-
-    test(utils, { type, value, kind, valueType });
+    test(utils, { type, value, kind, valueType }); // eslint-disable-line
   });
 };
 

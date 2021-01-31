@@ -6,7 +6,7 @@
     "composite": true,
     "jsx": "react",
     "target": "es5",
-    "strictPropertyInitialization": false
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": [
@@ -22,19 +22,7 @@
   ],
   "references": [
     {
-      "path": "../graphiql-create-fetcher"
-    },
-    {
-      "path": "../graphql-language-service"
-    },
-    {
-      "path": "../graphql-language-service-utils"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-interface"
+      "path": "../graphiql-toolkit"
     }
   ]
 }

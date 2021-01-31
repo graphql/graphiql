@@ -250,7 +250,7 @@ describe('GraphiQL', () => {
     expect(container.querySelectorAll('.history-label')).toHaveLength(2);
   });
 
-  it('will save query if variables are different ', () => {
+  it('will save query if variables are different', () => {
     const { getByTitle, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
@@ -275,7 +275,7 @@ describe('GraphiQL', () => {
     expect(container.querySelectorAll('.history-label')).toHaveLength(2);
   });
 
-  it('will save query if headers are different ', () => {
+  it('will save query if headers are different', () => {
     const { getByTitle, getByText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}

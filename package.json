@@ -1,10 +1,12 @@
 {
   "private": true,
   "license": "MIT",
-  "workspaces": [
-    "packages/*",
-    "examples/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*",
+      "examples/*"
+    ]
+  },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
@@ -80,20 +82,25 @@
     "@octokit/rest": "^18.0.12",
     "@strictsoftware/typedoc-plugin-monorepo": "^0.3.1",
     "@testing-library/jest-dom": "^5.4.0",
+    "@types/aws-serverless-express": "^3.3.3",
     "@types/codemirror": "^0.0.90",
+    "@types/express": "^4.17.11",
     "@types/fetch-mock": "^7.3.2",
-    "@types/jest": "^26.0.8",
-    "@types/node": "^13.11.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.22",
     "@types/prettier": "^2.0.0",
     "@types/theme-ui": "^0.3.1",
-    "@typescript-eslint/eslint-plugin": "^2.27.0",
-    "@typescript-eslint/parser": "^2.27.0",
+    "@types/ws": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.0",
+    "@typescript-eslint/parser": "^4.14.0",
+    "aws-serverless-express": "^3.4.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^25.3.0",
     "conventional-changelog-conventionalcommits": "^4.2.3",
     "copy": "^0.3.2",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.2",
-    "cypress": "^4.3.0",
+    "cypress": "^4.7.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-babel": "^5.3.0",
@@ -104,9 +111,9 @@
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "eslint-plugin-react": "7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
+    "express": "^4.17.1",
     "fetch-mock": "6.5.2",
     "flow-bin": "^0.119.1",
-    "graphql": "^15.4.0",
     "husky": "^4.2.3",
     "jest": "^25.3.0",
     "jest-environment-jsdom": "^25.3.0",
@@ -117,9 +124,10 @@
     "mkdirp": "^1.0.4",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
+    "serverless-http": "^2.7.0",
     "ts-jest": "^25.3.1",
     "typedoc": "^0.19.2",
-    "typescript": "^3.9.5",
+    "typescript": "^4.1.3",
     "whatwg-url": "^8.4.0"
   }
 }
