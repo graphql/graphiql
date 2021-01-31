@@ -39,14 +39,16 @@ export type FetcherResultPayload =
   | {
       data: IntrospectionQuery;
       errors?: Array<any>;
-      hasNext?: boolean;
     }
-  | { data?: any; errors?: Array<any>; hasNext?: boolean }
-  // for IncrementalDelivery
+  // normal result payloads
+  | { data?: any; errors?: Array<any> }
+  // for the initial Stream/Defer payload
+  | { data?: any; errors?: Array<any>; hasNext: boolean }
+  // for successive Stream/Defer payloads
   | {
       data?: any;
       errors?: any[];
-      path?: (string | number)[];
+      path: (string | number)[];
       hasNext: boolean;
     };
 

@@ -1,6 +1,6 @@
 import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros';
-import { createClient, Client } from 'graphql-ws';
+import { createClient, Client, ClientOptions } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 import {
   isAsyncIterable,
@@ -67,7 +67,10 @@ export const createSimpleFetcher = (
   return data.json();
 };
 
-export const createWebsocketsFetcherFromUrl = (url: string) => {
+export const createWebsocketsFetcherFromUrl = (
+  url: string,
+  connectionParams?: ClientOptions['connectionParams'],
+) => {
   let wsClient: Client | null = null;
   let legacyClient: SubscriptionClient | null = null;
   if (url) {
@@ -76,12 +79,13 @@ export const createWebsocketsFetcherFromUrl = (url: string) => {
         // TODO: defaults?
         wsClient = createClient({
           url,
+          connectionParams,
         });
         if (!wsClient) {
-          legacyClient = new SubscriptionClient(url);
+          legacyClient = new SubscriptionClient(url, { connectionParams });
         }
       } catch (err) {
-        legacyClient = new SubscriptionClient(url);
+        legacyClient = new SubscriptionClient(url, { connectionParams });
       }
     } catch (err) {
       console.error(`Error creating websocket client for:\n${url}\n\n${err}`);

@@ -137,6 +137,34 @@ const Greeting = new GraphQLObjectType({
   },
 });
 
+const delayArgument = (defaultValue = 400) => ({
+  description:
+    'delay in milleseconds for subsequent results, for demonstration purposes',
+  type: GraphQLInt,
+  defaultValue,
+});
+
+const DeferrableObject = new GraphQLObjectType({
+  name: 'Deferrable',
+  fields: {
+    normalString: {
+      type: GraphQLString,
+      resolve: () => `Nice`,
+    },
+    deferredString: {
+      args: {
+        delay: delayArgument(600),
+      },
+      type: GraphQLString,
+      resolve: async function lazilyReturnValue(_value, args) {
+        const seconds = args.delay / 1000;
+        await sleep(args.delay);
+        return `Oops, this took ${seconds} seconds longer than I thought it would!`;
+      },
+    },
+  },
+});
+
 const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
 
 const TestType = new GraphQLObjectType({
@@ -147,15 +175,14 @@ const TestType = new GraphQLObjectType({
       description: '`test` field from `Test` type.',
       resolve: () => ({}),
     },
+    deferrable: {
+      type: DeferrableObject,
+      resolve: () => ({}),
+    },
     streamable: {
       type: new GraphQLList(Greeting),
       args: {
-        delay: {
-          description:
-            'delay in milleseconds for subsequent results, for demonstration purposes',
-          type: GraphQLInt,
-          defaultValue: 400,
-        },
+        delay: delayArgument(300),
       },
       resolve: async function* sayHiInSomeLanguages(_value, args) {
         let i = 0;

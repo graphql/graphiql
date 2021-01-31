@@ -1068,7 +1068,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
-      const totalResponse: FetcherResultPayload = { data: {} };
+      // when dealing with defer or stream, we need to aggregate results
+      const fullResponse: FetcherResultPayload = { data: {}, hasNext: false };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1080,19 +1081,19 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             if (
-              typeof result === 'object' &&
+              typeof result !== 'string' &&
               result !== null &&
               'hasNext' in result
             ) {
               if (result.errors) {
                 // We dont care about "index" here, just concat.
-                totalResponse.errors = [
-                  ...(totalResponse?.errors || []),
+                fullResponse.errors = [
+                  ...(fullResponse?.errors || []),
                   ...result?.errors,
                 ];
               }
 
-              totalResponse.hasNext = result.hasNext;
+              fullResponse.hasNext = result.hasNext;
 
               if ('path' in result) {
                 if (!('data' in result)) {
@@ -1100,16 +1101,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     `Expected part to contain a data property, but got ${result}`,
                   );
                 }
-                dset(totalResponse.data, result.path!.map(String), result.data);
+                dset(fullResponse.data, result.path, result.data);
               } else if ('data' in result) {
                 // If there is no path, we don't know what to do with the payload,
                 // so we just set it.
-                totalResponse.data = result.data;
+                fullResponse.data = result.data;
               }
 
               this.setState({
                 isWaitingForResponse: false,
-                response: GraphiQL.formatResult(totalResponse),
+                response: GraphiQL.formatResult(fullResponse),
               });
             } else {
               this.setState({

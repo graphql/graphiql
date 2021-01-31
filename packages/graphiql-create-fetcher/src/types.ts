@@ -1,5 +1,6 @@
-import type { Client } from 'graphql-ws';
+import type { Client, ClientOptions } from 'graphql-ws';
 import type { SubscriptionClient } from 'subscriptions-transport-ws';
+import type { Fetcher } from '@graphiql/toolkit';
 
 export type WebsocketsClient = Client | SubscriptionClient;
 
@@ -28,6 +29,10 @@ export interface CreateFetcherOptions {
    */
   headers?: Record<string, string>;
   /**
+   * Websockets connection params used when you provide subscriptionUrl. graphql-ws `ClientOptions.connectionParams`
+   */
+  wsConnectionParams?: ClientOptions['connectionParams'];
+  /**
    * You can disable the usage of the `fetch-multipart-graphql` library
    * entirely, defaulting to a simple fetch POST implementation.
    */
@@ -38,4 +43,9 @@ export interface CreateFetcherOptions {
    * default fetch behavior yet.
    */
   fetch?: typeof fetch;
+  /**
+   * An optional custom fetcher specifically for your schema. For most cases
+   * the `url` and `headers` property should have you covered.
+   */
+  schemaFetcher?: Fetcher;
 }

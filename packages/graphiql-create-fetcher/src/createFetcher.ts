@@ -35,7 +35,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   if (!httpFetch) {
     throw Error('No valid fetcher implementation available');
   }
-
+  // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
   if (options.subscriptionUrl) {
@@ -49,12 +49,15 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
 
-  return (graphQLParams, opts) => {
+  return (graphQLParams, fetcherOpts) => {
     if (graphQLParams.operationName === 'IntrospectionQuery') {
-      return simpleFetcher(graphQLParams, opts);
+      return (options.schemaFetcher || simpleFetcher)(
+        graphQLParams,
+        fetcherOpts,
+      );
     }
     const isSubscription = isSubscriptionWithName(
-      opts?.documentAST!,
+      fetcherOpts?.documentAST!,
       graphQLParams.operationName,
     );
     if (isSubscription) {
@@ -69,6 +72,6 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
       }
       return wsFetcher(graphQLParams);
     }
-    return httpFetcher(graphQLParams, opts);
+    return httpFetcher(graphQLParams, fetcherOpts);
   };
 }

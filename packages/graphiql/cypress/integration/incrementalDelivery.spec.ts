@@ -44,8 +44,16 @@ const mockStreamSuccess = {
   hasNext: false,
 };
 
+const testDeferQuery = /* GraphQL */ `
+  query DeferQuery($delay: Int) {
+    streamable(delay: $delay) @stream(initialCount: 2) {
+      text
+    }
+  }
+`;
+
 describe('IncrementalDelivery support via fetcher', () => {
-  it('Expects slower streams to resolve in several increments', () => {
+  it('Expects slower streams to resolve in several increments, and the payloads to patch properly', () => {
     const delay = 100;
     const timeout = mockStreamSuccess.data.streamable.length * (delay * 1.5);
 
