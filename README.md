@@ -261,6 +261,16 @@ This plugin uses the [GraphQL language server](https://github.com/graphql/graphq
 1.  Logs for GraphQL language service will appear in output section under GraphQL Language Service
     ![GraphQL Language Service Logging](https://s3-ap-southeast-1.amazonaws.com/divyendusingh/vscode-graphql/Screen+Shot+2018-06-25+at+12.31.57+PM.png)
 
+### Contributing back to this project
+
+This repository is managed by EasyCLA. Project participants must sign the free GraphQL Specification Membership agreement ([preview](https://foundation.graphql.org/files/GraphQL_Specification-Individual-Preview.pdf)) before making a contribution. You only need to do this one time.
+
+You can either sign the document as an individual on your own behalf, or your company can do it. If your company has already signed the agreement, you will need to ask your CLA manager to add you to the [list of approved contributors](https://corporate.v1.easycla.lfx.linuxfoundation.org/). If you do not know your CLA manager, please email [operations@graphql.org](mailto:operations@graphql.org) for help.
+
+To initiate the signature process please open a PR. The EasyCLA bot will block merging if we still need a membership agreement from you.
+
+If you have issues, please email [operations@graphql.org](mailto:operations@graphql.org).
+
 ## License
 
 MIT
