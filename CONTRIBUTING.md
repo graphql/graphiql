@@ -14,10 +14,18 @@ We use GitHub issues to track public bugs and requests. Please ensure your bug
 description is clear and has sufficient instructions to be able to reproduce the
 issue. The best way is to provide a reduced test case on jsFiddle or jsBin.
 
-## Pull Requests
+## Pull Requests and signing the membership agreement
 
 All active development of this project happens on GitHub. We actively welcome
 your [pull requests](https://help.github.com/articles/creating-a-pull-request).
+
+This repository is managed by EasyCLA. Project participants must sign the free GraphQL Specification Membership agreement ([preview](https://foundation.graphql.org/files/GraphQL_Specification-Individual-Preview.pdf)) before making a contribution. You only need to do this one time.
+
+You can either sign the document as an individual on your own behalf, or your company can do it. If your company has already signed the agreement, you will need to ask your CLA manager to add you to the [list of approved contributors](https://corporate.v1.easycla.lfx.linuxfoundation.org/). If you do not know your CLA manager, please email [operations@graphql.org](mailto:operations@graphql.org) for help.
+
+To initiate the signature process please open a PR. The EasyCLA bot will block merging if we still need a membership agreement from you.
+
+If you have issues, please email [operations@graphql.org](mailto:operations@graphql.org).
 
 ## Commit Message Conventions
 
