@@ -1,5 +1,5 @@
 /**
- *  Copyright (c) 2021 GraphQL Contributors.
+ *  Copyright (c) 2020 GraphQL Contributors.
  *
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
@@ -19,14 +19,14 @@ import {
   print,
   visit,
   OperationDefinitionNode,
-  IntrospectionQuery,
   GraphQLType,
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
-import { getFragmentDependenciesForAST } from 'graphql-language-service';
+import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
+import { dset } from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -54,6 +54,17 @@ import {
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
 
+import type {
+  Fetcher,
+  FetcherResult,
+  FetcherReturnType,
+  FetcherOpts,
+  SyncFetcherResult,
+  Observable,
+  Unsubscribable,
+  FetcherResultPayload,
+} from '@graphiql/toolkit';
+
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
@@ -73,39 +84,6 @@ declare namespace global {
 }
 
 export type Maybe<T> = T | null | undefined;
-
-export type FetcherParams = {
-  query: string;
-  operationName: string;
-  variables?: any;
-};
-
-export type FetcherOpts = {
-  headers?: { [key: string]: any };
-  shouldPersistHeaders: boolean;
-  documentAST?: DocumentNode;
-};
-
-export type FetcherResult =
-  | {
-      data: IntrospectionQuery;
-    }
-  | string
-  | { data: any };
-
-export type MaybePromise<T> = T | Promise<T>;
-
-export type SyncFetcherResult =
-  | FetcherResult
-  | Observable<FetcherResult>
-  | AsyncIterable<FetcherResult>;
-
-export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
-
-export type Fetcher = (
-  graphQLParams: FetcherParams,
-  opts?: FetcherOpts,
-) => FetcherReturnType;
 
 type OnMouseMoveFn = Maybe<
   (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
@@ -1090,6 +1068,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         );
       }
 
+      // when dealing with defer or stream, we need to aggregate results
+      const fullResponse: FetcherResultPayload = { data: {}, hasNext: false };
+
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
         editedQuery as string,
@@ -1099,10 +1080,44 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            this.setState({
-              isWaitingForResponse: false,
-              response: GraphiQL.formatResult(result),
-            });
+            if (
+              typeof result !== 'string' &&
+              result !== null &&
+              'hasNext' in result
+            ) {
+              if (result.errors) {
+                // We dont care about "index" here, just concat.
+                fullResponse.errors = [
+                  ...(fullResponse?.errors || []),
+                  ...result?.errors,
+                ];
+              }
+
+              fullResponse.hasNext = result.hasNext;
+
+              if ('path' in result) {
+                if (!('data' in result)) {
+                  throw new Error(
+                    `Expected part to contain a data property, but got ${result}`,
+                  );
+                }
+                dset(fullResponse.data, result.path, result.data);
+              } else if ('data' in result) {
+                // If there is no path, we don't know what to do with the payload,
+                // so we just set it.
+                fullResponse.data = result.data;
+              }
+
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(fullResponse),
+              });
+            } else {
+              this.setState({
+                isWaitingForResponse: false,
+                response: GraphiQL.formatResult(result),
+              });
+            }
           }
         },
       );
@@ -1680,29 +1695,6 @@ const defaultQuery = `# Welcome to GraphiQL
 function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
   return typeof value === 'object' && typeof value.then === 'function';
 }
-
-// These type just taken from https://github.com/ReactiveX/rxjs/blob/master/src/internal/types.ts#L41
-type Unsubscribable = {
-  unsubscribe: () => void;
-};
-
-type Observable<T> = {
-  subscribe(opts: {
-    next: (value: T) => void;
-    error: (error: any) => void;
-    complete: () => void;
-  }): Unsubscribable;
-  subscribe(
-    next: (value: T) => void,
-    error: null | undefined,
-    complete: () => void,
-  ): Unsubscribable;
-  subscribe(
-    next?: (value: T) => void,
-    error?: (error: any) => void,
-    complete?: () => void,
-  ): Unsubscribable;
-};
 
 // Duck-type Observable.take(1).toPromise()
 function observableToPromise<T>(observable: Observable<T>): Promise<T> {

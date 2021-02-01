@@ -13,7 +13,8 @@
 declare namespace Cypress {
   type Op = {
     query: string;
-    variables?: string;
+    variables?: Record<string, any>;
+    variablesString?: string;
   };
   type MockResult =
     | {
@@ -31,7 +32,11 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
-    assertQueryResult(op: Op, expectedResult: MockResult): Chainable<Element>;
+    assertQueryResult(
+      op: Op,
+      expectedResult: MockResult,
+      timeout?: number,
+    ): Chainable<Element>;
   }
 }
 
@@ -47,33 +52,43 @@ Cypress.Commands.add('clickPrettify', () => {
   return cy.get('[title="Prettify Query (Shift-Ctrl-P)"]').click();
 });
 
-Cypress.Commands.add('visitWithOp', ({ query, variables }) => {
+Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
   let url = `/?query=${encodeURIComponent(query)}`;
-  if (variables) {
-    url += `&variables=${encodeURIComponent(variables)}`;
+  if (variables || variablesString) {
+    url += `&variables=${encodeURIComponent(
+      JSON.stringify(variables, null, 2) || variablesString,
+    )}`;
   }
   return cy.visit(url);
 });
 
-Cypress.Commands.add('assertHasValues', ({ query, variables }) => {
-  cy.window().then(w => {
-    // @ts-ignore
-    expect(w.g.getQueryEditor().getValue()).to.equal(query);
-    if (variables) {
+Cypress.Commands.add(
+  'assertHasValues',
+  ({ query, variables, variablesString }) => {
+    cy.window().then(w => {
       // @ts-ignore
-      expect(w.g.getVariableEditor().getValue()).to.equal(variables);
-    }
-  });
-});
+      expect(w.g.getQueryEditor().getValue()).to.equal(query);
+      if (variables) {
+        // @ts-ignore
+        expect(w.g.getVariableEditor().getValue()).to.equal(
+          JSON.stringify(variables, null, 2),
+        );
+      }
+      if (variablesString) {
+        // @ts-ignore
+        expect(w.g.getVariableEditor().getValue()).to.equal(variablesString);
+      }
+    });
+  },
+);
 
-Cypress.Commands.add('assertQueryResult', (op, mockSuccess) => {
+Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
-  cy.wait(200);
+  cy.wait(timeout);
   cy.window().then(w => {
     // @ts-ignore
-    expect(JSON.parse(w.g.resultComponent.viewer.getValue())).to.deep.equal(
-      mockSuccess,
-    );
+    const value = w.g.resultComponent.viewer.getValue();
+    expect(value).to.deep.equal(JSON.stringify(mockSuccess, null, 2));
   });
 });

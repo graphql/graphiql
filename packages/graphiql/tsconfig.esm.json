@@ -21,10 +21,22 @@
   ],
   "references": [
     {
-      "path": "../graphql-language-service"
+      "path": "../graphiql-toolkit/tsconfig.esm.json"
     },
     {
-      "path": "../graphql-language-service-utils"
+      "path": "../graphiql-create-fetcher"
+    },
+    {
+      "path": "../graphql-language-service/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphql-language-service-interface/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphql-language-service-parser/tsconfig.esm.json"
+    },
+    {
+      "path": "../graphql-language-service-utils/tsconfig.esm.json"
     }
   ]
 }

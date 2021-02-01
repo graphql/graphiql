@@ -6,6 +6,8 @@
  */
 import 'regenerator-runtime/runtime';
 
+import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+
 import './css/app.css';
 import './css/codemirror.css';
 import './css/foldgutter.css';
@@ -18,5 +20,10 @@ import './css/show-hint.css';
 import './css/doc-explorer.css';
 import './css/history.css';
 
-export default GraphiQL;
 import { GraphiQL } from './components/GraphiQL';
+// add the static function here for CDN only. otherwise, doing this in the component could
+// add unwanted dependencies to the bundle.
+// @ts-ignore
+GraphiQL.createFetcher = createGraphiQLFetcher;
+
+export default GraphiQL;

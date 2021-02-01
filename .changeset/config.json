@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "linked": [],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "minor",
+  "ignore": ["example-*", "graphiql-2-rfc-context*"]
+}

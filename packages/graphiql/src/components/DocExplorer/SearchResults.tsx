@@ -68,7 +68,7 @@ export default class SearchResults extends React.Component<
         );
       }
 
-      if ('getFields' in type) {
+      if (type && 'getFields' in type) {
         const fields = type.getFields();
         Object.keys(fields).forEach(fieldName => {
           const field = fields[fieldName];

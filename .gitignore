@@ -26,3 +26,6 @@ lerna-debug.log
 .yarnrc
 yarn-1.18.0.js
 *.orig
+
+# Local Netlify folder
+.netlify

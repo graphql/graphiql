@@ -3,10 +3,8 @@
   "version": "0.1.11-alpha.8",
   "private": true,
   "dependencies": {
-    "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.6",
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "^15.0.0",
+    "graphql": "experimental-stream-defer",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"

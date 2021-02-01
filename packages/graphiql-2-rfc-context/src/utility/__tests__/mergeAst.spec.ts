@@ -30,7 +30,7 @@ const schema = new GraphQLSchema({
 
 describe('MergeAst', () => {
   fixtures.forEach(fixture => {
-    it(fixture.desc, () => {
+    it(`${fixture.desc}`, () => {
       const result = print(mergeAst(parse(fixture.query))).replace(/\s/g, '');
       const result2 = print(mergeAst(parse(fixture.query), schema)).replace(
         /\s/g,

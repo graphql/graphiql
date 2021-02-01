@@ -6,7 +6,6 @@
  */
 
 import React, { MouseEventHandler } from 'react';
-import PropTypes from 'prop-types';
 
 type ToolbarSelectProps = {
   title?: string;
@@ -156,13 +155,6 @@ export function ToolbarSelectOption({
     </li>
   );
 }
-
-ToolbarSelectOption.propTypes = {
-  onSelect: PropTypes.func,
-  selected: PropTypes.bool,
-  label: PropTypes.string,
-  value: PropTypes.any,
-};
 
 function preventDefault(e: any) {
   e.preventDefault();
