@@ -1484,6 +1484,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       const docsSize = app.clientWidth - cursorPos;
 
       if (docsSize < 100) {
+        if (typeof this.props.onToggleDocs === 'function') {
+          this.props.onToggleDocs(!this.state.docExplorerOpen);
+        }
+        this._storage.set(
+          'docExplorerOpen',
+          JSON.stringify(this.state.docExplorerOpen),
+        );
         this.setState({ docExplorerOpen: false });
       } else {
         this.setState({
