@@ -1080,32 +1080,28 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            if (
-              typeof result !== 'string' &&
-              result !== null &&
-              'hasNext' in result
-            ) {
-              if (result.errors) {
-                // We dont care about "index" here, just concat.
-                fullResponse.errors = [
-                  ...(fullResponse?.errors || []),
-                  ...result?.errors,
-                ];
-              }
+            if (Array.isArray(result)) {
+              fullResponse.errors = [
+                ...(fullResponse?.errors || []),
+                ...result.reduce((r, i) => [...r, ...i.errors], []),
+              ];
 
-              fullResponse.hasNext = result.hasNext;
+              // We just take the last one
+              fullResponse.hasNext = result[result.length-1].hasNext;
 
-              if ('path' in result) {
-                if (!('data' in result)) {
-                  throw new Error(
-                    `Expected part to contain a data property, but got ${result}`,
-                  );
+              for (const part of result) {
+                if ('path' in part) {
+                  if (!('data' in part)) {
+                    throw new Error(
+                      `Expected part to contain a data property, but got ${part}`,
+                    );
+                  }
+                  dset(fullResponse.data, part.path, part.data);
+                } else if ('data' in part) {
+                  // If there is no path, we don't know what to do with the payload,
+                  // so we just set it.
+                  fullResponse.data = part.data;
                 }
-                dset(fullResponse.data, result.path, result.data);
-              } else if ('data' in result) {
-                // If there is no path, we don't know what to do with the payload,
-                // so we just set it.
-                fullResponse.data = result.data;
               }
 
               this.setState({
