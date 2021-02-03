@@ -2,6 +2,6 @@
 'graphiql': patch
 ---
 
-Fixes the search icon misalignment.
+Fixes the search icon misalignment. (#1776)
 
 Thanks ~@iifawzi
