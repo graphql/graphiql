@@ -1069,7 +1069,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
 
       // when dealing with defer or stream, we need to aggregate results
-      const fullResponse: FetcherResultPayload = { data: {} };
+      let fullResponse: FetcherResultPayload = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1104,18 +1104,26 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               }
 
               for (const part of maybeMultipart) {
-                if ('path' in part) {
-                  if (!('data' in part)) {
+                // We pull out errors here, so we dont include it later
+                const { path, data, errors, ...rest } = part;
+                if (path) {
+                  if (!data) {
                     throw new Error(
                       `Expected part to contain a data property, but got ${part}`,
                     );
                   }
                   dset(fullResponse.data, part.path, part.data);
-                } else if ('data' in part) {
+                } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.
                   fullResponse.data = part.data;
                 }
+
+                // Ensures we also bring extensions and alike along for the ride
+                fullResponse = {
+                  ...rest,
+                  ...fullResponse,
+                };
               }
 
               this.setState({
