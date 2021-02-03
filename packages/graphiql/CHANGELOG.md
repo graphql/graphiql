@@ -2,6 +2,11 @@
 
 ## 1.4.0
 
+### Bugfixes
+
+- Fixes the search icon misalignment. (#1776)
+- run `onToggleDocs` when setting `docExplorerOpen` to false
+
 ### Minor Changes
 
 - 1c119386: `@defer`, `@stream`, and `graphql-ws` support in a `createGraphiQLFetcher` utility (#1770)
