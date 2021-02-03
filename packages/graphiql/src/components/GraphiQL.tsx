@@ -1091,6 +1091,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             }
 
             if (maybeMultipart) {
+              const payload: FetcherResultPayload = { data: fullResponse.data };
               const maybeErrors = [
                 ...(fullResponse?.errors || []),
                 ...maybeMultipart
@@ -1100,29 +1101,29 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               ];
 
               if (maybeErrors.length) {
-                fullResponse.errors = maybeErrors;
+                payload.errors = maybeErrors;
               }
 
               for (const part of maybeMultipart) {
                 // We pull out errors here, so we dont include it later
-                const { path, data, errors, ...rest } = part;
+                const { path, data, errors: _errors, ...rest } = part;
                 if (path) {
                   if (!data) {
                     throw new Error(
                       `Expected part to contain a data property, but got ${part}`,
                     );
                   }
-                  dset(fullResponse.data, part.path, part.data);
+                  dset(payload.data, part.path, part.data);
                 } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.
-                  fullResponse.data = part.data;
+                  payload.data = part.data;
                 }
 
                 // Ensures we also bring extensions and alike along for the ride
                 fullResponse = {
+                  ...payload,
                   ...rest,
-                  ...fullResponse,
                 };
               }
 

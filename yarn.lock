@@ -14251,10 +14251,10 @@ merge@^1.2.0:
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
   integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
 
-meros@^1.1.0-beta.1:
-  version "1.1.0-beta.1"
-  resolved "https://registry.yarnpkg.com/meros/-/meros-1.1.0-beta.1.tgz#13168bd1db61f67ca1a44b0fe6f255c4e07aa239"
-  integrity sha512-FWjhhoTUecbFjhSYbiHuIe4EErBlwHScf1fYrKj8Lnk9l1Y2nwCObo1vHZk20arwtnhdR27d9y913bFgGfO11Q==
+meros@^1.1.0-beta.2:
+  version "1.1.0-beta.2"
+  resolved "https://registry.yarnpkg.com/meros/-/meros-1.1.0-beta.2.tgz#5a23f20689234527b4dded3178792b5c9ca571e5"
+  integrity sha512-XimPTn4kehyFVEPTyPpyiXGM+VD5QO8y5yAvnEl74Pn4xaOt1O243zBkWJps/xkxyIyRLBBRN/rPGXNOoKd8IQ==
 
 methods@~1.1.2:
   version "1.1.2"
