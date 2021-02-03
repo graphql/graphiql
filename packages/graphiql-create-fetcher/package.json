@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/create-fetcher",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A GraphiQL fetcher with `IncrementalDelivery` and `graphql-ws` support",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -24,7 +24,7 @@
     "subscriptions-transport-ws": "^0.9.18",
     "meros": "^1.1.0-beta.2",
     "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
-    "@graphiql/toolkit": "^0.0.1"
+    "@graphiql/toolkit": "^0.1.0"
   },
   "devDependencies": {
     "isomorphic-fetch": "^3.0.0",

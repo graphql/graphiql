@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -49,8 +49,8 @@
     "entities": "^2.0.0",
     "graphql-language-service": "^3.1.2",
     "markdown-it": "^10.0.0",
-    "@graphiql/toolkit": "^0.0.1",
-    "@graphiql/create-fetcher": "^0.0.1",
+    "@graphiql/toolkit": "^0.1.0",
+    "@graphiql/create-fetcher": "^0.1.0",
     "dset": "^3.0.0"
   },
   "peerDependencies": {
