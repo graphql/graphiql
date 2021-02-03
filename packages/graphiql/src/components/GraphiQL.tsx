@@ -5,65 +5,64 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
-  ComponentType,
-  PropsWithChildren,
-  MouseEventHandler,
-  Component,
-  FunctionComponent,
-} from 'react';
+import type {
+  Fetcher,
+  FetcherOpts,
+  FetcherResult,
+  FetcherResultPayload,
+  FetcherReturnType,
+  Observable,
+  SyncFetcherResult,
+  Unsubscribable,
+} from '@graphiql/toolkit';
+import copyToClipboard from 'copy-to-clipboard';
+import { dset } from 'dset';
 import {
   buildClientSchema,
+  DocumentNode,
+  FragmentDefinitionNode,
   GraphQLSchema,
+  GraphQLType,
+  OperationDefinitionNode,
   parse,
   print,
-  visit,
-  OperationDefinitionNode,
-  GraphQLType,
   ValidationRule,
-  FragmentDefinitionNode,
-  DocumentNode,
+  visit,
 } from 'graphql';
-import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-import { dset } from 'dset';
-
-import { ExecuteButton } from './ExecuteButton';
-import { ImagePreview } from './ImagePreview';
-import { ToolbarButton } from './ToolbarButton';
-import { ToolbarGroup } from './ToolbarGroup';
-import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
-import { QueryEditor } from './QueryEditor';
-import { VariableEditor } from './VariableEditor';
-import { HeaderEditor } from './HeaderEditor';
-import { ResultViewer } from './ResultViewer';
-import { DocExplorer } from './DocExplorer';
-import { QueryHistory } from './QueryHistory';
+import React, {
+  Component,
+  ComponentType,
+  FunctionComponent,
+  MouseEventHandler,
+  PropsWithChildren,
+} from 'react';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
-import StorageAPI, { Storage } from '../utility/StorageAPI';
+import debounce from '../utility/debounce';
+import { getLeft, getTop } from '../utility/elementPosition';
+import { fillLeafs, GetDefaultFieldNamesFn } from '../utility/fillLeafs';
+import find from '../utility/find';
 import getOperationFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
-import debounce from '../utility/debounce';
-import find from '../utility/find';
-import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
-import { getLeft, getTop } from '../utility/elementPosition';
-import mergeAST from '../utility/mergeAst';
 import {
   introspectionQuery,
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import mergeAST from '../utility/mergeAst';
+import StorageAPI, { Storage } from '../utility/StorageAPI';
+import { DocExplorer } from './DocExplorer';
 
-import type {
-  Fetcher,
-  FetcherResult,
-  FetcherReturnType,
-  FetcherOpts,
-  SyncFetcherResult,
-  Observable,
-  Unsubscribable,
-  FetcherResultPayload,
-} from '@graphiql/toolkit';
+import { ExecuteButton } from './ExecuteButton';
+import { HeaderEditor } from './HeaderEditor';
+import { ImagePreview } from './ImagePreview';
+import { QueryEditor } from './QueryEditor';
+import { QueryHistory } from './QueryHistory';
+import { ResultViewer } from './ResultViewer';
+import { ToolbarButton } from './ToolbarButton';
+import { ToolbarGroup } from './ToolbarGroup';
+import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
+import { VariableEditor } from './VariableEditor';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -1080,16 +1079,27 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            if (Array.isArray(result)) {
+            const maybeMultipart:
+              | Array<Extract<FetcherResultPayload, { hasNext: boolean }>>
+              | false = Array.isArray(result)
+              ? result
+              : typeof result !== 'string' &&
+                result !== null &&
+                'hasNext' in result
+              ? [result]
+              : false;
+
+            if (maybeMultipart) {
               fullResponse.errors = [
                 ...(fullResponse?.errors || []),
-                ...result.reduce((r, i) => [...r, ...i.errors], []),
+                ...maybeMultipart.map(i => i.errors).flat(),
               ];
 
               // We just take the last one
-              fullResponse.hasNext = result[result.length-1].hasNext;
+              fullResponse.hasNext =
+                maybeMultipart[maybeMultipart.length - 1].hasNext;
 
-              for (const part of result) {
+              for (const part of maybeMultipart) {
                 if ('path' in part) {
                   if (!('data' in part)) {
                     throw new Error(

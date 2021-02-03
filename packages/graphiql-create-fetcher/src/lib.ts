@@ -147,7 +147,9 @@ export const createMultipartFetcher = (
         ...fetcherOpts?.headers,
       },
     }).then(response =>
-      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response, {multiple: true}),
+      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response, {
+        multiple: true,
+      }),
     );
 
     // Follows the same as createSimpleFetcher above, in that we simply return it as json.
@@ -157,7 +159,9 @@ export const createMultipartFetcher = (
 
     for await (const chunk of response) {
       if (chunk.some(part => !part.json)) {
-        const message = chunk.map(part => `Headers::\n${part.headers}\n\nBody::\n${part.body}`);
+        const message = chunk.map(
+          part => `Headers::\n${part.headers}\n\nBody::\n${part.body}`,
+        );
         throw new Error(
           `Expected multipart chunks to be of json type. got:\n${message}`,
         );
