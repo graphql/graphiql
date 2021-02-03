@@ -1069,7 +1069,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
 
       // when dealing with defer or stream, we need to aggregate results
-      const fullResponse: FetcherResultPayload = { data: {}, hasNext: false };
+      const fullResponse: FetcherResultPayload = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1091,14 +1091,17 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             }
 
             if (maybeMultipart) {
-              fullResponse.errors = [
+              const maybeErrors = [
                 ...(fullResponse?.errors || []),
-                ...maybeMultipart.map(i => i.errors).flat(),
+                ...maybeMultipart
+                  .map(i => i.errors)
+                  .flat()
+                  .filter(Boolean),
               ];
 
-              // We just take the last one
-              fullResponse.hasNext =
-                maybeMultipart[maybeMultipart.length - 1].hasNext;
+              if (maybeErrors.length) {
+                fullResponse.errors = maybeErrors;
+              }
 
               for (const part of maybeMultipart) {
                 if ('path' in part) {

@@ -41,7 +41,6 @@ const mockStreamSuccess = {
       },
     ],
   },
-  hasNext: false,
 };
 
 const testDeferQuery = /* GraphQL */ `
