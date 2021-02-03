@@ -1,6 +1,9 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "graphql/graphiql" }
+  ],
   "commit": false,
   "linked": [],
   "access": "public",
