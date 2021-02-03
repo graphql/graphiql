@@ -4,8 +4,8 @@
 
 ### Bugfixes
 
-- Fixes the search icon misalignment. (#1776)
-- run `onToggleDocs` when setting `docExplorerOpen` to false
+- Fixes the search icon misalignment. (#1776) by [@iifawzi](https://github.com/iifawzi)
+- run `onToggleDocs` when setting `docExplorerOpen` to false (#1768) by [@ChiragKasat](https://github.com/ChiragKasat)
 
 ### Minor Changes
 
