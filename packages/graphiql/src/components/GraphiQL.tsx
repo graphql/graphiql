@@ -1069,7 +1069,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
 
       // when dealing with defer or stream, we need to aggregate results
-      const fullResponse: FetcherResultPayload = { data: {}, hasNext: false };
+      let fullResponse: FetcherResultPayload = { data: {} };
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
@@ -1080,32 +1080,51 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
+            let maybeMultipart = Array.isArray(result) ? result : false;
             if (
+              !maybeMultipart &&
               typeof result !== 'string' &&
               result !== null &&
               'hasNext' in result
             ) {
-              if (result.errors) {
-                // We dont care about "index" here, just concat.
-                fullResponse.errors = [
-                  ...(fullResponse?.errors || []),
-                  ...result?.errors,
-                ];
+              maybeMultipart = [result];
+            }
+
+            if (maybeMultipart) {
+              const payload: FetcherResultPayload = { data: fullResponse.data };
+              const maybeErrors = [
+                ...(fullResponse?.errors || []),
+                ...maybeMultipart
+                  .map(i => i.errors)
+                  .flat()
+                  .filter(Boolean),
+              ];
+
+              if (maybeErrors.length) {
+                payload.errors = maybeErrors;
               }
 
-              fullResponse.hasNext = result.hasNext;
-
-              if ('path' in result) {
-                if (!('data' in result)) {
-                  throw new Error(
-                    `Expected part to contain a data property, but got ${result}`,
-                  );
+              for (const part of maybeMultipart) {
+                // We pull out errors here, so we dont include it later
+                const { path, data, errors: _errors, ...rest } = part;
+                if (path) {
+                  if (!data) {
+                    throw new Error(
+                      `Expected part to contain a data property, but got ${part}`,
+                    );
+                  }
+                  dset(payload.data, part.path, part.data);
+                } else if (data) {
+                  // If there is no path, we don't know what to do with the payload,
+                  // so we just set it.
+                  payload.data = part.data;
                 }
-                dset(fullResponse.data, result.path, result.data);
-              } else if ('data' in result) {
-                // If there is no path, we don't know what to do with the payload,
-                // so we just set it.
-                fullResponse.data = result.data;
+
+                // Ensures we also bring extensions and alike along for the ride
+                fullResponse = {
+                  ...payload,
+                  ...rest,
+                };
               }
 
               this.setState({
