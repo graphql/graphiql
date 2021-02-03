@@ -5,64 +5,65 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import type {
-  Fetcher,
-  FetcherOpts,
-  FetcherResult,
-  FetcherResultPayload,
-  FetcherReturnType,
-  Observable,
-  SyncFetcherResult,
-  Unsubscribable,
-} from '@graphiql/toolkit';
-import copyToClipboard from 'copy-to-clipboard';
-import { dset } from 'dset';
+import React, {
+  ComponentType,
+  PropsWithChildren,
+  MouseEventHandler,
+  Component,
+  FunctionComponent,
+} from 'react';
 import {
   buildClientSchema,
-  DocumentNode,
-  FragmentDefinitionNode,
   GraphQLSchema,
-  GraphQLType,
-  OperationDefinitionNode,
   parse,
   print,
-  ValidationRule,
   visit,
+  OperationDefinitionNode,
+  GraphQLType,
+  ValidationRule,
+  FragmentDefinitionNode,
+  DocumentNode,
 } from 'graphql';
+import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-import React, {
-  Component,
-  ComponentType,
-  FunctionComponent,
-  MouseEventHandler,
-  PropsWithChildren,
-} from 'react';
+import { dset } from 'dset';
+
+import { ExecuteButton } from './ExecuteButton';
+import { ImagePreview } from './ImagePreview';
+import { ToolbarButton } from './ToolbarButton';
+import { ToolbarGroup } from './ToolbarGroup';
+import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
+import { QueryEditor } from './QueryEditor';
+import { VariableEditor } from './VariableEditor';
+import { HeaderEditor } from './HeaderEditor';
+import { ResultViewer } from './ResultViewer';
+import { DocExplorer } from './DocExplorer';
+import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
-import debounce from '../utility/debounce';
-import { getLeft, getTop } from '../utility/elementPosition';
-import { fillLeafs, GetDefaultFieldNamesFn } from '../utility/fillLeafs';
-import find from '../utility/find';
+import StorageAPI, { Storage } from '../utility/StorageAPI';
 import getOperationFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
+import debounce from '../utility/debounce';
+import find from '../utility/find';
+import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
+import { getLeft, getTop } from '../utility/elementPosition';
+import mergeAST from '../utility/mergeAst';
 import {
   introspectionQuery,
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
-import mergeAST from '../utility/mergeAst';
-import StorageAPI, { Storage } from '../utility/StorageAPI';
-import { DocExplorer } from './DocExplorer';
 
-import { ExecuteButton } from './ExecuteButton';
-import { HeaderEditor } from './HeaderEditor';
-import { ImagePreview } from './ImagePreview';
-import { QueryEditor } from './QueryEditor';
-import { QueryHistory } from './QueryHistory';
-import { ResultViewer } from './ResultViewer';
-import { ToolbarButton } from './ToolbarButton';
-import { ToolbarGroup } from './ToolbarGroup';
-import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
-import { VariableEditor } from './VariableEditor';
+import type {
+  Fetcher,
+  FetcherResult,
+  FetcherReturnType,
+  FetcherOpts,
+  SyncFetcherResult,
+  Observable,
+  Unsubscribable,
+  FetcherResultPayload,
+} from '@graphiql/toolkit';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
