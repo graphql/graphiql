@@ -1079,15 +1079,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         shouldPersistHeaders as boolean,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
-            const maybeMultipart:
-              | Array<Extract<FetcherResultPayload, { hasNext: boolean }>>
-              | false = Array.isArray(result)
-              ? result
-              : typeof result !== 'string' &&
-                result !== null &&
-                'hasNext' in result
-              ? [result]
-              : false;
+            let maybeMultipart = Array.isArray(result) ? result : false;
+            if (
+              !maybeMultipart &&
+              typeof result !== 'string' &&
+              result !== null &&
+              'hasNext' in result
+            ) {
+              maybeMultipart = [result];
+            }
 
             if (maybeMultipart) {
               fullResponse.errors = [
