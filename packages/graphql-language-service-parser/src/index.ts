@@ -15,4 +15,6 @@ export { butNot, list, opt, p, t } from './RuleHelpers';
 
 export { default as onlineParser } from './onlineParser';
 
+export { default as GraphqlParser } from './GraphqlParser';
+
 export * from './types';
