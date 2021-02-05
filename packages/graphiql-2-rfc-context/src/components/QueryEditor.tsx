@@ -1,3 +1,4 @@
+/* global monaco */
 /** @jsx jsx */
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
@@ -15,6 +16,7 @@ import EditorWrapper from '../components/common/EditorWrapper';
 
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
+import { useBrowserContext } from '../api/providers/GraphiQLBrowserProvider';
 
 export type QueryEditorProps = {
   onEdit?: (value: string) => void;
@@ -37,6 +39,7 @@ export function QueryEditor(props: QueryEditorProps) {
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const cachedValueRef = React.useRef<string>(props.operation ?? '');
   const session = useSessionContext();
+  const browser = useBrowserContext();
 
   const { loadEditor } = useEditorsContext();
 
@@ -49,6 +52,7 @@ export function QueryEditor(props: QueryEditorProps) {
 
   React.useEffect(() => {
     require('monaco-graphql/esm/monaco.contribution');
+    session.changeOperation(browser.queryStringParams.operation);
 
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
@@ -88,7 +92,12 @@ export function QueryEditor(props: QueryEditorProps) {
       editor.setValue(thisValue);
     }
     setIgnoreChangeEvent(false);
-  }, [session, session.operation, session.operation.text]);
+  }, [
+    session,
+    session.operation,
+    session.operation.text,
+    browser.queryStringParams.operation,
+  ]);
 
   React.useEffect(() => {
     const editor = editorRef.current;

@@ -4,7 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
+/* global monaco */
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { GraphQLType } from 'graphql';
@@ -15,6 +15,7 @@ import EditorWrapper from '../components/common/EditorWrapper';
 
 import { useEditorsContext } from '../api/providers/GraphiQLEditorsProvider';
 import { useSessionContext } from '../api/providers/GraphiQLSessionProvider';
+import { useBrowserContext } from '../api/providers/GraphiQLBrowserProvider';
 
 import type { EditorOptions } from '../types';
 // import useQueryFacts from '../api/hooks/useQueryFacts';
@@ -45,6 +46,7 @@ export type VariableEditorProps = {
  */
 export function VariableEditor(props: VariableEditorProps) {
   const session = useSessionContext();
+  const browser = useBrowserContext();
   // const queryFacts = useQueryFacts();
   const [ignoreChangeEvent, setIgnoreChangeEvent] = React.useState(false);
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
@@ -54,6 +56,7 @@ export function VariableEditor(props: VariableEditorProps) {
   // const variableToType = queryFacts?.variableToType
 
   React.useEffect(() => {
+    session.changeVariables(browser.queryStringParams.variables);
     // Lazily require to ensure requiring GraphiQL outside of a Browser context
     // does not produce an error.
 
@@ -89,6 +92,7 @@ export function VariableEditor(props: VariableEditorProps) {
       if (!ignoreChangeEvent) {
         cachedValueRef.current = editor.getValue();
         session.changeVariables(cachedValueRef.current);
+        browser.changeQueryStringParams('variables', cachedValueRef.current);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +108,8 @@ export function VariableEditor(props: VariableEditorProps) {
     // user-input changes which could otherwise result in an infinite
     // event loop.
     setIgnoreChangeEvent(true);
-    if (session.variables.text !== cachedValueRef.current) {
+    const vars = session.variables.text;
+    if (vars && vars !== cachedValueRef.current) {
       const thisValue = session.variables.text || '';
       cachedValueRef.current = thisValue;
       editor.setValue(thisValue);
