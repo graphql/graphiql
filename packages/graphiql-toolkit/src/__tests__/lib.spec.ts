@@ -1,5 +1,8 @@
 import { parse } from 'graphql';
-import { isSubscriptionWithName, createWebsocketsFetcherFromUrl } from '../lib';
+import {
+  isSubscriptionWithName,
+  createWebsocketsFetcherFromUrl,
+} from '../../dist/lib';
 
 import 'isomorphic-fetch';
 

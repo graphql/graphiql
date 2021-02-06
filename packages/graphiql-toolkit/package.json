@@ -19,6 +19,16 @@
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {},
+  "dependencies": {
+    "graphql-ws": "^4.1.0",
+    "subscriptions-transport-ws": "^0.9.18",
+    "meros": "^1.1.0-beta.2",
+    "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1"
+  },
+  "devDependencies": {
+    "isomorphic-fetch": "^3.0.0",
+    "graphql": "experimental-stream-defer"
+  },
   "keywords": [
     "graphql",
     "graphiql"
