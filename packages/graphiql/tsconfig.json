@@ -22,7 +22,7 @@
   ],
   "references": [
     {
-      "path": "../graphiql-create-fetcher"
+      "path": "../graphiql-toolkit"
     },
     {
       "path": "../graphql-language-service"

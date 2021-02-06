@@ -50,7 +50,6 @@
     "graphql-language-service": "^3.1.2",
     "markdown-it": "^10.0.0",
     "@graphiql/toolkit": "^0.1.0",
-    "@graphiql/create-fetcher": "^0.1.0",
     "dset": "^3.0.0"
   },
   "peerDependencies": {

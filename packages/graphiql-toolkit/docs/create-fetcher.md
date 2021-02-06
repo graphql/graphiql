@@ -145,3 +145,7 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
+
+## Credits
+
+This is inspired from `graphql-subscriptions-fetcher` and thanks to @Urigo
