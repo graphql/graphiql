@@ -294,6 +294,20 @@ describe('onlineParser', () => {
       t.eol();
     });
 
+    it(`parses invalid query`, () => {
+      const { t, token } = getUtils(`
+        {}garbage
+      `);
+
+      t.punctuation('{', { kind: 'SelectionSet' });
+
+      t.punctuation('}', { kind: 'Document' });
+
+      expect(token()).toEqual('invalidchar');
+
+      t.eol();
+    });
+
     it(`parses a fragment defination`, () => {
       const { t } = getUtils(`
         fragment SomeFragment on SomeType {
