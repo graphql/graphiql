@@ -11,12 +11,23 @@ import CodeMirror from 'codemirror';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
+  GraphQLInputType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLScalarType,
+  GraphQLType,
 } from 'graphql';
 
-import jsonParse from '../utils/jsonParse';
+import jsonParse, {
+  ParseArrayOutput,
+  ParseObjectOutput,
+  ParseValueOutput,
+} from '../utils/jsonParse';
+
+type VariableToType = Record<string, GraphQLInputType>;
+interface GraphQLVariableLintOptions {
+  variableToType: VariableToType;
+}
 
 /**
  * Registers a "lint" helper for CodeMirror.
@@ -33,7 +44,11 @@ import jsonParse from '../utils/jsonParse';
 CodeMirror.registerHelper(
   'lint',
   'graphql-variables',
-  (text, options, editor) => {
+  (
+    text: string,
+    options: GraphQLVariableLintOptions,
+    editor: CodeMirror.Editor,
+  ) => {
     // If there's no text, do nothing.
     if (!text) {
       return [];
@@ -63,24 +78,30 @@ CodeMirror.registerHelper(
 
 // Given a variableToType object, a source text, and a JSON AST, produces a
 // list of CodeMirror annotations for any variable validation errors.
-function validateVariables(editor, variableToType, variablesAST) {
-  const errors = [];
+function validateVariables(
+  editor: CodeMirror.Editor,
+  variableToType: VariableToType,
+  variablesAST: ParseObjectOutput,
+) {
+  const errors: CodeMirror.Annotation[] = [];
 
   variablesAST.members.forEach(member => {
-    const variableName = member.key.value;
-    const type = variableToType[variableName];
-    if (!type) {
-      errors.push(
-        lintError(
-          editor,
-          member.key,
-          `Variable "$${variableName}" does not appear in any GraphQL query.`,
-        ),
-      );
-    } else {
-      validateValue(type, member.value).forEach(([node, message]) => {
-        errors.push(lintError(editor, node, message));
-      });
+    if (member) {
+      const variableName = member.key?.value;
+      const type = variableToType[variableName];
+      if (!type) {
+        errors.push(
+          lintError(
+            editor,
+            member.key!,
+            `Variable "$${variableName}" does not appear in any GraphQL query.`,
+          ),
+        );
+      } else {
+        validateValue(type, member.value).forEach(([node, message]) => {
+          errors.push(lintError(editor, node, message));
+        });
+      }
     }
   });
 
@@ -88,7 +109,15 @@ function validateVariables(editor, variableToType, variablesAST) {
 }
 
 // Returns a list of validation errors in the form Array<[Node, String]>.
-function validateValue(type, valueAST) {
+function validateValue(
+  type?: GraphQLType,
+  valueAST?: ParseValueOutput,
+): any[][] {
+  // TODO: Can't figure out the right type.
+  if (!type || !valueAST) {
+    return [];
+  }
+
   // Validate non-nullable values.
   if (type instanceof GraphQLNonNull) {
     if (valueAST.kind === 'Null') {
@@ -105,7 +134,8 @@ function validateValue(type, valueAST) {
   if (type instanceof GraphQLList) {
     const itemType = type.ofType;
     if (valueAST.kind === 'Array') {
-      return mapCat(valueAST.values, item => validateValue(itemType, item));
+      const values = (valueAST as ParseArrayOutput).values || [];
+      return mapCat(values, item => validateValue(itemType, item));
     }
     return validateValue(itemType, valueAST);
   }
@@ -118,18 +148,25 @@ function validateValue(type, valueAST) {
 
     // Validate each field in the input object.
     const providedFields = Object.create(null);
-    const fieldErrors = mapCat(valueAST.members, member => {
-      const fieldName = member.key.value;
-      providedFields[fieldName] = true;
-      const inputField = type.getFields()[fieldName];
-      if (!inputField) {
-        return [
-          [member.key, `Type "${type}" does not have a field "${fieldName}".`],
-        ];
-      }
-      const fieldType = inputField ? inputField.type : undefined;
-      return validateValue(fieldType, member.value);
-    });
+    const fieldErrors: any[][] = mapCat(
+      (valueAST as ParseObjectOutput).members,
+      member => {
+        // TODO: Can't figure out the right type here
+        const fieldName = member?.key?.value;
+        providedFields[fieldName] = true;
+        const inputField = type.getFields()[fieldName];
+        if (!inputField) {
+          return [
+            [
+              member.key,
+              `Type "${type}" does not have a field "${fieldName}".`,
+            ],
+          ];
+        }
+        const fieldType = inputField ? inputField.type : undefined;
+        return validateValue(fieldType, member.value);
+      },
+    );
 
     // Look for missing non-nullable fields.
     Object.keys(type.getFields()).forEach(fieldName => {
@@ -180,7 +217,11 @@ function validateValue(type, valueAST) {
 
 // Give a parent text, an AST node with location, and a message, produces a
 // CodeMirror annotation object.
-function lintError(editor, node, message) {
+function lintError(
+  editor: CodeMirror.Editor,
+  node: { start: number; end: number },
+  message: string,
+): CodeMirror.Annotation & { type: string } {
   return {
     message,
     severity: 'error',
@@ -190,11 +231,11 @@ function lintError(editor, node, message) {
   };
 }
 
-function isNullish(value: mixed): boolean {
+function isNullish(value: any): boolean {
   // eslint-disable-next-line no-self-compare
   return value === null || value === undefined || value !== value;
 }
 
-function mapCat<T>(array: Array<T>, mapper: (item: T) => Array<T>): Array<T> {
+function mapCat<T, R>(array: T[], mapper: (item: T) => R[]): R[] {
   return Array.prototype.concat.apply([], array.map(mapper));
 }

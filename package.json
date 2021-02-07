@@ -25,8 +25,7 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn run build-clean && yarn build-ts && yarn build-babel",
-    "build-babel": "yarn workspace codemirror-graphql run build",
+    "build": "yarn tsc --clean && yarn tsc",
     "build-ts": "yarn run tsc --force",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",

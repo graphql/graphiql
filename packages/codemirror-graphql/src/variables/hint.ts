@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import CodeMirror from 'codemirror';
+import CodeMirror, { Hints } from 'codemirror';
 import {
   getNullableType,
   getNamedType,
@@ -15,10 +15,18 @@ import {
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLBoolean,
+  GraphQLInputType,
+  GraphQLInputFieldMap,
 } from 'graphql';
+import { State } from 'graphql-language-service-parser';
+import { Maybe } from 'graphql-language-service-types';
 
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
+
+interface GraphQLVariableHintOptions {
+  variableToType: Record<string, GraphQLInputType>;
+}
 
 /**
  * Registers a "hint" helper for CodeMirror.
@@ -37,21 +45,32 @@ import hintList from '../utils/hintList';
  *     new list of completion suggestions.
  *
  */
-CodeMirror.registerHelper('hint', 'graphql-variables', (editor, options) => {
-  const cur = editor.getCursor();
-  const token = editor.getTokenAt(cur);
+CodeMirror.registerHelper(
+  'hint',
+  'graphql-variables',
+  (
+    editor: CodeMirror.Editor,
+    options: GraphQLVariableHintOptions,
+  ): Hints | undefined => {
+    const cur = editor.getCursor();
+    const token = editor.getTokenAt(cur);
 
-  const results = getVariablesHint(cur, token, options);
-  if (results && results.list && results.list.length > 0) {
-    results.from = CodeMirror.Pos(results.from.line, results.from.column);
-    results.to = CodeMirror.Pos(results.to.line, results.to.column);
-    CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
-  }
+    const results = getVariablesHint(cur, token, options);
+    if (results && results.list && results.list.length > 0) {
+      results.from = CodeMirror.Pos(results.from.line, results.from.ch);
+      results.to = CodeMirror.Pos(results.to.line, results.to.ch);
+      CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
+    }
 
-  return results;
-});
+    return results;
+  },
+);
 
-function getVariablesHint(cur, token, options) {
+function getVariablesHint(
+  cur: CodeMirror.Position,
+  token: CodeMirror.Token,
+  options: GraphQLVariableHintOptions,
+) {
   // If currently parsing an invalid state, attempt to hint to the prior state.
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
@@ -88,7 +107,7 @@ function getVariablesHint(cur, token, options) {
   if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
     if (typeInfo.fields) {
       const inputFields = Object.keys(typeInfo.fields).map(
-        fieldName => typeInfo.fields[fieldName],
+        fieldName => typeInfo.fields![fieldName],
       );
       return hintList(
         cur,
@@ -112,12 +131,14 @@ function getVariablesHint(cur, token, options) {
     (kind === 'ObjectField' && step === 2) ||
     (kind === 'Variable' && step === 2)
   ) {
-    const namedInputType = getNamedType(typeInfo.type);
+    const namedInputType = typeInfo.type
+      ? getNamedType(typeInfo.type)
+      : undefined;
     if (namedInputType instanceof GraphQLInputObjectType) {
       return hintList(cur, token, [{ text: '{' }]);
     } else if (namedInputType instanceof GraphQLEnumType) {
-      const valueMap = namedInputType.getValues();
-      const values = Object.keys(valueMap).map(name => valueMap[name]);
+      const values = namedInputType.getValues();
+      // const values = Object.keys(valueMap).map(name => valueMap[name]); // TODO: Previously added
       return hintList(
         cur,
         token,
@@ -129,30 +150,36 @@ function getVariablesHint(cur, token, options) {
       );
     } else if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [
-        { text: 'true', type: GraphQLBoolean, description: 'Not false.' },
+        { text: 'true', type: GraphQLBoolean, description: 'Not false.' }, // TODO: type and description don't seem to be used. Added them as optional anyway.
         { text: 'false', type: GraphQLBoolean, description: 'Not true.' },
       ]);
     }
   }
 }
-
+interface VariableTypeInfo {
+  type?: Maybe<GraphQLInputType>;
+  fields?: Maybe<GraphQLInputFieldMap>;
+}
 // Utility for collecting rich type information given any token's state
 // from the graphql-variables-mode parser.
-function getTypeInfo(variableToType, tokenState) {
-  const info = {
+function getTypeInfo(
+  variableToType: Record<string, GraphQLInputType>,
+  tokenState: State,
+) {
+  const info: VariableTypeInfo = {
     type: null,
     fields: null,
   };
 
   forEachState(tokenState, state => {
     if (state.kind === 'Variable') {
-      info.type = variableToType[state.name];
+      info.type = variableToType[state.name!];
     } else if (state.kind === 'ListValue') {
-      const nullableType = getNullableType(info.type);
+      const nullableType = info.type ? getNullableType(info.type) : undefined;
       info.type =
         nullableType instanceof GraphQLList ? nullableType.ofType : null;
     } else if (state.kind === 'ObjectValue') {
-      const objectType = getNamedType(info.type);
+      const objectType = info.type ? getNamedType(info.type) : undefined;
       info.fields =
         objectType instanceof GraphQLInputObjectType
           ? objectType.getFields()
