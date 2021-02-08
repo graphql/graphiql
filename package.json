@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "yarn tsc --clean && yarn tsc",
+    "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "build-ts": "yarn run tsc --force",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",

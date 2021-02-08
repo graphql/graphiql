@@ -2,7 +2,7 @@
   "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./",
     "composite": true,
     "jsx": "react",
     "target": "es5",
