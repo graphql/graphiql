@@ -79,9 +79,6 @@ const LexRules = {
 
   // JSON literal keywords.
   Keyword: /^true|false|null/,
-
-  Name: undefined,
-  Comment: undefined,
 };
 
 /**

@@ -24,12 +24,27 @@ export interface GraphQLHintOptions {
 
 interface IHint extends Hint {
   isDeprecated?: boolean;
-  type?: GraphQLType;
+  type?: Maybe<GraphQLType>;
   description?: Maybe<string>;
+  deprecationReason?: Maybe<string>;
 }
 
 interface IHints extends Hints {
   list: IHint[];
+}
+
+declare module 'codemirror' {
+  interface ShowHintOptions {
+    schema?: GraphQLSchema;
+    externalFragments?: string | FragmentDefinitionNode[];
+  }
+
+  interface CodeMirrorHintMap {
+    graphql: (
+      editor: CodeMirror.Editor,
+      options: GraphQLHintOptions,
+    ) => IHints | undefined;
+  }
 }
 
 /**

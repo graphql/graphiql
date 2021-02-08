@@ -1,15 +1,19 @@
-import CodeMirror from 'codemirror';
+import CodeMirror, { ShowHintOptions } from 'codemirror';
+import { IHint, IHints } from './hint';
 
 declare module 'codemirror' {
   var Init: any;
 
   interface Editor {
+    doc: CodeMirror.Doc;
     getHelper(pos: { line; ch }, type: string): any;
     getHelpers(pos: { line; ch }, type: string): any[];
   }
-
   interface ShowHintOptions {
-    schema?: GraphQLSchema;
-    externalFragments?: string | FragmentDefinitionNode[];
+    hint?: ShowHintOptions['hint'];
   }
+
+  interface CodeMirrorHintMap {}
+
+  const hint: CodeMirrorHintMap;
 }

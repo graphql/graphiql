@@ -9,13 +9,14 @@
 
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
-import { parse } from 'graphql';
+import { GraphQLEnumType, GraphQLInputObjectType, parse } from 'graphql';
+import { IHint, IHints } from 'src/hint';
 import collectVariables from '../../utils/collectVariables';
 import { TestSchema } from '../../__tests__/testSchema';
 import '../hint';
 import '../mode';
 
-function createEditorWithHint(query) {
+function createEditorWithHint(query: string) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql-variables',
     hintOptions: {
@@ -26,9 +27,13 @@ function createEditorWithHint(query) {
   });
 }
 
-function getHintSuggestions(query, variables, cursor) {
+function getHintSuggestions(
+  query: string,
+  variables: string,
+  cursor: CodeMirror.Position,
+) {
   const editor = createEditorWithHint(query);
-  return new Promise(resolve => {
+  return new Promise<IHints | undefined>(resolve => {
     const graphqlVariablesHint = CodeMirror.hint['graphql-variables'];
     CodeMirror.hint['graphql-variables'] = (cm, options) => {
       const result = graphqlVariablesHint(cm, options);
@@ -43,8 +48,8 @@ function getHintSuggestions(query, variables, cursor) {
   });
 }
 
-function checkSuggestions(source, suggestions) {
-  const titles = suggestions.map(suggestion => suggestion.text);
+function checkSuggestions(source: string[], suggestions?: IHint[]) {
+  const titles = suggestions?.map(suggestion => suggestion.text);
   expect(titles).toEqual(source);
 }
 
@@ -57,7 +62,7 @@ describe('graphql-variables-hint', () => {
   it('provides correct initial token', async () => {
     const suggestions = await getHintSuggestions('', '', { line: 0, ch: 0 });
     const initialKeywords = ['{'];
-    checkSuggestions(initialKeywords, suggestions.list);
+    checkSuggestions(initialKeywords, suggestions?.list);
   });
 
   it('provides correct field name suggestions', async () => {
@@ -66,7 +71,7 @@ describe('graphql-variables-hint', () => {
       '{ ',
       { line: 0, ch: 2 },
     );
-    checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
+    checkSuggestions(['"foo": ', '"bar": '], suggestions?.list);
   });
 
   it('provides correct variable suggestion indentation', async () => {
@@ -75,8 +80,8 @@ describe('graphql-variables-hint', () => {
       '{\n  ',
       { line: 1, ch: 2 },
     );
-    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions?.to).toEqual({ line: 1, ch: 2, sticky: null });
   });
 
   it('provides correct variable completion', async () => {
@@ -85,9 +90,9 @@ describe('graphql-variables-hint', () => {
       '{\n  ba',
       { line: 1, ch: 4 },
     );
-    checkSuggestions(['"bar": '], suggestions.list);
-    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).toEqual({ line: 1, ch: 4, sticky: null });
+    checkSuggestions(['"bar": '], suggestions?.list);
+    expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions?.to).toEqual({ line: 1, ch: 4, sticky: null });
   });
 
   it('provides correct variable completion with open quote', async () => {
@@ -96,9 +101,9 @@ describe('graphql-variables-hint', () => {
       '{\n  "',
       { line: 1, ch: 4 },
     );
-    checkSuggestions(['"foo": ', '"bar": '], suggestions.list);
-    expect(suggestions.from).toEqual({ line: 1, ch: 2, sticky: null });
-    expect(suggestions.to).toEqual({ line: 1, ch: 3, sticky: null });
+    checkSuggestions(['"foo": ', '"bar": '], suggestions?.list);
+    expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
+    expect(suggestions?.to).toEqual({ line: 1, ch: 3, sticky: null });
   });
 
   it('provides correct Enum suggestions', async () => {
@@ -109,8 +114,10 @@ describe('graphql-variables-hint', () => {
     );
     const TestEnum = TestSchema.getType('TestEnum');
     checkSuggestions(
-      TestEnum.getValues().map(value => `"${value.name}"`),
-      suggestions.list,
+      (TestEnum as GraphQLEnumType)
+        ?.getValues()
+        .map(value => `"${value.name}"`),
+      suggestions?.list,
     );
   });
 
@@ -120,7 +127,7 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": ',
       { line: 1, ch: 13 },
     );
-    checkSuggestions(['{'], suggestions.list);
+    checkSuggestions(['{'], suggestions?.list);
   });
 
   it('provides Input Object fields', async () => {
@@ -131,11 +138,13 @@ describe('graphql-variables-hint', () => {
     );
     const TestInput = TestSchema.getType('TestInput');
     checkSuggestions(
-      Object.keys(TestInput.getFields()).map(name => `"${name}": `),
-      suggestions.list,
+      Object.keys((TestInput as GraphQLInputObjectType).getFields()).map(
+        name => `"${name}": `,
+      ),
+      suggestions?.list,
     );
-    expect(suggestions.from).toEqual({ line: 2, ch: 4, sticky: null });
-    expect(suggestions.to).toEqual({ line: 2, ch: 4, sticky: null });
+    expect(suggestions?.from).toEqual({ line: 2, ch: 4, sticky: null });
+    expect(suggestions?.to).toEqual({ line: 2, ch: 4, sticky: null });
   });
 
   it('provides correct Input Object field completion', async () => {
@@ -144,9 +153,9 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": {\n    bool',
       { line: 2, ch: 8 },
     );
-    checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions.list);
-    expect(suggestions.from).toEqual({ line: 2, ch: 4, sticky: null });
-    expect(suggestions.to).toEqual({ line: 2, ch: 8, sticky: null });
+    checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions?.list);
+    expect(suggestions?.from).toEqual({ line: 2, ch: 4, sticky: null });
+    expect(suggestions?.to).toEqual({ line: 2, ch: 8, sticky: null });
   });
 
   it('provides correct Input Object field value completion', async () => {
@@ -155,6 +164,6 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": {\n    "boolean": ',
       { line: 2, ch: 15 },
     );
-    checkSuggestions(['true', 'false'], suggestions.list);
+    checkSuggestions(['true', 'false'], suggestions?.list);
   });
 });

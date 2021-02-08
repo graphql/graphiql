@@ -38,28 +38,30 @@ export const TestEnum = new GraphQLEnumType({
   },
 });
 
-export const TestInputObject = new GraphQLInputObjectType({
-  name: 'TestInput',
-  fields: () => ({
-    string: { type: GraphQLString },
-    int: { type: GraphQLInt },
-    float: { type: GraphQLFloat },
-    boolean: { type: GraphQLBoolean },
-    id: { type: GraphQLID },
-    enum: { type: TestEnum },
-    object: { type: TestInputObject },
-    // List
-    listString: { type: new GraphQLList(GraphQLString) },
-    listInt: { type: new GraphQLList(GraphQLInt) },
-    listFloat: { type: new GraphQLList(GraphQLFloat) },
-    listBoolean: { type: new GraphQLList(GraphQLBoolean) },
-    listID: { type: new GraphQLList(GraphQLID) },
-    listEnum: { type: new GraphQLList(TestEnum) },
-    listObject: { type: new GraphQLList(TestInputObject) },
-  }),
-});
+export const TestInputObject: GraphQLInputObjectType = new GraphQLInputObjectType(
+  {
+    name: 'TestInput',
+    fields: () => ({
+      string: { type: GraphQLString },
+      int: { type: GraphQLInt },
+      float: { type: GraphQLFloat },
+      boolean: { type: GraphQLBoolean },
+      id: { type: GraphQLID },
+      enum: { type: TestEnum },
+      object: { type: TestInputObject },
+      // List
+      listString: { type: new GraphQLList(GraphQLString) },
+      listInt: { type: new GraphQLList(GraphQLInt) },
+      listFloat: { type: new GraphQLList(GraphQLFloat) },
+      listBoolean: { type: new GraphQLList(GraphQLBoolean) },
+      listID: { type: new GraphQLList(GraphQLID) },
+      listEnum: { type: new GraphQLList(TestEnum) },
+      listObject: { type: new GraphQLList(TestInputObject) },
+    }),
+  },
+);
 
-const TestInterface = new GraphQLInterfaceType({
+const TestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'TestInterface',
   resolveType: () => UnionFirst,
   fields: {
@@ -70,7 +72,7 @@ const TestInterface = new GraphQLInterfaceType({
   },
 });
 
-const AnotherTestInterface = new GraphQLInterfaceType({
+const AnotherTestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'AnotherTestInterface',
   resolveType: () => UnionFirst,
   fields: {
@@ -118,7 +120,7 @@ export const TestUnion = new GraphQLUnionType({
   },
 });
 
-export const TestType = new GraphQLObjectType({
+export const TestType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Test',
   fields: () => ({
     test: {
@@ -150,7 +152,7 @@ export const TestType = new GraphQLObjectType({
     },
     hasArgs: {
       type: GraphQLString,
-      resolve(value, args) {
+      resolve(_value, args) {
         return JSON.stringify(args);
       },
       args: {

@@ -20,12 +20,27 @@ import {
 } from 'graphql';
 import { State } from 'graphql-language-service-parser';
 import { Maybe } from 'graphql-language-service-types';
+import { IHints } from 'src/hint';
 
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
 
+export type VariableToType = Record<string, GraphQLInputType>;
 interface GraphQLVariableHintOptions {
-  variableToType: Record<string, GraphQLInputType>;
+  variableToType: VariableToType;
+}
+
+declare module 'codemirror' {
+  interface ShowHintOptions {
+    variableToType?: VariableToType;
+  }
+
+  interface CodeMirrorHintMap {
+    'graphql-variables': (
+      editor: CodeMirror.Editor,
+      options: GraphQLVariableHintOptions,
+    ) => IHints | undefined;
+  }
 }
 
 /**

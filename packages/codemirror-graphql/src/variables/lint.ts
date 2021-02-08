@@ -11,7 +11,6 @@ import CodeMirror from 'codemirror';
 import {
   GraphQLEnumType,
   GraphQLInputObjectType,
-  GraphQLInputType,
   GraphQLList,
   GraphQLNonNull,
   GraphQLScalarType,
@@ -23,8 +22,8 @@ import jsonParse, {
   ParseObjectOutput,
   ParseValueOutput,
 } from '../utils/jsonParse';
+import { VariableToType } from './hint';
 
-type VariableToType = Record<string, GraphQLInputType>;
 interface GraphQLVariableLintOptions {
   variableToType: VariableToType;
 }

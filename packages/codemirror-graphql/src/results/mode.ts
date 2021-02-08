@@ -9,7 +9,14 @@
 
 import CodeMirror from 'codemirror';
 
-import { list, t, onlineParser, p } from 'graphql-language-service-parser';
+import {
+  list,
+  t,
+  onlineParser,
+  p,
+  State,
+  Token,
+} from 'graphql-language-service-parser';
 
 /**
  * This mode defines JSON, but provides a data-laden parser state to enable
@@ -26,7 +33,7 @@ CodeMirror.defineMode('graphql-results', config => {
   return {
     config,
     startState: parser.startState,
-    token: parser.token,
+    token: (parser.token as unknown) as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
     indent,
     electricInput: /^\s*[}\]]/,
     fold: 'brace',
@@ -37,7 +44,14 @@ CodeMirror.defineMode('graphql-results', config => {
   };
 });
 
-function indent(state, textAfter) {
+function indent(
+  this: CodeMirror.Mode<any> & {
+    electricInput?: RegExp;
+    config?: CodeMirror.EditorConfiguration;
+  },
+  state: State,
+  textAfter: string,
+) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, pre-emptively dedenting for close braces.
@@ -45,8 +59,8 @@ function indent(state, textAfter) {
     !levels || levels.length === 0
       ? state.indentLevel
       : levels[levels.length - 1] -
-        (this.electricInput.test(textAfter) ? 1 : 0);
-  return level * this.config.indentUnit;
+        (this.electricInput?.test(textAfter) ? 1 : 0);
+  return (level || 0) * (this.config?.indentUnit || 0);
 }
 
 /**
@@ -72,7 +86,7 @@ const LexRules = {
 const ParseRules = {
   Document: [p('{'), list('Entry', p(',')), p('}')],
   Entry: [t('String', 'def'), p(':'), 'Value'],
-  Value(token) {
+  Value(token: Token) {
     switch (token.kind) {
       case 'Number':
         return 'NumberValue';
