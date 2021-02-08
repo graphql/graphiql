@@ -42,7 +42,7 @@
     "jest": "jest",
     "test-all": "yarn test --coverage",
     "ci": "yarn lint && yarn run check && yarn build && yarn test-all",
-    "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min && yarn run e2e",
+    "ci-e2e": "yarn build && yarn build-ts-esm && yarn workspace graphiql run build-bundles-min && yarn run e2e",
     "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
