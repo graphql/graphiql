@@ -1,4 +1,5 @@
-import CodeMirror from 'codemirror';
+import * as CM from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
 
 declare module 'codemirror' {
   var Init: any;
@@ -10,7 +11,6 @@ declare module 'codemirror' {
   }
 
   interface ShowHintOptions {
-    // @ts-ignore
     hint?: ShowHintOptions['hint'];
   }
 
@@ -18,5 +18,3 @@ declare module 'codemirror' {
 
   const hint: CodeMirrorHintMap;
 }
-
-export default CodeMirror;

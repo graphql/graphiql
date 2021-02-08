@@ -10,7 +10,7 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/hint/show-hint';
 import { GraphQLEnumType, GraphQLInputObjectType, parse } from 'graphql';
-import { IHint, IHints } from 'src/hint';
+import { IHint, IHints } from '../../hint';
 import collectVariables from '../../utils/collectVariables';
 import { TestSchema } from '../../__tests__/testSchema';
 import '../hint';
