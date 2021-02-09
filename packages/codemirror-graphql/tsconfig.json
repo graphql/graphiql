@@ -25,6 +25,9 @@
 
   "references": [
     {
+      "path": "../graphiql-toolkit"
+    },
+    {
       "path": "../graphql-language-service"
     },
     {

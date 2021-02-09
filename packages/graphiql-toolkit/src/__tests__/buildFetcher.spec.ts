@@ -13,7 +13,7 @@ import {
   createWebsocketsFetcherFromUrl,
   createMultipartFetcher,
   createSimpleFetcher,
-} from '../../dist/lib';
+} from '../lib';
 import { createClient } from 'graphql-ws';
 
 const exampleWithSubscripton = /* GraphQL */ `
