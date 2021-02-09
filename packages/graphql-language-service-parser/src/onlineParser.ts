@@ -36,9 +36,9 @@ import { State, Token, Rule, RuleKind } from './types';
 
 import { LexRules, ParseRules, isIgnored } from './Rules';
 
-type ParserOptions = {
+export type ParserOptions = {
   eatWhitespace: (stream: CharacterStream) => boolean;
-  lexRules: typeof LexRulesType;
+  lexRules: Partial<typeof LexRulesType>;
   parseRules: typeof ParseRulesType;
   editorConfig: { [name: string]: any };
 };
@@ -334,7 +334,7 @@ function unsuccessful(state: State): void {
 
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(
-  lexRules: typeof LexRulesType,
+  lexRules: Partial<typeof LexRulesType>,
   stream: CharacterStream,
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);
