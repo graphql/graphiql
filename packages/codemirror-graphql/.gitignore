@@ -2,6 +2,9 @@ node_modules/
 coverage/
 /*.js
 /*.js.flow
+/*.js.map
+/*.d.ts
+/*.d.ts.map
 !babel.config.js
 !jest.config.js
 /utils

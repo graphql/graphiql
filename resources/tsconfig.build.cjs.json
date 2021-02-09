@@ -18,6 +18,9 @@
       "path": "../packages/monaco-graphql"
     },
     {
+      "path": "../packages/codemirror-graphql"
+    },
+    {
       "path": "../packages/graphql-language-service-utils"
     },
     {

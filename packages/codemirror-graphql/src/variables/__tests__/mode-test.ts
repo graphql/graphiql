@@ -15,7 +15,7 @@ describe('graphql-variables-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
     const queryStr =
       '{ "variable": { "field": "value" }, "list": [ 1, true, null ] }';
-    const tokens = [];
+    const tokens: [string, string][] = [];
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
       if (style && style !== 'ws') {
@@ -49,7 +49,7 @@ describe('graphql-variables-mode', () => {
   it('is resilient to missing commas', () => {
     const queryStr =
       '{ "variable": { "field": "value" } "list": [ 1 true null ] }';
-    const tokens = [];
+    const tokens: [string, string][] = [];
 
     CodeMirror.runMode(queryStr, 'graphql-variables', (token, style) => {
       if (style && style !== 'ws') {

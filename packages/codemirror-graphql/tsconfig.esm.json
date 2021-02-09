@@ -3,10 +3,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./esm",
-    "composite": false,
+    "composite": true,
     "jsx": "react",
-    "baseUrl": ".",
-    "target": "es5"
+    "strictPropertyInitialization": false,
+    "baseUrl": "."
   },
   "include": ["src"],
   "exclude": [
@@ -17,17 +17,12 @@
     "**/*-test.ts",
     "**/*-test.js",
     "**/*.stories.js",
-    "**/*.stories.ts"
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
   ],
   "references": [
     {
-      "path": "../codemirror-graphql/tsconfig.esm.json"
-    },
-    {
       "path": "../graphiql-toolkit/tsconfig.esm.json"
-    },
-    {
-      "path": "../graphiql-create-fetcher"
     },
     {
       "path": "../graphql-language-service/tsconfig.esm.json"

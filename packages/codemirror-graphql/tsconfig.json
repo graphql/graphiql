@@ -2,16 +2,18 @@
   "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "./",
     "composite": true,
     "jsx": "react",
     "target": "es5",
+    "baseUrl": ".",
     "strictPropertyInitialization": false
   },
   "include": ["src"],
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",
+    "**/esm/**.*",
     "**/*.spec.ts",
     "**/*.spec.js",
     "**/*-test.ts",
@@ -20,13 +22,8 @@
     "**/*.stories.ts",
     "**/*.stories.tsx"
   ],
+
   "references": [
-    {
-      "path": "../codemirror-graphql"
-    },
-    {
-      "path": "../graphiql-create-fetcher"
-    },
     {
       "path": "../graphql-language-service"
     },

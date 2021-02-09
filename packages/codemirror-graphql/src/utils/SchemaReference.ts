@@ -1,4 +1,3 @@
-/** @flow */
 /**
  *  Copyright (c) 2021 GraphQL Contributors
  *  All rights reserved.
@@ -8,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { getNamedType } from 'graphql';
+import { getNamedType, GraphQLSchema } from 'graphql';
 
 import type {
   GraphQLArgument,
@@ -18,6 +17,8 @@ import type {
   GraphQLField,
   GraphQLNamedType,
 } from 'graphql';
+import { Maybe } from 'graphql/jsutils/Maybe';
+import { TypeInfo } from './getTypeInfo';
 
 export type SchemaReference =
   | FieldReference
@@ -27,33 +28,38 @@ export type SchemaReference =
   | TypeReference;
 
 export type FieldReference = {
-  kind: 'Field',
-  field: GraphQLField<any, any>,
-  type: ?GraphQLNamedType,
+  kind: 'Field';
+  field: GraphQLField<any, any>;
+  type: Maybe<GraphQLNamedType>;
+  schema?: GraphQLSchema;
 };
 
 export type DirectiveReference = {
-  kind: 'Directive',
-  directive: GraphQLDirective,
+  kind: 'Directive';
+  directive: GraphQLDirective;
+  schema?: GraphQLSchema;
 };
 
 export type ArgumentReference = {
-  kind: 'Argument',
-  argument: GraphQLArgument,
-  field?: GraphQLField<any, any>,
-  type?: ?GraphQLNamedType,
-  directive?: GraphQLDirective,
+  kind: 'Argument';
+  argument: GraphQLArgument;
+  field?: GraphQLField<any, any>;
+  type?: GraphQLNamedType;
+  directive?: GraphQLDirective;
+  schema?: GraphQLSchema;
 };
 
 export type EnumValueReference = {
-  kind: 'EnumValue',
-  value: GraphQLEnumValue,
-  type: GraphQLEnumType,
+  kind: 'EnumValue';
+  value?: GraphQLEnumValue;
+  type?: GraphQLEnumType;
+  schema?: GraphQLSchema;
 };
 
 export type TypeReference = {
-  kind: 'Type',
-  type: GraphQLNamedType,
+  kind: 'Type';
+  type: GraphQLNamedType;
+  schema?: GraphQLSchema;
 };
 
 export function getFieldReference(typeInfo: any): FieldReference {
@@ -90,12 +96,14 @@ export function getArgumentReference(typeInfo: any): ArgumentReference {
       };
 }
 
-export function getEnumValueReference(typeInfo: any): EnumValueReference {
+export function getEnumValueReference(typeInfo: TypeInfo): EnumValueReference {
   return {
     kind: 'EnumValue',
-    value: typeInfo.enumValue,
+    value: typeInfo.enumValue || undefined,
     // $FlowFixMe
-    type: getNamedType(typeInfo.inputType),
+    type: typeInfo.inputType
+      ? (getNamedType(typeInfo.inputType) as GraphQLEnumType)
+      : undefined,
   };
 }
 
@@ -103,7 +111,7 @@ export function getEnumValueReference(typeInfo: any): EnumValueReference {
 // though it defaults to the current type.
 export function getTypeReference(
   typeInfo: any,
-  type?: GraphQLNamedType,
+  type?: Maybe<GraphQLNamedType>,
 ): TypeReference {
   return {
     kind: 'Type',
@@ -112,6 +120,6 @@ export function getTypeReference(
   };
 }
 
-function isMetaField(fieldDef) {
+function isMetaField(fieldDef: GraphQLField<any, any>) {
   return fieldDef.name.slice(0, 2) === '__';
 }

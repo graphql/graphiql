@@ -7,6 +7,7 @@
  *
  */
 import { CompletionItemKind } from 'vscode-languageserver-types';
+import type CodeMirror from 'codemirror';
 
 import {
   FragmentDefinitionNode,
@@ -91,10 +92,11 @@ export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   cursor: IPosition,
-  contextToken?: ContextToken,
+  contextToken?: CodeMirror.Token,
   fragmentDefs?: FragmentDefinitionNode[] | string,
 ): Array<CompletionItem> {
-  const token = contextToken || getTokenAtPosition(queryText, cursor);
+  const token: ContextToken =
+    contextToken || getTokenAtPosition(queryText, cursor);
 
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;

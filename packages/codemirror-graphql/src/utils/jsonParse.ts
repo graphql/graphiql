@@ -19,7 +19,7 @@
  *   - end: int - the end exclusive offset of the syntax error
  *
  */
-export default function jsonParse(str) {
+export default function jsonParse(str: string) {
   string = str;
   strLen = str.length;
   start = end = lastEnd = -1;
@@ -30,15 +30,41 @@ export default function jsonParse(str) {
   return ast;
 }
 
-let string;
-let strLen;
-let start;
-let end;
-let lastEnd;
-let code;
-let kind;
+let string: string;
+let strLen: number;
+let start: number;
+let end: number;
+let lastEnd: number;
+let code: number;
+let kind: string;
 
-function parseObj() {
+interface BaseParseOutput {
+  kind: string;
+  start: number;
+  end: number;
+}
+export interface ParseTokenOutput extends BaseParseOutput {
+  value: any;
+}
+export interface ParseObjectOutput extends BaseParseOutput {
+  kind: 'Object';
+  members: ParseMemberOutput[];
+}
+export interface ParseArrayOutput extends BaseParseOutput {
+  kind: 'Array';
+  values?: ParseValueOutput[];
+}
+export interface ParseMemberOutput extends BaseParseOutput {
+  key: ParseTokenOutput | null;
+  value?: ParseValueOutput;
+}
+export type ParseValueOutput =
+  | ParseTokenOutput
+  | ParseObjectOutput
+  | ParseArrayOutput
+  | undefined;
+
+function parseObj(): ParseObjectOutput {
   const nodeStart = start;
   const members = [];
   expect('{');
@@ -56,7 +82,7 @@ function parseObj() {
   };
 }
 
-function parseMember() {
+function parseMember(): ParseMemberOutput {
   const nodeStart = start;
   const key = kind === 'String' ? curToken() : null;
   expect('String');
@@ -71,7 +97,7 @@ function parseMember() {
   };
 }
 
-function parseArr() {
+function parseArr(): ParseArrayOutput {
   const nodeStart = start;
   const values = [];
   expect('[');
@@ -89,7 +115,7 @@ function parseArr() {
   };
 }
 
-function parseVal() {
+function parseVal(): ParseValueOutput | undefined {
   switch (kind) {
     case '[':
       return parseArr();
@@ -103,14 +129,14 @@ function parseVal() {
       lex();
       return token;
   }
-  return expect('Value');
+  expect('Value');
 }
 
-function curToken() {
+function curToken(): ParseTokenOutput {
   return { kind, start, end, value: JSON.parse(string.slice(start, end)) };
 }
 
-function expect(str) {
+function expect(str: string) {
   if (kind === str) {
     lex();
     return;
@@ -129,11 +155,11 @@ function expect(str) {
   throw syntaxError(`Expected ${str} but found ${found}.`);
 }
 
-function syntaxError(message) {
+function syntaxError(message: string) {
   return { message, start, end };
 }
 
-function skip(k) {
+function skip(k: string) {
   if (kind === k) {
     lex();
     return true;
@@ -145,6 +171,7 @@ function ch() {
     end++;
     code = end === strLen ? 0 : string.charCodeAt(end);
   }
+  return code;
 }
 
 function lex() {
@@ -221,7 +248,7 @@ function readString() {
   while (code !== 34 && code > 31) {
     if (code === 92) {
       // \
-      ch();
+      code = ch();
       switch (code) {
         case 34: // "
         case 47: // /
@@ -290,7 +317,7 @@ function readNumber() {
 
   if (code === 69 || code === 101) {
     // E e
-    ch();
+    code = ch();
     if (code === 43 || code === 45) {
       // + -
       ch();

@@ -7,8 +7,15 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
+import type CodeMirror from 'codemirror';
+import { IHint, IHints } from 'src/hint';
+
 // Create the expected hint response given a possible list and a token
-export default function hintList(cursor, token, list) {
+export default function hintList(
+  cursor: CodeMirror.Position,
+  token: CodeMirror.Token,
+  list: IHint[],
+): IHints | undefined {
   const hints = filterAndSortList(list, normalizeText(token.string));
   if (!hints) {
     return;
@@ -21,14 +28,14 @@ export default function hintList(cursor, token, list) {
 
   return {
     list: hints,
-    from: { line: cursor.line, column: tokenStart },
-    to: { line: cursor.line, column: token.end },
+    from: { line: cursor.line, ch: tokenStart }, // TODO: Confirm. Was changed column to ch
+    to: { line: cursor.line, ch: token.end },
   };
 }
 
 // Given a list of hint entries and currently typed text, sort and filter to
 // provide a concise list.
-function filterAndSortList(list, text) {
+function filterAndSortList(list: IHint[], text: string) {
   if (!text) {
     return filterNonEmpty(list, entry => !entry.isDeprecated);
   }
@@ -55,17 +62,17 @@ function filterAndSortList(list, text) {
 
 // Filters the array by the predicate, unless it results in an empty array,
 // in which case return the original array.
-function filterNonEmpty(array, predicate) {
+function filterNonEmpty<T>(array: T[], predicate: (item: T) => boolean) {
   const filtered = array.filter(predicate);
   return filtered.length === 0 ? array : filtered;
 }
 
-function normalizeText(text) {
+function normalizeText(text: string) {
   return text.toLowerCase().replace(/\W/g, '');
 }
 
 // Determine a numeric proximity for a suggestion based on current text.
-function getProximity(suggestion, text) {
+function getProximity(suggestion: string, text: string) {
   // start with lexical distance
   let proximity = lexicalDistance(text, suggestion);
   if (suggestion.length > text.length) {
@@ -91,7 +98,7 @@ function getProximity(suggestion, text) {
  * @param {string} b
  * @return {int} distance in number of edits
  */
-function lexicalDistance(a, b) {
+function lexicalDistance(a: string, b: string) {
   let i;
   let j;
   const d = [];
