@@ -24,7 +24,9 @@
     "/*.js.flow",
     "/*.js.map",
     "/*.d.ts",
-    "/*.d.ts.map"
+    "/*.d.ts.map",
+    "!babel.config.js",
+    "!jest.config.js"
   ],
   "scripts": {
     "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
