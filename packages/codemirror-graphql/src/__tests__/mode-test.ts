@@ -16,8 +16,8 @@ import '../mode';
 describe('graphql-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
     const queryStr = 'query name { }';
-    const tokens = [];
-    const styles = [];
+    const tokens: string[] = [];
+    const styles: string[] = [];
 
     CodeMirror.runMode(queryStr, 'graphql', (token, style) => {
       if (style && style !== 'ws') {
@@ -31,7 +31,7 @@ describe('graphql-mode', () => {
   });
 
   it('parses Relay-style anonymous FragmentDefinitions', () => {
-    CodeMirror.runMode('fragment on Test { id }', 'graphql', (token, style) =>
+    CodeMirror.runMode('fragment on Test { id }', 'graphql', (_token, style) =>
       expect(style).not.toBe('invalidchar'),
     );
   });
@@ -40,17 +40,17 @@ describe('graphql-mode', () => {
     CodeMirror.runMode(
       '{ ... on OptionalType { name } }',
       'graphql',
-      (token, style) => expect(style).not.toBe('invalidchar'),
+      (_token, style) => expect(style).not.toBe('invalidchar'),
     );
 
-    CodeMirror.runMode('{ ... { name } }', 'graphql', (token, style) =>
+    CodeMirror.runMode('{ ... { name } }', 'graphql', (_token, style) =>
       expect(style).not.toBe('invalidchar'),
     );
 
     CodeMirror.runMode(
       '{ ... @optionalDirective { name } }',
       'graphql',
-      (token, style) => expect(style).not.toBe('invalidchar'),
+      (_token, style) => expect(style).not.toBe('invalidchar'),
     );
   });
 
@@ -73,7 +73,7 @@ describe('graphql-mode', () => {
       encoding: 'utf8',
     });
 
-    CodeMirror.runMode(kitchenSink, 'graphql', (token, style) => {
+    CodeMirror.runMode(kitchenSink, 'graphql', (_token, style) => {
       expect(style).not.toBe('invalidchar');
     });
   });
@@ -84,13 +84,13 @@ describe('graphql-mode', () => {
       { encoding: 'utf8' },
     );
 
-    CodeMirror.runMode(schemaKitchenSink, 'graphql', (token, style) => {
+    CodeMirror.runMode(schemaKitchenSink, 'graphql', (_token, style) => {
       expect(style).not.toBe('invalidchar');
     });
   });
 
   it('parses anonymous operations without invalidchar', () => {
-    CodeMirror.runMode('{ id }', 'graphql', (token, style) => {
+    CodeMirror.runMode('{ id }', 'graphql', (_token, style) => {
       expect(style).not.toBe('invalidchar');
     });
 
@@ -101,7 +101,7 @@ describe('graphql-mode', () => {
       }
     `,
       'graphql',
-      (token, style) => {
+      (_token, style) => {
         expect(style).not.toBe('invalidchar');
       },
     );
@@ -115,7 +115,7 @@ describe('graphql-mode', () => {
       }
     `,
       'graphql',
-      (token, style) => {
+      (_token, style) => {
         expect(style).not.toBe('invalidchar');
       },
     );

@@ -55,6 +55,7 @@ packages/graphiql/*.html
 **/codemirror-graphql/lint.*
 **/codemirror-graphql/info.*
 **/codemirror-graphql/hint.*
+**/codemirror-graphql/__tests__
 
 
 # Vendored files

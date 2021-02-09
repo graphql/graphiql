@@ -13,6 +13,7 @@ import {
   ParseRules,
   isIgnored,
   onlineParser,
+  State,
 } from 'graphql-language-service-parser';
 
 /**
@@ -46,7 +47,7 @@ CodeMirror.defineMode('graphql', config => {
   return {
     config,
     startState: parser.startState,
-    token: parser.token,
+    token: (parser.token as unknown) as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
     indent,
     electricInput: /^\s*[})\]]/,
     fold: 'brace',
@@ -58,7 +59,15 @@ CodeMirror.defineMode('graphql', config => {
   };
 });
 
-function indent(state, textAfter) {
+// Seems the electricInput type in @types/codemirror is wrong (i.e it is written as electricinput instead of electricInput)
+function indent(
+  this: CodeMirror.Mode<any> & {
+    electricInput?: RegExp;
+    config?: CodeMirror.EditorConfiguration;
+  },
+  state: State,
+  textAfter: string,
+) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, pre-emptively dedenting for close braces.
@@ -66,6 +75,6 @@ function indent(state, textAfter) {
     !levels || levels.length === 0
       ? state.indentLevel
       : levels[levels.length - 1] -
-        (this.electricInput.test(textAfter) ? 1 : 0);
-  return level * this.config.indentUnit;
+        (this.electricInput?.test(textAfter) ? 1 : 0);
+  return (level || 0) * (this.config?.indentUnit || 0);
 }

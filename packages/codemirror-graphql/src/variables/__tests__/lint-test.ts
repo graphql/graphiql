@@ -10,27 +10,30 @@
 import CodeMirror from 'codemirror';
 import 'codemirror/addon/lint/lint';
 import { parse } from 'graphql';
+import { Maybe } from 'graphql-language-service-types';
 import collectVariables from '../../utils/collectVariables';
 import { TestSchema } from '../../__tests__/testSchema';
 import '../lint';
 import '../mode';
 
-function createEditorWithLint(lintConfig) {
+function createEditorWithLint(lintConfig?: any) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql-variables',
     lint: lintConfig ? lintConfig : true,
   });
 }
 
-function printLintErrors(query, variables) {
+function printLintErrors(query: Maybe<string>, variables: string) {
   const editor = createEditorWithLint({
     variableToType: query && collectVariables(TestSchema, parse(query)),
   });
 
-  return new Promise(resolve => {
-    editor.state.lint.options.onUpdateLinting = errors => {
+  return new Promise<CodeMirror.Annotation[]>(resolve => {
+    editor.state.lint.options.onUpdateLinting = (
+      errors: CodeMirror.Annotation[],
+    ) => {
       if (errors && errors[0]) {
-        if (!errors[0].message.match('Unexpected EOF')) {
+        if (!errors[0].message?.match('Unexpected EOF')) {
           resolve(errors);
         }
       }

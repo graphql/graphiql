@@ -15,7 +15,7 @@ describe('graphql-results-mode', () => {
   it('provides correct tokens and styles after parsing', () => {
     const queryStr =
       '{ "data": { "field": "value" }, "errors": [ { "message": "bork" } ] }';
-    const tokens = [];
+    const tokens: [string, string][] = [];
 
     CodeMirror.runMode(queryStr, 'graphql-results', (token, style) => {
       if (style && style !== 'ws') {

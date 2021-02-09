@@ -7,7 +7,7 @@ export type ContextToken = {
   end: number;
   string: string;
   state: State;
-  style: string;
+  style?: string;
 };
 
 export type ContextTokenForCodeMirror = {

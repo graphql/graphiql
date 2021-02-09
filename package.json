@@ -25,8 +25,8 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn run build-clean && yarn build-ts && yarn build-babel",
-    "build-babel": "yarn workspace codemirror-graphql run build",
+    "build": "yarn tsc --clean && yarn tsc",
+    "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "build-ts": "yarn run tsc --force",
     "build-ts-cjs": "yarn run tsc resources/tsconfig.build.cjs.json",
     "build-ts-esm": "yarn run tsc resources/tsconfig.build.esm.json",
@@ -42,7 +42,7 @@
     "jest": "jest",
     "test-all": "yarn test --coverage",
     "ci": "yarn lint && yarn run check && yarn build && yarn test-all",
-    "ci-e2e": "yarn build-ts-esm && yarn workspace codemirror-graphql run build && yarn workspace graphiql run build-bundles-min && yarn run e2e",
+    "ci-e2e": "yarn build && yarn build-ts-esm && yarn workspace graphiql run build-bundles-min && yarn run e2e",
     "ci-validate": "yarn build-ts-esm && yarn build-validate",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "e2e": "yarn workspace graphiql e2e",
