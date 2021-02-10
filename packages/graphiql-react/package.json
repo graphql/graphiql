@@ -1,0 +1,43 @@
+{
+  "name": "@graphiql/react",
+  "version": "0.1.0",
+  "description": "React components and hooks to help build GraphQL tools",
+  "contributors": [
+    "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)",
+    "Ryan Walker <ryan.matthew.walker@gmail.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-react"
+  },
+  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-react"
+  },
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "storybook": "start-storybook"
+  },
+  "keywords": [
+    "graphql",
+    "graphiql",
+    "react"
+  ],
+  "dependencies": {
+    "theme-ui": "0.3.5"
+  },
+  "devDependencies": {
+    "@storybook/react": "6.1.17",
+    "@storybook/addon-essentials": "6.1.17",
+    "@storybook/addon-storyshots": "6.0.22"
+  },
+  "peerDependencies": {
+    "graphql": "^14.0.0 || ^15.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  }
+}
