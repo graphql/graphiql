@@ -32,12 +32,6 @@
     },
     {
       "path": "../graphql-language-service-utils"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-interface"
     }
   ]
 }
