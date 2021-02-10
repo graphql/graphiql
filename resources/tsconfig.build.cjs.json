@@ -6,9 +6,6 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-create-fetcher"
-    },
-    {
       "path": "../packages/graphiql-toolkit"
     },
     {

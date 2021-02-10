@@ -22,22 +22,16 @@
   ],
   "references": [
     {
-      "path": "../codemirror-graphql"
+      "path": "../graphiql-toolkit"
     },
     {
-      "path": "../graphiql-create-fetcher"
+      "path": "../codemirror-graphql"
     },
     {
       "path": "../graphql-language-service"
     },
     {
       "path": "../graphql-language-service-utils"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-interface"
     }
   ]
 }

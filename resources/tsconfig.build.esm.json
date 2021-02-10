@@ -6,9 +6,6 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-create-fetcher/tsconfig.esm.json"
-    },
-    {
       "path": "../packages/graphiql-toolkit/tsconfig.esm.json"
     },
     {

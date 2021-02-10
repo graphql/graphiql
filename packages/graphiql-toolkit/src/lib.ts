@@ -13,8 +13,8 @@ import type {
   FetcherParams,
   FetcherOpts,
   FetcherResultPayload,
-} from '@graphiql/toolkit';
-import type { CreateFetcherOptions } from './types';
+  CreateFetcherOptions,
+} from './types';
 
 /**
  * Returns true if the name matches a subscription in the AST

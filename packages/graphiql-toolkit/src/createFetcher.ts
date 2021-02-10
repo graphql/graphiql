@@ -1,5 +1,4 @@
-import type { Fetcher } from '@graphiql/toolkit';
-import type { CreateFetcherOptions } from './types';
+import type { Fetcher, CreateFetcherOptions } from './types';
 
 import {
   createMultipartFetcher,
