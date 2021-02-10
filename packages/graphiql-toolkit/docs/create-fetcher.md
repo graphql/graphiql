@@ -1,4 +1,4 @@
-## `@graphiql/create-fetcher`
+## Create Fetcher
 
 a utility for generating a full-featured `fetcher` for GraphiQL including `@stream`, `@defer` `IncrementalDelivery`and `multipart`
 
@@ -8,18 +8,18 @@ under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws)
 
 [`graphiql`](https://npmjs.com/package/graphiql) and thus `react` and `react-dom` should already be installed.
 
-you'll need to install `@graphiql/create-fetcher`
+you'll need to install `@graphiql/toolkit`
 
 npm
 
 ```bash
-npm install --save @graphiql/create-fetcher
+npm install --save @graphiql/toolkit
 ```
 
 yarn
 
 ```bash
-yarn add @graphiql/create-fetcher
+yarn add @graphiql/toolkit
 ```
 
 ### Getting Started
@@ -34,7 +34,7 @@ Here's a simple example. In this case, a websocket client isn't even initialized
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const url = 'https://myschema.com/graphql';
 
@@ -53,7 +53,7 @@ Just by providing the `subscriptionUrl`, you can generate a `graphql-ws` client
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const url = 'https://myschema.com/graphql';
 
@@ -104,7 +104,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
 import { createClient } from 'graphql-ws';
-import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const url = 'https://myschema.com/graphql';
 
@@ -132,7 +132,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { GraphiQL } from 'graphiql';
 import { fetch } from 'isomorphic-fetch';
-import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const url = 'https://myschema.com/graphql';
 
@@ -145,3 +145,7 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
+
+## Credits
+
+This is inspired from `graphql-subscriptions-fetcher` and thanks to @Urigo

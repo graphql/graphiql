@@ -24,10 +24,10 @@
   ],
   "references": [
     {
-      "path": "../monaco-graphql/tsconfig.esm.json"
+      "path": "../monaco-graphql"
     },
     {
-      "path": "../graphql-language-service/tsconfig.esm.json"
+      "path": "../graphql-language-service"
     }
   ]
 }
