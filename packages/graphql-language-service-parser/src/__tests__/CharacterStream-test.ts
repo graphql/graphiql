@@ -211,19 +211,19 @@ describe('CharacterStream', () => {
 
       stream.eatSpace();
 
-      expect(stream._pos).toEqual(2);
+      expect(stream.getCurrentPosition()).toEqual(2);
     });
 
     it('sets start to last space character position', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 
-      expect(stream._start).toEqual(0);
+      expect(stream.getStartOfToken()).toEqual(0);
 
-      stream._pos = 6;
+      stream.skipTo(6);
       stream.eatSpace();
 
-      expect(stream._start).toEqual(6);
+      expect(stream.getStartOfToken()).toEqual(6);
     });
   });
 
@@ -234,7 +234,7 @@ describe('CharacterStream', () => {
 
       stream.skipToEnd();
 
-      expect(stream._pos).toEqual(10);
+      expect(stream.getCurrentPosition()).toEqual(10);
     });
   });
 
@@ -245,7 +245,7 @@ describe('CharacterStream', () => {
 
       stream.skipTo(2);
 
-      expect(stream._pos).toEqual(2);
+      expect(stream.getCurrentPosition()).toEqual(2);
     });
   });
 
@@ -254,11 +254,11 @@ describe('CharacterStream', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 
-      stream._pos = 2;
+      stream.skipTo(2);
 
       stream.backUp(1);
 
-      expect(stream._pos).toEqual(1);
+      expect(stream.getCurrentPosition()).toEqual(1);
     });
   });
 
@@ -267,9 +267,9 @@ describe('CharacterStream', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 
-      stream._pos = 1;
+      stream.skipTo(1);
 
-      expect(stream.column()).toEqual(1);
+      expect(stream.getCurrentPosition()).toEqual(1);
     });
   });
 
@@ -279,7 +279,7 @@ describe('CharacterStream', () => {
       const stream = new CharacterStream(source);
 
       stream._start = 1;
-      stream._pos = 6;
+      stream.skipTo(6);
 
       expect(stream.current()).toEqual('calar');
     });

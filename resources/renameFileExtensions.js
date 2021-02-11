@@ -35,11 +35,15 @@ if (tempPath) {
     files.forEach(file => {
       if (file.dest) {
         const srcExt = path.parse(file.dest).ext;
-        const destinationPath = file.dest
-          .replace(srcExt, destExtension) // rewrite extension
-          .replace(tempRenamePath, dest); // and destination path
+        const destinationPath = path.resolve(
+          file.dest
+            .replace(srcExt, destExtension) // rewrite extension
+            .replace(tempRenamePath, dest), // and destination path
+        );
+
+        mkdirp.sync(path.dirname(destinationPath));
         // move the files and rename them... by renaming them :)
-        fs.renameSync(file.dest, path.resolve(destinationPath));
+        fs.renameSync(file.dest, destinationPath);
       }
     });
     // should cleanup temp directory after renaming

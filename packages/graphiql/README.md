@@ -97,7 +97,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import GraphiQL from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/create-fetcher';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 const fetcher = createGraphiQLFetcher({
   url: window.location.origin + '/graphql',
@@ -109,7 +109,7 @@ ReactDOM.render(
 );
 ```
 
-Read more about using [`@graphiql/create-fetcher`](https://github.com/graphql/graphiql/packages/tree/main/packages/graphiql-create-fetcher) in the readme to learn how to add headers and more.
+Read more about using [`createGraphiQLFetcher`](https://github.com/graphql/graphiql/packages/tree/main/packages/graphiql-toolkit) in the readme to learn how to add headers and more.
 
 ### Usage: UMD Bundle over CDN (Unpkg, JSDelivr, etc)
 

@@ -6,9 +6,6 @@
   "include": [],
   "references": [
     {
-      "path": "../packages/graphiql-create-fetcher"
-    },
-    {
       "path": "../packages/graphiql-toolkit"
     },
     {
@@ -16,6 +13,9 @@
     },
     {
       "path": "../packages/monaco-graphql"
+    },
+    {
+      "path": "../packages/codemirror-graphql"
     },
     {
       "path": "../packages/graphql-language-service-utils"

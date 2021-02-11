@@ -7,5 +7,6 @@
 
 export * from './types';
 export { parseQueryStringURL, updateQueryStringURL } from './queryString';
+export { createGraphiQLFetcher } from './createFetcher';
 
 // TODO: move the most useful utilities from graphiql to here
