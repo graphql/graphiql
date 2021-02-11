@@ -2,7 +2,7 @@
 
 exports[`Storyshots Layout With Full Screen Panel 1`] = `
 <main
-  className="css-1ox8a0q-Layout"
+  className="css-1cv340r-Layout"
 >
   <div
     className="css-4ddx2x-Card"
@@ -11,17 +11,58 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
       className="css-5tspew-Nav"
     >
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Schema"
+        className="css-1qywezs-NavItem"
+      >
+        <svg
+          style={
+            Object {
+              "fill": "currentColor",
+              "height": "1em",
+              "width": "1em",
+            }
+          }
+          viewBox="0 0 400 400"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M57.468 302.66l-14.376-8.3 160.15-277.38 14.376 8.3z"
+          />
+          <path
+            d="M39.8 272.2h320.3v16.6H39.8z"
+          />
+          <path
+            d="M206.348 374.026l-160.21-92.5 8.3-14.376 160.21 92.5zM345.522 132.947l-160.21-92.5 8.3-14.376 160.21 92.5z"
+          />
+          <path
+            d="M54.482 132.883l-8.3-14.375 160.21-92.5 8.3 14.376z"
+          />
+          <path
+            d="M342.568 302.663l-160.15-277.38 14.376-8.3 160.15 277.38zM52.5 107.5h16.6v185H52.5zM330.9 107.5h16.6v185h-16.6z"
+          />
+          <path
+            d="M203.522 367l-7.25-12.558 139.34-80.45 7.25 12.557z"
+          />
+          <path
+            d="M369.5 297.9c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.8 9.7 22.5 31 12.8 47.7M90.9 137c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.7 9.7 22.4 31 12.8 47.7M30.5 297.9c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.8 9.6-38.1 3.9-47.7-12.8M309.1 137c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.7 9.6-38.1 3.9-47.7-12.8M200 395.8c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.2-15.6 34.9-34.9 34.9M200 74c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.3-15.6 34.9-34.9 34.9"
+          />
+        </svg>
+      </button>
+      <button
+        aria-label="Pig’s nose"
+        className="css-1qywezs-NavItem"
       >
         🐽
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Farmer"
+        className="css-1qywezs-NavItem"
       >
         👨‍🌾
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Bee"
+        className="css-1qywezs-NavItem"
       >
         🐝
       </button>
@@ -44,55 +85,12 @@ exports[`Storyshots Layout With Full Screen Panel 1`] = `
       </div>
     </div>
   </div>
-  <div
-    className="css-l9qndh-Layout"
-  >
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Input
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Response
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-1ayby34-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Console/Inspector
-        </div>
-      </div>
-    </div>
-  </div>
 </main>
 `;
 
 exports[`Storyshots Layout With Many Sidebars 1`] = `
 <main
-  className="css-1ox8a0q-Layout"
+  className="css-1cv340r-Layout"
 >
   <div
     className="css-4ddx2x-Card"
@@ -101,17 +99,58 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
       className="css-5tspew-Nav"
     >
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Schema"
+        className="css-1qywezs-NavItem"
+      >
+        <svg
+          style={
+            Object {
+              "fill": "currentColor",
+              "height": "1em",
+              "width": "1em",
+            }
+          }
+          viewBox="0 0 400 400"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M57.468 302.66l-14.376-8.3 160.15-277.38 14.376 8.3z"
+          />
+          <path
+            d="M39.8 272.2h320.3v16.6H39.8z"
+          />
+          <path
+            d="M206.348 374.026l-160.21-92.5 8.3-14.376 160.21 92.5zM345.522 132.947l-160.21-92.5 8.3-14.376 160.21 92.5z"
+          />
+          <path
+            d="M54.482 132.883l-8.3-14.375 160.21-92.5 8.3 14.376z"
+          />
+          <path
+            d="M342.568 302.663l-160.15-277.38 14.376-8.3 160.15 277.38zM52.5 107.5h16.6v185H52.5zM330.9 107.5h16.6v185h-16.6z"
+          />
+          <path
+            d="M203.522 367l-7.25-12.558 139.34-80.45 7.25 12.557z"
+          />
+          <path
+            d="M369.5 297.9c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.8 9.7 22.5 31 12.8 47.7M90.9 137c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.7 9.7 22.4 31 12.8 47.7M30.5 297.9c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.8 9.6-38.1 3.9-47.7-12.8M309.1 137c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.7 9.6-38.1 3.9-47.7-12.8M200 395.8c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.2-15.6 34.9-34.9 34.9M200 74c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.3-15.6 34.9-34.9 34.9"
+          />
+        </svg>
+      </button>
+      <button
+        aria-label="Pig’s nose"
+        className="css-1qywezs-NavItem"
       >
         🐽
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Farmer"
+        className="css-1qywezs-NavItem"
       >
         👨‍🌾
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Bee"
+        className="css-1qywezs-NavItem"
       >
         🐝
       </button>
@@ -160,55 +199,12 @@ exports[`Storyshots Layout With Many Sidebars 1`] = `
       </div>
     </div>
   </div>
-  <div
-    className="css-l9qndh-Layout"
-  >
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Input
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Response
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-1ayby34-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Console/Inspector
-        </div>
-      </div>
-    </div>
-  </div>
 </main>
 `;
 
 exports[`Storyshots Layout With Slots 1`] = `
 <main
-  className="css-1jafrk2-Layout"
+  className="css-18jdlwm-Layout"
 >
   <div
     className="css-4ddx2x-Card"
@@ -217,71 +213,69 @@ exports[`Storyshots Layout With Slots 1`] = `
       className="css-5tspew-Nav"
     >
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Schema"
+        className="css-1qywezs-NavItem"
+      >
+        <svg
+          style={
+            Object {
+              "fill": "currentColor",
+              "height": "1em",
+              "width": "1em",
+            }
+          }
+          viewBox="0 0 400 400"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M57.468 302.66l-14.376-8.3 160.15-277.38 14.376 8.3z"
+          />
+          <path
+            d="M39.8 272.2h320.3v16.6H39.8z"
+          />
+          <path
+            d="M206.348 374.026l-160.21-92.5 8.3-14.376 160.21 92.5zM345.522 132.947l-160.21-92.5 8.3-14.376 160.21 92.5z"
+          />
+          <path
+            d="M54.482 132.883l-8.3-14.375 160.21-92.5 8.3 14.376z"
+          />
+          <path
+            d="M342.568 302.663l-160.15-277.38 14.376-8.3 160.15 277.38zM52.5 107.5h16.6v185H52.5zM330.9 107.5h16.6v185h-16.6z"
+          />
+          <path
+            d="M203.522 367l-7.25-12.558 139.34-80.45 7.25 12.557z"
+          />
+          <path
+            d="M369.5 297.9c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.8 9.7 22.5 31 12.8 47.7M90.9 137c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.7 9.7 22.4 31 12.8 47.7M30.5 297.9c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.8 9.6-38.1 3.9-47.7-12.8M309.1 137c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.7 9.6-38.1 3.9-47.7-12.8M200 395.8c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.2-15.6 34.9-34.9 34.9M200 74c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.3-15.6 34.9-34.9 34.9"
+          />
+        </svg>
+      </button>
+      <button
+        aria-label="Pig’s nose"
+        className="css-1qywezs-NavItem"
       >
         🐽
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Farmer"
+        className="css-1qywezs-NavItem"
       >
         👨‍🌾
       </button>
       <button
-        className="css-1ijr7ps-Item"
+        aria-label="Bee"
+        className="css-1qywezs-NavItem"
       >
         🐝
       </button>
     </nav>
-  </div>
-  <div
-    className="css-l9qndh-Layout"
-  >
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Input
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-nitczu-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Response
-        </div>
-      </div>
-    </div>
-    <div
-      className="css-1ayby34-Card"
-    >
-      <div
-        className="css-e025bq-List"
-      >
-        <div
-          className="css-6dhis2-ListRow"
-        >
-          Console/Inspector
-        </div>
-      </div>
-    </div>
   </div>
 </main>
 `;
 
 exports[`Storyshots Layout With Strings Only 1`] = `
 <main
-  className="css-1ox8a0q-Layout"
+  className="css-1cv340r-Layout"
 >
   <div
     className="css-4ddx2x-Card"
@@ -295,25 +289,6 @@ exports[`Storyshots Layout With Strings Only 1`] = `
       className="css-om1rsp-Card"
     >
       sidebar
-    </div>
-  </div>
-  <div
-    className="css-l9qndh-Layout"
-  >
-    <div
-      className="css-nitczu-Card"
-    >
-      input
-    </div>
-    <div
-      className="css-nitczu-Card"
-    >
-      response
-    </div>
-    <div
-      className="css-1ayby34-Card"
-    >
-      console
     </div>
   </div>
 </main>
@@ -2200,6 +2175,109 @@ exports[`Storyshots Lists With Stacked Rows 1`] = `
 </div>
 `;
 
+exports[`Storyshots Navbar Nav Bar 1`] = `
+<div
+  style={
+    Object {
+      "border": "1px solid #eee",
+      "margin": "5em auto",
+      "maxWidth": "60em",
+    }
+  }
+>
+  <nav
+    className="css-5tspew-Nav"
+  >
+    <button
+      aria-label="Schema"
+      className="css-1qywezs-NavItem"
+    >
+      <svg
+        style={
+          Object {
+            "fill": "currentColor",
+            "height": "1em",
+            "width": "1em",
+          }
+        }
+        viewBox="0 0 400 400"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M57.468 302.66l-14.376-8.3 160.15-277.38 14.376 8.3z"
+        />
+        <path
+          d="M39.8 272.2h320.3v16.6H39.8z"
+        />
+        <path
+          d="M206.348 374.026l-160.21-92.5 8.3-14.376 160.21 92.5zM345.522 132.947l-160.21-92.5 8.3-14.376 160.21 92.5z"
+        />
+        <path
+          d="M54.482 132.883l-8.3-14.375 160.21-92.5 8.3 14.376z"
+        />
+        <path
+          d="M342.568 302.663l-160.15-277.38 14.376-8.3 160.15 277.38zM52.5 107.5h16.6v185H52.5zM330.9 107.5h16.6v185h-16.6z"
+        />
+        <path
+          d="M203.522 367l-7.25-12.558 139.34-80.45 7.25 12.557z"
+        />
+        <path
+          d="M369.5 297.9c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.8 9.7 22.5 31 12.8 47.7M90.9 137c-9.6 16.7-31 22.4-47.7 12.8-16.7-9.6-22.4-31-12.8-47.7 9.6-16.7 31-22.4 47.7-12.8 16.7 9.7 22.4 31 12.8 47.7M30.5 297.9c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.8 9.6-38.1 3.9-47.7-12.8M309.1 137c-9.6-16.7-3.9-38 12.8-47.7 16.7-9.6 38-3.9 47.7 12.8 9.6 16.7 3.9 38-12.8 47.7-16.7 9.6-38.1 3.9-47.7-12.8M200 395.8c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.2-15.6 34.9-34.9 34.9M200 74c-19.3 0-34.9-15.6-34.9-34.9 0-19.3 15.6-34.9 34.9-34.9 19.3 0 34.9 15.6 34.9 34.9 0 19.3-15.6 34.9-34.9 34.9"
+        />
+      </svg>
+    </button>
+    <button
+      aria-label="Pig’s nose"
+      className="css-1qywezs-NavItem"
+    >
+      🐽
+    </button>
+    <button
+      aria-label="Farmer"
+      className="css-1qywezs-NavItem"
+    >
+      👨‍🌾
+    </button>
+    <button
+      aria-label="Bee"
+      className="css-1qywezs-NavItem"
+    >
+      🐝
+    </button>
+  </nav>
+</div>
+`;
+
+exports[`Storyshots Resizer Resizer 1`] = `
+<div
+  style={
+    Object {
+      "position": "relative",
+    }
+  }
+>
+  <div
+    onMouseDown={[Function]}
+    onTouchStart={[Function]}
+    style={
+      Object {
+        "backgroundColor": "rgba(0, 0, 0, 0.2)",
+        "bottom": -8,
+        "cursor": "ns-resize",
+        "height": 16,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "zIndex": 10,
+      }
+    }
+  />
+  <main>
+    Main content
+  </main>
+</div>
+`;
+
 exports[`Storyshots Tabbar Tabbar 1`] = `
 <div
   style={
@@ -2261,6 +2339,9 @@ exports[`Storyshots Tabbar Tabbar 1`] = `
           </button>
         </li>
       </ul>
+      <p>
+        One
+      </p>
     </div>
     <div
       className="css-6dhis2-ListRow"
@@ -2335,6 +2416,9 @@ exports[`Storyshots Tabbar Tabbar 1`] = `
           </button>
         </li>
       </ul>
+      <p>
+        With
+      </p>
     </div>
     <div
       className="css-crkf2n-ListRow"
@@ -2377,6 +2461,9 @@ exports[`Storyshots Tabbar Tabbar 1`] = `
             </button>
           </li>
         </ul>
+        <p>
+          a
+        </p>
       </div>
     </div>
   </div>

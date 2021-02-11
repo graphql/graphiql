@@ -24,7 +24,8 @@
     "build-clean": "rimraf esm dist",
     "build-cjs": "tsc",
     "build-esm": "tsc --project ./tsconfig.esm.json",
-    "storybook": "start-storybook"
+    "storybook": "start-storybook",
+    "test": "jest"
   },
   "keywords": [
     "graphql",
@@ -37,7 +38,8 @@
   "devDependencies": {
     "@storybook/react": "6.1.17",
     "@storybook/addon-essentials": "6.1.17",
-    "@storybook/addon-storyshots": "6.0.22"
+    "@storybook/addon-storyshots": "6.0.22",
+    "jest": "26.6.3"
   },
   "peerDependencies": {
     "graphql": "^14.0.0 || ^15.0.0",
