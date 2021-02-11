@@ -11,8 +11,9 @@ import Tabs from './Tabs';
 import React from 'react';
 import Toolbar from './index';
 import Content from './Content';
+import { layout } from '../../themes/decorators';
 
-export default { title: 'Toolbar' };
+export default { title: 'Toolbar', decorators: [layout] };
 
 export const Basic = () => (
   <List>

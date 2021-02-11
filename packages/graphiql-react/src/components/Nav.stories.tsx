@@ -10,10 +10,11 @@
 
 import { jsx } from 'theme-ui';
 import { NavItem, Nav } from './Nav';
+import { layout } from '../themes/decorators';
 
 import Logo from './Logo';
 
-export default { title: 'Navbar' };
+export default { title: 'Navbar', decorators: [layout] };
 
 export const NavBar = () => (
   <Nav>

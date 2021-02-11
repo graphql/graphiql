@@ -11,7 +11,7 @@
 import { jsx } from 'theme-ui';
 import { PropsWithChildren } from 'react';
 
-import { ReactNodeLike } from '../types';
+import { ReactNodeLike } from '../../types';
 
 interface NavProps {
   children: Array<ReactNodeLike>;
@@ -30,7 +30,6 @@ export const NavItem = ({
   <button
     aria-label={label}
     sx={{
-      background: 'primary',
       color: active ? '#E10098' : '#8c8c8c',
       display: 'flex',
       alignItems: 'center',

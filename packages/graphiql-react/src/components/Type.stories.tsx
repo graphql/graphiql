@@ -11,8 +11,9 @@
 import { jsx } from 'theme-ui';
 import List, { ListRow } from './List';
 import { SectionHeader, Explainer } from './Type';
+import { layout } from '../themes/decorators';
 
-export default { title: 'Type' };
+export default { title: 'Type', decorators: [layout] };
 
 export const type = () => (
   <List>
