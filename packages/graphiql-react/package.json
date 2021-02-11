@@ -20,6 +20,10 @@
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "build": "yarn build-clean && yarn build-cjs && yarn build-esm",
+    "build-clean": "rimraf esm dist",
+    "build-cjs": "tsc",
+    "build-esm": "tsc --project ./tsconfig.esm.json",
     "storybook": "start-storybook"
   },
   "keywords": [
