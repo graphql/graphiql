@@ -178,7 +178,7 @@ Please note that EasyCLA is configured to accept commits from certain GitHub bot
 
 Please note that EasyCLA is configured to accept commits from certain GitHub bots. These are approved on an exception basis once we are confident that any content they create is either unlikely to consist of copyrightable content or else was written by someone who has already signed the CLA (e.g., a project maintainer). The bots that have currently been approved as exceptions are:
 
-* github-actions (exclusively for the `changesets` Action)
+- github-actions (exclusively for the `changesets` Action)
 
 You can find [detailed information here](https://github.com/graphql/graphql-wg/tree/main/membership). If you have issues, please email [operations@graphql.org](mailto:operations@graphql.org).
 
