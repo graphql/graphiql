@@ -1,0 +1,23 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./esm",
+    "composite": true,
+    "jsx": "react",
+    "strictPropertyInitialization": false,
+    "baseUrl": "."
+  },
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/dist/**.*",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js",
+    "**/*.stories.js",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
+  ]
+}
