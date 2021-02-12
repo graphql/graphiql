@@ -33,6 +33,7 @@
     "react"
   ],
   "dependencies": {
+    "@emotion/core": "11.0.0",
     "theme-ui": "0.3.5"
   },
   "devDependencies": {
