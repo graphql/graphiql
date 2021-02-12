@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.1.1
+
+### Patch Changes
+
+- [`d3278556`](https://github.com/graphql/graphiql/commit/d3278556d050d948930c4b35a73039255f9a92b7) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - Move `@graphiql/create-fetcher` to `@graphiql/toolkit` because it doesn't need to be it's own package as @imolorhe pointed out
+
 ## 0.1.0
 
 ### Minor Changes
