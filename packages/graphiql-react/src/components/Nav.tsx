@@ -11,7 +11,7 @@
 import { jsx } from 'theme-ui';
 import { PropsWithChildren } from 'react';
 
-import { ReactNodeLike } from '../types';
+import { ReactNodeLike } from '../../types';
 
 interface NavProps {
   children: Array<ReactNodeLike>;

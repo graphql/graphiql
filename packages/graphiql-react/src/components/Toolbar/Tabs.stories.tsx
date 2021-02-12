@@ -9,8 +9,8 @@
 import List, { ListRow } from '../List';
 import Tabs from './Tabs';
 import React, { useState } from 'react';
-import { layout } from '../../themes/decorators';
-import { ReactNodeLike } from '../../types';
+import { layout } from '../themes/decorators';
+import { ReactNodeLike } from '../../../types';
 
 export default { title: 'Tabbar', decorators: [layout] };
 

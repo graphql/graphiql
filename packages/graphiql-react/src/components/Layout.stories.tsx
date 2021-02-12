@@ -11,7 +11,7 @@
 import { jsx } from 'theme-ui';
 import { Nav, NavItem } from './Nav';
 import List, { ListRow } from './List';
-import { useThemeLayout } from '../themes/provider';
+import { useThemeLayout } from './themes/provider';
 import Logo from './Logo';
 
 const explorer = {

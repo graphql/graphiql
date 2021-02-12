@@ -10,7 +10,7 @@
 
 import { jsx } from 'theme-ui';
 import { NavItem, Nav } from './Nav';
-import { layout } from '../themes/decorators';
+import { layout } from './themes/decorators';
 
 import Logo from './Logo';
 
