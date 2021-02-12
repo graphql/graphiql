@@ -2,6 +2,13 @@
 
 ## 1.4.0
 
+### Patch Changes
+
+- Updated dependencies [[`b4fc16c0`](https://github.com/graphql/graphiql/commit/b4fc16c025da6f466727dc17cab6026d14c6e7fe)]:
+  - codemirror-graphql@1.0.0
+
+## 1.4.0
+
 ### Bugfixes
 
 - Fixes the search icon misalignment. (#1776) by [@iifawzi](https://github.com/iifawzi)
