@@ -9031,11 +9031,6 @@ dotenv@^6.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
 
-dset@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/dset/-/dset-3.0.0.tgz#b49ef4a6a092c2c5328618eca2ccf6885fafb431"
-  integrity sha512-pp0B9VgLwMem6bfSDJujcXa41swmXkhWICL1jwC7WbD/NaxXPCXO0Z1sOrVshIQaD4D/pi5lDS7NCt6qIytWaA==
-
 duplexer2@~0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.1.4.tgz#8b12dab878c0d69e3e7891051662a32fc6bddcc1"
@@ -10990,16 +10985,17 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "graphiql@file:packages/graphiql":
-  version "1.4.0-rc.1"
+  version "1.4.0"
   dependencies:
     "@graphiql/toolkit" "^0.1.0"
     codemirror "^5.54.0"
-    codemirror-graphql "^0.15.2"
+    codemirror-graphql "^1.0.0"
     copy-to-clipboard "^3.2.0"
-    dset "^3.0.0"
+    deepmerge "^4.2.2"
     entities "^2.0.0"
     graphql-language-service "^3.1.2"
     markdown-it "^10.0.0"
+    nestie "^1.0.0"
 
 graphql-config@^3.0.2, graphql-config@^3.0.3:
   version "3.0.3"
@@ -14652,6 +14648,11 @@ neo-async@^2.6.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
+
+nestie@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/nestie/-/nestie-1.0.0.tgz#9e6612e7cf272105c04a60b74d65a91df8ddb7a2"
+  integrity sha512-kqV8S8idHH7+itzEr4JhKjlsDb1O1QEaHeDfPUssuufm3L/R1PDqfMoMzIGsqVhqynxlaQ4DtnM+ozq/mW96AQ==
 
 next-tick@~1.0.0:
   version "1.0.0"
