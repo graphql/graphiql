@@ -2,6 +2,8 @@
 
 const envConfig = {
   modules: 'commonjs',
+  loose: true,
+  shippedProposals: true,
 };
 
 if (process.env.ESM) {
@@ -30,5 +32,8 @@ module.exports = {
       compact: false,
     },
   },
-  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
+  plugins: [
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-proposal-private-methods'),
+  ],
 };

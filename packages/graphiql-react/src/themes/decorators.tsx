@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import { ReactNodeLike } from '../../../types';
+import { ReactNodeLike } from '../types';
 
 const styles = {
   maxWidth: '60em',
