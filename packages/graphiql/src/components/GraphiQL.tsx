@@ -52,8 +52,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
-import deepmerge from 'deepmerge';
-import { nestie } from 'nestie';
+import { dset } from '../utility/dset-merger';
 
 import type {
   Fetcher,
@@ -1114,11 +1113,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                       `Expected part to contain a data property, but got ${part}`,
                     );
                   }
-                  const partData = nestie<any, any>({
-                    [part.path.join('.')]: part.data,
-                  });
 
-                  fullResponse.data = deepmerge(fullResponse.data, partData);
+                  dset(payload.data, path, data);
                 } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.

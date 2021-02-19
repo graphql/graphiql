@@ -10991,11 +10991,9 @@ grapheme-splitter@^1.0.4:
     codemirror "^5.54.0"
     codemirror-graphql "^1.0.0"
     copy-to-clipboard "^3.2.0"
-    deepmerge "^4.2.2"
     entities "^2.0.0"
     graphql-language-service "^3.1.2"
     markdown-it "^10.0.0"
-    nestie "^1.0.0"
 
 graphql-config@^3.0.2, graphql-config@^3.0.3:
   version "3.0.3"
@@ -14648,11 +14646,6 @@ neo-async@^2.6.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
   integrity sha512-iyam8fBuCUpWeKPGpaNMetEocMt364qkCsfL9JuhjXX6dRnguRVOfk2GZaDpPjcOKiiXCPINZC1GczQ7iTq3Zw==
-
-nestie@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/nestie/-/nestie-1.0.0.tgz#9e6612e7cf272105c04a60b74d65a91df8ddb7a2"
-  integrity sha512-kqV8S8idHH7+itzEr4JhKjlsDb1O1QEaHeDfPUssuufm3L/R1PDqfMoMzIGsqVhqynxlaQ4DtnM+ozq/mW96AQ==
 
 next-tick@~1.0.0:
   version "1.0.0"
