@@ -52,7 +52,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
-import { dset } from '../utility/dset-merger';
+import { dset } from 'dset/merge';
 
 import type {
   Fetcher,
