@@ -26,7 +26,6 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-import { dset } from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -53,6 +52,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { dset } from 'dset/merge';
 
 import type {
   Fetcher,
@@ -1113,7 +1113,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                       `Expected part to contain a data property, but got ${part}`,
                     );
                   }
-                  dset(payload.data, part.path, part.data);
+
+                  dset(payload.data, path, data);
                 } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.
