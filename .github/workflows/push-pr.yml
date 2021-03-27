@@ -1,9 +1,9 @@
 name: Node.JS CI
 on: [push, pull_request]
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-16.04 
+  lint:
+    name: Lint
+    runs-on: ubuntu-16.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -15,13 +15,26 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: NPM Install
-        uses: bahmutov/npm-install@v1
-      - name: TSC Build
+          VALIDATE_ALL_CODEBASE: false
+      - uses: bahmutov/npm-install@v1
+      - name: Eslint
+        run: yarn lint
+      - name: Prettier Check
+        run: yarn prettier-check
+  build:
+    name: Typescript Build
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+      - name: Tyescript Build
         run: yarn build
   unit:
     name: Unit Tests
     runs-on: ubuntu-16.04
+    strategy:
+      matrix:
+        node: [12', '14']
     steps:
       - uses: actions/checkout@v2
       - uses: bahmutov/npm-install@v1
@@ -29,7 +42,6 @@ jobs:
       - uses: codecov/codecov-action@v1
         with:
           directory: coverage
-
   e2e:
     name: Cypress
     runs-on: ubuntu-16.04
