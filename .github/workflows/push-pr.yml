@@ -1,0 +1,42 @@
+name: Node.JS CI
+on: [push, pull_request]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-16.04 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+      - name: Lint Code Base
+        uses: github/super-linter@v3
+        env:
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+      - name: TSC Build
+        run: yarn build
+  unit:
+    name: Unit Tests
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+      - run: yarn test --coverage
+      - uses: codecov/codecov-action@v1
+        with:
+          directory: coverage
+
+  e2e:
+    name: Cypress
+    runs-on: ubuntu-16.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: bahmutov/npm-install@v1
+      - run: yarn ci-e2e
+      - uses: codecov/codecov-action@v1
+        with:
+          directory: .nyc_output
