@@ -1,0 +1,19 @@
+name: Node.JS CI
+on: 
+  push:
+    paths:
+      - 'yarn.lock'
+      
+jobs:
+  check:
+    name: License Check
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+
+      - name: Eslint
+        run: yarn license-check
