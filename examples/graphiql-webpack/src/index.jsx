@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import GraphiQL from 'graphiql';
+import 'graphiql/graphiql.css';
 
 const Logo = () => <span>{'My Corp'}</span>;
 

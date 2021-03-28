@@ -17,13 +17,13 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {},
   "dependencies": {
+    "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
     "graphql-ws": "^4.1.0",
-    "subscriptions-transport-ws": "^0.9.18",
     "meros": "^1.1.2",
-    "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1"
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "devDependencies": {
     "isomorphic-fetch": "^3.0.0",
