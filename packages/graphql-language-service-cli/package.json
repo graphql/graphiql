@@ -27,7 +27,7 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "dependencies": {
     "@babel/polyfill": "7.8.7",

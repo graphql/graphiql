@@ -29,6 +29,9 @@
     "isomorphic-fetch": "^3.0.0",
     "graphql": "experimental-stream-defer"
   },
+  "peerDependencies": {
+    "graphql": ">= v14.5.0 <= 15.5.0"
+  },
   "keywords": [
     "graphql",
     "graphiql"

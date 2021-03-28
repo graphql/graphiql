@@ -24,13 +24,14 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "dependencies": {
     "graphql-language-service-types": "^1.8.0",
     "nullthrows": "^1.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1"
+    "@types/jest": "^25.2.1",
+    "graphql": "experimental-stream-defer"
   }
 }

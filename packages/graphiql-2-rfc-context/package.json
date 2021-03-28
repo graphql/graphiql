@@ -57,7 +57,7 @@
     "theme-ui": "^0.3.1"
   },
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0",
+    "graphql": ">= v14.5.0 <= 15.5.0",
     "prop-types": ">=15.5.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
