@@ -1,4 +1,4 @@
-name: Node.JS CI
+name: License Check
 on: 
   push:
     paths:
@@ -15,5 +15,5 @@ jobs:
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
 
-      - name: Eslint
+      - name: License Check
         run: yarn license-check
