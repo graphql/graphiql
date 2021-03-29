@@ -2,8 +2,8 @@
 name: Netlify Production Deploy
 on:
   push:
-    branch:
-      only: main
+    branches:
+      - main
     paths-ignore:
       - '**.md'
       - 'examples'
