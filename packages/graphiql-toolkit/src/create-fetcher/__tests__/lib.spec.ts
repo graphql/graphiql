@@ -48,14 +48,14 @@ describe('createWebsocketsFetcherFromUrl', () => {
     createWebsocketsFetcherFromUrl('wss://example.com');
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
-    expect(SubscriptionClient.mock.calls).toEqual([]);
   });
 
-  it('creates a websockets client using provided url that fails to legacy client', async () => {
+  it('creates a websockets client using provided url that fails', async () => {
     createClient.mockReturnValue(false);
-    await createWebsocketsFetcherFromUrl('wss://example.com');
+    expect(
+      await createWebsocketsFetcherFromUrl('wss://example.com'),
+    ).toThrowError();
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
-    expect(SubscriptionClient.mock.calls[0][0]).toEqual('wss://example.com');
   });
 });

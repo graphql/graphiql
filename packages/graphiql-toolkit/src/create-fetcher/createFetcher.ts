@@ -4,8 +4,7 @@ import {
   createMultipartFetcher,
   createSimpleFetcher,
   isSubscriptionWithName,
-  createWebsocketsFetcherFromUrl,
-  createWebsocketsFetcherFromClient,
+  getWsFetcher,
 } from './lib';
 
 /**
@@ -18,7 +17,6 @@ import {
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   let httpFetch;
-  let wsFetcher: null | Fetcher | void = null;
   if (typeof window !== null && window?.fetch) {
     httpFetch = window.fetch;
   }
@@ -37,13 +35,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
-  if (options.subscriptionUrl) {
-    wsFetcher = createWebsocketsFetcherFromUrl(options.subscriptionUrl);
-  }
-  if (options.wsClient) {
-    wsFetcher = createWebsocketsFetcherFromClient(options.wsClient);
-  }
-
+  const wsFetcher = getWsFetcher(options);
   const httpFetcher = options.enableIncrementalDelivery
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
