@@ -1,0 +1,45 @@
+# .github/workflows/netlify.yml
+name: Netlify Deploy Preview
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
+  
+jobs:
+  build:
+    name: "Build & Deploy"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+      - name: Build 
+        run: yarn build
+
+      - name: Build Bundles 
+        run: yarn build-bundles
+
+      - name: Build Typedoc
+        run: yarn build-docs
+
+      - name: Deploy Dev to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './packages/graphiql/'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy Preview: ${{ github.event.pull_request.title }}. Use `/dev` for react debugging"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+          functions-dir: functions
+          github-deployment-environment: "Deploy Preview"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+        timeout-minutes: 1

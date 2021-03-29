@@ -44,7 +44,8 @@ jobs:
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
 
-      - run: yarn test --coverage
+      - name: Run Unit Tests
+        run: yarn test --coverage
 
       - name: Codecov
         uses: codecov/codecov-action@v1
