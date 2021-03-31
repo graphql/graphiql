@@ -482,25 +482,27 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           this.graphiqlContainer = n;
         }}
         className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          <QueryHistory
-            ref={node => {
-              this._queryHistory = node;
-            }}
-            operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
-            onSelectQuery={this.handleSelectHistoryQuery}
-            storage={this._storage}
-            queryID={this._editorQueryID}>
-            <button
-              className="docExplorerHide"
-              onClick={this.handleToggleHistory}
-              aria-label="Close History">
-              {'\u2715'}
-            </button>
-          </QueryHistory>
-        </div>
+        {this.state.historyPaneOpen && (
+          <div className="historyPaneWrap" style={historyPaneStyle}>
+            <QueryHistory
+              ref={node => {
+                this._queryHistory = node;
+              }}
+              operationName={this.state.operationName}
+              query={this.state.query}
+              variables={this.state.variables}
+              onSelectQuery={this.handleSelectHistoryQuery}
+              storage={this._storage}
+              queryID={this._editorQueryID}>
+              <button
+                className="docExplorerHide"
+                onClick={this.handleToggleHistory}
+                aria-label="Close History">
+                {'\u2715'}
+              </button>
+            </QueryHistory>
+          </div>
+        )}
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">
