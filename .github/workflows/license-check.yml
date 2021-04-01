@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'yarn.lock'
+  pull_request:
+    types: [opened, synchronize]
       
 jobs:
   check:
