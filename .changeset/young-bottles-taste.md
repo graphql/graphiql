@@ -12,4 +12,4 @@
 'monaco-graphql': patch
 ---
 
-improve peer resolutions for graphql 15. 14.5.0 minimum is for typescript types.
+improve peer resolutions for graphql 14 & 15. `14.5.0` minimum is for built-in typescript types, and another method only available in `14.4.0`
