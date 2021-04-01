@@ -24,7 +24,7 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.33",

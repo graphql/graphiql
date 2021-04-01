@@ -4,7 +4,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/*"
+      "examples/monaco-graphql-webpack"
     ]
   },
   "lint-staged": {
@@ -126,9 +126,5 @@
     "typescript": "^4.1.3",
     "whatwg-url": "^8.4.0",
     "wsrun": "^5.2.4"
-  },
-  "packageAllowlist": [
-    "package-with-no-license",
-    "package-with-okish-license"
-  ]
+  }
 }
