@@ -11137,17 +11137,10 @@ graphql-config@^3.0.2:
     string-env-interpolation "1.0.1"
     tslib "^2.0.0"
 
-graphql-transport-ws@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/graphql-transport-ws/-/graphql-transport-ws-1.9.0.tgz#81891de870619d4e39242954a9e0f832dd980179"
-  integrity sha512-yrw7nIR4V+lWWRCVCa5ogagHWjlPLDO/Ld1177V4S4fqcMO4qVJyTgMKbTcAUXBhlEATqN7Scb5Oy8Ly+zKFwg==
-  dependencies:
-    ws "^7.3.1"
-
-graphql-ws@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.1.0.tgz#cebe281474b5501d7be66210fb5711633b27fd78"
-  integrity sha512-DxJP1y2YzCqVLy7DrQN0iuR2l48vMOBWukX2d/J9aN2o5x9un5psIIq/2UFRh91UGARmfvPH86y1p4qbC1dITg==
+graphql-ws@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.3.2.tgz#c58b03acc3bd5d4a92a6e9f729d29ba5e90d46a3"
+  integrity sha512-jsW6eOlko7fJek1iaSGQFj97AWuhexL9A3PuxYtyke/VlMdbSFzmDR4PlPPCTBBskRg6tNRb5RTbBVSd2T60JQ==
 
 graphql@experimental-stream-defer:
   version "15.4.0-experimental-stream-defer.1"
@@ -14471,10 +14464,10 @@ merge@^1.2.0:
   resolved "https://registry.yarnpkg.com/merge/-/merge-1.2.1.tgz#38bebf80c3220a8a487b6fcfb3941bb11720c145"
   integrity sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==
 
-meros@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/meros/-/meros-1.1.2.tgz#12d5f520458ba8ae1536092824c1744fa09cf79d"
-  integrity sha512-BvOjEcEtGBOSts+lCCuqDe4LhSvzwQsQNxDB86ZY8RiAVQsPcmzxqm1/OjBBWv7vCufEEq8jstf4QJBBAHlDXg==
+meros@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/meros/-/meros-1.1.4.tgz#c17994d3133db8b23807f62bec7f0cb276cfd948"
+  integrity sha512-E9ZXfK9iQfG9s73ars9qvvvbSIkJZF5yOo9j4tcwM5tN8mUKfj/EKN5PzOr3ZH0y5wL7dLAHw3RVEfpQV9Q7VQ==
 
 methods@~1.1.2:
   version "1.1.2"
@@ -21332,11 +21325,6 @@ ws@^7.2.1, ws@^7.2.3:
   version "7.3.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.3.1.tgz#d0547bf67f7ce4f12a72dfe31262c68d7dc551c8"
   integrity sha512-D3RuNkynyHmEJIpD2qrgVkc9DQ23OrN/moAwZX4L8DfvszsJxpjQuUq3LMx6HoYji9fbIOBY18XWBsAux1ZZUA==
-
-ws@^7.3.1:
-  version "7.4.2"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.2.tgz#782100048e54eb36fe9843363ab1c68672b261dd"
-  integrity sha512-T4tewALS3+qsrpGI/8dqNMLIVdq/g/85U98HPMa6F0m6xTbvhXU6RCQLqPH3+SlomNV/LdY6RXEbBpMH6EOJnA==
 
 wsrun@^5.2.4:
   version "5.2.4"
