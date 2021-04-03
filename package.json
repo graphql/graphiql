@@ -65,7 +65,7 @@
     "testonly": "jest && yarn workspace codemirror-graphql run test",
     "tsc": "tsc --build"
   },
-  "devDependencies": {
+  "dependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/node": "^7.8.7",
