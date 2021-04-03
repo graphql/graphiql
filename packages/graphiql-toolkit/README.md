@@ -2,14 +2,16 @@
 
 General purpose library as a dependency of GraphiQL.
 
-The goal is to make this and related packages a set of general purpose tools used to build an end implementation like GraphiQL
+Part of the GraphiQL 2.0.0 initiative.
 
-It also allows us to share utilities, libraries and components that can be used by
+## Docs
+
+- **`createFetcher` [(Docs)](./docs/create-fetcher.md)** : a utility for creating a `fetcher` prop implementation for HTTP GET, POST including multipart, websockets fetcher
+- more to come!
 
 ## Todo
 
 - [x] Begin porting common type definitions used by GraphiQL and it's dependencies
-- [ ] Port over the GraphiQL components library created by @walaura and designed by @orta
+- [ ] `createFetcher` utility for an easier `fetcher`
 - [ ] Migrate over general purpose `graphiql/src/utilities`
-- [ ] Frontend framework agnostic state implementation
-- [ ] React components and hooks? Or should react specifics live seperately?
+- [ ] Utility to generate json schema spec from `getQueryFacts` for monaco, vscode, etc

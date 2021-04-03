@@ -21,13 +21,16 @@
   "scripts": {},
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
-    "graphql-ws": "^4.1.0",
-    "meros": "^1.1.2",
-    "subscriptions-transport-ws": "^0.9.18"
+    "graphql-ws": "^4.3.2",
+    "meros": "^1.1.4"
   },
   "devDependencies": {
     "isomorphic-fetch": "^3.0.0",
-    "graphql": "experimental-stream-defer"
+    "graphql": "experimental-stream-defer",
+    "subscriptions-transport-ws": "^0.9.18"
+  },
+  "optionalDependencies": {
+    "subscriptions-transport-ws": "^0.9.18"
   },
   "peerDependencies": {
     "graphql": ">= v14.5.0 <= 15.5.0"

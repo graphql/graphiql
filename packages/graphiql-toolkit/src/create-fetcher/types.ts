@@ -90,6 +90,11 @@ export interface CreateFetcherOptions {
    */
   wsClient?: Client;
   /**
+   * `legacyClient` implementation that matches `subscriptions-transport-ws` signature,
+   * whether via `new SubcriptionsClient()` itself or another client with a similar signature.
+   */
+  legacyClient?: SubscriptionClient;
+  /**
    * Headers you can provide statically.
    *
    * If you enable the headers editor and the user provides

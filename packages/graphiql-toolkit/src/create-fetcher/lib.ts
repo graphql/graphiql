@@ -71,33 +71,16 @@ export const createWebsocketsFetcherFromUrl = (
   url: string,
   connectionParams?: ClientOptions['connectionParams'],
 ) => {
-  let wsClient: Client | null = null;
-  let legacyClient: SubscriptionClient | null = null;
-  if (url) {
-    try {
-      try {
-        // TODO: defaults?
-        wsClient = createClient({
-          url,
-          connectionParams,
-        });
-        if (!wsClient) {
-          legacyClient = new SubscriptionClient(url, { connectionParams });
-        }
-      } catch (err) {
-        legacyClient = new SubscriptionClient(url, { connectionParams });
-      }
-    } catch (err) {
-      console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
-    }
-  }
-
-  if (wsClient) {
+  let wsClient;
+  try {
+    // TODO: defaults?
+    wsClient = createClient({
+      url,
+      connectionParams,
+    });
     return createWebsocketsFetcherFromClient(wsClient);
-  } else if (legacyClient) {
-    return createLegacyWebsocketsFetcher(legacyClient);
-  } else if (url) {
-    throw Error('subscriptions client failed to initialize');
+  } catch (err) {
+    console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
   }
 };
 
@@ -169,3 +152,20 @@ export const createMultipartFetcher = (
       yield chunk.map(part => part.body);
     }
   };
+
+/**
+ * If `wsClient` or `legacyClient` are provided, then `subscriptionUrl` is overridden.
+ * @param options {CreateFetcherOptions}
+ * @returns
+ */
+export const getWsFetcher = (options: CreateFetcherOptions) => {
+  if (options.wsClient) {
+    return createWebsocketsFetcherFromClient(options.wsClient);
+  }
+  if (options.legacyClient) {
+    return createLegacyWebsocketsFetcher(options.legacyClient);
+  }
+  if (options.subscriptionUrl) {
+    return createWebsocketsFetcherFromUrl(options.subscriptionUrl);
+  }
+};
