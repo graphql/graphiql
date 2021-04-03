@@ -30,10 +30,13 @@
     "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "dependencies": {
-    "@babel/polyfill": "7.8.7",
+    "@babel/polyfill": "^7.8.7",
     "graphql-language-service": "^3.1.2",
     "graphql-language-service-server": "^2.6.2",
     "graphql-language-service-utils": "^2.5.1",
-    "yargs": "^15.3.1"
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "graphql": "experimental-stream-defer"
   }
 }

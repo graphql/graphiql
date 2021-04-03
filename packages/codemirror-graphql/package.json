@@ -47,11 +47,11 @@
     "graphql-language-service-parser": "^1.9.0"
   },
   "devDependencies": {
-    "codemirror": "^5.52.2",
+    "codemirror": "^5.54.0",
     "cross-env": "^7.0.2",
     "graphql": "experimental-stream-defer",
-    "jsdom": "^16.1.0",
-    "rimraf": "^3.0.0",
+    "jsdom": "^16.4.0",
+    "rimraf": "^3.0.2",
     "sane": "2.0.0"
   }
 }
