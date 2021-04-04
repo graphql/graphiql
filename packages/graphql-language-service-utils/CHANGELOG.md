@@ -1,5 +1,11 @@
 # graphql-language-service-utils
 
+## 2.5.2
+
+### Patch Changes
+
+- [`6869ce77`](https://github.com/graphql/graphiql/commit/6869ce7767050787db5f1017abf82fa5a52fc97a) [#1816](https://github.com/graphql/graphiql/pull/1816) Thanks [@acao](https://github.com/acao)! - improve peer resolutions for graphql 14 & 15. `14.5.0` minimum is for built-in typescript types, and another method only available in `14.4.0`
+
 ## [2.5.1](https://github.com/graphql/graphiql/compare/graphql-language-service-utils@2.5.0...graphql-language-service-utils@2.5.1) (2021-01-07)
 
 ### Bug Fixes
