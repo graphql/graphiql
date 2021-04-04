@@ -6,6 +6,8 @@ on:
       - '**.md'
       - 'examples'
       - '!examples/monaco-graphql-webpack'
+  pull_request:
+    types: [opened, synchronize]
   
 jobs:
   build:
