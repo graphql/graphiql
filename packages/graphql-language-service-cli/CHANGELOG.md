@@ -1,5 +1,11 @@
 # graphql-language-service-cli
 
+## 3.1.13
+
+### Patch Changes
+
+- [`6869ce77`](https://github.com/graphql/graphiql/commit/6869ce7767050787db5f1017abf82fa5a52fc97a) [#1816](https://github.com/graphql/graphiql/pull/1816) Thanks [@acao](https://github.com/acao)! - improve peer resolutions for graphql 14 & 15. `14.5.0` minimum is for built-in typescript types, and another method only available in `14.4.0`
+
 ## [3.1.12](https://github.com/graphql/graphiql/compare/graphql-language-service-cli@3.1.11...graphql-language-service-cli@3.1.12) (2021-01-07)
 
 **Note:** Version bump only for package graphql-language-service-cli
