@@ -1,4 +1,5 @@
 {
+  "name": "graphiql-monorepo",
   "private": true,
   "license": "MIT",
   "workspaces": {
