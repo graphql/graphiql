@@ -1,3 +1,6 @@
 {
-  "packageAllowlist": ["valid-url"]
+  "packageAllowlist": [
+    // MIT, just lacking SPDX in manifest
+    "valid-url"
+  ]
 }
