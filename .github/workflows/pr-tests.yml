@@ -1,38 +1,12 @@
-name: CI
+name: Test PR
 on: 
   pull_request:
     types: [opened, synchronize]
-      
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-16.04
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
-
-      - name: Eslint
-        run: yarn lint
-
-      - name: Prettier Check
-        run: yarn pretty-check
-
-  build:
-    name: Typescript Build
-    runs-on: ubuntu-16.04
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
-
-      - name: Tyescript Build
-        run: yarn build
-
   unit:
     name: Unit Tests
     runs-on: ubuntu-16.04
@@ -45,6 +19,9 @@ jobs:
 
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
+
+      - name: Build
+        run: yarn build
 
       - name: Run Unit Tests
         run: yarn test --coverage
