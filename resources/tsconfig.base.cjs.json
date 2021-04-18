@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -9,6 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "downlevelIteration": true,
     "removeComments": true,
     "strict": true,
     "jsx": "react",
