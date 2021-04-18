@@ -14,6 +14,7 @@ import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
 
+const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
 let API_TOKEN = '';
 
 let isLoggedIn = false;
@@ -50,30 +51,27 @@ const THEME = 'vs-dark';
 render();
 
 function render() {
-  const schemaInput = document.createElement('input');
-  schemaInput.type = 'text';
-
-  schemaInput.value = SCHEMA_URL;
-
   const button = document.createElement('button');
 
   button.id = 'button';
-  button.innerText = 'Run';
+  button.innerText = 'Run Operation ➤';
 
   button.onclick = () => executeCurrentOp();
   button.ontouchend = () => executeCurrentOp();
 
+  const toolbar = document.getElementById('toolbar');
+
   const githubButton = document.createElement('button');
 
-  button.id = 'login';
-  button.innerText = 'GitHub Login';
+  githubButton.id = 'login';
+  githubButton.innerText = 'GitHub Login';
 
-  button.onclick = e => {
+  githubButton.onclick = e => {
     e.preventDefault();
     // @ts-ignore
-    const authenticator = new netlify.default({});
+    const authenticator = new netlify.default({ site_id: SITE_ID });
     authenticator.authenticate(
-      { provider: 'github', scope: 'user' },
+      { provider: 'github', scope: ['user', 'read:org'] },
       (err: Error, data: { token: string }) => {
         if (err) {
           return console.error('Error Authenticating with GitHub: ' + err);
@@ -86,20 +84,11 @@ function render() {
     );
   };
 
-  schemaInput.onkeyup = e => {
-    e.preventDefault();
-    // @ts-ignore
-    const val = e?.target?.value as string;
-    if (val && typeof val === 'string') {
-      GraphQLAPI.setSchemaConfig({ uri: val });
-    }
-  };
-
-  const toolbar = document.getElementById('toolbar');
-
   if (isLoggedIn) {
-    toolbar?.appendChild(schemaInput);
-    toolbar?.appendChild(button);
+    if (toolbar) {
+      toolbar.innerHTML = '';
+      toolbar?.appendChild(button);
+    }
   } else {
     toolbar?.appendChild(githubButton);
   }
@@ -131,6 +120,8 @@ function render() {
       model: variablesModel,
       language: 'json',
       automaticLayout: true,
+      formatOnPaste: true,
+      formatOnType: true,
       theme: THEME,
     },
   );

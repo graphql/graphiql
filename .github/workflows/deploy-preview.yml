@@ -1,13 +1,12 @@
 # .github/workflows/netlify.yml
-name: Netlify Deploy Preview
+name: Netlify Preview
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize]
     paths-ignore:
       - '**.md'
       - 'examples'
       - '!examples/monaco-graphql-webpack'
-  pull_request:
-    types: [opened, synchronize]
   
 jobs:
   graphiql-preview:
@@ -35,12 +34,12 @@ jobs:
           publish-dir: './packages/graphiql/'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy Preview for GraphiQL"
+          deploy-message: "GraphiQL 1 Preview"
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
           functions-dir: functions
-          github-deployment-environment: "GraphiQL Deploy Preview"
+          github-deployment-environment: "GraphiQL 1 Deploy Preview"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
@@ -59,15 +58,15 @@ jobs:
         run: yarn build
 
       - name: Build Monaco Example 
-        run: yarn workspace monaco-graphql-webpack run build
+        run: yarn workspace example-monaco-graphql-webpack run build
 
       - name: Deploy Monaco GraphQL Example to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
-          publish-dir: './examples/monaco-graphql-webpack/dist'
+          publish-dir: './examples/monaco-graphql-webpack/bundle'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy Preview for Monaco"
+          deploy-message: "Monaco GraphQL Preview"
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
@@ -75,5 +74,5 @@ jobs:
           github-deployment-environment: "Monaco GraphQL Preview"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+          NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
         timeout-minutes: 1
