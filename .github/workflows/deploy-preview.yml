@@ -10,8 +10,8 @@ on:
     types: [opened, synchronize]
   
 jobs:
-  build:
-    name: "Build & Deploy"
+  graphiql-preview:
+    name: "GraphiQL"
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -35,12 +35,44 @@ jobs:
           publish-dir: './packages/graphiql/'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy Preview: ${{ github.event.pull_request.title }}. Use `/dev` for react debugging"
+          deploy-message: "Deploy Preview for GraphiQL"
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
           functions-dir: functions
-          github-deployment-environment: "Deploy Preview"
+          github-deployment-environment: "GraphiQL Deploy Preview"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+        timeout-minutes: 1
+  monaco-preview:
+    name: "Monaco GraphQL"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+      - name: Build 
+        run: yarn build
+
+      - name: Build Monaco Example 
+        run: yarn workspace monaco-graphql-webpack run build
+
+      - name: Deploy Monaco GraphQL Example to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './examples/monaco-graphql-webpack/dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy Preview for Monaco"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+          functions-dir: functions
+          github-deployment-environment: "Monaco GraphQL Preview"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}

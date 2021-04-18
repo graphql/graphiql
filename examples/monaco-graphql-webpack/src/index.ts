@@ -1,3 +1,4 @@
+/* global netlify */
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { api as GraphQLAPI } from 'monaco-graphql';
@@ -15,18 +16,7 @@ const SCHEMA_URL = 'https://api.github.com/graphql';
 
 let API_TOKEN = '';
 
-const promptForToken = () => {
-  API_TOKEN =
-    window.localStorage.getItem('API_TOKEN') ||
-    (prompt('provide valid github token') as string);
-  if (!API_TOKEN || API_TOKEN.length < 32) {
-    promptForToken();
-  } else {
-    window.localStorage.setItem('API_TOKEN', API_TOKEN);
-  }
-};
-
-promptForToken();
+let isLoggedIn = false;
 
 // @ts-ignore
 window.MonacoEnvironment = {
@@ -40,6 +30,7 @@ window.MonacoEnvironment = {
     return new EditorWorker();
   },
 };
+
 const operation = `
 # right click to view context menu
 # F1 for command palette
@@ -56,155 +47,191 @@ const variables = `{ "owner": "graphql", "name": "graphiql" }`;
 
 const THEME = 'vs-dark';
 
-const schemaInput = document.createElement('input');
-schemaInput.type = 'text';
+render();
 
-schemaInput.value = SCHEMA_URL;
+function render() {
+  const schemaInput = document.createElement('input');
+  schemaInput.type = 'text';
 
-const button = document.createElement('button');
+  schemaInput.value = SCHEMA_URL;
 
-button.id = 'button';
-button.innerText = 'Run';
+  const button = document.createElement('button');
 
-button.onclick = () => executeCurrentOp();
-button.ontouchend = () => executeCurrentOp();
+  button.id = 'button';
+  button.innerText = 'Run';
 
-schemaInput.onkeyup = e => {
-  e.preventDefault();
-  // @ts-ignore
-  const val = e?.target?.value as string;
-  if (val && typeof val === 'string') {
-    GraphQLAPI.setSchemaConfig({ uri: val });
-  }
-};
+  button.onclick = () => executeCurrentOp();
+  button.ontouchend = () => executeCurrentOp();
 
-const toolbar = document.getElementById('toolbar');
-toolbar?.appendChild(schemaInput);
-toolbar?.appendChild(button);
+  const githubButton = document.createElement('button');
 
-const variablesModel = monaco.editor.createModel(
-  variables,
-  'json',
-  monaco.Uri.file('/1/variables.json'),
-);
+  button.id = 'login';
+  button.innerText = 'GitHub Login';
 
-const resultsEditor = monaco.editor.create(
-  document.getElementById('results') as HTMLElement,
-  {
-    value: `{}`,
-    language: 'json',
-    automaticLayout: true,
-    theme: THEME,
-    wordWrap: 'on',
-  },
-);
+  button.onclick = e => {
+    e.preventDefault();
+    // @ts-ignore
+    const authenticator = new netlify.default({});
+    authenticator.authenticate(
+      { provider: 'github', scope: 'user' },
+      (err: Error, data: { token: string }) => {
+        if (err) {
+          return console.error('Error Authenticating with GitHub: ' + err);
+        } else {
+          isLoggedIn = true;
+          API_TOKEN = data.token;
+          render();
+        }
+      },
+    );
+  };
 
-const variablesEditor = monaco.editor.create(
-  document.getElementById('variables') as HTMLElement,
-  {
-    model: variablesModel,
-    language: 'json',
-    automaticLayout: true,
-    theme: THEME,
-  },
-);
-const operationModel = monaco.editor.createModel(
-  operation,
-  'graphqlDev',
-  monaco.Uri.file('/1/operation.graphql'),
-);
-
-const operationEditor = monaco.editor.create(
-  document.getElementById('operation') as HTMLElement,
-  {
-    model: operationModel,
-    automaticLayout: true,
-    formatOnPaste: true,
-    formatOnType: true,
-    folding: true,
-    theme: THEME,
-  },
-);
-
-GraphQLAPI.setFormattingOptions({
-  prettierConfig: {
-    printWidth: 120,
-  },
-});
-
-/**
- * Basic Operation Exec Example
- */
-
-async function executeCurrentOp() {
-  try {
-    const operation = operationEditor.getValue();
-    const variables = variablesEditor.getValue();
-    const body: { variables?: string; query: string } = { query: operation };
-    const parsedVariables = JSON.parse(variables);
-    if (parsedVariables && Object.keys(parsedVariables).length) {
-      body.variables = variables;
+  schemaInput.onkeyup = e => {
+    e.preventDefault();
+    // @ts-ignore
+    const val = e?.target?.value as string;
+    if (val && typeof val === 'string') {
+      GraphQLAPI.setSchemaConfig({ uri: val });
     }
-    const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
-      body: JSON.stringify(body),
-    });
+  };
 
-    const resultText = await result.text();
-    resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
-  } catch (err) {
-    resultsEditor.setValue(err.toString());
+  const toolbar = document.getElementById('toolbar');
+
+  if (isLoggedIn) {
+    toolbar?.appendChild(schemaInput);
+    toolbar?.appendChild(button);
+  } else {
+    toolbar?.appendChild(githubButton);
   }
-}
 
-const opAction: monaco.editor.IActionDescriptor = {
-  id: 'graphql-run',
-  label: 'Run Operation',
-  contextMenuOrder: 0,
-  contextMenuGroupId: 'operation',
-  keybindings: [
-    // eslint-disable-next-line no-bitwise
-    monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-  ],
-  run: executeCurrentOp,
-};
+  if (!isLoggedIn) {
+    return;
+  }
 
-operationEditor.addAction(opAction);
-variablesEditor.addAction(opAction);
-resultsEditor.addAction(opAction);
+  const variablesModel = monaco.editor.createModel(
+    variables,
+    'json',
+    monaco.Uri.file('/1/variables.json'),
+  );
 
-/**
- * load local schema by default
- */
+  const resultsEditor = monaco.editor.create(
+    document.getElementById('results') as HTMLElement,
+    {
+      value: `{}`,
+      language: 'json',
+      automaticLayout: true,
+      theme: THEME,
+      wordWrap: 'on',
+    },
+  );
 
-let initialSchema = false;
+  const variablesEditor = monaco.editor.create(
+    document.getElementById('variables') as HTMLElement,
+    {
+      model: variablesModel,
+      language: 'json',
+      automaticLayout: true,
+      theme: THEME,
+    },
+  );
+  const operationModel = monaco.editor.createModel(
+    operation,
+    'graphqlDev',
+    monaco.Uri.file('/1/operation.graphql'),
+  );
 
-if (!initialSchema) {
-  GraphQLAPI.setSchemaConfig({
-    uri: SCHEMA_URL,
-    requestOpts: {
-      headers: {
-        Authorization: `Bearer ${API_TOKEN}`,
-      },
+  const operationEditor = monaco.editor.create(
+    document.getElementById('operation') as HTMLElement,
+    {
+      model: operationModel,
+      automaticLayout: true,
+      formatOnPaste: true,
+      formatOnType: true,
+      folding: true,
+      theme: THEME,
+    },
+  );
+
+  GraphQLAPI.setFormattingOptions({
+    prettierConfig: {
+      printWidth: 120,
     },
   });
-  initialSchema = true;
-}
 
-// add your own diagnostics? why not!
-// monaco.editor.setModelMarkers(
-//   model,
-//   'graphql',
-//   [{
-//     severity: 5,
-//     message: 'An example diagnostic error',
-//     startColumn: 2,
-//     startLineNumber: 4,
-//     endLineNumber: 4,
-//     endColumn: 0,
-//   }],
-// );
+  /**
+   * Basic Operation Exec Example
+   */
+
+  async function executeCurrentOp() {
+    try {
+      const operation = operationEditor.getValue();
+      const variables = variablesEditor.getValue();
+      const body: { variables?: string; query: string } = { query: operation };
+      const parsedVariables = JSON.parse(variables);
+      if (parsedVariables && Object.keys(parsedVariables).length) {
+        body.variables = variables;
+      }
+      const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      const resultText = await result.text();
+      resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
+    } catch (err) {
+      resultsEditor.setValue(err.toString());
+    }
+  }
+
+  const opAction: monaco.editor.IActionDescriptor = {
+    id: 'graphql-run',
+    label: 'Run Operation',
+    contextMenuOrder: 0,
+    contextMenuGroupId: 'operation',
+    keybindings: [
+      // eslint-disable-next-line no-bitwise
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+    ],
+    run: executeCurrentOp,
+  };
+
+  operationEditor.addAction(opAction);
+  variablesEditor.addAction(opAction);
+  resultsEditor.addAction(opAction);
+
+  /**
+   * load local schema by default
+   */
+
+  let initialSchema = false;
+
+  if (!initialSchema) {
+    GraphQLAPI.setSchemaConfig({
+      uri: SCHEMA_URL,
+      requestOpts: {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      },
+    });
+    initialSchema = true;
+  }
+
+  // add your own diagnostics? why not!
+  // monaco.editor.setModelMarkers(
+  //   model,
+  //   'graphql',
+  //   [{
+  //     severity: 5,
+  //     message: 'An example diagnostic error',
+  //     startColumn: 2,
+  //     startLineNumber: 4,
+  //     endLineNumber: 4,
+  //     endColumn: 0,
+  //   }],
+  // );
+}
