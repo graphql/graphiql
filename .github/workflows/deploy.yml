@@ -1,5 +1,5 @@
 # .github/workflows/netlify.yml
-name: Netlify Production Deploy
+name: Netlify Production
 on:
   push:
     branches:
@@ -7,11 +7,11 @@ on:
     paths-ignore:
       - '**.md'
       - 'examples'
-      - '!examples/monaco-graphql-webpack'
+      - '!examples/monaco-graphql-webpack/**'
 
 jobs:
   deploy:
-    name: "Build & Deploy Production Demo & API Docs"
+    name: "Build & Deploy GraphiQL 1 Demo & API Docs"
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -43,4 +43,32 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+        timeout-minutes: 1
+  deploy-monaco:
+    name: "Build & Deploy Monaco Example"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+
+      - name: Build 
+        run: yarn build
+
+      - name: Deploy Monaco Demo to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './packages/graphiql/'
+          production-branch: main
+          production-deploy: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Monaco Demo"
+          functions-dir: functions
+          github-deployment-environment: "Monaco Demo"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
         timeout-minutes: 1

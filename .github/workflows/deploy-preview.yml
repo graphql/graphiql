@@ -6,7 +6,7 @@ on:
     paths-ignore:
       - '**.md'
       - 'examples'
-      - '!examples/monaco-graphql-webpack'
+      - '!examples/monaco-graphql-webpack/**'
   
 jobs:
   graphiql-preview:
@@ -39,7 +39,7 @@ jobs:
           enable-commit-comment: true
           overwrites-pull-request-comment: true
           functions-dir: functions
-          github-deployment-environment: "GraphiQL 1 Deploy Preview"
+          github-deployment-environment: "graphiql-1"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
@@ -71,7 +71,7 @@ jobs:
           enable-commit-comment: true
           overwrites-pull-request-comment: true
           functions-dir: functions
-          github-deployment-environment: "Monaco GraphQL Preview"
+          github-deployment-environment: "monaco-graphql"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
