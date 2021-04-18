@@ -13,8 +13,11 @@ import {
   createWebsocketsFetcherFromUrl,
   createMultipartFetcher,
   createSimpleFetcher,
+  createWebsocketsFetcherFromClient,
+  createLegacyWebsocketsFetcher,
 } from '../lib';
 import { createClient } from 'graphql-ws';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 const exampleWithSubscripton = /* GraphQL */ `
   subscription Example {
@@ -85,9 +88,6 @@ describe('createGraphiQLFetcher', () => {
     createGraphiQLFetcher(args);
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args, fetch]]);
-    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([
-      [args.subscriptionUrl],
-    ]);
   });
 
   it('returns fetcher with custom wsClient', () => {
@@ -105,5 +105,24 @@ describe('createGraphiQLFetcher', () => {
 
     expect(createMultipartFetcher.mock.calls).toEqual([[args, fetch]]);
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
+  });
+
+  it('returns fetcher with custom legacyClient', () => {
+    createClient.mockReturnValue('WSClient');
+    createLegacyWebsocketsFetcher.mockReturnValue('CustomWSSFetcher');
+
+    const legacyClient = new SubscriptionClient(wssURL);
+    const args = {
+      url: serverURL,
+      legacyClient,
+      enableIncrementalDelivery: true,
+    };
+
+    createGraphiQLFetcher(args);
+
+    expect(createMultipartFetcher.mock.calls).toEqual([[args, fetch]]);
+    expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
+    expect(createWebsocketsFetcherFromClient.mock.calls).toEqual([]);
+    expect(createLegacyWebsocketsFetcher.mock.calls).toEqual([]);
   });
 });

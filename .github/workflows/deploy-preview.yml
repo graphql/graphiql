@@ -1,0 +1,76 @@
+# .github/workflows/netlify.yml
+name: Netlify Preview
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore:
+      - '**.md'
+  
+jobs:
+  graphiql-preview:
+    name: "GraphiQL"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+      - name: Build 
+        run: yarn build
+
+      - name: Build Bundles 
+        run: yarn build-bundles
+
+      - name: Build Typedoc
+        run: yarn build-docs
+
+      - name: Deploy Dev to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './packages/graphiql/'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "GraphiQL 1 Preview"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+          functions-dir: functions
+          github-deployment-environment: "graphiql-1"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
+        timeout-minutes: 1
+  monaco-preview:
+    name: "Monaco GraphQL"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+      - name: Build 
+        run: yarn build
+
+      - name: Build Monaco Example 
+        run: yarn workspace example-monaco-graphql-webpack run build
+
+      - name: Deploy Monaco GraphQL Example to Netlify
+        uses: nwtgck/actions-netlify@v1.1
+        with:
+          publish-dir: './examples/monaco-graphql-webpack/bundle'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Monaco GraphQL Preview"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+          functions-dir: functions
+          github-deployment-environment: "monaco-graphql"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
+        timeout-minutes: 1

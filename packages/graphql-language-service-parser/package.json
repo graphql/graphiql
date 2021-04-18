@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -24,16 +24,17 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "devDependencies": {
     "@types/benchmark": "^1.0.33",
     "benchmark": "^2.1.4",
+    "graphql": "experimental-stream-defer",
     "lodash": "^4.17.15",
     "platform": "^1.3.5",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.5",
-    "vscode-languageserver-types": "3.15.1"
+    "typescript": "^4.1.3",
+    "vscode-languageserver-types": "^3.15.1"
   },
   "dependencies": {
     "graphql-language-service-types": "^1.8.0"

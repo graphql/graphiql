@@ -16,4 +16,4 @@ if [ "$CI" != true ]; then
   exit 1;
 fi;
 
-yarn lint && yarn build && yarn build-bundles && yarn test-all && yarn e2e;
+yarn lint && yarn build && yarn build-bundles && yarn test && yarn e2e;

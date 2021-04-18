@@ -170,6 +170,11 @@ describe('GraphiQL', () => {
     expect(queryVariables3?.style.height).toEqual('');
   });
 
+  it('defaults to closed history panel', () => {
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+    expect(container.querySelector('.historyPaneWrap')).not.toBeInTheDocument();
+  });
+
   it('adds a history item when the execute query function button is clicked', () => {
     const { getByTitle, container } = render(
       <GraphiQL
@@ -180,6 +185,7 @@ describe('GraphiQL', () => {
         fetcher={noOpFetcher}
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
   });
@@ -188,6 +194,7 @@ describe('GraphiQL', () => {
     const { getByTitle, container } = render(
       <GraphiQL query={mockBadQuery} fetcher={noOpFetcher} />,
     );
+    fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(0);
   });
@@ -202,6 +209,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
   });
@@ -216,6 +224,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
@@ -232,6 +241,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
@@ -260,6 +270,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);
@@ -286,6 +297,7 @@ describe('GraphiQL', () => {
         headerEditorEnabled
       />,
     );
+    fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);

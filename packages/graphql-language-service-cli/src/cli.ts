@@ -134,7 +134,7 @@ switch (command) {
     }
     break;
   default: {
-    client(command, argv as { [key: string]: string });
+    client(command as string, argv as { [key: string]: string });
     break;
   }
 }

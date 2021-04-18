@@ -1,7 +1,10 @@
-# Change Log
+# graphql-language-service
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+## 3.1.3
+
+### Patch Changes
+
+- [`6869ce77`](https://github.com/graphql/graphiql/commit/6869ce7767050787db5f1017abf82fa5a52fc97a) [#1816](https://github.com/graphql/graphiql/pull/1816) Thanks [@acao](https://github.com/acao)! - improve peer resolutions for graphql 14 & 15. `14.5.0` minimum is for built-in typescript types, and another method only available in `14.4.0`
 
 ## [3.1.2](https://github.com/graphql/graphiql/compare/graphql-language-service@3.1.1...graphql-language-service@3.1.2) (2021-01-07)
 
@@ -11,7 +14,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package graphql-language-service
 
-# [3.1.0](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.6...graphql-language-service@3.1.0) (2021-01-07)
+## [3.1.0](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.6...graphql-language-service@3.1.0) (2021-01-07)
 
 ### Features
 
@@ -59,27 +62,27 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package graphql-language-service
 
-# [3.0.0](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.4...graphql-language-service@3.0.0) (2020-06-11)
+## [3.0.0](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.4...graphql-language-service@3.0.0) (2020-06-11)
 
 ### Features
 
 - standalone monaco API ([#1575](https://github.com/graphql/graphiql/issues/1575)) ([954aa3d](https://github.com/graphql/graphiql/commit/954aa3d7159fd26bba9650824e0f668e417ca64f))
 
-# [3.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.3...graphql-language-service@3.0.0-alpha.4) (2020-06-04)
+## [3.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.3...graphql-language-service@3.0.0-alpha.4) (2020-06-04)
 
 **Note:** Version bump only for package graphql-language-service
 
-# [3.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.2...graphql-language-service@3.0.0-alpha.3) (2020-06-04)
+## [3.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.2...graphql-language-service@3.0.0-alpha.3) (2020-06-04)
 
 ### Bug Fixes
 
 - cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
 
-# [3.0.0-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.1...graphql-language-service@3.0.0-alpha.2) (2020-05-28)
+## [3.0.0-alpha.2](https://github.com/graphql/graphiql/compare/graphql-language-service@3.0.0-alpha.1...graphql-language-service@3.0.0-alpha.2) (2020-05-28)
 
 **Note:** Version bump only for package graphql-language-service
 
-# [3.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.8...graphql-language-service@3.0.0-alpha.1) (2020-05-19)
+## [3.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@2.4.0-alpha.8...graphql-language-service@3.0.0-alpha.1) (2020-05-19)
 
 **Note:** Version bump only for package graphql-language-service
 

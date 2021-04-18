@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"
@@ -27,10 +27,13 @@
     "graphql": "./dist/temp-bin.js"
   },
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "dependencies": {
     "graphql-language-service-interface": "^2.8.2",
     "graphql-language-service-types": "^1.8.0"
+  },
+  "devDependencies": {
+    "graphql": "experimental-stream-defer"
   }
 }

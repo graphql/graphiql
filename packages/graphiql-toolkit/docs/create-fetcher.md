@@ -79,11 +79,15 @@ This is url used for all `HTTP` requests, and for schema introspection.
 
 #### `subscriptionUrl`
 
-This generates a `graphql-ws` client.
+This generates a `graphql-ws` client using the provided url. Note that a server must be compatible with the new `graphql-ws` subscriptions spec for this to work.
 
 #### `wsClient`
 
 provide your own subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `graphql-ws` `Client` signature.
+
+#### `legacyClient`
+
+provide a legacy subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `subscriptions-transport-ws` `Client` signature.
 
 #### `headers`
 
@@ -97,7 +101,7 @@ Pass a custom fetch implementation such as `isomorphic-feth`
 
 #### Custom `wsClient` Example
 
-Just by providing the `subscriptionUrl`
+Just by providing the `wsClient`
 
 ```ts
 import * as React from 'react';
@@ -116,6 +120,31 @@ const fetcher = createGraphiQLFetcher({
     url: subscriptionUrl,
     keepAlive: 2000,
   }),
+});
+
+export const App = () => <GraphiQL fetcher={fetcher} />;
+
+ReactDOM.render(document.getElementByID('graphiql'), <App />);
+```
+
+#### Custom `legacyClient` Example
+
+By providing the `legacyClient` you can support a `subscriptions-transport-ws` client implementation, or equivalent
+
+```ts
+import * as React from 'react';
+import ReactDOM from 'react-dom';
+import { GraphiQL } from 'graphiql';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { createGraphiQLFetcher } from '@graphiql/toolkit';
+
+const url = 'https://myschema.com/graphql';
+
+const subscriptionUrl = 'wss://myschema.com/graphql';
+
+const fetcher = createGraphiQLFetcher({
+  url,
+  legacyClient: new SubscriptionsClient(subscriptionUrl),
 });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
@@ -148,4 +177,4 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 
 ## Credits
 
-This is inspired from `graphql-subscriptions-fetcher` and thanks to @Urigo
+This is originally inspired by `graphql-subscriptions-fetcher` created by @Urigo

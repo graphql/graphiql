@@ -17,9 +17,8 @@ declare namespace Cypress {
     variablesString?: string;
   };
   type MockResult =
-    | {
-        data: any;
-      }
+    | { data: any }
+    | { data: any; hasNext?: boolean }
     | { error: any[] };
   interface Chainable<Subject = any> {
     /**

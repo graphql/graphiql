@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-utils",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -24,13 +24,14 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "dependencies": {
     "graphql-language-service-types": "^1.8.0",
     "nullthrows": "^1.0.0"
   },
   "devDependencies": {
-    "@types/jest": "^25.2.1"
+    "@types/jest": "^26.0.22",
+    "graphql": "experimental-stream-defer"
   }
 }

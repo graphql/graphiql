@@ -1,5 +1,9 @@
 import { parse } from 'graphql';
-import { isSubscriptionWithName, createWebsocketsFetcherFromUrl } from '../lib';
+import {
+  isSubscriptionWithName,
+  createWebsocketsFetcherFromUrl,
+  getWsFetcher,
+} from '../lib';
 
 import 'isomorphic-fetch';
 
@@ -48,14 +52,53 @@ describe('createWebsocketsFetcherFromUrl', () => {
     createWebsocketsFetcherFromUrl('wss://example.com');
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
-    expect(SubscriptionClient.mock.calls).toEqual([]);
   });
 
-  it('creates a websockets client using provided url that fails to legacy client', async () => {
+  it('creates a websockets client using provided url that fails', async () => {
     createClient.mockReturnValue(false);
-    await createWebsocketsFetcherFromUrl('wss://example.com');
+    expect(
+      await createWebsocketsFetcherFromUrl('wss://example.com'),
+    ).toThrowError();
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
-    expect(SubscriptionClient.mock.calls[0][0]).toEqual('wss://example.com');
+  });
+});
+
+describe('getWsFetcher', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+  it('provides an observable wsClient when custom wsClient option is provided', () => {
+    createClient.mockReturnValue(true);
+    getWsFetcher({
+      url: '',
+      // @ts-ignore
+      wsClient: true,
+    });
+    // @ts-ignore
+    expect(createClient.mock.calls).toHaveLength(0);
+  });
+  it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', () => {
+    createClient.mockReturnValue(true);
+    getWsFetcher({
+      url: '',
+      // @ts-ignore
+      legacyClient: true,
+    });
+    // @ts-ignore
+    expect(createClient.mock.calls).toHaveLength(0);
+    expect(SubscriptionClient.mock.calls).toHaveLength(0);
+  });
+
+  it('if subscriptionsUrl is provided, create a client on the fly', () => {
+    createClient.mockReturnValue(true);
+    getWsFetcher({
+      url: '',
+      subscriptionUrl: 'wss://example',
+    });
+    expect(createClient.mock.calls[0]).toEqual([
+      { connectionParams: undefined, url: 'wss://example' },
+    ]);
+    expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
 });

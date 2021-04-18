@@ -165,6 +165,37 @@ const DeferrableObject = new GraphQLObjectType({
   },
 });
 
+const Person = new GraphQLObjectType({
+  name: 'Person',
+  fields: () => ({
+    name: {
+      type: GraphQLString,
+      resolve: obj => obj.name,
+    },
+    age: {
+      args: {
+        delay: delayArgument(600),
+      },
+      type: GraphQLInt,
+      resolve: async function lazilyReturnValue(_value, args) {
+        const seconds = args.delay / 1000;
+        await sleep(args.delay);
+        return Math.ceil(args.delay);
+      },
+    },
+    friends: {
+      type: new GraphQLList(Person),
+      async *resolve(_value, args) {
+        const names = ['James', 'Mary', 'John', 'Patrica']; // Top 4 names https://www.ssa.gov/oact/babynames/decades/century.html
+        for (const name of names) {
+          await sleep(100);
+          yield { name };
+        }
+      },
+    },
+  }),
+});
+
 const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
 
 const TestType = new GraphQLObjectType({
@@ -205,6 +236,10 @@ const TestType = new GraphQLObjectType({
           yield { text: hi };
         }
       },
+    },
+    person: {
+      type: Person,
+      resolve: () => ({ name: 'Mark' }),
     },
     longDescriptionType: {
       type: TestType,

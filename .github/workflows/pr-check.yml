@@ -1,0 +1,34 @@
+name: Lint & Build PR
+on: 
+  pull_request:
+    types: [opened, synchronize]
+      
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+
+      - name: Eslint
+        run: yarn lint
+
+      - name: Prettier Check
+        run: yarn pretty-check
+
+  build:
+    name: Typescript Build
+    runs-on: ubuntu-16.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+
+      - name: Tyescript Build
+        run: yarn build

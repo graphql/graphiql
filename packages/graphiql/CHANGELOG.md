@@ -1,5 +1,29 @@
 # Change Log
 
+## 1.4.1
+
+### Patch Changes
+
+- [`9f8c78ce`](https://github.com/graphql/graphiql/commit/9f8c78ce8c72a9dcf35b3e82bd3129ac17d845e6) [#1821](https://github.com/graphql/graphiql/pull/1821) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - fix: render query history panel only when it's toggled, instead of hiding with CSS
+
+* [`dd9397e4`](https://github.com/graphql/graphiql/commit/dd9397e4c693b5ceadbd26d6fa92aa6246aac9c3) [#1819](https://github.com/graphql/graphiql/pull/1819) Thanks [@acao](https://github.com/acao)! - `GraphiQL.createClient()` accepts custom `legacyClient`, exports typescript types, fixes #1800.
+
+  `createGraphiQLFetcher` now only attempts an `graphql-ws` connection when only `subscriptionUrl` is provided. In order to use `graphql-transport-ws`, you'll need to provide the `legacyClient` option only, and no `subscriptionUrl` or `wsClient` option.
+
+- [`1f92d1dc`](https://github.com/graphql/graphiql/commit/1f92d1dcc0102bdec078263b87ca20cd670a1c86) [#1804](https://github.com/graphql/graphiql/pull/1804) Thanks [@maraisr](https://github.com/maraisr)! - Fixes issue where with IncrementalDelivery directives objects wouldn't deep-merge.
+
+* [`6869ce77`](https://github.com/graphql/graphiql/commit/6869ce7767050787db5f1017abf82fa5a52fc97a) [#1816](https://github.com/graphql/graphiql/pull/1816) Thanks [@acao](https://github.com/acao)! - improve peer resolutions for graphql 14 & 15. `14.5.0` minimum is for built-in typescript types, and another method only available in `14.4.0`
+
+* Updated dependencies [[`dd9397e4`](https://github.com/graphql/graphiql/commit/dd9397e4c693b5ceadbd26d6fa92aa6246aac9c3), [`6869ce77`](https://github.com/graphql/graphiql/commit/6869ce7767050787db5f1017abf82fa5a52fc97a)]:
+  - @graphiql/toolkit@0.2.0
+
+## 1.4.0
+
+### Patch Changes
+
+- Updated dependencies [[`b4fc16c0`](https://github.com/graphql/graphiql/commit/b4fc16c025da6f466727dc17cab6026d14c6e7fe)]:
+  - codemirror-graphql@1.0.0
+
 ## 1.4.0
 
 ### Bugfixes
@@ -24,9 +48,6 @@
   - @graphiql/create-fetcher@0.1.0
   - @graphiql/toolkit@0.1.0
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
-
 ## [1.3.2](https://github.com/graphql/graphiql/compare/graphiql@1.3.1...graphiql@1.3.2) (2021-01-07)
 
 **Note:** Version bump only for package graphiql
@@ -35,7 +56,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 **Note:** Version bump only for package graphiql
 
-# [1.3.0](https://github.com/graphql/graphiql/compare/graphiql@1.2.2...graphiql@1.3.0) (2021-01-07)
+## [1.3.0](https://github.com/graphql/graphiql/compare/graphiql@1.2.2...graphiql@1.3.0) (2021-01-07)
 
 ### Features
 
@@ -53,14 +74,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - display schema description if available ([050c506](https://github.com/graphql/graphiql/commit/050c506ed4ed2852bf9a5b099f967928d9856156))
 - fix linting issue ([7117b7c](https://github.com/graphql/graphiql/commit/7117b7ccd2a2872e0051c8751252040d4042e190))
 
-# [1.2.0](https://github.com/graphql/graphiql/compare/graphiql@1.1.0...graphiql@1.2.0) (2020-12-08)
+## [1.2.0](https://github.com/graphql/graphiql/compare/graphiql@1.1.0...graphiql@1.2.0) (2020-12-08)
 
 ### Features
 
 - add AsyncIterable support to fetcher function ([#1724](https://github.com/graphql/graphiql/issues/1724)) ([a568af3](https://github.com/graphql/graphiql/commit/a568af3674404b8a15055792c2c35128b2bd711c))
 - provide validation rules via props ([#1716](https://github.com/graphql/graphiql/issues/1716)) ([0c5785c](https://github.com/graphql/graphiql/commit/0c5785c82adbd4affb25300ae2d128b42c9b81fe))
 
-# [1.1.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.6...graphiql@1.1.0) (2020-11-28)
+## [1.1.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.6...graphiql@1.1.0) (2020-11-28)
 
 ### Bug Fixes
 
@@ -105,7 +126,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - network cancellation for 1.0 ([#1582](https://github.com/graphql/graphiql/issues/1582)) ([ad3cc0d](https://github.com/graphql/graphiql/commit/ad3cc0d1567ea49ff5677d4cd8524e5e072b605e))
 - Set headers to localstorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
 
-# [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
+## [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
 
 ### Bug Fixes
 
@@ -113,18 +134,18 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - fix server side rendering by using type only codemirror import ([#1573](https://github.com/graphql/graphiql/issues/1573)) ([1ee60a6](https://github.com/graphql/graphiql/commit/1ee60a6db87d54c7a1e8f1089e52a65f335351b6)), closes [#118](https://github.com/graphql/graphiql/issues/118)
 - Move all componentWillUnMount functionality to respective events ([#1544](https://github.com/graphql/graphiql/issues/1544)) ([046b09f](https://github.com/graphql/graphiql/commit/046b09f541e6a9f2ce4b46de590d49c04c916716))
 
-# [1.0.0-alpha.13](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.12...graphiql@1.0.0-alpha.13) (2020-06-04)
+## [1.0.0-alpha.13](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.12...graphiql@1.0.0-alpha.13) (2020-06-04)
 
 **Note:** Version bump only for package graphiql
 
-# [1.0.0-alpha.12](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.11...graphiql@1.0.0-alpha.12) (2020-06-04)
+## [1.0.0-alpha.12](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.11...graphiql@1.0.0-alpha.12) (2020-06-04)
 
 ### Bug Fixes
 
 - cleanup cache entry from lerna publish ([4a26218](https://github.com/graphql/graphiql/commit/4a2621808a1aea8b30d5d27b8d86a60bf2b44b01))
 - display variable editor when headers are not enabled ([ce7b2e2](https://github.com/graphql/graphiql/commit/ce7b2e2b45d530b61e916112e864074cf3a6ddc7))
 
-# [1.0.0-alpha.11](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.10...graphiql@1.0.0-alpha.11) (2020-05-28)
+## [1.0.0-alpha.11](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.10...graphiql@1.0.0-alpha.11) (2020-05-28)
 
 ### Bug Fixes
 
@@ -135,13 +156,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - Add Headers Editor to GraphiQL ([#1543](https://github.com/graphql/graphiql/issues/1543)) ([3faa1ac](https://github.com/graphql/graphiql/commit/3faa1ac46514252e90abf2b2bda0841edf6115ea))
 
-# [1.0.0-alpha.10](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.9...graphiql@1.0.0-alpha.10) (2020-05-19)
+## [1.0.0-alpha.10](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.9...graphiql@1.0.0-alpha.10) (2020-05-19)
 
 ### Bug Fixes
 
 - graphiql non-relative import issues ([#1534](https://github.com/graphql/graphiql/issues/1534)) fixes [#1530](https://github.com/graphql/graphiql/issues/1530) ([0ac9fa0](https://github.com/graphql/graphiql/commit/0ac9fa0a8dcdf8464c8ce31c487ebcfd6b9536a8))
 
-# [1.0.0-alpha.9](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.8...graphiql@1.0.0-alpha.9) (2020-05-17)
+## [1.0.0-alpha.9](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.8...graphiql@1.0.0-alpha.9) (2020-05-17)
 
 ### Bug Fixes
 
@@ -152,42 +173,42 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - introduce proper vscode completion kinds ([#1488](https://github.com/graphql/graphiql/issues/1488)) ([f19aa0d](https://github.com/graphql/graphiql/commit/f19aa0ddde6109526c101c8a487f43bbb8238394))
 - Monaco Mode - Phase 2 - Mode & Worker ([#1459](https://github.com/graphql/graphiql/issues/1459)) ([bc95fb4](https://github.com/graphql/graphiql/commit/bc95fb46459a4437ff9471ff43c98e1c5c50f51e))
 
-# [1.0.0-alpha.8](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.7...graphiql@1.0.0-alpha.8) (2020-04-10)
+## [1.0.0-alpha.8](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.7...graphiql@1.0.0-alpha.8) (2020-04-10)
 
 **Note:** Version bump only for package graphiql
 
-# [1.0.0-alpha.7](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.6...graphiql@1.0.0-alpha.7) (2020-04-10)
+## [1.0.0-alpha.7](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.6...graphiql@1.0.0-alpha.7) (2020-04-10)
 
 **Note:** Version bump only for package graphiql
 
-# [1.0.0-alpha.6](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.5...graphiql@1.0.0-alpha.6) (2020-04-10)
+## [1.0.0-alpha.6](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.5...graphiql@1.0.0-alpha.6) (2020-04-10)
 
 **Note:** Version bump only for package graphiql
 
-# [1.0.0-alpha.5](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.4...graphiql@1.0.0-alpha.5) (2020-04-06)
+## [1.0.0-alpha.5](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.4...graphiql@1.0.0-alpha.5) (2020-04-06)
 
 ### Features
 
 - upgrade to graphql@15.0.0 for [#1191](https://github.com/graphql/graphiql/issues/1191) ([#1204](https://github.com/graphql/graphiql/issues/1204)) ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
 
-# [1.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.3...graphiql@1.0.0-alpha.4) (2020-04-03)
+## [1.0.0-alpha.4](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.3...graphiql@1.0.0-alpha.4) (2020-04-03)
 
 ### Bug Fixes
 
 - fix query argument missing from onEditQuery call ([#1440](https://github.com/graphql/graphiql/issues/1440)) ([6c335a8](https://github.com/graphql/graphiql/commit/6c335a813f6101afded00c0e869c337a7ca44020))
 
-# [1.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.2...graphiql@1.0.0-alpha.3) (2020-03-20)
+## [1.0.0-alpha.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.2...graphiql@1.0.0-alpha.3) (2020-03-20)
 
 **Note:** Version bump only for package graphiql
 
-# [1.0.0-alpha.2](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.0...graphiql@1.0.0-alpha.2) (2020-03-20)
+## [1.0.0-alpha.2](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.0...graphiql@1.0.0-alpha.2) (2020-03-20)
 
 ### Bug Fixes
 
 - Fix typo in documentation (comments) ([#1431](https://github.com/graphql/graphiql/issues/1431)) ([fdda8f0](https://github.com/graphql/graphiql/commit/fdda8f04479412d22e9a3e9215c7caa5369e7d83))
 - initial request cache set, import tsc bugs ([#1266](https://github.com/graphql/graphiql/issues/1266)) ([6b98f8a](https://github.com/graphql/graphiql/commit/6b98f8a442d4a8ea160fb90a29acf33f5382db2e))
 
-# [1.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphiql@0.17.5...graphiql@1.0.0-alpha.1) (2020-01-18)
+## [1.0.0-alpha.1](https://github.com/graphql/graphiql/compare/graphiql@0.17.5...graphiql@1.0.0-alpha.1) (2020-01-18)
 
 ### Bug Fixes
 
@@ -241,7 +262,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - convert browserify build to webpack, fixes [#976](https://github.com/graphql/graphiql/issues/976) ([#1001](https://github.com/graphql/graphiql/issues/1001)) ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
 - hints vertical scroll ([216eaeb](https://github.com/graphql/graphiql/commit/216eaeb))
 
-# [0.17.0](https://github.com/graphql/graphiql/compare/graphiql@0.16.0...graphiql@0.17.0) (2019-11-26)
+## [0.17.0](https://github.com/graphql/graphiql/compare/graphiql@0.16.0...graphiql@0.17.0) (2019-11-26)
 
 ### Bug Fixes
 
@@ -252,7 +273,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - **graphiql:** Prettify also formats query variables ([b7d0bfd](https://github.com/graphql/graphiql/commit/b7d0bfd))
 
-# [0.16.0](https://github.com/graphql/graphiql/compare/graphiql@0.15.1...graphiql@0.16.0) (2019-10-19)
+## [0.16.0](https://github.com/graphql/graphiql/compare/graphiql@0.15.1...graphiql@0.16.0) (2019-10-19)
 
 ### Bug Fixes
 
@@ -264,13 +285,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 - **css:** beautify code tag in doc explorer ([#959](https://github.com/graphql/graphiql/issues/959)) resolves [#949](https://github.com/graphql/graphiql/issues/949) ([30810a2](https://github.com/graphql/graphiql/commit/30810a2))
 
-## [0.15.1](https://github.com/graphql/graphiql/compare/graphiql@0.15.0...graphiql@0.15.1) (2019-10-04)
+### [0.15.1](https://github.com/graphql/graphiql/compare/graphiql@0.15.0...graphiql@0.15.1) (2019-10-04)
 
 ### Bug Fixes
 
 - build tweaks ([0bc6a7c](https://github.com/graphql/graphiql/commit/0bc6a7c))
 
-# 0.15.0 (2019-10-04)
+## 0.15.0 (2019-10-04)
 
 ### Bug Fixes
 

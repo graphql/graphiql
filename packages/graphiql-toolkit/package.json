@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -17,17 +17,23 @@
   "license": "MIT",
   "main": "dist/index.js",
   "module": "esm/index.js",
-  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "scripts": {},
   "dependencies": {
-    "graphql-ws": "^4.1.0",
-    "subscriptions-transport-ws": "^0.9.18",
-    "meros": "^1.1.2",
-    "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1"
+    "@n1ru4l/push-pull-async-iterable-iterator": "^2.0.1",
+    "graphql-ws": "^4.3.2",
+    "meros": "^1.1.4"
   },
   "devDependencies": {
+    "graphql": "experimental-stream-defer",
     "isomorphic-fetch": "^3.0.0",
-    "graphql": "experimental-stream-defer"
+    "subscriptions-transport-ws": "^0.9.18"
+  },
+  "optionalDependencies": {
+    "subscriptions-transport-ws": "^0.9.18"
+  },
+  "peerDependencies": {
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "keywords": [
     "graphql",

@@ -26,7 +26,6 @@ import {
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
-import { dset } from 'dset';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -53,6 +52,7 @@ import {
   introspectionQueryName,
   introspectionQuerySansSubscriptions,
 } from '../utility/introspectionQueries';
+import { dset } from 'dset/merge';
 
 import type {
   Fetcher,
@@ -482,25 +482,27 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           this.graphiqlContainer = n;
         }}
         className="graphiql-container">
-        <div className="historyPaneWrap" style={historyPaneStyle}>
-          <QueryHistory
-            ref={node => {
-              this._queryHistory = node;
-            }}
-            operationName={this.state.operationName}
-            query={this.state.query}
-            variables={this.state.variables}
-            onSelectQuery={this.handleSelectHistoryQuery}
-            storage={this._storage}
-            queryID={this._editorQueryID}>
-            <button
-              className="docExplorerHide"
-              onClick={this.handleToggleHistory}
-              aria-label="Close History">
-              {'\u2715'}
-            </button>
-          </QueryHistory>
-        </div>
+        {this.state.historyPaneOpen && (
+          <div className="historyPaneWrap" style={historyPaneStyle}>
+            <QueryHistory
+              ref={node => {
+                this._queryHistory = node;
+              }}
+              operationName={this.state.operationName}
+              query={this.state.query}
+              variables={this.state.variables}
+              onSelectQuery={this.handleSelectHistoryQuery}
+              storage={this._storage}
+              queryID={this._editorQueryID}>
+              <button
+                className="docExplorerHide"
+                onClick={this.handleToggleHistory}
+                aria-label="Close History">
+                {'\u2715'}
+              </button>
+            </QueryHistory>
+          </div>
+        )}
         <div className="editorWrap">
           <div className="topBarWrap">
             <div className="topBar">
@@ -1113,7 +1115,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                       `Expected part to contain a data property, but got ${part}`,
                     );
                   }
-                  dset(payload.data, part.path, part.data);
+
+                  dset(payload.data, path, data);
                 } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.

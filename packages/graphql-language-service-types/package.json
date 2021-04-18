@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-types",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Types for building GraphQL language services for IDEs",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -24,10 +24,11 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0"
+    "graphql": ">= v14.5.0 <= 15.5.0"
   },
   "devDependencies": {
+    "graphql": "experimental-stream-defer",
     "graphql-config": "^3.0.2",
-    "vscode-languageserver-types": "3.15.0"
+    "vscode-languageserver-types": "^3.15.1"
   }
 }
