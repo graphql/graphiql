@@ -89,9 +89,9 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
           !(
             (callee.type === 'Identifier' &&
               CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
-            (callee.kind === 'MemberExpression' &&
+            (callee.type === 'MemberExpression' &&
               callee.object.type === 'Identifier' &&
-              callee.object.value === 'Relay' &&
+              callee.object.name === 'Relay' &&
               callee.property.type === 'Identifier' &&
               CREATE_CONTAINER_FUNCTIONS[callee.property.name])
           )

@@ -25,8 +25,8 @@
     "meros": "^1.1.4"
   },
   "devDependencies": {
-    "isomorphic-fetch": "^3.0.0",
     "graphql": "experimental-stream-defer",
+    "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "^0.9.18"
   },
   "optionalDependencies": {
