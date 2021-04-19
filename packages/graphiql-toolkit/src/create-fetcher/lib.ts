@@ -166,6 +166,9 @@ export const getWsFetcher = (options: CreateFetcherOptions) => {
     return createLegacyWebsocketsFetcher(options.legacyClient);
   }
   if (options.subscriptionUrl) {
-    return createWebsocketsFetcherFromUrl(options.subscriptionUrl, options.wsConnectionParams);
+    return createWebsocketsFetcherFromUrl(
+      options.subscriptionUrl,
+      options.wsConnectionParams,
+    );
   }
 };
