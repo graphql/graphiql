@@ -110,7 +110,7 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
         throwMe = err;
       } else if (err instanceof CloseEvent) {
         throwMe = new Error(
-          `Socket closed with event ${err.code} ${err.reason || ''}`,
+          `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
         );
       } else {
         throwMe = new Error(
