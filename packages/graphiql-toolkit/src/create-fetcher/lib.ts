@@ -105,12 +105,13 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
               `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
             ),
           );
+        } else {
+          sink.error(
+            new Error(
+              (err as GraphQLError[]).map(({ message }) => message).join(', '),
+            ),
+          );
         }
-        sink.error(
-          new Error(
-            (err as GraphQLError[]).map(({ message }) => message).join(', '),
-          ),
-        );
       },
     }),
   );
