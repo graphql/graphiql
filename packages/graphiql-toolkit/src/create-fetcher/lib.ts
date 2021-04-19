@@ -92,58 +92,28 @@ export const createWebsocketsFetcherFromUrl = (
  */
 export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
-): AsyncIterableIterator<FetcherResult> => {
-  let deferred: {
-    resolve: (done: boolean) => void;
-    reject: (err: unknown) => void;
-  } | null = null;
-  const pending: FetcherResult[] = [];
-  let throwMe: unknown = null,
-    done = false;
-  const dispose = wsClient.subscribe<FetcherResult>(graphQLParams, {
-    next: data => {
-      pending.push(data);
-      deferred?.resolve(false);
-    },
-    error: err => {
-      if (err instanceof Error) {
-        throwMe = err;
-      } else if (err instanceof CloseEvent) {
-        throwMe = new Error(
-          `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
+) =>
+  makeAsyncIterableIteratorFromSink<FetcherResult>(sink =>
+    wsClient!.subscribe(graphQLParams, {
+      ...sink,
+      error: err => {
+        if (err instanceof Error) {
+          sink.error(err);
+        } else if (err instanceof CloseEvent) {
+          sink.error(
+            new Error(
+              `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
+            ),
+          );
+        }
+        sink.error(
+          new Error(
+            (err as GraphQLError[]).map(({ message }) => message).join(', '),
+          ),
         );
-      } else {
-        throwMe = new Error(
-          (err as GraphQLError[]).map(({ message }) => message).join(', '),
-        );
-      }
-      deferred?.reject(throwMe);
-    },
-    complete: () => {
-      done = true;
-      deferred?.resolve(true);
-    },
-  });
-  return {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    async next() {
-      if (done) return { done: true, value: undefined };
-      if (throwMe) throw throwMe;
-      if (pending.length) return { value: pending.shift()! };
-      return (await new Promise<boolean>(
-        (resolve, reject) => (deferred = { resolve, reject }),
-      ))
-        ? { done: true, value: undefined }
-        : { value: pending.shift()! };
-    },
-    async return() {
-      dispose();
-      return { done: true, value: undefined };
-    },
-  };
-};
+      },
+    }),
+  );
 
 export const createLegacyWebsocketsFetcher = (
   legacyWsClient: SubscriptionClient,
