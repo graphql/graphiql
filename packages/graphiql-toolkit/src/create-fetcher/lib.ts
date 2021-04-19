@@ -92,15 +92,15 @@ export const createWebsocketsFetcherFromUrl = (
  */
 export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
-) => {
+): AsyncIterableIterator<FetcherResult> => {
   let deferred: {
     resolve: (done: boolean) => void;
     reject: (err: unknown) => void;
   } | null = null;
-  const pending: any[] = [];
+  const pending: FetcherResult[] = [];
   let throwMe: unknown = null,
     done = false;
-  const dispose = wsClient.subscribe(graphQLParams, {
+  const dispose = wsClient.subscribe<FetcherResult>(graphQLParams, {
     next: data => {
       pending.push(data);
       deferred?.resolve(false);
