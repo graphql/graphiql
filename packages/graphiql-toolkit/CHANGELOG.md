@@ -1,5 +1,13 @@
 # @graphiql/toolkit
 
+## 0.2.1
+
+### Patch Changes
+
+- [`3f002710`](https://github.com/graphql/graphiql/commit/3f00271089cbc519e221976c9308f60b317cae80) [#1840](https://github.com/graphql/graphiql/pull/1840) Thanks [@enisdenjo](https://github.com/enisdenjo)! - Use provided `wsConnectionParams`
+
+* [`94f16957`](https://github.com/graphql/graphiql/commit/94f169572f643374ead829af690b6dcc2eb0b6a1) [#1841](https://github.com/graphql/graphiql/pull/1841) Thanks [@enisdenjo](https://github.com/enisdenjo)! - Subscriptions async iterator completes and better error handling
+
 ## 0.2.0
 
 ### Minor Changes
