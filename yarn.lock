@@ -2683,10 +2683,10 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@n1ru4l/push-pull-async-iterable-iterator@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@n1ru4l/push-pull-async-iterable-iterator/-/push-pull-async-iterable-iterator-2.0.1.tgz#8fc68e0e9e8bd3826d727b96ddd2afba2a7f26c7"
-  integrity sha512-3nDfpI/4WZgdocw75cxG4Qwmi3yp5zOleaT23EpVUhwVwlYzb4kDojl0nCZKB5lCGcTqT5wFlKepShs4Q+hymw==
+"@n1ru4l/push-pull-async-iterable-iterator@^2.1.4":
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/@n1ru4l/push-pull-async-iterable-iterator/-/push-pull-async-iterable-iterator-2.1.4.tgz#a90225474352f9f159bff979905f707b9c6bcf04"
+  integrity sha512-qLIvoOUJ+zritv+BlzcBMePKNjKQzH9Rb2i9W98YXxf/M62Lye8qH0peyiU8yJ1tL0kfulWi31BoK10E6BKJeA==
 
 "@nicolo-ribaudo/chokidar-2@2.1.8-no-fsevents":
   version "2.1.8-no-fsevents"

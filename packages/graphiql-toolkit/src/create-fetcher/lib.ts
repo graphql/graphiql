@@ -1,4 +1,4 @@
-import { DocumentNode, visit } from 'graphql';
+import { DocumentNode, visit, GraphQLError } from 'graphql';
 import { meros } from 'meros';
 import { createClient, Client, ClientOptions } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
@@ -94,7 +94,26 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
 ) =>
   makeAsyncIterableIteratorFromSink<FetcherResult>(sink =>
-    wsClient!.subscribe(graphQLParams, sink),
+    wsClient!.subscribe(graphQLParams, {
+      ...sink,
+      error: err => {
+        if (err instanceof Error) {
+          sink.error(err);
+        } else if (err instanceof CloseEvent) {
+          sink.error(
+            new Error(
+              `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
+            ),
+          );
+        } else {
+          sink.error(
+            new Error(
+              (err as GraphQLError[]).map(({ message }) => message).join(', '),
+            ),
+          );
+        }
+      },
+    }),
   );
 
 export const createLegacyWebsocketsFetcher = (
