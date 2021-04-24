@@ -9,6 +9,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "downlevelIteration": true,
     "removeComments": true,
     "strict": true,
     "jsx": "react",

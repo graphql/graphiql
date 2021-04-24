@@ -20,7 +20,7 @@
   },
   "references": [
     {
-      "path": "../graphql-language-service/tsconfig.esm.json"
+      "path": "../graphql-language-service"
     }
   ],
   "include": ["./src"],

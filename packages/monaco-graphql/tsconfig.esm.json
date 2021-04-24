@@ -6,7 +6,6 @@
     "baseUrl": ".",
     "rootDir": "./src",
     "outDir": "./esm",
-    "target": "es6",
     "lib": [
       "dom",
       "es5",
