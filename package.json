@@ -79,6 +79,27 @@
       },
       {
         "injectTo": [
+          "source.reason",
+          "source.ocaml"
+        ],
+        "scopeName": "inline.graphql.re",
+        "path": "./grammars/graphql.re.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.rescript"
+        ],
+        "scopeName": "inline.graphql.res",
+        "path": "./grammars/graphql.rescript.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
           "text.html.markdown"
         ],
         "scopeName": "markdown.graphql.codeblock",
