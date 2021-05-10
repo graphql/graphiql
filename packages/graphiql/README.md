@@ -142,7 +142,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
     ></script>
 
     <script>
-      const fetcher = GraphiQL.createFetcher('https://my/graphql');
+      const fetcher = GraphiQL.createFetcher({ url: 'https://my/graphql' });
 
       ReactDOM.render(
         React.createElement(GraphiQL, { fetcher: fetcher }),
