@@ -115,7 +115,7 @@ Read more about using [`createGraphiQLFetcher`](https://github.com/graphql/graph
 
 Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
 
-For an example of setting up a GraphiQL, check out the [example](../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
+For an example of setting up a GraphiQL, check out the [example](../../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
 
 The most minimal way to set up GraphiQL is a single index.html file:
 
