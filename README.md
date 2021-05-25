@@ -1,5 +1,5 @@
 <!-- @format -->
-> # Black Lives Matter 🖤 Free Palestine 🇵🇸
+> # Black Lives Matter 🖤 Free Palestine (_with the purchase of another Palestine of equal or greater value_) 🇵🇸 
 
 # GraphQL IDE Monorepo
 
