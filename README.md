@@ -1,6 +1,4 @@
 <!-- @format -->
-> # Black Lives Matter 🖤 Free Palestine 🇵🇸
-
 # GraphQL IDE Monorepo
 
 > **Note:** The primary maintainer @acao is on hiatus until December 2020
