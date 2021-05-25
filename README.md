@@ -1,4 +1,5 @@
 <!-- @format -->
+
 # GraphQL IDE Monorepo
 
 > **Note:** The primary maintainer @acao is on hiatus until December 2020
