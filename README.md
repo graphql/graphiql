@@ -150,7 +150,7 @@ By default, all typescript packages target `es6`.
 
 `codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserlistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `rengenerator-runtime` or special babel configuration.
 
-### [`.browserslistrc`](./.browserlistrc):
+### [`.browserslistrc`](./.browserslistrc):
 
 ```
 last 2 versions
