@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-parser",
-  "version": "1.9.1",
+  "version": "1.9.2",
   "description": "An online parser for GraphQL for use in syntax-highlighters and code intelligence tools",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",

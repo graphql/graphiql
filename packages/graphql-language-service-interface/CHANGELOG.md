@@ -1,5 +1,11 @@
 # graphql-language-service-interface
 
+## 2.8.4
+
+### Patch Changes
+
+- [`5b8a057d`](https://github.com/graphql/graphiql/commit/5b8a057dd64ebecc391be32176a2403bb9d9ff92) [#1838](https://github.com/graphql/graphiql/pull/1838) Thanks [@acao](https://github.com/acao)! - Set all cross-runtime build targets to es6
+
 ## 2.8.3
 
 ### Patch Changes
