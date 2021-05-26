@@ -1,5 +1,4 @@
 <!-- @format -->
-> # Black Lives Matter 🖤 Free Palestine 🇵🇸
 
 # GraphQL IDE Monorepo
 
