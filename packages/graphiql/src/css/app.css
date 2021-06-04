@@ -525,7 +525,7 @@ div.CodeMirror-lint-tooltip > * + * {
 
 /* Comment */
 .cm-comment {
-  color: #999;
+  color: #666;
 }
 
 /* Punctuation */
