@@ -70,6 +70,8 @@ export function activate(context: ExtensionContext) {
       { scheme: "file", language: "javascriptreact" },
       { scheme: "file", language: "typescript" },
       { scheme: "file", language: "typescriptreact" },
+      // this applies grammar and thus highlighting i think?
+      { scheme: "file", language: "vue" },
     ],
     synchronize: {
       // TODO: should this focus on `graphql-config` documents, schema and/or includes?
@@ -81,8 +83,10 @@ export function activate(context: ExtensionContext) {
           true,
         ),
         // these ignore node_modules and .git by default
+        // this is more important for language features.
+        // we don't have language features for .vue yet but we can still try to load the files
         workspace.createFileSystemWatcher(
-          "**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx}",
+          "**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue}",
         ),
       ],
     },
@@ -128,6 +132,7 @@ export function activate(context: ExtensionContext) {
           "typescript",
           "javascriptreact",
           "typescriptreact",
+          "vue",
           "graphql",
         ],
         new GraphQLCodeLensProvider(outputChannel),
