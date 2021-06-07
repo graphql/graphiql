@@ -9,7 +9,10 @@ import React from 'react';
 import MD from 'markdown-it';
 import { Maybe } from '../../types';
 
-const md = new MD();
+const md = new MD({
+  // render urls as links, à la github-flavored markdown
+  linkify: true,
+});
 
 type MarkdownContentProps = {
   markdown?: Maybe<string>;
