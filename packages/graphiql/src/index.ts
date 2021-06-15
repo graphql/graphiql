@@ -38,10 +38,10 @@ export { DocExplorer } from './components/DocExplorer';
 /**
  * Toolbar
  */
-export { ToolbarMenu } from './components/ToolbarMenu';
+export { ToolbarMenu, ToolbarMenuItem } from './components/ToolbarMenu';
 export { ToolbarButton } from './components/ToolbarButton';
 export { ToolbarGroup } from './components/ToolbarGroup';
-export { ToolbarSelect } from './components/ToolbarSelect';
+export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**
  * Utilities
