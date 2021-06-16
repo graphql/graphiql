@@ -321,7 +321,8 @@ const TestMutationType = new GraphQLObjectType({
 
 const TestSubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
-  description: 'This is a simple subscription type',
+  description:
+    'This is a simple subscription type. Learn more at https://graphql.org/blog/subscriptions-in-graphql-and-relay/',
   fields: {
     subscribeToTest: {
       type: TestType,
