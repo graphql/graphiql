@@ -64,6 +64,7 @@ import type {
   Unsubscribable,
   FetcherResultPayload,
 } from '@graphiql/toolkit';
+import HistoryStore from '../utility/HistoryStore';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -185,6 +186,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   variableEditorComponent: Maybe<VariableEditor>;
   headerEditorComponent: Maybe<HeaderEditor>;
   _queryHistory: Maybe<QueryHistory>;
+  _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;
@@ -199,6 +201,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
+
+    this._historyStore = new HistoryStore(this._storage);
 
     // Disable setState when the component is not mounted
     this.componentIsMounted = false;
@@ -1062,12 +1066,21 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this._storage.set('operationName', operationName as string);
 
       if (this._queryHistory) {
-        this._queryHistory.updateHistory(
+        this._queryHistory.onUpdateHistory(
           editedQuery,
           variables,
           headers,
           operationName,
         );
+      } else {
+        if (this._historyStore) {
+          this._historyStore.updateHistory(
+            editedQuery,
+            variables,
+            headers,
+            operationName,
+          );
+        }
       }
 
       // when dealing with defer or stream, we need to aggregate results
