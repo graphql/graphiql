@@ -13,15 +13,18 @@ import {
 } from '../components/HistoryQuery';
 
 const MAX_QUERY_SIZE = 100000;
-const MAX_HISTORY_LENGTH = 20;
 
 export default class HistoryStore {
   queries: Array<QueryStoreItem>;
   history: QueryStore;
   favorite: QueryStore;
 
-  constructor(private storage: StorageAPI) {
-    this.history = new QueryStore('queries', this.storage, MAX_HISTORY_LENGTH);
+  constructor(private storage: StorageAPI, private maxHistoryLength: number) {
+    this.history = new QueryStore(
+      'queries',
+      this.storage,
+      this.maxHistoryLength,
+    );
     // favorites are not automatically deleted, so there's no need for a max length
     this.favorite = new QueryStore('favorites', this.storage, null);
     this.queries = this.fetchAllQueries();

@@ -124,6 +124,7 @@ export type GraphiQLProps = {
   readOnly?: boolean;
   docExplorerOpen?: boolean;
   toolbar?: GraphiQLToolbarConfig;
+  maxHistoryLength?: number;
 };
 
 export type GraphiQLState = {
@@ -148,6 +149,7 @@ export type GraphiQLState = {
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
+  maxHistoryLength: number;
 };
 
 /**
@@ -202,7 +204,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
 
-    this._historyStore = new HistoryStore(this._storage);
+    const maxHistoryLength = props.maxHistoryLength ?? 20;
+
+    this._historyStore = new HistoryStore(this._storage, maxHistoryLength);
 
     // Disable setState when the component is not mounted
     this.componentIsMounted = false;
@@ -289,6 +293,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      maxHistoryLength,
       ...queryFacts,
     };
   }
@@ -497,6 +502,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               variables={this.state.variables}
               onSelectQuery={this.handleSelectHistoryQuery}
               storage={this._storage}
+              maxHistoryLength={this.state.maxHistoryLength}
               queryID={this._editorQueryID}>
               <button
                 className="docExplorerHide"

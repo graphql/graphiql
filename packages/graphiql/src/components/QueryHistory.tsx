@@ -23,6 +23,7 @@ type QueryHistoryProps = {
   queryID?: number;
   onSelectQuery: HandleSelectQueryFn;
   storage: StorageAPI;
+  maxHistoryLength: number;
 };
 
 type QueryHistoryState = {
@@ -37,7 +38,10 @@ export class QueryHistory extends React.Component<
 
   constructor(props: QueryHistoryProps) {
     super(props);
-    this.historyStore = new HistoryStore(this.props.storage);
+    this.historyStore = new HistoryStore(
+      this.props.storage,
+      this.props.maxHistoryLength,
+    );
     const queries = this.historyStore.queries;
     this.state = { queries };
   }
