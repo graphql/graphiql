@@ -216,6 +216,7 @@ For more details on props, see the [API Docs](https://graphiql-test.netlify.app/
 | `onEditHeaders`              | `Function`                                                                                            | called when the request headers editor changes. The argument to the function will be the headers string.                                                                                        |
 | `onEditOperationName`        | `Function`                                                                                            | called when the operation name to be executed changes.                                                                                                                                          |
 | `onToggleDocs`               | `Function`                                                                                            | called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.                                                                   |
+| `maxHistoryLength`           | `number`                                                                                              | **Default:** 20. allows you to increase the number of queries in the history component                                                                                                          | 20 |
 
 ### Children (this pattern will be dropped in 2.0.0)
 

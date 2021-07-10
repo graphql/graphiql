@@ -64,6 +64,7 @@ import type {
   Unsubscribable,
   FetcherResultPayload,
 } from '@graphiql/toolkit';
+import HistoryStore from '../utility/HistoryStore';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -123,6 +124,7 @@ export type GraphiQLProps = {
   readOnly?: boolean;
   docExplorerOpen?: boolean;
   toolbar?: GraphiQLToolbarConfig;
+  maxHistoryLength?: number;
 };
 
 export type GraphiQLState = {
@@ -147,6 +149,7 @@ export type GraphiQLState = {
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
+  maxHistoryLength: number;
 };
 
 /**
@@ -185,6 +188,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   variableEditorComponent: Maybe<VariableEditor>;
   headerEditorComponent: Maybe<HeaderEditor>;
   _queryHistory: Maybe<QueryHistory>;
+  _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
   queryEditorComponent: Maybe<QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;
@@ -199,6 +203,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     // Cache the storage instance
     this._storage = new StorageAPI(props.storage);
+
+    const maxHistoryLength = props.maxHistoryLength ?? 20;
+
+    this._historyStore = new HistoryStore(this._storage, maxHistoryLength);
 
     // Disable setState when the component is not mounted
     this.componentIsMounted = false;
@@ -285,6 +293,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
+      maxHistoryLength,
       ...queryFacts,
     };
   }
@@ -493,6 +502,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               variables={this.state.variables}
               onSelectQuery={this.handleSelectHistoryQuery}
               storage={this._storage}
+              maxHistoryLength={this.state.maxHistoryLength}
               queryID={this._editorQueryID}>
               <button
                 className="docExplorerHide"
@@ -1062,12 +1072,21 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this._storage.set('operationName', operationName as string);
 
       if (this._queryHistory) {
-        this._queryHistory.updateHistory(
+        this._queryHistory.onUpdateHistory(
           editedQuery,
           variables,
           headers,
           operationName,
         );
+      } else {
+        if (this._historyStore) {
+          this._historyStore.updateHistory(
+            editedQuery,
+            variables,
+            headers,
+            operationName,
+          );
+        }
       }
 
       // when dealing with defer or stream, we need to aggregate results
