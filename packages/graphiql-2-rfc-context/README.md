@@ -1,3 +1,5 @@
+[Discord Channel](https://discord.gg/NP5vbPeUFp)
+
 # GraphiQL 2.x - React Context RFC Proposal
 
 This effort was merge to master in spring of 2020, and then moved to this workspace for the time being until we address some of the issues

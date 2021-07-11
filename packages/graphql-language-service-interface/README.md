@@ -5,6 +5,7 @@
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-interface?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 [![License](https://img.shields.io/npm/l/graphql-language-service-interface.svg?style=flat-square)](LICENSE)
+[Discord Channel](https://discord.gg/wkQCKwazxj)
 
 [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_interface.html)
 
