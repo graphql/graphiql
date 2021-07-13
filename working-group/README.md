@@ -1,5 +1,7 @@
 # GraphiQL & GraphQL LSP Working Group
 
+> **NOTE:** Working Group is on hiatus. For now, reach out in discord, create RFCs or discussions on github!
+
 The GraphiQL and GraphQL Working Group focuses on fielding and fostering proposals and specifications for plugin interfaces and other user/developer-facing interfaces, as well as overall features, decisions about lifecycle, etc. This doesn't mean we will make decisions about every PR we merge, but it's a chance to have stake in the roadmap and how commonly used interfaces change.
 
 All users of GraphiQL, the LSP, GraphQL IDE extensions, developer users, all GraphQL community members are welcome. There is no official list of members, though you can add yourself to the monthly meeting agends (see below)
@@ -16,20 +18,9 @@ Many of the underlying packages used for graphql web/desktop IDE tooling are in 
 
 In the [`'agendas'`]('/agendas') directory you can introduce PRs to add yourself as an atendee to each agenda, and optionally add an agenda item or two.
 
-## Rotating Working Sessions/Office Hours
-
-> **First and third saturday of the month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NXYxZnEzdHBvcHNqaTNrZHA5cm1obmFldm1fMjAyMDA0MThUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
-
-For now just twice a month on saturdays, we will have a group working session where we collaborate on API and feature proposals, demonstrate contributions to the monorepo we're working on, improve documentation, or even pair on actual PRs whilst sharing the session on the zoom link.
-
-It will be informal, with no set agenda, and no official decisions made about the spec (though we may collaborate on proposals brought to the monthly meeting above).
-
-As far as office hours, during these sessions @acao and others can field support and setup issues for all users of all skills as we always do.
-It might be a good time to get discussions going that can be turned into discussion Issues, Feature/Plugin Proposals, RFCs, etc.
-
 ## Get Involved
 
-You can also find us on [discord](https://discord.gg/8J65QW), in github via issues or PRs!
+You can also find us on [discord](https://discord.gg/NP5vbPeUFp), in github via issues or PRs!
 
 See the Community section at the bottom of [the root level readme](../README.md) for more information.
 

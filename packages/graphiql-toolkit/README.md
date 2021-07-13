@@ -1,3 +1,5 @@
+[Discord Channel](https://discord.gg/NP5vbPeUFp)
+
 # `@graphiql/toolkit`
 
 General purpose library as a dependency of GraphiQL.

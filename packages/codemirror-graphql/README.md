@@ -3,6 +3,7 @@
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg?style=flat-square)](https://npmjs.com/codemirror-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/codemirror-graphql?label=npm%20downloads)
 [![License](https://img.shields.io/npm/l/codemirror-graphql.svg?style=flat-square)](LICENSE)
+[Discord Channel](https://discord.gg/cffZwk8NJW)
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and
 typeahead hinter powered by your GraphQL Schema.

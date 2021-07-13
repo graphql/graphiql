@@ -13,7 +13,7 @@
 ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
 ![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 [![License](https://img.shields.io/npm/l/graphiql.svg?style=flat-square)](LICENSE)
-
+[Discord Channel](https://discord.gg/NP5vbPeUFp)
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
 [![](https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.jpg)](http://graphql.org/swapi-graphql)

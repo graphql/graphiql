@@ -1,3 +1,5 @@
+[Discord Channel](https://discord.gg/r4BxrAG6fN)
+
 # Monaco GraphQL
 
 GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want, or none!
