@@ -11,6 +11,7 @@ import {
   Expression,
   TaggedTemplateExpression,
   ObjectExpression,
+  TemplateExpression,
   TemplateLiteral,
 } from '@babel/types';
 
@@ -167,6 +168,22 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
         }
       }
     },
+    TemplateLiteral: (node: TemplateExpression) => {
+      if (node.quasis[0].value.raw.startsWith('#graphql\n')) {
+        const loc = node.quasis[0].loc;
+        if (loc) {
+          const range = new Range(
+            new Position(loc.start.line - 1, loc.start.column),
+            new Position(loc.end.line - 1, loc.end.column),
+          );
+          result.push({
+            tag: '',
+            template: node.quasis[0].value.raw,
+            range,
+          }
+          });
+      }
+    }
   };
   visit(ast, visitors);
   return result;
