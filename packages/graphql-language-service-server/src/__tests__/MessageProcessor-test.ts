@@ -400,6 +400,64 @@ query Test {
 `);
   });
 
+  it('parseDocument finds queries in #graphql-annotated templates', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = \`#graphql
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.ts');
+    expect(contents[0].query).toEqual(`#graphql
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('parseDocument finds queries in /*GraphQL*/-annotated templates', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+const QUERY: string = /* GraphQL */ \`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.ts');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
   it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
 // @flow
