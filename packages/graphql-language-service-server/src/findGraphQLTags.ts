@@ -169,7 +169,9 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
       }
     },
     TemplateLiteral: (node: TemplateExpression) => {
-      if (node.quasis[0].value.raw.startsWith('#graphql\n')) {
+      const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith('#graphql\n');
+      const hasGraphQLComment = !!node.leadingComments[0]?.value.match(/^\s*GraphQL\s*$/);
+      if (hasGraphQLPrefix || hasGraphQLComment) {
         const loc = node.quasis[0].loc;
         if (loc) {
           const range = new Range(
@@ -180,8 +182,8 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
             tag: '',
             template: node.quasis[0].value.raw,
             range,
-          }
           });
+        }
       }
     }
   };
