@@ -69,7 +69,8 @@
           "source.ts",
           "source.js.jsx",
           "source.tsx",
-          "source.vue"
+          "source.vue",
+          "source.svelte"
         ],
         "scopeName": "inline.graphql",
         "path": "./grammars/graphql.js.json",
