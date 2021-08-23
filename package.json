@@ -147,6 +147,13 @@
           ],
           "description": "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions"
         },
+        "vscode-graphql.rejectUnauthorized": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Fail the request on invalid certificate",
+          "default": true
+        },
         "graphql-config.load.rootDir": {
           "type": [
             "string"

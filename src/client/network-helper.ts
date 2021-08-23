@@ -13,10 +13,11 @@ import { createHttpLink } from "apollo-link-http"
 import { WebSocketLink } from "apollo-link-ws"
 import { InMemoryCache } from "apollo-cache-inmemory"
 import fetch from "node-fetch"
+import { Agent } from "https"
 import * as ws from "ws"
 
 import { Endpoints } from "graphql-config/extensions/endpoints"
-import { OutputChannel } from "vscode"
+import { OutputChannel, workspace } from "vscode"
 import { ApolloLink } from "apollo-link"
 import { UserVariables } from "./graphql-content-provider"
 import { GraphQLProjectConfig } from "graphql-config"
@@ -40,10 +41,16 @@ export class NetworkHelper {
     endpoint: Endpoint
     updateCallback: (data: string, operation: string) => void
   }) {
+    const { rejectUnauthorized } = workspace.getConfiguration("vscode-graphql")
+    const agent = new Agent({ rejectUnauthorized })
+
     const httpLink = createHttpLink({
       uri: endpoint.url,
       headers: endpoint.headers,
       fetch,
+      fetchOptions: {
+        agent,
+      },
     })
 
     const errorLink = onError(({ graphQLErrors, networkError }) => {

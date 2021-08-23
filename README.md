@@ -98,7 +98,7 @@ module.exports = {
             headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
           },
         },
-      }
+      },
     },
     db: {
       schema: "src/generated/db.graphql",
@@ -191,7 +191,13 @@ The best way to make "execute <op type>" codelens work is to add endpoints confi
 
 The config example above shows how to configure endpoints.
 
-If there is an issue with execution that has to do with your server, the error response should show now in the results panel
+If there is an issue with execution that has to do with your server, the error response should show now in the results panel.
+
+In case the request fails due to self signed certificate, you can bypass that check by adding this to your settings:
+
+```json
+"vscode-graphql.rejectUnauthorized": false
+```
 
 ### My graphql config file is not at the root
 
