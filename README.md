@@ -196,13 +196,14 @@ Originally this was three seperate repositories
 - [@asiandrummer](https://github.com/asiandrummer) - original creator of GraphiQL
 - [@wincent](https://github.com/wincent) - early co-author and maintainer
 - [@lostplan](https://github.com/lostplan) - maintained the language service ecosystem until about 2017
-- [@IvanGoncharov](https://github.com/ivangoncharov) -
+- [@IvanGoncharov](https://github.com/ivangoncharov) - maintainer and transitional mentor to @acao and others
 
 ### Active
 
 - [@acao](https://github.com/acao)
 - [@imolorhe](https://github.com/imolorhe)
 - [@yoshiakis](https://github.com/yoshiakis)
+- [@dotansimha](https://github.com/dotansimha)
 
 ### Fielding Proposals!
 
