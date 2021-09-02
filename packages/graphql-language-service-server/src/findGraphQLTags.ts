@@ -11,7 +11,6 @@ import {
   Expression,
   TaggedTemplateExpression,
   ObjectExpression,
-  TemplateExpression,
   TemplateLiteral,
 } from '@babel/types';
 
@@ -168,9 +167,13 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
         }
       }
     },
-    TemplateLiteral: (node: TemplateExpression) => {
-      const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith('#graphql\n');
-      const hasGraphQLComment = !!node.leadingComments[0]?.value.match(/^\s*GraphQL\s*$/);
+    TemplateLiteral: (node: TemplateLiteral) => {
+      const hasGraphQLPrefix = node.quasis[0].value.raw.startsWith(
+        '#graphql\n',
+      );
+      const hasGraphQLComment = Boolean(
+        node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
+      );
       if (hasGraphQLPrefix || hasGraphQLComment) {
         const loc = node.quasis[0].loc;
         if (loc) {
@@ -185,7 +188,7 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
           });
         }
       }
-    }
+    },
   };
   visit(ast, visitors);
   return result;
