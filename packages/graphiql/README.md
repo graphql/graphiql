@@ -78,11 +78,11 @@ With `unpkg`/`jsdelivr`, etc:
 
 ## Usage
 
-Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](../examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
+Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](../../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](../../examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
 
 ### Usage: NPM module
 
-**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. f you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../../examples/graphiql-webpack) first. f you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
 
 Using another GraphQL service? Here's how to get GraphiQL set up:
 
