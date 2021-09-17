@@ -44,6 +44,7 @@
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
-    "graphql": "experimental-stream-defer"
+    "graphql": "experimental-stream-defer",
+    "vscode-languageserver-protocol": "^3.15.3"
   }
 }

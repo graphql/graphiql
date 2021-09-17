@@ -564,11 +564,12 @@ export class MessageProcessor {
           throw Error('No cache available for handleWatchedFilesChanged');
         }
         // update when graphql config changes!
-        if (
-          ['graphql.config', 'graphqlrc', this._settings.load.fileName].some(
-            v => change.uri.match(v)?.length,
-          )
-        ) {
+        const configMatchers = [
+          'graphql.config',
+          'graphqlrc',
+          this._settings.load.fileName,
+        ].filter(Boolean);
+        if (configMatchers.some(v => change.uri.match(v)?.length)) {
           this._logger.info('updating graphql config');
           this._updateGraphQLConfig();
         }

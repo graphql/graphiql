@@ -8,6 +8,7 @@
  */
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
+import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { MessageProcessor } from '../MessageProcessor';
@@ -24,7 +25,10 @@ import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 import { Logger } from '../Logger';
 import { pathToFileURL } from 'url';
 
-const baseConfig = { dirpath: __dirname };
+jest.mock('fs', () => ({
+  ...jest.requireActual<typeof import('fs')>('fs'),
+  readFileSync: jest.fn(jest.requireActual('fs').readFileSync),
+}));
 
 describe('MessageProcessor', () => {
   const logger = new Logger(tmpdir());
@@ -48,6 +52,7 @@ describe('MessageProcessor', () => {
   beforeEach(async () => {
     const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
     // loadConfig.mockRestore();
+    messageProcessor._settings = { load: {} };
     messageProcessor._graphQLCache = new GraphQLCache({
       configDir: __dirname,
       config: gqlConfig,
@@ -421,5 +426,56 @@ export function Example(arg: string) {}`;
 
     const contents = parseDocument(text, 'test.js');
     expect(contents.length).toEqual(0);
+  });
+
+  describe('handleWatchedFilesChangedNotification', () => {
+    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._updateGraphQLConfig = jest.fn();
+    });
+
+    it('skips config updates for normal file changes', async () => {
+      await messageProcessor.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: `${pathToFileURL('.')}/foo.graphql`,
+            type: FileChangeType.Changed,
+          },
+        ],
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+    });
+
+    it('updates config for standard config filename changes', async () => {
+      await messageProcessor.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: `${pathToFileURL('.')}/.graphql.config`,
+            type: FileChangeType.Changed,
+          },
+        ],
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
+
+    it('updates config for custom config filename changes', async () => {
+      const customConfigName = 'custom-config-name.yml';
+      messageProcessor._settings = { load: { fileName: customConfigName } };
+
+      await messageProcessor.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: `${pathToFileURL('.')}/${customConfigName}`,
+            type: FileChangeType.Changed,
+          },
+        ],
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
   });
 });
