@@ -17,6 +17,8 @@ import type {
   IRange,
 } from 'monaco-editor';
 
+import * as monaco from 'monaco-editor';
+
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
 import { CompletionItem as GraphQLCompletionItem } from 'graphql-language-service';
