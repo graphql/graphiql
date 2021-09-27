@@ -200,10 +200,12 @@ Originally this was three seperate repositories
 
 ### Active
 
-- [@acao](https://github.com/acao)
 - [@imolorhe](https://github.com/imolorhe)
 - [@yoshiakis](https://github.com/yoshiakis)
 - [@dotansimha](https://github.com/dotansimha)
+- [@urigo](https://github.com/urigo)
+- [@timsuchanek](https://github.com/timsuchanek)
+- [@acao](https://github.com/acao)
 
 ### Fielding Proposals!
 
