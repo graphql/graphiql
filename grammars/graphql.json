@@ -81,6 +81,10 @@
                 "1": { "name": "support.type.graphql" }
               }
             },
+            { "include": "#graphql-comment" },
+            { "include": "#graphql-description-docstring" },
+            { "include": "#graphql-description-singleline" },
+            { "include": "#graphql-directive" },
             { "include": "#graphql-ampersand" },
             { "include": "#graphql-comma" }
           ]
@@ -130,6 +134,7 @@
         { "include": "#graphql-comment" },
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },
+        { "include": "#graphql-directive" },
         { "include": "#graphql-variable-definitions" },
         { "include": "#graphql-type-object" },
         { "include": "#graphql-colon" },
@@ -186,6 +191,7 @@
         { "include": "#graphql-comment" },
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },
+        { "include": "#graphql-directive" },
         { "include": "#graphql-skip-newlines" }
       ]
     },
@@ -261,6 +267,7 @@
         { "include": "#graphql-comment" },
         { "include": "#graphql-description-docstring" },
         { "include": "#graphql-description-singleline" },
+        { "include": "#graphql-directive" },
         { "include": "#graphql-colon" },
         { "include": "#graphql-input-types" },
         { "include": "#graphql-variable-assignment" },
@@ -536,6 +543,7 @@
             { "include": "#graphql-comment" },
             { "include": "#graphql-description-docstring" },
             { "include": "#graphql-description-singleline" },
+            { "include": "#graphql-directive" },
             { "include": "#graphql-value" },
             { "include": "#graphql-skip-newlines" }
           ]
@@ -622,10 +630,15 @@
             { "include": "#graphql-comment" },
             { "include": "#graphql-description-docstring" },
             { "include": "#graphql-description-singleline" },
+            { "include": "#graphql-directive" },
             { "include": "#graphql-enum-value" },
             { "include": "#literal-quasi-embedded" }
           ]
-        }
+        },
+        { "include": "#graphql-comment" },
+        { "include": "#graphql-description-docstring" },
+        { "include": "#graphql-description-singleline" },
+        { "include": "#graphql-directive" }
       ]
     },
     "graphql-enum-value": {
