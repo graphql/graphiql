@@ -60,3 +60,5 @@ packages/graphiql/*.html
 
 # Vendored files
 /packages/graphiql/test/vendor
+
+.changeset
