@@ -1,7 +1,5 @@
 # GraphiQL & GraphQL LSP Working Group
 
-> **NOTE:** Working Group is on hiatus. For now, reach out in discord, create RFCs or discussions on github!
-
 The GraphiQL and GraphQL Working Group focuses on fielding and fostering proposals and specifications for plugin interfaces and other user/developer-facing interfaces, as well as overall features, decisions about lifecycle, etc. This doesn't mean we will make decisions about every PR we merge, but it's a chance to have stake in the roadmap and how commonly used interfaces change.
 
 All users of GraphiQL, the LSP, GraphQL IDE extensions, developer users, all GraphQL community members are welcome. There is no official list of members, though you can add yourself to the monthly meeting agends (see below)
@@ -10,7 +8,7 @@ This working group is focused on usage of the entire monorepo - GraphiQL and plu
 
 ## Monthly Working Group Meeting
 
-> **Second Tuesday of Every month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NHN2YjJwcGc5bGxvb3MycW1xbXA1aTU3bzRfMjAyMDA0MTRUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
+> **Second Tuesday of Every month at 16GMT/12EST** [(GraphQL Foundation Google Calendar)](https://calendar.google.com/calendar/embed?src=linuxfoundation.org_ik79t9uuj2p32i3r203dgv5mo8@group.calendar.google.com)
 
 These are monthly sessions designed to work similarly to the official `graphql/graphql-wg` working group. The goal is decision making, setting specifications and navigating feature proposals for our shared graphql web and desktop IDE experiences as a community.
 
