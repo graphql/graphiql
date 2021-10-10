@@ -3,8 +3,6 @@ name: Netlify Preview
 on:
   pull_request:
     types: [opened, synchronize]
-    paths-ignore:
-      - '**.md'
   
 jobs:
   graphiql-preview:
@@ -27,7 +25,7 @@ jobs:
         run: yarn build-docs
 
       - name: Deploy Dev to Netlify
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2
         with:
           publish-dir: './packages/graphiql/'
           production-branch: main
@@ -59,7 +57,7 @@ jobs:
         run: yarn workspace example-monaco-graphql-webpack run build
 
       - name: Deploy Monaco GraphQL Example to Netlify
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2
         with:
           publish-dir: './examples/monaco-graphql-webpack/bundle'
           production-branch: main
