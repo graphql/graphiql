@@ -6,6 +6,7 @@
  */
 
 import { Uri, IDisposable } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
 
 import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
 

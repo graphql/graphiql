@@ -51,7 +51,7 @@
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.1.1",
     "markdown-it": "^10.0.0",
-    "monaco-editor": "^0.20.0",
+    "monaco-editor": "^0.27.0",
     "monaco-graphql": "^0.4.2",
     "react-i18next": "^11.4.0",
     "theme-ui": "^0.3.1"
@@ -86,7 +86,7 @@
     "jest": "^25.3.0",
     "jsdom": "^16.4.0",
     "mini-css-extract-plugin": "^0.9.0",
-    "monaco-editor-webpack-plugin": "^1.9.0",
+    "monaco-editor-webpack-plugin": "^4.0.0",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-preset-env": "^6.7.0",
