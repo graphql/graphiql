@@ -21,7 +21,7 @@
   "scripts": {},
   "dependencies": {
     "@n1ru4l/push-pull-async-iterable-iterator": "^3.0.0",
-    "graphql-ws": "^5.5.0",
+    "graphql-ws": "^4.9.0",
     "meros": "^1.1.4"
   },
   "devDependencies": {
