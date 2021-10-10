@@ -90,7 +90,7 @@ GraphiQL provides a React component responsible for rendering the UI, which shou
 
 For HTTP transport implementations, we recommend using the [fetch](https://fetch.spec.whatwg.org/) standard API, but you can use anything that matches [the type signature](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher), including async iterables and observables.
 
-You can also install `@graphiql/create-fetcher` to make it easier to create a simple fetcher for conventional http and websockets transports.
+You can also install `@graphiql/create-fetcher` to make it easier to create a simple fetcher for conventional http and websockets transports. It uses `graphql-ws@4.x` protocol by default.
 
 ```js
 import React from 'react';
@@ -109,7 +109,7 @@ ReactDOM.render(
 );
 ```
 
-Read more about using [`createGraphiQLFetcher`](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) in the readme to learn how to add headers and more.
+[Read more about using `createGraphiQLFetcher` in the readme](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) to learn how to add headers, support the legacy `subsriptions-transport-ws` protocol, and more.
 
 ### Usage: UMD Bundle over CDN (Unpkg, JSDelivr, etc)
 
@@ -259,5 +259,3 @@ In order to theme the editor portions of the interface, you can supply a `editor
   editorTheme="solarized light"
 />
 ```
-
-### Running Operations
