@@ -15,7 +15,7 @@ import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 const SCHEMA_URL = 'https://api.github.com/graphql';
 
 const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
-let API_TOKEN = '';
+let API_TOKEN = localStorage.getItem('ghapi') || '';
 
 let isLoggedIn = false;
 
@@ -44,58 +44,64 @@ query Example($owner: String!, $name: String!) {
   }
 }
 `;
+
 const variables = `{ "owner": "graphql", "name": "graphiql" }`;
 
 const THEME = 'vs-dark';
 
 render();
 
+/**
+ * load local schema by default
+ */
+
+let initialSchema = false;
+
 function render() {
-  const button = document.createElement('button');
-
-  button.id = 'button';
-  button.innerText = 'Run Operation ➤';
-
-  button.onclick = () => executeCurrentOp();
-  button.ontouchend = () => executeCurrentOp();
-
   const toolbar = document.getElementById('toolbar');
+  if (!isLoggedIn) {
+    const githubButton = document.createElement('button');
 
-  const githubButton = document.createElement('button');
+    githubButton.id = 'login';
+    githubButton.innerHTML = 'GitHub Login for <pre>monaco-graphql</pre> Demo';
 
-  githubButton.id = 'login';
-  githubButton.innerText = 'GitHub Login';
-
-  githubButton.onclick = e => {
-    e.preventDefault();
-    // @ts-ignore
-    const authenticator = new netlify.default({ site_id: SITE_ID });
-    authenticator.authenticate(
-      { provider: 'github', scope: ['user', 'read:org'] },
-      (err: Error, data: { token: string }) => {
-        if (err) {
-          return console.error('Error Authenticating with GitHub: ' + err);
-        } else {
-          isLoggedIn = true;
-          API_TOKEN = data.token;
-          render();
-        }
-      },
-    );
-  };
-
-  if (isLoggedIn) {
+    githubButton.onclick = e => {
+      e.preventDefault();
+      // @ts-ignore
+      const authenticator = new netlify.default({ site_id: SITE_ID });
+      authenticator.authenticate(
+        { provider: 'github', scope: ['user', 'read:org'] },
+        (err: Error, data: { token: string }) => {
+          if (err) {
+            console.error('Error Authenticating with GitHub: ' + err);
+          } else {
+            isLoggedIn = true;
+            API_TOKEN = data.token;
+            localStorage.setItem('ghapi', data.token);
+            render();
+          }
+        },
+      );
+    };
+    toolbar?.appendChild(githubButton);
+    return;
+  } else {
     if (toolbar) {
+      const button = document.createElement('button');
+
+      button.id = 'button';
+      button.innerText = 'Run Operation ➤';
+
+      button.onclick = () => executeCurrentOp();
+      button.ontouchend = () => executeCurrentOp();
       toolbar.innerHTML = '';
       toolbar?.appendChild(button);
     }
-  } else {
-    toolbar?.appendChild(githubButton);
   }
 
-  if (!isLoggedIn) {
-    return;
-  }
+  /**
+   * Creating & configuring the monaco editor panes
+   */
 
   const variablesModel = monaco.editor.createModel(
     variables,
@@ -143,6 +149,10 @@ function render() {
     },
   );
 
+  /**
+   * Configure monaco-graphql formatting operations
+   */
+
   GraphQLAPI.setFormattingOptions({
     prettierConfig: {
       printWidth: 120,
@@ -158,6 +168,7 @@ function render() {
       const operation = operationEditor.getValue();
       const variables = variablesEditor.getValue();
       const body: { variables?: string; query: string } = { query: operation };
+      // parse the variables so we can detect if we need to send any
       const parsedVariables = JSON.parse(variables);
       if (parsedVariables && Object.keys(parsedVariables).length) {
         body.variables = variables;
@@ -174,6 +185,8 @@ function render() {
       const resultText = await result.text();
       resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
     } catch (err) {
+      // set the error to results
+      // @ts-ignore
       resultsEditor.setValue(err.toString());
     }
   }
@@ -193,12 +206,6 @@ function render() {
   operationEditor.addAction(opAction);
   variablesEditor.addAction(opAction);
   resultsEditor.addAction(opAction);
-
-  /**
-   * load local schema by default
-   */
-
-  let initialSchema = false;
 
   if (!initialSchema) {
     GraphQLAPI.setSchemaConfig({
