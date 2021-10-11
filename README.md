@@ -4,7 +4,6 @@
 
 # GraphQL IDE Monorepo
 
-> **Note:** The primary maintainer @acao is on hiatus until December 2020
 > **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
 [![Build Status](https://github.com/graphql/graphiql/workflows/Node.JS%20CI/badge.svg)](https://github.com/graphql/graphiql/actions?query=workflow%3A%22Node.JS+CI%22)
