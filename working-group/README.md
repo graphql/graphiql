@@ -14,7 +14,7 @@ These are monthly sessions designed to work similarly to the official `graphql/g
 
 Many of the underlying packages used for graphql web/desktop IDE tooling are in this very monorepo!
 
-In the [`'agendas'`]('/agendas') directory you can introduce PRs to add yourself as an atendee to each agenda, and optionally add an agenda item or two.
+In the [`'agendas'`](/agendas) directory you can introduce PRs to add yourself as an atendee to each agenda, and optionally add an agenda item or two.
 
 ## Get Involved
 
