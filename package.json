@@ -6,7 +6,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/monaco-graphql-webpack"
+      "examples/*"
     ]
   },
   "lint-staged": {
