@@ -29,7 +29,6 @@
     "typescript": "^3.4.4"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
-    "worker-loader": "^2.0.0"
+    "parcel-bundler": "^1.12.4"
   }
 }

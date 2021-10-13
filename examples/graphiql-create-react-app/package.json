@@ -6,8 +6,7 @@
     "graphiql": "file:../../packages/graphiql",
     "graphql": "experimental-stream-defer",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-dom": "^16.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,6 +29,6 @@
   },
   "devDependencies": {
     "eslint-config-react-app": "^5.2.1",
-    "worker-loader": "^2.0.0"
+    "react-scripts": "4.0.3"
   }
 }
