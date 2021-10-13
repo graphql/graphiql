@@ -1,0 +1,10 @@
+{
+  "name": "example-graphiql-cdn",
+  "version": "0.0.8",
+  "private": true,
+  "license": "MIT",
+  "description": "An example using GraphiQL",
+  "scripts": {
+    "build-demo": "copy index.html ../../packages/graphiql/cdn/"
+  }
+}

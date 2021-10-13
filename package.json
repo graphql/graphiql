@@ -49,7 +49,7 @@
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "postpublish": "ts-node ./resources/publishCleanup.ts",
-    "prebuild-bundles": "yarn build && yarn build-bundles-clean",
+    "prebuild-bundles": "yarn build-bundles-clean",
     "prepublishOnly": "./resources/prepublish.sh",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
