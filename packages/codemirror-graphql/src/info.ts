@@ -12,6 +12,7 @@ import {
   GraphQLDirective,
   GraphQLEnumType,
   GraphQLEnumValue,
+  GraphQLField,
   GraphQLInputField,
   GraphQLList,
   GraphQLNonNull,
@@ -76,7 +77,11 @@ CodeMirror.registerHelper(
     ) {
       const into = document.createElement('div');
       renderField(into, typeInfo, options);
-      renderDescription(into, options, typeInfo.fieldDef as GraphQLInputField);
+      renderDescription(
+        into,
+        options,
+        typeInfo.fieldDef as GraphQLField<unknown, unknown>,
+      );
       return into;
     } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
       const into = document.createElement('div');
@@ -208,6 +213,7 @@ function renderDescription(
   into: HTMLElement,
   options: GraphQLInfoOptions,
   def:
+    | GraphQLField<unknown, unknown>
     | GraphQLInputField
     | GraphQLEnumType
     | GraphQLDirective
@@ -233,6 +239,7 @@ function renderDeprecation(
   into: HTMLElement,
   options: GraphQLInfoOptions,
   def:
+    | GraphQLField<unknown, unknown>
     | GraphQLInputField
     | GraphQLEnumType
     | GraphQLDirective

@@ -11,8 +11,7 @@ import {
 export const ExampleInterface = new GraphQLInterfaceType({
   name: 'exampleInterface',
   fields: {
-    name: {
-      name: 'nameField',
+    nameField: {
       type: GraphQLString,
     },
   },
@@ -28,30 +27,26 @@ export const ExampleEnum = new GraphQLEnumType({
 });
 
 export const ExampleUnionType1 = new GraphQLObjectType({
-  name: 'Union Type 1',
+  name: 'UnionType1',
   interfaces: [ExampleInterface],
   fields: {
-    name: {
-      name: 'nameField',
+    nameField: {
       type: GraphQLString,
     },
-    enum: {
-      name: 'enumField',
+    enumField: {
       type: ExampleEnum,
     },
   },
 });
 
 export const ExampleUnionType2 = new GraphQLObjectType({
-  name: 'Union Type 2',
+  name: 'UnionType2',
   interfaces: [ExampleInterface],
   fields: {
-    name: {
-      name: 'nameField',
+    nameField: {
       type: GraphQLString,
     },
-    string: {
-      name: 'stringField',
+    stringField: {
       type: GraphQLString,
     },
   },
@@ -66,25 +61,20 @@ export const ExampleQuery = new GraphQLObjectType({
   name: 'Query',
   fields: {
     string: {
-      name: 'exampleString',
       type: GraphQLString,
     },
     union: {
-      name: 'exampleUnion',
       type: ExampleUnion,
     },
     fieldWithArgs: {
-      name: 'exampleWithArgs',
       type: GraphQLString,
       args: {
         stringArg: {
-          name: 'exampleStringArg',
           type: GraphQLString,
         },
       },
     },
     deprecatedField: {
-      name: 'booleanField',
       type: GraphQLBoolean,
       deprecationReason: 'example deprecation reason',
     },

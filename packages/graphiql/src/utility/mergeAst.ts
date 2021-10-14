@@ -16,9 +16,6 @@ import {
   getNamedType,
   visit,
   visitWithTypeInfo,
-  ASTKindToNode,
-  Visitor,
-  ASTNode,
 } from 'graphql';
 
 type Maybe<T> = null | T;
@@ -134,7 +131,9 @@ export default function mergeAST(
     }
   }
 
-  const visitors: Visitor<ASTKindToNode, ASTNode> = {
+  type Visitor = Parameters<typeof visitWithTypeInfo>[1];
+
+  const visitors: Visitor = {
     SelectionSet(node) {
       const selectionSetType = typeInfo ? typeInfo.getParentType() : null;
       let { selections } = node;

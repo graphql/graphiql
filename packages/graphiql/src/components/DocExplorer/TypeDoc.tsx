@@ -93,9 +93,7 @@ export default class TypeDoc extends React.Component<
         <div className="doc-category">
           <div className="doc-category-title">{'fields'}</div>
           {fields
-            .filter(field =>
-              'isDeprecated' in field ? !field.isDeprecated : true,
-            )
+            .filter(field => !field.deprecationReason)
             .map(field => (
               <Field
                 key={field.name}
@@ -108,8 +106,8 @@ export default class TypeDoc extends React.Component<
         </div>
       );
 
-      const deprecatedFields = fields.filter(
-        field => 'isDeprecated' in field && field.isDeprecated,
+      const deprecatedFields = fields.filter(field =>
+        Boolean(field.deprecationReason),
       );
       if (deprecatedFields.length > 0) {
         deprecatedFieldsDef = (
@@ -143,14 +141,14 @@ export default class TypeDoc extends React.Component<
         <div className="doc-category">
           <div className="doc-category-title">{'values'}</div>
           {values
-            .filter(value => !value.isDeprecated)
+            .filter(value => !value.deprecationReason)
             .map(value => (
               <EnumValue key={value.name} value={value} />
             ))}
         </div>
       );
 
-      const deprecatedValues = values.filter(value => value.isDeprecated);
+      const deprecatedValues = values.filter(value => value.deprecationReason);
       if (deprecatedValues.length > 0) {
         deprecatedValuesDef = (
           <div className="doc-category">
@@ -235,11 +233,11 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
   );
 }
 
-type EnumValue = {
+type EnumValueProps = {
   value: GraphQLEnumValue;
 };
 
-function EnumValue({ value }: EnumValue) {
+function EnumValue({ value }: EnumValueProps) {
   return (
     <div className="doc-category-item">
       <div className="enum-value">{value.name}</div>

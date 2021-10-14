@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "experimental-stream-defer",
+    "graphql": "^16.0.0-rc.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "typescript": "^3.4.4"

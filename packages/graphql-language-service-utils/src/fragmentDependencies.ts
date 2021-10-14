@@ -14,10 +14,7 @@ export const getFragmentDependencies = (
   // Return an empty array.
   let parsedOperation;
   try {
-    parsedOperation = parse(operationString, {
-      allowLegacySDLImplementsInterfaces: true,
-      allowLegacySDLEmptyFields: true,
-    });
+    parsedOperation = parse(operationString);
   } catch (error) {
     return [];
   }

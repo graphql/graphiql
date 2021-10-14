@@ -683,17 +683,11 @@ export class MessageProcessor {
 
     const inlineFragments: string[] = [];
 
-    visit(
-      parse(query, {
-        allowLegacySDLEmptyFields: true,
-        allowLegacySDLImplementsInterfaces: true,
-      }),
-      {
-        FragmentDefinition: (node: FragmentDefinitionNode) => {
-          inlineFragments.push(node.name.value);
-        },
+    visit(parse(query, {}), {
+      FragmentDefinition: (node: FragmentDefinitionNode) => {
+        inlineFragments.push(node.name.value);
       },
-    );
+    });
 
     const formatted = result
       ? result.definitions.map(res => {
@@ -819,7 +813,7 @@ export class MessageProcessor {
         await this._updateObjectTypeDefinition(uri, contents);
       }
     } catch (err) {
-      this._logger.error(err);
+      this._logger.error(err as string);
     }
   }
   async _cacheSchemaFile(
@@ -906,9 +900,7 @@ export class MessageProcessor {
     try {
       const schema = await this._graphQLCache.getSchema(project.name);
       if (schema) {
-        let schemaText = printSchema(schema, {
-          commentDescriptions: true,
-        });
+        let schemaText = printSchema(schema);
         // file:// protocol path
         const uri = this._getTmpProjectPath(
           project,
@@ -945,7 +937,7 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
-      this._logger.error(err);
+      this._logger.error(err as string);
     }
   }
   /**
@@ -986,7 +978,7 @@ export class MessageProcessor {
       this._logger.error(
         `invalid/unknown file in graphql config documents entry:\n '${project.documents}'`,
       );
-      this._logger.error(err);
+      this._logger.error(err as string);
     }
   }
   /**

@@ -25,7 +25,7 @@ import {
   GraphQLInputFieldMap,
 } from 'graphql';
 import { State } from 'graphql-language-service-parser';
-import { Maybe } from 'graphql-language-service-types';
+import type { Maybe } from 'graphql-language-service-types';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
@@ -42,7 +42,7 @@ export interface TypeInfo {
   directiveDef?: Maybe<GraphQLDirective>;
   fieldDef?: Maybe<GraphQLField<any, any>>;
   argDef?: Maybe<GraphQLArgument>;
-  argDefs?: Maybe<GraphQLArgument[]>;
+  argDefs?: Maybe<readonly GraphQLArgument[]>;
   enumValue?: Maybe<GraphQLEnumValue>;
   objectFieldDefs?: Maybe<GraphQLInputFieldMap>;
 }
@@ -179,7 +179,7 @@ function getFieldDef(
 }
 
 // Returns the first item in the array which causes predicate to return truthy.
-function find<T>(array: T[], predicate: (item: T) => boolean) {
+function find<T>(array: readonly T[], predicate: (item: T) => boolean) {
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i])) {
       return array[i];

@@ -12,6 +12,8 @@ import {
   TextToken,
   TokenKind,
   IPosition,
+  OutlineTree,
+  OutlineableKinds,
 } from 'graphql-language-service-types';
 
 import {
@@ -38,26 +40,6 @@ import {
 import { offsetToPosition } from 'graphql-language-service-utils';
 
 const { INLINE_FRAGMENT } = Kind;
-
-const OUTLINEABLE_KINDS = {
-  Field: true,
-  OperationDefinition: true,
-  Document: true,
-  SelectionSet: true,
-  Name: true,
-  FragmentDefinition: true,
-  FragmentSpread: true,
-  InlineFragment: true,
-  ObjectTypeDefinition: true,
-  InputObjectTypeDefinition: true,
-  InterfaceTypeDefinition: true,
-  EnumTypeDefinition: true,
-  EnumValueDefinition: true,
-  InputValueDefinition: true,
-  FieldDefinition: true,
-};
-
-export type OutlineableKinds = keyof typeof OUTLINEABLE_KINDS;
 
 // type OutlineableNodes = FieldNode | OperationDefinitionNode | DocumentNode | SelectionSetNode | NameNode | FragmentDefinitionNode | FragmentSpreadNode |InlineFragmentNode | ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
 
@@ -90,11 +72,13 @@ export function getOutline(documentText: string): Outline | null {
   }
 
   const visitorFns = outlineTreeConverter(documentText);
-  const outlineTrees = visit(ast, {
+  const outlineTrees: OutlineTree[] = [];
+  visit(ast, {
     leave(node) {
       if (visitorFns !== undefined && node.kind in visitorFns) {
+        // FIXME: clashing kind enums
         // @ts-ignore
-        return visitorFns[node.kind](node);
+        outlineTrees.push(visitorFns[node.kind](node));
       }
       return null;
     },

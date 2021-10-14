@@ -153,7 +153,7 @@ export type AllTypeInfo = {
   fieldDef: Maybe<GraphQLField<any, any>>;
   enumValue: Maybe<GraphQLEnumValue>;
   argDef: Maybe<GraphQLArgument>;
-  argDefs: Maybe<GraphQLArgument[]>;
+  argDefs: Maybe<readonly GraphQLArgument[]>;
   objectFieldDefs: Maybe<GraphQLInputFieldMap>;
   interfaceDef: Maybe<GraphQLInterfaceType>;
   objectTypeDef: Maybe<GraphQLObjectType>;
@@ -219,20 +219,40 @@ export type TextToken = {
   value: string | NameNode;
 };
 
+const OUTLINEABLE_KINDS = {
+  Field: true,
+  OperationDefinition: true,
+  Document: true,
+  SelectionSet: true,
+  Name: true,
+  FragmentDefinition: true,
+  FragmentSpread: true,
+  InlineFragment: true,
+  ObjectTypeDefinition: true,
+  InputObjectTypeDefinition: true,
+  InterfaceTypeDefinition: true,
+  EnumTypeDefinition: true,
+  EnumValueDefinition: true,
+  InputValueDefinition: true,
+  FieldDefinition: true,
+};
+
+export type OutlineableKinds = keyof typeof OUTLINEABLE_KINDS;
+
 export type TokenizedText = TextToken[];
 export type OutlineTree = {
   // Must be one or the other. If both are present, tokenizedText is preferred.
   plainText?: string;
   tokenizedText?: TokenizedText;
   representativeName?: string;
-  kind: string;
+  kind: OutlineableKinds;
   startPosition: IPosition;
   endPosition?: IPosition;
   children: OutlineTree[];
 };
 
 export type Outline = {
-  outlineTrees: OutlineTree[];
+  outlineTrees: readonly OutlineTree[];
 };
 
 export interface FileEvent {

@@ -17,9 +17,11 @@ import {
   SourceLocation,
   ValidationRule,
   print,
+  validate,
+  NoDeprecatedCustomRule,
 } from 'graphql';
 
-import { findDeprecatedUsages, parse } from 'graphql';
+import { parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from 'graphql-language-service-parser';
 
@@ -67,13 +69,15 @@ export function getDiagnostics(
   externalFragments?: FragmentDefinitionNode[] | string,
 ): Array<Diagnostic> {
   let ast = null;
+  let operationalQuery = query;
   if (externalFragments) {
     if (typeof externalFragments === 'string') {
-      query += '\n\n' + externalFragments;
+      operationalQuery += '\n\n' + externalFragments;
     } else {
-      query +=
+      operationalQuery +=
         '\n\n' +
         externalFragments.reduce((agg, node) => {
+          // eslint-disable-next-line no-param-reassign
           agg += print(node) + '\n\n';
           return agg;
         }, '');
@@ -81,20 +85,30 @@ export function getDiagnostics(
   }
 
   try {
-    ast = parse(query);
+    ast = parse(operationalQuery);
   } catch (error) {
-    const range = getRange(error.locations[0], query);
-    return [
-      {
-        severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
-        message: error.message,
-        source: 'GraphQL: Syntax',
-        range,
-      },
-    ];
+    if (error instanceof GraphQLError && error.locations) {
+      const range = getRange(error.locations[0], operationalQuery);
+      return [
+        {
+          severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
+          message: error.message,
+          source: 'GraphQL: Syntax',
+          range,
+        },
+      ];
+    } else {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
-  return validateQuery(ast, schema, customRules, isRelayCompatMode);
+  return validateQuery(
+    ast as DocumentNode,
+    schema,
+    customRules,
+    isRelayCompatMode,
+  );
 }
 
 export function validateQuery(
@@ -113,9 +127,8 @@ export function validateQuery(
     error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
-  // TODO: detect if > graphql@15.2.0, and use the new rule for this.
   const deprecationWarningAnnotations = mapCat(
-    findDeprecatedUsages(schema, ast),
+    validate(schema, ast, [NoDeprecatedCustomRule]),
     error => annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
   );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);

@@ -80,7 +80,7 @@
     "express-graphql": "experimental-stream-defer",
     "file-loader": "6.2.0",
     "fork-ts-checker-webpack-plugin": "4.1.3",
-    "graphql": "experimental-stream-defer",
+    "graphql": "^16.0.0-rc.4",
     "html-webpack-plugin": "^4.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.3.0",

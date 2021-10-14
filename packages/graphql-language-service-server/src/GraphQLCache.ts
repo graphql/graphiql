@@ -122,10 +122,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query, {
-        allowLegacySDLImplementsInterfaces: true,
-        allowLegacySDLEmptyFields: true,
-      });
+      parsedQuery = parse(query, {});
     } catch (error) {
       return [];
     }
@@ -219,10 +216,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query, {
-        allowLegacySDLImplementsInterfaces: true,
-        allowLegacySDLEmptyFields: true,
-      });
+      parsedQuery = parse(query, {});
     } catch (error) {
       return [];
     }
@@ -414,10 +408,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const asts = contents.map(({ query }) => {
       try {
         return {
-          ast: parse(query, {
-            allowLegacySDLImplementsInterfaces: true,
-            allowLegacySDLEmptyFields: true,
-          }),
+          ast: parse(query, {}),
           query,
         };
       } catch (error) {
@@ -479,10 +470,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const asts = contents.map(({ query }) => {
       try {
         return {
-          ast: parse(query, {
-            allowLegacySDLImplementsInterfaces: true,
-            allowLegacySDLEmptyFields: true,
-          }),
+          ast: parse(query, {}),
           query,
         };
       } catch (error) {
@@ -641,13 +629,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const customDirectives = projectConfig?.extensions?.customDirectives;
     if (customDirectives && schema) {
       const directivesSDL = customDirectives.join('\n\n');
-      schema = extendSchema(
-        schema,
-        parse(directivesSDL, {
-          allowLegacySDLImplementsInterfaces: true,
-          allowLegacySDLEmptyFields: true,
-        }),
-      );
+      schema = extendSchema(schema, parse(directivesSDL, {}));
     }
 
     if (!schema) {
@@ -816,14 +798,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               return;
             }
 
-            queries.forEach(({ query }) =>
-              asts.push(
-                parse(query, {
-                  allowLegacySDLImplementsInterfaces: true,
-                  allowLegacySDLEmptyFields: true,
-                }),
-              ),
-            );
+            queries.forEach(({ query }) => asts.push(parse(query, {})));
             resolve({
               filePath,
               content,

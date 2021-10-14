@@ -70,16 +70,11 @@ import {
 const collectFragmentDefs = (op: string | undefined) => {
   const externalFragments: FragmentDefinitionNode[] = [];
   if (op) {
-    visit(
-      parse(op, {
-        experimentalFragmentVariables: true,
-      }),
-      {
-        FragmentDefinition(def) {
-          externalFragments.push(def);
-        },
+    visit(parse(op), {
+      FragmentDefinition(def) {
+        externalFragments.push(def);
       },
-    );
+    });
   }
   return externalFragments;
 };
@@ -286,8 +281,8 @@ function getSuggestionsForFieldNames(
         label: field.name,
         detail: String(field.type),
         documentation: field.description ?? undefined,
-        deprecated: field.isDeprecated,
-        isDeprecated: field.isDeprecated,
+        deprecated: Boolean(field.deprecationReason),
+        isDeprecated: Boolean(field.deprecationReason),
         deprecationReason: field.deprecationReason,
         kind: CompletionItemKind.Field,
         type: field.type,
@@ -312,7 +307,7 @@ function getSuggestionsForInputValues(
   ).filter(v => v.detail === namedInputType.name);
 
   if (namedInputType instanceof GraphQLEnumType) {
-    const values: GraphQLEnumValue[] = namedInputType.getValues();
+    const values: readonly GraphQLEnumValue[] = namedInputType.getValues();
     return hintList(
       token,
       values
@@ -320,8 +315,8 @@ function getSuggestionsForInputValues(
           label: value.name,
           detail: String(namedInputType),
           documentation: value.description ?? undefined,
-          deprecated: value.isDeprecated,
-          isDeprecated: value.isDeprecated,
+          deprecated: Boolean(value.deprecationReason),
+          isDeprecated: Boolean(value.deprecationReason),
           deprecationReason: value.deprecationReason,
           kind: CompletionItemKind.EnumMember,
           type: namedInputType,
@@ -1007,7 +1002,7 @@ export function getTypeInfo(
 }
 
 // Returns the first item in the array which causes predicate to return truthy.
-function find(array: any[], predicate: Function) {
+function find(array: readonly any[], predicate: Function) {
   for (let i = 0; i < array.length; i++) {
     if (predicate(array[i])) {
       return array[i];

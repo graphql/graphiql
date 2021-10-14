@@ -49,7 +49,7 @@
   "devDependencies": {
     "codemirror": "^5.58.2",
     "cross-env": "^7.0.2",
-    "graphql": "experimental-stream-defer",
+    "graphql": "^16.0.0-rc.4",
     "jsdom": "^16.4.0",
     "rimraf": "^3.0.2",
     "sane": "2.0.0"

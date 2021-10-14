@@ -37,6 +37,7 @@ function createEditorWithHint() {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql',
     hintOptions: {
+      hint: true,
       schema: TestSchema,
       closeOnUnfocus: false,
       completeSingle: false,
@@ -209,7 +210,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -855,7 +856,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -887,7 +888,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -1111,7 +1112,7 @@ describe('graphql-hint', () => {
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         deprecationReason: undefined,
       },
     ];

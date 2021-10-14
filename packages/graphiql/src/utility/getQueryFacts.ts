@@ -42,9 +42,7 @@ export default function getOperationFacts(
 
   let documentAST: DocumentNode;
   try {
-    documentAST = parse(documentStr, {
-      experimentalFragmentVariables: true,
-    });
+    documentAST = parse(documentStr);
   } catch {
     return;
   }
