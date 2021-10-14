@@ -1,9 +1,9 @@
 {
-  "name": "example-graphiql-cdn",
+  "name": "example-graphiql-cdn-create-fetcher",
   "version": "0.0.8",
   "private": true,
   "license": "MIT",
-  "description": "An example using GraphiQL",
+  "description": "An example using GraphiQL and GraphiQL.createFetcher()",
   "scripts": {
     "build-demo": "copy index.html ../../packages/graphiql/cdn/"
   }
