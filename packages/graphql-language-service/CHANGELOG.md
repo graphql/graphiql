@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 3.1.5
+
+### Patch Changes
+
+- [`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb) [#1941](https://github.com/graphql/graphiql/pull/1941) Thanks [@arcanis](https://github.com/arcanis)! - Adds support for `#graphql` and `/* GraphQL */` in the language server
+
 ## 3.1.4
 
 ### Patch Changes

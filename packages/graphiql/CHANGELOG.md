@@ -1,5 +1,22 @@
 # Change Log
 
+## 1.4.3
+
+### Patch Changes
+
+- [`6a459f4c`](https://github.com/graphql/graphiql/commit/6a459f4c235bb0d70725ae6ad7fc1cfa34f49dca) [#1968](https://github.com/graphql/graphiql/pull/1968) Thanks [@acao](https://github.com/acao)! - Remove `optionalDependencies` entirely, remove `subscriptions-transport-ws` which introduces vulnerabilities, upgrade `@n1ru4l/push-pull-async-iterable-iterator` to 3.0.0, upgrade `graphql-ws` several minor versions - the `graphql-ws@5.x` upgrade will come in a later minor release.
+
+* [`eb2d91fa`](https://github.com/graphql/graphiql/commit/eb2d91fa8e4a03cb5663f27f724db2c95989a40f) [#1914](https://github.com/graphql/graphiql/pull/1914) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - fix: history can now be saved even when query history panel is not opened
+  feat: create a new maxHistoryLength prop to allow more than 20 queries in history panel
+
+- [`04fad79c`](https://github.com/graphql/graphiql/commit/04fad79c094318d4b4c9e0250c5cff55d9fc5116) [#1889](https://github.com/graphql/graphiql/pull/1889) Thanks [@henryqdineen](https://github.com/henryqdineen)! - feat: export ToolbarSelectOption and ToolbarMenuItem
+
+* [`cd685435`](https://github.com/graphql/graphiql/commit/cd6854352ac6beff57af76db7de38e8157ff13aa) [#1923](https://github.com/graphql/graphiql/pull/1923) Thanks [@cgarnier](https://github.com/cgarnier)! - Fix result window theme
+
+* Updated dependencies [[`6a459f4c`](https://github.com/graphql/graphiql/commit/6a459f4c235bb0d70725ae6ad7fc1cfa34f49dca), [`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb)]:
+  - @graphiql/toolkit@0.3.0
+  - graphql-language-service@3.1.5
+
 ## 1.4.2
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # Change Log
 
+## 0.5.0
+
+### Minor Changes
+
+- [`fec37c6b`](https://github.com/graphql/graphiql/commit/fec37c6b2953e177bea99d4cbf993c9b253198ba) [#1952](https://github.com/graphql/graphiql/pull/1952) Thanks [@Nishchit14](https://github.com/Nishchit14)! - devDependancy and peerDependancy of monaco-graphql has been upgraded for monaco-editor. monaco-graphql is now supporting latest version of monaco-editor which is v0.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb)]:
+  - graphql-language-service@3.1.5
+
 ## 0.4.4
 
 ### Patch Changes
