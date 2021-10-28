@@ -83,7 +83,7 @@ export default function onHasCompletion(
           : type + description) +
         '</div>';
 
-      if (ctx && deprecation && ctx.isDeprecated) {
+      if (ctx && deprecation && ctx.deprecationReason) {
         const reason = ctx.deprecationReason
           ? md.render(ctx.deprecationReason)
           : '';

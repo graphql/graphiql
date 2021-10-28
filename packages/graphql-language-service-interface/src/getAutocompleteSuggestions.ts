@@ -24,6 +24,7 @@ import {
   GraphQLObjectType,
   Kind,
   DirectiveLocation,
+  GraphQLArgument,
 } from 'graphql';
 
 import {
@@ -919,10 +920,11 @@ export function getTypeInfo(
         } else {
           switch (state.prevState.kind) {
             case RuleKinds.FIELD:
-              argDefs = fieldDef && fieldDef.args;
+              argDefs = fieldDef && (fieldDef.args as GraphQLArgument[]);
               break;
             case RuleKinds.DIRECTIVE:
-              argDefs = directiveDef && directiveDef.args;
+              argDefs =
+                directiveDef && (directiveDef.args as GraphQLArgument[]);
               break;
             case RuleKinds.ALIASED_FIELD: {
               const name = state.prevState && state.prevState.name;
@@ -937,7 +939,7 @@ export function getTypeInfo(
                 argDefs = null;
                 break;
               }
-              argDefs = field.args;
+              argDefs = field.args as GraphQLArgument[];
               break;
             }
             default:
@@ -963,7 +965,7 @@ export function getTypeInfo(
         enumValue =
           enumType instanceof GraphQLEnumType
             ? find(
-                enumType.getValues(),
+                enumType.getValues() as GraphQLEnumValue[],
                 (val: GraphQLEnumValue) => val.value === state.name,
               )
             : null;
