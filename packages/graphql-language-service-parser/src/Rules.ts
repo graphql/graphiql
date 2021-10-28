@@ -10,6 +10,7 @@
 import { State, Token, Rule, RuleKind, ParseRule } from './types';
 import CharacterStream from './CharacterStream';
 import { opt, list, butNot, t, p } from './RuleHelpers';
+import { Kind } from 'graphql';
 
 /**
  * Whitespace tokens defined in GraphQL spec.
@@ -61,7 +62,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
       case 'subscription':
         return 'Subscription';
       case 'fragment':
-        return 'FragmentDefinition';
+        return Kind.FRAGMENT_DEFINITION;
       case 'schema':
         return 'SchemaDef';
       case 'scalar':
