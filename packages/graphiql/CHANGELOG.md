@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.4.4
+
+### Patch Changes
+
+- [`62e786b5`](https://github.com/graphql/graphiql/commit/62e786b57cc5748eccac59814dfc8ecd0104c748) [#1990](https://github.com/graphql/graphiql/pull/1990) Thanks [@acao](https://github.com/acao)! - Remove type definition from `subscriptions-transport-ws`
+
+- Updated dependencies [[`62e786b5`](https://github.com/graphql/graphiql/commit/62e786b57cc5748eccac59814dfc8ecd0104c748)]:
+  - @graphiql/toolkit@0.3.1
+
 ## 1.4.3
 
 ### Patch Changes
