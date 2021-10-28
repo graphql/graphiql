@@ -107,7 +107,7 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
               getFieldDef(schema, info.parentType, state.prevState.name)
             : null
           : null;
-        info.argDefs = parentDef ? parentDef.args : null;
+        info.argDefs = parentDef ? (parentDef.args as GraphQLArgument[]) : null;
         break;
       case 'Argument':
         info.argDef = null;
@@ -125,7 +125,10 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
         const enumType = info.inputType ? getNamedType(info.inputType) : null;
         info.enumValue =
           enumType instanceof GraphQLEnumType
-            ? find(enumType.getValues(), val => val.value === state.name)
+            ? find(
+                enumType.getValues() as GraphQLEnumValue[],
+                val => val.value === state.name,
+              )
             : null;
         break;
       case 'ListValue':

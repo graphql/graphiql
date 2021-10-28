@@ -32,6 +32,6 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",
-    "graphql": "experimental-stream-defer"
+    "graphql": "16.0.0-rc.7.experimental-stream-defer.4"
   }
 }
