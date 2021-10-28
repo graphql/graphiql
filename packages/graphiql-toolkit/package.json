@@ -25,12 +25,12 @@
     "meros": "^1.1.4"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-rc.7.experimental-stream-defer.4",
     "isomorphic-fetch": "^3.0.0",
     "subscriptions-transport-ws": "^0.9.19"
   },
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.6.1"
+    "graphql": ">= 15.5.0 <= 16.0.0-rc.7.experimental-stream-defer.4"
   },
   "keywords": [
     "graphql",

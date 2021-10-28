@@ -27,7 +27,7 @@
     "graphql": "./dist/temp-bin.js"
   },
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.5.0"
+    "graphql": ">= 15.5.0 <= 16.0.0-rc.7.experimental-stream-defer.4"
   },
   "dependencies": {
     "graphql-language-service-interface": "^2.8.2",
@@ -36,6 +36,6 @@
     "graphql-language-service-utils": "^2.5.3"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer"
+    "graphql": "16.0.0-rc.7.experimental-stream-defer.4"
   }
 }

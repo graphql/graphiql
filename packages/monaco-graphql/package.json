@@ -26,12 +26,12 @@
     "graphql-language-service-utils": "^2.5.1"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-rc.7.experimental-stream-defer.4",
     "monaco-editor": "^0.27.0",
     "vscode-languageserver-types": "^3.15.1"
   },
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.5.0",
+    "graphql": ">= 15.5.0 <= 16.0.0-rc.7.experimental-stream-defer.4",
     "monaco-editor": "^0.20.0"
   }
 }
