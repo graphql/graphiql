@@ -93,7 +93,7 @@ export default class TypeDoc extends React.Component<
         <div className="doc-category">
           <div className="doc-category-title">{'fields'}</div>
           {fields
-            .filter(field => Boolean(field.deprecationReason))
+            .filter(field => !field.deprecationReason)
             .map(field => (
               <Field
                 key={field.name}
