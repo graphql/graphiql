@@ -936,7 +936,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       } else {
         visit(
           parse(this.props.externalFragments, {
-            experimentalFragmentVariables: true,
+            allowLegacyFragmentVariables: true,
           }),
           {
             FragmentDefinition(def) {
@@ -1219,7 +1219,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const editor = this.getQueryEditor();
     const editorContent = editor?.getValue() ?? '';
     const prettifiedEditorContent = print(
-      parse(editorContent, { experimentalFragmentVariables: true }),
+      parse(editorContent, { allowLegacyFragmentVariables: true }),
     );
 
     if (prettifiedEditorContent !== editorContent) {
