@@ -2,8 +2,7 @@ const prettifiedQuery = `{
   longDescriptionType {
     id
   }
-}
-`;
+}`;
 
 const prettifiedVariables = `{
   "a": 1
