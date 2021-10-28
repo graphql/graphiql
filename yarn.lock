@@ -3288,7 +3288,7 @@
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
 "@graphiql/toolkit@file:packages/graphiql-toolkit":
-  version "0.2.2"
+  version "0.3.0"
   dependencies:
     "@n1ru4l/push-pull-async-iterable-iterator" "^3.0.0"
     graphql-ws "^4.9.0"
@@ -11512,15 +11512,15 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "graphiql@file:packages/graphiql":
-  version "1.4.2"
+  version "1.4.3"
   dependencies:
-    "@graphiql/toolkit" "^0.2.0"
+    "@graphiql/toolkit" "^0.3.0"
     codemirror "^5.58.2"
     codemirror-graphql "^1.0.0"
     copy-to-clipboard "^3.2.0"
     dset "^3.1.0"
     entities "^2.0.0"
-    graphql-language-service "^3.1.2"
+    graphql-language-service "^3.1.5"
     markdown-it "^10.0.0"
 
 graphql-config@^3.0.2:

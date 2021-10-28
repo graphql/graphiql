@@ -1,7 +1,6 @@
 import { DocumentNode, visit, GraphQLError } from 'graphql';
 import { meros } from 'meros';
 import { createClient, Client, ClientOptions } from 'graphql-ws';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,
@@ -116,9 +115,9 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
     }),
   );
 
-export const createLegacyWebsocketsFetcher = (
-  legacyWsClient: SubscriptionClient,
-) => (graphQLParams: FetcherParams) => {
+export const createLegacyWebsocketsFetcher = (legacyWsClient: {
+  request: (params: FetcherParams) => unknown;
+}) => (graphQLParams: FetcherParams) => {
   const observable = legacyWsClient.request(graphQLParams);
   return makeAsyncIterableIteratorFromSink<FetcherResult>(
     // @ts-ignore
