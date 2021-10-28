@@ -28,7 +28,7 @@ export const ExampleEnum = new GraphQLEnumType({
 });
 
 export const ExampleUnionType1 = new GraphQLObjectType({
-  name: 'Union Type 1',
+  name: 'Union_Type_1',
   interfaces: [ExampleInterface],
   fields: {
     name: {
@@ -43,7 +43,7 @@ export const ExampleUnionType1 = new GraphQLObjectType({
 });
 
 export const ExampleUnionType2 = new GraphQLObjectType({
-  name: 'Union Type 2',
+  name: 'Union_Type_2',
   interfaces: [ExampleInterface],
   fields: {
     name: {
