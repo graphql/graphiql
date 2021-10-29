@@ -1,5 +1,19 @@
 # Change Log
 
+## 1.4.6
+
+### Patch Changes
+
+- [`d3a88283`](https://github.com/graphql/graphiql/commit/d3a88283c7b618376ad4a06c7db20e60b066d1a0) [#1934](https://github.com/graphql/graphiql/pull/1934) Thanks [@tonyfromundefined](https://github.com/tonyfromundefined)! - add react 17, 18 in peerDependencies
+
+* [`afaa36c1`](https://github.com/graphql/graphiql/commit/afaa36c198648e84f305986a0b1dfefa97e70221) [#1883](https://github.com/graphql/graphiql/pull/1883) Thanks [@Sweetabix1](https://github.com/Sweetabix1)! - Updating font colors for line numbers, comments & brackets from #999 to #666 for accessibility purposes. #666 passes AA accessibility standards for small text, with a contrast ratio of over 5:1.
+
+- [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8) [#1777](https://github.com/graphql/graphiql/pull/1777) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - adopt block string parsing for variables in language parser
+
+- Updated dependencies [[`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb), [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8)]:
+  - graphql-language-service@3.1.6
+  - codemirror-graphql@1.0.3
+
 ## 1.4.5
 
 ### Patch Changes
