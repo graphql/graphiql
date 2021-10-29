@@ -5,8 +5,7 @@
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
-    "build-demo": "webpack-cli && yarn copy-demo",
-    "copy-demo": "mkdirp ../../packages/graphiql/webpack && copy 'dist/*' '../../packages/graphiql/webpack'",
+    "build-demo": "webpack-cli",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
