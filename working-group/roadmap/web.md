@@ -16,7 +16,10 @@
 
 ## `graphiql@2.x`
 
-`graphiql@2.x` will be a lightweight composition of the below two SDK libraries, as will the new graphql playground replacement
+`graphiql@2.x` will be a lightweight implementation of the below two SDK libraries, as will the new graphql playground replacement
+- [ ] implement `@graphiql/toolkit` and `@graphql/react` to create a simple, react-based editor
+ - [ ] query history dropped?
+ - [ ] doc explorer optional?
 
 ### `@graphiql/toolkit`
 - [ ] `createFetcher` make it more pluggable - exchange/link as inspiration?
@@ -43,3 +46,7 @@ We need to simplify how these instantiate - potentially by using cacheing in the
   - [ ] add variables completion support
 
 ## `codemirror-graphql`
+
+most improvements will be to underlying dependencies, shared by `monaco-graphql`
+
+- [ ] standalone examples on codesandbox
