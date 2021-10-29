@@ -81,6 +81,16 @@ function getToken(
   state: State,
   options: ParserOptions,
 ): string {
+  if (state.inBlockstring) {
+    if (stream.match(/.*"""/)) {
+      state.inBlockstring = false;
+      return 'string';
+    } else {
+      stream.skipToEnd();
+      return 'string';
+    }
+  }
+
   const { lexRules, parseRules, eatWhitespace, editorConfig } = options;
   // Restore state after an empty-rule.
   if (state.rule && state.rule.length === 0) {
