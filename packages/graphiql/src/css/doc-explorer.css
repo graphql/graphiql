@@ -159,7 +159,7 @@
 }
 
 .graphiql-container .field-short-description {
-  color: #999;
+  color: #666;
   margin-left: 5px;
   overflow: hidden;
   text-overflow: ellipsis;

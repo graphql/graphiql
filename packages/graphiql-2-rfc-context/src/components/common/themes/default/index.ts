@@ -11,7 +11,7 @@ import { Colors, Space, GraphiQLTheme } from '../types';
 
 const palette = {
   neutral: {
-    20: '#999999',
+    20: '#666666',
     70: '#333333',
     90: `rgba(0, 0, 0, 0.1)`,
     100: '#fff',
