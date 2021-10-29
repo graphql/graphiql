@@ -40,8 +40,9 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
         timeout-minutes: 1
+  # monaco-graphql deploy preview
   monaco-preview:
-    name: "Monaco GraphQL"
+    name: "Monaco GraphQL Example"
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -63,12 +64,39 @@ jobs:
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Monaco GraphQL Preview"
-          enable-pull-request-comment: true
-          enable-commit-comment: true
-          overwrites-pull-request-comment: true
           functions-dir: functions
           github-deployment-environment: "monaco-graphql"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
+        timeout-minutes: 1
+  # Test the webpack + typescript + react consuming build
+  webpack-preview:
+    name: "GrapihQL Typescript Webpack Example"
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+      # ( Build to ./dist or other directory... )
+      - name: Build 
+        run: yarn build & yarn build-bundles
+
+      - name: Build Webpack Example 
+        run: yarn workspace example-graphiql-webpack run build
+
+      - name: Deploy Webpack Example to Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          publish-dir: './examples/graphiql-webpack/dist'
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Monaco GraphQL Preview"
+          functions-dir: functions
+          github-deployment-environment: "graphiql-webpack"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_SITE_ID: aabca80b-fe63-43df-83ef-e431876560c9
         timeout-minutes: 1

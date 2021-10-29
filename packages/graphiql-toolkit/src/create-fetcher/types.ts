@@ -1,6 +1,5 @@
 import type { DocumentNode, IntrospectionQuery } from 'graphql';
 import type { Client, ClientOptions } from 'graphql-ws';
-import type { SubscriptionClient } from 'subscriptions-transport-ws';
 
 export type Observable<T> = {
   subscribe(opts: {
@@ -70,8 +69,6 @@ export type Fetcher = (
   opts?: FetcherOpts,
 ) => FetcherReturnType;
 
-export type WebsocketsClient = Client | SubscriptionClient;
-
 /**
  * Options for creating a simple, spec-compliant GraphiQL fetcher
  */
@@ -90,10 +87,14 @@ export interface CreateFetcherOptions {
    */
   wsClient?: Client;
   /**
-   * `legacyClient` implementation that matches `subscriptions-transport-ws` signature,
+   * `legacyWsClient` implementation that matches `subscriptions-transport-ws` signature,
    * whether via `new SubcriptionsClient()` itself or another client with a similar signature.
    */
-  legacyClient?: SubscriptionClient;
+  legacyWsClient?: any;
+  /**
+   * alias for `legacyWsClient`
+   */
+  legacyClient?: any;
   /**
    * Headers you can provide statically.
    *

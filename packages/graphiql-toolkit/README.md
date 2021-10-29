@@ -8,7 +8,7 @@ A core dependency of the GraphiQL 2.0.0 initiative.
 
 ## Docs
 
-- **`createFetcher` [(Docs)](./docs/create-fetcher.md)** : a utility for creating a `fetcher` prop implementation for HTTP GET, POST including multipart, websockets fetcher
+- **[`createFetcher`](./docs/create-fetcher.md)** : a utility for creating a `fetcher` prop implementation for HTTP GET, POST including multipart, websockets fetcher
 - more to come!
 
 ## Todo
