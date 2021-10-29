@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.3.2
+
+### Patch Changes
+
+- [`86795d5f`](https://github.com/graphql/graphiql/commit/86795d5ffa2d3e6c8aee74f761d02f054b428d46) Thanks [@acao](https://github.com/acao)! - Remove bad type definition from `subscriptions-transport-ws` #1992 closes #1989
+
 ## 0.3.1
 
 ### Patch Changes
