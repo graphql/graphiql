@@ -124,3 +124,14 @@ export class GraphQLWorker {
     return '';
   }
 }
+
+export default {
+  GraphQLWorker,
+};
+
+export function create(
+  ctx: worker.IWorkerContext,
+  createData: ICreateData,
+): GraphQLWorker {
+  return new GraphQLWorker(ctx, createData);
+}
