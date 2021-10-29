@@ -45,6 +45,8 @@ packages/graphiql/*.html
 **/coverage/
 .nyc_output/
 
+# ignore working-group dir markdown so it's easier for people to edit from the UI
+working-group/
 
 # codemirror's build artefacts are exported from the package root
 **/codemirror-graphql/variables
