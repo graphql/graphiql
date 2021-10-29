@@ -293,7 +293,7 @@ export class MessageProcessor {
           const results = await this._languageService.getDiagnostics(
             query,
             uri,
-            this._isRelayCompatMode(query) ? false : true,
+            this._isRelayCompatMode(query),
           );
           if (results && results.length > 0) {
             diagnostics.push(
@@ -365,7 +365,11 @@ export class MessageProcessor {
     const diagnostics: Diagnostic[] = [];
     await Promise.all(
       contents.map(async ({ query, range }) => {
-        const results = await this._languageService.getDiagnostics(query, uri);
+        const results = await this._languageService.getDiagnostics(
+          query,
+          uri,
+          this._isRelayCompatMode(query),
+        );
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
         }
@@ -592,6 +596,7 @@ export class MessageProcessor {
                 const results = await this._languageService.getDiagnostics(
                   query,
                   uri,
+                  this._isRelayCompatMode(query),
                 );
                 if (results && results.length > 0) {
                   return processDiagnosticsMessage(results, query, range);

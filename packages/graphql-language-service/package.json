@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"

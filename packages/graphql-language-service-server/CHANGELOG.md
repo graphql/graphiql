@@ -1,5 +1,16 @@
 # graphql-language-service-server
 
+## 2.6.4
+
+### Patch Changes
+
+- [`72bff0e7`](https://github.com/graphql/graphiql/commit/72bff0e7db46fb53293efc990dc64d2c06401459) [#1951](https://github.com/graphql/graphiql/pull/1951) Thanks [@GoodForOneFare](https://github.com/GoodForOneFare)! - fix: skip config updates when no custom filename is defined
+
+* [`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb) [#1941](https://github.com/graphql/graphiql/pull/1941) Thanks [@arcanis](https://github.com/arcanis)! - Adds support for `#graphql` and `/* GraphQL */` in the language server
+
+* Updated dependencies [[`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb)]:
+  - graphql-language-service@3.1.5
+
 ## 2.6.3
 
 ### Patch Changes
