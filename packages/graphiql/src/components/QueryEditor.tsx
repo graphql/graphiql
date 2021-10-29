@@ -20,7 +20,7 @@ import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from '../utility/CodeMirrorSizer';
 
 const md = new MD();
-const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
+const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(\s]$/;
 
 type QueryEditorProps = {
   schema?: GraphQLSchema;
