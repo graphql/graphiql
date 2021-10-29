@@ -1,9 +1,12 @@
 ## global efforts
 - [ ] improve build and package exports using a more efficient and dynamic bundling pattern. consider swc, esbuild, etc
+- [ ] upgrade to yarn 3?
+- [ ] explore using esbuild/swc, etc. 
+   - [ ] estrella, vite, etc as webpack replacements for dev tooling
 
 ## docs efforts
 - [ ] move detailed readme instructions to a root `docs` folder? or `docs` folders for each workspace in `packages`? 
- - so,`docs/graphiql`/`docs/monaco-graphql` or `packages/graphiql/docs`/`packagess/monaco-graphql/docs`?
+  - so,`docs/graphiql`/`docs/monaco-graphql` or `packages/graphiql/docs`/`packagess/monaco-graphql/docs`?
 - [ ] Replace non-build-verifying examples with codesandbox examples linked from the examples/README.md pointed to `latest` tags for graphiql/etc
   - Monaco-example verifies the monaco-graphql type/build interface
   - Graphiql-webpack example verifies the graphiql type/build interface
@@ -39,11 +42,11 @@
 
 ## `monaco-graphql`
 - [ ] Improve Language Service & worker patterns
-Dynamic webworker input means re-creating webworkers constantly, because concurrency models denote fixed input state for each concurrent process.
-We need to simplify how these instantiate - potentially by using cacheing in the main process?
-  - [ ] add symbols support
-  - [ ] add variables validation support
-  - [ ] add variables completion support
+  - Dynamic webworker input means re-creating webworkers constantly, because concurrency models denote fixed input state for each concurrent process.
+  - We need to simplify how these instantiate - potentially by using cacheing in the main process?
+- [ ] add symbols support
+- [ ] add variables validation support
+- [ ] add variables completion support
 
 ## `codemirror-graphql`
 
