@@ -1,5 +1,4 @@
 ---
-'graphiql-2-rfc-context': patch
 'graphiql': patch
 ---
 
