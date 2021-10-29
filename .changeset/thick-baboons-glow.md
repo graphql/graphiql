@@ -1,5 +1,6 @@
 ---
 "graphiql": patch
+"monaco-graphql": patch
 "codemirror-graphql": patch
 "graphql-language-service-parser": patch
 "graphql-language-service": patch
