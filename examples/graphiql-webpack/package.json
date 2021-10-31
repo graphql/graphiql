@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "16.0.0-rc.7.experimental-stream-defer.4",
+    "graphql": "16.0.0-experimental-stream-defer.5",
     "react": "17.0.2"
   },
   "devDependencies": {
