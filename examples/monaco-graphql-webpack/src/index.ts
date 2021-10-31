@@ -59,10 +59,15 @@ window.MonacoEnvironment = {
 const operationString = `
 # right click to view context menu
 # F1 for command palette
-# enjoy prettier formatting, autocompletion, 
+# enjoy prettier formatting, autocompletion,
 # validation, hinting and more for GraphQL SDL and operations!
 
-query Example($owner: String!, $name: String!, $review: PullRequestReviewEvent!, $user: FollowUserInput) {
+query Example(
+  $owner: String!
+  $name: String!
+  $reviewEvent: PullRequestReviewEvent!
+  $user: FollowUserInput!
+) {
   repository(owner: $owner, name: $name) {
     stargazerCount
   }
@@ -70,7 +75,7 @@ query Example($owner: String!, $name: String!, $review: PullRequestReviewEvent!,
 `;
 
 const variablesString = `{ 
-  "review": "graphql", 
+  "reviewEvent": "graphql", 
   "name": true
 }`;
 
@@ -107,14 +112,14 @@ async function render(api: LanguageServiceAPI) {
       const authenticator = new netlify.default({ site_id: SITE_ID });
       authenticator.authenticate(
         { provider: 'github', scope: ['user', 'read:org'] },
-        (err: Error, data: { token: string }) => {
+        async (err: Error, data: { token: string }) => {
           if (err) {
             console.error('Error Authenticating with GitHub: ' + err);
           } else {
             isLoggedIn = true;
             API_TOKEN = data.token;
             localStorage.setItem('ghapi', data.token);
-            render(api);
+            await render(api);
           }
         },
       );
