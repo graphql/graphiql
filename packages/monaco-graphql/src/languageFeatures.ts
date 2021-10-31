@@ -37,7 +37,7 @@ export class DiagnosticsAdapter {
   ) {
     this._worker = _worker;
     const onModelAdd = (model: editor.IModel): void => {
-      const modeId = model.getModeId();
+      const modeId = model.getLanguageId();
       if (modeId !== this.defaults.languageId) {
         return;
       }
@@ -78,7 +78,7 @@ export class DiagnosticsAdapter {
     this._disposables.push(
       defaults.onDidChange((_: any) => {
         editor.getModels().forEach(model => {
-          if (model.getModeId() === this.defaults.languageId) {
+          if (model.getLanguageId() === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }

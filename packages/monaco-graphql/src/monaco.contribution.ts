@@ -14,6 +14,7 @@ import {
 } from './api';
 
 import * as monaco from 'monaco-editor';
+import { SchemaConfig } from 'graphql-language-service';
 
 export * from './typings';
 
@@ -21,23 +22,21 @@ export const LANGUAGE_ID = 'graphqlDev';
 
 monaco.languages.register({
   id: LANGUAGE_ID,
-  extensions: ['.graphql', '.gql'],
-  aliases: ['graphql'],
   mimetypes: ['application/graphql', 'text/graphql'],
 });
 
-export const api = new LanguageServiceAPI({
-  languageId: LANGUAGE_ID,
-  schemaConfig: schemaDefault,
-  formattingOptions: formattingDefaults,
-  modeConfiguration: modeConfigurationDefault,
-});
-
-monaco.languages.onLanguage(LANGUAGE_ID, async () => {
+export async function init({ schemaConfig }: { schemaConfig: SchemaConfig }) {
+  const api = new LanguageServiceAPI({
+    languageId: LANGUAGE_ID,
+    schemaConfig: schemaConfig || schemaDefault,
+    formattingOptions: formattingDefaults,
+    modeConfiguration: modeConfigurationDefault,
+  });
   const graphqlMode = await getMode();
   graphqlMode.setupMode(api);
-});
 
+  return api;
+}
 function getMode(): Promise<typeof mode> {
   return import('./graphqlMode');
 }

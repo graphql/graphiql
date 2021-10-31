@@ -48,7 +48,8 @@ export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
  */
 export { fillLeafs } from './utility/fillLeafs';
 export { default as mergeAst } from './utility/mergeAst';
-export { getQueryFacts } from './utility/getQueryFacts';
+// this is now imported via @graphiql/toolkit
+// export { getQueryFacts } from './utility/getQueryFacts';
 export { default as getSelectedOperationName } from './utility/getSelectedOperationName';
 export { default as onHasCompletion } from './utility/onHasCompletion';
 export { Storage } from './utility/StorageAPI';

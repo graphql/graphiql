@@ -66,27 +66,29 @@ export class WorkerManager {
     this._lastUsedTime = Date.now();
 
     if (!this._client) {
-      this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
-        // module that exports the create() method and returns a `GraphQLWorker` instance
-        moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
-
-        label: this._defaults.languageId,
-        // passed in to the create() method
-        createData: {
-          languageId: this._defaults.languageId,
-          formattingOptions: this._defaults.formattingOptions,
-          languageConfig: {
-            schemaString: this._defaults.schemaString,
-            schemaConfig: this._defaults.schemaConfig,
-            exteralFragmentDefinitions: this._defaults
-              .externalFragmentDefinitions,
-          },
-        } as ICreateData,
-      });
       try {
-        this._client = await this._worker.getProxy();
+        const schema = await this._defaults.getSchema();
+        if (schema) {
+          this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
+            // module that exports the create() method and returns a `GraphQLWorker` instance
+            moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
+
+            label: this._defaults.languageId,
+            // passed in to the create() method
+            createData: {
+              languageId: this._defaults.languageId,
+              formattingOptions: this._defaults.formattingOptions,
+              languageConfig: {
+                schemaString: schema.schemaString,
+                exteralFragmentDefinitions: this._defaults
+                  .externalFragmentDefinitions,
+              },
+            } as ICreateData,
+          });
+          this._client = await this._worker.getProxy();
+        }
       } catch (error) {
-        // throw Error(error);
+        throw Error(error);
       }
     }
     return this._client as GraphQLWorker;

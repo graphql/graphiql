@@ -17,3 +17,12 @@ export { getASTNodeAtPosition, pointToOffset } from './getASTNodeAtPosition';
 export { Position, Range, locToRange, offsetToPosition } from './Range';
 
 export { validateWithCustomRules } from './validateWithCustomRules';
+
+export { collectVariables, VariableToType } from './collectVariables';
+
+export {
+  default as getOperationFacts,
+  getQueryFacts,
+  OperationFacts,
+  QueryFacts,
+} from './getOperationFacts';

@@ -8,13 +8,16 @@
 import { Uri, IDisposable } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 
-import IRichLanguageConfiguration = monaco.languages.LanguageConfiguration;
-
 import { WorkerManager } from './workerManager';
 import { GraphQLWorker } from './GraphQLWorker';
 
-// @ts-ignore
-import { language as monarchLanguage } from 'monaco-editor/esm/vs/basic-languages/graphql/graphql';
+import {
+  language as monarchLanguage,
+  conf,
+  // @ts-ignore
+} from 'monaco-editor/esm/vs/basic-languages/graphql/graphql.js';
+
+// console.log({ monarchLanguage })
 
 import { LanguageServiceAPI } from './api';
 import * as languageFeatures from './languageFeatures';
@@ -37,8 +40,7 @@ export function setupMode(defaults: LanguageServiceAPI): IDisposable {
 
   defaults.setWorker(worker);
 
-  monaco.languages.setLanguageConfiguration(languageId, richLanguageConfig);
-  monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);
+  monaco.languages.setLanguageConfiguration(languageId, conf);
 
   function registerFormattingProvider(): void {
     const { modeConfiguration } = defaults;
@@ -55,6 +57,10 @@ export function setupMode(defaults: LanguageServiceAPI): IDisposable {
   function registerProviders(): void {
     const { modeConfiguration } = defaults;
     disposeAll(providers);
+
+    providers.push(
+      monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage),
+    );
 
     if (modeConfiguration.completionItems) {
       providers.push(
@@ -114,31 +120,3 @@ function disposeAll(disposables: IDisposable[]) {
     disposables.pop()?.dispose();
   }
 }
-
-export const richLanguageConfig: IRichLanguageConfiguration = {
-  comments: {
-    lineComment: '#',
-  },
-  brackets: [
-    ['{', '}'],
-    ['[', ']'],
-    ['(', ')'],
-  ],
-  autoClosingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
-    { open: '"""', close: '"""', notIn: ['string', 'comment'] },
-    { open: '"', close: '"', notIn: ['string', 'comment'] },
-  ],
-  surroundingPairs: [
-    { open: '{', close: '}' },
-    { open: '[', close: ']' },
-    { open: '(', close: ')' },
-    { open: '"""', close: '"""' },
-    { open: '"', close: '"' },
-  ],
-  folding: {
-    offSide: true,
-  },
-};

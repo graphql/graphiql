@@ -9,13 +9,13 @@ import type { worker as WorkerNamespace } from 'monaco-editor';
 import { ICreateData } from './typings';
 
 // @ts-ignore
-import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
+import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker.js';
 
 import { GraphQLWorker } from './GraphQLWorker';
 
 self.onmessage = () => {
   try {
-    worker.initialize(
+    initialize(
       (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) => {
         return new GraphQLWorker(ctx, createData);
       },

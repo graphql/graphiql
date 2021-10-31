@@ -156,10 +156,7 @@ export class LanguageService {
   public async loadSchema() {
     const schemaResponse = await this.loadSchemaResponse();
     if (schemaResponse) {
-      this._schema = this._schemaBuilder(
-        schemaResponse,
-        this._schemaConfig.buildSchemaOptions,
-      ) as GraphQLSchema;
+      this._schema = this._schemaBuilder(schemaResponse) as GraphQLSchema;
       return this._schema;
     } else {
       return null;

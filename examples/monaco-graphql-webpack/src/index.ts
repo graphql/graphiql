@@ -1,7 +1,12 @@
 /* global netlify */
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { api as GraphQLAPI } from 'monaco-graphql';
+import * as monaco from 'monaco-editor';
+
+import { init } from 'monaco-graphql';
+
+import { JSONSchema6 } from 'json-schema';
+
+import { getOperationFacts } from 'graphql-language-service';
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
@@ -11,11 +16,30 @@ import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worke
 import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
 // @ts-ignore
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+import {
+  GraphQLEnumType,
+  GraphQLInputObjectType,
+  GraphQLInputType,
+  GraphQLInterfaceType,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLScalarType,
+  GraphQLSchema,
+  isEnumType,
+  isInputObjectType,
+  isInterfaceType,
+  isListType,
+  isNonNullType,
+  isObjectType,
+  isScalarType,
+} from 'graphql';
+import { JSONSchema6TypeName } from 'json-schema';
+import { LanguageServiceAPI } from 'monaco-graphql/src/api';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
 
 const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
-let API_TOKEN = localStorage.getItem('ghapi') || '';
+let API_TOKEN = localStorage.getItem('ghapi') || null;
 
 let isLoggedIn = false;
 
@@ -32,34 +56,46 @@ window.MonacoEnvironment = {
   },
 };
 
-const operation = `
+const operationString = `
 # right click to view context menu
 # F1 for command palette
 # enjoy prettier formatting, autocompletion, 
 # validation, hinting and more for GraphQL SDL and operations!
 
-query Example($owner: String!, $name: String!) {
+query Example($owner: String!, $name: String!, $review: PullRequestReviewEvent!, $user: FollowUserInput) {
   repository(owner: $owner, name: $name) {
     stargazerCount
   }
 }
 `;
 
-const variables = `{ "owner": "graphql", "name": "graphiql" }`;
+const variablesString = `{ 
+  "review": "graphql", 
+  "name": true
+}`;
 
 const THEME = 'vs-dark';
-
-render();
 
 /**
  * load local schema by default
  */
+(async () => {
+  const api = await init({
+    schemaConfig: {
+      uri: SCHEMA_URL,
+      requestOpts: {
+        headers: {
+          Authorization: `Bearer ${API_TOKEN}`,
+        },
+      },
+    },
+  });
+  await render(api);
+})();
 
-let initialSchema = false;
-
-function render() {
+async function render(api: LanguageServiceAPI) {
   const toolbar = document.getElementById('toolbar');
-  if (!isLoggedIn) {
+  if (!isLoggedIn && !API_TOKEN) {
     const githubButton = document.createElement('button');
 
     githubButton.id = 'login';
@@ -78,7 +114,7 @@ function render() {
             isLoggedIn = true;
             API_TOKEN = data.token;
             localStorage.setItem('ghapi', data.token);
-            render();
+            render(api);
           }
         },
       );
@@ -104,9 +140,20 @@ function render() {
    */
 
   const variablesModel = monaco.editor.createModel(
-    variables,
+    variablesString,
     'json',
     monaco.Uri.file('/1/variables.json'),
+  );
+
+  const variablesSchemaUri = monaco.Uri.file('/1/variables-schema.json');
+  /**
+   * Variables json schema model
+   */
+
+  const variablesSchemaModel = monaco.editor.createModel(
+    variablesString,
+    'json',
+    variablesSchemaUri,
   );
 
   const resultsEditor = monaco.editor.create(
@@ -131,8 +178,15 @@ function render() {
       theme: THEME,
     },
   );
+
+  // monaco.languages.json.jsonDefaults.setModeConfiguration({
+  //   diagnostics: true,
+  //   completionItems: true,
+  //   hovers: true
+  // });
+
   const operationModel = monaco.editor.createModel(
-    operation,
+    operationString,
     'graphqlDev',
     monaco.Uri.file('/1/operation.graphql'),
   );
@@ -146,14 +200,143 @@ function render() {
       formatOnType: true,
       folding: true,
       theme: THEME,
+      language: 'graphqlDev',
     },
   );
+
+  const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
+    Int: 'integer',
+    String: 'string',
+    Float: 'number',
+    ID: 'string',
+    Boolean: 'boolean',
+  };
+
+  const scalarType = (definition: JSONSchema6, type: GraphQLScalarType) => {
+    definition.type = scalarTypesMap[type.name];
+  };
+
+  const listType = (definition: JSONSchema6, type: GraphQLList<any>) => {
+    definition.type = 'array';
+    definition.items = { type: scalarTypesMap[type.ofType] || type.ofType };
+  };
+  const enumType = (definition: JSONSchema6, type: GraphQLEnumType) => {
+    definition.type = 'string';
+    definition.enum = type.getValues().map(val => val.name);
+  };
+
+  const objectType = (
+    definition: JSONSchema6,
+    type: GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType,
+  ) => {
+    definition.type = 'object';
+    const fields = type.getFields();
+    if (!definition.properties) {
+      definition.properties = {};
+    }
+    definition.required = [];
+
+    Object.keys(fields).forEach((fieldName: string) => {
+      const {
+        required,
+        definition: fieldDefinition,
+      } = getJSONSchemaFromGraphQLType(
+        fields[fieldName].type as GraphQLInputType,
+      );
+      definition.properties![fieldName] = fieldDefinition;
+      if (required) {
+        definition.required?.push(fieldName);
+      }
+    });
+  };
+
+  function getJSONSchemaFromGraphQLType(
+    type: GraphQLInputType,
+  ): { definition: JSONSchema6; required: boolean } {
+    let required = false;
+    let definition: JSONSchema6 = {};
+    if ('description' in type) {
+      definition.description = type.description as string;
+    }
+    if (isEnumType(type)) {
+      enumType(definition, type);
+    }
+    if (
+      isInterfaceType(type) ||
+      isObjectType(type) ||
+      isInputObjectType(type)
+    ) {
+      objectType(definition, type);
+    }
+    if (isListType(type)) {
+      listType(definition, type);
+    }
+    if (isScalarType(type)) {
+      scalarType(definition, type);
+    }
+    if (isNonNullType(type)) {
+      required = true;
+      definition = getJSONSchemaFromGraphQLType(type.ofType).definition;
+    }
+
+    return { required, definition };
+  }
+
+  const getJSONSchema = (schema: GraphQLSchema) => {
+    const doc = operationModel.getValue();
+    const facts = getOperationFacts(schema, doc);
+    const jsonSchema: JSONSchema6 = {
+      $schema: 'https://json-schema.org/draft/2020-12/schema',
+      $id: 'monaco://variables-schema.json',
+      title: 'GraphQL Variables',
+      type: 'object',
+      properties: {},
+      required: [],
+    };
+
+    if (facts && facts.variableToType) {
+      Object.entries(facts.variableToType).forEach(([variableName, type]) => {
+        // @ts-ignore
+        const { definition, required } = getJSONSchemaFromGraphQLType(type);
+        jsonSchema.properties![variableName] = definition;
+        if (required) {
+          jsonSchema.required?.push(variableName);
+        }
+      });
+    }
+    return jsonSchema;
+  };
+
+  const updateVariables = async () => {
+    const schema = await api.getSchema();
+    if (schema) {
+      const jsonSchema = getJSONSchema(schema.schema);
+      variablesSchemaModel.setValue(JSON.stringify(jsonSchema));
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemaValidation: 'error',
+        schemas: [
+          {
+            uri: variablesSchemaUri.toString(),
+            fileMatch: [variablesModel.uri.toString()],
+            schema: jsonSchema,
+          },
+        ],
+      });
+    }
+  };
+
+  await updateVariables();
+
+  operationEditor.onDidChangeModelContent(async _event => {
+    await updateVariables();
+  });
 
   /**
    * Configure monaco-graphql formatting operations
    */
 
-  GraphQLAPI.setFormattingOptions({
+  api.setFormattingOptions({
     prettierConfig: {
       printWidth: 120,
     },
@@ -173,7 +356,7 @@ function render() {
       if (parsedVariables && Object.keys(parsedVariables).length) {
         body.variables = variables;
       }
-      const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
+      const result = await fetch(api.schemaConfig.uri || SCHEMA_URL, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -207,18 +390,17 @@ function render() {
   variablesEditor.addAction(opAction);
   resultsEditor.addAction(opAction);
 
-  if (!initialSchema) {
-    GraphQLAPI.setSchemaConfig({
-      uri: SCHEMA_URL,
-      requestOpts: {
-        headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      },
-    });
-    initialSchema = true;
-  }
-
+  // if (!initialSchema) {
+  //   GraphQLAPI.setSchemaConfig({
+  //     uri: SCHEMA_URL,
+  //     requestOpts: {
+  //       headers: {
+  //         Authorization: `Bearer ${API_TOKEN}`,
+  //       },
+  //     },
+  //   });
+  //   initialSchema = true;
+  // }
   // add your own diagnostics? why not!
   // monaco.editor.setModelMarkers(
   //   model,

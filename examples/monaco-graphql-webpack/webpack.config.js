@@ -73,7 +73,8 @@ const resultConfig = {
     }),
 
     new MonacoWebpackPlugin({
-      languages: ['json'],
+      languages: ['json', 'graphql'],
+      publicPath: '/',
     }),
   ],
   resolve: {
