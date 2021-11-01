@@ -66,7 +66,7 @@ const THEME = 'vs-dark';
  * load local schema by default
  */
 (async () => {
-  const api = await init({
+  const GraphQLAPI = await init({
     schemaConfig: {
       uri: SCHEMA_URL,
       requestOpts: {
@@ -76,10 +76,10 @@ const THEME = 'vs-dark';
       },
     },
   });
-  await render(api);
+  await render(GraphQLAPI);
 })();
 
-async function render(api: LanguageServiceAPI) {
+async function render(GraphQLAPI: LanguageServiceAPI) {
   const toolbar = document.getElementById('toolbar');
   if (!isLoggedIn && !API_TOKEN) {
     const githubButton = document.createElement('button');
@@ -100,7 +100,7 @@ async function render(api: LanguageServiceAPI) {
             isLoggedIn = true;
             API_TOKEN = data.token;
             localStorage.setItem('ghapi', data.token);
-            await render(api);
+            await render(GraphQLAPI);
           }
         },
       );
@@ -114,7 +114,7 @@ async function render(api: LanguageServiceAPI) {
         `<small style="color: #eee; margin-right: 4px;">${message}</small>`;
       schemaLoader.innerHTML = getLoaderHTML('Schema Loading...');
 
-      api.onSchemaLoaded(() => {
+      GraphQLAPI.onSchemaLoaded(() => {
         schemaLoader.innerHTML = getLoaderHTML('Schema Loaded.');
       });
 
@@ -166,12 +166,6 @@ async function render(api: LanguageServiceAPI) {
     },
   );
 
-  // monaco.languages.json.jsonDefaults.setModeConfiguration({
-  //   diagnostics: true,
-  //   completionItems: true,
-  //   hovers: true
-  // });
-
   const operationModel = monaco.editor.createModel(
     operationString,
     GRAPHQL_LANGUAGE_ID,
@@ -195,7 +189,7 @@ async function render(api: LanguageServiceAPI) {
    */
 
   async function updateVariables() {
-    const jsonSchema = await api.getVariablesJSONSchema(
+    const jsonSchema = await GraphQLAPI.getVariablesJSONSchema(
       operationModel.getValue(),
     );
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -221,7 +215,7 @@ async function render(api: LanguageServiceAPI) {
    * Configure monaco-graphql formatting operations
    */
 
-  api.setFormattingOptions({
+  GraphQLAPI.setFormattingOptions({
     prettierConfig: {
       printWidth: 120,
     },
@@ -241,7 +235,7 @@ async function render(api: LanguageServiceAPI) {
       if (parsedVariables && Object.keys(parsedVariables).length) {
         body.variables = variables;
       }
-      const result = await fetch(api.schemaConfig.uri || SCHEMA_URL, {
+      const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -259,6 +253,9 @@ async function render(api: LanguageServiceAPI) {
     }
   }
 
+  /**
+   * Add an operation to the command palette & keyboard shortcuts
+   */
   const opAction: monaco.editor.IActionDescriptor = {
     id: 'graphql-run',
     label: 'Run Operation',
@@ -275,17 +272,6 @@ async function render(api: LanguageServiceAPI) {
   variablesEditor.addAction(opAction);
   resultsEditor.addAction(opAction);
 
-  // if (!initialSchema) {
-  //   GraphQLAPI.setSchemaConfig({
-  //     uri: SCHEMA_URL,
-  //     requestOpts: {
-  //       headers: {
-  //         Authorization: `Bearer ${API_TOKEN}`,
-  //       },
-  //     },
-  //   });
-  //   initialSchema = true;
-  // }
   // add your own diagnostics? why not!
   // monaco.editor.setModelMarkers(
   //   model,
