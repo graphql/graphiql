@@ -4,10 +4,6 @@ import * as monaco from 'monaco-editor';
 
 import { init } from 'monaco-graphql';
 
-import { JSONSchema6 } from 'json-schema';
-
-import { getOperationFacts } from 'graphql-language-service';
-
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
@@ -16,24 +12,7 @@ import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worke
 import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
 // @ts-ignore
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
-import {
-  GraphQLEnumType,
-  GraphQLInputObjectType,
-  GraphQLInputType,
-  GraphQLInterfaceType,
-  GraphQLList,
-  GraphQLObjectType,
-  GraphQLScalarType,
-  GraphQLSchema,
-  isEnumType,
-  isInputObjectType,
-  isInterfaceType,
-  isListType,
-  isNonNullType,
-  isObjectType,
-  isScalarType,
-} from 'graphql';
-import { JSONSchema6TypeName } from 'json-schema';
+
 import { LanguageServiceAPI } from 'monaco-graphql/src/api';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
@@ -43,10 +22,12 @@ let API_TOKEN = localStorage.getItem('ghapi') || null;
 
 let isLoggedIn = false;
 
+const GRAPHQL_LANGUAGE_ID = 'graphql';
+
 // @ts-ignore
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphqlDev') {
+    if (label === GRAPHQL_LANGUAGE_ID) {
       return new GraphQLWorker();
     }
     if (label === 'json') {
@@ -128,6 +109,15 @@ async function render(api: LanguageServiceAPI) {
     return;
   } else {
     if (toolbar) {
+      const schemaLoader = document.createElement('span');
+      const getLoaderHTML = (message: string) =>
+        `<small style="color: #eee; margin-right: 4px;">${message}</small>`;
+      schemaLoader.innerHTML = getLoaderHTML('Schema Loading...');
+
+      api.onSchemaLoaded(() => {
+        schemaLoader.innerHTML = getLoaderHTML('Schema Loaded.');
+      });
+
       const button = document.createElement('button');
 
       button.id = 'button';
@@ -136,12 +126,13 @@ async function render(api: LanguageServiceAPI) {
       button.onclick = () => executeCurrentOp();
       button.ontouchend = () => executeCurrentOp();
       toolbar.innerHTML = '';
+      toolbar.appendChild(schemaLoader);
       toolbar?.appendChild(button);
     }
   }
 
   /**
-   * Creating & configuring the monaco editor panes
+   * Creating & configuring the editor panes
    */
 
   const variablesModel = monaco.editor.createModel(
@@ -151,26 +142,6 @@ async function render(api: LanguageServiceAPI) {
   );
 
   const variablesSchemaUri = monaco.Uri.file('/1/variables-schema.json');
-  /**
-   * Variables json schema model
-   */
-
-  const variablesSchemaModel = monaco.editor.createModel(
-    variablesString,
-    'json',
-    variablesSchemaUri,
-  );
-
-  const resultsEditor = monaco.editor.create(
-    document.getElementById('results') as HTMLElement,
-    {
-      value: `{}`,
-      language: 'json',
-      automaticLayout: true,
-      theme: THEME,
-      wordWrap: 'on',
-    },
-  );
 
   const variablesEditor = monaco.editor.create(
     document.getElementById('variables') as HTMLElement,
@@ -184,6 +155,17 @@ async function render(api: LanguageServiceAPI) {
     },
   );
 
+  const resultsEditor = monaco.editor.create(
+    document.getElementById('results') as HTMLElement,
+    {
+      value: `{}`,
+      language: 'json',
+      automaticLayout: true,
+      theme: THEME,
+      wordWrap: 'on',
+    },
+  );
+
   // monaco.languages.json.jsonDefaults.setModeConfiguration({
   //   diagnostics: true,
   //   completionItems: true,
@@ -192,7 +174,7 @@ async function render(api: LanguageServiceAPI) {
 
   const operationModel = monaco.editor.createModel(
     operationString,
-    'graphqlDev',
+    GRAPHQL_LANGUAGE_ID,
     monaco.Uri.file('/1/operation.graphql'),
   );
 
@@ -205,131 +187,29 @@ async function render(api: LanguageServiceAPI) {
       formatOnType: true,
       folding: true,
       theme: THEME,
-      language: 'graphqlDev',
+      language: GRAPHQL_LANGUAGE_ID,
     },
   );
+  /**
+   * API Usage!!
+   */
 
-  const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
-    Int: 'integer',
-    String: 'string',
-    Float: 'number',
-    ID: 'string',
-    Boolean: 'boolean',
-  };
-
-  const scalarType = (definition: JSONSchema6, type: GraphQLScalarType) => {
-    definition.type = scalarTypesMap[type.name];
-  };
-
-  const listType = (definition: JSONSchema6, type: GraphQLList<any>) => {
-    definition.type = 'array';
-    definition.items = { type: scalarTypesMap[type.ofType] || type.ofType };
-  };
-  const enumType = (definition: JSONSchema6, type: GraphQLEnumType) => {
-    definition.type = 'string';
-    definition.enum = type.getValues().map(val => val.name);
-  };
-
-  const objectType = (
-    definition: JSONSchema6,
-    type: GraphQLObjectType | GraphQLInterfaceType | GraphQLInputObjectType,
-  ) => {
-    definition.type = 'object';
-    const fields = type.getFields();
-    if (!definition.properties) {
-      definition.properties = {};
-    }
-    definition.required = [];
-
-    Object.keys(fields).forEach((fieldName: string) => {
-      const {
-        required,
-        definition: fieldDefinition,
-      } = getJSONSchemaFromGraphQLType(
-        fields[fieldName].type as GraphQLInputType,
-      );
-      definition.properties![fieldName] = fieldDefinition;
-      if (required) {
-        definition.required?.push(fieldName);
-      }
+  async function updateVariables() {
+    const jsonSchema = await api.getVariablesJSONSchema(
+      operationModel.getValue(),
+    );
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemaValidation: 'error',
+      schemas: [
+        {
+          uri: variablesSchemaUri.toString(),
+          fileMatch: [variablesModel.uri.toString()],
+          schema: jsonSchema,
+        },
+      ],
     });
-  };
-
-  function getJSONSchemaFromGraphQLType(
-    type: GraphQLInputType,
-  ): { definition: JSONSchema6; required: boolean } {
-    let required = false;
-    let definition: JSONSchema6 = {};
-    if ('description' in type) {
-      definition.description = type.description as string;
-    }
-    if (isEnumType(type)) {
-      enumType(definition, type);
-    }
-    if (
-      isInterfaceType(type) ||
-      isObjectType(type) ||
-      isInputObjectType(type)
-    ) {
-      objectType(definition, type);
-    }
-    if (isListType(type)) {
-      listType(definition, type);
-    }
-    if (isScalarType(type)) {
-      scalarType(definition, type);
-    }
-    if (isNonNullType(type)) {
-      required = true;
-      definition = getJSONSchemaFromGraphQLType(type.ofType).definition;
-    }
-
-    return { required, definition };
   }
-
-  const getJSONSchema = (schema: GraphQLSchema) => {
-    const doc = operationModel.getValue();
-    const facts = getOperationFacts(schema, doc);
-    const jsonSchema: JSONSchema6 = {
-      $schema: 'https://json-schema.org/draft/2020-12/schema',
-      $id: 'monaco://variables-schema.json',
-      title: 'GraphQL Variables',
-      type: 'object',
-      properties: {},
-      required: [],
-    };
-
-    if (facts && facts.variableToType) {
-      Object.entries(facts.variableToType).forEach(([variableName, type]) => {
-        // @ts-ignore
-        const { definition, required } = getJSONSchemaFromGraphQLType(type);
-        jsonSchema.properties![variableName] = definition;
-        if (required) {
-          jsonSchema.required?.push(variableName);
-        }
-      });
-    }
-    return jsonSchema;
-  };
-
-  const updateVariables = async () => {
-    const schema = await api.getSchema();
-    if (schema) {
-      const jsonSchema = getJSONSchema(schema.schema);
-      variablesSchemaModel.setValue(JSON.stringify(jsonSchema));
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        validate: true,
-        schemaValidation: 'error',
-        schemas: [
-          {
-            uri: variablesSchemaUri.toString(),
-            fileMatch: [variablesModel.uri.toString()],
-            schema: jsonSchema,
-          },
-        ],
-      });
-    }
-  };
 
   await updateVariables();
 

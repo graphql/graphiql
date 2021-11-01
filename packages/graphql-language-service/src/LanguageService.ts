@@ -18,7 +18,6 @@ import {
   getDiagnostics,
   getHoverInformation,
 } from 'graphql-language-service-interface';
-
 import {
   defaultSchemaLoader,
   SchemaConfig,
@@ -162,6 +161,18 @@ export class LanguageService {
       return null;
     }
   }
+
+  // public async getVariablesJSONSchema(documentString: string) {
+  //   const schema = await this.getSchema()
+  //   console.log({ schema })
+  //   if(schema) {
+  //     const documentFacts = getOperationFacts(schema, documentString)
+  //     if(documentFacts) {
+  //       return getVariablesJSONSchema(documentFacts)
+  //     }
+  //   }
+  //   return null
+  // }
 
   public async parse(text: string, options?: ParseOptions) {
     return this._parser(text, options || this._parseOptions);

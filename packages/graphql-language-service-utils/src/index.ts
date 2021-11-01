@@ -12,6 +12,8 @@ export {
   getFragmentDependenciesForAST,
 } from './fragmentDependencies';
 
+export { getVariablesJSONSchema } from './getVariablesJSONSchema';
+
 export { getASTNodeAtPosition, pointToOffset } from './getASTNodeAtPosition';
 
 export { Position, Range, locToRange, offsetToPosition } from './Range';

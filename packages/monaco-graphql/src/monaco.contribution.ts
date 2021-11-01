@@ -18,7 +18,7 @@ import { SchemaConfig } from 'graphql-language-service';
 
 export * from './typings';
 
-export const LANGUAGE_ID = 'graphqlDev';
+export const LANGUAGE_ID = 'graphql';
 
 monaco.languages.register({
   id: LANGUAGE_ID,

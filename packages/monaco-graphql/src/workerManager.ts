@@ -88,7 +88,7 @@ export class WorkerManager {
           this._client = await this._worker.getProxy();
         }
       } catch (error) {
-        throw Error(error);
+        console.error('error loading worker', error);
       }
     }
     return this._client as GraphQLWorker;

@@ -9,6 +9,8 @@ import {
   GraphQLLanguageConfig,
   LanguageService,
   SchemaConfig,
+  getOperationFacts,
+  getVariablesJSONSchema,
 } from 'graphql-language-service';
 
 import type { FormattingOptions, ModeConfiguration } from './typings';
@@ -21,7 +23,6 @@ import {
   DocumentNode,
   FragmentDefinitionNode,
   GraphQLSchema,
-  parse,
   printSchema,
 } from 'graphql';
 
@@ -34,12 +35,12 @@ export type LanguageServiceAPIOptions = {
 
 export type SchemaEntry = {
   schema: GraphQLSchema;
-  ast: DocumentNode;
   schemaString: string;
 };
 
 export class LanguageServiceAPI {
   private _onDidChange = new Emitter<LanguageServiceAPI>();
+  private _onSchemaLoaded = new Emitter<LanguageServiceAPI>();
   private _schemaCache: Map<string, SchemaEntry>;
   private _schemaConfig: SchemaConfig = {};
   private _formattingOptions!: FormattingOptions;
@@ -55,7 +56,7 @@ export class LanguageServiceAPI {
     | FragmentDefinitionNode[]
     | null = null;
   private _langService: LanguageService | null = null;
-
+  private _isLoadingSchema: boolean = false;
   constructor({
     languageId,
     schemaConfig,
@@ -79,32 +80,69 @@ export class LanguageServiceAPI {
   public get onDidChange(): IEvent<LanguageServiceAPI> {
     return this._onDidChange.event;
   }
+  public get onSchemaLoaded(): IEvent<LanguageServiceAPI> {
+    return this._onSchemaLoaded.event;
+  }
+  public get langService(): LanguageService | null {
+    return this._langService;
+  }
+
   public getSchemaConfig(): GraphQLLanguageConfig {
     return {
       schemaConfig: this.schemaConfig,
       exteralFragmentDefinitions: this.externalFragmentDefinitions ?? undefined,
     };
   }
-  public async getSchema(): Promise<SchemaEntry | null> {
-    const cachedSchema = this._schemaCache.get('default');
-    if (cachedSchema) {
-      return cachedSchema;
-    }
-    const schema = await this._langService?.loadSchemaResponse();
+  public async getVariablesJSONSchema(documentString: string) {
+    const schema = await this.getSchema();
     if (schema) {
-      if ('__schema' in schema) {
-        const graphqlSchema = buildClientSchema(schema);
-        const schemaString = printSchema(graphqlSchema);
-        const schemaEntry = {
-          schema: graphqlSchema,
-          schemaString,
-          ast: parse(schemaString),
-        };
-        this._schemaCache.set('default', schemaEntry);
-        return schemaEntry;
+      const operatonFacts = getOperationFacts(schema.schema, documentString);
+      if (operatonFacts) {
+        return getVariablesJSONSchema(operatonFacts);
       }
     }
     return null;
+  }
+  private async loadSchema(): Promise<SchemaEntry | null> {
+    if (!this._isLoadingSchema) {
+      this._isLoadingSchema = true;
+      try {
+        const schema = await this._langService?.loadSchemaResponse();
+        if (schema) {
+          if ('__schema' in schema) {
+            const graphqlSchema = buildClientSchema(schema);
+            const schemaString = printSchema(graphqlSchema);
+            const schemaEntry = {
+              schema: graphqlSchema,
+              schemaString,
+            };
+            this._schemaCache.set(
+              this.schemaConfig.uri || 'default',
+              schemaEntry,
+            );
+            this._isLoadingSchema = false;
+            this._onSchemaLoaded.fire(this);
+            return schemaEntry;
+          }
+        }
+      } catch (err) {
+        console.log('error fetching schema', err);
+      }
+    }
+
+    return null;
+  }
+  public async getSchema(): Promise<SchemaEntry | null> {
+    const cachedSchema = this._schemaCache.get(
+      this.schemaConfig.uri || 'default',
+    );
+    if (cachedSchema) {
+      return cachedSchema;
+    }
+    return this.loadSchema();
+  }
+  public async reloadSchema(): Promise<void> {
+    this.loadSchema();
   }
   public get languageId(): string {
     return this._languageId;

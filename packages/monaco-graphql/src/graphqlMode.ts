@@ -28,85 +28,87 @@ export function setupMode(defaults: LanguageServiceAPI): IDisposable {
   const client = new WorkerManager(defaults);
   const { languageId } = defaults;
   disposables.push(client);
-  const worker: languageFeatures.WorkerAccessor = (
-    ...uris: Uri[]
-  ): Promise<GraphQLWorker> => {
-    try {
-      return client.getLanguageServiceWorker(...uris);
-    } catch (err) {
-      throw Error('Error fetching graphql language service worker');
-    }
-  };
-
-  defaults.setWorker(worker);
 
   monaco.languages.setLanguageConfiguration(languageId, conf);
+  monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);
 
-  function registerFormattingProvider(): void {
-    const { modeConfiguration } = defaults;
-    if (modeConfiguration.documentFormattingEdits) {
-      providers.push(
-        monaco.languages.registerDocumentFormattingEditProvider(
-          defaults.languageId,
-          new languageFeatures.DocumentFormattingAdapter(worker),
-        ),
-      );
-    }
-  }
+  defaults.onSchemaLoaded(_api => {
+    const worker: languageFeatures.WorkerAccessor = (
+      ...uris: Uri[]
+    ): Promise<GraphQLWorker> => {
+      try {
+        return client.getLanguageServiceWorker(...uris);
+      } catch (err) {
+        throw Error('Error fetching graphql language service worker');
+      }
+    };
 
-  function registerProviders(): void {
-    const { modeConfiguration } = defaults;
-    disposeAll(providers);
+    defaults.setWorker(worker);
 
-    providers.push(
-      monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage),
-    );
-
-    if (modeConfiguration.completionItems) {
-      providers.push(
-        monaco.languages.registerCompletionItemProvider(
-          defaults.languageId,
-          new languageFeatures.CompletionAdapter(worker),
-        ),
-      );
-    }
-    if (modeConfiguration.diagnostics) {
-      providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
-    }
-    if (modeConfiguration.hovers) {
-      providers.push(
-        monaco.languages.registerHoverProvider(
-          defaults.languageId,
-          new languageFeatures.HoverAdapter(worker),
-        ),
-      );
+    function registerFormattingProvider(): void {
+      const { modeConfiguration } = defaults;
+      if (modeConfiguration.documentFormattingEdits) {
+        providers.push(
+          monaco.languages.registerDocumentFormattingEditProvider(
+            defaults.languageId,
+            new languageFeatures.DocumentFormattingAdapter(worker),
+          ),
+        );
+      }
     }
 
-    registerFormattingProvider();
-  }
+    function registerProviders(): void {
+      const { modeConfiguration } = defaults;
+      disposeAll(providers);
 
-  registerProviders();
+      if (modeConfiguration.completionItems) {
+        providers.push(
+          monaco.languages.registerCompletionItemProvider(
+            defaults.languageId,
+            new languageFeatures.CompletionAdapter(worker),
+          ),
+        );
+      }
+      if (modeConfiguration.diagnostics) {
+        providers.push(
+          new languageFeatures.DiagnosticsAdapter(defaults, worker),
+        );
+      }
+      if (modeConfiguration.hovers) {
+        providers.push(
+          monaco.languages.registerHoverProvider(
+            defaults.languageId,
+            new languageFeatures.HoverAdapter(worker),
+          ),
+        );
+      }
 
-  let { modeConfiguration, schemaConfig, formattingOptions } = defaults;
-
-  defaults.onDidChange(newDefaults => {
-    if (defaults.schemaString !== newDefaults.schemaString) {
-      registerProviders();
-    }
-    if (newDefaults.modeConfiguration !== modeConfiguration) {
-      modeConfiguration = newDefaults.modeConfiguration;
-      registerProviders();
-    }
-    if (newDefaults.schemaConfig !== schemaConfig) {
-      schemaConfig = newDefaults.schemaConfig;
-      registerProviders();
-    }
-    if (newDefaults.formattingOptions !== formattingOptions) {
-      formattingOptions = newDefaults.formattingOptions;
       registerFormattingProvider();
     }
+
+    registerProviders();
+
+    let { modeConfiguration, schemaConfig, formattingOptions } = defaults;
+
+    defaults.onDidChange(newDefaults => {
+      if (defaults.schemaString !== newDefaults.schemaString) {
+        registerProviders();
+      }
+      if (newDefaults.modeConfiguration !== modeConfiguration) {
+        modeConfiguration = newDefaults.modeConfiguration;
+        registerProviders();
+      }
+      if (newDefaults.schemaConfig !== schemaConfig) {
+        schemaConfig = newDefaults.schemaConfig;
+        registerProviders();
+      }
+      if (newDefaults.formattingOptions !== formattingOptions) {
+        formattingOptions = newDefaults.formattingOptions;
+        registerFormattingProvider();
+      }
+    });
+    disposables.push(asDisposable(providers));
   });
-  disposables.push(asDisposable(providers));
 
   return asDisposable(disposables);
 }
