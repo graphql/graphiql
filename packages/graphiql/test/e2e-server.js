@@ -10,8 +10,8 @@ const express = require('express');
 const path = require('path');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema');
-
 const app = express();
+const { schema: badSchema } = require('./bad-schema');
 
 // Server
 app.post('/graphql', graphqlHTTP({ schema }));
@@ -22,6 +22,11 @@ app.get(
     schema,
   }),
 );
+
+app.post('/bad/graphql', (_req, res, next) => {
+  res.json({ data: badSchema });
+  next();
+});
 
 app.use(express.static(path.resolve(__dirname, '../')));
 

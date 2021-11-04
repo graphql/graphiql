@@ -23,6 +23,9 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
+  GraphQLError,
+  formatError as formatGraphQLError,
+  GraphQLFormattedError,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
@@ -66,6 +69,8 @@ import type {
 } from '@graphiql/toolkit';
 import HistoryStore from '../utility/HistoryStore';
 
+import { validateSchema } from 'graphql';
+
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
@@ -95,6 +100,14 @@ export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
 
+export type GenericError =
+  | Error
+  | string
+  | readonly Error[]
+  | readonly string[]
+  | GraphQLError
+  | readonly GraphQLError[];
+
 export type GraphiQLProps = {
   fetcher: Fetcher;
   schema?: GraphQLSchema;
@@ -121,6 +134,10 @@ export type GraphiQLProps = {
   editorTheme?: string;
   onToggleHistory?: (historyPaneOpen: boolean) => void;
   ResultsTooltip?: typeof Component | FunctionComponent;
+  /**
+   * decide whether schema responses should be validated. false by default
+   */
+  dangerouslyAssumeSchemaIsValid?: boolean;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
   toolbar?: GraphiQLToolbarConfig;
@@ -143,6 +160,7 @@ export type GraphiQLState = {
   headerEditorEnabled: boolean;
   shouldPersistHeaders: boolean;
   historyPaneOpen: boolean;
+  schemaErrors?: readonly GraphQLError[];
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription?: Unsubscribable | null;
@@ -150,6 +168,29 @@ export type GraphiQLState = {
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
   maxHistoryLength: number;
+};
+
+const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
+
+const formatSingleError = (error: Error): Error => ({
+  ...error,
+  // Raise these details even if they're non-enumerable
+  message: error.message,
+  stack: error.stack,
+});
+
+type InputError = Error | GraphQLError | string;
+
+const handleSingleError = (
+  error: InputError,
+): GraphQLFormattedError | Error | string => {
+  if (error instanceof GraphQLError) {
+    return formatGraphQLError(error);
+  }
+  if (error instanceof Error) {
+    return formatSingleError(error);
+  }
+  return error;
 };
 
 /**
@@ -166,12 +207,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     return JSON.stringify(result, null, 2);
   }
 
-  static formatError(rawError: Error) {
-    const result = Array.isArray(rawError)
-      ? rawError.map(formatSingleError)
-      : formatSingleError(rawError);
-    return JSON.stringify(result, null, 2);
-  }
+  static formatError = (error: GenericError): string => {
+    if (Array.isArray(error)) {
+      return stringify({
+        errors: error.map((e: InputError) => handleSingleError(e)),
+      });
+    }
+    // @ts-ignore
+    return stringify({ errors: handleSingleError(error) });
+  };
 
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
@@ -266,15 +310,30 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const headerEditorEnabled = props.headerEditorEnabled ?? false;
     const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
 
+    let schema = props.schema;
+    let response = props.response;
+    let schemaErrors: readonly GraphQLError[] | undefined = undefined;
+    if (schema && !this.props.dangerouslyAssumeSchemaIsValid) {
+      const validationErrors = validateSchema(schema);
+      if (validationErrors && validationErrors.length > 0) {
+        // This is equivalent to handleSchemaErrors, but it's too early
+        // to call setState.
+        response = GraphiQL.formatError(validationErrors);
+        schema = undefined;
+        schemaErrors = validationErrors;
+      }
+    }
+
     // Initialize state
     this.state = {
-      schema: props.schema,
+      schema,
       query,
       variables: variables as string,
       headers: headers as string,
       operationName,
       docExplorerOpen,
-      response: props.response,
+      schemaErrors,
+      response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -357,6 +416,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         nextQuery !== this.state.query ||
         nextOperationName !== this.state.operationName)
     ) {
+      if (!this.props.dangerouslyAssumeSchemaIsValid) {
+        const validationErrors = validateSchema(nextSchema);
+        if (validationErrors && validationErrors.length > 0) {
+          this.handleSchemaErrors(validationErrors);
+          nextSchema = undefined;
+        }
+      }
+
       const updatedQueryAttributes = this._updateQueryFacts(
         nextQuery,
         nextOperationName,
@@ -665,6 +732,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               ref={c => {
                 this.docExplorerComponent = c;
               }}
+              schemaErrors={this.state.schemaErrors}
               schema={this.state.schema}>
               <button
                 className="docExplorerHide"
@@ -871,25 +939,45 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         }
 
         if (typeof result !== 'string' && 'data' in result) {
-          const schema = buildClientSchema(result.data);
-          const queryFacts = getOperationFacts(schema, this.state.query);
-          this.safeSetState({ schema, ...queryFacts });
+          let schema: GraphQLSchema | undefined = buildClientSchema(
+            result.data,
+          );
+          if (!this.props.dangerouslyAssumeSchemaIsValid) {
+            const errors = validateSchema(schema);
+            // if there are errors, don't set schema
+            if (errors && errors.length > 0) {
+              schema = undefined;
+              this.handleSchemaErrors(errors);
+            }
+          }
+          if (schema) {
+            const queryFacts = getOperationFacts(schema, this.state.query);
+            this.safeSetState({
+              schema,
+              ...queryFacts,
+              schemaErrors: undefined,
+            });
+          }
         } else {
+          // handle as if it were an error if the fetcher response is not a string or response.data is not present
           const responseString =
             typeof result === 'string' ? result : GraphiQL.formatResult(result);
-          this.safeSetState({
-            // Set schema to `null` to explicitly indicate that no schema exists.
-            schema: undefined,
-            response: responseString,
-          });
+          this.handleSchemaErrors([responseString]);
         }
       })
       .catch(error => {
-        this.safeSetState({
-          schema: undefined,
-          response: error ? GraphiQL.formatError(error) : undefined,
-        });
+        this.handleSchemaErrors([error]);
       });
+  }
+
+  private handleSchemaErrors(
+    schemaErrors: readonly GraphQLError[] | readonly string[],
+  ) {
+    this.safeSetState({
+      response: schemaErrors ? GraphiQL.formatError(schemaErrors) : undefined,
+      schema: undefined,
+      schemaErrors,
+    });
   }
 
   private async _fetchQuery(
@@ -908,7 +996,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       jsonVariables =
         variables && variables.trim() !== '' ? JSON.parse(variables) : null;
     } catch (error) {
-      throw new Error(`Variables are invalid JSON: ${error.message}.`);
+      throw new Error(
+        `Variables are invalid JSON: ${(error as Error).message}.`,
+      );
     }
 
     if (typeof jsonVariables !== 'object') {
@@ -919,7 +1009,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       jsonHeaders =
         headers && headers.trim() !== '' ? JSON.parse(headers) : null;
     } catch (error) {
-      throw new Error(`Headers are invalid JSON: ${error.message}.`);
+      throw new Error(`Headers are invalid JSON: ${(error as Error).message}.`);
     }
 
     if (typeof jsonHeaders !== 'object') {
@@ -1008,7 +1098,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             } catch (error) {
               this.safeSetState({
                 isWaitingForResponse: false,
-                response: error ? GraphiQL.formatError(error) : undefined,
+                response: error
+                  ? GraphiQL.formatError(error as Error)
+                  : undefined,
                 subscription: null,
               });
             }
@@ -1167,7 +1259,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     } catch (error) {
       this.setState({
         isWaitingForResponse: false,
-        response: error.message,
+        response: (error as Error).message,
       });
     }
   };
@@ -1698,13 +1790,6 @@ function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
 GraphiQLFooter.displayName = 'GraphiQLFooter';
-
-const formatSingleError = (error: Error) => ({
-  ...error,
-  // Raise these details even if they're non-enumerable
-  message: error.message,
-  stack: error.stack,
-});
 
 const defaultQuery = `# Welcome to GraphiQL
 #
