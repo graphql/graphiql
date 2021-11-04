@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: 12
       - uses: bahmutov/npm-install@v1
+      - name: Setup NPM credentials
+        run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Release Canary
         id: canary
         uses: 'kamilkisiela/release-canary@master'
