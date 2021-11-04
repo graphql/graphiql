@@ -39,7 +39,7 @@ jobs:
         uses: 'kamilkisiela/pr-comment@master'
         with:
           message: |
-            The latest changes of this PR are available as alpha in npm (based on the declared `changesets`):
+            The latest changes of this PR are available as canary in npm (based on the declared `changesets`):
 
             ```
             ${{ steps.canary.outputs.changesetsPublishedPackages}}
@@ -52,7 +52,7 @@ jobs:
         uses: 'kamilkisiela/pr-comment@master'
         with:
           message: |
-            The latest changes of this PR are not available as alpha, since there are no linked `changesets` for this PR.
+            The latest changes of this PR are not available as canary, since there are no linked `changesets` for this PR.
           bot-token: ${{ secrets.GITHUB_TOKEN }}
           bot: 'github-actions'
           github-token: ${{ secrets.GITHUB_TOKEN }}

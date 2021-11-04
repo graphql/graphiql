@@ -54,7 +54,7 @@
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "release": "yarn build && yarn build-bundles && yarn changeset publish",
-    "release:canary": "(node scripts/canary-release.js && yarn build && yarn build-bundles && yarn changeset publish --tag alpha) || echo Skipping Canary...",
+    "release:canary": "(node scripts/canary-release.js && yarn build && yarn build-bundles && yarn changeset publish --tag canary) || echo Skipping Canary...",
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "start-graphiql": "yarn build:clean && npm-run-all -l -p build dev-graphiql",

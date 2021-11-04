@@ -16,7 +16,7 @@ function getNewVersion(version, type) {
     .stdout.toString()
     .trim();
 
-  return semver.inc(version, `pre${type}`, true, 'alpha-' + gitHash);
+  return semver.inc(version, `pre${type}`, true, 'canary-' + gitHash);
 }
 
 function getRelevantChangesets(baseBranch) {
@@ -24,18 +24,15 @@ function getRelevantChangesets(baseBranch) {
     .spawnSync('git', ['merge-base', `origin/${baseBranch}`, 'HEAD'])
     .stdout.toString()
     .trim();
-  console.log('compare point', comparePoint);
   const listModifiedFiles = cp
     .spawnSync('git', ['diff', '--name-only', comparePoint])
     .stdout.toString()
     .trim()
     .split('\n');
-  console.log('listModifiedFiles', listModifiedFiles);
 
   const items = listModifiedFiles
     .filter(f => f.startsWith('.changeset'))
     .map(f => basename(f, '.md'));
-  console.log('items', items);
 
   return items;
 }
