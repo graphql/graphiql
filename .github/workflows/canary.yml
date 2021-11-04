@@ -19,14 +19,13 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12
-      - name: Setup NPM credentials
-        run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - uses: bahmutov/npm-install@v1
       - name: Release Canary
         id: canary
         uses: 'kamilkisiela/release-canary@master'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-script: 'yarn release:canary'
