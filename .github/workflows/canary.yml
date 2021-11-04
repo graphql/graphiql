@@ -1,0 +1,55 @@
+name: Canary Release
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  publish-canary:
+    name: Publish Canary
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Checkout Main
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Setup NPM credentials
+        run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: bahmutov/npm-install@v1
+      - name: Release Canary
+        id: canary
+        uses: 'kamilkisiela/release-canary@master'
+        with:
+          npm-token: ${{ secrets.NPM_TOKEN }}
+          npm-script: 'yarn release:canary'
+          changesets: true
+      - name: Publish a message
+        if: steps.canary.outputs.released
+        uses: 'kamilkisiela/pr-comment@master'
+        with:
+          message: |
+            The latest changes of this PR are available as alpha in npm (based on the declared `changesets`):
+
+            ```
+            ${{ steps.canary.outputs.changesetsPublishedPackages}}
+            ```
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
+          bot: 'github-actions'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish a empty message
+        if: steps.canary.outputs.released == 'false'
+        uses: 'kamilkisiela/pr-comment@master'
+        with:
+          message: |
+            The latest changes of this PR are not available as alpha, since there are no linked `changesets` for this PR.
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
+          bot: 'github-actions'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
