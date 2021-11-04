@@ -19,7 +19,7 @@ A similar vulnerability affects `graphql-playground`, a fork of `graphiql`. Ther
 
 ### 1.1. Impact
 
-All versions of `graphiql` older than [`graphiql@1.4.3`](https://github.com/graphql/graphiql/releases/tag/v1.4.3) are vulnerable to compromised HTTP schema introspection responses or `schema` prop values with malicious GraphQL type names, exposing a dynamic XSS attack surface that can allow code injection on operation autocomplete.
+All versions of `graphiql` older than [`graphiql@1.4.7`](https://github.com/graphql/graphiql/releases/tag/v1.4.7) are vulnerable to compromised HTTP schema introspection responses or `schema` prop values with malicious GraphQL type names, exposing a dynamic XSS attack surface that can allow code injection on operation autocomplete.
 
 In order for the attack to take place, the user must load a vulnerable schema in `graphiql`. There are a number of ways that can occur.
 
@@ -39,13 +39,13 @@ It should be noted that desktop clients such as Altair, Insomnia, Postwoman, do 
 
 ### 1.3. Patches
 
-`graphiql@1.4.3` addresses this issue via defense in depth.
+`graphiql@1.4.7` addresses this issue via defense in depth.
 
 - **HTML-escaping text** that should be treated as text rather than HTML. In most of the app, this happens automatically because React escapes all interpolated text by default. However, one vulnerable component uses the unsafe `innerHTML` API and interpolated type names directly into HTML. We now properly escape that type name, which fixes the known vulnerability.
 
 - **Validates the schema** upon receiving the introspection response or schema changes. Schemas with names that violate the GraphQL spec will no longer be loaded. (This includes preventing the Doc Explorer from loading.) This change is also sufficient to fix the known vulnerability. You can disable this validation by setting `dangerouslyAssumeSchemaIsValid={true}`, which means you are relying only on escaping values to protect you from this attack.
 
-- **Ensuring that user-generated HTML is safe**. Schemas can contain Markdown in `description` and `deprecationReason` fields, and the web app renders them to HTML using the `markdown-it` library. As part of the development of `graphiql@1.4.3`, we verified that our use of `markdown-it` prevents the inclusion of arbitrary HTML. We use `markdown-it` without setting `html: true`, so we are comfortable relying on [`markdown-it`'s HTML escaping](https://github.com/markdown-it/markdown-it/blob/master/docs/security.md) here. We considered running a second level of sanitization over all rendered Markdown using a library such as `dompurify` but believe that is unnecessary as `markdown-it`'s sanitization appears to be adequate. `graphiql@1.4.3` does update to the latest version of `markdown-it` (v12, from v10) so that any security fixes in v11 and v12 will take effect.
+- **Ensuring that user-generated HTML is safe**. Schemas can contain Markdown in `description` and `deprecationReason` fields, and the web app renders them to HTML using the `markdown-it` library. As part of the development of `graphiql@1.4.7`, we verified that our use of `markdown-it` prevents the inclusion of arbitrary HTML. We use `markdown-it` without setting `html: true`, so we are comfortable relying on [`markdown-it`'s HTML escaping](https://github.com/markdown-it/markdown-it/blob/master/docs/security.md) here. We considered running a second level of sanitization over all rendered Markdown using a library such as `dompurify` but believe that is unnecessary as `markdown-it`'s sanitization appears to be adequate. `graphiql@1.4.7` does update to the latest version of `markdown-it` (v12, from v10) so that any security fixes in v11 and v12 will take effect.
 
 ### 1.3.1 CDN bundle implementations may be automatically patched
 
@@ -53,7 +53,7 @@ Note that if your implementation is depending on a CDN version of `graphiql`, an
 
 ### 1.4. Workarounds for Older Versions
 
-If you cannot use `graphiql@1.4.3` or later
+If you cannot use `graphiql@1.4.7` or later
 
 - Always use a static URL to a trusted server that is serving a trusted GraphQL schema.
 
@@ -61,7 +61,7 @@ If you cannot use `graphiql@1.4.3` or later
 
 ### 1.5. How to Re-create the Exploit
 
-You can see an example on [codesandbox](https://codesandbox.io/s/graphiql-xss-exploit-gr22f?file=/src/App.js). These are both fixed to the last `graphiql` release `1.4.2` which is the last vulnerable release; however it would work with any previous release of `graphiql`.
+You can see an example on [codesandbox](https://codesandbox.io/s/graphiql-xss-exploit-gr22f?file=/src/App.js). These are both fixed to the last `graphiql` release `1.4.6` which is the last vulnerable release; however it would work with any previous release of `graphiql`.
 
 Both of these examples are meant to demonstrate the phishing attack surface, so they are customized to accept a `url` parameter. To demonstrate the phishing attack, add `?url=https://graphql-xss-schema.netlify.app/graphql` to the in-codesandbox browser.
 
@@ -107,7 +107,7 @@ An installation of the GraphiQL web app is vulnerable if two conditions are met:
 - The web app trusts information from its corresponding GraphQL server by interpolating information such as GraphQL type names directly into HTML instead of appropriately escaping or sanitizing the information.
 - The victim can load the web app in a way where it speaks to a GraphQL server controlled by the attacker.
 
-All versions of `graphiql` prior to 1.4.3 inappropriately trust type names provided by the GraphQL server. They additionally rely on XSS filtering in the `markdown-it` package to try to protect themselves from XSS attacks in GraphQL descriptions and deprecation reasons.
+All versions of `graphiql` prior to 1.4.7 inappropriately trust type names provided by the GraphQL server. They additionally rely on XSS filtering in the `markdown-it` package to try to protect themselves from XSS attacks in GraphQL descriptions and deprecation reasons.
 
 By default, `graphiql` does _not_ allow the attacker to control what GraphQL server it speaks to. Therefore, many installations of `graphiql` are not affected by this advisory. Installations are only affected if the `fetcher` argument provided to GraphiQL allows arbitrary customization of the GraphQL endpoint (eg, reading a GraphQL URL from an URL parameter), or if the attacker has another way of affecting the introspection schema returned by the GraphQL server. (Note that `graphql-playground`, a project which started as a fork of `graphiql`, does this sort of URL parsing by default, so `graphql-playground` installations _are_ affected by a corresponding vulnerability in their default configuration.)
 
