@@ -1,7 +1,6 @@
 /* global netlify */
 
 import * as monaco from 'monaco-editor';
-
 import { init } from 'monaco-graphql';
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
