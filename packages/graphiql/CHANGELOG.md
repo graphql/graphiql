@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.4.7
+
+### Patch Changes
+
+- [`130ddad6`](https://github.com/graphql/graphiql/commit/130ddad6d0394356ec32070a6fee1840450a4660) Thanks [@acao](https://github.com/acao)! - **CRITICAL SECURITY PATCH** for the [GraphiQL introspection schema template injection attack](https://github.com/graphql/graphiql/security/advisories/GHSA-x4r7-m2q9-69c8)
+
 ## 1.4.6
 
 ### Patch Changes
