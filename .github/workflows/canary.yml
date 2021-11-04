@@ -36,8 +36,9 @@ jobs:
           changesets: true
       - name: Publish a message
         if: steps.canary.outputs.released === 'true'
-        uses: 'kamilkisiela/pr-comment@master'
+        uses: 'dotansimha/pr-comment@master'
         with:
+          commentKey: canary
           message: |
             The latest changes of this PR are available as canary in npm (based on the declared `changesets`):
 
@@ -45,14 +46,15 @@ jobs:
             ${{ steps.canary.outputs.changesetsPublishedPackages}}
             ```
           bot-token: ${{ secrets.GITHUB_TOKEN }}
-          bot: 'github-actions'
+          bot: 'github-actions[bot]'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish a empty message
         if: steps.canary.outputs.released == 'false'
-        uses: 'kamilkisiela/pr-comment@master'
+        uses: 'dotansimha/pr-comment@master'
         with:
+          commentKey: canary
           message: |
             The latest changes of this PR are not available as canary, since there are no linked `changesets` for this PR.
           bot-token: ${{ secrets.GITHUB_TOKEN }}
-          bot: 'github-actions'
+          bot: 'github-actions[bot]'
           github-token: ${{ secrets.GITHUB_TOKEN }}
