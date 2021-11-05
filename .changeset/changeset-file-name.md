@@ -2,4 +2,4 @@
 'graphiql': patch
 ---
 
-Correct npm readme version number and links
+Correct the npm readme security fix version number and links
