@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.4.8
+
+### Patch Changes
+
+- [`e63696de`](https://github.com/graphql/graphiql/commit/e63696de57a85c34d937bfb53345e2e0d0b874a4) [#2005](https://github.com/graphql/graphiql/pull/2005) Thanks [@acao](https://github.com/acao)! - Correct the npm readme security fix version number and links, thanks [@glasser](https://github.com/glasser) & [@dotansimha](https://github.com/dotansimha)!
+
 ## 1.4.7
 
 ### Patch Changes
