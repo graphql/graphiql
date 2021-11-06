@@ -17,7 +17,6 @@ import {
   // @ts-ignore
 } from 'monaco-editor/esm/vs/basic-languages/graphql/graphql.js';
 
-// console.log({ monarchLanguage })
 
 import { LanguageServiceAPI } from './api';
 import * as languageFeatures from './languageFeatures';
