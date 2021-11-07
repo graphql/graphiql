@@ -5,7 +5,7 @@
 .secrets
 npm-debug.log
 yarn-error.log
-
+examples/**/yarn.lock
 node_modules/
 coverage/
 .nyc_output

@@ -5,8 +5,7 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/*",
-      "examples/*"
+      "packages/*"
     ]
   },
   "lint-staged": {
@@ -58,12 +57,12 @@
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "start-graphiql": "yarn build:clean && npm-run-all -l -p build dev-graphiql",
-    "start-monaco": "yarn workspace example-monaco-graphql-webpack start",
+    "start-monaco": "cd examples/monaco-graphql-webpack && yarn start",
     "t": "yarn run testonly",
     "test": "yarn jest",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
-    "testonly": "jest && yarn workspace codemirror-graphql run test",
+    "testonly": "yarn jest",
     "tsc": "tsc --build"
   },
   "devDependencies": {

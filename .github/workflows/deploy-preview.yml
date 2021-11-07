@@ -1,12 +1,16 @@
 # .github/workflows/netlify.yml
 name: Netlify Preview
-on:
+on: 
+  push:
+    branches-ignore:
+      # depoloy.yml cares about main
+      - 'main' 
   pull_request:
     types: [opened, synchronize]
   
 jobs:
   graphiql-preview:
-    name: "GraphiQL"
+    name: "GraphiQL CDN Bundle"
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout
@@ -36,6 +40,7 @@ jobs:
           overwrites-pull-request-comment: true
           functions-dir: functions
           github-deployment-environment: "graphiql-1"
+          github-deployment-description: "test GraphiQL 1 cdn bundle"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
@@ -55,7 +60,7 @@ jobs:
         run: yarn build
 
       - name: Build Monaco Example 
-        run: yarn workspace example-monaco-graphql-webpack run build
+        run: cd examples/monaco-graphql-webpack && yarn && yarn build
 
       - name: Deploy Monaco GraphQL Example to Netlify
         uses: nwtgck/actions-netlify@v1.2
@@ -64,8 +69,12 @@ jobs:
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "Monaco GraphQL Preview"
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
           functions-dir: functions
           github-deployment-environment: "monaco-graphql"
+          github-deployment-description: "test monaco-graphql in the webpack example"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
@@ -81,21 +90,26 @@ jobs:
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
       # ( Build to ./dist or other directory... )
+      
       - name: Build 
         run: yarn build & yarn build-bundles
 
       - name: Build Webpack Example 
-        run: yarn workspace example-graphiql-webpack run build-demo
+        run: cd examples/graphiql-webpack && yarn && yarn build
 
       - name: Deploy Webpack Example to Netlify
         uses: nwtgck/actions-netlify@v1.2
         with:
+          enable-pull-request-comment: true
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
           publish-dir: './examples/graphiql-webpack/dist'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "GraphiQL Webpack Example"
           functions-dir: functions
           github-deployment-environment: "graphiql-webpack"
+          github-deployment-description: "test GraphiQL 1 module imports w/ webpack"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
           NETLIFY_SITE_ID: aabca80b-fe63-43df-83ef-e431876560c9
