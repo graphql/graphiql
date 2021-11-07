@@ -50,7 +50,7 @@ describe('GraphiQL On Initialization', () => {
       errors: [
         {
           message:
-            'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but "<img src=x onerror=alert(document.domain)>" does not.',
+            'Names must only contain [_a-zA-Z0-9] but "<img src=x onerror=alert(document.domain)>" does not.',
         },
       ],
     });
