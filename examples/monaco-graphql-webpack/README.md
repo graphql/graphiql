@@ -5,4 +5,4 @@ A simple example of `monaco-graphql` using webpack
 ### Setup
 
 1. `yarn` and `yarn build` at the root of this repository, if you have not already.
-2. `yarn start` from this folder to start webpack dev server
+2. run both `yarn` and `yarn start` from this folder to start webpack dev server

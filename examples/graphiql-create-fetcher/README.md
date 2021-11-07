@@ -5,4 +5,4 @@ This example demonstrates how to transpile your own custom ES6 GraphiQL implemen
 ### Setup
 
 1. `yarn`, `yarn build` and `yarn build-bundles` (to build css) at the root of this repository, if you have not already.
-1. `yarn start` from this folder to start webpack dev server
+1. run both `yarn` and `yarn start` from this folder to start webpack dev server
