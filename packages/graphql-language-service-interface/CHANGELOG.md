@@ -1,5 +1,18 @@
 # graphql-language-service-interface
 
+## 2.9.0
+
+### Minor Changes
+
+- [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a) [#2010](https://github.com/graphql/graphiql/pull/2010) Thanks [@acao](https://github.com/acao)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
+
+### Patch Changes
+
+- [`8869c4b1`](https://github.com/graphql/graphiql/commit/8869c4b18c900b9b35556255587ef5130a96a4d5) [#1998](https://github.com/graphql/graphiql/pull/1998) Thanks [@ferm10n](https://github.com/ferm10n)! - remove implicit codemirror dependency
+
+- Updated dependencies [[`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a)]:
+  - graphql-language-service-parser@1.10.0
+
 ## 2.8.4
 
 ### Patch Changes

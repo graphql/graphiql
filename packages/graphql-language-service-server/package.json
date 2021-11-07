@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.6.5",
+  "version": "2.7.0",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -33,7 +33,7 @@
     "dotenv": "8.2.0",
     "glob": "^7.1.2",
     "graphql-config": "^3.0.2",
-    "graphql-language-service": "^3.1.6",
+    "graphql-language-service": "^3.2.0",
     "graphql-language-service-utils": "^2.5.1",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
