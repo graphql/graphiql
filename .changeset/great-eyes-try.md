@@ -10,4 +10,4 @@
 "graphql-language-service": minor
 ---
 
-upgrade to `graphql@16.0.0-experimental-stream-defer.5`
+upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
