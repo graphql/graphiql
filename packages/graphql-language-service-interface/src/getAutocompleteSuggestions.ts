@@ -7,7 +7,6 @@
  *
  */
 import { CompletionItemKind } from 'vscode-languageserver-types';
-import type CodeMirror from 'codemirror';
 
 import {
   FragmentDefinitionNode,
@@ -60,6 +59,7 @@ import {
   RuleKinds,
   RuleKind,
   _RuleKinds,
+  ContextTokenForCodeMirror,
 } from 'graphql-language-service-parser';
 
 import {
@@ -95,7 +95,7 @@ export function getAutocompleteSuggestions(
   schema: GraphQLSchema,
   queryText: string,
   cursor: IPosition,
-  contextToken?: CodeMirror.Token,
+  contextToken?: ContextTokenForCodeMirror,
   fragmentDefs?: FragmentDefinitionNode[] | string,
 ): Array<CompletionItem> {
   const token: ContextToken =
