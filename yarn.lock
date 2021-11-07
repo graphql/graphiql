@@ -11573,10 +11573,10 @@ graphql-ws@^4.9.0:
   resolved "https://registry.yarnpkg.com/graphql-ws/-/graphql-ws-4.9.0.tgz#5cfd8bb490b35e86583d8322f5d5d099c26e365c"
   integrity sha512-sHkK9+lUm20/BGawNEWNtVAeJzhZeBg21VmvmLoT5NdGVeZWv5PdIhkcayQIAgjSyyQ17WMKmbDijIPG2On+Ag==
 
-graphql@experimental-stream-defer:
-  version "15.4.0-experimental-stream-defer.1"
-  resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.4.0-experimental-stream-defer.1.tgz#46ae3fd2b532284575e7ddcf6c4f08aa7fe53fa3"
-  integrity sha512-zlGgY7aLlIofjO0CfTpCYK/tMccnj+5jvjnkTnW5qOxYhgEltuCvpMNYOJ67gz6L1flTIigt5BVEM8JExgtW3w==
+graphql@16.0.0-experimental-stream-defer.5:
+  version "16.0.0-experimental-stream-defer.5"
+  resolved "https://registry.yarnpkg.com/graphql/-/graphql-16.0.0-experimental-stream-defer.5.tgz#d668566fd33053a054dc5367c38c20a4ac4e4224"
+  integrity sha512-bluMjYpxh3a1lwZuNP+FAaEDMWzccVhkv+STcw0ckB2EPtLRTYUdXQhF9YBbUHd3tZSAR7LXzsxIw2GZXhg5rw==
 
 growly@^1.3.0:
   version "1.3.0"

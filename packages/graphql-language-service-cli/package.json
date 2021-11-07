@@ -27,7 +27,7 @@
     "LSP"
   ],
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.5.0"
+    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
@@ -37,6 +37,6 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer"
+    "graphql": "16.0.0-experimental-stream-defer.5"
   }
 }

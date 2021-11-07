@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-experimental-stream-defer.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"

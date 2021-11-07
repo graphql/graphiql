@@ -106,7 +106,7 @@ export class LanguageServiceAPI {
     let rawSchema = schema as string;
 
     if (typeof schema !== 'string') {
-      rawSchema = printSchema(schema, { commentDescriptions: true });
+      rawSchema = printSchema(schema);
     }
     this._schemaString = rawSchema;
     const langWorker = await (await this.worker)();

@@ -12,6 +12,7 @@ import {
   TextToken,
   TokenKind,
   IPosition,
+  OutlineTree,
 } from 'graphql-language-service-types';
 
 import {
@@ -90,7 +91,7 @@ export function getOutline(documentText: string): Outline | null {
   }
 
   const visitorFns = outlineTreeConverter(documentText);
-  const outlineTrees = visit(ast, {
+  const outlineTrees = (visit(ast, {
     leave(node) {
       if (visitorFns !== undefined && node.kind in visitorFns) {
         // @ts-ignore
@@ -98,7 +99,7 @@ export function getOutline(documentText: string): Outline | null {
       }
       return null;
     },
-  });
+  }) as unknown) as OutlineTree[];
 
   return { outlineTrees };
 }

@@ -24,10 +24,10 @@
   "module": "esm/index.js",
   "typings": "dist/index.d.ts",
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.5.0"
+    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-experimental-stream-defer.5",
     "graphql-config": "^3.0.2",
     "vscode-languageserver-types": "^3.15.1"
   }

@@ -16,9 +16,8 @@ import {
   getNamedType,
   visit,
   visitWithTypeInfo,
-  ASTKindToNode,
-  Visitor,
-  ASTNode,
+  ASTVisitor,
+  Kind,
 } from 'graphql';
 
 type Maybe<T> = null | T;
@@ -82,7 +81,7 @@ export function inlineRelevantFragmentSpreads(
       if (fragmentDefinition) {
         const { typeCondition, directives, selectionSet } = fragmentDefinition;
         selection = {
-          kind: 'InlineFragment',
+          kind: Kind.INLINE_FRAGMENT,
           typeCondition,
           directives,
           selectionSet,
@@ -90,7 +89,7 @@ export function inlineRelevantFragmentSpreads(
       }
     }
     if (
-      selection.kind === 'InlineFragment' &&
+      selection.kind === Kind.INLINE_FRAGMENT &&
       // Cannot inline if there are directives
       (!selection.directives || selection.directives?.length === 0)
     ) {
@@ -129,13 +128,13 @@ export default function mergeAST(
   } = Object.create(null);
 
   for (const definition of documentAST.definitions) {
-    if (definition.kind === 'FragmentDefinition') {
+    if (definition.kind === Kind.FRAGMENT_DEFINITION) {
       fragmentDefinitions[definition.name.value] = definition;
     }
   }
 
-  const visitors: Visitor<ASTKindToNode, ASTNode> = {
-    SelectionSet(node) {
+  const visitors: ASTVisitor = {
+    SelectionSet(node: any) {
       const selectionSetType = typeInfo ? typeInfo.getParentType() : null;
       let { selections } = node;
 
