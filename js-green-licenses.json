@@ -1,6 +1,7 @@
 {
   "packageAllowlist": [
     // MIT, just lacking SPDX in manifest
-    "valid-url"
+    "valid-url",
+    "argparse"
   ]
 }
