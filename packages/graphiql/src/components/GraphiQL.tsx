@@ -307,7 +307,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       secondaryEditorOpen = Boolean(variables || headers);
     }
 
-    const headerEditorEnabled = props.headerEditorEnabled ?? false;
+    const headerEditorEnabled = props.headerEditorEnabled ?? true;
     const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
 
     let schema = props.schema;
