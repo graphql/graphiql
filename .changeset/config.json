@@ -6,5 +6,8 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["example-*", "graphiql-2-rfc-context*"]
+  "ignore": ["example-*", "graphiql-2-rfc-context*"],
+  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
+    "updateInternalDependents": "always"
+  }
 }
