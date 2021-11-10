@@ -6,7 +6,7 @@
  */
 
 import { editor as monacoEditor } from 'monaco-editor';
-import { LanguageServiceAPI } from './api';
+import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
 
 import IDisposable = monaco.IDisposable;
@@ -16,7 +16,7 @@ import { ICreateData } from './typings';
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 
 export class WorkerManager {
-  private _defaults: LanguageServiceAPI;
+  private _defaults: MonacoGraphQLAPI;
   private _idleCheckInterval: number;
   private _lastUsedTime: number;
   private _configChangeListener: IDisposable;
@@ -24,7 +24,7 @@ export class WorkerManager {
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
   private _client: GraphQLWorker | null;
 
-  constructor(defaults: LanguageServiceAPI) {
+  constructor(defaults: MonacoGraphQLAPI) {
     this._defaults = defaults;
     this._worker = null;
     this._idleCheckInterval = (setInterval(

@@ -17,11 +17,10 @@ import {
   // @ts-ignore
 } from 'monaco-editor/esm/vs/basic-languages/graphql/graphql.js';
 
-
-import { LanguageServiceAPI } from './api';
+import { MonacoGraphQLAPI } from './api';
 import * as languageFeatures from './languageFeatures';
 
-export function setupMode(defaults: LanguageServiceAPI): IDisposable {
+export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
   const client = new WorkerManager(defaults);

@@ -7,12 +7,14 @@
 
 import * as mode from './graphqlMode';
 import {
-  LanguageServiceAPI,
+  MonacoGraphQLAPI,
   schemaDefault,
   formattingDefaults,
   modeConfigurationDefault,
+  SchemaEntry,
 } from './api';
 
+export { MonacoGraphQLAPI, modeConfigurationDefault, SchemaEntry };
 import * as monaco from 'monaco-editor';
 import { SchemaConfig } from 'graphql-language-service';
 
@@ -25,8 +27,12 @@ monaco.languages.register({
   mimetypes: ['application/graphql', 'text/graphql'],
 });
 
-export async function init({ schemaConfig }: { schemaConfig: SchemaConfig }) {
-  const api = new LanguageServiceAPI({
+export async function initialize({
+  schemaConfig,
+}: {
+  schemaConfig: SchemaConfig;
+}) {
+  const api = new MonacoGraphQLAPI({
     languageId: LANGUAGE_ID,
     schemaConfig: schemaConfig || schemaDefault,
     formattingOptions: formattingDefaults,
@@ -34,7 +40,6 @@ export async function init({ schemaConfig }: { schemaConfig: SchemaConfig }) {
   });
   const graphqlMode = await getMode();
   graphqlMode.setupMode(api);
-
   return api;
 }
 function getMode(): Promise<typeof mode> {

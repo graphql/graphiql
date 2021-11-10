@@ -26,7 +26,7 @@ import {
   printSchema,
 } from 'graphql';
 
-export type LanguageServiceAPIOptions = {
+export type MonacoGraphQLAPIOptions = {
   languageId: string;
   schemaConfig: SchemaConfig;
   modeConfiguration: ModeConfiguration;
@@ -38,9 +38,9 @@ export type SchemaEntry = {
   schemaString: string;
 };
 
-export class LanguageServiceAPI {
-  private _onDidChange = new Emitter<LanguageServiceAPI>();
-  private _onSchemaLoaded = new Emitter<LanguageServiceAPI>();
+export class MonacoGraphQLAPI {
+  private _onDidChange = new Emitter<MonacoGraphQLAPI>();
+  private _onSchemaLoaded = new Emitter<MonacoGraphQLAPI>();
   private _schemaCache: Map<string, SchemaEntry>;
   private _schemaConfig: SchemaConfig = {};
   private _formattingOptions!: FormattingOptions;
@@ -62,7 +62,7 @@ export class LanguageServiceAPI {
     schemaConfig,
     modeConfiguration,
     formattingOptions,
-  }: LanguageServiceAPIOptions) {
+  }: MonacoGraphQLAPIOptions) {
     this._worker = null;
     this._workerPromise = new Promise(resolve => {
       this._resolveWorkerPromise = resolve;
@@ -77,10 +77,10 @@ export class LanguageServiceAPI {
     this._langService = new LanguageService(this.getSchemaConfig());
     this._schemaCache = new Map();
   }
-  public get onDidChange(): IEvent<LanguageServiceAPI> {
+  public get onDidChange(): IEvent<MonacoGraphQLAPI> {
     return this._onDidChange.event;
   }
-  public get onSchemaLoaded(): IEvent<LanguageServiceAPI> {
+  public get onSchemaLoaded(): IEvent<MonacoGraphQLAPI> {
     return this._onSchemaLoaded.event;
   }
   public get langService(): LanguageService | null {

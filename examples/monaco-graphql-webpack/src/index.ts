@@ -1,7 +1,8 @@
 /* global netlify */
 
 import * as monaco from 'monaco-editor';
-import { init } from 'monaco-graphql';
+import { initialize } from 'monaco-graphql';
+import type { MonacoGraphQLAPI } from 'monaco-graphql';
 
 // NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
@@ -11,8 +12,6 @@ import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worke
 import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
 // @ts-ignore
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
-
-import { LanguageServiceAPI } from 'monaco-graphql/src/api';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
 
@@ -65,7 +64,7 @@ const THEME = 'vs-dark';
  * load local schema by default
  */
 (async () => {
-  const GraphQLAPI = await init({
+  const api = await initialize({
     schemaConfig: {
       uri: SCHEMA_URL,
       requestOpts: {
@@ -75,10 +74,10 @@ const THEME = 'vs-dark';
       },
     },
   });
-  await render(GraphQLAPI);
+  await render(api);
 })();
 
-async function render(GraphQLAPI: LanguageServiceAPI) {
+async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
   const toolbar = document.getElementById('toolbar');
   if (!isLoggedIn && !API_TOKEN) {
     const githubButton = document.createElement('button');
@@ -99,7 +98,7 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
             isLoggedIn = true;
             API_TOKEN = data.token;
             localStorage.setItem('ghapi', data.token);
-            await render(GraphQLAPI);
+            await render(monacoGraphQLAPI);
           }
         },
       );
@@ -108,12 +107,34 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
     return;
   } else {
     if (toolbar) {
+      const schemaPicker = document.createElement('select');
+
+      const schemaOptions = [
+        { value: SCHEMA_URL, label: 'Github API', default: true },
+        {
+          value: 'https://api.spacex.land/graphql/',
+          label: 'SpaceX GraphQL API',
+        },
+      ];
+      schemaOptions.forEach(option => {
+        const optEl = document.createElement('option');
+        optEl.value = option.value;
+        optEl.label = option.label;
+        if (option.default) {
+          schemaPicker.value = option.value;
+        }
+        optEl.onclick = _event => {
+          monacoGraphQLAPI.setSchemaUri(option.value);
+        };
+        schemaPicker.appendChild(optEl);
+      });
+
       const schemaLoader = document.createElement('span');
       const getLoaderHTML = (message: string) =>
         `<small style="color: #eee; margin-right: 4px;">${message}</small>`;
       schemaLoader.innerHTML = getLoaderHTML('Schema Loading...');
 
-      GraphQLAPI.onSchemaLoaded(() => {
+      monacoGraphQLAPI.onSchemaLoaded(() => {
         schemaLoader.innerHTML = getLoaderHTML('Schema Loaded.');
       });
 
@@ -125,6 +146,7 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
       button.onclick = () => executeCurrentOp();
       button.ontouchend = () => executeCurrentOp();
       toolbar.innerHTML = '';
+      toolbar.appendChild(schemaPicker);
       toolbar.appendChild(schemaLoader);
       toolbar?.appendChild(button);
     }
@@ -188,7 +210,7 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
    */
 
   async function updateVariables() {
-    const jsonSchema = await GraphQLAPI.getVariablesJSONSchema(
+    const jsonSchema = await monacoGraphQLAPI.getVariablesJSONSchema(
       operationModel.getValue(),
     );
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -214,7 +236,7 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
    * Configure monaco-graphql formatting operations
    */
 
-  GraphQLAPI.setFormattingOptions({
+  monacoGraphQLAPI.setFormattingOptions({
     prettierConfig: {
       printWidth: 120,
     },
@@ -234,14 +256,17 @@ async function render(GraphQLAPI: LanguageServiceAPI) {
       if (parsedVariables && Object.keys(parsedVariables).length) {
         body.variables = variables;
       }
-      const result = await fetch(GraphQLAPI.schemaConfig.uri || SCHEMA_URL, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          Authorization: `Bearer ${API_TOKEN}`,
+      const result = await fetch(
+        monacoGraphQLAPI.schemaConfig.uri || SCHEMA_URL,
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${API_TOKEN}`,
+          },
+          body: JSON.stringify(body),
         },
-        body: JSON.stringify(body),
-      });
+      );
 
       const resultText = await result.text();
       resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));

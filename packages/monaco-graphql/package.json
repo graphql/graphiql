@@ -16,6 +16,10 @@
       "url": "https://github.com/acao"
     }
   ],
+  "repository": {
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/monaco-graphql"
+  },
   "files": [
     "dist",
     "esm",

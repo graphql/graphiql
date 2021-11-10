@@ -25,7 +25,7 @@ It provides the following features while editing GraphQL files:
 
 ## Usage
 
-For now, we use `language` id of `graphqlDev` until we can ensure we can dovetail nicely with the official `graphql` language ID.
+For now, we use `language` id of `graphql` until we can ensure we can dovetail nicely with the official `graphql` language ID.
 
 To use with webpack, here is an example to get you started:
 
@@ -36,14 +36,29 @@ yarn add monaco-graphql
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { api as GraphQLAPI } from 'monaco-graphql/esm/monaco.contribution';
+import { initialize } from 'monaco-graphql/esm/monaco.contribution';
 
 import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
+// if you're very modern
+const MonacoGraphQLAPI = await initialize({
+  schemaConfig: { uri: 'https://localhost:1234/graphql' },
+})(
+  // or
+
+  async () => {
+    const MonacoGraphQLAPI = await initialize({
+      schemaConfig: { uri: 'https://localhost:1234/graphql' },
+    });
+
+    const schema = await MonacoGraphQLAPI.getSchema();
+  },
+)();
+
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphqlDev') {
+    if (label === 'graphql') {
       return new GraphQLWorker();
     }
     return new EditorWorker();
@@ -51,18 +66,103 @@ window.MonacoEnvironment = {
 };
 monaco.editor.create(document.getElementById('someElementId'), {
   value: 'query { }',
-  language: 'graphqlDev',
+  language: 'graphql',
   formatOnPaste: true,
 });
-
-GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 ```
 
 This will cover the basics, making an HTTP POST with the default `introspectionQuery()` operation. To customize the entire fetcher, see [advanced customization]() below. For more customization options, see the [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 
 ## Advanced Usage
 
-### `GraphQLAPI` ([typedoc](https://graphiql-test.netlify.app/typedoc/classes/monaco_graphql.languageserviceapi.html))
+### Variables JSON Support!
+
+In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrive a `JSONSchema` description for the declared variables for any given set of operations
+
+```ts
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
+import { initialize } from 'monaco-graphql/esm/monaco.contribution';
+
+import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
+import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+
+window.MonacoEnvironment = {
+  getWorker(_workerId: string, label: string) {
+    if (label === 'graphql') {
+      return new GraphQLWorker();
+    }
+    return new EditorWorker();
+  },
+};
+
+const operationEditor = monaco.editor.create(
+  document.getElementById('someElementId'),
+  {
+    value: 'query { }',
+    language: 'graphql',
+    formatOnPaste: true,
+  },
+);
+
+// not sure if we actually need this but it's in other real-world examples of `monaco.languages.json.jsonDefaultssetDiagnosticOptions()`
+const variablesSchemaUri = monaco.editor.URI.file('/variables-schema.json');
+
+// this makes it easier to operate directly on the model itself
+const variablesModel = monaco.editor.createModel(
+  '{}',
+  'json',
+  '/variables.json',
+);
+
+const variablesEditor = monaco.editor.create(
+  document.getElementById('someElementId'),
+  {
+    model: variablesModel,
+    language: 'graphql',
+    formatOnPaste: true,
+  },
+);
+
+(async () => {
+  const MonacoGraphQLAPI = await initialize({
+    schemaConfig: { uri: 'https://localhost:1234/graphql' },
+  });
+  async function updateVariables() {
+    const jsonSchema = await GraphQLAPI.getVariablesJSONSchema(
+      operationModel.getValue(),
+    );
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemaValidation: 'error', // you can set this to a warning if you want
+      schemas: [
+        {
+          // you may find that one of `uri` or `fileMatch` isn't necessary here if you only have one json editor instance
+          uri: variablesSchemaUri.toString(),
+          fileMatch: [variablesModel.uri.toString()],
+          schema: jsonSchema,
+        },
+      ],
+    });
+  }
+
+  // when the schema changes, we should restart the variable language service
+  MonacoGraphQLAPI.onSchemaLoaded(async () => {
+    await updateVariables();
+  });
+
+  // when the operation changes, we should update the variable language service
+  operationEditor.onDidChangeModelContent(async _event => {
+    await updateVariables();
+  });
+})();
+```
+
+You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish syntax, for `tsconfig.json` etc) and the 3rd party `monaco-yaml` language modes for completion of other types of variable input. you can also experiment with editor methods to parse detected input into different formats, etc (`yaml` pastes as `json`, etc)
+
+You could of course prefer to generate a `jsonschema` form for variables input using a framework of your choice, instead of an editor. Enjoy!
+
+### `MonacoGraphQLAPI` ([typedoc](https://graphiql-test.netlify.app/typedoc/classes/monaco_graphql.monacoMonacoGraphQLAPI.html))
 
 If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
 
@@ -73,25 +173,33 @@ verbs prefixes for methods are meaningful:
 - `set...` means to force re-write the whole settings entry for that method
 - `update...` means a shallow merge of the object/value you pass with the rest of the existing settings
 
-#### `GraphQLAPI.updateSchemaConfig()`
+#### `MonacoGraphQLAPI.onSchemaLoaded()`
+
+is an event emitter for when a schema is loaded and available for language features, etc. webworkers are not created until this event has occurred either.
+
+this is a great callback for any additional schema driven behavior you might want to add!
+
+#### 1
+
+#### `MonacoGraphQLAPI.updateSchemaConfig()`
 
 set schema `uri` (required) as well as `requestOptions`, `buildSchemaConfig` and `introspectionOptions`, with a shallow merge.
 invoking these will cause the webworker to reload language services
 
 ```ts
-GraphQLAPI.updateSchemaConfig({
+MonacoGraphQLAPI.updateSchemaConfig({
   requestOptions: {
     headers: { Authorization: 'Bear Auth 2134' },
   },
 });
 ```
 
-#### `GraphQLAPI.setSchemaConfig()`
+#### `MonacoGraphQLAPI.setSchemaConfig()`
 
 same as the above, except it overwrites the entire schema config
 
 ```ts
-GraphQLAPI.setSchemaConfig({
+MonacoGraphQLAPI.setSchemaConfig({
   uri: 'https://my/schema',
   requestOptions: {
     headers: { Authorization: 'Bear Auth 2134' },
@@ -99,29 +207,29 @@ GraphQLAPI.setSchemaConfig({
 });
 ```
 
-#### `GraphQLAPI.setSchemaUri()`
+#### `MonacoGraphQLAPI.setSchemaUri()`
 
 You can also just change the schema uri directly!
 
 ```ts
-GraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
+MonacoGraphQLAPI.setSchemaUri('https://localhost:1234/graphql');
 ```
 
-#### `GraphQLAPI.setSchema()`
+#### `MonacoGraphQLAPI.setSchema()`
 
 With either a [`RawSchema`](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#rawschema-2) - an SDL string or an `introspectionQuery` JSON, set the schema directly, bypassing the schema fetcher.
 We can't use a programattic `GraphQLSchema` instance, since this needs to be used by the webworker.
 
 ```ts
-GraphQLAPI.setSchema(rawSchema);
+MonacoGraphQLAPI.setSchema(rawSchema);
 ```
 
-#### `GraphQLAPI.setModeConfiguration()`
+#### `MonacoGraphQLAPI.setModeConfiguration()`
 
 This is where you can toggle monaco language features. all are enabled by default.
 
 ```ts
-GraphQLAPI.setModeConfiguration({
+MonacoGraphQLAPI.setModeConfiguration({
   documentFormattingEdits: true,
   completionItems: true,
   hovers: true,
@@ -130,7 +238,7 @@ GraphQLAPI.setModeConfiguration({
 });
 ```
 
-#### `GraphQLAPI.setFormattingOptions()`
+#### `MonacoGraphQLAPI.setFormattingOptions()`
 
 this accepts an object `{ prettierConfig: prettier.Options }`, which accepts [any prettier option](https://prettier.io/docs/en/options.html).
 it will not re-load the schema or language features, however the new prettier options will take effect.
@@ -138,23 +246,23 @@ it will not re-load the schema or language features, however the new prettier op
 this method overwrites the previous configuration, and will only accept static values that can be passed between the main/worker process boundary.
 
 ```ts
-GraphQLAPI.setFormattingOptions({
+MonacoGraphQLAPI.setFormattingOptions({
   // if you wanna be like that
   prettierOptions: { tabWidth: 2, useTabs: true },
 });
 ```
 
-#### `GraphQLAPI.setExternalFragmentDefintions()`
+#### `MonacoGraphQLAPI.setExternalFragmentDefintions()`
 
 Append external fragments to be used by autocomplete and other language features.
 
 This accepts either a string that contains fragment definitions, or `TypeDefinitionNode[]`
 
-#### `GraphQLAPI.getSchema()`
+#### `MonacoGraphQLAPI.getSchema()`
 
 Returns either an AST `DocumentNode` or `IntrospectionQuery` result json using default or provided `schemaLoader`
 
-### `GraphQLAPI.parse()`
+### `MonacoGraphQLAPI.parse()`
 
 parse graphql from string using webworkers (less render-blocking/multi-threaded CPU/etc)
 
@@ -210,7 +318,7 @@ import GraphQLWorker from 'worker-loader!./mygraphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
-    if (label === 'graphqlDev') {
+    if (label === 'graphql') {
       return new GraphQLWorker();
     }
     return new EditorWorker();
@@ -232,8 +340,9 @@ If you are familiar with Codemirror/Atom-era terminology and features, here's so
 
 ## TODO
 
-- [ ] variables JSON validation
-- [ ] variables completion
+- [x] variables JSON validation
+- [x] variables completion
 - [ ] Symbols & Definitions
-- [ ] file uri-driven config/schema
-- [ ] schema <-> operation references
+- [x] file uri-driven schema loading
+- [ ] op -> schema & schema -> schema references
+- [ ] `additionalInsertText` for field and argument completion

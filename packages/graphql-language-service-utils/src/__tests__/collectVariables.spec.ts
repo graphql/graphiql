@@ -10,13 +10,22 @@ import {
   GraphQLFloat,
   GraphQLID,
   GraphQLInt,
-  GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
   parse,
+  GraphQLEnumType,
+  GraphQLObjectType,
 } from 'graphql';
 
-import { collectVariables } from '../getQueryFacts';
+import { collectVariables } from '../collectVariables';
+
+const TestEnum = new GraphQLEnumType({
+  name: 'ExampleEnum',
+  values: {
+    a: { value: 'a' },
+    b: { value: 'b' },
+  },
+});
 
 describe('collectVariables', () => {
   const TestType = new GraphQLObjectType({
@@ -27,6 +36,7 @@ describe('collectVariables', () => {
       int: { type: GraphQLInt },
       float: { type: GraphQLFloat },
       boolean: { type: GraphQLBoolean },
+      enum: { type: TestEnum },
     },
   });
 
@@ -56,12 +66,15 @@ describe('collectVariables', () => {
       TestSchema,
       parse(`
       query A($foo: Int, $bar: String) { id }
-      query B($foo: Int, $baz: Float) { id }
+      query B($foo: Int, $baz: Float) { id },
+      query B($foo: Int, $baz: Float, $bae: ExampleEnum) { id }
     `),
     );
-    expect(Object.keys(variableToType)).toEqual(['foo', 'bar', 'baz']);
+    expect(Object.keys(variableToType)).toEqual(['foo', 'bar', 'baz', 'bae']);
     expect(variableToType.foo).toEqual(GraphQLInt);
     expect(variableToType.bar).toEqual(GraphQLString);
     expect(variableToType.baz).toEqual(GraphQLFloat);
+    expect(variableToType.baz).toEqual(GraphQLFloat);
+    expect(variableToType.bae).toEqual(TestEnum);
   });
 });

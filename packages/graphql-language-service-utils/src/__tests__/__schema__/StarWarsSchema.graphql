@@ -35,6 +35,10 @@ type Droid implements Character {
   primaryFunction: String
 }
 
+"""
+example input type
+"""
+
 input InputType {
   key: String!
   value: Int = 42

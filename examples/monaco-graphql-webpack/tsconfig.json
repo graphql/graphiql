@@ -9,7 +9,7 @@
     "strictPropertyInitialization": false,
     "types": ["node", "jest"],
     "typeRoots": ["../../node_modules/@types", "node_modules/@types"],
-    "lib": ["dom"]
+    "lib": ["dom", "ESNext"]
   },
   "references": [{ "path": "../../packages/monaco-graphql" }],
   "include": ["src"],

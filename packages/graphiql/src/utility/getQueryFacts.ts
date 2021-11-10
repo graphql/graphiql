@@ -4,5 +4,5 @@ export {
   collectVariables,
   QueryFacts,
   OperationFacts,
-  VariableToType
+  VariableToType,
 } from 'graphql-language-service';
