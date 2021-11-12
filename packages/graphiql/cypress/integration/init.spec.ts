@@ -48,10 +48,7 @@ describe('GraphiQL On Initialization', () => {
     cy.visit(`/?bad=true`);
     cy.assertResult({
       errors: [
-        {
-          message:
-            'Names must only contain [_a-zA-Z0-9] but "<img src=x onerror=alert(document.domain)>" does not.',
-        },
+        'Names must only contain [_a-zA-Z0-9] but "<img src=x onerror=alert(document.domain)>" does not.',
       ],
     });
   });

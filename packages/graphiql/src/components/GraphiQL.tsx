@@ -24,11 +24,11 @@ import {
   FragmentDefinitionNode,
   DocumentNode,
   GraphQLError,
-  formatError as formatGraphQLError,
   GraphQLFormattedError,
+  IntrospectionQuery,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
-import { getFragmentDependenciesForAST } from 'graphql-language-service-utils';
+import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -185,7 +185,7 @@ const handleSingleError = (
   error: InputError,
 ): GraphQLFormattedError | Error | string => {
   if (error instanceof GraphQLError) {
-    return formatGraphQLError(error);
+    return error.toString();
   }
   if (error instanceof Error) {
     return formatSingleError(error);
@@ -938,9 +938,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           return;
         }
 
-        if (typeof result !== 'string' && 'data' in result) {
+        if (result && result.data && '__schema' in result?.data) {
           let schema: GraphQLSchema | undefined = buildClientSchema(
-            result.data,
+            result.data as IntrospectionQuery,
           );
           if (!this.props.dangerouslyAssumeSchemaIsValid) {
             const errors = validateSchema(schema);

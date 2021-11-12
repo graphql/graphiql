@@ -28,9 +28,6 @@
     },
     {
       "path": "../graphql-language-service"
-    },
-    {
-      "path": "../graphql-language-service-interface"
     }
   ]
 }

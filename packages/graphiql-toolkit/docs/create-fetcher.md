@@ -41,7 +41,17 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
 
-#### Adding Websockets
+#### Adding `graphql-ws` websockets subscriptions
+
+first you'll need to install `graphql-ws` as a peer dependency:
+
+```bash
+npm install --save graphql-ws
+```
+
+```bash
+yarn add graphql-ws
+```
 
 Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws` client. This client now supports both HTTP/Multipart Incremental Delivery for `@defer` and `@stream`, _and_ websockets subscriptions
 
