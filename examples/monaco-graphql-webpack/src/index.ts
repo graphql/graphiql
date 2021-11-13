@@ -206,7 +206,7 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
     },
   );
   /**
-   * API Usage!!
+   * API Usage!! - JSON Variables Language Support!
    */
 
   async function updateVariables() {
@@ -226,10 +226,13 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
     });
   }
 
-  await updateVariables();
-
-  operationEditor.onDidChangeModelContent(async _event => {
+  // wait until the schema is loaded to load json completion
+  monacoGraphQLAPI.onSchemaLoaded(async () => {
     await updateVariables();
+
+    operationEditor.onDidChangeModelContent(async _event => {
+      await updateVariables();
+    });
   });
 
   /**
