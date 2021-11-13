@@ -1,7 +1,11 @@
 import { DocumentNode, visit, GraphQLError } from 'graphql';
 import { meros } from 'meros';
-import { createClient, Client, ClientOptions } from 'graphql-ws';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+import {
+  createClient,
+  Client,
+  ClientOptions,
+  ExecutionResult,
+} from 'graphql-ws';
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,
@@ -9,10 +13,9 @@ import {
 
 import type {
   Fetcher,
-  FetcherResult,
   FetcherParams,
   FetcherOpts,
-  FetcherResultPayload,
+  ExecutionResultPayload,
   CreateFetcherOptions,
 } from './types';
 
@@ -93,7 +96,7 @@ export const createWebsocketsFetcherFromUrl = (
 export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
 ) =>
-  makeAsyncIterableIteratorFromSink<FetcherResult>(sink =>
+  makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
     wsClient!.subscribe(graphQLParams, {
       ...sink,
       error: err => {
@@ -116,11 +119,18 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
     }),
   );
 
-export const createLegacyWebsocketsFetcher = (
-  legacyWsClient: SubscriptionClient,
-) => (graphQLParams: FetcherParams) => {
+/**
+ * Allow legacy websockets protocol client, but no definitions for it,
+ * as the library is deprecated and has security issues
+ *
+ * @param legacyWsClient
+ * @returns
+ */
+export const createLegacyWebsocketsFetcher = (legacyWsClient: {
+  request: (params: FetcherParams) => unknown;
+}) => (graphQLParams: FetcherParams) => {
   const observable = legacyWsClient.request(graphQLParams);
-  return makeAsyncIterableIteratorFromSink<FetcherResult>(
+  return makeAsyncIterableIteratorFromSink<ExecutionResult>(
     // @ts-ignore
     sink => observable.subscribe(sink).unsubscribe,
   );
@@ -149,7 +159,7 @@ export const createMultipartFetcher = (
         ...fetcherOpts?.headers,
       },
     }).then(response =>
-      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response, {
+      meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(response, {
         multiple: true,
       }),
     );
@@ -181,13 +191,14 @@ export const getWsFetcher = (options: CreateFetcherOptions) => {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
-  if (options.legacyClient) {
-    return createLegacyWebsocketsFetcher(options.legacyClient);
-  }
   if (options.subscriptionUrl) {
     return createWebsocketsFetcherFromUrl(
       options.subscriptionUrl,
       options.wsConnectionParams,
     );
+  }
+  const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
+  if (legacyWebsocketsClient) {
+    return createLegacyWebsocketsFetcher(legacyWebsocketsClient);
   }
 };

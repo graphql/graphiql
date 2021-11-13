@@ -1,5 +1,16 @@
 # graphql-language-service-utils
 
+## 2.6.0
+
+### Minor Changes
+
+- [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce) [#2013](https://github.com/graphql/graphiql/pull/2013) Thanks [@PabloSzx](https://github.com/PabloSzx)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`
+
+### Patch Changes
+
+- Updated dependencies [[`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce)]:
+  - graphql-language-service-types@1.8.3
+
 ## 2.5.3
 
 ### Patch Changes

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { editor as monacoEditor } from 'monaco-editor/esm/vs/editor/editor.api';
+import { editor as monacoEditor } from 'monaco-editor';
 import { LanguageServiceAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
 
@@ -68,7 +68,7 @@ export class WorkerManager {
     if (!this._client) {
       this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
         // module that exports the create() method and returns a `GraphQLWorker` instance
-        moduleId: 'vs/language/graphql/graphqlWorker',
+        moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
 
         label: this._defaults.languageId,
         // passed in to the create() method
@@ -86,7 +86,7 @@ export class WorkerManager {
       try {
         this._client = await this._worker.getProxy();
       } catch (error) {
-        throw Error('Error loading serviceworker proxy');
+        // throw Error(error);
       }
     }
     return this._client as GraphQLWorker;

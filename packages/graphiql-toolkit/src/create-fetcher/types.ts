@@ -1,6 +1,5 @@
 import type { DocumentNode, IntrospectionQuery } from 'graphql';
-import type { Client, ClientOptions } from 'graphql-ws';
-import type { SubscriptionClient } from 'subscriptions-transport-ws';
+import type { Client, ClientOptions, ExecutionResult } from 'graphql-ws';
 
 export type Observable<T> = {
   subscribe(opts: {
@@ -37,7 +36,7 @@ export type FetcherOpts = {
   documentAST?: DocumentNode;
 };
 
-export type FetcherResultPayload =
+export type ExecutionResultPayload =
   | {
       data: IntrospectionQuery;
       errors?: Array<any>;
@@ -54,23 +53,25 @@ export type FetcherResultPayload =
       hasNext: boolean;
     };
 
-export type FetcherResult = FetcherResultPayload | string;
+export type FetcherResultPayload = ExecutionResultPayload;
 
 export type MaybePromise<T> = T | Promise<T>;
 
-export type SyncFetcherResult =
-  | FetcherResult
-  | Observable<FetcherResult>
-  | AsyncIterable<FetcherResult>;
+export type FetcherResult = ExecutionResult | { data: IntrospectionQuery };
 
-export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
+export type SyncExecutionResult =
+  | ExecutionResult
+  | Observable<ExecutionResult>
+  | AsyncIterable<ExecutionResult>;
+
+export type SyncFetcherResult = SyncExecutionResult;
+
+export type FetcherReturnType = MaybePromise<SyncExecutionResult>;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
   opts?: FetcherOpts,
 ) => FetcherReturnType;
-
-export type WebsocketsClient = Client | SubscriptionClient;
 
 /**
  * Options for creating a simple, spec-compliant GraphiQL fetcher
@@ -90,10 +91,14 @@ export interface CreateFetcherOptions {
    */
   wsClient?: Client;
   /**
-   * `legacyClient` implementation that matches `subscriptions-transport-ws` signature,
+   * `legacyWsClient` implementation that matches `subscriptions-transport-ws` signature,
    * whether via `new SubcriptionsClient()` itself or another client with a similar signature.
    */
-  legacyClient?: SubscriptionClient;
+  legacyWsClient?: any;
+  /**
+   * alias for `legacyWsClient`
+   */
+  legacyClient?: any;
   /**
    * Headers you can provide statically.
    *

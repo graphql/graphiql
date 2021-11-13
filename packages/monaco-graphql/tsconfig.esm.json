@@ -1,7 +1,7 @@
 {
   "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
-    "module": "amd",
+    "module": "ESNext",
     "moduleResolution": "node",
     "baseUrl": ".",
     "rootDir": "./src",

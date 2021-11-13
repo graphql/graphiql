@@ -1,5 +1,88 @@
 # Change Log
 
+## 1.5.1
+
+### Patch Changes
+
+- [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce) [#2013](https://github.com/graphql/graphiql/pull/2013) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Update utils
+
+- Updated dependencies [[`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce)]:
+  - graphql-language-service@3.2.1
+
+## 1.5.0
+
+### Minor Changes
+
+- [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a) [#2010](https://github.com/graphql/graphiql/pull/2010) Thanks [@acao](https://github.com/acao)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
+
+### Patch Changes
+
+- Updated dependencies [[`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a)]:
+  - codemirror-graphql@1.1.0
+  - @graphiql/toolkit@0.4.0
+  - graphql-language-service@3.2.0
+
+## 1.4.8
+
+### Patch Changes
+
+- [`e63696de`](https://github.com/graphql/graphiql/commit/e63696de57a85c34d937bfb53345e2e0d0b874a4) [#2005](https://github.com/graphql/graphiql/pull/2005) Thanks [@acao](https://github.com/acao)! - Correct the npm readme security fix version number and links, thanks [@glasser](https://github.com/glasser) & [@dotansimha](https://github.com/dotansimha)!
+
+## 1.4.7
+
+### Patch Changes
+
+- [`130ddad6`](https://github.com/graphql/graphiql/commit/130ddad6d0394356ec32070a6fee1840450a4660) Thanks [@acao](https://github.com/acao)! - **CRITICAL SECURITY PATCH** for the [GraphiQL introspection schema template injection attack](https://github.com/graphql/graphiql/security/advisories/GHSA-x4r7-m2q9-69c8)
+
+## 1.4.6
+
+### Patch Changes
+
+- [`d3a88283`](https://github.com/graphql/graphiql/commit/d3a88283c7b618376ad4a06c7db20e60b066d1a0) [#1934](https://github.com/graphql/graphiql/pull/1934) Thanks [@tonyfromundefined](https://github.com/tonyfromundefined)! - add react 17, 18 in peerDependencies
+
+* [`afaa36c1`](https://github.com/graphql/graphiql/commit/afaa36c198648e84f305986a0b1dfefa97e70221) [#1883](https://github.com/graphql/graphiql/pull/1883) Thanks [@Sweetabix1](https://github.com/Sweetabix1)! - Updating font colors for line numbers, comments & brackets from #999 to #666 for accessibility purposes. #666 passes AA accessibility standards for small text, with a contrast ratio of over 5:1.
+
+- [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8) [#1777](https://github.com/graphql/graphiql/pull/1777) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - adopt block string parsing for variables in language parser
+
+- Updated dependencies [[`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb), [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8)]:
+  - graphql-language-service@3.1.6
+  - codemirror-graphql@1.0.3
+
+## 1.4.5
+
+### Patch Changes
+
+- [`86795d5f`](https://github.com/graphql/graphiql/commit/86795d5ffa2d3e6c8aee74f761d02f054b428d46) Thanks [@acao](https://github.com/acao)! - Remove bad type definition from `subscriptions-transport-ws` #1992 closes #1989
+
+- Updated dependencies [[`86795d5f`](https://github.com/graphql/graphiql/commit/86795d5ffa2d3e6c8aee74f761d02f054b428d46)]:
+  - @graphiql/toolkit@0.3.2
+
+## 1.4.4
+
+### Patch Changes
+
+- [`62e786b5`](https://github.com/graphql/graphiql/commit/62e786b57cc5748eccac59814dfc8ecd0104c748) [#1990](https://github.com/graphql/graphiql/pull/1990) Thanks [@acao](https://github.com/acao)! - Remove type definition from `subscriptions-transport-ws`
+
+- Updated dependencies [[`62e786b5`](https://github.com/graphql/graphiql/commit/62e786b57cc5748eccac59814dfc8ecd0104c748)]:
+  - @graphiql/toolkit@0.3.1
+
+## 1.4.3
+
+### Patch Changes
+
+- [`6a459f4c`](https://github.com/graphql/graphiql/commit/6a459f4c235bb0d70725ae6ad7fc1cfa34f49dca) [#1968](https://github.com/graphql/graphiql/pull/1968) Thanks [@acao](https://github.com/acao)! - Remove `optionalDependencies` entirely, remove `subscriptions-transport-ws` which introduces vulnerabilities, upgrade `@n1ru4l/push-pull-async-iterable-iterator` to 3.0.0, upgrade `graphql-ws` several minor versions - the `graphql-ws@5.x` upgrade will come in a later minor release.
+
+* [`eb2d91fa`](https://github.com/graphql/graphiql/commit/eb2d91fa8e4a03cb5663f27f724db2c95989a40f) [#1914](https://github.com/graphql/graphiql/pull/1914) Thanks [@harshithpabbati](https://github.com/harshithpabbati)! - fix: history can now be saved even when query history panel is not opened
+  feat: create a new maxHistoryLength prop to allow more than 20 queries in history panel
+
+- [`04fad79c`](https://github.com/graphql/graphiql/commit/04fad79c094318d4b4c9e0250c5cff55d9fc5116) [#1889](https://github.com/graphql/graphiql/pull/1889) Thanks [@henryqdineen](https://github.com/henryqdineen)! - feat: export ToolbarSelectOption and ToolbarMenuItem
+
+* [`cd685435`](https://github.com/graphql/graphiql/commit/cd6854352ac6beff57af76db7de38e8157ff13aa) [#1923](https://github.com/graphql/graphiql/pull/1923) Thanks [@cgarnier](https://github.com/cgarnier)! - Fix result window theme
+
+* Updated dependencies [[`6a459f4c`](https://github.com/graphql/graphiql/commit/6a459f4c235bb0d70725ae6ad7fc1cfa34f49dca), [`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb)]:
+  - @graphiql/toolkit@0.3.0
+  - graphql-language-service@3.1.5
+
 ## 1.4.2
 
 ### Patch Changes

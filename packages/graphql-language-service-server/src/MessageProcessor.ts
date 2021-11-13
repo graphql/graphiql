@@ -293,7 +293,7 @@ export class MessageProcessor {
           const results = await this._languageService.getDiagnostics(
             query,
             uri,
-            this._isRelayCompatMode(query) ? false : true,
+            this._isRelayCompatMode(query),
           );
           if (results && results.length > 0) {
             diagnostics.push(
@@ -365,7 +365,11 @@ export class MessageProcessor {
     const diagnostics: Diagnostic[] = [];
     await Promise.all(
       contents.map(async ({ query, range }) => {
-        const results = await this._languageService.getDiagnostics(query, uri);
+        const results = await this._languageService.getDiagnostics(
+          query,
+          uri,
+          this._isRelayCompatMode(query),
+        );
         if (results && results.length > 0) {
           diagnostics.push(...processDiagnosticsMessage(results, query, range));
         }
@@ -564,11 +568,12 @@ export class MessageProcessor {
           throw Error('No cache available for handleWatchedFilesChanged');
         }
         // update when graphql config changes!
-        if (
-          ['graphql.config', 'graphqlrc', this._settings.load.fileName].some(
-            v => change.uri.match(v)?.length,
-          )
-        ) {
+        const configMatchers = [
+          'graphql.config',
+          'graphqlrc',
+          this._settings.load.fileName,
+        ].filter(Boolean);
+        if (configMatchers.some(v => change.uri.match(v)?.length)) {
           this._logger.info('updating graphql config');
           this._updateGraphQLConfig();
         }
@@ -591,6 +596,7 @@ export class MessageProcessor {
                 const results = await this._languageService.getDiagnostics(
                   query,
                   uri,
+                  this._isRelayCompatMode(query),
                 );
                 if (results && results.length > 0) {
                   return processDiagnosticsMessage(results, query, range);
@@ -682,17 +688,11 @@ export class MessageProcessor {
 
     const inlineFragments: string[] = [];
 
-    visit(
-      parse(query, {
-        allowLegacySDLEmptyFields: true,
-        allowLegacySDLImplementsInterfaces: true,
-      }),
-      {
-        FragmentDefinition: (node: FragmentDefinitionNode) => {
-          inlineFragments.push(node.name.value);
-        },
+    visit(parse(query), {
+      FragmentDefinition: (node: FragmentDefinitionNode) => {
+        inlineFragments.push(node.name.value);
       },
-    );
+    });
 
     const formatted = result
       ? result.definitions.map(res => {
@@ -905,9 +905,7 @@ export class MessageProcessor {
     try {
       const schema = await this._graphQLCache.getSchema(project.name);
       if (schema) {
-        let schemaText = printSchema(schema, {
-          commentDescriptions: true,
-        });
+        let schemaText = printSchema(schema);
         // file:// protocol path
         const uri = this._getTmpProjectPath(
           project,

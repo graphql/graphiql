@@ -17,6 +17,7 @@ import {
   GraphQLOutputType,
   GraphQLType,
   SelectionSetNode,
+  Kind,
 } from 'graphql';
 
 import { Maybe } from '../components/GraphiQL';
@@ -153,14 +154,14 @@ function buildSelectionSet(
 
   // Build a selection set of each field, calling buildSelectionSet recursively.
   return {
-    kind: 'SelectionSet',
+    kind: Kind.SELECTION_SET,
     selections: fieldNames.map(fieldName => {
       const fieldDef = namedType.getFields()[fieldName];
       const fieldType = fieldDef ? fieldDef.type : null;
       return {
-        kind: 'Field',
+        kind: Kind.FIELD,
         name: {
-          kind: 'Name',
+          kind: Kind.NAME,
           value: fieldName,
         },
         // we can use as here, because we already know that fieldType

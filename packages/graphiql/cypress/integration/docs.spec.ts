@@ -22,7 +22,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Searches docs for values', () => {
     cy.get('label.search-box input').type('test');
-    cy.get('.doc-category-item').should('have.length', 8);
+    cy.get('.doc-category-item').should('have.length', 7);
   });
 
   it('Navigates to a docs entry on selecting a search result', () => {
@@ -50,17 +50,15 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Type fields link to their own docs entry', () => {
-    cy.get('label.search-box input').type('test');
-    cy.pause();
     cy.get('.doc-search-items>.doc-category-item')
       .last()
       .find('a:nth-child(2)')
       .click();
-    cy.pause();
-    cy.get('.doc-explorer-title').should('have.text', 'subscribeToTest');
+
+    cy.get('.doc-explorer-title').should('have.text', 'isTest');
     cy.get('.doc-type-description').should(
       'have.text',
-      'Subscribe to the test type\n',
+      'Is this a test schema? Sure it is.\n',
     );
   });
 

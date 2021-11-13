@@ -52,6 +52,7 @@ export type State = {
   needsSeperator: boolean;
   needsAdvance?: boolean;
   indentLevel?: number;
+  inBlockstring?: boolean;
 };
 
 export const AdditionalRuleKinds: _AdditionalRuleKinds = {

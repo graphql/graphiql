@@ -35,6 +35,7 @@ import CharacterStream from './CharacterStream';
 import { State, Token, Rule, RuleKind } from './types';
 
 import { LexRules, ParseRules, isIgnored } from './Rules';
+import { Kind } from 'graphql';
 
 export type ParserOptions = {
   eatWhitespace: (stream: CharacterStream) => boolean;
@@ -67,7 +68,7 @@ export default function onlineParser(
         prevState: null,
       };
 
-      pushRule(options.parseRules, initialState, 'Document');
+      pushRule(options.parseRules, initialState, Kind.DOCUMENT);
       return initialState;
     },
     token(stream: CharacterStream, state: State) {
@@ -81,6 +82,16 @@ function getToken(
   state: State,
   options: ParserOptions,
 ): string {
+  if (state.inBlockstring) {
+    if (stream.match(/.*"""/)) {
+      state.inBlockstring = false;
+      return 'string';
+    } else {
+      stream.skipToEnd();
+      return 'string';
+    }
+  }
+
   const { lexRules, parseRules, eatWhitespace, editorConfig } = options;
   // Restore state after an empty-rule.
   if (state.rule && state.rule.length === 0) {

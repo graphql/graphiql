@@ -5,14 +5,14 @@
   "license": "MIT",
   "description": "A GraphiQL example with webpack and typescript",
   "scripts": {
-    "build-demo": "webpack-cli && yarn copy-demo",
-    "copy-demo": "mkdirp ../../packages/graphiql/webpack && copy 'dist/*' '../../packages/graphiql/webpack'",
+    "build-demo": "webpack-cli",
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
-    "graphql": "experimental-stream-defer",
-    "react": "16.13.1"
+    "@graphiql/toolkit": "file:../../packages/graphiql-toolkit",
+    "graphql": "16.0.0-experimental-stream-defer.5",
+    "react": "17.0.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",

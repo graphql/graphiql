@@ -1,8 +1,8 @@
 # GraphiQL
 
-> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 2.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
+> **Security Notice:** All versions of `graphiql` < `1.4.3` are vulnerable to an XSS attack in cases where the GraphQL server to which the GraphiQL web app connects is not trusted. Learn more in [our security advisory](https://github.com/graphql/graphiql/tree/main/docs/security/2021-introspection-schema-xss.md).
 
-> **[`graphiql@1.0.0`](https://github.com/graphql/graphiql/milestone/3)** is coming soon & will provide a stable release with react 16, graphql 15 support, fixes, and a headers tab
+> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones for GraphiQL 2.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
 > **[`graphiql@2.0.0-beta`](https://github.com/graphql/graphiql/issues/983)** is a much larger ongoing effort that introduces plugins, i18n, and so many more features after a substantial rewrite using modern react.
 
@@ -13,7 +13,7 @@
 ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
 ![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 [![License](https://img.shields.io/npm/l/graphiql.svg?style=flat-square)](LICENSE)
-
+[Discord Channel](https://discord.gg/NP5vbPeUFp)
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql).
 
 [![](https://raw.githubusercontent.com/graphql/graphiql/master/packages/graphiql/resources/graphiql.jpg)](http://graphql.org/swapi-graphql)
@@ -82,7 +82,7 @@ Build for the web with [webpack](https://webpack.js.org/) or [browserify](http:/
 
 ### Usage: NPM module
 
-**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. f you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
 
 Using another GraphQL service? Here's how to get GraphiQL set up:
 
@@ -90,7 +90,7 @@ GraphiQL provides a React component responsible for rendering the UI, which shou
 
 For HTTP transport implementations, we recommend using the [fetch](https://fetch.spec.whatwg.org/) standard API, but you can use anything that matches [the type signature](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher), including async iterables and observables.
 
-You can also install `@graphiql/create-fetcher` to make it easier to create a simple fetcher for conventional http and websockets transports.
+You can also install `@graphiql/create-fetcher` to make it easier to create a simple fetcher for conventional http and websockets transports. It uses `graphql-ws@4.x` protocol by default.
 
 ```js
 import React from 'react';
@@ -109,7 +109,7 @@ ReactDOM.render(
 );
 ```
 
-Read more about using [`createGraphiQLFetcher`](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) in the readme to learn how to add headers and more.
+[Read more about using `createGraphiQLFetcher` in the readme](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) to learn how to add headers, support the legacy `subsriptions-transport-ws` protocol, and more.
 
 ### Usage: UMD Bundle over CDN (Unpkg, JSDelivr, etc)
 
@@ -142,7 +142,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
     ></script>
 
     <script>
-      const fetcher = GraphiQL.createFetcher('https://my/graphql');
+      const fetcher = GraphiQL.createFetcher({ url: 'https://my/graphql' });
 
       ReactDOM.render(
         React.createElement(GraphiQL, { fetcher: fetcher }),
@@ -189,33 +189,35 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 For more details on props, see the [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops)
 
-| Prop                         | Type                                                                                                  | Description                                                                                                                                                                                     |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fetcher`                    | [`Fetcher function`](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher) | **Required.** a function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable which resolves to the GraphQL parsed JSON response.                           |  |
-| `schema`                     | [`GraphQLSchema`](https://graphql.org/graphql-js/type/#graphqlschema)                                 | a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.                       |
-| `query`                      | `string` (GraphQL)                                                                                    | initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used. You can also set this value at runtime to override the current operation editor state.    |
-| `validationRules`            | `ValidationRule[]`                                                                                    | A array of validation rules that will be used for validating the GraphQL operations. If `undefined` is provided, the default rules (exported as `specifiedRules` from `graphql`) will be used.  |
-| `variables`                  | `string` (JSON)                                                                                       | initial displayed query variables, if `undefined` is provided, the stored variables will be used.                                                                                               |
-| `headers`                    | `string`                                                                                              | initial displayed request headers. if not defined, it will default to the stored headers if `shouldPersistHeaders` is enabled.                                                                  |
-| `externalFragments`          | `string \| FragmentDefinitionNode[]`                                                                  | provide fragments external to the operation for completion, validation, and for selective use when executing operations.                                                                        |
-| `operationName`              | `string`                                                                                              | an optional name of which GraphQL operation should be executed.                                                                                                                                 |
-| `response`                   | `string` (JSON)                                                                                       | an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query. |
-| `storage`                    | [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html)               | **Default:** `window.localStorage`. an interface that matches `window.localStorage` signature that GraphiQL will use to persist state.                                                          |
-| `defaultQuery`               | `string`                                                                                              | **Default:** graphiql help text. Provides default query if no user state is present.                                                                                                            | default graphiql help text |
-| `defaultVariableEditorOpen`  | `boolean`                                                                                             | sets whether or not to show the variables pane on startup. overridden by user state (**deprecated** in favor of `defaultSecondaryEditorOpen`)                                                   |
-| `defaultSecondaryEditorOpen` | `boolean`                                                                                             | sets whether or not to show the variables/headers pane on startup. If not defined, it will be based off whether or not variables and/or headers are present.                                    |
-| `getDefaultFieldNames`       | `Function`                                                                                            | **Default:** `defaultGetDefaultFieldNames`. provides default field values for incomplete queries                                                                                                | `defaultGetDefaultFieldNames` |
-| `editorTheme`                | `string`                                                                                              | **Default:** `graphiql`. names a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. See below for full usage.                                          |
-| `readOnly`                   | `boolean`                                                                                             | when `true` will make the `QueryEditor` and `Variables` panes readOnly.                                                                                                                         |
-| `docExplorerOpen`            | `boolean`                                                                                             | when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. Overridden by user's toggle state                                                       |
-| `headerEditorEnabled`        | `boolean`                                                                                             | **Default:** `false`. enables the header editor when `true`.                                                                                                                                    |
-| `shouldPersistHeaders`       | `boolean`                                                                                             | **Default:** `false`. o persist headers to storage when `true`                                                                                                                                  |
-| `toolbar.additionalContent`  | `React.Component[]`                                                                                   | pass additional toolbar react components inside a fragment                                                                                                                                      | `null` |
-| `onEditQuery`                | `Function`                                                                                            | called when the Query editor changes. The argument to the function will be the query string.                                                                                                    |
-| `onEditVariables`            | `Function`                                                                                            | called when the Query variable editor changes. The argument to the function will be the variables string.                                                                                       |
-| `onEditHeaders`              | `Function`                                                                                            | called when the request headers editor changes. The argument to the function will be the headers string.                                                                                        |
-| `onEditOperationName`        | `Function`                                                                                            | called when the operation name to be executed changes.                                                                                                                                          |
-| `onToggleDocs`               | `Function`                                                                                            | called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.                                                                   |
+| Prop                             | Type                                                                                                  | Description                                                                                                                                                                                     |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fetcher`                        | [`Fetcher function`](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher) | **Required.** a function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable which resolves to the GraphQL parsed JSON response.                           |  |
+| `schema`                         | [`GraphQLSchema`](https://graphql.org/graphql-js/type/#graphqlschema)                                 | a GraphQLSchema instance or `null` if one is not to be used. If `undefined` is provided, GraphiQL will send an introspection query using the fetcher to produce a schema.                       |
+| `query`                          | `string` (GraphQL)                                                                                    | initial displayed query, if `undefined` is provided, the stored query or `defaultQuery` will be used. You can also set this value at runtime to override the current operation editor state.    |
+| `validationRules`                | `ValidationRule[]`                                                                                    | A array of validation rules that will be used for validating the GraphQL operations. If `undefined` is provided, the default rules (exported as `specifiedRules` from `graphql`) will be used.  |
+| `variables`                      | `string` (JSON)                                                                                       | initial displayed query variables, if `undefined` is provided, the stored variables will be used.                                                                                               |
+| `headers`                        | `string`                                                                                              | initial displayed request headers. if not defined, it will default to the stored headers if `shouldPersistHeaders` is enabled.                                                                  |
+| `externalFragments`              | `string \| FragmentDefinitionNode[]`                                                                  | provide fragments external to the operation for completion, validation, and for selective use when executing operations.                                                                        |
+| `operationName`                  | `string`                                                                                              | an optional name of which GraphQL operation should be executed.                                                                                                                                 |
+| `response`                       | `string` (JSON)                                                                                       | an optional JSON string to use as the initial displayed response. If not provided, no response will be initially shown. You might provide this if illustrating the result of the initial query. |
+| `storage`                        | [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html)               | **Default:** `window.localStorage`. an interface that matches `window.localStorage` signature that GraphiQL will use to persist state.                                                          |
+| `defaultQuery`                   | `string`                                                                                              | **Default:** graphiql help text. Provides default query if no user state is present.                                                                                                            | default graphiql help text |
+| `defaultVariableEditorOpen`      | `boolean`                                                                                             | sets whether or not to show the variables pane on startup. overridden by user state (**deprecated** in favor of `defaultSecondaryEditorOpen`)                                                   |
+| `defaultSecondaryEditorOpen`     | `boolean`                                                                                             | sets whether or not to show the variables/headers pane on startup. If not defined, it will be based off whether or not variables and/or headers are present.                                    |
+| `getDefaultFieldNames`           | `Function`                                                                                            | **Default:** `defaultGetDefaultFieldNames`. provides default field values for incomplete queries                                                                                                | `defaultGetDefaultFieldNames` |
+| `editorTheme`                    | `string`                                                                                              | **Default:** `graphiql`. names a CodeMirror theme to be applied to the `QueryEditor`, `ResultViewer`, and `Variables` panes. See below for full usage.                                          |
+| `readOnly`                       | `boolean`                                                                                             | when `true` will make the `QueryEditor` and `Variables` panes readOnly.                                                                                                                         |
+| `dangerouslyAssumeSchemaIsValid` | `boolean`                                                                                             | **Default:** `false`. When true, don't check that the loaded schema is valid; this can make the app vulnerable to XSS attacks and is not recommended.                                           |
+| `docExplorerOpen`                | `boolean`                                                                                             | when `true` will ensure the `DocExplorer` is open by default when the user first renders the component. Overridden by user's toggle state                                                       |
+| `headerEditorEnabled`            | `boolean`                                                                                             | **Default:** `true`. enables the header editor when `true`.                                                                                                                                     |
+| `shouldPersistHeaders`           | `boolean`                                                                                             | **Default:** `false`. o persist headers to storage when `true`                                                                                                                                  |
+| `toolbar.additionalContent`      | `React.Component[]`                                                                                   | pass additional toolbar react components inside a fragment                                                                                                                                      | `null` |
+| `onEditQuery`                    | `Function`                                                                                            | called when the Query editor changes. The argument to the function will be the query string.                                                                                                    |
+| `onEditVariables`                | `Function`                                                                                            | called when the Query variable editor changes. The argument to the function will be the variables string.                                                                                       |
+| `onEditHeaders`                  | `Function`                                                                                            | called when the request headers editor changes. The argument to the function will be the headers string.                                                                                        |
+| `onEditOperationName`            | `Function`                                                                                            | called when the operation name to be executed changes.                                                                                                                                          |
+| `onToggleDocs`                   | `Function`                                                                                            | called when the docs will be toggled. The argument to the function will be a boolean whether the docs are now open or closed.                                                                   |
+| `maxHistoryLength`               | `number`                                                                                              | **Default:** 20. allows you to increase the number of queries in the history component                                                                                                          | 20 |
 
 ### Children (this pattern will be dropped in 2.0.0)
 
@@ -258,5 +260,3 @@ In order to theme the editor portions of the interface, you can supply a `editor
   editorTheme="solarized light"
 />
 ```
-
-### Running Operations

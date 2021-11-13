@@ -91,8 +91,19 @@ function updateURL() {
   history.replaceState(null, null, newSearch);
 }
 
-const isDev = window.location.hostname.match(/localhost$/);
-const api = isDev ? '/graphql' : '/.netlify/functions/schema-demo';
+function getSchemaUrl() {
+  const isDev = window.location.hostname.match(/localhost$/);
+
+  if (isDev) {
+    // This supports an e2e test which ensures that invalid schemas do not load.
+    if (parameters.bad && parameters.bad === 'true') {
+      return '/bad/graphql';
+    } else {
+      return '/graphql';
+    }
+  }
+  return '/.netlify/functions/schema-demo';
+}
 
 // Render <GraphiQL /> into the body.
 // See the README in the top level of this module to learn more about
@@ -100,7 +111,10 @@ const api = isDev ? '/graphql' : '/.netlify/functions/schema-demo';
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
-    fetcher: GraphiQL.createFetcher({ url: api }),
+    fetcher: GraphiQL.createFetcher({
+      url: getSchemaUrl(),
+      subscriptionUrl: 'ws://localhost:8081/subscriptions',
+    }),
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,

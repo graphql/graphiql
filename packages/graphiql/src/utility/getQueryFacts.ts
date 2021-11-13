@@ -43,7 +43,7 @@ export default function getOperationFacts(
   let documentAST: DocumentNode;
   try {
     documentAST = parse(documentStr, {
-      experimentalFragmentVariables: true,
+      allowLegacyFragmentVariables: true,
     });
   } catch {
     return;

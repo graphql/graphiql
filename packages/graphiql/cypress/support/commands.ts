@@ -19,7 +19,8 @@ declare namespace Cypress {
   type MockResult =
     | { data: any }
     | { data: any; hasNext?: boolean }
-    | { error: any[] };
+    | { error: any[] }
+    | { errors: any[] };
   interface Chainable<Subject = any> {
     /**
      * Custom command to select DOM element by data-cy attribute.
@@ -31,6 +32,7 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
+    assertResult(result: MockResult): Chainable<Element>;
     assertQueryResult(
       op: Op,
       expectedResult: MockResult,
@@ -89,5 +91,14 @@ Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
     // @ts-ignore
     const value = w.g.resultComponent.viewer.getValue();
     expect(value).to.deep.equal(JSON.stringify(mockSuccess, null, 2));
+  });
+});
+
+Cypress.Commands.add('assertResult', (expectedResult, timeout = 200) => {
+  cy.wait(timeout);
+  cy.window().then(w => {
+    // @ts-ignore
+    const value = w.g.resultComponent.viewer.getValue();
+    expect(value).to.deep.equal(JSON.stringify(expectedResult, null, 2));
   });
 });

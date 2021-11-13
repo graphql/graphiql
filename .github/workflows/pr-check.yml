@@ -6,7 +6,7 @@ on:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
 
   build:
     name: Typescript Build
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

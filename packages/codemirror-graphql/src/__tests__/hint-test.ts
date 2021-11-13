@@ -137,13 +137,13 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
       {
         text: '__schema',
-        type: GraphQLNonNull(__Schema),
+        type: new GraphQLNonNull(__Schema),
         description: 'Access the current type schema of this server.',
         isDeprecated: false,
       },
@@ -209,7 +209,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -619,7 +619,7 @@ describe('graphql-hint', () => {
       {
         text: '__Type',
         description:
-          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
+          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
       },
       {
         text: '__Field',
@@ -855,7 +855,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -887,7 +887,7 @@ describe('graphql-hint', () => {
       },
       {
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
       },
@@ -1111,7 +1111,7 @@ describe('graphql-hint', () => {
         description: 'The name of the current Object type at runtime.',
         isDeprecated: false,
         text: '__typename',
-        type: GraphQLNonNull(GraphQLString),
+        type: new GraphQLNonNull(GraphQLString),
         deprecationReason: undefined,
       },
     ];

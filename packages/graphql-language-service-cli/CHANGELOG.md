@@ -1,5 +1,40 @@
 # graphql-language-service-cli
 
+## 3.2.1
+
+### Patch Changes
+
+- [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce) [#2013](https://github.com/graphql/graphiql/pull/2013) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Update utils
+
+- Updated dependencies [[`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce), [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce)]:
+  - graphql-language-service-utils@2.6.0
+  - graphql-language-service@3.2.1
+  - graphql-language-service-server@2.7.1
+
+## 3.2.0
+
+### Minor Changes
+
+- [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a) [#2010](https://github.com/graphql/graphiql/pull/2010) Thanks [@acao](https://github.com/acao)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
+
+### Patch Changes
+
+- Updated dependencies [[`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a)]:
+  - graphql-language-service-server@2.7.0
+  - graphql-language-service@3.2.0
+
+## 3.1.14
+
+### Patch Changes
+
+- [`83c4a007`](https://github.com/graphql/graphiql/commit/83c4a0070a4df704ce874ec977d65ca6c7e43ee8) [#1964](https://github.com/graphql/graphiql/pull/1964) Thanks [@patrickszmucer](https://github.com/patrickszmucer)! - Fix unknown fragment errors on save
+
+* [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8) [#1777](https://github.com/graphql/graphiql/pull/1777) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - adopt block string parsing for variables in language parser
+
+* Updated dependencies [[`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb), [`83c4a007`](https://github.com/graphql/graphiql/commit/83c4a0070a4df704ce874ec977d65ca6c7e43ee8), [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8)]:
+  - graphql-language-service@3.1.6
+  - graphql-language-service-server@2.6.5
+
 ## 3.1.13
 
 ### Patch Changes

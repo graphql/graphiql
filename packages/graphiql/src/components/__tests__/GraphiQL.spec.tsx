@@ -175,6 +175,21 @@ describe('GraphiQL', () => {
     expect(container.querySelector('.historyPaneWrap')).not.toBeInTheDocument();
   });
 
+  it('will save history item even when history panel is closed', () => {
+    const { getByTitle, container } = render(
+      <GraphiQL
+        query={mockQuery1}
+        variables={mockVariables1}
+        headers={mockHeaders1}
+        operationName={mockOperationName1}
+        fetcher={noOpFetcher}
+      />,
+    );
+    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(getByTitle('Show History'));
+    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+  });
+
   it('adds a history item when the execute query function button is clicked', () => {
     const { getByTitle, container } = render(
       <GraphiQL

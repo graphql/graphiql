@@ -8,28 +8,17 @@ This working group is focused on usage of the entire monorepo - GraphiQL and plu
 
 ## Monthly Working Group Meeting
 
-> **Second Tuesday of Every month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NHN2YjJwcGc5bGxvb3MycW1xbXA1aTU3bzRfMjAyMDA0MTRUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
+> **Second Tuesday of Every month at 16GMT/12EST** [(GraphQL Foundation Google Calendar)](https://calendar.google.com/calendar/embed?src=linuxfoundation.org_ik79t9uuj2p32i3r203dgv5mo8@group.calendar.google.com)
 
 These are monthly sessions designed to work similarly to the official `graphql/graphql-wg` working group. The goal is decision making, setting specifications and navigating feature proposals for our shared graphql web and desktop IDE experiences as a community.
 
 Many of the underlying packages used for graphql web/desktop IDE tooling are in this very monorepo!
 
-In the [`'agendas'`]('/agendas') directory you can introduce PRs to add yourself as an atendee to each agenda, and optionally add an agenda item or two.
-
-## Rotating Working Sessions/Office Hours
-
-> **First and third saturday of the month at 16GMT/12EST** [(Google Calendar Event)](https://calendar.google.com/event?action=TEMPLATE&tmeid=NXYxZnEzdHBvcHNqaTNrZHA5cm1obmFldm1fMjAyMDA0MThUMTYwMDAwWiByaWtraS5zY2h1bHRlQG0&tmsrc=rikki.schulte%40gmail.com&scp=ALL)
-
-For now just twice a month on saturdays, we will have a group working session where we collaborate on API and feature proposals, demonstrate contributions to the monorepo we're working on, improve documentation, or even pair on actual PRs whilst sharing the session on the zoom link.
-
-It will be informal, with no set agenda, and no official decisions made about the spec (though we may collaborate on proposals brought to the monthly meeting above).
-
-As far as office hours, during these sessions @acao and others can field support and setup issues for all users of all skills as we always do.
-It might be a good time to get discussions going that can be turned into discussion Issues, Feature/Plugin Proposals, RFCs, etc.
+In the [`'agendas'`](/working-group/agendas) directory you can introduce PRs to add yourself as an atendee to each agenda, and optionally add an agenda item or two.
 
 ## Get Involved
 
-You can also find us on [discord](https://discord.gg/8J65QW), in github via issues or PRs!
+You can also find us on [discord](https://discord.gg/NP5vbPeUFp), in github via issues or PRs!
 
 See the Community section at the bottom of [the root level readme](../README.md) for more information.
 

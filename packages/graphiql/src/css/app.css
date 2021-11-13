@@ -213,7 +213,7 @@
 }
 
 /* No `.graphiql-container` here so themes can overwrite */
-.result-window .CodeMirror {
+.result-window .CodeMirror.cm-s-graphiql {
   background: #f6f7f8;
 }
 
@@ -525,7 +525,7 @@ div.CodeMirror-lint-tooltip > * + * {
 
 /* Comment */
 .cm-comment {
-  color: #999;
+  color: #666;
 }
 
 /* Punctuation */

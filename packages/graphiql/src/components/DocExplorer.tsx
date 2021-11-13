@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { GraphQLSchema, isType, GraphQLNamedType } from 'graphql';
+import { GraphQLSchema, isType, GraphQLNamedType, GraphQLError } from 'graphql';
 import { FieldType } from './DocExplorer/types';
 
 import FieldDoc from './DocExplorer/FieldDoc';
@@ -29,6 +29,7 @@ const initialNav: NavStackItem = {
 
 type DocExplorerProps = {
   schema?: GraphQLSchema | null;
+  schemaErrors?: readonly GraphQLError[];
 };
 
 type DocExplorerState = {
@@ -68,17 +69,22 @@ export class DocExplorer extends React.Component<
   ) {
     return (
       this.props.schema !== nextProps.schema ||
-      this.state.navStack !== nextState.navStack
+      this.state.navStack !== nextState.navStack ||
+      this.props.schemaErrors !== nextProps.schemaErrors
     );
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema, schemaErrors } = this.props;
     const navStack = this.state.navStack;
     const navItem = navStack[navStack.length - 1];
 
     let content;
-    if (schema === undefined) {
+    if (schemaErrors) {
+      content = (
+        <div className="error-container">{'Error fetching schema'}</div>
+      );
+    } else if (schema === undefined) {
       // Schema is undefined when it is being loaded via introspection.
       content = (
         <div className="spinner-container">

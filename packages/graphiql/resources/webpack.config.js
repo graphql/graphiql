@@ -29,6 +29,7 @@ const resultConfig = {
     // these to 127.0.0.1 in /etc/hosts
     allowedHosts: ['local.example.com', 'graphiql.com'],
     before: require('../test/beforeDevServer'),
+    after: require('../test/afterDevServer'),
   },
   devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
   node: {

@@ -1,5 +1,45 @@
 # graphql-language-service
 
+## 3.2.1
+
+### Patch Changes
+
+- [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce) [#2013](https://github.com/graphql/graphiql/pull/2013) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Update utils
+
+- Updated dependencies [[`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce), [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce), [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce)]:
+  - graphql-language-service-utils@2.6.0
+  - graphql-language-service-types@1.8.3
+  - graphql-language-service-interface@2.9.1
+
+## 3.2.0
+
+### Minor Changes
+
+- [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a) [#2010](https://github.com/graphql/graphiql/pull/2010) Thanks [@acao](https://github.com/acao)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
+
+### Patch Changes
+
+- Updated dependencies [[`8869c4b1`](https://github.com/graphql/graphiql/commit/8869c4b18c900b9b35556255587ef5130a96a4d5), [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a)]:
+  - graphql-language-service-interface@2.9.0
+  - graphql-language-service-parser@1.10.0
+
+## 3.1.6
+
+### Patch Changes
+
+- [`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb) [#1979](https://github.com/graphql/graphiql/pull/1979) Thanks [@iahu](https://github.com/iahu)! - fix: export `monaco-graphql` esm with esm modules, also fix issues with worker manager, resolves #1706 & #1791
+
+* [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8) [#1777](https://github.com/graphql/graphiql/pull/1777) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - adopt block string parsing for variables in language parser
+
+* Updated dependencies [[`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8)]:
+  - graphql-language-service-parser@1.9.3
+
+## 3.1.5
+
+### Patch Changes
+
+- [`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb) [#1941](https://github.com/graphql/graphiql/pull/1941) Thanks [@arcanis](https://github.com/arcanis)! - Adds support for `#graphql` and `/* GraphQL */` in the language server
+
 ## 3.1.4
 
 ### Patch Changes

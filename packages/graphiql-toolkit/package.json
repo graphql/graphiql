@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "0.2.2",
+  "version": "0.4.0",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
@@ -20,20 +20,18 @@
   "typings": "dist/index.d.ts",
   "scripts": {},
   "dependencies": {
-    "@n1ru4l/push-pull-async-iterable-iterator": "^2.1.4",
-    "graphql-ws": "^4.3.2",
+    "@n1ru4l/push-pull-async-iterable-iterator": "^3.1.0",
     "meros": "^1.1.4"
   },
   "devDependencies": {
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-experimental-stream-defer.5",
     "isomorphic-fetch": "^3.0.0",
-    "subscriptions-transport-ws": "^0.9.18"
-  },
-  "optionalDependencies": {
-    "subscriptions-transport-ws": "^0.9.18"
+    "subscriptions-transport-ws": "^0.9.19",
+    "graphql-ws": "^5.5.5"
   },
   "peerDependencies": {
-    "graphql": ">= v14.5.0 <= 15.5.0"
+    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5",
+    "graphql-ws": ">= 4.5.0"
   },
   "keywords": [
     "graphql",

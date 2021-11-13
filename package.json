@@ -6,7 +6,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/monaco-graphql-webpack"
+      "examples/*"
     ]
   },
   "lint-staged": {
@@ -35,7 +35,7 @@
     "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",
     "build:clean": "yarn tsc --clean",
     "build:watch": "yarn tsc --watch",
-    "check": "flow check --show-all-errors && yarn tsc --dry",
+    "check": "yarn tsc --dry",
     "cypress-open": "yarn workspace graphiql cypress-open",
     "dev-graphiql": "yarn workspace graphiql dev",
     "e2e": "yarn run e2e:build && yarn workspace graphiql e2e",
@@ -49,11 +49,12 @@
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "postpublish": "ts-node ./resources/publishCleanup.ts",
-    "prebuild-bundles": "yarn build && yarn build-bundles-clean",
+    "prebuild-bundles": "yarn build-bundles-clean",
     "prepublishOnly": "./resources/prepublish.sh",
     "pretty": "node resources/pretty.js",
     "pretty-check": "node resources/pretty.js --check",
     "release": "yarn build && yarn build-bundles && yarn changeset publish",
+    "release:canary": "(node scripts/canary-release.js && yarn build && yarn build-bundles && yarn changeset publish --tag canary) || echo Skipping Canary...",
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
     "start-graphiql": "yarn build:clean && npm-run-all -l -p build dev-graphiql",
@@ -72,7 +73,6 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.12.1",
-    "@babel/preset-flow": "7.9.0",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
     "@babel/register": "^7.9.0",
@@ -105,7 +105,6 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-cypress": "^2.10.3",
-    "eslint-plugin-flowtype": "4.7.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-prefer-object-spread": "1.2.1",
@@ -113,7 +112,6 @@
     "eslint-plugin-react-hooks": "^3.0.0",
     "express": "^4.17.1",
     "fetch-mock": "6.5.2",
-    "flow-bin": "^0.119.1",
     "husky": "^4.2.3",
     "jest": "^25.3.0",
     "jest-environment-jsdom": "^25.3.0",

@@ -1,5 +1,48 @@
 # Change Log
 
+## 0.6.1
+
+### Patch Changes
+
+- [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce) [#2013](https://github.com/graphql/graphiql/pull/2013) Thanks [@PabloSzx](https://github.com/PabloSzx)! - Update utils
+
+- Updated dependencies [[`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce), [`9a6ed03f`](https://github.com/graphql/graphiql/commit/9a6ed03fbe4de9652ff5d81a8f584234995dd2ce)]:
+  - graphql-language-service-utils@2.6.0
+  - graphql-language-service@3.2.1
+
+## 0.6.0
+
+### Minor Changes
+
+- [`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a) [#2010](https://github.com/graphql/graphiql/pull/2010) Thanks [@acao](https://github.com/acao)! - upgrade to `graphql@16.0.0-experimental-stream-defer.5`. thanks @saihaj!
+
+### Patch Changes
+
+- Updated dependencies [[`716cf786`](https://github.com/graphql/graphiql/commit/716cf786aea6af42ea637ca3c56ae6c6ebc17c7a)]:
+  - graphql-language-service@3.2.0
+
+## 0.5.1
+
+### Patch Changes
+
+- [`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb) [#1979](https://github.com/graphql/graphiql/pull/1979) Thanks [@iahu](https://github.com/iahu)! - fix: export `monaco-graphql` esm with esm modules, also fix issues with worker manager, resolves #1706 & #1791
+
+* [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8) [#1777](https://github.com/graphql/graphiql/pull/1777) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - adopt block string parsing for variables in language parser
+
+* Updated dependencies [[`0e2c1a02`](https://github.com/graphql/graphiql/commit/0e2c1a020cc2761155f7c9467d3ed4cb45941aeb), [`75dbb0b1`](https://github.com/graphql/graphiql/commit/75dbb0b18e2102d271a5cfe78faf54fe22e83ac8)]:
+  - graphql-language-service@3.1.6
+
+## 0.5.0
+
+### Minor Changes
+
+- [`fec37c6b`](https://github.com/graphql/graphiql/commit/fec37c6b2953e177bea99d4cbf993c9b253198ba) [#1952](https://github.com/graphql/graphiql/pull/1952) Thanks [@Nishchit14](https://github.com/Nishchit14)! - devDependancy and peerDependancy of monaco-graphql has been upgraded for monaco-editor. monaco-graphql is now supporting latest version of monaco-editor which is v0.27.0
+
+### Patch Changes
+
+- Updated dependencies [[`2fd5bf72`](https://github.com/graphql/graphiql/commit/2fd5bf7239edb78339e5ac7211f09c245e47c3bb)]:
+  - graphql-language-service@3.1.5
+
 ## 0.4.4
 
 ### Patch Changes

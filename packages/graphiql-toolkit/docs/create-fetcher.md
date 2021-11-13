@@ -1,8 +1,8 @@
 ## Create Fetcher
 
-a utility for generating a full-featured `fetcher` for GraphiQL including `@stream`, `@defer` `IncrementalDelivery`and `multipart`
+a utility for generating a full-featured `fetcher` for GraphiQL including `@stream`, `@defer` `IncrementalDelivery`and `multipart` and subscriptions using `graphql-ws` or the legacy websockets protocol
 
-under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws) and [`meros`](https://www.npmjs.com/package/meros) which act as client reference implementations of the [GraphQL over HTTP Working Group Spec](https://github.com/graphql/graphql-over-http) specification, and the most popular transport spec proposals
+under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws) client and [`meros`](https://www.npmjs.com/package/meros) which act as client reference implementations of the [GraphQL over HTTP Working Group Spec](https://github.com/graphql/graphql-over-http) specification, and the most popular transport spec proposals
 
 ### Setup
 
@@ -10,13 +10,9 @@ under the hood, it uses [`graphql-ws`](https://www.npmjs.com/package/graphql-ws)
 
 you'll need to install `@graphiql/toolkit`
 
-npm
-
 ```bash
 npm install --save @graphiql/toolkit
 ```
-
-yarn
 
 ```bash
 yarn add @graphiql/toolkit
@@ -26,9 +22,9 @@ yarn add @graphiql/toolkit
 
 We have a few flexible options to get you started with the client. It's meant to cover the majority of common use cases with a simple encapsulation.
 
-#### HTTP/Multipart Usage
+#### Default HTTP/Multipart IncrementalDelivery Usage
 
-Here's a simple example. In this case, a websocket client isn't even initialized, only http (with multipart `@stream` and `@defer` support of course!).
+Here's a simple example. In this case, a websocket client isn't even initialized, only http (with multipart `@stream` and `@defer` Incremental Delivery support of course!).
 
 ```ts
 import * as React from 'react';
@@ -45,9 +41,19 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
 
-#### HTTP/Multipart & Websockets
+#### Adding `graphql-ws` websockets subscriptions
 
-Just by providing the `subscriptionUrl`, you can generate a `graphql-ws` client
+first you'll need to install `graphql-ws` as a peer dependency:
+
+```bash
+npm install --save graphql-ws
+```
+
+```bash
+yarn add graphql-ws
+```
+
+Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws` client. This client now supports both HTTP/Multipart Incremental Delivery for `@defer` and `@stream`, _and_ websockets subscriptions
 
 ```ts
 import * as React from 'react';
@@ -69,7 +75,7 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
 
-You can further customize the `wsClient` implementation below
+You can further customize the `graphql-ws` implementation by creating a custom client instance and providing it as the `wsClient` parameter
 
 ### Options
 
@@ -85,9 +91,9 @@ This generates a `graphql-ws` client using the provided url. Note that a server 
 
 provide your own subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `graphql-ws` `Client` signature.
 
-#### `legacyClient`
+#### `legacyWsClient` or `legacyClient`
 
-provide a legacy subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `subscriptions-transport-ws` `Client` signature.
+provide a legacy subscriptions client using `subscriptions-transport-ws` protocol. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `subscriptions-transport-ws` `Client` signature.
 
 #### `headers`
 
@@ -99,7 +105,7 @@ Pass a custom fetch implementation such as `isomorphic-feth`
 
 ### Customization Examples
 
-#### Custom `wsClient` Example
+#### Custom `wsClient` Example using `graphql-ws`
 
 Just by providing the `wsClient`
 
@@ -129,6 +135,8 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 
 #### Custom `legacyClient` Example
 
+(not reccomended)
+
 By providing the `legacyClient` you can support a `subscriptions-transport-ws` client implementation, or equivalent
 
 ```ts
@@ -144,13 +152,25 @@ const subscriptionUrl = 'wss://myschema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,
-  legacyClient: new SubscriptionsClient(subscriptionUrl),
+  legacyWsClient: new SubscriptionsClient(subscriptionUrl),
 });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;
 
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
+
+you will need to install the client seperately:
+
+```bash
+yarn add subscriptions-transport-ws
+```
+
+```bash
+npm install --save subscriptions-transport-ws
+```
+
+and instantiate a client instance following their readme, and pass it as `legacyWsClient`.
 
 #### Custom `fetcher` Example
 

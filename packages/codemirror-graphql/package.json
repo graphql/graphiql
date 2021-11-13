@@ -1,6 +1,6 @@
 {
   "name": "codemirror-graphql",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "GraphQL mode and helpers for CodeMirror.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -39,17 +39,17 @@
     "postbuild": "node ../../resources/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js"
   },
   "peerDependencies": {
-    "codemirror": "^5.54.0",
-    "graphql": ">= v14.5.0 <= 15.5.0"
+    "codemirror": "^5.58.2",
+    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.8.2",
-    "graphql-language-service-parser": "^1.9.0"
+    "graphql-language-service-interface": "^2.9.0",
+    "graphql-language-service-parser": "^1.10.0"
   },
   "devDependencies": {
-    "codemirror": "^5.54.0",
+    "codemirror": "^5.58.2",
     "cross-env": "^7.0.2",
-    "graphql": "experimental-stream-defer",
+    "graphql": "16.0.0-experimental-stream-defer.5",
     "jsdom": "^16.4.0",
     "rimraf": "^3.0.2",
     "sane": "2.0.0"

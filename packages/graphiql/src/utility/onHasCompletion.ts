@@ -12,6 +12,7 @@ import {
   GraphQLType,
   GraphQLField,
 } from 'graphql';
+import escapeHTML from 'escape-html';
 import MD from 'markdown-it';
 
 const md = new MD();
@@ -82,7 +83,7 @@ export default function onHasCompletion(
           : type + description) +
         '</div>';
 
-      if (ctx && deprecation && ctx.isDeprecated) {
+      if (ctx && deprecation && ctx.deprecationReason) {
         const reason = ctx.deprecationReason
           ? md.render(ctx.deprecationReason)
           : '';
@@ -108,5 +109,5 @@ function renderType(type: GraphQLType): string {
   if (type instanceof GraphQLList) {
     return `[${renderType(type.ofType)}]`;
   }
-  return `<a class="typeName">${type.name}</a>`;
+  return `<a class="typeName">${escapeHTML(type.name)}</a>`;
 }
