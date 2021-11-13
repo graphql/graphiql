@@ -35,9 +35,10 @@ jobs:
           enable-commit-comment: true
           overwrites-pull-request-comment: true
           functions-dir: functions
-          github-deployment-environment: "graphiql-1"
+          github-deployment-environment: "graphiql-cdn-preview"
+          fails-without-credentials: true
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
         timeout-minutes: 1
   # monaco-graphql deploy preview
@@ -60,14 +61,15 @@ jobs:
       - name: Deploy Monaco GraphQL Example to Netlify
         uses: nwtgck/actions-netlify@v1.2
         with:
-          publish-dir: './examples/monaco-graphql-webpack/bundle'
+          publish-dir: './examples/monaco-graphql-webpack/dist'
           production-branch: main
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Monaco GraphQL Preview"
-          functions-dir: functions
-          github-deployment-environment: "monaco-graphql"
+          deploy-message: "Monaco GraphQL Webpack Preview"
+          github-deployment-environment: "monaco-graphql-webpack-preview"
+          github-deployment-description: "A vanilla js github explorer example of `monaco-graphql` using webpack"
+          fails-without-credentials: true
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
         timeout-minutes: 1
   # Test the webpack + typescript + react consuming build
@@ -84,10 +86,10 @@ jobs:
       - name: Build 
         run: yarn build & yarn build-bundles
 
-      - name: Build Webpack Example 
+      - name: Build GraphiQL Webpack Example 
         run: yarn workspace example-graphiql-webpack run build-demo
 
-      - name: Deploy Webpack Example to Netlify
+      - name: Deploy GraphiQL Webpack Example to Netlify
         uses: nwtgck/actions-netlify@v1.2
         with:
           publish-dir: './examples/graphiql-webpack/dist'
@@ -95,8 +97,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           deploy-message: "GraphiQL Webpack Example"
           functions-dir: functions
-          github-deployment-environment: "graphiql-webpack"
+          github-deployment-environment: "graphiql-webpack-preview"
+          fails-without-credentials: true
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: aabca80b-fe63-43df-83ef-e431876560c9
         timeout-minutes: 1

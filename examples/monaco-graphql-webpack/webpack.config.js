@@ -14,7 +14,7 @@ const resultConfig = {
   entry: './index.ts',
   context: rootPath('src'),
   output: {
-    path: rootPath('bundle'),
+    path: rootPath('dist'),
     filename: '[name].js',
     globalObject: 'self',
   },

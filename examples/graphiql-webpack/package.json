@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
+    "@graphiql/toolkit": "file:../../packages/graphiql-toolkit",
     "graphql": "16.0.0-experimental-stream-defer.5",
     "react": "17.0.2"
   },
