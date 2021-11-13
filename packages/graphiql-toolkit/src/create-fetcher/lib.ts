@@ -1,6 +1,11 @@
 import { DocumentNode, visit, GraphQLError } from 'graphql';
 import { meros } from 'meros';
-import { createClient, Client, ClientOptions } from 'graphql-ws';
+import {
+  createClient,
+  Client,
+  ClientOptions,
+  ExecutionResult,
+} from 'graphql-ws';
 import {
   isAsyncIterable,
   makeAsyncIterableIteratorFromSink,
@@ -8,10 +13,9 @@ import {
 
 import type {
   Fetcher,
-  FetcherResult,
   FetcherParams,
   FetcherOpts,
-  FetcherResultPayload,
+  ExecutionResultPayload,
   CreateFetcherOptions,
 } from './types';
 
@@ -92,7 +96,7 @@ export const createWebsocketsFetcherFromUrl = (
 export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
   graphQLParams: FetcherParams,
 ) =>
-  makeAsyncIterableIteratorFromSink<FetcherResult>(sink =>
+  makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
     wsClient!.subscribe(graphQLParams, {
       ...sink,
       error: err => {
@@ -126,7 +130,7 @@ export const createLegacyWebsocketsFetcher = (legacyWsClient: {
   request: (params: FetcherParams) => unknown;
 }) => (graphQLParams: FetcherParams) => {
   const observable = legacyWsClient.request(graphQLParams);
-  return makeAsyncIterableIteratorFromSink<FetcherResult>(
+  return makeAsyncIterableIteratorFromSink<ExecutionResult>(
     // @ts-ignore
     sink => observable.subscribe(sink).unsubscribe,
   );
@@ -155,7 +159,7 @@ export const createMultipartFetcher = (
         ...fetcherOpts?.headers,
       },
     }).then(response =>
-      meros<Extract<FetcherResultPayload, { hasNext: boolean }>>(response, {
+      meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(response, {
         multiple: true,
       }),
     );

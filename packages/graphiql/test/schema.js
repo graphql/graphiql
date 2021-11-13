@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -178,7 +179,6 @@ const Person = new GraphQLObjectType({
       },
       type: GraphQLInt,
       resolve: async function lazilyReturnValue(_value, args) {
-        const seconds = args.delay / 1000;
         await sleep(args.delay);
         return Math.ceil(args.delay);
       },
@@ -200,6 +200,7 @@ const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
 
 const TestType = new GraphQLObjectType({
   name: 'Test',
+  description: 'Test type for testing',
   fields: () => ({
     test: {
       type: TestType,
@@ -322,13 +323,21 @@ const TestMutationType = new GraphQLObjectType({
 const TestSubscriptionType = new GraphQLObjectType({
   name: 'SubscriptionType',
   description:
-    'This is a simple subscription type. Learn more at https://graphql.org/blog/subscriptions-in-graphql-and-relay/',
+    'This is a simple subscription type. Learn more at https://www.npmjs.com/package/graphql-ws',
   fields: {
-    subscribeToTest: {
-      type: TestType,
-      description: 'Subscribe to the test type',
+    message: {
+      type: GraphQLString,
+      description: 'Subscribe to a message',
       args: {
-        id: { type: GraphQLString },
+        delay: delayArgument(600),
+      },
+      async *subscribe(args) {
+        for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
+          if (args?.delay) {
+            await sleep(args.delay);
+          }
+          yield { message: hi };
+        }
       },
     },
   },

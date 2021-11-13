@@ -75,6 +75,7 @@
     "express-graphql": "experimental-stream-defer",
     "fork-ts-checker-webpack-plugin": "4.1.3",
     "graphql": "16.0.0-experimental-stream-defer.5",
+    "graphql-subscriptions": "^2.0.0",
     "html-webpack-plugin": "^4.2.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^25.3.0",
@@ -93,11 +94,13 @@
     "serve": "^11.3.0",
     "start-server-and-test": "^1.10.11",
     "style-loader": "^1.1.3",
+    "subscriptions-transport-ws": "0.11.0",
     "ts-loader": "^7.0.0",
     "typescript": "^4.1.3",
     "webpack": "4.42.1",
     "webpack-bundle-analyzer": "^3.6.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.10.3",
+    "ws": ""
   }
 }

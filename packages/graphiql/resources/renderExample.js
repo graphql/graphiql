@@ -111,7 +111,10 @@ function getSchemaUrl() {
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
-    fetcher: GraphiQL.createFetcher({ url: getSchemaUrl() }),
+    fetcher: GraphiQL.createFetcher({
+      url: getSchemaUrl(),
+      subscriptionUrl: 'ws://localhost:8081/subscriptions',
+    }),
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,

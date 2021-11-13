@@ -1,5 +1,5 @@
 import type { DocumentNode, IntrospectionQuery } from 'graphql';
-import type { Client, ClientOptions } from 'graphql-ws';
+import type { Client, ClientOptions, ExecutionResult } from 'graphql-ws';
 
 export type Observable<T> = {
   subscribe(opts: {
@@ -36,7 +36,7 @@ export type FetcherOpts = {
   documentAST?: DocumentNode;
 };
 
-export type FetcherResultPayload =
+export type ExecutionResultPayload =
   | {
       data: IntrospectionQuery;
       errors?: Array<any>;
@@ -53,16 +53,20 @@ export type FetcherResultPayload =
       hasNext: boolean;
     };
 
-export type FetcherResult = FetcherResultPayload | string;
+export type FetcherResultPayload = ExecutionResultPayload;
 
 export type MaybePromise<T> = T | Promise<T>;
 
-export type SyncFetcherResult =
-  | FetcherResult
-  | Observable<FetcherResult>
-  | AsyncIterable<FetcherResult>;
+export type FetcherResult = ExecutionResult | { data: IntrospectionQuery };
 
-export type FetcherReturnType = MaybePromise<SyncFetcherResult>;
+export type SyncExecutionResult =
+  | ExecutionResult
+  | Observable<ExecutionResult>
+  | AsyncIterable<ExecutionResult>;
+
+export type SyncFetcherResult = SyncExecutionResult;
+
+export type FetcherReturnType = MaybePromise<SyncExecutionResult>;
 
 export type Fetcher = (
   graphQLParams: FetcherParams,
