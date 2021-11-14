@@ -85,6 +85,21 @@ export class GraphQLWorker {
     };
   }
 
+  public async doGetVariablesJSONSchema(uri: string): Promise<string | null> {
+    const document = this._getTextDocument(uri);
+    const jsonSchema = await this._languageService.getVariablesJSONSchema(
+      uri,
+      document,
+    );
+    if (jsonSchema) {
+      jsonSchema.$id = 'monaco://variables-schema.json';
+      jsonSchema.title = 'GraphQL Variables';
+      return JSON.stringify(jsonSchema);
+    }
+
+    return null;
+  }
+
   async doFormat(text: string): Promise<string> {
     const prettierStandalone = await import('prettier/standalone');
     const prettierGraphqlParser = await import('prettier/parser-graphql');
@@ -99,7 +114,9 @@ export class GraphQLWorker {
   async doParse(text: string): Promise<DocumentNode> {
     return this._languageService.parse(text);
   }
-
+  /**
+   * TODO: store this in a proper document cache in the language service
+   */
   private _getTextDocument(_uri: string): string {
     const models = this._ctx.getMirrorModels();
     if (models.length > 0) {

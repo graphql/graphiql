@@ -71,6 +71,25 @@ export interface ModeConfiguration {
   readonly selectionRanges?: boolean;
 }
 
+export type MonacoGraphQLSchemaConfig = {
+  /**
+   * should the schema load when calling `initialize()` ?
+   * @default true
+   */
+  loadSchemaOnInit?: boolean;
+  /**
+   * should the schema reload when calling a change or update function ?
+   * @default true
+   */
+  loadSchemaOnChange?: boolean;
+} & SchemaConfig;
+
+export type MonacoGraphQLInitializeConfig = {
+  schemaConfig: MonacoGraphQLSchemaConfig;
+  formattingOptions?: FormattingOptions;
+  modeConfiguration?: ModeConfiguration;
+};
+
 export interface ICreateData {
   languageId: string;
   enableSchemaRequest: boolean;

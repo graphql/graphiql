@@ -20,7 +20,7 @@ export class WorkerManager {
   private _idleCheckInterval: number;
   private _lastUsedTime: number;
   private _configChangeListener: IDisposable;
-
+  private _schemaConfigChangeListener: IDisposable;
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
   private _client: GraphQLWorker | null;
 
@@ -35,6 +35,10 @@ export class WorkerManager {
     this._configChangeListener = this._defaults.onDidChange(() =>
       this._stopWorker(),
     );
+    // TODO: I think this is causing some minor issues
+    this._schemaConfigChangeListener = this._defaults.onSchemaLoaded(() => {
+      this._stopWorker();
+    });
     this._client = null;
   }
 
@@ -49,6 +53,7 @@ export class WorkerManager {
   dispose(): void {
     clearInterval(this._idleCheckInterval);
     this._configChangeListener.dispose();
+    this._schemaConfigChangeListener.dispose();
     this._stopWorker();
   }
 
@@ -64,7 +69,6 @@ export class WorkerManager {
 
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
-
     if (!this._client) {
       try {
         const schema = await this._defaults.getSchema();
@@ -79,7 +83,10 @@ export class WorkerManager {
               languageId: this._defaults.languageId,
               formattingOptions: this._defaults.formattingOptions,
               languageConfig: {
-                schemaString: schema.schemaString,
+                schemaConfig: {
+                  introspectionJSONString: schema.introspectionJSONString,
+                  documentString: schema.documentString,
+                },
                 exteralFragmentDefinitions: this._defaults
                   .externalFragmentDefinitions,
               },

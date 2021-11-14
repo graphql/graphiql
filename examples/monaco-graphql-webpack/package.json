@@ -11,7 +11,11 @@
   "dependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
     "monaco-graphql": "^0.6.5",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "graphql-language-service": "^3.2.1",
+    "json-schema": "^0.3.0",
+    "jsonc-parser": "3.0.0",
+    "monaco-editor": "^0.29.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",

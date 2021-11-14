@@ -6,25 +6,97 @@ import {
   BuildSchemaOptions,
   buildClientSchema,
   buildASTSchema,
+  GraphQLSchema,
+  printSchema,
 } from 'graphql';
+
+import { LanguageService } from './LanguageService';
 
 export type SchemaConfig = {
   uri?: string;
+  // eslint-disable-next-line no-undef
   requestOpts?: RequestInit;
   introspectionOptions?: IntrospectionOptions;
   buildSchemaOptions?: BuildSchemaOptions;
+  schema?: GraphQLSchema;
+  documentString?: string;
+  documentAST?: DocumentNode;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
 };
 
-export type SchemaResponse = IntrospectionQuery | DocumentNode;
+export type SchemaLoaderResult = {
+  schema: GraphQLSchema;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
+  documentString?: string;
+  documentAST?: DocumentNode;
+};
 
 export type SchemaLoader = (
-  config: SchemaConfig,
-) => Promise<SchemaResponse | null>;
-
-export const defaultSchemaLoader: SchemaLoader = async (
   schemaConfig: SchemaConfig,
-): Promise<SchemaResponse | null> => {
-  const { requestOpts, uri, introspectionOptions } = schemaConfig;
+  parser: LanguageService['parse'],
+) => Promise<SchemaLoaderResult | null>;
+
+/**
+ * This schema loader is focused on performance for the monaco runtime
+ * We favor stringified schema representations as they can be used to communicate
+ * Across the main/webworker process boundary
+ * @param schemaConfig
+ * @param parser
+ * @returns
+ */
+export const defaultSchemaLoader: SchemaLoader = async (
+  schemaConfig,
+  parser,
+) => {
+  const {
+    requestOpts,
+    uri,
+    introspectionOptions,
+    schema: graphQLSchema,
+    documentAST,
+    introspectionJSON,
+    introspectionJSONString,
+    buildSchemaOptions,
+    documentString,
+  } = schemaConfig;
+  if (graphQLSchema) {
+    return {
+      schema: graphQLSchema,
+      documentString: printSchema(graphQLSchema),
+    };
+  }
+  if (introspectionJSON) {
+    return {
+      schema: buildClientSchema(introspectionJSON, buildSchemaOptions),
+      introspectionJSON,
+      introspectionJSONString: JSON.stringify(introspectionJSON),
+    };
+  }
+  if (introspectionJSONString) {
+    const introspectionJSONResult = JSON.parse(introspectionJSONString);
+    return {
+      introspectionJSON: introspectionJSONResult,
+      schema: buildClientSchema(introspectionJSONResult, buildSchemaOptions),
+      introspectionJSONString,
+    };
+  }
+  if (documentAST) {
+    const schema = buildASTSchema(documentAST, buildSchemaOptions);
+    return {
+      schema,
+      documentAST,
+      documentString: printSchema(schema),
+    };
+  }
+  if (documentString) {
+    return {
+      schema: buildASTSchema(parser(documentString), buildSchemaOptions),
+      documentString,
+    };
+  }
+  // at this point only HTTP requests are left
   if (!uri) {
     return null;
   }
@@ -35,31 +107,16 @@ export const defaultSchemaLoader: SchemaLoader = async (
       operationName: 'IntrospectionQuery',
     }),
     credentials: 'omit',
-    headers: requestOpts?.headers || {
-      'Content-Type': 'application/json',
-    },
     ...requestOpts,
+    headers: {
+      'Content-Type': 'application/json',
+      ...requestOpts?.headers,
+    },
   });
-  const introspectionResponse: {
-    data: IntrospectionQuery;
-  } = await fetchResult.json();
-  return introspectionResponse?.data;
+  const { data }: { data: IntrospectionQuery } = await fetchResult.json();
+  return {
+    schema: buildClientSchema(data, buildSchemaOptions),
+    introspectionJSON: data,
+    introspectionJSONString: JSON.stringify(data),
+  };
 };
-/**
- *
- * @param response {DocumentNode | IntrospectionQuery} response from retrieving schema
- * @param buildSchemaOptions {BuildSchemaOptions} options for building schema
- */
-export function defaultSchemaBuilder(
-  response: SchemaResponse,
-  buildSchemaOptions?: BuildSchemaOptions,
-) {
-  if (!response) {
-    throw Error('Empty schema response');
-  }
-  // if we have this property, it's an introspectionQuery
-  if ('__schema' in response) {
-    return buildClientSchema(response, buildSchemaOptions);
-  }
-  return buildASTSchema(response, buildSchemaOptions);
-}

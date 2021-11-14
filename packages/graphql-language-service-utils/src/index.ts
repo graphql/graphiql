@@ -12,7 +12,11 @@ export {
   getFragmentDependenciesForAST,
 } from './fragmentDependencies';
 
-export { getVariablesJSONSchema } from './getVariablesJSONSchema';
+export {
+  getVariablesJSONSchema,
+  JSONSchema6,
+  JSONSchema6TypeName,
+} from './getVariablesJSONSchema';
 
 export { getASTNodeAtPosition, pointToOffset } from './getASTNodeAtPosition';
 
@@ -24,6 +28,7 @@ export { collectVariables, VariableToType } from './collectVariables';
 
 export {
   default as getOperationFacts,
+  getOperationASTFacts,
   getQueryFacts,
   OperationFacts,
   QueryFacts,

@@ -30,83 +30,96 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   monaco.languages.setLanguageConfiguration(languageId, conf);
   monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);
 
-  defaults.onSchemaLoaded(_api => {
-    const worker: languageFeatures.WorkerAccessor = (
-      ...uris: Uri[]
-    ): Promise<GraphQLWorker> => {
-      try {
-        return client.getLanguageServiceWorker(...uris);
-      } catch (err) {
-        throw Error('Error fetching graphql language service worker');
-      }
-    };
+  // let initialLoad = true
 
-    defaults.setWorker(worker);
+  // let's avoid loading the language worker & providers until schema is present
+  // TODO: eventually support schema-agnostic features here. Right now only formatting would be supported,
+  // but the worker we create for that depends on schema.
 
-    function registerFormattingProvider(): void {
-      const { modeConfiguration } = defaults;
-      if (modeConfiguration.documentFormattingEdits) {
-        providers.push(
-          monaco.languages.registerDocumentFormattingEditProvider(
-            defaults.languageId,
-            new languageFeatures.DocumentFormattingAdapter(worker),
-          ),
-        );
-      }
+  const worker: languageFeatures.WorkerAccessor = (
+    ...uris: Uri[]
+  ): Promise<GraphQLWorker> => {
+    try {
+      return client!.getLanguageServiceWorker(...uris);
+    } catch (err) {
+      throw Error('Error fetching graphql language service worker');
+    }
+  };
+
+  // defaults.setWorker(worker);
+
+  function registerSchemaLessProviders(newDefaults: MonacoGraphQLAPI): void {
+    const { modeConfiguration } = newDefaults;
+    if (modeConfiguration.documentFormattingEdits) {
+      providers.push(
+        monaco.languages.registerDocumentFormattingEditProvider(
+          newDefaults.languageId,
+          new languageFeatures.DocumentFormattingAdapter(worker),
+        ),
+      );
+    }
+  }
+
+  function registerAllProviders(api: MonacoGraphQLAPI): void {
+    const { modeConfiguration } = api;
+    disposeAll(providers);
+
+    if (modeConfiguration.completionItems) {
+      providers.push(
+        monaco.languages.registerCompletionItemProvider(
+          api.languageId,
+          new languageFeatures.CompletionAdapter(worker),
+        ),
+      );
+    }
+    if (modeConfiguration.diagnostics) {
+      providers.push(new languageFeatures.DiagnosticsAdapter(api, worker));
+    }
+    if (modeConfiguration.hovers) {
+      providers.push(
+        monaco.languages.registerHoverProvider(
+          api.languageId,
+          new languageFeatures.HoverAdapter(worker),
+        ),
+      );
     }
 
-    function registerProviders(): void {
-      const { modeConfiguration } = defaults;
-      disposeAll(providers);
+    registerSchemaLessProviders(api);
+  }
 
-      if (modeConfiguration.completionItems) {
-        providers.push(
-          monaco.languages.registerCompletionItemProvider(
-            defaults.languageId,
-            new languageFeatures.CompletionAdapter(worker),
-          ),
-        );
-      }
-      if (modeConfiguration.diagnostics) {
-        providers.push(
-          new languageFeatures.DiagnosticsAdapter(defaults, worker),
-        );
-      }
-      if (modeConfiguration.hovers) {
-        providers.push(
-          monaco.languages.registerHoverProvider(
-            defaults.languageId,
-            new languageFeatures.HoverAdapter(worker),
-          ),
-        );
-      }
-
-      registerFormattingProvider();
+  defaults.onDidChange(newDefaults => {
+    let { modeConfiguration, formattingOptions, schemaConfig } = defaults;
+    if (newDefaults.modeConfiguration !== modeConfiguration) {
+      modeConfiguration = newDefaults.modeConfiguration;
+      registerAllProviders(newDefaults);
     }
-
-    registerProviders();
-
-    let { modeConfiguration, schemaConfig, formattingOptions } = defaults;
-
-    defaults.onDidChange(newDefaults => {
-      if (defaults.schemaString !== newDefaults.schemaString) {
-        registerProviders();
-      }
-      if (newDefaults.modeConfiguration !== modeConfiguration) {
-        modeConfiguration = newDefaults.modeConfiguration;
-        registerProviders();
-      }
-      if (newDefaults.schemaConfig !== schemaConfig) {
-        schemaConfig = newDefaults.schemaConfig;
-        registerProviders();
-      }
-      if (newDefaults.formattingOptions !== formattingOptions) {
-        formattingOptions = newDefaults.formattingOptions;
-        registerFormattingProvider();
-      }
-    });
-    disposables.push(asDisposable(providers));
+    if (newDefaults.formattingOptions !== formattingOptions) {
+      formattingOptions = newDefaults.formattingOptions;
+      registerSchemaLessProviders(newDefaults);
+    }
+    if (newDefaults.schemaConfig !== schemaConfig) {
+      schemaConfig = newDefaults.schemaConfig;
+      registerAllProviders(newDefaults);
+    }
   });
+  /**
+   * If a new schema loads, re-register the providers
+   */
+  defaults.onSchemaLoaded(api => {
+    registerAllProviders(api);
+  });
+
+  /**
+   * You can decide whether to loadSchemaOnChange. You can also do this yourself
+   */
+  defaults.onSchemaConfigChange(api => {
+    if (api.schemaConfig.loadSchemaOnChange) {
+      // don't register providers here!
+      api.changeSchema();
+    }
+  });
+
+  disposables.push(asDisposable(providers));
 
   return asDisposable(disposables);
 }

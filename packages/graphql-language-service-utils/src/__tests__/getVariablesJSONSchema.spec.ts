@@ -14,9 +14,11 @@ import {
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
+  parse,
 } from 'graphql';
+
 import { join } from 'path';
-import getOperationFacts from '../getOperationFacts';
+import { collectVariables } from '../collectVariables';
 
 import { getVariablesJSONSchema } from '../getVariablesJSONSchema';
 
@@ -29,16 +31,16 @@ describe('getVariablesJSONSchema', () => {
   });
 
   it('should handle scalar types', () => {
-    const facts = getOperationFacts(
+    const variableToType = collectVariables(
       schema,
-      `query($id: ID, $string: String!, $boolean: Boolean, $number: Int!, $price: Float) {
+      parse(`query($id: ID, $string: String!, $boolean: Boolean, $number: Int!, $price: Float) {
         characters{
           name
         }
-       }`,
+       }`),
     );
 
-    const jsonSchema = getVariablesJSONSchema(facts);
+    const jsonSchema = getVariablesJSONSchema(variableToType);
 
     expect(jsonSchema.required).toEqual(['string', 'number']);
 
@@ -63,36 +65,37 @@ describe('getVariablesJSONSchema', () => {
   });
 
   it('should handle input object types', () => {
-    const facts = getOperationFacts(
+    const variableToType = collectVariables(
       schema,
-      `query($input: InputType!) {
-        characters{
+      parse(`query($input: InputType!, $anotherInput: InputType) {
+        characters {
           name
         }
-       }`,
+       }`),
     );
+    const inputTypeDefinition = {
+      type: 'object',
+      description: 'example input type',
+      properties: {
+        key: {
+          type: 'string',
+          description: GraphQLString.description,
+        },
+        value: {
+          type: 'integer',
+          description: GraphQLInt.description,
+        },
+      },
+      required: ['key'],
+    };
 
-    const jsonSchema = getVariablesJSONSchema(facts);
+    const jsonSchema = getVariablesJSONSchema(variableToType);
 
     expect(jsonSchema.required).toEqual(['input']);
 
     expect(jsonSchema.properties).toEqual({
-      input: {
-        type: 'object',
-        description: 'example input type',
-        properties: {
-          key: {
-            type: 'string',
-            description: GraphQLString.description,
-          },
-          value: {
-            type: 'integer',
-            description: GraphQLInt.description,
-          },
-        },
-        required: ['key'],
-      },
-      // why is the price Float not appearing in the ?
+      input: inputTypeDefinition,
+      anotherInput: inputTypeDefinition,
     });
   });
 });

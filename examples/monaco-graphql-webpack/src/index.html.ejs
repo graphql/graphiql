@@ -7,48 +7,24 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>Monaco Example!</title>
-    <style>
-      body {
-        background-color: #1e1e1e;
-      }
-      .div {
-        margin: 0;
-        padding: 0;
-      }
-
-      .full-height {
-        height: 100vh;
-      }
-
-      .column {
-        width: 50%;
-      }
-      #toolbar {
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        background-color: #1e1e1e;
-        text-align: right;
-      }
-      #button {
-        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-        padding: .5em 1em;
-      }
-    </style>
-    
   </head>
-  <body style="margin: 0; padding: 0;">
-    <div style="display: flex;">
-      <div class="full-height column">
-        <div id="toolbar"></div>
-        <div id="operation" style="height: 70vh;"></div>
-        <div id="variables" style="height: 30vh;"></div>
+  <body>
+    <div id="flex-wrapper" class="column">
+      <div id="toolbar" class="row"></div>
+      <div class="row">
+        <div class="full-height column half-width">
+          <div id="operation"></div>
+          <div id="variables"></div>
+        </div>
+        <div class="full-height column half-width">
+          <div
+            aria-label="Result Window"
+            aria-live="polite"
+            aria-atomic="true"
+            id="results"
+          ></div>
+        </div>
       </div>
-      <div
-        id="results"
-        class="full-height column"
-        aria-label="Result Window"
-        aria-live="polite"
-        aria-atomic="true"
-      ></div>
     </div>
     <!-- for github auth -->
     <script src="https://unpkg.com/netlify-auth-providers"></script>

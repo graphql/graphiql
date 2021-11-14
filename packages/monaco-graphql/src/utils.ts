@@ -18,6 +18,7 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
 };
+
 export function toMonacoRange(range: GraphQLRange): monaco.IRange {
   return {
     startLineNumber: range.start.line + 1,

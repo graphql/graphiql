@@ -13,33 +13,51 @@ import {
   modeConfigurationDefault,
   SchemaEntry,
 } from './api';
+import { MonacoGraphQLInitializeConfig } from './typings';
 
 export { MonacoGraphQLAPI, modeConfigurationDefault, SchemaEntry };
 import * as monaco from 'monaco-editor';
-import { SchemaConfig } from 'graphql-language-service';
 
 export * from './typings';
 
 export const LANGUAGE_ID = 'graphql';
 
-monaco.languages.register({
-  id: LANGUAGE_ID,
-  mimetypes: ['application/graphql', 'text/graphql'],
-});
-
 export async function initialize({
   schemaConfig,
-}: {
-  schemaConfig: SchemaConfig;
-}) {
+  formattingOptions,
+  modeConfiguration,
+}: MonacoGraphQLInitializeConfig) {
+  monaco.languages.register({
+    id: LANGUAGE_ID,
+    mimetypes: ['application/graphql', 'text/graphql'],
+  });
+
   const api = new MonacoGraphQLAPI({
     languageId: LANGUAGE_ID,
-    schemaConfig: schemaConfig || schemaDefault,
-    formattingOptions: formattingDefaults,
-    modeConfiguration: modeConfigurationDefault,
+    schemaConfig: {
+      ...schemaDefault,
+      ...schemaConfig,
+    },
+    formattingOptions: {
+      ...formattingDefaults,
+      ...formattingOptions,
+      prettierConfig: {
+        ...formattingDefaults.prettierConfig,
+        ...formattingOptions?.prettierConfig,
+      },
+    },
+    modeConfiguration: {
+      ...modeConfigurationDefault,
+      ...modeConfiguration,
+    },
   });
+
   const graphqlMode = await getMode();
   graphqlMode.setupMode(api);
+
+  if (api.schemaConfig.loadSchemaOnInit) {
+    api.getSchema().catch(console.error);
+  }
   return api;
 }
 function getMode(): Promise<typeof mode> {

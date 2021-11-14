@@ -9,22 +9,17 @@ import {
   GraphQLLanguageConfig,
   LanguageService,
   SchemaConfig,
-  getOperationFacts,
-  getVariablesJSONSchema,
+  JSONSchema6,
 } from 'graphql-language-service';
-
-import type { FormattingOptions, ModeConfiguration } from './typings';
-import type { WorkerAccessor } from './languageFeatures';
-import type { IEvent } from 'monaco-editor';
-
 import { Emitter } from 'monaco-editor';
-import {
-  buildClientSchema,
-  DocumentNode,
-  FragmentDefinitionNode,
-  GraphQLSchema,
-  printSchema,
-} from 'graphql';
+
+import type { IEvent } from 'monaco-editor';
+import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
+import type {
+  FormattingOptions,
+  ModeConfiguration,
+  MonacoGraphQLSchemaConfig,
+} from './typings';
 
 export type MonacoGraphQLAPIOptions = {
   languageId: string;
@@ -35,56 +30,69 @@ export type MonacoGraphQLAPIOptions = {
 
 export type SchemaEntry = {
   schema: GraphQLSchema;
-  schemaString: string;
+  documentString?: string;
+  introspectionJSONString?: string;
 };
 
+const schemaCache = new Map<string, SchemaEntry>();
 export class MonacoGraphQLAPI {
   private _onDidChange = new Emitter<MonacoGraphQLAPI>();
   private _onSchemaLoaded = new Emitter<MonacoGraphQLAPI>();
-  private _schemaCache: Map<string, SchemaEntry>;
+  private _onSchemaConfigChange = new Emitter<MonacoGraphQLAPI>();
+  private _schemaCache: typeof schemaCache = schemaCache;
   private _schemaConfig: SchemaConfig = {};
   private _formattingOptions!: FormattingOptions;
   private _modeConfiguration!: ModeConfiguration;
   private _languageId: string;
-  private _worker: WorkerAccessor | null;
-  private _workerPromise: Promise<WorkerAccessor>;
-  private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => {};
-  private _schemaString: string | null = null;
-  private _graphqlSchema: GraphQLSchema | null = null;
+  private _documentString: string | null = null;
   private _externalFragmentDefinitions:
     | string
     | FragmentDefinitionNode[]
     | null = null;
   private _langService: LanguageService | null = null;
-  private _isLoadingSchema: boolean = false;
+
   constructor({
     languageId,
     schemaConfig,
     modeConfiguration,
     formattingOptions,
   }: MonacoGraphQLAPIOptions) {
-    this._worker = null;
-    this._workerPromise = new Promise(resolve => {
-      this._resolveWorkerPromise = resolve;
-    });
+    // this._workerPromise = new Promise(resolve => {
+    //   this._resolveWorkerPromise = resolve;
+    // });
     this._languageId = languageId;
-    if (schemaConfig && schemaConfig.uri) {
+    if (schemaConfig) {
       this.setSchemaConfig(schemaConfig);
     }
     this.setModeConfiguration(modeConfiguration);
     this.setFormattingOptions(formattingOptions);
-    this.setFormattingOptions(formattingOptions);
-    this._langService = new LanguageService(this.getSchemaConfig());
     this._schemaCache = new Map();
   }
+
   public get onDidChange(): IEvent<MonacoGraphQLAPI> {
     return this._onDidChange.event;
   }
+
   public get onSchemaLoaded(): IEvent<MonacoGraphQLAPI> {
     return this._onSchemaLoaded.event;
   }
+
+  public get onSchemaConfigChange(): IEvent<MonacoGraphQLAPI> {
+    return this._onSchemaConfigChange.event;
+  }
+  public get parse() {
+    return this._langService!.parse;
+  }
+
   public get langService(): LanguageService | null {
     return this._langService;
+  }
+
+  private get _currentSchemaId(): string {
+    return this.schemaConfig.uri || 'default';
+  }
+  private get _currentSchemaEntry(): SchemaEntry | null {
+    return this._schemaCache.get(this._currentSchemaId) ?? null;
   }
 
   public getSchemaConfig(): GraphQLLanguageConfig {
@@ -93,56 +101,98 @@ export class MonacoGraphQLAPI {
       exteralFragmentDefinitions: this.externalFragmentDefinitions ?? undefined,
     };
   }
-  public async getVariablesJSONSchema(documentString: string) {
-    const schema = await this.getSchema();
-    if (schema) {
-      const operatonFacts = getOperationFacts(schema.schema, documentString);
-      if (operatonFacts) {
-        return getVariablesJSONSchema(operatonFacts);
-      }
+  public async getVariablesJSONSchema(
+    uri: string,
+    documentText: string,
+  ): Promise<JSONSchema6 | null> {
+    const JSONSchema = await this._langService?.getVariablesJSONSchema(
+      uri,
+      documentText,
+    );
+    if (JSONSchema) {
+      return JSONSchema;
     }
     return null;
   }
+  /**
+   * hard load the schema from the language service
+   * @returns {Promise<SchemaEntry | null>}
+   */
   private async loadSchema(): Promise<SchemaEntry | null> {
-    if (!this._isLoadingSchema) {
-      this._isLoadingSchema = true;
-      try {
-        const schema = await this._langService?.loadSchemaResponse();
-        if (schema) {
-          if ('__schema' in schema) {
-            const graphqlSchema = buildClientSchema(schema);
-            const schemaString = printSchema(graphqlSchema);
-            const schemaEntry = {
-              schema: graphqlSchema,
-              schemaString,
-            };
-            this._schemaCache.set(
-              this.schemaConfig.uri || 'default',
-              schemaEntry,
-            );
-            this._isLoadingSchema = false;
-            this._onSchemaLoaded.fire(this);
-            return schemaEntry;
-          }
-        }
-      } catch (err) {
-        console.log('error fetching schema', err);
-      }
-    }
+    try {
+      const ls = new LanguageService(this.getSchemaConfig());
+      this._langService = ls;
+      const schema = await ls.loadSchema();
+      if (schema) {
+        const schemaEntry: SchemaEntry = {
+          schema,
+          introspectionJSONString: ls.schemaConfig.introspectionJSONString,
+          documentString: ls.schemaConfig.documentString,
+        };
 
+        this.cacheSchema(schemaEntry);
+
+        this._onSchemaLoaded.fire(this);
+
+        return schemaEntry;
+      }
+    } catch (err) {
+      console.error('error fetching schema\n', err);
+    }
     return null;
+  }
+  private cacheSchema({
+    introspectionJSONString,
+    documentString,
+    schema,
+  }: SchemaEntry): void {
+    this._schemaCache.set(this._currentSchemaId, {
+      introspectionJSONString,
+      schema,
+      documentString,
+    });
+  }
+  private get schemaReset() {
+    return {
+      schema: undefined,
+      introspectionJSON: undefined,
+      introspectionJSONString: undefined,
+      documentAST: undefined,
+      documentString: undefined,
+    };
   }
   public async getSchema(): Promise<SchemaEntry | null> {
-    const cachedSchema = this._schemaCache.get(
-      this.schemaConfig.uri || 'default',
-    );
+    const cachedSchema = this._currentSchemaEntry;
+
     if (cachedSchema) {
       return cachedSchema;
     }
     return this.loadSchema();
   }
+  /**
+   * The same as reloadSchema except it always fires a schema loaded event
+   * This is great for change events
+   *
+   * @returns {SchemaEntry}
+   */
+  public changeSchema(): void {
+    const cachedSchema = this._schemaCache.get(
+      this.schemaConfig.uri || 'default',
+    );
+    if (cachedSchema) {
+      const ls = new LanguageService(this.getSchemaConfig());
+      this._langService = ls;
+
+      this._onSchemaLoaded.fire(this);
+    } else {
+      this.loadSchema().then();
+    }
+  }
+  /**
+   * Force a reload of the schema
+   */
   public async reloadSchema(): Promise<void> {
-    this.loadSchema();
+    await this.loadSchema();
   }
   public get languageId(): string {
     return this._languageId;
@@ -150,7 +200,7 @@ export class MonacoGraphQLAPI {
   public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
-  public get schemaConfig(): SchemaConfig {
+  public get schemaConfig(): MonacoGraphQLSchemaConfig {
     return this._schemaConfig;
   }
   public get formattingOptions(): FormattingOptions {
@@ -160,54 +210,79 @@ export class MonacoGraphQLAPI {
     return this._externalFragmentDefinitions;
   }
   public get hasSchema() {
-    return Boolean(this._schemaString);
-  }
-  public get schemaString() {
-    return this._schemaString;
-  }
-  public get worker(): Promise<WorkerAccessor> {
-    if (this._worker) {
-      return Promise.resolve(this._worker);
-    }
-    return this._workerPromise;
-  }
-  setWorker(worker: WorkerAccessor) {
-    this._worker = worker;
-    this._resolveWorkerPromise(worker);
+    return Boolean(this._documentString);
   }
 
-  public async getGraphQLSchema(): Promise<GraphQLSchema | null> {
-    if (this._graphqlSchema) {
-      return this._graphqlSchema;
-    }
-    await this.getSchema();
-    return this._graphqlSchema;
-  }
+  // public get worker(): Promise<WorkerAccessor> {
+  //   if (this._worker) {
+  //     return Promise.resolve(this._worker);
+  //   }
+  //   return this._workerPromise;
+  // }
+  // setWorker(worker: WorkerAccessor) {
+  //   this._worker = worker;
+  //   this._resolveWorkerPromise(worker);
+  // }
 
-  public async parse(graphqlString: string): Promise<DocumentNode> {
-    const langWorker = await (await this.worker)();
-    return langWorker.doParse(graphqlString);
-  }
-
+  /**
+   * override all schema config. fires onSchemaConfigChange
+   *
+   * @param options {SchemaConfig}
+   */
   public setSchemaConfig(options: SchemaConfig): void {
     this._schemaConfig = options || Object.create(null);
-
-    this._onDidChange.fire(this);
+    this._onSchemaConfigChange.fire(this);
   }
 
+  /**
+   * update the schema config. fires onSchemaConfigChange
+   *
+   * @param options {SchemaConfig}
+   */
   public updateSchemaConfig(options: Partial<SchemaConfig>): void {
-    this._schemaConfig = { ...this._schemaConfig, ...options };
-    this._onDidChange.fire(this);
+    this.setSchemaConfig({
+      ...this._schemaConfig,
+      ...options,
+      requestOpts: {
+        ...this._schemaConfig.requestOpts,
+        ...options.requestOpts,
+        headers: {
+          ...this._schemaConfig.requestOpts?.headers,
+          ...options.requestOpts?.headers,
+        },
+      },
+    });
+  }
+
+  /**
+   * set a new schema URI. fires onSchemaConfigChange
+   * @param schemaUri
+   */
+  public setSchemaUri(schemaUri: string): void {
+    this.setSchemaConfig({
+      ...this._schemaConfig,
+      uri: schemaUri,
+      // reset everything else!
+      ...this.schemaReset,
+    });
+  }
+
+  /**
+   * set a new schema GraphQLSchema. fires onSchemaLoaded immediately
+   * @param schemaUri
+   */
+  public setSchema(schema: GraphQLSchema): void {
+    this._schemaConfig = {
+      schema,
+      buildSchemaOptions: this._schemaConfig.buildSchemaOptions,
+    };
+    this._onSchemaLoaded.fire(this);
   }
 
   public setExternalFragmentDefinitions(
     externalFragmentDefinitions: string | FragmentDefinitionNode[],
   ) {
     this._externalFragmentDefinitions = externalFragmentDefinitions;
-  }
-
-  public setSchemaUri(schemaUri: string): void {
-    this.setSchemaConfig({ ...this._schemaConfig, uri: schemaUri });
   }
 
   public setModeConfiguration(modeConfiguration: ModeConfiguration): void {
@@ -234,7 +309,18 @@ export const modeConfigurationDefault: Required<ModeConfiguration> = {
   selectionRanges: false,
 };
 
-export const schemaDefault: SchemaConfig = {};
+export const schemaDefault: MonacoGraphQLSchemaConfig = {
+  loadSchemaOnInit: true,
+  loadSchemaOnChange: true,
+  requestOpts: {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  },
+  buildSchemaOptions: {
+    assumeValidSDL: true,
+  },
+};
 
 export const formattingDefaults: FormattingOptions = {
   prettierConfig: {

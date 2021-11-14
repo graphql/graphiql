@@ -4,8 +4,8 @@ import {
   DocumentNode,
   NamedTypeNode,
   GraphQLInputType,
-  Kind,
   GraphQLFloat,
+  Kind,
 } from 'graphql';
 
 export type VariableToType = {
@@ -13,7 +13,8 @@ export type VariableToType = {
 };
 
 /**
- * Collects all variables in a document of operations
+ * Generates a map of GraphQLInputTypes for
+ * all the variables in an AST document of operations
  *
  * @param schema
  * @param documentAST
@@ -24,6 +25,7 @@ export function collectVariables(
   documentAST: DocumentNode,
 ): VariableToType {
   const variableToType: VariableToType = Object.create(null);
+  // it would be more ideal to use visitWithTypeInfo here but it's very simple
   documentAST.definitions.forEach(definition => {
     if (definition.kind === 'OperationDefinition') {
       const variableDefinitions = definition.variableDefinitions;
