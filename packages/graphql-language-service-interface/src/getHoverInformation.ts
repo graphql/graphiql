@@ -47,8 +47,6 @@ export function getHoverInformation(
   const typeInfo = getTypeInfo(schema, token.state);
   const options = { ...config, schema };
 
-  let result = '';
-
   // Given a Schema and a Token, produce the contents of an info tooltip.
   // To do this, create a div element that we will render "into" and then pass
   // it to various rendering functions.
@@ -61,21 +59,21 @@ export function getHoverInformation(
     renderField(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.fieldDef);
-    result = into.join('').trim();
+    return into.join('').trim();
   } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderDirective(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.directiveDef);
-    result = into.join('').trim();
+    return into.join('').trim();
   } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderArg(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.argDef);
-    result = into.join('').trim();
+    return into.join('').trim();
   } else if (
     kind === 'EnumValue' &&
     typeInfo.enumValue &&
@@ -86,7 +84,7 @@ export function getHoverInformation(
     renderEnumValue(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.enumValue);
-    result = into.join('').trim();
+    return into.join('').trim();
   } else if (
     kind === 'NamedType' &&
     typeInfo.type &&
@@ -97,9 +95,9 @@ export function getHoverInformation(
     renderType(into, typeInfo, options, typeInfo.type);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.type);
-    result = into.join('').trim();
+    return into.join('').trim();
   }
-  return result;
+  return '';
 }
 
 function renderMdCodeStart(into: string[], options: any) {

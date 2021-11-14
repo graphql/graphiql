@@ -8,8 +8,8 @@
 import type { worker as WorkerNamespace } from 'monaco-editor';
 import { ICreateData } from './typings';
 
-// @ts-ignore
-import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker.js';
+// @ts-expect-error
+import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import { GraphQLWorker } from './GraphQLWorker';
 

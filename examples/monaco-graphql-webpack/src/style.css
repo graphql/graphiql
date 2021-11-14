@@ -26,6 +26,14 @@ body {
   flex-direction: row;
 }
 
+.align-right {
+  /* align-self: stretch; */
+  margin-left: auto;
+  align-self: stretch;
+}
+
+/* Editors */
+
 #flex-wrapper {
   display: flex;
   align-items: stretch;
@@ -43,14 +51,6 @@ body {
   height: 90vh;
 }
 
-.align-right {
-  /* align-self: stretch; */
-  margin-left: auto;
-  align-self: stretch;
-}
-
-
-
 /* Toolbar */
 
 #toolbar {
@@ -65,7 +65,7 @@ body {
 #toolbar > span,
 button#execute-op {
   margin: 4px;
-  padding: 4px 4px;
+  padding: 4px;
 }
 
 #toolbar button,
@@ -83,7 +83,6 @@ select:focus {
   background-color: darkslategrey;
 }
 
-
 #execution-tray {
   display: flex;
   display: inline-flex;
@@ -91,11 +90,10 @@ select:focus {
 }
 
 #schema-status {
-    color: #eee;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 #toolbar button.reload-button {
   border: 0 none;
 }
-
