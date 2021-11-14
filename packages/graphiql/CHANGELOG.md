@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.5.2
+
+### Patch Changes
+
+- Updated dependencies [[`dec207e7`](https://github.com/graphql/graphiql/commit/dec207e74f0506db069482cc30f8cd1f045d8107)]:
+  - @graphiql/toolkit@0.4.1
+
 ## 1.5.1
 
 ### Patch Changes

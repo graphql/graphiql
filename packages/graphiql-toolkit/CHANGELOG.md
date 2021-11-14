@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.4.1
+
+### Patch Changes
+
+- [`dec207e7`](https://github.com/graphql/graphiql/commit/dec207e74f0506db069482cc30f8cd1f045d8107) [#2017](https://github.com/graphql/graphiql/pull/2017) Thanks [@acao](https://github.com/acao)! - graphql-ws is now a peerDependency. It supports ~4.5.0 to the latest graphql-ws@5.5.5 and beyond. we suggest using the latest version!
+
 ## 0.4.0
 
 ### Minor Changes
