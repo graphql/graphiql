@@ -40,7 +40,7 @@ export type GetDefaultFieldNamesFn = (type: GraphQLType) => string[];
  * utility represents a "best effort" which may be useful within IDE tools.
  */
 export function fillLeafs(
-  schema?: GraphQLSchema,
+  schema?: GraphQLSchema | null,
   docString?: string,
   getDefaultFieldNames?: GetDefaultFieldNamesFn,
 ) {

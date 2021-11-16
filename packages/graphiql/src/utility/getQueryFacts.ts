@@ -33,7 +33,7 @@ export type QueryFacts = {
  * If the query cannot be parsed, returns undefined.
  */
 export default function getOperationFacts(
-  schema?: GraphQLSchema,
+  schema?: GraphQLSchema | null,
   documentStr?: string | null,
 ): QueryFacts | undefined {
   if (!documentStr) {

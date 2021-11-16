@@ -117,7 +117,7 @@ export function inlineRelevantFragmentSpreads(
  */
 export default function mergeAST(
   documentAST: DocumentNode,
-  schema?: GraphQLSchema,
+  schema?: GraphQLSchema | null,
 ): DocumentNode {
   // If we're given the schema, we can simplify even further by resolving object
   // types vs unions/interfaces
