@@ -10,5 +10,6 @@
   - VSCode Version:
   - OS Name:
   - OS Version:
+  - graphql config filename and format example:
 
 ## Logs Of TS Server || GraphQL Language Service
