@@ -30,7 +30,7 @@
     "graphql-ws": "^5.5.5"
   },
   "peerDependencies": {
-    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5",
+    "graphql": "^15.5.0 || ^16.0.0-experimental-stream-defer.5 || ^16.0.0",
     "graphql-ws": ">= 4.5.0"
   },
   "keywords": [
