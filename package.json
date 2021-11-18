@@ -5,7 +5,7 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/*",
+      "packages/!(graphiql-2-rfc-context)/**",
       "examples/monaco-graphql-webpack",
       "examples/graphiql-webpack"
     ]
