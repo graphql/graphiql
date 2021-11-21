@@ -10,4 +10,5 @@ coverage/
 /utils
 /variables
 /results
+/cm6-legacy
 /__tests__

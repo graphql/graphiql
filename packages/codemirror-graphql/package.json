@@ -32,7 +32,7 @@
     "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
     "build-js": "yarn tsc",
     "build-esm": "cross-env ESM=true yarn tsc --project tsconfig.esm.json && node ../../resources/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
-    "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow,js.map,d.ts,d.ts.map} && rimraf esm results utils variables coverage __tests__",
+    "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow,js.map,d.ts,d.ts.map} && rimraf esm results utils variables coverage cm6-legacy __tests__",
     "build-flow": "node ../../resources/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",
     "test": "jest",
@@ -43,6 +43,7 @@
     "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5"
   },
   "dependencies": {
+    "@codemirror/stream-parser": "^0.19.2",
     "graphql-language-service-interface": "^2.9.0",
     "graphql-language-service-parser": "^1.10.0"
   },
