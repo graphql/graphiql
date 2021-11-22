@@ -103,11 +103,6 @@ async function render() {
     return;
   } else {
     const monacoGraphQLAPI = initializeMode({
-      // diagnosticSettings: {
-      //   validateVariablesJSON: {
-      //     [operationModel.uri.toString()]: [variablesModel.uri.toString()],
-      //   },
-      // },
       formattingOptions: {
         prettierConfig: {
           printWidth: 120,
@@ -141,6 +136,23 @@ async function render() {
       validateVariablesJSON: {
         [operationUri]: [variablesModel.uri.toString()],
       },
+      jsonDiagnosticSettings: {
+        // jsonc tip!
+        allowComments: true,
+        schemaValidation: 'error',
+        // this is nice too
+        trailingCommas: 'warning',
+      },
+    });
+    operationModel.onDidChangeContent(() => {
+      setTimeout(() => {
+        localStorage.setItem('operations', operationModel.getValue());
+      }, 200);
+    });
+    variablesModel.onDidChangeContent(() => {
+      setTimeout(() => {
+        localStorage.setItem('variables', variablesModel.getValue());
+      }, 200);
     });
 
     /**

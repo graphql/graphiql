@@ -96,4 +96,7 @@ select:focus {
 
 #toolbar button.reload-button {
   border: 0 none;
+  padding: 4px;
+  width: 30px;
+  text-align: center;
 }

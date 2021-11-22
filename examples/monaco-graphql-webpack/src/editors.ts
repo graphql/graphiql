@@ -24,7 +24,9 @@ window.MonacoEnvironment = {
   },
 };
 
-const operationString = `
+const operationString =
+  localStorage.getItem('operations') ??
+  `
 # right click to view context menu
 # F1 for command palette
 # enjoy prettier formatting, autocompletion,
@@ -41,7 +43,9 @@ query Example(
 }
 `;
 
-const variablesString = `{ 
+const variablesString =
+  localStorage.getItem('variables') ??
+  `{ 
   "reviewEvent": "graphql", 
   "name": true
 }`;

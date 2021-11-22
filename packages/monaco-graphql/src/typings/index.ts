@@ -11,6 +11,7 @@ export interface IDisposable {
 
 export type SchemaConfig = SchemaConfiguration;
 
+export type JSONDiagnosticOptions = monaco.languages.json.DiagnosticsOptions;
 export interface IEvent<T> {
   (listener: (e: T) => any, thisArg?: any): IDisposable;
 }
@@ -83,10 +84,8 @@ export type DiagnosticSettings = {
    * ```
    */
   validateVariablesJSON?: Record<string, string[]>;
-  /**
-   * SeverityLevel for json variable validations
-   */
-  validateVariablesLevel?: monaco.languages.json.SeverityLevel;
+
+  jsonDiagnosticSettings?: JSONDiagnosticOptions;
 };
 
 export type MonacoGraphQLInitializeConfig = {

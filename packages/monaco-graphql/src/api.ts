@@ -141,5 +141,7 @@ export const formattingDefaults: FormattingOptions = {
 };
 
 export const diagnosticSettingDefault: DiagnosticSettings = {
-  validateVariablesLevel: 'error',
+  jsonDiagnosticSettings: {
+    schemaValidation: 'error',
+  },
 };

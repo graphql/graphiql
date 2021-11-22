@@ -176,8 +176,8 @@ export class DiagnosticsAdapter {
       schemas.push(configResult);
     }
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
       validate: true,
-      schemaValidation: 'error',
       schemas,
       enableSchemaRequest: false,
     });
