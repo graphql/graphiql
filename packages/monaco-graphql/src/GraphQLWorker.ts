@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { FormattingOptions, ICreateData } from './typings';
+import { DiagnosticSettings, FormattingOptions, ICreateData } from './typings';
 
 import type { worker, Position } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
@@ -35,10 +35,12 @@ export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
+  private _diagnosticSettings: DiagnosticSettings | undefined;
   constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
+    this._diagnosticSettings = createData.diagnosticSettings;
   }
 
   async doValidation(uri: string) {
@@ -54,7 +56,10 @@ export class GraphQLWorker {
     return graphqlDiagnostics.map(toMarkerData);
   }
 
-  async doComplete(uri: string, position: Position): Promise<GraphQLWorkerCompletionItem[]> {
+  async doComplete(
+    uri: string,
+    position: Position,
+  ): Promise<GraphQLWorkerCompletionItem[]> {
     const documentModel = this._getTextModel(uri);
     const document = documentModel?.getValue();
     if (!document) {
@@ -62,11 +67,12 @@ export class GraphQLWorker {
       return [];
     }
     const graphQLPosition = toGraphQLPosition(position);
-
+    console.log(this._diagnosticSettings);
     const suggestions = this._languageService.getCompletion(
       uri,
       document,
       graphQLPosition,
+      { fillLeafsOnComplete: this._diagnosticSettings?.fillLeafsOnComplete },
     );
     return suggestions.map(suggestion => toCompletion(suggestion));
   }
@@ -99,7 +105,7 @@ export class GraphQLWorker {
     };
   }
 
-  public async doGetVariablesJSONSchema(uri: string): Promise<string | null> {
+  public async doGetVariablesJSONSchema(uri: string): Promise<unknown> {
     const documentModel = this._getTextModel(uri);
     const document = documentModel?.getValue();
     if (!documentModel || !document) {
@@ -108,11 +114,12 @@ export class GraphQLWorker {
     const jsonSchema = this._languageService.getVariablesJSONSchema(
       uri,
       document,
+      { useMarkdownDescription: true },
     );
     if (jsonSchema) {
       jsonSchema.$id = 'monaco://variables-schema.json';
       jsonSchema.title = 'GraphQL Variables';
-      return JSON.stringify(jsonSchema);
+      return jsonSchema;
     }
 
     return null;

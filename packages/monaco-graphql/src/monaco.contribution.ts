@@ -6,50 +6,30 @@
  */
 
 import type * as GraphQLMode from './graphqlMode';
-import {
+import { create as createMonacoGraphQLAPI } from './api';
+import type { MonacoGraphQLInitializeConfig } from './typings';
+
+export {
   MonacoGraphQLAPI,
-  formattingDefaults,
   modeConfigurationDefault,
   SchemaEntry,
   diagnosticSettingDefault,
+  formattingDefaults,
 } from './api';
-import type { MonacoGraphQLInitializeConfig } from './typings';
 
-export { MonacoGraphQLAPI, modeConfigurationDefault, SchemaEntry };
-import * as monaco from 'monaco-editor';
+import { languages } from 'monaco-editor';
 
 export * from './typings';
 
 export const LANGUAGE_ID = 'graphql';
 
-export function initializeMode({
-  schemas,
-  formattingOptions,
-  modeConfiguration,
-  diagnosticSettings,
-}: MonacoGraphQLInitializeConfig) {
-  const api = new MonacoGraphQLAPI({
-    languageId: LANGUAGE_ID,
-    schemas,
-    formattingOptions: {
-      ...formattingDefaults,
-      ...formattingOptions,
-      prettierConfig: {
-        ...formattingDefaults.prettierConfig,
-        ...formattingOptions?.prettierConfig,
-      },
-    },
-    modeConfiguration: {
-      ...modeConfigurationDefault,
-      ...modeConfiguration,
-    },
-    diagnosticSettings: {
-      ...diagnosticSettingDefault,
-      ...diagnosticSettings,
-    },
-  });
+export function initializeMode(config?: MonacoGraphQLInitializeConfig) {
+  const api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
 
-  monaco.languages.onLanguage(LANGUAGE_ID, () => {
+  // export to the global monaco API
+  (<any>languages).graphql = { api };
+
+  languages.onLanguage(LANGUAGE_ID, () => {
     getMode().then(mode => mode.setupMode(api));
   });
 

@@ -180,9 +180,7 @@ export class MessageProcessor {
       },
     };
 
-    this._rootPath = configDir
-      ? configDir.trim()
-      : params.rootUri || this._rootPath;
+    this._rootPath = configDir ? configDir.trim() : this._rootPath;
     if (!this._rootPath) {
       this._logger.warn(
         'no rootPath configured in extension or server, defaulting to cwd',
@@ -201,7 +199,28 @@ export class MessageProcessor {
 
     return serverCapabilities;
   }
-
+  /**
+   * Retrieves the same key from either the local graphql config project or the vscode settings,
+   * in that order of preference
+   * @param settingName {String}
+   * @param project {GraphQLProjectConfig}
+   * @param defaultValue {any}
+   * @returns
+   */
+  async _getSetting(
+    settingName: string,
+    project: GraphQLProjectConfig,
+    defaultValue?: any,
+  ) {
+    const languageService = project.extension('languageService');
+    if (languageService[settingName] !== 'undefined') {
+      return languageService[settingName];
+    }
+    const vscodeSetting = await this._connection.workspace.getConfiguration(
+      `vscode-graphql.${settingName}`,
+    );
+    return vscodeSetting ?? defaultValue;
+  }
   async _updateGraphQLConfig() {
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
@@ -478,6 +497,14 @@ export class MessageProcessor {
     const textDocument = params.textDocument;
     const position = params.position;
 
+    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
+
+    const fillLeafsOnComplete = await this._getSetting(
+      'fillLeadsOnComplete',
+      project,
+      false,
+    );
+
     // `textDocument/completion` event takes advantage of the fact that
     // `textDocument/didChange` event always fires before, which would have
     // updated the cache with the query text from the editor.
@@ -509,9 +536,8 @@ export class MessageProcessor {
       query,
       toPosition(position),
       textDocument.uri,
+      { fillLeafsOnComplete },
     );
-
-    const project = this._graphQLCache.getProjectForFile(textDocument.uri);
 
     this._logger.log(
       JSON.stringify({
@@ -913,7 +939,6 @@ export class MessageProcessor {
 
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
-    const config = project?.extensions?.languageService;
     /**
      * By default, we look for schema definitions in SDL files
      *
@@ -928,10 +953,11 @@ export class MessageProcessor {
      *
      * it is disabled by default
      */
-    const cacheSchemaFileForLookup =
-      config?.cacheSchemaFileForLookup ??
-      this?._settings?.cacheSchemaFileForLookup ??
-      false;
+    const cacheSchemaFileForLookup = await this._getSetting(
+      'cacheSchemaFileForLookup',
+      project,
+      false,
+    );
     if (cacheSchemaFileForLookup) {
       await this._cacheConfigSchema(project);
     } else if (typeof schema === 'string') {

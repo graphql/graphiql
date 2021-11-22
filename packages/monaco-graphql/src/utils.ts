@@ -10,7 +10,10 @@ import type {
   IPosition as GraphQLPosition,
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
+  SchemaConfig,
 } from 'graphql-language-service';
+
+import { buildASTSchema, printSchema } from 'graphql';
 
 import { Position } from 'graphql-language-service';
 
@@ -43,7 +46,8 @@ export function toCompletion(
 ): GraphQLWorkerCompletionItem {
   const results: GraphQLWorkerCompletionItem = {
     label: entry.label,
-    insertText: entry.insertText ?? entry.label,
+    insertText: entry.insertText,
+    insertTextFormat: entry.insertTextFormat,
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,
@@ -102,3 +106,51 @@ export function toMarkerData(
     code: (diagnostic.code as string) || undefined,
   };
 }
+
+/**
+ * Send the most minimal string representation
+ * to the worker for language service instantiation
+ */
+export const getStringSchema = (schemaConfig: SchemaConfig) => {
+  const {
+    schema: graphQLSchema,
+    documentAST,
+    introspectionJSON,
+    introspectionJSONString,
+    documentString,
+    ...rest
+  } = schemaConfig;
+  if (graphQLSchema) {
+    return {
+      ...rest,
+      documentString: printSchema(graphQLSchema),
+    };
+  }
+  if (introspectionJSONString) {
+    return {
+      ...rest,
+      introspectionJSONString,
+    };
+  }
+  if (documentString) {
+    return {
+      ...rest,
+      documentString,
+    };
+  }
+  if (introspectionJSON) {
+    return {
+      ...rest,
+      introspectionJSONString: JSON.stringify(introspectionJSON),
+    };
+  }
+
+  if (documentAST) {
+    const schema = buildASTSchema(documentAST, rest.buildSchemaOptions);
+    return {
+      ...rest,
+      documentString: printSchema(schema),
+    };
+  }
+  throw Error('no schema supplied');
+};

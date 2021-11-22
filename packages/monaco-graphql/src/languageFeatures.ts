@@ -56,20 +56,11 @@ export class DiagnosticsAdapter {
         clearTimeout(handle);
         // @ts-ignore
         handle = setTimeout(() => {
-          this._doValidate(model.uri, modeId);
-          if (jsonValidationForModel) {
-            this._doValidateVariablesJsonSchema(
-              model.uri,
-              jsonValidationForModel,
-            );
-          }
+          this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
 
-      this._doValidate(model.uri, modeId);
-      if (jsonValidationForModel) {
-        this._doValidateVariablesJsonSchema(model.uri, jsonValidationForModel);
-      }
+      this._doValidate(model.uri, modeId, jsonValidationForModel);
     };
 
     const onModelRemoved = (model: editor.IModel): void => {
@@ -96,8 +87,15 @@ export class DiagnosticsAdapter {
       }),
     );
 
+    this._disposables.push({
+      dispose: () => {
+        for (const key in this._listener) {
+          this._listener[key].dispose();
+        }
+      },
+    });
     this._disposables.push(
-      defaults.onDidChange((_: any) => {
+      defaults.onDidChange(() => {
         editor.getModels().forEach(model => {
           if (model.getModeId() === this.defaults.languageId) {
             onModelRemoved(model);
@@ -107,14 +105,6 @@ export class DiagnosticsAdapter {
       }),
     );
 
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
-      },
-    });
-
     editor.getModels().forEach(onModelAdd);
   }
 
@@ -123,7 +113,11 @@ export class DiagnosticsAdapter {
     this._disposables = [];
   }
 
-  private async _doValidate(resource: Uri, languageId: string) {
+  private async _doValidate(
+    resource: Uri,
+    languageId: string,
+    variablesUris?: string[],
+  ) {
     const worker = await this._worker(resource);
 
     const diagnostics = await worker.doValidation(resource.toString());
@@ -132,55 +126,34 @@ export class DiagnosticsAdapter {
       languageId,
       diagnostics,
     );
-  }
-  private async _doValidateVariablesJsonSchema(
-    resource: Uri,
-    variablesUris: string[],
-  ) {
-    const worker = await this._worker(resource);
 
-    if (!variablesUris || variablesUris.length < 1) {
-      throw Error('no variables URI strings provided to validate');
-    }
-
-    const jsonSchema = await worker.doGetVariablesJSONSchema(
-      resource.toString(),
-    );
-    if (!jsonSchema) {
-      return;
-    }
-
-    const schemaUri = monaco.Uri.file(
-      variablesUris[0].replace('.json', '-schema.json'),
-    ).toString();
-
-    const schemas: monaco.languages.json.DiagnosticsOptions['schemas'] = [];
-
-    const existingSchemas =
-      monaco.languages.json.jsonDefaults.diagnosticsOptions?.schemas;
-    const configResult = {
-      uri: schemaUri,
-      schema: JSON.parse(jsonSchema),
-      fileMatch: variablesUris,
-    };
-    if (existingSchemas) {
-      const exists = existingSchemas.findIndex(({ uri }) => uri === schemaUri);
-
-      if (exists >= 0) {
-        existingSchemas[exists] = configResult;
-        schemas.push(...existingSchemas);
-      } else {
-        schemas.push(configResult);
+    if (variablesUris) {
+      if (variablesUris.length < 1) {
+        throw Error('no variables URI strings provided to validate');
       }
-    } else {
-      schemas.push(configResult);
+      const jsonSchema = await worker.doGetVariablesJSONSchema(
+        resource.toString(),
+      );
+      if (!jsonSchema) {
+        return;
+      }
+
+      const schemaUri = monaco.Uri.file(
+        variablesUris[0].replace('.json', '-schema.json'),
+      ).toString();
+      const configResult = {
+        uri: schemaUri,
+        schema: jsonSchema,
+        fileMatch: variablesUris,
+      };
+      // TODO: export from api somehow?
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
+        validate: true,
+        schemas: [configResult],
+        enableSchemaRequest: false,
+      });
     }
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-      ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
-      validate: true,
-      schemas,
-      enableSchemaRequest: false,
-    });
   }
 }
 
@@ -245,7 +218,7 @@ export function toCompletionItemKind(kind: lsCompletionItemKind) {
 export function toCompletion(
   entry: GraphQLWorkerCompletionItem,
 ): monaco.languages.CompletionItem {
-  return {
+  const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
     kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
@@ -260,6 +233,14 @@ export function toCompletion(
     detail: entry.detail,
     command: entry.command,
   };
+  if (entry.insertText && entry.insertText.includes('$1')) {
+    suggestions.command = {
+      id: 'editor.action.triggerSuggest',
+      title: 'Suggest',
+    };
+    suggestions.insertTextRules = 4;
+  }
+  return suggestions;
 }
 
 export class CompletionAdapter

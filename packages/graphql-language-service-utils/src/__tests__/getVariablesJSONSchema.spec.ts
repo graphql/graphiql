@@ -73,29 +73,53 @@ describe('getVariablesJSONSchema', () => {
         }
        }`),
     );
-    const inputTypeDefinition = {
-      type: 'object',
-      description: 'example input type',
-      properties: {
-        key: {
-          type: 'string',
-          description: GraphQLString.description,
-        },
-        value: {
-          type: 'integer',
-          description: GraphQLInt.description,
-        },
-      },
-      required: ['key'],
-    };
 
     const jsonSchema = getVariablesJSONSchema(variableToType);
 
     expect(jsonSchema.required).toEqual(['input']);
 
     expect(jsonSchema.properties).toEqual({
-      input: inputTypeDefinition,
-      anotherInput: inputTypeDefinition,
+      input: {
+        $ref: '#/definitions/InputType',
+      },
+      anotherInput: {
+        $ref: '#/definitions/InputType',
+      },
+    });
+    expect(jsonSchema.definitions).toEqual({
+      InputType: {
+        type: 'object',
+        description: 'example input type',
+        properties: {
+          key: {
+            description: 'example key `String!`',
+            type: 'string',
+          },
+          value: {
+            description: 'example value `Int`',
+            type: 'integer',
+            default: 42,
+          },
+          exampleObject: {
+            description: 'nesting a whole object! `ChildInputType!`',
+            $ref: '#/definitions/ChildInputType',
+          },
+          exampleList: {
+            type: 'array',
+            items: {
+              $ref: '#/definitions/ChildInputType',
+            },
+            description: 'list type with fancy default `[ChildInputType]`',
+            default: [
+              {
+                isBaby: false,
+                favoriteBook: 'Goosebumps',
+              },
+            ],
+          },
+        },
+        required: ['key', 'exampleObject'],
+      },
     });
   });
 });

@@ -5,116 +5,17 @@ import * as JSONC from 'jsonc-parser';
 import { initializeMode } from 'monaco-graphql';
 
 import { createEditors } from './editors';
-
+import { schemaFetcher, schemaOptions } from './schema';
 import './style.css';
-import { getIntrospectionQuery } from 'graphql';
-import type { SchemaConfig } from 'graphql-language-service';
-
-const SCHEMA_URL = 'https://api.github.com/graphql';
 
 const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
-const API_TOKEN = localStorage.getItem('ghapi') || null;
-
-let isLoggedIn = false;
-
-const schemaOptions = [
-  {
-    value: SCHEMA_URL,
-    label: 'Github API',
-    default: true,
-    headers: Object.create(null),
-  },
-  {
-    value: 'https://api.spacex.land/graphql',
-    label: 'SpaceX GraphQL API',
-    headers: Object.create(null),
-  },
-];
-
-const setSchemaStatus = (message: string) => {
-  const schemaStatus = document.getElementById('schema-status');
-  if (schemaStatus) {
-    const html = `<small>${message}</small>`;
-    schemaStatus.innerHTML = html;
-  }
-};
-
-class MySchemaFetcher {
-  private _options: typeof schemaOptions;
-  private _currentSchema: typeof schemaOptions[0];
-  private _schemaCache = new Map<string, SchemaConfig>();
-  constructor(options = schemaOptions) {
-    this._options = options;
-    this._currentSchema = schemaOptions[0];
-    if (API_TOKEN) {
-      this._currentSchema.headers.authorization = `Bearer ${API_TOKEN}`;
-    }
-  }
-  public get currentSchema() {
-    return this._currentSchema;
-  }
-  public get token() {
-    return this._currentSchema.headers.authorization;
-  }
-  async getSchema() {
-    const cacheItem = this._schemaCache.get(this._currentSchema.value);
-    if (cacheItem) {
-      return cacheItem;
-    }
-    return this.loadSchema();
-  }
-  async setApiToken(token: string) {
-    this._currentSchema.headers.authorization = `Bearer ${token}`;
-  }
-  async loadSchema() {
-    try {
-      setSchemaStatus('Schema Loading...');
-      const url = this._currentSchema.value as string;
-
-      const headers = {
-        'content-type': 'application/json',
-      };
-      const result = await fetch(url, {
-        method: 'POST',
-        headers: {
-          ...headers,
-          ...this._currentSchema.headers,
-        },
-        body: JSON.stringify(
-          {
-            query: getIntrospectionQuery(),
-            operationName: 'IntrospectionQuery',
-          },
-          null,
-          2,
-        ),
-      });
-      this._schemaCache.set(url, {
-        introspectionJSON: (await result.json()).data,
-        uri: monaco.Uri.parse(url).toString(),
-      });
-
-      setSchemaStatus('Schema Loaded');
-    } catch {
-      setSchemaStatus('Schema error');
-    }
-
-    return this._schemaCache.get(this._currentSchema.value);
-  }
-  async changeSchema(uri: string) {
-    this._currentSchema = this._options.find(opt => opt.value === uri)!;
-    return this.getSchema();
-  }
-}
-
-const schemaFetcher = new MySchemaFetcher(schemaOptions);
 
 (async () => {
   await render();
 })();
 
 async function render() {
-  if (!isLoggedIn && !schemaFetcher.token) {
+  if (!schemaFetcher.token) {
     renderGithubLoginButton();
     return;
   } else {
@@ -149,6 +50,7 @@ async function render() {
     }
 
     monacoGraphQLAPI.setDiagnosticSettings({
+      fillLeafsOnComplete: true,
       validateVariablesJSON: {
         [operationUri]: [variablesModel.uri.toString()],
       },
@@ -351,7 +253,6 @@ export function renderGithubLoginButton() {
         if (err) {
           console.error('Error Authenticating with GitHub: ' + err);
         } else {
-          isLoggedIn = true;
           schemaFetcher.setApiToken(data.token);
           localStorage.setItem('ghapi', data.token);
           await render();

@@ -38,10 +38,35 @@ type Droid implements Character {
 """
 example input type
 """
-
 input InputType {
+  """
+  example key
+  """
   key: String!
+  """
+  example value
+  """
   value: Int = 42
+
+  """
+  nesting a whole object!
+  """
+  exampleObject: ChildInputType!
+
+  """
+  list type with fancy default
+  """
+  exampleList: [ChildInputType] = [
+    { isBaby: false, favoriteBook: "Goosebumps" }
+  ]
+}
+
+"""
+my baby
+"""
+input ChildInputType {
+  isBaby: Boolean! = true
+  favoriteBook: String = "Dinotopia"
 }
 
 type TestType {
@@ -52,5 +77,5 @@ type Query {
   hero(episode: Episode): Character
   human(id: String!): Human
   droid(id: String!): Droid
-  inputTypeTest(args: InputType = {key: "key"}): TestType
+  inputTypeTest(args: InputType = { key: "key" }): TestType
 }

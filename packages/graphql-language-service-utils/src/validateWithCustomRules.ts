@@ -18,7 +18,39 @@ import {
   KnownFragmentNamesRule,
   Kind,
   ExecutableDefinitionsRule,
+  // specifiedSDLRules:
+  LoneSchemaDefinitionRule,
+  UniqueOperationTypesRule,
+  UniqueTypeNamesRule,
+  UniqueEnumValueNamesRule,
+  UniqueFieldDefinitionNamesRule,
+  UniqueDirectiveNamesRule,
+  KnownTypeNamesRule,
+  KnownDirectivesRule,
+  UniqueDirectivesPerLocationRule,
+  PossibleTypeExtensionsRule,
+  // KnownArgumentNamesOnDirectivesRule,
+  UniqueArgumentNamesRule,
+  UniqueInputFieldNamesRule,
+  // ProvidedRequiredArgumentsOnDirectivesRule,
 } from 'graphql';
+
+const specifiedSDLRules = [
+  LoneSchemaDefinitionRule,
+  UniqueOperationTypesRule,
+  UniqueTypeNamesRule,
+  UniqueEnumValueNamesRule,
+  UniqueFieldDefinitionNamesRule,
+  UniqueDirectiveNamesRule,
+  KnownTypeNamesRule,
+  KnownDirectivesRule,
+  UniqueDirectivesPerLocationRule,
+  PossibleTypeExtensionsRule,
+  // KnownArgumentNamesOnDirectivesRule,
+  UniqueArgumentNamesRule,
+  UniqueInputFieldNamesRule,
+  // ProvidedRequiredArgumentsOnDirectivesRule,
+];
 
 /**
  * Validate a GraphQL Document optionally with custom validation rules.
@@ -28,6 +60,7 @@ export function validateWithCustomRules(
   ast: DocumentNode,
   customRules?: Array<ValidationRule> | null,
   isRelayCompatMode?: boolean,
+  isSchemaDocument?: boolean,
 ): Array<GraphQLError> {
   const rules = specifiedRules.filter(rule => {
     // Because every fragment is considered for determing model subsets that may
@@ -45,7 +78,9 @@ export function validateWithCustomRules(
   if (customRules) {
     Array.prototype.push.apply(rules, customRules);
   }
-
+  if (isSchemaDocument) {
+    Array.prototype.push.apply(rules, specifiedSDLRules);
+  }
   const errors = validate(schema, ast, rules);
   return errors.filter(error => {
     if (error.message.indexOf('Unknown directive') !== -1 && error.nodes) {

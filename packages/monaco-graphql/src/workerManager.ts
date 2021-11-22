@@ -4,7 +4,6 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import { buildASTSchema, printSchema } from 'graphql';
 import { editor as monacoEditor } from 'monaco-editor';
 import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
@@ -12,7 +11,7 @@ import { GraphQLWorker } from './GraphQLWorker';
 import IDisposable = monaco.IDisposable;
 import Uri = monaco.Uri;
 import { ICreateData } from './typings';
-import type { SchemaConfig } from 'graphql-language-service';
+import { getStringSchema } from './utils';
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 
@@ -27,11 +26,12 @@ export class WorkerManager {
   constructor(defaults: MonacoGraphQLAPI) {
     this._defaults = defaults;
     this._worker = null;
-    this._idleCheckInterval = (setInterval(
+    this._idleCheckInterval = window.setInterval(
       () => this._checkIfIdle(),
       30 * 1000,
-    ) as unknown) as number;
+    );
     this._lastUsedTime = 0;
+    // this is where we re-start the worker on config changes
     this._configChangeListener = this._defaults.onDidChange(() =>
       this._stopWorker(),
     );
@@ -62,54 +62,6 @@ export class WorkerManager {
     }
   }
 
-  /**
-   * Send the most minimal string representation
-   * to the worker for language service instantiation
-   */
-  private getStringSchema = (schemaConfig: SchemaConfig) => {
-    const {
-      schema: graphQLSchema,
-      documentAST,
-      introspectionJSON,
-      introspectionJSONString,
-      documentString,
-      ...rest
-    } = schemaConfig;
-    if (graphQLSchema) {
-      return {
-        ...rest,
-        documentString: printSchema(graphQLSchema),
-      };
-    }
-    if (introspectionJSONString) {
-      return {
-        ...rest,
-        introspectionJSONString,
-      };
-    }
-    if (documentString) {
-      return {
-        ...rest,
-        documentString,
-      };
-    }
-    if (introspectionJSON) {
-      return {
-        ...rest,
-        introspectionJSONString: JSON.stringify(introspectionJSON),
-      };
-    }
-
-    if (documentAST) {
-      const schema = buildASTSchema(documentAST, rest.buildSchemaOptions);
-      return {
-        ...rest,
-        documentString: printSchema(schema),
-      };
-    }
-    throw Error('no schema supplied');
-  };
-
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
     if (!this._client) {
@@ -123,8 +75,9 @@ export class WorkerManager {
           createData: {
             languageId: this._defaults.languageId,
             formattingOptions: this._defaults.formattingOptions,
+            diagnosticSettings: this._defaults.diagnosticSettings,
             languageConfig: {
-              schemas: this._defaults.schemas?.map(this.getStringSchema),
+              schemas: this._defaults.schemas?.map(getStringSchema),
               exteralFragmentDefinitions: this._defaults
                 .externalFragmentDefinitions,
             },
@@ -141,6 +94,7 @@ export class WorkerManager {
   async getLanguageServiceWorker(...resources: Uri[]): Promise<GraphQLWorker> {
     const client = await this._getClient();
     await this._worker!.withSyncedResources(resources);
+
     return client;
   }
 }

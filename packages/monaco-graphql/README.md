@@ -96,16 +96,21 @@ window.MonacoEnvironment = {
   },
 };
 
+const operationModel  = monaco.editor.createModel(
+  'query {}',
+  'graphql',
+  '/operation.graphql',
+);
+
 const operationEditor = monaco.editor.create(
   document.getElementById('someElementId'),
   {
-    value: 'query { }',
+    model: operationModel,
     language: 'graphql',
     formatOnPaste: true,
   },
 );
 
-// not sure if we actually need this but it's in other real-world examples of `monaco.languages.json.jsonDefaultssetDiagnosticOptions()`
 const variablesSchemaUri = monaco.editor.URI.file('/variables-schema.json');
 
 // this makes it easier to operate directly on the model itself
@@ -124,37 +129,21 @@ const variablesEditor = monaco.editor.create(
   },
 );
 
-(async () => {
-  const MonacoGraphQLAPI = await initialize({
-    schemaConfig: { uri: 'https://localhost:1234/graphql' },
-  });
-  async function updateVariables() {
-    const jsonSchema = await GraphQLAPI.getVariablesJSONSchema(
-      operationModel.getValue(),
-    );
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-      validate: true,
-      schemaValidation: 'error', // you can set this to a warning if you want
-      schemas: [
-        {
-          // you may find that one of `uri` or `fileMatch` isn't necessary here if you only have one json editor instance
-          uri: variablesSchemaUri.toString(),
-          fileMatch: [variablesModel.uri.toString()],
-          schema: jsonSchema,
-        },
-      ],
-    });
-  }
+  const MonacoGraphQLAPI = initializeMode({
+    schemas: [{
+      uri: 'https://myschema.com',
+      schema: myGraphqlSchema
+    }],
+  })
+  MonacoGraphQLAPI.setDiagnosticSettings({
+    validateVariablesJson: {
+      [operationModel.uri.toString()]: [variablesModel.uri.toString()]
+    },
+    jsonDiagnosticSettings: {
+      allowComments: true, // allow json, parse with a jsonc parser to make requests
+    }
+  })
 
-  // when the schema changes, we should restart the variable language service
-  MonacoGraphQLAPI.onSchemaLoaded(async () => {
-    await updateVariables();
-  });
-
-  // when the operation changes, we should update the variable language service
-  operationEditor.onDidChangeModelContent(async _event => {
-    await updateVariables();
-  });
 })();
 ```
 

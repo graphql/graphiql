@@ -22,6 +22,7 @@ import {
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
+  AutocompleteSuggestionOptions,
 } from 'graphql-language-service-interface';
 
 import {
@@ -34,6 +35,7 @@ import {
   SchemaConfig,
   SchemaLoader,
 } from './schemaLoader';
+import { JsonSchemaOptions } from 'graphql-language-service-utils/src/getVariablesJSONSchema';
 
 export type GraphQLLanguageConfig = {
   parser?: typeof parse;
@@ -45,10 +47,13 @@ export type GraphQLLanguageConfig = {
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
 
+type SchemaCache = Map<string, SchemaCacheItem>;
+const schemaCache: SchemaCache = new Map();
+
 export class LanguageService {
   private _parser: typeof parse = parse;
   private _schemas: SchemaConfig[] = [];
-  private _schemaCache: Map<string, SchemaCacheItem> = new Map();
+  private _schemaCache: SchemaCache = schemaCache;
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
   private _parseOptions: ParseOptions | undefined = undefined;
   private _exteralFragmentDefinitionNodes:
@@ -191,6 +196,7 @@ export class LanguageService {
     uri: string,
     documentText: string,
     position: IPosition,
+    options?: AutocompleteSuggestionOptions,
   ) => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.length < 1 || !schema?.schema) {
@@ -202,6 +208,7 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
+      options,
     );
   };
   /**
@@ -244,14 +251,18 @@ export class LanguageService {
     }
   };
 
-  public getVariablesJSONSchema = (uri: string, documentText: string) => {
+  public getVariablesJSONSchema = (
+    uri: string,
+    documentText: string,
+    options?: JsonSchemaOptions,
+  ) => {
     const schema = this.getSchemaForFile(uri);
     if (schema && documentText.length > 3) {
       try {
         const documentAST = this.parse(documentText);
         const operationFacts = getOperationASTFacts(documentAST, schema.schema);
         if (operationFacts && operationFacts.variableToType) {
-          return getVariablesJSONSchema(operationFacts.variableToType);
+          return getVariablesJSONSchema(operationFacts.variableToType, options);
         }
       } catch (err) {}
     }

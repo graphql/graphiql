@@ -47,6 +47,7 @@ import {
 import { getOutline } from './getOutline';
 
 import { getASTNodeAtPosition } from 'graphql-language-service-utils';
+import { AutocompleteSuggestionOptions } from '.';
 
 const {
   FRAGMENT_DEFINITION,
@@ -223,6 +224,7 @@ export class GraphQLLanguageService {
     query: string,
     position: IPosition,
     filePath: Uri,
+    options?: AutocompleteSuggestionOptions,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
@@ -241,6 +243,7 @@ export class GraphQLLanguageService {
         position,
         undefined,
         fragmentInfo,
+        options,
       );
     }
     return [];

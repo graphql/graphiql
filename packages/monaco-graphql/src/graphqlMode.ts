@@ -71,12 +71,11 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   let {
     modeConfiguration,
     formattingOptions,
-    schemas,
     diagnosticSettings,
     externalFragmentDefinitions,
   } = defaults;
 
-  defaults.onDidChange(async newDefaults => {
+  defaults.onDidChange(newDefaults => {
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
       registerAllProviders();
@@ -84,14 +83,6 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     if (newDefaults.formattingOptions !== formattingOptions) {
       formattingOptions = newDefaults.formattingOptions;
       registerSchemaLessProviders();
-    }
-    if (newDefaults.schemas !== schemas) {
-      if (newDefaults.schemas) {
-        const _worker = await worker();
-        await _worker.doUpdateSchemas(newDefaults.schemas);
-        schemas = newDefaults.schemas;
-        registerAllProviders();
-      }
     }
     if (
       newDefaults.externalFragmentDefinitions !== externalFragmentDefinitions
