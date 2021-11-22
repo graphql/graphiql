@@ -5,15 +5,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as mode from './graphqlMode';
+import type * as GraphQLMode from './graphqlMode';
 import {
   MonacoGraphQLAPI,
-  schemaDefault,
   formattingDefaults,
   modeConfigurationDefault,
   SchemaEntry,
+  diagnosticSettingDefault,
 } from './api';
-import { MonacoGraphQLInitializeConfig } from './typings';
+import type { MonacoGraphQLInitializeConfig } from './typings';
 
 export { MonacoGraphQLAPI, modeConfigurationDefault, SchemaEntry };
 import * as monaco from 'monaco-editor';
@@ -22,22 +22,15 @@ export * from './typings';
 
 export const LANGUAGE_ID = 'graphql';
 
-export async function initialize({
-  schemaConfig,
+export function initializeMode({
+  schemas,
   formattingOptions,
   modeConfiguration,
+  diagnosticSettings,
 }: MonacoGraphQLInitializeConfig) {
-  monaco.languages.register({
-    id: LANGUAGE_ID,
-    mimetypes: ['application/graphql', 'text/graphql'],
-  });
-
   const api = new MonacoGraphQLAPI({
     languageId: LANGUAGE_ID,
-    schemaConfig: {
-      ...schemaDefault,
-      ...schemaConfig,
-    },
+    schemas,
     formattingOptions: {
       ...formattingDefaults,
       ...formattingOptions,
@@ -50,16 +43,18 @@ export async function initialize({
       ...modeConfigurationDefault,
       ...modeConfiguration,
     },
+    diagnosticSettings: {
+      ...diagnosticSettingDefault,
+      ...diagnosticSettings,
+    },
   });
 
-  const graphqlMode = await getMode();
-  graphqlMode.setupMode(api);
+  monaco.languages.onLanguage(LANGUAGE_ID, () => {
+    getMode().then(mode => mode.setupMode(api));
+  });
 
-  if (api.schemaConfig.loadSchemaOnInit) {
-    api.getSchema().catch(console.error);
-  }
   return api;
 }
-function getMode(): Promise<typeof mode> {
+function getMode(): Promise<typeof GraphQLMode> {
   return import('./graphqlMode');
 }

@@ -11,12 +11,6 @@ import * as monaco from 'monaco-editor';
 import { WorkerManager } from './workerManager';
 import { GraphQLWorker } from './GraphQLWorker';
 
-import {
-  language as monarchLanguage,
-  conf,
-  // @ts-ignore
-} from 'monaco-editor/esm/vs/basic-languages/graphql/graphql.js';
-
 import { MonacoGraphQLAPI } from './api';
 import * as languageFeatures from './languageFeatures';
 
@@ -24,17 +18,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   const disposables: IDisposable[] = [];
   const providers: IDisposable[] = [];
   const client = new WorkerManager(defaults);
-  const { languageId } = defaults;
   disposables.push(client);
-
-  monaco.languages.setLanguageConfiguration(languageId, conf);
-  monaco.languages.setMonarchTokensProvider(languageId, monarchLanguage);
-
-  // let initialLoad = true
-
-  // let's avoid loading the language worker & providers until schema is present
-  // TODO: eventually support schema-agnostic features here. Right now only formatting would be supported,
-  // but the worker we create for that depends on schema.
 
   const worker: languageFeatures.WorkerAccessor = (
     ...uris: Uri[]
@@ -46,76 +30,78 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     }
   };
 
-  // defaults.setWorker(worker);
-
-  function registerSchemaLessProviders(newDefaults: MonacoGraphQLAPI): void {
-    const { modeConfiguration } = newDefaults;
+  function registerSchemaLessProviders(): void {
+    const { modeConfiguration } = defaults;
     if (modeConfiguration.documentFormattingEdits) {
       providers.push(
         monaco.languages.registerDocumentFormattingEditProvider(
-          newDefaults.languageId,
+          defaults.languageId,
           new languageFeatures.DocumentFormattingAdapter(worker),
         ),
       );
     }
   }
 
-  function registerAllProviders(api: MonacoGraphQLAPI): void {
-    const { modeConfiguration } = api;
+  function registerAllProviders(): void {
+    const { modeConfiguration } = defaults;
     disposeAll(providers);
 
     if (modeConfiguration.completionItems) {
       providers.push(
         monaco.languages.registerCompletionItemProvider(
-          api.languageId,
+          defaults.languageId,
           new languageFeatures.CompletionAdapter(worker),
         ),
       );
     }
     if (modeConfiguration.diagnostics) {
-      providers.push(new languageFeatures.DiagnosticsAdapter(api, worker));
+      providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
     }
     if (modeConfiguration.hovers) {
       providers.push(
         monaco.languages.registerHoverProvider(
-          api.languageId,
+          defaults.languageId,
           new languageFeatures.HoverAdapter(worker),
         ),
       );
     }
 
-    registerSchemaLessProviders(api);
+    registerSchemaLessProviders();
   }
+  let {
+    modeConfiguration,
+    formattingOptions,
+    schemas,
+    diagnosticSettings,
+    externalFragmentDefinitions,
+  } = defaults;
 
-  defaults.onDidChange(newDefaults => {
-    let { modeConfiguration, formattingOptions, schemaConfig } = defaults;
+  defaults.onDidChange(async newDefaults => {
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
-      registerAllProviders(newDefaults);
+      registerAllProviders();
     }
     if (newDefaults.formattingOptions !== formattingOptions) {
       formattingOptions = newDefaults.formattingOptions;
-      registerSchemaLessProviders(newDefaults);
+      registerSchemaLessProviders();
     }
-    if (newDefaults.schemaConfig !== schemaConfig) {
-      schemaConfig = newDefaults.schemaConfig;
-      registerAllProviders(newDefaults);
+    if (newDefaults.schemas !== schemas) {
+      if (newDefaults.schemas) {
+        const _worker = await worker();
+        await _worker.doUpdateSchemas(newDefaults.schemas);
+        schemas = newDefaults.schemas;
+        registerAllProviders();
+      }
     }
-  });
-  /**
-   * If a new schema loads, re-register the providers
-   */
-  defaults.onSchemaLoaded(api => {
-    registerAllProviders(api);
-  });
-
-  /**
-   * You can decide whether to loadSchemaOnChange. You can also do this yourself
-   */
-  defaults.onSchemaConfigChange(api => {
-    if (api.schemaConfig.loadSchemaOnChange) {
-      // don't register providers here!
-      api.changeSchema();
+    if (
+      newDefaults.externalFragmentDefinitions !== externalFragmentDefinitions
+    ) {
+      externalFragmentDefinitions = newDefaults.externalFragmentDefinitions;
+      registerAllProviders();
+    }
+    if (newDefaults.diagnosticSettings !== diagnosticSettings) {
+      diagnosticSettings = newDefaults.diagnosticSettings;
+      registerAllProviders();
     }
   });
 
@@ -130,6 +116,6 @@ function asDisposable(disposables: IDisposable[]): IDisposable {
 
 function disposeAll(disposables: IDisposable[]) {
   while (disposables.length) {
-    disposables.pop()?.dispose();
+    disposables.pop()!.dispose();
   }
 }

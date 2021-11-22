@@ -4,7 +4,7 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-
+import { buildASTSchema, printSchema } from 'graphql';
 import { editor as monacoEditor } from 'monaco-editor';
 import { MonacoGraphQLAPI } from './api';
 import { GraphQLWorker } from './GraphQLWorker';
@@ -12,6 +12,7 @@ import { GraphQLWorker } from './GraphQLWorker';
 import IDisposable = monaco.IDisposable;
 import Uri = monaco.Uri;
 import { ICreateData } from './typings';
+import type { SchemaConfig } from 'graphql-language-service';
 
 const STOP_WHEN_IDLE_FOR = 2 * 60 * 1000; // 2min
 
@@ -20,7 +21,6 @@ export class WorkerManager {
   private _idleCheckInterval: number;
   private _lastUsedTime: number;
   private _configChangeListener: IDisposable;
-  private _schemaConfigChangeListener: IDisposable;
   private _worker: monaco.editor.MonacoWebWorker<GraphQLWorker> | null;
   private _client: GraphQLWorker | null;
 
@@ -35,10 +35,6 @@ export class WorkerManager {
     this._configChangeListener = this._defaults.onDidChange(() =>
       this._stopWorker(),
     );
-    // TODO: I think this is causing some minor issues
-    this._schemaConfigChangeListener = this._defaults.onSchemaLoaded(() => {
-      this._stopWorker();
-    });
     this._client = null;
   }
 
@@ -53,7 +49,6 @@ export class WorkerManager {
   dispose(): void {
     clearInterval(this._idleCheckInterval);
     this._configChangeListener.dispose();
-    this._schemaConfigChangeListener.dispose();
     this._stopWorker();
   }
 
@@ -67,33 +62,75 @@ export class WorkerManager {
     }
   }
 
+  /**
+   * Send the most minimal string representation
+   * to the worker for language service instantiation
+   */
+  private getStringSchema = (schemaConfig: SchemaConfig) => {
+    const {
+      schema: graphQLSchema,
+      documentAST,
+      introspectionJSON,
+      introspectionJSONString,
+      documentString,
+      ...rest
+    } = schemaConfig;
+    if (graphQLSchema) {
+      return {
+        ...rest,
+        documentString: printSchema(graphQLSchema),
+      };
+    }
+    if (introspectionJSONString) {
+      return {
+        ...rest,
+        introspectionJSONString,
+      };
+    }
+    if (documentString) {
+      return {
+        ...rest,
+        documentString,
+      };
+    }
+    if (introspectionJSON) {
+      return {
+        ...rest,
+        introspectionJSONString: JSON.stringify(introspectionJSON),
+      };
+    }
+
+    if (documentAST) {
+      const schema = buildASTSchema(documentAST, rest.buildSchemaOptions);
+      return {
+        ...rest,
+        documentString: printSchema(schema),
+      };
+    }
+    throw Error('no schema supplied');
+  };
+
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
     if (!this._client) {
       try {
-        const schema = await this._defaults.getSchema();
-        if (schema) {
-          this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
-            // module that exports the create() method and returns a `GraphQLWorker` instance
-            moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
+        this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
+          // module that exports the create() method and returns a `GraphQLWorker` instance
+          moduleId: 'monaco-graphql/esm/GraphQLWorker.js',
 
-            label: this._defaults.languageId,
-            // passed in to the create() method
-            createData: {
-              languageId: this._defaults.languageId,
-              formattingOptions: this._defaults.formattingOptions,
-              languageConfig: {
-                schemaConfig: {
-                  introspectionJSONString: schema.introspectionJSONString,
-                  documentString: schema.documentString,
-                },
-                exteralFragmentDefinitions: this._defaults
-                  .externalFragmentDefinitions,
-              },
-            } as ICreateData,
-          });
-          this._client = await this._worker.getProxy();
-        }
+          label: this._defaults.languageId,
+          // passed in to the create() method
+          createData: {
+            languageId: this._defaults.languageId,
+            formattingOptions: this._defaults.formattingOptions,
+            languageConfig: {
+              schemas: this._defaults.schemas?.map(this.getStringSchema),
+              exteralFragmentDefinitions: this._defaults
+                .externalFragmentDefinitions,
+            },
+          } as ICreateData,
+        });
+        this._client = await this._worker.getProxy();
       } catch (error) {
         console.error('error loading worker', error);
       }

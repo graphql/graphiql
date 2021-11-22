@@ -1,6 +1,4 @@
 import {
-  getIntrospectionQuery,
-  IntrospectionOptions,
   IntrospectionQuery,
   DocumentNode,
   BuildSchemaOptions,
@@ -12,11 +10,22 @@ import {
 
 import { LanguageService } from './LanguageService';
 
+export type BaseSchemaConfig = {
+  buildSchemaOptions?: BuildSchemaOptions;
+  schema?: GraphQLSchema;
+  documentString?: string;
+  documentAST?: DocumentNode;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
+};
+
 export type SchemaConfig = {
-  uri?: string;
-  // eslint-disable-next-line no-undef
-  requestOpts?: RequestInit;
-  introspectionOptions?: IntrospectionOptions;
+  /**
+   * A unique URI for this schema.
+   * Model data will be set
+   */
+  uri: string;
+  fileMatch?: string[];
   buildSchemaOptions?: BuildSchemaOptions;
   schema?: GraphQLSchema;
   documentString?: string;
@@ -36,7 +45,7 @@ export type SchemaLoaderResult = {
 export type SchemaLoader = (
   schemaConfig: SchemaConfig,
   parser: LanguageService['parse'],
-) => Promise<SchemaLoaderResult | null>;
+) => SchemaLoaderResult;
 
 /**
  * This schema loader is focused on performance for the monaco runtime
@@ -46,14 +55,8 @@ export type SchemaLoader = (
  * @param parser
  * @returns
  */
-export const defaultSchemaLoader: SchemaLoader = async (
-  schemaConfig,
-  parser,
-) => {
+export const defaultSchemaLoader: SchemaLoader = (schemaConfig, parser) => {
   const {
-    requestOpts,
-    uri,
-    introspectionOptions,
     schema: graphQLSchema,
     documentAST,
     introspectionJSON,
@@ -67,13 +70,6 @@ export const defaultSchemaLoader: SchemaLoader = async (
       documentString: printSchema(graphQLSchema),
     };
   }
-  if (introspectionJSON) {
-    return {
-      schema: buildClientSchema(introspectionJSON, buildSchemaOptions),
-      introspectionJSON,
-      introspectionJSONString: JSON.stringify(introspectionJSON),
-    };
-  }
   if (introspectionJSONString) {
     const introspectionJSONResult = JSON.parse(introspectionJSONString);
     return {
@@ -82,6 +78,22 @@ export const defaultSchemaLoader: SchemaLoader = async (
       introspectionJSONString,
     };
   }
+  if (documentString) {
+    const docAST = parser(documentString);
+    return {
+      schema: buildASTSchema(docAST, buildSchemaOptions),
+      documentAST: docAST,
+      documentString,
+    };
+  }
+  if (introspectionJSON) {
+    return {
+      schema: buildClientSchema(introspectionJSON, buildSchemaOptions),
+      introspectionJSON,
+      introspectionJSONString: JSON.stringify(introspectionJSON),
+    };
+  }
+
   if (documentAST) {
     const schema = buildASTSchema(documentAST, buildSchemaOptions);
     return {
@@ -90,33 +102,5 @@ export const defaultSchemaLoader: SchemaLoader = async (
       documentString: printSchema(schema),
     };
   }
-  if (documentString) {
-    return {
-      schema: buildASTSchema(parser(documentString), buildSchemaOptions),
-      documentString,
-    };
-  }
-  // at this point only HTTP requests are left
-  if (!uri) {
-    return null;
-  }
-  const fetchResult = await fetch(uri, {
-    method: requestOpts?.method ?? 'post',
-    body: JSON.stringify({
-      query: getIntrospectionQuery(introspectionOptions),
-      operationName: 'IntrospectionQuery',
-    }),
-    credentials: 'omit',
-    ...requestOpts,
-    headers: {
-      'Content-Type': 'application/json',
-      ...requestOpts?.headers,
-    },
-  });
-  const { data }: { data: IntrospectionQuery } = await fetchResult.json();
-  return {
-    schema: buildClientSchema(data, buildSchemaOptions),
-    introspectionJSON: data,
-    introspectionJSONString: JSON.stringify(data),
-  };
+  throw Error('no schema supplied');
 };

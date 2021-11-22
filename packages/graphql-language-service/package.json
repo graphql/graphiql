@@ -34,9 +34,11 @@
     "graphql-language-service-interface": "^2.9.5",
     "graphql-language-service-parser": "^1.10.3",
     "graphql-language-service-types": "^1.8.6",
-    "graphql-language-service-utils": "^2.6.3"
+    "graphql-language-service-utils": "^2.6.3",
+    "picomatch": "^2.3.0"
   },
   "devDependencies": {
+    "@types/picomatch": "^2.3.0",
     "graphql": "16.0.0-experimental-stream-defer.5"
   }
 }

@@ -7,10 +7,14 @@
 
 import { FormattingOptions, ICreateData } from './typings';
 
-import type { worker, editor, Position } from 'monaco-editor';
+import type { worker, Position } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 
-import { getRange, LanguageService } from 'graphql-language-service';
+import {
+  getRange,
+  LanguageService,
+  SchemaConfig,
+} from 'graphql-language-service';
 
 import {
   toGraphQLPosition,
@@ -37,23 +41,29 @@ export class GraphQLWorker {
     this._formattingOptions = createData.formattingOptions;
   }
 
-  async doValidation(uri: string): Promise<editor.IMarkerData[]> {
-    const document = this._getTextDocument(uri);
-    const graphqlDiagnostics = await this._languageService.getDiagnostics(
+  async doValidation(uri: string) {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      return [];
+    }
+    const graphqlDiagnostics = this._languageService.getDiagnostics(
       uri,
       document,
     );
     return graphqlDiagnostics.map(toMarkerData);
   }
 
-  async doComplete(
-    uri: string,
-    position: Position,
-  ): Promise<GraphQLWorkerCompletionItem[]> {
-    const document = this._getTextDocument(uri);
+  async doComplete(uri: string, position: Position): Promise<GraphQLWorkerCompletionItem[]> {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      console.log('no document');
+      return [];
+    }
     const graphQLPosition = toGraphQLPosition(position);
 
-    const suggestions = await this._languageService.getCompletion(
+    const suggestions = this._languageService.getCompletion(
       uri,
       document,
       graphQLPosition,
@@ -62,10 +72,14 @@ export class GraphQLWorker {
   }
 
   async doHover(uri: string, position: Position) {
-    const document = this._getTextDocument(uri);
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      return null;
+    }
     const graphQLPosition = toGraphQLPosition(position);
 
-    const hover = await this._languageService.getHover(
+    const hover = this._languageService.getHover(
       uri,
       document,
       graphQLPosition,
@@ -86,8 +100,12 @@ export class GraphQLWorker {
   }
 
   public async doGetVariablesJSONSchema(uri: string): Promise<string | null> {
-    const document = this._getTextDocument(uri);
-    const jsonSchema = await this._languageService.getVariablesJSONSchema(
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!documentModel || !document) {
+      return null;
+    }
+    const jsonSchema = this._languageService.getVariablesJSONSchema(
       uri,
       document,
     );
@@ -100,14 +118,19 @@ export class GraphQLWorker {
     return null;
   }
 
-  async doFormat(text: string): Promise<string> {
+  async doFormat(uri: string): Promise<string | null> {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!documentModel || !document) {
+      return null;
+    }
     const prettierStandalone = await import('prettier/standalone');
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
-    return prettierStandalone.format(text, {
-      ...this._formattingOptions,
+    return prettierStandalone.format(document, {
       parser: 'graphql',
       plugins: [prettierGraphqlParser],
+      ...this._formattingOptions?.prettierConfig,
     });
   }
 
@@ -117,12 +140,20 @@ export class GraphQLWorker {
   /**
    * TODO: store this in a proper document cache in the language service
    */
-  private _getTextDocument(_uri: string): string {
+  private _getTextModel(uri: string): monaco.worker.IMirrorModel | null {
     const models = this._ctx.getMirrorModels();
-    if (models.length > 0) {
-      return models[0].getValue();
+    for (const model of models) {
+      if (model.uri.toString() === uri) {
+        return model;
+      }
     }
-    return '';
+    return null;
+  }
+  public doUpdateSchema(schema: SchemaConfig) {
+    return this._languageService.updateSchema(schema);
+  }
+  public doUpdateSchemas(schemas: SchemaConfig[]) {
+    return this._languageService.updateSchemas(schemas);
   }
 }
 

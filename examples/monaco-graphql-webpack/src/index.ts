@@ -2,12 +2,13 @@
 
 import * as monaco from 'monaco-editor';
 import * as JSONC from 'jsonc-parser';
-import { initialize } from 'monaco-graphql';
-import type { MonacoGraphQLAPI } from 'monaco-graphql';
+import { initializeMode } from 'monaco-graphql';
 
 import { createEditors } from './editors';
 
 import './style.css';
+import { getIntrospectionQuery } from 'graphql';
+import type { SchemaConfig } from 'graphql-language-service';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';
 
@@ -21,6 +22,9 @@ const schemaOptions = [
     value: SCHEMA_URL,
     label: 'Github API',
     default: true,
+    headers: {
+      authorization: `Bearer ${API_TOKEN}`,
+    },
   },
   {
     value: 'https://api.spacex.land/graphql',
@@ -28,49 +32,89 @@ const schemaOptions = [
   },
 ];
 
-/**
- * load github schema by default
- */
-(async () => {
-  const api = await initialize({
-    schemaConfig: {
-      uri: SCHEMA_URL,
-      requestOpts: {
-        headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
+const setSchemaStatus = (message: string) => {
+  const schemaStatus = document.getElementById('schema-status');
+  if (schemaStatus) {
+    const html = `<small>${message}</small>`;
+    schemaStatus.innerHTML = html;
+  }
+};
+
+class MySchemaFetcher {
+  private _options: typeof schemaOptions;
+  private _currentSchema: typeof schemaOptions[0];
+  private _schemaCache = new Map<string, SchemaConfig>();
+  constructor(options = schemaOptions) {
+    this._options = options;
+    this._currentSchema = schemaOptions[0];
+  }
+  public get currentSchema() {
+    return this._currentSchema;
+  }
+  async getSchema() {
+    const cacheItem = this._schemaCache.get(this._currentSchema.value);
+    if (cacheItem) {
+      return cacheItem;
+    }
+    return this.loadSchema();
+  }
+  async loadSchema() {
+    setSchemaStatus('Schema Loading...');
+    const url = this._currentSchema.value as string;
+    const result = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        ...this._currentSchema.headers,
       },
-    },
-  });
-  await render(api);
+      body: JSON.stringify(
+        {
+          query: getIntrospectionQuery(),
+          operationName: 'IntrospectionQuery',
+        },
+        null,
+        2,
+      ),
+    });
+    this._schemaCache.set(url, {
+      introspectionJSON: (await result.json()).data,
+      uri: monaco.Uri.parse(url).toString(),
+    });
+
+    setSchemaStatus('Schema Loaded');
+
+    return this._schemaCache.get(this._currentSchema.value);
+  }
+  async changeSchema(uri: string) {
+    this._currentSchema = this._options.find(opt => opt.value === uri)!;
+    return this.getSchema();
+  }
+}
+
+const schemaFetcher = new MySchemaFetcher(schemaOptions);
+
+(async () => {
+  await render();
 })();
 
-async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
-  /**
-   * Configure monaco-graphql prettier instance
-   */
-  monacoGraphQLAPI.setFormattingOptions({
-    prettierConfig: {
-      printWidth: 120,
-    },
-  });
-
-  /**
-   * Schema status
-   */
-
-  monacoGraphQLAPI.onSchemaLoaded(() => {
-    setSchemaStatus('Schema Loaded.');
-  });
-
-  monacoGraphQLAPI.onSchemaConfigChange(() => {
-    setSchemaStatus('Schema Loading....');
-  });
-
+async function render() {
   if (!isLoggedIn && !API_TOKEN) {
-    renderGithubLoginButton(monacoGraphQLAPI);
+    renderGithubLoginButton();
     return;
   } else {
+    const monacoGraphQLAPI = initializeMode({
+      // diagnosticSettings: {
+      //   validateVariablesJSON: {
+      //     [operationModel.uri.toString()]: [variablesModel.uri.toString()],
+      //   },
+      // },
+      formattingOptions: {
+        prettierConfig: {
+          printWidth: 120,
+        },
+      },
+    });
+
     const toolbar = document.getElementById('toolbar')!;
     const editors = createEditors();
     const {
@@ -84,64 +128,48 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
       toolbar,
     );
 
+    const operationUri = operationModel.uri.toString();
+
+    const schema = await schemaFetcher.loadSchema();
+    if (schema) {
+      monacoGraphQLAPI.setSchemaConfig([
+        { ...schema, fileMatch: [operationUri] },
+      ]);
+    }
+
+    monacoGraphQLAPI.setDiagnosticSettings({
+      validateVariablesJSON: {
+        [operationUri]: [variablesModel.uri.toString()],
+      },
+    });
+
     /**
      * Choosing a new schema
      */
-    schemaPicker.addEventListener('input', function SchemaSelectionHandler(
-      _ev: Event,
-    ) {
-      if (schemaPicker.value !== monacoGraphQLAPI.schemaConfig.uri) {
-        monacoGraphQLAPI.setSchemaUri(schemaPicker.value);
-        setSchemaStatus('Schema Loading...');
-      }
-    });
+    schemaPicker.addEventListener(
+      'input',
+      async function SchemaSelectionHandler(_ev: Event) {
+        if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
+          const schemaResult = await schemaFetcher.changeSchema(
+            schemaPicker.value,
+          );
+          if (schemaResult) {
+            monacoGraphQLAPI.setSchemaConfig([
+              {
+                ...schemaResult,
+                fileMatch: [operationModel.uri.toString()],
+              },
+            ]);
+          }
+        }
+      },
+    );
 
     /**
      * Reloading your schema
      */
-    schemaReloadButton.addEventListener('click', async () => {
-      setSchemaStatus('Schema Loading...');
-      await monacoGraphQLAPI.reloadSchema();
-    });
-
-    const variablesSchemaUri = monaco.Uri.file('/1/variables-schema.json');
-
-    /**
-     * VARIABLES JSON LANGUAGE FEATURES!!!!
-     */
-
-    // eslint-disable-next-line no-inner-declarations
-    async function updateVariables() {
-      // get the variables JSONSchema from the operationModel value
-      const jsonSchema = await monacoGraphQLAPI.getVariablesJSONSchema(
-        operationModel.uri.toString(),
-        operationModel.getValue(),
-      );
-      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        validate: true,
-        schemaValidation: 'error',
-        allowComments: true,
-        schemas: [
-          {
-            // just make sure this is unique for each operation.
-            // monaco can handle many models at once
-            uri: variablesSchemaUri.toString(),
-            // this should ensure that it only matches the current json model
-            fileMatch: [variablesModel.uri.toString()],
-            schema: jsonSchema,
-          },
-        ],
-      });
-    }
-
-    // this ensures that the variables JSON support reloads when the schema changes
-    monacoGraphQLAPI.onSchemaLoaded(async () => {
-      await updateVariables();
-      // and... every time the operation changes? or maybe debounce it?
-      // might need to make this an internal part of languageFeatures.ts
-      operationEditor.onDidChangeModelContent(async _event => {
-        await updateVariables();
-      });
+    schemaReloadButton.addEventListener('click', () => {
+      schemaFetcher.loadSchema().then();
     });
 
     /**
@@ -149,7 +177,7 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
      * monaco-graphql itself doesn't do anything with handling operations yet, but it may soon!
      */
 
-    const getOperationHandler = (api: MonacoGraphQLAPI) => {
+    const getOperationHandler = () => {
       return async () => {
         try {
           const operation = operationEditor.getValue();
@@ -162,14 +190,17 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
           if (parsedVariables && Object.keys(parsedVariables).length) {
             body.variables = JSON.stringify(parsedVariables, null, 2);
           }
-          const result = await fetch(api.schemaConfig.uri as string, {
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-              ...api?.schemaConfig?.requestOpts?.headers,
+          const result = await fetch(
+            schemaFetcher.currentSchema.value as string,
+            {
+              method: 'POST',
+              headers: {
+                'content-type': 'application/json',
+                ...schemaFetcher.currentSchema?.headers,
+              },
+              body: JSON.stringify(body, null, 2),
             },
-            body: JSON.stringify(body, null, 2),
-          });
+          );
 
           const resultText = await result.text();
           resultsEditor.setValue(
@@ -183,7 +214,7 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
       };
     };
 
-    const operationHandler = getOperationHandler(monacoGraphQLAPI);
+    const operationHandler = getOperationHandler();
 
     executeOpButton.addEventListener('click', operationHandler);
     executeOpButton.addEventListener('touchend', operationHandler);
@@ -224,16 +255,6 @@ async function render(monacoGraphQLAPI: MonacoGraphQLAPI) {
     operationEditor.addAction(reloadAction);
   }
 }
-
-// RENDERING - All the irrelevant vanillajs code you don't want to see
-
-const setSchemaStatus = (message: string) => {
-  const schemaStatus = document.getElementById('schema-status');
-  if (schemaStatus) {
-    const html = `<small>${message}</small>`;
-    schemaStatus.innerHTML = html;
-  }
-};
 
 function renderToolbar(toolbar: HTMLElement) {
   toolbar.innerHTML = '';
@@ -286,7 +307,7 @@ function getSchemaPicker(): HTMLSelectElement {
   return schemaPicker;
 }
 
-export function renderGithubLoginButton(api: MonacoGraphQLAPI) {
+export function renderGithubLoginButton() {
   const githubButton = document.createElement('button');
 
   githubButton.id = 'login';
@@ -305,7 +326,7 @@ export function renderGithubLoginButton(api: MonacoGraphQLAPI) {
           isLoggedIn = true;
           API_TOKEN = data.token;
           localStorage.setItem('ghapi', data.token);
-          await render(api);
+          await render();
         }
       },
     );

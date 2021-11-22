@@ -39,23 +39,44 @@ export class DiagnosticsAdapter {
     const onModelAdd = (model: editor.IModel): void => {
       const modeId = model.getModeId();
       if (modeId !== this.defaults.languageId) {
+        // it is tempting to load json models we cared about here
+        // into the webworker, however setDiagnosticOptions() needs
+        // to be called here from main process anyways, and the worker
+        // is already generating json schema itself!
         return;
       }
+      const modelUri = model.uri.toString();
+      // if the config changes, this adapter will be re-instantiated, so we only need to check this once
+      const jsonValidationForModel =
+        defaults.diagnosticSettings?.validateVariablesJSON &&
+        defaults.diagnosticSettings.validateVariablesJSON[modelUri];
 
       let handle: number;
-      this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
+      this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(handle);
         // @ts-ignore
-        handle = setTimeout(() => this._doValidate(model.uri, modeId), 200);
+        handle = setTimeout(() => {
+          this._doValidate(model.uri, modeId);
+          if (jsonValidationForModel) {
+            this._doValidateVariablesJsonSchema(
+              model.uri,
+              jsonValidationForModel,
+            );
+          }
+        }, 200);
       });
 
       this._doValidate(model.uri, modeId);
+      if (jsonValidationForModel) {
+        this._doValidateVariablesJsonSchema(model.uri, jsonValidationForModel);
+      }
     };
 
     const onModelRemoved = (model: editor.IModel): void => {
       editor.setModelMarkers(model, this.defaults.languageId, []);
       const uriStr = model.uri.toString();
       const listener = this._listener[uriStr];
+
       if (listener) {
         listener.dispose();
         delete this._listener[uriStr];
@@ -111,6 +132,55 @@ export class DiagnosticsAdapter {
       languageId,
       diagnostics,
     );
+  }
+  private async _doValidateVariablesJsonSchema(
+    resource: Uri,
+    variablesUris: string[],
+  ) {
+    const worker = await this._worker(resource);
+
+    if (!variablesUris || variablesUris.length < 1) {
+      throw Error('no variables URI strings provided to validate');
+    }
+
+    const jsonSchema = await worker.doGetVariablesJSONSchema(
+      resource.toString(),
+    );
+    if (!jsonSchema) {
+      return;
+    }
+
+    const schemaUri = monaco.Uri.file(
+      variablesUris[0].replace('.json', '-schema.json'),
+    ).toString();
+
+    const schemas: monaco.languages.json.DiagnosticsOptions['schemas'] = [];
+
+    const existingSchemas =
+      monaco.languages.json.jsonDefaults.diagnosticsOptions?.schemas;
+    const configResult = {
+      uri: schemaUri,
+      schema: JSON.parse(jsonSchema),
+      fileMatch: variablesUris,
+    };
+    if (existingSchemas) {
+      const exists = existingSchemas.findIndex(({ uri }) => uri === schemaUri);
+
+      if (exists >= 0) {
+        existingSchemas[exists] = configResult;
+        schemas.push(...existingSchemas);
+      } else {
+        schemas.push(configResult);
+      }
+    } else {
+      schemas.push(configResult);
+    }
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      schemaValidation: 'error',
+      schemas,
+      enableSchemaRequest: false,
+    });
   }
 }
 
@@ -228,11 +298,7 @@ export class CompletionAdapter
 
 export class DocumentFormattingAdapter
   implements monaco.languages.DocumentFormattingEditProvider {
-  constructor(
-    // private _defaults: MonacoGraphQLAPIImpl,
-    private _worker: WorkerAccessor,
-  ) {
-    // this._defaults = _defaults;
+  constructor(private _worker: WorkerAccessor) {
     this._worker = _worker;
   }
   async provideDocumentFormattingEdits(
@@ -241,9 +307,11 @@ export class DocumentFormattingAdapter
     _token: CancellationToken,
   ) {
     const worker = await this._worker(document.uri);
-    const text = document.getValue();
 
-    const formatted = await worker.doFormat(text);
+    const formatted = await worker.doFormat(document.uri.toString());
+    if (!formatted) {
+      return [];
+    }
     return [
       {
         range: document.getFullModelRange(),
@@ -272,8 +340,9 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
       };
     }
 
-    // @ts-ignore
-    return;
+    return {
+      contents: [],
+    };
   }
 
   dispose() {}

@@ -71,21 +71,27 @@ export interface ModeConfiguration {
   readonly selectionRanges?: boolean;
 }
 
-export type MonacoGraphQLSchemaConfig = {
+export type DiagnosticSettings = {
   /**
-   * should the schema load when calling `initialize()` ?
-   * @default true
+   * whilst editing operations, alongside graphql validation,
+   * generate json schema for variables to validate json schema models
+   * @example
+   * ```ts
+   * validateVariablesJSON: {
+   *   "monaco://myoperation.graphql": ["monaco://myvariables.json"]
+   *  }
+   * ```
    */
-  loadSchemaOnInit?: boolean;
+  validateVariablesJSON?: Record<string, string[]>;
   /**
-   * should the schema reload when calling a change or update function ?
-   * @default true
+   * SeverityLevel for json variable validations
    */
-  loadSchemaOnChange?: boolean;
-} & SchemaConfig;
+  validateVariablesLevel?: monaco.languages.json.SeverityLevel;
+};
 
 export type MonacoGraphQLInitializeConfig = {
-  schemaConfig: MonacoGraphQLSchemaConfig;
+  schemas?: SchemaConfig[];
+  diagnosticSettings?: DiagnosticSettings;
   formattingOptions?: FormattingOptions;
   modeConfiguration?: ModeConfiguration;
 };

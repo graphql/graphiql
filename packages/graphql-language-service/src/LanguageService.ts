@@ -11,40 +11,45 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   visit,
-  // introspectionFromSchema,
-  IntrospectionQuery,
+  DocumentNode,
 } from 'graphql';
+
+import { default as picomatch } from 'picomatch';
+
 import type { IPosition } from 'graphql-language-service-types';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getHoverInformation,
-  HoverConfig
+  HoverConfig,
 } from 'graphql-language-service-interface';
-import {
-  defaultSchemaLoader,
-  SchemaConfig,
-} from './schemaLoader';
 
 import {
   getVariablesJSONSchema,
   getOperationASTFacts,
 } from 'graphql-language-service-utils';
 
+import {
+  defaultSchemaLoader,
+  SchemaConfig,
+  SchemaLoader,
+} from './schemaLoader';
+
 export type GraphQLLanguageConfig = {
   parser?: typeof parse;
-  jsonParser?: typeof JSON.parse;
   schemaLoader?: typeof defaultSchemaLoader;
   parseOptions?: ParseOptions;
-  schemaConfig: SchemaConfig;
+  schemas?: SchemaConfig[];
   exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
 };
 
+type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
+
 export class LanguageService {
   private _parser: typeof parse = parse;
-  // private _jsonParser: typeof JSON.parse;
-  private _schemaConfig: SchemaConfig;
-  private _schemaLoader: typeof defaultSchemaLoader = defaultSchemaLoader;
+  private _schemas: SchemaConfig[] = [];
+  private _schemaCache: Map<string, SchemaCacheItem> = new Map();
+  private _schemaLoader: SchemaLoader = defaultSchemaLoader;
   private _parseOptions: ParseOptions | undefined = undefined;
   private _exteralFragmentDefinitionNodes:
     | FragmentDefinitionNode[]
@@ -52,21 +57,17 @@ export class LanguageService {
   private _exteralFragmentDefinitionsString: string | null = null;
   constructor({
     parser,
-    // jsonParser,
-    schemaLoader,
-    schemaConfig,
+    schemas,
     parseOptions,
     exteralFragmentDefinitions,
   }: GraphQLLanguageConfig) {
-    this._schemaConfig = schemaConfig;
+    this._schemaLoader = defaultSchemaLoader;
+    if (schemas) {
+      this._schemas = schemas;
+    }
     if (parser) {
       this._parser = parser;
-    }
-    // if(jsonParser) {
-    //   this._jsonParser = jsonParser
-    // }
-    if (schemaLoader) {
-      this._schemaLoader = schemaLoader;
+      this._cacheSchemas();
     }
 
     if (parseOptions) {
@@ -81,35 +82,46 @@ export class LanguageService {
     }
   }
 
-  public get schema() {
-    return this._schemaConfig.schema;
+  private _cacheSchemas() {
+    this._schemas.forEach(schema => this._cacheSchema(schema));
   }
 
-  public get schemaConfig() {
-    return this._schemaConfig;
+  private _cacheSchema(schema: SchemaConfig) {
+    const schemaResult = this._schemaLoader(schema, this.parse);
+    return this._schemaCache.set(schema.uri, {
+      ...schema,
+      ...schemaResult,
+    });
   }
 
-  public get introspectionJSON(): IntrospectionQuery {
-    return this._schemaConfig.introspectionJSON!;
-  }
-
-  public async getSchema() {
-    if (this.schema) {
-      return this.schema;
+  public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
+    const schema = this._schemas.find(schemaConfig => {
+      if (!schemaConfig.fileMatch) {
+        return false;
+      }
+      return schemaConfig.fileMatch.some(glob => {
+        const isMatch = picomatch(glob);
+        return isMatch(uri);
+      });
+    });
+    if (schema) {
+      const cacheEntry = this._schemaCache.get(schema.uri);
+      if (cacheEntry) {
+        return cacheEntry;
+      }
+      const cache = this._cacheSchema(schema);
+      return cache.get(schema.uri);
     }
-    return this.loadSchema();
   }
 
-  public async getExternalFragmentDefinitions(): Promise<
-    FragmentDefinitionNode[]
-  > {
+  public getExternalFragmentDefinitions(): FragmentDefinitionNode[] {
     if (
       !this._exteralFragmentDefinitionNodes &&
       this._exteralFragmentDefinitionsString
     ) {
       const definitionNodes: FragmentDefinitionNode[] = [];
       try {
-        visit(await this._parser(this._exteralFragmentDefinitionsString), {
+        visit(this._parser(this._exteralFragmentDefinitionsString), {
           FragmentDefinition(node) {
             definitionNodes.push(node);
           },
@@ -126,93 +138,118 @@ export class LanguageService {
   }
 
   /**
-   * setSchema statically, ignoring URI
+   * override `schemas` config entirely
    * @param schema {schemaString}
    */
-  public async setSchema(schema: GraphQLSchema): Promise<void> {
-    this._schemaConfig.schema = schema;
-    await this.loadSchema();
+  public async updateSchemas(schemas: SchemaConfig[]): Promise<void> {
+    this._schemas = schemas;
+    this._cacheSchemas();
   }
 
-  public async loadSchema(): Promise<GraphQLSchema | null> {
-    const result = await this._schemaLoader(this._schemaConfig, this.parse);
-    if (result?.schema) {
-      this._schemaConfig.schema = result.schema;
-      if (result.introspectionJSON && !result.introspectionJSONString) {
-        this._schemaConfig.introspectionJSON = result.introspectionJSON;
-        this._schemaConfig.introspectionJSONString = JSON.stringify(
-          result.introspectionJSONString,
-        );
-      } else if (result.introspectionJSONString) {
-        this._schemaConfig.introspectionJSON = JSON.parse(
-          result.introspectionJSONString,
-        );
-        this._schemaConfig.introspectionJSONString =
-          result.introspectionJSONString;
-      }
+  /**
+   * overwrite an existing schema config by Uri string
+   * @param schema {schemaString}
+   */
+  public updateSchema(schema: SchemaConfig): void {
+    const schemaIndex = this._schemas.findIndex(c => c.uri === schema.uri);
+    if (schemaIndex < 0) {
+      console.warn(
+        'updateSchema could not find a schema in your config by that URI',
+        schema.uri,
+      );
+      return;
     }
-
-    return this._schemaConfig.schema ?? null;
+    this._schemas[schemaIndex] = schema;
+    this._cacheSchema(schema);
   }
 
-  public parse(text: string, options?: ParseOptions) {
+  /**
+   * add a schema to the config
+   * @param schema {schemaString}
+   */
+  public addSchema(schema: SchemaConfig): void {
+    this._schemas.push(schema);
+    this._cacheSchema(schema);
+  }
+  /**
+   * Uses the configured parser
+   * @param text
+   * @param options
+   * @returns {DocumentNode}
+   */
+  public parse(text: string, options?: ParseOptions): DocumentNode {
     return this._parser(text, options || this._parseOptions);
   }
-
-  public getCompletion = async (
-    _uri: string,
+  /**
+   * get completion for the given uri and matching schema
+   * @param uri
+   * @param documentText
+   * @param position
+   * @returns
+   */
+  public getCompletion = (
+    uri: string,
     documentText: string,
     position: IPosition,
   ) => {
-    const schema = await this.getSchema();
-    if (!documentText || documentText.length < 1 || !schema) {
+    const schema = this.getSchemaForFile(uri);
+    if (!documentText || documentText.length < 1 || !schema?.schema) {
       return [];
     }
     return getAutocompleteSuggestions(
-      schema,
+      schema.schema,
       documentText,
       position,
       undefined,
-      await this.getExternalFragmentDefinitions(),
+      this.getExternalFragmentDefinitions(),
     );
   };
-  // todo: use uri arguments in the metheods below to read from a document cache? however json lang service's
-  // document cache is actually instantiated in monaco-json using ctx._getMirrorModels()
-  public getDiagnostics = async (
-    _uri: string,
+  /**
+   * get diagnostics using graphql validation
+   * @param uri
+   * @param documentText
+   * @param customRules
+   * @returns
+   */
+  public getDiagnostics = (
+    uri: string,
     documentText: string,
     customRules?: ValidationRule[],
   ) => {
-    const schema = await this.getSchema();
-    if (!documentText || documentText.length < 1 || !schema) {
+    const schema = this.getSchemaForFile(uri);
+    if (!documentText || documentText.length < 1 || !schema?.schema) {
       return [];
     }
-    return getDiagnostics(documentText, schema, customRules);
+    return getDiagnostics(documentText, schema.schema, customRules);
   };
 
-  public getHover = async (
-    _uri: string,
+  public getHover = (
+    uri: string,
     documentText: string,
     position: IPosition,
     options?: HoverConfig,
-  ) =>
-    getHoverInformation(
-      (await this.getSchema()) as GraphQLSchema,
-      documentText,
-      position,
-      undefined,
-      { useMarkdown: true, ...options },
-    );
-
-  public getVariablesJSONSchema = async (
-    _uri: string,
-    documentText: string,
   ) => {
-    const schema = await this.getSchema();
+    const schema = this.getSchemaForFile(uri);
+    if (schema && documentText?.length > 3) {
+      return getHoverInformation(
+        schema.schema,
+        documentText,
+        position,
+        undefined,
+        {
+          useMarkdown: true,
+          ...options,
+        },
+      );
+    }
+  };
+
+  public getVariablesJSONSchema = (uri: string, documentText: string) => {
+    const schema = this.getSchemaForFile(uri);
     if (schema && documentText.length > 3) {
       try {
-        const documentAST = await this.parse(documentText);
-        const operationFacts = getOperationASTFacts(documentAST, schema);
+        const documentAST = this.parse(documentText);
+        const operationFacts = getOperationASTFacts(documentAST, schema.schema);
         if (operationFacts && operationFacts.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType);
         }
