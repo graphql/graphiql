@@ -110,7 +110,7 @@ export type GenericError =
 
 export type GraphiQLProps = {
   fetcher: Fetcher;
-  schema?: GraphQLSchema;
+  schema?: GraphQLSchema | null;
   validationRules?: ValidationRule[];
   query?: string;
   variables?: string;
@@ -145,7 +145,7 @@ export type GraphiQLProps = {
 };
 
 export type GraphiQLState = {
-  schema?: GraphQLSchema;
+  schema?: GraphQLSchema | null;
   query?: string;
   variables?: string;
   headers?: string;
@@ -1399,7 +1399,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     query: string,
     operationName?: string,
     prevOperations?: OperationDefinitionNode[],
-    schema?: GraphQLSchema,
+    schema?: GraphQLSchema | null,
   ) => {
     const queryFacts = getOperationFacts(schema, query);
     if (queryFacts) {

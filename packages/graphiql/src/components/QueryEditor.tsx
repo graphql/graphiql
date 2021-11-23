@@ -23,7 +23,7 @@ const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
 type QueryEditorProps = {
-  schema?: GraphQLSchema;
+  schema?: GraphQLSchema | null;
   validationRules?: ValidationRule[];
   value?: string;
   onEdit?: (value: string) => void;
