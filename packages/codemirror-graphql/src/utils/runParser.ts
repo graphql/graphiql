@@ -12,7 +12,7 @@ import {
   onlineParser,
   ParserOptions,
   State,
-} from 'graphql-language-service-parser';
+} from 'graphql-language-service';
 
 export default function runParser(
   sourceText: string,

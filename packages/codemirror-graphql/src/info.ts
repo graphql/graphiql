@@ -31,7 +31,7 @@ import {
   SchemaReference,
 } from './utils/SchemaReference';
 import './utils/info-addon';
-import { Maybe } from 'graphql-language-service-types';
+import type { Maybe } from 'graphql-language-service';
 
 export interface GraphQLInfoOptions {
   schema?: GraphQLSchema;

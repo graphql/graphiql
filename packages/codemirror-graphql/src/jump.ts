@@ -22,7 +22,7 @@ import {
 } from './utils/SchemaReference';
 import './utils/jump-addon';
 import { GraphQLSchema } from 'graphql';
-import { State } from 'graphql-language-service-parser';
+import type { State } from 'graphql-language-service';
 
 export interface GraphQLJumpOptions {
   schema?: GraphQLSchema;
