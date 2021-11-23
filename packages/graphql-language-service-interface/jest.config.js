@@ -1,1 +1,1 @@
-module.exports = require('../../jest.config.base')(__dirname);
+module.exports = require('../../jest.config.base')(__dirname, 'node');

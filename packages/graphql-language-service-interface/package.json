@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
-    "graphql-config": "^3.0.2"
+    "graphql-config": "^4.1.0",
+    "vscode-languageserver-protocol": "^3.16.0"
   }
 }
