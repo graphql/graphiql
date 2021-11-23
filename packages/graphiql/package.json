@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -43,9 +43,9 @@
     "webpack": "webpack --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.4.0",
+    "@graphiql/toolkit": "^0.4.1",
     "codemirror": "^5.58.2",
-    "codemirror-graphql": "^1.1.0",
+    "codemirror-graphql": "^1.2.0",
     "copy-to-clipboard": "^3.2.0",
     "dset": "^3.1.0",
     "entities": "^2.0.0",

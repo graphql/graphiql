@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.5.2
+
+### Patch Changes
+
+- Updated dependencies [[`dec207e7`](https://github.com/graphql/graphiql/commit/dec207e74f0506db069482cc30f8cd1f045d8107), [`b79bf304`](https://github.com/graphql/graphiql/commit/b79bf304045add4b5c3b2539dd6b551a64e6ed87), [`d0c22c4f`](https://github.com/graphql/graphiql/commit/d0c22c4fce5ea39611c7ecee553943fdf27fd03e)]:
+  - @graphiql/toolkit@0.4.1
+  - codemirror-graphql@1.2.0
+
 ## 1.5.1
 
 ### Patch Changes

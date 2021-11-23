@@ -1,5 +1,12 @@
 # graphql-language-service-server
 
+## 2.7.2
+
+### Patch Changes
+
+- [`7e98c6ff`](https://github.com/graphql/graphiql/commit/7e98c6fff3b1c62954c9c8d902ac64ddbf23fc5d) Thanks [@acao](https://github.com/acao)! - ugprade graphql-language-service-server to use graphql-config 4.1.0!
+  adds support for .ts and .toml config files in the language server, amongst many other improvements!
+
 ## 2.7.1
 
 ### Patch Changes
