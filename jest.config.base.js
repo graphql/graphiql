@@ -1,8 +1,11 @@
 const path = require('path');
 
-module.exports = dir => {
+module.exports = (dir, env = 'dom') => {
   const package = require(`${dir}/package.json`);
-
+  const setupFilesAfterEnv = [];
+  if (env === 'dom') {
+    setupFilesAfterEnv.push(path.join(__dirname, '/resources/test.config.js'));
+  }
   return {
     globals: {
       'ts-jest': {
@@ -12,7 +15,7 @@ module.exports = dir => {
     clearMocks: true,
     collectCoverage: true,
     coverageDirectory: `${__dirname}/coverage/jest`,
-    setupFilesAfterEnv: [path.join(__dirname, '/resources/test.config.js')],
+    setupFilesAfterEnv,
     moduleNameMapper: {
       '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
         'identity-obj-proxy',
@@ -23,7 +26,8 @@ module.exports = dir => {
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
-    testEnvironment: require.resolve('jest-environment-jsdom'),
+    testEnvironment:
+      env === 'dom' ? require.resolve('jest-environment-jsdom') : `node`,
     testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
     collectCoverageFrom: [
       '**/src/**/*.{js,jsx,ts,tsx}',
