@@ -22,10 +22,7 @@
   ],
   "references": [
     {
-      "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphql-language-service-parser"
+      "path": "../graphql-language-service"
     }
   ]
 }

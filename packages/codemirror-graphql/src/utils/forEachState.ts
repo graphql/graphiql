@@ -7,8 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  */
 
-import { State } from 'graphql-language-service-parser';
-import { Maybe } from 'graphql-language-service-types';
+import type { State, Maybe } from 'graphql-language-service';
 
 // Utility for iterating through a CodeMirror parse state stack bottom-up.
 export default function forEachState(stack: State, fn: (state: State) => void) {

@@ -9,7 +9,7 @@
 
 import CodeMirror from 'codemirror';
 import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
-import { getDiagnostics } from 'graphql-language-service-interface';
+import { getDiagnostics } from 'graphql-language-service';
 
 const SEVERITY = ['error', 'warning', 'information', 'hint'];
 const TYPE: Record<string, string> = {
