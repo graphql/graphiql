@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.2.0
+
+### Minor Changes
+
+- [`d0c22c4f`](https://github.com/graphql/graphiql/commit/d0c22c4fce5ea39611c7ecee553943fdf27fd03e) [#2035](https://github.com/graphql/graphiql/pull/2035) Thanks [@imolorhe](https://github.com/imolorhe)! - Added Codemirror 6 legacy support
+
+### Patch Changes
+
+- [`b79bf304`](https://github.com/graphql/graphiql/commit/b79bf304045add4b5c3b2539dd6b551a64e6ed87) [#2037](https://github.com/graphql/graphiql/pull/2037) Thanks [@acao](https://github.com/acao)! - Resolves #1944, replaces graphql-language-service-utils with graphql-language-service in codemirror-graphql
+
 ## 1.1.0
 
 ### Minor Changes
