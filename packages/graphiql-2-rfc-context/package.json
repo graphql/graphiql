@@ -57,7 +57,7 @@
     "theme-ui": "^0.3.1"
   },
   "peerDependencies": {
-    "graphql": ">= 15.5.0 <= 16.0.0-experimental-stream-defer.5",
+    "graphql": "^15.5.0 || ^16.0.0",
     "prop-types": ">=15.5.0",
     "react": "^16.8.0",
     "react-dom": "^16.8.0"
