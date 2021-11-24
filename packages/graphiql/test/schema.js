@@ -333,7 +333,7 @@ const TestSubscriptionType = new GraphQLObjectType({
       },
       async *subscribe(args) {
         for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
-          if (args.delay) {
+          if (args && args.delay) {
             await sleep(args.delay);
           }
           yield { message: hi };
