@@ -1,5 +1,14 @@
 # graphql-language-service-parser
 
+## 1.10.1
+
+### Patch Changes
+
+- [`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf) [#2045](https://github.com/graphql/graphiql/pull/2045) Thanks [@acao](https://github.com/acao)! - fix graphql-js peer dependencies - [#2044](https://github.com/graphql/graphiql/pull/2044)
+
+- Updated dependencies [[`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf)]:
+  - graphql-language-service-types@1.8.4
+
 ## 1.10.0
 
 ### Minor Changes

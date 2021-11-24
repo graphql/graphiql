@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.5.3
+
+### Patch Changes
+
+- [`c83d1d4c`](https://github.com/graphql/graphiql/commit/c83d1d4c518ad1b0862aae5f46359dfaee00dda1) Thanks [@kikkupico](https://github.com/kikkupico)! - fix `schema` type nullability for #2028
+
+* [`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf) [#2045](https://github.com/graphql/graphiql/pull/2045) Thanks [@acao](https://github.com/acao)! - fix graphql-js peer dependencies - [#2044](https://github.com/graphql/graphiql/pull/2044)
+
+* Updated dependencies [[`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf)]:
+  - codemirror-graphql@1.2.1
+  - @graphiql/toolkit@0.4.2
+  - graphql-language-service@3.2.2
+
 ## 1.5.2
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # Change Log
 
+## 0.6.2
+
+### Patch Changes
+
+- [`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf) [#2045](https://github.com/graphql/graphiql/pull/2045) Thanks [@acao](https://github.com/acao)! - fix graphql-js peer dependencies - [#2044](https://github.com/graphql/graphiql/pull/2044)
+
+- Updated dependencies [[`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf)]:
+  - graphql-language-service@3.2.2
+  - graphql-language-service-utils@2.6.1
+
 ## 0.6.1
 
 ### Patch Changes
