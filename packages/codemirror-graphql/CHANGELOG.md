@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.2.2
+
+### Patch Changes
+
+- [`bdd57312`](https://github.com/graphql/graphiql/commit/bdd573129844168749aba0aaa20e31b9da81aacf) [#2047](https://github.com/graphql/graphiql/pull/2047) Thanks [@willstott101](https://github.com/willstott101)! - Source code included in all packages to fix source maps. codemirror-graphql includes esm build in package.
+
+* [`8b486555`](https://github.com/graphql/graphiql/commit/8b486555e2aa4d90891070a1bbc52b59d9c670c4) [#2046](https://github.com/graphql/graphiql/pull/2046) Thanks [@willstott101](https://github.com/willstott101)! - Further resolves #1944, replaces graphql-language-service-parser with graphql-language-service in codemirror-graphql
+
+* Updated dependencies [[`bdd57312`](https://github.com/graphql/graphiql/commit/bdd573129844168749aba0aaa20e31b9da81aacf)]:
+  - graphql-language-service@3.2.3
+
 ## 1.2.1
 
 ### Patch Changes
