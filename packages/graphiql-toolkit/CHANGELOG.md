@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.4.2
+
+### Patch Changes
+
+- [`858907d2`](https://github.com/graphql/graphiql/commit/858907d2106742a65ec52eb017f2e91268cc37bf) [#2045](https://github.com/graphql/graphiql/pull/2045) Thanks [@acao](https://github.com/acao)! - fix graphql-js peer dependencies - [#2044](https://github.com/graphql/graphiql/pull/2044)
+
 ## 0.4.1
 
 ### Patch Changes
