@@ -11,4 +11,4 @@
 'monaco-graphql': patch
 ---
 
-fix graphql-js peer dependencies
+fix graphql-js peer dependencies - [#2044](https://github.com/graphql/graphiql/pull/2044)

@@ -17,9 +17,10 @@ jobs:
           fetch-depth: 0
       - name: Use Node
         uses: actions/setup-node@v2
-        with:
-          node-version: 12
-      - uses: bahmutov/npm-install@v1
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1
+
       - name: Setup NPM credentials
         run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc
         env:
