@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Use Node
+        uses: actions/setup-node@v2
 
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
@@ -26,7 +28,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
+      - name: Use Node
+        uses: actions/setup-node@v2
       - name: Yarn Install
         uses: bahmutov/npm-install@v1
 
