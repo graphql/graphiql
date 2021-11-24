@@ -17,6 +17,7 @@
   "module": "esm/index.js",
   "files": [
     "src",
+    "cm6-legacy",
     "esm",
     "utils",
     "variables",
