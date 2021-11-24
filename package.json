@@ -208,8 +208,8 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --external:react --format=cjs --platform=node",
-    "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --external:react --format=cjs --platform=node",
+    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
     "build": "npm run compile -- --sourcemap",
     "watch": "npm run build --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
@@ -238,6 +238,7 @@
     "@graphql-tools/load": "^7.4.1",
     "@graphql-tools/url-loader": "^7.5.2",
     "@graphql-tools/wrap": "^8.3.2",
+    "@urql/core": "^2.3.5",
     "babel-polyfill": "6.26.0",
     "capitalize": "^2.0.4",
     "dotenv": "^10.0.0",
@@ -247,7 +248,6 @@
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.5.5",
     "node-fetch": "^2.6.6",
-    "urql": "^2.0.5",
     "vscode-languageclient": "^5.2.1",
     "ws": "^8.2.3"
   },

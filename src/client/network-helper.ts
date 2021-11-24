@@ -13,7 +13,7 @@ import {
   createClient,
   defaultExchanges,
   subscriptionExchange,
-} from "urql"
+} from "@urql/core"
 
 import {
   ExtractedTemplateLiteral,
