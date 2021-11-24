@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-interface",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "description": "Interface to the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -28,9 +28,9 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "graphql-language-service-parser": "^1.10.1",
-    "graphql-language-service-types": "^1.8.4",
-    "graphql-language-service-utils": "^2.6.1",
+    "graphql-language-service-parser": "^1.10.2",
+    "graphql-language-service-types": "^1.8.5",
+    "graphql-language-service-utils": "^2.6.2",
     "vscode-languageserver-types": "^3.15.1"
   },
   "devDependencies": {
