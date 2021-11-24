@@ -16,7 +16,8 @@
   "main": "index.js",
   "module": "esm/index.js",
   "files": [
-    "dist",
+    "src",
+    "esm",
     "utils",
     "variables",
     "results",
