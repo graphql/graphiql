@@ -18,6 +18,7 @@
   "files": [
     "dist",
     "esm",
+    "src",
     "graphiql.js",
     "graphiql.min.js",
     "graphiql.css",
