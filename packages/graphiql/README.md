@@ -41,10 +41,10 @@ We have a few demos of `master` branch via the default netlify build (the same U
 
 ## Examples
 
-- [`Unpkg (CDN)`](../../examples/graphiql-cdn/) - a single html file using cdn assets and a script tag
-- [`Webpack`](../../examples/graphiql-webpack/) - a starter for webpack
-- [`Create React App`](../../examples/graphiql-create-react-app) - an example using [Create React App](https://create-react-app.dev/)
-- [`Parcel`](../../examples/graphiql-parcel) - an example using [Parcel](https://parceljs.org/)
+- [`Unpkg (CDN)`](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/) - a single html file using cdn assets and a script tag
+- [`Webpack`](https://github.com/graphql/graphiql/blob/main/examples/graphiql-webpack/) - a starter for webpack
+- [`Create React App`](https://github.com/graphql/graphiql/blob/main/examples/graphiql-create-react-app) - an example using [Create React App](https://create-react-app.dev/)
+- [`Parcel`](https://github.com/graphql/graphiql/blob/main/examples/graphiql-parcel) - an example using [Parcel](https://parceljs.org/)
 - `Rollup` - TODO
 
 ## Getting started
@@ -78,11 +78,11 @@ With `unpkg`/`jsdelivr`, etc:
 
 ## Usage
 
-Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](../examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](../examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
+Build for the web with [webpack](https://webpack.js.org/) or [browserify](http://browserify.org/), or use the pre-bundled `graphiql.js` file. See the [cdn example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/) in the git repository to see how to use the pre-bundled file, or see the [webpack example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-webpack) to see how to bundle an application using the `GraphiQL` component.
 
 ### Usage: NPM module
 
-**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](../examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
+**Note**: If you are having webpack issues or questions about webpack, make sure you've cross-referenced your webpack configuration with our own [webpack example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-webpack) first. We now have tests in CI that ensure this always builds, and we ensure it works end-to-end with every publish.
 
 Using another GraphQL service? Here's how to get GraphiQL set up:
 
@@ -115,7 +115,7 @@ ReactDOM.render(
 
 Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
 
-For an example of setting up a GraphiQL, check out the [example](../../examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
+For an example of setting up a GraphiQL, check out the [example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
 
 The most minimal way to set up GraphiQL is a single index.html file:
 
