@@ -29,8 +29,8 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
     return literals.map(literal => {
       return new CodeLens(
         new Range(
-          new Position(literal.position.line + 1, 0),
-          new Position(literal.position.line + 1, 0),
+          new Position(literal.position.line, 0),
+          new Position(literal.position.line, 0),
         ),
         {
           title: `Execute ${capitalize(literal.definition.operation)}`,
