@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
       - name: Setup GIT
         run: |
           git config --global user.email "prismabots@gmail.com"

@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: ["automatic-release"]
     branches: [master]
-    types: 
+    types:
       - completed
   workflow_dispatch:
 
@@ -20,6 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
       - name: Publish Extension as Patch to open-vsx
         run: node_modules/.bin/ovsx publish -p "$OPEN_VSX_ACCESS_TOKEN"

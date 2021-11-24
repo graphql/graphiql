@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
       - name: Publish Extension as Patch to marketplace
         run: |
           ./node_modules/.bin/vsce publish
