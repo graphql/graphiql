@@ -1,29 +1,27 @@
+import { visit, OperationTypeNode, GraphQLError } from "graphql"
+import gql from "graphql-tag"
+import fetch from "node-fetch"
+import { Agent } from "https"
+import * as ws from "ws"
+import { pipe, subscribe } from "wonka"
+import { Endpoint } from "graphql-config/extensions/endpoints"
+import { OutputChannel, workspace } from "vscode"
+import { GraphQLProjectConfig } from "graphql-config"
+import { createClient as createWSClient, OperationResult } from "graphql-ws"
+import {
+  CombinedError,
+  createClient,
+  defaultExchanges,
+  subscriptionExchange,
+} from "urql"
+
 import {
   ExtractedTemplateLiteral,
   SourceHelper,
   getFragmentDependenciesForAST,
 } from "./source-helper"
-import { visit, OperationTypeNode } from "graphql"
 
-import ApolloClient from "apollo-client"
-import { onError } from "apollo-link-error"
-
-import gql from "graphql-tag"
-import { createHttpLink } from "apollo-link-http"
-import { WebSocketLink } from "apollo-link-ws"
-import { InMemoryCache } from "apollo-cache-inmemory"
-import fetch from "node-fetch"
-import { Agent } from "https"
-import * as ws from "ws"
-
-import { Endpoints } from "graphql-config/extensions/endpoints"
-import { OutputChannel, workspace } from "vscode"
-import { ApolloLink } from "apollo-link"
 import { UserVariables } from "./graphql-content-provider"
-import { GraphQLProjectConfig } from "graphql-config"
-
-export type Endpoint = Endpoints[0]
-
 export class NetworkHelper {
   private outputChannel: OutputChannel
   private sourceHelper: SourceHelper
@@ -41,53 +39,63 @@ export class NetworkHelper {
     endpoint: Endpoint
     updateCallback: (data: string, operation: string) => void
   }) {
-    const { rejectUnauthorized } = workspace.getConfiguration("vscode-graphql")
-    const agent = new Agent({ rejectUnauthorized })
-
-    const httpLink = createHttpLink({
-      uri: endpoint.url,
-      headers: endpoint.headers,
-      fetch,
-      fetchOptions: {
-        agent,
-      },
-    })
-
-    const errorLink = onError(({ graphQLErrors, networkError }) => {
-      if (networkError) {
-        updateCallback(networkError.toString(), operation)
-      }
-      if (graphQLErrors && graphQLErrors.length > 0) {
-        updateCallback(formatData({ errors: graphQLErrors }), operation)
-      }
-    })
-
     const wsEndpointURL = endpoint.url.replace(/^http/, "ws")
-    const wsLink = new WebSocketLink({
-      uri: wsEndpointURL,
-      options: {
-        reconnect: true,
-        inactivityTimeout: 30000,
-      },
+    const wsClient = createWSClient({
+      url: wsEndpointURL,
+      connectionAckWaitTimeout: 3000,
       webSocketImpl: ws,
     })
 
-    return new ApolloClient({
-      link: ApolloLink.from([
-        errorLink,
-        ApolloLink.split(
-          () => {
-            return operation === "subscription"
-          },
-          wsLink,
-          httpLink,
-        ),
-      ]),
-      cache: new InMemoryCache({
-        addTypename: false,
-      }),
+    const { rejectUnauthorized } = workspace.getConfiguration("vscode-graphql")
+    // this is a node specific setting that can allow requests against servers using self-signed certificates
+    // it is similar to passing the nodejs env variable flag, except configured on a per-request basis here
+    const agent = new Agent({ rejectUnauthorized })
+
+    return createClient({
+      url: endpoint.url,
+      fetch,
+      fetchOptions: {
+        headers: endpoint.headers as HeadersInit,
+        // this is an option that's only available in `node-fetch`, not in the standard fetch API
+        // @ts-expect-error
+        agent,
+      },
+      exchanges: [
+        ...defaultExchanges,
+        subscriptionExchange({
+          forwardSubscription: operation => ({
+            subscribe: sink => ({
+              unsubscribe: wsClient.subscribe(operation, sink),
+            }),
+          }),
+        }),
+      ],
     })
   }
+
+  buildSubscribeConsumer =
+    (cb: ExecuteOperationOptions["updateCallback"], operation: string) =>
+    (result: OperationResult) => {
+      const { errors, data, error } = result as {
+        error?: CombinedError
+        errors?: GraphQLError[]
+        data?: unknown
+      }
+      if (errors || data) {
+        cb(formatData(result), operation)
+      }
+      if (error) {
+        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+          cb(
+            JSON.stringify({ errors: error.graphQLErrors }, null, 2),
+            operation,
+          )
+        }
+        if (error.networkError) {
+          cb(error.networkError.toString(), operation)
+        }
+      }
+    }
 
   async executeOperation({
     endpoint,
@@ -123,43 +131,40 @@ export class NetworkHelper {
     `
     return Promise.all(
       operationTypes.map(async operation => {
+        const subscriber = this.buildSubscribeConsumer(
+          updateCallback,
+          operation,
+        )
         this.outputChannel.appendLine(`NetworkHelper: operation: ${operation}`)
         this.outputChannel.appendLine(
           `NetworkHelper: endpoint: ${endpoint.url}`,
         )
-
-        const apolloClient = this.buildClient({
-          operation,
-          endpoint,
-          updateCallback,
-        })
-        if (operation === "subscription") {
-          await apolloClient
-            .subscribe({
-              query: parsedOperation,
-              variables,
-            })
-            .subscribe({
-              next(data: any) {
-                updateCallback(formatData(data), operation)
-              },
-            })
-        } else {
-          if (operation === "query") {
-            const data = await apolloClient.query({
-              query: parsedOperation,
-              variables,
-              errorPolicy: "all",
-            })
-            updateCallback(formatData(data), operation)
+        try {
+          const urqlClient = this.buildClient({
+            operation,
+            endpoint,
+            updateCallback,
+          })
+          if (operation === "subscription") {
+            pipe(
+              urqlClient.subscription(parsedOperation, variables),
+              subscribe(subscriber),
+            )
           } else {
-            const data = await apolloClient.mutate({
-              mutation: parsedOperation,
-              variables,
-              errorPolicy: "all",
-            })
-            updateCallback(formatData(data), operation)
+            if (operation === "query") {
+              pipe(
+                urqlClient.query(parsedOperation, variables),
+                subscribe(subscriber),
+              )
+            } else {
+              pipe(
+                urqlClient.mutation(parsedOperation, variables),
+                subscribe(subscriber),
+              )
+            }
           }
+        } catch {
+          console.error("error executing operation")
         }
       }),
     )

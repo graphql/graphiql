@@ -14,9 +14,9 @@ import {
 import type { ExtractedTemplateLiteral } from "./source-helper"
 import { loadConfig, GraphQLProjectConfig } from "graphql-config"
 import { visit, VariableDefinitionNode } from "graphql"
-import { NetworkHelper, Endpoint } from "./network-helper"
+import { NetworkHelper } from "./network-helper"
 import { SourceHelper, GraphQLScalarTSType } from "./source-helper"
-import type { Endpoints } from "graphql-config/extensions/endpoints"
+import type { Endpoints, Endpoint } from "graphql-config/extensions/endpoints"
 
 export type UserVariables = { [key: string]: GraphQLScalarTSType }
 
@@ -54,9 +54,8 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     await this.timeout(500)
     let variables = {}
     for (let node of variableDefinitionNodes) {
-      const variableType = this.sourceHelper.getTypeForVariableDefinitionNode(
-        node,
-      )
+      const variableType =
+        this.sourceHelper.getTypeForVariableDefinitionNode(node)
       variables = {
         ...variables,
         [`${node.variable.name.value}`]: this.sourceHelper.typeCast(
@@ -119,13 +118,18 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
   validUrlFromSchema(pathOrUrl: string) {
     return Boolean(pathOrUrl.match(/^https?:\/\//g))
   }
+  reportError(message: string) {
+    this.outputChannel.appendLine(message)
+    this.setContentAndUpdate(message)
+  }
+  setContentAndUpdate(html: string) {
+    this.html = html
+    this.update(this.uri)
+    this.updatePanel()
+  }
   async loadEndpoint(
     projectConfig?: GraphQLProjectConfig,
   ): Promise<Endpoint | null> {
-    // I dont think this is needed in 3.0 any more.
-    // if (config && !projectConfig) {
-    //   projectConfig = this.patchProjectConfig(config) as GraphQLProjectConfig
-    // }
     let endpoints: Endpoints = projectConfig?.extensions?.endpoints
 
     if (!endpoints) {
@@ -149,12 +153,10 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         } else if (schema && this.validUrlFromSchema(schema as string)) {
           endpoints.default.url = schema.toString()
         }
-      }
-      if (!endpoints?.default?.url) {
-        this.html =
-          "Warning: No Endpoints configured. Config schema contains no URLs"
-        this.update(this.uri)
-        this.updatePanel()
+      } else if (!endpoints?.default?.url) {
+        this.reportError(
+          "Warning: No Endpoints configured. Config schema contains no URLs",
+        )
         return null
       } else {
         this.outputChannel.appendLine(
@@ -165,13 +167,9 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     const endpointNames = Object.keys(endpoints)
 
     if (endpointNames.length === 0) {
-      this.outputChannel.appendLine(
+      this.reportError(
         `Error: endpoint data missing from graphql config endpoints extension`,
       )
-      this.html =
-        "Error: endpoint data missing from graphql config endpoints extension"
-      this.update(this.uri)
-      this.updatePanel()
       return null
     }
     const endpointName = await this.getEndpointName(endpointNames)
@@ -181,12 +179,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     try {
       const rootDir = workspace.getWorkspaceFolder(Uri.file(this.literal.uri))
       if (!rootDir) {
-        this.outputChannel.appendLine(
-          `Error: this file is outside the workspace.`,
-        )
-        this.html = "Error: this file is outside the workspace."
-        this.update(this.uri)
-        this.updatePanel()
+        this.reportError("Error: this file is outside the workspace.")
         return
       } else {
         const config = await loadConfig({ rootDir: rootDir!.uri.fsPath })
@@ -237,33 +230,22 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           }
         }
       }
-    } catch (err) {
-      if (err.networkError) {
-        this.html += err.networkError
-      }
-
-      throw err
+    } catch (err: unknown) {
+      // @ts-expect-error
+      this.reportError(`Error: graphql operation failed\n ${err.toString()}`)
     }
   }
   async loadConfig() {
     const rootDir = this.rootDir
     if (!rootDir) {
-      this.outputChannel.appendLine(
-        `Error: this file is outside the workspace.`,
-      )
-      this.html = "Error: this file is outside the workspace."
-      this.update(this.uri)
-      this.updatePanel()
+      this.reportError(`Error: this file is outside the workspace.`)
       return
     } else {
       const config = await loadConfig({ rootDir: rootDir!.uri.fsPath })
       let projectConfig = config?.getProjectForFile(this.literal.uri)
 
       if (!projectConfig!.schema) {
-        this.outputChannel.appendLine(`Error: schema from graphql config`)
-        this.html = "Error: schema missing from graphql config"
-        this.update(this.uri)
-        this.updatePanel()
+        this.reportError(`Error: schema from graphql config`)
         return
       }
       return projectConfig

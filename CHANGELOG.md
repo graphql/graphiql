@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 
+# 0.3.19
+
+- support `graphql-config` for `.ts` and `.toml` files by upgrading `graphql-config` & `graphql-language-service-server`
+- use `*` activation event, because `graphql-config` in `package.json` is impossible to detect otherwise using vscode `activationEvents`
+- support additional language features in `graphql-language-service-server` such as interface implements interfaces, etc
+- upgrade operation execution to use a new graphql client and support subscriptions
+- fix openvsx & vscode publish by re-creating PATs and signing new agreements
+
+Note: there are still some known bugs in the language server we will be fixing soon:
+
+- if you don't see editor output, please check your config
+- output channel may show errors even after your configuration works
+- there may be issues with schema file loading
+
 # 0.3.13
 
 LSP bugfixes:

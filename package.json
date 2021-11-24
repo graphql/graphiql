@@ -24,7 +24,7 @@
   },
   "publisher": "GraphQL",
   "engines": {
-    "vscode": "^1.32.0"
+    "vscode": "^1.52.0"
   },
   "categories": [
     "Programming Languages",
@@ -37,8 +37,9 @@
     "onCommand:vscode-graphql.contentProvider",
     "onLanguage:graphql",
     "workspaceContains:**/.graphqlrc",
-    "workspaceContains:**/.graphqlrc.{json,yaml,yml,js}",
-    "workspaceContains:**/graphql.config.{json,yaml,yml,js}"
+    "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
+    "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
+    "*"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -206,9 +207,11 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile -- --minify",
+    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --external:react --format=cjs --platform=node",
+    "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --external:react --format=cjs --platform=node",
+    "build": "npm run compile -- --sourcemap",
+    "watch": "npm run build --watch",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "vsce:package": "vsce package",
@@ -220,39 +223,35 @@
     "@types/capitalize": "^2.0.0",
     "@types/dotenv": "^8.2.0",
     "@types/mocha": "5.2.7",
-    "@types/node": "12.12.34",
-    "@types/ws": "6.0.4",
+    "@types/node": "16.11.7",
+    "@types/node-fetch": "^3.0.3",
+    "@types/vscode": "^1.62.0",
+    "@types/ws": "8.2.0",
+    "esbuild": "^0.13.15",
+    "ovsx": "0.2.1",
     "tslint": "5.20.1",
-    "typescript": "3.9.7",
-    "vsce": "^1.78.0",
+    "typescript": "4.4.4",
+    "vsce": "^2.5.0",
     "vscode": "^1.1.37"
   },
   "dependencies": {
-    "@graphql-tools/url-loader": "^6.0.19-alpha-edce0415.0",
-    "@graphql-tools/wrap": "^6.0.19-alpha-edce0415.0",
-    "apollo-cache-inmemory": "1.6.6",
-    "apollo-client": "2.6.10",
-    "apollo-link": "1.2.14",
-    "apollo-link-error": "^1.1.13",
-    "apollo-link-http": "1.5.17",
-    "apollo-link-ws": "1.0.20",
+    "@graphql-tools/load": "^7.4.1",
+    "@graphql-tools/url-loader": "^7.5.2",
+    "@graphql-tools/wrap": "^8.3.2",
     "babel-polyfill": "6.26.0",
-    "capitalize": "^2.0.3",
-    "dotenv": "^8.2.0",
-    "graphql": "^15.4.0",
-    "graphql-config": "^3.2.0",
-    "graphql-language-service-server": "^2.5.6",
-    "graphql-tag": "^2.11.0",
-    "node-fetch": "^2.6.0",
-    "ovsx": "0.1.0-next.dacd2fd",
-    "subscriptions-transport-ws": "^0.9.17",
-    "vscode-languageclient": "5.2.1",
-    "ws": "^7.3.1"
+    "capitalize": "^2.0.4",
+    "dotenv": "^10.0.0",
+    "graphql": "^15",
+    "graphql-config": "~4.1.0",
+    "graphql-language-service-server": "^2.7.3",
+    "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.5.5",
+    "node-fetch": "^2.6.6",
+    "urql": "^2.0.5",
+    "vscode-languageclient": "^5.2.1",
+    "ws": "^8.2.3"
   },
   "resolutions": {
-    "graphql": "^15.3.0",
-    "graphql-config": "^3.0.3",
-    "@graphql-tools/wrap": "6.0.19-alpha-edce0415.0",
-    "@graphql-tools/url-loader": "6.0.19-alpha-edce0415.0"
+    "graphql-config": "~4.1.0"
   }
 }

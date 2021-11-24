@@ -9,7 +9,7 @@ import {
 } from "vscode"
 
 import { SourceHelper, ExtractedTemplateLiteral } from "./source-helper"
-import * as capitalize from "capitalize"
+import capitalize from "capitalize"
 
 export class GraphQLCodeLensProvider implements CodeLensProvider {
   outputChannel: OutputChannel
@@ -24,10 +24,8 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
     document: TextDocument,
     _token: CancellationToken,
   ): CodeLens[] {
-    const literals: ExtractedTemplateLiteral[] = this.sourceHelper.extractAllTemplateLiterals(
-      document,
-      ["gql", "graphql"],
-    )
+    const literals: ExtractedTemplateLiteral[] =
+      this.sourceHelper.extractAllTemplateLiterals(document, ["gql", "graphql"])
     return literals.map(literal => {
       return new CodeLens(
         new Range(

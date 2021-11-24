@@ -60,26 +60,26 @@ export class SourceHelper {
           if (parseInt(value)) {
             return null
           }
-          break;
+          break
         case "Float":
           if (parseFloat(value)) {
             return null
           }
-          break;
+          break
         case "Boolean":
           if (value === "true" || value === "false") {
             return null
           }
-          break;
+          break
         case "String":
           if (value.length && !Array.isArray(value)) {
             return null
           }
-          break;
+          break
         default:
           // For scalar types, it is impossible to know what data type they
           // should be. Therefore we don't do any validation.
-          return null;
+          return null
       }
     } catch {
       return `${value} is not a valid ${type}`
@@ -234,10 +234,7 @@ export const getFragmentDependencies = async (
   // Return an empty array.
   let parsedQuery
   try {
-    parsedQuery = parse(query, {
-      allowLegacySDLImplementsInterfaces: true,
-      allowLegacySDLEmptyFields: true,
-    })
+    parsedQuery = parse(query)
   } catch (error) {
     return []
   }

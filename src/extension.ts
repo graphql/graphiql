@@ -32,7 +32,7 @@ function getConfig() {
   )
 }
 
-export async function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext) {
   let outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Language Server",
   )
@@ -79,9 +79,8 @@ export async function activate(context: ExtensionContext) {
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
     revealOutputChannelOn: RevealOutputChannelOn.Never,
-    initializationFailedHandler: CustomInitializationFailedHandler(
-      outputChannel,
-    ),
+    initializationFailedHandler:
+      CustomInitializationFailedHandler(outputChannel),
   }
 
   const client = new LanguageClient(
@@ -143,7 +142,7 @@ export async function activate(context: ExtensionContext) {
       const uri = Uri.parse("graphql://authority/graphql")
 
       const panel = window.createWebviewPanel(
-        "executionReusltWebView",
+        "vscode-graphql.results-preview",
         "GraphQL Execution Result",
         ViewColumn.Two,
         {},
