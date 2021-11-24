@@ -1,7 +1,6 @@
 ---
 'codemirror-graphql': patch
 'graphiql': patch
-'graphiql-2-rfc-context': patch
 'graphql-language-service': patch
 'graphql-language-service-cli': patch
 'graphql-language-service-interface': patch
