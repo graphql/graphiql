@@ -28,6 +28,7 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
+    "graphql-config": "^4.1.0",
     "graphql-language-service-parser": "^1.10.2",
     "graphql-language-service-types": "^1.8.5",
     "graphql-language-service-utils": "^2.6.2",
@@ -35,7 +36,6 @@
   },
   "devDependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
-    "graphql-config": "^4.1.0",
     "vscode-languageserver-protocol": "^3.16.0"
   }
 }
