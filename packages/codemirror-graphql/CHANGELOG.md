@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.3
+
+### Patch Changes
+
+- [`c42b145f`](https://github.com/graphql/graphiql/commit/c42b145fffeaefbd1103bc7addee1873e939bc83) [#2052](https://github.com/graphql/graphiql/pull/2052) Thanks [@imolorhe](https://github.com/imolorhe)! - Added cm6-legacy to published files list
+
 ## 1.2.2
 
 ### Patch Changes
