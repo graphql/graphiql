@@ -11,6 +11,7 @@ import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
 import { pathToFileURL } from 'url';
 import * as path from 'path';
+import glob from 'fast-glob';
 import {
   CachedContent,
   Uri,
@@ -863,37 +864,83 @@ export class MessageProcessor {
       return path.resolve(projectTmpPath);
     }
   }
+  /**
+   * Safely attempts to cache schema files based on a glob or path
+   * Exits without warning in several cases because these strings can be almost
+   * anything!
+   * @param uri
+   * @param project
+   */
+  async _cacheSchemaPath(uri: string, project: GraphQLProjectConfig) {
+    try {
+      const files = await glob(uri);
+      if (files && files.length > 0) {
+        await Promise.all(
+          files.map(uriPath => this._cacheSchemaFile(uriPath, project)),
+        );
+      } else {
+        try {
+          this._cacheSchemaFile(uri, project);
+        } catch (err) {
+          // this string may be an SDL string even, how do we even evaluate this? haha
+        }
+      }
+    } catch (err) {}
+  }
+  async _cacheObjectSchema(
+    pointer: { [key: string]: any },
+    project: GraphQLProjectConfig,
+  ) {
+    await Promise.all(
+      Object.keys(pointer).map(async schemaUri =>
+        this._cacheSchemaPath(schemaUri, project),
+      ),
+    );
+  }
+  async _cacheArraySchema(
+    pointers: UnnormalizedTypeDefPointer[],
+    project: GraphQLProjectConfig,
+  ) {
+    await Promise.all(
+      pointers.map(async schemaEntry => {
+        if (typeof schemaEntry === 'string') {
+          await this._cacheSchemaPath(schemaEntry, project);
+        } else if (schemaEntry) {
+          await this._cacheObjectSchema(schemaEntry, project);
+        }
+      }),
+    );
+  }
 
   async _cacheSchemaFilesForProject(project: GraphQLProjectConfig) {
     const schema = project?.schema;
     const config = project?.extensions?.languageService;
     /**
-     * By default, let's only cache the full graphql config schema.
-     * This allows us to rely on graphql-config's schema building features
-     * And our own cache implementations
-     * This prefers schema instead of SDL first schema development, but will still
-     * work with lookup of the actual .graphql schema files if the option is enabled,
-     * however results may vary.
+     * By default, we look for schema definitions in SDL files
      *
-     * The default temporary schema file seems preferrable until we have graphql source maps
+     * with the opt-in feature `cacheSchemaOutputFileForLookup` enabled,
+     * the resultant `graphql-config` .getSchema() schema output will be cached
+     * locally and available as a single file for definition lookup and peek
+     *
+     * this is helpful when your `graphql-config` `schema` input is:
+     * - a remote or local URL
+     * - compiled from graphql files and code sources
+     * - otherwise where you don't have schema SDL in the codebase or don't want to use it for lookup
+     *
+     * it is disabled by default
      */
-    const useSchemaFileDefinitions =
-      config?.useSchemaFileDefinitions ??
-      this?._settings?.useSchemaFileDefinitions ??
+    const cacheSchemaFileForLookup =
+      config?.cacheSchemaFileForLookup ??
+      this?._settings?.cacheSchemaFileForLookup ??
       false;
-    if (useSchemaFileDefinitions) {
+    if (cacheSchemaFileForLookup) {
       await this._cacheConfigSchema(project);
-    } else {
-      if (Array.isArray(schema)) {
-        Promise.all(
-          schema.map(async (uri: UnnormalizedTypeDefPointer) => {
-            await this._cacheSchemaFile(uri, project);
-          }),
-        );
-      } else {
-        const uri = schema.toString();
-        await this._cacheSchemaFile(uri, project);
-      }
+    } else if (typeof schema === 'string') {
+      await this._cacheSchemaPath(schema, project);
+    } else if (Array.isArray(schema)) {
+      await this._cacheArraySchema(schema, project);
+    } else if (schema) {
+      await this._cacheObjectSchema(schema, project);
     }
   }
   /**
@@ -995,7 +1042,7 @@ export class MessageProcessor {
     if (config?.projects) {
       return Promise.all(
         Object.keys(config.projects).map(async projectName => {
-          const project = await config.getProject(projectName);
+          const project = config.getProject(projectName);
           await this._cacheSchemaFilesForProject(project);
           await this._cacheDocumentFilesforProject(project);
         }),
@@ -1057,13 +1104,11 @@ export class MessageProcessor {
           contents,
         });
       }
-    } else if (textDocument?.version) {
-      return this._textDocumentCache.set(uri, {
-        version: textDocument.version,
-        contents,
-      });
     }
-    return null;
+    return this._textDocumentCache.set(uri, {
+      version: textDocument.version ?? 0,
+      contents,
+    });
   }
 }
 

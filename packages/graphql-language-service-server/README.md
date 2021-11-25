@@ -117,7 +117,7 @@ await startServer({
     // rootDir is same as `configDir` before, the path where the graphql config file would be found by cosmic-config
     rootDir: 'config/',
     // or - the relative or absolute path to your file
-    filePath: 'exact/path/to/config.js (also supports yml, json)',
+      filePath: 'exact/path/to/config.js' // (also supports yml, json, ts, toml)
     // myPlatform.config.js/json/yaml works now!
     configName: 'myPlatform',
   },
@@ -134,8 +134,9 @@ module.exports = {
      // a function that returns rules array with parameter `ValidationContext` from `graphql/validation`
     "customValidationRules": require('./config/customValidationRules')
     "languageService": {
-      // should the language service read from source files? if false, it generates a schema from the project/config schema
-      useSchemaFileDefinitions: false
+      // should the language service read schema for lookups from a cached file based on graphql config output?
+      cacheSchemaFileForLookup: true
+     // NOTE: this will disable all definition lookup for local SDL files
     }
   }
 }
@@ -147,14 +148,14 @@ we also load `require('dotenv').config()`, so you can use process.env variables 
 
 The LSP Server reads config by sending `workspace/configuration` method when it initializes.
 
-| Parameter                                | Default                         | Description                                                                                            |
-| ---------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `graphql-config.load.baseDir`            | workspace root or process.cwd() | the path where graphql config looks for config files                                                   |
-| `graphql-config.load.filePath`           | `null`                          | exact filepath of the config file.                                                                     |
-| `graphql-config.load.configName`         | `graphql`                       | config name prefix instead of `graphql`                                                                |
-| `graphql-config.load.legacy`             | `true`                          | backwards compatibility with `graphql-config@2`                                                        |
-| `graphql-config.dotEnvPath`              | `null`                          | backwards compatibility with `graphql-config@2`                                                        |
-| `vsode-graphql.useSchemaFileDefinitions` | `false`                         | whether the LSP server will use source files, or generate an SDL from `config.schema`/`project.schema` |
+| Parameter                                | Default                         | Description                                                                                                                                                       |
+| ---------------------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `graphql-config.load.baseDir`            | workspace root or process.cwd() | the path where graphql config looks for config files                                                                                                              |
+| `graphql-config.load.filePath`           | `null`                          | exact filepath of the config file.                                                                                                                                |
+| `graphql-config.load.configName`         | `graphql`                       | config name prefix instead of `graphql`                                                                                                                           |
+| `graphql-config.load.legacy`             | `true`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
+| `graphql-config.dotEnvPath`              | `null`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
+| `vsode-graphql.cacheSchemaFileForLookup` | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls |
 
 all the `graphql-config.load.*` configuration values come from static `loadConfig()` options in graphql config.
 
