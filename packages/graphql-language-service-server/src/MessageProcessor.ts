@@ -9,7 +9,7 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { pathToFileURL } from 'url';
 import * as path from 'path';
 import {
   CachedContent,
@@ -191,7 +191,7 @@ export class MessageProcessor {
       throw new Error('GraphQL Language Server is not initialized.');
     }
 
-    this._logger.log(
+    this._logger.info(
       JSON.stringify({
         type: 'usage',
         messageType: 'initialize',
@@ -584,7 +584,7 @@ export class MessageProcessor {
         ) {
           const uri = change.uri;
 
-          const text = readFileSync(fileURLToPath(uri), { encoding: 'utf8' });
+          const text = readFileSync(new URL(uri).pathname).toString();
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
@@ -878,10 +878,10 @@ export class MessageProcessor {
      * The default temporary schema file seems preferrable until we have graphql source maps
      */
     const useSchemaFileDefinitions =
-      (config?.useSchemaFileDefinitions ??
-        this?._settings?.useSchemaFileDefinitions) ||
+      config?.useSchemaFileDefinitions ??
+      this?._settings?.useSchemaFileDefinitions ??
       false;
-    if (!useSchemaFileDefinitions) {
+    if (useSchemaFileDefinitions) {
       await this._cacheConfigSchema(project);
     } else {
       if (Array.isArray(schema)) {

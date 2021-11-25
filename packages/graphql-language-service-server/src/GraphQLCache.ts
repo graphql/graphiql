@@ -106,7 +106,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getProjectForFile = (uri: string): GraphQLProjectConfig => {
-    return this._graphQLConfig.getProjectForFile(fileURLToPath(uri));
+    return this._graphQLConfig.getProjectForFile(new URL(uri).pathname);
   };
 
   getFragmentDependencies = async (
