@@ -3,6 +3,10 @@ projects:
     schema:
       - __schema__/StarWarsSchema.graphql
       - 'directive @customDirective on FRAGMENT_SPREAD'
+  testWithGlobSchema:
+    schema:
+      - __schema__/*.graphql
+      - 'directive @customDirective on FRAGMENT_SPREAD'
   testWithEndpoint:
     schema: https://example.com/graphql
   testWithEndpointAndSchema:

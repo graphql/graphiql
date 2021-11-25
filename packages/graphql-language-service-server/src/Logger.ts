@@ -71,9 +71,12 @@ export class Logger implements VSCodeLogger {
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${stringMessage}\n`;
     // write to the file in tmpdir
     fs.appendFile(this._logFilePath, logMessage, _error => {});
-    this._getOutputStream(severity).write(logMessage, err => {
-      err && console.error(err);
-    });
+    // @TODO: enable with debugging
+    if (severityKey !== SEVERITY.Hint) {
+      this._getOutputStream(severity).write(logMessage, err => {
+        err && console.error(err);
+      });
+    }
   }
 
   _getOutputStream(severity: DiagnosticSeverity): Socket {

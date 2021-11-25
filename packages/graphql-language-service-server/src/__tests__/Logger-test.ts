@@ -30,7 +30,7 @@ describe('Logger', () => {
 
   it('logs to stdout', () => {
     const logger = new Logger(tmpdir());
-    logger.log('log test');
+    logger.info('log test');
 
     expect(mockedStdoutWrite.mock.calls.length).toBe(1);
     expect(mockedStdoutWrite.mock.calls[0][0]).toContain('log test');
@@ -51,14 +51,14 @@ describe('Logger', () => {
     const logger = new Logger(tmpdir(), stderrOnly);
     logger.info('info test');
     logger.warn('warn test');
+    // log is only logged to file now :)
     logger.log('log test');
     logger.error('error test');
 
     expect(mockedStdoutWrite.mock.calls.length).toBe(0);
-    expect(mockedStderrWrite.mock.calls.length).toBe(4);
+    expect(mockedStderrWrite.mock.calls.length).toBe(3);
     expect(mockedStderrWrite.mock.calls[0][0]).toContain('info test');
     expect(mockedStderrWrite.mock.calls[1][0]).toContain('warn test');
-    expect(mockedStderrWrite.mock.calls[2][0]).toContain('log test');
-    expect(mockedStderrWrite.mock.calls[3][0]).toContain('error test');
+    expect(mockedStderrWrite.mock.calls[2][0]).toContain('error test');
   });
 });
