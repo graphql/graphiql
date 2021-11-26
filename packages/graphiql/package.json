@@ -21,8 +21,10 @@
     "src",
     "graphiql.js",
     "graphiql.min.js",
+    "graphiql.min.js.map",
     "graphiql.css",
-    "graphiql.min.css"
+    "graphiql.min.css",
+    "graphiql.min.css.map"
   ],
   "scripts": {
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
