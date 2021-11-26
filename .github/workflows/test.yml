@@ -3,7 +3,7 @@ name: Test
 on: pull_request
 
 jobs:
- compile:
+  compile:
     name: Compile and check peer dependencies
     runs-on: ubuntu-latest
     steps:
@@ -14,3 +14,5 @@ jobs:
         run: npm run compile
       - name: Check peer dependencies
         run: npm list --production --parseable --depth=99999 --loglevel=error
+      - name: Attempt vsce Package
+        run: npm run vsce:package
