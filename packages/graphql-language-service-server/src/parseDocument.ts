@@ -4,7 +4,17 @@ import { Range, Position } from 'graphql-language-service-utils';
 
 import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
 
-export const DEFAULT_SUPPORTED_EXTENSIONS = ['.js', '.ts', '.jsx', '.tsx'];
+export const DEFAULT_SUPPORTED_EXTENSIONS = [
+  '.js',
+  '.cjs',
+  '.mjs',
+  '.es',
+  '.esm',
+  '.es6',
+  '.ts',
+  '.jsx',
+  '.tsx',
+];
 
 /**
  * .graphql is the officially reccomended extension for graphql files
