@@ -1,7 +1,5 @@
 # VSCode GraphQL
 
-> **Note:** The primary maintainer @acao is on hiatus until December 2020
-
 GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
@@ -129,26 +127,31 @@ Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` i
 
 ## Frequently Asked Questions
 
-### Go to definition is using `generated_schema.graphql`, not my schema source files
+### Go to definition is not working for my URL
 
-Ah yes, this is now the default behavior used by most users, who do not have source SDL files.
-If you're using an "SDL first" methodology, such as with apollo, you'll want to enable `useSchemaFileDefinitions`.
-Add this to your settings:
+You can try the new experimental `cacheSchemaFileForLookup` option. NOTE: this will disable all definition lookup for local SDL graphql schema files, and _only_ perform lookup of the result an SDL result of `graphql-config` `getSchema()`
+
+To enable, add this to your settings:
 
 ```json
-"vscode-graphql.useSchemaFileDefinitions": true,
+"vscode-graphql.cacheSchemaFileForLookup": true,
 ```
 
 you can also use graphql config if you need to mix and match these settings:
 
 ```yml
+schema: http://myschema.com/graphql
+extensions:
+  languageService:
+    cacheSchemaFileForLookup: true
 projects:
   project1:
     schema: project1/schema/schema.graphql
     documents: project1/queries/**/*.{graphql,tsx,jsx,ts,js}
     extensions:
       languageService:
-        useSchemaFileDefinitions: true
+      cacheSchemaFileForLookup: false
+
   project2:
     schema: https://api.spacex.land/graphql/
     documents: project2/queries.graphql
@@ -156,6 +159,9 @@ projects:
       endpoints:
         default:
           url: https://api.spacex.land/graphql/
+      languageService:
+        # Do project configs inherit parent config?
+        cacheSchemaFileForLookup: true
 ```
 
 ### The extension fails with errors about duplicate types
@@ -189,9 +195,22 @@ So you'll need to add something like this to your global vscode settings:
 
 The best way to make "execute <op type>" codelens work is to add endpoints config to the global graphql config or the project config.
 
-The config example above shows how to configure endpoints.
+This would look like:
 
-If there is an issue with execution that has to do with your server, the error response should show now in the results panel.
+```ts
+export default {
+  schema: "mschema.graphql",
+  extension: {
+    endpoints: {
+      default: "http://localhost:9000",
+    },
+  },
+}
+```
+
+(see above for per-project examples)
+
+If there is an issue with execution that has to do with your server, the error response should show now in the result panel.
 
 In case the request fails due to self signed certificate, you can bypass that check by adding this to your settings:
 

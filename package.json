@@ -142,11 +142,11 @@
           "description": "Show codelens to execute operations inline",
           "default": true
         },
-        "vscode-graphql.useSchemaFileDefinitions": {
+        "vscode-graphql.cacheSchemaFileForLookup": {
           "type": [
             "boolean"
           ],
-          "description": "Use local SDL/IDL files for definition lookups. Default is to use generated_schema.graphql from GraphQL Config settings for definitions"
+          "description": "Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Disabled by default."
         },
         "vscode-graphql.rejectUnauthorized": {
           "type": [
@@ -243,7 +243,7 @@
     "dotenv": "^10.0.0",
     "graphql": "^15",
     "graphql-config": "~4.1.0",
-    "graphql-language-service-server": "^2.7.3",
+    "graphql-language-service-server": "^2.7.5",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.5.5",
     "node-fetch": "^2.6.6",
