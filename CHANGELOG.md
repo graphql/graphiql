@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 
+# 0.3.25
+
+Remove `node_modules` from bundle after adding `esbuild` to make the extension bundle smaller
+
 # 0.3.24
 
 Add highlighting and langauge support for `.mjs`, `.cjs`, `.es6`, `.esm` and other similar extensions

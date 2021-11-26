@@ -7,3 +7,6 @@ src/**
 tsconfig.json
 vsc-extension-quickstart.md
 tslint.json
+node_modules
+.github
+renovate.json
