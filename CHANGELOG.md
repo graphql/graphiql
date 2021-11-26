@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 The git log should show a fairly clean view of each of these new versions, and the issues/PRs associated.
 
+# 0.3.24
+
+Add highlighting and langauge support for `.mjs`, `.cjs`, `.es6`, `.esm` and other similar extensions
+
+# 0.3.23
+
+Major bugfixes for language features. Most bugs with language features not working should be resolved.
+
+The `useSchemaFileDefinition` setting was deprecated, and SDL-driven projects work by default. If you want to opt-into an experimental feature to cache graphql-config schema result for definitions (useful for remote schemas), consult the readme on how to configure `cacheSchemaFileForLookup` option in vscode settings, or graphql config (yes you can enable/disable it per-project!)
+
+Definition lookup works by default with SDL file schemas. `cacheSchemaFileForLookup` must be enabled if you have a remote schema want definition lookup for input types, etc in queries
+
 # 0.3.19
 
 - support `graphql-config` for `.ts` and `.toml` files by upgrading `graphql-config` & `graphql-language-service-server`
