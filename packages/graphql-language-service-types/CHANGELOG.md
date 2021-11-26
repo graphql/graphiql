@@ -1,5 +1,11 @@
 # graphql-language-service-types
 
+## 1.8.6
+
+### Patch Changes
+
+- [`a3782ff0`](https://github.com/graphql/graphiql/commit/a3782ff0ff0d7c321e6f70bea61b1969b1690f26) [#2057](https://github.com/graphql/graphiql/pull/2057) Thanks [@acao](https://github.com/acao)! - Dependents of `graphql-language-service-types` and `interface` need `graphql-config` as a dependent for typescript support
+
 ## 1.8.5
 
 ### Patch Changes

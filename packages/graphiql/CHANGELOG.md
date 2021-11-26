@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.5.6
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service@3.2.4
+  - codemirror-graphql@1.2.4
+
 ## 1.5.5
 
 ### Patch Changes

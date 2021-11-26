@@ -1,5 +1,21 @@
 # graphql-language-service-cli
 
+## 3.2.5
+
+### Patch Changes
+
+- [`f82bd7a9`](https://github.com/graphql/graphiql/commit/f82bd7a931eb5fa9a33e59d417303706844c9063) [#2055](https://github.com/graphql/graphiql/pull/2055) Thanks [@acao](https://github.com/acao)! - this fixes the URI scheme related bugs and make sure schema as sdl config works again.
+
+  `fileURLToPath` had been introduced by a contributor and I didnt test properly, it broke sdl file loading!
+
+  definitions, autocomplete, diagnostics, etc should work again
+  also hides the more verbose logging output for now
+
+- Updated dependencies [[`f82bd7a9`](https://github.com/graphql/graphiql/commit/f82bd7a931eb5fa9a33e59d417303706844c9063)]:
+  - graphql-language-service-server@2.7.5
+  - graphql-language-service@3.2.4
+  - graphql-language-service-utils@2.6.3
+
 ## 3.2.4
 
 ### Patch Changes

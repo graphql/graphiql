@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.6.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service@3.2.4
+  - graphql-language-service-utils@2.6.3
+
 ## 0.6.3
 
 ### Patch Changes
