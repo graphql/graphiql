@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.7.6
+
+### Patch Changes
+
+- [`4286185c`](https://github.com/graphql/graphiql/commit/4286185cdc6119175e23d66b8e177ba32693a63a) [#2060](https://github.com/graphql/graphiql/pull/2060) Thanks [@acao](https://github.com/acao)! - Parse more JS extensions in the language server
+
 ## 2.7.5
 
 ### Patch Changes
