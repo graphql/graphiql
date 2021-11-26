@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.7
+
+### Patch Changes
+
+- [`49bce429`](https://github.com/graphql/graphiql/commit/49bce429f0780a5e2856cfb7ccda50d10d38f724) [#2051](https://github.com/graphql/graphiql/pull/2051) Thanks [@willstott101](https://github.com/willstott101)! - Include source maps for minified JS and CSS in the graphiql package.
+
 ## 1.5.6
 
 ### Patch Changes
