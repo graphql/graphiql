@@ -49,15 +49,17 @@ import { LoadConfigOptions } from './types';
 
 export interface ServerOptions {
   /**
-   * port for the LSP server to run on. required if using method socket
+   * port for the LSP server to run on.
+   * @required if using method `socket`
    */
   port?: number;
   /**
-   * hostname if using socker
+   * hostname if using socket
    */
   hostname?: string;
   /**
    * socket, streams, or node (ipc). `node` by default.
+   * @default "node"
    */
   method?: 'socket' | 'stream' | 'node';
   /**
@@ -67,22 +69,26 @@ export interface ServerOptions {
    */
   loadConfigOptions?: LoadConfigOptions;
   /**
-   * (deprecated: use loadConfigOptions.rootDir now) the directory where graphql-config is found
+   * @deprecated: use loadConfigOptions.rootDir now the directory where graphql-config is found
    */
   configDir?: string;
   /**
-   * (deprecated: use loadConfigOptions.extensions now) array of functions to transform the graphql-config and add extensions dynamically
+   * @deprecated: use loadConfigOptions.extensions now array of functions to transform the graphql-config and add extensions dynamically
    */
   extensions?: GraphQLExtensionDeclaration[];
   /**
-   * default: ['.js', '.jsx', '.tsx', '.ts', '.mjs']
    * allowed file extensions for embedded graphql, used by the parser.
    * note that with vscode, this is also controlled by manifest and client configurations.
    * do not put full-file graphql extensions here!
+   *
+   * @default
+   * ['.js', '.cjs', '.mjs', '.es', '.esm', '.es6', '.ts', '.jsx', '.tsx']
    */
   fileExtensions?: string[];
   /**
-   * default: ['graphql'] - allowed file extensions for graphql, used by the parser
+   * allowed file extensions for graphql, used by the parser
+   * @default
+   * ["graphql", "gql", "graphqls"]
    */
   graphqlFileExtensions?: string[];
   /**
@@ -94,6 +100,9 @@ export interface ServerOptions {
    * detects extension from uri and decides how to parse it.
    * uses graphql.parse() by default
    * response format is designed to assist with developing LSP tooling around embedded language support
+   * defaults to `parseDocument` which can read javascript, typescript, jsx and tsx for `graphql`
+   * using `@babel/parser`, and graphql parser using graphql-js `parse()`
+   * @default parseDocument
    */
   parser?: typeof parseDocument;
   /**
