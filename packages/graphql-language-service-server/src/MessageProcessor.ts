@@ -549,6 +549,7 @@ export class MessageProcessor {
       query,
       toPosition(position),
       textDocument.uri,
+      { useMarkdown: true },
     );
 
     return {
