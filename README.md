@@ -74,8 +74,8 @@ To support language features like "go-to definition" across multiple files, plea
 
 ### Simple Example
 
-```js
-// .graphqlrc.yml
+```yaml
+# .graphqlrc.yml
 schema: "schema.graphql"
 documents: "src/**/*.{graphql,js,ts,jsx,tsx}"
 ```
