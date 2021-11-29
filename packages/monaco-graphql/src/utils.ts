@@ -14,12 +14,10 @@ import type {
 
 import { Position } from 'graphql-language-service';
 
-// @ts-ignore
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
 };
-// @ts-ignore
 export function toMonacoRange(range: GraphQLRange): monaco.IRange {
   return {
     startLineNumber: range.start.line + 1,
@@ -29,7 +27,6 @@ export function toMonacoRange(range: GraphQLRange): monaco.IRange {
   };
 }
 
-// @ts-ignore
 export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return new Position(position.lineNumber - 1, position.column - 1);
 }
@@ -37,20 +34,15 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range?: GraphQLRange,
-  // @ts-ignore
 ): GraphQLCompletionItem & { range: monaco.IRange } {
   return {
     label: entry.label,
-    // TODO: when adding variables to getAutocompleteSuggestions, we appended the $.
-    // this appears to cause an issue in monaco, but not vscode
-    insertText:
-      entry.insertText ||
-      (!entry.label.startsWith('$') ? entry.label : entry.label.substring(1)),
+    insertText: entry.insertText ?? entry.label,
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
-    // @ts-ignore
+    // @ts-expect-error
     range: range ? toMonacoRange(range) : undefined,
     kind: entry.kind,
   };
@@ -84,7 +76,6 @@ export function toCompletion(
 
 export function toMarkerData(
   diagnostic: Diagnostic,
-  // @ts-ignore
 ): monaco.editor.IMarkerData {
   return {
     startLineNumber: diagnostic.range.start.line + 1,

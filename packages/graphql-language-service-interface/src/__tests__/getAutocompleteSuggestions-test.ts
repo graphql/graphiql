@@ -279,7 +279,7 @@ query name {
     ]);
   });
 
-  it('provides correct suggestions when autocompleting for declared variable while typing', () => {
+  it('provides correct suggestions for declared variables upon typing $', () => {
     const result = testSuggestions(
       'query($id: String, $ep: Episode!){ hero(episode: $ }',
       new Position(0, 51),
@@ -287,7 +287,7 @@ query name {
     expect(result).toEqual([{ label: '$ep', detail: 'Episode' }]);
   });
 
-  it('provides correct suggestions when autocompleting for declared variable', () => {
+  it('provides correct suggestions for variables based on argument context', () => {
     const result = testSuggestions(
       'query($id: String!, $episode: Episode!){ hero(episode: ',
       new Position(0, 55),
@@ -297,6 +297,7 @@ query name {
       { label: 'EMPIRE', detail: 'Episode' },
       { label: 'JEDI', detail: 'Episode' },
       { label: 'NEWHOPE', detail: 'Episode' },
+      // no $id here, it's not compatible :P
     ]);
   });
 

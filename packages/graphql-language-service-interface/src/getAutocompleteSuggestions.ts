@@ -203,7 +203,11 @@ export function getAutocompleteSuggestions(
   // complete for all variables available in the query
   if (kind === RuleKinds.VARIABLE && step === 1) {
     const namedInputType = getNamedType(typeInfo.inputType as GraphQLType);
-    const variableDefinitions = getVariableCompletions(queryText, schema);
+    const variableDefinitions = getVariableCompletions(
+      queryText,
+      schema,
+      token,
+    );
     return hintList(
       token,
       variableDefinitions.filter(v => v.detail === namedInputType?.name),
@@ -311,7 +315,7 @@ function getSuggestionsForInputValues(
   const queryVariables: CompletionItem[] = getVariableCompletions(
     queryText,
     schema,
-    true,
+    token,
   ).filter(v => v.detail === namedInputType.name);
 
   if (namedInputType instanceof GraphQLEnumType) {
@@ -579,11 +583,12 @@ const getParentDefinition = (state: State, kind: RuleKind) => {
 export function getVariableCompletions(
   queryText: string,
   schema: GraphQLSchema,
-  forcePrefix: boolean = false,
+  token: ContextToken,
 ): CompletionItem[] {
   let variableName: null | string;
   let variableType: GraphQLInputObjectType | undefined | null;
   const definitions: Record<string, any> = Object.create({});
+  // TODO: gather this as part of `AllTypeInfo`, as I don't think it's optimal to re-run the parser like this
   runOnlineParser(queryText, (_, state: State) => {
     if (state.kind === RuleKinds.VARIABLE && state.name) {
       variableName = state.name;
@@ -599,15 +604,15 @@ export function getVariableCompletions(
 
     if (variableName && variableType) {
       if (!definitions[variableName]) {
+        // append `$` if the `token.string` is not already `$`
+        const label = token.string === '$' ? variableName : '$' + variableName;
         definitions[variableName] = {
           detail: variableType.toString(),
-          label: `$${variableName}`,
+          label,
           type: variableType,
           kind: CompletionItemKind.Variable,
         } as CompletionItem;
-        if (forcePrefix) {
-          definitions[variableName].insertText = `$${variableName}`;
-        }
+
         variableName = null;
         variableType = null;
       }
