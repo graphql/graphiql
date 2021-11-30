@@ -31,7 +31,6 @@ import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
-import { pathToFileURL } from 'url';
 import { URI } from 'vscode-uri';
 
 // Maximum files to read when processing GraphQL files.
@@ -366,7 +365,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               // the docs indicate that is what's there :shrug:
               const cacheEntry = globResult.statCache[filePath] as fs.Stats;
               return {
-                filePath: pathToFileURL(filePath).toString(),
+                filePath: URI.parse(filePath).toString(),
                 mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
                 size: cacheEntry.size,
               };

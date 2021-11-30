@@ -315,6 +315,43 @@ describe('MessageProcessor', () => {
     await expect(result[0].uri).toEqual(`${queryPathUri}/test3.graphql`);
   });
 
+  describe('handleDidOpenOrSaveNotification', () => {
+    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._updateGraphQLConfig = jest.fn();
+    });
+    it('updates config for standard config filename changes', async () => {
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/.graphql.config.js`,
+          languageId: 'js',
+          version: 0,
+          text: '',
+        },
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
+
+    it('updates config for custom config filename changes', async () => {
+      const customConfigName = 'custom-config-name.yml';
+      messageProcessor._settings = { load: { fileName: customConfigName } };
+
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/${customConfigName}`,
+          languageId: 'js',
+          version: 0,
+          text: '',
+        },
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
+  });
+
   it('parseDocument finds queries in tagged templates', async () => {
     const text = `
 // @flow
@@ -505,35 +542,6 @@ export function Example(arg: string) {}`;
       });
 
       expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
-    });
-
-    it('updates config for standard config filename changes', async () => {
-      await messageProcessor.handleWatchedFilesChangedNotification({
-        changes: [
-          {
-            uri: `${pathToFileURL('.')}/.graphql.config`,
-            type: FileChangeType.Changed,
-          },
-        ],
-      });
-
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
-    });
-
-    it('updates config for custom config filename changes', async () => {
-      const customConfigName = 'custom-config-name.yml';
-      messageProcessor._settings = { load: { fileName: customConfigName } };
-
-      await messageProcessor.handleWatchedFilesChangedNotification({
-        changes: [
-          {
-            uri: `${pathToFileURL('.')}/${customConfigName}`,
-            type: FileChangeType.Changed,
-          },
-        ],
-      });
-
-      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
   });
 });
