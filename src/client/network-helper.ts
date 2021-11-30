@@ -39,17 +39,29 @@ export class NetworkHelper {
     endpoint: Endpoint
     updateCallback: (data: string, operation: string) => void
   }) {
-    const wsEndpointURL = endpoint.url.replace(/^http/, "ws")
-    const wsClient = createWSClient({
-      url: wsEndpointURL,
-      connectionAckWaitTimeout: 3000,
-      webSocketImpl: ws,
-    })
-
     const { rejectUnauthorized } = workspace.getConfiguration("vscode-graphql")
     // this is a node specific setting that can allow requests against servers using self-signed certificates
     // it is similar to passing the nodejs env variable flag, except configured on a per-request basis here
     const agent = new Agent({ rejectUnauthorized })
+
+    const exchanges = [...defaultExchanges];
+    if (operation === "subscription") {
+      const wsEndpointURL = endpoint.url.replace(/^http/, "ws")
+      const wsClient = createWSClient({
+        url: wsEndpointURL,
+        connectionAckWaitTimeout: 3000,
+        webSocketImpl: ws,
+      })
+      exchanges.push(
+        subscriptionExchange({
+          forwardSubscription: operation => ({
+            subscribe: sink => ({
+              unsubscribe: wsClient.subscribe(operation, sink),
+            }),
+          }),
+        }),
+      )
+    }
 
     return createClient({
       url: endpoint.url,
@@ -60,16 +72,7 @@ export class NetworkHelper {
         // @ts-expect-error
         agent,
       },
-      exchanges: [
-        ...defaultExchanges,
-        subscriptionExchange({
-          forwardSubscription: operation => ({
-            subscribe: sink => ({
-              unsubscribe: wsClient.subscribe(operation, sink),
-            }),
-          }),
-        }),
-      ],
+      exchanges,
     })
   }
 
