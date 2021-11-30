@@ -196,7 +196,7 @@ export class CompletionAdapter
   }
 
   public get triggerCharacters(): string[] {
-    return [' ', ':', '$', '\n', ' ', '('];
+    return [':', '$', '\n', ' ', '(', '@'];
   }
 
   async provideCompletionItems(

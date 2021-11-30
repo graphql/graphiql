@@ -156,18 +156,20 @@ export function getAutocompleteSuggestions(
     if (argDefs) {
       return hintList(
         token,
-        argDefs.map((argDef: GraphQLArgument): CompletionItem => ({
-          label: argDef.name,
-          insertText: argDef.name + ': ',
-          command: {
-            command: 'editor.action.triggerSuggest',
-            title: 'Suggestions',
-          },
-          detail: String(argDef.type),
-          documentation: argDef.description ?? undefined,
-          kind: CompletionItemKind.Variable,
-          type: argDef.type,
-        })),
+        argDefs.map(
+          (argDef: GraphQLArgument): CompletionItem => ({
+            label: argDef.name,
+            insertText: argDef.name + ': ',
+            command: {
+              command: 'editor.action.triggerSuggest',
+              title: 'Suggestions',
+            },
+            detail: String(argDef.type),
+            documentation: argDef.description ?? undefined,
+            kind: CompletionItemKind.Variable,
+            type: argDef.type,
+          }),
+        ),
       );
     }
   }
