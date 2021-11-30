@@ -31,7 +31,8 @@ import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { pathToFileURL } from 'url';
+import { URI } from 'vscode-uri';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -106,7 +107,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getProjectForFile = (uri: string): GraphQLProjectConfig => {
-    return this._graphQLConfig.getProjectForFile(new URL(uri).pathname);
+    return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
   };
 
   getFragmentDependencies = async (
@@ -776,7 +777,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
    */
   promiseToReadGraphQLFile = (filePath: Uri): Promise<GraphQLFileInfo> => {
     return new Promise((resolve, reject) =>
-      fs.readFile(fileURLToPath(filePath), 'utf8', (error, content) => {
+      fs.readFile(URI.parse(filePath).fsPath, 'utf8', (error, content) => {
         if (error) {
           reject(error);
           return;
