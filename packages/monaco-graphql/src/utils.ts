@@ -31,21 +31,31 @@ export function toGraphQLPosition(position: monaco.Position): GraphQLPosition {
   return new Position(position.lineNumber - 1, position.column - 1);
 }
 
+export type GraphQLWorkerCompletionItem = GraphQLCompletionItem & {
+  range?: monaco.IRange;
+  command?: monaco.languages.CompletionItem['command'];
+};
+
 export function toCompletion(
   entry: GraphQLCompletionItem,
   range?: GraphQLRange,
-): GraphQLCompletionItem & { range: monaco.IRange } {
-  return {
+): GraphQLWorkerCompletionItem {
+  const results: GraphQLWorkerCompletionItem = {
     label: entry.label,
     insertText: entry.insertText ?? entry.label,
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
-    // @ts-expect-error
     range: range ? toMonacoRange(range) : undefined,
     kind: entry.kind,
   };
+
+  if (entry.command) {
+    results.command = { ...entry.command, id: entry.command.command };
+  }
+
+  return results;
 }
 
 /**

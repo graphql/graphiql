@@ -7,21 +7,19 @@
 
 import { FormattingOptions, ICreateData } from './typings';
 
-import type { worker, editor, Position, IRange } from 'monaco-editor';
+import type { worker, editor, Position } from 'monaco-editor';
 import * as monaco from 'monaco-editor';
 
 import { getRange, LanguageService } from 'graphql-language-service';
 
-import type {
-  SchemaResponse,
-  CompletionItem as GraphQLCompletionItem,
-} from 'graphql-language-service';
+import type { SchemaResponse } from 'graphql-language-service';
 
 import {
   toGraphQLPosition,
   toMonacoRange,
   toMarkerData,
   toCompletion,
+  GraphQLWorkerCompletionItem,
 } from './utils';
 
 import type { GraphQLSchema, DocumentNode } from 'graphql';
@@ -65,7 +63,7 @@ export class GraphQLWorker {
   async doComplete(
     uri: string,
     position: Position,
-  ): Promise<(GraphQLCompletionItem & { range: IRange })[]> {
+  ): Promise<GraphQLWorkerCompletionItem[]> {
     const document = this._getTextDocument(uri);
     const graphQLPosition = toGraphQLPosition(position);
 

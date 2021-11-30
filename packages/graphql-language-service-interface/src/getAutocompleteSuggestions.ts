@@ -156,8 +156,13 @@ export function getAutocompleteSuggestions(
     if (argDefs) {
       return hintList(
         token,
-        argDefs.map(argDef => ({
+        argDefs.map((argDef: GraphQLArgument): CompletionItem => ({
           label: argDef.name,
+          insertText: argDef.name + ': ',
+          command: {
+            command: 'editor.action.triggerSuggest',
+            title: 'Suggestions',
+          },
           detail: String(argDef.type),
           documentation: argDef.description ?? undefined,
           kind: CompletionItemKind.Variable,
@@ -585,15 +590,15 @@ export function getVariableCompletions(
   schema: GraphQLSchema,
   token: ContextToken,
 ): CompletionItem[] {
-  let variableName: null | string;
+  let variableName: null | string = null;
   let variableType: GraphQLInputObjectType | undefined | null;
   const definitions: Record<string, any> = Object.create({});
-  // TODO: gather this as part of `AllTypeInfo`, as I don't think it's optimal to re-run the parser like this
   runOnlineParser(queryText, (_, state: State) => {
-    if (state.kind === RuleKinds.VARIABLE && state.name) {
+    // TODO: gather this as part of `AllTypeInfo`, as I don't think it's optimal to re-run the parser like this
+    if (state?.kind === RuleKinds.VARIABLE && state.name) {
       variableName = state.name;
     }
-    if (state.kind === RuleKinds.NAMED_TYPE && variableName) {
+    if (state?.kind === RuleKinds.NAMED_TYPE && variableName) {
       const parentDefinition = getParentDefinition(state, RuleKinds.TYPE);
       if (parentDefinition?.type) {
         variableType = schema.getType(

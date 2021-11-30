@@ -14,14 +14,13 @@ import type {
   Thenable,
   CancellationToken,
   IDisposable,
-  IRange,
 } from 'monaco-editor';
 
 import * as monaco from 'monaco-editor';
 
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
-import { CompletionItemKind as lsCompletionItemKind } from 'vscode-languageserver-types';
-import { CompletionItem as GraphQLCompletionItem } from 'graphql-language-service';
+import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
+import { GraphQLWorkerCompletionItem } from './utils';
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }
@@ -174,17 +173,19 @@ export function toCompletionItemKind(kind: lsCompletionItemKind) {
 }
 
 export function toCompletion(
-  entry: GraphQLCompletionItem & { range: IRange },
+  entry: GraphQLWorkerCompletionItem,
 ): monaco.languages.CompletionItem {
   return {
+    // @ts-expect-error
+    range: entry.range,
+    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
     label: entry.label,
     insertText: entry.insertText || (entry.label as string),
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,
     detail: entry.detail,
-    range: entry.range,
-    kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
+    command: entry.command,
   };
 }
 
