@@ -9,9 +9,9 @@
 
 import mkdirp from 'mkdirp';
 import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import { pathToFileURL } from 'url';
 import * as path from 'path';
 import glob from 'fast-glob';
+import { URI } from 'vscode-uri';
 import {
   CachedContent,
   Uri,
@@ -131,7 +131,7 @@ export class MessageProcessor {
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = pathToFileURL(this._tmpDirBase).toString();
+    this._tmpUriBase = URI.parse(this._tmpDirBase).toString();
     this._loadConfigOptions = loadConfigOptions;
     if (
       loadConfigOptions.extensions &&
@@ -225,11 +225,10 @@ export class MessageProcessor {
       }, this._settings.load),
       rootDir,
     };
-
+    // reload the graphql cache
     this._graphQLCache = await getGraphQLCache({
       parser: this._parser,
       loadConfigOptions: this._loadConfigOptions,
-      config: this._graphQLConfig,
     });
     this._languageService = new GraphQLLanguageService(this._graphQLCache);
     if (this._graphQLCache?.getGraphQLConfig) {
@@ -248,6 +247,7 @@ export class MessageProcessor {
     try {
       if (!this._isInitialized || !this._graphQLCache) {
         if (!this._settings) {
+          // then initial call to update graphql config
           await this._updateGraphQLConfig();
           this._isInitialized = true;
         } else {
@@ -283,6 +283,18 @@ export class MessageProcessor {
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
+      const configMatchers = [
+        'graphql.config',
+        'graphqlrc',
+        'package.json',
+        this._settings.load.fileName,
+      ].filter(Boolean);
+      if (configMatchers.some(v => uri.match(v)?.length)) {
+        this._logger.info('updating graphql config');
+        this._updateGraphQLConfig();
+        return { uri, diagnostics: [] };
+      }
+      // update graphql config only when graphql config is saved!
       const cachedDocument = this._getCachedDocument(textDocument.uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
@@ -567,25 +579,13 @@ export class MessageProcessor {
       params.changes.map(async (change: FileEvent) => {
         if (!this._isInitialized || !this._graphQLCache) {
           throw Error('No cache available for handleWatchedFilesChanged');
-        }
-        // update when graphql config changes!
-        const configMatchers = [
-          'graphql.config',
-          'graphqlrc',
-          this._settings.load.fileName,
-        ].filter(Boolean);
-        if (configMatchers.some(v => change.uri.match(v)?.length)) {
-          this._logger.info('updating graphql config');
-          this._updateGraphQLConfig();
-        }
-
-        if (
+        } else if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
         ) {
           const uri = change.uri;
 
-          const text = readFileSync(new URL(uri).pathname).toString();
+          const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
           const contents = this._parser(text, uri);
 
           await this._updateFragmentDefinition(uri, contents);
@@ -831,9 +831,7 @@ export class MessageProcessor {
     const isFileUri = existsSync(uri);
     let version = 1;
     if (isFileUri) {
-      const schemaUri = pathToFileURL(
-        path.join(project.dirpath, uri),
-      ).toString();
+      const schemaUri = URI.parse(path.join(project.dirpath, uri)).toString();
       const schemaDocument = this._getCachedDocument(schemaUri);
 
       if (schemaDocument) {
@@ -859,7 +857,7 @@ export class MessageProcessor {
       projectTmpPath = path.join(projectTmpPath, appendPath);
     }
     if (prependWithProtocol) {
-      return pathToFileURL(path.resolve(projectTmpPath)).toString();
+      return URI.parse(path.resolve(projectTmpPath)).toString();
     } else {
       return path.resolve(projectTmpPath);
     }
@@ -1014,7 +1012,7 @@ export class MessageProcessor {
           }
 
           // build full system URI path with protocol
-          const uri = pathToFileURL(filePath).toString();
+          const uri = URI.parse(filePath).toString();
 
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);
