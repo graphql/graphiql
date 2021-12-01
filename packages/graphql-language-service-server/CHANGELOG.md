@@ -1,5 +1,28 @@
 # graphql-language-service-server
 
+## 2.7.7
+
+### Patch Changes
+
+- [`c4236190`](https://github.com/graphql/graphiql/commit/c4236190f91adedaf4f4a54cd0400a6b42c3c407) [#2072](https://github.com/graphql/graphiql/pull/2072) Thanks [@acao](https://github.com/acao)! - this fixes the parsing of file URIs by `graphql-language-service-server` in cases such as:
+
+  - windows without WSL
+  - special characters in filenames
+  - likely other cases
+
+  previously we were using the old approach of `URL(uri).pathname` which was not working! now using the standard `vscode-uri` approach of `URI.parse(uri).fsName`.
+
+  this should fix issues with object and fragment type completion as well I think
+
+  also for #2066 made it so that graphql config is not loaded into the file cache unnecessarily, and that it's only loaded on editor save events rather than on file changed events
+
+  fixes #1644 and #2066
+
+* [`df57cd25`](https://github.com/graphql/graphiql/commit/df57cd2556302d6aa5dd140e7bee3f7bdab4deb1) [#2065](https://github.com/graphql/graphiql/pull/2065) Thanks [@acao](https://github.com/acao)! - Add an opt-in feature to generate markdown in hover elements, starting with highlighting type information. Enabled for the language server and also the language service and thus `monaco-graphql` as well.
+
+* Updated dependencies [[`df57cd25`](https://github.com/graphql/graphiql/commit/df57cd2556302d6aa5dd140e7bee3f7bdab4deb1)]:
+  - graphql-language-service@3.2.5
+
 ## 2.7.6
 
 ### Patch Changes
