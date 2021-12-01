@@ -35,7 +35,7 @@ import {
 
 import { Kind, parse, print } from 'graphql';
 import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
-import { getHoverInformation } from './getHoverInformation';
+import { getHoverInformation, HoverConfig } from './getHoverInformation';
 import { validateQuery, getRange, DIAGNOSTIC_SEVERITY } from './getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
@@ -250,12 +250,13 @@ export class GraphQLLanguageService {
     query: string,
     position: IPosition,
     filePath: Uri,
+    options?: HoverConfig,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
-      return getHoverInformation(schema, query, position);
+      return getHoverInformation(schema, query, position, undefined, options);
     }
     return '';
   }

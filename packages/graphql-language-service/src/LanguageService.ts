@@ -25,6 +25,7 @@ import {
   SchemaResponse,
   defaultSchemaBuilder,
 } from './schemaLoader';
+import { HoverConfig } from 'graphql-language-service-interface/src/getHoverInformation';
 
 export type GraphQLLanguageConfig = {
   parser?: typeof parse;
@@ -203,10 +204,13 @@ export class LanguageService {
     _uri: string,
     documentText: string,
     position: IPosition,
+    options?: HoverConfig,
   ) =>
     getHoverInformation(
       (await this.getSchema()) as GraphQLSchema,
       documentText,
       position,
+      undefined,
+      { useMarkdown: true, ...options },
     );
 }

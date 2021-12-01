@@ -26,11 +26,14 @@ import { AllTypeInfo, IPosition } from 'graphql-language-service-types';
 import { Hover } from 'vscode-languageserver-types';
 import { getTokenAtPosition, getTypeInfo } from './getAutocompleteSuggestions';
 
+export type HoverConfig = { useMarkdown?: boolean };
+
 export function getHoverInformation(
   schema: GraphQLSchema,
   queryText: string,
   cursor: IPosition,
   contextToken?: ContextToken,
+  config?: HoverConfig,
 ): Hover['contents'] {
   const token = contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -42,7 +45,7 @@ export function getHoverInformation(
   const kind = state.kind;
   const step = state.step;
   const typeInfo = getTypeInfo(schema, token.state);
-  const options = { schema };
+  const options = { ...config, schema };
 
   // Given a Schema and a Token, produce the contents of an info tooltip.
   // To do this, create a div element that we will render "into" and then pass
@@ -52,17 +55,23 @@ export function getHoverInformation(
     (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
   ) {
     const into: string[] = [];
+    renderMdCodeStart(into, options);
     renderField(into, typeInfo, options);
+    renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.fieldDef);
     return into.join('').trim();
   } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     const into: string[] = [];
+    renderMdCodeStart(into, options);
     renderDirective(into, typeInfo, options);
+    renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.directiveDef);
     return into.join('').trim();
   } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     const into: string[] = [];
+    renderMdCodeStart(into, options);
     renderArg(into, typeInfo, options);
+    renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
   } else if (
@@ -71,7 +80,9 @@ export function getHoverInformation(
     'description' in typeInfo.enumValue
   ) {
     const into: string[] = [];
+    renderMdCodeStart(into, options);
     renderEnumValue(into, typeInfo, options);
+    renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.enumValue);
     return into.join('').trim();
   } else if (
@@ -80,11 +91,24 @@ export function getHoverInformation(
     'description' in typeInfo.type
   ) {
     const into: string[] = [];
+    renderMdCodeStart(into, options);
     renderType(into, typeInfo, options, typeInfo.type);
+    renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.type);
     return into.join('').trim();
   }
   return '';
+}
+
+function renderMdCodeStart(into: string[], options: any) {
+  if (options.useMarkdown) {
+    text(into, '```graphql\n');
+  }
+}
+function renderMdCodeEnd(into: string[], options: any) {
+  if (options.useMarkdown) {
+    text(into, '\n```');
+  }
 }
 
 function renderField(into: string[], typeInfo: AllTypeInfo, options: any) {
@@ -168,6 +192,7 @@ function renderType(
   if (!t) {
     return;
   }
+
   if (t instanceof GraphQLNonNull) {
     renderType(into, typeInfo, options, t.ofType);
     text(into, '!');
