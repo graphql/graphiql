@@ -189,6 +189,7 @@ export type CompletionItem = CompletionItemType & {
   documentation?: string | null;
   deprecationReason?: string | null;
   type?: GraphQLType;
+  command?: CompletionItemType['command'];
 };
 // Below are basically a copy-paste from Nuclide rpc types for definitions.
 
@@ -246,6 +247,7 @@ export const FileChangeTypeKind = {
   Deleted: 3,
 };
 
+// eslint-disable-next-line no-redeclare
 export type FileChangeTypeKind = {
   Created: 1;
   Changed: 2;
@@ -255,3 +257,64 @@ export type FileChangeTypeKind = {
 export type FileChangeTypeKeys = keyof FileChangeTypeKind;
 
 export type FileChangeType = FileChangeTypeKind[FileChangeTypeKeys];
+
+// copied from `microsoft/vscode-languageserver-types` to prevent import issues
+
+/**
+ * The kind of a completion entry.
+ */
+export namespace CompletionItemKind {
+  export const Text: 1 = 1;
+  export const Method: 2 = 2;
+  export const Function: 3 = 3;
+  export const Constructor: 4 = 4;
+  export const Field: 5 = 5;
+  export const Variable: 6 = 6;
+  export const Class: 7 = 7;
+  export const Interface: 8 = 8;
+  export const Module: 9 = 9;
+  export const Property: 10 = 10;
+  export const Unit: 11 = 11;
+  export const Value: 12 = 12;
+  export const Enum: 13 = 13;
+  export const Keyword: 14 = 14;
+  export const Snippet: 15 = 15;
+  export const Color: 16 = 16;
+  export const File: 17 = 17;
+  export const Reference: 18 = 18;
+  export const Folder: 19 = 19;
+  export const EnumMember: 20 = 20;
+  export const Constant: 21 = 21;
+  export const Struct: 22 = 22;
+  export const Event: 23 = 23;
+  export const Operator: 24 = 24;
+  export const TypeParameter: 25 = 25;
+}
+
+// eslint-disable-next-line no-redeclare
+export type CompletionItemKind =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | 21
+  | 22
+  | 23
+  | 24
+  | 25;
