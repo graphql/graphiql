@@ -72,9 +72,19 @@ export function activate(context: ExtensionContext) {
       { scheme: "file", language: "typescriptreact" },
     ],
     synchronize: {
-      fileEvents: workspace.createFileSystemWatcher(
-        "**/{*.graphql,*.graphqls,*.gql,*.js,*.jsx,*.ts,*.tsx,graphql.config.*,.graphqlrc,.graphqlrc.*,package.json}",
-      ),
+      // TODO: should this focus on `graphql-config` documents, schema and/or includes?
+      fileEvents: [
+        workspace.createFileSystemWatcher(
+          "/{graphql.config.*,.graphqlrc,.graphqlrc.*,package.json}",
+          false,
+          // ignore change events for graphql config, we only care about create, delete and save events
+          true,
+        ),
+        // these ignore node_modules and .git by default
+        workspace.createFileSystemWatcher(
+          "**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx}",
+        ),
+      ],
     },
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
