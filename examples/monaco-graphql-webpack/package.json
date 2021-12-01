@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
-    "monaco-graphql": "^0.6.4",
+    "monaco-graphql": "^0.6.5",
     "prettier": "^2.0.4"
   },
   "devDependencies": {

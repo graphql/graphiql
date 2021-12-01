@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.6.5
+
+### Patch Changes
+
+- [`989fca69`](https://github.com/graphql/graphiql/commit/989fca693385aa408bcfe18cde34934a5aea5dce) [#2070](https://github.com/graphql/graphiql/pull/2070) Thanks [@acao](https://github.com/acao)! - Fix a bug with variable completion with duplicate `$` across the ecosytem. Introduce more `triggerCharacters` across monaco and the LSP server for autocompletion in far more cases
+
+- Updated dependencies [[`df57cd25`](https://github.com/graphql/graphiql/commit/df57cd2556302d6aa5dd140e7bee3f7bdab4deb1)]:
+  - graphql-language-service@3.2.5
+
 ## 0.6.4
 
 ### Patch Changes
