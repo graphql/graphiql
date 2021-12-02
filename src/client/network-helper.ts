@@ -70,7 +70,7 @@ export class NetworkHelper {
         headers: endpoint.headers as HeadersInit,
         // this is an option that's only available in `node-fetch`, not in the standard fetch API
         // @ts-expect-error
-        agent,
+        agent: new URL(endpoint.url).protocol === 'https:' ? agent : undefined,
       },
       exchanges,
     })
@@ -78,27 +78,27 @@ export class NetworkHelper {
 
   buildSubscribeConsumer =
     (cb: ExecuteOperationOptions["updateCallback"], operation: string) =>
-    (result: OperationResult) => {
-      const { errors, data, error } = result as {
-        error?: CombinedError
-        errors?: GraphQLError[]
-        data?: unknown
-      }
-      if (errors || data) {
-        cb(formatData(result), operation)
-      }
-      if (error) {
-        if (error.graphQLErrors && error.graphQLErrors.length > 0) {
-          cb(
-            JSON.stringify({ errors: error.graphQLErrors }, null, 2),
-            operation,
-          )
+      (result: OperationResult) => {
+        const { errors, data, error } = result as {
+          error?: CombinedError
+          errors?: GraphQLError[]
+          data?: unknown
         }
-        if (error.networkError) {
-          cb(error.networkError.toString(), operation)
+        if (errors || data) {
+          cb(formatData(result), operation)
+        }
+        if (error) {
+          if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+            cb(
+              JSON.stringify({ errors: error.graphQLErrors }, null, 2),
+              operation,
+            )
+          }
+          if (error.networkError) {
+            cb(error.networkError.toString(), operation)
+          }
         }
       }
-    }
 
   async executeOperation({
     endpoint,
