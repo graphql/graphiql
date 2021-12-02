@@ -242,6 +242,7 @@
     "babel-polyfill": "6.26.0",
     "capitalize": "^2.0.4",
     "dotenv": "^10.0.0",
+    "escape-html": "^1.0.3",
     "graphql": "^15",
     "graphql-config": "~4.1.0",
     "graphql-language-service-server": "^2.7.7",
