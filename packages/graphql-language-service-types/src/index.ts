@@ -258,5 +258,5 @@ export type FileChangeTypeKeys = keyof FileChangeTypeKind;
 
 export type FileChangeType = FileChangeTypeKind[FileChangeTypeKeys];
 
-// a alias of `vscode-languageserver-types` module, to prevent import issues
+// an alias of `vscode-languageserver-types` module, to prevent import issues
 export { CompletionItemKind } from 'vscode-languageserver-types';
