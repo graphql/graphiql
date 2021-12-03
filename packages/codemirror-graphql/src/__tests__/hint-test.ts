@@ -1087,11 +1087,42 @@ describe('graphql-hint', () => {
       ch: 18,
     });
     expect(suggestions6?.list).toEqual(expectedSuggestions);
+
     const suggestions7 = await getHintSuggestions(
       '{ hasArgs(object: { string ',
       { line: 0, ch: 27 },
     );
     expect(suggestions7?.list).toEqual(expectedSuggestions);
+  });
+  it('provides variable completion for argments', async () => {
+    const expectedSuggestions = getExpectedSuggestions([
+      { text: 'string', type: GraphQLString },
+      { text: 'listString', type: new GraphQLList(GraphQLString) },
+    ]);
+    // kind is Argument, step is 2, and input type isn't GraphQLEnumType or GraphQLBoolean
+    const suggestions9 = await getHintSuggestions(
+      'query myQuery($arg: String){ hasArgs(string: ',
+      {
+        line: 0,
+        ch: 42,
+      },
+    );
+    expect(suggestions9?.list).toEqual(expectedSuggestions);
+  });
+  it('provides variable completion for argments with $', async () => {
+    const expectedSuggestions = getExpectedSuggestions([
+      { text: 'string', type: GraphQLString },
+      { text: 'listString', type: new GraphQLList(GraphQLString) },
+    ]);
+    // kind is Argument, step is 2, and input type isn't GraphQLEnumType or GraphQLBoolean
+    const suggestions9 = await getHintSuggestions(
+      'query myQuery($arg: String){ hasArgs(string: $',
+      {
+        line: 0,
+        ch: 42,
+      },
+    );
+    expect(suggestions9?.list).toEqual(expectedSuggestions);
   });
   it('provides correct field name suggestions for an interface type', async () => {
     const suggestions = await getHintSuggestions(
