@@ -347,6 +347,7 @@ const myTestSchema = new GraphQLSchema({
   query: TestType,
   mutation: TestMutationType,
   subscription: TestSubscriptionType,
+  description: 'This is a test schema for GraphiQL',
 });
 
 module.exports = myTestSchema;

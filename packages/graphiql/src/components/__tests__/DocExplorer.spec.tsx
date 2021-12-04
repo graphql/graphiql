@@ -26,5 +26,8 @@ describe('DocExplorer', () => {
     const { container } = render(<DocExplorer schema={ExampleSchema} />);
     const error = container.querySelectorAll('.error-container');
     expect(error).toHaveLength(0);
+    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
+      'GraphQL Schema for testing',
+    );
   });
 });

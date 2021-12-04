@@ -7,7 +7,9 @@
 
 import { getIntrospectionQuery } from 'graphql';
 
-export const introspectionQuery = getIntrospectionQuery();
+export const introspectionQuery = getIntrospectionQuery({
+  schemaDescription: true,
+});
 
 export const staticName = 'IntrospectionQuery';
 
