@@ -6,7 +6,10 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { CompletionItemKind } from 'vscode-languageserver-types';
+import {
+  CompletionItemKind,
+  InsertTextFormat,
+} from 'vscode-languageserver-types';
 
 import {
   FragmentDefinitionNode,
@@ -24,6 +27,9 @@ import {
   Kind,
   DirectiveLocation,
   GraphQLArgument,
+  isObjectType,
+  isListType,
+  isNonNullType,
 } from 'graphql';
 
 import {
@@ -70,6 +76,11 @@ import {
   objectValues,
 } from './autocompleteUtils';
 
+export const SuggestionCommand = {
+  command: 'editor.action.triggerSuggest',
+  title: 'Suggestions',
+};
+
 const collectFragmentDefs = (op: string | undefined) => {
   const externalFragments: FragmentDefinitionNode[] = [];
   if (op) {
@@ -87,6 +98,11 @@ const collectFragmentDefs = (op: string | undefined) => {
   return externalFragments;
 };
 
+export type AutocompleteSuggestionOptions = {
+  fillLeafsOnComplete?: boolean;
+  schema?: GraphQLSchema;
+};
+
 /**
  * Given GraphQLSchema, queryText, and context of the current position within
  * the source text, provide a list of typeahead entries.
@@ -97,7 +113,12 @@ export function getAutocompleteSuggestions(
   cursor: IPosition,
   contextToken?: ContextTokenForCodeMirror,
   fragmentDefs?: FragmentDefinitionNode[] | string,
+  options?: AutocompleteSuggestionOptions,
 ): Array<CompletionItem> {
+  const opts = {
+    ...options,
+    schema,
+  };
   const token: ContextToken =
     contextToken || getTokenAtPosition(queryText, cursor);
 
@@ -111,7 +132,6 @@ export function getAutocompleteSuggestions(
 
   const kind = state.kind;
   const step = state.step;
-
   const typeInfo = getTypeInfo(schema, token.state);
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
@@ -144,7 +164,7 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.FIELD ||
     kind === RuleKinds.ALIASED_FIELD
   ) {
-    return getSuggestionsForFieldNames(token, typeInfo, schema);
+    return getSuggestionsForFieldNames(token, typeInfo, opts);
   }
 
   // Argument names
@@ -160,10 +180,7 @@ export function getAutocompleteSuggestions(
           (argDef: GraphQLArgument): CompletionItem => ({
             label: argDef.name,
             insertText: argDef.name + ': ',
-            command: {
-              command: 'editor.action.triggerSuggest',
-              title: 'Suggestions',
-            },
+            command: SuggestionCommand,
             detail: String(argDef.type),
             documentation: argDef.description ?? undefined,
             kind: CompletionItemKind.Variable,
@@ -270,11 +287,32 @@ export function getAutocompleteSuggestions(
   return [];
 }
 
+const insertSuffix = ` {\n  $1\n}`;
+
+const getInsertText = (field: GraphQLField<null, null>) => {
+  const type = field.type;
+  if (isCompositeType(type)) {
+    return insertSuffix;
+  }
+  if (isListType(type)) {
+    return insertSuffix;
+  }
+  if (isNonNullType(type)) {
+    if (isObjectType(type.ofType)) {
+      return insertSuffix;
+    }
+    if (isListType(type.ofType)) {
+      return insertSuffix;
+    }
+  }
+  return null;
+};
+
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
-  schema: GraphQLSchema,
+  options?: AutocompleteSuggestionOptions,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
     const parentType = typeInfo.parentType;
@@ -289,23 +327,34 @@ function getSuggestionsForFieldNames(
     if (isCompositeType(parentType)) {
       fields.push(TypeNameMetaFieldDef);
     }
-    if (parentType === schema.getQueryType()) {
+    if (parentType === options?.schema?.getQueryType()) {
       fields.push(SchemaMetaFieldDef, TypeMetaFieldDef);
     }
     return hintList(
       token,
-      fields.map<CompletionItem>((field, index) => ({
-        // This will sort the fields in the same order they are listed in the schema
-        sortText: String(index) + field.name,
-        label: field.name,
-        detail: String(field.type),
-        documentation: field.description ?? undefined,
-        deprecated: Boolean(field.deprecationReason),
-        isDeprecated: Boolean(field.deprecationReason),
-        deprecationReason: field.deprecationReason,
-        kind: CompletionItemKind.Field,
-        type: field.type,
-      })),
+      fields.map<CompletionItem>((field, index) => {
+        const suggestion: CompletionItem = {
+          // This will sort the fields in the same order they are listed in the schema
+          sortText: String(index) + field.name,
+          label: field.name,
+          detail: String(field.type),
+          documentation: field.description ?? undefined,
+          deprecated: Boolean(field.deprecationReason),
+          isDeprecated: Boolean(field.deprecationReason),
+          deprecationReason: field.deprecationReason,
+          kind: CompletionItemKind.Field,
+          type: field.type,
+        };
+        // TODO: fillLeafs capability
+        const insertText = getInsertText(field);
+
+        if (insertText) {
+          suggestion.insertText = field.name + insertText;
+          suggestion.insertTextFormat = InsertTextFormat.Snippet;
+          suggestion.command = SuggestionCommand;
+        }
+        return suggestion;
+      }),
     );
   }
   return [];
@@ -939,6 +988,7 @@ export function getTypeInfo(
               argDefs =
                 directiveDef && (directiveDef.args as GraphQLArgument[]);
               break;
+            // TODO: needs more tests
             case RuleKinds.ALIASED_FIELD: {
               const name = state.prevState && state.prevState.name;
               if (!name) {
@@ -973,16 +1023,17 @@ export function getTypeInfo(
         }
         inputType = argDef && argDef.type;
         break;
+      // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
         const enumType = getNamedType(inputType as GraphQLType);
         enumValue =
           enumType instanceof GraphQLEnumType
-            ? find(
-                enumType.getValues() as GraphQLEnumValue[],
-                (val: GraphQLEnumValue) => val.value === state.name,
-              )
+            ? enumType
+                .getValues()
+                .find((val: GraphQLEnumValue) => val.value === state.name)
             : null;
         break;
+      // TODO: needs tests
       case RuleKinds.LIST_VALUE:
         const nullableType = getNullableType(inputType as GraphQLType);
         inputType =
@@ -995,10 +1046,12 @@ export function getTypeInfo(
             ? objectType.getFields()
             : null;
         break;
+      // TODO: needs tests
       case RuleKinds.OBJECT_FIELD:
         const objectField =
           state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
         inputType = objectField && objectField.type;
+
         break;
       case RuleKinds.NAMED_TYPE:
         if (state.name) {
@@ -1025,14 +1078,4 @@ export function getTypeInfo(
     interfaceDef,
     objectTypeDef,
   };
-}
-
-// Returns the first item in the array which causes predicate to return truthy.
-function find(array: any[], predicate: Function) {
-  for (let i = 0; i < array.length; i++) {
-    if (predicate(array[i])) {
-      return array[i];
-    }
-  }
-  return null;
 }

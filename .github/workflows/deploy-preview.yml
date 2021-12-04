@@ -39,7 +39,6 @@ jobs:
           overwrites-pull-request-comment: true
           functions-dir: functions
           github-deployment-environment: "graphiql-cdn-preview"
-          fails-without-credentials: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.SITE_ID }}
@@ -74,7 +73,6 @@ jobs:
           deploy-message: "Monaco GraphQL Webpack Preview"
           github-deployment-environment: "monaco-graphql-webpack-preview"
           github-deployment-description: "A vanilla js github explorer example of `monaco-graphql` using webpack"
-          fails-without-credentials: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: 46a6b3c8-992f-4623-9a76-f1bd5d40505c
@@ -108,7 +106,6 @@ jobs:
           deploy-message: "GraphiQL Webpack Example"
           functions-dir: functions
           github-deployment-environment: "graphiql-webpack-preview"
-          fails-without-credentials: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: aabca80b-fe63-43df-83ef-e431876560c9

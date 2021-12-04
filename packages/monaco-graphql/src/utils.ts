@@ -50,6 +50,9 @@ export function toCompletion(
     range: range ? toMonacoRange(range) : undefined,
     kind: entry.kind,
   };
+  if (entry.insertTextFormat) {
+    results.insertTextFormat = entry.insertTextFormat;
+  }
 
   if (entry.command) {
     results.command = { ...entry.command, id: entry.command.command };
