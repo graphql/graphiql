@@ -93,4 +93,5 @@ export const ExampleQuery = new GraphQLObjectType({
 
 export const ExampleSchema = new GraphQLSchema({
   query: ExampleQuery,
+  description: 'GraphQL Schema for testing',
 });

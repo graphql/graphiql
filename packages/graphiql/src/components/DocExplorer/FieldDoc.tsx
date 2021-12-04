@@ -19,24 +19,69 @@ type FieldDocProps = {
 };
 
 export default function FieldDoc({ field, onClickType }: FieldDocProps) {
+  const [showDeprecated, handleShowDeprecated] = React.useState(false);
   let argsDef;
+  let deprecatedArgsDef;
   if (field && 'args' in field && field.args.length > 0) {
     argsDef = (
-      <div className="doc-category">
+      <div id="doc-args" className="doc-category">
         <div className="doc-category-title">{'arguments'}</div>
-        {field.args.map((arg: GraphQLArgument) => (
-          <div key={arg.name} className="doc-category-item">
-            <div>
-              <Argument arg={arg} onClickType={onClickType} />
+        {field.args
+          .filter(arg => !arg.deprecationReason)
+          .map((arg: GraphQLArgument) => (
+            <div key={arg.name} className="doc-category-item">
+              <div>
+                <Argument arg={arg} onClickType={onClickType} />
+              </div>
+              <MarkdownContent
+                className="doc-value-description"
+                markdown={arg.description}
+              />
+              {arg && 'deprecationReason' in arg && (
+                <MarkdownContent
+                  className="doc-deprecation"
+                  markdown={arg?.deprecationReason}
+                />
+              )}
             </div>
-            <MarkdownContent
-              className="doc-value-description"
-              markdown={arg.description}
-            />
-          </div>
-        ))}
+          ))}
       </div>
     );
+    const deprecatedArgs = field.args.filter(arg =>
+      Boolean(arg.deprecationReason),
+    );
+    if (deprecatedArgs.length > 0) {
+      deprecatedArgsDef = (
+        <div id="doc-deprecated-args" className="doc-category">
+          <div className="doc-category-title">{'deprecated arguments'}</div>
+          {!showDeprecated ? (
+            <button
+              className="show-btn"
+              onClick={() => handleShowDeprecated(!showDeprecated)}>
+              {'Show deprecated arguments...'}
+            </button>
+          ) : (
+            deprecatedArgs.map((arg, i) => (
+              <div key={i}>
+                <div>
+                  <Argument arg={arg} onClickType={onClickType} />
+                </div>
+                <MarkdownContent
+                  className="doc-value-description"
+                  markdown={arg.description}
+                />
+                {arg && 'deprecationReason' in arg && (
+                  <MarkdownContent
+                    className="doc-deprecation"
+                    markdown={arg?.deprecationReason}
+                  />
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      );
+    }
   }
 
   let directivesDef;
@@ -47,7 +92,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     field.astNode.directives.length > 0
   ) {
     directivesDef = (
-      <div className="doc-category">
+      <div id="doc-directives" className="doc-category">
         <div className="doc-category-title">{'directives'}</div>
         {field.astNode.directives.map((directive: DirectiveNode) => (
           <div key={directive.name.value} className="doc-category-item">
@@ -78,6 +123,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
       </div>
       {argsDef}
       {directivesDef}
+      {deprecatedArgsDef}
     </div>
   );
 }

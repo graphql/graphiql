@@ -72,7 +72,7 @@ export default class TypeDoc extends React.Component<
     let typesDef;
     if (types && types.length > 0) {
       typesDef = (
-        <div className="doc-category">
+        <div id="doc-types" className="doc-category">
           <div className="doc-category-title">{typesTitle}</div>
           {types.map(subtype => (
             <div key={subtype.name} className="doc-category-item">
@@ -90,7 +90,7 @@ export default class TypeDoc extends React.Component<
       const fieldMap = type.getFields();
       const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
       fieldsDef = (
-        <div className="doc-category">
+        <div id="doc-fields" className="doc-category">
           <div className="doc-category-title">{'fields'}</div>
           {fields
             .filter(field => !field.deprecationReason)
@@ -111,7 +111,7 @@ export default class TypeDoc extends React.Component<
       );
       if (deprecatedFields.length > 0) {
         deprecatedFieldsDef = (
-          <div className="doc-category">
+          <div id="doc-deprecated-fields" className="doc-category">
             <div className="doc-category-title">{'deprecated fields'}</div>
             {!this.state.showDeprecated ? (
               <button className="show-btn" onClick={this.handleShowDeprecated}>
@@ -210,9 +210,11 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
         field.args.length > 0 && [
           '(',
           <span key="args">
-            {field.args.map(arg => (
-              <Argument key={arg.name} arg={arg} onClickType={onClickType} />
-            ))}
+            {field.args
+              .filter(arg => !arg.deprecationReason)
+              .map(arg => (
+                <Argument key={arg.name} arg={arg} onClickType={onClickType} />
+              ))}
           </span>,
           ')',
         ]}

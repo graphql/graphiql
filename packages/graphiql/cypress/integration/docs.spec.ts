@@ -97,4 +97,12 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
         '<p>No longer in use, try <code>test</code> instead.</p>',
       );
   });
+  it('should show deprecated arguments category title', () => {
+    cy.get('#doc-fields .doc-category-item a.field-name').last().click();
+    cy.get('#doc-deprecated-args>.doc-category-title')
+      .last()
+      .should('have.text', 'deprecated arguments');
+    cy.get('.show-btn').click();
+    cy.get('.doc-deprecation').should('have.text', 'deprecated argument\n');
+  });
 });
