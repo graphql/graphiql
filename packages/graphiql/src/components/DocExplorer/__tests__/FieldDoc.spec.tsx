@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 
 import FieldDoc from '../FieldDoc';
 
@@ -27,6 +27,11 @@ const exampleObject = new GraphQLObjectType({
         stringArg: {
           name: 'stringArg',
           type: GraphQLString,
+        },
+        deprecatedStringArg: {
+          name: 'deprecatedStringArg',
+          type: GraphQLString,
+          deprecationReason: 'no longer used',
         },
       },
     },
@@ -115,6 +120,13 @@ describe('FieldDoc', () => {
     expect(container.querySelector('.arg')).toHaveTextContent(
       'stringArg: String',
     );
+    // by default, the deprecation docs should be hidden
+    expect(container.querySelectorAll('.doc-deprecation')).toHaveLength(0);
+    // make sure deprecation is present
+    fireEvent.click(container.querySelector('.show-btn'));
+    const deprecationDocs = container.querySelectorAll('.doc-deprecation');
+    expect(deprecationDocs).toHaveLength(1);
+    expect(deprecationDocs[0]).toHaveTextContent('no longer used');
   });
 
   it('should render a string field with directives', () => {

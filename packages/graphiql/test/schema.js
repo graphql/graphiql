@@ -282,7 +282,7 @@ const TestType = new GraphQLObjectType({
         return JSON.stringify(args);
       },
       args: {
-        string: { type: GraphQLString },
+        string: { type: GraphQLString, description: 'A string' },
         int: { type: GraphQLInt },
         float: { type: GraphQLFloat },
         boolean: { type: GraphQLBoolean },
@@ -301,6 +301,11 @@ const TestType = new GraphQLObjectType({
         listID: { type: new GraphQLList(GraphQLID) },
         listEnum: { type: new GraphQLList(TestEnum) },
         listObject: { type: new GraphQLList(TestInputObject) },
+        deprecatedArg: {
+          type: GraphQLString,
+          deprecationReason: 'deprecated argument',
+          description: 'Hello!',
+        },
       },
     },
   }),
