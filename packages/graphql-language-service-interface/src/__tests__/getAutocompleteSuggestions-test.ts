@@ -21,6 +21,11 @@ import path from 'path';
 
 import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
 
+const suggestionCommand = {
+  command: 'editor.action.triggerSuggest',
+  title: 'Suggestions',
+};
+
 describe('getAutocompleteSuggestions', () => {
   let schema: GraphQLSchema;
   beforeEach(async () => {
@@ -50,13 +55,21 @@ describe('getAutocompleteSuggestions', () => {
       )
       .sort((a, b) => a.label.localeCompare(b.label))
       .map(suggestion => {
+        // TODO: A PR where we do `const { type, ..rest} = suggestion; return rest;`
+        // and validate the entire completion object - kinds, documentation, etc
         const response = { label: suggestion.label } as CompletionItem;
         if (suggestion.detail) {
           response.detail = String(suggestion.detail);
         }
-        // if(suggestion.documentation) {
-        //   response.documentation = String(suggestion.documentation)
-        // }
+        if (suggestion.insertText) {
+          response.insertText = suggestion.insertText;
+        }
+        if (suggestion.insertTextFormat) {
+          response.insertTextFormat = suggestion.insertTextFormat;
+        }
+        if (suggestion.command) {
+          response.command = suggestion.command;
+        }
         return response;
       });
   }
@@ -194,12 +207,26 @@ query name {
 
   it('provides correct argument suggestions', () => {
     const result = testSuggestions('{ human (', new Position(0, 9));
-    expect(result).toEqual([{ label: 'id', detail: 'String!' }]);
+    expect(result).toEqual([
+      {
+        label: 'id',
+        detail: 'String!',
+        insertText: 'id: ',
+        command: suggestionCommand,
+      },
+    ]);
   });
 
   it('provides correct argument suggestions when using aliases', () => {
     const result = testSuggestions('{ aliasTest: human( ', new Position(0, 20));
-    expect(result).toEqual([{ label: 'id', detail: 'String!' }]);
+    expect(result).toEqual([
+      {
+        label: 'id',
+        detail: 'String!',
+        command: suggestionCommand,
+        insertText: 'id: ',
+      },
+    ]);
   });
 
   it('provides correct input type suggestions', () => {
@@ -284,7 +311,9 @@ query name {
       'query($id: String, $ep: Episode!){ hero(episode: $ }',
       new Position(0, 51),
     );
-    expect(result).toEqual([{ label: '$ep', detail: 'Episode' }]);
+    expect(result).toEqual([
+      { label: 'ep', insertText: '$ep', detail: 'Episode' },
+    ]);
   });
 
   it('provides correct suggestions for variables based on argument context', () => {
@@ -293,8 +322,8 @@ query name {
       new Position(0, 55),
     );
     expect(result).toEqual([
-      { label: '$episode', detail: 'Episode' },
       { label: 'EMPIRE', detail: 'Episode' },
+      { label: 'episode', detail: 'Episode', insertText: '$episode' },
       { label: 'JEDI', detail: 'Episode' },
       { label: 'NEWHOPE', detail: 'Episode' },
       // no $id here, it's not compatible :P

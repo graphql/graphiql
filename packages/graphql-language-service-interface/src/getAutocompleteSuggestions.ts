@@ -612,10 +612,11 @@ export function getVariableCompletions(
     if (variableName && variableType) {
       if (!definitions[variableName]) {
         // append `$` if the `token.string` is not already `$`
-        const label = token.string === '$' ? variableName : '$' + variableName;
+
         definitions[variableName] = {
           detail: variableType.toString(),
-          label,
+          insertText: token.string === '$' ? variableName : '$' + variableName,
+          label: variableName, // keep label the same for `codemirror-graphql`
           type: variableType,
           kind: CompletionItemKind.Variable,
         } as CompletionItem;
