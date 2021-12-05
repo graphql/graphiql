@@ -180,7 +180,10 @@ export function toCompletion(
     range: entry.range,
     kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
     label: entry.label,
-    insertText: entry.insertText || (entry.label as string),
+    insertText: entry.insertText ?? (entry.label as string),
+    insertTextRules: entry.insertText
+      ? monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet
+      : undefined,
     sortText: entry.sortText,
     filterText: entry.filterText,
     documentation: entry.documentation,

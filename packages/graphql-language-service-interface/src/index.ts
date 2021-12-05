@@ -16,6 +16,6 @@ export * from './getDefinition';
 export * from './getDiagnostics';
 
 export { getOutline } from './getOutline';
-export { getHoverInformation } from './getHoverInformation';
+export { getHoverInformation, HoverConfig } from './getHoverInformation';
 
 export * from './GraphQLLanguageService';
