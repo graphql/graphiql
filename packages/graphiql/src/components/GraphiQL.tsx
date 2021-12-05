@@ -28,7 +28,11 @@ import {
   IntrospectionQuery,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
-import { getFragmentDependenciesForAST } from 'graphql-language-service';
+import {
+  getFragmentDependenciesForAST,
+  getOperationFacts,
+  VariableToType,
+} from 'graphql-language-service';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -43,7 +47,6 @@ import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
-import getOperationFacts, { VariableToType } from '../utility/getQueryFacts';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';

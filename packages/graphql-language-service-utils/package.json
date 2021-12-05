@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "graphql-language-service-types": "^1.8.6",
-    "nullthrows": "^1.0.0"
+    "nullthrows": "^1.0.0",
+    "@types/json-schema": "7.0.9"
   },
   "devDependencies": {
     "@types/jest": "^26.0.22",

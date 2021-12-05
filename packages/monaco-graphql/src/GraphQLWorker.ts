@@ -7,12 +7,13 @@
 
 import { FormattingOptions, ICreateData } from './typings';
 
-import type { worker, editor, Position } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
+import type { worker, Position } from 'monaco-editor';
 
-import { getRange, LanguageService } from 'graphql-language-service';
-
-import type { SchemaResponse } from 'graphql-language-service';
+import {
+  getRange,
+  LanguageService,
+  SchemaConfig,
+} from 'graphql-language-service';
 
 import {
   toGraphQLPosition,
@@ -21,8 +22,6 @@ import {
   toCompletion,
   GraphQLWorkerCompletionItem,
 } from './utils';
-
-import type { GraphQLSchema, DocumentNode } from 'graphql';
 
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
@@ -39,35 +38,31 @@ export class GraphQLWorker {
     this._formattingOptions = createData.formattingOptions;
   }
 
-  async getSchemaResponse(_uri?: string): Promise<SchemaResponse | null> {
-    return this._languageService.getSchemaResponse();
-  }
-
-  async setSchema(schema: string): Promise<void> {
-    await this._languageService.setSchema(schema);
-  }
-
-  async loadSchema(_uri?: string): Promise<GraphQLSchema | null> {
-    return this._languageService.getSchema();
-  }
-
-  async doValidation(uri: string): Promise<editor.IMarkerData[]> {
-    const document = this._getTextDocument(uri);
-    const graphqlDiagnostics = await this._languageService.getDiagnostics(
+  public async doValidation(uri: string) {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      return [];
+    }
+    const graphqlDiagnostics = this._languageService.getDiagnostics(
       uri,
       document,
     );
     return graphqlDiagnostics.map(toMarkerData);
   }
 
-  async doComplete(
+  public async doComplete(
     uri: string,
     position: Position,
   ): Promise<GraphQLWorkerCompletionItem[]> {
-    const document = this._getTextDocument(uri);
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      console.log('no document');
+      return [];
+    }
     const graphQLPosition = toGraphQLPosition(position);
-
-    const suggestions = await this._languageService.getCompletion(
+    const suggestions = this._languageService.getCompletion(
       uri,
       document,
       graphQLPosition,
@@ -75,11 +70,15 @@ export class GraphQLWorker {
     return suggestions.map(suggestion => toCompletion(suggestion));
   }
 
-  async doHover(uri: string, position: Position) {
-    const document = this._getTextDocument(uri);
+  public async doHover(uri: string, position: Position) {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!document) {
+      return null;
+    }
     const graphQLPosition = toGraphQLPosition(position);
 
-    const hover = await this._languageService.getHover(
+    const hover = this._languageService.getHover(
       uri,
       document,
       graphQLPosition,
@@ -99,27 +98,58 @@ export class GraphQLWorker {
     };
   }
 
-  async doFormat(text: string): Promise<string> {
+  public async doGetVariablesJSONSchema(uri: string): Promise<unknown> {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!documentModel || !document) {
+      return null;
+    }
+    const jsonSchema = this._languageService.getVariablesJSONSchema(
+      uri,
+      document,
+      { useMarkdownDescription: true },
+    );
+    if (jsonSchema) {
+      jsonSchema.$id = 'monaco://variables-schema.json';
+      jsonSchema.title = 'GraphQL Variables';
+      return jsonSchema;
+    }
+
+    return null;
+  }
+
+  async doFormat(uri: string): Promise<string | null> {
+    const documentModel = this._getTextModel(uri);
+    const document = documentModel?.getValue();
+    if (!documentModel || !document) {
+      return null;
+    }
     const prettierStandalone = await import('prettier/standalone');
     const prettierGraphqlParser = await import('prettier/parser-graphql');
 
-    return prettierStandalone.format(text, {
-      ...this._formattingOptions,
+    return prettierStandalone.format(document, {
       parser: 'graphql',
       plugins: [prettierGraphqlParser],
+      ...this._formattingOptions?.prettierConfig,
     });
   }
-
-  async doParse(text: string): Promise<DocumentNode> {
-    return this._languageService.parse(text);
-  }
-
-  private _getTextDocument(_uri: string): string {
+  /**
+   * TODO: store this in a proper document cache in the language service
+   */
+  private _getTextModel(uri: string): monaco.worker.IMirrorModel | null {
     const models = this._ctx.getMirrorModels();
-    if (models.length > 0) {
-      return models[0].getValue();
+    for (const model of models) {
+      if (model.uri.toString() === uri) {
+        return model;
+      }
     }
-    return '';
+    return null;
+  }
+  public doUpdateSchema(schema: SchemaConfig) {
+    return this._languageService.updateSchema(schema);
+  }
+  public doUpdateSchemas(schemas: SchemaConfig[]) {
+    return this._languageService.updateSchemas(schemas);
   }
 }
 

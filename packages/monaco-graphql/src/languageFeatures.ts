@@ -6,7 +6,7 @@
  */
 
 import { GraphQLWorker } from './GraphQLWorker';
-import type { LanguageServiceAPI } from './api';
+import type { MonacoGraphQLAPI } from './api';
 
 import type {
   Uri,
@@ -32,30 +32,42 @@ export class DiagnosticsAdapter {
   private _listener: { [uri: string]: IDisposable } = Object.create(null);
 
   constructor(
-    private defaults: LanguageServiceAPI,
+    private defaults: MonacoGraphQLAPI,
     private _worker: WorkerAccessor,
   ) {
     this._worker = _worker;
     const onModelAdd = (model: editor.IModel): void => {
       const modeId = model.getModeId();
       if (modeId !== this.defaults.languageId) {
+        // it is tempting to load json models we cared about here
+        // into the webworker, however setDiagnosticOptions() needs
+        // to be called here from main process anyways, and the worker
+        // is already generating json schema itself!
         return;
       }
+      const modelUri = model.uri.toString();
+      // if the config changes, this adapter will be re-instantiated, so we only need to check this once
+      const jsonValidationForModel =
+        defaults.diagnosticSettings?.validateVariablesJSON &&
+        defaults.diagnosticSettings.validateVariablesJSON[modelUri];
 
       let handle: number;
-      this._listener[model.uri.toString()] = model.onDidChangeContent(() => {
+      this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(handle);
         // @ts-ignore
-        handle = setTimeout(() => this._doValidate(model.uri, modeId), 200);
+        handle = setTimeout(() => {
+          this._doValidate(model.uri, modeId, jsonValidationForModel);
+        }, 200);
       });
 
-      this._doValidate(model.uri, modeId);
+      this._doValidate(model.uri, modeId, jsonValidationForModel);
     };
 
     const onModelRemoved = (model: editor.IModel): void => {
       editor.setModelMarkers(model, this.defaults.languageId, []);
       const uriStr = model.uri.toString();
       const listener = this._listener[uriStr];
+
       if (listener) {
         listener.dispose();
         delete this._listener[uriStr];
@@ -75,8 +87,15 @@ export class DiagnosticsAdapter {
       }),
     );
 
+    this._disposables.push({
+      dispose: () => {
+        for (const key in this._listener) {
+          this._listener[key].dispose();
+        }
+      },
+    });
     this._disposables.push(
-      defaults.onDidChange((_: any) => {
+      defaults.onDidChange(() => {
         editor.getModels().forEach(model => {
           if (model.getModeId() === this.defaults.languageId) {
             onModelRemoved(model);
@@ -86,14 +105,6 @@ export class DiagnosticsAdapter {
       }),
     );
 
-    this._disposables.push({
-      dispose: () => {
-        for (const key in this._listener) {
-          this._listener[key].dispose();
-        }
-      },
-    });
-
     editor.getModels().forEach(onModelAdd);
   }
 
@@ -102,7 +113,11 @@ export class DiagnosticsAdapter {
     this._disposables = [];
   }
 
-  private async _doValidate(resource: Uri, languageId: string) {
+  private async _doValidate(
+    resource: Uri,
+    languageId: string,
+    variablesUris?: string[],
+  ) {
     const worker = await this._worker(resource);
 
     const diagnostics = await worker.doValidation(resource.toString());
@@ -111,6 +126,34 @@ export class DiagnosticsAdapter {
       languageId,
       diagnostics,
     );
+
+    if (variablesUris) {
+      if (variablesUris.length < 1) {
+        throw Error('no variables URI strings provided to validate');
+      }
+      const jsonSchema = await worker.doGetVariablesJSONSchema(
+        resource.toString(),
+      );
+      if (!jsonSchema) {
+        return;
+      }
+
+      const schemaUri = monaco.Uri.file(
+        variablesUris[0].replace('.json', '-schema.json'),
+      ).toString();
+      const configResult = {
+        uri: schemaUri,
+        schema: jsonSchema,
+        fileMatch: variablesUris,
+      };
+      // TODO: export from api somehow?
+      monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
+        validate: true,
+        schemas: [configResult],
+        enableSchemaRequest: false,
+      });
+    }
   }
 }
 
@@ -175,7 +218,7 @@ export function toCompletionItemKind(kind: lsCompletionItemKind) {
 export function toCompletion(
   entry: GraphQLWorkerCompletionItem,
 ): monaco.languages.CompletionItem {
-  return {
+  const suggestions: monaco.languages.CompletionItem = {
     // @ts-expect-error
     range: entry.range,
     kind: toCompletionItemKind(entry.kind as lsCompletionItemKind),
@@ -190,6 +233,7 @@ export function toCompletion(
     detail: entry.detail,
     command: entry.command,
   };
+  return suggestions;
 }
 
 export class CompletionAdapter
@@ -228,11 +272,7 @@ export class CompletionAdapter
 
 export class DocumentFormattingAdapter
   implements monaco.languages.DocumentFormattingEditProvider {
-  constructor(
-    // private _defaults: LanguageServiceAPIImpl,
-    private _worker: WorkerAccessor,
-  ) {
-    // this._defaults = _defaults;
+  constructor(private _worker: WorkerAccessor) {
     this._worker = _worker;
   }
   async provideDocumentFormattingEdits(
@@ -241,9 +281,11 @@ export class DocumentFormattingAdapter
     _token: CancellationToken,
   ) {
     const worker = await this._worker(document.uri);
-    const text = document.getValue();
 
-    const formatted = await worker.doFormat(text);
+    const formatted = await worker.doFormat(document.uri.toString());
+    if (!formatted) {
+      return [];
+    }
     return [
       {
         range: document.getFullModelRange(),
@@ -272,8 +314,9 @@ export class HoverAdapter implements monaco.languages.HoverProvider {
       };
     }
 
-    // @ts-ignore
-    return;
+    return {
+      contents: [],
+    };
   }
 
   dispose() {}

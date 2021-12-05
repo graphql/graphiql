@@ -1,7 +1,7 @@
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const isDev = process.env.NODE_ENV === 'development';
@@ -18,12 +18,7 @@ const resultConfig = {
     filename: '[name].js',
     globalObject: 'self',
   },
-  devServer: {
-    // bypass simple localhost CORS restrictions by setting
-    // these to 127.0.0.1 in /etc/hosts
-    allowedHosts: ['local.example.com', 'monaco-graphql.com'],
-  },
-  devtool: isDev ? 'cheap-module-eval-source-map' : 'source-map',
+  devtool: 'cheap-module-eval-source-map',
   node: {
     fs: 'empty',
     module: 'empty',
@@ -67,13 +62,15 @@ const resultConfig = {
       template: relPath('src/index.html.ejs'),
       filename: 'index.html',
     }),
+    // critical! make sure that webpack can consume the exported modules and types
     new ForkTsCheckerWebpackPlugin({
       async: isDev,
       tsconfig: rootPath('tsconfig.json'),
     }),
 
     new MonacoWebpackPlugin({
-      languages: ['json'],
+      languages: ['json', 'graphql'],
+      publicPath: '/',
     }),
   ],
   resolve: {
@@ -81,14 +78,14 @@ const resultConfig = {
   },
 };
 
-if (process.env.ANALYZE) {
-  resultConfig.plugins.push(
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      openAnalyzer: false,
-      reportFilename: rootPath('build/analyzer.html'),
-    }),
-  );
-}
+// if (process.env.ANALYZE) {
+//   resultConfig.plugins.push(
+//     new BundleAnalyzerPlugin({
+//       analyzerMode: 'static',
+//       openAnalyzer: false,
+//       reportFilename: rootPath('build/analyzer.html'),
+//     }),
+//   );
+// }
 
 module.exports = resultConfig;

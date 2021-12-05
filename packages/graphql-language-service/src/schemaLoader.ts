@@ -1,65 +1,77 @@
 import {
-  getIntrospectionQuery,
-  IntrospectionOptions,
   IntrospectionQuery,
   DocumentNode,
   BuildSchemaOptions,
   buildClientSchema,
   buildASTSchema,
+  GraphQLSchema,
 } from 'graphql';
 
-export type SchemaConfig = {
-  uri?: string;
-  requestOpts?: RequestInit;
-  introspectionOptions?: IntrospectionOptions;
+import { LanguageService } from './LanguageService';
+
+export type BaseSchemaConfig = {
   buildSchemaOptions?: BuildSchemaOptions;
+  schema?: GraphQLSchema;
+  documentString?: string;
+  documentAST?: DocumentNode;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
 };
 
-export type SchemaResponse = IntrospectionQuery | DocumentNode;
-
-export type SchemaLoader = (
-  config: SchemaConfig,
-) => Promise<SchemaResponse | null>;
-
-export const defaultSchemaLoader: SchemaLoader = async (
-  schemaConfig: SchemaConfig,
-): Promise<SchemaResponse | null> => {
-  const { requestOpts, uri, introspectionOptions } = schemaConfig;
-  if (!uri) {
-    return null;
-  }
-  const fetchResult = await fetch(uri, {
-    method: requestOpts?.method ?? 'post',
-    body: JSON.stringify({
-      query: getIntrospectionQuery(introspectionOptions),
-      operationName: 'IntrospectionQuery',
-    }),
-    credentials: 'omit',
-    headers: requestOpts?.headers || {
-      'Content-Type': 'application/json',
-    },
-    ...requestOpts,
-  });
-  const introspectionResponse: {
-    data: IntrospectionQuery;
-  } = await fetchResult.json();
-  return introspectionResponse?.data;
+export type SchemaConfig = {
+  /**
+   * A unique URI for this schema.
+   * Model data will be set
+   */
+  uri: string;
+  fileMatch?: string[];
+  buildSchemaOptions?: BuildSchemaOptions;
+  schema?: GraphQLSchema;
+  documentString?: string;
+  documentAST?: DocumentNode;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
 };
+
 /**
+ * This schema loader is focused on performance for the monaco worker runtime
+ * We favor taking in stringified schema representations as they can be used to communicate
+ * Across the main/webworker process boundary
  *
- * @param response {DocumentNode | IntrospectionQuery} response from retrieving schema
- * @param buildSchemaOptions {BuildSchemaOptions} options for building schema
+ * @param schemaConfig {SchemaConfig}
+ * @param parser {LanguageService['parse']}
+ * @returns {GraphQLSchema}
  */
-export function defaultSchemaBuilder(
-  response: SchemaResponse,
-  buildSchemaOptions?: BuildSchemaOptions,
-) {
-  if (!response) {
-    throw Error('Empty schema response');
+export type SchemaLoader = (
+  schemaConfig: SchemaConfig,
+  parser: LanguageService['parse'],
+) => GraphQLSchema;
+
+export const defaultSchemaLoader: SchemaLoader = (schemaConfig, parser) => {
+  const {
+    schema,
+    documentAST,
+    introspectionJSON,
+    introspectionJSONString,
+    buildSchemaOptions,
+    documentString,
+  } = schemaConfig;
+  if (schema) {
+    return schema;
   }
-  // if we have this property, it's an introspectionQuery
-  if ('__schema' in response) {
-    return buildClientSchema(response, buildSchemaOptions);
+  if (introspectionJSONString) {
+    const introspectionJSONResult = JSON.parse(introspectionJSONString);
+    return buildClientSchema(introspectionJSONResult, buildSchemaOptions);
   }
-  return buildASTSchema(response, buildSchemaOptions);
-}
+  if (documentString) {
+    const docAST = parser(documentString);
+    return buildASTSchema(docAST, buildSchemaOptions);
+  }
+  if (introspectionJSON) {
+    return buildClientSchema(introspectionJSON, buildSchemaOptions);
+  }
+  if (documentAST) {
+    return buildASTSchema(documentAST, buildSchemaOptions);
+  }
+  throw Error('no schema supplied');
+};

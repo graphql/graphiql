@@ -5,39 +5,19 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import * as mode from './graphqlMode';
-import {
-  LanguageServiceAPI,
-  schemaDefault,
-  formattingDefaults,
+export {
   modeConfigurationDefault,
+  SchemaEntry,
+  formattingDefaults,
+  MonacoGraphQLAPI,
+  MonacoGraphQLAPIOptions,
+  diagnosticSettingDefault,
 } from './api';
 
-import * as monaco from 'monaco-editor';
-
 export * from './typings';
+import { initializeMode } from './initializeMode';
 
-export const LANGUAGE_ID = 'graphqlDev';
-
-monaco.languages.register({
-  id: LANGUAGE_ID,
-  extensions: ['.graphql', '.gql'],
-  aliases: ['graphql'],
-  mimetypes: ['application/graphql', 'text/graphql'],
-});
-
-export const api = new LanguageServiceAPI({
-  languageId: LANGUAGE_ID,
-  schemaConfig: schemaDefault,
-  formattingOptions: formattingDefaults,
-  modeConfiguration: modeConfigurationDefault,
-});
-
-monaco.languages.onLanguage(LANGUAGE_ID, async () => {
-  const graphqlMode = await getMode();
-  graphqlMode.setupMode(api);
-});
-
-function getMode(): Promise<typeof mode> {
-  return import('./graphqlMode');
-}
+/**
+ * Register the language mode without schema or any settings, so you can configure them asynchronously.
+ */
+initializeMode();

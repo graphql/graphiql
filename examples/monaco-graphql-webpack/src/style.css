@@ -1,0 +1,102 @@
+body {
+  background-color: #1e1e1e;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.div {
+  margin: 0;
+  padding: 0;
+}
+
+.full-height {
+  height: 100vh;
+}
+
+.half-width {
+  width: 50%;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.align-right {
+  /* align-self: stretch; */
+  margin-left: auto;
+  align-self: stretch;
+}
+
+/* Editors */
+
+#flex-wrapper {
+  display: flex;
+  align-items: stretch;
+}
+#operation {
+  height: 60vh;
+  min-height: 260px;
+}
+#variables {
+  height: 30vh;
+  align-items: stretch;
+}
+#results {
+  align-items: stretch;
+  height: 90vh;
+}
+
+/* Toolbar */
+
+#toolbar {
+  min-height: 40px;
+  background-color: #1e1e1e;
+  display: inline-flex;
+  align-items: stretch;
+}
+
+#toolbar > button,
+#toolbar > select,
+#toolbar > span,
+button#execute-op {
+  margin: 4px;
+  padding: 4px;
+}
+
+#toolbar button,
+#toolbar select {
+  background-color: #1e1e1e;
+  color: #eee;
+  border: 1px solid #eee;
+  border-radius: 4px;
+}
+
+#toolbar button:hover,
+select:hover,
+button:focus,
+select:focus {
+  background-color: darkslategrey;
+}
+
+#execution-tray {
+  display: flex;
+  display: inline-flex;
+  align-items: baseline;
+}
+
+#schema-status {
+  color: #eee;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#toolbar button.reload-button {
+  border: 0 none;
+  padding: 4px;
+  width: 30px;
+  text-align: center;
+}

@@ -5,37 +5,40 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { SchemaConfig, SchemaResponse } from 'graphql-language-service';
-
-import type { FormattingOptions, ModeConfiguration } from './typings';
-import type { WorkerAccessor } from './languageFeatures';
-import type { IEvent } from 'monaco-editor';
-
+import { SchemaConfig } from 'graphql-language-service';
 import { Emitter } from 'monaco-editor';
-import {
-  DocumentNode,
-  FragmentDefinitionNode,
-  GraphQLSchema,
-  printSchema,
-} from 'graphql';
 
-export type LanguageServiceAPIOptions = {
+import type { IEvent } from 'monaco-editor';
+import type { FragmentDefinitionNode, GraphQLSchema } from 'graphql';
+import type {
+  DiagnosticSettings,
+  FormattingOptions,
+  ModeConfiguration,
+  MonacoGraphQLInitializeConfig,
+} from './typings';
+
+export type MonacoGraphQLAPIOptions = {
   languageId: string;
-  schemaConfig: SchemaConfig;
+  schemas?: SchemaConfig[];
   modeConfiguration: ModeConfiguration;
   formattingOptions: FormattingOptions;
+  diagnosticSettings: DiagnosticSettings;
 };
 
-export class LanguageServiceAPI {
-  private _onDidChange = new Emitter<LanguageServiceAPI>();
-  private _schemaConfig: SchemaConfig = {};
+export type SchemaEntry = {
+  schema: GraphQLSchema;
+  documentString?: string;
+  introspectionJSONString?: string;
+};
+
+export class MonacoGraphQLAPI {
+  private _onDidChange = new Emitter<MonacoGraphQLAPI>();
   private _formattingOptions!: FormattingOptions;
   private _modeConfiguration!: ModeConfiguration;
+  private _diagnosticSettings!: DiagnosticSettings;
+  private _schemas: SchemaConfig[] | null = null;
+  private _schemasById: Record<string, SchemaConfig> = Object.create(null);
   private _languageId: string;
-  private _worker: WorkerAccessor | null;
-  private _workerPromise: Promise<WorkerAccessor>;
-  private _resolveWorkerPromise: (value: WorkerAccessor) => void = () => {};
-  private _schemaString: string | null = null;
   private _externalFragmentDefinitions:
     | string
     | FragmentDefinitionNode[]
@@ -43,23 +46,22 @@ export class LanguageServiceAPI {
 
   constructor({
     languageId,
-    schemaConfig,
+    schemas,
     modeConfiguration,
     formattingOptions,
-  }: LanguageServiceAPIOptions) {
-    this._worker = null;
-    this._workerPromise = new Promise(resolve => {
-      this._resolveWorkerPromise = resolve;
-    });
+    diagnosticSettings,
+  }: MonacoGraphQLAPIOptions) {
     this._languageId = languageId;
-    if (schemaConfig && schemaConfig.uri) {
-      this.setSchemaConfig(schemaConfig);
+
+    if (schemas) {
+      this.setSchemaConfig(schemas);
     }
     this.setModeConfiguration(modeConfiguration);
     this.setFormattingOptions(formattingOptions);
-    this.setFormattingOptions(formattingOptions);
+    this.setDiagnosticSettings(diagnosticSettings);
   }
-  public get onDidChange(): IEvent<LanguageServiceAPI> {
+
+  public get onDidChange(): IEvent<MonacoGraphQLAPI> {
     return this._onDidChange.event;
   }
 
@@ -69,63 +71,35 @@ export class LanguageServiceAPI {
   public get modeConfiguration(): ModeConfiguration {
     return this._modeConfiguration;
   }
-  public get schemaConfig(): SchemaConfig {
-    return this._schemaConfig;
+
+  public get schemas(): SchemaConfig[] | null {
+    return this._schemas;
   }
+  public schemasById(): Record<string, SchemaConfig> {
+    return this._schemasById;
+  }
+
   public get formattingOptions(): FormattingOptions {
     return this._formattingOptions;
+  }
+  public get diagnosticSettings(): DiagnosticSettings {
+    return this._diagnosticSettings;
   }
   public get externalFragmentDefinitions() {
     return this._externalFragmentDefinitions;
   }
-  public get hasSchema() {
-    return Boolean(this._schemaString);
-  }
-  public get schemaString() {
-    return this._schemaString;
-  }
-  public get worker(): Promise<WorkerAccessor> {
-    if (this._worker) {
-      return Promise.resolve(this._worker);
-    }
-    return this._workerPromise;
-  }
-  setWorker(worker: WorkerAccessor) {
-    this._worker = worker;
-    this._resolveWorkerPromise(worker);
-  }
 
-  public async getSchema(): Promise<SchemaResponse | string | null> {
-    if (this._schemaString) {
-      return this._schemaString;
-    }
-    const langWorker = await (await this.worker)();
-    return langWorker.getSchemaResponse();
-  }
-  public async setSchema(schema: string | GraphQLSchema): Promise<void> {
-    let rawSchema = schema as string;
-
-    if (typeof schema !== 'string') {
-      rawSchema = printSchema(schema);
-    }
-    this._schemaString = rawSchema;
-    const langWorker = await (await this.worker)();
-    await langWorker.setSchema(rawSchema);
-    this._onDidChange.fire(this);
-  }
-  public async parse(graphqlString: string): Promise<DocumentNode> {
-    const langWorker = await (await this.worker)();
-    return langWorker.doParse(graphqlString);
-  }
-
-  public setSchemaConfig(options: SchemaConfig): void {
-    this._schemaConfig = options || Object.create(null);
-
-    this._onDidChange.fire(this);
-  }
-
-  public updateSchemaConfig(options: Partial<SchemaConfig>): void {
-    this._schemaConfig = { ...this._schemaConfig, ...options };
+  /**
+   * override all schema config.
+   *
+   * @param schemas {SchemaConfig[]}
+   */
+  public setSchemaConfig(schemas: SchemaConfig[]): void {
+    this._schemas = schemas || null;
+    this._schemasById = schemas.reduce((result, schema) => {
+      result[schema.uri] = schema;
+      return result;
+    }, Object.create(null));
     this._onDidChange.fire(this);
   }
 
@@ -133,10 +107,6 @@ export class LanguageServiceAPI {
     externalFragmentDefinitions: string | FragmentDefinitionNode[],
   ) {
     this._externalFragmentDefinitions = externalFragmentDefinitions;
-  }
-
-  public setSchemaUri(schemaUri: string): void {
-    this.setSchemaConfig({ ...this._schemaConfig, uri: schemaUri });
   }
 
   public setModeConfiguration(modeConfiguration: ModeConfiguration): void {
@@ -147,6 +117,52 @@ export class LanguageServiceAPI {
   public setFormattingOptions(formattingOptions: FormattingOptions): void {
     this._formattingOptions = formattingOptions || Object.create(null);
     this._onDidChange.fire(this);
+  }
+
+  public setDiagnosticSettings(diagnosticSettings: DiagnosticSettings): void {
+    this._diagnosticSettings = diagnosticSettings || Object.create(null);
+    this._onDidChange.fire(this);
+  }
+}
+
+export function create(
+  languageId: string,
+  config?: MonacoGraphQLInitializeConfig,
+) {
+  if (!config) {
+    return new MonacoGraphQLAPI({
+      languageId,
+      formattingOptions: formattingDefaults,
+      modeConfiguration: modeConfigurationDefault,
+      diagnosticSettings: diagnosticSettingDefault,
+    });
+  } else {
+    const {
+      schemas,
+      formattingOptions,
+      modeConfiguration,
+      diagnosticSettings,
+    } = config;
+    return new MonacoGraphQLAPI({
+      languageId,
+      schemas,
+      formattingOptions: {
+        ...formattingDefaults,
+        ...formattingOptions,
+        prettierConfig: {
+          ...formattingDefaults.prettierConfig,
+          ...formattingOptions?.prettierConfig,
+        },
+      },
+      modeConfiguration: {
+        ...modeConfigurationDefault,
+        ...modeConfiguration,
+      },
+      diagnosticSettings: {
+        ...diagnosticSettingDefault,
+        ...diagnosticSettings,
+      },
+    });
   }
 }
 
@@ -163,10 +179,14 @@ export const modeConfigurationDefault: Required<ModeConfiguration> = {
   selectionRanges: false,
 };
 
-export const schemaDefault: SchemaConfig = {};
-
 export const formattingDefaults: FormattingOptions = {
   prettierConfig: {
     tabWidth: 2,
+  },
+};
+
+export const diagnosticSettingDefault: DiagnosticSettings = {
+  jsonDiagnosticSettings: {
+    schemaValidation: 'error',
   },
 };

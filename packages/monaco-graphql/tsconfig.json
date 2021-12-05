@@ -12,7 +12,8 @@
       "es2015.collection",
       "es2015.promise",
       "es2015.iterable",
-      "es6"
+      "es6",
+      "ESNext"
     ],
     "paths": {
       "*": ["*"]

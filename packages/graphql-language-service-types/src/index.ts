@@ -10,6 +10,7 @@ import type {
   Diagnostic as DiagnosticType,
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-types';
+
 import type { ASTNode, GraphQLSchema } from 'graphql';
 
 import type {
@@ -19,6 +20,7 @@ import type {
   TypeDefinitionNode,
   NameNode,
 } from 'graphql/language';
+
 import type {
   GraphQLArgument,
   GraphQLEnumValue,
@@ -37,6 +39,7 @@ import type {
   GraphQLProjectConfig,
   GraphQLExtensionDeclaration,
 } from 'graphql-config';
+
 export type {
   GraphQLConfig,
   GraphQLProjectConfig,
