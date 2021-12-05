@@ -7,15 +7,7 @@
  */
 
 import { readFileSync } from 'fs';
-import {
-  buildSchema,
-  GraphQLSchema,
-  GraphQLBoolean,
-  GraphQLString,
-  GraphQLInt,
-  GraphQLFloat,
-  parse,
-} from 'graphql';
+import { buildSchema, GraphQLSchema, parse } from 'graphql';
 
 import { join } from 'path';
 import { collectVariables } from '../collectVariables';
@@ -47,18 +39,18 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       boolean: {
         type: 'boolean',
-        description: GraphQLBoolean.description,
+        description: 'Boolean',
       },
       string: {
         type: 'string',
-        description: GraphQLString.description,
+        description: 'String!',
       },
       number: {
         type: 'integer',
-        description: GraphQLInt.description,
+        description: 'Int!',
       },
       price: {
-        description: GraphQLFloat.description,
+        description: 'Float',
         type: 'number',
       },
     });
@@ -81,27 +73,136 @@ describe('getVariablesJSONSchema', () => {
     expect(jsonSchema.properties).toEqual({
       input: {
         $ref: '#/definitions/InputType',
+        description: 'InputType!',
       },
       anotherInput: {
         $ref: '#/definitions/InputType',
+        description: 'example input type\nInputType',
       },
     });
     expect(jsonSchema.definitions).toEqual({
       InputType: {
         type: 'object',
-        description: 'example input type',
+        description: 'example input type\nInputType',
         properties: {
           key: {
-            description: 'example key `String!`',
+            description: 'example key\nString!',
             type: 'string',
           },
           value: {
-            description: 'example value `Int`',
+            description: 'example value\nInt',
             type: 'integer',
             default: 42,
           },
           exampleObject: {
-            description: 'nesting a whole object! `ChildInputType!`',
+            $ref: '#/definitions/ChildInputType',
+            description: 'nesting a whole object!\nChildInputType!',
+          },
+          exampleList: {
+            type: 'array',
+            items: {
+              $ref: '#/definitions/ChildInputType',
+            },
+            description: 'list type with default\n[ChildInputType]',
+            default: [
+              {
+                isChild: false,
+                favoriteBook: 'Binti',
+              },
+            ],
+          },
+          exampleScalarList: {
+            type: 'array',
+            description: '[String]!',
+            items: {
+              type: 'string',
+              description: 'String',
+            },
+            default: ['something'],
+          },
+        },
+        required: ['key', 'exampleObject', 'exampleScalarList'],
+      },
+      ChildInputType: {
+        type: 'object',
+        description: 'ChildInputType',
+        properties: {
+          isChild: {
+            type: 'boolean',
+            description: 'Boolean!',
+            default: true,
+          },
+          favoriteBook: {
+            type: 'string',
+            description: 'favorite book\nString',
+            default: 'Where the wild things are',
+          },
+        },
+        required: ['isChild'],
+      },
+    });
+  });
+
+  const mdTicks = (name: string) => `\`\`\`graphql\n${name}\n\`\`\``;
+
+  it('should handle input object types with markdown', () => {
+    const variableToType = collectVariables(
+      schema,
+      parse(`query($input: InputType!, $anotherInput: InputType, $episode: Episode) {
+        characters {
+          name
+        }
+       }`),
+    );
+
+    const jsonSchema = getVariablesJSONSchema(variableToType, {
+      useMarkdownDescription: true,
+    });
+
+    expect(jsonSchema.required).toEqual(['input']);
+
+    expect(jsonSchema.properties).toEqual({
+      input: {
+        $ref: '#/definitions/InputType',
+        description: 'InputType!',
+        markdownDescription: mdTicks('InputType!'),
+      },
+      anotherInput: {
+        $ref: '#/definitions/InputType',
+        // description: 'example input type',
+        // TODO: fix this for non-nulls?
+        description: 'example input type\nInputType',
+        markdownDescription: 'example input type\n```graphql\nInputType\n```',
+      },
+      episode: {
+        enum: ['NEWHOPE', 'EMPIRE', 'JEDI'],
+        description: 'Episode',
+        type: 'string',
+        markdownDescription: mdTicks('Episode'),
+      },
+    });
+    expect(jsonSchema.definitions).toEqual({
+      InputType: {
+        type: 'object',
+        description: 'example input type\nInputType',
+        markdownDescription: `example input type\n${mdTicks('InputType')}`,
+        properties: {
+          key: {
+            description: 'example key\nString!',
+            markdownDescription: `example key\n${mdTicks('String!')}`,
+            type: 'string',
+          },
+          value: {
+            description: 'example value\nInt',
+            markdownDescription: `example value\n${mdTicks('Int')}`,
+            type: 'integer',
+            default: 42,
+          },
+          exampleObject: {
+            description: 'nesting a whole object!\nChildInputType!',
+            markdownDescription: `nesting a whole object!\n${mdTicks(
+              'ChildInputType!',
+            )}`,
             $ref: '#/definitions/ChildInputType',
           },
           exampleList: {
@@ -109,16 +210,50 @@ describe('getVariablesJSONSchema', () => {
             items: {
               $ref: '#/definitions/ChildInputType',
             },
-            description: 'list type with fancy default `[ChildInputType]`',
+            description: `list type with default\n[ChildInputType]`,
+            markdownDescription: `list type with default\n${mdTicks(
+              '[ChildInputType]',
+            )}`,
             default: [
               {
-                isBaby: false,
-                favoriteBook: 'Goosebumps',
+                isChild: false,
+                favoriteBook: 'Binti',
               },
             ],
           },
+          exampleScalarList: {
+            type: 'array',
+            description: '[String]!',
+            markdownDescription: mdTicks('[String]!'),
+            items: {
+              type: 'string',
+              description: 'String',
+              markdownDescription: mdTicks('String'),
+            },
+            default: ['something'],
+          },
         },
-        required: ['key', 'exampleObject'],
+        required: ['key', 'exampleObject', 'exampleScalarList'],
+      },
+      ChildInputType: {
+        description: 'ChildInputType',
+        markdownDescription: `${mdTicks('ChildInputType')}`,
+        properties: {
+          favoriteBook: {
+            default: 'Where the wild things are',
+            description: 'favorite book\nString',
+            markdownDescription: 'favorite book\n```graphql\nString\n```',
+            type: 'string',
+          },
+          isChild: {
+            default: true,
+            description: 'Boolean!',
+            markdownDescription: '```graphql\nBoolean!\n```',
+            type: 'boolean',
+          },
+        },
+        required: ['isChild'],
+        type: 'object',
       },
     });
   });

@@ -54,19 +54,20 @@ input InputType {
   exampleObject: ChildInputType!
 
   """
-  list type with fancy default
+  list type with default
   """
   exampleList: [ChildInputType] = [
-    { isBaby: false, favoriteBook: "Goosebumps" }
+    { isChild: false, favoriteBook: "Binti" }
   ]
+  exampleScalarList: [String]! = ["something"]
 }
 
-"""
-my baby
-"""
 input ChildInputType {
-  isBaby: Boolean! = true
-  favoriteBook: String = "Dinotopia"
+  isChild: Boolean! = true
+  """
+  favorite book
+  """
+  favoriteBook: String = "Where the wild things are"
 }
 
 type TestType {

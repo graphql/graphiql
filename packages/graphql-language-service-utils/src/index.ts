@@ -27,13 +27,6 @@ export { validateWithCustomRules } from './validateWithCustomRules';
 export { collectVariables, VariableToType } from './collectVariables';
 
 export {
-  fillLeafs,
-  GetDefaultFieldNamesFn,
-  buildSelectionSet,
-  defaultGetDefaultFieldNames,
-} from './fillLeafs';
-
-export {
   default as getOperationFacts,
   getOperationASTFacts,
   getQueryFacts,
