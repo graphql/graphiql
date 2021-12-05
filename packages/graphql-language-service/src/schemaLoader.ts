@@ -5,7 +5,6 @@ import {
   buildClientSchema,
   buildASTSchema,
   GraphQLSchema,
-  printSchema,
 } from 'graphql';
 
 import { LanguageService } from './LanguageService';
@@ -34,73 +33,45 @@ export type SchemaConfig = {
   introspectionJSONString?: string;
 };
 
-export type SchemaLoaderResult = {
-  schema: GraphQLSchema;
-  introspectionJSON?: IntrospectionQuery;
-  introspectionJSONString?: string;
-  documentString?: string;
-  documentAST?: DocumentNode;
-};
-
+/**
+ * This schema loader is focused on performance for the monaco worker runtime
+ * We favor taking in stringified schema representations as they can be used to communicate
+ * Across the main/webworker process boundary
+ *
+ * @param schemaConfig {SchemaConfig}
+ * @param parser {LanguageService['parse']}
+ * @returns {GraphQLSchema}
+ */
 export type SchemaLoader = (
   schemaConfig: SchemaConfig,
   parser: LanguageService['parse'],
-) => SchemaLoaderResult;
+) => GraphQLSchema;
 
-/**
- * This schema loader is focused on performance for the monaco runtime
- * We favor stringified schema representations as they can be used to communicate
- * Across the main/webworker process boundary
- * @param schemaConfig
- * @param parser
- * @returns
- */
 export const defaultSchemaLoader: SchemaLoader = (schemaConfig, parser) => {
   const {
-    schema: graphQLSchema,
+    schema,
     documentAST,
     introspectionJSON,
     introspectionJSONString,
     buildSchemaOptions,
     documentString,
   } = schemaConfig;
-  if (graphQLSchema) {
-    return {
-      schema: graphQLSchema,
-      documentString: printSchema(graphQLSchema),
-    };
+  if (schema) {
+    return schema;
   }
   if (introspectionJSONString) {
     const introspectionJSONResult = JSON.parse(introspectionJSONString);
-    return {
-      introspectionJSON: introspectionJSONResult,
-      schema: buildClientSchema(introspectionJSONResult, buildSchemaOptions),
-      introspectionJSONString,
-    };
+    return buildClientSchema(introspectionJSONResult, buildSchemaOptions);
   }
   if (documentString) {
     const docAST = parser(documentString);
-    return {
-      schema: buildASTSchema(docAST, buildSchemaOptions),
-      documentAST: docAST,
-      documentString,
-    };
+    return buildASTSchema(docAST, buildSchemaOptions);
   }
   if (introspectionJSON) {
-    return {
-      schema: buildClientSchema(introspectionJSON, buildSchemaOptions),
-      introspectionJSON,
-      introspectionJSONString: JSON.stringify(introspectionJSON),
-    };
+    return buildClientSchema(introspectionJSON, buildSchemaOptions);
   }
-
   if (documentAST) {
-    const schema = buildASTSchema(documentAST, buildSchemaOptions);
-    return {
-      schema,
-      documentAST,
-      documentString: printSchema(schema),
-    };
+    return buildASTSchema(documentAST, buildSchemaOptions);
   }
   throw Error('no schema supplied');
 };

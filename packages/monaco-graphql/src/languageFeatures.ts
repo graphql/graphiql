@@ -233,13 +233,6 @@ export function toCompletion(
     detail: entry.detail,
     command: entry.command,
   };
-  if (entry.insertText && entry.insertText.includes('$1')) {
-    suggestions.command = {
-      id: 'editor.action.triggerSuggest',
-      title: 'Suggest',
-    };
-    suggestions.insertTextRules = 4;
-  }
   return suggestions;
 }
 

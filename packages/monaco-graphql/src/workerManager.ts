@@ -75,7 +75,7 @@ export class WorkerManager {
           createData: {
             languageId: this._defaults.languageId,
             formattingOptions: this._defaults.formattingOptions,
-            diagnosticSettings: this._defaults.diagnosticSettings,
+            // only string based config can be passed from the main process
             languageConfig: {
               schemas: this._defaults.schemas?.map(getStringSchema),
               exteralFragmentDefinitions: this._defaults

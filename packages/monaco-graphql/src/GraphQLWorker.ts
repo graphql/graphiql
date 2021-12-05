@@ -5,10 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { DiagnosticSettings, FormattingOptions, ICreateData } from './typings';
+import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, Position } from 'monaco-editor';
-import * as monaco from 'monaco-editor';
 
 import {
   getRange,
@@ -24,8 +23,6 @@ import {
   GraphQLWorkerCompletionItem,
 } from './utils';
 
-import type { DocumentNode } from 'graphql';
-
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
@@ -35,15 +32,13 @@ export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;
   private _formattingOptions: FormattingOptions | undefined;
-  private _diagnosticSettings: DiagnosticSettings | undefined;
   constructor(ctx: worker.IWorkerContext, createData: ICreateData) {
     this._ctx = ctx;
     this._languageService = new LanguageService(createData.languageConfig);
     this._formattingOptions = createData.formattingOptions;
-    this._diagnosticSettings = createData.diagnosticSettings;
   }
 
-  async doValidation(uri: string) {
+  public async doValidation(uri: string) {
     const documentModel = this._getTextModel(uri);
     const document = documentModel?.getValue();
     if (!document) {
@@ -56,7 +51,7 @@ export class GraphQLWorker {
     return graphqlDiagnostics.map(toMarkerData);
   }
 
-  async doComplete(
+  public async doComplete(
     uri: string,
     position: Position,
   ): Promise<GraphQLWorkerCompletionItem[]> {
@@ -67,17 +62,15 @@ export class GraphQLWorker {
       return [];
     }
     const graphQLPosition = toGraphQLPosition(position);
-    console.log(this._diagnosticSettings);
     const suggestions = this._languageService.getCompletion(
       uri,
       document,
       graphQLPosition,
-      { fillLeafsOnComplete: this._diagnosticSettings?.fillLeafsOnComplete },
     );
     return suggestions.map(suggestion => toCompletion(suggestion));
   }
 
-  async doHover(uri: string, position: Position) {
+  public async doHover(uri: string, position: Position) {
     const documentModel = this._getTextModel(uri);
     const document = documentModel?.getValue();
     if (!document) {
@@ -139,10 +132,6 @@ export class GraphQLWorker {
       plugins: [prettierGraphqlParser],
       ...this._formattingOptions?.prettierConfig,
     });
-  }
-
-  async doParse(text: string): Promise<DocumentNode> {
-    return this._languageService.parse(text);
   }
   /**
    * TODO: store this in a proper document cache in the language service

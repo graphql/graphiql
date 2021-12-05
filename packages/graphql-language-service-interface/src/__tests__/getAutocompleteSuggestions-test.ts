@@ -68,45 +68,6 @@ const expectedResults = {
   },
 };
 
-const expectedResults = {
-  droid: {
-    label: 'droid',
-    detail: 'Droid',
-    insertTextFormat: 2,
-    insertText: `droid {\n  $1\n}`,
-  },
-  hero: {
-    label: 'hero',
-    detail: 'Character',
-    insertTextFormat: 2,
-    insertText: `hero {\n  $1\n}`,
-  },
-  human: {
-    label: 'human',
-    detail: 'Human',
-    insertTextFormat: 2,
-    insertText: `human {\n  $1\n}`,
-  },
-  inputTypeTest: {
-    label: 'inputTypeTest',
-    detail: 'TestType',
-    insertTextFormat: 2,
-    insertText: `inputTypeTest {\n  $1\n}`,
-  },
-  appearsIn: {
-    label: 'appearsIn',
-    detail: '[Episode]',
-    insertTextFormat: 2,
-    insertText: `appearsIn {\n  $1\n}`,
-  },
-  friends: {
-    label: 'friends',
-    detail: '[Character]',
-    insertTextFormat: 2,
-    insertText: `friends {\n  $1\n}`,
-  },
-};
-
 const suggestionCommand = {
   command: 'editor.action.triggerSuggest',
   title: 'Suggestions',

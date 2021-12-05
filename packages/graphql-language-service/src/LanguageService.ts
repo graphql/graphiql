@@ -22,12 +22,12 @@ import {
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
-  AutocompleteSuggestionOptions,
 } from 'graphql-language-service-interface';
 
 import {
   getVariablesJSONSchema,
   getOperationASTFacts,
+  JSONSchemaOptions,
 } from 'graphql-language-service-utils';
 
 import {
@@ -35,14 +35,39 @@ import {
   SchemaConfig,
   SchemaLoader,
 } from './schemaLoader';
-import { JsonSchemaOptions } from 'graphql-language-service-utils/src/getVariablesJSONSchema';
 
+/**
+ * For the `monaco-graphql` language worker, these must be specified
+ * in a custom webworker. see the readme.
+ */
 export type GraphQLLanguageConfig = {
+  /**
+   * Provide a parser that matches `graphql` `parse()` signature
+   * Used for internal document parsing operations
+   * for autocompletion and hover, `graphql-language-service-parser ` is used via `graphql-language-service-interface`
+   */
   parser?: typeof parse;
-  schemaLoader?: typeof defaultSchemaLoader;
+  /**
+   * Custom options passed to `parse`, whether `graphql` parse by default or custom parser
+   */
   parseOptions?: ParseOptions;
+  /**
+   * Take a variety of schema inputs common for the language worker, and transform them
+   * to at least a `schema` if not other easily available implementations
+   */
+  schemaLoader?: SchemaLoader;
+  /**
+   * An array of schema configurations from which to match files for language features
+   */
   schemas?: SchemaConfig[];
+  /**
+   * External fragments to be used with completion and validation
+   */
   exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
+  /**
+   * Custom validation rules following `graphql` `ValidationRule` signature
+   */
+  customValidationRules?: ValidationRule[];
 };
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
@@ -56,6 +81,7 @@ export class LanguageService {
   private _schemaCache: SchemaCache = schemaCache;
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
   private _parseOptions: ParseOptions | undefined = undefined;
+  private _customValidationRules: ValidationRule[] | undefined = undefined;
   private _exteralFragmentDefinitionNodes:
     | FragmentDefinitionNode[]
     | null = null;
@@ -65,6 +91,7 @@ export class LanguageService {
     schemas,
     parseOptions,
     exteralFragmentDefinitions,
+    customValidationRules,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -77,6 +104,9 @@ export class LanguageService {
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
+    }
+    if (customValidationRules) {
+      this._customValidationRules = customValidationRules;
     }
     if (exteralFragmentDefinitions) {
       if (Array.isArray(exteralFragmentDefinitions)) {
@@ -91,14 +121,18 @@ export class LanguageService {
     this._schemas.forEach(schema => this._cacheSchema(schema));
   }
 
-  private _cacheSchema(schema: SchemaConfig) {
-    const schemaResult = this._schemaLoader(schema, this.parse);
-    return this._schemaCache.set(schema.uri, {
-      ...schema,
-      ...schemaResult,
+  private _cacheSchema(schemaConfig: SchemaConfig) {
+    const schema = this._schemaLoader(schemaConfig, this.parse);
+    return this._schemaCache.set(schemaConfig.uri, {
+      ...schemaConfig,
+      schema,
     });
   }
-
+  /**
+   * Provide a model uri path, and see if a schema config has a `fileMatch` to match it
+   * @param uri {string}
+   * @returns {SchemaCacheItem | undefined}
+   */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
     const schema = this._schemas.find(schemaConfig => {
       if (!schemaConfig.fileMatch) {
@@ -196,7 +230,6 @@ export class LanguageService {
     uri: string,
     documentText: string,
     position: IPosition,
-    options?: AutocompleteSuggestionOptions,
   ) => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.length < 1 || !schema?.schema) {
@@ -208,7 +241,6 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      options,
     );
   };
   /**
@@ -227,7 +259,11 @@ export class LanguageService {
     if (!documentText || documentText.length < 1 || !schema?.schema) {
       return [];
     }
-    return getDiagnostics(documentText, schema.schema, customRules);
+    return getDiagnostics(
+      documentText,
+      schema.schema,
+      customRules ?? this._customValidationRules,
+    );
   };
 
   public getHover = (
@@ -254,7 +290,7 @@ export class LanguageService {
   public getVariablesJSONSchema = (
     uri: string,
     documentText: string,
-    options?: JsonSchemaOptions,
+    options?: JSONSchemaOptions,
   ) => {
     const schema = this.getSchemaForFile(uri);
     if (schema && documentText.length > 3) {

@@ -1,46 +1,28 @@
 ---
 'graphql-language-service-utils': minor
-'monaco-graphql': minor
-'graphiql': patch
-'@graphiql/toolkit': patch
+'graphql-language-service': major
+'monaco-graphql': major
 ---
 
-Add support for variables `json` diagnostics, code completion with additionalInsertText, and hover to `monaco-graphql` using the built in `JSONSchema` support in `monaco-graphql`. 🎉
+This introduces some big changes to `monaco-graphql`, and some exciting features, including multi-model support, multi-schema support, and variables json language feature support 🎉. 
 
-See the `monaco-graphql` README for instructions on how to set this up in your project.
+see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql) to learn how to configure and use the new interface. 
 
-The utility allows users to generate `JSONSchema` definitions for the variables JSON on the fly which they feed to monaco's json language api when editing an operation's documents.
+## 🚨 BREAKING CHANGES!! 🚨
 
-**BREAKING CHANGE!!** for `monaco-graphql` to api instantiation and using `graphql` language id instead of `graphqlDev` - it does not apply to `graphiql` or `@graphiql/toolkit` - they receive patches because the underling util has a new feature. These may be some of the last major breaking changes to `monaco-graphql` before we are able to ship the first `@graphiql/react` sdk, and thus be able to build towards a `graphqil@2.0.0` release.
+*  `monaco-graphql` 🚨  **no longer loads schemas using `fetch` introspection** 🚨, you must specify the schema in one of many ways statically or dynamically. specifying just a schema `uri` no longer works. see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql)
+* when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
+  * the mode now extends the default basic language support from `monaco-editor` itself
+  * when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
+* The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
-the `monaco-graphql` mode is now instantiated using a new pattern:
+## New Features
 
-```ts
-import { initialize } from 'monaco-graphql'
-
-const monacoGraphQLAPI = await instantiate({
-  schemaConfig: { uri: 'http://myschema' },
-  schemaLoader: mySchemaLoader,
-  externalFragmentDefinitions: myFragmentDefinitionNodes ?? `myFragment {} AnotherFragment {}`,
-  formattingOptions: {
-    prettier: {
-      printWidth: 120
-    }
-  }
-});
-```
-
-There are now several additional methods:
-
-* `monacoGraphQLAPI.onSchemaLoaded((api) => console.log(api.schema.schema, api.schema.schemaString))` for any behavior where you want to wait for the schema to be present.
-* `await monacoGrapQLAPI.reloadSchema()` - forces a new schema request without config changes, for example in development environments
-* `const JSONSchema = monacoGraphQLAPI.getJSONSChema()` for adding json features, see the readme for more details on how to add this to your implementation.
-* `monacoGraphQLAPI.setGraphQLSchema(myGraphQLSchema)` was added by popular request
-
-but most existing methods work just as before!
-
-this also introduces improvements:
-- less redundant schema loading - schema is loaded in main process instead of in the webworkers, providing a single source of truth and an EventEmitter
-- web worker stability has been improved by contributors in previous patches, but waiting for the schema to be present seems to prevent most issues with unnecessary re-creation of webworkers
-- language providers and webworkers are only called to action once the schema is present in the cache
-
+this introduces many improvements:
+- json language support, by mapping from each graphql model uri to a set of json variable model uris
+  - we generate a json schema definition for the json variables on the fly
+  - it updates alongside editor validation as you type
+- less redundant schema loading - schema is loaded in main process instead of in the webworker
+- web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
+- the editor now supports multiple graphql models, configurable against multiple schema configurations
+* You can now use `intializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support

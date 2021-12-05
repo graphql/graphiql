@@ -2,6 +2,7 @@ import type {
   SchemaConfig as SchemaConfiguration,
   GraphQLLanguageConfig,
 } from 'graphql-language-service';
+import type { languages } from 'monaco-editor';
 
 import type { Options as PrettierConfig } from 'prettier';
 
@@ -11,7 +12,7 @@ export interface IDisposable {
 
 export type SchemaConfig = SchemaConfiguration;
 
-export type JSONDiagnosticOptions = monaco.languages.json.DiagnosticsOptions;
+export type JSONDiagnosticOptions = languages.json.DiagnosticsOptions;
 export interface IEvent<T> {
   (listener: (e: T) => any, thisArg?: any): IDisposable;
 }
@@ -74,17 +75,13 @@ export interface ModeConfiguration {
 
 export type DiagnosticSettings = {
   /**
-   * Automatically insert non-null (required) selection sets when writing operations
-   */
-  fillLeafsOnComplete?: boolean;
-  /**
    * whilst editing operations, alongside graphql validation,
    * generate json schema for variables to validate json schema models
    * @example
    * ```ts
    * validateVariablesJSON: {
    *   "monaco://myoperation.graphql": ["monaco://myvariables.json"]
-   *  }P
+   *  }
    * ```
    */
   validateVariablesJSON?: Record<string, string[]>;
@@ -94,8 +91,10 @@ export type DiagnosticSettings = {
    *
    * - `allowComments: true` enables jsonc editing
    * - `validateSchema: 'warning'`
+   * - `trailingComments` is `error` by default, and can be `warning` or `ignore`
+   * {languages.json.DiagnosticsOptions}
    */
-  jsonDiagnosticSettings?: JSONDiagnosticOptions;
+  jsonDiagnosticSettings?: languages.json.DiagnosticsOptions;
 };
 
 /**

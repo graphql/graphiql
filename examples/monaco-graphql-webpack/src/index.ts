@@ -2,7 +2,7 @@
 
 import * as monaco from 'monaco-editor';
 import * as JSONC from 'jsonc-parser';
-import { initializeMode } from 'monaco-graphql';
+import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
 import { createEditors } from './editors';
 import { schemaFetcher, schemaOptions } from './schema';
@@ -50,7 +50,6 @@ async function render() {
     }
 
     monacoGraphQLAPI.setDiagnosticSettings({
-      fillLeafsOnComplete: true,
       validateVariablesJSON: {
         [operationUri]: [variablesModel.uri.toString()],
       },

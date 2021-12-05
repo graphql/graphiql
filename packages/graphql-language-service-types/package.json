@@ -28,10 +28,10 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "graphql-config": "^4.1.0"
+    "graphql-config": "^4.1.0",
+    "vscode-languageserver-types": "^3.15.1"
   },
   "devDependencies": {
-    "graphql": "16.0.0-experimental-stream-defer.5",
-    "vscode-languageserver-types": "^3.15.1"
+    "graphql": "16.0.0-experimental-stream-defer.5"
   }
 }

@@ -16,6 +16,7 @@ export {
   getVariablesJSONSchema,
   JSONSchema6,
   JSONSchema6TypeName,
+  JSONSchemaOptions,
 } from './getVariablesJSONSchema';
 
 export { getASTNodeAtPosition, pointToOffset } from './getASTNodeAtPosition';

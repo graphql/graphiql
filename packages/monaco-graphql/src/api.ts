@@ -90,7 +90,7 @@ export class MonacoGraphQLAPI {
   }
 
   /**
-   * override all schema config. fires onSchemaConfigChange
+   * override all schema config.
    *
    * @param schemas {SchemaConfig[]}
    */
