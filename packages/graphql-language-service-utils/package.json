@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-utils",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Utilities to support the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -28,7 +28,7 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "graphql-language-service-types": "^1.8.6",
+    "graphql-language-service-types": "^1.8.7",
     "nullthrows": "^1.0.0",
     "@types/json-schema": "7.0.9"
   },

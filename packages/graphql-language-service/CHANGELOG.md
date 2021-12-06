@@ -1,5 +1,15 @@
 # graphql-language-service
 
+## 4.1.1
+
+### Patch Changes
+
+- Updated dependencies [[`ff9cebe5`](https://github.com/graphql/graphiql/commit/ff9cebe515a3539f85b9479954ae644dfeb68b63)]:
+  - graphql-language-service-interface@2.10.1
+  - graphql-language-service-utils@2.7.1
+  - graphql-language-service-types@1.8.7
+  - graphql-language-service-parser@1.10.4
+
 ## 4.1.0
 
 ### Minor Changes
