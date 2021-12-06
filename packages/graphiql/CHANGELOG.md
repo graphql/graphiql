@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.10
+
+### Patch Changes
+
+- [#2087](https://github.com/graphql/graphiql/pull/2087) [`45a9075d`](https://github.com/graphql/graphiql/commit/45a9075d718046e0f17c930162fa9752dfe052ec) Thanks [@acao](https://github.com/acao)! - Fix issue with introspection in servers which don't support `inputValueDeprecation`. make `inputValueDeprecation` an opt-in prop for DocExplorer features
+
 ## 1.5.9
 
 ### Patch Changes
