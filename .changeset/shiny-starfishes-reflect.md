@@ -8,7 +8,7 @@ This introduces some big changes to `monaco-graphql`, and some exciting features
 
 see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql) to learn how to configure and use the new interface. 
 
-## 🚨 BREAKING CHANGES!! 🚨
+#### 🚨 BREAKING CHANGES!! 🚨
 
 *  `monaco-graphql` 🚨  **no longer loads schemas using `fetch` introspection** 🚨, you must specify the schema in one of many ways statically or dynamically. specifying just a schema `uri` no longer works. see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-graphql#monaco-graphql)
 * when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
@@ -16,7 +16,7 @@ see [the readme](https://github.com/graphql/graphiql/tree/main/packages/monaco-g
   * when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
 * The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
-## New Features
+#### New Features
 
 this introduces many improvements:
 - json language support, by mapping from each graphql model uri to a set of json variable model uris

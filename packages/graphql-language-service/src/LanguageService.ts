@@ -263,6 +263,8 @@ export class LanguageService {
       documentText,
       schema.schema,
       customRules ?? this._customValidationRules,
+      false,
+      this.getExternalFragmentDefinitions(),
     );
   };
 
