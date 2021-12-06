@@ -26,6 +26,7 @@ import {
   GraphQLError,
   GraphQLFormattedError,
   IntrospectionQuery,
+  getIntrospectionQuery,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import {
@@ -53,11 +54,7 @@ import find from '../utility/find';
 import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 import mergeAST from '../utility/mergeAst';
-import {
-  introspectionQuery,
-  introspectionQueryName,
-  introspectionQuerySansSubscriptions,
-} from '../utility/introspectionQueries';
+import { introspectionQueryName } from '../utility/introspectionQueries';
 import { dset } from 'dset/merge';
 
 import type {
@@ -141,6 +138,15 @@ export type GraphiQLProps = {
    * decide whether schema responses should be validated. false by default
    */
   dangerouslyAssumeSchemaIsValid?: boolean;
+  /**
+   * Enable new introspectionQuery
+   * DANGER: your server must be configured to support this new feature, or else introspecion will fail with an invalid query
+   */
+  inputValueDeprecation?: boolean;
+  /**
+   * OperationName to use for introspection queries
+   */
+  introspectionQueryName?: string;
   readOnly?: boolean;
   docExplorerOpen?: boolean;
   toolbar?: GraphiQLToolbarConfig;
@@ -223,6 +229,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
+  _introspectionQuery: string;
+  _introspectionQueryName: string;
+  _introspectionQuerySansSubscriptions: string;
 
   codeMirrorSizer!: CodeMirrorSizer;
   // Ensure the component is mounted to execute async setState
@@ -326,6 +335,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         schemaErrors = validationErrors;
       }
     }
+
+    this._introspectionQuery = getIntrospectionQuery({
+      schemaDescription: true,
+      inputValueDeprecation: props.inputValueDeprecation ?? undefined,
+    });
+
+    this._introspectionQueryName =
+      props.introspectionQueryName ?? introspectionQueryName;
+
+    // Some GraphQL services do not support subscriptions and fail an introspection
+    // query which includes the `subscriptionType` field as the stock introspection
+    // query does. This backup query removes that field.
+    this._introspectionQuerySansSubscriptions = this._introspectionQuery.replace(
+      'subscriptionType { name }',
+      '',
+    );
 
     // Initialize state
     this.state = {
@@ -895,8 +920,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     const fetch = fetcherReturnToPromise(
       fetcher(
         {
-          query: introspectionQuery,
-          operationName: introspectionQueryName,
+          query: this._introspectionQuery,
+          operationName: this._introspectionQueryName,
         },
         fetcherOpts,
       ),
@@ -920,8 +945,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         const fetch2 = fetcherReturnToPromise(
           fetcher(
             {
-              query: introspectionQuerySansSubscriptions,
-              operationName: introspectionQueryName,
+              query: this._introspectionQuerySansSubscriptions,
+              operationName: this._introspectionQueryName,
             },
             fetcherOpts,
           ),
