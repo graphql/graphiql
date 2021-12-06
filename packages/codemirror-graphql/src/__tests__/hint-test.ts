@@ -17,6 +17,10 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLString,
+  __Directive,
+  __EnumValue,
+  __Field,
+  __InputValue,
   __Schema,
   __Type,
 } from 'graphql';
@@ -613,33 +617,27 @@ describe('graphql-hint', () => {
       },
       {
         text: '__Schema',
-        description:
-          'A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.',
+        description: __Schema.description,
       },
       {
         text: '__Type',
-        description:
-          'The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.',
+        description: __Type.description,
       },
       {
         text: '__Field',
-        description:
-          'Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.',
+        description: __Field.description,
       },
       {
         text: '__InputValue',
-        description:
-          'Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.',
+        description: __InputValue.description,
       },
       {
         text: '__EnumValue',
-        description:
-          'One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.',
+        description: __EnumValue.description,
       },
       {
         text: '__Directive',
-        description:
-          "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+        description: __Directive.description,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);

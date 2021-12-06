@@ -46,10 +46,12 @@ describe('GraphiQL On Initialization', () => {
   });
   it('Shows the expected error when the schema is invalid', () => {
     cy.visit(`/?bad=true`);
-    cy.assertResult({
-      errors: [
-        'Names must only contain [_a-zA-Z0-9] but "<img src=x onerror=alert(document.domain)>" does not.',
-      ],
+    cy.wait(200);
+    cy.window().then(w => {
+      // @ts-ignore
+      const value = w.g.resultComponent.viewer.getValue();
+      // this message changes between graphql 15 & 16
+      expect(value).to.contain('Names must');
     });
   });
 });

@@ -1,3 +1,11 @@
+import { version } from 'graphql';
+let describeOrSkip = describe.skip;
+
+// hard to account for the extra \n between 15/16 so these only run for 16 for now
+if (version.includes('16')) {
+  describeOrSkip = describe;
+}
+
 const prettifiedQuery = `{
   longDescriptionType {
     id
@@ -16,7 +24,7 @@ const brokenQuery = `longDescriptionType {id}}`;
 
 const brokenVariables = `"a": 1}`;
 
-describe('GraphiQL Prettify', () => {
+describeOrSkip('GraphiQL Prettify', () => {
   it('Regular prettification', () => {
     cy.visitWithOp({ query: uglyQuery, variablesString: uglyVariables });
 

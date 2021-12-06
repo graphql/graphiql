@@ -8,7 +8,6 @@
 import {
   GraphQLInputField,
   GraphQLInputType,
-  GraphQLList,
   isEnumType,
   isInputObjectType,
   isListType,
@@ -72,8 +71,9 @@ function renderType(into: string[], t: GraphQLInputType | GraphQLInputField) {
   if (isNonNullType(t)) {
     renderType(into, t.ofType);
     text(into, '!');
-  } else if (t instanceof GraphQLList) {
+  } else if (isListType(t)) {
     text(into, '[');
+    // @ts-ignore
     renderType(into, t.ofType);
     text(into, ']');
   } else {

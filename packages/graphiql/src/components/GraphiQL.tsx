@@ -1052,16 +1052,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           externalFragments.set(def.name.value, def);
         });
       } else {
-        visit(
-          parse(this.props.externalFragments, {
-            allowLegacyFragmentVariables: true,
-          }),
-          {
-            FragmentDefinition(def) {
-              externalFragments.set(def.name.value, def);
-            },
+        visit(parse(this.props.externalFragments, {}), {
+          FragmentDefinition(def) {
+            externalFragments.set(def.name.value, def);
           },
-        );
+        });
       }
       const fragmentDependencies = getFragmentDependenciesForAST(
         this.state.documentAST!,
@@ -1338,9 +1333,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   handlePrettifyQuery = () => {
     const editor = this.getQueryEditor();
     const editorContent = editor?.getValue() ?? '';
-    const prettifiedEditorContent = print(
-      parse(editorContent, { allowLegacyFragmentVariables: true }),
-    );
+    const prettifiedEditorContent = print(parse(editorContent));
 
     if (prettifiedEditorContent !== editorContent) {
       editor?.setValue(prettifiedEditorContent);

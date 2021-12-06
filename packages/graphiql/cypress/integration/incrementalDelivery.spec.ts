@@ -1,4 +1,13 @@
-describe('IncrementalDelivery support via fetcher', () => {
+import { version } from 'graphql/version';
+
+let describeOrSkip = describe.skip;
+
+// TODO: disable when defer/stream is merged to graphql
+if (version.includes('stream')) {
+  describeOrSkip = describe;
+}
+
+describeOrSkip('IncrementalDelivery support via fetcher', () => {
   describe('When operation contains @stream', () => {
     const testStreamQuery = /* GraphQL */ `
       query StreamQuery($delay: Int) {
