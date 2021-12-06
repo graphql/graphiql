@@ -1,0 +1,32 @@
+name: Build & Test PR w/ GraphQL 15
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+# TODO: test matrix?
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Use Node
+        uses: actions/setup-node@v2
+
+      - name: Force GraphQL 15 resolution
+        run: yarn repo:resolve graphql@15 
+
+      - name: Yarn Install
+        uses: bahmutov/npm-install@v1  
+
+      - name: Typescript Build
+        run: yarn build
+
+      - name: Unit Tests
+        run: yarn test
+
+      - name: Cypress
+        run: yarn e2e

@@ -9,12 +9,13 @@
 
 import { CompletionItem } from 'graphql-language-service-types';
 
-import fs from 'fs';
+import fs, { readSync } from 'fs';
 import {
   buildSchema,
   FragmentDefinitionNode,
   GraphQLSchema,
   parse,
+  version as graphQLVersion,
 } from 'graphql';
 import { Position } from 'graphql-language-service-utils';
 import path from 'path';
@@ -76,6 +77,7 @@ const suggestionCommand = {
 describe('getAutocompleteSuggestions', () => {
   let schema: GraphQLSchema;
   beforeEach(async () => {
+    // graphQLVersion = pkg.version;
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
       'utf8',
@@ -432,29 +434,28 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
-    it('provides correct directive suggestions', () => {
-      expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual([
-        { label: 'include' },
-        { label: 'skip' },
-        { label: 'stream' },
-        { label: 'test' },
-      ]);
+    const expectedDirectiveSuggestions = [
+      { label: 'include' },
+      { label: 'skip' },
+    ];
+    // TODO: remove this once defer and stream are merged to `graphql`
+    if (graphQLVersion.includes('defer')) {
+      expectedDirectiveSuggestions.push({ label: 'stream' });
+    }
+    expectedDirectiveSuggestions.push({ label: 'test' });
 
-      expect(testSuggestions('{ test @', new Position(0, 8))).toEqual([
-        { label: 'include' },
-        { label: 'skip' },
-        { label: 'stream' },
-        { label: 'test' },
-      ]);
+    it('provides correct directive suggestions', () => {
+      expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual(
+        expectedDirectiveSuggestions,
+      );
+
+      expect(testSuggestions('{ test @', new Position(0, 8))).toEqual(
+        expectedDirectiveSuggestions,
+      );
 
       expect(
         testSuggestions('{ aliasTest: test @ }', new Position(0, 19)),
-      ).toEqual([
-        { label: 'include' },
-        { label: 'skip' },
-        { label: 'stream' },
-        { label: 'test' },
-      ]);
+      ).toEqual(expectedDirectiveSuggestions);
 
       expect(testSuggestions('query @', new Position(0, 7))).toEqual([]);
     });

@@ -10,7 +10,7 @@ fi
 # In order to prevent inadvertently circumventing this, we ensure that a CI
 # environment exists before continuing.
 if [ "$CI" != true ]; then
-  echo "\n\n\n  \033[101;30m Only Travis CI can publish to NPM. \033[0m" 1>&2;
+  echo "\n\n\n  \033[101;30m Only CI can publish to NPM. \033[0m" 1>&2;
   echo "  Ensure git is left is a good state by backing out any commits and deleting any tags." 1>&2;
   echo "  Then read CONTRIBUTING.md to learn how to publish to NPM.\n\n\n" 1>&2;
   exit 1;

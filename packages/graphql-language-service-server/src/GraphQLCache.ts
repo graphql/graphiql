@@ -216,9 +216,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     // Return an empty array.
     let parsedQuery;
     try {
-      parsedQuery = parse(query, {
-        allowLegacyFragmentVariables: true,
-      });
+      parsedQuery = parse(query);
     } catch (error) {
       return [];
     }
