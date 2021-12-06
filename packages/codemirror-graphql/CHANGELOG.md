@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.2.8
+
+### Patch Changes
+
+- [#2091](https://github.com/graphql/graphiql/pull/2091) [`ff9cebe5`](https://github.com/graphql/graphiql/commit/ff9cebe515a3539f85b9479954ae644dfeb68b63) Thanks [@acao](https://github.com/acao)! - Fix graphql 15 related issues. Should now build & test interchangeably.
+
+- Updated dependencies []:
+  - graphql-language-service@4.1.1
+
 ## 1.2.7
 
 ### Patch Changes
