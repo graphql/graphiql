@@ -14746,6 +14746,14 @@ monaco-editor@^0.29.1:
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.29.1.tgz#6ee93d8a5320704d48fd7058204deed72429c020"
   integrity sha512-rguaEG/zrPQSaKzQB7IfX/PpNa0qxF1FY8ZXRkN4WIl8qZdTQRSRJCtRto7IMcSgrU6H53RXI+fTcywOBC4aVw==
 
+monaco-graphql@^0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/monaco-graphql/-/monaco-graphql-0.6.5.tgz#14c52f4ec4e99c6d958d31190c9deaf2caae47d3"
+  integrity sha512-0zhymVaYkn7jA33l7bnwED1cUtddQYN2NmF1NeXJ1nlyEoug9oy61H8UDOrNk/d6/cTnr7pLt30o3XuQDOMbmA==
+  dependencies:
+    graphql-language-service "^3.2.5"
+    graphql-language-service-utils "^2.6.3"
+
 move-concurrently@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/move-concurrently/-/move-concurrently-1.0.1.tgz#be2c005fda32e0b29af1f05d7c4b33214c701f92"

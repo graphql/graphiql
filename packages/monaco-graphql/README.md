@@ -372,6 +372,7 @@ the plain javascript [webpack example](https://github.com/graphql/graphiql/tree/
 
 - [`use-monaco`](https://www.npmjs.com/package/use-monaco) seems to support the custom language worker configuration we want, and seems to be well built! we hope to help them build their
 - when loading it yourself, either dynamic import the mode and/or instantiate it yourself using `useEffect` on `didMount` to prevent breaking SSR.
+- it may work with other libraries by using a similar strategy to [this](https://github.com/graphql/graphiql/blob/9df315b44896efa313ed6744445fc8f9e702ebc3/examples/monaco-graphql-webpack/src/editors.ts#L15). you can also provide `MonacoEnvironment.getWorkerUrl` which works better as an async import of your pre-build worker files
 
 ## Custom Webworker (for passing non-static config to worker)
 
@@ -425,6 +426,39 @@ window.MonacoEnvironment = {
     return new EditorWorker();
   },
 };
+```
+
+or, if you have webpack configured for it:
+
+```ts
+window.MonacoEnvironment = {
+  getWorkerUrl(_workerId: string, label: string) {
+    if (label === 'graphql') {
+      return 'mygraphql.worker.js`;
+    }
+    return 'editor.worker.js`;
+  },
+};
+```
+
+with vite you just need:
+
+```ts
+import { defineConfig } from 'vite';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
+
+export default defineConfig({
+  plugins: [
+    monacoEditorPlugin({
+      customWorker: [
+        {
+          label: 'graphql',
+          entry: 'mygraphql.worker.js',
+        },
+      ],
+    }),
+  ],
+});
 ```
 
 ## Monaco Editor Tips

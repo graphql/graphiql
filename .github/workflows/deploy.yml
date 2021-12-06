@@ -59,10 +59,13 @@ jobs:
       - name: Build 
         run: yarn build
 
+      - name: Build Monaco Example
+        run: yarn workspace example-monaco-graphql-webpack build
+
       - name: Deploy Monaco Demo to Netlify
         uses: nwtgck/actions-netlify@v1.1
         with:
-          publish-dir: './packages/graphiql/'
+          publish-dir: './examples/monaco-graphql-webpack/dist'
           production-branch: main
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
