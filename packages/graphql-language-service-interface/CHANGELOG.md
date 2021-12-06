@@ -1,5 +1,23 @@
 # graphql-language-service-interface
 
+## 2.10.0
+
+### Minor Changes
+
+- [#2081](https://github.com/graphql/graphiql/pull/2081) [`9b72af57`](https://github.com/graphql/graphiql/commit/9b72af57183f4435992c232e63506ad2f5a72576) Thanks [@acao](https://github.com/acao)! - Auto-expand selection sets & invoke completion on newline
+
+  Introduces `insertText` and completion for field `selectionSets` for the appropriate `field.type`s.
+  Works across `monaco-graphql` and `graphql-language-service-server`.
+
+  Though the changeset is bumping a patch for `codemirror-graphql`, the lsp completion `insertText` is not used by `codemirror`, and thus this lsp enhancment will not change the `codemirror-graphql` experience.
+
+### Patch Changes
+
+- [#2076](https://github.com/graphql/graphiql/pull/2076) [`581df6d8`](https://github.com/graphql/graphiql/commit/581df6d83f4bc145de94e5d730b00e5b025907da) Thanks [@acao](https://github.com/acao)! - fix a potential issue where field(arg: $| in codemirror-graphql might have autocompletion insert of $\$variable because of recent changes to completion for monaco-graphql/vscode-graphql
+
+- Updated dependencies [[`9df315b4`](https://github.com/graphql/graphiql/commit/9df315b44896efa313ed6744445fc8f9e702ebc3)]:
+  - graphql-language-service-utils@2.7.0
+
 ## 2.9.5
 
 ### Patch Changes
