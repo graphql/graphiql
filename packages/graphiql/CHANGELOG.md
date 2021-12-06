@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.5.9
+
+### Patch Changes
+
+- [#2077](https://github.com/graphql/graphiql/pull/2077) [`701ca13f`](https://github.com/graphql/graphiql/commit/701ca13f625735564d71931e6d917e5bf69c8aa5) Thanks [@acao](https://github.com/acao)! - Include schema description in DocExplorer for schema introspection requests. Enables the `schemaDescription` option for `getIntrospectionQuery()`.
+  Also includes `deprecationReason` support in DocExplorer for arguments!
+  Enables `inputValueDeprecation` in `getIntrospectionQuery()` and displays deprecation section on field doc view.
+- Updated dependencies [[`9df315b4`](https://github.com/graphql/graphiql/commit/9df315b44896efa313ed6744445fc8f9e702ebc3)]:
+  - graphql-language-service@4.0.0
+  - codemirror-graphql@1.2.6
+
 ## 1.5.8
 
 ### Patch Changes
