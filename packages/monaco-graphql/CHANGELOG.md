@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.3
+
+### Patch Changes
+
+- [#2093](https://github.com/graphql/graphiql/pull/2093) [`c875412f`](https://github.com/graphql/graphiql/commit/c875412faaf0e1fb374c27ddd26d7f9795003675) Thanks [@acao](https://github.com/acao)! - export LANGUAGE_ID from monaco-graphql again
+
 ## 1.0.2
 
 ### Patch Changes
