@@ -15,8 +15,9 @@ export {
 } from './api';
 
 export * from './typings';
-import { initializeMode } from './initializeMode';
+import { initializeMode, LANGUAGE_ID } from './initializeMode';
 
+export { LANGUAGE_ID };
 /**
  * Register the language mode without schema or any settings, so you can configure them asynchronously.
  */
