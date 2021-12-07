@@ -11047,16 +11047,16 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "graphiql@file:packages/graphiql":
-  version "1.5.13"
+  version "1.5.14"
   dependencies:
     "@graphiql/toolkit" "^0.4.2"
     codemirror "^5.58.2"
-    codemirror-graphql "^1.2.8"
+    codemirror-graphql "^1.2.9"
     copy-to-clipboard "^3.2.0"
     dset "^3.1.0"
     entities "^2.0.0"
     escape-html "^1.0.3"
-    graphql-language-service "^4.1.1"
+    graphql-language-service "^4.1.2"
     markdown-it "^12.2.0"
 
 graphql-config@^4.1.0:

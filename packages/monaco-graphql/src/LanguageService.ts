@@ -12,17 +12,18 @@ import {
   FragmentDefinitionNode,
   visit,
   DocumentNode,
+  Source,
 } from 'graphql';
 
-import { default as picomatch } from 'picomatch';
+import picomatch from 'picomatch-browser';
 
-import type { IPosition } from 'graphql-language-service-types';
+import type { IPosition } from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
-} from 'graphql-language-service-interface';
+} from 'graphql-language-service';
 
 import {
   getVariablesJSONSchema,
@@ -30,51 +31,18 @@ import {
   JSONSchemaOptions,
 } from 'graphql-language-service-utils';
 
-import {
-  defaultSchemaLoader,
-  SchemaConfig,
-  SchemaLoader,
-} from './schemaLoader';
+import { defaultSchemaLoader } from './schemaLoader';
 
-/**
- * For the `monaco-graphql` language worker, these must be specified
- * in a custom webworker. see the readme.
- */
-export type GraphQLLanguageConfig = {
-  /**
-   * Provide a parser that matches `graphql` `parse()` signature
-   * Used for internal document parsing operations
-   * for autocompletion and hover, `graphql-language-service-parser ` is used via `graphql-language-service-interface`
-   */
-  parser?: typeof parse;
-  /**
-   * Custom options passed to `parse`, whether `graphql` parse by default or custom parser
-   */
-  parseOptions?: ParseOptions;
-  /**
-   * Take a variety of schema inputs common for the language worker, and transform them
-   * to at least a `schema` if not other easily available implementations
-   */
-  schemaLoader?: SchemaLoader;
-  /**
-   * An array of schema configurations from which to match files for language features
-   */
-  schemas?: SchemaConfig[];
-  /**
-   * External fragments to be used with completion and validation
-   */
-  exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
-  /**
-   * Custom validation rules following `graphql` `ValidationRule` signature
-   */
-  customValidationRules?: ValidationRule[];
-};
+import { SchemaConfig, SchemaLoader, GraphQLLanguageConfig } from './typings';
 
 type SchemaCacheItem = Omit<SchemaConfig, 'schema'> & { schema: GraphQLSchema };
 
 type SchemaCache = Map<string, SchemaCacheItem>;
 const schemaCache: SchemaCache = new Map();
 
+/**
+ * Currently only used by the `monaco-graphql` worker
+ */
 export class LanguageService {
   private _parser: typeof parse = parse;
   private _schemas: SchemaConfig[] = [];
@@ -128,28 +96,36 @@ export class LanguageService {
       schema,
     });
   }
+
   /**
    * Provide a model uri path, and see if a schema config has a `fileMatch` to match it
    * @param uri {string}
    * @returns {SchemaCacheItem | undefined}
    */
   public getSchemaForFile(uri: string): SchemaCacheItem | undefined {
-    const schema = this._schemas.find(schemaConfig => {
-      if (!schemaConfig.fileMatch) {
-        return false;
-      }
-      return schemaConfig.fileMatch.some(glob => {
-        const isMatch = picomatch(glob);
-        return isMatch(uri);
+    if (!this._schemas || !this._schemas.length) {
+      return;
+    }
+    if (this._schemas.length === 1) {
+      return this._schemaCache.get(this._schemas[0].uri);
+    } else {
+      const schema = this._schemas.find(schemaConfig => {
+        if (!schemaConfig.fileMatch) {
+          return false;
+        }
+        return schemaConfig.fileMatch.some(glob => {
+          const isMatch = picomatch(glob);
+          return isMatch(uri);
+        });
       });
-    });
-    if (schema) {
-      const cacheEntry = this._schemaCache.get(schema.uri);
-      if (cacheEntry) {
-        return cacheEntry;
+      if (schema) {
+        const cacheEntry = this._schemaCache.get(schema.uri);
+        if (cacheEntry) {
+          return cacheEntry;
+        }
+        const cache = this._cacheSchema(schema);
+        return cache.get(schema.uri);
       }
-      const cache = this._cacheSchema(schema);
-      return cache.get(schema.uri);
     }
   }
 
@@ -212,11 +188,11 @@ export class LanguageService {
   }
   /**
    * Uses the configured parser
-   * @param text
-   * @param options
+   * @param text {string | Source}
+   * @param options {ParseOptions}
    * @returns {DocumentNode}
    */
-  public parse(text: string, options?: ParseOptions): DocumentNode {
+  public parse(text: string | Source, options?: ParseOptions): DocumentNode {
     return this._parser(text, options || this._parseOptions);
   }
   /**

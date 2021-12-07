@@ -5,12 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { SchemaConfig } from './typings';
 import type {
   IRange as GraphQLRange,
   IPosition as GraphQLPosition,
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
-  SchemaConfig,
 } from 'graphql-language-service';
 
 import { buildASTSchema, printSchema } from 'graphql';

@@ -12,16 +12,6 @@
  *
  * TODO: retire `graphql-language-service-{parser,interface,types,utils}` and merge with this workspace
  */
-export type {
-  SchemaConfig,
-  BaseSchemaConfig,
-  SchemaLoader,
-} from './schemaLoader';
-export { defaultSchemaLoader } from './schemaLoader';
-
-export type { GraphQLLanguageConfig } from './LanguageService';
-export { LanguageService } from './LanguageService';
-
 /**
  * A whole bunch of the key language services
  */
@@ -43,6 +33,7 @@ export {
   GraphQLLanguageService,
   SEVERITY,
   Severity,
+  HoverConfig,
   SeverityEnum,
   DIAGNOSTIC_SEVERITY,
   DefinitionQueryResult,

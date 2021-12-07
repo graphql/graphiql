@@ -1,16 +1,125 @@
-import type {
-  SchemaConfig as SchemaConfiguration,
-  GraphQLLanguageConfig,
-} from 'graphql-language-service';
 import type { languages } from 'monaco-editor';
 
+import {
+  IntrospectionQuery,
+  DocumentNode,
+  BuildSchemaOptions,
+  parse,
+  ParseOptions,
+  GraphQLSchema,
+  ValidationRule,
+  FragmentDefinitionNode,
+} from 'graphql';
+
 import type { Options as PrettierConfig } from 'prettier';
+
+export type BaseSchemaConfig = {
+  buildSchemaOptions?: BuildSchemaOptions;
+  schema?: GraphQLSchema;
+  documentString?: string;
+  documentAST?: DocumentNode;
+  introspectionJSON?: IntrospectionQuery;
+  introspectionJSONString?: string;
+};
+
+/**
+ * Inspired by the `monaco-json` schema object in `DiagnosticSettings["schemas"]`,
+ * which we use :)
+ *
+ * You have many schema format options to provide, choose one!
+ *
+ * For large schemas, try different formats to see what is most efficient for you.
+ */
+export type SchemaConfig = {
+  /**
+   * A unique uri string for this schema.
+   * Model data will evenetually be set for this URI for definition lookup
+   */
+  uri: string;
+  /**
+   * An array of URIs or globs to associate with this schema in the language worker
+   * Uses `picomatch` which supports many common expressions except brackets
+   * Only necessary if you provide more than one schema, otherwise it defaults to the sole schema
+   */
+  fileMatch?: string[];
+  /**
+   * provide custom options when using `buildClientSchema`, `buildASTSchema`, etc
+   */
+  buildSchemaOptions?: BuildSchemaOptions;
+  /**
+   * A GraphQLSchema instance
+   */
+  schema?: GraphQLSchema;
+  /**
+   * An SDL document string
+   */
+  documentString?: string;
+  /**
+   * A GraphQL DocumentNode AST
+   */
+  documentAST?: DocumentNode;
+  /**
+   * A parsed JSON literal of the introspection results
+   */
+  introspectionJSON?: IntrospectionQuery;
+  /**
+   * A stringified introspection JSON result
+   */
+  introspectionJSONString?: string;
+};
+
+/**
+ * This schema loader is focused on performance for the monaco worker runtime
+ * We favor taking in stringified schema representations as they can be used to communicate
+ * Across the main/webworker process boundary
+ *
+ * @param schemaConfig {SchemaConfig}
+ * @param parser {LanguageService['parse']}
+ * @returns {GraphQLSchema}
+ */
+export type SchemaLoader = (
+  schemaConfig: SchemaConfig,
+  parser: GraphQLLanguageConfig['parser'],
+) => GraphQLSchema;
+
+/**
+ * For the `monaco-graphql` language worker, these must be specified
+ * in a custom webworker. see the readme.
+ */
+export type GraphQLLanguageConfig = {
+  /**
+   * Provide a parser that matches `graphql` `parse()` signature
+   * Used for internal document parsing operations
+   * for autocompletion and hover, `graphql-language-service-parser ` is used via `graphql-language-service-interface`
+   */
+  parser?: typeof parse;
+  /**
+   * Custom options passed to `parse`, whether `graphql` parse by default or custom parser
+   */
+  parseOptions?: ParseOptions;
+  /**
+   * Take a variety of schema inputs common for the language worker, and transform them
+   * to at least a `schema` if not other easily available implementations
+   */
+  schemaLoader?: SchemaLoader;
+  /**
+   * An array of schema configurations from which to match files for language features
+   * You can provide many formats, see the config for details!
+   */
+  schemas?: SchemaConfig[];
+  /**
+   * External fragments to be used with completion and validation
+   */
+  exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
+  /**
+   * Custom validation rules following `graphql` `ValidationRule` signature
+   */
+  customValidationRules?: ValidationRule[];
+};
 
 export interface IDisposable {
   dispose(): void;
 }
-
-export type SchemaConfig = SchemaConfiguration;
 
 export type JSONDiagnosticOptions = languages.json.DiagnosticsOptions;
 export interface IEvent<T> {
