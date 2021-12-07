@@ -20,7 +20,7 @@
         "graphql-ws",
         "@urql/core"
       ],
-      "extends": ["schedule:before 8am and after 6pm every day"]
+      "extends": ["schedule:daily"]
     }
   ]
 }
