@@ -108,48 +108,181 @@ export type GenericError =
   | GraphQLError
   | readonly GraphQLError[];
 
+/**
+ * API docs for this live here:
+ *
+ * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
+ */
 export type GraphiQLProps = {
+  /**
+   * Required. A function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable
+   * which resolves to the GraphQL parsed JSON response.
+   *
+   * We suggest using `@graphiql/toolkit` `createGraphiQLFetcher()` to cover most implementations,
+   * including custom headers, websockets and even incremental delivery for @defer and @stream.
+   *
+   * [`GraphiQL Create Fetcher documentation`](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher)
+   *  **Required.**
+   */
   fetcher: Fetcher;
+  /**
+   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema introspection.
+   */
   schema?: GraphQLSchema | null;
+  /**
+   * An array of graphql ValidationRules
+   */
   validationRules?: ValidationRule[];
+  /**
+   * Optionally provide the query in a controlled-component manner. This will override the user state.
+   *
+   * If you just want to provide a different initial query, use `defaultQuery`
+   */
   query?: string;
+  /**
+   * Same as above. provide a json string that controls the present variables editor state.
+   */
   variables?: string;
+  /**
+   * provide a json string that controls the headers editor state
+   */
   headers?: string;
+  /**
+   * The operationName to use when executing the current opeartion.
+   * Overrides the dropdown when multiple operations are present.
+   */
   operationName?: string;
+  /**
+   * privide a json string that controls the results editor state
+   */
   response?: string;
+  /**
+   * Provide a custom storage API, as an alternative to localStorage.
+   * [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html
+   * default: StorageAPI
+   */
   storage?: Storage;
+  /**
+   * The defaultQuery present when the editor is first loaded
+   * and the user has no local query editing state
+   * @default "A really long graphql # comment that welcomes you to GraphiQL"
+   */
   defaultQuery?: string;
+  /**
+   * Should the variables editor be open by default?
+   * default: true
+   */
   defaultVariableEditorOpen?: boolean;
+  /**
+   * Should the "secondary editor" that contains both headers or variables be open by default?
+   * default: true
+   */
   defaultSecondaryEditorOpen?: boolean;
+  /**
+   * Should the headers editor even be enabled?
+   * Note that you can still pass custom headers in the fetcher
+   * default: true
+   */
   headerEditorEnabled?: boolean;
+  /**
+   * Should user header changes be persisted to localstorage?
+   * default: false
+   */
   shouldPersistHeaders?: boolean;
+  /**
+   * Provide an array of fragment nodes or a string to append to queries,
+   * and for validation and completion
+   */
   externalFragments?: string | FragmentDefinitionNode[];
+  /**
+   * Handler for when a user copies a query
+   */
   onCopyQuery?: (query?: string) => void;
+  /**
+   * Handler for when a user edits a query.
+   */
   onEditQuery?: (query?: string, documentAST?: DocumentNode) => void;
+  /**
+   * Handler for when a user edits variables.
+   */
   onEditVariables?: (value: string) => void;
+  /**
+   * Handler for when a user edits headers.
+   */
   onEditHeaders?: (value: string) => void;
+  /**
+   * Handler for when a user edits operation names
+   */
   onEditOperationName?: (operationName: string) => void;
+  /**
+   * Handler for when the user toggles the doc pane
+   */
   onToggleDocs?: (docExplorerOpen: boolean) => void;
+  /**
+   * A custom function to determine which field leafs are automatically
+   * added when fill leafs command is used
+   */
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  /**
+   * The codemirror editor theme you'd like to use
+   *
+   */
   editorTheme?: string;
+  /**
+   * On history pane toggle event
+   */
   onToggleHistory?: (historyPaneOpen: boolean) => void;
+  /**
+   * Custom results tooltip component
+   */
   ResultsTooltip?: typeof Component | FunctionComponent;
   /**
-   * decide whether schema responses should be validated. false by default
+   * decide whether schema responses should be validated.
+   *
+   * default: false
    */
   dangerouslyAssumeSchemaIsValid?: boolean;
   /**
-   * Enable new introspectionQuery
-   * DANGER: your server must be configured to support this new feature, or else introspecion will fail with an invalid query
+   * Enable new introspectionQuery option `inputValueDeprecation`
+   * DANGER: your server must be configured to support this new feature,
+   * or else introspecion will fail with an invalid query
+   *
+   * default: false
    */
   inputValueDeprecation?: boolean;
   /**
+   * Enable new introspectionQuery option `schemaDescription`, which expects the `__Schema.description` field
+   * DANGER: your server must be configured to support a `__Schema.description` field on
+   * introspection or it will fail with an invalid query.
+   *
+   * default: false
+   */
+  schemaDescription?: boolean;
+  /**
    * OperationName to use for introspection queries
+   *
+   * default: false
+   *
    */
   introspectionQueryName?: string;
+  /**
+   * Set codemirror editors to readOnly state
+   */
   readOnly?: boolean;
+  /**
+   * Toggle the doc explorer state by default/programatically
+   *
+   * default: false
+   */
   docExplorerOpen?: boolean;
+  /**
+   * Custom toolbar configuration
+   */
   toolbar?: GraphiQLToolbarConfig;
+  /**
+   * Max query history to retain
+   * default: 20
+   */
   maxHistoryLength?: number;
 };
 
@@ -337,7 +470,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     }
 
     this._introspectionQuery = getIntrospectionQuery({
-      schemaDescription: true,
+      schemaDescription: props.schemaDescription ?? undefined,
       inputValueDeprecation: props.inputValueDeprecation ?? undefined,
     });
 
