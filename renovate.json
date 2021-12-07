@@ -1,7 +1,5 @@
 {
-  "extends": [
-    "config:base"
-  ],
+  "extends": ["config:base"],
   "docker": {
     "enabled": false
   },
@@ -12,5 +10,17 @@
   "minor": {
     "automerge": false
   },
-  "semanticCommits": true
+  "semanticCommits": true,
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "graphql-language-service-server",
+        "graphql",
+        "graphql-config",
+        "graphql-ws",
+        "@urql/core"
+      ],
+      "extends": ["schedule:before 8am and after 6pm every day"]
+    }
+  ]
 }
