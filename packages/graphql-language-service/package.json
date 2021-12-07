@@ -35,7 +35,7 @@
     "graphql-language-service-parser": "^1.10.4",
     "graphql-language-service-types": "^1.8.7",
     "graphql-language-service-utils": "^2.7.1",
-    "picomatch": "^2.3.0"
+    "picomatch-browser": "^2.2.5"
   },
   "devDependencies": {
     "@types/picomatch": "^2.3.0",
