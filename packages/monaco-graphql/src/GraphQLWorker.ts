@@ -9,11 +9,9 @@ import { FormattingOptions, ICreateData } from './typings';
 
 import type { worker, Position } from 'monaco-editor';
 
-import {
-  getRange,
-  LanguageService,
-  SchemaConfig,
-} from 'graphql-language-service';
+import { getRange, SchemaConfig } from 'graphql-language-service';
+
+import { LanguageService } from 'graphql-language-service/src/LanguageService';
 
 import {
   toGraphQLPosition,
@@ -133,6 +131,7 @@ export class GraphQLWorker {
       ...this._formattingOptions?.prettierConfig,
     });
   }
+
   /**
    * TODO: store this in a proper document cache in the language service
    */

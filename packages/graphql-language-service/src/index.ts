@@ -20,8 +20,6 @@ export type {
 export { defaultSchemaLoader } from './schemaLoader';
 
 export type { GraphQLLanguageConfig } from './LanguageService';
-export { LanguageService } from './LanguageService';
-
 /**
  * A whole bunch of the key language services
  */
