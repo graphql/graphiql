@@ -1,7 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -26,7 +26,7 @@
     "src"
   ],
   "dependencies": {
-    "graphql-language-service": "^4.1.1",
+    "graphql-language-service": "^4.1.2",
     "graphql-language-service-utils": "^2.7.1"
   },
   "devDependencies": {

@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 4.1.2
+
+### Patch Changes
+
+- [#2101](https://github.com/graphql/graphiql/pull/2101) [`e20760fb`](https://github.com/graphql/graphiql/commit/e20760fbd95c13d6d549cba3faa15a59aee9a2c0) Thanks [@acao](https://github.com/acao)! - Fix picomatch bug by using a browser compatible fork
+
 ## 4.1.1
 
 ### Patch Changes
