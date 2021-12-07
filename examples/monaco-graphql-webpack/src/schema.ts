@@ -1,5 +1,5 @@
 import { getIntrospectionQuery } from 'graphql';
-import type { SchemaConfig } from 'graphql-language-service';
+import type { SchemaConfig } from 'monaco-graphql/src/typings';
 import { Uri } from 'monaco-editor';
 
 const SCHEMA_URL = 'https://api.github.com/graphql';

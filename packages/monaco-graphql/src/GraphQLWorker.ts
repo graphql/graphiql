@@ -5,13 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { FormattingOptions, ICreateData } from './typings';
+import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 
 import type { worker, Position } from 'monaco-editor';
 
-import { getRange, SchemaConfig } from 'graphql-language-service';
+import { getRange } from 'graphql-language-service';
 
-import { LanguageService } from 'graphql-language-service/src/LanguageService';
+import { LanguageService } from './LanguageService';
 
 import {
   toGraphQLPosition,
@@ -25,7 +25,6 @@ export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
   deprecationReason?: string | null;
 };
-
 export class GraphQLWorker {
   private _ctx: worker.IWorkerContext;
   private _languageService: LanguageService;

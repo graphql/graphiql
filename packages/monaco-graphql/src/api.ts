@@ -5,7 +5,6 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { SchemaConfig } from 'graphql-language-service';
 import { Emitter } from 'monaco-editor';
 
 import type { IEvent } from 'monaco-editor';
@@ -15,6 +14,7 @@ import type {
   FormattingOptions,
   ModeConfiguration,
   MonacoGraphQLInitializeConfig,
+  SchemaConfig,
 } from './typings';
 
 export type MonacoGraphQLAPIOptions = {
