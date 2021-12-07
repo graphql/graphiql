@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.13
+
+### Patch Changes
+
+- [#2097](https://github.com/graphql/graphiql/pull/2097) [`4d3eeaa4`](https://github.com/graphql/graphiql/commit/4d3eeaa4446c84e92cd77f213e454059602a72e5) Thanks [@acao](https://github.com/acao)! - Disable introspection of schema.description by default
+
 ## 1.5.12
 
 ### Patch Changes
