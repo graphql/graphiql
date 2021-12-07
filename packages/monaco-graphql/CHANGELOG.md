@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.5
+
+### Patch Changes
+
+- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LangugeService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
+
+- Updated dependencies [[`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8)]:
+  - graphql-language-service@4.1.3
+
 ## 1.0.4
 
 ### Patch Changes
