@@ -64,10 +64,10 @@ export class LanguageService {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
       this._schemas = schemas;
+      this._cacheSchemas();
     }
     if (parser) {
       this._parser = parser;
-      this._cacheSchemas();
     }
 
     if (parseOptions) {
