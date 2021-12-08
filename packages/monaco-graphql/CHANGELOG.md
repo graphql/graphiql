@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.6
+
+### Patch Changes
+
+- [#2105](https://github.com/graphql/graphiql/pull/2105) [`f7dc1f12`](https://github.com/graphql/graphiql/commit/f7dc1f1299cee06e20b65f8e457d74bf1cb6f76f) Thanks [@acao](https://github.com/acao)! - Fix a bug where `_cacheSchemas()` was not being called by the language service
+
 ## 1.0.5
 
 ### Patch Changes
