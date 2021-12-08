@@ -31,7 +31,7 @@ Lots of new improvements happening! We now have a [`CHANGELOG.md`](https://githu
 - go to definition support (input, enum, type)
 - outline support
 
-### `gql`/`graphql` tagged template literal support for tsx, jsx, ts, js, vue
+### `gql`/`graphql` tagged template literal support for tsx, jsx, ts, js
 
 - syntax highlighting (type, query, mutation, interface, union, enum, scalar, fragments, directives)
 - autocomplete suggestions

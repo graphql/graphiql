@@ -33,8 +33,7 @@ const statusBarActivationLanguageIds = [
   "javascript",
   "javascriptreact",
   "typescript",
-  "typescriptreact",
-  "vue"
+  "typescriptreact"
 ];
 
 function initStatusBar(
