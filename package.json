@@ -212,7 +212,6 @@
     "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
     "build": "npm run compile -- --sourcemap",
     "watch": "npm run build --watch",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "vsce:package": "vsce package",
     "env:source": "export $(cat .envrc | xargs)",
