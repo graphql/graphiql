@@ -27,7 +27,6 @@ import {
   Kind,
   DirectiveLocation,
   GraphQLArgument,
-  isObjectType,
   isListType,
   isNonNullType,
 } from 'graphql';
@@ -284,19 +283,24 @@ export function getAutocompleteSuggestions(
 
 const insertSuffix = ` {\n  $1\n}`;
 
+/**
+ * Choose carefully when to insert the `insertText`!
+ * @param field
+ * @returns
+ */
 const getInsertText = (field: GraphQLField<null, null>) => {
   const type = field.type;
   if (isCompositeType(type)) {
     return insertSuffix;
   }
-  if (isListType(type)) {
+  if (isListType(type) && isCompositeType(type.ofType)) {
     return insertSuffix;
   }
   if (isNonNullType(type)) {
-    if (isObjectType(type.ofType)) {
+    if (isCompositeType(type.ofType)) {
       return insertSuffix;
     }
-    if (isListType(type.ofType)) {
+    if (isListType(type.ofType) && isCompositeType(type.ofType.ofType)) {
       return insertSuffix;
     }
   }

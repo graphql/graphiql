@@ -44,6 +44,7 @@ type Droid implements Character {
   appearsIn: [Episode]
   secretBackstory: String
   primaryFunction: String
+  instructions: [String]!
 }
 
 input InputType {
