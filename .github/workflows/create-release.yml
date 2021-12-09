@@ -22,4 +22,4 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          ./node_modules/.bin/vsce publish --pre
+          ./node_modules/.bin/vsce publish --pre-release
