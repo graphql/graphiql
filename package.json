@@ -24,7 +24,7 @@
   },
   "publisher": "GraphQL",
   "engines": {
-    "vscode": "^1.52.0"
+    "vscode": "^1.63.0"
   },
   "categories": [
     "Programming Languages",
