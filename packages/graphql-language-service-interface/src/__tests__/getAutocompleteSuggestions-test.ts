@@ -56,10 +56,8 @@ const expectedResults = {
     insertText: `inputTypeTest {\n  $1\n}`,
   },
   appearsIn: {
-    ...commonInsert,
     label: 'appearsIn',
     detail: '[Episode]',
-    insertText: `appearsIn {\n  $1\n}`,
   },
   friends: {
     ...commonInsert,
@@ -492,6 +490,7 @@ describe('getAutocompleteSuggestions', () => {
         expectedResults.appearsIn,
         expectedResults.friends,
         { label: 'id', detail: 'String!' },
+        { label: 'instructions', detail: '[String]!' },
         { label: 'name', detail: 'String' },
         { label: 'primaryFunction', detail: 'String' },
         { label: 'secretBackstory', detail: 'String' },
