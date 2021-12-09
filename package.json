@@ -249,7 +249,7 @@
     "escape-html": "^1.0.3",
     "graphql": "^15",
     "graphql-config": "~4.1.0",
-    "graphql-language-service-server": "^2.7.10",
+    "graphql-language-service-server": "^2.7.13",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.5.5",
     "node-fetch": "^2.6.6",
