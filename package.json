@@ -221,41 +221,41 @@
     "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
-    "@types/capitalize": "^2.0.0",
-    "@types/dotenv": "^8.2.0",
+    "@types/capitalize": "2.0.0",
+    "@types/dotenv": "8.2.0",
     "@types/mocha": "5.2.7",
     "@types/node": "16.11.12",
-    "@types/node-fetch": "^3.0.3",
-    "@types/vscode": "^1.52.0",
+    "@types/node-fetch": "3.0.3",
+    "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "esbuild": "^0.13.15",
+    "esbuild": "0.13.15",
     "ovsx": "0.2.1",
     "tslint": "5.20.1",
     "typescript": "4.4.4",
     "vsce": "2.5.1",
-    "vscode": "^1.1.37"
+    "vscode": "1.1.37"
   },
   "dependencies": {
-    "@changesets/changelog-github": "^0.4.2",
-    "@changesets/cli": "^2.18.1",
-    "@graphql-tools/load": "^7.4.1",
-    "@graphql-tools/url-loader": "^7.5.2",
-    "@graphql-tools/wrap": "^8.3.2",
-    "@urql/core": "^2.3.5",
+    "@changesets/changelog-github": "0.4.2",
+    "@changesets/cli": "2.18.1",
+    "@graphql-tools/load": "7.4.1",
+    "@graphql-tools/url-loader": "7.5.2",
+    "@graphql-tools/wrap": "8.3.2",
+    "@urql/core": "2.3.5",
     "babel-polyfill": "6.26.0",
-    "capitalize": "^2.0.4",
-    "dotenv": "^10.0.0",
-    "escape-html": "^1.0.3",
-    "graphql": "^15",
-    "graphql-config": "~4.1.0",
-    "graphql-language-service-server": "^2.7.13",
+    "capitalize": "2.0.4",
+    "dotenv": "10.0.0",
+    "escape-html": "1.0.3",
+    "graphql": "15.7.2",
+    "graphql-config": "4.1.0",
+    "graphql-language-service-server": "2.7.13",
     "graphql-tag": "^2.12.6",
-    "graphql-ws": "^5.5.5",
-    "node-fetch": "^2.6.6",
-    "vscode-languageclient": "^5.2.1",
-    "ws": "^8.2.3"
+    "graphql-ws": "5.5.5",
+    "node-fetch": "2.6.6",
+    "vscode-languageclient": "5.2.1",
+    "ws": "8.2.3"
   },
   "resolutions": {
-    "graphql-config": "~4.1.0"
+    "graphql-config": "4.1.0"
   }
 }
