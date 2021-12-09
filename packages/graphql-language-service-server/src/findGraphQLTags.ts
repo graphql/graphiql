@@ -136,6 +136,7 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
                 new Position(loc.start.line - 1, loc.start.column),
                 new Position(loc.end.line - 1, loc.end.column),
               );
+
               result.push({
                 tag: tagName,
                 template,
@@ -154,14 +155,27 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
         const loc = node.quasi.quasis[0].loc;
+        const template =
+          node.quasi.quasis.length > 1
+            ? node.quasi.quasis.map(quasi => quasi.value.raw).join('')
+            : node.quasi.quasis[0].value.raw;
+        if (loc && node.quasi.quasis.length > 1) {
+          const last = node.quasi.quasis.pop();
+          if (last?.loc?.end) {
+            loc.end = last.loc.end;
+          }
+        }
         if (loc) {
           const range = new Range(
             new Position(loc.start.line - 1, loc.start.column),
             new Position(loc.end.line - 1, loc.end.column),
           );
+
           result.push({
             tag: tagName,
-            template: node.quasi.quasis[0].value.raw,
+            template: template.endsWith('\n')
+              ? template.slice(0, template.length - 1)
+              : template,
             range,
           });
         }
@@ -177,13 +191,23 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
       if (hasGraphQLPrefix || hasGraphQLComment) {
         const loc = node.quasis[0].loc;
         if (loc) {
+          if (node.quasis.length > 1) {
+            const last = node.quasis.pop();
+            if (last?.loc?.end) {
+              loc.end = last.loc.end;
+            }
+          }
+          const template =
+            node.quasis.length > 1
+              ? node.quasis.map(quasi => quasi.value.raw).join('')
+              : node.quasis[0].value.raw;
           const range = new Range(
             new Position(loc.start.line - 1, loc.start.column),
             new Position(loc.end.line - 1, loc.end.column),
           );
           result.push({
             tag: '',
-            template: node.quasis[0].value.raw,
+            template,
             range,
           });
         }
@@ -191,6 +215,7 @@ export function findGraphQLTags(text: string, ext: string): TagResult[] {
     },
   };
   visit(ast, visitors);
+
   return result;
 }
 

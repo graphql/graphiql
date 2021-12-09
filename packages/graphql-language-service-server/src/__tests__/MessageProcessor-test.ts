@@ -442,6 +442,106 @@ query Test {
 `);
   });
 
+  it('parseDocument finds queries in multi-expression tagged templates using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+const someValue = 'value'
+const QUERY: string = gql\`
+query Test {
+  test {
+    value
+    $\{someValue}
+    ...FragmentsComment
+  }
+  $\{someValue}
+}\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = parseDocument(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    
+    ...FragmentsComment
+  }
+  
+}`);
+  });
+  // TODO: why an extra line here?
+  it('parseDocument finds queries in multi-expression tagged template with declarations with using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+const someValue = 'value'
+type SomeType = { test: any }
+const QUERY: string = gql<SomeType>\`
+query Test {
+  test {
+    value
+    $\{someValue}
+    ...FragmentsComment
+  }
+  $\{someValue}
+}\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = parseDocument(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    
+    ...FragmentsComment
+  }
+  
+}`);
+  });
+
+  it('parseDocument finds queries in multi-expression template strings using tsx', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+const someValue = 'value'
+const QUERY: string =
+/* GraphQL */
+\`
+query Test {
+  test {
+    value
+    \${someValue}
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {
+  return <div>{QUERY}</div>
+}`;
+
+    const contents = parseDocument(text, 'test.tsx');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
   it('parseDocument finds queries in #graphql-annotated templates', async () => {
     const text = `
 import {gql} from 'react-apollo';
