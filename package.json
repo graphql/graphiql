@@ -2,7 +2,7 @@
   "name": "vscode-graphql",
   "version": "0.3.41",
   "preview": true,
-  "private": false,
+  "private": true,
   "license": "MIT",
   "displayName": "GraphQL",
   "keywords": [
@@ -216,7 +216,9 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test",
     "vsce:package": "vsce package",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "sh publish.sh",
+    "vsce:publish": "vsce publish",
+    "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
+    "publish": "vsce:publush && open-vsx:publish",
     "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
@@ -235,6 +237,8 @@
     "vscode": "^1.1.37"
   },
   "dependencies": {
+    "@changesets/changelog-github": "^0.4.2",
+    "@changesets/cli": "^2.18.1",
     "@graphql-tools/load": "^7.4.1",
     "@graphql-tools/url-loader": "^7.5.2",
     "@graphql-tools/wrap": "^8.3.2",

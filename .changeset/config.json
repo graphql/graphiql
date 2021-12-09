@@ -1,0 +1,10 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@1.5.0/schema.json",
+  "changelog": [
+    "@changesets/changelog-github",
+    { "repo": "graphql/vscode-graphql" }
+  ],
+  "commit": false,
+  "access": "public",
+  "baseBranch": "master"
+}

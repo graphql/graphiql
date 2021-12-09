@@ -7,24 +7,19 @@ on:
 
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
 jobs:
-  release:
-    name: Create release
+  prerelease:
+    if: endsWith(github.ref, '/master')
+    name: Create prerelease
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: npm ci
-      - name: Setup GIT
-        run: |
-          git config --global user.email "prismabots@gmail.com"
-          git config --global user.name "Prismo"
-          git remote add github "https://$GITHUB_ACTOR:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" || true
+
       - name: Bump version
         id: bump
         run: |
-          npm version patch
-      - name: Push to master
-        run: |
-          git push github HEAD:"${GITHUB_REF}"
+          ./node_modules/.bin/vsce publish --pre
