@@ -1,5 +1,14 @@
 # graphql-language-service-server
 
+## 2.7.13
+
+### Patch Changes
+
+- [#2111](https://github.com/graphql/graphiql/pull/2111) [`08ff6dce`](https://github.com/graphql/graphiql/commit/08ff6dce0625f7ab58a45364aed9ca04c7862fa7) Thanks [@acao](https://github.com/acao)! - Support template literals and tagged template literals with replacement expressions
+
+- Updated dependencies []:
+  - graphql-language-service@4.1.4
+
 ## 2.7.12
 
 ### Patch Changes

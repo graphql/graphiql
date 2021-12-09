@@ -1,5 +1,11 @@
 # graphql-language-service-interface
 
+## 2.10.2
+
+### Patch Changes
+
+- [#2114](https://github.com/graphql/graphiql/pull/2114) [`d5fca9db`](https://github.com/graphql/graphiql/commit/d5fca9db067927446087717b84e0b2a3ff94bbe9) Thanks [@acao](https://github.com/acao)! - Fix major issue with non-leaf types receiving insertText
+
 ## 2.10.1
 
 ### Patch Changes

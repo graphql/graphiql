@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.2.11
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service@4.1.4
+
 ## 1.2.10
 
 ### Patch Changes
