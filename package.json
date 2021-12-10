@@ -217,7 +217,7 @@
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish",
     "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
-    "publish": "vsce:publush && open-vsx:publish",
+    "publish": "vsce:publish && open-vsx:publish",
     "upgrade-interactive": "npx npm-check -u"
   },
   "devDependencies": {
