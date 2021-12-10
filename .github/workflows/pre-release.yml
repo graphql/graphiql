@@ -2,7 +2,7 @@ name: automatic-release
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
 
 env:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   prerelease:
-    if: endsWith(github.ref, '/master')
+    if: endsWith(github.ref, '/master')!
     name: Create prerelease
     runs-on: ubuntu-latest
     steps:
