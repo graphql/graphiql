@@ -28,7 +28,7 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          npm version prepatch
+          npm version patch
 
       - name: VSCE Pre-Release Publish
         id: publish
