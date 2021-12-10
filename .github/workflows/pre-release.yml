@@ -11,7 +11,6 @@ env:
 
 jobs:
   prerelease:
-    if: endsWith(github.ref, '/master')!
     name: Create prerelease
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +27,7 @@ jobs:
       - name: Bump version
         id: bump
         run: |
-          npm version patch
+          npm version patch -m "%s (prerelease)"
 
       - name: VSCE Pre-Release Publish
         id: publish
