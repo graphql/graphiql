@@ -33,7 +33,7 @@ jobs:
       - name: VSCE Pre-Release Publish
         id: publish
         run: |
-          /node_modules/.bin/vsce publish --pre-release
+          ./node_modules/.bin/vsce publish --pre-release
 
       - name: Push to master
         run: |
