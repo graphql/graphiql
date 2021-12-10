@@ -249,7 +249,7 @@
     "graphql": "15.7.2",
     "graphql-config": "4.1.0",
     "graphql-language-service-server": "2.7.13",
-    "graphql-tag": "^2.12.6",
+    "graphql-tag": "2.12.6",
     "graphql-ws": "5.5.5",
     "node-fetch": "2.6.6",
     "vscode-languageclient": "5.2.1",
