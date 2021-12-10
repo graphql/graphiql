@@ -11322,6 +11322,17 @@ graphql-config@^4.1.0:
     minimatch "3.0.4"
     string-env-interpolation "1.0.1"
 
+graphql-language-service-interface@^2.10.2:
+  version "2.10.2"
+  resolved "https://registry.yarnpkg.com/graphql-language-service-interface/-/graphql-language-service-interface-2.10.2.tgz#de9386f699e446320256175e215cdc10ccf9f9b7"
+  integrity sha512-RKIEBPhRMWdXY3fxRs99XysTDnEgAvNbu8ov/5iOlnkZsWQNzitjtd0O0l1CutQOQt3iXoHde7w8uhCnKL4tcg==
+  dependencies:
+    graphql-config "^4.1.0"
+    graphql-language-service-parser "^1.10.4"
+    graphql-language-service-types "^1.8.7"
+    graphql-language-service-utils "^2.7.1"
+    vscode-languageserver-types "^3.15.1"
+
 graphql-language-service@^3.0.4:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/graphql-language-service/-/graphql-language-service-3.2.5.tgz#aa73884fced898e8efeaa5a13188e00a9c1b4552"
@@ -11331,6 +11342,16 @@ graphql-language-service@^3.0.4:
     graphql-language-service-parser "^1.10.3"
     graphql-language-service-types "^1.8.6"
     graphql-language-service-utils "^2.6.3"
+
+graphql-language-service@^4.1.4:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/graphql-language-service/-/graphql-language-service-4.1.4.tgz#9be998e94c6c2950d4cde5ab07bcd63969afc176"
+  integrity sha512-LJk1vwwWwh8onewIzjbXXfa7C5mI6tNN67yztFbmQmfDQv1naZfqKLitudQWaDwJgLqAlpKIefRaeU3cNYHRFQ==
+  dependencies:
+    graphql-language-service-interface "^2.10.2"
+    graphql-language-service-parser "^1.10.4"
+    graphql-language-service-types "^1.8.7"
+    graphql-language-service-utils "^2.7.1"
 
 graphql-sse@^1.0.1:
   version "1.0.6"
@@ -15036,6 +15057,15 @@ monaco-editor@^0.29.1:
   version "0.29.1"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.29.1.tgz#6ee93d8a5320704d48fd7058204deed72429c020"
   integrity sha512-rguaEG/zrPQSaKzQB7IfX/PpNa0qxF1FY8ZXRkN4WIl8qZdTQRSRJCtRto7IMcSgrU6H53RXI+fTcywOBC4aVw==
+
+monaco-graphql@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/monaco-graphql/-/monaco-graphql-1.0.7.tgz#ce6d3d7b739df6cc388c26c3014f3298da7fcdeb"
+  integrity sha512-IT+tROKbyU++I2rzm2kYKWtTQQCMZC8AkCmg3GsEXed80Zq9O9tFTQGIk6Zzpwe0S2ph5+QUCte2NZQ+d5qj9Q==
+  dependencies:
+    graphql-language-service "^4.1.4"
+    graphql-language-service-utils "^2.7.1"
+    picomatch-browser "^2.2.5"
 
 monaco-languages@^2.1.1:
   version "2.11.1"
