@@ -1,5 +1,37 @@
 # Change Log
 
+## 0.3.43
+
+### Patch Changes
+
+- [#391](https://github.com/graphql/vscode-graphql/pull/391) [`6be5593`](https://github.com/graphql/vscode-graphql/commit/6be5593a45a4629f3438f59223ecb04949cb48d2) Thanks [@acao](https://github.com/acao)! - LSP upgrades:
+
+  - bugfix for `insertText` & completion on invalid list types
+  - add support for template strings and tags with replacement expressions, so strings like these should work now:
+
+  ```ts
+  const = /*GraphiQL*/
+      `
+          ${myFragments}
+          query MyQuery {
+              something
+              ${anotherString}
+          }
+
+      `
+  ```
+
+  ```ts
+  const = gql`
+          ${myFragments}
+          query MyQuery {
+              something
+              ${anotherString}
+          }
+
+      `
+  ```
+
 All notable changes to the "vscode-graphql" extension will be manually documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
