@@ -36,63 +36,78 @@ export class GraphQLWorker {
   }
 
   public async doValidation(uri: string) {
-    const documentModel = this._getTextModel(uri);
-    const document = documentModel?.getValue();
-    if (!document) {
+    try {
+      const documentModel = this._getTextModel(uri);
+      const document = documentModel?.getValue();
+      if (!document) {
+        return [];
+      }
+      const graphqlDiagnostics = this._languageService.getDiagnostics(
+        uri,
+        document,
+      );
+      return graphqlDiagnostics.map(toMarkerData);
+    } catch (err) {
+      console.error(err);
       return [];
     }
-    const graphqlDiagnostics = this._languageService.getDiagnostics(
-      uri,
-      document,
-    );
-    return graphqlDiagnostics.map(toMarkerData);
   }
 
   public async doComplete(
     uri: string,
     position: Position,
   ): Promise<GraphQLWorkerCompletionItem[]> {
-    const documentModel = this._getTextModel(uri);
-    const document = documentModel?.getValue();
-    if (!document) {
-      console.log('no document');
+    try {
+      const documentModel = this._getTextModel(uri);
+      const document = documentModel?.getValue();
+      if (!document) {
+        console.log('no document');
+        return [];
+      }
+      const graphQLPosition = toGraphQLPosition(position);
+      const suggestions = this._languageService.getCompletion(
+        uri,
+        document,
+        graphQLPosition,
+      );
+      return suggestions.map(suggestion => toCompletion(suggestion));
+    } catch (err) {
+      console.error(err);
       return [];
     }
-    const graphQLPosition = toGraphQLPosition(position);
-    const suggestions = this._languageService.getCompletion(
-      uri,
-      document,
-      graphQLPosition,
-    );
-    return suggestions.map(suggestion => toCompletion(suggestion));
   }
 
   public async doHover(uri: string, position: Position) {
-    const documentModel = this._getTextModel(uri);
-    const document = documentModel?.getValue();
-    if (!document) {
+    try {
+      const documentModel = this._getTextModel(uri);
+      const document = documentModel?.getValue();
+      if (!document) {
+        return null;
+      }
+      const graphQLPosition = toGraphQLPosition(position);
+
+      const hover = this._languageService.getHover(
+        uri,
+        document,
+        graphQLPosition,
+      );
+
+      return {
+        content: hover,
+        range: toMonacoRange(
+          getRange(
+            {
+              column: graphQLPosition.character,
+              line: graphQLPosition.line,
+            },
+            document,
+          ),
+        ),
+      };
+    } catch (err) {
+      console.error(err);
       return null;
     }
-    const graphQLPosition = toGraphQLPosition(position);
-
-    const hover = this._languageService.getHover(
-      uri,
-      document,
-      graphQLPosition,
-    );
-
-    return {
-      content: hover,
-      range: toMonacoRange(
-        getRange(
-          {
-            column: graphQLPosition.character,
-            line: graphQLPosition.line,
-          },
-          document,
-        ),
-      ),
-    };
   }
 
   public async doGetVariablesJSONSchema(uri: string): Promise<unknown> {

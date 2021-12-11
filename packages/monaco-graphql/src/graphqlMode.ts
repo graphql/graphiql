@@ -42,7 +42,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     }
   }
 
-  function registerAllProviders(): void {
+  function registerAllProviders(api: MonacoGraphQLAPI): void {
     const { modeConfiguration } = defaults;
     disposeAll(providers);
 
@@ -55,7 +55,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
       );
     }
     if (modeConfiguration.diagnostics) {
-      providers.push(new languageFeatures.DiagnosticsAdapter(defaults, worker));
+      providers.push(new languageFeatures.DiagnosticsAdapter(api, worker));
     }
     if (modeConfiguration.hovers) {
       providers.push(
@@ -73,12 +73,15 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     formattingOptions,
     diagnosticSettings,
     externalFragmentDefinitions,
+    schemas,
   } = defaults;
+
+  registerAllProviders(defaults);
 
   defaults.onDidChange(newDefaults => {
     if (newDefaults.modeConfiguration !== modeConfiguration) {
       modeConfiguration = newDefaults.modeConfiguration;
-      registerAllProviders();
+      registerAllProviders(newDefaults);
     }
     if (newDefaults.formattingOptions !== formattingOptions) {
       formattingOptions = newDefaults.formattingOptions;
@@ -88,11 +91,15 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
       newDefaults.externalFragmentDefinitions !== externalFragmentDefinitions
     ) {
       externalFragmentDefinitions = newDefaults.externalFragmentDefinitions;
-      registerAllProviders();
+      registerAllProviders(newDefaults);
     }
     if (newDefaults.diagnosticSettings !== diagnosticSettings) {
       diagnosticSettings = newDefaults.diagnosticSettings;
-      registerAllProviders();
+      registerAllProviders(newDefaults);
+    }
+    if (newDefaults.schemas !== schemas) {
+      schemas = newDefaults.schemas;
+      registerAllProviders(newDefaults);
     }
   });
 
