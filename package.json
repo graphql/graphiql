@@ -241,7 +241,7 @@
     "@graphql-tools/load": "7.4.1",
     "@graphql-tools/url-loader": "7.5.2",
     "@graphql-tools/wrap": "8.3.2",
-    "@urql/core": "2.3.5",
+    "@urql/core": "2.3.6",
     "babel-polyfill": "6.26.0",
     "capitalize": "2.0.4",
     "dotenv": "10.0.0",
