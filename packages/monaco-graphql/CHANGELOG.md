@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.0.8
+
+### Patch Changes
+
+- [#2116](https://github.com/graphql/graphiql/pull/2116) [`65a51d04`](https://github.com/graphql/graphiql/commit/65a51d04876d56560d3453a09eb93f2e296f462a) Thanks [@acao](https://github.com/acao)! - - `picomatch-browser` fork no longer uses `path`. these changes to remove node dependencies from `picomatch`, 99% of them are by another contributor, will eventually be merged into the actual `picomatch`
+  - no `onLanguage` for `initializeMode` - always instantiate the mode when this is called directly! Fixes some editor creation race condition issues
+  - introduce a demo using react + vite and minimal config, no workarounds! This will help us prototype for `@graphiql/react`
+  - use `schemaValidation: 'error'` by default. allow user to override `validate` if they want.
+  - always re-register providers on schema config changes. seems to fix some issues on lazy instantiation
+
 ## 1.0.7
 
 ### Patch Changes
