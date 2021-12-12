@@ -1,0 +1,27 @@
+{
+  "name": "example-monaco-graphql-react-vite",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@graphiql/toolkit": "^0.4.2",
+    "graphql-language-service": "^4.1.1",
+    "monaco-graphql": "^1.0.7",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "jsonc-parser": "^3.0.0"
+  },
+  "devDependencies": {
+    "vite": "^2.7.0",
+    "@vitejs/plugin-react": "^1.1.1",
+    "@types/react": "^17.0.37",
+    "vite-plugin-monaco-editor": "^1.0.10",
+    "path-browserify": "^1.0.1"
+  },
+  "peerDependencies": {
+    "graphql": "^16.1.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  }
+}

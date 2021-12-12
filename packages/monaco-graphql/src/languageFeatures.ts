@@ -148,8 +148,9 @@ export class DiagnosticsAdapter {
       };
       // TODO: export from api somehow?
       monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
+        schemaValidation: 'error',
         validate: true,
+        ...this.defaults?.diagnosticSettings?.jsonDiagnosticSettings,
         schemas: [configResult],
         enableSchemaRequest: false,
       });

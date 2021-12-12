@@ -25,11 +25,9 @@ export function initializeMode(
   const api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
 
   // export to the global monaco API
-  (<any>languages)[LANGUAGE_ID] = { api };
+  (<any>languages).graphql = { api };
 
-  languages.onLanguage(LANGUAGE_ID, () => {
-    getMode().then(mode => mode.setupMode(api));
-  });
+  getMode().then(mode => mode.setupMode(api));
 
   return api;
 }
