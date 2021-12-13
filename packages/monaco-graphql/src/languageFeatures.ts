@@ -20,7 +20,7 @@ import * as monaco from 'monaco-editor';
 
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
-import { GraphQLWorkerCompletionItem } from './utils';
+import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }
@@ -37,7 +37,7 @@ export class DiagnosticsAdapter {
   ) {
     this._worker = _worker;
     const onModelAdd = (model: editor.IModel): void => {
-      const modeId = model.getModeId();
+      const modeId = getModelLanguageId(model);
       if (modeId !== this.defaults.languageId) {
         // it is tempting to load json models we cared about here
         // into the webworker, however setDiagnosticOptions() needs
@@ -97,7 +97,7 @@ export class DiagnosticsAdapter {
     this._disposables.push(
       defaults.onDidChange(() => {
         editor.getModels().forEach(model => {
-          if (model.getModeId() === this.defaults.languageId) {
+          if (getModelLanguageId(model) === this.defaults.languageId) {
             onModelRemoved(model);
             onModelAdd(model);
           }

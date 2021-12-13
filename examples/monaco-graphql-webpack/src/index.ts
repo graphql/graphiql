@@ -172,8 +172,10 @@ async function render() {
       contextMenuOrder: 0,
       contextMenuGroupId: 'graphql',
       keybindings: [
-        // eslint-disable-next-line no-bitwise
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_R,
+        // backwards compatibility
+        // @ts-expect-error
+        monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR ??
+          (monaco.KeyCode?.KEY_R as unknown), // eslint-disable-line no-bitwise
       ],
       run: operationHandler,
     };
