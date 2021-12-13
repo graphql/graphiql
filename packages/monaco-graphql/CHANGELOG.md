@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.9
+
+### Patch Changes
+
+- [#2118](https://github.com/graphql/graphiql/pull/2118) [`0d1122f9`](https://github.com/graphql/graphiql/commit/0d1122f9c8600ddd86022e72c0fa3696bb1e8b33) Thanks [@acao](https://github.com/acao)! - fix: monaco `getModeId` bug for `monaco-editor@^0.30.0`
+
+  We fixed this already, but we reverted it because folks were having issues with older versions. This fix works for all versions of `monaco-editor` that we support!
+
 ## 1.0.8
 
 ### Patch Changes
