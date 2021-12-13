@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
-    "monaco-editor": "^0.29.1",
+    "monaco-editor": "^0.31.0",
     "vscode-languageserver-types": "^3.15.1"
   },
   "peerDependencies": {

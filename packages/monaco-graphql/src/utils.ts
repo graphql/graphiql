@@ -12,10 +12,21 @@ import type {
   Diagnostic,
   CompletionItem as GraphQLCompletionItem,
 } from 'graphql-language-service';
+import type { editor } from 'monaco-editor';
 
 import { buildASTSchema, printSchema } from 'graphql';
 
 import { Position } from 'graphql-language-service';
+
+// for backwards compatibility
+export const getModelLanguageId = (model: editor.ITextModel) => {
+  if ('getModeId' in model) {
+    // for <0.30.0 support
+    // @ts-expect-error
+    return model.getModeId();
+  }
+  return model.getLanguageId();
+};
 
 export type MonacoCompletionItem = monaco.languages.CompletionItem & {
   isDeprecated?: boolean;
