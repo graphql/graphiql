@@ -192,7 +192,7 @@ Maintainers of this repository regulary review PRs and issues and help advance t
 
 ### Alumni
 
-Originally this was three seperate repositories
+Originally this was three separate repositories
 
 - [@leebyron](https://github.com/leebyron) - original author of all libraries
 - [@asiandrummer](https://github.com/asiandrummer) - original creator of GraphiQL
