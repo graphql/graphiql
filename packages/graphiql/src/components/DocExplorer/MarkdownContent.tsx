@@ -11,6 +11,7 @@ import { Maybe } from '../../types';
 
 const md = new MD({
   // render urls as links, à la github-flavored markdown
+  breaks: true,
   linkify: true,
 });
 

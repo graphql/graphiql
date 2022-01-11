@@ -64,6 +64,7 @@ export const ExampleUnion = new GraphQLUnionType({
 
 export const ExampleQuery = new GraphQLObjectType({
   name: 'Query',
+  description: 'Query description\n Second line',
   fields: {
     string: {
       name: 'exampleString',
