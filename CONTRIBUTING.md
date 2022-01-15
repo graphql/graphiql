@@ -59,7 +59,7 @@ feat: introduce new `fooBar()` API, break `foo()` api
 BREAKING CHANGE: break `foo()` api
 ```
 
-notice the nonbreaking spaces between header and footer.
+notice the non breaking spaces between header and footer.
 
 ## Releasing
 
