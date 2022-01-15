@@ -111,6 +111,7 @@
     "copy": "^0.3.2",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "cspell": "^5.15.2",
     "cypress": "^4.7.0",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
