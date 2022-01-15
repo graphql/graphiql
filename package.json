@@ -15,10 +15,12 @@
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
       "prettier --write",
-      "jest --passWithNoTests"
+      "jest --passWithNoTests",
+      "yarn cspell **"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write"
+      "prettier --write",
+      "yarn cspell **"
     ]
   },
   "husky": {
