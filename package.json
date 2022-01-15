@@ -14,10 +14,12 @@
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write",
+      "yarn cspell **"
     ],
     "*.{md,html,json}": [
-      "prettier --write"
+      "prettier --write",
+      "yarn cspell **"
     ]
   },
   "husky": {
