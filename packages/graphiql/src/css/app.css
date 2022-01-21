@@ -592,3 +592,8 @@ div.CodeMirror-lint-tooltip > * + * {
 .cm-atom {
   color: #CA9800;
 }
+
+
+.graphiql-dark {
+  filter: invert(1) hue-rotate(180deg);
+}

@@ -310,6 +310,7 @@ export type GraphiQLState = {
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
   maxHistoryLength: number;
+  darkMode: boolean;
 };
 
 const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
@@ -514,6 +515,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       isWaitingForResponse: false,
       subscription: null,
       maxHistoryLength,
+      darkMode: false,
       ...queryFacts,
     };
   }
@@ -677,6 +679,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           title="Show History"
           label="History"
         />
+        <ToolbarButton
+          onClick={this.handleDarkMode}
+          title="Dark Mode"
+          label="Dark"
+        />
         {this.props.toolbar?.additionalContent
           ? this.props.toolbar.additionalContent
           : null}
@@ -714,197 +721,205 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     };
 
     return (
-      <div
-        ref={n => {
-          this.graphiqlContainer = n;
-        }}
-        className="graphiql-container">
-        {this.state.historyPaneOpen && (
-          <div className="historyPaneWrap" style={historyPaneStyle}>
-            <QueryHistory
-              ref={node => {
-                this._queryHistory = node;
-              }}
-              operationName={this.state.operationName}
-              query={this.state.query}
-              variables={this.state.variables}
-              onSelectQuery={this.handleSelectHistoryQuery}
-              storage={this._storage}
-              maxHistoryLength={this.state.maxHistoryLength}
-              queryID={this._editorQueryID}>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleHistory}
-                aria-label="Close History">
-                {'\u2715'}
-              </button>
-            </QueryHistory>
-          </div>
-        )}
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}
-                aria-label="Open Documentation Explorer">
-                {'Docs'}
-              </button>
-            )}
-          </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
+      <>
+        <div
+          ref={n => {
+            this.graphiqlContainer = n;
+          }}
+          className={`graphiql-container ${
+            this.state.darkMode ? 'graphiql-dark' : ''
+          }`}>
+          {this.state.historyPaneOpen && (
+            <div className="historyPaneWrap" style={historyPaneStyle}>
+              <QueryHistory
+                ref={node => {
+                  this._queryHistory = node;
                 }}
-                schema={this.state.schema}
-                validationRules={this.props.validationRules}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
-                onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-                externalFragments={this.props.externalFragments}
-              />
-              <section
-                className="variable-editor secondary-editor"
-                style={secondaryEditorStyle}
-                aria-label={
-                  this.state.variableEditorActive
-                    ? 'Query Variables'
-                    : 'Request Headers'
-                }>
-                <div
-                  className="secondary-editor-title variable-editor-title"
-                  id="secondary-editor-title"
-                  style={{
-                    cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleSecondaryEditorResizeStart}>
-                  <div
-                    style={{
-                      cursor: 'pointer',
-                      color: this.state.variableEditorActive ? '#000' : 'gray',
-                      display: 'inline-block',
-                    }}
-                    onClick={this.handleOpenVariableEditorTab}
-                    onMouseDown={this.handleTabClickPropogation}>
-                    {'Query Variables'}
-                  </div>
-                  {this.state.headerEditorEnabled && (
-                    <div
-                      style={{
-                        cursor: 'pointer',
-                        color: this.state.headerEditorActive ? '#000' : 'gray',
-                        display: 'inline-block',
-                        marginLeft: '20px',
-                      }}
-                      onClick={this.handleOpenHeaderEditorTab}
-                      onMouseDown={this.handleTabClickPropogation}>
-                      {'Request Headers'}
-                    </div>
-                  )}
-                </div>
-                <VariableEditor
+                operationName={this.state.operationName}
+                query={this.state.query}
+                variables={this.state.variables}
+                onSelectQuery={this.handleSelectHistoryQuery}
+                storage={this._storage}
+                maxHistoryLength={this.state.maxHistoryLength}
+                queryID={this._editorQueryID}>
+                <button
+                  className="docExplorerHide"
+                  onClick={this.handleToggleHistory}
+                  aria-label="Close History">
+                  {'\u2715'}
+                </button>
+              </QueryHistory>
+            </div>
+          )}
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              <div className="topBar">
+                {logo}
+                <ExecuteButton
+                  isRunning={Boolean(this.state.subscription)}
+                  onRun={this.handleRunQuery}
+                  onStop={this.handleStopQuery}
+                  operations={this.state.operations}
+                />
+                {toolbar}
+              </div>
+              {!this.state.docExplorerOpen && (
+                <button
+                  className="docExplorerShow"
+                  onClick={this.handleToggleDocs}
+                  aria-label="Open Documentation Explorer">
+                  {'Docs'}
+                </button>
+              )}
+            </div>
+            <div
+              ref={n => {
+                this.editorBarComponent = n;
+              }}
+              className="editorBar"
+              onDoubleClick={this.handleResetResize}
+              onMouseDown={this.handleResizeStart}>
+              <div className="queryWrap" style={queryWrapStyle}>
+                <QueryEditor
                   ref={n => {
-                    this.variableEditorComponent = n;
+                    this.queryEditorComponent = n;
                   }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
+                  schema={this.state.schema}
+                  validationRules={this.props.validationRules}
+                  value={this.state.query}
+                  onEdit={this.handleEditQuery}
                   onHintInformationRender={this.handleHintInformationRender}
+                  onClickReference={this.handleClickReference}
+                  onCopyQuery={this.handleCopyQuery}
                   onPrettifyQuery={this.handlePrettifyQuery}
                   onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
-                  active={this.state.variableEditorActive}
+                  externalFragments={this.props.externalFragments}
                 />
-                {this.state.headerEditorEnabled && (
-                  <HeaderEditor
-                    ref={n => {
-                      this.headerEditorComponent = n;
+                <section
+                  className="variable-editor secondary-editor"
+                  style={secondaryEditorStyle}
+                  aria-label={
+                    this.state.variableEditorActive
+                      ? 'Query Variables'
+                      : 'Request Headers'
+                  }>
+                  <div
+                    className="secondary-editor-title variable-editor-title"
+                    id="secondary-editor-title"
+                    style={{
+                      cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
                     }}
-                    value={this.state.headers}
-                    onEdit={this.handleEditHeaders}
+                    onMouseDown={this.handleSecondaryEditorResizeStart}>
+                    <div
+                      style={{
+                        cursor: 'pointer',
+                        color: this.state.variableEditorActive
+                          ? '#000'
+                          : 'gray',
+                        display: 'inline-block',
+                      }}
+                      onClick={this.handleOpenVariableEditorTab}
+                      onMouseDown={this.handleTabClickPropogation}>
+                      {'Query Variables'}
+                    </div>
+                    {this.state.headerEditorEnabled && (
+                      <div
+                        style={{
+                          cursor: 'pointer',
+                          color: this.state.headerEditorActive
+                            ? '#000'
+                            : 'gray',
+                          display: 'inline-block',
+                          marginLeft: '20px',
+                        }}
+                        onClick={this.handleOpenHeaderEditorTab}
+                        onMouseDown={this.handleTabClickPropogation}>
+                        {'Request Headers'}
+                      </div>
+                    )}
+                  </div>
+                  <VariableEditor
+                    ref={n => {
+                      this.variableEditorComponent = n;
+                    }}
+                    value={this.state.variables}
+                    variableToType={this.state.variableToType}
+                    onEdit={this.handleEditVariables}
                     onHintInformationRender={this.handleHintInformationRender}
                     onPrettifyQuery={this.handlePrettifyQuery}
                     onMergeQuery={this.handleMergeQuery}
                     onRunQuery={this.handleEditorRunQuery}
                     editorTheme={this.props.editorTheme}
                     readOnly={this.props.readOnly}
-                    active={this.state.headerEditorActive}
+                    active={this.state.variableEditorActive}
                   />
+                  {this.state.headerEditorEnabled && (
+                    <HeaderEditor
+                      ref={n => {
+                        this.headerEditorComponent = n;
+                      }}
+                      value={this.state.headers}
+                      onEdit={this.handleEditHeaders}
+                      onHintInformationRender={this.handleHintInformationRender}
+                      onPrettifyQuery={this.handlePrettifyQuery}
+                      onMergeQuery={this.handleMergeQuery}
+                      onRunQuery={this.handleEditorRunQuery}
+                      editorTheme={this.props.editorTheme}
+                      readOnly={this.props.readOnly}
+                      active={this.state.headerEditorActive}
+                    />
+                  )}
+                </section>
+              </div>
+              <div className="resultWrap">
+                {this.state.isWaitingForResponse && (
+                  <div className="spinner-container">
+                    <div className="spinner" />
+                  </div>
                 )}
-              </section>
+                <ResultViewer
+                  registerRef={n => {
+                    this.resultViewerElement = n;
+                  }}
+                  ref={c => {
+                    this.resultComponent = c;
+                  }}
+                  value={this.state.response}
+                  editorTheme={this.props.editorTheme}
+                  ResultsTooltip={this.props.ResultsTooltip}
+                  ImagePreview={ImagePreview}
+                />
+                {footer}
+              </div>
             </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>
-              )}
-              <ResultViewer
-                registerRef={n => {
-                  this.resultViewerElement = n;
-                }}
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.state.response}
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
+          </div>
+          {this.state.docExplorerOpen && (
+            <div className={docExplorerWrapClasses} style={docWrapStyle}>
+              <div
+                className="docExplorerResizer"
+                onDoubleClick={this.handleDocsResetResize}
+                onMouseDown={this.handleDocsResizeStart}
               />
-              {footer}
+              <DocExplorer
+                ref={c => {
+                  this.docExplorerComponent = c;
+                }}
+                schemaErrors={this.state.schemaErrors}
+                schema={this.state.schema}>
+                <button
+                  className="docExplorerHide"
+                  onClick={this.handleToggleDocs}
+                  aria-label="Close Documentation Explorer">
+                  {'\u2715'}
+                </button>
+              </DocExplorer>
             </div>
-          </div>
+          )}
         </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
-              schemaErrors={this.state.schemaErrors}
-              schema={this.state.schema}>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleDocs}
-                aria-label="Close Documentation Explorer">
-                {'\u2715'}
-              </button>
-            </DocExplorer>
-          </div>
-        )}
-      </div>
+      </>
     );
   }
 
@@ -1671,6 +1686,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       JSON.stringify(!this.state.historyPaneOpen),
     );
     this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
+  };
+
+  handleDarkMode = () => {
+    this.setState(st => ({ darkMode: !st.darkMode }));
   };
 
   handleSelectHistoryQuery = (
