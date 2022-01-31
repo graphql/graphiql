@@ -419,7 +419,7 @@ function getSuggestionsForImplements(
   typeInfo: AllTypeInfo,
 ): Array<CompletionItem> {
   // exit empty if we need an &
-  if (tokenState.needsSeperator) {
+  if (tokenState.needsSeparator) {
     return [];
   }
   const typeMap = schema.getTypeMap();

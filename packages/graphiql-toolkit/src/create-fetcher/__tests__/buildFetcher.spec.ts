@@ -19,7 +19,7 @@ import {
 import { createClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-const exampleWithSubscripton = /* GraphQL */ `
+const exampleWithSubscription = /* GraphQL */ `
   subscription Example {
     example
   }
@@ -28,7 +28,7 @@ const exampleWithSubscripton = /* GraphQL */ `
   }
 `;
 
-const exampleWithSubscriptonNode = parse(exampleWithSubscripton);
+const exampleWithSubscriptionNode = parse(exampleWithSubscription);
 
 const serverURL = 'http://localhost:3000/graphql';
 const wssURL = 'ws://localhost:3000/graphql';

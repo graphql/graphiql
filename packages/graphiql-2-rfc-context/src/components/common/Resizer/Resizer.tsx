@@ -42,7 +42,7 @@ export const Resizer: React.FC<ResizeProps> = props => {
 
   const [diffCoord, setDiffCoord] = useState<ResizingData['diffCoord']>(0);
   const [oldSize, setOldSize] = useState<ResizingData['oldSize']>(null);
-  const oldCoordRef = useRef<ResizingData['oldCorrd']>(null);
+  const oldCoordRef = useRef<ResizingData['oldCoord']>(null);
   const boxRef = useRef<HTMLDivElement>(null);
 
   const containerMeta = getContainerMeta({ border });

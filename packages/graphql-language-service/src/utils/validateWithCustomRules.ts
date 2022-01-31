@@ -63,7 +63,7 @@ export function validateWithCustomRules(
   isSchemaDocument?: boolean,
 ): Array<GraphQLError> {
   const rules = specifiedRules.filter(rule => {
-    // Because every fragment is considered for determing model subsets that may
+    // Because every fragment is considered for determining model subsets that may
     // be used anywhere in the codebase they're all technically "used" by clients
     // of graphql-data. So we remove this rule from the validators.
     if (rule === NoUnusedFragmentsRule || rule === ExecutableDefinitionsRule) {

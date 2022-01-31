@@ -27,7 +27,7 @@ export const fixtures = [
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
       }`,

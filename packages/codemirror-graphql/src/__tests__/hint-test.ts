@@ -1037,7 +1037,7 @@ describe('graphql-hint', () => {
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
-  it('provides no suggestinos', async () => {
+  it('provides no suggestions', async () => {
     const list: IHint[] = [];
     const expectedSuggestions = getExpectedSuggestions(list);
 
@@ -1092,7 +1092,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions7?.list).toEqual(expectedSuggestions);
   });
-  it('provides variable completion for argments', async () => {
+  it('provides variable completion for arguments', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },
@@ -1107,7 +1107,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions9?.list).toEqual(expectedSuggestions);
   });
-  it('provides variable completion for argments with $', async () => {
+  it('provides variable completion for arguments with $', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },

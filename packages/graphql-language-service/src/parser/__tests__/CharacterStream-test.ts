@@ -2,7 +2,7 @@ import CharacterStream from '../CharacterStream';
 
 describe('CharacterStream', () => {
   describe('getStartOfToken', () => {
-    it('returns start postition', () => {
+    it('returns start position', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 
@@ -11,7 +11,7 @@ describe('CharacterStream', () => {
   });
 
   describe('getCurrentPosition', () => {
-    it('returns current postition', () => {
+    it('returns current position', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 
@@ -330,7 +330,7 @@ describe('CharacterStream', () => {
       expect(stream.match('scalar')).toEqual(true);
     });
 
-    it('dose case-insensitve match when caseFold is true', () => {
+    it('dose case-insensitive match when caseFold is true', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 

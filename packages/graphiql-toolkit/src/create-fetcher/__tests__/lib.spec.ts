@@ -15,7 +15,7 @@ import { createClient } from 'graphql-ws';
 
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-const exampleWithSubscripton = /* GraphQL */ parse(`
+const exampleWithSubscription = /* GraphQL */ parse(`
   subscription Example {
     example
   }
@@ -24,20 +24,20 @@ const exampleWithSubscripton = /* GraphQL */ parse(`
   }
 `);
 
-describe('isSubcriptionWithName', () => {
+describe('isSubscriptionWithName', () => {
   it('detects when the subscription is present', () => {
     expect(
-      isSubscriptionWithName(exampleWithSubscripton, 'Example'),
+      isSubscriptionWithName(exampleWithSubscription, 'Example'),
     ).toBeTruthy();
   });
   it('detects when the specified operation is not a subscription', () => {
     expect(
-      isSubscriptionWithName(exampleWithSubscripton, 'SomethingElse'),
+      isSubscriptionWithName(exampleWithSubscription, 'SomethingElse'),
     ).toBeFalsy();
   });
   it('detects when the operation is not present', () => {
     expect(
-      isSubscriptionWithName(exampleWithSubscripton, 'NotPresent'),
+      isSubscriptionWithName(exampleWithSubscription, 'NotPresent'),
     ).toBeFalsy();
   });
 });
