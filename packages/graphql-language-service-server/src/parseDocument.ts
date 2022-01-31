@@ -17,7 +17,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
 ];
 
 /**
- * .graphql is the officially reccomended extension for graphql files
+ * .graphql is the officially recommended extension for graphql files
  *
  * .gql and .graphqls are included for compatibility for commonly used extensions
  *

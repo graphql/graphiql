@@ -54,11 +54,11 @@ export type GraphiQLTheme = {
 export type PanelSize = 'sidebar' | 'aside' | 'full-screen';
 
 /*
-Layout components are divided into 3 areas: 
+Layout components are divided into 3 areas:
 - the gql explorer itself, which has 3 panels (input, response, console)
 - the side nav
-- the nav panels, which are a potentially infinite stack, 
-  they are wrapped in an object that specifies what size they 
+- the nav panels, which are a potentially infinite stack,
+  they are wrapped in an object that specifies what size they
   should render at
 
 TODO: For the nav we can probably just pass a list oflinks instead of a component

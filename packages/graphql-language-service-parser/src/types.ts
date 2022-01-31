@@ -49,7 +49,7 @@ export type State = {
   name: Maybe<string>;
   type: Maybe<string>;
   step: number;
-  needsSeperator: boolean;
+  needsSeparator: boolean;
   needsAdvance?: boolean;
   indentLevel?: number;
   inBlockstring?: boolean;

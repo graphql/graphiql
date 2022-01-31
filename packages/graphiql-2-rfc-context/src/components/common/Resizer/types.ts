@@ -48,6 +48,6 @@ export interface ResizeProps {
 
 export interface ResizingData {
   diffCoord: number;
-  oldCorrd: number | null;
+  oldCoord: number | null;
   oldSize: number | null;
 }
