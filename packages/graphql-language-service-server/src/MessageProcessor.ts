@@ -1124,7 +1124,7 @@ export class MessageProcessor {
   }
   /**
    * This should only be run on initialize() really.
-   * Cacheing all the document files upfront could be expensive.
+   * Caching all the document files upfront could be expensive.
    * @param config {GraphQLConfig}
    */
   async _cacheAllProjectFiles(config: GraphQLConfig) {

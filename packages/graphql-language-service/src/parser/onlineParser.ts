@@ -64,7 +64,7 @@ export default function onlineParser(
         kind: null,
         type: null,
         rule: null,
-        needsSeperator: false,
+        needsSeparator: false,
         prevState: null,
       };
 
@@ -172,7 +172,7 @@ function getToken(
         : state.rule[state.step];
 
     // Separator between list elements if necessary.
-    if (state.needsSeperator) {
+    if (state.needsSeparator) {
       expected = expected?.separator;
     }
 
@@ -247,7 +247,7 @@ function pushRule(
   state.type = null;
   state.rule = rules[ruleKind];
   state.step = 0;
-  state.needsSeperator = false;
+  state.needsSeparator = false;
 }
 
 // Pop the current rule from the state.
@@ -261,7 +261,7 @@ function popRule(state: State): undefined {
   state.type = state.prevState.type;
   state.rule = state.prevState.rule;
   state.step = state.prevState.step;
-  state.needsSeperator = state.prevState.needsSeperator;
+  state.needsSeparator = state.prevState.needsSeparator;
   state.prevState = state.prevState.prevState;
 }
 
@@ -275,9 +275,9 @@ function advanceRule(state: State, successful: boolean): undefined {
     const step = state.rule[state.step];
     if (step.separator) {
       const separator = step.separator;
-      state.needsSeperator = !state.needsSeperator;
+      state.needsSeparator = !state.needsSeparator;
       // If the separator was optional, then give it an opportunity to repeat.
-      if (!state.needsSeperator && separator.ofRule) {
+      if (!state.needsSeparator && separator.ofRule) {
         return;
       }
     }
@@ -289,7 +289,7 @@ function advanceRule(state: State, successful: boolean): undefined {
 
   // Advance the step in the rule. If the rule is completed, pop
   // the rule and advance the parent rule as well (recursively).
-  state.needsSeperator = false;
+  state.needsSeparator = false;
   state.step++;
 
   // While the current rule is completed.
@@ -305,10 +305,10 @@ function advanceRule(state: State, successful: boolean): undefined {
         // @ts-ignore
         // TODO: ParseRules as numerical index
         if (state.rule?.[state.step].separator) {
-          state.needsSeperator = !state.needsSeperator;
+          state.needsSeparator = !state.needsSeparator;
         }
       } else {
-        state.needsSeperator = false;
+        state.needsSeparator = false;
         state.step++;
       }
     }

@@ -1,6 +1,6 @@
 import * as monaco from 'monaco-editor';
 
-// NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
+// NOTE: using loader syntax because Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker';

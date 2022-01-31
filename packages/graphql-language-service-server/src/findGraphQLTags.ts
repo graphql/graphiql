@@ -39,7 +39,7 @@ export const DEFAULT_TAGS = [...DEFAULT_STABLE_TAGS, 'graphql.experimental'];
 
 type TagResult = { tag: string; template: string; range: Range };
 
-interface TagVisitiors {
+interface TagVisitors {
   [type: string]: (node: any) => void;
 }
 
@@ -272,7 +272,7 @@ function getGraphQLText(quasi: TemplateLiteral) {
   return quasis[0].value.raw;
 }
 
-function visit(node: { [key: string]: any }, visitors: TagVisitiors) {
+function visit(node: { [key: string]: any }, visitors: TagVisitors) {
   const fn = visitors[node.type];
   if (fn && fn != null) {
     fn(node);
@@ -281,7 +281,7 @@ function visit(node: { [key: string]: any }, visitors: TagVisitiors) {
   traverse(node, visitors);
 }
 
-function traverse(node: { [key: string]: any }, visitors: TagVisitiors) {
+function traverse(node: { [key: string]: any }, visitors: TagVisitors) {
   for (const key in node) {
     if (IGNORED_KEYS[key]) {
       continue;

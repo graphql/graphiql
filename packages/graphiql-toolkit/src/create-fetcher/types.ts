@@ -97,7 +97,7 @@ export interface CreateFetcherOptions {
   wsClient?: Client;
   /**
    * `legacyWsClient` implementation that matches `subscriptions-transport-ws` signature,
-   * whether via `new SubcriptionsClient()` itself or another client with a similar signature.
+   * whether via `new SubscriptionsClient()` itself or another client with a similar signature.
    */
   legacyWsClient?: any;
   /**

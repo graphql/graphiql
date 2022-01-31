@@ -98,7 +98,7 @@ export interface ServerOptions {
    */
   parser?: typeof parseDocument;
   /**
-   * the temporary directory that the server writes to for logs and cacheing schema
+   * the temporary directory that the server writes to for logs and caching schema
    */
   tmpDir?: string;
 }

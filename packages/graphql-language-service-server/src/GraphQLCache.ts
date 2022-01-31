@@ -378,7 +378,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
             .map(filePath => {
               // @TODO
               // so we have to force this here
-              // because glob's DefinatelyTyped doesn't use fs.Stats here though
+              // because glob's DefinitelyTyped doesn't use fs.Stats here though
               // the docs indicate that is what's there :shrug:
               const cacheEntry = globResult.statCache[filePath] as fs.Stats;
               return {

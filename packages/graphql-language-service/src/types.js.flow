@@ -192,7 +192,7 @@ export type State = {
   name: ?string,
   type: ?string,
   step: number,
-  needsSeperator: boolean,
+  needsSeparator: boolean,
   needsAdvance?: boolean,
   indentLevel?: number,
 };
@@ -278,7 +278,7 @@ export type CompletionItem = {
   // GraphQL Deprecation information
   isDeprecated?: ?boolean,
   deprecationReason?: ?string,
-  type?: GraphQLType
+  type?: GraphQLType,
 };
 
 export type CompletionItemBase = {

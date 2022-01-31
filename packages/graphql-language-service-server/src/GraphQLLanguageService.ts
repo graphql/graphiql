@@ -414,7 +414,7 @@ export class GraphQLLanguageService {
       TypeDefinitionNode
     >;
 
-    const localOperationDefinationInfos = typeCastedDefs.map(
+    const localOperationDefinitionInfos = typeCastedDefs.map(
       (definition: TypeDefinitionNode) => ({
         filePath,
         content: query,
@@ -425,7 +425,7 @@ export class GraphQLLanguageService {
     const result = await getDefinitionQueryResultForNamedType(
       query,
       node,
-      dependencies.concat(localOperationDefinationInfos),
+      dependencies.concat(localOperationDefinitionInfos),
     );
 
     return result;

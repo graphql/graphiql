@@ -127,7 +127,7 @@ function _getDiagnostics(
   schemaPath?: string,
 ): EXIT_CODE {
   try {
-    // `schema` is not strictly requied as GraphQL diagnostics may still notify
+    // `schema` is not strictly required as GraphQL diagnostics may still notify
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getDiagnostics(queryText, schema);
@@ -184,6 +184,6 @@ function generateSchema(schemaPath: string): GraphQLSchema {
     case '.json':
       return buildClientSchema(JSON.parse(schemaDSL));
     default:
-      throw new Error('Unsupported schema file extention');
+      throw new Error('Unsupported schema file extension');
   }
 }

@@ -67,7 +67,7 @@ describe('t', () => {
 });
 
 describe('p', () => {
-  it('build correct rule for puncuation token of a value', () => {
+  it('build correct rule for punctuation token of a value', () => {
     const rule = p('(');
 
     expect(rule.style).toEqual('punctuation');
