@@ -84,7 +84,7 @@ describe('getAutocompleteSuggestions', () => {
     schema = buildSchema(schemaIDL);
   });
 
-  // Returns a soreted autocomplete suggestions in an increasing order.
+  // Returns a sorted autocomplete suggestions in an increasing order.
   function testSuggestions(
     query: string,
     point: Position,
