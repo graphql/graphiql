@@ -128,7 +128,7 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ### Variables JSON Support!
 
-In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrive a `JSONSchema` description for the declared variables for any given set of operations
+In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrieve a `JSONSchema` description for the declared variables for any given set of operations
 
 ## Full Sync Demo with Variables JSON
 
@@ -329,7 +329,7 @@ monaco.languages.graphql.api.setFormattingOptions({
 });
 ```
 
-### `monaco.languages.graphql.api.setExternalFragmentDefintions()`
+### `monaco.languages.graphql.api.setExternalFragmentDefinitions()`
 
 Append external fragments to be used by autocomplete and other language features.
 
@@ -380,7 +380,7 @@ If you want to pass a custom parser and/or or validation rules, it is supported,
 
 You can add any `LanguageServiceConfig` ([typedoc](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#graphqllanguageconfig-1)) configuration options you like here to `languageConfig` as below.
 
-This is because we can't pass non-static configuration to the existing worker programatically, so you must import these and build the worker custom with those functions. Part of the (worthwile) cost of crossing runtimes!
+This is because we can't pass non-static configuration to the existing worker programmatically, so you must import these and build the worker custom with those functions. Part of the (worthwhile) cost of crossing runtimes!
 
 you'll want to create your own `mygraphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
 
