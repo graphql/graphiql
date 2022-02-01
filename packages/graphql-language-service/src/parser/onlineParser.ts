@@ -171,7 +171,7 @@ function getToken(
           : null
         : state.rule[state.step];
 
-    // Seperator between list elements if necessary.
+    // Separator between list elements if necessary.
     if (state.needsSeparator) {
       expected = expected && expected?.separator;
     }

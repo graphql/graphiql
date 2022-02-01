@@ -119,7 +119,7 @@ function getDefinitionForFragmentDefinition(
     path,
     position: getPosition(text, definition),
     range: getRange(text, definition),
-    // TODO: doesnt seem to pick up the inference
+    // TODO: doesn't seem to pick up the inference
     // from assert() exception logic
     name: name.value || '',
     language: LANGUAGE,

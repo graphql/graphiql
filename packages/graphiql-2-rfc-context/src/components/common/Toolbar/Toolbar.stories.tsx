@@ -18,7 +18,7 @@ export default { title: 'Toolbar', decorators: [layout] };
 export const Basic = () => (
   <List>
     <ListRow padding>
-      <p>{`Toolbars group together widgets in a flexbox. You can cutomize what type of
+      <p>{`Toolbars group together widgets in a flexbox. You can customize what type of
       justification to use and if elements go together it'll add dividers
       between them`}</p>
     </ListRow>
