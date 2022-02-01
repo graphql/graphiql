@@ -320,7 +320,7 @@
 
 ### Bug Fixes
 
-- dont use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
+- don't use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
 
 ## [1.0.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.2...graphiql@1.0.3) (2020-06-24)
 

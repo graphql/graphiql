@@ -26,7 +26,7 @@
   Introduces `insertText` and completion for field `selectionSets` for the appropriate `field.type`s.
   Works across `monaco-graphql` and `graphql-language-service-server`.
 
-  Though the changeset is bumping a patch for `codemirror-graphql`, the lsp completion `insertText` is not used by `codemirror`, and thus this lsp enhancment will not change the `codemirror-graphql` experience.
+  Though the changeset is bumping a patch for `codemirror-graphql`, the lsp completion `insertText` is not used by `codemirror`, and thus this lsp enhancement will not change the `codemirror-graphql` experience.
 
 ### Patch Changes
 
@@ -39,7 +39,7 @@
 
 ### Patch Changes
 
-- [`989fca69`](https://github.com/graphql/graphiql/commit/989fca693385aa408bcfe18cde34934a5aea5dce) [#2070](https://github.com/graphql/graphiql/pull/2070) Thanks [@acao](https://github.com/acao)! - Fix a bug with variable completion with duplicate `$` across the ecosytem. Introduce more `triggerCharacters` across monaco and the LSP server for autocompletion in far more cases
+- [`989fca69`](https://github.com/graphql/graphiql/commit/989fca693385aa408bcfe18cde34934a5aea5dce) [#2070](https://github.com/graphql/graphiql/pull/2070) Thanks [@acao](https://github.com/acao)! - Fix a bug with variable completion with duplicate `$` across the ecosystem. Introduce more `triggerCharacters` across monaco and the LSP server for autocompletion in far more cases
 
 * [`df57cd25`](https://github.com/graphql/graphiql/commit/df57cd2556302d6aa5dd140e7bee3f7bdab4deb1) [#2065](https://github.com/graphql/graphiql/pull/2065) Thanks [@acao](https://github.com/acao)! - Add an opt-in feature to generate markdown in hover elements, starting with highlighting type information. Enabled for the language server and also the language service and thus `monaco-graphql` as well.
 
@@ -143,7 +143,7 @@
 
 ### Bug Fixes
 
-- dont use new deprecation rule yet ([8f0a4ac](https://github.com/graphql/graphiql/commit/8f0a4ac3331785994e4fe2d98637af0359314359))
+- don't use new deprecation rule yet ([8f0a4ac](https://github.com/graphql/graphiql/commit/8f0a4ac3331785994e4fe2d98637af0359314359))
 
 ### Features
 

@@ -23,7 +23,7 @@
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
     - when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
-  - The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
+  - The exported mode api for configuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
   #### New Features
 

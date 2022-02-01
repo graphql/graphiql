@@ -43,7 +43,7 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ## External Fragments Example
 
-If you want to have autcompletion for external fragment definitions, there's a new configuration setting available
+If you want to have autocompletion for external fragment definitions, there's a new configuration setting available
 
 ```ts
 import CodeMirror from 'codemirror';

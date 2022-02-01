@@ -11,7 +11,7 @@
 
 ### Patch Changes
 
-- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LangugeService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
+- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LanguageService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
 
 ## 4.1.2
 
@@ -49,7 +49,7 @@
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
     - when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
-  - The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
+  - The exported mode api for configuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
   #### New Features
 

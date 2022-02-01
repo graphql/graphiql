@@ -8,7 +8,7 @@ This effort was merge to master in spring of 2020, and then moved to this worksp
 
 - hooks rewrite for react 16. _gets rid of deprecated methods_
 - swap out codemirror for monaco
-- partial re-themeing with new component library and a customizeable`theme-ui`
+- partial re-theming with new component library and a customizable`theme-ui`
 - context implementation
 - i18n using `i18n-next`
 
