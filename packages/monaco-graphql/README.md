@@ -327,7 +327,7 @@ monaco.languages.graphql.api.setFormattingOptions({
 });
 ```
 
-### `monaco.languages.graphql.api.setExternalFragmentDefintions()`
+### `monaco.languages.graphql.api.setExternalFragmentDefinitions()`
 
 Append external fragments to be used by autocomplete and other language features.
 

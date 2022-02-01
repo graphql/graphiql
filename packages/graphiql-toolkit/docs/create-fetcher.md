@@ -101,7 +101,7 @@ Pass headers to any and all requests
 
 #### `fetch`
 
-Pass a custom fetch implementation such as `isomorphic-feth`
+Pass a custom fetch implementation such as `isomorphic-fetch`
 
 ### Customization Examples
 
@@ -135,7 +135,7 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 
 #### Custom `legacyClient` Example
 
-(not reccomended)
+(not recommended)
 
 By providing the `legacyClient` you can support a `subscriptions-transport-ws` client implementation, or equivalent
 
@@ -160,7 +160,7 @@ export const App = () => <GraphiQL fetcher={fetcher} />;
 ReactDOM.render(document.getElementByID('graphiql'), <App />);
 ```
 
-you will need to install the client seperately:
+you will need to install the client separately:
 
 ```bash
 yarn add subscriptions-transport-ws

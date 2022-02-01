@@ -109,7 +109,7 @@ ReactDOM.render(
 );
 ```
 
-[Read more about using `createGraphiQLFetcher` in the readme](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) to learn how to add headers, support the legacy `subsriptions-transport-ws` protocol, and more.
+[Read more about using `createGraphiQLFetcher` in the readme](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) to learn how to add headers, support the legacy `subscriptions-transport-ws` protocol, and more.
 
 ### Usage: UMD Bundle over CDN (Unpkg, JSDelivr, etc)
 
