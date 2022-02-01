@@ -140,7 +140,7 @@ const Greeting = new GraphQLObjectType({
 
 const delayArgument = (defaultValue = 400) => ({
   description:
-    'delay in milleseconds for subsequent results, for demonstration purposes',
+    'delay in milliseconds for subsequent results, for demonstration purposes',
   type: GraphQLInt,
   defaultValue,
 });
