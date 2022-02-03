@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.17
+
+### Patch Changes
+
+- [#2138](https://github.com/graphql/graphiql/pull/2138) [`8700b4bb`](https://github.com/graphql/graphiql/commit/8700b4bbaadb17136f649f504c9575a8c853cd0b) Thanks [@danielleletarte](https://github.com/danielleletarte)! - Correctly render line breaks for Descriptions in Doc Explorer - #2137 - @danielleletarte
+
 ## 1.5.16
 
 ### Patch Changes
