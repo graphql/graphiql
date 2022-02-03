@@ -29,6 +29,12 @@ describe('TypeDoc', () => {
         onClickType={jest.fn()}
       />,
     );
+    const description = container.querySelectorAll('.doc-type-description');
+    expect(description).toHaveLength(1);
+    expect(description[0]).toHaveTextContent('Query description\nSecond line', {
+      normalizeWhitespace: false,
+    });
+
     const cats = container.querySelectorAll('.doc-category-item');
     expect(cats[0]).toHaveTextContent('string: String');
     expect(cats[1]).toHaveTextContent('union: exampleUnion');

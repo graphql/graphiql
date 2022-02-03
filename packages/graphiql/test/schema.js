@@ -200,7 +200,7 @@ const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
 
 const TestType = new GraphQLObjectType({
   name: 'Test',
-  description: 'Test type for testing',
+  description: 'Test type for testing\n New line works',
   fields: () => ({
     test: {
       type: TestType,
