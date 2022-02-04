@@ -12,7 +12,7 @@ const App = () => (
   <GraphiQL
     style={{ height: '100vh' }}
     headerEditorEnabled
-    fetcher={async (graphQLParams, headers) => {
+    fetcher={async (graphQLParams, options) => {
       const data = await fetch(
         'https://swapi-graphql.netlify.app/.netlify/functions/index',
         {
@@ -20,7 +20,7 @@ const App = () => (
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            ...headers,
+            ...options.headers,
           },
           body: JSON.stringify(graphQLParams),
           credentials: 'same-origin',
