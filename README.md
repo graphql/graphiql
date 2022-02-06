@@ -68,7 +68,9 @@ the file needs to be placed at the project root by default, but you can configur
 
 Previous versions of this extension support `graphql-config@2` format, which follows [legacy configuration patterns](https://github.com/kamilkisiela/graphql-config/tree/legacy#usage)
 
-To support language features like "go-to definition" across multiple files, please include `documents` key in the graphql-config default or /per project (this was `include` in 2.0).
+If you need legacy support for `.graphqlconfig` files or older graphql-config formats, see [this FAQ answer](#legacy). If you are missing legacy `graphql-config` features, please consult [the `graphql-config` repository](https://github.com/kamilkisiela/graphql-config).
+
+To support language features like "go-to definition" across multiple files, please include `documents` key in the `graphql-config` file default or per-project (this was `include` in 2.0).
 
 ## Configuration Examples
 
@@ -126,6 +128,16 @@ module.exports = {
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` is also valid.
 
 ## Frequently Asked Questions
+
+<span id="legacy" />
+
+### I can't load `.graphqlconfig` files anymore
+
+If you need to use a legacy config file, then you just need to enable legacy mode for `graphql-config`:
+
+```
+"graphql-config.load.legacy": true
+```
 
 ### Go to definition is not working for my URL
 
@@ -245,9 +257,9 @@ which would search for `./config/.acmerc`, `.config/.acmerc.js`, `.config/acme.c
 
 If you have multiple projects, you need to define one top-level config that defines all project configs using `projects`
 
-### How do I highlight an embedded graphql string
+### How do I highlight an embedded graphql string?
 
-If you aren't using a template tag function, and just want to use a plain string, you can use an inline `#graphql` comment:
+If you aren't using a template tag function such as `gql` or `graphql`, and just want to use a plain string, you can use an inline `#graphql` comment:
 
 ```ts
 const myQuery = `#graphql
@@ -259,19 +271,27 @@ const myQuery = `#graphql
 
 or
 
+
 ```ts
-const myQuery = `
-  #graphql
+  const myQuery =
+  /* GraphiQL / 
+`
   query {
     something
   }
 `
 ```
+  
+### Template literal expressions dont work with `Execute Query`
+
+Experimental support for template literal expressions ala `${}` has been added for language support, which just add an empty newline behind the scenes. It does not yet work for `Execute Query` codelans.
+
+
+
 
 ## Known Issues
 
-- template replacement inside a graphql string [will break graphql parsing](https://github.com/graphql/vscode-graphql/issues/137). If you want to help improve partial parsing support, you can contribute to the parser efforts in [`graphql`](https://github.com/graphql/graphql-js) reference implementation. You can now re-use fragments across your project source, if you include the files in `documents`.
-- the output channel occasionally shows "definition not found" when you first start the language service, but once the definition cache is built for each project, definition lookup will work. so if a "peek definition" fails when you first start, just try clicking it again.
+- the output channel occasionally shows "definition not found" when you first start the language service, but once the definition cache is built for each project, definition lookup will work. so if a "peek definition" fails when you first start the editor or when you first install the extension, just try the definition lookup again.
 
 ## Development
 
