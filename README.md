@@ -135,7 +135,7 @@ Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` i
 
 If you need to use a legacy config file, then you just need to enable legacy mode for `graphql-config`:
 
-```
+```json
 "graphql-config.load.legacy": true
 ```
 
