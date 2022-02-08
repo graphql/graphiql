@@ -89,8 +89,9 @@ export function activate(context: ExtensionContext) {
     outputChannel: outputChannel,
     outputChannelName: "GraphQL Language Server",
     revealOutputChannelOn: RevealOutputChannelOn.Never,
-    initializationFailedHandler:
-      CustomInitializationFailedHandler(outputChannel),
+    initializationFailedHandler: CustomInitializationFailedHandler(
+      outputChannel,
+    ),
   }
 
   const client = new LanguageClient(
@@ -177,8 +178,11 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(commandContentProvider)
 
   commands.registerCommand("vscode-graphql.restart", async () => {
+    outputChannel.appendLine(`Stopping GraphQL LSP`)
     await client.stop()
+    outputChannel.appendLine(`Restarting GraphQL LSP`)
     await client.start()
+    outputChannel.appendLine(`GraphQL LSP restarted`)
   })
 }
 
