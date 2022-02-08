@@ -102,8 +102,8 @@ export function activate(context: ExtensionContext) {
     debug,
   )
 
-  const disposableClient = client.start()
-  context.subscriptions.push(disposableClient)
+  let clientLSPDisposable = client.start()
+  context.subscriptions.push(clientLSPDisposable)
 
   const commandIsDebugging = commands.registerCommand(
     "vscode-graphql.isDebugging",
@@ -180,8 +180,12 @@ export function activate(context: ExtensionContext) {
   commands.registerCommand("vscode-graphql.restart", async () => {
     outputChannel.appendLine(`Stopping GraphQL LSP`)
     await client.stop()
+    clientLSPDisposable.dispose()
+
     outputChannel.appendLine(`Restarting GraphQL LSP`)
-    await client.start()
+    clientLSPDisposable = await client.start()
+    context.subscriptions.push(clientLSPDisposable)
+
     outputChannel.appendLine(`GraphQL LSP restarted`)
   })
 }
