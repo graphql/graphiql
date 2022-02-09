@@ -229,10 +229,10 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "esbuild": "0.13.15",
-    "ovsx": "0.2.1",
+    "ovsx": "0.3.0",
     "tslint": "5.20.1",
     "typescript": "4.4.4",
-    "vsce": "2.5.1",
+    "vsce": "2.6.4",
     "vscode": "1.1.37"
   },
   "dependencies": {
