@@ -531,7 +531,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
 
-    global.g = this;
+    if (global) {
+      global.g = this;
+    }
   }
   UNSAFE_componentWillMount() {
     this.componentIsMounted = false;
