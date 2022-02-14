@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.18
+
+### Patch Changes
+
+- [#2156](https://github.com/graphql/graphiql/pull/2156) [`ae5ea77b`](https://github.com/graphql/graphiql/commit/ae5ea77b4c2ec2a25e25c542ae72b2c3dabbe256) Thanks [@francisu](https://github.com/francisu)! - Fixed problem where 'global' variable is referenced when it might not be present (#2155)
+
 ## 1.5.17
 
 ### Patch Changes
