@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.5.19
+
+### Patch Changes
+
+- [#2167](https://github.com/graphql/graphiql/pull/2167) [`bc81f0ee`](https://github.com/graphql/graphiql/commit/bc81f0ee6d382fe996d92e55f90cdc3be10910a7) Thanks [@acao](https://github.com/acao)! - Fix legacy bug where global is expected
+
 ## 1.5.18
 
 ### Patch Changes
