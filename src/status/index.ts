@@ -83,12 +83,12 @@ function updateStatusBar(
   statusBarItem: StatusBarItem,
   editor: TextEditor | undefined,
 ) {
-  extensionStatus = serverRunning ? Status.RUNNING : Status.ERROR
+  extensionStatus = serverRunning ? Status.RUNNING : Status.ERROR;
 
-  const statusUI = statusBarUIElements[extensionStatus]
-  statusBarItem.text = `$(${statusUI.icon}) ${statusBarText}`
-  statusBarItem.tooltip = statusUI.tooltip
-  statusBarItem.command = "vscode-graphql.isDebugging"
+  const statusUI = statusBarUIElements[extensionStatus];
+  statusBarItem.text = `$(${statusUI.icon}) ${statusBarText}`;
+  statusBarItem.tooltip = statusUI.tooltip;
+  statusBarItem.command = "vscode-graphql.showOutputChannel";
   if ("color" in statusUI) statusBarItem.color = statusUI.color
 
   if (

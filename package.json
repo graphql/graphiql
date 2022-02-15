@@ -194,15 +194,19 @@
     "commands": [
       {
         "command": "vscode-graphql.isDebugging",
-        "title": "VSCode GraphQL - Is Debugging?"
+        "title": "VSCode GraphQL: Is Debugging?"
       },
       {
         "command": "vscode-graphql.restart",
-        "title": "VSCode GraphQL - Manual Restart"
+        "title": "VSCode GraphQL: Manual Restart"
+      },
+      {
+        "command": "vscode-graphql.showOutputChannel",
+        "title": "VSCode GraphQL: Show output channel"
       },
       {
         "command": "vscode-graphql.contentProvider",
-        "title": "Execute GraphQL Operations"
+        "title": "VSCode GraphQL: Execute GraphQL Operations"
       }
     ]
   },

@@ -113,6 +113,14 @@ export function activate(context: ExtensionContext) {
   )
   context.subscriptions.push(commandIsDebugging)
 
+  const commandShowOutputChannel = commands.registerCommand(
+    "vscode-graphql.showOutputChannel",
+    () => {
+      outputChannel.show()
+    },
+  )
+  context.subscriptions.push(commandShowOutputChannel)
+
   // Manage Status Bar
   context.subscriptions.push(statusBarItem)
   client.onReady().then(() => {
