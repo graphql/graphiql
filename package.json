@@ -238,9 +238,9 @@
   "dependencies": {
     "@changesets/changelog-github": "0.4.2",
     "@changesets/cli": "2.18.1",
-    "@graphql-tools/load": "7.4.1",
-    "@graphql-tools/url-loader": "7.5.2",
-    "@graphql-tools/wrap": "8.3.2",
+    "@graphql-tools/load": "7.5.1",
+    "@graphql-tools/url-loader": "7.7.1",
+    "@graphql-tools/wrap": "8.4.0",
     "@urql/core": "2.3.6",
     "babel-polyfill": "6.26.0",
     "capitalize": "2.0.4",
