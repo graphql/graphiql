@@ -127,7 +127,7 @@ export class MessageProcessor {
     this._graphQLConfig = config;
     this._parser = (text, uri) => {
       const p = parser ?? parseDocument;
-      return p(text, uri, fileExtensions, graphqlFileExtensions);
+      return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
