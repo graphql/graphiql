@@ -224,7 +224,7 @@
     "@types/capitalize": "2.0.0",
     "@types/dotenv": "8.2.0",
     "@types/mocha": "5.2.7",
-    "@types/node": "16.11.21",
+    "@types/node": "16.11.25",
     "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
