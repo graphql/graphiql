@@ -30,8 +30,8 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "@babel/types": "^7.16.0",
-    "@babel/parser": "^7.13.13",
+    "@babel/types": "^7.17.0",
+    "@babel/parser": "^7.17.3",
     "dotenv": "8.2.0",
     "graphql-config": "^4.1.0",
     "graphql-language-service": "^4.1.4",
