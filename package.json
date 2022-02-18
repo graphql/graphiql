@@ -232,7 +232,7 @@
     "ovsx": "0.3.0",
     "tslint": "5.20.1",
     "typescript": "4.4.4",
-    "vsce": "2.6.4",
+    "vsce": "2.6.7",
     "vscode": "1.1.37"
   },
   "dependencies": {
