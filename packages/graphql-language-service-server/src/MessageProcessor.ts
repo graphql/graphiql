@@ -485,7 +485,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      throw new Error(this._errorMessageForMissingDocument(textDocument.uri));
+      return [];
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -537,7 +537,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      throw new Error(this._errorMessageForMissingDocument(textDocument.uri));
+      return { contents: [] };
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -749,26 +749,13 @@ export class MessageProcessor {
     const textDocument = params.textDocument;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument || !cachedDocument.contents[0]) {
-      throw new Error(this._errorMessageForMissingDocument(textDocument.uri));
+      return [];
     }
 
     return this._languageService.getDocumentSymbols(
       cachedDocument.contents[0].query,
       textDocument.uri,
     );
-  }
-
-  _errorMessageForMissingDocument(uri: string): string {
-    const allURIs = Object.keys(this._textDocumentCache);
-    if (allURIs.length === 0) {
-      return `A cached document cannot be found for ${uri}. There are no documents in the cache.`;
-    } else if (allURIs.length > 5) {
-      return `A cached document cannot be found for ${uri}. There are ${
-        allURIs.length
-      } documents in the cache: ${allURIs.join(', ')}`;
-    } else {
-      return `A cached document cannot be found for ${uri}. There are ${allURIs.length} documents in the cache.`;
-    }
   }
 
   // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
