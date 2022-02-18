@@ -485,7 +485,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      throw new Error('A cached document cannot be found.');
+      return [];
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -537,7 +537,7 @@ export class MessageProcessor {
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
-      throw new Error('A cached document cannot be found.');
+      return { contents: [] };
     }
 
     const found = cachedDocument.contents.find(content => {
@@ -749,8 +749,9 @@ export class MessageProcessor {
     const textDocument = params.textDocument;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument || !cachedDocument.contents[0]) {
-      throw new Error('A cached document cannot be found.');
+      return [];
     }
+
     return this._languageService.getDocumentSymbols(
       cachedDocument.contents[0].query,
       textDocument.uri,
