@@ -211,18 +211,11 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
-    "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
-    "build": "npm run compile -- --sourcemap",
-    "watch": "npm run build --watch",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "test": "node ./node_modules/vscode-test",
     "vsce:package": "vsce package",
-    "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish",
     "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
-    "publish": "npm run vsce:publish && npm run open-vsx:publish",
-    "upgrade-interactive": "npx npm-check -u"
+    "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
@@ -232,12 +225,9 @@
     "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
-    "esbuild": "0.13.15",
     "ovsx": "0.3.0",
-    "tslint": "5.20.1",
-    "typescript": "4.4.4",
     "vsce": "2.6.7",
-    "vscode": "1.1.37"
+    "vscode-test": "^1.6.1"
   },
   "dependencies": {
     "@changesets/changelog-github": "0.4.3",
@@ -245,21 +235,18 @@
     "@graphql-tools/load": "7.5.1",
     "@graphql-tools/url-loader": "7.7.1",
     "@graphql-tools/wrap": "8.4.0",
-    "@urql/core": "2.3.6",
+    "@urql/core": "^2.4.2",
     "babel-polyfill": "6.26.0",
     "capitalize": "2.0.4",
-    "dotenv": "10.0.0",
+    "dotenv": "^10.0.0",
     "escape-html": "1.0.3",
-    "graphql": "15.8.0",
-    "graphql-config": "4.1.0",
-    "graphql-language-service-server": "2.7.14",
-    "graphql-tag": "2.12.6",
-    "graphql-ws": "5.5.5",
-    "node-fetch": "2.6.7",
+    "graphql": "^16.1.0",
+    "graphql-config": "^4.1.0",
+    "graphql-language-service-server": "^2.7.14",
+    "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.6.0",
+    "node-fetch": "^2.6.7",
     "vscode-languageclient": "5.2.1",
-    "ws": "8.2.3"
-  },
-  "resolutions": {
-    "graphql-config": "4.1.0"
+    "ws": "^8.2.3"
   }
 }

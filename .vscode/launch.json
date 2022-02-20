@@ -6,20 +6,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Server",
-      "type": "node",
-      "request": "attach",
-      "port": 6009,
-      "sourceMaps": true,
-      "outFiles": ["${workspaceRoot}/client/server/**/*.js"]
-    },
-    {
       "name": "Extension",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
-      "outFiles": ["${workspaceFolder}/out/extension.js"],
+      "outFiles": [
+        "${workspaceFolder}/packages/vscode-graphql/dist/extension.js"
+      ],
       "sourceMaps": true,
       "preLaunchTask": "npm: compile"
     },
@@ -30,9 +24,11 @@
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test"
+        "--extensionTestsPath=${workspaceFolder}/packages/vscode-graphql/dist/test"
       ],
-      "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
+      "outFiles": [
+        "${workspaceFolder}/packages/vscode-graphql/dist/test/**/*.js"
+      ],
       "preLaunchTask": "npm: watch"
     }
   ]

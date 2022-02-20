@@ -35,6 +35,7 @@
     {
       "path": "../packages/graphql-language-service-server/tsconfig.esm.json"
     },
+    // TODO: why do we need an esm build of the CLI?!
     {
       "path": "../packages/graphql-language-service-cli/tsconfig.esm.json"
     }

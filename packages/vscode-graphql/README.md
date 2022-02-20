@@ -78,8 +78,8 @@ To support language features like "go-to definition" across multiple files, plea
 
 ```yaml
 # .graphqlrc.yml
-schema: "schema.graphql"
-documents: "src/**/*.{graphql,js,ts,jsx,tsx}"
+schema: 'schema.graphql'
+documents: 'src/**/*.{graphql,js,ts,jsx,tsx}'
 ```
 
 ### Advanced Example
@@ -89,40 +89,40 @@ documents: "src/**/*.{graphql,js,ts,jsx,tsx}"
 module.exports = {
   projects: {
     app: {
-      schema: ["src/schema.graphql", "directives.graphql"],
-      documents: ["**/*.{graphql,js,ts,jsx,tsx}", "my/fragments.graphql"],
+      schema: ['src/schema.graphql', 'directives.graphql'],
+      documents: ['**/*.{graphql,js,ts,jsx,tsx}', 'my/fragments.graphql'],
       extensions: {
         endpoints: {
           default: {
-            url: "http://localhost:8000",
+            url: 'http://localhost:8000',
             headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
           },
         },
       },
     },
     db: {
-      schema: "src/generated/db.graphql",
-      documents: ["src/db/**/*.graphql", "my/fragments.graphql"],
+      schema: 'src/generated/db.graphql',
+      documents: ['src/db/**/*.graphql', 'my/fragments.graphql'],
       extensions: {
         codegen: [
           {
-            generator: "graphql-binding",
-            language: "typescript",
+            generator: 'graphql-binding',
+            language: 'typescript',
             output: {
-              binding: "src/generated/db.ts",
+              binding: 'src/generated/db.ts',
             },
           },
         ],
         endpoints: {
           default: {
-            url: "http://localhost:8080",
+            url: 'http://localhost:8080',
             headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
           },
         },
       },
     },
   },
-}
+};
 ```
 
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` is also valid.
@@ -211,13 +211,13 @@ This would look like:
 
 ```ts
 export default {
-  schema: "mschema.graphql",
+  schema: 'mschema.graphql',
   extension: {
     endpoints: {
-      default: "http://localhost:9000",
+      default: 'http://localhost:9000',
     },
   },
-}
+};
 ```
 
 (see above for per-project examples)
@@ -266,28 +266,24 @@ const myQuery = `#graphql
   query {
     something
   }
-`
+`;
 ```
 
 or
 
-
 ```ts
   const myQuery =
-  /* GraphiQL / 
+  /* GraphiQL /
 `
   query {
     something
   }
 `
 ```
-  
+
 ### Template literal expressions dont work with `Execute Query`
 
 Experimental support for template literal expressions ala `${}` has been added for language support, which just add an empty newline behind the scenes. It does not yet work for `Execute Query` codelans.
-
-
-
 
 ## Known Issues
 
@@ -315,6 +311,12 @@ To initiate the signature process please open a PR against this repo. The EasyCL
 You can find [detailed information here](https://github.com/graphql/graphql-wg/tree/main/membership). If you have issues, please email [operations@graphql.org](mailto:operations@graphql.org).
 
 If your company benefits from GraphQL and you would like to provide essential financial support for the systems and people that power our community, please also consider membership in the [GraphQL Foundation](https://foundation.graphql.org/join).
+
+## Credit
+
+This repository was originally created and maintained by [@divyenduz](https://github.com/divyenduz), thanks Divyendu!
+
+He granted it to graphql foundation in 2020.
 
 ## License
 

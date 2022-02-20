@@ -1,8 +1,8 @@
-import * as testRunner from "vscode/lib/testrunner";
+// import { configure } from "vscode-test";
 
-testRunner.configure({
- ui: "tdd",
- useColors: true
-});
+// testRunner.configure({
+//  ui: "tdd",
+//  useColors: true
+// });
 
-module.exports = testRunner;
+// module.exports = testRunner;
