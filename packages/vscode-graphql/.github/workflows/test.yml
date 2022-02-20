@@ -1,0 +1,18 @@
+name: Test
+
+on: pull_request
+
+jobs:
+  compile:
+    name: Compile and check peer dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Compile
+        run: npm run compile
+      - name: Check peer dependencies
+        run: npm list --production --parseable --depth=99999 --loglevel=error
+      - name: Attempt vsce Package
+        run: npm run vsce:package

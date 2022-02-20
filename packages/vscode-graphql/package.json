@@ -1,0 +1,265 @@
+{
+  "name": "vscode-graphql",
+  "version": "0.3.49",
+  "preview": true,
+  "private": true,
+  "license": "MIT",
+  "displayName": "GraphQL",
+  "keywords": [
+    "multi-root ready",
+    "graphql",
+    "lsp",
+    "graph"
+  ],
+  "description": "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tag.",
+  "icon": "assets/images/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/vscode-graphql"
+  },
+  "homepage": "https://github.com/graphql/vscode-graphql/blob/master/README.md",
+  "galleryBanner": {
+    "color": "#032539",
+    "theme": "dark"
+  },
+  "publisher": "GraphQL",
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:vscode-graphql.isDebugging",
+    "onCommand:vscode-graphql.contentProvider",
+    "onLanguage:graphql",
+    "workspaceContains:**/.graphqlrc",
+    "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
+    "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
+    "*"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "graphql",
+        "extensions": [
+          ".gql",
+          ".graphql",
+          ".graphqls"
+        ],
+        "aliases": [
+          "GraphQL",
+          "graphql"
+        ],
+        "configuration": "./language/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "graphql",
+        "path": "./grammars/graphql.json",
+        "scopeName": "source.graphql"
+      },
+      {
+        "injectTo": [
+          "source.js",
+          "source.ts",
+          "source.js.jsx",
+          "source.tsx",
+          "source.vue",
+          "source.svelte"
+        ],
+        "scopeName": "inline.graphql",
+        "path": "./grammars/graphql.js.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.reason",
+          "source.ocaml"
+        ],
+        "scopeName": "inline.graphql.re",
+        "path": "./grammars/graphql.re.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.rescript"
+        ],
+        "scopeName": "inline.graphql.res",
+        "path": "./grammars/graphql.rescript.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "scopeName": "markdown.graphql.codeblock",
+        "path": "./grammars/graphql.markdown.codeblock.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "graphql",
+        "path": "./snippets/graphql.json"
+      }
+    ],
+    "configuration": {
+      "title": "VSCode GraphQL",
+      "properties": {
+        "vscode-graphql.debug": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": false,
+          "description": "Enable debug logs"
+        },
+        "vscode-graphql.trace.server": {
+          "type": [
+            "string"
+          ],
+          "default": "off",
+          "description": "Enable tracing for language server"
+        },
+        "vscode-graphql.showExecCodelens": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Show codelens to execute operations inline",
+          "default": true
+        },
+        "vscode-graphql.cacheSchemaFileForLookup": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Disabled by default."
+        },
+        "vscode-graphql.rejectUnauthorized": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Fail the request on invalid certificate",
+          "default": true
+        },
+        "graphql-config.load.rootDir": {
+          "type": [
+            "string"
+          ],
+          "description": "Base dir for graphql config loadConfig()"
+        },
+        "graphql-config.load.filePath": {
+          "type": [
+            "string"
+          ],
+          "description": "filePath for graphql config loadConfig()",
+          "default": null
+        },
+        "graphql-config.load.legacy": {
+          "type": [
+            "boolean"
+          ],
+          "description": "legacy mode for graphql config v2 config",
+          "default": null
+        },
+        "graphql-config.load.configName": {
+          "type": [
+            "string"
+          ],
+          "description": "optional <configName>.config.js instead of default `graphql`",
+          "default": null
+        },
+        "graphql-config.dotEnvPath": {
+          "type": [
+            "string"
+          ],
+          "description": "optional .env load path, if not the default",
+          "default": null
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "vscode-graphql.isDebugging",
+        "title": "VSCode GraphQL: Is Debugging?"
+      },
+      {
+        "command": "vscode-graphql.restart",
+        "title": "VSCode GraphQL: Manual Restart"
+      },
+      {
+        "command": "vscode-graphql.showOutputChannel",
+        "title": "VSCode GraphQL: Show output channel"
+      },
+      {
+        "command": "vscode-graphql.contentProvider",
+        "title": "VSCode GraphQL: Execute GraphQL Operations"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile -- --minify",
+    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "compile:server": "esbuild ./src/server/server.ts --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
+    "build": "npm run compile -- --sourcemap",
+    "watch": "npm run build --watch",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "vsce:package": "vsce package",
+    "env:source": "export $(cat .envrc | xargs)",
+    "vsce:publish": "vsce publish",
+    "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
+    "publish": "npm run vsce:publish && npm run open-vsx:publish",
+    "upgrade-interactive": "npx npm-check -u"
+  },
+  "devDependencies": {
+    "@types/capitalize": "2.0.0",
+    "@types/dotenv": "8.2.0",
+    "@types/mocha": "5.2.7",
+    "@types/node": "16.11.25",
+    "@types/node-fetch": "3.0.3",
+    "@types/vscode": "1.62.0",
+    "@types/ws": "8.2.2",
+    "esbuild": "0.13.15",
+    "ovsx": "0.3.0",
+    "tslint": "5.20.1",
+    "typescript": "4.4.4",
+    "vsce": "2.6.7",
+    "vscode": "1.1.37"
+  },
+  "dependencies": {
+    "@changesets/changelog-github": "0.4.3",
+    "@changesets/cli": "2.18.1",
+    "@graphql-tools/load": "7.5.1",
+    "@graphql-tools/url-loader": "7.7.1",
+    "@graphql-tools/wrap": "8.4.0",
+    "@urql/core": "2.3.6",
+    "babel-polyfill": "6.26.0",
+    "capitalize": "2.0.4",
+    "dotenv": "10.0.0",
+    "escape-html": "1.0.3",
+    "graphql": "15.8.0",
+    "graphql-config": "4.1.0",
+    "graphql-language-service-server": "2.7.14",
+    "graphql-tag": "2.12.6",
+    "graphql-ws": "5.5.5",
+    "node-fetch": "2.6.7",
+    "vscode-languageclient": "5.2.1",
+    "ws": "8.2.3"
+  },
+  "resolutions": {
+    "graphql-config": "4.1.0"
+  }
+}
