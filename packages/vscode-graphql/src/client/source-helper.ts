@@ -1,4 +1,4 @@
-import { Position, OutputChannel, TextDocument } from "vscode"
+import { Position, OutputChannel, TextDocument } from 'vscode';
 import {
   visit,
   parse,
@@ -8,97 +8,97 @@ import {
   ListTypeNode,
   OperationDefinitionNode,
   print,
-} from "graphql"
-import { GraphQLProjectConfig } from "graphql-config"
-import { ASTNode, DocumentNode } from "graphql/language"
+} from 'graphql';
+import { GraphQLProjectConfig } from 'graphql-config';
+import { ASTNode, DocumentNode } from 'graphql/language';
 
 export type FragmentInfo = {
-  filePath?: string
-  content: string
-  definition: FragmentDefinitionNode
-}
+  filePath?: string;
+  content: string;
+  definition: FragmentDefinitionNode;
+};
 
-import nullthrows from "nullthrows"
+import nullthrows from 'nullthrows';
 
 export class SourceHelper {
-  private outputChannel: OutputChannel
-  private fragmentDefinitions: Map<string, FragmentInfo>
+  private outputChannel: OutputChannel;
+  private fragmentDefinitions: Map<string, FragmentInfo>;
   constructor(outputChannel: OutputChannel) {
-    this.outputChannel = outputChannel
-    this.fragmentDefinitions = new Map()
+    this.outputChannel = outputChannel;
+    this.fragmentDefinitions = new Map();
   }
 
   getTypeForVariableDefinitionNode(
     node: VariableDefinitionNode,
   ): GraphQLScalarType {
-    let namedTypeNode: NamedTypeNode | null = null
-    let isList = false
+    let namedTypeNode: NamedTypeNode | null = null;
+    let isList = false;
     visit(node, {
       ListType(_listNode: ListTypeNode) {
-        isList = true
+        isList = true;
       },
       NamedType(namedNode: NamedTypeNode) {
-        namedTypeNode = namedNode
+        namedTypeNode = namedNode;
       },
-    })
+    });
     if (isList) {
       // TODO: This is not a name.value but a custom type that might confuse future programmers
-      return "ListNode"
+      return 'ListNode';
     }
     if (namedTypeNode) {
       // TODO: Handle this for object types/ enums/ custom scalars
-      return (namedTypeNode as NamedTypeNode).name.value as GraphQLScalarType
+      return (namedTypeNode as NamedTypeNode).name.value as GraphQLScalarType;
     } else {
       // TODO: Is handling all via string a correct fallback?
-      return "String"
+      return 'String';
     }
   }
   validate(value: string, type: GraphQLScalarType) {
     try {
       switch (type) {
-        case "Int":
+        case 'Int':
           if (parseInt(value)) {
-            return null
+            return null;
           }
-          break
-        case "Float":
+          break;
+        case 'Float':
           if (parseFloat(value)) {
-            return null
+            return null;
           }
-          break
-        case "Boolean":
-          if (value === "true" || value === "false") {
-            return null
+          break;
+        case 'Boolean':
+          if (value === 'true' || value === 'false') {
+            return null;
           }
-          break
-        case "String":
+          break;
+        case 'String':
           if (value.length && !Array.isArray(value)) {
-            return null
+            return null;
           }
-          break
+          break;
         default:
           // For scalar types, it is impossible to know what data type they
           // should be. Therefore we don't do any validation.
-          return null
+          return null;
       }
     } catch {
-      return `${value} is not a valid ${type}`
+      return `${value} is not a valid ${type}`;
     }
-    return `${value} is not a valid ${type}`
+    return `${value} is not a valid ${type}`;
   }
 
   typeCast(value: string, type: GraphQLScalarType) {
-    if (type === "Int") {
-      return parseInt(value)
+    if (type === 'Int') {
+      return parseInt(value);
     }
-    if (type === "Float") {
-      return parseFloat(value)
+    if (type === 'Float') {
+      return parseFloat(value);
     }
-    if (type === "Boolean") {
-      return Boolean(value)
+    if (type === 'Boolean') {
+      return Boolean(value);
     }
-    if (type === "String") {
-      return value
+    if (type === 'String') {
+      return value;
     }
 
     // TODO: Does this note need to have an impact?
@@ -109,116 +109,116 @@ export class SourceHelper {
 
     // Object type
     try {
-      return JSON.parse(value)
+      return JSON.parse(value);
     } catch (e) {
       this.outputChannel.appendLine(
         `Failed to parse user input as JSON, please use double quotes.`,
-      )
-      return value
+      );
+      return value;
     }
   }
   async getFragmentDefinitions(
     projectConfig: GraphQLProjectConfig,
   ): Promise<Map<string, FragmentInfo>> {
-    const sources = await projectConfig.getDocuments()
-    const fragmentDefinitions = this.fragmentDefinitions
+    const sources = await projectConfig.getDocuments();
+    const fragmentDefinitions = this.fragmentDefinitions;
 
     sources.forEach(source => {
       visit(source.document as DocumentNode, {
         FragmentDefinition(node) {
-          const existingDef = fragmentDefinitions.get(node.name.value)
-          const newVal = print(node)
+          const existingDef = fragmentDefinitions.get(node.name.value);
+          const newVal = print(node);
           if (existingDef && existingDef.content !== newVal) {
             fragmentDefinitions.set(node.name.value, {
               definition: node,
               content: newVal,
               filePath: source.location,
-            })
+            });
           } else if (!existingDef) {
             fragmentDefinitions.set(node.name.value, {
               definition: node,
               content: newVal,
               filePath: source.location,
-            })
+            });
           }
         },
-      })
-    })
-    return fragmentDefinitions
+      });
+    });
+    return fragmentDefinitions;
   }
 
   extractAllTemplateLiterals(
     document: TextDocument,
-    tags: string[] = ["gql"],
+    tags: string[] = ['gql'],
   ): ExtractedTemplateLiteral[] {
-    const text = document.getText()
-    const documents: ExtractedTemplateLiteral[] = []
+    const text = document.getText();
+    const documents: ExtractedTemplateLiteral[] = [];
 
-    if (document.languageId === "graphql") {
-      const text = document.getText()
-      processGraphQLString(text, 0)
-      return documents
+    if (document.languageId === 'graphql') {
+      const text = document.getText();
+      processGraphQLString(text, 0);
+      return documents;
     }
 
     tags.forEach(tag => {
       // https://regex101.com/r/Pd5PaU/2
-      const regExpGQL = new RegExp(tag + "\\s*`([\\s\\S]+?)`", "mg")
+      const regExpGQL = new RegExp(tag + '\\s*`([\\s\\S]+?)`', 'mg');
 
-      let result: RegExpExecArray | null
+      let result: RegExpExecArray | null;
       while ((result = regExpGQL.exec(text)) !== null) {
-        const contents = result[1]
+        const contents = result[1];
 
         // https://regex101.com/r/KFMXFg/2
-        if (Boolean(contents.match("/${(.+)?}/g"))) {
+        if (contents.match('/${(.+)?}/g')) {
           // We are ignoring operations with template variables for now
-          continue
+          continue;
         }
         try {
-          processGraphQLString(contents, result.index + tag.length + 1)
+          processGraphQLString(contents, result.index + tag.length + 1);
         } catch (e) {}
       }
-    })
-    return documents
+    });
+    return documents;
 
     function processGraphQLString(text: string, offset: number) {
       try {
-        const ast = parse(text)
+        const ast = parse(text);
         const operations = ast.definitions.filter(
-          def => def.kind === "OperationDefinition",
-        )
+          def => def.kind === 'OperationDefinition',
+        );
         operations.forEach((op: any) => {
           const filteredAst = {
             ...ast,
             definitions: ast.definitions.filter(def => {
-              if (def.kind === "OperationDefinition" && def !== op) {
-                return false
+              if (def.kind === 'OperationDefinition' && def !== op) {
+                return false;
               }
-              return true
+              return true;
             }),
-          }
-          const content = print(filteredAst)
+          };
+          const content = print(filteredAst);
           documents.push({
-            content: content,
+            content,
             uri: document.uri.path,
             position: document.positionAt(op.loc.start + offset),
             definition: op,
             ast: filteredAst,
-          })
-        })
+          });
+        });
       } catch (e) {}
     }
   }
 }
 
-export type GraphQLScalarType = "String" | "Float" | "Int" | "Boolean" | string
-export type GraphQLScalarTSType = string | number | boolean
+export type GraphQLScalarType = 'String' | 'Float' | 'Int' | 'Boolean' | string;
+export type GraphQLScalarTSType = string | number | boolean;
 
 export interface ExtractedTemplateLiteral {
-  content: string
-  uri: string
-  position: Position
-  ast: DocumentNode
-  definition: OperationDefinitionNode
+  content: string;
+  uri: string;
+  position: Position;
+  ast: DocumentNode;
+  definition: OperationDefinitionNode;
 }
 
 export const getFragmentDependencies = async (
@@ -228,49 +228,49 @@ export const getFragmentDependencies = async (
   // If there isn't context for fragment references,
   // return an empty array.
   if (!fragmentDefinitions) {
-    return []
+    return [];
   }
   // If the query cannot be parsed, validations cannot happen yet.
   // Return an empty array.
-  let parsedQuery
+  let parsedQuery;
   try {
-    parsedQuery = parse(query)
+    parsedQuery = parse(query);
   } catch (error) {
-    return []
+    return [];
   }
-  return getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions)
-}
+  return getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
+};
 
 export const getFragmentDependenciesForAST = async (
   parsedQuery: ASTNode,
   fragmentDefinitions: Map<string, FragmentInfo>,
 ): Promise<FragmentInfo[]> => {
   if (!fragmentDefinitions) {
-    return []
+    return [];
   }
 
-  const existingFrags = new Map()
-  const referencedFragNames = new Set<string>()
+  const existingFrags = new Map();
+  const referencedFragNames = new Set<string>();
 
   visit(parsedQuery, {
     FragmentDefinition(node) {
-      existingFrags.set(node.name.value, true)
+      existingFrags.set(node.name.value, true);
     },
     FragmentSpread(node) {
       if (!referencedFragNames.has(node.name.value)) {
-        referencedFragNames.add(node.name.value)
+        referencedFragNames.add(node.name.value);
       }
     },
-  })
+  });
 
-  const asts = new Set<FragmentInfo>()
+  const asts = new Set<FragmentInfo>();
   referencedFragNames.forEach(name => {
     if (!existingFrags.has(name) && fragmentDefinitions.has(name)) {
-      asts.add(nullthrows(fragmentDefinitions.get(name)))
+      asts.add(nullthrows(fragmentDefinitions.get(name)));
     }
-  })
+  });
 
-  const referencedFragments: FragmentInfo[] = []
+  const referencedFragments: FragmentInfo[] = [];
 
   asts.forEach(ast => {
     visit(ast.definition, {
@@ -279,15 +279,15 @@ export const getFragmentDependenciesForAST = async (
           !referencedFragNames.has(node.name.value) &&
           fragmentDefinitions.get(node.name.value)
         ) {
-          asts.add(nullthrows(fragmentDefinitions.get(node.name.value)))
-          referencedFragNames.add(node.name.value)
+          asts.add(nullthrows(fragmentDefinitions.get(node.name.value)));
+          referencedFragNames.add(node.name.value);
         }
       },
-    })
+    });
     if (!existingFrags.has(ast.definition.name.value)) {
-      referencedFragments.push(ast)
+      referencedFragments.push(ast);
     }
-  })
+  });
 
-  return referencedFragments
-}
+  return referencedFragments;
+};

@@ -7,18 +7,18 @@ import {
   Range,
   Position,
   ProviderResult,
-} from "vscode"
+} from 'vscode';
 
-import { SourceHelper, ExtractedTemplateLiteral } from "./source-helper"
-import capitalize from "capitalize"
+import { SourceHelper, ExtractedTemplateLiteral } from './source-helper';
+import capitalize from 'capitalize';
 
 export class GraphQLCodeLensProvider implements CodeLensProvider {
-  outputChannel: OutputChannel
-  sourceHelper: SourceHelper
+  outputChannel: OutputChannel;
+  sourceHelper: SourceHelper;
 
   constructor(outputChannel: OutputChannel) {
-    this.outputChannel = outputChannel
-    this.sourceHelper = new SourceHelper(this.outputChannel)
+    this.outputChannel = outputChannel;
+    this.sourceHelper = new SourceHelper(this.outputChannel);
   }
 
   public provideCodeLenses(
@@ -29,8 +29,8 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
   ): ProviderResult<[]> {
     const literals: ExtractedTemplateLiteral[] = this.sourceHelper.extractAllTemplateLiterals(
       document,
-      ["gql", "graphql", "/\\* GraphQL \\*/"],
-    )
+      ['gql', 'graphql', '/\\* GraphQL \\*/'],
+    );
     const results = literals.map(literal => {
       return new CodeLens(
         new Range(
@@ -39,12 +39,12 @@ export class GraphQLCodeLensProvider implements CodeLensProvider {
         ),
         {
           title: `Execute ${capitalize(literal.definition.operation)}`,
-          command: "vscode-graphql.contentProvider",
+          command: 'vscode-graphql.contentProvider',
           arguments: [literal],
         },
-      )
-    })
+      );
+    });
 
-    return results as ProviderResult<[]>
+    return results as ProviderResult<[]>;
   }
 }
