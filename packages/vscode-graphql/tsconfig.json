@@ -1,8 +1,10 @@
 {
+  "extends": "../../resources/tsconfig.base.cjs",
   "compilerOptions": {
+    "composite": true,
     "module": "commonjs",
     "target": "es6",
-    "outDir": "out",
+    "outDir": "dist",
     "lib": ["es6", "esnext", "dom"],
     "sourceMap": true,
     "rootDir": "src",
@@ -17,5 +19,10 @@
     "skipLibCheck": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules", ".vscode-test", "ts-graphql-plugin"]
+  "exclude": ["node_modules", ".vscode-test", "ts-graphql-plugin", "dist"],
+  "references": [
+    {
+      "path": "../graphql-language-service-server"
+    }
+  ]
 }
