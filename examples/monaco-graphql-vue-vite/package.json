@@ -1,0 +1,26 @@
+{
+  "name": "example-monaco-graphql-vue-vite",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@graphiql/toolkit": "^0.4.2",
+    "graphql-language-service": "^4.1.5",
+    "jsonc-parser": "^3.0.0",
+    "monaco-editor": "^0.31.0",
+    "monaco-graphql": "^1.0.10"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.2.2",
+    "path-browserify": "^1.0.1",
+    "vite": "^2.8.4",
+    "vite-plugin-monaco-editor": "^1.0.10",
+    "vue": "^3.2.31"
+  },
+  "peerDependencies": {
+    "graphql": "^16.1.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  }
+}
