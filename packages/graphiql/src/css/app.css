@@ -488,6 +488,65 @@ div.CodeMirror-lint-tooltip > * + * {
   color: #000;
 }
 
+.graphiql-container .tabs {
+  height: 40px;
+  background: linear-gradient(#f7f7f7, #e2e2e2);
+  display: flex;
+}
+
+.graphiql-container .tab {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 3px;
+  border-left: 1px solid lightgray;
+}
+
+.graphiql-container .tab.active {
+  font-weight: bold;
+}
+
+.graphiql-container .tab.active,
+.graphiql-container .tab:hover {
+  background: linear-gradient(#dfdfdf, #c4c4c4);
+}
+
+.graphiql-container .tab .close {
+  cursor: pointer;
+  position: absolute;
+  border: none;
+  background: transparent;
+  margin: 0;
+  padding: 3px;
+  right: 0;
+  top: 0;
+  height: 15px;
+  width: 15px;
+  line-height: 7px;
+}
+
+.graphiql-container .tab .close::before {
+  content: '+';
+  transform: rotate(45deg);
+  display: inline-block;
+}
+
+.graphiql-container .tab-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 20px;
+  padding-bottom: 3px;
+}
+
 /* COLORS */
 
 .graphiql-container .CodeMirror-foldmarker {
