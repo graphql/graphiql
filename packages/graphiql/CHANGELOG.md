@@ -1,5 +1,27 @@
 # Change Log
 
+## 1.6.0
+
+### Minor Changes
+
+- [#2191](https://github.com/graphql/graphiql/pull/2191) [`eb8af7b5`](https://github.com/graphql/graphiql/commit/eb8af7b5666e7ed01497a862127011524fc400f5) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Allow inserting content before the topBar element via the `beforeTopBarContent` property.
+
+  ```ts
+  <GraphiQL beforeTopBarContent={<SomeComponent />} />
+  ```
+
+* [#2189](https://github.com/graphql/graphiql/pull/2189) [`96d47267`](https://github.com/graphql/graphiql/commit/96d4726716b782fcafa9d6c1671f3a3050ebe0b7) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Apply variable editor title text styles via class `variable-editor-title-text` instead of using inline-styles. This allows better customization of styles. An active element also has the class `active`. This allows overriding the inactive state color using the selector `.graphiql-container .variable-editor-title-text` and overriding the active state color using the selector `.graphiql-container .variable-editor-title-text.active`.
+
+- [#2190](https://github.com/graphql/graphiql/pull/2190) [`d5179899`](https://github.com/graphql/graphiql/commit/d517989996cf6f33ef7e08d18a870e2bed565cca) Thanks [@n1ru4l](https://github.com/n1ru4l)! - New callback property `onSchemaChange` for `GraphiQL`.
+
+  The callback is invoked with the successfully fetched schema from the remote.
+
+  **Usage example:**
+
+  ```tsx
+  <GraphiQL onSchemaChange={schema => console.log(schema)} />
+  ```
+
 ## 1.5.20
 
 ### Patch Changes
