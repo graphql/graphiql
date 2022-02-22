@@ -284,6 +284,10 @@ export type GraphiQLProps = {
    * default: 20
    */
   maxHistoryLength?: number;
+  /**
+   * Callback that is invoked once a remote schema has been fetched.
+   */
+  onSchemaChange?: (schema: GraphQLSchema) => void;
 };
 
 export type GraphiQLState = {
@@ -1120,6 +1124,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               ...queryFacts,
               schemaErrors: undefined,
             });
+            this.props.onSchemaChange?.(schema);
           }
         } else {
           // handle as if it were an error if the fetcher response is not a string or response.data is not present
