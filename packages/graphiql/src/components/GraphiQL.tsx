@@ -810,11 +810,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   }}
                   onMouseDown={this.handleSecondaryEditorResizeStart}>
                   <div
-                    style={{
-                      cursor: 'pointer',
-                      color: this.state.variableEditorActive ? '#000' : 'gray',
-                      display: 'inline-block',
-                    }}
+                    className={`variable-editor-title-text${
+                      this.state.variableEditorActive ? ' active' : ''
+                    }`}
                     onClick={this.handleOpenVariableEditorTab}
                     onMouseDown={this.handleTabClickPropogation}>
                     {'Query Variables'}
@@ -822,11 +820,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   {this.state.headerEditorEnabled && (
                     <div
                       style={{
-                        cursor: 'pointer',
-                        color: this.state.headerEditorActive ? '#000' : 'gray',
-                        display: 'inline-block',
                         marginLeft: '20px',
                       }}
+                      className={`variable-editor-title-text${
+                        this.state.headerEditorActive ? ' active' : ''
+                      }`}
                       onClick={this.handleOpenHeaderEditorTab}
                       onMouseDown={this.handleTabClickPropogation}>
                       {'Request Headers'}

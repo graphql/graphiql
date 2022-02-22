@@ -496,6 +496,16 @@ div.CodeMirror-lint-tooltip > * + * {
   margin-top: 12px;
 }
 
+.graphiql-container .variable-editor-title-text {
+  cursor: pointer;
+  display: inline-block;
+  color: gray;
+}
+
+.graphiql-container .variable-editor-title-text.active {
+  color: #000;
+}
+
 /* COLORS */
 
 .graphiql-container .CodeMirror-foldmarker {
