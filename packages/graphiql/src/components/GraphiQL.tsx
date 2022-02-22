@@ -71,6 +71,7 @@ import HistoryStore from '../utility/HistoryStore';
 
 import { validateSchema } from 'graphql';
 import { Tab, TabAddButton, Tabs } from './Tabs';
+import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -522,7 +523,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             query,
             variables: variables as string,
             headers: headers as string,
-            operationName: props.operationName,
+            operationName,
             response: undefined,
           },
         ],
@@ -1726,6 +1727,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.state.operations,
       this.state.schema,
     );
+
     this.setState(
       state => ({
         ...state,
@@ -1739,6 +1741,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             }
             return {
               ...tab,
+              title: fuzzyExtractOperationTitle(value),
               query: value,
             };
           }),

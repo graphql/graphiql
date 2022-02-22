@@ -1,0 +1,13 @@
+/**
+ * Very simple and quick way of extracting the operation title from a document string (compared to parsing and traversing the whole AST).
+ */
+export function fuzzyExtractOperationTitle(str: string): string {
+  const regex = /(query|subscription|mutation) ([a-zA-Z0-9]+)/;
+  const match = regex.exec(str);
+
+  if (match === null) {
+    return '<untitled>';
+  }
+
+  return match[2] as string;
+}
