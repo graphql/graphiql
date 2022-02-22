@@ -535,7 +535,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         tab.query = tab.query;
         tab.variables = tab.variables;
         tab.headers = tab.headers;
-        tab.response = tab.response;
+        tab.response = undefined;
+        tab.operationName = undefined;
       });
     }
 
@@ -707,8 +708,13 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.componentIsMounted && this.setState(nextState, callback);
   };
 
-  _persistTabsState = () => {
-    this._storage.set('tabState', JSON.stringify(this.state.tabs));
+  private _persistTabsState = () => {
+    this._storage.set(
+      'tabState',
+      JSON.stringify(this.state.tabs, (key, value) =>
+        key === 'response' ? undefined : value,
+      ),
+    );
   };
 
   render() {
