@@ -72,6 +72,8 @@ import HistoryStore from '../utility/HistoryStore';
 import { validateSchema } from 'graphql';
 import { Tab, TabAddButton, Tabs } from './Tabs';
 import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
+import { idFromTabContents } from '../utility/id-from-tab-contents';
+import { guid } from '../utility/guid';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -294,6 +296,10 @@ export type GraphiQLProps = {
    * Content to place before the top bar (logo).
    */
   beforeTopBarContent?: React.ReactElement | null;
+  /**
+   * On tab change
+   */
+  onTabChange?: (tab: TabsState) => void;
 };
 
 export type GraphiQLState = {
@@ -348,6 +354,7 @@ const handleSingleError = (
 
 type TabState = {
   id: string;
+  hash: string;
   title: string;
   query: string | undefined;
   variables: string | undefined;
@@ -511,33 +518,54 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       '',
     );
 
+    const initialTabId = idFromTabContents({
+      query,
+      variables: variables as string,
+      headers: headers as string,
+    });
+
+    const initialTab: TabState = {
+      id: guid(),
+      hash: initialTabId,
+      title: operationName ?? '<untitled>',
+      query,
+      variables: variables as string,
+      headers: headers as string,
+      operationName,
+      response: undefined,
+    };
+
     const rawTabState = this._storage.get('tabState');
     let tabsState: TabsState;
     if (rawTabState === null) {
       tabsState = {
         activeTabIndex: 0,
-        tabs: [
-          {
-            id: '1',
-            title: operationName ?? '<untitled>',
-            query,
-            variables: variables as string,
-            headers: headers as string,
-            operationName,
-            response: undefined,
-          },
-        ],
+        tabs: [initialTab],
       };
     } else {
       tabsState = JSON.parse(rawTabState);
-      // because undefined is omitted during JSON.stringify we explicitly set it here
-      tabsState.tabs.forEach(tab => {
-        tab.query = tab.query;
-        tab.variables = tab.variables;
-        tab.headers = tab.headers;
+      let queryParameterOperationIsWithinTabs = false;
+      for (const tab of tabsState.tabs) {
+        // ensure property is present
+        tab.query = tab.query!;
+        tab.variables = tab.variables!;
+        tab.headers = tab.headers!;
         tab.response = undefined;
         tab.operationName = undefined;
-      });
+
+        tab.id = guid();
+
+        tab.hash = idFromTabContents(tab);
+
+        if (tab.hash === initialTabId) {
+          queryParameterOperationIsWithinTabs = true;
+        }
+      }
+
+      if (queryParameterOperationIsWithinTabs === false) {
+        tabsState.tabs.push(initialTab);
+        tabsState.activeTabIndex = tabsState.tabs.length - 1;
+      }
     }
 
     const activeTab = tabsState.tabs.find(
@@ -715,6 +743,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         key === 'response' ? undefined : value,
       ),
     );
+    this.props.onTabChange?.(this.state.tabs);
   };
 
   render() {
@@ -857,6 +886,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                         operationName: state.operationName,
                         headers: state.headers,
                         response: state.response,
+                        hash: idFromTabContents({
+                          query: state.query,
+                          variables: state.variables,
+                          headers: state.headers,
+                        }),
                       };
                     });
 
@@ -907,13 +941,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   const oldActiveTabIndex = state.tabs.activeTabIndex;
 
                   const newTab: TabState = {
-                    id: '999',
+                    id: guid(),
                     title: '<untitled>',
                     headers: '',
                     variables: '',
                     query: '',
                     operationName: '',
                     response: '',
+                    hash: idFromTabContents({
+                      query: '',
+                      variables: '',
+                      headers: '',
+                    }),
                   };
 
                   const tabs = state.tabs.tabs.map((tab, index) => {
@@ -1749,6 +1788,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               ...tab,
               title: fuzzyExtractOperationTitle(value),
               query: value,
+              hash: idFromTabContents({
+                query: value,
+                headers: tab.headers,
+                variables: tab.variables,
+              }),
             };
           }),
         },
@@ -1822,6 +1866,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             return {
               ...tab,
               variables: value,
+              hash: idFromTabContents({
+                query: tab.query,
+                headers: tab.headers,
+                variables: value,
+              }),
             };
           }),
         },
@@ -1848,6 +1897,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             return {
               ...tab,
               headers: value,
+              hash: idFromTabContents({
+                query: tab.query,
+                headers: value,
+                variables: tab.variables,
+              }),
             };
           }),
         },
