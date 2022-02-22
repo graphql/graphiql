@@ -288,6 +288,10 @@ export type GraphiQLProps = {
    * Callback that is invoked once a remote schema has been fetched.
    */
   onSchemaChange?: (schema: GraphQLSchema) => void;
+  /**
+   * Content to place before the top bar (logo).
+   */
+  beforeTopBarContent?: React.ReactElement | null;
 };
 
 export type GraphiQLState = {
@@ -749,6 +753,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         )}
         <div className="editorWrap">
           <div className="topBarWrap">
+            {this.props.beforeTopBarContent}
             <div className="topBar">
               {logo}
               <ExecuteButton
