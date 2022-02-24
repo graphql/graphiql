@@ -40,7 +40,6 @@ module.exports = (dir, env = 'dom') => {
       'test',
       'examples',
       'graphiql-2-rfc-context',
-      'graphql-language-service-types',
       '.d.ts',
       'types.ts',
     ],

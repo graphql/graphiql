@@ -6,20 +6,6 @@
     "outDir": "./dist",
     "baseUrl": "."
   },
-  "references": [
-    {
-      "path": "../graphql-language-service-interface"
-    },
-    {
-      "path": "../graphql-language-service-parser"
-    },
-    {
-      "path": "../graphql-language-service-types"
-    },
-    {
-      "path": "../graphql-language-service-utils"
-    }
-  ],
   "include": ["src"],
   "exclude": ["**/__tests__/**", "**/*.spec.*"]
 }

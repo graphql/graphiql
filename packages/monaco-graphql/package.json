@@ -27,7 +27,6 @@
   ],
   "dependencies": {
     "graphql-language-service": "^4.1.5",
-    "graphql-language-service-utils": "^2.7.1",
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
