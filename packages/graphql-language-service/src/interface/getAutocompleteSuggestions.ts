@@ -31,11 +31,7 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import {
-  CompletionItem,
-  AllTypeInfo,
-  IPosition,
-} from 'graphql-language-service-types';
+import { CompletionItem, AllTypeInfo, IPosition } from '../types';
 
 import {
   GraphQLBoolean,
@@ -65,7 +61,7 @@ import {
   RuleKind,
   _RuleKinds,
   ContextTokenForCodeMirror,
-} from 'graphql-language-service-parser';
+} from '../parser';
 
 import {
   forEachState,

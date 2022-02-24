@@ -13,7 +13,7 @@ import {
   TokenKind,
   IPosition,
   OutlineTree,
-} from 'graphql-language-service-types';
+} from '../types';
 
 import {
   Kind,
@@ -36,7 +36,8 @@ import {
   FieldDefinitionNode,
   EnumValueDefinitionNode,
 } from 'graphql';
-import { offsetToPosition } from 'graphql-language-service-utils';
+
+import { offsetToPosition } from '../utils';
 
 const { INLINE_FRAGMENT } = Kind;
 

@@ -14,12 +14,9 @@ import {
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
 } from 'graphql/type/introspection';
-import {
-  CompletionItemBase,
-  AllTypeInfo,
-} from 'graphql-language-service-types';
+import { CompletionItemBase, AllTypeInfo } from '../types';
 
-import { ContextTokenUnion, State } from 'graphql-language-service-parser';
+import { ContextTokenUnion, State } from '../parser';
 
 // Utility for returning the state representing the Definition this token state
 // is within, if any.

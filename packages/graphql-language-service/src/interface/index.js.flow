@@ -21,7 +21,7 @@ import type {
   CompletionItemBase,
   TypeInfo,
   State,
-} from 'graphql-language-service-types';
+} from 'graphql-language-service';
 import type { ValidationRule, GraphQLSchema } from 'graphql';
 import type { Hover } from 'vscode-languageserver-types';
 import { GraphQLDirective } from "graphql";

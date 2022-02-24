@@ -40,7 +40,7 @@ export {
   canUseDirective,
   SuggestionCommand,
   AutocompleteSuggestionOptions,
-} from 'graphql-language-service-interface';
+} from './interface';
 
 /**
  * The dependency-less streaming token parser used for getAutocompleteSuggestions, getHover and more
@@ -56,7 +56,7 @@ export {
   list,
   t,
   opt,
-} from 'graphql-language-service-parser';
+} from './parser';
 
 export type {
   RuleOrString,
@@ -71,7 +71,7 @@ export type {
   ContextTokenForCodeMirror,
   ContextTokenUnion,
   RuleKind,
-} from 'graphql-language-service-parser';
+} from './parser';
 
 /**
  * Types and enums to use across projects
@@ -96,12 +96,9 @@ export type {
   FileChangeType,
   GraphQLCache,
   GraphQLExtensionDeclaration,
-} from 'graphql-language-service-types';
+} from './types';
 
-export {
-  CompletionItemKind,
-  FileChangeTypeKind,
-} from 'graphql-language-service-types';
+export { CompletionItemKind, FileChangeTypeKind } from './types';
 
 /**
  * Utilities useful for language services across runtimes
@@ -126,4 +123,4 @@ export {
   VariableToType,
   QueryFacts,
   Range,
-} from 'graphql-language-service-utils';
+} from './utils';

@@ -17,19 +17,9 @@ import {
   Location,
 } from 'graphql';
 
-import {
-  Definition,
-  FragmentInfo,
-  Uri,
-  ObjectTypeInfo,
-} from 'graphql-language-service-types';
+import { Definition, FragmentInfo, Uri, ObjectTypeInfo } from '../types';
 
-import {
-  locToRange,
-  offsetToPosition,
-  Range,
-  Position,
-} from 'graphql-language-service-utils';
+import { locToRange, offsetToPosition, Range, Position } from '../utils';
 
 export type DefinitionQueryResult = {
   queryRange: Range[];
