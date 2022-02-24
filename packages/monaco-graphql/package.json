@@ -30,7 +30,7 @@
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
-    "graphql": "16.0.0-experimental-stream-defer.5",
+    "graphql": "^16.4.0",
     "monaco-editor": "^0.31.0",
     "vscode-languageserver-types": "^3.15.1"
   },
