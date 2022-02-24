@@ -121,6 +121,20 @@ describe('getAutocompleteSuggestions', () => {
       });
   }
   describe('with Operation types', () => {
+    const expectedDirectiveSuggestions = [
+      { label: 'include' },
+      { label: 'skip' },
+    ];
+
+    console.log({ graphQLVersion });
+
+    // TODO: remove this once defer and stream are merged to `graphql`
+    if (graphQLVersion.startsWith('16.0.0-experimental-stream-defer')) {
+      console.log('expect stream');
+      expectedDirectiveSuggestions.push({ label: 'stream' }, { label: 'test' });
+    } else {
+      expectedDirectiveSuggestions.push({ label: 'test' });
+    }
     it('provides correct sortText response', () => {
       const result = getAutocompleteSuggestions(
         schema,
@@ -431,16 +445,6 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'CharacterDetails2', detail: 'Human' },
       ]);
     });
-
-    const expectedDirectiveSuggestions = [
-      { label: 'include' },
-      { label: 'skip' },
-    ];
-    // TODO: remove this once defer and stream are merged to `graphql`
-    if (graphQLVersion.includes('defer')) {
-      expectedDirectiveSuggestions.push({ label: 'stream' });
-    }
-    expectedDirectiveSuggestions.push({ label: 'test' });
 
     it('provides correct directive suggestions', () => {
       expect(testSuggestions('{ test @ }', new Position(0, 8))).toEqual(

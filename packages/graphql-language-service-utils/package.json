@@ -1,0 +1,39 @@
+{
+  "name": "graphql-language-service-utils",
+  "version": "2.7.1",
+  "description": "Utilities to support the GraphQL Language Service",
+  "contributors": [
+    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "http://github.com/graphql/graphiql",
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-utils#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphql-language-service/issues?q=issue+label:language-utils"
+  },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "esm",
+    "src"
+  ],
+  "keywords": [
+    "graphql"
+  ],
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "dist/index.d.ts",
+  "peerDependencies": {
+    "graphql": "^15.5.0 || ^16.0.0"
+  },
+  "dependencies": {
+    "graphql-language-service-types": "^1.8.7",
+    "nullthrows": "^1.0.0",
+    "@types/json-schema": "7.0.9"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.22",
+    "graphql": "^16.4.0"
+  }
+}

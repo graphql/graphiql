@@ -9,8 +9,8 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
-    "graphql": "16.0.0-experimental-stream-defer.5",
     "monaco-graphql": "^1.0.17",
+    "graphql": "^16.4.0",
     "prettier": "^2.0.4",
     "graphql-language-service": "^5.0.4",
     "json-schema": "^0.3.0",

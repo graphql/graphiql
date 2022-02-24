@@ -1,3 +1,5 @@
+import { version } from 'graphql/version';
+
 describe('GraphiQL DocExplorer - button', () => {
   before(() => {
     cy.visit(`/`);
@@ -79,6 +81,7 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
   });
   it('should show deprecated fields category title', () => {
     cy.get('.doc-category>.doc-category-item').first().find('a').click();
+    cy.wait(300);
     cy.get('.doc-category>.doc-category-title')
       .last()
       .should('have.text', 'deprecated fields');
@@ -97,6 +100,16 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
         '<p>No longer in use, try <code>test</code> instead.</p>',
       );
   });
+});
+
+let describeOrSkip = describe.skip;
+
+// TODO: disable when defer/stream is merged to graphql
+if (!version.includes('15.5')) {
+  describeOrSkip = describe;
+}
+
+describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
     cy.get('#doc-fields .doc-category-item a.field-name').last().click();
     cy.get('#doc-deprecated-args>.doc-category-title')
