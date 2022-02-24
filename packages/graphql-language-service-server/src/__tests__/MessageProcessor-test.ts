@@ -9,7 +9,7 @@
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
-import { Position, Range } from 'graphql-language-service-utils';
+import { Position, Range } from 'graphql-language-service';
 
 import { MessageProcessor } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';

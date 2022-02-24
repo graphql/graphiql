@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { State } from 'graphql-language-service-parser';
+import { State } from 'graphql-language-service';
 
 // Seems the electricInput type in @types/codemirror is wrong (i.e it is written as electricinput instead of electricInput)
 export default function indent(

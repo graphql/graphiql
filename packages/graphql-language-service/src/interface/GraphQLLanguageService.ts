@@ -24,7 +24,7 @@ import {
   Outline,
   OutlineTree,
   GraphQLCache,
-} from 'graphql-language-service-types';
+} from '../types';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
 import {
@@ -46,7 +46,7 @@ import {
 
 import { getOutline } from './getOutline';
 
-import { getASTNodeAtPosition } from 'graphql-language-service-utils';
+import { getASTNodeAtPosition } from '../utils';
 
 const {
   FRAGMENT_DEFINITION,

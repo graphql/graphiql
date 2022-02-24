@@ -23,13 +23,10 @@ import {
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
-} from 'graphql-language-service';
-
-import {
   getVariablesJSONSchema,
   getOperationASTFacts,
   JSONSchemaOptions,
-} from 'graphql-language-service-utils';
+} from 'graphql-language-service';
 
 import { defaultSchemaLoader } from './schemaLoader';
 

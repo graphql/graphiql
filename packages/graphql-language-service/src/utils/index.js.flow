@@ -13,7 +13,7 @@ import type { Location } from 'graphql/language';
 import type {
   IRange,
   IPosition ,
-} from 'graphql-language-service-types';
+} from 'graphql-language-service';
 
 declare export function getASTNodeAtPosition(): void;
 

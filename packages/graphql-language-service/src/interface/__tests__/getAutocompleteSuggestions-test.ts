@@ -7,7 +7,7 @@
  *
  */
 
-import { CompletionItem } from 'graphql-language-service-types';
+import { CompletionItem } from 'graphql-language-service';
 
 import fs, { readSync } from 'fs';
 import {
@@ -17,7 +17,7 @@ import {
   parse,
   version as graphQLVersion,
 } from 'graphql';
-import { Position } from 'graphql-language-service-utils';
+import { Position } from '../../utils';
 import path from 'path';
 
 import {
