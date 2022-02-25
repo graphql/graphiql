@@ -296,10 +296,19 @@ export type GraphiQLProps = {
    * Content to place before the top bar (logo).
    */
   beforeTopBarContent?: React.ReactElement | null;
+
   /**
-   * On tab change
+   * Whether tabs should be enabled.
+   * default: false
    */
-  onTabChange?: (tab: TabsState) => void;
+  tabs:
+    | boolean
+    | {
+        /**
+         * Callback that is invoked onTabChange.
+         */
+        onTabChange?: (tab: TabsState) => void;
+      };
 };
 
 export type GraphiQLState = {
@@ -535,7 +544,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       response: undefined,
     };
 
-    const rawTabState = this._storage.get('tabState');
+    let rawTabState: string | null = null;
+    // only load tab state if tabs are enabled
+    if (this.props.tabs) {
+      rawTabState = this._storage.get('tabState');
+    }
+
     let tabsState: TabsState;
     if (rawTabState === null) {
       tabsState = {
@@ -737,13 +751,17 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   private _persistTabsState = () => {
-    this._storage.set(
-      'tabState',
-      JSON.stringify(this.state.tabs, (key, value) =>
-        key === 'response' ? undefined : value,
-      ),
-    );
-    this.props.onTabChange?.(this.state.tabs);
+    if (this.props.tabs) {
+      this._storage.set(
+        'tabState',
+        JSON.stringify(this.state.tabs, (key, value) =>
+          key === 'response' ? undefined : value,
+        ),
+      );
+      if (typeof this.props.tabs === 'object') {
+        this.props.tabs.onTabChange?.(this.state.tabs);
+      }
+    }
   };
 
   render() {
@@ -863,130 +881,134 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               </button>
             )}
           </div>
-          <Tabs>
-            {this.state.tabs.tabs.map((tab, index) => (
-              <Tab
-                key={tab.id}
-                isActive={index === this.state.tabs.activeTabIndex}
-                title={tab.title}
-                isCloseable={this.state.tabs.tabs.length > 1}
-                onSelect={() => {
-                  this.handleStopQuery();
+          {this.props.tabs ? (
+            <Tabs>
+              {this.state.tabs.tabs.map((tab, index) => (
+                <Tab
+                  key={tab.id}
+                  isActive={index === this.state.tabs.activeTabIndex}
+                  title={tab.title}
+                  isCloseable={this.state.tabs.tabs.length > 1}
+                  onSelect={() => {
+                    this.handleStopQuery();
+                    this.setState(state => {
+                      const oldActiveTabIndex = state.tabs.activeTabIndex;
+                      const tabs = state.tabs.tabs.map(
+                        (currentTab, tabIndex) => {
+                          if (tabIndex !== oldActiveTabIndex) {
+                            return currentTab;
+                          }
+
+                          return {
+                            ...currentTab,
+                            query: state.query,
+                            variables: state.variables,
+                            operationName: state.operationName,
+                            headers: state.headers,
+                            response: state.response,
+                            hash: idFromTabContents({
+                              query: state.query,
+                              variables: state.variables,
+                              headers: state.headers,
+                            }),
+                          };
+                        },
+                      );
+
+                      const newActiveTab = this.state.tabs.tabs[index];
+
+                      return {
+                        ...state,
+                        query: newActiveTab.query,
+                        variables: newActiveTab.variables,
+                        operationName: newActiveTab.operationName,
+                        headers: newActiveTab.headers,
+                        response: newActiveTab.response,
+                        tabs: { ...state.tabs, tabs, activeTabIndex: index },
+                      };
+                    }, this._persistTabsState);
+                  }}
+                  onClose={() => {
+                    if (this.state.tabs.activeTabIndex === index) {
+                      this.handleStopQuery();
+                    }
+                    this.setState(state => {
+                      const newActiveTabIndex =
+                        state.tabs.activeTabIndex > 0
+                          ? state.tabs.activeTabIndex - 1
+                          : 0;
+                      const newTabsState = {
+                        ...state.tabs,
+                        activeTabIndex: newActiveTabIndex,
+                        tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
+                      };
+                      const activeTab = newTabsState.tabs[newActiveTabIndex];
+                      return {
+                        ...state,
+                        query: activeTab.query,
+                        variables: activeTab.variables,
+                        operationName: activeTab.operationName,
+                        headers: activeTab.headers,
+                        response: activeTab.response,
+                        tabs: newTabsState,
+                      };
+                    }, this._persistTabsState);
+                  }}
+                />
+              ))}
+              <TabAddButton
+                onClick={() =>
                   this.setState(state => {
                     const oldActiveTabIndex = state.tabs.activeTabIndex;
-                    const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
-                      if (tabIndex !== oldActiveTabIndex) {
-                        return currentTab;
+
+                    const newTab: TabState = {
+                      id: guid(),
+                      title: '<untitled>',
+                      headers: '',
+                      variables: '',
+                      query: '',
+                      operationName: '',
+                      response: '',
+                      hash: idFromTabContents({
+                        query: '',
+                        variables: '',
+                        headers: '',
+                      }),
+                    };
+
+                    const tabs = state.tabs.tabs.map((tab, index) => {
+                      if (index !== oldActiveTabIndex) {
+                        return tab;
                       }
 
                       return {
-                        ...currentTab,
-                        query: state.query,
-                        variables: state.variables,
-                        operationName: state.operationName,
+                        ...tab,
                         headers: state.headers,
+                        variables: state.variables,
+                        query: state.query,
+                        operationName: state.operationName,
                         response: state.response,
-                        hash: idFromTabContents({
-                          query: state.query,
-                          variables: state.variables,
-                          headers: state.headers,
-                        }),
                       };
                     });
 
-                    const newActiveTab = this.state.tabs.tabs[index];
-
                     return {
                       ...state,
-                      query: newActiveTab.query,
-                      variables: newActiveTab.variables,
-                      operationName: newActiveTab.operationName,
-                      headers: newActiveTab.headers,
-                      response: newActiveTab.response,
-                      tabs: { ...state.tabs, tabs, activeTabIndex: index },
+                      headers: newTab.headers,
+                      variables: newTab.variables,
+                      query: newTab.query,
+                      operationName: newTab.operationName,
+                      response: newTab.response,
+                      tabs: {
+                        ...state.tabs,
+                        activeTabIndex: state.tabs.tabs.length,
+                        tabs: [...tabs, newTab],
+                      },
                     };
-                  }, this._persistTabsState);
-                }}
-                onClose={() => {
-                  if (this.state.tabs.activeTabIndex === index) {
-                    this.handleStopQuery();
-                  }
-                  this.setState(state => {
-                    const newActiveTabIndex =
-                      state.tabs.activeTabIndex > 0
-                        ? state.tabs.activeTabIndex - 1
-                        : 0;
-                    const newTabsState = {
-                      ...state.tabs,
-                      activeTabIndex: newActiveTabIndex,
-                      tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
-                    };
-                    const activeTab = newTabsState.tabs[newActiveTabIndex];
-                    return {
-                      ...state,
-                      query: activeTab.query,
-                      variables: activeTab.variables,
-                      operationName: activeTab.operationName,
-                      headers: activeTab.headers,
-                      response: activeTab.response,
-                      tabs: newTabsState,
-                    };
-                  }, this._persistTabsState);
-                }}
+                  }, this._persistTabsState)
+                }
               />
-            ))}
-            <TabAddButton
-              onClick={() =>
-                this.setState(state => {
-                  const oldActiveTabIndex = state.tabs.activeTabIndex;
-
-                  const newTab: TabState = {
-                    id: guid(),
-                    title: '<untitled>',
-                    headers: '',
-                    variables: '',
-                    query: '',
-                    operationName: '',
-                    response: '',
-                    hash: idFromTabContents({
-                      query: '',
-                      variables: '',
-                      headers: '',
-                    }),
-                  };
-
-                  const tabs = state.tabs.tabs.map((tab, index) => {
-                    if (index !== oldActiveTabIndex) {
-                      return tab;
-                    }
-
-                    return {
-                      ...tab,
-                      headers: state.headers,
-                      variables: state.variables,
-                      query: state.query,
-                      operationName: state.operationName,
-                      response: state.response,
-                    };
-                  });
-
-                  return {
-                    ...state,
-                    headers: newTab.headers,
-                    variables: newTab.variables,
-                    query: newTab.query,
-                    operationName: newTab.operationName,
-                    response: newTab.response,
-                    tabs: {
-                      ...state.tabs,
-                      activeTabIndex: state.tabs.tabs.length,
-                      tabs: [...tabs, newTab],
-                    },
-                  };
-                }, this._persistTabsState)
-              }
-            />
-          </Tabs>
+            </Tabs>
+          ) : null}
           <div
             ref={n => {
               this.editorBarComponent = n;

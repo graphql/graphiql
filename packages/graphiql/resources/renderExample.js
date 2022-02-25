@@ -136,7 +136,9 @@ ReactDOM.render(
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: true,
-    onTabChange: onTabChange,
+    tabs: {
+      onTabChange: onTabChange,
+    },
   }),
   document.getElementById('graphiql'),
 );
