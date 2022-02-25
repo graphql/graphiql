@@ -490,8 +490,9 @@ div.CodeMirror-lint-tooltip > * + * {
 
 .graphiql-container .tabs {
   height: 40px;
-  background: linear-gradient(#f7f7f7, #e2e2e2);
+  background-image: linear-gradient(#f7f7f7, #e2e2e2);
   display: flex;
+  align-items: center;
 }
 
 .graphiql-container .tab {
@@ -503,6 +504,7 @@ div.CodeMirror-lint-tooltip > * + * {
   justify-content: center;
   padding-bottom: 3px;
   border-left: 1px solid lightgray;
+  height: 100%;
 }
 
 .graphiql-container .tab.active {
@@ -511,7 +513,10 @@ div.CodeMirror-lint-tooltip > * + * {
 
 .graphiql-container .tab.active,
 .graphiql-container .tab:hover {
-  background: linear-gradient(#dfdfdf, #c4c4c4);
+  background-image: linear-gradient(
+    rgba(223, 223, 223, 0.5),
+    rgba(196, 196, 196, 1)
+  );
 }
 
 .graphiql-container .tab .close {
@@ -532,6 +537,7 @@ div.CodeMirror-lint-tooltip > * + * {
   content: '+';
   transform: rotate(45deg);
   display: inline-block;
+  font-weight: bold;
 }
 
 .graphiql-container .tab-add {
@@ -541,10 +547,9 @@ div.CodeMirror-lint-tooltip > * + * {
   width: 30px;
   border: none;
   background: transparent;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 20px;
   padding-bottom: 3px;
+  height: 27px;
+  font-weight: bold;
 }
 
 /* COLORS */
