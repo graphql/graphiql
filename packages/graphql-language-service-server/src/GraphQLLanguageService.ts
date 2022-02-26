@@ -35,26 +35,23 @@ import {
 } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
-import { getAutocompleteSuggestions } from 'graphql-language-service/src/interface/getAutocompleteSuggestions';
-import {
-  getHoverInformation,
-  HoverConfig,
-} from 'graphql-language-service/src/interface/getHoverInformation';
+import { getAutocompleteSuggestions } from 'graphql-language-service';
+import { getHoverInformation, HoverConfig } from 'graphql-language-service';
 import {
   validateQuery,
   getRange,
   DIAGNOSTIC_SEVERITY,
-} from 'graphql-language-service/src/interface/getDiagnostics';
+} from 'graphql-language-service';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
   DefinitionQueryResult,
-} from 'graphql-language-service/src/interface/getDefinition';
+} from 'graphql-language-service';
 
-import { getOutline } from 'graphql-language-service/src/interface/getOutline';
+import { getOutline } from 'graphql-language-service';
 
-import { getASTNodeAtPosition } from 'graphql-language-service/src/utils';
+import { getASTNodeAtPosition } from 'graphql-language-service';
 
 const {
   FRAGMENT_DEFINITION,
