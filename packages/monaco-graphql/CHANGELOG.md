@@ -1,5 +1,6 @@
 # Change Log
 
+<<<<<<< HEAD
 ## 1.0.12
 
 ### Patch Changes
@@ -13,6 +14,8 @@
 
 - [#2222](https://github.com/graphql/graphiql/pull/2222) [`33f4bf97`](https://github.com/graphql/graphiql/commit/33f4bf977d2c9e831bf9c3acb9c16365b9de2750) Thanks [@acao](https://github.com/acao)! - fixed lost this handle while parsing schema, thanks @waterfoul
 
+=======
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
 ## 1.0.10
 
 ### Patch Changes

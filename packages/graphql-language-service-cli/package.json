@@ -1,6 +1,10 @@
 {
   "name": "graphql-language-service-cli",
+<<<<<<< HEAD
   "version": "3.2.16",
+=======
+  "version": "3.2.14",
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -32,8 +36,13 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",
+<<<<<<< HEAD
     "graphql-language-service": "^5.0.0",
     "graphql-language-service-server": "^2.7.16",
+=======
+    "graphql-language-service": "^4.1.5",
+    "graphql-language-service-server": "^2.7.14",
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
     "graphql-language-service-utils": "^2.7.1",
     "yargs": "^16.2.0"
   },

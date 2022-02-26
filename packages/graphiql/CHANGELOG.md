@@ -1,5 +1,6 @@
 # Change Log
 
+<<<<<<< HEAD
 ## 1.7.1
 
 ### Patch Changes
@@ -20,6 +21,8 @@
 
 - [#2205](https://github.com/graphql/graphiql/pull/2205) [`91500d4e`](https://github.com/graphql/graphiql/commit/91500d4eba8b99bf779ff6ac899c814070c6dff3) Thanks [@francisu](https://github.com/francisu)! - Fixed problem where 'global' variable is referenced when it might not be present (#2155)
 
+=======
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
 ## 1.6.0
 
 ### Minor Changes

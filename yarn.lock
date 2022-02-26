@@ -11674,7 +11674,11 @@ grapheme-splitter@^1.0.4:
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
 "graphiql@file:packages/graphiql":
+<<<<<<< HEAD
   version "1.6.0"
+=======
+  version "1.5.19"
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
   dependencies:
     "@graphiql/toolkit" "^0.4.2"
     codemirror "^5.58.2"

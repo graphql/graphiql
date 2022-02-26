@@ -10,9 +10,15 @@
   },
   "dependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
+<<<<<<< HEAD
     "monaco-graphql": "^1.0.12",
     "prettier": "^2.0.4",
     "graphql-language-service": "^5.0.0",
+=======
+    "monaco-graphql": "^1.0.10",
+    "prettier": "^2.0.4",
+    "graphql-language-service": "^4.1.5",
+>>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
     "json-schema": "^0.3.0",
     "jsonc-parser": "3.0.0",
     "monaco-editor": "^0.31.0"
