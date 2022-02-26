@@ -206,7 +206,6 @@ qauery
 matchbrackets
 closebrackets
 languges
-intializeMode
 
 // person name
 gracenoah
