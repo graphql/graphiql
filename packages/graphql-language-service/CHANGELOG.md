@@ -1,5 +1,15 @@
 # graphql-language-service
 
+## 4.1.5
+
+### Patch Changes
+
+- [#2161](https://github.com/graphql/graphiql/pull/2161) [`484c0523`](https://github.com/graphql/graphiql/commit/484c0523cdd529f9e261d61a38616b6745075c7f) Thanks [@orta](https://github.com/orta)! - Do not log errors when a JS/TS file has no embedded graphql tags
+
+* [#2176](https://github.com/graphql/graphiql/pull/2176) [`5852ba47`](https://github.com/graphql/graphiql/commit/5852ba47c720a2577817aed512bef9a262254f2c) Thanks [@orta](https://github.com/orta)! - Update babel parser in the graphql language server
+
+- [#2175](https://github.com/graphql/graphiql/pull/2175) [`48c5df65`](https://github.com/graphql/graphiql/commit/48c5df654e323cee3b8c57d7414247465235d1b5) Thanks [@orta](https://github.com/orta)! - Better handling of unparsable babel JS/TS files
+
 ## 4.1.4
 
 ### Patch Changes

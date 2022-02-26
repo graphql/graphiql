@@ -2,19 +2,9 @@
 .graphiql-container button,
 .graphiql-container input {
   color: #141823;
-  font-family:
-    system,
-    -apple-system,
-    'San Francisco',
-    '.SFNSDisplay-Regular',
-    'Segoe UI',
-    Segoe,
-    'Segoe WP',
-    'Helvetica Neue',
-    helvetica,
-    'Lucida Grande',
-    arial,
-    sans-serif;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular',
+    'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande',
+    arial, sans-serif;
   font-size: 14px;
 }
 
@@ -74,7 +64,7 @@
   border-bottom: 1px solid #d0d0d0;
   border-right: none;
   border-top: none;
-  color: #3B5998;
+  color: #3b5998;
   cursor: pointer;
   font-size: 14px;
   margin: 0;
@@ -91,8 +81,8 @@
 }
 
 .graphiql-container .docExplorerShow:before {
-  border-left: 2px solid #3B5998;
-  border-top: 2px solid #3B5998;
+  border-left: 2px solid #3b5998;
+  border-top: 2px solid #3b5998;
   content: '';
   display: inline-block;
   height: 9px;
@@ -106,6 +96,7 @@
   display: flex;
   flex-direction: row;
   flex: 1;
+  max-height: 100%;
 }
 
 .graphiql-container .queryWrap {
@@ -205,7 +196,7 @@
 .graphiql-container .footer:before {
   background: #eeeeee;
   bottom: 0;
-  content: " ";
+  content: ' ';
   left: -13px;
   position: absolute;
   top: -1px;
@@ -234,10 +225,8 @@
   background: linear-gradient(#f9f9f9, #ececec);
   border: 0;
   border-radius: 3px;
-  box-shadow:
-    inset 0 0 0 1px rgba(0,0,0,0.20),
-    0 1px 0 rgba(255,255,255, 0.7),
-    inset 0 1px #fff;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.7), inset 0 1px #fff;
   color: #555;
   cursor: pointer;
   display: inline-block;
@@ -251,10 +240,8 @@
 
 .graphiql-container .toolbar-button:active {
   background: linear-gradient(#ececec, #d5d5d5);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 0 0 1px rgba(0,0,0,0.10),
-    inset 0 1px 1px 1px rgba(0, 0, 0, 0.12),
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 1px 1px 1px rgba(0, 0, 0, 0.12),
     inset 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -292,7 +279,7 @@
 .graphiql-container .execute-button {
   background: linear-gradient(#fdfdfd, #d2d3d6);
   border-radius: 17px;
-  border: 1px solid rgba(0,0,0,0.25);
+  border: 1px solid rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 0 #fff;
   cursor: pointer;
   fill: #444;
@@ -308,9 +295,7 @@
 
 .graphiql-container .execute-button:active {
   background: linear-gradient(#e6e6e6, #c3c3c3);
-  box-shadow:
-    0 1px 0 #fff,
-    inset 0 0 2px rgba(0, 0, 0, 0.2),
+  box-shadow: 0 1px 0 #fff, inset 0 0 2px rgba(0, 0, 0, 0.2),
     inset 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -323,9 +308,7 @@
 .graphiql-container .toolbar-menu-items,
 .graphiql-container .toolbar-select-options {
   background: #fff;
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.1),
-    0 2px 4px rgba(0,0,0,0.25);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.25);
   margin: 0;
   padding: 6px 0;
   position: absolute;
@@ -406,12 +389,7 @@
 
 .graphiql-container .CodeMirror {
   color: #141823;
-  font-family:
-    'Consolas',
-    'Inconsolata',
-    'Droid Sans Mono',
-    'Monaco',
-    monospace;
+  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
   font-size: 13px;
   height: 100%;
   left: 0;
@@ -428,7 +406,9 @@
   box-orient: vertical;
   color: #141823;
   display: flex;
-  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular', 'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande', arial, sans-serif;
+  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular',
+    'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande',
+    arial, sans-serif;
   font-size: 13px;
   line-clamp: 3;
   line-height: 16px;
@@ -446,7 +426,7 @@
 }
 
 .CodeMirror-hint-information .infoType {
-  color: #CA9800;
+  color: #ca9800;
   cursor: pointer;
   display: inline;
   margin-right: 0.5em;
@@ -462,12 +442,14 @@
 }
 
 @keyframes insertionFade {
-  from, to {
+  from,
+  to {
     background: rgba(255, 255, 255, 0);
     border-color: rgba(255, 255, 255, 0);
   }
 
-  15%, 85% {
+  15%,
+  85% {
     background: #fbffc9;
     border-color: #f0f3c0;
   }
@@ -496,15 +478,23 @@ div.CodeMirror-lint-tooltip > * + * {
   margin-top: 12px;
 }
 
+.graphiql-container .variable-editor-title-text {
+  cursor: pointer;
+  display: inline-block;
+  color: gray;
+}
+
+.graphiql-container .variable-editor-title-text.active {
+  color: #000;
+}
+
 /* COLORS */
 
 .graphiql-container .CodeMirror-foldmarker {
   border-radius: 4px;
   background: #08f;
-  background: linear-gradient(#43A8FF, #0F83E8);
-  box-shadow:
-    0 1px 1px rgba(0, 0, 0, 0.2),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(#43a8ff, #0f83e8);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   color: white;
   font-family: arial;
   font-size: 12px;
@@ -535,60 +525,60 @@ div.CodeMirror-lint-tooltip > * + * {
 
 /* Keyword */
 .cm-keyword {
-  color: #B11A04;
+  color: #b11a04;
 }
 
 /* OperationName, FragmentName */
 .cm-def {
-  color: #D2054E;
+  color: #d2054e;
 }
 
 /* FieldName */
 .cm-property {
-  color: #1F61A0;
+  color: #1f61a0;
 }
 
 /* FieldAlias */
 .cm-qualifier {
-  color: #1C92A9;
+  color: #1c92a9;
 }
 
 /* ArgumentName and ObjectFieldName */
 .cm-attribute {
-  color: #8B2BB9;
+  color: #8b2bb9;
 }
 
 /* Number */
 .cm-number {
-  color: #2882F9;
+  color: #2882f9;
 }
 
 /* String */
 .cm-string {
-  color: #D64292;
+  color: #d64292;
 }
 
 /* Boolean */
 .cm-builtin {
-  color: #D47509;
+  color: #d47509;
 }
 
 /* EnumValue */
 .cm-string-2 {
-  color: #0B7FC7;
+  color: #0b7fc7;
 }
 
 /* Variable */
 .cm-variable {
-  color: #397D13;
+  color: #397d13;
 }
 
 /* Directive */
 .cm-meta {
-  color: #B33086;
+  color: #b33086;
 }
 
 /* Type */
 .cm-atom {
-  color: #CA9800;
+  color: #ca9800;
 }

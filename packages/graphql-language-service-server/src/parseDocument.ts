@@ -3,6 +3,7 @@ import type { CachedContent } from 'graphql-language-service';
 import { Range, Position } from 'graphql-language-service-utils';
 
 import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
+import { Logger } from './Logger';
 
 export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.js',
@@ -43,6 +44,7 @@ export function parseDocument(
   uri: string,
   fileExtensions: string[] = DEFAULT_SUPPORTED_EXTENSIONS,
   graphQLFileExtensions: string[] = DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
+  logger: Logger = new Logger(),
 ): CachedContent[] {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
@@ -51,7 +53,7 @@ export function parseDocument(
     if (DEFAULT_TAGS.some(t => t === text)) {
       return [];
     }
-    const templates = findGraphQLTags(text, ext);
+    const templates = findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
   if (graphQLFileExtensions.some(e => e === ext)) {

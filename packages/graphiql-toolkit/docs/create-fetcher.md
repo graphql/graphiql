@@ -152,7 +152,7 @@ const subscriptionUrl = 'wss://myschema.com/graphql';
 
 const fetcher = createGraphiQLFetcher({
   url,
-  legacyWsClient: new SubscriptionsClient(subscriptionUrl),
+  legacyWsClient: new SubscriptionClient(subscriptionUrl),
 });
 
 export const App = () => <GraphiQL fetcher={fetcher} />;

@@ -1,5 +1,53 @@
 # Change Log
 
+## 1.6.0
+
+### Minor Changes
+
+- [#2191](https://github.com/graphql/graphiql/pull/2191) [`eb8af7b5`](https://github.com/graphql/graphiql/commit/eb8af7b5666e7ed01497a862127011524fc400f5) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Allow inserting content before the topBar element via the `beforeTopBarContent` property.
+
+  ```ts
+  <GraphiQL beforeTopBarContent={<SomeComponent />} />
+  ```
+
+* [#2189](https://github.com/graphql/graphiql/pull/2189) [`96d47267`](https://github.com/graphql/graphiql/commit/96d4726716b782fcafa9d6c1671f3a3050ebe0b7) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Apply variable editor title text styles via class `variable-editor-title-text` instead of using inline-styles. This allows better customization of styles. An active element also has the class `active`. This allows overriding the inactive state color using the selector `.graphiql-container .variable-editor-title-text` and overriding the active state color using the selector `.graphiql-container .variable-editor-title-text.active`.
+
+- [#2190](https://github.com/graphql/graphiql/pull/2190) [`d5179899`](https://github.com/graphql/graphiql/commit/d517989996cf6f33ef7e08d18a870e2bed565cca) Thanks [@n1ru4l](https://github.com/n1ru4l)! - New callback property `onSchemaChange` for `GraphiQL`.
+
+  The callback is invoked with the successfully fetched schema from the remote.
+
+  **Usage example:**
+
+  ```tsx
+  <GraphiQL onSchemaChange={schema => console.log(schema)} />
+  ```
+
+## 1.5.20
+
+### Patch Changes
+
+- Updated dependencies [[`484c0523`](https://github.com/graphql/graphiql/commit/484c0523cdd529f9e261d61a38616b6745075c7f), [`5852ba47`](https://github.com/graphql/graphiql/commit/5852ba47c720a2577817aed512bef9a262254f2c), [`48c5df65`](https://github.com/graphql/graphiql/commit/48c5df654e323cee3b8c57d7414247465235d1b5)]:
+  - graphql-language-service@4.1.5
+  - codemirror-graphql@1.2.12
+
+## 1.5.19
+
+### Patch Changes
+
+- [#2167](https://github.com/graphql/graphiql/pull/2167) [`bc81f0ee`](https://github.com/graphql/graphiql/commit/bc81f0ee6d382fe996d92e55f90cdc3be10910a7) Thanks [@acao](https://github.com/acao)! - Fix legacy bug where global is expected
+
+## 1.5.18
+
+### Patch Changes
+
+- [#2156](https://github.com/graphql/graphiql/pull/2156) [`ae5ea77b`](https://github.com/graphql/graphiql/commit/ae5ea77b4c2ec2a25e25c542ae72b2c3dabbe256) Thanks [@francisu](https://github.com/francisu)! - Fixed problem where 'global' variable is referenced when it might not be present (#2155)
+
+## 1.5.17
+
+### Patch Changes
+
+- [#2138](https://github.com/graphql/graphiql/pull/2138) [`8700b4bb`](https://github.com/graphql/graphiql/commit/8700b4bbaadb17136f649f504c9575a8c853cd0b) Thanks [@danielleletarte](https://github.com/danielleletarte)! - Correctly render line breaks for Descriptions in Doc Explorer - #2137 - @danielleletarte
+
 ## 1.5.16
 
 ### Patch Changes

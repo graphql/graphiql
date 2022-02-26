@@ -17,6 +17,7 @@ import {
 import { Position, Range } from 'graphql-language-service-utils';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
+import { Logger } from './Logger';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -68,18 +69,36 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'logicalAssignment',
 ];
 
-export function findGraphQLTags(text: string, ext: string): TagResult[] {
+export function findGraphQLTags(
+  text: string,
+  ext: string,
+  uri: string,
+  logger: Logger,
+): TagResult[] {
   const result: TagResult[] = [];
 
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
-  if (ext === '.ts' || ext === '.tsx') {
+  const isTypeScript = ext === '.ts' || ext === '.tsx';
+  if (isTypeScript) {
     plugins?.push('typescript');
   } else {
     plugins?.push('flow', 'flowComments');
   }
   PARSER_OPTIONS.plugins = plugins;
-  const ast = parse(text, PARSER_OPTIONS);
+
+  let parsedAST: ReturnType<typeof parse> | undefined = undefined;
+  try {
+    parsedAST = parse(text, PARSER_OPTIONS);
+  } catch (error) {
+    const type = isTypeScript ? 'TypeScript' : 'JavaScript';
+    logger.error(
+      `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
+    );
+    logger.error(error);
+    return [];
+  }
+  const ast = parsedAST!;
 
   const visitors = {
     CallExpression: (node: Expression) => {

@@ -623,6 +623,26 @@ export function Example(arg: string) {}`;
     expect(contents.length).toEqual(0);
   });
 
+  it('an unparsable JS/TS file does not throw and bring down the server', async () => {
+    const text = `
+// @flow
+import type randomthing fro 'package';
+import type {B} from 'B';
+im port A from './A';
+
+con  QUERY = randomthing\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.frag`;
+
+    const contents = parseDocument(text, 'test.js');
+    expect(contents.length).toEqual(0);
+  });
+
   describe('handleWatchedFilesChangedNotification', () => {
     const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
 

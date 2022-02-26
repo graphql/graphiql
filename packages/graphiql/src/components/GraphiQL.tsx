@@ -284,6 +284,14 @@ export type GraphiQLProps = {
    * default: 20
    */
   maxHistoryLength?: number;
+  /**
+   * Callback that is invoked once a remote schema has been fetched.
+   */
+  onSchemaChange?: (schema: GraphQLSchema) => void;
+  /**
+   * Content to place before the top bar (logo).
+   */
+  beforeTopBarContent?: React.ReactElement | null;
 };
 
 export type GraphiQLState = {
@@ -531,7 +539,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
 
-    global.g = this;
+    if (global !== undefined) {
+      global.g = this;
+    }
   }
   UNSAFE_componentWillMount() {
     this.componentIsMounted = false;
@@ -743,6 +753,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         )}
         <div className="editorWrap">
           <div className="topBarWrap">
+            {this.props.beforeTopBarContent}
             <div className="topBar">
               {logo}
               <ExecuteButton
@@ -804,11 +815,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   }}
                   onMouseDown={this.handleSecondaryEditorResizeStart}>
                   <div
-                    style={{
-                      cursor: 'pointer',
-                      color: this.state.variableEditorActive ? '#000' : 'gray',
-                      display: 'inline-block',
-                    }}
+                    className={`variable-editor-title-text${
+                      this.state.variableEditorActive ? ' active' : ''
+                    }`}
                     onClick={this.handleOpenVariableEditorTab}
                     onMouseDown={this.handleTabClickPropagation}>
                     {'Query Variables'}
@@ -816,11 +825,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   {this.state.headerEditorEnabled && (
                     <div
                       style={{
-                        cursor: 'pointer',
-                        color: this.state.headerEditorActive ? '#000' : 'gray',
-                        display: 'inline-block',
                         marginLeft: '20px',
                       }}
+                      className={`variable-editor-title-text${
+                        this.state.headerEditorActive ? ' active' : ''
+                      }`}
                       onClick={this.handleOpenHeaderEditorTab}
                       onMouseDown={this.handleTabClickPropagation}>
                       {'Request Headers'}
@@ -1118,6 +1127,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               ...queryFacts,
               schemaErrors: undefined,
             });
+            this.props.onSchemaChange?.(schema);
           }
         } else {
           // handle as if it were an error if the fetcher response is not a string or response.data is not present
