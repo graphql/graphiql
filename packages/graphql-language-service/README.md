@@ -34,3 +34,19 @@ const languageService = new LanguageService({
   schemaConfig: { uri: 'https://my/schema' },
 });
 ```
+
+## Interface
+
+LSP Language Service written in Typescript used by [GraphQL Language Service Server](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server) and [Codemirror GraphQL](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql).
+
+This provides the Official [Language Server Protocol](https://langserver.org) compliant GraphQL language service to be used by an IDE plugin, a browser application or desktop application.
+
+Implements our custom parser.
+
+## Parser
+
+An online, immutable, dependeancy free parser for [GraphQL](http://graphql.org/), designed to be used as part of syntax-highlighting and code intelligence tools such as for the [GraphQL Language Service Server](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server), and [codemirror-graphql](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql).
+
+## Types
+
+[Typescript](https://typescript.com) and [Flow](https://flowtype.org/) type definitions for the [GraphQL Language Service](https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service) and other parts of the language ecosystem.

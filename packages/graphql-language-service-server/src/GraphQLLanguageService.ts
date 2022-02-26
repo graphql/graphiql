@@ -24,9 +24,10 @@ import {
   Outline,
   OutlineTree,
   GraphQLCache,
-} from '../types';
+} from 'graphql-language-service';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
+
 import {
   Hover,
   SymbolInformation,
@@ -34,19 +35,26 @@ import {
 } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
-import { getAutocompleteSuggestions } from './getAutocompleteSuggestions';
-import { getHoverInformation, HoverConfig } from './getHoverInformation';
-import { validateQuery, getRange, DIAGNOSTIC_SEVERITY } from './getDiagnostics';
+import { getAutocompleteSuggestions } from 'graphql-language-service/src/interface/getAutocompleteSuggestions';
+import {
+  getHoverInformation,
+  HoverConfig,
+} from 'graphql-language-service/src/interface/getHoverInformation';
+import {
+  validateQuery,
+  getRange,
+  DIAGNOSTIC_SEVERITY,
+} from 'graphql-language-service/src/interface/getDiagnostics';
 import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
   DefinitionQueryResult,
-} from './getDefinition';
+} from 'graphql-language-service/src/interface/getDefinition';
 
-import { getOutline } from './getOutline';
+import { getOutline } from 'graphql-language-service/src/interface/getOutline';
 
-import { getASTNodeAtPosition } from '../utils';
+import { getASTNodeAtPosition } from 'graphql-language-service/src/utils';
 
 const {
   FRAGMENT_DEFINITION,

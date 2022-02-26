@@ -12,9 +12,6 @@
     },
     {
       "path": "../graphql-language-service-server"
-    },
-    {
-      "path": "../graphql-language-service-utils"
     }
   ],
   "include": ["src"],
