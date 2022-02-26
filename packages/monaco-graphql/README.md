@@ -240,7 +240,7 @@ Otherwise, you can, like in the sync demo above:
 
 ```ts
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
-const api = intializeMode(config);
+const api = initializeMode(config);
 ```
 
 ### `monaco.languages.graphql.api.setSchemaConfig([SchemaConfig])`
@@ -274,7 +274,7 @@ const schemas = [
     uri: 'myschema.graphql',
   },
 ];
-const api = intializeMode({ schemas });
+const api = initializeMode({ schemas });
 
 // add another schema. this will cause language workers and features to reset
 api.setSchemaConfig([
