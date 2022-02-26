@@ -18,8 +18,7 @@
       "yarn cspell '**/*.{js,ts,jsx,tsx}'"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write",
-      "yarn cspell '**/*.{md,html,json, css}'"
+      "prettier --write"
     ]
   },
     "husky": {
