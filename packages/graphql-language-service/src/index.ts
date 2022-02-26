@@ -30,7 +30,6 @@ export {
   getTokenAtPosition,
   getTypeInfo,
   getVariableCompletions,
-  GraphQLLanguageService,
   SEVERITY,
   Severity,
   HoverConfig,

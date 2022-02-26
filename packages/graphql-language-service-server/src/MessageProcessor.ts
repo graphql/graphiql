@@ -17,12 +17,13 @@ import {
   Uri,
   GraphQLConfig,
   GraphQLProjectConfig,
-  GraphQLLanguageService,
   FileChangeTypeKind,
   Range,
   Position,
   IPosition,
 } from 'graphql-language-service';
+
+import { GraphQLLanguageService } from './GraphQLLanguageService';
 
 import type {
   CompletionParams,
