@@ -39,6 +39,7 @@ export {
   canUseDirective,
   SuggestionCommand,
   AutocompleteSuggestionOptions,
+  validateQuery,
 } from './interface';
 
 /**
