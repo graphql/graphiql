@@ -169,6 +169,9 @@ typeof
 belaborous
 Tabbars
 MARKDOWNIT
+inno
+devx
+unparsable
 
 // packages/graphql-language-service-parser/benchmark/fixtures/github.graphql
 Labelable
@@ -266,6 +269,10 @@ Aivazis
 Hyohyeon
 Hurrell
 willstott
+cshaver
+Suchanek
+danielleletarte
+francisu
 
 // organization
 Medellín

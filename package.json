@@ -20,7 +20,7 @@
     ],
     "*.{md,html,json,css}": [
       "prettier --write",
-      "yarn cspell '**/*.{md,html,json,css}'"
+      "yarn cspell '**/*.{md,html,json}'"
     ]
   },
   "husky": {
