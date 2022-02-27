@@ -277,12 +277,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   margin-bottom: -30px;
   vertical-align: top;
   white-space: normal;
-<<<<<<< HEAD
-=======
-  /* Hack to make IE7 behave */
-  *zoom: 1;
-  *display: inline;
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
 }
 .CodeMirror-gutter-wrapper {
   background: none !important;
@@ -417,14 +411,6 @@ div.CodeMirror-dragcursors {
   background: rgba(255, 255, 0, 0.4);
 }
 
-<<<<<<< HEAD
-=======
-/* IE7 hack to prevent it from returning funny offsetTops on the spans */
-.CodeMirror span {
-  *vertical-align: text-bottom;
-}
-
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
 /* Used to force a border model for a node */
 .cm-force-border {
   padding-right: 0.1px;

@@ -1,6 +1,5 @@
 # graphql-language-service-cli
 
-<<<<<<< HEAD
 ## 3.2.16
 
 ### Patch Changes
@@ -16,8 +15,6 @@
 - Updated dependencies [[`ab83198f`](https://github.com/graphql/graphiql/commit/ab83198fa8b3c5453d3733982ee9ca8a2d6bca7a)]:
   - graphql-language-service-server@2.7.15
 
-=======
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
 ## 3.2.14
 
 ### Patch Changes

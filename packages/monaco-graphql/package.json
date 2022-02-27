@@ -1,11 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-<<<<<<< HEAD
   "version": "1.0.12",
-=======
-  "version": "1.0.10",
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -30,12 +26,7 @@
     "src"
   ],
   "dependencies": {
-<<<<<<< HEAD
     "graphql-language-service": "^5.0.0",
-=======
-    "graphql-language-service": "^4.1.5",
-    "graphql-language-service-utils": "^2.7.1",
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {

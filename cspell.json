@@ -1,16 +1,18 @@
 {
   "language": "en",
   "dictionaries": ["custom-words"],
-
+  "useGitignore": true,
   "dictionaryDefinitions": [
     {
       "name": "custom-words",
-      "path": "./custom-words.txt",
+      "path": "./resources/custom-words.txt",
       "addWords": true
     }
   ],
   "ignorePaths": [
     "**/node_modules/**",
-    "packages/graphiql-2-rfc-context/src/locales/ru"
-  ]
+    "packages/graphiql-2-rfc-context/src/locales/ru",
+    "**/*.css"
+  ],
+  "ignoreRegExpList": ["\\@\\w+"]
 }

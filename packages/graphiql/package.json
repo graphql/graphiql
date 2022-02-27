@@ -1,10 +1,6 @@
 {
   "name": "graphiql",
-<<<<<<< HEAD
   "version": "1.7.1",
-=======
-  "version": "1.6.0",
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -52,20 +48,12 @@
   "dependencies": {
     "@graphiql/toolkit": "^0.4.2",
     "codemirror": "^5.58.2",
-<<<<<<< HEAD
     "codemirror-graphql": "^1.2.13",
-=======
-    "codemirror-graphql": "^1.2.12",
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
     "copy-to-clipboard": "^3.2.0",
     "dset": "^3.1.0",
     "entities": "^2.0.0",
     "escape-html": "^1.0.3",
-<<<<<<< HEAD
     "graphql-language-service": "^5.0.0",
-=======
-    "graphql-language-service": "^4.1.5",
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
     "markdown-it": "^12.2.0"
   },
   "peerDependencies": {

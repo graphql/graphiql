@@ -46,11 +46,7 @@
   },
   "dependencies": {
     "@codemirror/stream-parser": "^0.19.2",
-<<<<<<< HEAD
     "graphql-language-service": "^5.0.0"
-=======
-    "graphql-language-service": "^4.1.5"
->>>>>>> ac1dede1 (Merge branch 'main' into feat/add_cspell)
   },
   "devDependencies": {
     "codemirror": "^5.58.2",

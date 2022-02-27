@@ -30,43 +30,16 @@ codesandbox
 stackblitz
 typeahead
 browserslistrc
-acao
-benjie
-ganemone
-Neitsch
-yoshiakis
-ganenome
-divyenduz
-codestryke
-jbblanchet
-asiandrummer
-jaebradley
-dunnbobcat
-zouxuoz
-jonaskello
-orta
-lostplan
-@lostplan
 commitlint
 yournamehere
 browserlistrc
 roadmap
-leebyron
-wincent
-lostplan
-wincent
-IvanGoncharov
-imolorhe
-dotansimha
-urigo
-timsuchanek
 picomatch
 MonacoGraphQLAPI
 myoperation
 myvariables
 Unsubscribable
 runmode
-derp
 emptively
 dedenting
 Subword
@@ -77,7 +50,6 @@ garply
 oflinks
 monospace
 typeless
-electricinput
 Resizer
 Avenir
 Menlo
@@ -125,7 +97,6 @@ OUTLINEABLE
 cating
 eslintignore
 Ooops
-bobbybobby
 searchcursor
 storyshots
 dset
@@ -169,6 +140,9 @@ typeof
 belaborous
 Tabbars
 MARKDOWNIT
+inno
+devx
+unparsable
 
 // packages/graphql-language-service-parser/benchmark/fixtures/github.graphql
 Labelable
@@ -266,6 +240,16 @@ Aivazis
 Hyohyeon
 Hurrell
 willstott
+cshaver
+Suchanek
+danielleletarte
+francisu
+Benjie
+acao
+orta
+asiandrummer
+dbaeumer
+esbenp
 
 // organization
 Medellín
