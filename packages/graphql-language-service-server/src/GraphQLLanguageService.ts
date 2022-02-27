@@ -24,6 +24,18 @@ import {
   Outline,
   OutlineTree,
   GraphQLCache,
+  getAutocompleteSuggestions,
+  getHoverInformation,
+  HoverConfig,
+  validateQuery,
+  getRange,
+  DIAGNOSTIC_SEVERITY,
+  getOutline,
+  getDefinitionQueryResultForFragmentSpread,
+  getDefinitionQueryResultForDefinitionNode,
+  getDefinitionQueryResultForNamedType,
+  DefinitionQueryResult,
+  getASTNodeAtPosition,
 } from 'graphql-language-service';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -35,23 +47,6 @@ import {
 } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
-import { getAutocompleteSuggestions } from 'graphql-language-service';
-import { getHoverInformation, HoverConfig } from 'graphql-language-service';
-import {
-  validateQuery,
-  getRange,
-  DIAGNOSTIC_SEVERITY,
-} from 'graphql-language-service';
-import {
-  getDefinitionQueryResultForFragmentSpread,
-  getDefinitionQueryResultForDefinitionNode,
-  getDefinitionQueryResultForNamedType,
-  DefinitionQueryResult,
-} from 'graphql-language-service';
-
-import { getOutline } from 'graphql-language-service';
-
-import { getASTNodeAtPosition } from 'graphql-language-service';
 
 const {
   FRAGMENT_DEFINITION,
