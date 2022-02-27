@@ -363,7 +363,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               // the docs indicate that is what's there :shrug:
               const cacheEntry = globResult.statCache[filePath] as fs.Stats;
               return {
-                filePath: URI.parse(filePath).toString(),
+                filePath: URI.file(filePath).toString(),
                 mtime: Math.trunc(cacheEntry.mtime.getTime() / 1000),
                 size: cacheEntry.size,
               };
