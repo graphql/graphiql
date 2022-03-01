@@ -9,6 +9,18 @@ import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
+import codemirror from 'codemirror';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/search/searchcursor';
+import 'codemirror/addon/search/jump-to-line';
+import 'codemirror/addon/dialog/dialog';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/keymap/sublime';
 
 declare module CodeMirror {
   export interface Editor extends CM.Editor {}
@@ -59,20 +71,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
   }
 
   componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
-    // does not produce an error.
-    this.CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/mode/javascript/javascript');
-    require('codemirror/keymap/sublime');
+    this.CodeMirror = codemirror;
 
     const editor = (this.editor = this.CodeMirror(this._node, {
       value: this.props.value || '',
@@ -142,7 +141,8 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
   }
 
   componentDidUpdate(prevProps: HeaderEditorProps) {
-    this.CodeMirror = require('codemirror');
+    this.CodeMirror = codemirror;
+
     if (!this.editor) {
       return;
     }
