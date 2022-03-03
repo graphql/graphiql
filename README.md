@@ -1,7 +1,5 @@
 <!-- @format -->
 
-> # Black Lives Matter 🖤
-
 # GraphQL IDE Monorepo
 
 > **Security Notice:** All versions of `graphiql` < `1.4.7` are vulnerable to an XSS attack in cases where the GraphQL server to which the GraphiQL web app connects is not trusted. Learn more [in the graphiql `security` docs directory](https://github.com/graphql/graphiql/blob/main/docs/security)
