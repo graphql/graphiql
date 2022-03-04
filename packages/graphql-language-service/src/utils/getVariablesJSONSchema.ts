@@ -253,13 +253,41 @@ function getJSONSchemaFromGraphQLType(
   return { required, definition, definitions };
 }
 /**
- * Generate a JSONSchema6 valid document from a map of Map<string, GraphQLInputDefinition>
+ * Generates a JSONSchema6 valid document for operation(s) from a map of Map<string, GraphQLInputType>.
  *
- * TODO: optimize with shared definitions.
- * Otherwise, if you have multiple variables in your operations with the same input type, they are repeated.
+ * It generates referenced Definitions for each type, so that no graphql types are repeated.
+ *
+ * Note: you must install `@types/json-schema` if you want a valid result type
  *
  * @param facts {OperationFacts} the result of getOperationFacts, or getOperationASTFacts
- * @returns {JSONSchema6}
+ * @returns {JSONSchema6}'
+ *
+ * @example
+ * simple usage:
+ *
+ * ```ts
+ * import { parse } from 'graphql'
+ * import { collectVariables, getVariablesJSONSchema } from 'graphql-language-service'
+ * const variablesToType = collectVariables(parse(query), schema)
+ * const JSONSchema6Result = getVariablesJSONSchema(variablesToType, schema)
+ * ```
+ *
+ * @example
+ * advanced usage:
+ * ```ts
+ *
+ * import { parse } from 'graphql'
+ * import { collectVariables, getVariablesJSONSchema } from 'graphql-language-service'
+ * const variablesToType = collectVariables(parse(query), schema)
+ *
+ * // you can append `markdownDescription` to JSON schema, which  monaco-json uses.
+ * const JSONSchema6Result = getVariablesJSONSchema(variablesToType, schema, { useMarkdownDescription: true })
+ *
+ * // let's say we want to use it with an IDE extension that expects a JSON file
+ * // the resultant object literal can be written to string
+ * import fs from 'fs/promises'
+ * await fs.writeFile('operation-schema.json', JSON.stringify(JSONSchema6Result, null, 2))
+ * ```
  */
 export function getVariablesJSONSchema(
   variableToType: VariableToType,
