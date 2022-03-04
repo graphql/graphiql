@@ -35,7 +35,10 @@ export function Tab(props: {
 
 export function TabAddButton(props: { onClick: () => void }) {
   return (
-    <button onClick={props.onClick} className="tab-add">
+    <button
+      onClick={props.onClick}
+      className="toolbar-button tab-add"
+      title="Create new tab">
       {'+'}
     </button>
   );
