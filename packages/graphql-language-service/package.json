@@ -33,12 +33,12 @@
   "dependencies": {
     "graphql-config": "^4.1.0",
     "vscode-languageserver-types": "^3.15.1",
-    "nullthrows": "^1.0.0",
-    "@types/json-schema": "7.0.9"
+    "nullthrows": "^1.0.0"
   },
   "devDependencies": {
     "@types/picomatch": "^2.3.0",
     "@types/benchmark": "^1.0.33",
+    "@types/json-schema": "7.0.9",
     "benchmark": "^2.1.4",
     "graphql": "16.0.0-experimental-stream-defer.5",
     "lodash": "^4.17.15",
