@@ -527,7 +527,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       '',
     );
 
-    const initialTabId = idFromTabContents({
+    const initialTabHash = idFromTabContents({
       query,
       variables: variables as string,
       headers: headers as string,
@@ -535,7 +535,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
     const initialTab: TabState = {
       id: guid(),
-      hash: initialTabId,
+      hash: initialTabHash,
       title: operationName ?? '<untitled>',
       query,
       variables: variables as string,
@@ -563,7 +563,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         // ensure property is present
         tab.query = tab.query!;
         tab.variables = tab.variables!;
-        tab.headers = tab.headers!;
+        tab.headers = shouldPersistHeaders ? tab.headers! : undefined;
         tab.response = undefined;
         tab.operationName = undefined;
 
@@ -571,7 +571,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
         tab.hash = idFromTabContents(tab);
 
-        if (tab.hash === initialTabId) {
+        if (tab.hash === initialTabHash) {
           queryParameterOperationIsWithinTabs = true;
         }
       }
@@ -582,9 +582,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       }
     }
 
-    const activeTab = tabsState.tabs.find(
-      (_tab, index) => index === tabsState.activeTabIndex,
-    )!;
+    let activeTab = tabsState.tabs[0];
+    let index = 0;
+    for (const tab of tabsState.tabs) {
+      if (tab.hash === initialTabHash) {
+        tabsState.activeTabIndex = index;
+        activeTab = tab;
+        break;
+      }
+      index++;
+    }
 
     // Initialize state
     this.state = {
@@ -755,7 +762,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this._storage.set(
         'tabState',
         JSON.stringify(this.state.tabs, (key, value) =>
-          key === 'response' ? undefined : value,
+          key === 'response' ||
+          (this.state.shouldPersistHeaders && key === 'headers')
+            ? undefined
+            : value,
         ),
       );
       if (typeof this.props.tabs === 'object') {
@@ -783,53 +793,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   private handleOnAddTab = () => {
-    this.setState(state => {
-      const oldActiveTabIndex = state.tabs.activeTabIndex;
-
-      const newTab: TabState = {
-        id: guid(),
-        title: '<untitled>',
-        headers: '',
-        variables: '',
-        query: '',
-        operationName: '',
-        response: '',
-        hash: idFromTabContents({
-          query: '',
-          variables: '',
-          headers: '',
-        }),
-      };
-
-      const tabs = state.tabs.tabs.map((tab, index) => {
-        if (index !== oldActiveTabIndex) {
-          return tab;
-        }
-
-        return {
-          ...tab,
-          headers: state.headers,
-          variables: state.variables,
-          query: state.query,
-          operationName: state.operationName,
-          response: state.response,
-        };
-      });
-
-      return {
-        ...state,
-        headers: newTab.headers,
-        variables: newTab.variables,
-        query: newTab.query,
-        operationName: newTab.operationName,
-        response: newTab.response,
-        tabs: {
-          ...state.tabs,
-          activeTabIndex: state.tabs.tabs.length,
-          tabs: [...tabs, newTab],
-        },
-      };
-    }, this.persistTabsState);
+    this.setState(state => stateOnTabAddReducer(state), this.persistTabsState);
   };
 
   render() {
@@ -2445,5 +2409,53 @@ function stateOnCloseTabReducer(
     headers: activeTab.headers,
     response: activeTab.response,
     tabs: newTabsState,
+  };
+}
+
+function stateOnTabAddReducer(state: GraphiQLState): GraphiQLState {
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+
+  const newTab: TabState = {
+    id: guid(),
+    title: '<untitled>',
+    headers: '',
+    variables: '',
+    query: '',
+    operationName: '',
+    response: '',
+    hash: idFromTabContents({
+      query: '',
+      variables: '',
+      headers: '',
+    }),
+  };
+
+  const tabs = state.tabs.tabs.map((tab, index) => {
+    if (index !== oldActiveTabIndex) {
+      return tab;
+    }
+
+    return {
+      ...tab,
+      headers: state.headers,
+      variables: state.variables,
+      query: state.query,
+      operationName: state.operationName,
+      response: state.response,
+    };
+  });
+
+  return {
+    ...state,
+    headers: newTab.headers,
+    variables: newTab.variables,
+    query: newTab.query,
+    operationName: newTab.operationName,
+    response: newTab.response,
+    tabs: {
+      ...state.tabs,
+      activeTabIndex: state.tabs.tabs.length,
+      tabs: [...tabs, newTab],
+    },
   };
 }
