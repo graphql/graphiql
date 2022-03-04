@@ -766,65 +766,20 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   private makeHandleOnSelectTab = (index: number) => () => {
     this.handleStopQuery();
-    this.setState(state => {
-      const oldActiveTabIndex = state.tabs.activeTabIndex;
-      const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
-        if (tabIndex !== oldActiveTabIndex) {
-          return currentTab;
-        }
-
-        return {
-          ...currentTab,
-          query: state.query,
-          variables: state.variables,
-          operationName: state.operationName,
-          headers: state.headers,
-          response: state.response,
-          hash: idFromTabContents({
-            query: state.query,
-            variables: state.variables,
-            headers: state.headers,
-          }),
-        };
-      });
-
-      const newActiveTab = this.state.tabs.tabs[index];
-
-      return {
-        ...state,
-        query: newActiveTab.query,
-        variables: newActiveTab.variables,
-        operationName: newActiveTab.operationName,
-        headers: newActiveTab.headers,
-        response: newActiveTab.response,
-        tabs: { ...state.tabs, tabs, activeTabIndex: index },
-      };
-    }, this.persistTabsState);
+    this.setState(
+      state => stateOnSelectTabReducer(index, state),
+      this.persistTabsState,
+    );
   };
 
   private makeHandleOnCloseTab = (index: number) => () => {
     if (this.state.tabs.activeTabIndex === index) {
       this.handleStopQuery();
     }
-    this.setState(state => {
-      const newActiveTabIndex =
-        state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
-      const newTabsState = {
-        ...state.tabs,
-        activeTabIndex: newActiveTabIndex,
-        tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
-      };
-      const activeTab = newTabsState.tabs[newActiveTabIndex];
-      return {
-        ...state,
-        query: activeTab.query,
-        variables: activeTab.variables,
-        operationName: activeTab.operationName,
-        headers: activeTab.headers,
-        response: activeTab.response,
-        tabs: newTabsState,
-      };
-    }, this.persistTabsState);
+    this.setState(
+      state => stateOnCloseTabReducer(index, state),
+      this.persistTabsState,
+    );
   };
 
   private handleOnAddTab = () => {
@@ -1800,24 +1755,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ...state,
         query: value,
         ...queryFacts,
-        tabs: {
-          ...state.tabs,
-          tabs: state.tabs.tabs.map((tab, index) => {
-            if (index !== state.tabs.activeTabIndex) {
-              return tab;
-            }
-            return {
-              ...tab,
-              title: fuzzyExtractOperationTitle(value),
-              query: value,
-              hash: idFromTabContents({
-                query: value,
-                headers: tab.headers,
-                variables: tab.variables,
-              }),
-            };
-          }),
-        },
+        tabs: tabsStateEditQueryReducer(value, state.tabs),
       }),
       this.persistTabsState,
     );
@@ -1879,23 +1817,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       state => ({
         ...state,
         variables: value,
-        tabs: {
-          ...state.tabs,
-          tabs: state.tabs.tabs.map((tab, index) => {
-            if (index !== state.tabs.activeTabIndex) {
-              return tab;
-            }
-            return {
-              ...tab,
-              variables: value,
-              hash: idFromTabContents({
-                query: tab.query,
-                headers: tab.headers,
-                variables: value,
-              }),
-            };
-          }),
-        },
+        tabs: tabsStateEditVariablesReducer(value, state.tabs),
       }),
       this.persistTabsState,
     );
@@ -1910,23 +1832,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       state => ({
         ...state,
         headers: value,
-        tabs: {
-          ...state.tabs,
-          tabs: state.tabs.tabs.map((tab, index) => {
-            if (index !== state.tabs.activeTabIndex) {
-              return tab;
-            }
-            return {
-              ...tab,
-              headers: value,
-              hash: idFromTabContents({
-                query: tab.query,
-                headers: value,
-                variables: tab.variables,
-              }),
-            };
-          }),
-        },
+        tabs: tabsStateEditHeadersReducer(value, state.tabs),
       }),
       this.persistTabsState,
     );
@@ -2412,4 +2318,132 @@ function isChildComponentType<T extends ComponentType>(
   }
 
   return child.type === component;
+}
+
+function tabsStateEditHeadersReducer(
+  value: string,
+  state: TabsState,
+): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        headers: value,
+        hash: idFromTabContents({
+          query: tab.query,
+          headers: value,
+          variables: tab.variables,
+        }),
+      };
+    }),
+  };
+}
+
+function tabsStateEditVariablesReducer(
+  value: string,
+  state: TabsState,
+): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        variables: value,
+        hash: idFromTabContents({
+          query: tab.query,
+          headers: tab.headers,
+          variables: value,
+        }),
+      };
+    }),
+  };
+}
+
+function tabsStateEditQueryReducer(value: string, state: TabsState): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        title: fuzzyExtractOperationTitle(value),
+        query: value,
+        hash: idFromTabContents({
+          query: value,
+          headers: tab.headers,
+          variables: tab.variables,
+        }),
+      };
+    }),
+  };
+}
+
+function stateOnSelectTabReducer(
+  index: number,
+  state: GraphiQLState,
+): GraphiQLState {
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+  const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
+    if (tabIndex !== oldActiveTabIndex) {
+      return currentTab;
+    }
+
+    return {
+      ...currentTab,
+      query: state.query,
+      variables: state.variables,
+      operationName: state.operationName,
+      headers: state.headers,
+      response: state.response,
+      hash: idFromTabContents({
+        query: state.query,
+        variables: state.variables,
+        headers: state.headers,
+      }),
+    };
+  });
+
+  const newActiveTab = state.tabs.tabs[index];
+
+  return {
+    ...state,
+    query: newActiveTab.query,
+    variables: newActiveTab.variables,
+    operationName: newActiveTab.operationName,
+    headers: newActiveTab.headers,
+    response: newActiveTab.response,
+    tabs: { ...state.tabs, tabs, activeTabIndex: index },
+  };
+}
+
+function stateOnCloseTabReducer(
+  index: number,
+  state: GraphiQLState,
+): GraphiQLState {
+  const newActiveTabIndex =
+    state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
+  const newTabsState = {
+    ...state.tabs,
+    activeTabIndex: newActiveTabIndex,
+    tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
+  };
+  const activeTab = newTabsState.tabs[newActiveTabIndex];
+  return {
+    ...state,
+    query: activeTab.query,
+    variables: activeTab.variables,
+    operationName: activeTab.operationName,
+    headers: activeTab.headers,
+    response: activeTab.response,
+    tabs: newTabsState,
+  };
 }
