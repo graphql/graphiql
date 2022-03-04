@@ -750,7 +750,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.componentIsMounted && this.setState(nextState, callback);
   };
 
-  private _persistTabsState = () => {
+  private persistTabsState = () => {
     if (this.props.tabs) {
       this._storage.set(
         'tabState',
@@ -762,6 +762,119 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         this.props.tabs.onTabChange?.(this.state.tabs);
       }
     }
+  };
+
+  private makeHandleOnSelectTab = (index: number) => () => {
+    this.handleStopQuery();
+    this.setState(state => {
+      const oldActiveTabIndex = state.tabs.activeTabIndex;
+      const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
+        if (tabIndex !== oldActiveTabIndex) {
+          return currentTab;
+        }
+
+        return {
+          ...currentTab,
+          query: state.query,
+          variables: state.variables,
+          operationName: state.operationName,
+          headers: state.headers,
+          response: state.response,
+          hash: idFromTabContents({
+            query: state.query,
+            variables: state.variables,
+            headers: state.headers,
+          }),
+        };
+      });
+
+      const newActiveTab = this.state.tabs.tabs[index];
+
+      return {
+        ...state,
+        query: newActiveTab.query,
+        variables: newActiveTab.variables,
+        operationName: newActiveTab.operationName,
+        headers: newActiveTab.headers,
+        response: newActiveTab.response,
+        tabs: { ...state.tabs, tabs, activeTabIndex: index },
+      };
+    }, this.persistTabsState);
+  };
+
+  private makeHandleOnCloseTab = (index: number) => () => {
+    if (this.state.tabs.activeTabIndex === index) {
+      this.handleStopQuery();
+    }
+    this.setState(state => {
+      const newActiveTabIndex =
+        state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
+      const newTabsState = {
+        ...state.tabs,
+        activeTabIndex: newActiveTabIndex,
+        tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
+      };
+      const activeTab = newTabsState.tabs[newActiveTabIndex];
+      return {
+        ...state,
+        query: activeTab.query,
+        variables: activeTab.variables,
+        operationName: activeTab.operationName,
+        headers: activeTab.headers,
+        response: activeTab.response,
+        tabs: newTabsState,
+      };
+    }, this.persistTabsState);
+  };
+
+  private handleOnAddTab = () => {
+    this.setState(state => {
+      const oldActiveTabIndex = state.tabs.activeTabIndex;
+
+      const newTab: TabState = {
+        id: guid(),
+        title: '<untitled>',
+        headers: '',
+        variables: '',
+        query: '',
+        operationName: '',
+        response: '',
+        hash: idFromTabContents({
+          query: '',
+          variables: '',
+          headers: '',
+        }),
+      };
+
+      const tabs = state.tabs.tabs.map((tab, index) => {
+        if (index !== oldActiveTabIndex) {
+          return tab;
+        }
+
+        return {
+          ...tab,
+          headers: state.headers,
+          variables: state.variables,
+          query: state.query,
+          operationName: state.operationName,
+          response: state.response,
+        };
+      });
+
+      return {
+        ...state,
+        headers: newTab.headers,
+        variables: newTab.variables,
+        query: newTab.query,
+        operationName: newTab.operationName,
+        response: newTab.response,
+        tabs: {
+          ...state.tabs,
+          activeTabIndex: state.tabs.tabs.length,
+          tabs: [...tabs, newTab],
+        },
+      };
+    }, this.persistTabsState);
   };
 
   render() {
@@ -889,124 +1002,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   isActive={index === this.state.tabs.activeTabIndex}
                   title={tab.title}
                   isCloseable={this.state.tabs.tabs.length > 1}
-                  onSelect={() => {
-                    this.handleStopQuery();
-                    this.setState(state => {
-                      const oldActiveTabIndex = state.tabs.activeTabIndex;
-                      const tabs = state.tabs.tabs.map(
-                        (currentTab, tabIndex) => {
-                          if (tabIndex !== oldActiveTabIndex) {
-                            return currentTab;
-                          }
-
-                          return {
-                            ...currentTab,
-                            query: state.query,
-                            variables: state.variables,
-                            operationName: state.operationName,
-                            headers: state.headers,
-                            response: state.response,
-                            hash: idFromTabContents({
-                              query: state.query,
-                              variables: state.variables,
-                              headers: state.headers,
-                            }),
-                          };
-                        },
-                      );
-
-                      const newActiveTab = this.state.tabs.tabs[index];
-
-                      return {
-                        ...state,
-                        query: newActiveTab.query,
-                        variables: newActiveTab.variables,
-                        operationName: newActiveTab.operationName,
-                        headers: newActiveTab.headers,
-                        response: newActiveTab.response,
-                        tabs: { ...state.tabs, tabs, activeTabIndex: index },
-                      };
-                    }, this._persistTabsState);
-                  }}
-                  onClose={() => {
-                    if (this.state.tabs.activeTabIndex === index) {
-                      this.handleStopQuery();
-                    }
-                    this.setState(state => {
-                      const newActiveTabIndex =
-                        state.tabs.activeTabIndex > 0
-                          ? state.tabs.activeTabIndex - 1
-                          : 0;
-                      const newTabsState = {
-                        ...state.tabs,
-                        activeTabIndex: newActiveTabIndex,
-                        tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
-                      };
-                      const activeTab = newTabsState.tabs[newActiveTabIndex];
-                      return {
-                        ...state,
-                        query: activeTab.query,
-                        variables: activeTab.variables,
-                        operationName: activeTab.operationName,
-                        headers: activeTab.headers,
-                        response: activeTab.response,
-                        tabs: newTabsState,
-                      };
-                    }, this._persistTabsState);
-                  }}
+                  onSelect={this.makeHandleOnSelectTab(index)}
+                  onClose={this.makeHandleOnCloseTab(index)}
                 />
               ))}
-              <TabAddButton
-                onClick={() =>
-                  this.setState(state => {
-                    const oldActiveTabIndex = state.tabs.activeTabIndex;
-
-                    const newTab: TabState = {
-                      id: guid(),
-                      title: '<untitled>',
-                      headers: '',
-                      variables: '',
-                      query: '',
-                      operationName: '',
-                      response: '',
-                      hash: idFromTabContents({
-                        query: '',
-                        variables: '',
-                        headers: '',
-                      }),
-                    };
-
-                    const tabs = state.tabs.tabs.map((tab, index) => {
-                      if (index !== oldActiveTabIndex) {
-                        return tab;
-                      }
-
-                      return {
-                        ...tab,
-                        headers: state.headers,
-                        variables: state.variables,
-                        query: state.query,
-                        operationName: state.operationName,
-                        response: state.response,
-                      };
-                    });
-
-                    return {
-                      ...state,
-                      headers: newTab.headers,
-                      variables: newTab.variables,
-                      query: newTab.query,
-                      operationName: newTab.operationName,
-                      response: newTab.response,
-                      tabs: {
-                        ...state.tabs,
-                        activeTabIndex: state.tabs.tabs.length,
-                        tabs: [...tabs, newTab],
-                      },
-                    };
-                  }, this._persistTabsState)
-                }
-              />
+              <TabAddButton onClick={this.handleOnAddTab} />
             </Tabs>
           ) : null}
           <div
@@ -1674,7 +1674,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                   isWaitingForResponse: false,
                   response,
                 }),
-                this._persistTabsState,
+                this.persistTabsState,
               );
             }
           }
@@ -1819,7 +1819,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           }),
         },
       }),
-      this._persistTabsState,
+      this.persistTabsState,
     );
     this._storage.set('query', value);
     if (this.props.onEditQuery) {
@@ -1897,7 +1897,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           }),
         },
       }),
-      this._persistTabsState,
+      this.persistTabsState,
     );
     debounce(500, () => this._storage.set('variables', value))();
     if (this.props.onEditVariables) {
@@ -1928,7 +1928,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
           }),
         },
       }),
-      this._persistTabsState,
+      this.persistTabsState,
     );
     this.props.shouldPersistHeaders &&
       debounce(500, () => this._storage.set('headers', value))();
