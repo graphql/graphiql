@@ -215,11 +215,23 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     // user-input changes which could otherwise result in an infinite
     // event loop.
     this.ignoreChangeEvent = true;
+    let signalChange = false;
     if (this.props.schema !== prevProps.schema && this.editor) {
       this.editor.options.lint.schema = this.props.schema;
       this.editor.options.hintOptions.schema = this.props.schema;
       this.editor.options.info.schema = this.props.schema;
       this.editor.options.jump.schema = this.props.schema;
+      signalChange = true;
+    }
+    if (
+      this.props.externalFragments !== prevProps.externalFragments &&
+      this.editor
+    ) {
+      this.editor.options.lint.externalFragments = this.props.externalFragments;
+      this.editor.options.hintOptions.externalFragments = this.props.externalFragments;
+      signalChange = true;
+    }
+    if (signalChange) {
       CodeMirror.signal(this.editor, 'change', this.editor);
     }
     if (
