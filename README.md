@@ -43,7 +43,7 @@ As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain an sdk a
 
 ![Diagram of the proposed Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/proposed-ecosystem.jpg)
 
-## [GraphiQL](packages/graphiql#readme)
+## [`graphiql`](packages/graphiql#readme)
 
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
@@ -70,10 +70,10 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 **The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
-## [Monaco GraphQL](packages/monaco-graphql#readme)
+## [`monaco-graphql`](packages/monaco-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/monaco-graphql.svg)](https://npmjs.com/monaco-graphql)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/monaco-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/monaco-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/monaco-graphql)
 
@@ -81,10 +81,10 @@ Provides monaco editor with a powerful, schema-driven graphql language mode.
 
 See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using github API
 
-## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
+## [`codemirror-graphql`](packages/codemirror-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/codemirror-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/codemirror-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 
@@ -92,53 +92,29 @@ See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain ja
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and typeahead hinter powered by your GraphQL Schema
 
-## [GraphQL Language Service](packages/graphql-language-service#readme)
+## [`graphql-language-service`](packages/graphql-language-service#readme)
 
 [![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service)
 
-Provides a command-line interface for running [GraphQL Language Service Server](packages/graphql-language-service-server#readme) for various IDEs.
+Provides language services for [`graphql-language-service-server`](packages/graphql-language-service-server#readme) [`codemirror-graphql`](packages/codemirror-graphql) and [`monaco-graphql`](packages/monaco-graphql).
 
-## [GraphQL Language Service Server](packages/graphql-language-service-server#readme)
+## [`graphql-language-service-server`](packages/graphql-language-service-server#readme)
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-server.svg)](https://npmjs.com/graphql-language-service-server)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server)
 
-An almost fully LSP compliant server process backing the [GraphQL Language Service](packages/graphql-language-service#readme).
+Provides language services for LSP-based IDE extensions
 
-## [GraphQL Language Service Interface](packages/graphql-language-service-interface#readme)
+## [`graphql-language-service-server-cli`](packages/graphql-language-service-server-cli#readme)
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-interface.svg)](https://npmjs.com/graphql-language-service-interface)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphql-language-service-interface)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-interface?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-server-cli.svg)](https://npmjs.com/graphql-language-service-server-cli)
+![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server-cli?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server-cli)
 
-Runtime agnostic Language Service used by [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) and [GraphQL Language Service Server](packages/graphql-language-service-server#readme)
-
-## [GraphQL Language Service Parser](packages/graphql-language-service-parser#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-parser.svg)](https://npmjs.com/graphql-language-service-parser)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-parser?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
-
-An online immutable parser for [GraphQL](http://graphql.org/), designed to be used as part of syntax-highlighting and code intelligence tools such as for the [GraphQL Language Service](packages/graphql-language-service#readme) and [codemirror-graphql](packages/codemirror-graphql#readme).
-
-## [GraphQL Language Service Types](packages/graphql-language-service-types#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-types.svg)](https://npmjs.com/graphql-language-service-types)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-types?label=npm%20downloads)
-
-[Flow](https://flowtype.org/) and Typescript type definitions for the [GraphQL Language Service](packages/graphql-language-service#readme).
-
-## [GraphQL Language Service Utilities](packages/graphql-language-service-utils#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-utils.svg)](https://npmjs.com/graphql-language-service-utils)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-parser?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
-
-Utilities to support the [GraphQL Language Service](packages/graphql-language-service#readme).
+Provides a CLI for the language service server
 
 ## Browser & Runtime Support
 
