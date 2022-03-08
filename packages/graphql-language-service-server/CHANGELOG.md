@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.7.15
+
+### Patch Changes
+
+- [#2214](https://github.com/graphql/graphiql/pull/2214) [`ab83198f`](https://github.com/graphql/graphiql/commit/ab83198fa8b3c5453d3733982ee9ca8a2d6bca7a) Thanks [@Cellule](https://github.com/Cellule)! - Fixed Windows fileUri when resolving type definition location
+
 ## 2.7.14
 
 ### Patch Changes
