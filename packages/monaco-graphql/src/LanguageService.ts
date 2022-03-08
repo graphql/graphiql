@@ -90,7 +90,7 @@ export class LanguageService {
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {
-    const schema = this._schemaLoader(schemaConfig, this.parse);
+    const schema = this._schemaLoader(schemaConfig, this.parse.bind(this));
     return this._schemaCache.set(schemaConfig.uri, {
       ...schemaConfig,
       schema,
