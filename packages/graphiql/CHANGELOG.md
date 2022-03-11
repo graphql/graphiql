@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [[`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958)]:
+  - graphql-language-service@5.0.0
+  - codemirror-graphql@1.2.13
+
 ## 1.7.0
 
 ### Minor Changes
