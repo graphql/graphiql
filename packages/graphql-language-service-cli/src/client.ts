@@ -16,8 +16,9 @@ import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getOutline,
+  Position,
 } from 'graphql-language-service';
-import { Position } from 'graphql-language-service-utils';
+
 import path from 'path';
 
 import type { CompletionItem, Diagnostic } from 'graphql-language-service';

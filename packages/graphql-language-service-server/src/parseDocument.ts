@@ -1,6 +1,6 @@
 import { extname } from 'path';
 import type { CachedContent } from 'graphql-language-service';
-import { Range, Position } from 'graphql-language-service-utils';
+import { Range, Position } from 'graphql-language-service';
 
 import { findGraphQLTags, DEFAULT_TAGS } from './findGraphQLTags';
 import { Logger } from './Logger';

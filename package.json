@@ -18,7 +18,9 @@
       "yarn cspell '**/*.{js,ts,jsx,tsx}'"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write",
+      "prettier --write"
+    ],
+    "*.{md,html,json}": [
       "yarn cspell '**/*.{md,html,json}'"
     ]
   },

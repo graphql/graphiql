@@ -17,12 +17,13 @@ import {
   Uri,
   GraphQLConfig,
   GraphQLProjectConfig,
-  GraphQLLanguageService,
   FileChangeTypeKind,
   Range,
   Position,
   IPosition,
 } from 'graphql-language-service';
+
+import { GraphQLLanguageService } from './GraphQLLanguageService';
 
 import type {
   CompletionParams,
@@ -131,7 +132,7 @@ export class MessageProcessor {
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = URI.parse(this._tmpDirBase).toString();
+    this._tmpUriBase = URI.file(this._tmpDirBase).toString();
     this._loadConfigOptions = loadConfigOptions;
     if (
       loadConfigOptions.extensions &&
@@ -833,7 +834,7 @@ export class MessageProcessor {
     const isFileUri = existsSync(uri);
     let version = 1;
     if (isFileUri) {
-      const schemaUri = URI.parse(path.join(project.dirpath, uri)).toString();
+      const schemaUri = URI.file(path.join(project.dirpath, uri)).toString();
       const schemaDocument = this._getCachedDocument(schemaUri);
 
       if (schemaDocument) {
@@ -859,7 +860,7 @@ export class MessageProcessor {
       projectTmpPath = path.join(projectTmpPath, appendPath);
     }
     if (prependWithProtocol) {
-      return URI.parse(path.resolve(projectTmpPath)).toString();
+      return URI.file(path.resolve(projectTmpPath)).toString();
     } else {
       return path.resolve(projectTmpPath);
     }
@@ -1014,7 +1015,7 @@ export class MessageProcessor {
           }
 
           // build full system URI path with protocol
-          const uri = URI.parse(filePath).toString();
+          const uri = URI.file(filePath).toString();
 
           // i would use the already existing graphql-config AST, but there are a few reasons we can't yet
           const contents = this._parser(document.rawSDL, uri);

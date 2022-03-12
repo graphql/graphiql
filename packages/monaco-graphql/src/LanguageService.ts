@@ -23,13 +23,10 @@ import {
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
-} from 'graphql-language-service';
-
-import {
   getVariablesJSONSchema,
   getOperationASTFacts,
   JSONSchemaOptions,
-} from 'graphql-language-service-utils';
+} from 'graphql-language-service';
 
 import { defaultSchemaLoader } from './schemaLoader';
 
@@ -90,7 +87,7 @@ export class LanguageService {
   }
 
   private _cacheSchema(schemaConfig: SchemaConfig) {
-    const schema = this._schemaLoader(schemaConfig, this.parse);
+    const schema = this._schemaLoader(schemaConfig, this.parse.bind(this));
     return this._schemaCache.set(schemaConfig.uri, {
       ...schemaConfig,
       schema,

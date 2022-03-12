@@ -16,9 +16,10 @@ flags:
   graphiql:
     paths:
       - packages/graphiql/
-  graphql-language-service-interface:
+  graphql-language-service:
     paths:
-      - packages/graphql-language-service-interface/
-  graphql-language-service-utils:
+      - packages/graphql-language-service
+
+  graphql-language-service-server:
     paths:
-      - packages/graphql-language-service-utils/
+      - packages/graphql-language-service-server

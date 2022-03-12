@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.0.0
+
+### Major Changes
+
+- [#2209](https://github.com/graphql/graphiql/pull/2209) [`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958) Thanks [@acao](https://github.com/acao)! - Retire parser, interface, utils and types packages, combine with graphql-language-service
+
 ## 4.1.5
 
 ### Patch Changes

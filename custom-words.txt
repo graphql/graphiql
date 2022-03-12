@@ -211,6 +211,8 @@ closebrackets
 languges
 
 // person name
+waterfoul
+hatappi
 gracenoah
 enisdenjo
 walaura

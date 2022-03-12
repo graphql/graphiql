@@ -1,0 +1,94 @@
+/**
+ *  Copyright (c) 2021 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+ *
+ *  @flow
+ */
+
+import type {
+  Outline,
+  Diagnostic,
+  ContextToken,
+  ContextTokenUnion,
+  IPosition,
+  DefinitionQueryResult,
+  Uri,
+  GraphQLCache,
+  CompletionItem,
+  CompletionItemBase,
+  TypeInfo,
+  State,
+} from 'graphql-language-service';
+import type { ValidationRule, GraphQLSchema } from 'graphql';
+import type { Hover } from 'vscode-languageserver-types';
+import { GraphQLDirective } from "graphql";
+import type { FragmentDefinitionNode } from "graphql";
+
+declare export function getOutline(queryText: string): ?Outline;
+declare export function getDiagnostics(
+  query: string,
+  schema: ?GraphQLSchema,
+  customRules?: Array<ValidationRule>,
+  isRelayCompatMode?: boolean,
+  externalFragments?: Array<FragmentDefinitionNode> | string
+): Array<Diagnostic>;
+
+declare export function getAutocompleteSuggestions(
+  schema: GraphQLSchema,
+  queryText: string,
+  cursor: IPosition,
+  contextToken?: ContextToken,
+  externalFragments?: Array<FragmentDefinitionNode>
+): Array<CompletionItem>;
+
+declare export class GraphQLLanguageService {
+  constructor(cache: GraphQLCache): GraphQLLanguageService;
+
+  getDefinition(
+    query: string,
+    position: IPosition,
+    filePath: Uri,
+  ): Promise<?DefinitionQueryResult>;
+
+  getDiagnostics(
+    query: string,
+    uri: Uri,
+    isRelayCompatMode?: boolean,
+  ): Promise<Array<Diagnostic>>;
+
+  getHoverInformation(
+    query: string,
+    position: IPosition,
+    filePath: Uri,
+  ): Promise<Hover.contents>;
+
+  getAutocompleteSuggestions(
+    query: string,
+    position: IPosition,
+    filePath: Uri,
+  ): Promise<Array<CompletionItem>>;
+}
+declare export function canUseDirective(
+  state: $PropertyType<State, "prevState">,
+  directive: GraphQLDirective
+): boolean;
+declare export function getDefinitionState(
+  tokenState: State
+): State | null | void;
+declare export function getFragmentDefinitions(
+  queryText: string
+): Array<FragmentDefinitionNode>;
+declare export function getTypeInfo(
+  schema: GraphQLSchema,
+  tokenState: State
+): TypeInfo;
+declare export function hintList<T: CompletionItemBase>(
+  token: ContextTokenUnion,
+  list: Array<T>
+): Array<T>;
+declare export function objectValues(object: {
+  [key: string]: any,
+}): Array<any>;

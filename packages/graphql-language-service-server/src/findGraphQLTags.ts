@@ -14,7 +14,7 @@ import {
   TemplateLiteral,
 } from '@babel/types';
 
-import { Position, Range } from 'graphql-language-service-utils';
+import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import { Logger } from './Logger';

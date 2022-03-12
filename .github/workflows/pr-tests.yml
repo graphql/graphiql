@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node: ['10', '12', '14', '16']
+        node: ['12', '14', '16', '17', '18']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

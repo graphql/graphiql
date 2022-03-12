@@ -1,5 +1,25 @@
 # Change Log
 
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [[`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958)]:
+  - graphql-language-service@5.0.0
+  - codemirror-graphql@1.2.13
+
+## 1.7.0
+
+### Minor Changes
+
+- [#2221](https://github.com/graphql/graphiql/pull/2221) [`64826c87`](https://github.com/graphql/graphiql/commit/64826c8776dfc8394a65c98663d47cc3c9d397b9) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - Fix to trigger codemirror update when externalFragments prop changes [#2220](https://github.com/graphql/graphiql/pull/2220)
+
+* [#2213](https://github.com/graphql/graphiql/pull/2213) [`ba85bc24`](https://github.com/graphql/graphiql/commit/ba85bc242b8271cbd09ade9d69a93d86e4e1a49f) Thanks [@hatappi](https://github.com/hatappi)! - remove IE7 CSS star property hack
+
+### Patch Changes
+
+- [#2205](https://github.com/graphql/graphiql/pull/2205) [`91500d4e`](https://github.com/graphql/graphiql/commit/91500d4eba8b99bf779ff6ac899c814070c6dff3) Thanks [@francisu](https://github.com/francisu)! - Fixed problem where 'global' variable is referenced when it might not be present (#2155)
+
 ## 1.6.0
 
 ### Minor Changes
