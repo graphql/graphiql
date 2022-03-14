@@ -117,6 +117,29 @@
         "path": "./snippets/graphql.json"
       }
     ],
+    "icons": {
+      "graphql-logo": {
+        "description": "GraphQL Icon",
+        "default": {
+          "fontPath": "assets/graphql-fonts.woff",
+          "fontCharacter": "\\E900"
+        }
+      },
+      "graphql-loading": {
+        "description": "GraphQL Loading Icon",
+        "default": {
+          "fontPath": "assets/graphql-fonts.woff",
+          "fontCharacter": "\\E902"
+        }
+      },
+      "graphql-failed": {
+        "description": "GraphQL Failed Icon",
+        "default": {
+          "fontPath": "assets/graphql-fonts.woff",
+          "fontCharacter": "\\E901"
+        }
+      }
+    },
     "configuration": {
       "title": "VS Code GraphQL",
       "properties": {

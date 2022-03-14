@@ -4,6 +4,7 @@ import {
   TextEditor,
   window,
   ThemeColor,
+  version,
 } from 'vscode';
 import { LanguageClient, State } from 'vscode-languageclient';
 
@@ -14,7 +15,8 @@ enum Status {
 }
 
 const statusBarText = 'GraphQL';
-const statusBarUIElements = {
+
+const oldStatusBarUIElements = {
   [Status.INIT]: {
     icon: 'sync',
     tooltip: 'GraphQL language server is initializing',
@@ -27,6 +29,23 @@ const statusBarUIElements = {
     icon: 'stop',
     color: new ThemeColor('list.warningForeground'),
     tooltip: 'GraphQL language server has stopped',
+  },
+};
+
+// Uses an API added in Feb 2022
+const statusBarUIElements = {
+  [Status.INIT]: {
+    icon: 'graphql-loading',
+    tooltip: 'GraphQL language server is starting up, click to show logs',
+  },
+  [Status.RUNNING]: {
+    icon: 'graphql-logo',
+    tooltip: 'GraphQL language server is running, click to show logs',
+  },
+  [Status.ERROR]: {
+    icon: 'graphql-error',
+    color: new ThemeColor('list.warningForeground'),
+    tooltip: 'GraphQL language server has stopped, click to show logs',
   },
 };
 
@@ -95,8 +114,20 @@ function updateStatusBar(
 ) {
   extensionStatus = serverRunning ? Status.RUNNING : Status.ERROR;
 
-  const statusUI = statusBarUIElements[extensionStatus];
-  statusBarItem.text = `$(${statusUI.icon}) ${statusBarText}`;
+  // Support two different versions of the status bar UI,
+  // a modern version which uses the new API which lets us use the GraphQL logo and
+  // a legacy version which says 'graphql' in text.
+
+  const [major, minor] = version.split('.');
+  const userNewVersion =
+    Number(major) > 1 || (Number(major) === 1 && Number(minor) >= 65);
+  const statusBarUIElement = userNewVersion
+    ? statusBarUIElements
+    : oldStatusBarUIElements;
+  const message = userNewVersion ? '' : ' GraphQL';
+
+  const statusUI = statusBarUIElement[extensionStatus];
+  statusBarItem.text = `$(${statusUI.icon})${message}`;
   statusBarItem.tooltip = statusUI.tooltip;
   statusBarItem.command = 'vscode-graphql.showOutputChannel';
   if ('color' in statusUI) {
