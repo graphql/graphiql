@@ -36,6 +36,7 @@
     "build-demo": "yarn workspaces run build-demo",
     "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",
     "build:clean": "yarn tsc --clean",
+    "build-vscode-ext": "yarn workspace vscode-graphql build",
     "build:watch": "yarn tsc --watch",
     "check": "yarn tsc --dry",
     "cypress-open": "yarn workspace graphiql cypress-open",
