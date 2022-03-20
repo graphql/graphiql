@@ -503,7 +503,7 @@ div.CodeMirror-lint-tooltip > * + * {
   align-items: center;
   justify-content: center;
   padding-bottom: 3px;
-  border-left: 1px solid lightgray;
+  border: 0 0 0 1px solid lightgray;
   height: 100%;
 }
 

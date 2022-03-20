@@ -301,7 +301,7 @@ export type GraphiQLProps = {
    * Whether tabs should be enabled.
    * default: false
    */
-  tabs:
+  tabs?:
     | boolean
     | {
         /**
@@ -862,6 +862,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ? this.state.secondaryEditorHeight
         : undefined,
     };
+    const tabsState = this.state.tabs;
 
     return (
       <div
@@ -914,15 +915,22 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             )}
           </div>
           {this.props.tabs ? (
-            <Tabs>
-              {this.state.tabs.tabs.map((tab, index) => (
+            <Tabs
+              tabsProps={{
+                'aria-label': 'Select active operation',
+              }}>
+              {tabsState.tabs.map((tab, index) => (
                 <Tab
                   key={tab.id}
-                  isActive={index === this.state.tabs.activeTabIndex}
+                  isActive={index === tabsState.activeTabIndex}
                   title={tab.title}
-                  isCloseable={this.state.tabs.tabs.length > 1}
+                  isCloseable={tabsState.tabs.length > 1}
                   onSelect={this.makeHandleOnSelectTab(index)}
                   onClose={this.makeHandleOnCloseTab(index)}
+                  tabProps={{
+                    'aria-controls': 'sessionWrap',
+                    id: `session-tab-${index}`,
+                  }}
                 />
               ))}
               <TabAddButton onClick={this.handleOnAddTab} />
@@ -932,7 +940,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             ref={n => {
               this.editorBarComponent = n;
             }}
+            role="tabpanel"
+            id="sessionWrap"
             className="editorBar"
+            aria-labelledby={`session-tab-${tabsState.activeTabIndex}`}
             onDoubleClick={this.handleResetResize}
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
