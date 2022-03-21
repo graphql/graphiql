@@ -504,9 +504,16 @@ div.CodeMirror-lint-tooltip > * + * {
   padding-top: 0;
   padding-right: 6px;
   padding-left: 14px;
-  border-left: 1px solid lightgray;
   height: 100%;
   color: rgba(0, 0, 0, 0.6);
+
+  border-left: 1px solid lightgray;
+  /*
+  Needed for `button` components.
+  */
+  border-top-style: none;
+  border-bottom-style: none;
+  border-right-style: none;
 }
 
 /*
