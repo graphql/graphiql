@@ -489,7 +489,7 @@ div.CodeMirror-lint-tooltip > * + * {
 }
 
 .graphiql-container .tabs {
-  height: 40px;
+  height: 42px;
   background-image: linear-gradient(#f7f7f7, #e2e2e2);
   display: flex;
   align-items: center;
@@ -499,57 +499,104 @@ div.CodeMirror-lint-tooltip > * + * {
   position: relative;
   cursor: pointer;
   display: flex;
-  width: 100px;
   align-items: center;
   justify-content: center;
-  padding-bottom: 3px;
-  border: 0 0 0 1px solid lightgray;
+  padding-top: 0;
+  padding-right: 6px;
+  padding-left: 14px;
+  border-left: 1px solid lightgray;
   height: 100%;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+/*
+  If it's only one tab, we don't have the X button, so we want more padding.
+  In the .tabs container, we have one more child - the plus button.
+  So if this tab is first child and the second last at the same time,
+  this is the case we want to target.
+*/
+
+.graphiql-container .tab:first-child:nth-last-child(2) {
+  padding-right: 14px;
+}
+
+.graphiql-container .tab:hover {
+  background-image: linear-gradient(
+    rgba(245, 245, 245, 0.7),
+    rgba(215, 215, 215, 1)
+  );
+  color: rgba(0, 0, 0, 0.8);
 }
 
 .graphiql-container .tab.active {
-  font-weight: bold;
+  background-image: linear-gradient(
+    rgba(233, 233, 233, 0.7),
+    rgba(205, 205, 205, 1)
+  );
+  color: black;
 }
 
-.graphiql-container .tab.active,
-.graphiql-container .tab:hover {
+/* {
   background-image: linear-gradient(
     rgba(223, 223, 223, 0.5),
     rgba(196, 196, 196, 1)
   );
-}
+} */
 
 .graphiql-container .tab .close {
   cursor: pointer;
-  position: absolute;
   border: none;
   background: transparent;
-  margin: 0;
-  padding: 3px;
-  right: 0;
-  top: 0;
-  height: 15px;
-  width: 15px;
-  line-height: 7px;
+  margin-left: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.graphiql-container .tab:hover .close,
+.graphiql-container .tab.active .close {
+  opacity: 1;
 }
 
 .graphiql-container .tab .close::before {
-  content: '+';
-  transform: rotate(45deg);
+  content: '✕';
   display: inline-block;
   font-weight: bold;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  height: 14px;
+}
+
+.graphiql-container .tab .close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.graphiql-container .tab .close:active {
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .graphiql-container .tab-add {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
   border: none;
   background: transparent;
+  line-height: 1;
+  font-size: 26px;
+  padding: 0 8px;
+  height: 30px;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.5);
   padding-bottom: 3px;
-  height: 27px;
-  font-weight: bold;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.graphiql-container .tab-add:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.graphiql-container .tab-add:active {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* COLORS */

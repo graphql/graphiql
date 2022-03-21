@@ -50,11 +50,8 @@ export function Tab(props: TabProps): React.ReactElement {
 
 export function TabAddButton(props: { onClick: () => void }) {
   return (
-    <button
-      onClick={props.onClick}
-      className="toolbar-button tab-add"
-      title="Create new tab">
-      {'+'}
+    <button onClick={props.onClick} className="tab-add" title="Create new tab">
+      <span>{'+'}</span>
     </button>
   );
 }
