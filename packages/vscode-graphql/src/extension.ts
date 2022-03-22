@@ -62,6 +62,10 @@ export function activate(context: ExtensionContext) {
           '/{graphql.config.*,.graphqlrc,.graphqlrc.*,package.json}',
           false,
           // Ignore change events for graphql config, we only care about create, delete and save events
+          // otherwise, the underlying language service is re-started on every key change.
+          // also, it makes sense that it should only re-load on file save, but we need to document that.
+          // TODO: perhaps we can intercept change events, and remind the user
+          // to save for the changes to take effect
           true,
         ),
         // These ignore node_modules and .git by default
@@ -101,6 +105,7 @@ export function activate(context: ExtensionContext) {
     'vscode-graphql.showOutputChannel',
     () => outputChannel.show(),
   );
+
   context.subscriptions.push(commandShowOutputChannel);
 
   const statusBarItem = createStatusBar();
@@ -112,10 +117,11 @@ export function activate(context: ExtensionContext) {
   commands.registerCommand('vscode-graphql.restart', async () => {
     outputChannel.appendLine(`Stopping GraphQL LSP`);
     await client.stop();
+
     clientLSPDisposable.dispose();
 
     outputChannel.appendLine(`Restarting GraphQL LSP`);
-    clientLSPDisposable = await client.start();
+    clientLSPDisposable = client.start();
     context.subscriptions.push(clientLSPDisposable);
 
     outputChannel.appendLine(`GraphQL LSP restarted`);
@@ -123,7 +129,7 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
-  console.log('Extension "vscode-graphql" is now de-active!');
+  console.log('Extension "vscode-graphql" has been de-activated!!');
 }
 
 function getConfig() {

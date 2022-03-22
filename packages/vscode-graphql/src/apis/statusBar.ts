@@ -14,7 +14,7 @@ enum Status {
   ERROR = 3,
 }
 
-const statusBarText = 'GraphQL';
+// const statusBarText = 'GraphQL';
 
 const oldStatusBarUIElements = {
   [Status.INIT]: {

@@ -1,14 +1,17 @@
 {
-  "extends": "../../resources/tsconfig.base.cjs.json",
+  "extends": "../../resources/tsconfig.base.esm.json",
   "compilerOptions": {
     "target": "ES2018",
     "composite": true,
     "rootDir": "./src",
-    "noEmit": true
+    "outDir": "./dist"
   },
   "references": [
     {
       "path": "../graphql-language-service"
+    },
+    {
+      "path": "../graphql-language-service-server"
     }
   ],
   "include": ["src"],

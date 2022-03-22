@@ -235,10 +235,9 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "npm run compile:server && esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
-    "compile:server": "esbuild ./src/server/index.ts --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
-    "build": "npm run compile -- --sourcemap",
-    "watch": "npm run build --watch",
+    "compile": "npm run compile:server && esbuild ./dist/extension.js --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+    "compile:server": "esbuild ./dist/server/index.js --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
+    "build-bundles": "npm run compile -- --sourcemap",
     "vsce:package": "vsce package",
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish",
@@ -247,36 +246,16 @@
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
-    "@types/dotenv": "8.2.0",
-    "@types/mocha": "5.2.7",
-    "@types/node": "16.11.26",
-    "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
-    "@types/ws": "8.2.2",
     "esbuild": "0.13.15",
     "ovsx": "0.3.0",
-    "tslint": "5.20.1",
-    "typescript": "^4.1.3",
-    "vsce": "2.6.7",
-    "vscode": "1.1.37"
+    "vsce": "2.6.7"
   },
   "dependencies": {
-    "@graphql-tools/load": "7.5.2",
-    "@graphql-tools/url-loader": "7.8.0",
-    "@graphql-tools/wrap": "8.4.3",
-    "@urql/core": "2.3.6",
-    "babel-polyfill": "6.26.0",
-    "capitalize": "2.0.4",
-    "dotenv": "10.0.0",
-    "escape-html": "1.0.3",
-    "graphql": "15.8.0",
-    "graphql-config": "4.1.0",
-    "graphql-language-service-server": "2.7.15",
-    "graphql-tag": "2.12.6",
-    "graphql-ws": "5.5.5",
-    "node-fetch": "2.6.7",
-    "vscode-languageclient": "5.2.1",
-    "ws": "8.2.3"
+    "graphql": "16.0.0-experimental-stream-defer.5",
+    "graphql-config": "^4.1.0",
+    "graphql-language-service-server": "^2.7.16",
+    "vscode-languageclient": "5.2.1"
   },
   "resolutions": {
     "graphql-config": "4.1.0"
