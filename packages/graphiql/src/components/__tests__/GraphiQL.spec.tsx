@@ -576,22 +576,22 @@ describe('GraphiQL', () => {
     it('open multiple tabs', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
       expect(container.querySelectorAll('.tabs .tab')).toHaveLength(1);
-      fireEvent.click(container.querySelector('.toolbar-button.tab-add'));
+      fireEvent.click(container.querySelector('.tab-add'));
       expect(container.querySelectorAll('.tabs .tab')).toHaveLength(2);
-      fireEvent.click(container.querySelector('.toolbar-button.tab-add'));
+      fireEvent.click(container.querySelector('.tab-add'));
       expect(container.querySelectorAll('.tabs .tab')).toHaveLength(3);
     });
     it('each tab has a close button when multiple tabs are open', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
       expect(container.querySelectorAll('.tab .close')).toHaveLength(0);
-      fireEvent.click(container.querySelector('.toolbar-button.tab-add'));
+      fireEvent.click(container.querySelector('.tab-add'));
       expect(container.querySelectorAll('.tab .close')).toHaveLength(2);
-      fireEvent.click(container.querySelector('.toolbar-button.tab-add'));
+      fireEvent.click(container.querySelector('.tab-add'));
       expect(container.querySelectorAll('.tab .close')).toHaveLength(3);
     });
     it('close button removes a tab', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      fireEvent.click(container.querySelector('.toolbar-button.tab-add'));
+      fireEvent.click(container.querySelector('.tab-add'));
       expect(container.querySelectorAll('.tab .close')).toHaveLength(2);
       fireEvent.click(container.querySelector('.tab .close'));
       expect(container.querySelectorAll('.tabs .tab')).toHaveLength(1);
