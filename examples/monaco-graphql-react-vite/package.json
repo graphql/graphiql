@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "dependencies": {
     "@graphiql/toolkit": "^0.4.2",
-    "graphql-language-service": "^5.0.0",
-    "monaco-graphql": "^1.0.12",
+    "graphql-language-service": "^5.0.1",
+    "monaco-graphql": "^1.0.13",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "jsonc-parser": "^3.0.0",
