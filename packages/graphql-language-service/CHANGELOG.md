@@ -1,5 +1,13 @@
 # graphql-language-service
 
+## 5.0.1
+
+### Patch Changes
+
+- [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa) Thanks [@acao](https://github.com/acao)! - fix lockfile and imports from LSP merge
+
+* [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa) Thanks [@acao](https://github.com/acao)! - default to es6 target across the language services, fix #2240
+
 ## 5.0.0
 
 ### Major Changes
