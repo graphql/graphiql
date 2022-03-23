@@ -25,6 +25,9 @@
     },
     {
       "path": "../packages/graphql-language-service-cli"
+    },
+    {
+      "path": "../packages/vscode-graphql"
     }
   ]
 }

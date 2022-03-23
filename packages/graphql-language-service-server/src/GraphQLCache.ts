@@ -27,6 +27,9 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-config';
+
+import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
+
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
@@ -653,7 +656,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
     schemaKey && this._schemaMap.delete(schemaKey);
   }
 
-  _getSchemaCacheKeyForProject(projectConfig: GraphQLProjectConfig) {
+  _getSchemaCacheKeyForProject(
+    projectConfig: GraphQLProjectConfig,
+  ): UnnormalizedTypeDefPointer {
     return projectConfig.schema;
   }
 
