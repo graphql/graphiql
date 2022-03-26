@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import type * as CM from 'codemirror';
+import { Editor } from 'codemirror';
 import {
   FragmentDefinitionNode,
   GraphQLSchema,
@@ -151,14 +151,16 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
   ];
 
   async initializeEditor() {
-    const CodeMirror = await importCodeMirror(this.addonModules());
-    this.CodeMirror = CodeMirror;
+    const CodeMirror = (this.CodeMirror = await importCodeMirror(
+      this.addonModules(),
+    ));
     const editor = (this.editor = CodeMirror(this._node!, {
       value: this.props.value ?? '',
       lineNumbers: true,
       tabSize: 2,
       foldGutter: {
         // @ts-expect-error
+
         minFoldSize: 4,
       },
       mode: 'graphql',
@@ -170,6 +172,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       readOnly: this.props.readOnly ? 'nocursor' : false,
       lint: {
         // @ts-expect-error
+
         schema: this.props.schema,
         validationRules: this.props.validationRules ?? null,
         // linting accepts string or FragmentDefinitionNode[]
@@ -177,6 +180,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       },
       hintOptions: {
         // @ts-expect-error
+
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
@@ -267,7 +271,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
    * React component.
    */
   getCodeMirror() {
-    return this.editor as CM.Editor;
+    return this.editor as Editor;
   }
 
   /**
@@ -277,7 +281,7 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
     return this._node && this._node.clientHeight;
   }
 
-  private _onKeyUp = (_cm: CM.Editor, event: KeyboardEvent) => {
+  private _onKeyUp = (_cm: Editor, event: KeyboardEvent) => {
     if (AUTO_COMPLETE_AFTER_KEY.test(event.key) && this.editor) {
       this.editor.execCommand('autocomplete');
     }
@@ -296,11 +300,11 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
    * Render a custom UI for CodeMirror's hint which includes additional info
    * about the type and description for the selected context.
    */
-  private _onHasCompletion = (cm: CM.Editor, data: any) => {
+  private _onHasCompletion = (cm: Editor, data: any) => {
     onHasCompletion(cm, data, this.props.onHintInformationRender);
   };
 
-  private _onBeforeChange(_instance: CM.Editor, change: any) {
+  private _onBeforeChange(_instance: Editor, change: any) {
     // The update function is only present on non-redo, non-undo events.
     if (change.origin === 'paste') {
       const text = change.text.map(normalizeWhitespace);
