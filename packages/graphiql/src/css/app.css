@@ -551,6 +551,7 @@ div.CodeMirror-lint-tooltip > * + * {
 } */
 
 .graphiql-container .tab .close {
+  display: inline-block;
   cursor: pointer;
   border: none;
   background: transparent;

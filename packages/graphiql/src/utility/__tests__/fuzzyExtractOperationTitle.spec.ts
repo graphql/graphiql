@@ -24,4 +24,9 @@ describe('fuzzyExtractionOperationTitle', () => {
   it('should return null for anonymous queries', () => {
     expect(fuzzyExtractOperationTitle('{}')).toEqual('<untitled>');
   });
+  it('should not extract query names with comments', () => {
+    expect(fuzzyExtractOperationTitle('# query My_3xampleQuery() {}')).toEqual(
+      '<untitled>',
+    );
+  });
 });

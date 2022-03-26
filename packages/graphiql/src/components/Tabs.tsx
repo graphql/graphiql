@@ -6,7 +6,9 @@ import React from 'react';
 
 function TabCloseButton(props: { onClick: () => void }) {
   return (
-    <button
+    <div
+      role="button"
+      aria-pressed={false}
       className="close"
       aria-label="Close Tab"
       title="Close Tab"
