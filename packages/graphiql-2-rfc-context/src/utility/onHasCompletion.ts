@@ -22,7 +22,7 @@ const md = new MD();
  */
 export default function onHasCompletion(
   _cm: CM.Editor,
-  data: CM.EditorChangeLinkedList | undefined,
+  data: CM.EditorChange | undefined,
   onHintInformationRender: (el: HTMLDivElement) => void,
 ) {
   const CodeMirror = require('codemirror');

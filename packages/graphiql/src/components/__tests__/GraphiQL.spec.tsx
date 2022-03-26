@@ -48,8 +48,8 @@ const wait = () =>
     .then(() => Promise.resolve())
     .then(() => Promise.resolve());
 
-const waitTime = (timeout: number) =>
-  new Promise(resolve => setTimeout(resolve, timeout));
+const sleep = (delay: number = 600) =>
+  new Promise(res => setTimeout(res, delay));
 
 Object.defineProperty(window, 'localStorage', {
   value: getMockStorage(),
@@ -111,17 +111,17 @@ describe('GraphiQL', () => {
     ).not.toThrow();
   });
 
-  it('defaults to the built-in default query', () => {
-    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-    expect(
-      container.querySelector('.query-editor .mockCodeMirror')?.value,
-    ).toContain('# Welcome to GraphiQL');
+  it('defaults to the built-in default query', async () => {
+    const { findByText } = render(<GraphiQL fetcher={noOpFetcher} />);
+    await wait();
+    expect(findByText('# Welcome to GraphiQL')).toBeTruthy();
   });
 
-  it('accepts a custom default query', () => {
+  it('accepts a custom default query', async () => {
     const { container } = render(
       <GraphiQL fetcher={noOpFetcher} defaultQuery="GraphQL Party!!" />,
     );
+    await wait();
     expect(
       container.querySelector('.query-editor .mockCodeMirror'),
     ).toHaveValue('GraphQL Party!!');
@@ -256,6 +256,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    await wait();
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
@@ -269,13 +270,13 @@ describe('GraphiQL', () => {
     );
 
     // wait for onChange debounce
-    await waitTime(150);
+    await sleep(150);
 
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(2);
   });
 
-  it('will save query if variables are different', () => {
+  it('will save query if variables are different', async () => {
     const { getByTitle, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
@@ -285,6 +286,7 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
+    await wait();
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
@@ -301,7 +303,7 @@ describe('GraphiQL', () => {
     expect(container.querySelectorAll('.history-label')).toHaveLength(2);
   });
 
-  it('will save query if headers are different', () => {
+  it('will save query if headers are different', async () => {
     const { getByTitle, getByText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
@@ -312,6 +314,8 @@ describe('GraphiQL', () => {
         headerEditorEnabled
       />,
     );
+    await wait();
+
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
@@ -489,12 +493,14 @@ describe('GraphiQL', () => {
     });
   });
 
-  it('readjusts the query wrapper flex style field when the result panel is resized', () => {
+  it('readjusts the query wrapper flex style field when the result panel is resized', async () => {
     const spy = jest
       .spyOn(Element.prototype, 'clientWidth', 'get')
       .mockReturnValue(900);
 
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+    await wait();
 
     const codeMirrorGutter = container.querySelector(
       '.result-window .CodeMirror-gutter',

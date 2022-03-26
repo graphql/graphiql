@@ -18,6 +18,8 @@ import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from '../utility/CodeMirrorSizer';
+import { importCodeMirror } from '../utility/importCodeMirror';
+import { CodeMirrorEditor } from '../types';
 
 const md = new MD();
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
@@ -54,9 +56,9 @@ type QueryEditorProps = {
 export class QueryEditor extends React.Component<QueryEditorProps, {}>
   implements SizerComponent {
   cachedValue: string | undefined;
-  editor: (CM.Editor & { options: any; showHint: any }) | null = null;
+  editor: CodeMirrorEditor | null = null;
   ignoreChangeEvent: boolean = false;
-
+  CodeMirror: any;
   _node: HTMLElement | null = null;
 
   constructor(props: QueryEditorProps) {
@@ -69,31 +71,96 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
   }
 
   componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
-    // does not produce an error.
-    const CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/comment/comment');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/search/search');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/hint');
-    require('codemirror-graphql/lint');
-    require('codemirror-graphql/info');
-    require('codemirror-graphql/jump');
-    require('codemirror-graphql/mode');
+    this.initializeEditor()
+      .then(editor => {
+        if (editor) {
+          editor.on('change', this._onEdit);
+          editor.on('keyup', this._onKeyUp);
+          // @ts-ignore @TODO additional args for hasCompletion event
+          editor.on('hasCompletion', this._onHasCompletion);
+          editor.on('beforeChange', this._onBeforeChange);
+        }
+      })
+      .catch(console.error);
+  }
 
-    const editor: CM.Editor = (this.editor = CodeMirror(this._node, {
-      value: this.props.value || '',
+  componentDidUpdate(prevProps: QueryEditorProps) {
+    // Ensure the changes caused by this update are not interpreted as
+    // user-input changes which could otherwise result in an infinite
+    // event loop.
+    this.ignoreChangeEvent = true;
+    let signalChange = false;
+    if (this.props.schema !== prevProps.schema && this.editor) {
+      this.editor.options.lint.schema = this.props.schema;
+      this.editor.options.hintOptions.schema = this.props.schema;
+      this.editor.options.info.schema = this.props.schema;
+      this.editor.options.jump.schema = this.props.schema;
+      signalChange = true;
+    }
+    if (
+      this.props.externalFragments !== prevProps.externalFragments &&
+      this.editor
+    ) {
+      this.editor.options.lint.externalFragments = this.props.externalFragments;
+      this.editor.options.hintOptions.externalFragments = this.props.externalFragments;
+      signalChange = true;
+    }
+    if (signalChange) {
+      this.CodeMirror.signal(this.editor, 'change', this.editor);
+    }
+    if (
+      this.props.value !== prevProps.value &&
+      this.props.value !== this.cachedValue &&
+      this.editor
+    ) {
+      this.cachedValue = this.props.value;
+      this.editor.setValue(this.props.value as string);
+    }
+    this.ignoreChangeEvent = false;
+  }
+
+  componentWillUnmount() {
+    if (this.editor) {
+      this.editor.off('change', this._onEdit);
+      this.editor.off('keyup', this._onKeyUp);
+      // @ts-ignore @TODO additional args for hasCompletion event
+      this.editor.off('hasCompletion', this._onHasCompletion);
+    }
+  }
+
+  render() {
+    return (
+      <section
+        className="query-editor"
+        aria-label="Query Editor"
+        ref={node => {
+          this._node = node;
+        }}
+      />
+    );
+  }
+
+  addonModules = () => [
+    import('codemirror/addon/comment/comment'),
+    import('codemirror/addon/search/search'),
+    import('codemirror-graphql/hint'),
+    import('codemirror-graphql/lint'),
+    import('codemirror-graphql/info'),
+    import('codemirror-graphql/jump'),
+    import('codemirror-graphql/mode'),
+  ];
+
+  async initializeEditor() {
+    const CodeMirror = await importCodeMirror(this.addonModules());
+    this.CodeMirror = CodeMirror;
+    const editor = (this.editor = CodeMirror(this._node!, {
+      value: this.props.value ?? '',
       lineNumbers: true,
       tabSize: 2,
+      foldGutter: {
+        // @ts-expect-error
+        minFoldSize: 4,
+      },
       mode: 'graphql',
       theme: this.props.editorTheme || 'graphiql',
       keyMap: 'sublime',
@@ -101,16 +168,15 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       matchBrackets: true,
       showCursorWhenSelecting: true,
       readOnly: this.props.readOnly ? 'nocursor' : false,
-      foldGutter: {
-        minFoldSize: 4,
-      },
       lint: {
+        // @ts-expect-error
         schema: this.props.schema,
         validationRules: this.props.validationRules ?? null,
         // linting accepts string or FragmentDefinitionNode[]
         externalFragments: this.props?.externalFragments,
       },
       hintOptions: {
+        // @ts-expect-error
         schema: this.props.schema,
         closeOnUnfocus: false,
         completeSingle: false,
@@ -133,20 +199,14 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
       extraKeys: {
         'Cmd-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Ctrl-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
-
           editor.showHint({ completeSingle: true, container: this._node }),
         'Alt-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
         'Shift-Alt-Space': () =>
-          // @ts-ignore showHint method needs improvement on definatelytyped
           editor.showHint({ completeSingle: true, container: this._node }),
 
         'Cmd-Enter': () => {
@@ -198,73 +258,8 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
           }
         },
       },
-    }));
-    if (editor) {
-      editor.on('change', this._onEdit);
-      editor.on('keyup', this._onKeyUp);
-      // @ts-ignore @TODO additional args for hasCompletion event
-      editor.on('hasCompletion', this._onHasCompletion);
-      editor.on('beforeChange', this._onBeforeChange);
-    }
-  }
-
-  componentDidUpdate(prevProps: QueryEditorProps) {
-    const CodeMirror = require('codemirror');
-
-    // Ensure the changes caused by this update are not interpretted as
-    // user-input changes which could otherwise result in an infinite
-    // event loop.
-    this.ignoreChangeEvent = true;
-    let signalChange = false;
-    if (this.props.schema !== prevProps.schema && this.editor) {
-      this.editor.options.lint.schema = this.props.schema;
-      this.editor.options.hintOptions.schema = this.props.schema;
-      this.editor.options.info.schema = this.props.schema;
-      this.editor.options.jump.schema = this.props.schema;
-      signalChange = true;
-    }
-    if (
-      this.props.externalFragments !== prevProps.externalFragments &&
-      this.editor
-    ) {
-      this.editor.options.lint.externalFragments = this.props.externalFragments;
-      this.editor.options.hintOptions.externalFragments = this.props.externalFragments;
-      signalChange = true;
-    }
-    if (signalChange) {
-      CodeMirror.signal(this.editor, 'change', this.editor);
-    }
-    if (
-      this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue &&
-      this.editor
-    ) {
-      this.cachedValue = this.props.value;
-      this.editor.setValue(this.props.value as string);
-    }
-    this.ignoreChangeEvent = false;
-  }
-
-  componentWillUnmount() {
-    if (this.editor) {
-      this.editor.off('change', this._onEdit);
-      this.editor.off('keyup', this._onKeyUp);
-      // @ts-ignore @TODO additional args for hasCompletion event
-      this.editor.off('hasCompletion', this._onHasCompletion);
-      this.editor = null;
-    }
-  }
-
-  render() {
-    return (
-      <section
-        className="query-editor"
-        aria-label="Query Editor"
-        ref={node => {
-          this._node = node;
-        }}
-      />
-    );
+    })) as CodeMirrorEditor;
+    return editor;
   }
 
   /**

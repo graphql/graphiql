@@ -728,6 +728,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ref={n => {
           this.graphiqlContainer = n;
         }}
+        data-testid="graphiql-container"
         className="graphiql-container">
         {this.state.historyPaneOpen && (
           <div className="historyPaneWrap" style={historyPaneStyle}>
