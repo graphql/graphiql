@@ -234,7 +234,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
 
   private _onHasCompletion = (
     instance: CM.Editor,
-    changeObj?: CM.EditorChangeLinkedList,
+    changeObj?: CM.EditorChange,
   ) => {
     onHasCompletion(instance, changeObj, this.props.onHintInformationRender);
   };

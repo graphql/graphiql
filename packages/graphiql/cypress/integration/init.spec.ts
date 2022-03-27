@@ -27,7 +27,7 @@ const mockSuccess = {
 };
 
 describe('GraphiQL On Initialization', () => {
-  it('Renders without error', () => {
+  it('Renders default value without error', () => {
     const containers = [
       '#graphiql',
       '.graphiql-container',
@@ -37,7 +37,13 @@ describe('GraphiQL On Initialization', () => {
       '.resultWrap',
       '.variable-editor',
     ];
-    cy.visit(`/?query=${testQuery}`);
+    cy.visit(`/`);
+    cy.window().then(w => {
+      // @ts-ignore
+      const value = w.g.getQueryEditor().getValue();
+      // this message changes between graphql 15 & 16
+      expect(value).to.contain('# Welcome to GraphiQL');
+    });
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
   });
 

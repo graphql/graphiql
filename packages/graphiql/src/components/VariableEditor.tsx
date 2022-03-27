@@ -12,6 +12,8 @@ import React from 'react';
 
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
+import { importCodeMirror } from '../utility/importCodeMirror';
+import { CodeMirrorEditor } from '../types';
 
 declare module CodeMirror {
   export interface Editor extends CM.Editor {}
@@ -50,10 +52,11 @@ type VariableEditorProps = {
  */
 export class VariableEditor extends React.Component<VariableEditorProps> {
   CodeMirror: any;
-  editor: (CM.Editor & { options: any; showHint: any }) | null = null;
+  editor: CodeMirrorEditor | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
   ignoreChangeEvent: boolean = false;
+
   constructor(props: VariableEditorProps) {
     super(props);
 
@@ -64,24 +67,82 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   }
 
   componentDidMount() {
-    // Lazily require to ensure requiring GraphiQL outside of a Browser context
-    // does not produce an error.
-    this.CodeMirror = require('codemirror');
-    require('codemirror/addon/hint/show-hint');
-    require('codemirror/addon/edit/matchbrackets');
-    require('codemirror/addon/edit/closebrackets');
-    require('codemirror/addon/fold/brace-fold');
-    require('codemirror/addon/fold/foldgutter');
-    require('codemirror/addon/lint/lint');
-    require('codemirror/addon/search/searchcursor');
-    require('codemirror/addon/search/jump-to-line');
-    require('codemirror/addon/dialog/dialog');
-    require('codemirror/keymap/sublime');
-    require('codemirror-graphql/variables/hint');
-    require('codemirror-graphql/variables/lint');
-    require('codemirror-graphql/variables/mode');
+    this.initializeEditor()
+      .then(editor => {
+        editor.on('change', this._onEdit);
+        editor.on('keyup', this._onKeyUp);
+        // @ts-expect-error
+        editor.on('hasCompletion', this._onHasCompletion);
+      })
+      .catch(console.error);
+  }
 
-    const editor = (this.editor = this.CodeMirror(this._node, {
+  componentDidUpdate(prevProps: VariableEditorProps) {
+    if (!this.editor) {
+      return;
+    }
+    if (!this.CodeMirror) {
+      return;
+    }
+
+    // Ensure the changes caused by this update are not interpretted as
+    // user-input changes which could otherwise result in an infinite
+    // event loop.
+    this.ignoreChangeEvent = true;
+    if (this.props.variableToType !== prevProps.variableToType) {
+      this.editor.options.lint.variableToType = this.props.variableToType;
+      this.editor.options.hintOptions.variableToType = this.props.variableToType;
+      this.CodeMirror.signal(this.editor, 'change', this.editor);
+    }
+    if (
+      this.props.value !== prevProps.value &&
+      this.props.value !== this.cachedValue
+    ) {
+      const thisValue = this.props.value || '';
+      this.cachedValue = thisValue;
+      this.editor.setValue(thisValue);
+    }
+    this.ignoreChangeEvent = false;
+  }
+
+  componentWillUnmount() {
+    if (!this.editor) {
+      return;
+    }
+    this.editor.off('change', this._onEdit);
+    this.editor.off('keyup', this._onKeyUp);
+    // @ts-expect-error
+    this.editor.off('hasCompletion', this._onHasCompletion);
+    this.editor = null;
+  }
+
+  render() {
+    return (
+      <div
+        className="codemirrorWrap"
+        // This horrible hack is necessary because a simple display none toggle
+        // causes one of the editors' gutters to break otherwise.
+        style={{
+          position: this.props.active ? 'relative' : 'absolute',
+          visibility: this.props.active ? 'visible' : 'hidden',
+        }}
+        ref={node => {
+          this._node = node as HTMLDivElement;
+        }}
+      />
+    );
+  }
+
+  addonModules = () => [
+    import('codemirror-graphql/variables/hint'),
+    import('codemirror-graphql/variables/lint'),
+    import('codemirror-graphql/variables/mode'),
+  ];
+
+  async initializeEditor() {
+    this.CodeMirror = await importCodeMirror(this.addonModules());
+
+    const editor = (this.editor = this.CodeMirror(this._node!, {
       value: this.props.value || '',
       lineNumbers: true,
       tabSize: 2,
@@ -150,64 +211,8 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
 
         ...commonKeys,
       },
-    }));
-
-    editor.on('change', this._onEdit);
-    editor.on('keyup', this._onKeyUp);
-    editor.on('hasCompletion', this._onHasCompletion);
-  }
-
-  componentDidUpdate(prevProps: VariableEditorProps) {
-    this.CodeMirror = require('codemirror');
-    if (!this.editor) {
-      return;
-    }
-
-    // Ensure the changes caused by this update are not interpretted as
-    // user-input changes which could otherwise result in an infinite
-    // event loop.
-    this.ignoreChangeEvent = true;
-    if (this.props.variableToType !== prevProps.variableToType) {
-      this.editor.options.lint.variableToType = this.props.variableToType;
-      this.editor.options.hintOptions.variableToType = this.props.variableToType;
-      this.CodeMirror.signal(this.editor, 'change', this.editor);
-    }
-    if (
-      this.props.value !== prevProps.value &&
-      this.props.value !== this.cachedValue
-    ) {
-      const thisValue = this.props.value || '';
-      this.cachedValue = thisValue;
-      this.editor.setValue(thisValue);
-    }
-    this.ignoreChangeEvent = false;
-  }
-
-  componentWillUnmount() {
-    if (!this.editor) {
-      return;
-    }
-    this.editor.off('change', this._onEdit);
-    this.editor.off('keyup', this._onKeyUp);
-    this.editor.off('hasCompletion', this._onHasCompletion);
-    this.editor = null;
-  }
-
-  render() {
-    return (
-      <div
-        className="codemirrorWrap"
-        // This horrible hack is necessary because a simple display none toggle
-        // causes one of the editors' gutters to break otherwise.
-        style={{
-          position: this.props.active ? 'relative' : 'absolute',
-          visibility: this.props.active ? 'visible' : 'hidden',
-        }}
-        ref={node => {
-          this._node = node as HTMLDivElement;
-        }}
-      />
-    );
+    })) as CodeMirrorEditor;
+    return editor;
   }
 
   /**
@@ -254,7 +259,7 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
 
   private _onHasCompletion = (
     instance: CM.Editor,
-    changeObj?: CM.EditorChangeLinkedList,
+    changeObj?: CM.EditorChange,
   ) => {
     onHasCompletion(instance, changeObj, this.props.onHintInformationRender);
   };
