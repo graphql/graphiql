@@ -1731,7 +1731,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ...state,
         query: value,
         ...queryFacts,
-        tabs: tabsStateEditQueryReducer(value, state.tabs),
+        tabs: tabsStateEditQueryReducer(
+          value,
+          state.tabs,
+          queryFacts?.operationName,
+        ),
       }),
       this.persistTabsState,
     );
@@ -2342,7 +2346,11 @@ function tabsStateEditVariablesReducer(
   };
 }
 
-function tabsStateEditQueryReducer(value: string, state: TabsState): TabsState {
+function tabsStateEditQueryReducer(
+  value: string,
+  state: TabsState,
+  operationName?: string,
+): TabsState {
   return {
     ...state,
     tabs: state.tabs.map((tab, index) => {
@@ -2351,7 +2359,7 @@ function tabsStateEditQueryReducer(value: string, state: TabsState): TabsState {
       }
       return {
         ...tab,
-        title: fuzzyExtractOperationTitle(value),
+        title: operationName ?? fuzzyExtractOperationTitle(value),
         query: value,
         hash: idFromTabContents({
           query: value,
