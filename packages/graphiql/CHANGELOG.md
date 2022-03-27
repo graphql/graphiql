@@ -1,5 +1,20 @@
 # Change Log
 
+## 1.8.0
+
+### Minor Changes
+
+- [#2197](https://github.com/graphql/graphiql/pull/2197) [`3137a6c4`](https://github.com/graphql/graphiql/commit/3137a6c4333dad8db8a0eb980d6c6464c7292946) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Now featuring: tabs! 🥳 🍾 just opt-in with new prop `<GraphiQL tabs />`.
+  You can also both opt-in and provide a handler via `<GraphiQL tabs={{ onTabsChange }} />`!
+
+### Patch Changes
+
+- [#2249](https://github.com/graphql/graphiql/pull/2249) [`1540fd3d`](https://github.com/graphql/graphiql/commit/1540fd3d0df553798e41a153c5f0386d9d52be01) Thanks [@acao](https://github.com/acao)! - Finally remove inline `require()` for codemirror addon imports, replace with modern dynamic `import()` (which enables `esbuild`, `vite`, etc).
+
+  This change should allow your bundler to code split codemirror-graphql and the codemirror addons based on which you import. For SSR support, GraphiQL must load these modules dynamically.
+
+  If you want to use other codemirror addons (vim, etc) for non-ssr you can just import them top level, or for SSR, you can just dynamically import them.
+
 ## 1.7.2
 
 ### Patch Changes
