@@ -70,6 +70,10 @@ import type {
 import HistoryStore from '../utility/HistoryStore';
 
 import { validateSchema } from 'graphql';
+import { Tab, TabAddButton, Tabs } from './Tabs';
+import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
+import { idFromTabContents } from '../utility/id-from-tab-contents';
+import { guid } from '../utility/guid';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -292,6 +296,19 @@ export type GraphiQLProps = {
    * Content to place before the top bar (logo).
    */
   beforeTopBarContent?: React.ReactElement | null;
+
+  /**
+   * Whether tabs should be enabled.
+   * default: false
+   */
+  tabs?:
+    | boolean
+    | {
+        /**
+         * Callback that is invoked onTabChange.
+         */
+        onTabChange?: (tab: TabsState) => void;
+      };
 };
 
 export type GraphiQLState = {
@@ -318,6 +335,7 @@ export type GraphiQLState = {
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
   maxHistoryLength: number;
+  tabs: TabsState;
 };
 
 const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
@@ -341,6 +359,22 @@ const handleSingleError = (
     return formatSingleError(error);
   }
   return error;
+};
+
+type TabState = {
+  id: string;
+  hash: string;
+  title: string;
+  query: string | undefined;
+  variables: string | undefined;
+  headers: string | undefined;
+  operationName: string | undefined;
+  response: string | undefined;
+};
+
+type TabsState = {
+  activeTabIndex: number;
+  tabs: Array<TabState>;
 };
 
 /**
@@ -493,16 +527,83 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       '',
     );
 
-    // Initialize state
-    this.state = {
-      schema,
+    const initialTabHash = idFromTabContents({
+      query,
+      variables: variables as string,
+      headers: headers as string,
+    });
+
+    const initialTab: TabState = {
+      id: guid(),
+      hash: initialTabHash,
+      title: operationName ?? '<untitled>',
       query,
       variables: variables as string,
       headers: headers as string,
       operationName,
+      response: undefined,
+    };
+
+    let rawTabState: string | null = null;
+    // only load tab state if tabs are enabled
+    if (this.props.tabs) {
+      rawTabState = this._storage.get('tabState');
+    }
+
+    let tabsState: TabsState;
+    if (rawTabState === null) {
+      tabsState = {
+        activeTabIndex: 0,
+        tabs: [initialTab],
+      };
+    } else {
+      tabsState = JSON.parse(rawTabState);
+      let queryParameterOperationIsWithinTabs = false;
+      for (const tab of tabsState.tabs) {
+        // ensure property is present
+        tab.query = tab.query!;
+        tab.variables = tab.variables!;
+        tab.headers = shouldPersistHeaders ? tab.headers! : undefined;
+        tab.response = undefined;
+        tab.operationName = undefined;
+
+        tab.id = guid();
+
+        tab.hash = idFromTabContents(tab);
+
+        if (tab.hash === initialTabHash) {
+          queryParameterOperationIsWithinTabs = true;
+        }
+      }
+
+      if (queryParameterOperationIsWithinTabs === false) {
+        tabsState.tabs.push(initialTab);
+        tabsState.activeTabIndex = tabsState.tabs.length - 1;
+      }
+    }
+
+    let activeTab = tabsState.tabs[0];
+    let index = 0;
+    for (const tab of tabsState.tabs) {
+      if (tab.hash === initialTabHash) {
+        tabsState.activeTabIndex = index;
+        activeTab = tab;
+        break;
+      }
+      index++;
+    }
+
+    // Initialize state
+    this.state = {
+      tabs: tabsState,
+      schema,
+      query: activeTab?.query,
+      variables: activeTab?.variables,
+      headers: activeTab?.headers,
+      operationName: activeTab?.operationName,
+      response: activeTab?.response ?? response,
       docExplorerOpen,
       schemaErrors,
-      response,
       editorFlex: Number(this._storage.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -656,6 +757,45 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.componentIsMounted && this.setState(nextState, callback);
   };
 
+  private persistTabsState = () => {
+    if (this.props.tabs) {
+      this._storage.set(
+        'tabState',
+        JSON.stringify(this.state.tabs, (key, value) =>
+          key === 'response' ||
+          (this.state.shouldPersistHeaders && key === 'headers')
+            ? undefined
+            : value,
+        ),
+      );
+      if (typeof this.props.tabs === 'object') {
+        this.props.tabs.onTabChange?.(this.state.tabs);
+      }
+    }
+  };
+
+  private makeHandleOnSelectTab = (index: number) => () => {
+    this.handleStopQuery();
+    this.setState(
+      state => stateOnSelectTabReducer(index, state),
+      this.persistTabsState,
+    );
+  };
+
+  private makeHandleOnCloseTab = (index: number) => () => {
+    if (this.state.tabs.activeTabIndex === index) {
+      this.handleStopQuery();
+    }
+    this.setState(
+      state => stateOnCloseTabReducer(index, state),
+      this.persistTabsState,
+    );
+  };
+
+  private handleOnAddTab = () => {
+    this.setState(state => stateOnTabAddReducer(state), this.persistTabsState);
+  };
+
   render() {
     const children = React.Children.toArray(this.props.children);
 
@@ -722,6 +862,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         ? this.state.secondaryEditorHeight
         : undefined,
     };
+    const tabsState = this.state.tabs;
 
     return (
       <div
@@ -773,11 +914,36 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               </button>
             )}
           </div>
+          {this.props.tabs ? (
+            <Tabs
+              tabsProps={{
+                'aria-label': 'Select active operation',
+              }}>
+              {tabsState.tabs.map((tab, index) => (
+                <Tab
+                  key={tab.id}
+                  isActive={index === tabsState.activeTabIndex}
+                  title={tab.title}
+                  isCloseable={tabsState.tabs.length > 1}
+                  onSelect={this.makeHandleOnSelectTab(index)}
+                  onClose={this.makeHandleOnCloseTab(index)}
+                  tabProps={{
+                    'aria-controls': 'sessionWrap',
+                    id: `session-tab-${index}`,
+                  }}
+                />
+              ))}
+              <TabAddButton onClick={this.handleOnAddTab} />
+            </Tabs>
+          ) : null}
           <div
             ref={n => {
               this.editorBarComponent = n;
             }}
+            role="tabpanel"
+            id="sessionWrap"
             className="editorBar"
+            aria-labelledby={`session-tab-${tabsState.activeTabIndex}`}
             onDoubleClick={this.handleResetResize}
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
@@ -1052,11 +1218,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
       documentAST: this.state.documentAST,
     };
-    if (this.state.headers && this.state.headers.trim().length > 2) {
-      fetcherOpts.headers = JSON.parse(this.state.headers);
-      // if state is not present, but props are
-    } else if (this.props.headers) {
-      fetcherOpts.headers = JSON.parse(this.props.headers);
+    try {
+      if (this.state.headers && this.state.headers.trim().length > 2) {
+        fetcherOpts.headers = JSON.parse(this.state.headers);
+        // if state is not present, but props are
+      } else if (this.props.headers) {
+        fetcherOpts.headers = JSON.parse(this.props.headers);
+      }
+    } catch (err) {
+      this.setState({
+        response: 'Introspection failed as headers are invalid.',
+      });
+      return;
     }
 
     const fetch = fetcherReturnToPromise(
@@ -1412,10 +1585,27 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 response: GraphiQL.formatResult(fullResponse),
               });
             } else {
-              this.setState({
-                isWaitingForResponse: false,
-                response: GraphiQL.formatResult(result),
-              });
+              const response = GraphiQL.formatResult(result);
+              this.setState(
+                state => ({
+                  ...state,
+                  tabs: {
+                    ...state.tabs,
+                    tabs: state.tabs.tabs.map((tab, index) => {
+                      if (index !== state.tabs.activeTabIndex) {
+                        return tab;
+                      }
+                      return {
+                        ...tab,
+                        response,
+                      };
+                    }),
+                  },
+                  isWaitingForResponse: false,
+                  response,
+                }),
+                this.persistTabsState,
+              );
             }
           }
         },
@@ -1534,10 +1724,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       this.state.operations,
       this.state.schema,
     );
-    this.setState({
-      query: value,
-      ...queryFacts,
-    });
+
+    this.setState(
+      state => ({
+        ...state,
+        query: value,
+        ...queryFacts,
+        tabs: tabsStateEditQueryReducer(value, state.tabs),
+      }),
+      this.persistTabsState,
+    );
     this._storage.set('query', value);
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value, queryFacts?.documentAST);
@@ -1592,7 +1788,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   handleEditVariables = (value: string) => {
-    this.setState({ variables: value });
+    this.setState(
+      state => ({
+        ...state,
+        variables: value,
+        tabs: tabsStateEditVariablesReducer(value, state.tabs),
+      }),
+      this.persistTabsState,
+    );
     debounce(500, () => this._storage.set('variables', value))();
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
@@ -1600,7 +1803,14 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   };
 
   handleEditHeaders = (value: string) => {
-    this.setState({ headers: value });
+    this.setState(
+      state => ({
+        ...state,
+        headers: value,
+        tabs: tabsStateEditHeadersReducer(value, state.tabs),
+      }),
+      this.persistTabsState,
+    );
     this.props.shouldPersistHeaders &&
       debounce(500, () => this._storage.set('headers', value))();
     if (this.props.onEditHeaders) {
@@ -2083,4 +2293,180 @@ function isChildComponentType<T extends ComponentType>(
   }
 
   return child.type === component;
+}
+
+function tabsStateEditHeadersReducer(
+  value: string,
+  state: TabsState,
+): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        headers: value,
+        hash: idFromTabContents({
+          query: tab.query,
+          headers: value,
+          variables: tab.variables,
+        }),
+      };
+    }),
+  };
+}
+
+function tabsStateEditVariablesReducer(
+  value: string,
+  state: TabsState,
+): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        variables: value,
+        hash: idFromTabContents({
+          query: tab.query,
+          headers: tab.headers,
+          variables: value,
+        }),
+      };
+    }),
+  };
+}
+
+function tabsStateEditQueryReducer(value: string, state: TabsState): TabsState {
+  return {
+    ...state,
+    tabs: state.tabs.map((tab, index) => {
+      if (index !== state.activeTabIndex) {
+        return tab;
+      }
+      return {
+        ...tab,
+        title: fuzzyExtractOperationTitle(value),
+        query: value,
+        hash: idFromTabContents({
+          query: value,
+          headers: tab.headers,
+          variables: tab.variables,
+        }),
+      };
+    }),
+  };
+}
+
+function stateOnSelectTabReducer(
+  index: number,
+  state: GraphiQLState,
+): GraphiQLState {
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+  const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
+    if (tabIndex !== oldActiveTabIndex) {
+      return currentTab;
+    }
+
+    return {
+      ...currentTab,
+      query: state.query,
+      variables: state.variables,
+      operationName: state.operationName,
+      headers: state.headers,
+      response: state.response,
+      hash: idFromTabContents({
+        query: state.query,
+        variables: state.variables,
+        headers: state.headers,
+      }),
+    };
+  });
+
+  const newActiveTab = state.tabs.tabs[index];
+
+  return {
+    ...state,
+    query: newActiveTab.query,
+    variables: newActiveTab.variables,
+    operationName: newActiveTab.operationName,
+    headers: newActiveTab.headers,
+    response: newActiveTab.response,
+    tabs: { ...state.tabs, tabs, activeTabIndex: index },
+  };
+}
+
+function stateOnCloseTabReducer(
+  index: number,
+  state: GraphiQLState,
+): GraphiQLState {
+  const newActiveTabIndex =
+    state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
+  const newTabsState = {
+    ...state.tabs,
+    activeTabIndex: newActiveTabIndex,
+    tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
+  };
+  const activeTab = newTabsState.tabs[newActiveTabIndex];
+  return {
+    ...state,
+    query: activeTab.query,
+    variables: activeTab.variables,
+    operationName: activeTab.operationName,
+    headers: activeTab.headers,
+    response: activeTab.response,
+    tabs: newTabsState,
+  };
+}
+
+function stateOnTabAddReducer(state: GraphiQLState): GraphiQLState {
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+
+  const newTab: TabState = {
+    id: guid(),
+    title: '<untitled>',
+    headers: '',
+    variables: '',
+    query: '',
+    operationName: '',
+    response: '',
+    hash: idFromTabContents({
+      query: '',
+      variables: '',
+      headers: '',
+    }),
+  };
+
+  const tabs = state.tabs.tabs.map((tab, index) => {
+    if (index !== oldActiveTabIndex) {
+      return tab;
+    }
+
+    return {
+      ...tab,
+      headers: state.headers,
+      variables: state.variables,
+      query: state.query,
+      operationName: state.operationName,
+      response: state.response,
+    };
+  });
+
+  return {
+    ...state,
+    headers: newTab.headers,
+    variables: newTab.variables,
+    query: newTab.query,
+    operationName: newTab.operationName,
+    response: newTab.response,
+    tabs: {
+      ...state.tabs,
+      activeTabIndex: state.tabs.tabs.length,
+      tabs: [...tabs, newTab],
+    },
+  };
 }

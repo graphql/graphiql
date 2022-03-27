@@ -75,6 +75,15 @@ function onEditOperationName(newOperationName) {
   updateURL();
 }
 
+function onTabChange(tabsState) {
+  const activeTab = tabsState.tabs[tabsState.activeTabIndex];
+  parameters.query = activeTab.query;
+  parameters.variables = activeTab.variables;
+  parameters.headers = activeTab.headers;
+  parameters.operationName = activeTab.operationName;
+  updateURL();
+}
+
 function updateURL() {
   var newSearch =
     '?' +
@@ -127,6 +136,9 @@ ReactDOM.render(
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: true,
+    tabs: {
+      onTabChange: onTabChange,
+    },
   }),
   document.getElementById('graphiql'),
 );
