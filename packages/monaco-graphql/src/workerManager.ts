@@ -64,7 +64,7 @@ export class WorkerManager {
 
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
-    if (!this._client) {
+    if (!this._client && !this._worker) {
       try {
         this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
