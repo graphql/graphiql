@@ -5,6 +5,8 @@ import { Uri } from 'monaco-editor';
 const SCHEMA_URL = 'https://api.github.com/graphql';
 const API_TOKEN = localStorage.getItem('ghapi') || null;
 
+const localStorageKey = 'ghapi';
+
 export const schemaOptions = [
   {
     value: SCHEMA_URL,
@@ -22,7 +24,7 @@ export const schemaOptions = [
 const setSchemaStatus = (message: string) => {
   const schemaStatus = document.getElementById('schema-status');
   if (schemaStatus) {
-    const html = `<small>${message}</small>`;
+    const html = message;
     schemaStatus.innerHTML = html;
   }
 };
@@ -53,6 +55,11 @@ class MySchemaFetcher {
   }
   async setApiToken(token: string) {
     this._currentSchema.headers.authorization = `Bearer ${token}`;
+    localStorage.setItem(localStorageKey, token);
+  }
+  logout() {
+    this._currentSchema.headers.authorization = undefined;
+    localStorage.removeItem(localStorageKey);
   }
   async loadSchema() {
     try {

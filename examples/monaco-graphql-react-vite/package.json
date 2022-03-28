@@ -8,6 +8,7 @@
     "monaco-graphql": "^1.0.13",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "graphql": "^16.1.0",
     "jsonc-parser": "^3.0.0",
     "monaco-editor": "^0.31.0"
   },
@@ -15,11 +16,7 @@
     "vite": "^2.7.0",
     "@vitejs/plugin-react": "^1.1.1",
     "@types/react": "^17.0.37",
-    "vite-plugin-monaco-editor": "^1.0.10",
-    "path-browserify": "^1.0.1"
-  },
-  "peerDependencies": {
-    "graphql": "^16.1.0"
+    "vite-plugin-monaco-editor": "^1.0.10"
   },
   "scripts": {
     "start": "vite",

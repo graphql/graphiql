@@ -7,8 +7,11 @@ import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 import { createEditors } from './editors';
 import { schemaFetcher, schemaOptions } from './schema';
 import './style.css';
+import type { MonacoGraphQLAPI } from 'monaco-graphql';
 
 const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
+
+let monacoGraphQLAPI: MonacoGraphQLAPI | null = null;
 
 (async () => {
   await render();
@@ -17,15 +20,26 @@ const SITE_ID = '46a6b3c8-992f-4623-9a76-f1bd5d40505c';
 async function render() {
   if (!schemaFetcher.token) {
     renderGithubLoginButton();
+
     return;
   } else {
-    const monacoGraphQLAPI = initializeMode({
-      formattingOptions: {
-        prettierConfig: {
-          printWidth: 120,
+    if (!monacoGraphQLAPI) {
+      monacoGraphQLAPI = initializeMode({
+        formattingOptions: {
+          prettierConfig: {
+            printWidth: 120,
+          },
         },
-      },
-    });
+      });
+    }
+
+    document.getElementById('github-login-wrapper')?.remove();
+    document
+      .getElementById('session-editor')
+      ?.setAttribute('style', 'display: flex');
+    document
+      .getElementById('toolbar')
+      ?.setAttribute('style', 'display: inline-flex');
 
     const toolbar = document.getElementById('toolbar')!;
     const editors = createEditors();
@@ -39,6 +53,8 @@ async function render() {
     const { schemaReloadButton, executeOpButton, schemaPicker } = renderToolbar(
       toolbar,
     );
+
+    renderGithubLoginButton();
 
     const operationUri = operationModel.uri.toString();
 
@@ -82,7 +98,7 @@ async function render() {
           const schemaResult = await schemaFetcher.changeSchema(
             schemaPicker.value,
           );
-          if (schemaResult) {
+          if (schemaResult && monacoGraphQLAPI) {
             monacoGraphQLAPI.setSchemaConfig([
               {
                 ...schemaResult,
@@ -174,7 +190,9 @@ async function render() {
       keybindings: [
         monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
       ],
-      run: operationHandler,
+      run: async () => {
+        await schemaFetcher.loadSchema();
+      },
     };
 
     operationEditor.addAction(opAction);
@@ -187,7 +205,7 @@ async function render() {
 function renderToolbar(toolbar: HTMLElement) {
   toolbar.innerHTML = '';
 
-  const schemaStatus = document.createElement('span');
+  const schemaStatus = document.createElement('div');
   const schemaReloadButton = document.createElement('button');
   const executeOpButton = document.createElement('button');
   const schemaPicker = getSchemaPicker();
@@ -206,15 +224,14 @@ function renderToolbar(toolbar: HTMLElement) {
   schemaReloadButton.title = 'Reload the graphql schema';
 
   schemaStatus.id = 'schema-status';
-  schemaStatus.innerHTML = `<small>Schema Empty</small>`;
-  schemaStatus.classList.add('button');
+  schemaStatus.innerHTML = `Schema Empty`;
 
   toolbar.appendChild(schemaPicker);
 
   toolbar.appendChild(schemaReloadButton);
   toolbar.appendChild(schemaStatus);
 
-  toolbar?.appendChild(executionTray);
+  toolbar?.appendChild(executeOpButton);
   return { schemaReloadButton, executeOpButton, schemaStatus, schemaPicker };
 }
 
@@ -235,29 +252,55 @@ function getSchemaPicker(): HTMLSelectElement {
   return schemaPicker;
 }
 
+/**
+ * login using the provided netlify API for oauth
+ */
 export function renderGithubLoginButton() {
+  const githubLoginWrapper = document.createElement('div');
+  githubLoginWrapper.id = 'github-login-wrapper';
+  githubLoginWrapper.innerHTML = `<p>Using Netlify's OAuth client to retrieve your token, you'll see a simple github graphql <code>monaco-graphql</code> Demo.</p>`;
   const githubButton = document.createElement('button');
 
+  const logoutButton = document.createElement('button');
+
+  logoutButton.innerHTML = 'Logout';
+
+  logoutButton.onclick = async e => {
+    e.preventDefault();
+    schemaFetcher.logout();
+    await render();
+    document
+      .getElementById('session-editor')
+      ?.setAttribute('style', 'display: none');
+    document.getElementById('toolbar')?.setAttribute('style', 'display: none');
+  };
+
+  if (schemaFetcher.token) {
+    document.getElementById('github-login-wrapper')?.remove();
+    const toolbar = document.getElementById('toolbar');
+    toolbar?.appendChild(logoutButton);
+  } else {
+    githubLoginWrapper.appendChild(githubButton);
+    document.getElementById('flex-wrapper')?.prepend(githubLoginWrapper);
+  }
+
   githubButton.id = 'login';
-  githubButton.innerHTML = 'GitHub Login for <pre>monaco-graphql</pre> Demo';
+  githubButton.innerHTML = 'GitHub Login';
 
   githubButton.onclick = e => {
     e.preventDefault();
     // @ts-expect-error
     const authenticator = new netlify.default({ site_id: SITE_ID });
     authenticator.authenticate(
-      { provider: 'github', scope: ['user', 'read:org'] },
+      { provider: 'github', scope: ['user'] },
       async (err: Error, data: { token: string }) => {
         if (err) {
           console.error('Error Authenticating with GitHub: ' + err);
         } else {
           schemaFetcher.setApiToken(data.token);
-          localStorage.setItem('ghapi', data.token);
           await render();
         }
       },
     );
   };
-  const toolbar = document.getElementById('toolbar');
-  toolbar?.appendChild(githubButton);
 }

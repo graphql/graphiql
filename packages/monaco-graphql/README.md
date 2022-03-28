@@ -4,7 +4,8 @@
 
 GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want, or none!
 
-- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) using plain javascript
+- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) using plain javascript, shows how to change schemas
+- [vite + react example](https://stackblitz.com/edit/monaco-graphql-react-vite?file=src%2FApp.tsx&terminal=dev) - minimal example with variables (C)JSON support using react
 - [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example (prompts for github access token!)
 
 > **NOTE:** This is in pre-release state as we build towards GraphiQL 2.0.x. [`codemirror-graphql`](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql) has more features (such as JSON variables validation) and is more stable.
@@ -43,7 +44,6 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 // instantiates the worker & language features with the schema!
@@ -68,7 +68,8 @@ window.MonacoEnvironment = {
     if (label === 'graphql') {
       return new GraphQLWorker();
     }
-    return new EditorWorker();
+    // if you are using vite or webpack plugin, it will be found here
+    return new Worker('editor.worker.js');
   },
 };
 monaco.editor.create(document.getElementById('someElementId'), {
@@ -84,12 +85,10 @@ The existing API works as before in terms of instantiating the schema
 
 ```ts
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-
-// enables our language workern right away, despite no schema
+// enables our language worker right away, despite no schema
 import 'monaco-graphql';
 
 // you can also configure these using the webpack or vite plugins for `monaco-editor`
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 // lazily invoke the api config methods whenever we want!
@@ -112,7 +111,7 @@ window.MonacoEnvironment = {
     if (label === 'graphql') {
       return new GraphQLWorker();
     }
-    return new EditorWorker();
+    return new Worker('editor.worker.js');
   },
 };
 monaco.editor.create(document.getElementById('someElementId'), {
@@ -137,7 +136,6 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
 
 window.MonacoEnvironment = {
@@ -145,7 +143,7 @@ window.MonacoEnvironment = {
     if (label === 'graphql') {
       return new GraphQLWorker();
     }
-    return new EditorWorker();
+    return new Worker('editor.worker.js');
   },
 };
 
