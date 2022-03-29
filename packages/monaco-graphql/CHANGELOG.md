@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.14
+
+### Patch Changes
+
+- [#2253](https://github.com/graphql/graphiql/pull/2253) [`63177891`](https://github.com/graphql/graphiql/commit/63177891d7ea4e8a3824892baea45ebaba06eba8) Thanks [@acao](https://github.com/acao)! - fix worker + n problem when changing config (schema, etc) in `monaco-graphql`
+
 ## 1.0.13
 
 ### Patch Changes
