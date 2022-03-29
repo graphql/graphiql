@@ -32,9 +32,9 @@ export class WorkerManager {
     );
     this._lastUsedTime = 0;
     // this is where we re-start the worker on config changes
-    this._configChangeListener = this._defaults.onDidChange(() =>
-      this._stopWorker(),
-    );
+    this._configChangeListener = this._defaults.onDidChange(() => {
+      this._stopWorker();
+    });
     this._client = null;
   }
 

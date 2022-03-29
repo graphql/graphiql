@@ -62,9 +62,9 @@ body {
 
 #toolbar > button,
 #toolbar > select,
-#toolbar > span,
+#toolbar > div,
 button#execute-op {
-  margin: 4px;
+  margin: 0px 4px;
   padding: 4px;
 }
 
@@ -84,14 +84,14 @@ select:focus {
 }
 
 #execution-tray {
-  display: flex;
-  display: inline-flex;
-  align-items: baseline;
+  align-items: flex-end;
 }
 
-#schema-status {
+#toolbar #schema-status {
   color: #eee;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 11px 4px;
+  font-size: small;
 }
 
 #toolbar button.reload-button {
@@ -99,4 +99,12 @@ select:focus {
   padding: 4px;
   width: 30px;
   text-align: center;
+}
+
+#github-login-wrapper {
+  text-align: center;
+  color: white;
+  flex-direction: row;
+  width: 100%;
+  height: 200px;
 }
