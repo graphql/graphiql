@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.8.1
+
+### Patch Changes
+
+- [#2257](https://github.com/graphql/graphiql/pull/2257) [`6cc95851`](https://github.com/graphql/graphiql/commit/6cc9585119f33ba80f960da310f7ef2747b7bc38) Thanks [@acao](https://github.com/acao)! - _security fix:_ replace the vulnerable `dset` dependency with `set-value`
+
+  `dset` is vulnerable to prototype pollution attacks. this is only possible if you are doing all of the following:
+
+  1. running graphiql with an experimental graphql-js release tag that supports @stream and @defer
+  2. executing a properly @streamed or @deferred query ala IncrementalDelivery spec, with multipart chunks
+  3. consuming a malicious schema that contains field names like proto, prototype, or constructor that return malicious data designed to exploit a prototype pollution attack
+
 ## 1.8.0
 
 ### Minor Changes
