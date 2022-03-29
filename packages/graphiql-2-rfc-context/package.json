@@ -51,7 +51,7 @@
     "graphql-language-service": "^5.0.1",
     "i18next": "^19.4.4",
     "i18next-browser-languagedetector": "^4.1.1",
-    "markdown-it": "^10.0.0",
+    "markdown-it": "^12.3.2",
     "monaco-editor": "^0.27.0",
     "monaco-graphql": "^1.0.14",
     "react-i18next": "^11.4.0",
