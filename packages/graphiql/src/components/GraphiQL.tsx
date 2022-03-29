@@ -55,7 +55,7 @@ import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 import mergeAST from '../utility/mergeAst';
 import { introspectionQueryName } from '../utility/introspectionQueries';
-import { dset } from 'dset/merge';
+import setValue from 'set-value';
 
 import type {
   Fetcher,
@@ -1567,7 +1567,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     );
                   }
 
-                  dset(payload.data, path, data);
+                  setValue(payload.data, path, data, { merge: true });
                 } else if (data) {
                   // If there is no path, we don't know what to do with the payload,
                   // so we just set it.

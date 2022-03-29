@@ -15,7 +15,7 @@
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
       "prettier --write",
-      "jest"
+      "jest --passWithNoTests"
     ],
     "*.{md,html,json,css}": [
       "prettier --write"
@@ -98,6 +98,7 @@
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.22",
     "@types/prettier": "^2.0.0",
+    "@types/set-value": "^4.0.1",
     "@types/theme-ui": "^0.3.1",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^4.14.0",
