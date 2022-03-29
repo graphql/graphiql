@@ -36,7 +36,7 @@
     "graphql-config": "^4.1.0",
     "graphql-language-service": "^5.0.1",
     "mkdirp": "^1.0.4",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
     "vscode-languageserver": "^6.1.1",
