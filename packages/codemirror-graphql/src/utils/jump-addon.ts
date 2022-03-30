@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { GraphQLJumpOptions } from 'src/jump';
+import { GraphQLJumpOptions } from '../jump';
 
 CodeMirror.defineOption(
   'jump',
