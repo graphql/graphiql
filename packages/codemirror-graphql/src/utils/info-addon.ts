@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { GraphQLInfoOptions } from 'src/info';
+import { GraphQLInfoOptions } from '../info';
 
 CodeMirror.defineOption(
   'info',

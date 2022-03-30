@@ -8,7 +8,7 @@
  */
 
 import type CodeMirror from 'codemirror';
-import { IHint, IHints } from 'src/hint';
+import { IHint, IHints } from '../hint';
 
 // Create the expected hint response given a possible list and a token
 export default function hintList(

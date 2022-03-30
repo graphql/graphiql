@@ -19,7 +19,7 @@ import {
   GraphQLInputFieldMap,
 } from 'graphql';
 import type { State, Maybe } from 'graphql-language-service';
-import { IHints } from 'src/hint';
+import { IHints } from '../hint';
 
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
