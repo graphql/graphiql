@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`261f2044`](https://github.com/graphql/graphiql/commit/261f2044066412e40f9962bef55295f7c9c35aec)]:
+  - codemirror-graphql@1.2.15
+
 ## 1.8.1
 
 ### Patch Changes

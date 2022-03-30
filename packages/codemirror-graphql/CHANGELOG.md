@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.2.15
+
+### Patch Changes
+
+- [#2261](https://github.com/graphql/graphiql/pull/2261) [`261f2044`](https://github.com/graphql/graphiql/commit/261f2044066412e40f9962bef55295f7c9c35aec) Thanks [@acao](https://github.com/acao)! - Fix typescript path resolution bug in codemirror-graphql
+
 ## 1.2.14
 
 ### Patch Changes
