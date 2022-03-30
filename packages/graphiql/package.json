@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@graphiql/toolkit": "^0.4.2",
     "codemirror": "^5.58.2",
-    "codemirror-graphql": "^1.2.14",
+    "codemirror-graphql": "^1.2.15",
     "copy-to-clipboard": "^3.2.0",
     "set-value": "^4.1.0",
     "entities": "^2.0.0",
