@@ -89,7 +89,7 @@ if (majorVersion < 16) {
   );
 }
 
-declare namespace global {
+declare namespace window {
   export let g: GraphiQL;
 }
 
@@ -640,8 +640,8 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Utility for keeping CodeMirror correctly sized.
     this.codeMirrorSizer = new CodeMirrorSizer();
 
-    if (typeof global !== undefined) {
-      global.g = this;
+    if (typeof window !== 'undefined') {
+      window.g = this;
     }
   }
   UNSAFE_componentWillMount() {
