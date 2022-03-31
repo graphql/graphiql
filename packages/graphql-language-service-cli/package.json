@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-cli",
-  "version": "3.2.17",
+  "version": "3.2.18",
   "description": "An interface for building GraphQL language services for IDEs",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
