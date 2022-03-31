@@ -26,7 +26,7 @@ export default function onHasCompletion(
   data: CM.EditorChange | undefined,
   onHintInformationRender: (el: HTMLDivElement) => void,
 ) {
-  import('codemirror').then(CodeMirror => {
+  import('codemirror').then(({ default: CodeMirror }) => {
     let information: HTMLDivElement | null;
     let deprecation: HTMLDivElement | null;
     CodeMirror.on(
