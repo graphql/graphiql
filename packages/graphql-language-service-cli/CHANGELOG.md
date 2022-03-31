@@ -1,5 +1,11 @@
 # graphql-language-service-cli
 
+## 3.2.18
+
+### Patch Changes
+
+- [#2267](https://github.com/graphql/graphiql/pull/2267) [`fe441272`](https://github.com/graphql/graphiql/commit/fe44127296f808e58407855c7f8806e04c8ddf03) Thanks [@elken](https://github.com/elken)! - Re-add `graphql-language-service-server` as a dep to `graphql-language-service-cli`
+
 ## 3.2.17
 
 ### Patch Changes

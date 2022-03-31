@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.8.3
+
+### Patch Changes
+
+- [#2268](https://github.com/graphql/graphiql/pull/2268) [`b1886822`](https://github.com/graphql/graphiql/commit/b188682296ee04a87fbf09dc51385f127bffcec0) Thanks [@acao](https://github.com/acao)! - remove dependency on `global` for esbuild/etc users!
+
+* [#2265](https://github.com/graphql/graphiql/pull/2265) [`9458e10b`](https://github.com/graphql/graphiql/commit/9458e10ba24a6c919142ea1cebb409c7d055baf9) Thanks [@acao](https://github.com/acao)! - fix `codemirror` import bug for `onHasCompletion` for #2263. for esm/cjs users on autocomplete (umd bundle users not impacted)
+
 ## 1.8.2
 
 ### Patch Changes
