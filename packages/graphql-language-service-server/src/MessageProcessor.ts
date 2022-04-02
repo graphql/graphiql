@@ -217,13 +217,13 @@ export class MessageProcessor {
     const rootDir = this._settings?.load?.rootDir || this._rootPath;
     this._rootPath = rootDir;
     this._loadConfigOptions = {
-      ...Object.keys(this._settings.load || []).reduce((agg, key) => {
-        const value = this._settings.load[key];
+      ...Object.keys(this._settings?.load ?? {}).reduce((agg, key) => {
+        const value = this._settings?.load[key];
         if (value === undefined || value === null) {
           delete agg[key];
         }
         return agg;
-      }, this._settings.load),
+      }, this._settings.load ?? {}),
       rootDir,
     };
     // reload the graphql cache
@@ -288,7 +288,7 @@ export class MessageProcessor {
         'graphql.config',
         'graphqlrc',
         'package.json',
-        this._settings.load.fileName,
+        this._settings.load?.fileName,
       ].filter(Boolean);
       if (configMatchers.some(v => uri.match(v)?.length)) {
         this._logger.info('updating graphql config');
@@ -404,7 +404,7 @@ export class MessageProcessor {
     return { uri, diagnostics };
   }
   async handleDidChangeConfiguration(
-    _params?: DidChangeConfigurationParams,
+    _params: DidChangeConfigurationParams,
   ): Promise<DidChangeConfigurationRegistrationOptions> {
     await this._updateGraphQLConfig();
     this._logger.log(

@@ -350,6 +350,28 @@ describe('MessageProcessor', () => {
 
       expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
+
+    it('handles config requests with no config', async () => {
+      const customConfigName = 'custom-config-name.yml';
+      messageProcessor._settings = {};
+
+      await messageProcessor.handleDidChangeConfiguration({
+        settings: [],
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/.graphql.config.js`,
+          languageId: 'js',
+          version: 0,
+          text: '',
+        },
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
   });
 
   it('parseDocument finds queries in tagged templates', async () => {
