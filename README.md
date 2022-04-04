@@ -39,7 +39,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 ### Proposed Ecosystem
 
-As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain an sdk and plugins.
+As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain a sdk and plugins.
 
 ![Diagram of the proposed Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/proposed-ecosystem.jpg)
 
@@ -65,7 +65,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 ### How To Setup/Implement GraphiQL
 
-[codesandbox.io graphiql exmaple](https://codesandbox.io/s/graphiql-js-example-oc851)
+[codesandbox.io graphiql example](https://codesandbox.io/s/graphiql-js-example-oc851)
 [stackblitz.com graphiql example](https://stackblitz.com/edit/react-ts-jpnmod)
 
 **The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
@@ -79,7 +79,7 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 Provides monaco editor with a powerful, schema-driven graphql language mode.
 
-See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using github API
+See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using GitHub API
 
 ## [`codemirror-graphql`](packages/codemirror-graphql#readme)
 

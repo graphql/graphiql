@@ -6,7 +6,7 @@ GraphQL language plugin for the Monaco Editor. You can use it to build vscode/co
 
 - [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) using plain javascript, shows how to change schemas
 - [vite + react example](https://stackblitz.com/edit/monaco-graphql-react-vite?file=src%2FApp.tsx&terminal=dev) - minimal example with variables (C)JSON support using react
-- [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example (prompts for github access token!)
+- [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example (prompts for GitHub access token!)
 
 > **NOTE:** This is in pre-release state as we build towards GraphiQL 2.0.x. [`codemirror-graphql`](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql) has more features (such as JSON variables validation) and is more stable.
 
@@ -127,7 +127,7 @@ This will cover the basics, making an HTTP POST with the default `introspectionQ
 
 ### Variables JSON Support!
 
-In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrive a `JSONSchema` description for the declared variables for any given set of operations
+In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrieve a `JSONSchema` description for the declared variables for any given set of operations
 
 ## Full Sync Demo with Variables JSON
 
@@ -148,16 +148,16 @@ window.MonacoEnvironment = {
 };
 
 // the language service will be instantiated once the schema is available
-  const MonacoGraphQLAPI = initializeMode({
-    schemas: [{
-      // anything that monaco.URI.from() is compatible with
-      uri: 'https://myschema.com',
-      // match the monaco file uris for this schema.
-      // accepts specific filenames and anything `picomatch` supports.
-      fileMatch: ["**/*.graphql"],
-      schema: myGraphqlSchema as GraphQLSchema
-    }],
-  })
+const MonacoGraphQLAPI = initializeMode({
+  schemas: [{
+    // anything that monaco.URI.from() is compatible with
+    uri: 'https://myschema.com',
+    // match the monaco file uris for this schema.
+    // accepts specific filenames and anything `picomatch` supports.
+    fileMatch: ["**/*.graphql"],
+    schema: myGraphqlSchema as GraphQLSchema
+  }],
+})
 
 
 const operationModel  = monaco.editor.createModel(
@@ -192,26 +192,25 @@ const variablesEditor = monaco.editor.create(
   },
 );
 
-  // high-level method for configuring json variables validation
-  MonacoGraphQLAPI.setDiagnosticSettings({
-    validateVariablesJson: {
-      // Urls, uris, anything that monaco.URI.from() is compatible with.
-      // Match operation model to variables editor,
-      // and the language service will automatically listen for changes,
-      // and compute the json schema using the GraphQLWorker.
-      // This is in the main process is applied to the global monaco json settings
-      // for validation, completion and more using monaco-json's built-in JSON Schema support.
-      [operationModel.uri.toString()]: [variablesModel.uri.toString()]
-    },
-    jsonDiagnosticSettings: {
-      allowComments: true, // allow json, parse with a jsonc parser to make requests
-    }
-  })
-  // TODO: document manual alternative approach
-})();
+// high-level method for configuring json variables validation
+MonacoGraphQLAPI.setDiagnosticSettings({
+  validateVariablesJson: {
+    // Urls, uris, anything that monaco.URI.from() is compatible with.
+    // Match operation model to variables editor,
+    // and the language service will automatically listen for changes,
+    // and compute the json schema using the GraphQLWorker.
+    // This is in the main process is applied to the global monaco json settings
+    // for validation, completion and more using monaco-json's built-in JSON Schema support.
+    [operationModel.uri.toString()]: [variablesModel.uri.toString()]
+  },
+  jsonDiagnosticSettings: {
+    allowComments: true, // allow json, parse with a jsonc parser to make requests
+  }
+})
+// TODO: document manual alternative approach
 ```
 
-You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish syntax, for `tsconfig.json` etc) and the 3rd party `monaco-yaml` language modes for completion of other types of variable input. you can also experiment with editor methods to parse detected input into different formats, etc (`yaml` pastes as `json`, etc)
+You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish syntax, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes for completion of other types of variable input. you can also experiment with editor methods to parse detected input into different formats, etc (`yaml` pastes as `json`, etc.)
 
 You could of course prefer to generate a `jsonschema` form for variables input using a framework of your choice, instead of an editor. Enjoy!
 
@@ -248,7 +247,7 @@ const api = intializeMode(config);
 same as the above, except it overwrites the entire schema config.
 
 you can provide multiple, and use `fileMatch` to map to various uri "directory" globs or specific files.
-`uri` can be a url or file path, anything parsable
+`uri` can be an url or file path, anything parsable
 
 ```ts
 // you can load it lazily
@@ -278,7 +277,7 @@ const api = intializeMode({ schemas });
 
 // add another schema. this will cause language workers and features to reset
 api.setSchemaConfig([
-  ..schemas,
+  ...schemas,
   {
     introspectionJSON: myIntrospectionJSON,
     fileMatch: ['specific/monaco/uri.graphql'],
@@ -374,11 +373,11 @@ the plain javascript [webpack example](https://github.com/graphql/graphiql/tree/
 
 ## Custom Webworker (for passing non-static config to worker)
 
-If you want to pass a custom parser and/or or validation rules, it is supported, however the setup is a bit more complicated.
+If you want to pass a custom parser and/or validation rules, it is supported, however the setup is a bit more complicated.
 
 You can add any `LanguageServiceConfig` ([typedoc](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#graphqllanguageconfig-1)) configuration options you like here to `languageConfig` as below.
 
-This is because we can't pass non-static configuration to the existing worker programatically, so you must import these and build the worker custom with those functions. Part of the (worthwile) cost of crossing runtimes!
+This is because we can't pass non-static configuration to the existing worker programmatically, so you must import these and build the worker custom with those functions. Part of the (worthwhile) cost of crossing runtimes!
 
 you'll want to create your own `mygraphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
 
@@ -432,9 +431,9 @@ or, if you have webpack configured for it:
 window.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
     if (label === 'graphql') {
-      return 'mygraphql.worker.js`;
+      return 'mygraphql.worker.js';
     }
-    return 'editor.worker.js`;
+    return 'editor.worker.js';
   },
 };
 ```
@@ -469,7 +468,7 @@ If you are familiar with Codemirror/Atom-era terminology and features, here's so
 - command palette and right click context menu are important
 - you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
 - [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
-- [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples) repository is great for tips on implementing with different bundlers, runtimes, etc
+- [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples) repository is great for tips on implementing with different bundlers, runtimes, etc.
 
 ## TODO
 

@@ -37,13 +37,13 @@ Only node 9 or greater, and npm or yarn are required dependencies.
 
 with `yarn`:
 
-```
+```sh
 yarn global add graphql-language-service-cli
 ```
 
 with `npm`:
 
-```
+```sh
 npm i -g graphql-language-service-cli
 ```
 
@@ -64,8 +64,7 @@ The custom graphql language configurations are:
 
 The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
 
-```
-
+```text
 GraphQL Language Service Command-Line Interface.
 
 Usage: graphql-lsp <command> <file>
