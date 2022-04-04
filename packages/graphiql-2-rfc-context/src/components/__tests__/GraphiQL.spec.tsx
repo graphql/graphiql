@@ -366,7 +366,7 @@ describe('GraphiQL', () => {
       it('can be overridden using the exported type', () => {
         const { container } = render(
           <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>
+            <GraphiQL.Logo>My Great Logo</GraphiQL.Logo>
           </GraphiQL>,
         );
 
@@ -376,9 +376,7 @@ describe('GraphiQL', () => {
       });
 
       it('can be overridden using a named component', () => {
-        const WrappedLogo = wrap(
-          <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>,
-        );
+        const WrappedLogo = wrap(<GraphiQL.Logo>My Great Logo</GraphiQL.Logo>);
         WrappedLogo.displayName = 'GraphiQLLogo';
 
         const { getByText } = render(

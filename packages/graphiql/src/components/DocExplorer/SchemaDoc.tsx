@@ -33,22 +33,22 @@ export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {
         }
       />
       <div className="doc-category">
-        <div className="doc-category-title">{'root types'}</div>
+        <div className="doc-category-title">root types</div>
         <div className="doc-category-item">
-          <span className="keyword">{'query'}</span>
+          <span className="keyword">query</span>
           {': '}
           <TypeLink type={queryType} onClick={onClickType} />
         </div>
         {mutationType && (
           <div className="doc-category-item">
-            <span className="keyword">{'mutation'}</span>
+            <span className="keyword">mutation</span>
             {': '}
             <TypeLink type={mutationType} onClick={onClickType} />
           </div>
         )}
         {subscriptionType && (
           <div className="doc-category-item">
-            <span className="keyword">{'subscription'}</span>
+            <span className="keyword">subscription</span>
             {': '}
             <TypeLink type={subscriptionType} onClick={onClickType} />
           </div>
