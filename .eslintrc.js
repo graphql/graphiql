@@ -275,6 +275,7 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
 
     // react rules
+    'react/no-unused-state': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
     'react/jsx-key': 'error',
