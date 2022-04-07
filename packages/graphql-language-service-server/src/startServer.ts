@@ -25,6 +25,7 @@ import {
   DidOpenTextDocumentNotification,
   DidSaveTextDocumentNotification,
   DidChangeTextDocumentNotification,
+  DidChangeConfigurationNotification,
   DidCloseTextDocumentNotification,
   ExitNotification,
   HoverRequest,
@@ -366,7 +367,7 @@ async function addHandlers({
     messageProcessor.handleWorkspaceSymbolRequest(params),
   );
 
-  connection.onDidChangeConfiguration(
-    messageProcessor.handleDidChangeConfiguration,
+  connection.onNotification(DidChangeConfigurationNotification.type, params =>
+    messageProcessor.handleDidChangeConfiguration(params),
   );
 }
