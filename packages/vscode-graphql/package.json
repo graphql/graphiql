@@ -239,9 +239,9 @@
     "compile": "npm run compile:server && esbuild ./dist/extension.js --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
     "compile:server": "esbuild ./dist/server/index.js --bundle --outfile=out/server/server.js --external:vscode --format=cjs --platform=node",
     "build-bundles": "npm run compile -- --sourcemap",
-    "vsce:package": "vsce package",
+    "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish",
+    "vsce:publish": "vsce publish --yarn",
     "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
@@ -250,7 +250,7 @@
     "@types/vscode": "1.62.0",
     "esbuild": "0.13.15",
     "ovsx": "0.3.0",
-    "vsce": "2.6.7"
+    "vsce-yarn-patch": "^1.66.2"
   },
   "dependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
