@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.8.4
+
+### Patch Changes
+
+- [#2274](https://github.com/graphql/graphiql/pull/2274) [`12950380`](https://github.com/graphql/graphiql/commit/12950380e92c38f6eec23499e7fca5dc9dcd8216) Thanks [@B2o5T](https://github.com/B2o5T)! - turn `valid-typeof` as `error`, SSR fix
+
+- Updated dependencies [[`12950380`](https://github.com/graphql/graphiql/commit/12950380e92c38f6eec23499e7fca5dc9dcd8216)]:
+  - @graphiql/toolkit@0.4.3
+
 ## 1.8.3
 
 ### Patch Changes
