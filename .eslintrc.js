@@ -79,7 +79,7 @@ module.exports = {
     'no-unsafe-negation': 1,
     'use-isnan': 1,
     'valid-jsdoc': 0,
-    'valid-typeof': 1,
+    'valid-typeof': 'error',
 
     // Best Practices (http://eslint.org/docs/rules/#best-practices)
     'accessor-pairs': 1,
