@@ -241,7 +241,7 @@
     "build-bundles": "npm run compile -- --sourcemap",
     "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish --yarn",
+    "vsce:publish": "vsce publish --yarn --pat \"$PAT_TOKEN\"",
     "open-vsx:publish": "ovsx publish -p \"$OPEN_VSX_ACCESS_TOKEN\"",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
