@@ -30,6 +30,7 @@ examples/graphiql-create-react-app
 # Build artifacts
 **/flow-typed
 **/dist
+**/out
 **/esm
 **/bundle
 **/typedoc

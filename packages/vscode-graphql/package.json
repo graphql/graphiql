@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.3.52",
+  "version": "0.3.53",
   "preview": true,
   "private": true,
   "license": "MIT",
@@ -15,9 +15,10 @@
   "icon": "assets/images/logo.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/graphql/vscode-graphql"
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/vscode-graphql"
   },
-  "homepage": "https://github.com/graphql/vscode-graphql/blob/master/README.md",
+  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql/README.md",
   "galleryBanner": {
     "color": "#032539",
     "theme": "dark"
