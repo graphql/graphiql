@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.7.18
+
+### Patch Changes
+
+- [#2271](https://github.com/graphql/graphiql/pull/2271) [`e15d1dae`](https://github.com/graphql/graphiql/commit/e15d1dae399a7d43d8d98f2ce431a9a1f0ba84ae) Thanks [@acao](https://github.com/acao)! - a few bugfixes related to config handling impacting vim and potentially other LSP server users
+
 ## 2.7.17
 
 ### Patch Changes

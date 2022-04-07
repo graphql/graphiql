@@ -1,5 +1,16 @@
 # Change Log
 
+## 0.4.0
+
+### Minor Changes
+
+- [#2276](https://github.com/graphql/graphiql/pull/2276) [`6973a20b`](https://github.com/graphql/graphiql/commit/6973a20bcd12a599acca7c5d6671ac49def2768c) Thanks [@acao](https://github.com/acao)! - Simplified, merged with monorepo, dropped operation execution feature, we will reccomend an alternative instead.
+
+### Patch Changes
+
+- Updated dependencies [[`e15d1dae`](https://github.com/graphql/graphiql/commit/e15d1dae399a7d43d8d98f2ce431a9a1f0ba84ae)]:
+  - graphql-language-service-server@2.7.18
+
 ## 0.3.52
 
 ### Patch Changes
