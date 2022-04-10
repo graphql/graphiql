@@ -33,7 +33,7 @@
     "@babel/types": "^7.17.0",
     "@babel/parser": "^7.17.3",
     "dotenv": "8.2.0",
-    "graphql-config": "^4.1.0",
+    "graphql-config": "^4.3.0",
     "graphql-language-service": "^5.0.1",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",

@@ -146,6 +146,8 @@ module.exports = {
 
 we also load `require('dotenv').config()`, so you can use process.env variables from local `.env` files!
 
+<span id="workspace-configuration" />
+
 ### Workspace Configuration
 
 The LSP Server reads config by sending `workspace/configuration` method when it initializes.
