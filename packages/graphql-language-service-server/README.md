@@ -25,7 +25,7 @@ Supported features include:
 
 ### Dependencies
 
-An LSP compatible client with it's own file watcher, that sends watch notifications to the server.
+An LSP compatible client with its own file watcher, that sends watch notifications to the server.
 
 **DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
 
@@ -89,7 +89,9 @@ extensions:
 #### `.graphqlrc` or `.graphqlrc.json` or `graphql.config.json`
 
 ```json
-{ "schema": "https://localhost:8000" }
+{
+  "schema": "https://localhost:8000"
+}
 ```
 
 #### `graphql.config.js` or `.graphqlrc.js`
@@ -117,7 +119,7 @@ await startServer({
     // rootDir is same as `configDir` before, the path where the graphql config file would be found by cosmic-config
     rootDir: 'config/',
     // or - the relative or absolute path to your file
-      filePath: 'exact/path/to/config.js' // (also supports yml, json, ts, toml)
+    filePath: 'exact/path/to/config.js', // (also supports yml, json, ts, toml)
     // myPlatform.config.js/json/yaml works now!
     configName: 'myPlatform',
   },
@@ -130,13 +132,13 @@ The graphql-config features we support are:
 module.exports = {
   extensions: {
     // add customDirectives *legacy*. you can now provide multiple schema pointers to config.schema/project.schema, including inline strings
-    "customDirectives": ["@myExampleDirective"],
-     // a function that returns rules array with parameter `ValidationContext` from `graphql/validation`
-    "customValidationRules": require('./config/customValidationRules')
-    "languageService": {
+    customDirectives: ["@myExampleDirective"],
+    // a function that returns rules array with parameter `ValidationContext` from `graphql/validation`
+    customValidationRules: require('./config/customValidationRules'),
+    languageService: {
       // should the language service read schema for lookups from a cached file based on graphql config output?
       cacheSchemaFileForLookup: true
-     // NOTE: this will disable all definition lookup for local SDL files
+      // NOTE: this will disable all definition lookup for local SDL files
     }
   }
 }

@@ -55,7 +55,7 @@ You can use the `graphiql` module, however bear in mind that `react` `react-dom`
 
 With `npm`:
 
-```
+```sh
 npm install --save graphiql react react-dom graphql
 ```
 
@@ -67,7 +67,7 @@ yarn add graphiql react react-dom graphql
 
 ### UMD
 
-With `unpkg`/`jsdelivr`, etc:
+With `unpkg`/`jsdelivr`, etc.:
 
 ```html
 <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
