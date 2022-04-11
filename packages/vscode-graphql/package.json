@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.4.3",
+  "version": "0.4.1",
   "preview": true,
   "private": true,
   "license": "MIT",
@@ -220,7 +220,7 @@
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --yarn --pat \"$PAT_TOKEN\"",
     "open-vsx:publish": "ovsx publish --pat \"$OPEN_VSX_ACCESS_TOKEN\"",
-    "release": "npm run vsce:publish && npm run open-vsx:publish"
+    "postpublish": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",

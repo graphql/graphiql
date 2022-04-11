@@ -132,16 +132,16 @@ The graphql-config features we support are:
 module.exports = {
   extensions: {
     // add customDirectives *legacy*. you can now provide multiple schema pointers to config.schema/project.schema, including inline strings
-    customDirectives: ["@myExampleDirective"],
+    customDirectives: ['@myExampleDirective'],
     // a function that returns rules array with parameter `ValidationContext` from `graphql/validation`
     customValidationRules: require('./config/customValidationRules'),
     languageService: {
       // should the language service read schema for lookups from a cached file based on graphql config output?
-      cacheSchemaFileForLookup: true
+      cacheSchemaFileForLookup: true,
       // NOTE: this will disable all definition lookup for local SDL files
-    }
-  }
-}
+    },
+  },
+};
 ```
 
 we also load `require('dotenv').config()`, so you can use process.env variables from local `.env` files!

@@ -57,7 +57,7 @@
     "prepublishOnly": "./scripts/prepublish.sh",
     "pretty": "node scripts/pretty.js",
     "pretty-check": "node scripts/pretty.js --check",
-    "release": "yarn build && yarn build-bundles && yarn changeset publish && wsrun release",
+    "release": "yarn build && yarn build-bundles && yarn changeset publish",
     "release:canary": "(node scripts/canary-release.js && yarn build && yarn build-bundles && yarn changeset publish --tag canary) || echo Skipping Canary...",
     "repo:lint": "manypkg check",
     "repo:fix": "manypkg fix",
