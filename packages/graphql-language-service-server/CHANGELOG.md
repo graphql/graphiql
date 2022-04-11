@@ -1,5 +1,15 @@
 # graphql-language-service-server
 
+## 2.7.19
+
+### Patch Changes
+
+- [`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f) Thanks [@acao](https://github.com/acao)! - - upgrade `graphql-config` to latest in server
+  - remove `graphql-config` dependency from `vscode-graphql` and `graphql-language-service`
+  - fix `vscode-graphql` esbuild bundling bug in `vscode-graphql` [#2269](https://github.com/graphql/graphiql/issues/2269) by fixing `esbuild` version
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+
 ## 2.7.18
 
 ### Patch Changes
