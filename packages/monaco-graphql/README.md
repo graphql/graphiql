@@ -149,18 +149,19 @@ window.MonacoEnvironment = {
 
 // the language service will be instantiated once the schema is available
 const MonacoGraphQLAPI = initializeMode({
-  schemas: [{
-    // anything that monaco.URI.from() is compatible with
-    uri: 'https://myschema.com',
-    // match the monaco file uris for this schema.
-    // accepts specific filenames and anything `picomatch` supports.
-    fileMatch: ["**/*.graphql"],
-    schema: myGraphqlSchema as GraphQLSchema
-  }],
-})
+  schemas: [
+    {
+      // anything that monaco.URI.from() is compatible with
+      uri: 'https://myschema.com',
+      // match the monaco file uris for this schema.
+      // accepts specific filenames and anything `picomatch` supports.
+      fileMatch: ['**/*.graphql'],
+      schema: myGraphqlSchema as GraphQLSchema,
+    },
+  ],
+});
 
-
-const operationModel  = monaco.editor.createModel(
+const operationModel = monaco.editor.createModel(
   'query {}',
   'graphql',
   '/operation.graphql',
@@ -201,12 +202,12 @@ MonacoGraphQLAPI.setDiagnosticSettings({
     // and compute the json schema using the GraphQLWorker.
     // This is in the main process is applied to the global monaco json settings
     // for validation, completion and more using monaco-json's built-in JSON Schema support.
-    [operationModel.uri.toString()]: [variablesModel.uri.toString()]
+    [operationModel.uri.toString()]: [variablesModel.uri.toString()],
   },
   jsonDiagnosticSettings: {
     allowComments: true, // allow json, parse with a jsonc parser to make requests
-  }
-})
+  },
+});
 // TODO: document manual alternative approach
 ```
 
@@ -266,13 +267,13 @@ or you can load the language features only when you have your schema
 ```ts
 import { initializeMode } from 'monaco-graphql/esm/initializeMode';
 
-const schemas  = [
+const schemas = [
   {
     schema: GraphQLSchema,
     fileMatch: ['operations/*.graphql'],
     uri: 'myschema.graphql',
   },
-]
+];
 const api = intializeMode({ schemas });
 
 // add another schema. this will cause language workers and features to reset
