@@ -778,7 +778,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.handleStopQuery();
     this.setState(
       state => stateOnSelectTabReducer(index, state),
-      this.persistTabsState,
+      () => {
+        this.persistTabsState();
+        if (this.state.query) {
+          this.handleEditQuery(this.state.query);
+        }
+      },
     );
   };
 
