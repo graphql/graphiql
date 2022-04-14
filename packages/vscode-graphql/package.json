@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "preview": true,
   "private": true,
   "license": "MIT",
@@ -231,7 +231,7 @@
   },
   "dependencies": {
     "graphql": "16.0.0-experimental-stream-defer.5",
-    "graphql-language-service-server": "^2.7.19",
+    "graphql-language-service-server": "^2.7.20",
     "vscode-languageclient": "5.2.1"
   }
 }

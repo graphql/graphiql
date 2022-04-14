@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.8.6
+
+### Patch Changes
+
+- [#2312](https://github.com/graphql/graphiql/pull/2312) [`3c97cf63`](https://github.com/graphql/graphiql/commit/3c97cf63f0d6a8c27265905af1a2da243925ff01) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: After changing to a tab with a subscription, graphiql sends a query request
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+  - codemirror-graphql@1.2.17
+
 ## 1.8.5
 
 ### Patch Changes
