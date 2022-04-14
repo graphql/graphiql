@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.0.3
+
+### Patch Changes
+
+- [#2291](https://github.com/graphql/graphiql/pull/2291) [`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - Target es6 for the languages services
+
 ## 5.0.2
 
 ### Patch Changes
