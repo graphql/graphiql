@@ -625,6 +625,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       maxHistoryLength,
       ...queryFacts,
     };
+    if (this.state.query) {
+      this.handleEditQuery(this.state.query);
+    }
   }
 
   componentDidMount() {
