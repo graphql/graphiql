@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.8.7
+
+### Patch Changes
+
+- [#2316](https://github.com/graphql/graphiql/pull/2316) [`3d8510c8`](https://github.com/graphql/graphiql/commit/3d8510c87b9f0cc73f747ed4cd88e112f9fe65f7) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: With tabs enabled, if a subscription is restored from storage, a query request is sent instead
+
 ## 1.8.6
 
 ### Patch Changes
