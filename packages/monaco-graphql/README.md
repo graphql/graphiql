@@ -33,7 +33,7 @@ For now, we use `language` id of `graphql` until we can ensure we can dovetail n
 To use with webpack, here is an example to get you started:
 
 ```shell
-yarn add monaco-graphql
+pnpm add monaco-graphql
 ```
 
 ## Sync Example

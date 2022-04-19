@@ -31,9 +31,9 @@
     "!jest.config.js"
   ],
   "scripts": {
-    "build": "yarn build-clean && yarn build-js && yarn build-esm && yarn build-flow .",
-    "build-js": "yarn tsc",
-    "build-esm": "cross-env ESM=true yarn tsc --project tsconfig.esm.json && node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
+    "build": "pnpm build-clean && pnpm build-js && pnpm build-esm && pnpm build-flow .",
+    "build-js": "pnpm tsc",
+    "build-esm": "cross-env ESM=true pnpm tsc --project tsconfig.esm.json && node ../../scripts/renameFileExtensions.js './esm/{**,!**/__tests__/}/*.js' . .esm.js",
     "build-clean": "rimraf {mode,hint,info,jump,lint}.{js,esm.js,js.flow,js.map,d.ts,d.ts.map} && rimraf esm results utils variables coverage cm6-legacy __tests__",
     "build-flow": "node ../../scripts/buildFlow.js",
     "watch": "babel --optional runtime resources/watch.js | node",

@@ -4,7 +4,7 @@ set -e
 set -o pipefail
 
 if [ ! -d "node_modules/.bin" ]; then
-  echo "Be sure to run \`yarn install\` before building GraphiQL."
+  echo "Be sure to run \`pnpm install\` before building GraphiQL."
   exit 1
 fi
 

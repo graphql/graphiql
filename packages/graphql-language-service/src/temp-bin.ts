@@ -21,9 +21,9 @@ process.stderr.write(`
   
   ${bright('Re-Installation:')}
 
-  yarn:
-    ${bright('yarn global remove graphql-language-service')}
-    ${bright('yarn global add graphql-language-service-cli')}
+  pnpm:
+    ${bright('pnpm global remove graphql-language-service')}
+    ${bright('pnpm global add graphql-language-service-cli')}
 
   npm:
     ${bright('npm uninstall -g graphql-language-service')}

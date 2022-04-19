@@ -17,16 +17,16 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Force GraphQL 15 resolution
-        run: yarn repo:resolve graphql@15 
+        run: pnpm repo:resolve graphql@15 
 
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1  
 
       - name: Typescript Build
-        run: yarn build
+        run: pnpm build
 
       - name: Unit Tests
-        run: yarn test
+        run: pnpm test
 
       - name: Cypress
-        run: yarn e2e
+        run: pnpm e2e

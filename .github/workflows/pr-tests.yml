@@ -20,14 +20,14 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v2
 
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: Build
-        run: yarn build
+        run: pnpm build
 
       - name: Run Unit Tests
-        run: yarn test --coverage
+        run: pnpm test --coverage
 
       - name: Codecov
         uses: codecov/codecov-action@v1
@@ -44,8 +44,8 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v2
 
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: Run E2E suite
-        run: yarn e2e
+        run: pnpm e2e

@@ -13,14 +13,14 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v2
 
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: Eslint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Prettier Check
-        run: yarn pretty-check
+        run: pnpm pretty-check
 
   build:
     name: Typescript Build
@@ -30,8 +30,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Use Node
         uses: actions/setup-node@v2
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: Tyescript Build
-        run: yarn build
+        run: pnpm build

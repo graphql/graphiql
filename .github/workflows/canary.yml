@@ -18,7 +18,7 @@ jobs:
       - name: Use Node
         uses: actions/setup-node@v2
 
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: Setup NPM credentials
@@ -33,7 +33,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
-          npm-script: 'yarn release:canary'
+          npm-script: 'pnpm release:canary'
           changesets: true
       - name: Publish a message
         if: steps.canary.outputs.released == 'true'

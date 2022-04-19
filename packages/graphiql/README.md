@@ -59,10 +59,10 @@ With `npm`:
 npm install --save graphiql react react-dom graphql
 ```
 
-Alternatively, if you are using [`yarn`](https://yarnpkg.com/):
+Alternatively, if you are using [`pnpm`](https://pnpmpkg.com/):
 
 ```
-yarn add graphiql react react-dom graphql
+pnpm add graphiql react react-dom graphql
 ```
 
 ### UMD
@@ -113,7 +113,7 @@ ReactDOM.render(
 
 ### Usage: UMD Bundle over CDN (Unpkg, JSDelivr, etc)
 
-Don't forget to include the CSS file on the page! If you're using `npm` or `yarn`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
+Don't forget to include the CSS file on the page! If you're using `npm` or `pnpm`, you can find it in `node_modules/graphiql/graphiql.css`, or you can download it from the [releases page](https://github.com/graphql/graphiql/releases).
 
 For an example of setting up a GraphiQL, check out the [example](https://github.com/graphql/graphiql/blob/main/examples/graphiql-cdn/) in this repository which also includes a few useful features highlighting GraphiQL's API.
 

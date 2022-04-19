@@ -8,6 +8,6 @@ This workspace could be used to help us prototype components & hooks for `@graph
 
 ## Setup
 
-First, `yarn` in the root, and then `yarn build` in the root
+First, `pnpm` in the root, and then `pnpm build` in the root
 
-Then, in this directory, you can just run `yarn start`
+Then, in this directory, you can just run `pnpm start`

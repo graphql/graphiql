@@ -2,7 +2,7 @@ name: License Check
 on: 
   push:
     paths:
-      - 'yarn.lock'
+      - 'pnpm.lock'
   pull_request:
     types: [opened, synchronize]
       
@@ -15,8 +15,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Use Node
         uses: actions/setup-node@v2
-      - name: Yarn Install
+      - name: pnpm Install
         uses: bahmutov/npm-install@v1
 
       - name: License Check
-        run: yarn license-check
+        run: pnpm license-check

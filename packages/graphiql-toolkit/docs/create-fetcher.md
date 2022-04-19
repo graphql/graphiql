@@ -15,7 +15,7 @@ npm install --save @graphiql/toolkit
 ```
 
 ```bash
-yarn add @graphiql/toolkit
+pnpm add @graphiql/toolkit
 ```
 
 ### Getting Started
@@ -50,7 +50,7 @@ npm install --save graphql-ws
 ```
 
 ```bash
-yarn add graphql-ws
+pnpm add graphql-ws
 ```
 
 Just by providing the `subscriptionUrl`, you can also generate a `graphql-ws` client. This client now supports both HTTP/Multipart Incremental Delivery for `@defer` and `@stream`, _and_ websockets subscriptions
@@ -163,7 +163,7 @@ ReactDOM.render(document.getElementByID('graphiql'), <App />);
 you will need to install the client seperately:
 
 ```bash
-yarn add subscriptions-transport-ws
+pnpm add subscriptions-transport-ws
 ```
 
 ```bash
