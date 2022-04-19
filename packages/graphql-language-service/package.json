@@ -25,7 +25,7 @@
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "graphql": "./dist/temp-bin.js"
+    "graphql": "./bin.cjs"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0"
