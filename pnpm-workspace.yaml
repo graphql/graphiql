@@ -1,0 +1,5 @@
+packages:
+  - 'packages/*'
+  - 'examples/monaco-graphql-webpack'
+  - 'examples/graphiql-webpack'
+  - 'examples/monaco-graphql-react-vite'
