@@ -3,14 +3,6 @@
   "version": "independent",
   "private": true,
   "license": "MIT",
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "examples/monaco-graphql-webpack",
-      "examples/graphiql-webpack",
-      "examples/monaco-graphql-react-vite"
-    ]
-  },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
