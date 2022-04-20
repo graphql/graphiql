@@ -1,3 +1,7 @@
+export type DebounceFn<T> = T & {
+  clear(): void;
+};
+
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
@@ -12,15 +16,24 @@
 export default function debounce<F extends (...args: any[]) => any>(
   duration: number,
   fn: F,
-) {
+): DebounceFn<F> {
   let timeout: number | null;
-  return function (this: any, ...args: Parameters<F>) {
-    if (timeout) {
-      window.clearTimeout(timeout);
-    }
-    timeout = window.setTimeout(() => {
-      timeout = null;
-      fn.apply(this, args);
-    }, duration);
-  };
+  return Object.assign(
+    function (this: any, ...args: Parameters<F>) {
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(() => {
+        timeout = null;
+        fn.apply(this, args);
+      }, duration);
+    } as DebounceFn<F>,
+    {
+      clear() {
+        if (timeout) {
+          window.clearTimeout(timeout);
+        }
+      },
+    },
+  );
 }

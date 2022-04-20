@@ -7,7 +7,7 @@
 
 import React, { ChangeEventHandler } from 'react';
 
-import debounce from '../../utility/debounce';
+import debounce, { DebounceFn } from '../../utility/debounce';
 
 type OnSearchFn = (value: string) => void;
 
@@ -25,12 +25,16 @@ export default class SearchBox extends React.Component<
   SearchBoxProps,
   SearchBoxState
 > {
-  debouncedOnSearch: OnSearchFn;
+  debouncedOnSearch: DebounceFn<OnSearchFn>;
 
   constructor(props: SearchBoxProps) {
     super(props);
     this.state = { value: props.value || '' };
     this.debouncedOnSearch = debounce(200, this.props.onSearch);
+  }
+
+  componentWillUnmount() {
+    this.debouncedOnSearch.clear();
   }
 
   render() {
