@@ -8,6 +8,7 @@
 import { FormattingOptions, ICreateData, SchemaConfig } from './typings';
 
 import type { worker, Position } from 'monaco-editor';
+import type { MarkupContent, MarkedString } from 'vscode-languageserver-types';
 
 import { getRange } from 'graphql-language-service';
 
@@ -77,7 +78,13 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: Position) {
+  public async doHover(
+    uri: string,
+    position: Position,
+  ): Promise<{
+    content: MarkupContent | MarkedString | MarkedString[] | undefined;
+    range: monaco.IRange;
+  } | null> {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();

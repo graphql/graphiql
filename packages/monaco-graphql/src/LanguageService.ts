@@ -17,7 +17,7 @@ import {
 
 import picomatch from 'picomatch-browser';
 
-import type { IPosition } from 'graphql-language-service';
+import type { Diagnostic, IPosition } from 'graphql-language-service';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -227,7 +227,7 @@ export class LanguageService {
     uri: string,
     documentText: string,
     customRules?: ValidationRule[],
-  ) => {
+  ): Diagnostic[] => {
     const schema = this.getSchemaForFile(uri);
     if (!documentText || documentText.length < 1 || !schema?.schema) {
       return [];
