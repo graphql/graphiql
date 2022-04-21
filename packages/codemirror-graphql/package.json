@@ -42,7 +42,7 @@
   },
   "peerDependencies": {
     "@codemirror/language": "^0.20.0",
-    "codemirror": "^5.58.2",
+    "codemirror": "^5.65.3",
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@codemirror/language": "^0.20.0",
-    "codemirror": "^5.58.2",
+    "codemirror": "^5.65.3",
     "cross-env": "^7.0.2",
     "graphql": "16.0.0-experimental-stream-defer.5",
     "jsdom": "^16.4.0",

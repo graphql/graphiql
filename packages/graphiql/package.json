@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@graphiql/toolkit": "^0.4.3",
-    "codemirror": "^5.58.2",
+    "codemirror": "^5.65.3",
     "codemirror-graphql": "^1.2.17",
     "copy-to-clipboard": "^3.2.0",
     "set-value": "^4.1.0",
@@ -64,7 +64,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.4.0",
     "@testing-library/react": "9.4.1",
-    "@types/codemirror": "^5.58.2",
+    "@types/codemirror": "^5.60.5",
     "@types/escape-html": "^1.0.1",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^14.14.22",
