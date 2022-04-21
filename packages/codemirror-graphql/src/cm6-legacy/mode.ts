@@ -1,4 +1,4 @@
-import type { StreamParser } from '@codemirror/stream-parser';
+import type { StreamParser } from '@codemirror/language';
 import graphqlModeFactory from '../utils/mode-factory';
 
 // Types of property 'token' are incompatible.
