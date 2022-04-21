@@ -15,12 +15,13 @@ import {
   GraphQLType,
   GraphQLEnumValue,
 } from 'graphql';
+import { ExplorerFieldDef } from '@graphiql/react';
 
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
-import { FieldType, OnClickTypeFunction, OnClickFieldFunction } from './types';
+import { OnClickTypeFunction, OnClickFieldFunction } from './types';
 
 type TypeDocProps = {
   schema: GraphQLSchema;
@@ -192,7 +193,7 @@ export default class TypeDoc extends React.Component<
 
 type FieldProps = {
   type: GraphQLType;
-  field: FieldType;
+  field: ExplorerFieldDef;
   onClickType: OnClickTypeFunction;
   onClickField: OnClickFieldFunction;
 };
@@ -237,11 +238,11 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
   );
 }
 
-type EnumValue = {
+type EnumValueProps = {
   value: GraphQLEnumValue;
 };
 
-function EnumValue({ value }: EnumValue) {
+function EnumValue({ value }: EnumValueProps) {
   return (
     <div className="doc-category-item">
       <div className="enum-value">{value.name}</div>

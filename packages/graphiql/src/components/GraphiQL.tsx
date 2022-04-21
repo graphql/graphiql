@@ -20,13 +20,13 @@ import {
   print,
   visit,
   OperationDefinitionNode,
-  GraphQLType,
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
   GraphQLError,
   IntrospectionQuery,
   getIntrospectionQuery,
+  GraphQLNamedType,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import {
@@ -34,6 +34,10 @@ import {
   getOperationFacts,
   VariableToType,
 } from 'graphql-language-service';
+import { SchemaReference } from 'codemirror-graphql/src/utils/SchemaReference';
+
+import { ExplorerContext, ExplorerContextProvider } from '@graphiql/react';
+import type { ExplorerContextType, ExplorerFieldDef } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
 import { ImagePreview } from './ImagePreview';
@@ -96,7 +100,7 @@ if (majorVersion < 16) {
 }
 
 declare namespace window {
-  export let g: GraphiQL;
+  export let g: GraphiQLWithContext;
 }
 
 export type Maybe<T> = T | null | undefined;
@@ -360,24 +364,64 @@ type TabsState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
-  /**
-   * Static Methods
-   */
-  static formatResult(result: any) {
-    console.warn(
-      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
-    );
-    return formatResult(result);
-  }
+export function GraphiQL(props: GraphiQLProps) {
+  return (
+    <ExplorerContextProvider>
+      <ExplorerContext.Consumer>
+        {explorerContext => (
+          <GraphiQLWithContext {...props} explorerContext={explorerContext} />
+        )}
+      </ExplorerContext.Consumer>
+    </ExplorerContextProvider>
+  );
+}
 
-  static formatError(error: any) {
-    console.warn(
-      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
-    );
-    return formatError(error);
-  }
+GraphiQL.formatResult = (result: any): string => {
+  console.warn(
+    'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
+  );
+  return formatResult(result);
+};
 
+GraphiQL.formatError = (error: any): string => {
+  console.warn(
+    'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
+  );
+  return formatError(error);
+};
+
+// Export main windows/panes to be used separately if desired.
+GraphiQL.Logo = GraphiQLLogo;
+GraphiQL.Toolbar = GraphiQLToolbar;
+GraphiQL.Footer = GraphiQLFooter;
+GraphiQL.QueryEditor = QueryEditor;
+GraphiQL.VariableEditor = VariableEditor;
+GraphiQL.HeaderEditor = HeaderEditor;
+GraphiQL.ResultViewer = ResultViewer;
+
+// Add a button to the Toolbar.
+GraphiQL.Button = ToolbarButton;
+GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
+
+// Add a group of buttons to the Toolbar
+GraphiQL.Group = ToolbarGroup;
+
+// Add a menu of items to the Toolbar.
+GraphiQL.Menu = ToolbarMenu;
+GraphiQL.MenuItem = ToolbarMenuItem;
+
+// Add a select-option input to the Toolbar.
+// GraphiQL.Select = ToolbarSelect;
+// GraphiQL.SelectOption = ToolbarSelectOption;
+
+type GraphiQLWithContextProps = GraphiQLProps & {
+  explorerContext: ExplorerContextType;
+};
+
+class GraphiQLWithContext extends React.Component<
+  GraphiQLWithContextProps,
+  GraphiQLState
+> {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
   _storage: StorageAPI;
@@ -390,7 +434,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   componentIsMounted: boolean;
 
   // refs
-  docExplorerComponent: Maybe<DocExplorer>;
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<ResultViewer>;
   variableEditorComponent: Maybe<VariableEditor>;
@@ -401,7 +444,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   queryEditorComponent: Maybe<QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;
 
-  constructor(props: GraphiQLProps) {
+  constructor(props: GraphiQLWithContextProps) {
     super(props);
 
     // Ensure props are correct
@@ -712,10 +755,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       },
       () => {
         if (this.state.schema === undefined) {
-          if (this.docExplorerComponent) {
-            this.docExplorerComponent.reset();
-          }
-
+          this.props.explorerContext.reset();
           this.fetchSchema();
         }
       },
@@ -1053,9 +1093,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
               onMouseDown={this.handleDocsResizeStart}
             />
             <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
               schemaErrors={this.state.schemaErrors}
               schema={this.state.schema}>
               <button
@@ -1070,30 +1107,6 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       </div>
     );
   }
-
-  // Export main windows/panes to be used separately if desired.
-  static Logo = GraphiQLLogo;
-  static Toolbar = GraphiQLToolbar;
-  static Footer = GraphiQLFooter;
-  static QueryEditor = QueryEditor;
-  static VariableEditor = VariableEditor;
-  static HeaderEditor = HeaderEditor;
-  static ResultViewer = ResultViewer;
-
-  // Add a button to the Toolbar.
-  static Button = ToolbarButton;
-  static ToolbarButton = ToolbarButton; // Don't break existing API.
-
-  // Add a group of buttons to the Toolbar
-  static Group = ToolbarGroup;
-
-  // Add a menu of items to the Toolbar.
-  static Menu = ToolbarMenu;
-  static MenuItem = ToolbarMenuItem;
-
-  // Add a select-option input to the Toolbar.
-  // static Select = ToolbarSelect;
-  // static SelectOption = ToolbarSelectOption;
 
   /**
    * Get the query editor CodeMirror instance.
@@ -1448,10 +1461,16 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       });
   }
 
-  handleClickReference = (reference: GraphQLType) => {
+  handleClickReference = (reference: SchemaReference) => {
     this.setState({ docExplorerOpen: true }, () => {
-      if (this.docExplorerComponent) {
-        this.docExplorerComponent.showDocForReference(reference);
+      if (reference && reference.kind === 'Type') {
+        this.showDoc(reference.type);
+      } else if (reference.kind === 'Field') {
+        this.showDoc(reference.field);
+      } else if (reference.kind === 'Argument' && reference.field) {
+        this.showDoc(reference.field);
+      } else if (reference.kind === 'EnumValue' && reference.type) {
+        this.showDoc(reference.type);
       }
     });
     this._storage.set(
@@ -1846,9 +1865,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         const type = schema.getType(typeName);
         if (type) {
           this.setState({ docExplorerOpen: true }, () => {
-            if (this.docExplorerComponent) {
-              this.docExplorerComponent.showDoc(type);
-            }
+            this.showDoc(type);
           });
           debounce(500, () =>
             this._storage.set(
@@ -2121,6 +2138,15 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   };
+
+  // TODO: When refactoring this to a function component replace this with
+  // useExplorerNavStack().push from @graphiql/react
+  private showDoc(typeOrField: GraphQLNamedType | ExplorerFieldDef) {
+    this.props.explorerContext.push({
+      name: typeOrField.name,
+      def: typeOrField,
+    });
+  }
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
