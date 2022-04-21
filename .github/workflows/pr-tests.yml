@@ -32,7 +32,7 @@ jobs:
         run: pnpm build
 
       - name: Run Unit Tests
-        run: pnpm test --coverage
+        run: pnpm jest --coverage
 
       - name: Codecov
         uses: codecov/codecov-action@v1
@@ -45,7 +45,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-        
+
       - name: Use Node
         uses: actions/setup-node@v2
 
