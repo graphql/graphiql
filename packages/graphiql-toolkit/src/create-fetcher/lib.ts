@@ -28,7 +28,7 @@ import type {
  */
 export const isSubscriptionWithName = (
   document: DocumentNode,
-  name: string,
+  name: string | undefined,
 ): boolean => {
   let isSubscription = false;
   visit(document, {

@@ -57,7 +57,7 @@ export type SchemaConfig = {
 
 export type FetcherParams = {
   query: string;
-  operationName?: string;
+  operationName?: string | null;
   variables?: string;
 };
 
