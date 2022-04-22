@@ -81,7 +81,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     import('codemirror/addon/search/jump-to-line'),
     // @ts-expect-error
     import('codemirror/keymap/sublime'),
-    import('codemirror-graphql/results/mode'),
+    import('codemirror-graphql/esm/results/mode'),
   ];
 
   async initializeEditor() {
@@ -94,7 +94,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
     const ImagePreview = this.props.ImagePreview;
 
     if (Tooltip || ImagePreview) {
-      await import('codemirror-graphql/utils/info-addon');
+      await import('codemirror-graphql/esm/utils/info-addon');
       const tooltipDiv = document.createElement('div');
       CodeMirror.registerHelper(
         'info',

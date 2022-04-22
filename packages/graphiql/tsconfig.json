@@ -5,7 +5,7 @@
     "outDir": "./dist",
     "composite": true,
     "jsx": "react",
-    "target": "es5",
+    "target": "ESNext",
     "strictPropertyInitialization": false
   },
   "include": ["src"],

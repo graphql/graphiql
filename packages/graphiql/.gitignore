@@ -14,6 +14,7 @@ example/graphiql.js
 example/graphiql.css
 test/pid
 /*.html
+!index.html
 renderGraphiql.js
 cypress/screenshots
 .awcache

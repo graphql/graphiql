@@ -134,9 +134,9 @@ export class VariableEditor extends React.Component<VariableEditorProps> {
   }
 
   addonModules = () => [
-    import('codemirror-graphql/variables/hint'),
-    import('codemirror-graphql/variables/lint'),
-    import('codemirror-graphql/variables/mode'),
+    import('codemirror-graphql/esm/variables/hint'),
+    import('codemirror-graphql/esm/variables/lint'),
+    import('codemirror-graphql/esm/variables/mode'),
   ];
 
   async initializeEditor() {
