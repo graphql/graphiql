@@ -30,7 +30,7 @@
     "analyze-bundle": "cross-env NODE_ENV=production CDN=1 ANALYZE=1 yarn webpack -p",
     "build": "yarn build-cjs && yarn build-esm",
     "build-bundles": "yarn build-bundles-clean && yarn build-bundles-dev && yarn build-bundles-min",
-    "build-bundles-clean": "rimraf 'graphiql.*{js,css}' *.html",
+    "build-bundles-clean": "rimraf 'graphiql.*{js,css}'",
     "build-bundles-dev": "cross-env NODE_ENV=development CDN=1 yarn vite build --mode dev",
     "build-bundles-min": "cross-env ANALYZE=1 NODE_ENV=production CDN=1 vite build",
     "build-cjs": "tsc",

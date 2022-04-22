@@ -6,6 +6,8 @@
     "composite": true,
     "jsx": "react",
     "target": "ESNext",
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
     "strictPropertyInitialization": false
   },
   "include": ["src"],

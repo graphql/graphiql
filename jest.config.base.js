@@ -22,6 +22,7 @@ module.exports = (dir, env = 'dom') => {
       '\\.(css|less)$': 'identity-obj-proxy',
       '^graphql-language-([^/]+)': `${__dirname}/packages/graphql-language-$1/src`,
       '^@graphiql-plugins\\/([^/]+)': `${__dirname}/plugins/$1/src`,
+      '^codemirror-graphql\\/esm\\/([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
       '^codemirror-graphql\\/([^]+)': `${__dirname}/packages/codemirror-graphql/src/$1`,
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
     },

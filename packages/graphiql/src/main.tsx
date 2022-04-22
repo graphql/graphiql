@@ -26,14 +26,15 @@ import './css/doc-explorer.css';
 import './css/history.css';
 
 // Parse the search string to get url parameters.
-var search = window.location.search;
-var parameters = {};
+const search = window.location.search;
+const parameters = {};
 search
   .substr(1)
   .split('&')
   .forEach(function (entry) {
-    var eq = entry.indexOf('=');
+    const eq = entry.indexOf('=');
     if (eq >= 0) {
+      // @ts-expect-error
       parameters[decodeURIComponent(entry.slice(0, eq))] = decodeURIComponent(
         entry.slice(eq + 1),
       );
@@ -41,9 +42,12 @@ search
   });
 
 // If variables was provided, try to format it.
+// @ts-expect-error
 if (parameters.variables) {
   try {
+    // @ts-expect-error
     parameters.variables = JSON.stringify(
+      // @ts-expect-error
       JSON.parse(parameters.variables),
       null,
       2,
@@ -55,9 +59,12 @@ if (parameters.variables) {
 }
 
 // If headers was provided, try to format it.
+// @ts-expect-error
 if (parameters.headers) {
   try {
+    // @ts-expect-error
     parameters.headers = JSON.stringify(
+      // @ts-expect-error
       JSON.parse(parameters.headers),
       null,
       2,
@@ -70,48 +77,64 @@ if (parameters.headers) {
 
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
+// @ts-expect-error
 function onEditQuery(newQuery) {
+  // @ts-expect-error
   parameters.query = newQuery;
   updateURL();
 }
 
+// @ts-expect-error
 function onEditVariables(newVariables) {
+  // @ts-expect-error
   parameters.variables = newVariables;
   updateURL();
 }
 
+// @ts-expect-error
 function onEditHeaders(newHeaders) {
+  // @ts-expect-error
   parameters.headers = newHeaders;
   updateURL();
 }
 
+// @ts-expect-error
 function onEditOperationName(newOperationName) {
+  // @ts-expect-error
   parameters.operationName = newOperationName;
   updateURL();
 }
 
+// @ts-expect-error
 function onTabChange(tabsState) {
   const activeTab = tabsState.tabs[tabsState.activeTabIndex];
+  // @ts-expect-error
   parameters.query = activeTab.query;
+  // @ts-expect-error
   parameters.variables = activeTab.variables;
+  // @ts-expect-error
   parameters.headers = activeTab.headers;
+  // @ts-expect-error
   parameters.operationName = activeTab.operationName;
   updateURL();
 }
 
 function updateURL() {
-  var newSearch =
+  const newSearch =
     '?' +
     Object.keys(parameters)
       .filter(function (key) {
+        // @ts-expect-error
         return Boolean(parameters[key]);
       })
       .map(function (key) {
         return (
+          // @ts-expect-error
           encodeURIComponent(key) + '=' + encodeURIComponent(parameters[key])
         );
       })
       .join('&');
+  // @ts-expect-error
   history.replaceState(null, null, newSearch);
 }
 
@@ -120,6 +143,7 @@ function getSchemaUrl() {
 
   if (isDev) {
     // This supports an e2e test which ensures that invalid schemas do not load.
+    // @ts-expect-error
     if (parameters.bad && parameters.bad === 'true') {
       return '/bad/graphql';
     } else {
@@ -135,24 +159,29 @@ function getSchemaUrl() {
 // additional child elements.
 ReactDOM.render(
   React.createElement(GraphiQL, {
+    // @ts-expect-error
     fetcher: GraphiQL.createFetcher({
       url: getSchemaUrl(),
       subscriptionUrl: 'ws://localhost:8081/subscriptions',
     }),
+    // @ts-expect-error
     query: parameters.query,
+    // @ts-expect-error
     variables: parameters.variables,
+    // @ts-expect-error
     headers: parameters.headers,
+    // @ts-expect-error
     operationName: parameters.operationName,
-    onEditQuery: onEditQuery,
-    onEditVariables: onEditVariables,
-    onEditHeaders: onEditHeaders,
+    onEditQuery,
+    onEditVariables,
+    onEditHeaders,
     defaultSecondaryEditorOpen: true,
-    onEditOperationName: onEditOperationName,
+    onEditOperationName,
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: true,
     tabs: {
-      onTabChange: onTabChange,
+      onTabChange,
     },
   }),
   document.getElementById('graphiql'),
