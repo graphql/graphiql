@@ -1,7 +1,7 @@
 const { build } = require('esbuild');
 const [, , arg] = process.argv;
 
-const logger = console.log;
+const logger = console;
 
 build({
   entryPoints: ['src/extension.ts', 'src/server/index.ts'],
