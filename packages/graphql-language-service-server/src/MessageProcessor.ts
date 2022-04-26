@@ -690,12 +690,13 @@ export class MessageProcessor {
     }
 
     const inlineFragments: string[] = [];
-
-    visit(parse(query), {
-      FragmentDefinition: (node: FragmentDefinitionNode) => {
-        inlineFragments.push(node.name.value);
-      },
-    });
+    try {
+      visit(parse(query), {
+        FragmentDefinition: (node: FragmentDefinitionNode) => {
+          inlineFragments.push(node.name.value);
+        },
+      });
+    } catch {}
 
     const formatted = result
       ? result.definitions.map(res => {
