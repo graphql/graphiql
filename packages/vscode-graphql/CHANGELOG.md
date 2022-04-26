@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service-server@2.7.21
+
 ## 0.4.3
 
 ### Patch Changes
