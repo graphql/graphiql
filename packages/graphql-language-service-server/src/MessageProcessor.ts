@@ -301,7 +301,13 @@ export class MessageProcessor {
         contents = cachedDocument.contents;
       }
     }
-    if (this._isInitialized && this._graphQLCache) {
+    const project = this._graphQLCache.getProjectForFile(uri);
+
+    if (
+      this._isInitialized &&
+      this._graphQLCache &&
+      project.extensions?.languageService?.enableValidation !== false
+    ) {
       await Promise.all(
         contents.map(async ({ query, range }) => {
           const results = await this._languageService.getDiagnostics(
@@ -316,7 +322,6 @@ export class MessageProcessor {
           }
         }),
       );
-      const project = this._graphQLCache.getProjectForFile(uri);
 
       this._logger.log(
         JSON.stringify({
@@ -375,22 +380,26 @@ export class MessageProcessor {
     await this._updateFragmentDefinition(uri, contents);
     await this._updateObjectTypeDefinition(uri, contents);
 
-    // Send the diagnostics onChange as well
-    const diagnostics: Diagnostic[] = [];
-    await Promise.all(
-      contents.map(async ({ query, range }) => {
-        const results = await this._languageService.getDiagnostics(
-          query,
-          uri,
-          this._isRelayCompatMode(query),
-        );
-        if (results && results.length > 0) {
-          diagnostics.push(...processDiagnosticsMessage(results, query, range));
-        }
-      }),
-    );
-
     const project = this._graphQLCache.getProjectForFile(uri);
+    const diagnostics: Diagnostic[] = [];
+
+    if (project.extensions?.languageService?.enableValidation !== false) {
+      // Send the diagnostics onChange as well
+      await Promise.all(
+        contents.map(async ({ query, range }) => {
+          const results = await this._languageService.getDiagnostics(
+            query,
+            uri,
+            this._isRelayCompatMode(query),
+          );
+          if (results && results.length > 0) {
+            diagnostics.push(
+              ...processDiagnosticsMessage(results, query, range),
+            );
+          }
+        }),
+      );
+    }
 
     this._logger.log(
       JSON.stringify({
@@ -593,24 +602,27 @@ export class MessageProcessor {
           await this._updateFragmentDefinition(uri, contents);
           await this._updateObjectTypeDefinition(uri, contents);
 
-          const diagnostics = (
-            await Promise.all(
-              contents.map(async ({ query, range }) => {
-                const results = await this._languageService.getDiagnostics(
-                  query,
-                  uri,
-                  this._isRelayCompatMode(query),
-                );
-                if (results && results.length > 0) {
-                  return processDiagnosticsMessage(results, query, range);
-                } else {
-                  return [];
-                }
-              }),
-            )
-          ).reduce((left, right) => left.concat(right), []);
-
           const project = this._graphQLCache.getProjectForFile(uri);
+          let diagnostics: Diagnostic[] = [];
+
+          if (project.extensions?.languageService?.enableValidation !== false) {
+            diagnostics = (
+              await Promise.all(
+                contents.map(async ({ query, range }) => {
+                  const results = await this._languageService.getDiagnostics(
+                    query,
+                    uri,
+                    this._isRelayCompatMode(query),
+                  );
+                  if (results && results.length > 0) {
+                    return processDiagnosticsMessage(results, query, range);
+                  } else {
+                    return [];
+                  }
+                }),
+              )
+            ).reduce((left, right) => left.concat(right), diagnostics);
+          }
 
           this._logger.log(
             JSON.stringify({
@@ -620,7 +632,6 @@ export class MessageProcessor {
               fileName: uri,
             }),
           );
-
           return { uri, diagnostics };
         } else if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
