@@ -29,5 +29,9 @@ module.exports = {
       compact: false,
     },
   },
-  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
+  plugins: [
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
+    require.resolve('@babel/plugin-proposal-optional-chaining'),
+  ],
 };
