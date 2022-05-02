@@ -95,7 +95,7 @@ describe('GraphQLLanguageService', () => {
 
   it('avoids reporting validation errors when not enough characters are present', async () => {
     const diagnostics = await languageService.getDiagnostics(
-      ' \n   \n typ\n\n',
+      ' \n   \n  \n\n',
       './queries/testQuery.graphql',
     );
     expect(diagnostics.length).toEqual(0);

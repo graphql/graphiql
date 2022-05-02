@@ -60,7 +60,7 @@ export class GraphQLWorker {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
-      if (!document || document.trim().length < 4) {
+      if (!document) {
         return [];
       }
       const graphQLPosition = toGraphQLPosition(position);
