@@ -123,7 +123,7 @@ export class GraphQLLanguageService {
     let documentHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
     // skip validation when there's nothing to validate, prevents noisy unexpected EOF errors
-    if (!projectConfig || !document || document.trim().length < 4) {
+    if (!projectConfig || !document || document.trim().length < 2) {
       return [];
     }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
