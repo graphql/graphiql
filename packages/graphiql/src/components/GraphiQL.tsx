@@ -1338,9 +1338,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   private async _fetchQuery(
     query: string,
-    variables: string,
-    headers: string,
-    operationName: string,
+    variables: string | undefined,
+    headers: string | undefined,
+    operationName: string | undefined,
     shouldPersistHeaders: boolean,
     cb: (value: FetcherResult) => any,
   ): Promise<null | Unsubscribable> {
@@ -1493,7 +1493,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query;
+    const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
     const variables = this.state.variables;
     const headers = this.state.headers;
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
@@ -1537,11 +1537,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
-        editedQuery as string,
-        variables as string,
-        headers as string,
-        operationName as string,
-        shouldPersistHeaders as boolean,
+        editedQuery,
+        variables,
+        headers,
+        operationName,
+        shouldPersistHeaders,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             let maybeMultipart = Array.isArray(result) ? result : false;
