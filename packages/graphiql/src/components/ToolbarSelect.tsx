@@ -5,12 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 
 type ToolbarSelectProps = {
   title?: string;
   label?: string;
   onSelect?: (selection: string) => void;
+  children?: ReactNode;
 };
 
 type ToolbarSelectState = {

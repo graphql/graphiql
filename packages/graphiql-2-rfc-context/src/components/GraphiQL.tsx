@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ComponentType, PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import type { SchemaConfig } from 'graphql-language-service';
@@ -94,6 +94,7 @@ export type GraphiQLProps = {
   variablesEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   operationEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   resultsEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  children?: ReactNode;
 } & Partial<Formatters>;
 
 export type GraphiQLState = {
