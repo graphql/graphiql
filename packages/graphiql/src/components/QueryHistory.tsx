@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { QueryStoreItem } from '../utility/QueryStore';
 import HistoryQuery, {
   HandleEditLabelFn,
@@ -24,6 +24,7 @@ type QueryHistoryProps = {
   onSelectQuery: HandleSelectQueryFn;
   storage: StorageAPI;
   maxHistoryLength: number;
+  children?: ReactNode;
 };
 
 type QueryHistoryState = {

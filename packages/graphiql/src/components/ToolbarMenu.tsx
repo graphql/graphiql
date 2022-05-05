@@ -5,11 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { FC, MouseEventHandler } from 'react';
+import React, { FC, MouseEventHandler, ReactNode } from 'react';
 
 type ToolbarMenuProps = {
   title: string;
   label: string;
+  children?: ReactNode;
 };
 
 type ToolbarMenuState = {

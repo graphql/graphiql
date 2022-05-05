@@ -11,6 +11,7 @@ import React, {
   MouseEventHandler,
   Component,
   FunctionComponent,
+  ReactNode,
 } from 'react';
 import {
   buildClientSchema,
@@ -309,6 +310,8 @@ export type GraphiQLProps = {
          */
         onTabChange?: (tab: TabsState) => void;
       };
+
+  children?: ReactNode;
 };
 
 export type GraphiQLState = {

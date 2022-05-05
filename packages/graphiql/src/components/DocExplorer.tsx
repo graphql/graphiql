@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { GraphQLSchema, isType, GraphQLNamedType, GraphQLError } from 'graphql';
 import { FieldType } from './DocExplorer/types';
 
@@ -30,6 +30,7 @@ const initialNav: NavStackItem = {
 type DocExplorerProps = {
   schema?: GraphQLSchema | null;
   schemaErrors?: readonly GraphQLError[];
+  children?: ReactNode;
 };
 
 type DocExplorerState = {
