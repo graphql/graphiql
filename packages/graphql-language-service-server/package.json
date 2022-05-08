@@ -36,6 +36,7 @@
   "dependencies": {
     "@babel/types": "^7.17.0",
     "@babel/parser": "^7.17.3",
+    "@vue/compiler-sfc": "^3.2.33",
     "dotenv": "8.2.0",
     "graphql-config": "^4.3.0",
     "graphql-language-service": "^5.0.6",

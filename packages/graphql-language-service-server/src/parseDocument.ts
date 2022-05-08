@@ -15,6 +15,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.ts',
   '.jsx',
   '.tsx',
+  '.vue',
 ];
 
 /**
