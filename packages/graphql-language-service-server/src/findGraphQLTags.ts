@@ -16,6 +16,7 @@ import {
 import { Position, Range } from 'graphql-language-service';
 
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
+import * as VueParser from '@vue/compiler-sfc';
 import { Logger } from './Logger';
 
 // Attempt to be as inclusive as possible of source text.
@@ -62,6 +63,37 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'logicalAssignment',
 ];
 
+function parseVueSFC(
+  source: string,
+):
+  | { type: 'error'; errors: Error[] }
+  | {
+      type: 'ok';
+      scriptSetupAst?: import('@babel/types').Statement[];
+      scriptAst?: import('@babel/types').Statement[];
+    } {
+  const { errors, descriptor } = VueParser.parse(source);
+
+  if (errors.length !== 0) {
+    return { type: 'error', errors };
+  }
+
+  console.log(descriptor.script?.scriptAst);
+
+  let scriptBlock: VueParser.SFCScriptBlock | null = null;
+  try {
+    scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
+  } catch (error) {
+    return { type: 'error', errors: [error as Error] };
+  }
+
+  return {
+    type: 'ok',
+    scriptSetupAst: scriptBlock?.scriptSetupAst,
+    scriptAst: scriptBlock?.scriptAst,
+  };
+}
+
 export function findGraphQLTags(
   text: string,
   ext: string,
@@ -72,26 +104,50 @@ export function findGraphQLTags(
 
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
-  const isTypeScript = ext === '.ts' || ext === '.tsx';
-  if (isTypeScript) {
-    plugins?.push('typescript');
-  } else {
-    plugins?.push('flow', 'flowComments');
-  }
-  PARSER_OPTIONS.plugins = plugins;
+  const isVue = ext === '.vue';
 
-  let parsedAST: ReturnType<typeof parse> | undefined = undefined;
-  try {
-    parsedAST = parse(text, PARSER_OPTIONS);
-  } catch (error) {
-    const type = isTypeScript ? 'TypeScript' : 'JavaScript';
-    logger.error(
-      `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
-    );
-    logger.error(String(error));
-    return [];
+  let parsedASTs: { [key: string]: any }[] = [];
+
+  if (isVue) {
+    const result = parseVueSFC(text);
+    if (result.type === 'error') {
+      logger.error(
+        `Could not parse the Vue file at ${uri} to extract the graphql tags:`,
+      );
+      for (const error of result.errors) {
+        logger.error(String(error));
+      }
+      return [];
+    }
+
+    if (result.scriptAst !== undefined) {
+      parsedASTs.push(...result.scriptAst);
+    }
+    if (result.scriptSetupAst !== undefined) {
+      parsedASTs.push(...result.scriptSetupAst);
+    }
+  } else {
+    const isTypeScript = ext === '.ts' || ext === '.tsx';
+    if (isTypeScript) {
+      plugins?.push('typescript');
+    } else {
+      plugins?.push('flow', 'flowComments');
+    }
+    PARSER_OPTIONS.plugins = plugins;
+
+    try {
+      parsedASTs = [parse(text, PARSER_OPTIONS)];
+    } catch (error) {
+      const type = isTypeScript ? 'TypeScript' : 'JavaScript';
+      logger.error(
+        `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
+      );
+      logger.error(String(error));
+      return [];
+    }
   }
-  const ast = parsedAST!;
+
+  const asts = parsedASTs!;
 
   const parseTemplateLiteral = (node: TemplateLiteral) => {
     const loc = node.quasis[0].loc;
@@ -180,7 +236,9 @@ export function findGraphQLTags(
       }
     },
   };
-  visit(ast, visitors);
+  for (const ast of asts) {
+    visit(ast, visitors);
+  }
 
   return result;
 }
