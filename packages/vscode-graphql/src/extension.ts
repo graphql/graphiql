@@ -56,6 +56,7 @@ export async function activate(context: ExtensionContext) {
       { scheme: 'file', language: 'javascriptreact' },
       { scheme: 'file', language: 'typescript' },
       { scheme: 'file', language: 'typescriptreact' },
+      { scheme: 'file', language: 'vue' },
     ],
     synchronize: {
       // TODO: This should include any referenced graphql files inside the graphql-config
@@ -73,7 +74,7 @@ export async function activate(context: ExtensionContext) {
         // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
-          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx}',
+          '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx,*.vue}',
         ),
       ],
     },
