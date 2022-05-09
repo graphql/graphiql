@@ -1,5 +1,18 @@
 # Change Log
 
+## 1.8.9
+
+### Patch Changes
+
+- [#2387](https://github.com/graphql/graphiql/pull/2387) [`e823697b`](https://github.com/graphql/graphiql/commit/e823697b5d47565671d5919be84f69919e70977f) Thanks [@benjie](https://github.com/benjie)! - Add 'children' type definition to various component props
+
+* [#2388](https://github.com/graphql/graphiql/pull/2388) [`d3ae074c`](https://github.com/graphql/graphiql/commit/d3ae074c9b9dae6ed4f69b0a79efaa0353dcea2d) Thanks [@benjie](https://github.com/benjie)! - Add 'pointer-events: none' to SVG style for dropdown arrow in GraphiQL.Menu component
+
+- [#2373](https://github.com/graphql/graphiql/pull/2373) [`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597) Thanks [@benjie](https://github.com/benjie)! - Fix TypeScript definition of FetcherParams to reflect that operationName is optional
+
+- Updated dependencies [[`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597)]:
+  - @graphiql/toolkit@0.4.4
+
 ## 1.8.8
 
 ### Patch Changes
