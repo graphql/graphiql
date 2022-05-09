@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.4.6
+
+### Patch Changes
+
+- [#2395](https://github.com/graphql/graphiql/pull/2395) [`f7f1e900`](https://github.com/graphql/graphiql/commit/f7f1e9001ba773bdccb29e513a188384cd805834) Thanks [@acao](https://github.com/acao)! - Release `vscode-graphql` changes since publishing was broken
+
 ## 0.4.5
 
 ### Patch Changes

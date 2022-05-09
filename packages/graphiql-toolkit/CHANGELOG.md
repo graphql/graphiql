@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.4.4
+
+### Patch Changes
+
+- [#2373](https://github.com/graphql/graphiql/pull/2373) [`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597) Thanks [@benjie](https://github.com/benjie)! - Fix TypeScript definition of FetcherParams to reflect that operationName is optional
+
 ## 0.4.3
 
 ### Patch Changes
