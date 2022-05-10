@@ -50,7 +50,7 @@ export const DocExplorer = memo(
       push({ name: field.name, def: field });
     }
 
-    let content;
+    let content: ReactNode;
     if (schemaErrors) {
       content = <div className="error-container">Error fetching schema</div>;
     } else if (schema === undefined) {
