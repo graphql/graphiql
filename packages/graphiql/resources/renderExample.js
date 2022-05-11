@@ -135,7 +135,7 @@ ReactDOM.render(
     onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
-    inputValueDeprecation: true,
+    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     tabs: {
       onTabChange: onTabChange,
     },

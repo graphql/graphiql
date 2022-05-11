@@ -22,15 +22,14 @@ export const WithFlexChild = () => (
     <List>
       <ListRow padding>
         <div>
-          {
-            'Lists are a vertical stack of components and form the basis of most modules. This one is very long'
-          }
+          Lists are a vertical stack of components and form the basis of most
+          modules. This one is very long
         </div>
       </ListRow>
       <ListRow padding flex>
-        {'You normally want 1 flex area that grows forever like this one'}
+        You normally want 1 flex area that grows forever like this one
         {longText}
-        {'the end'}
+        the end
       </ListRow>
     </List>
   </div>
@@ -39,17 +38,17 @@ export const WithFlexChild = () => (
 export const WithStackedRows = () => (
   <div style={{ height: '100vh', display: 'grid' }}>
     <List>
-      <ListRow padding>{'Title'}</ListRow>
-      <ListRow padding>{'Navigation'}</ListRow>
-      <ListRow padding>{'Search'}</ListRow>
-      <ListRow padding>{'Filter'}</ListRow>
+      <ListRow padding>Title</ListRow>
+      <ListRow padding>Navigation</ListRow>
+      <ListRow padding>Search</ListRow>
+      <ListRow padding>Filter</ListRow>
       <ListRow padding flex>
-        {'Actual content'}
+        Actual content
         {longText}
-        {'Actual content ends here'}
+        Actual content ends here
       </ListRow>
-      <ListRow padding>{'Footer'}</ListRow>
-      <ListRow padding>{'Footers footer'}</ListRow>
+      <ListRow padding>Footer</ListRow>
+      <ListRow padding>Footers footer</ListRow>
     </List>
   </div>
 );

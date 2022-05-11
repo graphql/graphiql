@@ -22,7 +22,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   if (field && 'args' in field && field.args.length > 0) {
     argsDef = (
       <div className="doc-category">
-        <div className="doc-category-title">{'arguments'}</div>
+        <div className="doc-category-title">arguments</div>
         {field.args.map((arg: GraphQLArgument) => (
           <div key={arg.name} className="doc-category-item">
             <div>
@@ -51,7 +51,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
         />
       )}
       <div className="doc-category">
-        <div className="doc-category-title">{'type'}</div>
+        <div className="doc-category-title">type</div>
         <TypeLink type={field?.type} onClick={onClickType} />
       </div>
       {argsDef}

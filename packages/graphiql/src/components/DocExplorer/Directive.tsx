@@ -15,8 +15,7 @@ type DirectiveProps = {
 export default function Directive({ directive }: DirectiveProps) {
   return (
     <span className="doc-category-item" id={directive.name.value}>
-      {'@'}
-      {directive.name.value}
+      @{directive.name.value}
     </span>
   );
 }

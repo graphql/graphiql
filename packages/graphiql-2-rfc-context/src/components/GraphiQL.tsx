@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ComponentType, PropsWithChildren } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import { GraphQLSchema, OperationDefinitionNode, GraphQLType } from 'graphql';
 
 import type { SchemaConfig } from 'graphql-language-service';
@@ -94,6 +94,7 @@ export type GraphiQLProps = {
   variablesEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   operationEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
   resultsEditorOptions?: monaco.editor.IStandaloneEditorConstructionOptions;
+  children?: ReactNode;
 } & Partial<Formatters>;
 
 export type GraphiQLState = {
@@ -208,6 +209,7 @@ class GraphiQLInternals extends React.Component<
 
     global.g = this;
   }
+
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
 
@@ -264,7 +266,7 @@ class GraphiQLInternals extends React.Component<
       //   onMouseDown={this.handleResizeStart}>
       //   <div className="queryWrap" style={queryWrapStyle}>
       <section aria-label="Operation Editor">
-        <SessionTabs tabs={[`Operation`, `Explorer`]} name={`operation`}>
+        <SessionTabs tabs={[`Operation`, `Explorer`]} name="operation">
           <QueryEditor
             onHintInformationRender={this.handleHintInformationRender}
             onClickReference={this.handleClickReference}
@@ -272,14 +274,14 @@ class GraphiQLInternals extends React.Component<
             readOnly={this.props.readOnly}
             editorOptions={this.props.operationEditorOptions}
           />
-          <div>{`Explorer`}</div>
+          <div>Explorer</div>
         </SessionTabs>
       </section>
     );
 
     const variables = (
       <section aria-label="Query Variables">
-        <SessionTabs tabs={[`Variables`, `Console`]} name={`variables`}>
+        <SessionTabs tabs={[`Variables`, `Console`]} name="variables">
           <VariableEditor
             onHintInformationRender={this.handleHintInformationRender}
             onPrettifyQuery={this.handlePrettifyQuery}
@@ -288,7 +290,7 @@ class GraphiQLInternals extends React.Component<
             readOnly={this.props.readOnly}
             editorOptions={this.props.variablesEditorOptions}
           />
-          <div>{`Console`}</div>
+          <div>Console</div>
         </SessionTabs>
       </section>
     );
@@ -297,7 +299,7 @@ class GraphiQLInternals extends React.Component<
       <section aria-label="Response Editor">
         <SessionTabs
           tabs={[`Response`, `Extensions`, `Playground`]}
-          name={`results`}>
+          name="results">
           <>
             {this.state.isWaitingForResponse && (
               <div className="spinner-container">
@@ -310,8 +312,8 @@ class GraphiQLInternals extends React.Component<
             />
             {footer}
           </>
-          <div>{`Extensions`}</div>
-          <div>{`Playground`}</div>
+          <div>Extensions</div>
+          <div>Playground</div>
         </SessionTabs>
       </section>
     );
@@ -320,40 +322,38 @@ class GraphiQLInternals extends React.Component<
       <Provider>
         <Layout
           nav={
-            <>
-              <GraphiQLToolbar>
-                {logo}
-                <ExecuteButton
-                  isRunning={Boolean(this.state.subscription)}
-                  onStop={() => null}
-                />
-                <ToolbarButton
-                  onClick={this.handlePrettifyQuery}
-                  title="Prettify Query (Shift-Ctrl-P)"
-                  label="Prettify"
-                />
-                <ToolbarButton
-                  onClick={this.handleMergeQuery}
-                  title="Merge Query (Shift-Ctrl-M)"
-                  label="Merge"
-                />
-                <ToolbarButton
-                  onClick={this.handleCopyQuery}
-                  title="Copy Query (Shift-Ctrl-C)"
-                  label="Copy"
-                />
-                <ToolbarButton
-                  onClick={() => null}
-                  title="Show History"
-                  label="History"
-                />
-                <ToolbarButton
-                  onClick={() => null}
-                  title="Open Documentation Explorer"
-                  label="Docs"
-                />
-              </GraphiQLToolbar>
-            </>
+            <GraphiQLToolbar>
+              {logo}
+              <ExecuteButton
+                isRunning={Boolean(this.state.subscription)}
+                onStop={() => null}
+              />
+              <ToolbarButton
+                onClick={this.handlePrettifyQuery}
+                title="Prettify Query (Shift-Ctrl-P)"
+                label="Prettify"
+              />
+              <ToolbarButton
+                onClick={this.handleMergeQuery}
+                title="Merge Query (Shift-Ctrl-M)"
+                label="Merge"
+              />
+              <ToolbarButton
+                onClick={this.handleCopyQuery}
+                title="Copy Query (Shift-Ctrl-C)"
+                label="Copy"
+              />
+              <ToolbarButton
+                onClick={() => null}
+                title="Show History"
+                label="History"
+              />
+              <ToolbarButton
+                onClick={() => null}
+                title="Open Documentation Explorer"
+                label="Docs"
+              />
+            </GraphiQLToolbar>
           }
           session={{
             input: operationEditor,
@@ -746,14 +746,15 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     <div className="title">
       {props.children || (
         <span>
-          {'Graph'}
-          <em>{'i'}</em>
-          {'QL'}
+          Graph
+          <em>i</em>
+          QL
         </span>
       )}
     </div>
   );
 }
+
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL
@@ -764,12 +765,14 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
+
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 const formatSingleError = (error: Error) => ({

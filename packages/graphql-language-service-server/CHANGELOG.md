@@ -1,5 +1,41 @@
 # graphql-language-service-server
 
+## 2.7.22
+
+### Patch Changes
+
+- [#2385](https://github.com/graphql/graphiql/pull/2385) [`6db28447`](https://github.com/graphql/graphiql/commit/6db284479a14873fea3e359efd71be0b15ab3ee8) Thanks [@acao](https://github.com/acao)! - Stop reporting unnecessary EOF errors when authoring new queries
+
+* [#2382](https://github.com/graphql/graphiql/pull/2382) [`1bea864d`](https://github.com/graphql/graphiql/commit/1bea864d05dee04bb20c06dc3c3d68675b87a50a) Thanks [@acao](https://github.com/acao)! - allow disabling query/SDL validation with `graphql-config` setting `{ extensions: { languageService: { enableValidation: false } } }`.
+
+  Currently, users receive duplicate validation messages when using our LSP alongside existing validation tools like `graphql-eslint`, and this allows them to disable the LSP feature in that case.
+
+## 2.7.21
+
+### Patch Changes
+
+- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plauging users for two years now, sorry!
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service@5.0.4
+
+## 2.7.20
+
+### Patch Changes
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+
+## 2.7.19
+
+### Patch Changes
+
+- [`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f) Thanks [@acao](https://github.com/acao)! - - upgrade `graphql-config` to latest in server
+  - remove `graphql-config` dependency from `vscode-graphql` and `graphql-language-service`
+  - fix `vscode-graphql` esbuild bundling bug in `vscode-graphql` [#2269](https://github.com/graphql/graphiql/issues/2269) by fixing `esbuild` version
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+
 ## 2.7.18
 
 ### Patch Changes

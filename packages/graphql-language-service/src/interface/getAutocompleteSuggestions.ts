@@ -79,11 +79,15 @@ export const SuggestionCommand = {
 const collectFragmentDefs = (op: string | undefined) => {
   const externalFragments: FragmentDefinitionNode[] = [];
   if (op) {
-    visit(parse(op), {
-      FragmentDefinition(def) {
-        externalFragments.push(def);
-      },
-    });
+    try {
+      visit(parse(op), {
+        FragmentDefinition(def) {
+          externalFragments.push(def);
+        },
+      });
+    } catch {
+      return [];
+    }
   }
   return externalFragments;
 };

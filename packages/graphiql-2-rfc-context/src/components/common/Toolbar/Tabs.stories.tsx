@@ -33,9 +33,9 @@ export const Tabbar = () => (
   <List>
     <ListRow>
       <ManagedTabs tabs={['One', 'Two', 'Three']}>
-        <p>{'One'}</p>
-        <p>{'Two'}</p>
-        <p>{'Three'}</p>
+        <p>One</p>
+        <p>Two</p>
+        <p>Three</p>
       </ManagedTabs>
     </ListRow>
     <ListRow>
@@ -46,20 +46,20 @@ export const Tabbar = () => (
           'nested',
           <>
             {'Component '}
-            <small style={{ background: 'yellow', padding: 3 }}>{'2'}</small>
+            <small style={{ background: 'yellow', padding: 3 }}>2</small>
           </>,
         ]}>
-        <p>{'With'}</p>
-        <p>{'a'}</p>
-        <p>{'nested'}</p>
-        <p>{'component'}</p>
+        <p>With</p>
+        <p>a</p>
+        <p>nested</p>
+        <p>component</p>
       </ManagedTabs>
     </ListRow>
     <ListRow flex>
       <div style={{ height: '100px', display: 'grid' }}>
         <ManagedTabs tabs={['Very tall', 'tabs']}>
-          <p>{'a'}</p>
-          <p>{'b'}</p>
+          <p>a</p>
+          <p>b</p>
         </ManagedTabs>
       </div>
     </ListRow>

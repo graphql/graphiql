@@ -1,4 +1,4 @@
-name: Build & Test PR w/ GraphQL 15
+name: Build & Test PR w/ GraphQL Regressions
 on:
   pull_request:
     types: [opened, synchronize]
@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        release: ['15.5.3', '^15.8.0', '16.1.0', '16.2.0', '16.3.0']
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -17,7 +20,7 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Force GraphQL 15 resolution
-        run: yarn repo:resolve graphql@15 
+        run: yarn repo:resolve graphql@${{ matrix.release }}
 
       - name: Yarn Install
         uses: bahmutov/npm-install@v1  

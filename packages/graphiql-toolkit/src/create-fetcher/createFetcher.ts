@@ -49,7 +49,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     }
     const isSubscription = isSubscriptionWithName(
       fetcherOpts?.documentAST!,
-      graphQLParams.operationName,
+      graphQLParams.operationName || undefined,
     );
     if (isSubscription) {
       if (!wsFetcher) {

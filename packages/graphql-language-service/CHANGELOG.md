@@ -1,5 +1,25 @@
 # graphql-language-service
 
+## 5.0.4
+
+### Patch Changes
+
+- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plauging users for two years now, sorry!
+
+## 5.0.3
+
+### Patch Changes
+
+- [#2291](https://github.com/graphql/graphiql/pull/2291) [`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - Target es6 for the languages services
+
+## 5.0.2
+
+### Patch Changes
+
+- [`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f) Thanks [@acao](https://github.com/acao)! - - upgrade `graphql-config` to latest in server
+  - remove `graphql-config` dependency from `vscode-graphql` and `graphql-language-service`
+  - fix `vscode-graphql` esbuild bundling bug in `vscode-graphql` [#2269](https://github.com/graphql/graphiql/issues/2269) by fixing `esbuild` version
+
 ## 5.0.1
 
 ### Patch Changes

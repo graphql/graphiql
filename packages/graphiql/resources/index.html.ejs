@@ -27,8 +27,14 @@
       If you do not want to rely on a CDN, you can host these files locally or
       include them directly in your favored resource bunder.
     -->
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
 
     <!--
       These two files can be found in the npm module, however you may wish to
@@ -38,6 +44,13 @@
   </head>
   <body>
     <div id="graphiql">Loading...</div>
-    <script defer src="/resources/renderExample.js" type="application/javascript"></script>
+    <script type="application/javascript">
+      window.GraphQLVersion = <%= htmlWebpackPlugin.options.graphqlVersion %>
+    </script>
+    <script
+      defer
+      src="/resources/renderExample.js"
+      type="application/javascript"
+    ></script>
   </body>
 </html>

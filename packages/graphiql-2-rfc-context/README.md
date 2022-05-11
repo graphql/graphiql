@@ -2,13 +2,13 @@
 
 # GraphiQL 2.x - React Context RFC Proposal
 
-This effort was merge to master in spring of 2020, and then moved to this workspace for the time being until we address some of the issues
+This effort was merged to master in spring of 2020, and then moved to this workspace for the time being until we address some of the issues
 
 ## Features
 
 - hooks rewrite for react 16. _gets rid of deprecated methods_
 - swap out codemirror for monaco
-- partial re-themeing with new component library and a customizeable`theme-ui`
+- partial re-theming with new component library and a customizable `theme-ui`
 - context implementation
 - i18n using `i18n-next`
 

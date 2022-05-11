@@ -114,23 +114,24 @@ export class GraphQLLanguageService {
   }
 
   public async getDiagnostics(
-    query: string,
+    document: string,
     uri: Uri,
     isRelayCompatMode?: boolean,
   ): Promise<Array<Diagnostic>> {
     // Perform syntax diagnostics first, as this doesn't require
     // schema/fragment definitions, even the project configuration.
-    let queryHasExtensions = false;
+    let documentHasExtensions = false;
     const projectConfig = this.getConfigForURI(uri);
-    if (!projectConfig) {
+    // skip validation when there's nothing to validate, prevents noisy unexpected EOF errors
+    if (!projectConfig || !document || document.trim().length < 2) {
       return [];
     }
     const { schema: schemaPath, name: projectName, extensions } = projectConfig;
 
     try {
-      const queryAST = parse(query);
+      const documentAST = parse(document);
       if (!schemaPath || uri !== schemaPath) {
-        queryHasExtensions = queryAST.definitions.some(definition => {
+        documentHasExtensions = documentAST.definitions.some(definition => {
           switch (definition.kind) {
             case OBJECT_TYPE_DEFINITION:
             case INTERFACE_TYPE_DEFINITION:
@@ -152,7 +153,7 @@ export class GraphQLLanguageService {
         });
       }
     } catch (error) {
-      const range = getRange(error.locations[0], query);
+      const range = getRange(error.locations[0], document);
       return [
         {
           severity: DIAGNOSTIC_SEVERITY.Error,
@@ -164,13 +165,13 @@ export class GraphQLLanguageService {
     }
 
     // If there's a matching config, proceed to prepare to run validation
-    let source = query;
+    let source = document;
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
       projectConfig,
     );
 
     const fragmentDependencies = await this._graphQLCache.getFragmentDependencies(
-      query,
+      document,
       fragmentDefinitions,
     );
 
@@ -204,7 +205,7 @@ export class GraphQLLanguageService {
     }
     const schema = await this._graphQLCache.getSchema(
       projectName,
-      queryHasExtensions,
+      documentHasExtensions,
     );
 
     if (!schema) {

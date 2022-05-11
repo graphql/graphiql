@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import { startServer } from 'graphql-language-service-server';
 
 // The npm scripts are configured to only build this once before

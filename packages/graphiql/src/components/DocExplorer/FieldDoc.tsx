@@ -25,7 +25,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   if (field && 'args' in field && field.args.length > 0) {
     argsDef = (
       <div id="doc-args" className="doc-category">
-        <div className="doc-category-title">{'arguments'}</div>
+        <div className="doc-category-title">arguments</div>
         {field.args
           .filter(arg => !arg.deprecationReason)
           .map((arg: GraphQLArgument) => (
@@ -53,12 +53,12 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     if (deprecatedArgs.length > 0) {
       deprecatedArgsDef = (
         <div id="doc-deprecated-args" className="doc-category">
-          <div className="doc-category-title">{'deprecated arguments'}</div>
+          <div className="doc-category-title">deprecated arguments</div>
           {!showDeprecated ? (
             <button
               className="show-btn"
               onClick={() => handleShowDeprecated(!showDeprecated)}>
-              {'Show deprecated arguments...'}
+              Show deprecated arguments...
             </button>
           ) : (
             deprecatedArgs.map((arg, i) => (
@@ -93,7 +93,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   ) {
     directivesDef = (
       <div id="doc-directives" className="doc-category">
-        <div className="doc-category-title">{'directives'}</div>
+        <div className="doc-category-title">directives</div>
         {field.astNode.directives.map((directive: DirectiveNode) => (
           <div key={directive.name.value} className="doc-category-item">
             <div>
@@ -118,7 +118,7 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
         />
       )}
       <div className="doc-category">
-        <div className="doc-category-title">{'type'}</div>
+        <div className="doc-category-title">type</div>
         <TypeLink type={field?.type} onClick={onClickType} />
       </div>
       {argsDef}

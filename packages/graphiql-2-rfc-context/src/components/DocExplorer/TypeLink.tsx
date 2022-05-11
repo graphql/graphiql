@@ -28,21 +28,10 @@ export default function TypeLink(props: TypeLinkProps) {
 
 function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
   if (type instanceof GraphQLNonNull) {
-    return (
-      <span>
-        {renderType(type.ofType, onClick)}
-        {'!'}
-      </span>
-    );
+    return <span>{renderType(type.ofType, onClick)}!</span>;
   }
   if (type instanceof GraphQLList) {
-    return (
-      <span>
-        {'['}
-        {renderType(type.ofType, onClick)}
-        {']'}
-      </span>
-    );
+    return <span>[{renderType(type.ofType, onClick)}]</span>;
   }
   return (
     <a

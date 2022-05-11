@@ -34,10 +34,10 @@ module.exports = {
   },
 
   extends: [
-    'prettier',
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
 
   globals: {
@@ -276,11 +276,11 @@ module.exports = {
 
     // react rules
     'react/no-unused-state': 'error',
+    'react/jsx-curly-brace-presence': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
     'react/jsx-key': 'error',
     'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-no-literals': 'error',
     'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': 'error',
     'react/jsx-uses-react': 'error',
@@ -297,6 +297,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
     'react/display-name': 'warn',
+    'react/jsx-no-useless-fragment': 'error',
     // Jest rules
     'jest/no-conditional-expect': 0,
   },

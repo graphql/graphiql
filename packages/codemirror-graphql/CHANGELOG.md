@@ -1,5 +1,30 @@
 # Change Log
 
+## 1.3.0
+
+### Minor Changes
+
+- [#2369](https://github.com/graphql/graphiql/pull/2369) [`2dec55f2`](https://github.com/graphql/graphiql/commit/2dec55f2c5e979cc7bb1adadff4fb063775b088c) Thanks [@sergeichestakov](https://github.com/sergeichestakov)! - Moved @codemirror/language to peer dependencies and upgraded to 0.20.0
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service@5.0.4
+
+## 1.2.17
+
+### Patch Changes
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+
+## 1.2.16
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+
 ## 1.2.15
 
 ### Patch Changes

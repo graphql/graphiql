@@ -229,7 +229,7 @@ export class LanguageService {
     customRules?: ValidationRule[],
   ) => {
     const schema = this.getSchemaForFile(uri);
-    if (!documentText || documentText.length < 1 || !schema?.schema) {
+    if (!documentText || documentText.trim().length < 2 || !schema?.schema) {
       return [];
     }
     return getDiagnostics(

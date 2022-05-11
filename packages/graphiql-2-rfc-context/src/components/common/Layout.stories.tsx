@@ -17,17 +17,17 @@ import Logo from './Logo';
 const explorer = {
   input: (
     <List>
-      <ListRow>{'Input'}</ListRow>
+      <ListRow>Input</ListRow>
     </List>
   ),
   response: (
     <List>
-      <ListRow>{'Response'}</ListRow>
+      <ListRow>Response</ListRow>
     </List>
   ),
   console: (
     <List>
-      <ListRow>{'Console/Inspector'}</ListRow>
+      <ListRow>Console/Inspector</ListRow>
     </List>
   ),
 };
@@ -36,9 +36,9 @@ const nav = (
     <NavItem label="Schema">
       <Logo size="1em" />
     </NavItem>
-    <NavItem label="Pig’s nose">{'🐽'}</NavItem>
-    <NavItem label="Farmer">{'👨‍🌾'}</NavItem>
-    <NavItem label="Bee">{'🐝'}</NavItem>
+    <NavItem label="Pig’s nose">🐽</NavItem>
+    <NavItem label="Farmer">👨‍🌾</NavItem>
+    <NavItem label="Bee">🐝</NavItem>
   </Nav>
 );
 const slots = { nav, explorer };
@@ -61,7 +61,7 @@ export const WithManySidebars = () => {
           size: 'sidebar',
           component: (
             <List>
-              <ListRow>{'Sidebar'}</ListRow>
+              <ListRow>Sidebar</ListRow>
             </List>
           ),
         },
@@ -70,7 +70,7 @@ export const WithManySidebars = () => {
           size: 'aside',
           component: (
             <List>
-              <ListRow>{'aside'}</ListRow>
+              <ListRow>aside</ListRow>
             </List>
           ),
         },
@@ -79,7 +79,7 @@ export const WithManySidebars = () => {
           size: 'aside',
           component: (
             <List>
-              <ListRow>{'Another aside'}</ListRow>
+              <ListRow>Another aside</ListRow>
             </List>
           ),
         },
@@ -99,7 +99,7 @@ export const WithFullScreenPanel = () => {
           size: 'full-screen',
           component: (
             <List>
-              <ListRow>{'Woooo'}</ListRow>
+              <ListRow>Woooo</ListRow>
             </List>
           ),
         },

@@ -3,8 +3,9 @@
   "tasks": [
     {
       "label": "watch-vscode",
-      "type": "shell",
-      "command": "source ~/.zshrc; yarn run watch-vscode",
+      "type": "npm",
+      "script": "watch-vscode",
+      "problemMatcher": ["$tsc-watch"],
       "isBackground": true,
       "presentation": {
         "reveal": "always"

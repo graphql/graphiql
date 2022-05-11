@@ -18,11 +18,11 @@ export default { title: 'Type', decorators: [layout] };
 export const type = () => (
   <List>
     <ListRow padding>
-      <SectionHeader>{'Title'}</SectionHeader>
+      <SectionHeader>Title</SectionHeader>
     </ListRow>
     <ListRow padding>
-      <Explainer>{'Small explainer text'}</Explainer>
+      <Explainer>Small explainer text</Explainer>
     </ListRow>
-    <ListRow padding>{'Normal text'}</ListRow>
+    <ListRow padding>Normal text</ListRow>
   </List>
 );

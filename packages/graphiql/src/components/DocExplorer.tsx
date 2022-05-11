@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { GraphQLSchema, isType, GraphQLNamedType, GraphQLError } from 'graphql';
 import { FieldType } from './DocExplorer/types';
 
@@ -30,6 +30,7 @@ const initialNav: NavStackItem = {
 type DocExplorerProps = {
   schema?: GraphQLSchema | null;
   schemaErrors?: readonly GraphQLError[];
+  children?: ReactNode;
 };
 
 type DocExplorerState = {
@@ -81,9 +82,7 @@ export class DocExplorer extends React.Component<
 
     let content;
     if (schemaErrors) {
-      content = (
-        <div className="error-container">{'Error fetching schema'}</div>
-      );
+      content = <div className="error-container">Error fetching schema</div>;
     } else if (schema === undefined) {
       // Schema is undefined when it is being loaded via introspection.
       content = (
@@ -94,7 +93,7 @@ export class DocExplorer extends React.Component<
     } else if (!schema) {
       // Schema is null when it explicitly does not exist, typically due to
       // an error during introspection.
-      content = <div className="error-container">{'No Schema Available'}</div>;
+      content = <div className="error-container">No Schema Available</div>;
     } else if (navItem.search) {
       content = (
         <SearchResults

@@ -28,7 +28,7 @@ export function activate(context: ExtensionContext) {
     console.log('Extension "vscode-graphql" is now active!');
   }
 
-  const serverPath = path.join('out/server', 'server.js');
+  const serverPath = path.join('out', 'server', 'index.js');
   const serverModule = context.asAbsolutePath(serverPath);
 
   const debugOptions = {

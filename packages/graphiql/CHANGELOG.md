@@ -1,5 +1,50 @@
 # Change Log
 
+## 1.8.9
+
+### Patch Changes
+
+- [#2387](https://github.com/graphql/graphiql/pull/2387) [`e823697b`](https://github.com/graphql/graphiql/commit/e823697b5d47565671d5919be84f69919e70977f) Thanks [@benjie](https://github.com/benjie)! - Add 'children' type definition to various component props
+
+* [#2388](https://github.com/graphql/graphiql/pull/2388) [`d3ae074c`](https://github.com/graphql/graphiql/commit/d3ae074c9b9dae6ed4f69b0a79efaa0353dcea2d) Thanks [@benjie](https://github.com/benjie)! - Add 'pointer-events: none' to SVG style for dropdown arrow in GraphiQL.Menu component
+
+- [#2373](https://github.com/graphql/graphiql/pull/2373) [`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597) Thanks [@benjie](https://github.com/benjie)! - Fix TypeScript definition of FetcherParams to reflect that operationName is optional
+
+- Updated dependencies [[`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597)]:
+  - @graphiql/toolkit@0.4.4
+
+## 1.8.8
+
+### Patch Changes
+
+- Updated dependencies [[`2dec55f2`](https://github.com/graphql/graphiql/commit/2dec55f2c5e979cc7bb1adadff4fb063775b088c), [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - codemirror-graphql@1.3.0
+  - graphql-language-service@5.0.4
+
+## 1.8.7
+
+### Patch Changes
+
+- [#2316](https://github.com/graphql/graphiql/pull/2316) [`3d8510c8`](https://github.com/graphql/graphiql/commit/3d8510c87b9f0cc73f747ed4cd88e112f9fe65f7) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: With tabs enabled, if a subscription is restored from storage, a query request is sent instead
+
+## 1.8.6
+
+### Patch Changes
+
+- [#2312](https://github.com/graphql/graphiql/pull/2312) [`3c97cf63`](https://github.com/graphql/graphiql/commit/3c97cf63f0d6a8c27265905af1a2da243925ff01) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: After changing to a tab with a subscription, graphiql sends a query request
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+  - codemirror-graphql@1.2.17
+
+## 1.8.5
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+  - codemirror-graphql@1.2.16
+
 ## 1.8.4
 
 ### Patch Changes

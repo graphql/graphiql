@@ -14,6 +14,7 @@ import {
 } from 'graphql';
 import escapeHTML from 'escape-html';
 import MD from 'markdown-it';
+import { importCodeMirror } from './importCodeMirror';
 
 const md = new MD();
 
@@ -26,7 +27,7 @@ export default function onHasCompletion(
   data: CM.EditorChange | undefined,
   onHintInformationRender: (el: HTMLDivElement) => void,
 ) {
-  import('codemirror').then(({ default: CodeMirror }) => {
+  importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
     let deprecation: HTMLDivElement | null;
     CodeMirror.on(

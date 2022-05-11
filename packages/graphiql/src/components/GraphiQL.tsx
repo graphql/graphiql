@@ -11,6 +11,7 @@ import React, {
   MouseEventHandler,
   Component,
   FunctionComponent,
+  ReactNode,
 } from 'react';
 import {
   buildClientSchema,
@@ -309,6 +310,8 @@ export type GraphiQLProps = {
          */
         onTabChange?: (tab: TabsState) => void;
       };
+
+  children?: ReactNode;
 };
 
 export type GraphiQLState = {
@@ -625,6 +628,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       maxHistoryLength,
       ...queryFacts,
     };
+    if (this.state.query) {
+      this.handleEditQuery(this.state.query);
+    }
   }
 
   componentDidMount() {
@@ -644,9 +650,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       window.g = this;
     }
   }
+
   UNSAFE_componentWillMount() {
     this.componentIsMounted = false;
   }
+
   // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
@@ -778,7 +786,12 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     this.handleStopQuery();
     this.setState(
       state => stateOnSelectTabReducer(index, state),
-      this.persistTabsState,
+      () => {
+        this.persistTabsState();
+        if (this.state.query) {
+          this.handleEditQuery(this.state.query);
+        }
+      },
     );
   };
 
@@ -911,7 +924,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 className="docExplorerShow"
                 onClick={this.handleToggleDocs}
                 aria-label="Open Documentation Explorer">
-                {'Docs'}
+                Docs
               </button>
             )}
           </div>
@@ -987,7 +1000,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     }`}
                     onClick={this.handleOpenVariableEditorTab}
                     onMouseDown={this.handleTabClickPropogation}>
-                    {'Query Variables'}
+                    Query Variables
                   </div>
                   {this.state.headerEditorEnabled && (
                     <div
@@ -999,7 +1012,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                       }`}
                       onClick={this.handleOpenHeaderEditorTab}
                       onMouseDown={this.handleTabClickPropogation}>
-                      {'Request Headers'}
+                      Request Headers
                     </div>
                   )}
                 </div>
@@ -1327,9 +1340,9 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
   private async _fetchQuery(
     query: string,
-    variables: string,
-    headers: string,
-    operationName: string,
+    variables: string | undefined,
+    headers: string | undefined,
+    operationName: string | undefined,
     shouldPersistHeaders: boolean,
     cb: (value: FetcherResult) => any,
   ): Promise<null | Unsubscribable> {
@@ -1482,7 +1495,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query;
+    const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
     const variables = this.state.variables;
     const headers = this.state.headers;
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
@@ -1526,11 +1539,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
       // _fetchQuery may return a subscription.
       const subscription = await this._fetchQuery(
-        editedQuery as string,
-        variables as string,
-        headers as string,
-        operationName as string,
-        shouldPersistHeaders as boolean,
+        editedQuery,
+        variables,
+        headers,
+        operationName,
+        shouldPersistHeaders,
         (result: FetcherResult) => {
           if (queryID === this._editorQueryID) {
             let maybeMultipart = Array.isArray(result) ? result : false;
@@ -2144,14 +2157,15 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     <div className="title">
       {props.children || (
         <span>
-          {'Graph'}
-          <em>{'i'}</em>
-          {'QL'}
+          Graph
+          <em>i</em>
+          QL
         </span>
       )}
     </div>
   );
 }
+
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
@@ -2162,12 +2176,14 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
+
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 const defaultQuery = `# Welcome to GraphiQL

@@ -1,5 +1,38 @@
 # graphql-language-service-cli
 
+## 3.2.23
+
+### Patch Changes
+
+- Updated dependencies [[`6db28447`](https://github.com/graphql/graphiql/commit/6db284479a14873fea3e359efd71be0b15ab3ee8), [`1bea864d`](https://github.com/graphql/graphiql/commit/1bea864d05dee04bb20c06dc3c3d68675b87a50a)]:
+  - graphql-language-service-server@2.7.22
+
+## 3.2.22
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service@5.0.4
+  - graphql-language-service-server@2.7.21
+
+## 3.2.21
+
+### Patch Changes
+
+- [#2291](https://github.com/graphql/graphiql/pull/2291) [`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - Target es6 for the languages services
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+  - graphql-language-service-server@2.7.20
+
+## 3.2.20
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+  - graphql-language-service-server@2.7.19
+
 ## 3.2.19
 
 ### Patch Changes

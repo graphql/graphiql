@@ -93,6 +93,25 @@ describe('GraphQLLanguageService', () => {
     );
   });
 
+  it('avoids reporting validation errors when not enough characters are present', async () => {
+    const diagnostics = await languageService.getDiagnostics(
+      ' \n   \n  \n\n',
+      './queries/testQuery.graphql',
+    );
+    expect(diagnostics.length).toEqual(0);
+  });
+
+  it('still reports errors on empty anonymous op', async () => {
+    const diagnostics = await languageService.getDiagnostics(
+      ' \n   {\n  \n}\n\n',
+      './queries/testQuery.graphql',
+    );
+    expect(diagnostics.length).toEqual(1);
+    expect(diagnostics[0].message).toEqual(
+      'Syntax Error: Expected Name, found "}".',
+    );
+  });
+
   it('runs definition service as expected', async () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',

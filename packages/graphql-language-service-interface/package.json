@@ -1,0 +1,41 @@
+{
+  "name": "graphql-language-service-interface",
+  "version": "2.10.2",
+  "description": "Interface to the GraphQL Language Service",
+  "contributors": [
+    "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
+    "Hyohyeon Jeong <asiandrummer@fb.com>",
+    "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
+  ],
+  "repository": "http://github.com/graphql/graphiql",
+  "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-interface#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-interface"
+  },
+  "license": "MIT",
+  "files": [
+    "dist",
+    "esm",
+    "src"
+  ],
+  "keywords": [
+    "graphql"
+  ],
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "typings": "dist/index.d.ts",
+  "peerDependencies": {
+    "graphql": "^15.5.0 || ^16.0.0"
+  },
+  "dependencies": {
+    "graphql-config": "^4.1.0",
+    "graphql-language-service-parser": "^1.10.4",
+    "graphql-language-service-types": "^1.8.7",
+    "graphql-language-service-utils": "^2.7.1",
+    "vscode-languageserver-types": "^3.15.1"
+  },
+  "devDependencies": {
+    "graphql": "^16.4.0",
+    "vscode-languageserver-protocol": "^3.16.0"
+  }
+}

@@ -37,13 +37,13 @@ Only node 9 or greater, and npm or yarn are required dependencies.
 
 with `yarn`:
 
-```
+```sh
 yarn global add graphql-language-service-cli
 ```
 
 with `npm`:
 
-```
+```sh
 npm i -g graphql-language-service-cli
 ```
 
@@ -58,16 +58,39 @@ The custom graphql language configurations are:
 - `customDirectives` - `['@myExampleDirective']`
 - `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`
 
+### LSP Workspace Configuration
+
+When running `server`, your LSP-compatible client can [provide additional workspace configuration](https://npmjs.com/graphql-language-service-server#workspace-configuration).
+
+For example, `coc.nvim` allows for providing custom `settings`
+
+```json
+"languageserver": {
+  "graphql": {
+    "command": "graphql-lsp",
+    "args": ["server", "-m", "stream"],
+    // customize filetypes to your needs
+    "filetypes": ["typescript", "typescriptreact", "graphql"],
+    "settings": {
+        "graphql-config.load.legacy": true
+    }
+  }
+}
+```
+
+this would allow for legacy `graphql-config` file formats like `.graphqlconfig`, useful on projects maintaining compatibility with the intellij plugin
+
 ### Using the command-line interface
 
-`graphql-lsp server --schema=localhost:3000`
+```sh
+graphql-lsp server --schema=localhost:3000
+```
 
 The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
 
+### CLI Options
+
 ```
-
-GraphQL Language Service Command-Line Interface.
-
 Usage: graphql-lsp <command> <file>
 
 [-h | --help][-c | --configdir] {configDir}

@@ -91,7 +91,7 @@ export default class TypeDoc extends React.Component<
       const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
       fieldsDef = (
         <div className="doc-category">
-          <div className="doc-category-title">{'fields'}</div>
+          <div className="doc-category-title">fields</div>
           {fields
             .filter(field =>
               'isDeprecated' in field ? !field.isDeprecated : true,
@@ -114,10 +114,10 @@ export default class TypeDoc extends React.Component<
       if (deprecatedFields.length > 0) {
         deprecatedFieldsDef = (
           <div className="doc-category">
-            <div className="doc-category-title">{'deprecated fields'}</div>
+            <div className="doc-category-title">deprecated fields</div>
             {!this.state.showDeprecated ? (
               <button className="show-btn" onClick={this.handleShowDeprecated}>
-                {'Show deprecated fields...'}
+                Show deprecated fields...
               </button>
             ) : (
               deprecatedFields.map(field => (
@@ -141,7 +141,7 @@ export default class TypeDoc extends React.Component<
       const values = type.getValues();
       valuesDef = (
         <div className="doc-category">
-          <div className="doc-category-title">{'values'}</div>
+          <div className="doc-category-title">values</div>
           {values
             .filter(value => !value.isDeprecated)
             .map(value => (
@@ -154,10 +154,10 @@ export default class TypeDoc extends React.Component<
       if (deprecatedValues.length > 0) {
         deprecatedValuesDef = (
           <div className="doc-category">
-            <div className="doc-category-title">{'deprecated values'}</div>
+            <div className="doc-category-title">deprecated values</div>
             {!this.state.showDeprecated ? (
               <button className="show-btn" onClick={this.handleShowDeprecated}>
-                {'Show deprecated values...'}
+                Show deprecated values...
               </button>
             ) : (
               deprecatedValues.map(value => (

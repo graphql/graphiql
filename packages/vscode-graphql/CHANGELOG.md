@@ -1,5 +1,46 @@
 # Change Log
 
+## 0.4.6
+
+### Patch Changes
+
+- [#2395](https://github.com/graphql/graphiql/pull/2395) [`f7f1e900`](https://github.com/graphql/graphiql/commit/f7f1e9001ba773bdccb29e513a188384cd805834) Thanks [@acao](https://github.com/acao)! - Release `vscode-graphql` changes since publishing was broken
+
+## 0.4.5
+
+### Patch Changes
+
+- [#2382](https://github.com/graphql/graphiql/pull/2382) [`1bea864d`](https://github.com/graphql/graphiql/commit/1bea864d05dee04bb20c06dc3c3d68675b87a50a) Thanks [@acao](https://github.com/acao)! - allow disabling query/SDL validation with `graphql-config` setting `{ extensions: { languageService: { enableValidation: false } } }`.
+
+  Currently, users receive duplicate validation messages when using our LSP alongside existing validation tools like `graphql-eslint`, and this allows them to disable the LSP feature in that case.
+
+- Updated dependencies [[`6db28447`](https://github.com/graphql/graphiql/commit/6db284479a14873fea3e359efd71be0b15ab3ee8), [`1bea864d`](https://github.com/graphql/graphiql/commit/1bea864d05dee04bb20c06dc3c3d68675b87a50a)]:
+  - graphql-language-service-server@2.7.22
+
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service-server@2.7.21
+
+## 0.4.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service-server@2.7.20
+
+## 0.4.2
+
+### Patch Changes
+
+- [`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f) Thanks [@acao](https://github.com/acao)! - - upgrade `graphql-config` to latest in server
+  - remove `graphql-config` dependency from `vscode-graphql` and `graphql-language-service`
+  - fix `vscode-graphql` esbuild bundling bug in `vscode-graphql` [#2269](https://github.com/graphql/graphiql/issues/2269) by fixing `esbuild` version
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service-server@2.7.19
+
 ## 0.4.0
 
 ### Minor Changes
