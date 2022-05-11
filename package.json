@@ -30,7 +30,7 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn tsc --clean && yarn tsc && yarn workspace @graphiql/react run build",
+    "build": "yarn workspace @graphiql/react run build && yarn tsc --clean && yarn tsc",
     "build-bundles": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun build-clean",
