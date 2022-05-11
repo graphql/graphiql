@@ -24,12 +24,12 @@
   "dependencies": {
     "graphiql": "file:../../packages/graphiql",
     "graphql": "^16.4.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "typescript": "^3.4.4"
   },
   "devDependencies": {
-    "parcel-bundler": "^1.12.4",
+    "parcel": "^2.5.0",
     "worker-loader": "^2.0.0"
   }
 }
