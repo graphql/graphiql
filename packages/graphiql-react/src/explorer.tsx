@@ -67,7 +67,9 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
   }, []);
 
   const reset = useCallback(() => {
-    setState([initialNavStackItem]);
+    setState(currentState =>
+      currentState.length === 1 ? currentState : [initialNavStackItem],
+    );
   }, []);
 
   const showSearch = useCallback((search: string) => {
