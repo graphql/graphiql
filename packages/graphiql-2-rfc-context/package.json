@@ -64,8 +64,8 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@storybook/addon-storyshots": "^5.2.8",
-    "@storybook/react": "^5.2.8",
+    "@storybook/addon-storyshots": "6.1.21",
+    "@storybook/react": "6.1.21",
     "@testing-library/jest-dom": "^5.4.0",
     "@testing-library/react": "9.4.1",
     "@types/markdown-it": "^0.0.9",
