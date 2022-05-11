@@ -1,7 +1,16 @@
 {
   "name": "@graphiql/react",
-  "private": true,
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-react"
+  },
+  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-react"
+  },
+  "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "types/index.d.ts",
