@@ -674,7 +674,7 @@ class GraphiQLWithContext extends React.Component<
 
   // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: GraphiQLWithContextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
     let nextVariables = this.state.variables;
