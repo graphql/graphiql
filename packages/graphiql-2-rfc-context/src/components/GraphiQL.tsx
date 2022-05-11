@@ -266,7 +266,7 @@ class GraphiQLInternals extends React.Component<
       //   onMouseDown={this.handleResizeStart}>
       //   <div className="queryWrap" style={queryWrapStyle}>
       <section aria-label="Operation Editor">
-        <SessionTabs tabs={[`Operation`, `Explorer`]} name={`operation`}>
+        <SessionTabs tabs={[`Operation`, `Explorer`]} name="operation">
           <QueryEditor
             onHintInformationRender={this.handleHintInformationRender}
             onClickReference={this.handleClickReference}
@@ -274,14 +274,14 @@ class GraphiQLInternals extends React.Component<
             readOnly={this.props.readOnly}
             editorOptions={this.props.operationEditorOptions}
           />
-          <div>{`Explorer`}</div>
+          <div>Explorer</div>
         </SessionTabs>
       </section>
     );
 
     const variables = (
       <section aria-label="Query Variables">
-        <SessionTabs tabs={[`Variables`, `Console`]} name={`variables`}>
+        <SessionTabs tabs={[`Variables`, `Console`]} name="variables">
           <VariableEditor
             onHintInformationRender={this.handleHintInformationRender}
             onPrettifyQuery={this.handlePrettifyQuery}
@@ -290,7 +290,7 @@ class GraphiQLInternals extends React.Component<
             readOnly={this.props.readOnly}
             editorOptions={this.props.variablesEditorOptions}
           />
-          <div>{`Console`}</div>
+          <div>Console</div>
         </SessionTabs>
       </section>
     );
@@ -299,7 +299,7 @@ class GraphiQLInternals extends React.Component<
       <section aria-label="Response Editor">
         <SessionTabs
           tabs={[`Response`, `Extensions`, `Playground`]}
-          name={`results`}>
+          name="results">
           <>
             {this.state.isWaitingForResponse && (
               <div className="spinner-container">
@@ -312,8 +312,8 @@ class GraphiQLInternals extends React.Component<
             />
             {footer}
           </>
-          <div>{`Extensions`}</div>
-          <div>{`Playground`}</div>
+          <div>Extensions</div>
+          <div>Playground</div>
         </SessionTabs>
       </section>
     );
@@ -748,9 +748,9 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     <div className="title">
       {props.children || (
         <span>
-          {'Graph'}
-          <em>{'i'}</em>
-          {'QL'}
+          Graph
+          <em>i</em>
+          QL
         </span>
       )}
     </div>

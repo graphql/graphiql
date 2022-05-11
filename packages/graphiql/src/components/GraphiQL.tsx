@@ -650,9 +650,11 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       window.g = this;
     }
   }
+
   UNSAFE_componentWillMount() {
     this.componentIsMounted = false;
   }
+
   // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
   UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
@@ -922,7 +924,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                 className="docExplorerShow"
                 onClick={this.handleToggleDocs}
                 aria-label="Open Documentation Explorer">
-                {'Docs'}
+                Docs
               </button>
             )}
           </div>
@@ -998,7 +1000,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                     }`}
                     onClick={this.handleOpenVariableEditorTab}
                     onMouseDown={this.handleTabClickPropogation}>
-                    {'Query Variables'}
+                    Query Variables
                   </div>
                   {this.state.headerEditorEnabled && (
                     <div
@@ -1010,7 +1012,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
                       }`}
                       onClick={this.handleOpenHeaderEditorTab}
                       onMouseDown={this.handleTabClickPropogation}>
-                      {'Request Headers'}
+                      Request Headers
                     </div>
                   )}
                 </div>
@@ -2155,14 +2157,15 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     <div className="title">
       {props.children || (
         <span>
-          {'Graph'}
-          <em>{'i'}</em>
-          {'QL'}
+          Graph
+          <em>i</em>
+          QL
         </span>
       )}
     </div>
   );
 }
+
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
@@ -2173,12 +2176,14 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
+
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 const defaultQuery = `# Welcome to GraphiQL

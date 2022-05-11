@@ -76,12 +76,14 @@ describe('GraphiQL', () => {
 
   it('should refetch schema with new fetcher', async () => {
     let firstCalled = false;
+
     function firstFetcher() {
       firstCalled = true;
       return Promise.resolve(simpleIntrospection);
     }
 
     let secondCalled = false;
+
     function secondFetcher() {
       secondCalled = true;
       return Promise.resolve(simpleIntrospection);
@@ -399,7 +401,7 @@ describe('GraphiQL', () => {
       it('can be overridden using the exported type', () => {
         const { container } = render(
           <GraphiQL fetcher={noOpFetcher}>
-            <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>
+            <GraphiQL.Logo>My Great Logo</GraphiQL.Logo>
           </GraphiQL>,
         );
 
@@ -409,9 +411,7 @@ describe('GraphiQL', () => {
       });
 
       it('can be overridden using a named component', () => {
-        const WrappedLogo = wrap(
-          <GraphiQL.Logo>{'My Great Logo'}</GraphiQL.Logo>,
-        );
+        const WrappedLogo = wrap(<GraphiQL.Logo>My Great Logo</GraphiQL.Logo>);
         WrappedLogo.displayName = 'GraphiQLLogo';
 
         const { getByText } = render(

@@ -34,10 +34,10 @@ module.exports = {
   },
 
   extends: [
-    'prettier',
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
 
   globals: {
@@ -275,11 +275,11 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
 
     // react rules
+    'react/jsx-curly-brace-presence': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
     'react/jsx-key': 'error',
     'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-no-literals': 'error',
     'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': 'error',
     'react/jsx-uses-react': 'error',

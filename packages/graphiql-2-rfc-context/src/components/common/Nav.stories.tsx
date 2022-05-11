@@ -21,8 +21,8 @@ export const NavBar = () => (
     <NavItem label="Schema">
       <Logo size="1em" />
     </NavItem>
-    <NavItem label="Pig’s nose">{'🐽'}</NavItem>
-    <NavItem label="Farmer">{'👨‍🌾'}</NavItem>
-    <NavItem label="Bee">{'🐝'}</NavItem>
+    <NavItem label="Pig’s nose">🐽</NavItem>
+    <NavItem label="Farmer">👨‍🌾</NavItem>
+    <NavItem label="Bee">🐝</NavItem>
   </Nav>
 );

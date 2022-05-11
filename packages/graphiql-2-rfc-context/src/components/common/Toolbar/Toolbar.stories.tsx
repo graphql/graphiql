@@ -18,36 +18,38 @@ export default { title: 'Toolbar', decorators: [layout] };
 export const Basic = () => (
   <List>
     <ListRow padding>
-      <p>{`Toolbars group together widgets in a flexbox. You can cutomize what type of
-      justification to use and if elements go together it'll add dividers
-      between them`}</p>
+      <p>
+        Toolbars group together widgets in a flexbox. You can customize what
+        type of justification to use and if elements go together it&apos;ll add
+        dividers between them
+      </p>
     </ListRow>
     <ListRow>
       <Toolbar justifyContent="center">
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
       </Toolbar>
     </ListRow>
     <ListRow>
       <Toolbar justifyContent="flex-start">
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
       </Toolbar>
     </ListRow>
     <ListRow>
       <Toolbar justifyContent="flex-end">
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
       </Toolbar>
     </ListRow>
     <ListRow>
       <Toolbar justifyContent="space-between">
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
-        <Content>{'Some text'}</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
+        <Content>Some text</Content>
       </Toolbar>
     </ListRow>
   </List>
@@ -57,7 +59,8 @@ export const ToolbarWithTabs = () => (
   <List>
     <ListRow padding>
       <p>
-        {`The dividers don't nest so if you have tabs inside a toolbar the tabs won't get dividers`}
+        The dividers don&apos;t nest so if you have tabs inside a toolbar the
+        tabs won&apos;t get dividers
       </p>
     </ListRow>
     <ListRow>
