@@ -210,6 +210,7 @@ class GraphiQLInternals extends React.Component<
 
     global.g = this;
   }
+
   // When the component is about to unmount, store any persistable state, such
   // that when the component is remounted, it will use the last used values.
 
@@ -322,40 +323,38 @@ class GraphiQLInternals extends React.Component<
       <Provider>
         <Layout
           nav={
-            <>
-              <GraphiQLToolbar>
-                {logo}
-                <ExecuteButton
-                  isRunning={Boolean(this.state.subscription)}
-                  onStop={() => null}
-                />
-                <ToolbarButton
-                  onClick={this.handlePrettifyQuery}
-                  title="Prettify Query (Shift-Ctrl-P)"
-                  label="Prettify"
-                />
-                <ToolbarButton
-                  onClick={this.handleMergeQuery}
-                  title="Merge Query (Shift-Ctrl-M)"
-                  label="Merge"
-                />
-                <ToolbarButton
-                  onClick={this.handleCopyQuery}
-                  title="Copy Query (Shift-Ctrl-C)"
-                  label="Copy"
-                />
-                <ToolbarButton
-                  onClick={() => null}
-                  title="Show History"
-                  label="History"
-                />
-                <ToolbarButton
-                  onClick={() => null}
-                  title="Open Documentation Explorer"
-                  label="Docs"
-                />
-              </GraphiQLToolbar>
-            </>
+            <GraphiQLToolbar>
+              {logo}
+              <ExecuteButton
+                isRunning={Boolean(this.state.subscription)}
+                onStop={() => null}
+              />
+              <ToolbarButton
+                onClick={this.handlePrettifyQuery}
+                title="Prettify Query (Shift-Ctrl-P)"
+                label="Prettify"
+              />
+              <ToolbarButton
+                onClick={this.handleMergeQuery}
+                title="Merge Query (Shift-Ctrl-M)"
+                label="Merge"
+              />
+              <ToolbarButton
+                onClick={this.handleCopyQuery}
+                title="Copy Query (Shift-Ctrl-C)"
+                label="Copy"
+              />
+              <ToolbarButton
+                onClick={() => null}
+                title="Show History"
+                label="History"
+              />
+              <ToolbarButton
+                onClick={() => null}
+                title="Open Documentation Explorer"
+                label="Docs"
+              />
+            </GraphiQLToolbar>
           }
           session={{
             input: operationEditor,
@@ -756,6 +755,7 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL
@@ -766,12 +766,14 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
+
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
 const formatSingleError = (error: Error) => ({

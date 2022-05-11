@@ -39,7 +39,7 @@ examples/graphiql-create-react-app
 packages/graphiql/webpack
 packages/graphiql/storybook
 packages/graphiql/lsp
-packages/graphiql/monaco  
+packages/graphiql/monaco
 packages/graphiql/*.html
 **/renderExample.js
 **/*.min.js
@@ -60,8 +60,8 @@ working-group/
 **/codemirror-graphql/hint.*
 **/codemirror-graphql/__tests__
 
-
 # Vendored files
 /packages/graphiql/test/vendor
 
 .changeset
+storybook-static/
