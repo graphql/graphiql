@@ -192,7 +192,6 @@ class GraphiQLInternals extends React.Component<
 
     // Initialize state
     this.state = {
-      response: props.response,
       isWaitingForResponse: false,
       subscription: null,
     };
