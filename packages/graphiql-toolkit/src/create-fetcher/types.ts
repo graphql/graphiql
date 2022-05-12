@@ -32,6 +32,9 @@ export type FetcherParams = {
 
 export type FetcherOpts = {
   headers?: { [key: string]: any };
+  /**
+   * @deprecated This property will be removed in the next major version of `graphiql`
+   */
   shouldPersistHeaders?: boolean;
   documentAST?: DocumentNode;
 };
