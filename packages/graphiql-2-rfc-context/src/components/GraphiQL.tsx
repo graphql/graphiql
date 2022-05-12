@@ -32,6 +32,8 @@ import {
   SessionProvider,
   SessionContext,
 } from '../api/providers/GraphiQLSessionProvider';
+import { BrowserProvider } from '../api/providers/GraphiQLBrowserProvider';
+
 import { getFetcher } from '../api/common';
 
 import { Unsubscribable, Fetcher, ReactNodeLike } from '../types';
@@ -127,16 +129,18 @@ export const GraphiQL: React.FC<GraphiQLProps> = props => {
         <SchemaProvider
           fetcher={fetcher}
           config={{ uri: props.uri, ...props.schemaConfig }}>
-          <SessionProvider fetcher={fetcher} sessionId={0}>
-            <GraphiQLInternals
-              {...{
-                formatResult,
-                formatError,
-                ...props,
-              }}>
-              {props.children}
-            </GraphiQLInternals>
-          </SessionProvider>
+          <BrowserProvider>
+            <SessionProvider fetcher={fetcher} sessionId={0}>
+              <GraphiQLInternals
+                {...{
+                  formatResult,
+                  formatError,
+                  ...props,
+                }}>
+                {props.children}
+              </GraphiQLInternals>
+            </SessionProvider>
+          </BrowserProvider>
         </SchemaProvider>
       </EditorsProvider>
     </I18nextProvider>
