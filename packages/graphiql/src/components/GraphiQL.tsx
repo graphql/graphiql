@@ -25,7 +25,6 @@ import {
   FragmentDefinitionNode,
   DocumentNode,
   GraphQLError,
-  GraphQLFormattedError,
   IntrospectionQuery,
   getIntrospectionQuery,
 } from 'graphql';
@@ -58,6 +57,14 @@ import mergeAST from '../utility/mergeAst';
 import { introspectionQueryName } from '../utility/introspectionQueries';
 import setValue from 'set-value';
 
+import {
+  fetcherReturnToPromise,
+  formatError,
+  formatResult,
+  isPromise,
+  isObservable,
+  isAsyncIterable,
+} from '@graphiql/toolkit';
 import type {
   Fetcher,
   FetcherResult,
@@ -65,12 +72,6 @@ import type {
   SyncFetcherResult,
   Unsubscribable,
   FetcherResultPayload,
-} from '@graphiql/toolkit';
-import {
-  fetcherReturnToPromise,
-  isPromise,
-  isObservable,
-  isAsyncIterable,
 } from '@graphiql/toolkit';
 import HistoryStore from '../utility/HistoryStore';
 
@@ -108,14 +109,6 @@ type OnMouseUpFn = Maybe<() => void>;
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
-
-export type GenericError =
-  | Error
-  | string
-  | readonly Error[]
-  | readonly string[]
-  | GraphQLError
-  | readonly GraphQLError[];
 
 /**
  * API docs for this live here:
@@ -345,29 +338,6 @@ export type GraphiQLState = {
   tabs: TabsState;
 };
 
-const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
-
-const formatSingleError = (error: Error): Error => ({
-  ...error,
-  // Raise these details even if they're non-enumerable
-  message: error.message,
-  stack: error.stack,
-});
-
-type InputError = Error | GraphQLError | string;
-
-const handleSingleError = (
-  error: InputError,
-): GraphQLFormattedError | Error | string => {
-  if (error instanceof GraphQLError) {
-    return error.toString();
-  }
-  if (error instanceof Error) {
-    return formatSingleError(error);
-  }
-  return error;
-};
-
 type TabState = {
   id: string;
   hash: string;
@@ -395,18 +365,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    * Static Methods
    */
   static formatResult(result: any) {
-    return JSON.stringify(result, null, 2);
+    console.warn(
+      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatResult(result);
   }
 
-  static formatError = (error: GenericError): string => {
-    if (Array.isArray(error)) {
-      return stringify({
-        errors: error.map((e: InputError) => handleSingleError(e)),
-      });
-    }
-    // @ts-ignore
-    return stringify({ errors: handleSingleError(error) });
-  };
+  static formatError(error: any) {
+    console.warn(
+      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatError(error);
+  }
 
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
@@ -512,7 +482,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       if (validationErrors && validationErrors.length > 0) {
         // This is equivalent to handleSchemaErrors, but it's too early
         // to call setState.
-        response = GraphiQL.formatError(validationErrors);
+        response = formatError(validationErrors);
         schema = undefined;
         schemaErrors = validationErrors;
       }
@@ -1323,7 +1293,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         } else {
           // handle as if it were an error if the fetcher response is not a string or response.data is not present
           const responseString =
-            typeof result === 'string' ? result : GraphiQL.formatResult(result);
+            typeof result === 'string' ? result : formatResult(result);
           this.handleSchemaErrors([responseString]);
         }
       })
@@ -1336,7 +1306,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     schemaErrors: readonly GraphQLError[] | readonly string[],
   ) {
     this.safeSetState({
-      response: schemaErrors ? GraphiQL.formatError(schemaErrors) : undefined,
+      response: schemaErrors ? formatError(schemaErrors) : undefined,
       schema: undefined,
       schemaErrors,
     });
@@ -1429,7 +1399,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             error: (error: Error) => {
               this.safeSetState({
                 isWaitingForResponse: false,
-                response: error ? GraphiQL.formatError(error) : undefined,
+                response: error ? formatError(error) : undefined,
                 subscription: null,
               });
             },
@@ -1455,9 +1425,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             } catch (error) {
               this.safeSetState({
                 isWaitingForResponse: false,
-                response: error
-                  ? GraphiQL.formatError(error as Error)
-                  : undefined,
+                response: error ? formatError(error as Error) : undefined,
                 subscription: null,
               });
             }
@@ -1474,7 +1442,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       .catch(error => {
         this.safeSetState({
           isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : undefined,
+          response: error ? formatError(error) : undefined,
         });
         return null;
       });
@@ -1600,10 +1568,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
               this.setState({
                 isWaitingForResponse: false,
-                response: GraphiQL.formatResult(fullResponse),
+                response: formatResult(fullResponse),
               });
             } else {
-              const response = GraphiQL.formatResult(result);
+              const response = formatResult(result);
               this.setState(
                 state => ({
                   ...state,
