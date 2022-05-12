@@ -9,11 +9,11 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
-    "graphiql": "file:../../packages/graphiql",
-    "@graphiql/toolkit": "file:../../packages/graphiql-toolkit",
+    "@graphiql/toolkit": "^0.4.4",
+    "graphiql": "^1.8.9",
     "graphql": "^16.4.0",
-    "react": "17.0.2",
-    "graphql-ws": "^5.5.5"
+    "graphql-ws": "^5.5.5",
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.8.3",
