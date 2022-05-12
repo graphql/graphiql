@@ -6,11 +6,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: 'src/index.ts',
-      fileName: 'index',
+      fileName: 'graphiql-react',
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
       external: ['react', 'react-dom'],
+      output: {
+        chunkFileNames: '[name].[format].js',
+      },
     },
   },
 });

@@ -11,8 +11,8 @@
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-react"
   },
   "license": "MIT",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
+  "main": "dist/graphiql-react.cjs.js",
+  "module": "dist/graphiql-react.es.js",
   "types": "types/index.d.ts",
   "scripts": {
     "dev": "vite",
