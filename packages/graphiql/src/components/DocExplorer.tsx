@@ -39,7 +39,14 @@ type DocExplorerProps = {
  */
 export const DocExplorer = memo(
   function DocExplorer({ children, schema, schemaErrors }: DocExplorerProps) {
-    const { explorerNavStack, pop, push, showSearch } = useExplorerNavStack();
+    const explorerContext = useExplorerNavStack();
+    if (!explorerContext) {
+      throw new Error(
+        'Tried to render the `DocExplorer` component without the necessary context. Make sure that the `ExplorerContextProvider` from `@graphiql/react` is rendered higher in the tree.',
+      );
+    }
+
+    const { explorerNavStack, pop, push, showSearch } = explorerContext;
     const navItem = explorerNavStack[explorerNavStack.length - 1];
 
     function handleClickType(type: GraphQLNamedType) {

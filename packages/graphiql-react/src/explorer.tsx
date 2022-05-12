@@ -43,7 +43,7 @@ export type ExplorerContextType = {
   showSearch(search: string): void;
 };
 
-export const ExplorerContext = createContext<ExplorerContextType>(null as any);
+export const ExplorerContext = createContext<ExplorerContextType | null>(null);
 
 export function ExplorerContextProvider(props: { children: ReactNode }) {
   const [state, setState] = useState<ExplorerNavStack>([initialNavStackItem]);

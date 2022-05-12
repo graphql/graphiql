@@ -415,7 +415,7 @@ GraphiQL.MenuItem = ToolbarMenuItem;
 // GraphiQL.SelectOption = ToolbarSelectOption;
 
 type GraphiQLWithContextProps = GraphiQLProps & {
-  explorerContext: ExplorerContextType;
+  explorerContext: ExplorerContextType | null;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -755,7 +755,7 @@ class GraphiQLWithContext extends React.Component<
       },
       () => {
         if (this.state.schema === undefined) {
-          this.props.explorerContext.reset();
+          this.props.explorerContext?.reset();
           this.fetchSchema();
         }
       },
@@ -2142,7 +2142,7 @@ class GraphiQLWithContext extends React.Component<
   // TODO: When refactoring this to a function component replace this with
   // useExplorerNavStack().push from @graphiql/react
   private showDoc(typeOrField: GraphQLNamedType | ExplorerFieldDef) {
-    this.props.explorerContext.push({
+    this.props.explorerContext?.push({
       name: typeOrField.name,
       def: typeOrField,
     });
