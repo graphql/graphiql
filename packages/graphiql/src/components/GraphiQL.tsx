@@ -2338,7 +2338,7 @@ function stateOnSelectTabReducer(
   const newActiveTab = state.tabs.tabs[index];
 
   if (typeof newActiveTab.headers !== 'undefined') {
-    props.editorContext?.headerEditor?.setValue(newActiveTab.headers);
+    setHeaders(props, newActiveTab.headers);
   }
 
   return {
@@ -2365,7 +2365,7 @@ function stateOnCloseTabReducer(
   };
   const activeTab = newTabsState.tabs[newActiveTabIndex];
   if (typeof activeTab.headers !== 'undefined') {
-    props.editorContext?.headerEditor?.setValue(activeTab.headers);
+    setHeaders(props, activeTab.headers);
   }
   return {
     ...state,
@@ -2416,7 +2416,7 @@ function stateOnTabAddReducer(
   });
 
   if (typeof newTab.headers !== 'undefined') {
-    props.editorContext?.headerEditor?.setValue(newTab.headers);
+    setHeaders(props, newTab.headers);
   }
 
   return {
@@ -2435,4 +2435,8 @@ function stateOnTabAddReducer(
 
 function getHeaders(props: GraphiQLWithContextProps) {
   return props.headers ?? props.editorContext?.headerEditor?.getValue();
+}
+
+function setHeaders(props: GraphiQLWithContextProps, value: string) {
+  props.editorContext?.headerEditor?.setValue(value);
 }
