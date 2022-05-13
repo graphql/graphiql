@@ -1,5 +1,13 @@
 # @graphiql/toolkit
 
+## 0.4.5
+
+### Patch Changes
+
+- [#2401](https://github.com/graphql/graphiql/pull/2401) [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - move async helper functions and formatting functions over into the @graphiql/toolkit package
+
+* [#2401](https://github.com/graphql/graphiql/pull/2401) [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - deprecate the unused `shouldPersistHeaders` property from fetcher options to be removed in the next major version
+
 ## 0.4.4
 
 ### Patch Changes

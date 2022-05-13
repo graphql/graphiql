@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.8.10
+
+### Patch Changes
+
+- [#2397](https://github.com/graphql/graphiql/pull/2397) [`a63ff958`](https://github.com/graphql/graphiql/commit/a63ff958838cf4fcf31f7eaa3e3b022d02838f65) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - upgrade to React v17
+
+* [#2401](https://github.com/graphql/graphiql/pull/2401) [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - move async helper functions and formatting functions over into the @graphiql/toolkit package
+
+* Updated dependencies [[`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5), [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5)]:
+  - @graphiql/toolkit@0.4.5
+
 ## 1.8.9
 
 ### Patch Changes
