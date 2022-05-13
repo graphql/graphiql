@@ -1,17 +1,25 @@
-import type { Editor, EditorChange } from 'codemirror';
 import { useContext, useEffect, useRef } from 'react';
 
 import { commonKeys, importCodeMirror } from './common';
-import onHasCompletion from './completion';
 import { EditorContext } from './context';
+import {
+  CompletionCallback,
+  EditCallback,
+  EmptyCallback,
+  useChangeHandler,
+  useCompletion,
+  useKeyMap,
+  useResizeEditor,
+  useSyncValue,
+} from './hooks';
 
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
-  onEdit?(value: string): void;
-  onHintInformationRender?(value: HTMLDivElement): void;
-  onPrettifyQuery?(value?: string): void;
-  onMergeQuery?(value?: string): void;
-  onRunQuery?(value?: string): void;
+  onEdit?: EditCallback;
+  onHintInformationRender?: CompletionCallback;
+  onPrettifyQuery?: EmptyCallback;
+  onMergeQuery?: EmptyCallback;
+  onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   value?: string;
 };
@@ -93,127 +101,17 @@ export function useHeaderEditor({
     });
   }, [editorTheme, readOnly, setHeaderEditor]);
 
-  /**
-   * Handle setting value (controlled component)
-   */
-  useEffect(() => {
-    if (headerEditor && typeof value !== 'undefined') {
-      if (value !== headerEditor.getValue()) {
-        headerEditor.setValue(value);
-      }
-    }
-  }, [headerEditor, value]);
+  useSyncValue(headerEditor, value);
 
-  /**
-   * Handle callback for change
-   */
-  useEffect(() => {
-    if (!headerEditor) {
-      return;
-    }
+  useChangeHandler(headerEditor, onEdit);
 
-    const handleChange = (editorInstance: Editor) => {
-      const newValue = editorInstance.getValue();
-      onEdit?.(newValue);
-    };
-    headerEditor.on('change', handleChange);
-    return () => headerEditor.off('change', handleChange);
-  }, [headerEditor, onEdit]);
+  useCompletion(headerEditor, onHintInformationRender);
 
-  /**
-   * Handle completion
-   */
-  useEffect(() => {
-    if (headerEditor && onHintInformationRender) {
-      const handleCompletion = (instance: Editor, changeObj?: EditorChange) => {
-        onHasCompletion(instance, changeObj, onHintInformationRender);
-      };
-      headerEditor.on(
-        // @ts-expect-error
-        'hasCompletion',
-        handleCompletion,
-      );
-      return () =>
-        headerEditor.off(
-          // @ts-expect-error
-          'hasCompletion',
-          handleCompletion,
-        );
-    }
-  }, [headerEditor, onHintInformationRender]);
+  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
+  useKeyMap(headerEditor, ['Shift-Ctrl-P'], onPrettifyQuery);
+  useKeyMap(headerEditor, ['Shift-Ctrl-M'], onMergeQuery);
 
-  /**
-   * Handle callback for query execution
-   */
-  useEffect(() => {
-    if (!headerEditor) {
-      return;
-    }
-    headerEditor.removeKeyMap('Cmd-Enter');
-    headerEditor.removeKeyMap('Ctrl-Enter');
-
-    if (onRunQuery) {
-      headerEditor.addKeyMap({
-        'Cmd-Enter'() {
-          onRunQuery();
-        },
-        'Ctrl-Enter'() {
-          onRunQuery();
-        },
-      });
-    }
-  }, [headerEditor, onRunQuery]);
-
-  /**
-   * Handle callback for prettifying
-   */
-  useEffect(() => {
-    if (!headerEditor) {
-      return;
-    }
-    headerEditor.removeKeyMap('Shift-Ctrl-P');
-
-    if (onPrettifyQuery) {
-      headerEditor.addKeyMap({
-        'Shift-Ctrl-P'() {
-          onPrettifyQuery();
-        },
-      });
-    }
-  }, [headerEditor, onPrettifyQuery]);
-
-  /**
-   * Handle callback for merging
-   */
-  useEffect(() => {
-    if (!headerEditor) {
-      return;
-    }
-    headerEditor.removeKeyMap('Shift-Ctrl-M');
-
-    if (onMergeQuery) {
-      headerEditor.addKeyMap({
-        'Shift-Ctrl-M'() {
-          onMergeQuery();
-        },
-      });
-    }
-  }, [headerEditor, onMergeQuery]);
-
-  /**
-   * Resizing
-   */
-  const sizeRef = useRef<number>();
-  useEffect(() => {
-    if (!ref.current || !headerEditor) {
-      return;
-    }
-    const size = ref.current.clientHeight;
-    if (size !== sizeRef.current) {
-      headerEditor.setSize(null, null); // TODO: added the args here. double check no effects. might be version issue
-    }
-    sizeRef.current = size;
-  });
+  useResizeEditor(headerEditor, ref);
 
   return ref;
 }
