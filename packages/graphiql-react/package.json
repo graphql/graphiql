@@ -16,7 +16,7 @@
   "types": "types/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && rimraf tsc && vite build",
+    "build": "tsc --emitDeclarationOnly && vite build",
     "preview": "vite preview"
   },
   "peerDependencies": {
