@@ -807,7 +807,7 @@ class GraphiQLWithContext extends React.Component<
   private makeHandleOnSelectTab = (index: number) => () => {
     this.handleStopQuery();
     this.setState(
-      state => this.stateOnSelectTabReducer(index, state),
+      state => stateOnSelectTabReducer(index, state, this.props),
       () => {
         this.persistTabsState();
         if (this.state.query) {
@@ -822,14 +822,14 @@ class GraphiQLWithContext extends React.Component<
       this.handleStopQuery();
     }
     this.setState(
-      state => this.stateOnCloseTabReducer(index, state),
+      state => stateOnCloseTabReducer(index, state, this.props),
       this.persistTabsState,
     );
   };
 
   private handleOnAddTab = () => {
     this.setState(
-      state => this.stateOnTabAddReducer(state),
+      state => stateOnTabAddReducer(state, this.props),
       this.persistTabsState,
     );
   };
@@ -1215,12 +1215,6 @@ class GraphiQLWithContext extends React.Component<
 
   // Private methods
 
-  private getHeaders() {
-    return (
-      this.props.headers ?? this.props.editorContext?.headerEditor?.getValue()
-    );
-  }
-
   private fetchSchema() {
     const fetcher = this.props.fetcher;
 
@@ -1228,7 +1222,7 @@ class GraphiQLWithContext extends React.Component<
       shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
       documentAST: this.state.documentAST,
     };
-    const headers = this.getHeaders();
+    const headers = getHeaders(this.props);
     try {
       if (headers && headers.trim().length > 2) {
         fetcherOpts.headers = JSON.parse(headers);
@@ -1498,7 +1492,7 @@ class GraphiQLWithContext extends React.Component<
     // the current query from the editor.
     const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
     const variables = this.state.variables;
-    const headers = this.getHeaders();
+    const headers = getHeaders(this.props);
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
     let operationName = this.state.operationName;
 
@@ -2157,127 +2151,6 @@ class GraphiQLWithContext extends React.Component<
       def: typeOrField,
     });
   }
-
-  private stateOnSelectTabReducer(
-    index: number,
-    state: GraphiQLState,
-  ): GraphiQLState {
-    const headers = this.getHeaders();
-
-    const oldActiveTabIndex = state.tabs.activeTabIndex;
-    const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
-      if (tabIndex !== oldActiveTabIndex) {
-        return currentTab;
-      }
-
-      return {
-        ...currentTab,
-        query: state.query,
-        variables: state.variables,
-        operationName: state.operationName,
-        headers,
-        response: state.response,
-        hash: idFromTabContents({
-          query: state.query,
-          variables: state.variables,
-          headers,
-        }),
-      };
-    });
-
-    const newActiveTab = state.tabs.tabs[index];
-
-    if (typeof newActiveTab.headers !== 'undefined') {
-      this.props.editorContext?.headerEditor?.setValue(newActiveTab.headers);
-    }
-
-    return {
-      ...state,
-      query: newActiveTab.query,
-      variables: newActiveTab.variables,
-      operationName: newActiveTab.operationName,
-      response: newActiveTab.response,
-      tabs: { ...state.tabs, tabs, activeTabIndex: index },
-    };
-  }
-
-  private stateOnCloseTabReducer(
-    index: number,
-    state: GraphiQLState,
-  ): GraphiQLState {
-    const newActiveTabIndex =
-      state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
-    const newTabsState = {
-      ...state.tabs,
-      activeTabIndex: newActiveTabIndex,
-      tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
-    };
-    const activeTab = newTabsState.tabs[newActiveTabIndex];
-    if (typeof activeTab.headers !== 'undefined') {
-      this.props.editorContext?.headerEditor?.setValue(activeTab.headers);
-    }
-    return {
-      ...state,
-      query: activeTab.query,
-      variables: activeTab.variables,
-      operationName: activeTab.operationName,
-      response: activeTab.response,
-      tabs: newTabsState,
-    };
-  }
-
-  private stateOnTabAddReducer(state: GraphiQLState): GraphiQLState {
-    const headers = this.getHeaders();
-
-    const oldActiveTabIndex = state.tabs.activeTabIndex;
-
-    const newTab: TabState = {
-      id: guid(),
-      title: '<untitled>',
-      headers: '',
-      variables: '',
-      query: '',
-      operationName: '',
-      response: '',
-      hash: idFromTabContents({
-        query: '',
-        variables: '',
-        headers: '',
-      }),
-    };
-
-    const tabs = state.tabs.tabs.map((tab, index) => {
-      if (index !== oldActiveTabIndex) {
-        return tab;
-      }
-
-      return {
-        ...tab,
-        headers,
-        variables: state.variables,
-        query: state.query,
-        operationName: state.operationName,
-        response: state.response,
-      };
-    });
-
-    if (typeof newTab.headers !== 'undefined') {
-      this.props.editorContext?.headerEditor?.setValue(newTab.headers);
-    }
-
-    return {
-      ...state,
-      variables: newTab.variables,
-      query: newTab.query,
-      operationName: newTab.operationName,
-      response: newTab.response,
-      tabs: {
-        ...state.tabs,
-        activeTabIndex: state.tabs.tabs.length,
-        tabs: [...tabs, newTab],
-      },
-    };
-  }
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
@@ -2432,4 +2305,134 @@ function tabsStateEditQueryReducer(
       };
     }),
   };
+}
+
+function stateOnSelectTabReducer(
+  index: number,
+  state: GraphiQLState,
+  props: GraphiQLWithContextProps,
+): GraphiQLState {
+  const headers = getHeaders(props);
+
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+  const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
+    if (tabIndex !== oldActiveTabIndex) {
+      return currentTab;
+    }
+
+    return {
+      ...currentTab,
+      query: state.query,
+      variables: state.variables,
+      operationName: state.operationName,
+      headers,
+      response: state.response,
+      hash: idFromTabContents({
+        query: state.query,
+        variables: state.variables,
+        headers,
+      }),
+    };
+  });
+
+  const newActiveTab = state.tabs.tabs[index];
+
+  if (typeof newActiveTab.headers !== 'undefined') {
+    props.editorContext?.headerEditor?.setValue(newActiveTab.headers);
+  }
+
+  return {
+    ...state,
+    query: newActiveTab.query,
+    variables: newActiveTab.variables,
+    operationName: newActiveTab.operationName,
+    response: newActiveTab.response,
+    tabs: { ...state.tabs, tabs, activeTabIndex: index },
+  };
+}
+
+function stateOnCloseTabReducer(
+  index: number,
+  state: GraphiQLState,
+  props: GraphiQLWithContextProps,
+): GraphiQLState {
+  const newActiveTabIndex =
+    state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
+  const newTabsState = {
+    ...state.tabs,
+    activeTabIndex: newActiveTabIndex,
+    tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
+  };
+  const activeTab = newTabsState.tabs[newActiveTabIndex];
+  if (typeof activeTab.headers !== 'undefined') {
+    props.editorContext?.headerEditor?.setValue(activeTab.headers);
+  }
+  return {
+    ...state,
+    query: activeTab.query,
+    variables: activeTab.variables,
+    operationName: activeTab.operationName,
+    response: activeTab.response,
+    tabs: newTabsState,
+  };
+}
+
+function stateOnTabAddReducer(
+  state: GraphiQLState,
+  props: GraphiQLWithContextProps,
+): GraphiQLState {
+  const headers = getHeaders(props);
+
+  const oldActiveTabIndex = state.tabs.activeTabIndex;
+
+  const newTab: TabState = {
+    id: guid(),
+    title: '<untitled>',
+    headers: '',
+    variables: '',
+    query: '',
+    operationName: '',
+    response: '',
+    hash: idFromTabContents({
+      query: '',
+      variables: '',
+      headers: '',
+    }),
+  };
+
+  const tabs = state.tabs.tabs.map((tab, index) => {
+    if (index !== oldActiveTabIndex) {
+      return tab;
+    }
+
+    return {
+      ...tab,
+      headers,
+      variables: state.variables,
+      query: state.query,
+      operationName: state.operationName,
+      response: state.response,
+    };
+  });
+
+  if (typeof newTab.headers !== 'undefined') {
+    props.editorContext?.headerEditor?.setValue(newTab.headers);
+  }
+
+  return {
+    ...state,
+    variables: newTab.variables,
+    query: newTab.query,
+    operationName: newTab.operationName,
+    response: newTab.response,
+    tabs: {
+      ...state.tabs,
+      activeTabIndex: state.tabs.tabs.length,
+      tabs: [...tabs, newTab],
+    },
+  };
+}
+
+function getHeaders(props: GraphiQLWithContextProps) {
+  return props.headers ?? props.editorContext?.headerEditor?.getValue();
 }
