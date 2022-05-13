@@ -25,7 +25,6 @@ import {
   FragmentDefinitionNode,
   DocumentNode,
   GraphQLError,
-  GraphQLFormattedError,
   IntrospectionQuery,
   getIntrospectionQuery,
 } from 'graphql';
@@ -58,13 +57,19 @@ import mergeAST from '../utility/mergeAst';
 import { introspectionQueryName } from '../utility/introspectionQueries';
 import setValue from 'set-value';
 
+import {
+  fetcherReturnToPromise,
+  formatError,
+  formatResult,
+  isPromise,
+  isObservable,
+  isAsyncIterable,
+} from '@graphiql/toolkit';
 import type {
   Fetcher,
   FetcherResult,
-  FetcherReturnType,
   FetcherOpts,
   SyncFetcherResult,
-  Observable,
   Unsubscribable,
   FetcherResultPayload,
 } from '@graphiql/toolkit';
@@ -104,14 +109,6 @@ type OnMouseUpFn = Maybe<() => void>;
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
-
-export type GenericError =
-  | Error
-  | string
-  | readonly Error[]
-  | readonly string[]
-  | GraphQLError
-  | readonly GraphQLError[];
 
 /**
  * API docs for this live here:
@@ -341,29 +338,6 @@ export type GraphiQLState = {
   tabs: TabsState;
 };
 
-const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
-
-const formatSingleError = (error: Error): Error => ({
-  ...error,
-  // Raise these details even if they're non-enumerable
-  message: error.message,
-  stack: error.stack,
-});
-
-type InputError = Error | GraphQLError | string;
-
-const handleSingleError = (
-  error: InputError,
-): GraphQLFormattedError | Error | string => {
-  if (error instanceof GraphQLError) {
-    return error.toString();
-  }
-  if (error instanceof Error) {
-    return formatSingleError(error);
-  }
-  return error;
-};
-
 type TabState = {
   id: string;
   hash: string;
@@ -391,18 +365,18 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
    * Static Methods
    */
   static formatResult(result: any) {
-    return JSON.stringify(result, null, 2);
+    console.warn(
+      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatResult(result);
   }
 
-  static formatError = (error: GenericError): string => {
-    if (Array.isArray(error)) {
-      return stringify({
-        errors: error.map((e: InputError) => handleSingleError(e)),
-      });
-    }
-    // @ts-ignore
-    return stringify({ errors: handleSingleError(error) });
-  };
+  static formatError(error: any) {
+    console.warn(
+      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatError(error);
+  }
 
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
@@ -508,7 +482,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       if (validationErrors && validationErrors.length > 0) {
         // This is equivalent to handleSchemaErrors, but it's too early
         // to call setState.
-        response = GraphiQL.formatError(validationErrors);
+        response = formatError(validationErrors);
         schema = undefined;
         schemaErrors = validationErrors;
       }
@@ -1319,7 +1293,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
         } else {
           // handle as if it were an error if the fetcher response is not a string or response.data is not present
           const responseString =
-            typeof result === 'string' ? result : GraphiQL.formatResult(result);
+            typeof result === 'string' ? result : formatResult(result);
           this.handleSchemaErrors([responseString]);
         }
       })
@@ -1332,7 +1306,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
     schemaErrors: readonly GraphQLError[] | readonly string[],
   ) {
     this.safeSetState({
-      response: schemaErrors ? GraphiQL.formatError(schemaErrors) : undefined,
+      response: schemaErrors ? formatError(schemaErrors) : undefined,
       schema: undefined,
       schemaErrors,
     });
@@ -1425,7 +1399,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             error: (error: Error) => {
               this.safeSetState({
                 isWaitingForResponse: false,
-                response: error ? GraphiQL.formatError(error) : undefined,
+                response: error ? formatError(error) : undefined,
                 subscription: null,
               });
             },
@@ -1451,9 +1425,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
             } catch (error) {
               this.safeSetState({
                 isWaitingForResponse: false,
-                response: error
-                  ? GraphiQL.formatError(error as Error)
-                  : undefined,
+                response: error ? formatError(error as Error) : undefined,
                 subscription: null,
               });
             }
@@ -1470,7 +1442,7 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
       .catch(error => {
         this.safeSetState({
           isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : undefined,
+          response: error ? formatError(error) : undefined,
         });
         return null;
       });
@@ -1596,10 +1568,10 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
 
               this.setState({
                 isWaitingForResponse: false,
-                response: GraphiQL.formatResult(fullResponse),
+                response: formatResult(fullResponse),
               });
             } else {
-              const response = GraphiQL.formatResult(result);
+              const response = formatResult(result);
               this.setState(
                 state => ({
                   ...state,
@@ -2218,88 +2190,6 @@ const defaultQuery = `# Welcome to GraphiQL
 #
 
 `;
-
-// Duck-type promise detection.
-function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
-  return typeof value === 'object' && typeof value.then === 'function';
-}
-
-// Duck-type Observable.take(1).toPromise()
-function observableToPromise<T>(observable: Observable<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const subscription = observable.subscribe({
-      next: v => {
-        resolve(v);
-        subscription.unsubscribe();
-      },
-      error: reject,
-      complete: () => {
-        reject(new Error('no value resolved'));
-      },
-    });
-  });
-}
-
-// Duck-type observable detection.
-function isObservable<T>(value: any): value is Observable<T> {
-  return (
-    typeof value === 'object' &&
-    'subscribe' in value &&
-    typeof value.subscribe === 'function'
-  );
-}
-
-function isAsyncIterable(input: unknown): input is AsyncIterable<unknown> {
-  return (
-    typeof input === 'object' &&
-    input !== null &&
-    // Some browsers still don't have Symbol.asyncIterator implemented (iOS Safari)
-    // That means every custom AsyncIterable must be built using a AsyncGeneratorFunction (async function * () {})
-    ((input as any)[Symbol.toStringTag] === 'AsyncGenerator' ||
-      Symbol.asyncIterator in input)
-  );
-}
-
-function asyncIterableToPromise<T>(
-  input: AsyncIterable<T> | AsyncIterableIterator<T>,
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    // Also support AsyncGenerator on Safari iOS.
-    // As mentioned in the isAsyncIterable function there is no Symbol.asyncIterator available
-    // so every AsyncIterable must be implemented using AsyncGenerator.
-    const iteratorReturn = ('return' in input
-      ? input
-      : input[Symbol.asyncIterator]()
-    ).return?.bind(input);
-    const iteratorNext = ('next' in input
-      ? input
-      : input[Symbol.asyncIterator]()
-    ).next.bind(input);
-
-    iteratorNext()
-      .then(result => {
-        resolve(result.value);
-        // ensure cleanup
-        iteratorReturn?.();
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-
-function fetcherReturnToPromise(
-  fetcherResult: FetcherReturnType,
-): Promise<FetcherResult> {
-  return Promise.resolve(fetcherResult).then(fetcherResult => {
-    if (isAsyncIterable(fetcherResult)) {
-      return asyncIterableToPromise(fetcherResult);
-    } else if (isObservable(fetcherResult)) {
-      return observableToPromise(fetcherResult);
-    }
-    return fetcherResult;
-  });
-}
 
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(
