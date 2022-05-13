@@ -1,2 +1,2 @@
 export * from './context';
-export * from './header';
+export * from './header-editor';
