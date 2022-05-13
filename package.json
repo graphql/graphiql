@@ -30,7 +30,7 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn tsc --clean && yarn tsc",
+    "build": "yarn workspace @graphiql/react run build && yarn tsc --clean && yarn tsc",
     "build-bundles": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun build-clean",
@@ -96,6 +96,7 @@
     "@types/jest": "^26.0.22",
     "@types/node": "^14.14.22",
     "@types/prettier": "^2.0.0",
+    "@types/react": "^17.0.37",
     "@types/set-value": "^4.0.1",
     "@types/theme-ui": "^0.3.1",
     "@types/ws": "^7.4.0",
@@ -117,7 +118,7 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-prefer-object-spread": "1.2.1",
-    "eslint-plugin-react": "7.19.0",
+    "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^3.0.0",
     "execa": "^6.0.0",
     "express": "^4.17.1",

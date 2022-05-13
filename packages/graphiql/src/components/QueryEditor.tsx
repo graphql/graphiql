@@ -7,13 +7,9 @@
 
 import React from 'react';
 import { Editor } from 'codemirror';
-import {
-  FragmentDefinitionNode,
-  GraphQLSchema,
-  GraphQLType,
-  ValidationRule,
-} from 'graphql';
+import { FragmentDefinitionNode, GraphQLSchema, ValidationRule } from 'graphql';
 import MD from 'markdown-it';
+import { SchemaReference } from 'codemirror-graphql/src/utils/SchemaReference';
 import { normalizeWhitespace } from '../utility/normalizeWhitespace';
 import onHasCompletion from '../utility/onHasCompletion';
 import commonKeys from '../utility/commonKeys';
@@ -31,7 +27,7 @@ type QueryEditorProps = {
   onEdit?: (value: string) => void;
   readOnly?: boolean;
   onHintInformationRender: (elem: HTMLDivElement) => void;
-  onClickReference?: (reference: GraphQLType) => void;
+  onClickReference?: (reference: SchemaReference) => void;
   onCopyQuery?: () => void;
   onPrettifyQuery?: () => void;
   onMergeQuery?: () => void;
@@ -190,14 +186,12 @@ export class QueryEditor extends React.Component<QueryEditorProps, {}>
       info: {
         schema: this.props.schema,
         renderDescription: (text: string) => md.render(text),
-        onClick: (reference: GraphQLType) =>
+        onClick: (reference: SchemaReference) =>
           this.props.onClickReference && this.props.onClickReference(reference),
       },
       jump: {
         schema: this.props.schema,
-        onClick: (
-          reference: GraphQLType, // TODO: it looks like this arg is not actually a GraphQL type but something from GraphiQL codemirror
-        ) =>
+        onClick: (reference: SchemaReference) =>
           this.props.onClickReference && this.props.onClickReference(reference),
       },
       gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],

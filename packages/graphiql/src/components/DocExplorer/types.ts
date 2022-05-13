@@ -1,22 +1,15 @@
 import { MouseEvent } from 'react';
 import {
-  GraphQLField,
-  GraphQLInputField,
-  GraphQLArgument,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLInputObjectType,
   GraphQLType,
   GraphQLNamedType,
 } from 'graphql';
-
-export type FieldType =
-  | GraphQLField<{}, {}, {}>
-  | GraphQLInputField
-  | GraphQLArgument;
+import { ExplorerFieldDef } from '@graphiql/react';
 
 export type OnClickFieldFunction = (
-  field: FieldType,
+  field: ExplorerFieldDef,
   type?:
     | GraphQLObjectType
     | GraphQLInterfaceType

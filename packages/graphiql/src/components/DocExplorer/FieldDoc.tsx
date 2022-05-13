@@ -6,15 +6,17 @@
  */
 
 import React from 'react';
+import { GraphQLArgument, DirectiveNode } from 'graphql';
+import { ExplorerFieldDef } from '@graphiql/react';
+
 import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLArgument, DirectiveNode } from 'graphql';
-import { OnClickTypeFunction, FieldType } from './types';
+import { OnClickTypeFunction } from './types';
 
 type FieldDocProps = {
-  field?: FieldType;
+  field?: ExplorerFieldDef;
   onClickType: OnClickTypeFunction;
 };
 
