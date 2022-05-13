@@ -33,7 +33,9 @@ export type FetcherParams = {
 export type FetcherOpts = {
   headers?: { [key: string]: any };
   /**
-   * @deprecated This property will be removed in the next major version of `graphiql`
+   * @deprecated This property will be removed in the next major version of
+   * `graphiql`, it just echoes back the value passed as prop to the `GraphiQL`
+   * component with a default value of `false`
    */
   shouldPersistHeaders?: boolean;
   documentAST?: DocumentNode;
