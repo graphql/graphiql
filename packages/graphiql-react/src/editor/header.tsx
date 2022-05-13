@@ -31,7 +31,7 @@ export function useHeaderEditor({
 
   if (!context) {
     throw new Error(
-      'Tried to call the `useHeaderEditor` hook without the necessary context. Make sure that the `HeaderEditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
+      'Tried to call the `useHeaderEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
   }
 
