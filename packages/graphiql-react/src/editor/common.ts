@@ -1,7 +1,7 @@
 let isMacOs = false;
 
 if (typeof window === 'object') {
-  isMacOs = window.navigator.platform === 'MacIntel';
+  isMacOs = window.navigator.platform.toLowerCase().indexOf('mac') === 0;
 }
 
 export const commonKeys = {
