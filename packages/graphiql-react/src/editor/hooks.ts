@@ -3,7 +3,10 @@ import { RefObject, useEffect, useRef } from 'react';
 
 import onHasCompletion from './completion';
 
-export function useSyncValue(editor: Editor | null, value: string | undefined) {
+export function useSynchronizeValue(
+  editor: Editor | null,
+  value: string | undefined,
+) {
   useEffect(() => {
     if (editor && typeof value !== 'undefined') {
       if (value !== editor.getValue()) {

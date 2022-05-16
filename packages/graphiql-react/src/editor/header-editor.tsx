@@ -10,7 +10,7 @@ import {
   useCompletion,
   useKeyMap,
   useResizeEditor,
-  useSyncValue,
+  useSynchronizeValue,
 } from './hooks';
 
 export type UseHeaderEditorArgs = {
@@ -101,7 +101,7 @@ export function useHeaderEditor({
     });
   }, [editorTheme, readOnly, setHeaderEditor]);
 
-  useSyncValue(headerEditor, value);
+  useSynchronizeValue(headerEditor, value);
 
   useChangeHandler(headerEditor, onEdit);
 
