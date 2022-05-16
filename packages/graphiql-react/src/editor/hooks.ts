@@ -70,13 +70,13 @@ export function useKeyMap(
     if (!editor) {
       return;
     }
-    for (const key in keys) {
+    for (const key of keys) {
       editor.removeKeyMap(key);
     }
 
     if (callback) {
       const keyMap: Record<string, EmptyCallback> = {};
-      for (const key in keys) {
+      for (const key of keys) {
         keyMap[key] = () => callback();
       }
       editor.addKeyMap(keyMap);
