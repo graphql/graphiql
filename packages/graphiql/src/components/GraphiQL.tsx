@@ -1705,15 +1705,21 @@ class GraphiQLWithContext extends React.Component<
   };
 
   handleMergeQuery = () => {
-    const editor = this.getQueryEditor() as CodeMirror.Editor;
-    const query = editor.getValue();
+    if (!this.state.documentAST) {
+      return;
+    }
 
+    const editor = this.getQueryEditor();
+    if (!editor) {
+      return;
+    }
+
+    const query = editor.getValue();
     if (!query) {
       return;
     }
 
-    const ast = this.state.documentAST!;
-    editor.setValue(print(mergeAST(ast, this.state.schema)));
+    editor.setValue(print(mergeAST(this.state.documentAST, this.state.schema)));
   };
 
   handleEditQuery = debounce(100, (value: string) => {
