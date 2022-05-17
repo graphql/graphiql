@@ -1,7 +1,7 @@
 import { EditorChange } from 'codemirror';
 import { RefObject, useEffect, useRef } from 'react';
 
-import onHasCompletion from './completion';
+import { onHasCompletion } from './completion';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(

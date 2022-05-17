@@ -1,8 +1,10 @@
 import {
   EditorContext,
   EditorContextProvider,
+  onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useVariableEditor,
 } from './editor';
 import {
   ExplorerContext,
@@ -14,6 +16,7 @@ import type {
   EditorContextType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseVariableEditorArgs,
 } from './editor';
 import type {
   ExplorerContextType,
@@ -26,8 +29,10 @@ export {
   // editor
   EditorContext,
   EditorContextProvider,
+  onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useVariableEditor,
   // explorer
   ExplorerContext,
   ExplorerContextProvider,
@@ -39,6 +44,7 @@ export type {
   EditorContextType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseVariableEditorArgs,
   // explorer
   ExplorerContextType,
   ExplorerFieldDef,

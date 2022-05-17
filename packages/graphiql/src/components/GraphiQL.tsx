@@ -455,7 +455,6 @@ class GraphiQLWithContext extends React.Component<
   // refs
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<ResultViewer>;
-  variableEditorComponent: Maybe<VariableEditor>;
   _queryHistory: Maybe<QueryHistory>;
   _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
@@ -773,10 +772,7 @@ class GraphiQLWithContext extends React.Component<
   componentDidUpdate() {
     // If this update caused DOM nodes to have changed sizes, update the
     // corresponding CodeMirror instance sizes to match.
-    this.codeMirrorSizer.updateSizes([
-      this.variableEditorComponent,
-      this.resultComponent,
-    ]);
+    this.codeMirrorSizer.updateSizes([this.resultComponent]);
   }
 
   // Use it when the state change is async
@@ -1037,10 +1033,7 @@ class GraphiQLWithContext extends React.Component<
                   )}
                 </div>
                 <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
-                  value={this.state.variables}
+                  value={this.props.variables}
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
@@ -1126,10 +1119,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
-    if (this.variableEditorComponent) {
-      return this.variableEditorComponent.getCodeMirror();
-    }
-    return null;
+    return this.props.editorContext?.variableEditor || null;
   }
 
   /**
@@ -1148,9 +1138,7 @@ class GraphiQLWithContext extends React.Component<
    */
   public refresh() {
     this.props.editorContext?.queryEditor?.refresh();
-    if (this.variableEditorComponent) {
-      this.variableEditorComponent.getCodeMirror().refresh();
-    }
+    this.props.editorContext?.variableEditor?.refresh();
     this.props.editorContext?.headerEditor?.refresh();
     if (this.resultComponent) {
       this.resultComponent.getCodeMirror().refresh();
