@@ -102,3 +102,18 @@ describe('getWsFetcher', () => {
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
 });
+
+describe('missing graphql-ws dependency', () => {
+  it('should throw a nice error', () => {
+    jest.resetModules();
+    jest.doMock('graphql-ws', () => {
+      throw { code: 'MODULE_NOT_FOUND' };
+    });
+
+    expect(() =>
+      createWebsocketsFetcherFromUrl('wss://example.com'),
+    ).toThrowError(
+      /You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'/,
+    );
+  });
+});
