@@ -38,12 +38,7 @@ describe('GraphiQL On Initialization', () => {
       '.variable-editor',
     ];
     cy.visit(`/`);
-    cy.window().then(w => {
-      // @ts-ignore
-      const value = w.g.getQueryEditor().getValue();
-      // this message changes between graphql 15 & 16
-      expect(value).to.contain('# Welcome to GraphiQL');
-    });
+    cy.get('.query-editor').contains('# Welcome to GraphiQL');
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
   });
 

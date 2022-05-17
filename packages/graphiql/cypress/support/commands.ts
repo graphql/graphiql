@@ -10,12 +10,12 @@
 
 // / <reference types="cypress" />
 
+type Op = {
+  query: string;
+  variables?: Record<string, any>;
+  variablesString?: string;
+};
 declare namespace Cypress {
-  type Op = {
-    query: string;
-    variables?: Record<string, any>;
-    variablesString?: string;
-  };
   type MockResult =
     | { data: any }
     | { data: any; hasNext?: boolean }
@@ -65,21 +65,24 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 
 Cypress.Commands.add(
   'assertHasValues',
-  ({ query, variables, variablesString }) => {
-    cy.window().then(w => {
-      // @ts-ignore
-      expect(w.g.getQueryEditor().getValue()).to.equal(query);
-      if (variables) {
-        // @ts-ignore
-        expect(w.g.getVariableEditor().getValue()).to.equal(
-          JSON.stringify(variables, null, 2),
-        );
-      }
-      if (variablesString) {
-        // @ts-ignore
-        expect(w.g.getVariableEditor().getValue()).to.equal(variablesString);
-      }
+  ({ query, variables, variablesString }: Op) => {
+    cy.get('.query-editor').should(element => {
+      expect(element.get(0).innerText).to.equal(codeWithLineNumbers(query));
     });
+    if (typeof variables !== 'undefined') {
+      cy.get('.variable-editor .codemirrorWrap').should(element => {
+        expect(element.get(0).innerText).to.equal(
+          codeWithLineNumbers(JSON.stringify(variables, null, 2)),
+        );
+      });
+    }
+    if (typeof variablesString !== 'undefined') {
+      cy.get('.variable-editor .codemirrorWrap').should(element => {
+        expect(element.get(0).innerText).to.equal(
+          codeWithLineNumbers(variablesString),
+        );
+      });
+    }
   },
 );
 
@@ -102,3 +105,10 @@ Cypress.Commands.add('assertResult', (expectedResult, timeout = 200) => {
     expect(value).to.deep.equal(JSON.stringify(expectedResult, null, 2));
   });
 });
+
+function codeWithLineNumbers(code: string): string {
+  return code
+    .split('\n')
+    .map((line, i) => `${i + 1}\n${line}`)
+    .join('\n');
+}
