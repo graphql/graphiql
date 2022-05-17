@@ -114,9 +114,11 @@ describe('GraphiQL', () => {
   });
 
   it('defaults to the built-in default query', async () => {
-    const { findByText } = render(<GraphiQL fetcher={noOpFetcher} />);
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
     await wait();
-    expect(findByText('# Welcome to GraphiQL')).toBeTruthy();
+    expect(
+      container.querySelector('.query-editor .mockCodeMirror').value,
+    ).toContain('# Welcome to GraphiQL');
   });
 
   it('accepts a custom default query', async () => {
