@@ -1,10 +1,10 @@
 import { DocumentNode, visit, GraphQLError } from 'graphql';
 import { meros } from 'meros';
 import {
-  createClient,
   Client,
   ClientOptions,
   ExecutionResult,
+  createClient as createClientType,
 } from 'graphql-ws';
 import {
   isAsyncIterable,
@@ -18,6 +18,10 @@ import type {
   ExecutionResultPayload,
   CreateFetcherOptions,
 } from './types';
+
+const errorHasCode = (err: unknown): err is { code: string } => {
+  return typeof err === 'object' && err !== null && 'code' in err;
+};
 
 /**
  * Returns true if the name matches a subscription in the AST
@@ -76,6 +80,10 @@ export const createWebsocketsFetcherFromUrl = (
 ) => {
   let wsClient;
   try {
+    const { createClient } = require('graphql-ws') as {
+      createClient: typeof createClientType;
+    };
+
     // TODO: defaults?
     wsClient = createClient({
       url,
@@ -83,6 +91,13 @@ export const createWebsocketsFetcherFromUrl = (
     });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
+    if (errorHasCode(err)) {
+      if (err.code === 'MODULE_NOT_FOUND') {
+        throw Error(
+          "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
+        );
+      }
+    }
     console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
   }
 };
