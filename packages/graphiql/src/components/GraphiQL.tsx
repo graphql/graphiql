@@ -567,8 +567,8 @@ class GraphiQLWithContext extends React.Component<
 
     const initialTabHash = idFromTabContents({
       query,
-      variables: variables as string,
-      headers: headers as string,
+      variables: variables ?? undefined,
+      headers: headers ?? undefined,
     });
 
     const initialTab: TabState = {
@@ -576,8 +576,8 @@ class GraphiQLWithContext extends React.Component<
       hash: initialTabHash,
       title: operationName ?? '<untitled>',
       query,
-      variables: variables as string,
-      headers: headers as string,
+      variables: variables ?? undefined,
+      headers: headers ?? undefined,
       operationName,
       response: undefined,
     };
