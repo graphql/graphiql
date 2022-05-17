@@ -7,10 +7,8 @@ import {
   GraphQLField,
 } from 'graphql';
 import escapeHTML from 'escape-html';
-import MD from 'markdown-it';
 import { importCodeMirror } from './common';
-
-const md = new MD();
+import { markdown } from '../markdown';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
@@ -63,7 +61,7 @@ export default function onHasCompletion(
 
         // Now that the UI has been set up, add info to information.
         const description = ctx.description
-          ? md.render(ctx.description)
+          ? markdown.render(ctx.description)
           : 'Self descriptive.';
         const type = ctx.type
           ? '<span class="infoType">' + renderType(ctx.type) + '</span>'
@@ -78,7 +76,7 @@ export default function onHasCompletion(
 
         if (ctx && deprecation && ctx.deprecationReason) {
           const reason = ctx.deprecationReason
-            ? md.render(ctx.deprecationReason)
+            ? markdown.render(ctx.deprecationReason)
             : '';
           deprecation.innerHTML =
             '<span class="deprecation-label">Deprecated</span>' + reason;
