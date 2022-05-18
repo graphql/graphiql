@@ -1,5 +1,3 @@
-import CM from 'codemirror';
-
 export type Maybe<T> = T | null | undefined;
 
 export type ReactComponentLike =
@@ -22,5 +20,3 @@ export type ReactNodeLike =
   | boolean
   | null
   | undefined;
-
-export type CodeMirrorEditor = CM.Editor & { options?: any };

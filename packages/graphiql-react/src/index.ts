@@ -5,6 +5,7 @@ import {
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useResultEditor,
   useVariableEditor,
 } from './editor';
 import {
@@ -15,8 +16,10 @@ import {
 
 import type {
   EditorContextType,
+  ResultsTooltipType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseResultEditorArgs,
   UseVariableEditorArgs,
 } from './editor';
 import type {
@@ -34,6 +37,7 @@ export {
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useResultEditor,
   useVariableEditor,
   // explorer
   ExplorerContext,
@@ -44,8 +48,10 @@ export {
 export type {
   // editor
   EditorContextType,
+  ResultsTooltipType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseResultEditorArgs,
   UseVariableEditorArgs,
   // explorer
   ExplorerContextType,

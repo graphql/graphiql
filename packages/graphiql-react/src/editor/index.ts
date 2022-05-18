@@ -3,11 +3,13 @@ import { ImagePreview } from './components';
 import { EditorContext, EditorContextProvider } from './context';
 import { useHeaderEditor } from './header-editor';
 import { useQueryEditor } from './query-editor';
+import { useResultEditor } from './result-editor';
 import { useVariableEditor } from './variable-editor';
 
 import type { EditorContextType } from './context';
 import type { UseHeaderEditorArgs } from './header-editor';
 import type { UseQueryEditorArgs } from './query-editor';
+import type { ResultsTooltipType, UseResultEditorArgs } from './result-editor';
 import type { UseVariableEditorArgs } from './variable-editor';
 
 export {
@@ -17,12 +19,15 @@ export {
   EditorContextProvider,
   useHeaderEditor,
   useQueryEditor,
+  useResultEditor,
   useVariableEditor,
 };
 
 export type {
   EditorContextType,
+  ResultsTooltipType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseResultEditorArgs,
   UseVariableEditorArgs,
 };
