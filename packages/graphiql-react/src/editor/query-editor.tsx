@@ -73,6 +73,8 @@ export function useQueryEditor({
   }, [onClickReference]);
 
   useEffect(() => {
+    let isActive = true;
+
     importCodeMirror([
       import('codemirror/addon/comment/comment'),
       import('codemirror/addon/search/search'),
@@ -82,6 +84,11 @@ export function useQueryEditor({
       import('codemirror-graphql/esm/jump'),
       import('codemirror-graphql/esm/mode'),
     ]).then(CodeMirror => {
+      // Don't continue if the effect has already been cleaned up
+      if (!isActive) {
+        return;
+      }
+
       codeMirrorRef.current = CodeMirror;
 
       const container = ref.current;
@@ -174,6 +181,10 @@ export function useQueryEditor({
 
       setQueryEditor(newEditor);
     });
+
+    return () => {
+      isActive = false;
+    };
   }, [editorTheme, readOnly, setQueryEditor]);
 
   useSynchronizeSchema(queryEditor, schema, codeMirrorRef);

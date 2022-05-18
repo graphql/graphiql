@@ -46,10 +46,17 @@ export function useHeaderEditor({
   const { headerEditor, setHeaderEditor } = context;
 
   useEffect(() => {
+    let isActive = true;
+
     importCodeMirror([
       // @ts-expect-error
       import('codemirror/mode/javascript/javascript'),
     ]).then(CodeMirror => {
+      // Don't continue if the effect has already been cleaned up
+      if (!isActive) {
+        return;
+      }
+
       const container = ref.current;
       if (!container) {
         return;
@@ -99,6 +106,10 @@ export function useHeaderEditor({
 
       setHeaderEditor(newEditor);
     });
+
+    return () => {
+      isActive = false;
+    };
   }, [editorTheme, readOnly, setHeaderEditor]);
 
   useSynchronizeValue(headerEditor, value);
