@@ -1799,7 +1799,6 @@ class GraphiQLWithContext extends React.Component<
     this.setState(
       state => ({
         ...state,
-        headers: value,
         tabs: tabsStateEditHeadersReducer(value, state.tabs),
       }),
       this.persistTabsState,
@@ -1897,7 +1896,7 @@ class GraphiQLWithContext extends React.Component<
       this.handleEditVariables(variables);
     }
     if (headers) {
-      this.handleEditHeaders(headers);
+      setHeaders(this.props, headers);
     }
     if (operationName) {
       this.handleEditOperationName(operationName);
@@ -2414,7 +2413,7 @@ function stateOnTabAddReducer(
 }
 
 function getHeaders(props: GraphiQLWithContextProps) {
-  return props.headers ?? props.editorContext?.headerEditor?.getValue();
+  return props.editorContext?.headerEditor?.getValue();
 }
 
 function setHeaders(props: GraphiQLWithContextProps, value: string) {
