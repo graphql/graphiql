@@ -459,7 +459,6 @@ class GraphiQLWithContext extends React.Component<
   _queryHistory: Maybe<QueryHistory>;
   _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
-  queryEditorComponent: Maybe<QueryEditor>;
   resultViewerElement: Maybe<HTMLElement>;
 
   constructor(props: GraphiQLWithContextProps) {
@@ -775,7 +774,6 @@ class GraphiQLWithContext extends React.Component<
     // If this update caused DOM nodes to have changed sizes, update the
     // corresponding CodeMirror instance sizes to match.
     this.codeMirrorSizer.updateSizes([
-      this.queryEditorComponent,
       this.variableEditorComponent,
       this.resultComponent,
     ]);
@@ -987,9 +985,6 @@ class GraphiQLWithContext extends React.Component<
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
                 schema={this.state.schema}
                 validationRules={this.props.validationRules}
                 value={this.state.query}
@@ -1122,10 +1117,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   getQueryEditor() {
-    if (this.queryEditorComponent) {
-      return this.queryEditorComponent.getCodeMirror();
-    }
-    // return null
+    return this.props.editorContext?.queryEditor || null;
   }
 
   /**
@@ -1155,9 +1147,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public refresh() {
-    if (this.queryEditorComponent) {
-      this.queryEditorComponent.getCodeMirror().refresh();
-    }
+    this.props.editorContext?.queryEditor?.refresh();
     if (this.variableEditorComponent) {
       this.variableEditorComponent.getCodeMirror().refresh();
     }
@@ -1715,15 +1705,21 @@ class GraphiQLWithContext extends React.Component<
   };
 
   handleMergeQuery = () => {
-    const editor = this.getQueryEditor() as CodeMirror.Editor;
-    const query = editor.getValue();
+    if (!this.state.documentAST) {
+      return;
+    }
 
+    const editor = this.getQueryEditor();
+    if (!editor) {
+      return;
+    }
+
+    const query = editor.getValue();
     if (!query) {
       return;
     }
 
-    const ast = this.state.documentAST!;
-    editor.setValue(print(mergeAST(ast, this.state.schema)));
+    editor.setValue(print(mergeAST(this.state.documentAST, this.state.schema)));
   };
 
   handleEditQuery = debounce(100, (value: string) => {

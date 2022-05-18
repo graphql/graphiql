@@ -30,13 +30,16 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn workspace @graphiql/react run build && yarn tsc --clean && yarn tsc",
+    "build": "yarn build:clean && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql",
     "build-bundles": "yarn prebuild-bundles && yarn workspace graphiql run build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun build-clean",
     "build-demo": "wsrun build-demo",
     "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",
-    "build:clean": "yarn tsc --clean",
+    "build:clean": "yarn tsc --clean && yarn tsc --clean resources/tsconfig.graphiql.json",
+    "build:graphiql": "yarn tsc resources/tsconfig.graphiql.json",
+    "build:graphiql-react": "yarn workspace @graphiql/react run build",
+    "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
     "watch": "yarn build:watch",
     "watch-vscode": "concurrently --raw 'yarn tsc --watch' 'yarn workspace vscode-graphql run compile --watch'",

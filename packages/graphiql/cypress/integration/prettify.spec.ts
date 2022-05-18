@@ -30,11 +30,9 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     cy.clickPrettify();
 
-    cy.window().then(w => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
@@ -46,11 +44,9 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     cy.clickPrettify();
 
-    cy.window().then(w => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
@@ -59,11 +55,9 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     cy.clickPrettify();
 
-    cy.window().then(w => {
-      cy.assertHasValues({
-        query: brokenQuery,
-        variablesString: prettifiedVariables,
-      });
+    cy.assertHasValues({
+      query: brokenQuery,
+      variablesString: prettifiedVariables,
     });
   });
 
@@ -72,11 +66,9 @@ describeOrSkip('GraphiQL Prettify', () => {
 
     cy.clickPrettify();
 
-    cy.window().then(w => {
-      cy.assertHasValues({
-        query: prettifiedQuery,
-        variablesString: brokenVariables,
-      });
+    cy.assertHasValues({
+      query: prettifiedQuery,
+      variablesString: brokenVariables,
     });
   });
 });

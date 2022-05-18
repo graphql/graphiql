@@ -2,6 +2,7 @@ import {
   EditorContext,
   EditorContextProvider,
   useHeaderEditor,
+  useQueryEditor,
 } from './editor';
 import {
   ExplorerContext,
@@ -9,7 +10,11 @@ import {
   useExplorerNavStack,
 } from './explorer';
 
-import type { EditorContextType, UseHeaderEditorArgs } from './editor';
+import type {
+  EditorContextType,
+  UseHeaderEditorArgs,
+  UseQueryEditorArgs,
+} from './editor';
 import type {
   ExplorerContextType,
   ExplorerFieldDef,
@@ -22,6 +27,7 @@ export {
   EditorContext,
   EditorContextProvider,
   useHeaderEditor,
+  useQueryEditor,
   // explorer
   ExplorerContext,
   ExplorerContextProvider,
@@ -32,6 +38,7 @@ export type {
   // editor
   EditorContextType,
   UseHeaderEditorArgs,
+  UseQueryEditorArgs,
   // explorer
   ExplorerContextType,
   ExplorerFieldDef,

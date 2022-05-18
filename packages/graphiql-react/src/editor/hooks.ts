@@ -1,10 +1,11 @@
-import { Editor, EditorChange } from 'codemirror';
+import { EditorChange } from 'codemirror';
 import { RefObject, useEffect, useRef } from 'react';
 
 import onHasCompletion from './completion';
+import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   value: string | undefined,
 ) {
   useEffect(() => {
@@ -19,7 +20,7 @@ export function useSynchronizeValue(
 export type EditCallback = (value: string) => void;
 
 export function useChangeHandler(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   callback: EditCallback | undefined,
 ) {
   useEffect(() => {
@@ -27,7 +28,7 @@ export function useChangeHandler(
       return;
     }
 
-    const handleChange = (editorInstance: Editor) => {
+    const handleChange = (editorInstance: CodeMirrorEditor) => {
       const newValue = editorInstance.getValue();
       callback?.(newValue);
     };
@@ -39,12 +40,15 @@ export function useChangeHandler(
 export type CompletionCallback = (value: HTMLDivElement) => void;
 
 export function useCompletion(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   callback: CompletionCallback | undefined,
 ) {
   useEffect(() => {
     if (editor && callback) {
-      const handleCompletion = (instance: Editor, changeObj?: EditorChange) => {
+      const handleCompletion = (
+        instance: CodeMirrorEditor,
+        changeObj?: EditorChange,
+      ) => {
         onHasCompletion(instance, changeObj, callback);
       };
       editor.on(
@@ -65,7 +69,7 @@ export function useCompletion(
 export type EmptyCallback = () => void;
 
 export function useKeyMap(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   keys: string[],
   callback: EmptyCallback | undefined,
 ) {
@@ -88,7 +92,7 @@ export function useKeyMap(
 }
 
 export function useResizeEditor(
-  editor: Editor | null,
+  editor: CodeMirrorEditor | null,
   ref: RefObject<HTMLDivElement>,
 ) {
   const sizeRef = useRef<number>();
