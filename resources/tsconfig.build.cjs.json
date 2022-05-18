@@ -9,9 +9,6 @@
       "path": "../packages/graphiql-toolkit"
     },
     {
-      "path": "../packages/graphiql"
-    },
-    {
       "path": "../packages/monaco-graphql"
     },
     {
