@@ -909,13 +909,9 @@ class GraphiQLWithContext extends React.Component<
               ref={node => {
                 this._queryHistory = node;
               }}
-              operationName={this.state.operationName}
-              query={this.state.query}
-              variables={this.state.variables}
               onSelectQuery={this.handleSelectHistoryQuery}
               storage={this._storage}
-              maxHistoryLength={this.state.maxHistoryLength}
-              queryID={this._editorQueryID}>
+              maxHistoryLength={this.state.maxHistoryLength}>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleHistory}
