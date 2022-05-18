@@ -44,7 +44,7 @@ import type {
   EditorContextType,
   ExplorerContextType,
   ExplorerFieldDef,
-  ResultsTooltipType,
+  ResponseTooltipType,
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
@@ -247,7 +247,7 @@ export type GraphiQLProps = {
   /**
    * Custom results tooltip component
    */
-  ResultsTooltip?: ResultsTooltipType;
+  ResultsTooltip?: ResponseTooltipType;
   /**
    * decide whether schema responses should be validated.
    *
@@ -1039,7 +1039,7 @@ class GraphiQLWithContext extends React.Component<
               <ResultViewer
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
+                ResponseTooltip={this.props.ResultsTooltip}
               />
               {footer}
             </div>
@@ -1104,7 +1104,7 @@ class GraphiQLWithContext extends React.Component<
     this.props.editorContext?.queryEditor?.refresh();
     this.props.editorContext?.variableEditor?.refresh();
     this.props.editorContext?.headerEditor?.refresh();
-    this.props.editorContext?.resultEditor?.refresh();
+    this.props.editorContext?.responseEditor?.refresh();
   }
 
   /**

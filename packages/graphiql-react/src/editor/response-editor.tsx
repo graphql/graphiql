@@ -8,36 +8,36 @@ import { EditorContext } from './context';
 import { useResizeEditor, useSynchronizeValue } from './hooks';
 import { CodeMirrorEditor } from './types';
 
-export type ResultsTooltipType = ComponentType<{ pos: Position }>;
+export type ResponseTooltipType = ComponentType<{ pos: Position }>;
 
-export type UseResultEditorArgs = {
-  ResultsTooltip?: ResultsTooltipType;
+export type UseResponseEditorArgs = {
+  ResponseTooltip?: ResponseTooltipType;
   editorTheme?: string;
   value?: string;
 };
 
-export function useResultEditor({
-  ResultsTooltip,
+export function useResponseEditor({
+  ResponseTooltip,
   editorTheme = 'graphiql',
   value,
-}: UseResultEditorArgs = {}) {
+}: UseResponseEditorArgs = {}) {
   const context = useContext(EditorContext);
   const ref = useRef<HTMLDivElement>(null);
 
-  const resultsTooltipRef = useRef<ResultsTooltipType | undefined>(
-    ResultsTooltip,
+  const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
+    ResponseTooltip,
   );
   useEffect(() => {
-    resultsTooltipRef.current = ResultsTooltip;
-  }, [ResultsTooltip]);
+    responseTooltipRef.current = ResponseTooltip;
+  }, [ResponseTooltip]);
 
   if (!context) {
     throw new Error(
-      'Tried to call the `useResultEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
+      'Tried to call the `useResponseEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
   }
 
-  const { resultEditor, setResultEditor } = context;
+  const { responseEditor, setResponseEditor } = context;
 
   useEffect(() => {
     let isActive = true;
@@ -69,9 +69,9 @@ export function useResultEditor({
         (token: Token, _options: any, _cm: CodeMirrorEditor, pos: Position) => {
           const infoElements: JSX.Element[] = [];
 
-          const ResultsTooltipComponent = resultsTooltipRef.current;
-          if (ResultsTooltipComponent) {
-            infoElements.push(<ResultsTooltipComponent pos={pos} />);
+          const ResponseTooltipComponent = responseTooltipRef.current;
+          if (ResponseTooltipComponent) {
+            infoElements.push(<ResponseTooltipComponent pos={pos} />);
           }
 
           if (ImagePreview.shouldRender(token)) {
@@ -107,17 +107,17 @@ export function useResultEditor({
         extraKeys: commonKeys,
       });
 
-      setResultEditor(newEditor);
+      setResponseEditor(newEditor);
     });
 
     return () => {
       isActive = false;
     };
-  }, [editorTheme, setResultEditor]);
+  }, [editorTheme, setResponseEditor]);
 
-  useSynchronizeValue(resultEditor, value);
+  useSynchronizeValue(responseEditor, value);
 
-  useResizeEditor(resultEditor, ref);
+  useResizeEditor(responseEditor, ref);
 
   return ref;
 }
