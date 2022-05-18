@@ -1,4 +1,5 @@
 import { onHasCompletion } from './completion';
+import { ImagePreview } from './components';
 import { EditorContext, EditorContextProvider } from './context';
 import { useHeaderEditor } from './header-editor';
 import { useQueryEditor } from './query-editor';
@@ -11,6 +12,7 @@ import type { UseVariableEditorArgs } from './variable-editor';
 
 export {
   onHasCompletion,
+  ImagePreview,
   EditorContext,
   EditorContextProvider,
   useHeaderEditor,

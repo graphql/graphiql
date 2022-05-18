@@ -5,12 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { ImagePreview } from '@graphiql/react';
 import React, { ComponentType } from 'react';
 import type { Editor, Position, Token } from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from '../utility/CodeMirrorSizer';
-import { ImagePreview } from './ImagePreview';
 import { importCodeMirror } from '../utility/importCodeMirror';
 import { CodeMirrorEditor } from '../types';
 

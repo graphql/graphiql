@@ -1,6 +1,7 @@
 import {
   EditorContext,
   EditorContextProvider,
+  ImagePreview,
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
@@ -29,6 +30,7 @@ export {
   // editor
   EditorContext,
   EditorContextProvider,
+  ImagePreview,
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
