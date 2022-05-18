@@ -9,8 +9,6 @@ import React, {
   ComponentType,
   PropsWithChildren,
   MouseEventHandler,
-  Component,
-  FunctionComponent,
   ReactNode,
 } from 'react';
 import {
@@ -49,14 +47,13 @@ import type {
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
-import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { HeaderEditor } from './HeaderEditor';
-import { ResultViewer } from './ResultViewer';
+import { ResultTooltipType, ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import CodeMirrorSizer from '../utility/CodeMirrorSizer';
@@ -250,7 +247,7 @@ export type GraphiQLProps = {
   /**
    * Custom results tooltip component
    */
-  ResultsTooltip?: typeof Component | FunctionComponent;
+  ResultsTooltip?: ResultTooltipType;
   /**
    * decide whether schema responses should be validated.
    *
@@ -1061,7 +1058,6 @@ class GraphiQLWithContext extends React.Component<
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
                 ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
               />
               {footer}
             </div>

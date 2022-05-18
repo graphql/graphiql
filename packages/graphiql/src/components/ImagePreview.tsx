@@ -4,10 +4,86 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
+import type { Token } from 'codemirror';
+import React, { useEffect, useRef, useState } from 'react';
 
-import React from 'react';
+type ImagePreviewProps = { token: Token };
 
-function tokenToURL(token: any) {
+type ImagePreviewState = {
+  width: number | null;
+  height: number | null;
+  src: string | null;
+  mime: string | null;
+};
+
+export function ImagePreview(props: ImagePreviewProps) {
+  const [state, setState] = useState<ImagePreviewState>({
+    width: null,
+    height: null,
+    src: null,
+    mime: null,
+  });
+
+  const ref = useRef<HTMLImageElement>(null);
+
+  function updateMetadata() {
+    if (!ref.current) {
+      return;
+    }
+
+    const width = ref.current.naturalWidth;
+    const height = ref.current.naturalHeight;
+    const src = ref.current.src;
+
+    if (src !== state.src) {
+      setState(current => ({ ...current, src }));
+      fetch(src, { method: 'HEAD' }).then(response => {
+        setState(current => ({
+          ...current,
+          mime: response.headers.get('Content-Type'),
+        }));
+      });
+    }
+
+    if (width !== state.width || height !== state.height) {
+      setState(current => ({ ...current, height, width }));
+    }
+  }
+
+  useEffect(() => {
+    updateMetadata();
+  });
+
+  let dims = null;
+  if (state.width !== null && state.height !== null) {
+    let dimensions = state.width + 'x' + state.height;
+    if (state.mime !== null) {
+      dimensions += ' ' + state.mime;
+    }
+
+    dims = <div>{dimensions}</div>;
+  }
+
+  return (
+    <div>
+      <img
+        onLoad={() => {
+          updateMetadata();
+        }}
+        ref={ref}
+        src={tokenToURL(props.token)?.href}
+      />
+      {dims}
+    </div>
+  );
+}
+
+ImagePreview.shouldRender = function shouldRender(token: Token) {
+  const url = tokenToURL(token);
+  return url ? isImageURL(url) : false;
+};
+
+function tokenToURL(token: Token) {
   if (token.type !== 'string') {
     return;
   }
@@ -24,90 +100,4 @@ function tokenToURL(token: any) {
 
 function isImageURL(url: URL) {
   return /(bmp|gif|jpeg|jpg|png|svg)$/.test(url.pathname);
-}
-
-type ImagePreviewProps = {
-  token: any;
-};
-
-type ImagePreviewState = {
-  width: number | null;
-  height: number | null;
-  src: string | null;
-  mime: string | null;
-};
-
-export class ImagePreview extends React.Component<
-  ImagePreviewProps,
-  ImagePreviewState
-> {
-  _node: HTMLImageElement | null = null;
-
-  static shouldRender(token: any) {
-    const url = tokenToURL(token);
-    return url ? isImageURL(url) : false;
-  }
-
-  state = {
-    width: null,
-    height: null,
-    src: null,
-    mime: null,
-  };
-
-  componentDidMount() {
-    this._updateMetadata();
-  }
-
-  componentDidUpdate() {
-    this._updateMetadata();
-  }
-
-  render() {
-    let dims = null;
-    if (this.state.width !== null && this.state.height !== null) {
-      let dimensions = this.state.width + 'x' + this.state.height;
-      if (this.state.mime !== null) {
-        dimensions += ' ' + this.state.mime;
-      }
-
-      dims = <div>{dimensions}</div>;
-    }
-
-    return (
-      <div>
-        <img
-          onLoad={() => this._updateMetadata()}
-          ref={node => {
-            this._node = node;
-          }}
-          src={tokenToURL(this.props.token)?.href}
-        />
-        {dims}
-      </div>
-    );
-  }
-
-  _updateMetadata() {
-    if (!this._node) {
-      return;
-    }
-
-    const width = this._node.naturalWidth;
-    const height = this._node.naturalHeight;
-    const src = this._node.src;
-
-    if (src !== this.state.src) {
-      this.setState({ src });
-      fetch(src, { method: 'HEAD' }).then(response => {
-        this.setState({
-          mime: response.headers.get('Content-Type'),
-        });
-      });
-    }
-
-    if (width !== this.state.width || height !== this.state.height) {
-      this.setState({ height, width });
-    }
-  }
 }

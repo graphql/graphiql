@@ -5,20 +5,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { Component, FunctionComponent } from 'react';
-import type * as CM from 'codemirror';
+import React, { ComponentType } from 'react';
+import type { Editor, Position, Token } from 'codemirror';
 import ReactDOM from 'react-dom';
 import commonKeys from '../utility/commonKeys';
 import { SizerComponent } from '../utility/CodeMirrorSizer';
-import { ImagePreview as ImagePreviewComponent } from './ImagePreview';
+import { ImagePreview } from './ImagePreview';
 import { importCodeMirror } from '../utility/importCodeMirror';
 import { CodeMirrorEditor } from '../types';
+
+export type ResultTooltipType = ComponentType<{ pos: Position }>;
 
 type ResultViewerProps = {
   value?: string;
   editorTheme?: string;
-  ResultsTooltip?: typeof Component | FunctionComponent;
-  ImagePreview: typeof ImagePreviewComponent;
+  ResultsTooltip?: ResultTooltipType;
   registerRef: (node: HTMLElement) => void;
 };
 
@@ -91,7 +92,6 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
       useCommonAddons: false,
     });
     const Tooltip = this.props.ResultsTooltip;
-    const ImagePreview = this.props.ImagePreview;
 
     if (Tooltip || ImagePreview) {
       await import('codemirror-graphql/utils/info-addon');
@@ -99,25 +99,23 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
       CodeMirror.registerHelper(
         'info',
         'graphql-results',
-        (token: any, _options: any, _cm: CodeMirror.Editor, pos: any) => {
+        (token: Token, _options: any, _cm: Editor, pos: Position) => {
           const infoElements: JSX.Element[] = [];
           if (Tooltip) {
             infoElements.push(<Tooltip pos={pos} />);
           }
 
-          if (
-            ImagePreview &&
-            typeof ImagePreview.shouldRender === 'function' &&
-            ImagePreview.shouldRender(token)
-          ) {
-            infoElements.push(<ImagePreview token={token} />);
+          if (ImagePreview.shouldRender(token)) {
+            infoElements.push(
+              <ImagePreview key="image-preview" token={token} />,
+            );
           }
 
           if (!infoElements.length) {
             ReactDOM.unmountComponentAtNode(tooltipDiv);
             return null;
           }
-          ReactDOM.render(<div>{infoElements}</div>, tooltipDiv);
+          ReactDOM.render(infoElements, tooltipDiv);
           return tooltipDiv;
         },
       );
@@ -135,7 +133,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
         minFoldSize: 4,
       },
       gutters: ['CodeMirror-foldgutter'],
-      info: Boolean(this.props.ResultsTooltip || this.props.ImagePreview),
+      info: true,
       extraKeys: commonKeys,
     }) as CodeMirrorEditor;
   }
@@ -145,7 +143,7 @@ export class ResultViewer extends React.Component<ResultViewerProps, {}>
    * React component.
    */
   getCodeMirror() {
-    return this.viewer as CM.Editor;
+    return this.viewer as Editor;
   }
 
   /**
