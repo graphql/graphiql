@@ -45,16 +45,15 @@ function useMockedEditor(value?: string, onEdit?: (newValue: string) => void) {
       return;
     }
 
+    if (ref.current.childElementCount > 0) {
+      return;
+    }
+
     const mockGutter = document.createElement('div');
     mockGutter.className = 'CodeMirror-gutter';
 
     const mockTextArea = document.createElement('textarea');
     mockTextArea.className = 'mockCodeMirror';
-    mockTextArea.addEventListener('change', event => {
-      const newValue = (event.target as HTMLTextAreaElement).value;
-      setCode(newValue);
-      onEdit?.(newValue);
-    });
 
     const mockWrapper = document.createElement('div');
     mockWrapper.appendChild(mockGutter);
@@ -62,6 +61,26 @@ function useMockedEditor(value?: string, onEdit?: (newValue: string) => void) {
 
     ref.current.appendChild(mockWrapper);
   });
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const textarea = ref.current.querySelector('.mockCodeMirror');
+    if (!(textarea instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    function handleChange(event: Event) {
+      const newValue = (event.target as HTMLTextAreaElement).value;
+      setCode(newValue);
+      onEdit?.(newValue);
+    }
+
+    textarea.addEventListener('change', handleChange);
+    return () => textarea.removeEventListener('change', handleChange);
+  }, [onEdit]);
 
   useEffect(() => {
     setCode(value);
