@@ -24,8 +24,9 @@ export type {
   FetcherParams,
   FetcherResult,
   FetcherReturnType,
-  SyncFetcherResult,
   Observable,
+  Storage,
+  SyncFetcherResult,
 } from '@graphiql/toolkit';
 /**
  * Components
@@ -49,7 +50,6 @@ export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 export { fillLeafs } from './utility/fillLeafs';
 export { default as mergeAst } from './utility/mergeAst';
 export { default as getSelectedOperationName } from './utility/getSelectedOperationName';
-export { Storage } from './utility/StorageAPI';
 
 /**
  * Legacy exports

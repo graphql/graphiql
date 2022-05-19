@@ -57,7 +57,6 @@ import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer, RESULT_VIEWER_ID } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import StorageAPI, { Storage } from '../utility/StorageAPI';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
@@ -74,6 +73,7 @@ import {
   isPromise,
   isObservable,
   isAsyncIterable,
+  StorageAPI,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
@@ -82,6 +82,7 @@ import type {
   SyncFetcherResult,
   Unsubscribable,
   FetcherResultPayload,
+  Storage,
 } from '@graphiql/toolkit';
 import HistoryStore from '../utility/HistoryStore';
 

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 import QueryStore, { QueryStoreItem } from './QueryStore';
-import StorageAPI from './StorageAPI';
+import { StorageAPI } from '@graphiql/toolkit';
 import { parse } from 'graphql';
 import {
   HandleEditLabelFn,

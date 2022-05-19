@@ -1,18 +1,11 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-export interface Storage {
-  getItem: (key: string) => string | null;
-  removeItem: (key: string) => void;
-  setItem: (key: string, value: string) => void;
+export type Storage = {
+  getItem(key: string): string | null;
+  removeItem(key: string): void;
+  setItem(key: string, value: string): void;
   length: number;
-}
+};
 
-function isQuotaError(storage: Storage, e: Error) {
+function isQuotaError(storage: Storage, e: unknown) {
   return (
     e instanceof DOMException &&
     // everything except Firefox
@@ -29,7 +22,7 @@ function isQuotaError(storage: Storage, e: Error) {
   );
 }
 
-export default class StorageAPI {
+export class StorageAPI {
   storage: Storage | null;
 
   constructor(storage?: Storage) {
@@ -38,32 +31,35 @@ export default class StorageAPI {
   }
 
   get(name: string): string | null {
-    if (this.storage) {
-      const value = this.storage.getItem('graphiql:' + name);
-      // Clean up any inadvertently saved null/undefined values.
-      if (value === 'null' || value === 'undefined') {
-        this.storage.removeItem('graphiql:' + name);
-        return null;
-      }
-
-      if (value) {
-        return value;
-      }
+    if (!this.storage) {
+      return null;
     }
-    return null;
+
+    const key = `${STORAGE_NAMESPACE}:${name}`;
+    const value = this.storage.getItem(key);
+    // Clean up any inadvertently saved null/undefined values.
+    if (value === 'null' || value === 'undefined') {
+      this.storage.removeItem(key);
+      return null;
+    }
+
+    return value || null;
   }
 
-  set(name: string, value: string) {
+  set(
+    name: string,
+    value: string,
+  ): { isQuotaError: boolean; error: Error | null } {
     let quotaError = false;
-    let error = null;
+    let error: Error | null = null;
 
     if (this.storage) {
-      const key = `graphiql:${name}`;
+      const key = `${STORAGE_NAMESPACE}:${name}`;
       if (value) {
         try {
           this.storage.setItem(key, value);
         } catch (e) {
-          error = e;
+          error = e instanceof Error ? e : new Error(`${e}`);
           quotaError = isQuotaError(this.storage, e);
         }
       } else {
@@ -72,9 +68,8 @@ export default class StorageAPI {
       }
     }
 
-    return {
-      isQuotaError: quotaError,
-      error,
-    };
+    return { isQuotaError: quotaError, error };
   }
 }
+
+const STORAGE_NAMESPACE = 'graphiql';
