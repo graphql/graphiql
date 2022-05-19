@@ -1,10 +1,4 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-import StorageAPI from './StorageAPI';
+import { StorageAPI } from './base';
 
 export type QueryStoreItem = {
   query?: string;
@@ -15,7 +9,7 @@ export type QueryStoreItem = {
   favorite?: boolean;
 };
 
-export default class QueryStore {
+export class QueryStore {
   items: Array<QueryStoreItem>;
 
   constructor(
