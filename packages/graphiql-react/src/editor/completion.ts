@@ -14,7 +14,7 @@ import { markdown } from '../markdown';
  * Render a custom UI for CodeMirror's hint which includes additional info
  * about the type and description for the selected context.
  */
-export default function onHasCompletion(
+export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
   onHintInformationRender: (el: HTMLDivElement) => void,

@@ -49,5 +49,18 @@ export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 export { fillLeafs } from './utility/fillLeafs';
 export { default as mergeAst } from './utility/mergeAst';
 export { default as getSelectedOperationName } from './utility/getSelectedOperationName';
-export { default as onHasCompletion } from './utility/onHasCompletion';
 export { Storage } from './utility/StorageAPI';
+
+/**
+ * Legacy exports
+ */
+import { onHasCompletion as _onHasCompletion } from '@graphiql/react';
+
+export const onHasCompletion: typeof _onHasCompletion = function onHasCompletion(
+  ...args
+) {
+  console.warn(
+    'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
+  );
+  return _onHasCompletion(...args);
+};

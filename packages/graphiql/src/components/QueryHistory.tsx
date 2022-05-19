@@ -16,11 +16,6 @@ import StorageAPI from '../utility/StorageAPI';
 import HistoryStore from '../utility/HistoryStore';
 
 type QueryHistoryProps = {
-  query?: string;
-  variables?: string;
-  headers?: string;
-  operationName?: string;
-  queryID?: number;
   onSelectQuery: HandleSelectQueryFn;
   storage: StorageAPI;
   maxHistoryLength: number;

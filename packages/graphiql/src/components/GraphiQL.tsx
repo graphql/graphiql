@@ -327,7 +327,6 @@ export type GraphiQLProps = {
 export type GraphiQLState = {
   schema?: GraphQLSchema | null;
   query?: string;
-  variables?: string;
   operationName?: string;
   docExplorerOpen: boolean;
   response?: string;
@@ -455,7 +454,6 @@ class GraphiQLWithContext extends React.Component<
   // refs
   graphiqlContainer: Maybe<HTMLDivElement>;
   resultComponent: Maybe<ResultViewer>;
-  variableEditorComponent: Maybe<VariableEditor>;
   _queryHistory: Maybe<QueryHistory>;
   _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
@@ -635,7 +633,6 @@ class GraphiQLWithContext extends React.Component<
       tabs: tabsState,
       schema,
       query: activeTab?.query,
-      variables: activeTab?.variables,
       operationName: activeTab?.operationName,
       response: activeTab?.response ?? response,
       docExplorerOpen,
@@ -693,7 +690,6 @@ class GraphiQLWithContext extends React.Component<
   UNSAFE_componentWillReceiveProps(nextProps: GraphiQLWithContextProps) {
     let nextSchema = this.state.schema;
     let nextQuery = this.state.query;
-    let nextVariables = this.state.variables;
     let nextOperationName = this.state.operationName;
     let nextResponse = this.state.response;
 
@@ -702,12 +698,6 @@ class GraphiQLWithContext extends React.Component<
     }
     if (nextProps.query !== undefined && this.props.query !== nextProps.query) {
       nextQuery = nextProps.query;
-    }
-    if (
-      nextProps.variables !== undefined &&
-      this.props.variables !== nextProps.variables
-    ) {
-      nextVariables = nextProps.variables;
     }
     if (nextProps.operationName !== undefined) {
       nextOperationName = nextProps.operationName;
@@ -757,7 +747,6 @@ class GraphiQLWithContext extends React.Component<
       {
         schema: nextSchema,
         query: nextQuery,
-        variables: nextVariables,
         operationName: nextOperationName,
         response: nextResponse,
       },
@@ -773,10 +762,7 @@ class GraphiQLWithContext extends React.Component<
   componentDidUpdate() {
     // If this update caused DOM nodes to have changed sizes, update the
     // corresponding CodeMirror instance sizes to match.
-    this.codeMirrorSizer.updateSizes([
-      this.variableEditorComponent,
-      this.resultComponent,
-    ]);
+    this.codeMirrorSizer.updateSizes([this.resultComponent]);
   }
 
   // Use it when the state change is async
@@ -913,13 +899,9 @@ class GraphiQLWithContext extends React.Component<
               ref={node => {
                 this._queryHistory = node;
               }}
-              operationName={this.state.operationName}
-              query={this.state.query}
-              variables={this.state.variables}
               onSelectQuery={this.handleSelectHistoryQuery}
               storage={this._storage}
-              maxHistoryLength={this.state.maxHistoryLength}
-              queryID={this._editorQueryID}>
+              maxHistoryLength={this.state.maxHistoryLength}>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleHistory}
@@ -1037,10 +1019,7 @@ class GraphiQLWithContext extends React.Component<
                   )}
                 </div>
                 <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
-                  value={this.state.variables}
+                  value={this.props.variables}
                   variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
@@ -1126,10 +1105,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
-    if (this.variableEditorComponent) {
-      return this.variableEditorComponent.getCodeMirror();
-    }
-    return null;
+    return this.props.editorContext?.variableEditor || null;
   }
 
   /**
@@ -1148,9 +1124,7 @@ class GraphiQLWithContext extends React.Component<
    */
   public refresh() {
     this.props.editorContext?.queryEditor?.refresh();
-    if (this.variableEditorComponent) {
-      this.variableEditorComponent.getCodeMirror().refresh();
-    }
+    this.props.editorContext?.variableEditor?.refresh();
     this.props.editorContext?.headerEditor?.refresh();
     if (this.resultComponent) {
       this.resultComponent.getCodeMirror().refresh();
@@ -1481,7 +1455,7 @@ class GraphiQLWithContext extends React.Component<
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
     const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
-    const variables = this.state.variables;
+    const variables = getVariables(this.props);
     const headers = getHeaders(this.props);
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
     let operationName = this.state.operationName;
@@ -1800,7 +1774,6 @@ class GraphiQLWithContext extends React.Component<
     this.setState(
       state => ({
         ...state,
-        variables: value,
         tabs: tabsStateEditVariablesReducer(value, state.tabs),
       }),
       this.persistTabsState,
@@ -1815,7 +1788,6 @@ class GraphiQLWithContext extends React.Component<
     this.setState(
       state => ({
         ...state,
-        headers: value,
         tabs: tabsStateEditHeadersReducer(value, state.tabs),
       }),
       this.persistTabsState,
@@ -1910,10 +1882,10 @@ class GraphiQLWithContext extends React.Component<
       this.handleEditQuery(query);
     }
     if (variables) {
-      this.handleEditVariables(variables);
+      setVariables(this.props, variables);
     }
     if (headers) {
-      this.handleEditHeaders(headers);
+      setHeaders(this.props, headers);
     }
     if (operationName) {
       this.handleEditOperationName(operationName);
@@ -2308,6 +2280,7 @@ function stateOnSelectTabReducer(
   state: GraphiQLState,
   props: GraphiQLWithContextProps,
 ): GraphiQLState {
+  const variables = getVariables(props);
   const headers = getHeaders(props);
 
   const oldActiveTabIndex = state.tabs.activeTabIndex;
@@ -2319,13 +2292,13 @@ function stateOnSelectTabReducer(
     return {
       ...currentTab,
       query: state.query,
-      variables: state.variables,
+      variables,
       operationName: state.operationName,
       headers,
       response: state.response,
       hash: idFromTabContents({
         query: state.query,
-        variables: state.variables,
+        variables,
         headers,
       }),
     };
@@ -2333,6 +2306,9 @@ function stateOnSelectTabReducer(
 
   const newActiveTab = state.tabs.tabs[index];
 
+  if (typeof newActiveTab.variables !== 'undefined') {
+    setVariables(props, newActiveTab.variables);
+  }
   if (typeof newActiveTab.headers !== 'undefined') {
     setHeaders(props, newActiveTab.headers);
   }
@@ -2340,7 +2316,6 @@ function stateOnSelectTabReducer(
   return {
     ...state,
     query: newActiveTab.query,
-    variables: newActiveTab.variables,
     operationName: newActiveTab.operationName,
     response: newActiveTab.response,
     tabs: { ...state.tabs, tabs, activeTabIndex: index },
@@ -2360,13 +2335,15 @@ function stateOnCloseTabReducer(
     tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
   };
   const activeTab = newTabsState.tabs[newActiveTabIndex];
+  if (typeof activeTab.variables !== 'undefined') {
+    setVariables(props, activeTab.variables);
+  }
   if (typeof activeTab.headers !== 'undefined') {
     setHeaders(props, activeTab.headers);
   }
   return {
     ...state,
     query: activeTab.query,
-    variables: activeTab.variables,
     operationName: activeTab.operationName,
     response: activeTab.response,
     tabs: newTabsState,
@@ -2377,6 +2354,7 @@ function stateOnTabAddReducer(
   state: GraphiQLState,
   props: GraphiQLWithContextProps,
 ): GraphiQLState {
+  const variables = getVariables(props);
   const headers = getHeaders(props);
 
   const oldActiveTabIndex = state.tabs.activeTabIndex;
@@ -2404,20 +2382,22 @@ function stateOnTabAddReducer(
     return {
       ...tab,
       headers,
-      variables: state.variables,
+      variables,
       query: state.query,
       operationName: state.operationName,
       response: state.response,
     };
   });
 
+  if (typeof newTab.variables !== 'undefined') {
+    setVariables(props, newTab.variables);
+  }
   if (typeof newTab.headers !== 'undefined') {
     setHeaders(props, newTab.headers);
   }
 
   return {
     ...state,
-    variables: newTab.variables,
     query: newTab.query,
     operationName: newTab.operationName,
     response: newTab.response,
@@ -2429,8 +2409,16 @@ function stateOnTabAddReducer(
   };
 }
 
+function getVariables(props: GraphiQLWithContextProps) {
+  return props.editorContext?.variableEditor?.getValue();
+}
+
+function setVariables(props: GraphiQLWithContextProps, value: string) {
+  props.editorContext?.variableEditor?.setValue(value);
+}
+
 function getHeaders(props: GraphiQLWithContextProps) {
-  return props.headers ?? props.editorContext?.headerEditor?.getValue();
+  return props.editorContext?.headerEditor?.getValue();
 }
 
 function setHeaders(props: GraphiQLWithContextProps, value: string) {

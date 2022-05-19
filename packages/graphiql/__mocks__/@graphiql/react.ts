@@ -6,6 +6,7 @@ import {
   useExplorerNavStack,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
+  useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
 import type {
   EditorContextType,
@@ -16,7 +17,7 @@ import type {
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
 } from '@graphiql/react';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 export {
   EditorContext,
@@ -36,9 +37,22 @@ export type {
   UseQueryEditorArgs,
 };
 
-function useMockedEditor(value?: string, onEdit?: (newValue: string) => void) {
+function useMockedEditor(
+  name: string,
+  value?: string,
+  onEdit?: (newValue: string) => void,
+) {
   const [code, setCode] = useState(value);
   const ref = useRef<HTMLDivElement>(null);
+
+  const context = useContext(EditorContext);
+  const setEditor =
+    context[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
+
+  const getValueRef = useRef<() => string>();
+  useEffect(() => {
+    getValueRef.current = () => code;
+  }, [code]);
 
   useEffect(() => {
     if (!ref.current) {
@@ -60,6 +74,15 @@ function useMockedEditor(value?: string, onEdit?: (newValue: string) => void) {
     mockWrapper.appendChild(mockTextArea);
 
     ref.current.appendChild(mockWrapper);
+
+    setEditor({
+      getValue() {
+        return getValueRef.current();
+      },
+      setValue(newValue: string) {
+        setCode(newValue);
+      },
+    });
   });
 
   useEffect(() => {
@@ -106,12 +129,19 @@ export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor
   onEdit,
   value,
 }) {
-  return useMockedEditor(value, onEdit);
+  return useMockedEditor('header', value, onEdit);
 };
 
 export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
   onEdit,
   value,
 }) {
-  return useMockedEditor(value, onEdit);
+  return useMockedEditor('query', value, onEdit);
+};
+
+export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({
+  onEdit,
+  value,
+}) {
+  return useMockedEditor('variable', value, onEdit);
 };
