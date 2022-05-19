@@ -452,7 +452,7 @@ type GraphiQLWithContextProps = Omit<
   GraphiQLProps,
   'maxHistoryLength' | 'onToggleHistory' | 'storage'
 > & {
-  editorContext: EditorContextType | null;
+  editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
   storageContext: StorageContextType | null;
@@ -1071,7 +1071,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   getQueryEditor() {
-    return this.props.editorContext?.queryEditor || null;
+    return this.props.editorContext.queryEditor || null;
   }
 
   /**
@@ -1080,7 +1080,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
-    return this.props.editorContext?.variableEditor || null;
+    return this.props.editorContext.variableEditor || null;
   }
 
   /**
@@ -1089,7 +1089,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getHeaderEditor() {
-    return this.props.editorContext?.headerEditor || null;
+    return this.props.editorContext.headerEditor || null;
   }
 
   /**
@@ -1098,10 +1098,10 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public refresh() {
-    this.props.editorContext?.queryEditor?.refresh();
-    this.props.editorContext?.variableEditor?.refresh();
-    this.props.editorContext?.headerEditor?.refresh();
-    this.props.editorContext?.responseEditor?.refresh();
+    this.props.editorContext.queryEditor?.refresh();
+    this.props.editorContext.variableEditor?.refresh();
+    this.props.editorContext.headerEditor?.refresh();
+    this.props.editorContext.responseEditor?.refresh();
   }
 
   /**
@@ -2366,17 +2366,17 @@ function stateOnTabAddReducer(
 }
 
 function getVariables(props: GraphiQLWithContextProps) {
-  return props.editorContext?.variableEditor?.getValue();
+  return props.editorContext.variableEditor?.getValue();
 }
 
 function setVariables(props: GraphiQLWithContextProps, value: string) {
-  props.editorContext?.variableEditor?.setValue(value);
+  props.editorContext.variableEditor?.setValue(value);
 }
 
 function getHeaders(props: GraphiQLWithContextProps) {
-  return props.editorContext?.headerEditor?.getValue();
+  return props.editorContext.headerEditor?.getValue();
 }
 
 function setHeaders(props: GraphiQLWithContextProps, value: string) {
-  props.editorContext?.headerEditor?.setValue(value);
+  props.editorContext.headerEditor?.setValue(value);
 }
