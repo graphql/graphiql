@@ -39,6 +39,8 @@ export function useResponseEditor({
 
   const { responseEditor, setResponseEditor } = context;
 
+  const initialValue = useRef(value);
+
   useEffect(() => {
     let isActive = true;
     importCodeMirror(
@@ -95,6 +97,7 @@ export function useResponseEditor({
       }
 
       const newEditor = CodeMirror(container, {
+        value: initialValue.current || '',
         lineWrapping: true,
         readOnly: true,
         theme: editorTheme,

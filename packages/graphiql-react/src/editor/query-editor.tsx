@@ -72,6 +72,8 @@ export function useQueryEditor({
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
 
+  const initialValue = useRef(value);
+
   useEffect(() => {
     let isActive = true;
 
@@ -97,6 +99,7 @@ export function useQueryEditor({
       }
 
       const newEditor = CodeMirror(container, {
+        value: initialValue.current || '',
         lineNumbers: true,
         tabSize: 2,
         foldGutter: true,
