@@ -25,9 +25,16 @@ function isQuotaError(storage: Storage, e: unknown) {
 export class StorageAPI {
   storage: Storage | null;
 
-  constructor(storage?: Storage) {
-    this.storage =
-      storage || (typeof window !== 'undefined' ? window.localStorage : null);
+  constructor(storage?: Storage | null) {
+    if (storage) {
+      this.storage = storage;
+    } else if (storage === null) {
+      // Passing `null` creates a noop storage
+      this.storage = null;
+    } else {
+      // When passing `undefined` we default to localStorage
+      this.storage = typeof window !== 'undefined' ? window.localStorage : null;
+    }
   }
 
   get(name: string): string | null {
