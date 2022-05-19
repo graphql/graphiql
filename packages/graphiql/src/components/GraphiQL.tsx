@@ -70,21 +70,20 @@ import {
   fetcherReturnToPromise,
   formatError,
   formatResult,
-  isPromise,
-  isObservable,
+  HistoryStore,
   isAsyncIterable,
+  isObservable,
+  isPromise,
   StorageAPI,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
-  FetcherResult,
   FetcherOpts,
+  FetcherResult,
+  FetcherResultPayload,
   SyncFetcherResult,
   Unsubscribable,
-  FetcherResultPayload,
-  Storage,
 } from '@graphiql/toolkit';
-import HistoryStore from '../utility/HistoryStore';
 
 import { validateSchema } from 'graphql';
 import { Tab, TabAddButton, Tabs } from './Tabs';

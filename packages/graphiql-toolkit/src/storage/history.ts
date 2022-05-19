@@ -1,19 +1,11 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-import { QueryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import { parse } from 'graphql';
-import {
-  HandleEditLabelFn,
-  HandleToggleFavoriteFn,
-} from '../components/HistoryQuery';
+
+import { StorageAPI } from './base';
+import { QueryStore, QueryStoreItem } from './query';
 
 const MAX_QUERY_SIZE = 100000;
 
-export default class HistoryStore {
+export class HistoryStore {
   queries: Array<QueryStoreItem>;
   history: QueryStore;
   favorite: QueryStore;
@@ -26,15 +18,16 @@ export default class HistoryStore {
     );
     // favorites are not automatically deleted, so there's no need for a max length
     this.favorite = new QueryStore('favorites', this.storage, null);
-    this.queries = this.fetchAllQueries();
+
+    this.queries = [...this.history.fetchAll(), ...this.favorite.fetchAll()];
   }
 
-  shouldSaveQuery = (
+  private shouldSaveQuery(
     query?: string,
     variables?: string,
     headers?: string,
     lastQuerySaved?: QueryStoreItem,
-  ) => {
+  ) {
     if (!query) {
       return false;
     }
@@ -70,15 +63,8 @@ export default class HistoryStore {
       }
     }
     return true;
-  };
+  }
 
-  fetchAllQueries = () => {
-    const historyQueries = this.history.fetchAll();
-    const favoriteQueries = this.favorite.fetchAll();
-    return historyQueries.concat(favoriteQueries);
-  };
-
-  // Public API
   updateHistory = (
     query?: string,
     variables?: string,
@@ -105,15 +91,14 @@ export default class HistoryStore {
     }
   };
 
-  // Public API
-  toggleFavorite: HandleToggleFavoriteFn = (
-    query,
-    variables,
-    headers,
-    operationName,
-    label,
-    favorite,
-  ) => {
+  toggleFavorite(
+    query?: string,
+    variables?: string,
+    headers?: string,
+    operationName?: string,
+    label?: string,
+    favorite?: boolean,
+  ) {
     const item: QueryStoreItem = {
       query,
       variables,
@@ -129,17 +114,16 @@ export default class HistoryStore {
       this.favorite.delete(item);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
-  };
+  }
 
-  // Public API
-  editLabel: HandleEditLabelFn = (
-    query,
-    variables,
-    headers,
-    operationName,
-    label,
-    favorite,
-  ) => {
+  editLabel(
+    query?: string,
+    variables?: string,
+    headers?: string,
+    operationName?: string,
+    label?: string,
+    favorite?: boolean,
+  ) {
     const item = {
       query,
       variables,
@@ -153,5 +137,5 @@ export default class HistoryStore {
       this.history.edit(item);
     }
     this.queries = [...this.history.items, ...this.favorite.items];
-  };
+  }
 }

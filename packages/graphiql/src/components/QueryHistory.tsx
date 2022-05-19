@@ -5,14 +5,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
+import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import React, { ReactNode } from 'react';
+
 import HistoryQuery, {
   HandleEditLabelFn,
   HandleSelectQueryFn,
   HandleToggleFavoriteFn,
 } from './HistoryQuery';
-import HistoryStore from '../utility/HistoryStore';
 
 type QueryHistoryProps = {
   onSelectQuery: HandleSelectQueryFn;
