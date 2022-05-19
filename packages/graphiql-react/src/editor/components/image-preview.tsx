@@ -3,69 +3,60 @@ import { useEffect, useRef, useState } from 'react';
 
 type ImagePreviewProps = { token: Token };
 
-type ImagePreviewState = {
+type Dimensions = {
   width: number | null;
   height: number | null;
-  src: string | null;
-  mime: string | null;
 };
 
 export function ImagePreview(props: ImagePreviewProps) {
-  const [state, setState] = useState<ImagePreviewState>({
+  const [dimensions, setDimensions] = useState<Dimensions>({
     width: null,
     height: null,
-    src: null,
-    mime: null,
   });
+  const [mime, setMime] = useState<string | null>(null);
 
   const ref = useRef<HTMLImageElement>(null);
 
-  function updateMetadata() {
+  const src = tokenToURL(props.token)?.href;
+
+  useEffect(() => {
     if (!ref.current) {
       return;
     }
+    if (!src) {
+      setDimensions({ width: null, height: null });
+      setMime(null);
+      return;
+    }
 
-    const width = ref.current.naturalWidth;
-    const height = ref.current.naturalHeight;
-    const src = ref.current.src;
-
-    if (src !== state.src) {
-      setState(current => ({ ...current, src }));
-      fetch(src, { method: 'HEAD' }).then(response => {
-        setState(current => ({
-          ...current,
-          mime: response.headers.get('Content-Type'),
-        }));
+    fetch(src, { method: 'HEAD' })
+      .then(response => {
+        setMime(response.headers.get('Content-Type'));
+      })
+      .catch(() => {
+        setMime(null);
       });
-    }
+  }, [src]);
 
-    if (width !== state.width || height !== state.height) {
-      setState(current => ({ ...current, height, width }));
-    }
-  }
-
-  useEffect(() => {
-    updateMetadata();
-  });
-
-  let dims = null;
-  if (state.width !== null && state.height !== null) {
-    let dimensions = state.width + 'x' + state.height;
-    if (state.mime !== null) {
-      dimensions += ' ' + state.mime;
-    }
-
-    dims = <div>{dimensions}</div>;
-  }
+  const dims =
+    dimensions.width !== null && dimensions.height !== null ? (
+      <div>
+        {dimensions.width}x{dimensions.height}
+        {mime !== null ? ' ' + mime : null}
+      </div>
+    ) : null;
 
   return (
     <div>
       <img
         onLoad={() => {
-          updateMetadata();
+          setDimensions({
+            width: ref.current?.naturalWidth ?? null,
+            height: ref.current?.naturalHeight ?? null,
+          });
         }}
         ref={ref}
-        src={tokenToURL(props.token)?.href}
+        src={src}
       />
       {dims}
     </div>
