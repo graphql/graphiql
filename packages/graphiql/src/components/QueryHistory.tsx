@@ -5,9 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { StorageAPI } from '@graphiql/toolkit';
+import { QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
 import React, { ReactNode } from 'react';
-import { QueryStoreItem } from '../utility/QueryStore';
 import HistoryQuery, {
   HandleEditLabelFn,
   HandleSelectQueryFn,

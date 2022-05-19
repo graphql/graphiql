@@ -1,12 +1,5 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import QueryStore from '../QueryStore';
-import StorageAPI from '../StorageAPI';
+import { StorageAPI } from '../base';
+import { QueryStore } from '../query';
 
 class StorageMock {
   shouldThrow: () => boolean;
@@ -23,9 +16,8 @@ class StorageMock {
 
     if (this.shouldThrow()) {
       return {
-        error: {},
+        error: new Error('boom'),
         isQuotaError: true,
-        storageAvailable: true,
       };
     }
 
@@ -34,7 +26,6 @@ class StorageMock {
     return {
       error: null,
       isQuotaError: false,
-      storageAvailable: true,
     };
   }
 

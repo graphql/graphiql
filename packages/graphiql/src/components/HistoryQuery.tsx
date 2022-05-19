@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { QueryStoreItem } from '../utility/QueryStore';
+import type { QueryStoreItem } from '@graphiql/toolkit';
 
 export type HandleEditLabelFn = (
   query?: string,
