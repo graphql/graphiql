@@ -6,6 +6,7 @@ import {
   useExplorerNavStack,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
+  useResponseEditor as _useResponseEditor,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
 import type {
@@ -137,6 +138,12 @@ export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
   value,
 }) {
   return useMockedEditor('query', value, onEdit);
+};
+
+export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor({
+  value,
+}) {
+  return useMockedEditor('query', value);
 };
 
 export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({
