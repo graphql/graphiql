@@ -48,11 +48,8 @@ describe('GraphiQL On Initialization', () => {
   it('Shows the expected error when the schema is invalid', () => {
     cy.visit(`/?bad=true`);
     cy.wait(200);
-    cy.window().then(w => {
-      // @ts-ignore
-      const value = w.g.resultComponent.viewer.getValue();
-      // this message changes between graphql 15 & 16
-      expect(value).to.contain('Names must');
+    cy.get('section#graphiql-result-viewer').should(element => {
+      expect(element.get(0).innerText).to.contain('Names must');
     });
   });
 });

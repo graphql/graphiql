@@ -9,8 +9,6 @@ import React, {
   ComponentType,
   PropsWithChildren,
   MouseEventHandler,
-  Component,
-  FunctionComponent,
   ReactNode,
 } from 'react';
 import {
@@ -46,20 +44,19 @@ import type {
   EditorContextType,
   ExplorerContextType,
   ExplorerFieldDef,
+  ResponseTooltipType,
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
-import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { HeaderEditor } from './HeaderEditor';
-import { ResultViewer } from './ResultViewer';
+import { ResultViewer, RESULT_VIEWER_ID } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import CodeMirrorSizer from '../utility/CodeMirrorSizer';
 import StorageAPI, { Storage } from '../utility/StorageAPI';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
@@ -250,7 +247,7 @@ export type GraphiQLProps = {
   /**
    * Custom results tooltip component
    */
-  ResultsTooltip?: typeof Component | FunctionComponent;
+  ResultsTooltip?: ResponseTooltipType;
   /**
    * decide whether schema responses should be validated.
    *
@@ -447,17 +444,14 @@ class GraphiQLWithContext extends React.Component<
   _introspectionQueryName: string;
   _introspectionQuerySansSubscriptions: string;
 
-  codeMirrorSizer!: CodeMirrorSizer;
   // Ensure the component is mounted to execute async setState
   componentIsMounted: boolean;
 
   // refs
   graphiqlContainer: Maybe<HTMLDivElement>;
-  resultComponent: Maybe<ResultViewer>;
   _queryHistory: Maybe<QueryHistory>;
   _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
-  resultViewerElement: Maybe<HTMLElement>;
 
   constructor(props: GraphiQLWithContextProps) {
     super(props);
@@ -673,9 +667,6 @@ class GraphiQLWithContext extends React.Component<
       this.fetchSchema();
     }
 
-    // Utility for keeping CodeMirror correctly sized.
-    this.codeMirrorSizer = new CodeMirrorSizer();
-
     if (typeof window !== 'undefined') {
       window.g = this;
     }
@@ -757,12 +748,6 @@ class GraphiQLWithContext extends React.Component<
         }
       },
     );
-  }
-
-  componentDidUpdate() {
-    // If this update caused DOM nodes to have changed sizes, update the
-    // corresponding CodeMirror instance sizes to match.
-    this.codeMirrorSizer.updateSizes([this.resultComponent]);
   }
 
   // Use it when the state change is async
@@ -1052,16 +1037,9 @@ class GraphiQLWithContext extends React.Component<
                 </div>
               )}
               <ResultViewer
-                registerRef={n => {
-                  this.resultViewerElement = n;
-                }}
-                ref={c => {
-                  this.resultComponent = c;
-                }}
                 value={this.state.response}
                 editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
+                ResponseTooltip={this.props.ResultsTooltip}
               />
               {footer}
             </div>
@@ -1126,9 +1104,7 @@ class GraphiQLWithContext extends React.Component<
     this.props.editorContext?.queryEditor?.refresh();
     this.props.editorContext?.variableEditor?.refresh();
     this.props.editorContext?.headerEditor?.refresh();
-    if (this.resultComponent) {
-      this.resultComponent.getCodeMirror().refresh();
-    }
+    this.props.editorContext?.responseEditor?.refresh();
   }
 
   /**
@@ -1936,20 +1912,17 @@ class GraphiQLWithContext extends React.Component<
     if (event.button !== 0 || event.ctrlKey) {
       return false;
     }
-    let target = event.target as Element;
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return false;
+    }
     // We use codemirror's gutter as the drag bar.
     if (target.className.indexOf('CodeMirror-gutter') !== 0) {
       return false;
     }
     // Specifically the result window's drag bar.
-    const resultWindow = this.resultViewerElement;
-    while (target) {
-      if (target === resultWindow) {
-        return true;
-      }
-      target = target.parentNode as Element;
-    }
-    return false;
+    const resultWindow = target.closest('section');
+    return resultWindow ? resultWindow.id === RESULT_VIEWER_ID : false;
   }
 
   private handleDocsResizeStart: MouseEventHandler<

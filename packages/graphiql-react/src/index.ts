@@ -1,9 +1,11 @@
 import {
   EditorContext,
   EditorContextProvider,
+  ImagePreview,
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useResponseEditor,
   useVariableEditor,
 } from './editor';
 import {
@@ -14,8 +16,10 @@ import {
 
 import type {
   EditorContextType,
+  ResponseTooltipType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseResponseEditorArgs,
   UseVariableEditorArgs,
 } from './editor';
 import type {
@@ -29,9 +33,11 @@ export {
   // editor
   EditorContext,
   EditorContextProvider,
+  ImagePreview,
   onHasCompletion,
   useHeaderEditor,
   useQueryEditor,
+  useResponseEditor,
   useVariableEditor,
   // explorer
   ExplorerContext,
@@ -42,8 +48,10 @@ export {
 export type {
   // editor
   EditorContextType,
+  ResponseTooltipType,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
+  UseResponseEditorArgs,
   UseVariableEditorArgs,
   // explorer
   ExplorerContextType,

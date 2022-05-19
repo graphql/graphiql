@@ -32,7 +32,6 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
-    assertResult(result: MockResult): Chainable<Element>;
     assertQueryResult(
       op: Op,
       expectedResult: MockResult,
@@ -90,19 +89,10 @@ Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
   cy.wait(timeout);
-  cy.window().then(w => {
-    // @ts-ignore
-    const value = w.g.resultComponent.viewer.getValue();
-    expect(value).to.deep.equal(JSON.stringify(mockSuccess, null, 2));
-  });
-});
-
-Cypress.Commands.add('assertResult', (expectedResult, timeout = 200) => {
-  cy.wait(timeout);
-  cy.window().then(w => {
-    // @ts-ignore
-    const value = w.g.resultComponent.viewer.getValue();
-    expect(value).to.deep.equal(JSON.stringify(expectedResult, null, 2));
+  cy.get('section#graphiql-result-viewer').should(element => {
+    // Replace "invisible" whitespace characters with regular whitespace
+    const response = element.get(0).innerText.replace(/[\u00a0]/g, ' ');
+    expect(response).to.equal(JSON.stringify(mockSuccess, null, 2));
   });
 });
 
