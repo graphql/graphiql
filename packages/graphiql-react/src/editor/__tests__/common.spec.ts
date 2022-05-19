@@ -1,4 +1,4 @@
-import { importCodeMirror } from '../importCodeMirror';
+import { importCodeMirror } from '../common';
 
 describe('importCodeMirror', () => {
   it('should dynamically load codemirror module', async () => {
