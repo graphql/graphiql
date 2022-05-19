@@ -1,5 +1,5 @@
 import { Storage, StorageAPI } from '@graphiql/toolkit';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 
 export type StorageContextType = StorageAPI;
 
@@ -11,10 +11,15 @@ type StorageContextProviderProps = {
 };
 
 export function StorageContextProvider(props: StorageContextProviderProps) {
+  const isInitialRender = useRef(true);
   const [storage, setStorage] = useState(new StorageAPI(props.storage));
 
   useEffect(() => {
-    setStorage(new StorageAPI(props.storage));
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    } else {
+      setStorage(new StorageAPI(props.storage));
+    }
   }, [props.storage]);
 
   return (
