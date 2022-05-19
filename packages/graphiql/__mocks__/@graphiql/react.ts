@@ -3,6 +3,12 @@ import {
   EditorContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  HistoryContext,
+  HistoryContextProvider,
+  ImagePreview,
+  onHasCompletion,
+  StorageContext,
+  StorageContextProvider,
   useExplorerNavStack,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
@@ -15,8 +21,13 @@ import type {
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,
+  HistoryContextType,
+  ResponseTooltipType,
+  StorageContextType,
   UseHeaderEditorArgs,
+  UseResponseEditorArgs,
   UseQueryEditorArgs,
+  UseVariableEditorArgs,
 } from '@graphiql/react';
 import { useContext, useEffect, useRef, useState } from 'react';
 
@@ -25,6 +36,12 @@ export {
   EditorContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  HistoryContext,
+  HistoryContextProvider,
+  ImagePreview,
+  onHasCompletion,
+  StorageContext,
+  StorageContextProvider,
   useExplorerNavStack,
 };
 
@@ -34,8 +51,13 @@ export type {
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,
+  HistoryContextType,
+  ResponseTooltipType,
+  StorageContextType,
   UseHeaderEditorArgs,
+  UseResponseEditorArgs,
   UseQueryEditorArgs,
+  UseVariableEditorArgs,
 };
 
 function useMockedEditor(

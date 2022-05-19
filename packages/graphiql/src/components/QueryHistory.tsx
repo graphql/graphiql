@@ -5,111 +5,131 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import React, { ReactNode } from 'react';
-
-import HistoryQuery, {
-  HandleEditLabelFn,
-  HandleSelectQueryFn,
-  HandleToggleFavoriteFn,
-} from './HistoryQuery';
+import { HistoryContext } from '@graphiql/react';
+import { QueryStoreItem } from '@graphiql/toolkit';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
 type QueryHistoryProps = {
-  onSelectQuery: HandleSelectQueryFn;
-  storage: StorageAPI;
-  maxHistoryLength: number;
-  children?: ReactNode;
+  onSelect(item: QueryStoreItem): void;
 };
 
-type QueryHistoryState = {
-  queries: Array<QueryStoreItem>;
-};
-
-export class QueryHistory extends React.Component<
-  QueryHistoryProps,
-  QueryHistoryState
-> {
-  historyStore: HistoryStore;
-
-  constructor(props: QueryHistoryProps) {
-    super(props);
-    this.historyStore = new HistoryStore(
-      this.props.storage,
-      this.props.maxHistoryLength,
+export function QueryHistory(props: QueryHistoryProps) {
+  const historyContext = useContext(HistoryContext);
+  if (!historyContext) {
+    throw new Error(
+      'Tried to render the `QueryHistory` component without the necessary context. Make sure that the `HistoryContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
-    const queries = this.historyStore.queries;
-    this.state = { queries };
   }
 
-  onUpdateHistory = (
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-  ) => {
-    this.historyStore.updateHistory(query, variables, headers, operationName);
-    this.setState({ queries: this.historyStore.queries });
-  };
-
-  onHandleEditLabel: HandleEditLabelFn = (
-    query,
-    variables,
-    headers,
-    operationName,
-    label,
-    favorite,
-  ) => {
-    this.historyStore.editLabel(
-      query,
-      variables,
-      headers,
-      operationName,
-      label,
-      favorite,
-    );
-    this.setState({ queries: this.historyStore.queries });
-  };
-
-  onToggleFavorite: HandleToggleFavoriteFn = (
-    query,
-    variables,
-    headers,
-    operationName,
-    label,
-    favorite,
-  ) => {
-    this.historyStore.toggleFavorite(
-      query,
-      variables,
-      headers,
-      operationName,
-      label,
-      favorite,
-    );
-    this.setState({ queries: this.historyStore.queries });
-  };
-
-  render() {
-    const queries = this.state.queries.slice().reverse();
-    const queryNodes = queries.map((query, i) => {
-      return (
-        <HistoryQuery
-          handleEditLabel={this.onHandleEditLabel}
-          handleToggleFavorite={this.onToggleFavorite}
-          key={`${i}:${query.label || query.query}`}
-          onSelect={this.props.onSelectQuery}
-          {...query}
-        />
-      );
-    });
-    return (
-      <section aria-label="History">
-        <div className="history-title-bar">
-          <div className="history-title">History</div>
-          <div className="doc-explorer-rhs">{this.props.children}</div>
+  return (
+    <section aria-label="History">
+      <div className="history-title-bar">
+        <div className="history-title">History</div>
+        <div className="doc-explorer-rhs">
+          <button
+            className="docExplorerHide"
+            onClick={() => historyContext.hide()}
+            aria-label="Close History">
+            {'\u2715'}
+          </button>
         </div>
-        <ul className="history-contents">{queryNodes}</ul>
-      </section>
+      </div>
+      <ul className="history-contents">
+        {historyContext.items
+          .slice()
+          .reverse()
+          .map((item, i) => {
+            return (
+              <QueryHistoryItem
+                key={`${i}:${item.label || item.query}`}
+                onSelect={props.onSelect}
+                item={item}
+              />
+            );
+          })}
+      </ul>
+    </section>
+  );
+}
+
+type QueryHistoryItemProps = {
+  onSelect(item: QueryStoreItem): void;
+  item: QueryStoreItem;
+};
+
+export function QueryHistoryItem(props: QueryHistoryItemProps) {
+  const historyContext = useContext(HistoryContext);
+  if (!historyContext) {
+    throw new Error(
+      'Tried to render the `QueryHistoryItem` component without the necessary context. Make sure that the `HistoryContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
   }
+
+  const editField = useRef<HTMLInputElement>(null);
+  const [isEditable, setIsEditable] = useState(false);
+
+  useEffect(() => {
+    if (isEditable && editField.current) {
+      editField.current.focus();
+    }
+  }, [isEditable]);
+
+  const displayName =
+    props.item.label ||
+    props.item.operationName ||
+    props.item.query
+      ?.split('\n')
+      .filter(line => line.indexOf('#') !== 0)
+      .join('');
+  const starIcon = props.item.favorite ? '\u2605' : '\u2606';
+  return (
+    <li className={isEditable ? 'editable' : undefined}>
+      {isEditable ? (
+        <input
+          type="text"
+          defaultValue={props.item.label}
+          ref={editField}
+          onBlur={e => {
+            e.stopPropagation();
+            setIsEditable(false);
+            historyContext.editLabel({ ...props.item, label: e.target.value });
+          }}
+          onKeyDown={e => {
+            if (e.keyCode === 13) {
+              e.stopPropagation();
+              setIsEditable(false);
+              historyContext.editLabel({
+                ...props.item,
+                label: e.currentTarget.value,
+              });
+            }
+          }}
+          placeholder="Type a label"
+        />
+      ) : (
+        <button
+          className="history-label"
+          onClick={() => props.onSelect(props.item)}>
+          {displayName}
+        </button>
+      )}
+      <button
+        onClick={e => {
+          e.stopPropagation();
+          setIsEditable(true);
+        }}
+        aria-label="Edit label">
+        {'\u270e'}
+      </button>
+      <button
+        className={props.item.favorite ? 'favorited' : undefined}
+        onClick={e => {
+          e.stopPropagation();
+          historyContext.toggleFavorite(props.item);
+        }}
+        aria-label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}>
+        {starIcon}
+      </button>
+    </li>
+  );
 }
