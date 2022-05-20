@@ -68,7 +68,6 @@ import { getLeft, getTop } from '../utility/elementPosition';
 import setValue from 'set-value';
 
 import {
-  fillLeafs,
   formatError,
   formatResult,
   getSelectedOperationName,
@@ -1066,43 +1065,10 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public autoCompleteLeafs() {
-    const { insertions, result } = fillLeafs(
-      this.props.schemaContext.schema,
-      this.state.query,
-      this.props.getDefaultFieldNames,
+    console.warn(
+      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
     );
-    if (insertions && insertions.length > 0) {
-      const editor = this.getQueryEditor();
-      if (editor) {
-        editor.operation(() => {
-          const cursor = editor.getCursor();
-          const cursorIndex = editor.indexFromPos(cursor);
-          editor.setValue(result || '');
-          let added = 0;
-          const markers = insertions.map(({ index, string }) =>
-            editor.markText(
-              editor.posFromIndex(index + added),
-              editor.posFromIndex(index + (added += string.length)),
-              {
-                className: 'autoInsertedLeaf',
-                clearOnEnter: true,
-                title: 'Automatically added leaf fields',
-              },
-            ),
-          );
-          setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-          let newCursorIndex = cursorIndex;
-          insertions.forEach(({ index, string }) => {
-            if (index < cursorIndex) {
-              newCursorIndex += string.length;
-            }
-          });
-          editor.setCursor(editor.posFromIndex(newCursorIndex));
-        });
-      }
-    }
-
-    return result;
+    return this.props.editorContext.autoCompleteLeafs();
   }
 
   // Private methods
@@ -1268,7 +1234,8 @@ class GraphiQLWithContext extends React.Component<
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
+    const editedQuery =
+      this.props.editorContext.autoCompleteLeafs() || this.state.query || '';
     const variables = getVariables(this.props);
     const headers = getHeaders(this.props);
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
