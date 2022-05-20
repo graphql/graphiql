@@ -1073,9 +1073,7 @@ class GraphiQLWithContext extends React.Component<
               onDoubleClick={this.handleDocsResetResize}
               onMouseDown={this.handleDocsResizeStart}
             />
-            <DocExplorer
-              schemaErrors={this.state.schemaErrors}
-              schema={this.state.schema}>
+            <DocExplorer>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleDocs}
