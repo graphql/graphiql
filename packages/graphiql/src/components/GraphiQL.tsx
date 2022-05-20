@@ -1067,7 +1067,7 @@ class GraphiQLWithContext extends React.Component<
    */
   public autoCompleteLeafs() {
     const { insertions, result } = fillLeafs(
-      this.state.schema,
+      this.props.schemaContext.schema,
       this.state.query,
       this.props.getDefaultFieldNames,
     );
@@ -1498,7 +1498,9 @@ class GraphiQLWithContext extends React.Component<
       return;
     }
 
-    editor.setValue(print(mergeAst(this.state.documentAST, this.state.schema)));
+    editor.setValue(
+      print(mergeAst(this.state.documentAST, this.props.schemaContext.schema)),
+    );
   };
 
   handleEditQuery = debounce(100, (value: string) => {
@@ -1506,7 +1508,7 @@ class GraphiQLWithContext extends React.Component<
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.props.schemaContext.schema,
     );
 
     this.setState(
@@ -1637,7 +1639,7 @@ class GraphiQLWithContext extends React.Component<
       event.currentTarget.className === 'typeName'
     ) {
       const typeName = event.currentTarget.innerHTML;
-      const schema = this.state.schema;
+      const schema = this.props.schemaContext.schema;
       if (schema) {
         const type = schema.getType(typeName);
         if (type) {
