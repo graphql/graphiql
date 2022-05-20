@@ -24,10 +24,7 @@ export const EditorContext = createContext<EditorContextType>({
   setVariableEditor() {},
 });
 
-export function EditorContextProvider(props: {
-  children: ReactNode;
-  initialValue?: string;
-}) {
+export function EditorContextProvider(props: { children: ReactNode }) {
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
