@@ -9,8 +9,11 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
+  useMemo,
   useState,
 } from 'react';
+import { useSchemaWithError } from './schema';
 
 export type ExplorerFieldDef =
   | GraphQLField<{}, {}, {}>
@@ -46,6 +49,11 @@ export type ExplorerContextType = {
 export const ExplorerContext = createContext<ExplorerContextType | null>(null);
 
 export function ExplorerContextProvider(props: { children: ReactNode }) {
+  const { isFetching } = useSchemaWithError(
+    'component',
+    'ExplorerContextProvider',
+  );
+
   const [state, setState] = useState<ExplorerNavStack>([initialNavStackItem]);
 
   const push = useCallback((item: ExplorerNavStackItem) => {
@@ -80,9 +88,19 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
     });
   }, []);
 
+  useEffect(() => {
+    if (isFetching) {
+      reset();
+    }
+  }, [isFetching, reset]);
+
+  const value = useMemo<ExplorerContextType>(
+    () => ({ explorerNavStack: state, push, pop, reset, showSearch }),
+    [state, push, pop, reset, showSearch],
+  );
+
   return (
-    <ExplorerContext.Provider
-      value={{ explorerNavStack: state, push, pop, reset, showSearch }}>
+    <ExplorerContext.Provider value={value}>
       {props.children}
     </ExplorerContext.Provider>
   );

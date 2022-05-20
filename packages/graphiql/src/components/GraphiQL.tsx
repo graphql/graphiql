@@ -12,7 +12,6 @@ import React, {
   ReactNode,
 } from 'react';
 import {
-  buildClientSchema,
   GraphQLSchema,
   parse,
   print,
@@ -21,9 +20,6 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
-  GraphQLError,
-  IntrospectionQuery,
-  getIntrospectionQuery,
   GraphQLNamedType,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
@@ -69,23 +65,19 @@ import { QueryHistory } from './QueryHistory';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
-import { introspectionQueryName } from '../utility/introspectionQueries';
 import setValue from 'set-value';
 
 import {
-  fetcherReturnToPromise,
   fillLeafs,
   formatError,
   formatResult,
   getSelectedOperationName,
   isAsyncIterable,
   isObservable,
-  isPromise,
   mergeAst,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
-  FetcherOpts,
   FetcherResult,
   FetcherResultPayload,
   GetDefaultFieldNamesFn,
@@ -94,7 +86,6 @@ import type {
   Unsubscribable,
 } from '@graphiql/toolkit';
 
-import { validateSchema } from 'graphql';
 import { Tab, TabAddButton, Tabs } from './Tabs';
 import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
 import { idFromTabContents } from '../utility/id-from-tab-contents';
@@ -343,7 +334,6 @@ export type GraphiQLState = {
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
   shouldPersistHeaders: boolean;
-  schemaErrors?: readonly GraphQLError[];
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription?: Unsubscribable | null;
@@ -488,9 +478,6 @@ class GraphiQLWithContext extends React.Component<
 > {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
-  _introspectionQuery: string;
-  _introspectionQueryName: string;
-  _introspectionQuerySansSubscriptions: string;
 
   // Ensure the component is mounted to execute async setState
   componentIsMounted: boolean;
@@ -558,36 +545,6 @@ class GraphiQLWithContext extends React.Component<
 
     const headerEditorEnabled = props.headerEditorEnabled ?? true;
     const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
-
-    let schema = props.schema;
-    let response = props.response;
-    let schemaErrors: readonly GraphQLError[] | undefined = undefined;
-    if (schema && !this.props.dangerouslyAssumeSchemaIsValid) {
-      const validationErrors = validateSchema(schema);
-      if (validationErrors && validationErrors.length > 0) {
-        // This is equivalent to handleSchemaErrors, but it's too early
-        // to call setState.
-        response = formatError(validationErrors);
-        schema = undefined;
-        schemaErrors = validationErrors;
-      }
-    }
-
-    this._introspectionQuery = getIntrospectionQuery({
-      schemaDescription: props.schemaDescription ?? undefined,
-      inputValueDeprecation: props.inputValueDeprecation ?? undefined,
-    });
-
-    this._introspectionQueryName =
-      props.introspectionQueryName ?? introspectionQueryName;
-
-    // Some GraphQL services do not support subscriptions and fail an introspection
-    // query which includes the `subscriptionType` field as the stock introspection
-    // query does. This backup query removes that field.
-    this._introspectionQuerySansSubscriptions = this._introspectionQuery.replace(
-      'subscriptionType { name }',
-      '',
-    );
 
     const initialTabHash = idFromTabContents({
       query,
@@ -658,12 +615,11 @@ class GraphiQLWithContext extends React.Component<
     // Initialize state
     this.state = {
       tabs: tabsState,
-      schema,
+      schema: props.schema,
       query: activeTab?.query,
       operationName: activeTab?.operationName,
-      response: activeTab?.response ?? response,
+      response: activeTab?.response,
       docExplorerOpen,
-      schemaErrors,
       editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -692,12 +648,6 @@ class GraphiQLWithContext extends React.Component<
   componentDidMount() {
     // Allow async state changes
     this.componentIsMounted = true;
-
-    // Only fetch schema via introspection if a schema has not been
-    // provided, including if `null` was provided.
-    if (this.state.schema === undefined) {
-      this.fetchSchema();
-    }
 
     if (typeof window !== 'undefined') {
       window.g = this;
@@ -735,14 +685,6 @@ class GraphiQLWithContext extends React.Component<
         nextQuery !== this.state.query ||
         nextOperationName !== this.state.operationName)
     ) {
-      if (!this.props.dangerouslyAssumeSchemaIsValid) {
-        const validationErrors = validateSchema(nextSchema);
-        if (validationErrors && validationErrors.length > 0) {
-          this.handleSchemaErrors(validationErrors);
-          nextSchema = undefined;
-        }
-      }
-
       const updatedQueryAttributes = this._updateQueryFacts(
         nextQuery,
         nextOperationName,
@@ -768,20 +710,12 @@ class GraphiQLWithContext extends React.Component<
     if (nextOperationName !== undefined) {
       this.props.storageContext?.set('operationName', nextOperationName);
     }
-    this.setState(
-      {
-        schema: nextSchema,
-        query: nextQuery,
-        operationName: nextOperationName,
-        response: nextResponse,
-      },
-      () => {
-        if (this.state.schema === undefined) {
-          this.props.explorerContext?.reset();
-          this.fetchSchema();
-        }
-      },
-    );
+    this.setState({
+      schema: nextSchema,
+      query: nextQuery,
+      operationName: nextOperationName,
+      response: nextResponse,
+    });
   }
 
   // Use it when the state change is async
@@ -1173,120 +1107,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  private fetchSchema() {
-    const fetcher = this.props.fetcher;
-
-    const fetcherOpts: FetcherOpts = {
-      shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
-      documentAST: this.state.documentAST,
-    };
-    const headers = getHeaders(this.props);
-    try {
-      if (headers && headers.trim().length > 2) {
-        fetcherOpts.headers = JSON.parse(headers);
-        // if state is not present, but props are
-      } else if (this.props.headers) {
-        fetcherOpts.headers = JSON.parse(this.props.headers);
-      }
-    } catch (err) {
-      this.setState({
-        response: 'Introspection failed as headers are invalid.',
-      });
-      return;
-    }
-
-    const fetch = fetcherReturnToPromise(
-      fetcher(
-        {
-          query: this._introspectionQuery,
-          operationName: this._introspectionQueryName,
-        },
-        fetcherOpts,
-      ),
-    );
-
-    if (!isPromise(fetch)) {
-      this.setState({
-        response: 'Fetcher did not return a Promise for introspection.',
-      });
-      return;
-    }
-
-    fetch
-      .then(result => {
-        if (typeof result !== 'string' && 'data' in result) {
-          return result;
-        }
-
-        // Try the stock introspection query first, falling back on the
-        // sans-subscriptions query for services which do not yet support it.
-        const fetch2 = fetcherReturnToPromise(
-          fetcher(
-            {
-              query: this._introspectionQuerySansSubscriptions,
-              operationName: this._introspectionQueryName,
-            },
-            fetcherOpts,
-          ),
-        );
-        if (!isPromise(fetch)) {
-          throw new Error(
-            'Fetcher did not return a Promise for introspection.',
-          );
-        }
-        return fetch2;
-      })
-      .then(result => {
-        // If a schema was provided while this fetch was underway, then
-        // satisfy the race condition by respecting the already
-        // provided schema.
-        if (this.state.schema !== undefined) {
-          return;
-        }
-
-        if (result && result.data && '__schema' in result?.data) {
-          let schema: GraphQLSchema | undefined = buildClientSchema(
-            result.data as IntrospectionQuery,
-          );
-          if (!this.props.dangerouslyAssumeSchemaIsValid) {
-            const errors = validateSchema(schema);
-            // if there are errors, don't set schema
-            if (errors && errors.length > 0) {
-              schema = undefined;
-              this.handleSchemaErrors(errors);
-            }
-          }
-          if (schema) {
-            const queryFacts = getOperationFacts(schema, this.state.query);
-            this.safeSetState({
-              schema,
-              ...queryFacts,
-              schemaErrors: undefined,
-            });
-            this.props.onSchemaChange?.(schema);
-          }
-        } else {
-          // handle as if it were an error if the fetcher response is not a string or response.data is not present
-          const responseString =
-            typeof result === 'string' ? result : formatResult(result);
-          this.handleSchemaErrors([responseString]);
-        }
-      })
-      .catch(error => {
-        this.handleSchemaErrors([error]);
-      });
-  }
-
-  private handleSchemaErrors(
-    schemaErrors: readonly GraphQLError[] | readonly string[],
-  ) {
-    this.safeSetState({
-      response: schemaErrors ? formatError(schemaErrors) : undefined,
-      schema: undefined,
-      schemaErrors,
-    });
-  }
 
   private async _fetchQuery(
     query: string,
