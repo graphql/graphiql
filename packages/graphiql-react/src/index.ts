@@ -14,6 +14,7 @@ import {
   useExplorerNavStack,
 } from './explorer';
 import { HistoryContext, HistoryContextProvider } from './history';
+import { SchemaContext, SchemaContextProvider, useSchema } from './schema';
 import { StorageContext, StorageContextProvider } from './storage';
 
 import type {
@@ -31,6 +32,7 @@ import type {
   ExplorerNavStackItem,
 } from './explorer';
 import type { HistoryContextType } from './history';
+import type { SchemaContextType } from './schema';
 import type { StorageContextType } from './storage';
 
 export {
@@ -50,6 +52,10 @@ export {
   // history
   HistoryContext,
   HistoryContextProvider,
+  // schema
+  SchemaContext,
+  SchemaContextProvider,
+  useSchema,
   // storage
   StorageContext,
   StorageContextProvider,
@@ -70,6 +76,8 @@ export type {
   ExplorerNavStackItem,
   // history
   HistoryContextType,
+  // schema
+  SchemaContextType,
   // storage
   StorageContextType,
 };

@@ -41,6 +41,8 @@ import {
   ExplorerContextProvider,
   HistoryContext,
   HistoryContextProvider,
+  SchemaContext,
+  SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
 } from '@graphiql/react';
@@ -50,6 +52,7 @@ import type {
   ExplorerFieldDef,
   HistoryContextType,
   ResponseTooltipType,
+  SchemaContextType,
   StorageContextType,
 } from '@graphiql/react';
 
@@ -377,33 +380,53 @@ export function GraphiQL(props: GraphiQLProps) {
     <StorageContextProvider storage={props.storage}>
       <StorageContext.Consumer>
         {storageContext => (
-          <EditorContextProvider>
-            <HistoryContextProvider
-              maxHistoryLength={props.maxHistoryLength}
-              onToggle={props.onToggleHistory}>
-              <ExplorerContextProvider>
-                <EditorContext.Consumer>
-                  {editorContext => (
-                    <HistoryContext.Consumer>
-                      {historyContext => (
-                        <ExplorerContext.Consumer>
-                          {explorerContext => (
-                            <GraphiQLWithContext
-                              {...props}
-                              editorContext={editorContext}
-                              explorerContext={explorerContext}
-                              historyContext={historyContext}
-                              storageContext={storageContext}
-                            />
-                          )}
-                        </ExplorerContext.Consumer>
-                      )}
-                    </HistoryContext.Consumer>
-                  )}
-                </EditorContext.Consumer>
-              </ExplorerContextProvider>
-            </HistoryContextProvider>
-          </EditorContextProvider>
+          <SchemaContextProvider
+            dangerouslyAssumeSchemaIsValid={
+              props.dangerouslyAssumeSchemaIsValid
+            }
+            fetcher={props.fetcher}
+            initialHeaders={
+              props.headers !== undefined
+                ? props.headers
+                : storageContext?.get('headers') ?? undefined
+            }
+            inputValueDeprecation={props.inputValueDeprecation}
+            introspectionQueryName={props.introspectionQueryName}
+            schema={props.schema}
+            schemaDescription={props.schemaDescription}>
+            <EditorContextProvider>
+              <HistoryContextProvider
+                maxHistoryLength={props.maxHistoryLength}
+                onToggle={props.onToggleHistory}>
+                <ExplorerContextProvider>
+                  <SchemaContext.Consumer>
+                    {schemaContext => (
+                      <EditorContext.Consumer>
+                        {editorContext => (
+                          <HistoryContext.Consumer>
+                            {historyContext => (
+                              <ExplorerContext.Consumer>
+                                {explorerContext => (
+                                  <GraphiQLWithContext
+                                    {...props}
+                                    editorContext={editorContext}
+                                    explorerContext={explorerContext}
+                                    historyContext={historyContext}
+                                    schemaContext={schemaContext}
+                                    storageContext={storageContext}
+                                  />
+                                )}
+                              </ExplorerContext.Consumer>
+                            )}
+                          </HistoryContext.Consumer>
+                        )}
+                      </EditorContext.Consumer>
+                    )}
+                  </SchemaContext.Consumer>
+                </ExplorerContextProvider>
+              </HistoryContextProvider>
+            </EditorContextProvider>
+          </SchemaContextProvider>
         )}
       </StorageContext.Consumer>
     </StorageContextProvider>
@@ -455,6 +478,7 @@ type GraphiQLWithContextProps = Omit<
   editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
+  schemaContext: SchemaContextType;
   storageContext: StorageContextType | null;
 };
 
