@@ -762,7 +762,7 @@ class GraphiQLWithContext extends React.Component<
         'tabState',
         JSON.stringify(this.state.tabs, (key, value) =>
           key === 'response' ||
-          (this.state.shouldPersistHeaders && key === 'headers')
+          (!this.state.shouldPersistHeaders && key === 'headers')
             ? undefined
             : value,
         ),
