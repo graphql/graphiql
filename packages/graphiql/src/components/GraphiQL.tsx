@@ -63,7 +63,6 @@ import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer, RESULT_VIEWER_ID } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
@@ -76,6 +75,7 @@ import {
   fillLeafs,
   formatError,
   formatResult,
+  getSelectedOperationName,
   isAsyncIterable,
   isObservable,
   isPromise,
