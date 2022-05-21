@@ -137,7 +137,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 
     fetch
       .then(result => {
-        if (typeof result !== 'string' && 'data' in result) {
+        if (typeof result === 'object' && result !== null && 'data' in result) {
           return result;
         }
 
@@ -165,7 +165,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
           return;
         }
 
-        if (result && result.data && '__schema' in result?.data) {
+        if (result && result.data && '__schema' in result.data) {
           try {
             const newSchema = buildClientSchema(
               result.data as IntrospectionQuery,
@@ -184,6 +184,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         setIsFetching(false);
       })
       .catch(error => {
+        // Don't continue if the effect has already been cleaned up
+        if (!isActive) {
+          return;
+        }
+
         setFetchError(formatError(error));
         setIsFetching(false);
       });

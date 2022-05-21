@@ -1280,7 +1280,7 @@ class GraphiQLWithContext extends React.Component<
             let maybeMultipart = Array.isArray(result) ? result : false;
             if (
               !maybeMultipart &&
-              typeof result !== 'string' &&
+              typeof result === 'object' &&
               result !== null &&
               'hasNext' in result
             ) {

@@ -31,7 +31,7 @@ import TypeDoc from './DocExplorer/TypeDoc';
  *
  */
 export function DocExplorer(props: { children?: ReactNode }) {
-  const { fetchError, schema, validationErrors } = useSchema();
+  const { fetchError, isFetching, schema, validationErrors } = useSchema();
   const explorerContext = useExplorerNavStack();
   if (!explorerContext) {
     throw new Error(
@@ -59,7 +59,7 @@ export function DocExplorer(props: { children?: ReactNode }) {
         Schema is invalid: {validationErrors[0].message}
       </div>
     );
-  } else if (schema === undefined) {
+  } else if (isFetching) {
     // Schema is undefined when it is being loaded via introspection.
     content = (
       <div className="spinner-container">
