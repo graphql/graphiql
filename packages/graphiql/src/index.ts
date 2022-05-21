@@ -45,17 +45,13 @@ export { ToolbarGroup } from './components/ToolbarGroup';
 export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**
- * Utilities
- */
-export { default as mergeAst } from './utility/mergeAst';
-
-/**
  * Legacy exports
  */
 import { onHasCompletion as _onHasCompletion } from '@graphiql/react';
 import {
   fillLeafs as _fillLeafs,
   getSelectedOperationName as _getSelectedOperationName,
+  mergeAst as _mergeAst,
 } from '@graphiql/toolkit';
 
 export const onHasCompletion: typeof _onHasCompletion = function onHasCompletion(
@@ -81,4 +77,11 @@ export const getSelectedOperationName: typeof _getSelectedOperationName = functi
     'Importing `getSelectedOperationName` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `getSelectedOperationName` function provided by the `@graphiql/toolkit` package.',
   );
   return _getSelectedOperationName(...args);
+};
+
+export const mergeAst: typeof _mergeAst = function mergeAst(...args) {
+  console.warn(
+    'Importing `mergeAst` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `mergeAst` function provided by the `@graphiql/toolkit` package.',
+  );
+  return _mergeAst(...args);
 };

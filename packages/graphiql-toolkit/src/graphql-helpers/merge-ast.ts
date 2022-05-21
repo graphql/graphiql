@@ -1,10 +1,3 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
 import {
   DocumentNode,
   FieldNode,
@@ -20,9 +13,7 @@ import {
   Kind,
 } from 'graphql';
 
-type Maybe<T> = null | T;
-
-export function uniqueBy<T>(
+function uniqueBy<T>(
   array: readonly SelectionNode[],
   iteratee: (item: FieldNode) => T,
 ) {
@@ -54,12 +45,12 @@ export function uniqueBy<T>(
   return result;
 }
 
-export function inlineRelevantFragmentSpreads(
+function inlineRelevantFragmentSpreads(
   fragmentDefinitions: {
     [key: string]: FragmentDefinitionNode | undefined;
   },
   selections: readonly SelectionNode[],
-  selectionSetType?: Maybe<GraphQLOutputType>,
+  selectionSetType?: GraphQLOutputType | null,
 ): readonly SelectionNode[] {
   const selectionSetTypeName = selectionSetType
     ? getNamedType(selectionSetType).name
@@ -115,7 +106,7 @@ export function inlineRelevantFragmentSpreads(
 /**
  * Given a document AST, inline all named fragment definitions.
  */
-export default function mergeAST(
+export function mergeAst(
   documentAST: DocumentNode,
   schema?: GraphQLSchema | null,
 ): DocumentNode {
