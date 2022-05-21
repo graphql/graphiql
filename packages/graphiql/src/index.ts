@@ -47,7 +47,6 @@ export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 /**
  * Utilities
  */
-export { fillLeafs } from './utility/fillLeafs';
 export { default as mergeAst } from './utility/mergeAst';
 export { default as getSelectedOperationName } from './utility/getSelectedOperationName';
 
@@ -55,6 +54,7 @@ export { default as getSelectedOperationName } from './utility/getSelectedOperat
  * Legacy exports
  */
 import { onHasCompletion as _onHasCompletion } from '@graphiql/react';
+import { fillLeafs as _fillLeafs } from '@graphiql/toolkit';
 
 export const onHasCompletion: typeof _onHasCompletion = function onHasCompletion(
   ...args
@@ -63,4 +63,11 @@ export const onHasCompletion: typeof _onHasCompletion = function onHasCompletion
     'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
   );
   return _onHasCompletion(...args);
+};
+
+export const fillLeafs: typeof _fillLeafs = function fillLeafs(...args) {
+  console.warn(
+    'Importing `fillLeafs` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `fillLeafs` function provided by the `@graphiql/toolkit` package.',
+  );
+  return _fillLeafs(...args);
 };

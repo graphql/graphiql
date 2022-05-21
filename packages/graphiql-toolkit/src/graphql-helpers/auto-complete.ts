@@ -1,26 +1,17 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
 import {
+  DocumentNode,
   getNamedType,
+  GraphQLOutputType,
+  GraphQLSchema,
+  GraphQLType,
   isLeafType,
+  Kind,
   parse,
   print,
+  SelectionSetNode,
   TypeInfo,
   visit,
-  GraphQLSchema,
-  DocumentNode,
-  GraphQLOutputType,
-  GraphQLType,
-  SelectionSetNode,
-  Kind,
 } from 'graphql';
-
-import { Maybe } from '../components/GraphiQL';
 
 type Insertion = {
   index: number;
@@ -212,7 +203,7 @@ function getIndentation(str: string, index: number) {
 }
 
 function isFieldType(
-  fieldType: Maybe<GraphQLOutputType>,
+  fieldType: GraphQLOutputType | null | undefined,
 ): GraphQLOutputType | void {
   if (fieldType) {
     return fieldType;

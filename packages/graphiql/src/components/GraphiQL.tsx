@@ -66,7 +66,6 @@ import { QueryHistory } from './QueryHistory';
 import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
 import mergeAST from '../utility/mergeAst';
 import { introspectionQueryName } from '../utility/introspectionQueries';
@@ -74,6 +73,7 @@ import setValue from 'set-value';
 
 import {
   fetcherReturnToPromise,
+  fillLeafs,
   formatError,
   formatResult,
   isAsyncIterable,
@@ -86,6 +86,7 @@ import type {
   FetcherOpts,
   FetcherResult,
   FetcherResultPayload,
+  GetDefaultFieldNamesFn,
   SyncFetcherResult,
   Unsubscribable,
 } from '@graphiql/toolkit';
