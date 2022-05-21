@@ -220,7 +220,7 @@
     "env:source": "export $(cat .envrc | xargs)",
     "vsce:publish": "vsce publish --yarn --pat \"$PAT_TOKEN\"",
     "open-vsx:publish": "ovsx publish --pat \"$OPEN_VSX_ACCESS_TOKEN\"",
-    "postversion": "npm run vsce:publish && npm run open-vsx:publish"
+    "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
