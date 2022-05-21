@@ -167,7 +167,7 @@ export class MessageProcessor {
         documentSymbolProvider: true,
         completionProvider: {
           resolveProvider: true,
-          triggerCharacters: [' ', ':', '$', '\n', ' ', '(', '@'],
+          triggerCharacters: [' ', ':', '$', '(', '@'],
         },
         definitionProvider: true,
         textDocumentSync: 1,

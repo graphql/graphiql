@@ -20,6 +20,6 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build-demo": "vite build"
   }
 }
