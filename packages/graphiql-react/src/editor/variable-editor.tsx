@@ -161,6 +161,7 @@ function useSynchronizeVariableTypes(
 
     const didChange = editor.options.lint.variableToType !== variableToType;
 
+    editor.state.lint.linterOptions.variableToType = variableToType;
     editor.options.lint.variableToType = variableToType;
     editor.options.hintOptions.variableToType = variableToType;
 

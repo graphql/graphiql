@@ -10,7 +10,7 @@ export default defineConfig({
       formats: ['cjs', 'es'],
     },
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: ['graphql', 'react', 'react-dom'],
       output: {
         chunkFileNames: '[name].[format].js',
       },
