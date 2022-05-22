@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.1.1
+
+### Patch Changes
+
+- [#2423](https://github.com/graphql/graphiql/pull/2423) [`838e58da`](https://github.com/graphql/graphiql/commit/838e58dad652d8f5559af7b88d049b1c62348f2f) Thanks [@chentsulin](https://github.com/chentsulin)! - Fix peer dependency declaration by using `||` instead of `|` to link multiple major versions
+
 ## 0.1.0
 
 ### Minor Changes
