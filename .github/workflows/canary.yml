@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.head.repo.full_name == github.repository
     env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout Main
@@ -46,9 +46,9 @@ jobs:
             ```
             ${{ steps.canary.outputs.changesetsPublishedPackages}}
             ```
-          bot-token: ${{ secrets.GH_TOKEN }}
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
           bot: 'github-actions[bot]'
-          github-token: ${{ secrets.GH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish a empty message
         if: steps.canary.outputs.released == 'false'
         uses: 'dotansimha/pr-comment@master'
@@ -56,6 +56,6 @@ jobs:
           commentKey: canary
           message: |
             The latest changes of this PR are not available as canary, since there are no linked `changesets` for this PR.
-          bot-token: ${{ secrets.GH_TOKEN }}
+          bot-token: ${{ secrets.GITHUB_TOKEN }}
           bot: 'github-actions[bot]'
-          github-token: ${{ secrets.GH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
