@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.7.23
+
+### Patch Changes
+
+- [#2417](https://github.com/graphql/graphiql/pull/2417) [`6ca6a92d`](https://github.com/graphql/graphiql/commit/6ca6a92d0fd12af974683de9706c8e8e06c751c2) Thanks [@acao](https://github.com/acao)! - fix annoying trigger character on newline issue #2182
+
 ## 2.7.22
 
 ### Patch Changes
