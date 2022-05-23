@@ -1,5 +1,8 @@
 import { EditorChange } from 'codemirror';
-import { RefObject, useEffect, useRef } from 'react';
+import { RefObject, useContext, useEffect, useRef } from 'react';
+
+import { StorageContext } from '../storage';
+import debounce from '../utility/debounce';
 
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditor } from './types';
@@ -20,19 +23,29 @@ export type EditCallback = (value: string) => void;
 export function useChangeHandler(
   editor: CodeMirrorEditor | null,
   callback: EditCallback | undefined,
+  storageKey: string | null,
 ) {
+  const storage = useContext(StorageContext);
   useEffect(() => {
     if (!editor) {
       return;
     }
 
+    const store = debounce(500, (value: string) => {
+      if (!storage || storageKey === null) {
+        return;
+      }
+      storage.set(storageKey, value);
+    });
+
     const handleChange = (editorInstance: CodeMirrorEditor) => {
       const newValue = editorInstance.getValue();
       callback?.(newValue);
+      store(newValue);
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [editor, callback]);
+  }, [callback, editor, storage, storageKey]);
 }
 
 export type CompletionCallback = (value: HTMLDivElement) => void;

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef } from 'react';
 
+import { StorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { EditorContext } from './context';
 import {
@@ -21,6 +22,7 @@ export type UseHeaderEditorArgs = {
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
+  shouldPersistHeaders?: boolean;
   value?: string;
 };
 
@@ -32,9 +34,11 @@ export function useHeaderEditor({
   onPrettifyQuery,
   onRunQuery,
   readOnly = false,
+  shouldPersistHeaders = false,
   value,
 }: UseHeaderEditorArgs = {}) {
   const context = useContext(EditorContext);
+  const storage = useContext(StorageContext);
   const ref = useRef<HTMLDivElement>(null);
 
   if (!context) {
@@ -45,7 +49,7 @@ export function useHeaderEditor({
 
   const { headerEditor, setHeaderEditor } = context;
 
-  const initialValue = useRef(value);
+  const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
   useEffect(() => {
     let isActive = true;
@@ -117,7 +121,11 @@ export function useHeaderEditor({
 
   useSynchronizeValue(headerEditor, value);
 
-  useChangeHandler(headerEditor, onEdit);
+  useChangeHandler(
+    headerEditor,
+    onEdit,
+    shouldPersistHeaders ? STORAGE_KEY : null,
+  );
 
   useCompletion(headerEditor, onHintInformationRender);
 
@@ -129,3 +137,5 @@ export function useHeaderEditor({
 
   return ref;
 }
+
+const STORAGE_KEY = 'headers';

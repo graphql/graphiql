@@ -22,10 +22,12 @@ import { markdown } from '../markdown';
 import { normalizeWhitespace } from './whitespace';
 import { CodeMirrorType, CodeMirrorEditor } from './types';
 import { useSchemaWithError } from '../schema';
+import { StorageContext } from '../storage';
 
 type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
+  defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
   onClickReference?: OnClickReference;
@@ -41,6 +43,7 @@ export type UseQueryEditorArgs = {
 };
 
 export function useQueryEditor({
+  defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
   onClickReference,
@@ -56,6 +59,7 @@ export function useQueryEditor({
 }: UseQueryEditorArgs = {}) {
   const { schema } = useSchemaWithError('hook', 'useQueryEditor');
   const editorContext = useContext(EditorContext);
+  const storage = useContext(StorageContext);
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
@@ -72,7 +76,9 @@ export function useQueryEditor({
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
 
-  const initialValue = useRef(value);
+  const initialValue = useRef(
+    value ?? storage?.get(STORAGE_KEY) ?? defaultValue,
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -204,7 +210,7 @@ export function useQueryEditor({
 
   useSynchronizeValue(queryEditor, value);
 
-  useChangeHandler(queryEditor, onEdit);
+  useChangeHandler(queryEditor, onEdit, STORAGE_KEY);
 
   useCompletion(queryEditor, onHintInformationRender);
 
@@ -295,3 +301,38 @@ function useSynchronizeExternalFragments(
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
+
+const DEFAULT_VALUE = `# Welcome to GraphiQL
+#
+# GraphiQL is an in-browser tool for writing, validating, and
+# testing GraphQL queries.
+#
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
+#
+# GraphQL queries typically start with a "{" character. Lines that start
+# with a # are ignored.
+#
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
+#
+#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
+#
+#       Run Query:  Ctrl-Enter (or press the play button above)
+#
+#   Auto Complete:  Ctrl-Space (or just start typing)
+#
+
+`;
+
+const STORAGE_KEY = 'query';

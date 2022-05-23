@@ -906,18 +906,19 @@ class GraphiQLWithContext extends React.Component<
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                validationRules={this.props.validationRules}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
+                defaultValue={this.props.defaultQuery}
+                editorTheme={this.props.editorTheme}
+                externalFragments={this.props.externalFragments}
                 onClickReference={this.handleClickReference}
                 onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
+                onEdit={this.handleEditQuery}
+                onHintInformationRender={this.handleHintInformationRender}
                 onMergeQuery={this.handleMergeQuery}
+                onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
                 readOnly={this.props.readOnly}
-                externalFragments={this.props.externalFragments}
+                validationRules={this.props.validationRules}
+                value={this.props.query}
               />
               <section
                 className="variable-editor secondary-editor"
@@ -970,15 +971,16 @@ class GraphiQLWithContext extends React.Component<
                 />
                 {this.state.headerEditorEnabled && (
                   <HeaderEditor
-                    value={this.props.headers}
+                    active={this.state.headerEditorActive}
+                    editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
                     onHintInformationRender={this.handleHintInformationRender}
-                    onPrettifyQuery={this.handlePrettifyQuery}
                     onMergeQuery={this.handleMergeQuery}
+                    onPrettifyQuery={this.handlePrettifyQuery}
                     onRunQuery={this.handleEditorRunQuery}
-                    editorTheme={this.props.editorTheme}
                     readOnly={this.props.readOnly}
-                    active={this.state.headerEditorActive}
+                    shouldPersistHeaders={this.props.shouldPersistHeaders}
+                    value={this.props.headers}
                   />
                 )}
               </section>
@@ -1491,7 +1493,6 @@ class GraphiQLWithContext extends React.Component<
       }),
       this.persistTabsState,
     );
-    this.props.storageContext?.set('query', value);
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value, queryFacts?.documentAST);
     }
@@ -1552,7 +1553,6 @@ class GraphiQLWithContext extends React.Component<
       }),
       this.persistTabsState,
     );
-    debounce(500, () => this.props.storageContext?.set('variables', value))();
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
@@ -1566,8 +1566,6 @@ class GraphiQLWithContext extends React.Component<
       }),
       this.persistTabsState,
     );
-    this.props.shouldPersistHeaders &&
-      debounce(500, () => this.props.storageContext?.set('headers', value))();
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }

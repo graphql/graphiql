@@ -1,6 +1,7 @@
 import type { VariableToType } from 'graphql-language-service';
 import { MutableRefObject, useContext, useEffect, useRef } from 'react';
 
+import { StorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { EditorContext } from './context';
 import {
@@ -39,6 +40,7 @@ export function useVariableEditor({
   variableToType,
 }: UseVariableEditorArgs = {}) {
   const context = useContext(EditorContext);
+  const storage = useContext(StorageContext);
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
@@ -50,7 +52,7 @@ export function useVariableEditor({
 
   const { variableEditor, setVariableEditor } = context;
 
-  const initialValue = useRef(value);
+  const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
   useEffect(() => {
     let isActive = true;
@@ -138,7 +140,7 @@ export function useVariableEditor({
 
   useSynchronizeValue(variableEditor, value);
 
-  useChangeHandler(variableEditor, onEdit);
+  useChangeHandler(variableEditor, onEdit, STORAGE_KEY);
 
   useCompletion(variableEditor, onHintInformationRender);
 
@@ -172,3 +174,5 @@ function useSynchronizeVariableTypes(
     }
   }, [editor, variableToType, codeMirrorRef]);
 }
+
+const STORAGE_KEY = 'variables';
