@@ -1820,12 +1820,12 @@ class GraphiQLWithContext extends React.Component<
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   };
 
-  handleSelectHistoryQuery({
+  handleSelectHistoryQuery = ({
     query,
     variables,
     headers,
     operationName,
-  }: QueryStoreItem) {
+  }: QueryStoreItem) => {
     if (query) {
       this.handleEditQuery(query);
     }
@@ -1838,7 +1838,7 @@ class GraphiQLWithContext extends React.Component<
     if (operationName) {
       this.handleEditOperationName(operationName);
     }
-  }
+  };
 
   private handleResizeStart = (downEvent: React.MouseEvent) => {
     if (!this._didClickDragBar(downEvent)) {
