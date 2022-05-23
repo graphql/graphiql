@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.1.2
+
+### Patch Changes
+
+- [#2427](https://github.com/graphql/graphiql/pull/2427) [`ebc864f0`](https://github.com/graphql/graphiql/commit/ebc864f0ab05000758cb2898daaa73a2f15255ec) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Mark `graphql` as external dependency to avoid importing multiple instances
+
+* [#2427](https://github.com/graphql/graphiql/pull/2427) [`ebc864f0`](https://github.com/graphql/graphiql/commit/ebc864f0ab05000758cb2898daaa73a2f15255ec) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix linting by also updating the options object in the internal codemirror state
+
 ## 0.1.1
 
 ### Patch Changes
