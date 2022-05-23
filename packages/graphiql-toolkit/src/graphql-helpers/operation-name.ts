@@ -1,17 +1,10 @@
 import { OperationDefinitionNode } from 'graphql';
 
 /**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-/**
  * Provided optional previous operations and selected name, and a next list of
  * operations, determine what the next selected operation should be.
  */
-export default function getSelectedOperationName(
+export function getSelectedOperationName(
   prevOperations?: OperationDefinitionNode[] | undefined,
   prevSelectedOperationName?: string,
   operations?: OperationDefinitionNode[],

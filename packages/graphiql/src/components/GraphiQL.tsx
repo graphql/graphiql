@@ -63,29 +63,30 @@ import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer, RESULT_VIEWER_ID } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import getSelectedOperationName from '../utility/getSelectedOperationName';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
 import { getLeft, getTop } from '../utility/elementPosition';
-import mergeAST from '../utility/mergeAst';
 import { introspectionQueryName } from '../utility/introspectionQueries';
 import setValue from 'set-value';
 
 import {
   fetcherReturnToPromise,
+  fillLeafs,
   formatError,
   formatResult,
+  getSelectedOperationName,
   isAsyncIterable,
   isObservable,
   isPromise,
-  QueryStoreItem,
+  mergeAst,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
   FetcherOpts,
   FetcherResult,
   FetcherResultPayload,
+  GetDefaultFieldNamesFn,
+  QueryStoreItem,
   SyncFetcherResult,
   Unsubscribable,
 } from '@graphiql/toolkit';
@@ -1656,7 +1657,7 @@ class GraphiQLWithContext extends React.Component<
       return;
     }
 
-    editor.setValue(print(mergeAST(this.state.documentAST, this.state.schema)));
+    editor.setValue(print(mergeAst(this.state.documentAST, this.state.schema)));
   };
 
   handleEditQuery = debounce(100, (value: string) => {
