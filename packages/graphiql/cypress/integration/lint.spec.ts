@@ -1,3 +1,5 @@
+import { version as graphqlVersion } from 'graphql/version';
+
 describe('Linting', () => {
   it('Marks GraphQL syntax errors as error', () => {
     cy.visitWithOp({
@@ -13,7 +15,9 @@ describe('Linting', () => {
     }).assertLinterMarkWithMessage(
       '+++',
       'error',
-      'Syntax Error: Unexpected character: "+".',
+      graphqlVersion.startsWith('15.')
+        ? 'Syntax Error: Cannot parse the unexpected character "+".'
+        : 'Syntax Error: Unexpected character: "+".',
     );
   });
 
