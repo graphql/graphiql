@@ -1,5 +1,5 @@
 ---
-'graphiql': minor
+'graphiql': patch
 '@graphiql/react': minor
 ---
 
