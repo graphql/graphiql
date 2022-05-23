@@ -30,6 +30,7 @@ export type HistoryContextType = {
   isVisible: boolean;
   items: readonly QueryStoreItem[];
   show(): void;
+  toggle(): void;
   toggleFavorite(args: {
     query?: string;
     variables?: string;
@@ -104,6 +105,15 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     setIsVisible(true);
   }, [onToggle, storage]);
 
+  const toggle = useCallback(() => {
+    setIsVisible(current => {
+      const newValue = !current;
+      onToggle?.(newValue);
+      storage?.set(STORAGE_KEY, JSON.stringify(newValue));
+      return newValue;
+    });
+  }, [onToggle, storage]);
+
   const toggleFavorite: HistoryContextType['toggleFavorite'] = useCallback(
     ({ query, variables, headers, operationName, label, favorite }) => {
       historyStore.current.toggleFavorite(
@@ -127,9 +137,19 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
       isVisible,
       items,
       show,
+      toggle,
       toggleFavorite,
     }),
-    [addToHistory, editLabel, hide, isVisible, items, show, toggleFavorite],
+    [
+      addToHistory,
+      editLabel,
+      hide,
+      isVisible,
+      items,
+      show,
+      toggle,
+      toggleFavorite,
+    ],
   );
 
   return (

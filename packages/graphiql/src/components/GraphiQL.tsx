@@ -839,8 +839,12 @@ class GraphiQLWithContext extends React.Component<
           label="Copy"
         />
         <ToolbarButton
-          onClick={() => this.props.historyContext?.show()}
-          title="Show History"
+          onClick={() => this.props.historyContext?.toggle()}
+          title={
+            this.props.historyContext?.isVisible
+              ? 'Hide History'
+              : 'Show History'
+          }
           label="History"
         />
         {this.props.toolbar?.additionalContent
