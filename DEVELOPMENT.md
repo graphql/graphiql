@@ -65,7 +65,7 @@ if you see typescript build issues, do a `yarn build` locally and make sure the 
 - `yarn e2e` at the root will run the end to end suite
 - `yarn start-monaco` will launch webpack dev server for the monaco editor example with github API from the root. this is the fastest way to test changes to `graphql-language-service-interface`, parser, etc.
 
-if you want these commands to watch for changes to dependent packages in the repo, then `yarn build --watch` is what you want to run alongside either of these.
+if you want these commands to watch for changes to dependent packages in the repo, then `yarn build:watch` is what you want to run alongside either of these.
 
 ### Developing for GraphiQL
 

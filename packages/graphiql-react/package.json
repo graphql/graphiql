@@ -21,7 +21,11 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc --emitDeclarationOnly && vite build",
+    "build": "yarn build:types && yarn build:code",
+    "build:code": "vite build",
+    "build:code:watch": "yarn build:code --watch",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:types:watch": "yarn build:types --watch --preserveWatchOutput",
     "preview": "vite preview"
   },
   "peerDependencies": {
