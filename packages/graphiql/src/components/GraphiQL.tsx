@@ -912,6 +912,7 @@ class GraphiQLWithContext extends React.Component<
                 onClickReference={this.handleClickReference}
                 onCopyQuery={this.handleCopyQuery}
                 onEdit={this.handleEditQuery}
+                onEditOperationName={this.props.onEditOperationName}
                 onHintInformationRender={this.handleHintInformationRender}
                 onMergeQuery={this.handleMergeQuery}
                 onPrettifyQuery={this.handlePrettifyQuery}
@@ -959,7 +960,6 @@ class GraphiQLWithContext extends React.Component<
                 </div>
                 <VariableEditor
                   value={this.props.variables}
-                  variableToType={this.state.variableToType}
                   onEdit={this.handleEditVariables}
                   onHintInformationRender={this.handleHintInformationRender}
                   onPrettifyQuery={this.handlePrettifyQuery}
@@ -1247,7 +1247,7 @@ class GraphiQLWithContext extends React.Component<
     // operation name, then report that it changed.
     if (selectedOperationName && selectedOperationName !== operationName) {
       operationName = selectedOperationName;
-      this.handleEditOperationName(operationName);
+      this.props.onEditOperationName?.(operationName);
     }
 
     try {
@@ -1571,13 +1571,6 @@ class GraphiQLWithContext extends React.Component<
     }
   };
 
-  handleEditOperationName = (operationName: string) => {
-    const onEditOperationName = this.props.onEditOperationName;
-    if (onEditOperationName) {
-      onEditOperationName(operationName);
-    }
-  };
-
   handleHintInformationRender = (elem: HTMLDivElement) => {
     elem.addEventListener('click', this._onClickHintInformation);
 
@@ -1649,7 +1642,7 @@ class GraphiQLWithContext extends React.Component<
       setHeaders(this.props, headers);
     }
     if (operationName) {
-      this.handleEditOperationName(operationName);
+      this.props.onEditOperationName?.(operationName);
     }
   };
 

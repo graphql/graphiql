@@ -1,5 +1,4 @@
-import type { VariableToType } from 'graphql-language-service';
-import { MutableRefObject, useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 
 import { StorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
@@ -14,7 +13,7 @@ import {
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
-import { CodeMirrorEditor, CodeMirrorType } from './types';
+import { CodeMirrorType } from './types';
 
 export type UseVariableEditorArgs = {
   editorTheme?: string;
@@ -25,7 +24,6 @@ export type UseVariableEditorArgs = {
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   value?: string;
-  variableToType?: VariableToType;
 };
 
 export function useVariableEditor({
@@ -37,7 +35,6 @@ export function useVariableEditor({
   onRunQuery,
   readOnly = false,
   value,
-  variableToType,
 }: UseVariableEditorArgs = {}) {
   const context = useContext(EditorContext);
   const storage = useContext(StorageContext);
@@ -136,8 +133,6 @@ export function useVariableEditor({
     };
   }, [editorTheme, readOnly, setVariableEditor]);
 
-  useSynchronizeVariableTypes(variableEditor, variableToType, codeMirrorRef);
-
   useSynchronizeValue(variableEditor, value);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY);
@@ -151,28 +146,6 @@ export function useVariableEditor({
   useResizeEditor(variableEditor, ref);
 
   return ref;
-}
-
-function useSynchronizeVariableTypes(
-  editor: CodeMirrorEditor | null,
-  variableToType: VariableToType | undefined,
-  codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
-) {
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    const didChange = editor.options.lint.variableToType !== variableToType;
-
-    editor.state.lint.linterOptions.variableToType = variableToType;
-    editor.options.lint.variableToType = variableToType;
-    editor.options.hintOptions.variableToType = variableToType;
-
-    if (didChange && codeMirrorRef.current) {
-      codeMirrorRef.current.signal(editor, 'change', editor);
-    }
-  }, [editor, variableToType, codeMirrorRef]);
 }
 
 const STORAGE_KEY = 'variables';
