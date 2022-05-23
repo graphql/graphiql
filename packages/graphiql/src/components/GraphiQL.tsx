@@ -859,7 +859,6 @@ class GraphiQLWithContext extends React.Component<
                 isRunning={Boolean(this.state.subscription)}
                 onRun={this.handleRunQuery}
                 onStop={this.handleStopQuery}
-                operations={this.state.operations}
               />
               {toolbar}
             </div>

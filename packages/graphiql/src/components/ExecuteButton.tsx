@@ -4,27 +4,34 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { OperationDefinitionNode } from 'graphql';
+import { EditorContext } from '@graphiql/react';
 
 type ExecuteButtonProps = {
-  operations?: OperationDefinitionNode[];
   isRunning: boolean;
   onStop: () => void;
   onRun: (value?: string) => void;
 };
 
 export function ExecuteButton({
-  operations = [],
   isRunning,
   onStop,
   onRun,
 }: ExecuteButtonProps) {
+  const editorContext = useContext(EditorContext);
+  if (!editorContext) {
+    throw new Error(
+      'Tried to render the `ExecuteButton` component without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
+    );
+  }
+
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
   );
 
+  const operations = editorContext.queryEditor?.operations || [];
   const hasOptions = operations.length > 1;
 
   return (
