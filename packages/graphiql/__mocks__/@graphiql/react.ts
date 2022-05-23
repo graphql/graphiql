@@ -7,12 +7,15 @@ import {
   HistoryContextProvider,
   ImagePreview,
   onHasCompletion,
+  SchemaContext,
+  SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
   useExplorerNavStack,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
   useResponseEditor as _useResponseEditor,
+  useSchema,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
 import type {
@@ -23,6 +26,7 @@ import type {
   ExplorerNavStackItem,
   HistoryContextType,
   ResponseTooltipType,
+  SchemaContextType,
   StorageContextType,
   UseHeaderEditorArgs,
   UseResponseEditorArgs,
@@ -40,9 +44,12 @@ export {
   HistoryContextProvider,
   ImagePreview,
   onHasCompletion,
+  SchemaContext,
+  SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
   useExplorerNavStack,
+  useSchema,
 };
 
 export type {
@@ -53,6 +60,7 @@ export type {
   ExplorerNavStackItem,
   HistoryContextType,
   ResponseTooltipType,
+  SchemaContextType,
   StorageContextType,
   UseHeaderEditorArgs,
   UseResponseEditorArgs,

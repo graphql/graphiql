@@ -6,10 +6,23 @@
  */
 import React from 'react';
 import { render } from '@testing-library/react';
-import { ExplorerContextProvider } from '@graphiql/react';
+import {
+  ExplorerContextProvider,
+  SchemaContext,
+  SchemaContextType,
+} from '@graphiql/react';
 
 import { DocExplorer } from '../DocExplorer';
 import { ExampleSchema } from './ExampleSchema';
+
+const defaultSchemaContext: SchemaContextType = {
+  fetchError: null,
+  isFetching: false,
+  schema: ExampleSchema,
+  setFetchError() {},
+  setSchema() {},
+  validationErrors: null,
+};
 
 function DocExplorerWithContext(
   props: React.ComponentProps<typeof DocExplorer>,
@@ -22,20 +35,35 @@ function DocExplorerWithContext(
 }
 
 describe('DocExplorer', () => {
-  it('renders spinner when no schema prop is present', () => {
-    const { container } = render(<DocExplorerWithContext />);
+  it('renders spinner when the schema is loading', () => {
+    const { container } = render(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          isFetching: true,
+          schema: undefined,
+        }}>
+        <DocExplorerWithContext />
+      </SchemaContext.Provider>,
+    );
     const spinner = container.querySelectorAll('.spinner-container');
     expect(spinner).toHaveLength(1);
   });
   it('renders with null schema', () => {
-    const { container } = render(<DocExplorerWithContext schema={null} />);
+    const { container } = render(
+      <SchemaContext.Provider value={{ ...defaultSchemaContext, schema: null }}>
+        <DocExplorerWithContext />
+      </SchemaContext.Provider>,
+    );
     const error = container.querySelectorAll('.error-container');
     expect(error).toHaveLength(1);
     expect(error[0]).toHaveTextContent('No Schema Available');
   });
   it('renders with schema', () => {
     const { container } = render(
-      <DocExplorerWithContext schema={ExampleSchema} />,
+      <SchemaContext.Provider value={defaultSchemaContext}>
+        <DocExplorerWithContext />,
+      </SchemaContext.Provider>,
     );
     const error = container.querySelectorAll('.error-container');
     expect(error).toHaveLength(0);

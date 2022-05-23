@@ -50,6 +50,8 @@ export function useVariableEditor({
 
   const { variableEditor, setVariableEditor } = context;
 
+  const initialValue = useRef(value);
+
   useEffect(() => {
     let isActive = true;
 
@@ -71,7 +73,7 @@ export function useVariableEditor({
       }
 
       const newEditor = CodeMirror(container, {
-        value: '',
+        value: initialValue.current || '',
         lineNumbers: true,
         tabSize: 2,
         mode: 'graphql-variables',

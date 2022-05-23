@@ -1,8 +1,17 @@
-import { createContext, ReactNode, useState } from 'react';
+import { fillLeafs, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
+import { useSchemaWithError } from '../schema';
 
 import { CodeMirrorEditor } from './types';
 
 export type EditorContextType = {
+  autoCompleteLeafs(): string | undefined;
   headerEditor: CodeMirrorEditor | null;
   queryEditor: CodeMirrorEditor | null;
   responseEditor: CodeMirrorEditor | null;
@@ -14,6 +23,9 @@ export type EditorContextType = {
 };
 
 export const EditorContext = createContext<EditorContextType>({
+  autoCompleteLeafs() {
+    return undefined;
+  },
   headerEditor: null,
   queryEditor: null,
   responseEditor: null,
@@ -24,10 +36,13 @@ export const EditorContext = createContext<EditorContextType>({
   setVariableEditor() {},
 });
 
-export function EditorContextProvider(props: {
+type EditorContextProviderProps = {
   children: ReactNode;
-  initialValue?: string;
-}) {
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+};
+
+export function EditorContextProvider(props: EditorContextProviderProps) {
+  const { schema } = useSchemaWithError('component', 'EditorContextProvider');
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
@@ -38,18 +53,74 @@ export function EditorContextProvider(props: {
   const [variableEditor, setVariableEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
+
+  const autoCompleteLeafs = useCallback<
+    EditorContextType['autoCompleteLeafs']
+  >(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    const { insertions, result } = fillLeafs(
+      schema,
+      query,
+      props.getDefaultFieldNames,
+    );
+    if (insertions && insertions.length > 0) {
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'autoInsertedLeaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        let newCursorIndex = cursorIndex;
+        insertions.forEach(({ index, string }) => {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        });
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    }
+
+    return result;
+  }, [props.getDefaultFieldNames, queryEditor, schema]);
+
+  const value = useMemo<EditorContextType>(
+    () => ({
+      autoCompleteLeafs,
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+      setHeaderEditor,
+      setQueryEditor,
+      setResponseEditor,
+      setVariableEditor,
+    }),
+    [
+      autoCompleteLeafs,
+      headerEditor,
+      queryEditor,
+      responseEditor,
+      variableEditor,
+    ],
+  );
+
   return (
-    <EditorContext.Provider
-      value={{
-        headerEditor,
-        queryEditor,
-        responseEditor,
-        variableEditor,
-        setHeaderEditor,
-        setQueryEditor,
-        setResponseEditor,
-        setVariableEditor,
-      }}>
+    <EditorContext.Provider value={value}>
       {props.children}
     </EditorContext.Provider>
   );

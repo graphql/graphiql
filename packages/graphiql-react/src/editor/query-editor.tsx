@@ -21,6 +21,7 @@ import {
 import { markdown } from '../markdown';
 import { normalizeWhitespace } from './whitespace';
 import { CodeMirrorType, CodeMirrorEditor } from './types';
+import { useSchemaWithError } from '../schema';
 
 type OnClickReference = (reference: SchemaReference) => void;
 
@@ -35,7 +36,6 @@ export type UseQueryEditorArgs = {
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
-  schema?: GraphQLSchema | null;
   validationRules?: ValidationRule[];
   value?: string;
 };
@@ -51,26 +51,28 @@ export function useQueryEditor({
   onPrettifyQuery,
   onRunQuery,
   readOnly = false,
-  schema,
   validationRules,
   value,
 }: UseQueryEditorArgs = {}) {
-  const context = useContext(EditorContext);
+  const { schema } = useSchemaWithError('hook', 'useQueryEditor');
+  const editorContext = useContext(EditorContext);
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
-  if (!context) {
+  if (!editorContext) {
     throw new Error(
       'Tried to call the `useQueryEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
   }
 
-  const { queryEditor, setQueryEditor } = context;
+  const { queryEditor, setQueryEditor } = editorContext;
 
   const onClickReferenceRef = useRef<OnClickReference>();
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
+
+  const initialValue = useRef(value);
 
   useEffect(() => {
     let isActive = true;
@@ -97,6 +99,7 @@ export function useQueryEditor({
       }
 
       const newEditor = CodeMirror(container, {
+        value: initialValue.current || '',
         lineNumbers: true,
         tabSize: 2,
         foldGutter: true,

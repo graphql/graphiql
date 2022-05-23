@@ -12,7 +12,6 @@ import React, {
   ReactNode,
 } from 'react';
 import {
-  buildClientSchema,
   GraphQLSchema,
   parse,
   print,
@@ -21,9 +20,6 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
-  GraphQLError,
-  IntrospectionQuery,
-  getIntrospectionQuery,
   GraphQLNamedType,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
@@ -41,6 +37,8 @@ import {
   ExplorerContextProvider,
   HistoryContext,
   HistoryContextProvider,
+  SchemaContext,
+  SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
 } from '@graphiql/react';
@@ -50,6 +48,7 @@ import type {
   ExplorerFieldDef,
   HistoryContextType,
   ResponseTooltipType,
+  SchemaContextType,
   StorageContextType,
 } from '@graphiql/react';
 
@@ -66,23 +65,18 @@ import { QueryHistory } from './QueryHistory';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
-import { introspectionQueryName } from '../utility/introspectionQueries';
 import setValue from 'set-value';
 
 import {
-  fetcherReturnToPromise,
-  fillLeafs,
   formatError,
   formatResult,
   getSelectedOperationName,
   isAsyncIterable,
   isObservable,
-  isPromise,
   mergeAst,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
-  FetcherOpts,
   FetcherResult,
   FetcherResultPayload,
   GetDefaultFieldNamesFn,
@@ -91,7 +85,6 @@ import type {
   Unsubscribable,
 } from '@graphiql/toolkit';
 
-import { validateSchema } from 'graphql';
 import { Tab, TabAddButton, Tabs } from './Tabs';
 import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
 import { idFromTabContents } from '../utility/id-from-tab-contents';
@@ -340,7 +333,6 @@ export type GraphiQLState = {
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
   shouldPersistHeaders: boolean;
-  schemaErrors?: readonly GraphQLError[];
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription?: Unsubscribable | null;
@@ -377,33 +369,53 @@ export function GraphiQL(props: GraphiQLProps) {
     <StorageContextProvider storage={props.storage}>
       <StorageContext.Consumer>
         {storageContext => (
-          <EditorContextProvider>
-            <HistoryContextProvider
-              maxHistoryLength={props.maxHistoryLength}
-              onToggle={props.onToggleHistory}>
-              <ExplorerContextProvider>
-                <EditorContext.Consumer>
-                  {editorContext => (
-                    <HistoryContext.Consumer>
-                      {historyContext => (
-                        <ExplorerContext.Consumer>
-                          {explorerContext => (
-                            <GraphiQLWithContext
-                              {...props}
-                              editorContext={editorContext}
-                              explorerContext={explorerContext}
-                              historyContext={historyContext}
-                              storageContext={storageContext}
-                            />
-                          )}
-                        </ExplorerContext.Consumer>
-                      )}
-                    </HistoryContext.Consumer>
-                  )}
-                </EditorContext.Consumer>
-              </ExplorerContextProvider>
-            </HistoryContextProvider>
-          </EditorContextProvider>
+          <SchemaContextProvider
+            dangerouslyAssumeSchemaIsValid={
+              props.dangerouslyAssumeSchemaIsValid
+            }
+            fetcher={props.fetcher}
+            initialHeaders={
+              props.headers !== undefined
+                ? props.headers
+                : storageContext?.get('headers') ?? undefined
+            }
+            inputValueDeprecation={props.inputValueDeprecation}
+            introspectionQueryName={props.introspectionQueryName}
+            schema={props.schema}
+            schemaDescription={props.schemaDescription}>
+            <EditorContextProvider>
+              <HistoryContextProvider
+                maxHistoryLength={props.maxHistoryLength}
+                onToggle={props.onToggleHistory}>
+                <ExplorerContextProvider>
+                  <SchemaContext.Consumer>
+                    {schemaContext => (
+                      <EditorContext.Consumer>
+                        {editorContext => (
+                          <HistoryContext.Consumer>
+                            {historyContext => (
+                              <ExplorerContext.Consumer>
+                                {explorerContext => (
+                                  <GraphiQLWithContext
+                                    {...props}
+                                    editorContext={editorContext}
+                                    explorerContext={explorerContext}
+                                    historyContext={historyContext}
+                                    schemaContext={schemaContext}
+                                    storageContext={storageContext}
+                                  />
+                                )}
+                              </ExplorerContext.Consumer>
+                            )}
+                          </HistoryContext.Consumer>
+                        )}
+                      </EditorContext.Consumer>
+                    )}
+                  </SchemaContext.Consumer>
+                </ExplorerContextProvider>
+              </HistoryContextProvider>
+            </EditorContextProvider>
+          </SchemaContextProvider>
         )}
       </StorageContext.Consumer>
     </StorageContextProvider>
@@ -452,9 +464,10 @@ type GraphiQLWithContextProps = Omit<
   GraphiQLProps,
   'maxHistoryLength' | 'onToggleHistory' | 'storage'
 > & {
-  editorContext: EditorContextType | null;
+  editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
+  schemaContext: SchemaContextType;
   storageContext: StorageContextType | null;
 };
 
@@ -464,9 +477,6 @@ class GraphiQLWithContext extends React.Component<
 > {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
-  _introspectionQuery: string;
-  _introspectionQueryName: string;
-  _introspectionQuerySansSubscriptions: string;
 
   // Ensure the component is mounted to execute async setState
   componentIsMounted: boolean;
@@ -534,36 +544,6 @@ class GraphiQLWithContext extends React.Component<
 
     const headerEditorEnabled = props.headerEditorEnabled ?? true;
     const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
-
-    let schema = props.schema;
-    let response = props.response;
-    let schemaErrors: readonly GraphQLError[] | undefined = undefined;
-    if (schema && !this.props.dangerouslyAssumeSchemaIsValid) {
-      const validationErrors = validateSchema(schema);
-      if (validationErrors && validationErrors.length > 0) {
-        // This is equivalent to handleSchemaErrors, but it's too early
-        // to call setState.
-        response = formatError(validationErrors);
-        schema = undefined;
-        schemaErrors = validationErrors;
-      }
-    }
-
-    this._introspectionQuery = getIntrospectionQuery({
-      schemaDescription: props.schemaDescription ?? undefined,
-      inputValueDeprecation: props.inputValueDeprecation ?? undefined,
-    });
-
-    this._introspectionQueryName =
-      props.introspectionQueryName ?? introspectionQueryName;
-
-    // Some GraphQL services do not support subscriptions and fail an introspection
-    // query which includes the `subscriptionType` field as the stock introspection
-    // query does. This backup query removes that field.
-    this._introspectionQuerySansSubscriptions = this._introspectionQuery.replace(
-      'subscriptionType { name }',
-      '',
-    );
 
     const initialTabHash = idFromTabContents({
       query,
@@ -634,12 +614,11 @@ class GraphiQLWithContext extends React.Component<
     // Initialize state
     this.state = {
       tabs: tabsState,
-      schema,
+      schema: props.schema,
       query: activeTab?.query,
       operationName: activeTab?.operationName,
-      response: activeTab?.response ?? response,
+      response: activeTab?.response,
       docExplorerOpen,
-      schemaErrors,
       editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -668,12 +647,6 @@ class GraphiQLWithContext extends React.Component<
   componentDidMount() {
     // Allow async state changes
     this.componentIsMounted = true;
-
-    // Only fetch schema via introspection if a schema has not been
-    // provided, including if `null` was provided.
-    if (this.state.schema === undefined) {
-      this.fetchSchema();
-    }
 
     if (typeof window !== 'undefined') {
       window.g = this;
@@ -711,14 +684,6 @@ class GraphiQLWithContext extends React.Component<
         nextQuery !== this.state.query ||
         nextOperationName !== this.state.operationName)
     ) {
-      if (!this.props.dangerouslyAssumeSchemaIsValid) {
-        const validationErrors = validateSchema(nextSchema);
-        if (validationErrors && validationErrors.length > 0) {
-          this.handleSchemaErrors(validationErrors);
-          nextSchema = undefined;
-        }
-      }
-
       const updatedQueryAttributes = this._updateQueryFacts(
         nextQuery,
         nextOperationName,
@@ -744,20 +709,12 @@ class GraphiQLWithContext extends React.Component<
     if (nextOperationName !== undefined) {
       this.props.storageContext?.set('operationName', nextOperationName);
     }
-    this.setState(
-      {
-        schema: nextSchema,
-        query: nextQuery,
-        operationName: nextOperationName,
-        response: nextResponse,
-      },
-      () => {
-        if (this.state.schema === undefined) {
-          this.props.explorerContext?.reset();
-          this.fetchSchema();
-        }
-      },
-    );
+    this.setState({
+      schema: nextSchema,
+      query: nextQuery,
+      operationName: nextOperationName,
+      response: nextResponse,
+    });
   }
 
   // Use it when the state change is async
@@ -949,7 +906,6 @@ class GraphiQLWithContext extends React.Component<
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                schema={this.state.schema}
                 validationRules={this.props.validationRules}
                 value={this.state.query}
                 onEdit={this.handleEditQuery}
@@ -1049,9 +1005,7 @@ class GraphiQLWithContext extends React.Component<
               onDoubleClick={this.handleDocsResetResize}
               onMouseDown={this.handleDocsResizeStart}
             />
-            <DocExplorer
-              schemaErrors={this.state.schemaErrors}
-              schema={this.state.schema}>
+            <DocExplorer>
               <button
                 className="docExplorerHide"
                 onClick={this.handleToggleDocs}
@@ -1071,7 +1025,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   getQueryEditor() {
-    return this.props.editorContext?.queryEditor || null;
+    return this.props.editorContext.queryEditor || null;
   }
 
   /**
@@ -1080,7 +1034,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
-    return this.props.editorContext?.variableEditor || null;
+    return this.props.editorContext.variableEditor || null;
   }
 
   /**
@@ -1089,7 +1043,7 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getHeaderEditor() {
-    return this.props.editorContext?.headerEditor || null;
+    return this.props.editorContext.headerEditor || null;
   }
 
   /**
@@ -1098,10 +1052,10 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public refresh() {
-    this.props.editorContext?.queryEditor?.refresh();
-    this.props.editorContext?.variableEditor?.refresh();
-    this.props.editorContext?.headerEditor?.refresh();
-    this.props.editorContext?.responseEditor?.refresh();
+    this.props.editorContext.queryEditor?.refresh();
+    this.props.editorContext.variableEditor?.refresh();
+    this.props.editorContext.headerEditor?.refresh();
+    this.props.editorContext.responseEditor?.refresh();
   }
 
   /**
@@ -1111,160 +1065,13 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public autoCompleteLeafs() {
-    const { insertions, result } = fillLeafs(
-      this.state.schema,
-      this.state.query,
-      this.props.getDefaultFieldNames,
+    console.warn(
+      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
     );
-    if (insertions && insertions.length > 0) {
-      const editor = this.getQueryEditor();
-      if (editor) {
-        editor.operation(() => {
-          const cursor = editor.getCursor();
-          const cursorIndex = editor.indexFromPos(cursor);
-          editor.setValue(result || '');
-          let added = 0;
-          const markers = insertions.map(({ index, string }) =>
-            editor.markText(
-              editor.posFromIndex(index + added),
-              editor.posFromIndex(index + (added += string.length)),
-              {
-                className: 'autoInsertedLeaf',
-                clearOnEnter: true,
-                title: 'Automatically added leaf fields',
-              },
-            ),
-          );
-          setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-          let newCursorIndex = cursorIndex;
-          insertions.forEach(({ index, string }) => {
-            if (index < cursorIndex) {
-              newCursorIndex += string.length;
-            }
-          });
-          editor.setCursor(editor.posFromIndex(newCursorIndex));
-        });
-      }
-    }
-
-    return result;
+    return this.props.editorContext.autoCompleteLeafs();
   }
 
   // Private methods
-
-  private fetchSchema() {
-    const fetcher = this.props.fetcher;
-
-    const fetcherOpts: FetcherOpts = {
-      shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
-      documentAST: this.state.documentAST,
-    };
-    const headers = getHeaders(this.props);
-    try {
-      if (headers && headers.trim().length > 2) {
-        fetcherOpts.headers = JSON.parse(headers);
-        // if state is not present, but props are
-      } else if (this.props.headers) {
-        fetcherOpts.headers = JSON.parse(this.props.headers);
-      }
-    } catch (err) {
-      this.setState({
-        response: 'Introspection failed as headers are invalid.',
-      });
-      return;
-    }
-
-    const fetch = fetcherReturnToPromise(
-      fetcher(
-        {
-          query: this._introspectionQuery,
-          operationName: this._introspectionQueryName,
-        },
-        fetcherOpts,
-      ),
-    );
-
-    if (!isPromise(fetch)) {
-      this.setState({
-        response: 'Fetcher did not return a Promise for introspection.',
-      });
-      return;
-    }
-
-    fetch
-      .then(result => {
-        if (typeof result !== 'string' && 'data' in result) {
-          return result;
-        }
-
-        // Try the stock introspection query first, falling back on the
-        // sans-subscriptions query for services which do not yet support it.
-        const fetch2 = fetcherReturnToPromise(
-          fetcher(
-            {
-              query: this._introspectionQuerySansSubscriptions,
-              operationName: this._introspectionQueryName,
-            },
-            fetcherOpts,
-          ),
-        );
-        if (!isPromise(fetch)) {
-          throw new Error(
-            'Fetcher did not return a Promise for introspection.',
-          );
-        }
-        return fetch2;
-      })
-      .then(result => {
-        // If a schema was provided while this fetch was underway, then
-        // satisfy the race condition by respecting the already
-        // provided schema.
-        if (this.state.schema !== undefined) {
-          return;
-        }
-
-        if (result && result.data && '__schema' in result?.data) {
-          let schema: GraphQLSchema | undefined = buildClientSchema(
-            result.data as IntrospectionQuery,
-          );
-          if (!this.props.dangerouslyAssumeSchemaIsValid) {
-            const errors = validateSchema(schema);
-            // if there are errors, don't set schema
-            if (errors && errors.length > 0) {
-              schema = undefined;
-              this.handleSchemaErrors(errors);
-            }
-          }
-          if (schema) {
-            const queryFacts = getOperationFacts(schema, this.state.query);
-            this.safeSetState({
-              schema,
-              ...queryFacts,
-              schemaErrors: undefined,
-            });
-            this.props.onSchemaChange?.(schema);
-          }
-        } else {
-          // handle as if it were an error if the fetcher response is not a string or response.data is not present
-          const responseString =
-            typeof result === 'string' ? result : formatResult(result);
-          this.handleSchemaErrors([responseString]);
-        }
-      })
-      .catch(error => {
-        this.handleSchemaErrors([error]);
-      });
-  }
-
-  private handleSchemaErrors(
-    schemaErrors: readonly GraphQLError[] | readonly string[],
-  ) {
-    this.safeSetState({
-      response: schemaErrors ? formatError(schemaErrors) : undefined,
-      schema: undefined,
-      schemaErrors,
-    });
-  }
 
   private async _fetchQuery(
     query: string,
@@ -1427,7 +1234,8 @@ class GraphiQLWithContext extends React.Component<
     // Use the edited query after autoCompleteLeafs() runs or,
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query || '';
+    const editedQuery =
+      this.props.editorContext.autoCompleteLeafs() || this.state.query || '';
     const variables = getVariables(this.props);
     const headers = getHeaders(this.props);
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
@@ -1472,7 +1280,7 @@ class GraphiQLWithContext extends React.Component<
             let maybeMultipart = Array.isArray(result) ? result : false;
             if (
               !maybeMultipart &&
-              typeof result !== 'string' &&
+              typeof result === 'object' &&
               result !== null &&
               'hasNext' in result
             ) {
@@ -1657,7 +1465,9 @@ class GraphiQLWithContext extends React.Component<
       return;
     }
 
-    editor.setValue(print(mergeAst(this.state.documentAST, this.state.schema)));
+    editor.setValue(
+      print(mergeAst(this.state.documentAST, this.props.schemaContext.schema)),
+    );
   };
 
   handleEditQuery = debounce(100, (value: string) => {
@@ -1665,7 +1475,7 @@ class GraphiQLWithContext extends React.Component<
       value,
       this.state.operationName,
       this.state.operations,
-      this.state.schema,
+      this.props.schemaContext.schema,
     );
 
     this.setState(
@@ -1796,7 +1606,7 @@ class GraphiQLWithContext extends React.Component<
       event.currentTarget.className === 'typeName'
     ) {
       const typeName = event.currentTarget.innerHTML;
-      const schema = this.state.schema;
+      const schema = this.props.schemaContext.schema;
       if (schema) {
         const type = schema.getType(typeName);
         if (type) {
@@ -2366,17 +2176,17 @@ function stateOnTabAddReducer(
 }
 
 function getVariables(props: GraphiQLWithContextProps) {
-  return props.editorContext?.variableEditor?.getValue();
+  return props.editorContext.variableEditor?.getValue();
 }
 
 function setVariables(props: GraphiQLWithContextProps, value: string) {
-  props.editorContext?.variableEditor?.setValue(value);
+  props.editorContext.variableEditor?.setValue(value);
 }
 
 function getHeaders(props: GraphiQLWithContextProps) {
-  return props.editorContext?.headerEditor?.getValue();
+  return props.editorContext.headerEditor?.getValue();
 }
 
 function setHeaders(props: GraphiQLWithContextProps, value: string) {
-  props.editorContext?.headerEditor?.setValue(value);
+  props.editorContext.headerEditor?.setValue(value);
 }

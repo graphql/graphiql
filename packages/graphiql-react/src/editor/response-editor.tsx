@@ -1,3 +1,4 @@
+import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
 import { ComponentType, useContext, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
@@ -7,6 +8,7 @@ import { ImagePreview } from './components';
 import { EditorContext } from './context';
 import { useResizeEditor, useSynchronizeValue } from './hooks';
 import { CodeMirrorEditor } from './types';
+import { useSchemaWithError } from '../schema';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
 
@@ -21,7 +23,11 @@ export function useResponseEditor({
   editorTheme = 'graphiql',
   value,
 }: UseResponseEditorArgs = {}) {
-  const context = useContext(EditorContext);
+  const { fetchError, validationErrors } = useSchemaWithError(
+    'hook',
+    'useResponseEditor',
+  );
+  const editorContext = useContext(EditorContext);
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
@@ -31,13 +37,15 @@ export function useResponseEditor({
     responseTooltipRef.current = ResponseTooltip;
   }, [ResponseTooltip]);
 
-  if (!context) {
+  if (!editorContext) {
     throw new Error(
       'Tried to call the `useResponseEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
     );
   }
 
-  const { responseEditor, setResponseEditor } = context;
+  const { responseEditor, setResponseEditor } = editorContext;
+
+  const initialValue = useRef(value);
 
   useEffect(() => {
     let isActive = true;
@@ -95,6 +103,7 @@ export function useResponseEditor({
       }
 
       const newEditor = CodeMirror(container, {
+        value: initialValue.current || '',
         lineWrapping: true,
         readOnly: true,
         theme: editorTheme,
@@ -118,6 +127,15 @@ export function useResponseEditor({
   useSynchronizeValue(responseEditor, value);
 
   useResizeEditor(responseEditor, ref);
+
+  useEffect(() => {
+    if (fetchError) {
+      responseEditor?.setValue(fetchError);
+    }
+    if (validationErrors) {
+      responseEditor?.setValue(formatError(validationErrors));
+    }
+  }, [responseEditor, fetchError, validationErrors]);
 
   return ref;
 }

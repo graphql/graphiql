@@ -45,6 +45,8 @@ export function useHeaderEditor({
 
   const { headerEditor, setHeaderEditor } = context;
 
+  const initialValue = useRef(value);
+
   useEffect(() => {
     let isActive = true;
 
@@ -63,6 +65,7 @@ export function useHeaderEditor({
       }
 
       const newEditor = CodeMirror(container, {
+        value: initialValue.current || '',
         lineNumbers: true,
         tabSize: 2,
         mode: { name: 'javascript', json: true },
