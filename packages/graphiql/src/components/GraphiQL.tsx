@@ -39,12 +39,18 @@ import {
   EditorContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  HistoryContext,
+  HistoryContextProvider,
+  StorageContext,
+  StorageContextProvider,
 } from '@graphiql/react';
 import type {
   EditorContextType,
   ExplorerContextType,
   ExplorerFieldDef,
+  HistoryContextType,
   ResponseTooltipType,
+  StorageContextType,
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
@@ -70,11 +76,10 @@ import {
   fetcherReturnToPromise,
   formatError,
   formatResult,
-  HistoryStore,
   isAsyncIterable,
   isObservable,
   isPromise,
-  StorageAPI,
+  QueryStoreItem,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
@@ -334,7 +339,6 @@ export type GraphiQLState = {
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
   shouldPersistHeaders: boolean;
-  historyPaneOpen: boolean;
   schemaErrors?: readonly GraphQLError[];
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
@@ -342,7 +346,6 @@ export type GraphiQLState = {
   variableToType?: VariableToType;
   operations?: OperationDefinitionNode[];
   documentAST?: DocumentNode;
-  maxHistoryLength: number;
   tabs: TabsState;
 };
 
@@ -370,23 +373,39 @@ type TabsState = {
  */
 export function GraphiQL(props: GraphiQLProps) {
   return (
-    <EditorContextProvider>
-      <ExplorerContextProvider>
-        <EditorContext.Consumer>
-          {editorContext => (
-            <ExplorerContext.Consumer>
-              {explorerContext => (
-                <GraphiQLWithContext
-                  {...props}
-                  editorContext={editorContext}
-                  explorerContext={explorerContext}
-                />
-              )}
-            </ExplorerContext.Consumer>
-          )}
-        </EditorContext.Consumer>
-      </ExplorerContextProvider>
-    </EditorContextProvider>
+    <StorageContextProvider storage={props.storage}>
+      <StorageContext.Consumer>
+        {storageContext => (
+          <EditorContextProvider>
+            <HistoryContextProvider
+              maxHistoryLength={props.maxHistoryLength}
+              onToggle={props.onToggleHistory}>
+              <ExplorerContextProvider>
+                <EditorContext.Consumer>
+                  {editorContext => (
+                    <HistoryContext.Consumer>
+                      {historyContext => (
+                        <ExplorerContext.Consumer>
+                          {explorerContext => (
+                            <GraphiQLWithContext
+                              {...props}
+                              editorContext={editorContext}
+                              explorerContext={explorerContext}
+                              historyContext={historyContext}
+                              storageContext={storageContext}
+                            />
+                          )}
+                        </ExplorerContext.Consumer>
+                      )}
+                    </HistoryContext.Consumer>
+                  )}
+                </EditorContext.Consumer>
+              </ExplorerContextProvider>
+            </HistoryContextProvider>
+          </EditorContextProvider>
+        )}
+      </StorageContext.Consumer>
+    </StorageContextProvider>
   );
 }
 
@@ -428,9 +447,14 @@ GraphiQL.MenuItem = ToolbarMenuItem;
 // GraphiQL.Select = ToolbarSelect;
 // GraphiQL.SelectOption = ToolbarSelectOption;
 
-type GraphiQLWithContextProps = GraphiQLProps & {
+type GraphiQLWithContextProps = Omit<
+  GraphiQLProps,
+  'maxHistoryLength' | 'onToggleHistory' | 'storage'
+> & {
   editorContext: EditorContextType | null;
   explorerContext: ExplorerContextType | null;
+  historyContext: HistoryContextType | null;
+  storageContext: StorageContextType | null;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -439,7 +463,6 @@ class GraphiQLWithContext extends React.Component<
 > {
   // Ensure only the last executed editor query is rendered.
   _editorQueryID = 0;
-  _storage: StorageAPI;
   _introspectionQuery: string;
   _introspectionQueryName: string;
   _introspectionQuerySansSubscriptions: string;
@@ -449,8 +472,6 @@ class GraphiQLWithContext extends React.Component<
 
   // refs
   graphiqlContainer: Maybe<HTMLDivElement>;
-  _queryHistory: Maybe<QueryHistory>;
-  _historyStore: Maybe<HistoryStore>;
   editorBarComponent: Maybe<HTMLDivElement>;
 
   constructor(props: GraphiQLWithContextProps) {
@@ -461,56 +482,43 @@ class GraphiQLWithContext extends React.Component<
       throw new TypeError('GraphiQL requires a fetcher function.');
     }
 
-    // Cache the storage instance
-    this._storage = new StorageAPI(props.storage);
-
-    const maxHistoryLength = props.maxHistoryLength ?? 20;
-
-    this._historyStore = new HistoryStore(this._storage, maxHistoryLength);
-
     // Disable setState when the component is not mounted
     this.componentIsMounted = false;
 
     // Determine the initial query to display.
     const query =
-      props.query !== undefined
-        ? props.query
-        : this._storage.get('query')
-        ? (this._storage.get('query') as string)
-        : props.defaultQuery !== undefined
-        ? props.defaultQuery
-        : defaultQuery;
+      props.query ??
+      this.props.storageContext?.get('query') ??
+      props.defaultQuery ??
+      defaultQuery;
 
     // Get the initial query facts.
     const queryFacts = getOperationFacts(props.schema, query);
     // Determine the initial variables to display.
     const variables =
-      props.variables !== undefined
-        ? props.variables
-        : this._storage.get('variables');
+      props.variables ?? this.props.storageContext?.get('variables');
 
     // Determine the initial headers to display.
-    const headers =
-      props.headers !== undefined
-        ? props.headers
-        : this._storage.get('headers');
+    const headers = props.headers ?? this.props.storageContext?.get('headers');
 
     // Determine the initial operationName to use.
     const operationName =
-      props.operationName !== undefined
-        ? props.operationName
-        : getSelectedOperationName(
-            undefined,
-            this._storage.get('operationName') as string,
-            queryFacts && queryFacts.operations,
-          );
+      props.operationName ??
+      getSelectedOperationName(
+        undefined,
+        this.props.storageContext?.get('operationName') ?? undefined,
+        queryFacts && queryFacts.operations,
+      );
 
     // prop can be supplied to open docExplorer initially
     let docExplorerOpen = props.docExplorerOpen || false;
 
     // but then local storage state overrides it
-    if (this._storage.get('docExplorerOpen')) {
-      docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
+    const docExplorerOpenStorage = this.props.storageContext?.get(
+      'docExplorerOpen',
+    );
+    if (docExplorerOpenStorage) {
+      docExplorerOpen = docExplorerOpenStorage === 'true';
     }
 
     // initial secondary editor pane open
@@ -576,7 +584,7 @@ class GraphiQLWithContext extends React.Component<
     let rawTabState: string | null = null;
     // only load tab state if tabs are enabled
     if (this.props.tabs) {
-      rawTabState = this._storage.get('tabState');
+      rawTabState = this.props.storageContext?.get('tabState') ?? null;
     }
 
     let tabsState: TabsState;
@@ -631,25 +639,24 @@ class GraphiQLWithContext extends React.Component<
       response: activeTab?.response ?? response,
       docExplorerOpen,
       schemaErrors,
-      editorFlex: Number(this._storage.get('editorFlex')) || 1,
+      editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
-        Number(this._storage.get('secondaryEditorHeight')) || 200,
+        Number(this.props.storageContext?.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
-        this._storage.get('variableEditorActive') === 'true' ||
+        this.props.storageContext?.get('variableEditorActive') === 'true' ||
         props.headerEditorEnabled
-          ? this._storage.get('headerEditorActive') !== 'true'
+          ? this.props.storageContext?.get('headerEditorActive') !== 'true'
           : true,
-      headerEditorActive: this._storage.get('headerEditorActive') === 'true',
+      headerEditorActive:
+        this.props.storageContext?.get('headerEditorActive') === 'true',
       headerEditorEnabled,
       shouldPersistHeaders,
-      historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
       docExplorerWidth:
-        Number(this._storage.get('docExplorerWidth')) ||
+        Number(this.props.storageContext?.get('docExplorerWidth')) ||
         DEFAULT_DOC_EXPLORER_WIDTH,
       isWaitingForResponse: false,
       subscription: null,
-      maxHistoryLength,
       ...queryFacts,
     };
     if (this.state.query) {
@@ -733,7 +740,9 @@ class GraphiQLWithContext extends React.Component<
     ) {
       nextSchema = undefined;
     }
-    this._storage.set('operationName', nextOperationName as string);
+    if (nextOperationName !== undefined) {
+      this.props.storageContext?.set('operationName', nextOperationName);
+    }
     this.setState(
       {
         schema: nextSchema,
@@ -758,7 +767,7 @@ class GraphiQLWithContext extends React.Component<
 
   private persistTabsState = () => {
     if (this.props.tabs) {
-      this._storage.set(
+      this.props.storageContext?.set(
         'tabState',
         JSON.stringify(this.state.tabs, (key, value) =>
           key === 'response' ||
@@ -830,8 +839,12 @@ class GraphiQLWithContext extends React.Component<
           label="Copy"
         />
         <ToolbarButton
-          onClick={this.handleToggleHistory}
-          title="Show History"
+          onClick={() => this.props.historyContext?.toggle()}
+          title={
+            this.props.historyContext?.isVisible
+              ? 'Hide History'
+              : 'Show History'
+          }
           label="History"
         />
         {this.props.toolbar?.additionalContent
@@ -857,12 +870,6 @@ class GraphiQLWithContext extends React.Component<
       'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
 
-    const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'block' : 'none',
-      width: '230px',
-      zIndex: 7,
-    };
-
     const secondaryEditorOpen = this.state.secondaryEditorOpen;
     const secondaryEditorStyle = {
       height: secondaryEditorOpen
@@ -878,22 +885,11 @@ class GraphiQLWithContext extends React.Component<
         }}
         data-testid="graphiql-container"
         className="graphiql-container">
-        {this.state.historyPaneOpen && (
-          <div className="historyPaneWrap" style={historyPaneStyle}>
-            <QueryHistory
-              ref={node => {
-                this._queryHistory = node;
-              }}
-              onSelectQuery={this.handleSelectHistoryQuery}
-              storage={this._storage}
-              maxHistoryLength={this.state.maxHistoryLength}>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleHistory}
-                aria-label="Close History">
-                {'\u2715'}
-              </button>
-            </QueryHistory>
+        {this.props.historyContext?.isVisible && (
+          <div
+            className="historyPaneWrap"
+            style={{ width: '230px', zIndex: 7 }}>
+            <QueryHistory onSelect={this.handleSelectHistoryQuery} />
           </div>
         )}
         <div className="editorWrap">
@@ -1417,7 +1413,7 @@ class GraphiQLWithContext extends React.Component<
         this.showDoc(reference.type);
       }
     });
-    this._storage.set(
+    this.props.storageContext?.set(
       'docExplorerOpen',
       JSON.stringify(this.state.docExplorerOpen),
     );
@@ -1449,25 +1445,16 @@ class GraphiQLWithContext extends React.Component<
         response: undefined,
         operationName,
       });
-      this._storage.set('operationName', operationName as string);
-
-      if (this._queryHistory) {
-        this._queryHistory.onUpdateHistory(
-          editedQuery,
-          variables,
-          headers,
-          operationName,
-        );
-      } else {
-        if (this._historyStore) {
-          this._historyStore.updateHistory(
-            editedQuery,
-            variables,
-            headers,
-            operationName,
-          );
-        }
+      if (operationName !== undefined) {
+        this.props.storageContext?.set('operationName', operationName);
       }
+
+      this.props.historyContext?.addToHistory({
+        query: editedQuery,
+        variables,
+        headers,
+        operationName,
+      });
 
       // when dealing with defer or stream, we need to aggregate results
       let fullResponse: FetcherResultPayload = { data: {} };
@@ -1693,7 +1680,7 @@ class GraphiQLWithContext extends React.Component<
       }),
       this.persistTabsState,
     );
-    this._storage.set('query', value);
+    this.props.storageContext?.set('query', value);
     if (this.props.onEditQuery) {
       return this.props.onEditQuery(value, queryFacts?.documentAST);
     }
@@ -1754,7 +1741,7 @@ class GraphiQLWithContext extends React.Component<
       }),
       this.persistTabsState,
     );
-    debounce(500, () => this._storage.set('variables', value))();
+    debounce(500, () => this.props.storageContext?.set('variables', value))();
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
@@ -1769,7 +1756,7 @@ class GraphiQLWithContext extends React.Component<
       this.persistTabsState,
     );
     this.props.shouldPersistHeaders &&
-      debounce(500, () => this._storage.set('headers', value))();
+      debounce(500, () => this.props.storageContext?.set('headers', value))();
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }
@@ -1816,7 +1803,7 @@ class GraphiQLWithContext extends React.Component<
             this.showDoc(type);
           });
           debounce(500, () =>
-            this._storage.set(
+            this.props.storageContext?.set(
               'docExplorerOpen',
               JSON.stringify(this.state.docExplorerOpen),
             ),
@@ -1830,30 +1817,19 @@ class GraphiQLWithContext extends React.Component<
     if (typeof this.props.onToggleDocs === 'function') {
       this.props.onToggleDocs(!this.state.docExplorerOpen);
     }
-    this._storage.set(
+    this.props.storageContext?.set(
       'docExplorerOpen',
       JSON.stringify(!this.state.docExplorerOpen),
     );
     this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   };
 
-  handleToggleHistory = () => {
-    if (typeof this.props.onToggleHistory === 'function') {
-      this.props.onToggleHistory(!this.state.historyPaneOpen);
-    }
-    this._storage.set(
-      'historyPaneOpen',
-      JSON.stringify(!this.state.historyPaneOpen),
-    );
-    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
-  };
-
-  handleSelectHistoryQuery = (
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-  ) => {
+  handleSelectHistoryQuery = ({
+    query,
+    variables,
+    headers,
+    operationName,
+  }: QueryStoreItem) => {
     if (query) {
       this.handleEditQuery(query);
     }
@@ -1887,7 +1863,10 @@ class GraphiQLWithContext extends React.Component<
       const rightSize = editorBar.clientWidth - leftSize;
       this.setState({ editorFlex: leftSize / rightSize });
       debounce(500, () =>
-        this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex)),
+        this.props.storageContext?.set(
+          'editorFlex',
+          JSON.stringify(this.state.editorFlex),
+        ),
       )();
     };
 
@@ -1904,7 +1883,10 @@ class GraphiQLWithContext extends React.Component<
 
   handleResetResize = () => {
     this.setState({ editorFlex: 1 });
-    this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
+    this.props.storageContext?.set(
+      'editorFlex',
+      JSON.stringify(this.state.editorFlex),
+    );
   };
 
   private _didClickDragBar(event: React.MouseEvent) {
@@ -1946,7 +1928,7 @@ class GraphiQLWithContext extends React.Component<
         if (typeof this.props.onToggleDocs === 'function') {
           this.props.onToggleDocs(!this.state.docExplorerOpen);
         }
-        this._storage.set(
+        this.props.storageContext?.set(
           'docExplorerOpen',
           JSON.stringify(this.state.docExplorerOpen),
         );
@@ -1957,13 +1939,13 @@ class GraphiQLWithContext extends React.Component<
           docExplorerWidth: Math.min(docsSize, 650),
         });
         debounce(500, () =>
-          this._storage.set(
+          this.props.storageContext?.set(
             'docExplorerWidth',
             JSON.stringify(this.state.docExplorerWidth),
           ),
         )();
       }
-      this._storage.set(
+      this.props.storageContext?.set(
         'docExplorerOpen',
         JSON.stringify(this.state.docExplorerOpen),
       );
@@ -1973,7 +1955,7 @@ class GraphiQLWithContext extends React.Component<
       if (!this.state.docExplorerOpen) {
         this.setState({ docExplorerWidth: hadWidth });
         debounce(500, () =>
-          this._storage.set(
+          this.props.storageContext?.set(
             'docExplorerWidth',
             JSON.stringify(this.state.docExplorerWidth),
           ),
@@ -1995,7 +1977,7 @@ class GraphiQLWithContext extends React.Component<
       docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
     });
     debounce(500, () =>
-      this._storage.set(
+      this.props.storageContext?.set(
         'docExplorerWidth',
         JSON.stringify(this.state.docExplorerWidth),
       ),
@@ -2062,7 +2044,7 @@ class GraphiQLWithContext extends React.Component<
         });
       }
       debounce(500, () =>
-        this._storage.set(
+        this.props.storageContext?.set(
           'secondaryEditorHeight',
           JSON.stringify(this.state.secondaryEditorHeight),
         ),

@@ -13,6 +13,8 @@ import {
   ExplorerContextProvider,
   useExplorerNavStack,
 } from './explorer';
+import { HistoryContext, HistoryContextProvider } from './history';
+import { StorageContext, StorageContextProvider } from './storage';
 
 import type {
   EditorContextType,
@@ -28,6 +30,8 @@ import type {
   ExplorerNavStack,
   ExplorerNavStackItem,
 } from './explorer';
+import type { HistoryContextType } from './history';
+import type { StorageContextType } from './storage';
 
 export {
   // editor
@@ -43,6 +47,12 @@ export {
   ExplorerContext,
   ExplorerContextProvider,
   useExplorerNavStack,
+  // history
+  HistoryContext,
+  HistoryContextProvider,
+  // storage
+  StorageContext,
+  StorageContextProvider,
 };
 
 export type {
@@ -58,4 +68,8 @@ export type {
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,
+  // history
+  HistoryContextType,
+  // storage
+  StorageContextType,
 };
