@@ -1,5 +1,27 @@
 # Change Log
 
+## 1.9.3
+
+### Patch Changes
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `fillLeafs` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+* [#2413](https://github.com/graphql/graphiql/pull/2413) [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a `StorageContext` and a `HistoryContext` to `@graphiql/react` that replaces the logic in the `graphiql` package
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `mergeAst` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+* [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix sending multiple introspection requests when loading the page
+
+- [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate the `autoCompleteLeafs` method of the `GraphiQL` component in favor of the function provided by the `EditorContext` from `@graphiql/react`
+
+* [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a `SchemaContext` to `@graphiql/react` that replaces the logic for fetching and validating the schema in the `graphiql` package
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `getSelectedOperationName` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+- Updated dependencies [[`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e), [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9), [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9), [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e), [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962), [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e)]:
+  - @graphiql/toolkit@0.6.0
+  - @graphiql/react@0.2.0
+
 ## 1.9.2
 
 ### Patch Changes
