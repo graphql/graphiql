@@ -235,6 +235,7 @@ function useSynchronizeSchema(
 
     const didChange = editor.options.lint.schema !== schema;
 
+    editor.state.lint.linterOptions.schema = schema;
     editor.options.lint.schema = schema;
     editor.options.hintOptions.schema = schema;
     editor.options.info.schema = schema;
@@ -258,6 +259,7 @@ function useSynchronizeValidationRules(
 
     const didChange = editor.options.lint.validationRules !== validationRules;
 
+    editor.state.lint.linterOptions.validationRules = validationRules;
     editor.options.lint.validationRules = validationRules;
 
     if (didChange && codeMirrorRef.current) {
@@ -279,6 +281,7 @@ function useSynchronizeExternalFragments(
     const didChange =
       editor.options.lint.externalFragments !== externalFragments;
 
+    editor.state.lint.linterOptions.externalFragments = externalFragments;
     editor.options.lint.externalFragments = externalFragments;
     editor.options.hintOptions.externalFragments = externalFragments;
 

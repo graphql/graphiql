@@ -37,6 +37,11 @@ declare namespace Cypress {
       expectedResult: MockResult,
       timeout?: number,
     ): Chainable<Element>;
+    assertLinterMarkWithMessage(
+      text: string,
+      severity: 'error' | 'warning',
+      message?: string,
+    ): Chainable<Element>;
   }
 }
 
@@ -102,3 +107,16 @@ function codeWithLineNumbers(code: string): string {
     .map((line, i) => `${i + 1}\n${line}`)
     .join('\n');
 }
+
+Cypress.Commands.add(
+  'assertLinterMarkWithMessage',
+  (text, severity, message) => {
+    cy.contains(text)
+      .should('have.class', 'CodeMirror-lint-mark')
+      .and('have.class', `CodeMirror-lint-mark-${severity}`);
+    if (message) {
+      cy.contains(text).trigger('mouseover');
+      cy.contains(message);
+    }
+  },
+);
