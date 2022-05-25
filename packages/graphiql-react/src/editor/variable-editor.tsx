@@ -4,7 +4,6 @@ import { StorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { EditorContext } from './context';
 import {
-  CompletionCallback,
   EditCallback,
   EmptyCallback,
   useChangeHandler,
@@ -18,7 +17,6 @@ import { CodeMirrorType } from './types';
 export type UseVariableEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onHintInformationRender?: CompletionCallback;
   onPrettifyQuery?: EmptyCallback;
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
@@ -29,7 +27,6 @@ export type UseVariableEditorArgs = {
 export function useVariableEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onHintInformationRender,
   onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
@@ -137,7 +134,7 @@ export function useVariableEditor({
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY);
 
-  useCompletion(variableEditor, onHintInformationRender);
+  useCompletion(variableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], onPrettifyQuery);

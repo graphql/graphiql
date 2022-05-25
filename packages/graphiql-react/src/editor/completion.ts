@@ -1,14 +1,15 @@
 import type { Editor, EditorChange } from 'codemirror';
-
-import {
-  GraphQLNonNull,
-  GraphQLList,
-  GraphQLType,
-  GraphQLField,
-} from 'graphql';
 import escapeHTML from 'escape-html';
-import { importCodeMirror } from './common';
+import {
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLSchema,
+  GraphQLType,
+} from 'graphql';
+
+import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
+import { importCodeMirror } from './common';
 
 /**
  * Render a custom UI for CodeMirror's hint which includes additional info
@@ -17,7 +18,8 @@ import { markdown } from '../markdown';
 export function onHasCompletion(
   _cm: Editor,
   data: EditorChange | undefined,
-  onHintInformationRender: (el: HTMLDivElement) => void,
+  schema: GraphQLSchema | null | undefined,
+  explorer: ExplorerContextType | null,
 ) {
   importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
@@ -36,6 +38,7 @@ export function onHasCompletion(
           // highlighted typeahead option.
           information = document.createElement('div');
           information.className = 'CodeMirror-hint-information';
+          information.addEventListener('click', onClickHintInformation);
           hintsUl.appendChild(information);
 
           // This "deprecation" node will contain info about deprecated usage.
@@ -51,6 +54,12 @@ export function onHasCompletion(
             (onRemoveFn = (event: Event) => {
               if (event.target === hintsUl) {
                 hintsUl.removeEventListener('DOMNodeRemoved', onRemoveFn);
+                if (information) {
+                  information.removeEventListener(
+                    'click',
+                    onClickHintInformation,
+                  );
+                }
                 information = null;
                 deprecation = null;
                 onRemoveFn = null;
@@ -84,14 +93,27 @@ export function onHasCompletion(
         } else if (deprecation) {
           deprecation.style.display = 'none';
         }
-
-        // Additional rendering?
-        if (onHintInformationRender) {
-          onHintInformationRender(information);
-        }
       },
     );
   });
+
+  function onClickHintInformation(event: Event) {
+    if (
+      !schema ||
+      !explorer ||
+      !(event.currentTarget instanceof HTMLElement) ||
+      event.currentTarget.className !== 'typeName'
+    ) {
+      return;
+    }
+
+    const typeName = event.currentTarget.innerHTML;
+    const type = schema.getType(typeName);
+    if (type) {
+      explorer.show();
+      explorer.push({ name: type.name, def: type });
+    }
+  }
 }
 
 function renderType(type: GraphQLType): string {

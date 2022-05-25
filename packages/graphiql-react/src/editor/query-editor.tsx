@@ -16,7 +16,6 @@ import debounce from '../utility/debounce';
 import { commonKeys, importCodeMirror } from './common';
 import { CodeMirrorEditorWithOperationFacts, EditorContext } from './context';
 import {
-  CompletionCallback,
   EditCallback,
   EmptyCallback,
   useCompletion,
@@ -36,7 +35,6 @@ export type UseQueryEditorArgs = {
   onCopyQuery?: EmptyCallback;
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
-  onHintInformationRender?: CompletionCallback;
   onPrettifyQuery?: EmptyCallback;
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
@@ -52,7 +50,6 @@ export function useQueryEditor({
   onCopyQuery,
   onEdit,
   onEditOperationName,
-  onHintInformationRender,
   onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
@@ -321,7 +318,7 @@ export function useQueryEditor({
 
   useSynchronizeValue(queryEditor, value);
 
-  useCompletion(queryEditor, onHintInformationRender);
+  useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], onCopyQuery);

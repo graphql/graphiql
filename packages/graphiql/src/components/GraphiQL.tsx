@@ -841,7 +841,6 @@ class GraphiQLWithContext extends React.Component<
                 onCopyQuery={this.handleCopyQuery}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
-                onHintInformationRender={this.handleHintInformationRender}
                 onMergeQuery={this.handleMergeQuery}
                 onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
@@ -889,7 +888,6 @@ class GraphiQLWithContext extends React.Component<
                 <VariableEditor
                   value={this.props.variables}
                   onEdit={this.handleEditVariables}
-                  onHintInformationRender={this.handleHintInformationRender}
                   onPrettifyQuery={this.handlePrettifyQuery}
                   onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
@@ -902,7 +900,6 @@ class GraphiQLWithContext extends React.Component<
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
-                    onHintInformationRender={this.handleHintInformationRender}
                     onMergeQuery={this.handleMergeQuery}
                     onPrettifyQuery={this.handlePrettifyQuery}
                     onRunQuery={this.handleEditorRunQuery}
@@ -1429,41 +1426,8 @@ class GraphiQLWithContext extends React.Component<
     }
   };
 
-  handleHintInformationRender = (elem: HTMLDivElement) => {
-    elem.addEventListener('click', this._onClickHintInformation);
-
-    let onRemoveFn: EventListener;
-    elem.addEventListener(
-      'DOMNodeRemoved',
-      (onRemoveFn = () => {
-        elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
-        elem.removeEventListener('click', this._onClickHintInformation);
-      }),
-    );
-  };
-
   handleEditorRunQuery = () => {
     this._runQueryAtCursor();
-  };
-
-  private _onClickHintInformation = (
-    event: MouseEvent | React.MouseEvent<HTMLDivElement>,
-  ) => {
-    if (
-      event?.currentTarget &&
-      'className' in event.currentTarget &&
-      event.currentTarget.className === 'typeName'
-    ) {
-      const typeName = event.currentTarget.innerHTML;
-      const schema = this.props.schemaContext.schema;
-      if (schema) {
-        const type = schema.getType(typeName);
-        if (type && this.props.explorerContext) {
-          this.props.explorerContext.show();
-          this.props.explorerContext.push({ name: type.name, def: type });
-        }
-      }
-    }
   };
 
   handleSelectHistoryQuery = ({

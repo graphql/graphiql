@@ -1,5 +1,7 @@
 import { EditorChange } from 'codemirror';
 import { RefObject, useContext, useEffect, useRef } from 'react';
+import { ExplorerContext } from '../explorer';
+import { useSchemaWithError } from '../schema';
 
 import { StorageContext } from '../storage';
 import debounce from '../utility/debounce';
@@ -48,33 +50,32 @@ export function useChangeHandler(
   }, [callback, editor, storage, storageKey]);
 }
 
-export type CompletionCallback = (value: HTMLDivElement) => void;
-
-export function useCompletion(
-  editor: CodeMirrorEditor | null,
-  callback: CompletionCallback | undefined,
-) {
+export function useCompletion(editor: CodeMirrorEditor | null) {
+  const { schema } = useSchemaWithError('hook', 'useCompletion');
+  const explorer = useContext(ExplorerContext);
   useEffect(() => {
-    if (editor && callback) {
-      const handleCompletion = (
-        instance: CodeMirrorEditor,
-        changeObj?: EditorChange,
-      ) => {
-        onHasCompletion(instance, changeObj, callback);
-      };
-      editor.on(
+    if (!editor) {
+      return;
+    }
+
+    const handleCompletion = (
+      instance: CodeMirrorEditor,
+      changeObj?: EditorChange,
+    ) => {
+      onHasCompletion(instance, changeObj, schema, explorer);
+    };
+    editor.on(
+      // @ts-expect-error @TODO additional args for hasCompletion event
+      'hasCompletion',
+      handleCompletion,
+    );
+    return () =>
+      editor.off(
         // @ts-expect-error @TODO additional args for hasCompletion event
         'hasCompletion',
         handleCompletion,
       );
-      return () =>
-        editor.off(
-          // @ts-expect-error @TODO additional args for hasCompletion event
-          'hasCompletion',
-          handleCompletion,
-        );
-    }
-  }, [editor, callback]);
+  }, [editor, explorer, schema]);
 }
 
 export type EmptyCallback = () => void;
