@@ -35,7 +35,6 @@ export type UseQueryEditorArgs = {
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
   onPrettifyQuery?: EmptyCallback;
-  onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
@@ -48,7 +47,6 @@ export function useQueryEditor({
   externalFragments,
   onEdit,
   onEditOperationName,
-  onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
   readOnly = false,
@@ -329,7 +327,7 @@ export function useQueryEditor({
     ],
     onPrettifyQuery,
   );
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], onMergeQuery);
+  useKeyMap(queryEditor, ['Shift-Ctrl-M'], editorContext.merge);
 
   useResizeEditor(queryEditor, ref);
 

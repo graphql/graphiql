@@ -1,12 +1,13 @@
+import { mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
+import { GraphQLSchema, print } from 'graphql';
 import { RefObject, useCallback, useContext, useEffect, useRef } from 'react';
+
 import { ExplorerContext } from '../explorer';
 import { useSchemaWithError } from '../schema';
-
 import { StorageContext } from '../storage';
 import debounce from '../utility/debounce';
-
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
@@ -139,4 +140,22 @@ export function useCopyQuery({
 
     onCopyQuery?.(query);
   }, [queryEditor, onCopyQuery]);
+}
+
+export function useMergeQuery({
+  queryEditor,
+  schema,
+}: {
+  queryEditor?: CodeMirrorEditorWithOperationFacts | null;
+  schema: GraphQLSchema | null | undefined;
+}) {
+  return useCallback(() => {
+    const documentAST = queryEditor?.documentAST;
+    const query = queryEditor?.getValue();
+    if (!documentAST || !query) {
+      return;
+    }
+
+    queryEditor.setValue(print(mergeAst(documentAST, schema)));
+  }, [queryEditor, schema]);
 }

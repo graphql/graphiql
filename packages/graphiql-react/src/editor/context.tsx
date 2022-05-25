@@ -10,7 +10,7 @@ import {
 } from 'react';
 
 import { useSchemaWithError } from '../schema';
-import { useCopyQuery } from './hooks';
+import { useCopyQuery, useMergeQuery } from './hooks';
 import { CodeMirrorEditor } from './types';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
@@ -23,6 +23,7 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 export type EditorContextType = {
   autoCompleteLeafs(): string | undefined;
   copy(): void;
+  merge(): void;
   headerEditor: CodeMirrorEditor | null;
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   responseEditor: CodeMirrorEditor | null;
@@ -38,6 +39,7 @@ export const EditorContext = createContext<EditorContextType>({
     return undefined;
   },
   copy() {},
+  merge() {},
   headerEditor: null,
   queryEditor: null,
   responseEditor: null,
@@ -116,10 +118,13 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const copy = useCopyQuery({ queryEditor, onCopyQuery: props.onCopyQuery });
 
+  const merge = useMergeQuery({ queryEditor, schema });
+
   const value = useMemo<EditorContextType>(
     () => ({
       autoCompleteLeafs,
       copy,
+      merge,
       headerEditor,
       queryEditor,
       responseEditor,
@@ -132,6 +137,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     [
       autoCompleteLeafs,
       copy,
+      merge,
       headerEditor,
       queryEditor,
       responseEditor,

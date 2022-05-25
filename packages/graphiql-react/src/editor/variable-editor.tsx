@@ -18,7 +18,6 @@ export type UseVariableEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
   onPrettifyQuery?: EmptyCallback;
-  onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   value?: string;
@@ -27,7 +26,6 @@ export type UseVariableEditorArgs = {
 export function useVariableEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
   readOnly = false,
@@ -138,7 +136,7 @@ export function useVariableEditor({
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], onPrettifyQuery);
-  useKeyMap(variableEditor, ['Shift-Ctrl-M'], onMergeQuery);
+  useKeyMap(variableEditor, ['Shift-Ctrl-M'], context.merge);
 
   useResizeEditor(variableEditor, ref);
 

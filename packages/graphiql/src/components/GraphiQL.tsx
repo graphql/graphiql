@@ -63,7 +63,6 @@ import {
   formatResult,
   isAsyncIterable,
   isObservable,
-  mergeAst,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
@@ -719,7 +718,9 @@ class GraphiQLWithContext extends React.Component<
           label="Prettify"
         />
         <ToolbarButton
-          onClick={this.handleMergeQuery}
+          onClick={() => {
+            this.props.editorContext.merge();
+          }}
           title="Merge Query (Shift-Ctrl-M)"
           label="Merge"
         />
@@ -847,7 +848,6 @@ class GraphiQLWithContext extends React.Component<
                 externalFragments={this.props.externalFragments}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
-                onMergeQuery={this.handleMergeQuery}
                 onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 readOnly={this.props.readOnly}
@@ -895,7 +895,6 @@ class GraphiQLWithContext extends React.Component<
                   value={this.props.variables}
                   onEdit={this.handleEditVariables}
                   onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
@@ -906,7 +905,6 @@ class GraphiQLWithContext extends React.Component<
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
-                    onMergeQuery={this.handleMergeQuery}
                     onPrettifyQuery={this.handlePrettifyQuery}
                     onRunQuery={this.handleEditorRunQuery}
                     readOnly={this.props.readOnly}
@@ -1350,27 +1348,6 @@ class GraphiQLWithContext extends React.Component<
     } catch {
       /* Parsing JSON failed, skip prettification */
     }
-  };
-
-  handleMergeQuery = () => {
-    const documentAST = this.props.editorContext.queryEditor?.documentAST;
-    if (!documentAST) {
-      return;
-    }
-
-    const editor = this.getQueryEditor();
-    if (!editor) {
-      return;
-    }
-
-    const query = editor.getValue();
-    if (!query) {
-      return;
-    }
-
-    editor.setValue(
-      print(mergeAst(documentAST, this.props.schemaContext.schema)),
-    );
   };
 
   handleEditQuery = (value: string) => {
