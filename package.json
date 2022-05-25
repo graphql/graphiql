@@ -143,5 +143,8 @@
     "typescript": "^4.6.3",
     "whatwg-url": "^8.4.0",
     "wsrun": "^5.2.4"
+  },
+  "resolutions": {
+    "graphql": "17.0.0-alpha.1"
   }
 }
