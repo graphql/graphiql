@@ -11,9 +11,11 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { useSchemaWithError } from './schema';
+import { StorageContext } from './storage';
 
 export type ExplorerFieldDef =
   | GraphQLField<{}, {}, {}>
@@ -40,24 +42,56 @@ const initialNavStackItem: ExplorerNavStackItem = {
 
 export type ExplorerContextType = {
   explorerNavStack: ExplorerNavStack;
+  hide(): void;
+  isVisible: boolean;
   push(item: ExplorerNavStackItem): void;
   pop(): void;
   reset(): void;
+  show(): void;
   showSearch(search: string): void;
 };
 
 export const ExplorerContext = createContext<ExplorerContextType | null>(null);
 
-export function ExplorerContextProvider(props: { children: ReactNode }) {
+type ExplorerContextProviderProps = {
+  children: ReactNode;
+  isVisible?: boolean;
+  onToggleVisibility?(isVisible: boolean): void;
+};
+
+export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
   const { isFetching } = useSchemaWithError(
     'component',
     'ExplorerContextProvider',
   );
+  const storage = useContext(StorageContext);
 
-  const [state, setState] = useState<ExplorerNavStack>([initialNavStackItem]);
+  const [isVisible, setIsVisible] = useState(
+    props.isVisible ?? storage?.get(STORAGE_KEY) === 'true' ?? false,
+  );
+  const [navStack, setNavStack] = useState<ExplorerNavStack>([
+    initialNavStackItem,
+  ]);
+
+  const { onToggleVisibility } = props;
+
+  const isInitialRender = useRef(true);
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+    } else if (props.isVisible !== undefined) {
+      setIsVisible(props.isVisible);
+    }
+  }, [props.isVisible]);
+
+  const hide = useCallback(() => {
+    onToggleVisibility?.(false);
+    storage?.set(STORAGE_KEY, 'false');
+    setIsVisible(false);
+  }, [onToggleVisibility, storage]);
 
   const push = useCallback((item: ExplorerNavStackItem) => {
-    setState(currentState => {
+    setNavStack(currentState => {
       const lastItem = currentState[currentState.length - 1];
       return lastItem.def === item.def
         ? // Avoid pushing duplicate items
@@ -67,7 +101,7 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
   }, []);
 
   const pop = useCallback(() => {
-    setState(currentState =>
+    setNavStack(currentState =>
       currentState.length > 1
         ? (currentState.slice(0, -1) as ExplorerNavStack)
         : currentState,
@@ -75,13 +109,19 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
   }, []);
 
   const reset = useCallback(() => {
-    setState(currentState =>
+    setNavStack(currentState =>
       currentState.length === 1 ? currentState : [initialNavStackItem],
     );
   }, []);
 
+  const show = useCallback(() => {
+    onToggleVisibility?.(true);
+    storage?.set(STORAGE_KEY, 'true');
+    setIsVisible(true);
+  }, [onToggleVisibility, storage]);
+
   const showSearch = useCallback((search: string) => {
-    setState(currentState => {
+    setNavStack(currentState => {
       const lastItem = currentState[currentState.length - 1];
       const allButLastItem = currentState.slice(0, -1) as ExplorerNavStack;
       return [...allButLastItem, { ...lastItem, search }] as ExplorerNavStack;
@@ -95,8 +135,17 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
   }, [isFetching, reset]);
 
   const value = useMemo<ExplorerContextType>(
-    () => ({ explorerNavStack: state, push, pop, reset, showSearch }),
-    [state, push, pop, reset, showSearch],
+    () => ({
+      explorerNavStack: navStack,
+      hide,
+      isVisible,
+      push,
+      pop,
+      reset,
+      show,
+      showSearch,
+    }),
+    [hide, isVisible, navStack, push, pop, reset, show, showSearch],
   );
 
   return (
@@ -109,3 +158,5 @@ export function ExplorerContextProvider(props: { children: ReactNode }) {
 export function useExplorerNavStack() {
   return useContext(ExplorerContext);
 }
+
+const STORAGE_KEY = 'docExplorerOpen';

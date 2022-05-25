@@ -315,7 +315,6 @@ export type GraphiQLProps = {
 };
 
 export type GraphiQLState = {
-  docExplorerOpen: boolean;
   response?: string;
   editorFlex: number;
   secondaryEditorOpen: boolean;
@@ -354,14 +353,19 @@ type TabsState = {
  */
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
+  docExplorerOpen,
   inputValueDeprecation,
   introspectionQueryName,
+  maxHistoryLength,
+  onToggleHistory,
+  onToggleDocs,
+  storage,
   schema,
   schemaDescription,
   ...props
 }: GraphiQLProps) {
   return (
-    <StorageContextProvider storage={props.storage}>
+    <StorageContextProvider storage={storage}>
       <StorageContext.Consumer>
         {storageContext => (
           <SchemaContextProvider
@@ -378,9 +382,11 @@ export function GraphiQL({
             schemaDescription={schemaDescription}>
             <EditorContextProvider>
               <HistoryContextProvider
-                maxHistoryLength={props.maxHistoryLength}
-                onToggle={props.onToggleHistory}>
-                <ExplorerContextProvider>
+                maxHistoryLength={maxHistoryLength}
+                onToggle={onToggleHistory}>
+                <ExplorerContextProvider
+                  isVisible={docExplorerOpen}
+                  onToggleVisibility={onToggleDocs}>
                   <SchemaContext.Consumer>
                     {schemaContext => (
                       <EditorContext.Consumer>
@@ -456,9 +462,11 @@ GraphiQL.MenuItem = ToolbarMenuItem;
 type GraphiQLWithContextProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
+  | 'docExplorerOpen'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
+  | 'onToggleDocs'
   | 'onToggleHistory'
   | 'schema'
   | 'schemaDescription'
@@ -512,17 +520,6 @@ class GraphiQLWithContext extends React.Component<
       props.operationName ??
       props.storageContext?.get('operationName') ??
       undefined;
-
-    // prop can be supplied to open docExplorer initially
-    let docExplorerOpen = props.docExplorerOpen || false;
-
-    // but then local storage state overrides it
-    const docExplorerOpenStorage = this.props.storageContext?.get(
-      'docExplorerOpen',
-    );
-    if (docExplorerOpenStorage) {
-      docExplorerOpen = docExplorerOpenStorage === 'true';
-    }
 
     // initial secondary editor pane open
     let secondaryEditorOpen;
@@ -607,7 +604,6 @@ class GraphiQLWithContext extends React.Component<
     this.state = {
       tabs: tabsState,
       response: activeTab?.response,
-      docExplorerOpen,
       editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -796,14 +792,17 @@ class GraphiQLWithContext extends React.Component<
               />
               {toolbar}
             </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}
-                aria-label="Open Documentation Explorer">
-                Docs
-              </button>
-            )}
+            {this.props.explorerContext &&
+              !this.props.explorerContext.isVisible && (
+                <button
+                  className="docExplorerShow"
+                  onClick={() => {
+                    this.props.explorerContext?.show();
+                  }}
+                  aria-label="Open Documentation Explorer">
+                  Docs
+                </button>
+              )}
           </div>
           {this.props.tabs ? (
             <Tabs
@@ -933,21 +932,14 @@ class GraphiQLWithContext extends React.Component<
             </div>
           </div>
         </div>
-        {this.state.docExplorerOpen && (
+        {this.props.explorerContext?.isVisible && (
           <div className={docExplorerWrapClasses} style={docWrapStyle}>
             <div
               className="docExplorerResizer"
               onDoubleClick={this.handleDocsResetResize}
               onMouseDown={this.handleDocsResizeStart}
             />
-            <DocExplorer>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleDocs}
-                aria-label="Close Documentation Explorer">
-                {'\u2715'}
-              </button>
-            </DocExplorer>
+            <DocExplorer />
           </div>
         )}
       </div>
@@ -1140,21 +1132,16 @@ class GraphiQLWithContext extends React.Component<
   }
 
   handleClickReference = (reference: SchemaReference) => {
-    this.setState({ docExplorerOpen: true }, () => {
-      if (reference && reference.kind === 'Type') {
-        this.showDoc(reference.type);
-      } else if (reference.kind === 'Field') {
-        this.showDoc(reference.field);
-      } else if (reference.kind === 'Argument' && reference.field) {
-        this.showDoc(reference.field);
-      } else if (reference.kind === 'EnumValue' && reference.type) {
-        this.showDoc(reference.type);
-      }
-    });
-    this.props.storageContext?.set(
-      'docExplorerOpen',
-      JSON.stringify(this.state.docExplorerOpen),
-    );
+    this.props.explorerContext?.show();
+    if (reference && reference.kind === 'Type') {
+      this.showDoc(reference.type);
+    } else if (reference.kind === 'Field') {
+      this.showDoc(reference.field);
+    } else if (reference.kind === 'Argument' && reference.field) {
+      this.showDoc(reference.field);
+    } else if (reference.kind === 'EnumValue' && reference.type) {
+      this.showDoc(reference.type);
+    }
   };
 
   handleRunQuery = async (selectedOperationName?: string) => {
@@ -1489,29 +1476,11 @@ class GraphiQLWithContext extends React.Component<
       if (schema) {
         const type = schema.getType(typeName);
         if (type) {
-          this.setState({ docExplorerOpen: true }, () => {
-            this.showDoc(type);
-          });
-          debounce(500, () =>
-            this.props.storageContext?.set(
-              'docExplorerOpen',
-              JSON.stringify(this.state.docExplorerOpen),
-            ),
-          )();
+          this.props.explorerContext?.show();
+          this.showDoc(type);
         }
       }
     }
-  };
-
-  handleToggleDocs = () => {
-    if (typeof this.props.onToggleDocs === 'function') {
-      this.props.onToggleDocs(!this.state.docExplorerOpen);
-    }
-    this.props.storageContext?.set(
-      'docExplorerOpen',
-      JSON.stringify(!this.state.docExplorerOpen),
-    );
-    this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
   };
 
   handleSelectHistoryQuery = ({
@@ -1615,19 +1584,10 @@ class GraphiQLWithContext extends React.Component<
       const docsSize = app.clientWidth - cursorPos;
 
       if (docsSize < 100) {
-        if (typeof this.props.onToggleDocs === 'function') {
-          this.props.onToggleDocs(!this.state.docExplorerOpen);
-        }
-        this.props.storageContext?.set(
-          'docExplorerOpen',
-          JSON.stringify(this.state.docExplorerOpen),
-        );
-        this.setState({ docExplorerOpen: false });
+        this.props.explorerContext?.hide();
       } else {
-        this.setState({
-          docExplorerOpen: true,
-          docExplorerWidth: Math.min(docsSize, 650),
-        });
+        this.props.explorerContext?.show();
+        this.setState({ docExplorerWidth: Math.min(docsSize, 650) });
         debounce(500, () =>
           this.props.storageContext?.set(
             'docExplorerWidth',
@@ -1635,14 +1595,10 @@ class GraphiQLWithContext extends React.Component<
           ),
         )();
       }
-      this.props.storageContext?.set(
-        'docExplorerOpen',
-        JSON.stringify(this.state.docExplorerOpen),
-      );
     };
 
     let onMouseUp: OnMouseUpFn = () => {
-      if (!this.state.docExplorerOpen) {
+      if (this.props.explorerContext && !this.props.explorerContext.isVisible) {
         this.setState({ docExplorerWidth: hadWidth });
         debounce(500, () =>
           this.props.storageContext?.set(
