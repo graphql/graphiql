@@ -19,11 +19,9 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
-  GraphQLNamedType,
 } from 'graphql';
 import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
-import { SchemaReference } from 'codemirror-graphql/src/utils/SchemaReference';
 
 import {
   EditorContext,
@@ -40,7 +38,6 @@ import {
 import type {
   EditorContextType,
   ExplorerContextType,
-  ExplorerFieldDef,
   HistoryContextType,
   ResponseTooltipType,
   SchemaContextType,
@@ -380,21 +377,21 @@ export function GraphiQL({
             introspectionQueryName={introspectionQueryName}
             schema={schema}
             schemaDescription={schemaDescription}>
-            <EditorContextProvider>
-              <HistoryContextProvider
-                maxHistoryLength={maxHistoryLength}
-                onToggle={onToggleHistory}>
-                <ExplorerContextProvider
-                  isVisible={docExplorerOpen}
-                  onToggleVisibility={onToggleDocs}>
+            <ExplorerContextProvider
+              isVisible={docExplorerOpen}
+              onToggleVisibility={onToggleDocs}>
+              <EditorContextProvider>
+                <HistoryContextProvider
+                  maxHistoryLength={maxHistoryLength}
+                  onToggle={onToggleHistory}>
                   <SchemaContext.Consumer>
                     {schemaContext => (
-                      <EditorContext.Consumer>
-                        {editorContext => (
-                          <HistoryContext.Consumer>
-                            {historyContext => (
-                              <ExplorerContext.Consumer>
-                                {explorerContext => (
+                      <ExplorerContext.Consumer>
+                        {explorerContext => (
+                          <EditorContext.Consumer>
+                            {editorContext => (
+                              <HistoryContext.Consumer>
+                                {historyContext => (
                                   <GraphiQLWithContext
                                     {...props}
                                     editorContext={editorContext}
@@ -404,16 +401,16 @@ export function GraphiQL({
                                     storageContext={storageContext}
                                   />
                                 )}
-                              </ExplorerContext.Consumer>
+                              </HistoryContext.Consumer>
                             )}
-                          </HistoryContext.Consumer>
+                          </EditorContext.Consumer>
                         )}
-                      </EditorContext.Consumer>
+                      </ExplorerContext.Consumer>
                     )}
                   </SchemaContext.Consumer>
-                </ExplorerContextProvider>
-              </HistoryContextProvider>
-            </EditorContextProvider>
+                </HistoryContextProvider>
+              </EditorContextProvider>
+            </ExplorerContextProvider>
           </SchemaContextProvider>
         )}
       </StorageContext.Consumer>
@@ -841,7 +838,6 @@ class GraphiQLWithContext extends React.Component<
                 defaultValue={this.props.defaultQuery}
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
-                onClickReference={this.handleClickReference}
                 onCopyQuery={this.handleCopyQuery}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
@@ -1130,19 +1126,6 @@ class GraphiQLWithContext extends React.Component<
         return null;
       });
   }
-
-  handleClickReference = (reference: SchemaReference) => {
-    this.props.explorerContext?.show();
-    if (reference && reference.kind === 'Type') {
-      this.showDoc(reference.type);
-    } else if (reference.kind === 'Field') {
-      this.showDoc(reference.field);
-    } else if (reference.kind === 'Argument' && reference.field) {
-      this.showDoc(reference.field);
-    } else if (reference.kind === 'EnumValue' && reference.type) {
-      this.showDoc(reference.type);
-    }
-  };
 
   handleRunQuery = async (selectedOperationName?: string) => {
     this._editorQueryID++;
@@ -1475,9 +1458,9 @@ class GraphiQLWithContext extends React.Component<
       const schema = this.props.schemaContext.schema;
       if (schema) {
         const type = schema.getType(typeName);
-        if (type) {
-          this.props.explorerContext?.show();
-          this.showDoc(type);
+        if (type && this.props.explorerContext) {
+          this.props.explorerContext.show();
+          this.props.explorerContext.push({ name: type.name, def: type });
         }
       }
     }
@@ -1711,15 +1694,6 @@ class GraphiQLWithContext extends React.Component<
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   };
-
-  // TODO: When refactoring this to a function component replace this with
-  // useExplorerNavStack().push from @graphiql/react
-  private showDoc(typeOrField: GraphQLNamedType | ExplorerFieldDef) {
-    this.props.explorerContext?.push({
-      name: typeOrField.name,
-      def: typeOrField,
-    });
-  }
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
