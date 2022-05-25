@@ -32,7 +32,6 @@ export type UseQueryEditorArgs = {
   defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
-  onCopyQuery?: EmptyCallback;
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
   onPrettifyQuery?: EmptyCallback;
@@ -47,7 +46,6 @@ export function useQueryEditor({
   defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
-  onCopyQuery,
   onEdit,
   onEditOperationName,
   onMergeQuery,
@@ -321,7 +319,7 @@ export function useQueryEditor({
   useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], onCopyQuery);
+  useKeyMap(queryEditor, ['Shift-Ctrl-C'], editorContext.copy);
   useKeyMap(
     queryEditor,
     [

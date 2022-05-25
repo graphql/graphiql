@@ -1,5 +1,6 @@
 import { EditorChange } from 'codemirror';
-import { RefObject, useContext, useEffect, useRef } from 'react';
+import copyToClipboard from 'copy-to-clipboard';
+import { RefObject, useCallback, useContext, useEffect, useRef } from 'react';
 import { ExplorerContext } from '../explorer';
 import { useSchemaWithError } from '../schema';
 
@@ -7,6 +8,7 @@ import { StorageContext } from '../storage';
 import debounce from '../utility/debounce';
 
 import { onHasCompletion } from './completion';
+import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -118,4 +120,23 @@ export function useResizeEditor(
     }
     sizeRef.current = size;
   });
+}
+
+export function useCopyQuery({
+  queryEditor,
+  onCopyQuery,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  onCopyQuery?(query: string): void;
+}) {
+  return useCallback(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    copyToClipboard(query);
+
+    onCopyQuery?.(query);
+  }, [queryEditor, onCopyQuery]);
 }

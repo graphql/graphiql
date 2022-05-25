@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import { useSchemaWithError } from '../schema';
+import { useCopyQuery } from './hooks';
 import { CodeMirrorEditor } from './types';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
@@ -21,6 +22,7 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 
 export type EditorContextType = {
   autoCompleteLeafs(): string | undefined;
+  copy(): void;
   headerEditor: CodeMirrorEditor | null;
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   responseEditor: CodeMirrorEditor | null;
@@ -35,6 +37,7 @@ export const EditorContext = createContext<EditorContextType>({
   autoCompleteLeafs() {
     return undefined;
   },
+  copy() {},
   headerEditor: null,
   queryEditor: null,
   responseEditor: null,
@@ -48,6 +51,7 @@ export const EditorContext = createContext<EditorContextType>({
 type EditorContextProviderProps = {
   children: ReactNode;
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  onCopyQuery?(query: string): void;
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
@@ -110,9 +114,12 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     return result;
   }, [props.getDefaultFieldNames, queryEditor, schema]);
 
+  const copy = useCopyQuery({ queryEditor, onCopyQuery: props.onCopyQuery });
+
   const value = useMemo<EditorContextType>(
     () => ({
       autoCompleteLeafs,
+      copy,
       headerEditor,
       queryEditor,
       responseEditor,
@@ -124,6 +131,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     }),
     [
       autoCompleteLeafs,
+      copy,
       headerEditor,
       queryEditor,
       responseEditor,

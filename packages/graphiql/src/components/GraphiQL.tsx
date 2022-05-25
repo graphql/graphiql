@@ -20,7 +20,6 @@ import {
   FragmentDefinitionNode,
   DocumentNode,
 } from 'graphql';
-import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import {
@@ -351,9 +350,11 @@ type TabsState = {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   docExplorerOpen,
+  getDefaultFieldNames,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
+  onCopyQuery,
   onToggleHistory,
   onToggleDocs,
   storage,
@@ -380,7 +381,9 @@ export function GraphiQL({
             <ExplorerContextProvider
               isVisible={docExplorerOpen}
               onToggleVisibility={onToggleDocs}>
-              <EditorContextProvider>
+              <EditorContextProvider
+                getDefaultFieldNames={getDefaultFieldNames}
+                onCopyQuery={onCopyQuery}>
                 <HistoryContextProvider
                   maxHistoryLength={maxHistoryLength}
                   onToggle={onToggleHistory}>
@@ -460,9 +463,11 @@ type GraphiQLWithContextProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
   | 'docExplorerOpen'
+  | 'getDefaultFieldNames'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
+  | 'onCopyQuery'
   | 'onToggleDocs'
   | 'onToggleHistory'
   | 'schema'
@@ -719,7 +724,9 @@ class GraphiQLWithContext extends React.Component<
           label="Merge"
         />
         <ToolbarButton
-          onClick={this.handleCopyQuery}
+          onClick={() => {
+            this.props.editorContext.copy();
+          }}
           title="Copy Query (Shift-Ctrl-C)"
           label="Copy"
         />
@@ -838,7 +845,6 @@ class GraphiQLWithContext extends React.Component<
                 defaultValue={this.props.defaultQuery}
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
-                onCopyQuery={this.handleCopyQuery}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
                 onMergeQuery={this.handleMergeQuery}
@@ -1383,21 +1389,6 @@ class GraphiQLWithContext extends React.Component<
       value,
       this.props.editorContext.queryEditor?.documentAST ?? undefined,
     );
-  };
-
-  handleCopyQuery = () => {
-    const editor = this.getQueryEditor();
-    const query = editor && editor.getValue();
-
-    if (!query) {
-      return;
-    }
-
-    copyToClipboard(query);
-
-    if (this.props.onCopyQuery) {
-      return this.props.onCopyQuery(query);
-    }
   };
 
   handleEditVariables = (value: string) => {
