@@ -9,8 +9,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { GraphiQL, Fetcher } from '../GraphiQL';
-import { getMockStorage } from './helpers/storage';
-import { codeMirrorModules } from './helpers/codeMirror';
 import {
   mockQuery1,
   mockVariables1,
@@ -21,8 +19,6 @@ import {
   mockHeaders1,
   mockHeaders2,
 } from './fixtures';
-
-codeMirrorModules.forEach(m => jest.mock(m, () => {}));
 
 // The smallest possible introspection result that builds a schema.
 const simpleIntrospection = {
@@ -50,10 +46,6 @@ const wait = () =>
 
 const sleep = (delay: number = 600) =>
   new Promise(res => setTimeout(res, delay));
-
-Object.defineProperty(window, 'localStorage', {
-  value: getMockStorage(),
-});
 
 beforeEach(() => {
   window.localStorage.clear();
