@@ -15,6 +15,7 @@ import {
   NamedTypeNode,
   ValidationRule,
   FieldNode,
+  GraphQLError,
 } from 'graphql';
 
 import {
@@ -161,17 +162,23 @@ export class GraphQLLanguageService {
           return false;
         });
       }
-    } catch (err) {
-      const error = err as any;
-      const range = getRange(error.locations[0], document);
-      return [
-        {
-          severity: DIAGNOSTIC_SEVERITY.Error,
-          message: error.message,
-          source: 'GraphQL: Syntax',
-          range,
-        },
-      ];
+    } catch (error) {
+      if (error instanceof GraphQLError) {
+        const range = getRange(
+          error.locations?.[0] ?? { column: 0, line: 0 },
+          document,
+        );
+        return [
+          {
+            severity: DIAGNOSTIC_SEVERITY.Error,
+            message: error.message,
+            source: 'GraphQL: Syntax',
+            range,
+          },
+        ];
+      }
+
+      throw error;
     }
 
     // If there's a matching config, proceed to prepare to run validation

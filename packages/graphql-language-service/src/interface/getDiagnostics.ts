@@ -81,15 +81,22 @@ export function getDiagnostics(
   try {
     ast = parse(query);
   } catch (error) {
-    const range = getRange(error.locations[0], query);
-    return [
-      {
-        severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
-        message: error.message,
-        source: 'GraphQL: Syntax',
-        range,
-      },
-    ];
+    if (error instanceof GraphQLError) {
+      const range = getRange(
+        error.locations?.[0] ?? { line: 0, column: 0 },
+        query,
+      );
+
+      return [
+        {
+          severity: DIAGNOSTIC_SEVERITY.Error as DiagnosticSeverity,
+          message: error.message,
+          source: 'GraphQL: Syntax',
+          range,
+        },
+      ];
+    }
+    throw error;
   }
 
   return validateQuery(ast, schema, customRules, isRelayCompatMode);

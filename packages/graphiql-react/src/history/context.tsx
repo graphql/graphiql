@@ -154,7 +154,9 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
   );
 }
 
-export const useHistoryContext = createContextHook(HistoryContext);
+export const useHistoryContext = createContextHook<HistoryContextType>(
+  HistoryContext,
+);
 
 const DEFAULT_HISTORY_LENGTH = 20;
 const STORAGE_KEY = 'historyPaneOpen';

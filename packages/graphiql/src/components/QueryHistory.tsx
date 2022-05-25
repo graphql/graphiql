@@ -5,12 +5,18 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { useHistoryContext, useSelectHistoryItem } from '@graphiql/react';
+import {
+  HistoryContextType,
+  useHistoryContext,
+  useSelectHistoryItem,
+} from '@graphiql/react';
 import { QueryStoreItem } from '@graphiql/toolkit';
 import React, { useEffect, useRef, useState } from 'react';
 
 export function QueryHistory() {
-  const { hide, items } = useHistoryContext({ nonNull: true });
+  const { hide, items } = useHistoryContext({
+    nonNull: true,
+  }) as HistoryContextType;
 
   return (
     <section aria-label="History">
