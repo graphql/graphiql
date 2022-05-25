@@ -8,6 +8,8 @@ import 'regenerator-runtime/runtime';
 
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
+import '@graphiql/react/font/roboto.css';
+import '@graphiql/react/font/fira-code.css';
 import './css/app.css';
 import './css/codemirror.css';
 import './css/foldgutter.css';
