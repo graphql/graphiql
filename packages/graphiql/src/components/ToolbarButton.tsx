@@ -49,7 +49,11 @@ export class ToolbarButton extends React.Component<
       this.props.onClick();
       this.setState({ error: null });
     } catch (error) {
-      this.setState({ error });
+      if (error instanceof Error) {
+        this.setState({ error });
+        return;
+      }
+      throw error;
     }
   };
 }

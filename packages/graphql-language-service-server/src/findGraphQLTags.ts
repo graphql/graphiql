@@ -95,7 +95,7 @@ export function findGraphQLTags(
     logger.error(
       `Could not parse the ${type} file at ${uri} to extract the graphql tags:`,
     );
-    logger.error(error);
+    logger.error(String(error));
     return [];
   }
   const ast = parsedAST!;
