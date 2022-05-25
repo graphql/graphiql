@@ -713,7 +713,9 @@ class GraphiQLWithContext extends React.Component<
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
-          onClick={this.handlePrettifyQuery}
+          onClick={() => {
+            this.props.editorContext.prettify();
+          }}
           title="Prettify Query (Shift-Ctrl-P)"
           label="Prettify"
         />
@@ -848,7 +850,6 @@ class GraphiQLWithContext extends React.Component<
                 externalFragments={this.props.externalFragments}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
-                onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
@@ -894,7 +895,6 @@ class GraphiQLWithContext extends React.Component<
                 <VariableEditor
                   value={this.props.variables}
                   onEdit={this.handleEditVariables}
-                  onPrettifyQuery={this.handlePrettifyQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
@@ -905,7 +905,6 @@ class GraphiQLWithContext extends React.Component<
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
-                    onPrettifyQuery={this.handlePrettifyQuery}
                     onRunQuery={this.handleEditorRunQuery}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
@@ -1307,48 +1306,6 @@ class GraphiQLWithContext extends React.Component<
 
     this.handleRunQuery(operationName);
   }
-
-  handlePrettifyQuery = () => {
-    const editor = this.getQueryEditor();
-    const editorContent = editor?.getValue() ?? '';
-    const prettifiedEditorContent = print(parse(editorContent));
-
-    if (prettifiedEditorContent !== editorContent) {
-      editor?.setValue(prettifiedEditorContent);
-    }
-
-    const variableEditor = this.getVariableEditor();
-    const variableEditorContent = variableEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedVariableEditorContent = JSON.stringify(
-        JSON.parse(variableEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedVariableEditorContent !== variableEditorContent) {
-        variableEditor?.setValue(prettifiedVariableEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-
-    const headerEditor = this.getHeaderEditor();
-    const headerEditorContent = headerEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedHeaderEditorContent = JSON.stringify(
-        JSON.parse(headerEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedHeaderEditorContent !== headerEditorContent) {
-        headerEditor?.setValue(prettifiedHeaderEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-  };
 
   handleEditQuery = (value: string) => {
     this.setState(

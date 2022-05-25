@@ -34,7 +34,6 @@ export type UseQueryEditorArgs = {
   externalFragments?: string | FragmentDefinitionNode[];
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
-  onPrettifyQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
@@ -47,7 +46,6 @@ export function useQueryEditor({
   externalFragments,
   onEdit,
   onEditOperationName,
-  onPrettifyQuery,
   onRunQuery,
   readOnly = false,
   validationRules,
@@ -325,7 +323,7 @@ export function useQueryEditor({
       // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy
       'Shift-Ctrl-F',
     ],
-    onPrettifyQuery,
+    editorContext.prettify,
   );
   useKeyMap(queryEditor, ['Shift-Ctrl-M'], editorContext.merge);
 

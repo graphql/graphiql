@@ -17,7 +17,6 @@ import { CodeMirrorType } from './types';
 export type UseVariableEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onPrettifyQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   value?: string;
@@ -26,7 +25,6 @@ export type UseVariableEditorArgs = {
 export function useVariableEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onPrettifyQuery,
   onRunQuery,
   readOnly = false,
   value,
@@ -135,7 +133,7 @@ export function useVariableEditor({
   useCompletion(variableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(variableEditor, ['Shift-Ctrl-P'], onPrettifyQuery);
+  useKeyMap(variableEditor, ['Shift-Ctrl-P'], context.prettify);
   useKeyMap(variableEditor, ['Shift-Ctrl-M'], context.merge);
 
   useResizeEditor(variableEditor, ref);
