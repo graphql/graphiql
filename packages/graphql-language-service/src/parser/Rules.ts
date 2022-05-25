@@ -196,7 +196,7 @@ export const ParseRules: { [name: string]: ParseRule } = {
   StringValue: [
     {
       style: 'string',
-      match: token => token.kind === 'String',
+      match: (token: Token) => token.kind === 'String',
       update(state: State, token: Token) {
         if (token.value.startsWith('"""')) {
           state.inBlockstring = !token.value.slice(3).endsWith('"""');

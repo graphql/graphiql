@@ -256,7 +256,7 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
-      this._logger.warn(err);
+      this._logger.warn(String(err));
     }
 
     // Here, we set the workspace settings in memory,
@@ -834,7 +834,7 @@ export class MessageProcessor {
         await this._updateObjectTypeDefinition(uri, contents);
       }
     } catch (err) {
-      this._logger.error(err);
+      this._logger.error(String(err));
     }
   }
   async _cacheSchemaFile(
@@ -1002,7 +1002,7 @@ export class MessageProcessor {
         }
       }
     } catch (err) {
-      this._logger.error(err);
+      this._logger.error(String(err));
     }
   }
   /**
@@ -1043,7 +1043,7 @@ export class MessageProcessor {
       this._logger.error(
         `invalid/unknown file in graphql config documents entry:\n '${project.documents}'`,
       );
-      this._logger.error(err);
+      this._logger.error(String(err));
     }
   }
   /**

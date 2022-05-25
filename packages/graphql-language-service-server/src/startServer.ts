@@ -211,7 +211,7 @@ export default async function startServer(
       serverWithHandlers.listen();
     } catch (err) {
       logger.error('There was a Graphql LSP handler exception:');
-      logger.error(err);
+      logger.error(String(err));
     }
   }
 }
@@ -236,7 +236,7 @@ async function initializeHandlers({
     return connection;
   } catch (err) {
     logger.error('There was an error initializing the server connection');
-    logger.error(err);
+    logger.error(String(err));
     process.exit(1);
   }
 }

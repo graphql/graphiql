@@ -14,6 +14,7 @@ import {
   TypeDefinitionNode,
   NamedTypeNode,
   ValidationRule,
+  GraphQLError,
 } from 'graphql';
 
 import {
@@ -153,15 +154,22 @@ export class GraphQLLanguageService {
         });
       }
     } catch (error) {
-      const range = getRange(error.locations[0], document);
-      return [
-        {
-          severity: DIAGNOSTIC_SEVERITY.Error,
-          message: error.message,
-          source: 'GraphQL: Syntax',
-          range,
-        },
-      ];
+      if (error instanceof GraphQLError) {
+        const range = getRange(
+          error.locations?.[0] ?? { column: 0, line: 0 },
+          document,
+        );
+        return [
+          {
+            severity: DIAGNOSTIC_SEVERITY.Error,
+            message: error.message,
+            source: 'GraphQL: Syntax',
+            range,
+          },
+        ];
+      }
+
+      throw error;
     }
 
     // If there's a matching config, proceed to prepare to run validation

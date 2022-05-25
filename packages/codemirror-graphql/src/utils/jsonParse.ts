@@ -155,8 +155,18 @@ function expect(str: string) {
   throw syntaxError(`Expected ${str} but found ${found}.`);
 }
 
+type SyntaxErrorPosition = { start: number; end: number };
+
+export class JSONSyntaxError extends Error {
+  readonly position: SyntaxErrorPosition;
+  constructor(message: string, position: SyntaxErrorPosition) {
+    super(message);
+    this.position = position;
+  }
+}
+
 function syntaxError(message: string) {
-  return { message, start, end };
+  return new JSONSyntaxError(message, { start, end });
 }
 
 function skip(k: string) {

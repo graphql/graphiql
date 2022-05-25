@@ -18,6 +18,7 @@ import {
 } from 'graphql';
 
 import jsonParse, {
+  JSONSyntaxError,
   ParseArrayOutput,
   ParseObjectOutput,
   ParseValueOutput,
@@ -57,11 +58,11 @@ CodeMirror.registerHelper(
     let ast;
     try {
       ast = jsonParse(text);
-    } catch (syntaxError) {
-      if (syntaxError.stack) {
-        throw syntaxError;
+    } catch (error) {
+      if (error instanceof JSONSyntaxError) {
+        return [lintError(editor, error.position, error.message)];
       }
-      return [lintError(editor, syntaxError, syntaxError.message)];
+      throw error;
     }
 
     // If there are not yet known variables, do nothing.

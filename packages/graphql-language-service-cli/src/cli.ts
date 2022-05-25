@@ -130,7 +130,7 @@ switch (command) {
       startServer(options);
     } catch (error) {
       const logger = new Logger();
-      logger.error(error);
+      logger.error(String(error));
     }
     break;
   default: {

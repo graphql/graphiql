@@ -79,6 +79,14 @@ interface AutocompleteResultsMap {
   [i: number]: CompletionItem;
 }
 
+function formatUnknownError(error: unknown) {
+  let message: string | undefined;
+  if (error instanceof Error) {
+    message = error.stack;
+  }
+  return message ?? String(error);
+}
+
 function _getAutocompleteSuggestions(
   queryText: string,
   point: Position,
@@ -104,7 +112,7 @@ function _getAutocompleteSuggestions(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -133,7 +141,7 @@ function _getDiagnostics(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -147,7 +155,7 @@ function _getOutline(queryText: string): EXIT_CODE {
       throw Error('Error parsing or no outline tree found');
     }
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
   return GRAPHQL_SUCCESS_CODE;
@@ -161,7 +169,7 @@ function ensureText(queryText: string, filePath: string): string {
     try {
       text = fs.readFileSync(filePath, 'utf8');
     } catch (error) {
-      throw new Error(error);
+      throw new Error(String(error));
     }
   }
   return text;
