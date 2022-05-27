@@ -72,8 +72,9 @@ function useMockedEditor(
   name: string,
   value?: string,
   onEdit?: (newValue: string) => void,
+  defaultValue?: string,
 ) {
-  const [code, setCode] = useState(value);
+  const [code, setCode] = useState(value ?? defaultValue);
   const ref = useRef<HTMLDivElement>(null);
 
   const context = useContext(EditorContext);
@@ -137,7 +138,9 @@ function useMockedEditor(
   }, [onEdit]);
 
   useEffect(() => {
-    setCode(value);
+    if (value) {
+      setCode(value);
+    }
   }, [value]);
 
   useEffect(() => {
@@ -164,16 +167,17 @@ export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor
 };
 
 export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
+  defaultValue = '# Welcome to GraphiQL',
   onEdit,
   value,
 }) {
-  return useMockedEditor('query', value, onEdit);
+  return useMockedEditor('query', value, onEdit, defaultValue);
 };
 
 export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor({
   value,
 }) {
-  return useMockedEditor('query', value);
+  return useMockedEditor('response', value);
 };
 
 export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({

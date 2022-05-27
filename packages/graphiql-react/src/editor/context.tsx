@@ -1,4 +1,6 @@
 import { fillLeafs, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
+import { DocumentNode, OperationDefinitionNode } from 'graphql';
+import { VariableToType } from 'graphql-language-service';
 import {
   createContext,
   ReactNode,
@@ -6,18 +8,25 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { useSchemaWithError } from '../schema';
 
+import { useSchemaWithError } from '../schema';
 import { CodeMirrorEditor } from './types';
+
+export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
+  documentAST: DocumentNode | null;
+  operationName: string | null;
+  operations: OperationDefinitionNode[] | null;
+  variableToType: VariableToType | null;
+};
 
 export type EditorContextType = {
   autoCompleteLeafs(): string | undefined;
   headerEditor: CodeMirrorEditor | null;
-  queryEditor: CodeMirrorEditor | null;
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
   responseEditor: CodeMirrorEditor | null;
   variableEditor: CodeMirrorEditor | null;
   setHeaderEditor(newEditor: CodeMirrorEditor): void;
-  setQueryEditor(newEditor: CodeMirrorEditor): void;
+  setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
   setResponseEditor(newEditor: CodeMirrorEditor): void;
   setVariableEditor(newEditor: CodeMirrorEditor): void;
 };
@@ -46,7 +55,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
-  const [queryEditor, setQueryEditor] = useState<CodeMirrorEditor | null>(null);
+  const [
+    queryEditor,
+    setQueryEditor,
+  ] = useState<CodeMirrorEditorWithOperationFacts | null>(null);
   const [responseEditor, setResponseEditor] = useState<CodeMirrorEditor | null>(
     null,
   );

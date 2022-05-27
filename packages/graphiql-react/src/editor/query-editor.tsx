@@ -1,36 +1,41 @@
+import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import type {
   FragmentDefinitionNode,
   GraphQLSchema,
   ValidationRule,
 } from 'graphql';
+import { getOperationFacts } from 'graphql-language-service';
 import { MutableRefObject, useContext, useEffect, useRef } from 'react';
 
+import { markdown } from '../markdown';
+import { useSchemaWithError } from '../schema';
+import { StorageContext } from '../storage';
+import debounce from '../utility/debounce';
 import { commonKeys, importCodeMirror } from './common';
-import { EditorContext } from './context';
+import { CodeMirrorEditorWithOperationFacts, EditorContext } from './context';
 import {
   CompletionCallback,
   EditCallback,
   EmptyCallback,
-  useChangeHandler,
   useCompletion,
   useKeyMap,
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
-import { markdown } from '../markdown';
+import { CodeMirrorEditor, CodeMirrorType } from './types';
 import { normalizeWhitespace } from './whitespace';
-import { CodeMirrorType, CodeMirrorEditor } from './types';
-import { useSchemaWithError } from '../schema';
 
 type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
+  defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
   onClickReference?: OnClickReference;
   onCopyQuery?: EmptyCallback;
   onEdit?: EditCallback;
+  onEditOperationName?: EditCallback;
   onHintInformationRender?: CompletionCallback;
   onPrettifyQuery?: EmptyCallback;
   onMergeQuery?: EmptyCallback;
@@ -41,11 +46,13 @@ export type UseQueryEditorArgs = {
 };
 
 export function useQueryEditor({
+  defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
   onClickReference,
   onCopyQuery,
   onEdit,
+  onEditOperationName,
   onHintInformationRender,
   onMergeQuery,
   onPrettifyQuery,
@@ -56,6 +63,7 @@ export function useQueryEditor({
 }: UseQueryEditorArgs = {}) {
   const { schema } = useSchemaWithError('hook', 'useQueryEditor');
   const editorContext = useContext(EditorContext);
+  const storage = useContext(StorageContext);
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
@@ -65,14 +73,16 @@ export function useQueryEditor({
     );
   }
 
-  const { queryEditor, setQueryEditor } = editorContext;
+  const { queryEditor, setQueryEditor, variableEditor } = editorContext;
 
   const onClickReferenceRef = useRef<OnClickReference>();
   useEffect(() => {
     onClickReferenceRef.current = onClickReference;
   }, [onClickReference]);
 
-  const initialValue = useRef(value);
+  const initialValue = useRef(
+    value ?? storage?.get(STORAGE_KEY_QUERY) ?? defaultValue,
+  );
 
   useEffect(() => {
     let isActive = true;
@@ -148,7 +158,7 @@ export function useQueryEditor({
             // empty
           },
         },
-      });
+      }) as CodeMirrorEditorWithOperationFacts;
 
       newEditor.addKeyMap({
         'Cmd-Space'() {
@@ -182,6 +192,11 @@ export function useQueryEditor({
         }
       });
 
+      newEditor.documentAST = null;
+      newEditor.operationName = null;
+      newEditor.operations = null;
+      newEditor.variableToType = null;
+
       setQueryEditor(newEditor);
     });
 
@@ -190,7 +205,95 @@ export function useQueryEditor({
     };
   }, [editorTheme, readOnly, setQueryEditor]);
 
-  useSynchronizeSchema(queryEditor, schema, codeMirrorRef);
+  /**
+   * We don't use the generic `useChangeHandler` hook here because we want to
+   * have additional logic that updates the operation facts that we store as
+   * properties on the editor.
+   */
+  useEffect(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    function getAndUpdateOperationFacts(
+      editorInstance: CodeMirrorEditorWithOperationFacts,
+    ) {
+      const operationFacts = getOperationFacts(
+        schema,
+        editorInstance.getValue(),
+      );
+      if (!operationFacts) {
+        return;
+      }
+
+      // Update operation name should any query names change.
+      const operationName = getSelectedOperationName(
+        editorInstance.operations ?? undefined,
+        editorInstance.operationName ?? undefined,
+        operationFacts.operations,
+      );
+
+      // Store the operation facts on editor properties
+      editorInstance.documentAST = operationFacts.documentAST;
+      editorInstance.operationName = operationName ?? null;
+      editorInstance.operations = operationFacts.operations;
+      editorInstance.variableToType = operationFacts.variableToType ?? null;
+
+      // Update variable types for the variable editor
+      if (variableEditor) {
+        variableEditor.state.lint.linterOptions.variableToType =
+          operationFacts.variableToType;
+        variableEditor.options.lint.variableToType =
+          operationFacts.variableToType;
+        variableEditor.options.hintOptions.variableToType =
+          operationFacts.variableToType;
+        codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
+      }
+
+      return { ...operationFacts, operationName };
+    }
+
+    const handleChange = debounce(
+      100,
+      (editorInstance: CodeMirrorEditorWithOperationFacts, change: any) => {
+        const query = editorInstance.getValue();
+        storage?.set(STORAGE_KEY_QUERY, query);
+
+        const operationFacts = getAndUpdateOperationFacts(editorInstance);
+        if (operationFacts?.operationName !== undefined) {
+          storage?.set(
+            STORAGE_KEY_OPERATION_NAME,
+            operationFacts.operationName,
+          );
+        }
+
+        // Invoke callback props only after the operation facts have been updated
+        onEdit?.(query);
+        if (
+          onEditOperationName &&
+          operationFacts?.operationName !== undefined &&
+          editorInstance.operationName !== operationFacts.operationName
+        ) {
+          onEditOperationName(operationFacts.operationName);
+        }
+      },
+    ) as (editorInstance: CodeMirrorEditor) => void;
+
+    // Call once to initially update the values
+    getAndUpdateOperationFacts(queryEditor);
+
+    queryEditor.on('change', handleChange);
+    return () => queryEditor.off('change', handleChange);
+  }, [
+    onEdit,
+    onEditOperationName,
+    queryEditor,
+    schema,
+    storage,
+    variableEditor,
+  ]);
+
+  useSynchronizeSchema(queryEditor, schema ?? null, codeMirrorRef);
   useSynchronizeValidationRules(
     queryEditor,
     validationRules ?? null,
@@ -203,8 +306,6 @@ export function useQueryEditor({
   );
 
   useSynchronizeValue(queryEditor, value);
-
-  useChangeHandler(queryEditor, onEdit);
 
   useCompletion(queryEditor, onHintInformationRender);
 
@@ -228,7 +329,7 @@ export function useQueryEditor({
 
 function useSynchronizeSchema(
   editor: CodeMirrorEditor | null,
-  schema: GraphQLSchema | null | undefined,
+  schema: GraphQLSchema | null,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
   useEffect(() => {
@@ -295,3 +396,40 @@ function useSynchronizeExternalFragments(
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
+
+const DEFAULT_VALUE = `# Welcome to GraphiQL
+#
+# GraphiQL is an in-browser tool for writing, validating, and
+# testing GraphQL queries.
+#
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
+#
+# GraphQL queries typically start with a "{" character. Lines that start
+# with a # are ignored.
+#
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
+#
+#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
+#
+#       Run Query:  Ctrl-Enter (or press the play button above)
+#
+#   Auto Complete:  Ctrl-Space (or just start typing)
+#
+
+`;
+
+const STORAGE_KEY_QUERY = 'query';
+
+const STORAGE_KEY_OPERATION_NAME = 'operationName';
