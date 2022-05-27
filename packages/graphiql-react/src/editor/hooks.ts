@@ -170,15 +170,6 @@ export function usePrettifyEditors({
   headerEditor: CodeMirrorEditor | null;
 }) {
   return useCallback(() => {
-    if (queryEditor) {
-      const editorContent = queryEditor.getValue();
-      const prettifiedEditorContent = print(parse(editorContent));
-
-      if (prettifiedEditorContent !== editorContent) {
-        queryEditor.setValue(prettifiedEditorContent);
-      }
-    }
-
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
       try {
@@ -209,6 +200,15 @@ export function usePrettifyEditors({
         }
       } catch {
         /* Parsing JSON failed, skip prettification */
+      }
+    }
+
+    if (queryEditor) {
+      const editorContent = queryEditor.getValue();
+      const prettifiedEditorContent = print(parse(editorContent));
+
+      if (prettifiedEditorContent !== editorContent) {
+        queryEditor.setValue(prettifiedEditorContent);
       }
     }
   }, [queryEditor, variableEditor, headerEditor]);
