@@ -25,34 +25,6 @@ search
     }
   });
 
-// If variables was provided, try to format it.
-if (parameters.variables) {
-  try {
-    parameters.variables = JSON.stringify(
-      JSON.parse(parameters.variables),
-      null,
-      2,
-    );
-  } catch (e) {
-    // Do nothing, we want to display the invalid JSON as a string, rather
-    // than present an error.
-  }
-}
-
-// If headers was provided, try to format it.
-if (parameters.headers) {
-  try {
-    parameters.headers = JSON.stringify(
-      JSON.parse(parameters.headers),
-      null,
-      2,
-    );
-  } catch (e) {
-    // Do nothing, we want to display the invalid JSON as a string, rather
-    // than present an error.
-  }
-}
-
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery) {
