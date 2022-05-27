@@ -20,7 +20,6 @@ import {
   FragmentDefinitionNode,
   DocumentNode,
 } from 'graphql';
-import copyToClipboard from 'copy-to-clipboard';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import {
@@ -64,7 +63,6 @@ import {
   formatResult,
   isAsyncIterable,
   isObservable,
-  mergeAst,
 } from '@graphiql/toolkit';
 import type {
   Fetcher,
@@ -351,9 +349,11 @@ type TabsState = {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   docExplorerOpen,
+  getDefaultFieldNames,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
+  onCopyQuery,
   onToggleHistory,
   onToggleDocs,
   storage,
@@ -380,7 +380,9 @@ export function GraphiQL({
             <ExplorerContextProvider
               isVisible={docExplorerOpen}
               onToggleVisibility={onToggleDocs}>
-              <EditorContextProvider>
+              <EditorContextProvider
+                getDefaultFieldNames={getDefaultFieldNames}
+                onCopyQuery={onCopyQuery}>
                 <HistoryContextProvider
                   maxHistoryLength={maxHistoryLength}
                   onToggle={onToggleHistory}>
@@ -460,9 +462,11 @@ type GraphiQLWithContextProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
   | 'docExplorerOpen'
+  | 'getDefaultFieldNames'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
+  | 'onCopyQuery'
   | 'onToggleDocs'
   | 'onToggleHistory'
   | 'schema'
@@ -709,17 +713,23 @@ class GraphiQLWithContext extends React.Component<
     ) || (
       <GraphiQL.Toolbar>
         <ToolbarButton
-          onClick={this.handlePrettifyQuery}
+          onClick={() => {
+            this.props.editorContext.prettify();
+          }}
           title="Prettify Query (Shift-Ctrl-P)"
           label="Prettify"
         />
         <ToolbarButton
-          onClick={this.handleMergeQuery}
+          onClick={() => {
+            this.props.editorContext.merge();
+          }}
           title="Merge Query (Shift-Ctrl-M)"
           label="Merge"
         />
         <ToolbarButton
-          onClick={this.handleCopyQuery}
+          onClick={() => {
+            this.props.editorContext.copy();
+          }}
           title="Copy Query (Shift-Ctrl-C)"
           label="Copy"
         />
@@ -838,11 +848,8 @@ class GraphiQLWithContext extends React.Component<
                 defaultValue={this.props.defaultQuery}
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
-                onCopyQuery={this.handleCopyQuery}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
-                onMergeQuery={this.handleMergeQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
                 onRunQuery={this.handleEditorRunQuery}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
@@ -888,8 +895,6 @@ class GraphiQLWithContext extends React.Component<
                 <VariableEditor
                   value={this.props.variables}
                   onEdit={this.handleEditVariables}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
@@ -900,8 +905,6 @@ class GraphiQLWithContext extends React.Component<
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
-                    onMergeQuery={this.handleMergeQuery}
-                    onPrettifyQuery={this.handlePrettifyQuery}
                     onRunQuery={this.handleEditorRunQuery}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
@@ -1304,69 +1307,6 @@ class GraphiQLWithContext extends React.Component<
     this.handleRunQuery(operationName);
   }
 
-  handlePrettifyQuery = () => {
-    const editor = this.getQueryEditor();
-    const editorContent = editor?.getValue() ?? '';
-    const prettifiedEditorContent = print(parse(editorContent));
-
-    if (prettifiedEditorContent !== editorContent) {
-      editor?.setValue(prettifiedEditorContent);
-    }
-
-    const variableEditor = this.getVariableEditor();
-    const variableEditorContent = variableEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedVariableEditorContent = JSON.stringify(
-        JSON.parse(variableEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedVariableEditorContent !== variableEditorContent) {
-        variableEditor?.setValue(prettifiedVariableEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-
-    const headerEditor = this.getHeaderEditor();
-    const headerEditorContent = headerEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedHeaderEditorContent = JSON.stringify(
-        JSON.parse(headerEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedHeaderEditorContent !== headerEditorContent) {
-        headerEditor?.setValue(prettifiedHeaderEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-  };
-
-  handleMergeQuery = () => {
-    const documentAST = this.props.editorContext.queryEditor?.documentAST;
-    if (!documentAST) {
-      return;
-    }
-
-    const editor = this.getQueryEditor();
-    if (!editor) {
-      return;
-    }
-
-    const query = editor.getValue();
-    if (!query) {
-      return;
-    }
-
-    editor.setValue(
-      print(mergeAst(documentAST, this.props.schemaContext.schema)),
-    );
-  };
-
   handleEditQuery = (value: string) => {
     this.setState(
       state => ({
@@ -1383,21 +1323,6 @@ class GraphiQLWithContext extends React.Component<
       value,
       this.props.editorContext.queryEditor?.documentAST ?? undefined,
     );
-  };
-
-  handleCopyQuery = () => {
-    const editor = this.getQueryEditor();
-    const query = editor && editor.getValue();
-
-    if (!query) {
-      return;
-    }
-
-    copyToClipboard(query);
-
-    if (this.props.onCopyQuery) {
-      return this.props.onCopyQuery(query);
-    }
   };
 
   handleEditVariables = (value: string) => {

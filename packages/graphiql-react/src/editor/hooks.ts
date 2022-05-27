@@ -1,12 +1,15 @@
+import { mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
-import { RefObject, useContext, useEffect, useRef } from 'react';
+import copyToClipboard from 'copy-to-clipboard';
+import { GraphQLSchema, parse, print } from 'graphql';
+import { RefObject, useCallback, useContext, useEffect, useRef } from 'react';
+
 import { ExplorerContext } from '../explorer';
 import { useSchemaWithError } from '../schema';
-
 import { StorageContext } from '../storage';
 import debounce from '../utility/debounce';
-
 import { onHasCompletion } from './completion';
+import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -118,4 +121,95 @@ export function useResizeEditor(
     }
     sizeRef.current = size;
   });
+}
+
+export function useCopyQuery({
+  queryEditor,
+  onCopyQuery,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  onCopyQuery?(query: string): void;
+}) {
+  return useCallback(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    copyToClipboard(query);
+
+    onCopyQuery?.(query);
+  }, [queryEditor, onCopyQuery]);
+}
+
+export function useMergeQuery({
+  queryEditor,
+  schema,
+}: {
+  queryEditor?: CodeMirrorEditorWithOperationFacts | null;
+  schema: GraphQLSchema | null | undefined;
+}) {
+  return useCallback(() => {
+    const documentAST = queryEditor?.documentAST;
+    const query = queryEditor?.getValue();
+    if (!documentAST || !query) {
+      return;
+    }
+
+    queryEditor.setValue(print(mergeAst(documentAST, schema)));
+  }, [queryEditor, schema]);
+}
+
+export function usePrettifyEditors({
+  queryEditor,
+  variableEditor,
+  headerEditor,
+}: {
+  queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  variableEditor: CodeMirrorEditor | null;
+  headerEditor: CodeMirrorEditor | null;
+}) {
+  return useCallback(() => {
+    if (variableEditor) {
+      const variableEditorContent = variableEditor.getValue();
+      try {
+        const prettifiedVariableEditorContent = JSON.stringify(
+          JSON.parse(variableEditorContent),
+          null,
+          2,
+        );
+        if (prettifiedVariableEditorContent !== variableEditorContent) {
+          variableEditor.setValue(prettifiedVariableEditorContent);
+        }
+      } catch {
+        /* Parsing JSON failed, skip prettification */
+      }
+    }
+
+    if (headerEditor) {
+      const headerEditorContent = headerEditor.getValue();
+
+      try {
+        const prettifiedHeaderEditorContent = JSON.stringify(
+          JSON.parse(headerEditorContent),
+          null,
+          2,
+        );
+        if (prettifiedHeaderEditorContent !== headerEditorContent) {
+          headerEditor.setValue(prettifiedHeaderEditorContent);
+        }
+      } catch {
+        /* Parsing JSON failed, skip prettification */
+      }
+    }
+
+    if (queryEditor) {
+      const editorContent = queryEditor.getValue();
+      const prettifiedEditorContent = print(parse(editorContent));
+
+      if (prettifiedEditorContent !== editorContent) {
+        queryEditor.setValue(prettifiedEditorContent);
+      }
+    }
+  }, [queryEditor, variableEditor, headerEditor]);
 }

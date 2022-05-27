@@ -16,8 +16,6 @@ import {
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onPrettifyQuery?: EmptyCallback;
-  onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   shouldPersistHeaders?: boolean;
@@ -27,8 +25,6 @@ export type UseHeaderEditorArgs = {
 export function useHeaderEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onMergeQuery,
-  onPrettifyQuery,
   onRunQuery,
   readOnly = false,
   shouldPersistHeaders = false,
@@ -127,8 +123,8 @@ export function useHeaderEditor({
   useCompletion(headerEditor);
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(headerEditor, ['Shift-Ctrl-P'], onPrettifyQuery);
-  useKeyMap(headerEditor, ['Shift-Ctrl-M'], onMergeQuery);
+  useKeyMap(headerEditor, ['Shift-Ctrl-P'], context.prettify);
+  useKeyMap(headerEditor, ['Shift-Ctrl-M'], context.merge);
 
   useResizeEditor(headerEditor, ref);
 

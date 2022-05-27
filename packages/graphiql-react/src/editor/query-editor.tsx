@@ -32,11 +32,8 @@ export type UseQueryEditorArgs = {
   defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
-  onCopyQuery?: EmptyCallback;
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
-  onPrettifyQuery?: EmptyCallback;
-  onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
@@ -47,11 +44,8 @@ export function useQueryEditor({
   defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
-  onCopyQuery,
   onEdit,
   onEditOperationName,
-  onMergeQuery,
-  onPrettifyQuery,
   onRunQuery,
   readOnly = false,
   validationRules,
@@ -321,7 +315,7 @@ export function useQueryEditor({
   useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], onCopyQuery);
+  useKeyMap(queryEditor, ['Shift-Ctrl-C'], editorContext.copy);
   useKeyMap(
     queryEditor,
     [
@@ -329,9 +323,9 @@ export function useQueryEditor({
       // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy
       'Shift-Ctrl-F',
     ],
-    onPrettifyQuery,
+    editorContext.prettify,
   );
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], onMergeQuery);
+  useKeyMap(queryEditor, ['Shift-Ctrl-M'], editorContext.merge);
 
   useResizeEditor(queryEditor, ref);
 
