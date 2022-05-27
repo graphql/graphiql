@@ -24,13 +24,8 @@ import TypeDoc from './DocExplorer/TypeDoc';
  *
  * Shows documentations for GraphQL definitions from the schema.
  *
- * Children:
- *
- *   - Any provided children will be positioned in the right-hand-side of the
- *     top bar. Typically this will be a "close" button for temporary explorer.
- *
  */
-export function DocExplorer(props: { children?: ReactNode }) {
+export function DocExplorer() {
   const { fetchError, isFetching, schema, validationErrors } = useSchema();
   const explorerContext = useExplorerNavStack();
   if (!explorerContext) {
@@ -39,7 +34,7 @@ export function DocExplorer(props: { children?: ReactNode }) {
     );
   }
 
-  const { explorerNavStack, pop, push, showSearch } = explorerContext;
+  const { explorerNavStack, hide, pop, push, showSearch } = explorerContext;
   const navItem = explorerNavStack[explorerNavStack.length - 1];
 
   function handleClickType(type: GraphQLNamedType) {
@@ -121,7 +116,16 @@ export function DocExplorer(props: { children?: ReactNode }) {
         <div className="doc-explorer-title">
           {navItem.title || navItem.name}
         </div>
-        <div className="doc-explorer-rhs">{props.children}</div>
+        <div className="doc-explorer-rhs">
+          <button
+            className="docExplorerHide"
+            onClick={() => {
+              hide();
+            }}
+            aria-label="Close Documentation Explorer">
+            {'\u2715'}
+          </button>
+        </div>
       </div>
       <div className="doc-explorer-contents">
         {shouldSearchBoxAppear && (

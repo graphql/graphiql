@@ -8,6 +8,7 @@ import type {
 import { getOperationFacts } from 'graphql-language-service';
 import { MutableRefObject, useContext, useEffect, useRef } from 'react';
 
+import { ExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
 import { useSchemaWithError } from '../schema';
 import { StorageContext } from '../storage';
@@ -15,7 +16,6 @@ import debounce from '../utility/debounce';
 import { commonKeys, importCodeMirror } from './common';
 import { CodeMirrorEditorWithOperationFacts, EditorContext } from './context';
 import {
-  CompletionCallback,
   EditCallback,
   EmptyCallback,
   useCompletion,
@@ -32,11 +32,9 @@ export type UseQueryEditorArgs = {
   defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
-  onClickReference?: OnClickReference;
   onCopyQuery?: EmptyCallback;
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
-  onHintInformationRender?: CompletionCallback;
   onPrettifyQuery?: EmptyCallback;
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
@@ -49,11 +47,9 @@ export function useQueryEditor({
   defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
-  onClickReference,
   onCopyQuery,
   onEdit,
   onEditOperationName,
-  onHintInformationRender,
   onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
@@ -64,6 +60,7 @@ export function useQueryEditor({
   const { schema } = useSchemaWithError('hook', 'useQueryEditor');
   const editorContext = useContext(EditorContext);
   const storage = useContext(StorageContext);
+  const explorer = useContext(ExplorerContext);
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
@@ -75,10 +72,24 @@ export function useQueryEditor({
 
   const { queryEditor, setQueryEditor, variableEditor } = editorContext;
 
-  const onClickReferenceRef = useRef<OnClickReference>();
+  const onClickReferenceRef = useRef<OnClickReference>(() => {});
   useEffect(() => {
-    onClickReferenceRef.current = onClickReference;
-  }, [onClickReference]);
+    onClickReferenceRef.current = reference => {
+      if (!explorer) {
+        return;
+      }
+      explorer.show();
+      if (reference && reference.kind === 'Type') {
+        explorer.push({ name: reference.type.name, def: reference.type });
+      } else if (reference.kind === 'Field') {
+        explorer.push({ name: reference.field.name, def: reference.field });
+      } else if (reference.kind === 'Argument' && reference.field) {
+        explorer.push({ name: reference.field.name, def: reference.field });
+      } else if (reference.kind === 'EnumValue' && reference.type) {
+        explorer.push({ name: reference.type.name, def: reference.type });
+      }
+    };
+  }, [explorer]);
 
   const initialValue = useRef(
     value ?? storage?.get(STORAGE_KEY_QUERY) ?? defaultValue,
@@ -139,13 +150,13 @@ export function useQueryEditor({
           schema: undefined,
           renderDescription: (text: string) => markdown.render(text),
           onClick: (reference: SchemaReference) => {
-            onClickReferenceRef.current?.(reference);
+            onClickReferenceRef.current(reference);
           },
         },
         jump: {
           schema: undefined,
           onClick: (reference: SchemaReference) => {
-            onClickReferenceRef.current?.(reference);
+            onClickReferenceRef.current(reference);
           },
         },
         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
@@ -307,7 +318,7 @@ export function useQueryEditor({
 
   useSynchronizeValue(queryEditor, value);
 
-  useCompletion(queryEditor, onHintInformationRender);
+  useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], onCopyQuery);

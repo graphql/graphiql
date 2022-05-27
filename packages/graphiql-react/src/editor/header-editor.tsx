@@ -4,7 +4,6 @@ import { StorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { EditorContext } from './context';
 import {
-  CompletionCallback,
   EditCallback,
   EmptyCallback,
   useChangeHandler,
@@ -17,7 +16,6 @@ import {
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onHintInformationRender?: CompletionCallback;
   onPrettifyQuery?: EmptyCallback;
   onMergeQuery?: EmptyCallback;
   onRunQuery?: EmptyCallback;
@@ -29,7 +27,6 @@ export type UseHeaderEditorArgs = {
 export function useHeaderEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onHintInformationRender,
   onMergeQuery,
   onPrettifyQuery,
   onRunQuery,
@@ -127,7 +124,7 @@ export function useHeaderEditor({
     shouldPersistHeaders ? STORAGE_KEY : null,
   );
 
-  useCompletion(headerEditor, onHintInformationRender);
+  useCompletion(headerEditor);
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], onPrettifyQuery);
