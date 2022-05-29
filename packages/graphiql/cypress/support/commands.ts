@@ -14,6 +14,8 @@ type Op = {
   query: string;
   variables?: Record<string, any>;
   variablesString?: string;
+  headersString?: string;
+  response?: Record<string, any>;
 };
 declare namespace Cypress {
   type MockResult =
@@ -69,21 +71,46 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 
 Cypress.Commands.add(
   'assertHasValues',
-  ({ query, variables, variablesString }: Op) => {
+  ({ query, variables, variablesString, headersString, response }: Op) => {
     cy.get('.query-editor').should(element => {
-      expect(element.get(0).innerText).to.equal(codeWithLineNumbers(query));
+      expect(normalize(element.get(0).innerText)).to.equal(
+        codeWithLineNumbers(query),
+      );
     });
     if (typeof variables !== 'undefined') {
-      cy.get('.variable-editor .codemirrorWrap').should(element => {
-        expect(element.get(0).innerText).to.equal(
-          codeWithLineNumbers(JSON.stringify(variables, null, 2)),
-        );
-      });
+      cy.contains('Query Variables').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(0)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(JSON.stringify(variables, null, 2)),
+          );
+        });
     }
     if (typeof variablesString !== 'undefined') {
-      cy.get('.variable-editor .codemirrorWrap').should(element => {
-        expect(element.get(0).innerText).to.equal(
-          codeWithLineNumbers(variablesString),
+      cy.contains('Query Variables').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(0)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(variablesString),
+          );
+        });
+    }
+    if (typeof headersString !== 'undefined') {
+      cy.contains('Request Headers').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(1)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(headersString),
+          );
+        });
+    }
+    if (typeof response !== 'undefined') {
+      cy.get('.result-window').should(element => {
+        expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
+          JSON.stringify(response, null, 2),
         );
       });
     }
@@ -95,9 +122,9 @@ Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
   cy.clickExecuteQuery();
   cy.wait(timeout);
   cy.get('section#graphiql-result-viewer').should(element => {
-    // Replace "invisible" whitespace characters with regular whitespace
-    const response = element.get(0).innerText.replace(/[\u00a0]/g, ' ');
-    expect(response).to.equal(JSON.stringify(mockSuccess, null, 2));
+    expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
+      JSON.stringify(mockSuccess, null, 2),
+    );
   });
 });
 
@@ -106,6 +133,14 @@ function codeWithLineNumbers(code: string): string {
     .split('\n')
     .map((line, i) => `${i + 1}\n${line}`)
     .join('\n');
+}
+
+function normalize(str: string) {
+  return str.replace(/\u200b/g, '');
+}
+
+function normalizeWhitespace(str: string) {
+  return str.replace(/\u00a0/g, ' ');
 }
 
 Cypress.Commands.add(
