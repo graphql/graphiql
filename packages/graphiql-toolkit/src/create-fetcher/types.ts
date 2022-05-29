@@ -108,7 +108,7 @@ export interface CreateFetcherOptions {
    * Headers you can provide statically.
    *
    * If you enable the headers editor and the user provides
-   * A header you set statically here, it will be overriden by their value.
+   * A header you set statically here, it will be overridden by their value.
    */
   headers?: Record<string, string>;
   /**
