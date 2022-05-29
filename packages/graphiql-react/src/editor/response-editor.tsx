@@ -1,14 +1,14 @@
 import { formatError } from '@graphiql/toolkit';
 import type { Position, Token } from 'codemirror';
-import { ComponentType, useContext, useEffect, useRef } from 'react';
+import { ComponentType, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { useSchemaContext } from '../schema';
 
 import { commonKeys, importCodeMirror } from './common';
 import { ImagePreview } from './components';
-import { EditorContext } from './context';
+import { useEditorContext } from './context';
 import { useResizeEditor, useSynchronizeValue } from './hooks';
 import { CodeMirrorEditor } from './types';
-import { useSchemaWithError } from '../schema';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
 
@@ -23,11 +23,14 @@ export function useResponseEditor({
   editorTheme = 'graphiql',
   value,
 }: UseResponseEditorArgs = {}) {
-  const { fetchError, validationErrors } = useSchemaWithError(
-    'hook',
-    'useResponseEditor',
-  );
-  const editorContext = useContext(EditorContext);
+  const { fetchError, validationErrors } = useSchemaContext({
+    nonNull: true,
+    caller: useResponseEditor,
+  });
+  const { responseEditor, setResponseEditor } = useEditorContext({
+    nonNull: true,
+    caller: useResponseEditor,
+  });
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
@@ -36,14 +39,6 @@ export function useResponseEditor({
   useEffect(() => {
     responseTooltipRef.current = ResponseTooltip;
   }, [ResponseTooltip]);
-
-  if (!editorContext) {
-    throw new Error(
-      'Tried to call the `useResponseEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
-  const { responseEditor, setResponseEditor } = editorContext;
 
   const initialValue = useRef(value);
 

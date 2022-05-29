@@ -1,8 +1,8 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { StorageContext } from '../storage';
+import { useStorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
-import { EditorContext } from './context';
+import { useEditorContext } from './context';
 import {
   EditCallback,
   EmptyCallback,
@@ -30,17 +30,12 @@ export function useHeaderEditor({
   shouldPersistHeaders = false,
   value,
 }: UseHeaderEditorArgs = {}) {
-  const context = useContext(EditorContext);
-  const storage = useContext(StorageContext);
+  const { headerEditor, merge, prettify, setHeaderEditor } = useEditorContext({
+    nonNull: true,
+    caller: useHeaderEditor,
+  });
+  const storage = useStorageContext();
   const ref = useRef<HTMLDivElement>(null);
-
-  if (!context) {
-    throw new Error(
-      'Tried to call the `useHeaderEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
-  const { headerEditor, setHeaderEditor } = context;
 
   const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
@@ -123,8 +118,8 @@ export function useHeaderEditor({
   useCompletion(headerEditor);
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(headerEditor, ['Shift-Ctrl-P'], context.prettify);
-  useKeyMap(headerEditor, ['Shift-Ctrl-M'], context.merge);
+  useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
+  useKeyMap(headerEditor, ['Shift-Ctrl-M'], merge);
 
   useResizeEditor(headerEditor, ref);
 

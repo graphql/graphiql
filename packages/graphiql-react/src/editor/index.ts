@@ -1,6 +1,10 @@
 import { onHasCompletion } from './completion';
 import { ImagePreview } from './components';
-import { EditorContext, EditorContextProvider } from './context';
+import {
+  EditorContext,
+  EditorContextProvider,
+  useEditorContext,
+} from './context';
 import { useHeaderEditor } from './header-editor';
 import { useQueryEditor } from './query-editor';
 import { useResponseEditor } from './response-editor';
@@ -20,6 +24,7 @@ export {
   ImagePreview,
   EditorContext,
   EditorContextProvider,
+  useEditorContext,
   useHeaderEditor,
   useQueryEditor,
   useResponseEditor,

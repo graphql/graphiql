@@ -3,6 +3,7 @@ import {
   EditorContextProvider,
   ImagePreview,
   onHasCompletion,
+  useEditorContext,
   useHeaderEditor,
   useQueryEditor,
   useResponseEditor,
@@ -11,11 +12,23 @@ import {
 import {
   ExplorerContext,
   ExplorerContextProvider,
-  useExplorerNavStack,
+  useExplorerContext,
 } from './explorer';
-import { HistoryContext, HistoryContextProvider } from './history';
-import { SchemaContext, SchemaContextProvider, useSchema } from './schema';
-import { StorageContext, StorageContextProvider } from './storage';
+import {
+  HistoryContext,
+  HistoryContextProvider,
+  useHistoryContext,
+} from './history';
+import {
+  SchemaContext,
+  SchemaContextProvider,
+  useSchemaContext,
+} from './schema';
+import {
+  StorageContext,
+  StorageContextProvider,
+  useStorageContext,
+} from './storage';
 
 import type {
   EditorContextType,
@@ -41,6 +54,7 @@ export {
   EditorContextProvider,
   ImagePreview,
   onHasCompletion,
+  useEditorContext,
   useHeaderEditor,
   useQueryEditor,
   useResponseEditor,
@@ -48,17 +62,19 @@ export {
   // explorer
   ExplorerContext,
   ExplorerContextProvider,
-  useExplorerNavStack,
+  useExplorerContext,
   // history
   HistoryContext,
   HistoryContextProvider,
+  useHistoryContext,
   // schema
   SchemaContext,
   SchemaContextProvider,
-  useSchema,
+  useSchemaContext,
   // storage
   StorageContext,
   StorageContextProvider,
+  useStorageContext,
 };
 
 export type {

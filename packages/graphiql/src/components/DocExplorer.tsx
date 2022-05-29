@@ -9,8 +9,8 @@ import React, { ReactNode } from 'react';
 import { isType, GraphQLNamedType } from 'graphql';
 import {
   ExplorerFieldDef,
-  useExplorerNavStack,
-  useSchema,
+  useExplorerContext,
+  useSchemaContext,
 } from '@graphiql/react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
@@ -26,15 +26,16 @@ import TypeDoc from './DocExplorer/TypeDoc';
  *
  */
 export function DocExplorer() {
-  const { fetchError, isFetching, schema, validationErrors } = useSchema();
-  const explorerContext = useExplorerNavStack();
-  if (!explorerContext) {
-    throw new Error(
-      'Tried to render the `DocExplorer` component without the necessary context. Make sure that the `ExplorerContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
+  const {
+    fetchError,
+    isFetching,
+    schema,
+    validationErrors,
+  } = useSchemaContext({ nonNull: true });
+  const { explorerNavStack, hide, pop, push, showSearch } = useExplorerContext({
+    nonNull: true,
+  });
 
-  const { explorerNavStack, hide, pop, push, showSearch } = explorerContext;
   const navItem = explorerNavStack[explorerNavStack.length - 1];
 
   function handleClickType(type: GraphQLNamedType) {

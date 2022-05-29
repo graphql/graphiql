@@ -23,16 +23,17 @@ import {
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import {
-  EditorContext,
   EditorContextProvider,
-  ExplorerContext,
   ExplorerContextProvider,
-  HistoryContext,
   HistoryContextProvider,
-  SchemaContext,
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
+  useEditorContext,
+  useExplorerContext,
+  useHistoryContext,
+  useSchemaContext,
+  useStorageContext,
 } from '@graphiql/react';
 import type {
   EditorContextType,
@@ -386,30 +387,7 @@ export function GraphiQL({
                 <HistoryContextProvider
                   maxHistoryLength={maxHistoryLength}
                   onToggle={onToggleHistory}>
-                  <SchemaContext.Consumer>
-                    {schemaContext => (
-                      <ExplorerContext.Consumer>
-                        {explorerContext => (
-                          <EditorContext.Consumer>
-                            {editorContext => (
-                              <HistoryContext.Consumer>
-                                {historyContext => (
-                                  <GraphiQLWithContext
-                                    {...props}
-                                    editorContext={editorContext}
-                                    explorerContext={explorerContext}
-                                    historyContext={historyContext}
-                                    schemaContext={schemaContext}
-                                    storageContext={storageContext}
-                                  />
-                                )}
-                              </HistoryContext.Consumer>
-                            )}
-                          </EditorContext.Consumer>
-                        )}
-                      </ExplorerContext.Consumer>
-                    )}
-                  </SchemaContext.Consumer>
+                  <GraphiQLConsumeContexts {...props} />
                 </HistoryContextProvider>
               </EditorContextProvider>
             </ExplorerContextProvider>
@@ -458,7 +436,7 @@ GraphiQL.MenuItem = ToolbarMenuItem;
 // GraphiQL.Select = ToolbarSelect;
 // GraphiQL.SelectOption = ToolbarSelectOption;
 
-type GraphiQLWithContextProps = Omit<
+type GraphiQLWithContextProviderProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
   | 'docExplorerOpen'
@@ -472,7 +450,27 @@ type GraphiQLWithContextProps = Omit<
   | 'schema'
   | 'schemaDescription'
   | 'storage'
-> & {
+>;
+
+function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
+  const editorContext = useEditorContext({ nonNull: true });
+  const explorerContext = useExplorerContext();
+  const historyContext = useHistoryContext();
+  const schemaContext = useSchemaContext({ nonNull: true });
+  const storageContext = useStorageContext();
+  return (
+    <GraphiQLWithContext
+      {...props}
+      editorContext={editorContext}
+      explorerContext={explorerContext}
+      historyContext={historyContext}
+      schemaContext={schemaContext}
+      storageContext={storageContext}
+    />
+  );
+}
+
+type GraphiQLWithContextConsumerProps = GraphiQLWithContextProviderProps & {
   editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
@@ -481,7 +479,7 @@ type GraphiQLWithContextProps = Omit<
 };
 
 class GraphiQLWithContext extends React.Component<
-  GraphiQLWithContextProps,
+  GraphiQLWithContextConsumerProps,
   GraphiQLState
 > {
   // Ensure only the last executed editor query is rendered.
@@ -494,7 +492,7 @@ class GraphiQLWithContext extends React.Component<
   graphiqlContainer: Maybe<HTMLDivElement>;
   editorBarComponent: Maybe<HTMLDivElement>;
 
-  constructor(props: GraphiQLWithContextProps) {
+  constructor(props: GraphiQLWithContextConsumerProps) {
     super(props);
 
     // Ensure props are correct
@@ -641,7 +639,9 @@ class GraphiQLWithContext extends React.Component<
 
   // TODO: these values should be updated in a reducer imo
   // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: GraphiQLWithContextProps) {
+  UNSAFE_componentWillReceiveProps(
+    nextProps: GraphiQLWithContextConsumerProps,
+  ) {
     let nextResponse = this.state.response;
 
     if (nextProps.response !== undefined) {
@@ -1742,7 +1742,7 @@ function tabsStateEditQueryReducer(
 function stateOnSelectTabReducer(
   index: number,
   state: GraphiQLState,
-  props: GraphiQLWithContextProps,
+  props: GraphiQLWithContextConsumerProps,
 ): GraphiQLState {
   const query = getQuery(props);
   const variables = getVariables(props);
@@ -1787,7 +1787,7 @@ function stateOnSelectTabReducer(
 function stateOnCloseTabReducer(
   index: number,
   state: GraphiQLState,
-  props: GraphiQLWithContextProps,
+  props: GraphiQLWithContextConsumerProps,
 ): GraphiQLState {
   const newActiveTabIndex =
     state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
@@ -1810,7 +1810,7 @@ function stateOnCloseTabReducer(
 
 function stateOnTabAddReducer(
   state: GraphiQLState,
-  props: GraphiQLWithContextProps,
+  props: GraphiQLWithContextConsumerProps,
 ): GraphiQLState {
   const query = getQuery(props);
   const variables = getVariables(props);
@@ -1865,36 +1865,36 @@ function stateOnTabAddReducer(
   };
 }
 
-function getQuery(props: GraphiQLWithContextProps) {
+function getQuery(props: GraphiQLWithContextConsumerProps) {
   return props.editorContext.queryEditor?.getValue();
 }
 
-function setQuery(props: GraphiQLWithContextProps, value: string) {
+function setQuery(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.queryEditor?.setValue(value);
 }
 
-function getVariables(props: GraphiQLWithContextProps) {
+function getVariables(props: GraphiQLWithContextConsumerProps) {
   return props.editorContext.variableEditor?.getValue();
 }
 
-function setVariables(props: GraphiQLWithContextProps, value: string) {
+function setVariables(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.variableEditor?.setValue(value);
 }
 
-function getHeaders(props: GraphiQLWithContextProps) {
+function getHeaders(props: GraphiQLWithContextConsumerProps) {
   return props.editorContext.headerEditor?.getValue();
 }
 
-function setHeaders(props: GraphiQLWithContextProps, value: string) {
+function setHeaders(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.headerEditor?.setValue(value);
 }
 
-function getOperationName(props: GraphiQLWithContextProps) {
+function getOperationName(props: GraphiQLWithContextConsumerProps) {
   return props.editorContext.queryEditor?.operationName ?? undefined;
 }
 
 function setOperationName(
-  props: GraphiQLWithContextProps,
+  props: GraphiQLWithContextConsumerProps,
   value: string | null | undefined,
 ) {
   if (props.editorContext.queryEditor) {

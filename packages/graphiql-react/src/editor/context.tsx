@@ -1,15 +1,10 @@
 import { fillLeafs, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 import { DocumentNode, OperationDefinitionNode } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { useSchemaContext } from '../schema';
 
-import { useSchemaWithError } from '../schema';
+import { createContextHook, createNullableContext } from '../utility/context';
 import { useCopyQuery, useMergeQuery, usePrettifyEditors } from './hooks';
 import { CodeMirrorEditor } from './types';
 
@@ -35,22 +30,9 @@ export type EditorContextType = {
   setVariableEditor(newEditor: CodeMirrorEditor): void;
 };
 
-export const EditorContext = createContext<EditorContextType>({
-  autoCompleteLeafs() {
-    return undefined;
-  },
-  copy() {},
-  merge() {},
-  prettify() {},
-  headerEditor: null,
-  queryEditor: null,
-  responseEditor: null,
-  variableEditor: null,
-  setHeaderEditor() {},
-  setQueryEditor() {},
-  setResponseEditor() {},
-  setVariableEditor() {},
-});
+export const EditorContext = createNullableContext<EditorContextType>(
+  'EditorContext',
+);
 
 type EditorContextProviderProps = {
   children: ReactNode;
@@ -59,7 +41,10 @@ type EditorContextProviderProps = {
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
-  const { schema } = useSchemaWithError('component', 'EditorContextProvider');
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: EditorContextProvider,
+  });
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
@@ -161,3 +146,5 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     </EditorContext.Provider>
   );
 }
+
+export const useEditorContext = createContextHook(EditorContext);

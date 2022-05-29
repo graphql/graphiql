@@ -2,11 +2,11 @@ import { mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { GraphQLSchema, parse, print } from 'graphql';
-import { RefObject, useCallback, useContext, useEffect, useRef } from 'react';
+import { RefObject, useCallback, useEffect, useRef } from 'react';
 
-import { ExplorerContext } from '../explorer';
-import { useSchemaWithError } from '../schema';
-import { StorageContext } from '../storage';
+import { useExplorerContext } from '../explorer';
+import { useSchemaContext } from '../schema';
+import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
 import { CodeMirrorEditorWithOperationFacts } from './context';
@@ -30,7 +30,7 @@ export function useChangeHandler(
   callback: EditCallback | undefined,
   storageKey: string | null,
 ) {
-  const storage = useContext(StorageContext);
+  const storage = useStorageContext();
   useEffect(() => {
     if (!editor) {
       return;
@@ -54,8 +54,8 @@ export function useChangeHandler(
 }
 
 export function useCompletion(editor: CodeMirrorEditor | null) {
-  const { schema } = useSchemaWithError('hook', 'useCompletion');
-  const explorer = useContext(ExplorerContext);
+  const { schema } = useSchemaContext({ nonNull: true, caller: useCompletion });
+  const explorer = useExplorerContext();
   useEffect(() => {
     if (!editor) {
       return;
