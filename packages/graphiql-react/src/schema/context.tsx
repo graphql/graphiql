@@ -107,6 +107,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   const { fetcher } = props;
   useEffect(() => {
+    // Only introspect if there is no schema provided via props
+    if (props.schema !== undefined) {
+      return;
+    }
+
     let isActive = true;
 
     if (!headersRef.current.isValidJSON) {
@@ -170,7 +175,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
             const newSchema = buildClientSchema(
               result.data as IntrospectionQuery,
             );
-            setSchema(newSchema);
+            // Only override the schema in state if it's still `undefined` (the
+            // prop and thus the state could have changed while introspecting,
+            // so this avoids a race condition by prioritizing the state that
+            // was set after the introspection request was initialized)
+            setSchema(current => (current === undefined ? newSchema : current));
           } catch (error) {
             setFetchError(formatError(error as Error));
           }
@@ -201,6 +210,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     introspectionQueryName,
     introspectionQuery,
     introspectionQuerySansSubscriptions,
+    props.schema,
   ]);
 
   /**
