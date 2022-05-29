@@ -19,9 +19,11 @@ import {
   useEditorContext,
 } from './context';
 import {
+  CopyQueryCallback,
   EditCallback,
   EmptyCallback,
   useCompletion,
+  useCopyQuery,
   useKeyMap,
   useResizeEditor,
   useSynchronizeValue,
@@ -37,6 +39,7 @@ export type UseQueryEditorArgs = {
   externalFragments?: string | FragmentDefinitionNode[];
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
+  onCopyQuery?: CopyQueryCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
@@ -49,6 +52,7 @@ export function useQueryEditor({
   externalFragments,
   onEdit,
   onEditOperationName,
+  onCopyQuery,
   onRunQuery,
   readOnly = false,
   validationRules,
@@ -59,7 +63,6 @@ export function useQueryEditor({
     caller: useQueryEditor,
   });
   const {
-    copy,
     merge,
     prettify,
     queryEditor,
@@ -73,6 +76,8 @@ export function useQueryEditor({
   const explorer = useExplorerContext();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
+
+  const copy = useCopyQuery({ caller: useQueryEditor, onCopyQuery });
 
   const onClickReferenceRef = useRef<OnClickReference>(() => {});
   useEffect(() => {

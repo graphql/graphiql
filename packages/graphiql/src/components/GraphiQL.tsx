@@ -29,6 +29,7 @@ import {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
+  useCopyQuery,
   useEditorContext,
   useExplorerContext,
   useHistoryContext,
@@ -354,7 +355,6 @@ export function GraphiQL({
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
-  onCopyQuery,
   onToggleHistory,
   onToggleDocs,
   storage,
@@ -382,8 +382,7 @@ export function GraphiQL({
               isVisible={docExplorerOpen}
               onToggleVisibility={onToggleDocs}>
               <EditorContextProvider
-                getDefaultFieldNames={getDefaultFieldNames}
-                onCopyQuery={onCopyQuery}>
+                getDefaultFieldNames={getDefaultFieldNames}>
                 <HistoryContextProvider
                   maxHistoryLength={maxHistoryLength}
                   onToggle={onToggleHistory}>
@@ -444,7 +443,6 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
-  | 'onCopyQuery'
   | 'onToggleDocs'
   | 'onToggleHistory'
   | 'schema'
@@ -458,6 +456,9 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
   const historyContext = useHistoryContext();
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
+
+  const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
+
   return (
     <GraphiQLWithContext
       {...props}
@@ -466,16 +467,22 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
       historyContext={historyContext}
       schemaContext={schemaContext}
       storageContext={storageContext}
+      copy={copy}
     />
   );
 }
 
-type GraphiQLWithContextConsumerProps = GraphiQLWithContextProviderProps & {
+type GraphiQLWithContextConsumerProps = Omit<
+  GraphiQLWithContextProviderProps,
+  'onCopyQuery'
+> & {
   editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
   schemaContext: SchemaContextType;
   storageContext: StorageContextType | null;
+
+  copy(): void;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -728,7 +735,7 @@ class GraphiQLWithContext extends React.Component<
         />
         <ToolbarButton
           onClick={() => {
-            this.props.editorContext.copy();
+            this.props.copy();
           }}
           title="Copy Query (Shift-Ctrl-C)"
           label="Copy"

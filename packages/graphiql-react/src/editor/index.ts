@@ -6,6 +6,7 @@ import {
   useEditorContext,
 } from './context';
 import { useHeaderEditor } from './header-editor';
+import { useCopyQuery } from './hooks';
 import { useQueryEditor } from './query-editor';
 import { useResponseEditor } from './response-editor';
 import { useVariableEditor } from './variable-editor';
@@ -24,6 +25,7 @@ export {
   ImagePreview,
   EditorContext,
   EditorContextProvider,
+  useCopyQuery,
   useEditorContext,
   useHeaderEditor,
   useQueryEditor,

@@ -9,7 +9,10 @@ import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
-import { CodeMirrorEditorWithOperationFacts } from './context';
+import {
+  CodeMirrorEditorWithOperationFacts,
+  useEditorContext,
+} from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -123,13 +126,19 @@ export function useResizeEditor(
   });
 }
 
+export type CopyQueryCallback = (query: string) => void;
+
 export function useCopyQuery({
-  queryEditor,
+  caller,
   onCopyQuery,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  onCopyQuery?(query: string): void;
-}) {
+  caller?: Function;
+  onCopyQuery?: CopyQueryCallback;
+} = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useCopyQuery,
+  });
   return useCallback(() => {
     if (!queryEditor) {
       return;
