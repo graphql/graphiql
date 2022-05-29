@@ -1,4 +1,4 @@
-import { mergeAst } from '@graphiql/toolkit';
+import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
@@ -217,4 +217,59 @@ export function usePrettifyEditors({
       }
     }
   }, [queryEditor, variableEditor, headerEditor]);
+}
+
+export function useAutoCompleteLeafs({
+  getDefaultFieldNames,
+  caller,
+}: { getDefaultFieldNames?: GetDefaultFieldNamesFn; caller?: Function } = {}) {
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: caller || useAutoCompleteLeafs,
+  });
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useAutoCompleteLeafs,
+  });
+  return useCallback(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    const { insertions, result } = fillLeafs(
+      schema,
+      query,
+      getDefaultFieldNames,
+    );
+    if (insertions && insertions.length > 0) {
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'autoInsertedLeaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        let newCursorIndex = cursorIndex;
+        insertions.forEach(({ index, string }) => {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        });
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    }
+
+    return result;
+  }, [getDefaultFieldNames, queryEditor, schema]);
 }

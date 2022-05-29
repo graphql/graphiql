@@ -29,6 +29,7 @@ import {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
+  useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
   useExplorerContext,
@@ -353,7 +354,6 @@ type TabsState = {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   docExplorerOpen,
-  getDefaultFieldNames,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -383,8 +383,7 @@ export function GraphiQL({
             <ExplorerContextProvider
               isVisible={docExplorerOpen}
               onToggleVisibility={onToggleDocs}>
-              <EditorContextProvider
-                getDefaultFieldNames={getDefaultFieldNames}>
+              <EditorContextProvider>
                 <HistoryContextProvider
                   maxHistoryLength={maxHistoryLength}
                   onToggle={onToggleHistory}>
@@ -441,7 +440,6 @@ type GraphiQLWithContextProviderProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
   | 'docExplorerOpen'
-  | 'getDefaultFieldNames'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
@@ -452,14 +450,19 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'storage'
 >;
 
-function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
+function GraphiQLConsumeContexts({
+  getDefaultFieldNames,
+  onCopyQuery,
+  ...props
+}: GraphiQLWithContextProviderProps) {
   const editorContext = useEditorContext({ nonNull: true });
   const explorerContext = useExplorerContext();
   const historyContext = useHistoryContext();
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
 
-  const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
+  const autoCompleteLeafs = useAutoCompleteLeafs({ getDefaultFieldNames });
+  const copy = useCopyQuery({ onCopyQuery });
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
@@ -471,6 +474,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
       historyContext={historyContext}
       schemaContext={schemaContext}
       storageContext={storageContext}
+      autoCompleteLeafs={autoCompleteLeafs}
       copy={copy}
       merge={merge}
       prettify={prettify}
@@ -480,7 +484,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
-  'onCopyQuery'
+  'onCopyQuery' | 'getDefaultFieldNames'
 > & {
   editorContext: EditorContextType;
   explorerContext: ExplorerContextType | null;
@@ -488,6 +492,7 @@ type GraphiQLWithContextConsumerProps = Omit<
   schemaContext: SchemaContextType;
   storageContext: StorageContextType | null;
 
+  autoCompleteLeafs(): string | undefined;
   copy(): void;
   merge(): void;
   prettify(): void;
@@ -1006,7 +1011,7 @@ class GraphiQLWithContext extends React.Component<
     console.warn(
       'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
     );
-    return this.props.editorContext.autoCompleteLeafs();
+    return this.props.autoCompleteLeafs();
   }
 
   // Private methods
@@ -1150,9 +1155,7 @@ class GraphiQLWithContext extends React.Component<
     // in case autoCompletion fails (the function returns undefined),
     // the current query from the editor.
     const editedQuery =
-      this.props.editorContext.autoCompleteLeafs() ||
-      getQuery(this.props) ||
-      '';
+      this.props.autoCompleteLeafs() || getQuery(this.props) || '';
     const variables = getVariables(this.props);
     const headers = getHeaders(this.props);
     const shouldPersistHeaders = this.state.shouldPersistHeaders;
