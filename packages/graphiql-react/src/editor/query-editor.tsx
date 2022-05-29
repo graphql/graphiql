@@ -26,6 +26,7 @@ import {
   useCopyQuery,
   useKeyMap,
   useMergeQuery,
+  usePrettifyEditors,
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
@@ -63,12 +64,7 @@ export function useQueryEditor({
     nonNull: true,
     caller: useQueryEditor,
   });
-  const {
-    prettify,
-    queryEditor,
-    setQueryEditor,
-    variableEditor,
-  } = useEditorContext({
+  const { queryEditor, setQueryEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: useQueryEditor,
   });
@@ -76,6 +72,7 @@ export function useQueryEditor({
   const explorer = useExplorerContext();
   const copy = useCopyQuery({ caller: useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: useQueryEditor });
+  const prettify = usePrettifyEditors({ caller: useQueryEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 

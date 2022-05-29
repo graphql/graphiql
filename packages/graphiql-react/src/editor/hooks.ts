@@ -9,10 +9,7 @@ import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
-import {
-  CodeMirrorEditorWithOperationFacts,
-  useEditorContext,
-} from './context';
+import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -169,14 +166,14 @@ export function useMergeQuery({ caller }: { caller?: Function } = {}) {
 }
 
 export function usePrettifyEditors({
-  queryEditor,
-  variableEditor,
-  headerEditor,
+  caller,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-}) {
+  caller?: Function;
+} = {}) {
+  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || usePrettifyEditors,
+  });
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();

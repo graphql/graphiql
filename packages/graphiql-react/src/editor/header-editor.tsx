@@ -10,6 +10,7 @@ import {
   useCompletion,
   useKeyMap,
   useMergeQuery,
+  usePrettifyEditors,
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
@@ -31,12 +32,13 @@ export function useHeaderEditor({
   shouldPersistHeaders = false,
   value,
 }: UseHeaderEditorArgs = {}) {
-  const { headerEditor, prettify, setHeaderEditor } = useEditorContext({
+  const { headerEditor, setHeaderEditor } = useEditorContext({
     nonNull: true,
     caller: useHeaderEditor,
   });
   const storage = useStorageContext();
   const merge = useMergeQuery({ caller: useHeaderEditor });
+  const prettify = usePrettifyEditors({ caller: useHeaderEditor });
   const ref = useRef<HTMLDivElement>(null);
   const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 

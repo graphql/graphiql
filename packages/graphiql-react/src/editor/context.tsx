@@ -5,7 +5,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { useSchemaContext } from '../schema';
 
 import { createContextHook, createNullableContext } from '../utility/context';
-import { usePrettifyEditors } from './hooks';
 import { CodeMirrorEditor } from './types';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
@@ -17,7 +16,6 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 
 export type EditorContextType = {
   autoCompleteLeafs(): string | undefined;
-  prettify(): void;
   headerEditor: CodeMirrorEditor | null;
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
   responseEditor: CodeMirrorEditor | null;
@@ -100,16 +98,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     return result;
   }, [props.getDefaultFieldNames, queryEditor, schema]);
 
-  const prettify = usePrettifyEditors({
-    queryEditor,
-    variableEditor,
-    headerEditor,
-  });
-
   const value = useMemo<EditorContextType>(
     () => ({
       autoCompleteLeafs,
-      prettify,
       headerEditor,
       queryEditor,
       responseEditor,
@@ -121,7 +112,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     }),
     [
       autoCompleteLeafs,
-      prettify,
       headerEditor,
       queryEditor,
       responseEditor,

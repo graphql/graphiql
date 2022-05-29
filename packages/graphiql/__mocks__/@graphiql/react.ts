@@ -16,6 +16,7 @@ import {
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
+  usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
   useHeaderEditor as _useHeaderEditor,
@@ -58,6 +59,7 @@ export {
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
+  usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
 };

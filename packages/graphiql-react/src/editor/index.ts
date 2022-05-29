@@ -6,7 +6,7 @@ import {
   useEditorContext,
 } from './context';
 import { useHeaderEditor } from './header-editor';
-import { useCopyQuery, useMergeQuery } from './hooks';
+import { useCopyQuery, useMergeQuery, usePrettifyEditors } from './hooks';
 import { useQueryEditor } from './query-editor';
 import { useResponseEditor } from './response-editor';
 import { useVariableEditor } from './variable-editor';
@@ -29,6 +29,7 @@ export {
   useEditorContext,
   useHeaderEditor,
   useMergeQuery,
+  usePrettifyEditors,
   useQueryEditor,
   useResponseEditor,
   useVariableEditor,

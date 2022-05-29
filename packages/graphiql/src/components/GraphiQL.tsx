@@ -34,6 +34,7 @@ import {
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
+  usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
 } from '@graphiql/react';
@@ -460,6 +461,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
+  const prettify = usePrettifyEditors();
 
   return (
     <GraphiQLWithContext
@@ -471,6 +473,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
       storageContext={storageContext}
       copy={copy}
       merge={merge}
+      prettify={prettify}
     />
   );
 }
@@ -487,6 +490,7 @@ type GraphiQLWithContextConsumerProps = Omit<
 
   copy(): void;
   merge(): void;
+  prettify(): void;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -725,7 +729,7 @@ class GraphiQLWithContext extends React.Component<
       <GraphiQL.Toolbar>
         <ToolbarButton
           onClick={() => {
-            this.props.editorContext.prettify();
+            this.props.prettify();
           }}
           title="Prettify Query (Shift-Ctrl-P)"
           label="Prettify"

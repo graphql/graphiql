@@ -10,6 +10,7 @@ import {
   useCompletion,
   useKeyMap,
   useMergeQuery,
+  usePrettifyEditors,
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
@@ -30,12 +31,13 @@ export function useVariableEditor({
   readOnly = false,
   value,
 }: UseVariableEditorArgs = {}) {
-  const { prettify, variableEditor, setVariableEditor } = useEditorContext({
+  const { variableEditor, setVariableEditor } = useEditorContext({
     nonNull: true,
     caller: useVariableEditor,
   });
   const storage = useStorageContext();
   const merge = useMergeQuery({ caller: useVariableEditor });
+  const prettify = usePrettifyEditors({ caller: useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
   const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
