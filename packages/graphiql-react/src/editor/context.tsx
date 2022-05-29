@@ -5,7 +5,7 @@ import { ReactNode, useCallback, useMemo, useState } from 'react';
 import { useSchemaContext } from '../schema';
 
 import { createContextHook, createNullableContext } from '../utility/context';
-import { useMergeQuery, usePrettifyEditors } from './hooks';
+import { usePrettifyEditors } from './hooks';
 import { CodeMirrorEditor } from './types';
 
 export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
@@ -17,7 +17,6 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
 
 export type EditorContextType = {
   autoCompleteLeafs(): string | undefined;
-  merge(): void;
   prettify(): void;
   headerEditor: CodeMirrorEditor | null;
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
@@ -101,8 +100,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     return result;
   }, [props.getDefaultFieldNames, queryEditor, schema]);
 
-  const merge = useMergeQuery({ queryEditor, schema });
-
   const prettify = usePrettifyEditors({
     queryEditor,
     variableEditor,
@@ -112,7 +109,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const value = useMemo<EditorContextType>(
     () => ({
       autoCompleteLeafs,
-      merge,
       prettify,
       headerEditor,
       queryEditor,
@@ -125,7 +121,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     }),
     [
       autoCompleteLeafs,
-      merge,
       prettify,
       headerEditor,
       queryEditor,

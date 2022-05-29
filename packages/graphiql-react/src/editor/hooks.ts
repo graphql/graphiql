@@ -1,7 +1,7 @@
 import { mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
-import { GraphQLSchema, parse, print } from 'graphql';
+import { parse, print } from 'graphql';
 import { RefObject, useCallback, useEffect, useRef } from 'react';
 
 import { useExplorerContext } from '../explorer';
@@ -151,13 +151,12 @@ export function useCopyQuery({
   }, [queryEditor, onCopyQuery]);
 }
 
-export function useMergeQuery({
-  queryEditor,
-  schema,
-}: {
-  queryEditor?: CodeMirrorEditorWithOperationFacts | null;
-  schema: GraphQLSchema | null | undefined;
-}) {
+export function useMergeQuery({ caller }: { caller?: Function } = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useMergeQuery,
+  });
+  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
   return useCallback(() => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();

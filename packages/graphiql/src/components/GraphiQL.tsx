@@ -33,6 +33,7 @@ import {
   useEditorContext,
   useExplorerContext,
   useHistoryContext,
+  useMergeQuery,
   useSchemaContext,
   useStorageContext,
 } from '@graphiql/react';
@@ -458,6 +459,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
   const storageContext = useStorageContext();
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
+  const merge = useMergeQuery();
 
   return (
     <GraphiQLWithContext
@@ -468,6 +470,7 @@ function GraphiQLConsumeContexts(props: GraphiQLWithContextProviderProps) {
       schemaContext={schemaContext}
       storageContext={storageContext}
       copy={copy}
+      merge={merge}
     />
   );
 }
@@ -483,6 +486,7 @@ type GraphiQLWithContextConsumerProps = Omit<
   storageContext: StorageContextType | null;
 
   copy(): void;
+  merge(): void;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -728,7 +732,7 @@ class GraphiQLWithContext extends React.Component<
         />
         <ToolbarButton
           onClick={() => {
-            this.props.editorContext.merge();
+            this.props.merge();
           }}
           title="Merge Query (Shift-Ctrl-M)"
           label="Merge"
