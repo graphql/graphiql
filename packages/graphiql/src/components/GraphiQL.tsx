@@ -801,6 +801,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   getQueryEditor() {
+    console.warn(
+      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
+    );
     return this.props.editorContext.queryEditor || null;
   }
 
@@ -810,6 +813,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
+    console.warn(
+      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
+    );
     return this.props.editorContext.variableEditor || null;
   }
 
@@ -819,6 +825,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getHeaderEditor() {
+    console.warn(
+      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
+    );
     return this.props.editorContext.headerEditor || null;
   }
 
@@ -828,6 +837,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public refresh() {
+    console.warn(
+      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
+    );
     this.props.editorContext.queryEditor?.refresh();
     this.props.editorContext.variableEditor?.refresh();
     this.props.editorContext.headerEditor?.refresh();
