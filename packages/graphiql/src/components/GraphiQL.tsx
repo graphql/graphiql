@@ -10,6 +10,9 @@ import React, {
   PropsWithChildren,
   MouseEventHandler,
   ReactNode,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
 } from 'react';
 import {
   GraphQLSchema,
@@ -312,20 +315,41 @@ export type GraphiQLState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export function GraphiQL({
-  dangerouslyAssumeSchemaIsValid,
-  docExplorerOpen,
-  fetcher,
-  inputValueDeprecation,
-  introspectionQueryName,
-  maxHistoryLength,
-  onToggleHistory,
-  onToggleDocs,
-  storage,
-  schema,
-  schemaDescription,
-  ...props
-}: GraphiQLProps) {
+
+export const GraphiQL: ForwardRefExoticComponent<
+  GraphiQLProps & RefAttributes<GraphiQLWithContext>
+> & {
+  formatResult(result: any): string;
+  formatError(error: any): string;
+  Logo: typeof GraphiQLLogo;
+  Toolbar: typeof GraphiQLToolbar;
+  Footer: typeof GraphiQLFooter;
+  QueryEditor: typeof QueryEditor;
+  VariableEditor: typeof VariableEditor;
+  HeaderEditor: typeof HeaderEditor;
+  ResultViewer: typeof ResultViewer;
+  Button: typeof ToolbarButton;
+  ToolbarButton: typeof ToolbarButton;
+  Group: typeof ToolbarGroup;
+  Menu: typeof ToolbarMenu;
+  MenuItem: typeof ToolbarMenuItem;
+} = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQL(
+  {
+    dangerouslyAssumeSchemaIsValid,
+    docExplorerOpen,
+    fetcher,
+    inputValueDeprecation,
+    introspectionQueryName,
+    maxHistoryLength,
+    onToggleHistory,
+    onToggleDocs,
+    storage,
+    schema,
+    schemaDescription,
+    ...props
+  },
+  ref,
+) {
   // Ensure props are correct
   if (typeof fetcher !== 'function') {
     throw new TypeError('GraphiQL requires a fetcher function.');
@@ -356,7 +380,7 @@ export function GraphiQL({
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
-                <GraphiQLConsumeContexts {...props} />
+                <GraphiQLConsumeContexts {...props} ref={ref} />
               </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
@@ -364,7 +388,7 @@ export function GraphiQL({
       </HistoryContextProvider>
     </StorageContextProvider>
   );
-}
+}) as any;
 
 GraphiQL.formatResult = (result: any): string => {
   console.warn(
@@ -421,11 +445,13 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'storage'
 >;
 
-function GraphiQLConsumeContexts({
-  getDefaultFieldNames,
-  onCopyQuery,
-  ...props
-}: GraphiQLWithContextProviderProps) {
+const GraphiQLConsumeContexts = forwardRef<
+  GraphiQLWithContext,
+  GraphiQLWithContextProviderProps
+>(function GraphiQLConsumeContexts(
+  { getDefaultFieldNames, onCopyQuery, ...props },
+  ref,
+) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
@@ -451,9 +477,10 @@ function GraphiQLConsumeContexts({
       copy={copy}
       merge={merge}
       prettify={prettify}
+      ref={ref}
     />
   );
-}
+});
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
