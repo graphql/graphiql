@@ -684,7 +684,7 @@ class GraphiQLWithContext extends React.Component<
               <QueryEditor
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
-                onEdit={this.handleEditQuery}
+                onEdit={this.props.onEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
@@ -825,13 +825,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  handleEditQuery = (value: string) => {
-    this.props.onEditQuery?.(
-      value,
-      this.props.editorContext.queryEditor?.documentAST ?? undefined,
-    );
-  };
 
   handleEditVariables = (value: string) => {
     if (this.props.onEditVariables) {
