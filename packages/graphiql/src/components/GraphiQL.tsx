@@ -27,7 +27,6 @@ import {
   ExplorerContextProvider,
   HistoryContextProvider,
   SchemaContextProvider,
-  StorageContext,
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
@@ -366,34 +365,29 @@ export function GraphiQL({
 }: GraphiQLProps) {
   return (
     <StorageContextProvider storage={storage}>
-      <StorageContext.Consumer>
-        {storageContext => (
-          <SchemaContextProvider
-            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-            fetcher={props.fetcher}
-            initialHeaders={
-              props.headers !== undefined
-                ? props.headers
-                : storageContext?.get('headers') ?? undefined
-            }
-            inputValueDeprecation={inputValueDeprecation}
-            introspectionQueryName={introspectionQueryName}
-            schema={schema}
-            schemaDescription={schemaDescription}>
-            <ExplorerContextProvider
-              isVisible={docExplorerOpen}
-              onToggleVisibility={onToggleDocs}>
-              <EditorContextProvider>
-                <HistoryContextProvider
-                  maxHistoryLength={maxHistoryLength}
-                  onToggle={onToggleHistory}>
-                  <GraphiQLConsumeContexts {...props} />
-                </HistoryContextProvider>
-              </EditorContextProvider>
-            </ExplorerContextProvider>
-          </SchemaContextProvider>
-        )}
-      </StorageContext.Consumer>
+      <EditorContextProvider
+        defaultQuery={props.defaultQuery}
+        headers={props.headers}
+        query={props.query}
+        variables={props.variables}>
+        <SchemaContextProvider
+          dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+          fetcher={props.fetcher}
+          inputValueDeprecation={inputValueDeprecation}
+          introspectionQueryName={introspectionQueryName}
+          schema={schema}
+          schemaDescription={schemaDescription}>
+          <ExplorerContextProvider
+            isVisible={docExplorerOpen}
+            onToggleVisibility={onToggleDocs}>
+            <HistoryContextProvider
+              maxHistoryLength={maxHistoryLength}
+              onToggle={onToggleHistory}>
+              <GraphiQLConsumeContexts {...props} />
+            </HistoryContextProvider>
+          </ExplorerContextProvider>
+        </SchemaContextProvider>
+      </EditorContextProvider>
     </StorageContextProvider>
   );
 }
@@ -865,7 +859,6 @@ class GraphiQLWithContext extends React.Component<
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
               <QueryEditor
-                defaultValue={this.props.defaultQuery}
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
                 onEdit={this.handleEditQuery}
@@ -873,7 +866,6 @@ class GraphiQLWithContext extends React.Component<
                 onRunQuery={this.handleEditorRunQuery}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
-                value={this.props.query}
               />
               <section
                 className="variable-editor secondary-editor"
@@ -913,7 +905,6 @@ class GraphiQLWithContext extends React.Component<
                   )}
                 </div>
                 <VariableEditor
-                  value={this.props.variables}
                   onEdit={this.handleEditVariables}
                   onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
@@ -928,7 +919,6 @@ class GraphiQLWithContext extends React.Component<
                     onRunQuery={this.handleEditorRunQuery}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
-                    value={this.props.headers}
                   />
                 )}
               </section>

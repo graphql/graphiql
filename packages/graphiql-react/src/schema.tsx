@@ -24,6 +24,7 @@ import {
   useState,
 } from 'react';
 
+import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
 
 /**
@@ -53,11 +54,14 @@ type SchemaContextProviderProps = {
   children: ReactNode;
   dangerouslyAssumeSchemaIsValid?: boolean;
   fetcher: Fetcher;
-  initialHeaders?: string;
   schema?: GraphQLSchema | null;
 } & IntrospectionArgs;
 
 export function SchemaContextProvider(props: SchemaContextProviderProps) {
+  const { initialHeaders, headerEditor } = useEditorContext({
+    nonNull: true,
+    caller: SchemaContextProvider,
+  });
   const [schema, setSchema] = useState<MaybeGraphQLSchema>(
     props.schema || null,
   );
@@ -74,7 +78,12 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Keep a ref to the current headers
    */
-  const headersRef = useRef(parseHeaderString(props.initialHeaders));
+  const headersRef = useRef(initialHeaders);
+  useEffect(() => {
+    if (headerEditor) {
+      headersRef.current = headerEditor.getValue();
+    }
+  });
 
   /**
    * Get introspection query for settings given via props
@@ -101,13 +110,14 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 
     let isActive = true;
 
-    if (!headersRef.current.isValidJSON) {
+    const parsedHeaders = parseHeaderString(headersRef.current);
+    if (!parsedHeaders.isValidJSON) {
       setFetchError('Introspection failed as headers are invalid.');
       return;
     }
 
-    const fetcherOpts: FetcherOpts = headersRef.current.headers
-      ? { headers: headersRef.current.headers }
+    const fetcherOpts: FetcherOpts = parsedHeaders.headers
+      ? { headers: parsedHeaders.headers }
       : {};
 
     const fetch = fetcherReturnToPromise(

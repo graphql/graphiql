@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { useStorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { useEditorContext } from './context';
 import {
@@ -12,7 +11,6 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useResizeEditor,
-  useSynchronizeValue,
 } from './hooks';
 
 export type UseHeaderEditorArgs = {
@@ -21,7 +19,6 @@ export type UseHeaderEditorArgs = {
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   shouldPersistHeaders?: boolean;
-  value?: string;
 };
 
 export function useHeaderEditor({
@@ -30,17 +27,14 @@ export function useHeaderEditor({
   onRunQuery,
   readOnly = false,
   shouldPersistHeaders = false,
-  value,
 }: UseHeaderEditorArgs = {}) {
-  const { headerEditor, setHeaderEditor } = useEditorContext({
+  const { initialHeaders, headerEditor, setHeaderEditor } = useEditorContext({
     nonNull: true,
     caller: useHeaderEditor,
   });
-  const storage = useStorageContext();
   const merge = useMergeQuery({ caller: useHeaderEditor });
   const prettify = usePrettifyEditors({ caller: useHeaderEditor });
   const ref = useRef<HTMLDivElement>(null);
-  const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
   useEffect(() => {
     let isActive = true;
@@ -60,7 +54,7 @@ export function useHeaderEditor({
       }
 
       const newEditor = CodeMirror(container, {
-        value: initialValue.current || '',
+        value: initialHeaders,
         lineNumbers: true,
         tabSize: 2,
         mode: { name: 'javascript', json: true },
@@ -108,9 +102,7 @@ export function useHeaderEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, readOnly, setHeaderEditor]);
-
-  useSynchronizeValue(headerEditor, value);
+  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
 
   useChangeHandler(
     headerEditor,
@@ -129,4 +121,4 @@ export function useHeaderEditor({
   return ref;
 }
 
-const STORAGE_KEY = 'headers';
+export const STORAGE_KEY = 'headers';

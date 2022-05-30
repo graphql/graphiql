@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-import { useStorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
 import { useEditorContext } from './context';
 import {
@@ -12,7 +11,6 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useResizeEditor,
-  useSynchronizeValue,
 } from './hooks';
 import { CodeMirrorType } from './types';
 
@@ -21,7 +19,6 @@ export type UseVariableEditorArgs = {
   onEdit?: EditCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
-  value?: string;
 };
 
 export function useVariableEditor({
@@ -29,18 +26,19 @@ export function useVariableEditor({
   onEdit,
   onRunQuery,
   readOnly = false,
-  value,
 }: UseVariableEditorArgs = {}) {
-  const { variableEditor, setVariableEditor } = useEditorContext({
+  const {
+    initialVariables,
+    variableEditor,
+    setVariableEditor,
+  } = useEditorContext({
     nonNull: true,
     caller: useVariableEditor,
   });
-  const storage = useStorageContext();
   const merge = useMergeQuery({ caller: useVariableEditor });
   const prettify = usePrettifyEditors({ caller: useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
-  const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
   useEffect(() => {
     let isActive = true;
@@ -63,7 +61,7 @@ export function useVariableEditor({
       }
 
       const newEditor = CodeMirror(container, {
-        value: initialValue.current || '',
+        value: initialVariables,
         lineNumbers: true,
         tabSize: 2,
         mode: 'graphql-variables',
@@ -122,9 +120,7 @@ export function useVariableEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, readOnly, setVariableEditor]);
-
-  useSynchronizeValue(variableEditor, value);
+  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
 
   useChangeHandler(variableEditor, onEdit, STORAGE_KEY);
 
@@ -139,4 +135,4 @@ export function useVariableEditor({
   return ref;
 }
 
-const STORAGE_KEY = 'variables';
+export const STORAGE_KEY = 'variables';
