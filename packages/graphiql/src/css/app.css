@@ -106,7 +106,6 @@
 }
 
 .graphiql-container .resultWrap {
-  border-left: solid 1px #e0e0e0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -209,8 +208,15 @@
 }
 
 .graphiql-container .result-window .CodeMirror-gutters {
+  background-color: #f6f7f8;
+  border: none;
+}
+
+.editor-drag-bar {
+  width: 12px;
   background-color: #eeeeee;
-  border-color: #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   cursor: col-resize;
 }
 
