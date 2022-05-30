@@ -736,7 +736,7 @@ class GraphiQLWithContext extends React.Component<
                   <HeaderEditor
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
-                    onEdit={this.handleEditHeaders}
+                    onEdit={this.props.onEditHeaders}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
                   />
@@ -825,12 +825,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  handleEditHeaders = (value: string) => {
-    if (this.props.onEditHeaders) {
-      this.props.onEditHeaders(value);
-    }
-  };
 
   handleSelectHistoryQuery = ({
     query,
