@@ -1,4 +1,5 @@
 import {
+  DragResizeContainer,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -49,6 +50,7 @@ import type {
 import { useEffect, useRef, useState } from 'react';
 
 export {
+  DragResizeContainer,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
