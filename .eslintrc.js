@@ -53,6 +53,7 @@ module.exports = {
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
     'no-cond-assign': 1,
     'no-console': 1,
+    'no-constant-binary-expression': 2,
     'no-constant-condition': [1, { checkLoops: false }],
     'no-control-regex': 1,
     'no-debugger': 1,
