@@ -148,12 +148,12 @@ export type GraphiQLProps = {
    */
   headers?: string;
   /**
-   * The operationName to use when executing the current opeartion.
+   * The operationName to use when executing the current operation.
    * Overrides the dropdown when multiple operations are present.
    */
   operationName?: string;
   /**
-   * privide a json string that controls the results editor state
+   * provide a json string that controls the results editor state
    */
   response?: string;
   /**
@@ -245,7 +245,7 @@ export type GraphiQLProps = {
   /**
    * Enable new introspectionQuery option `inputValueDeprecation`
    * DANGER: your server must be configured to support this new feature,
-   * or else introspecion will fail with an invalid query
+   * or else introspection will fail with an invalid query
    *
    * default: false
    */
@@ -270,7 +270,7 @@ export type GraphiQLProps = {
    */
   readOnly?: boolean;
   /**
-   * Toggle the doc explorer state by default/programatically
+   * Toggle the doc explorer state by default/programmatically
    *
    * default: false
    */
@@ -875,7 +875,7 @@ class GraphiQLWithContext extends React.Component<
                       this.state.variableEditorActive ? ' active' : ''
                     }`}
                     onClick={this.handleOpenVariableEditorTab}
-                    onMouseDown={this.handleTabClickPropogation}>
+                    onMouseDown={this.handleTabClickPropagation}>
                     Query Variables
                   </div>
                   {this.state.headerEditorEnabled && (
@@ -887,7 +887,7 @@ class GraphiQLWithContext extends React.Component<
                         this.state.headerEditorActive ? ' active' : ''
                       }`}
                       onClick={this.handleOpenHeaderEditorTab}
-                      onMouseDown={this.handleTabClickPropogation}>
+                      onMouseDown={this.handleTabClickPropagation}>
                       Request Headers
                     </div>
                   )}
@@ -1503,7 +1503,7 @@ class GraphiQLWithContext extends React.Component<
   };
 
   // Prevent clicking on the tab button from propagating to the resizer.
-  private handleTabClickPropogation: MouseEventHandler<
+  private handleTabClickPropagation: MouseEventHandler<
     HTMLDivElement
   > = downEvent => {
     downEvent.preventDefault();
