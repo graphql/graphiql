@@ -727,7 +727,7 @@ class GraphiQLWithContext extends React.Component<
                   )}
                 </div>
                 <VariableEditor
-                  onEdit={this.handleEditVariables}
+                  onEdit={this.props.onEditVariables}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                   active={this.state.variableEditorActive}
@@ -825,12 +825,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  handleEditVariables = (value: string) => {
-    if (this.props.onEditVariables) {
-      this.props.onEditVariables(value);
-    }
-  };
 
   handleEditHeaders = (value: string) => {
     if (this.props.onEditHeaders) {
