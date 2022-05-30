@@ -14,15 +14,37 @@ import {
   mockVariables1,
   mockHeaders1,
 } from './fixtures';
-import { HistoryContextProvider } from '@graphiql/react';
+import {
+  EditorContextProvider,
+  HistoryContextProvider,
+  useHeaderEditor,
+  useQueryEditor,
+  useVariableEditor,
+} from '@graphiql/react';
 
 type QueryHistoryItemProps = ComponentProps<typeof QueryHistoryItem>;
 
 function QueryHistoryItemWithContext(props: QueryHistoryItemProps) {
   return (
-    <HistoryContextProvider>
-      <QueryHistoryItem {...props} />
-    </HistoryContextProvider>
+    <EditorContextProvider>
+      <HistoryContextProvider>
+        <QueryHistoryItem {...props} />
+        <Editors />
+      </HistoryContextProvider>
+    </EditorContextProvider>
+  );
+}
+
+function Editors() {
+  const queryRef = useQueryEditor({});
+  const variableRef = useVariableEditor({});
+  const headerRef = useHeaderEditor({});
+  return (
+    <>
+      <div data-testid="query-editor" ref={queryRef} />
+      <div data-testid="variable-editor" ref={variableRef} />
+      <div data-testid="header-editor" ref={headerRef} />
+    </>
   );
 }
 
@@ -33,7 +55,6 @@ const baseMockProps: QueryHistoryItemProps = {
     headers: mockHeaders1,
     favorite: false,
   },
-  onSelect: () => {},
 };
 
 function getMockProps(
@@ -68,15 +89,22 @@ describe('QueryHistoryItem', () => {
     );
   });
 
-  it('calls onSelect with the correct arguments when history label button is clicked', () => {
-    const onSelectSpy = jest.spyOn(baseMockProps, 'onSelect');
+  it('sets the editor values when history label button is clicked', () => {
     const otherMockProps = { item: { operationName: mockOperationName1 } };
     const mockProps = getMockProps(otherMockProps);
-    const { container } = render(
+    const { container, getByTestId } = render(
       <QueryHistoryItemWithContext {...mockProps} />,
     );
     fireEvent.click(container.querySelector('button.history-label')!);
-    expect(onSelectSpy).toHaveBeenCalledWith(mockProps.item);
+    expect(getByTestId('query-editor').querySelector('textarea')).toHaveValue(
+      mockProps.item.query,
+    );
+    expect(
+      getByTestId('variable-editor').querySelector('textarea'),
+    ).toHaveValue(mockProps.item.variables);
+    expect(getByTestId('header-editor').querySelector('textarea')).toHaveValue(
+      mockProps.item.headers,
+    );
   });
 
   it('renders label input if the edit label button is clicked', () => {

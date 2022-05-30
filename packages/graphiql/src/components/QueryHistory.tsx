@@ -5,21 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { HistoryContext } from '@graphiql/react';
+import { useHistoryContext, useSelectHistoryItem } from '@graphiql/react';
 import { QueryStoreItem } from '@graphiql/toolkit';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-type QueryHistoryProps = {
-  onSelect(item: QueryStoreItem): void;
-};
-
-export function QueryHistory(props: QueryHistoryProps) {
-  const historyContext = useContext(HistoryContext);
-  if (!historyContext) {
-    throw new Error(
-      'Tried to render the `QueryHistory` component without the necessary context. Make sure that the `HistoryContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
+export function QueryHistory() {
+  const { hide, items } = useHistoryContext({ nonNull: true });
 
   return (
     <section aria-label="History">
@@ -28,21 +19,20 @@ export function QueryHistory(props: QueryHistoryProps) {
         <div className="doc-explorer-rhs">
           <button
             className="docExplorerHide"
-            onClick={() => historyContext.hide()}
+            onClick={() => hide()}
             aria-label="Close History">
             {'\u2715'}
           </button>
         </div>
       </div>
       <ul className="history-contents">
-        {historyContext.items
+        {items
           .slice()
           .reverse()
           .map((item, i) => {
             return (
               <QueryHistoryItem
                 key={`${i}:${item.label || item.query}`}
-                onSelect={props.onSelect}
                 item={item}
               />
             );
@@ -53,18 +43,12 @@ export function QueryHistory(props: QueryHistoryProps) {
 }
 
 type QueryHistoryItemProps = {
-  onSelect(item: QueryStoreItem): void;
   item: QueryStoreItem;
 };
 
 export function QueryHistoryItem(props: QueryHistoryItemProps) {
-  const historyContext = useContext(HistoryContext);
-  if (!historyContext) {
-    throw new Error(
-      'Tried to render the `QueryHistoryItem` component without the necessary context. Make sure that the `HistoryContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
+  const { editLabel, toggleFavorite } = useHistoryContext({ nonNull: true });
+  const selectHistoryItem = useSelectHistoryItem();
   const editField = useRef<HTMLInputElement>(null);
   const [isEditable, setIsEditable] = useState(false);
 
@@ -92,16 +76,13 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
           onBlur={e => {
             e.stopPropagation();
             setIsEditable(false);
-            historyContext.editLabel({ ...props.item, label: e.target.value });
+            editLabel({ ...props.item, label: e.target.value });
           }}
           onKeyDown={e => {
             if (e.keyCode === 13) {
               e.stopPropagation();
               setIsEditable(false);
-              historyContext.editLabel({
-                ...props.item,
-                label: e.currentTarget.value,
-              });
+              editLabel({ ...props.item, label: e.currentTarget.value });
             }
           }}
           placeholder="Type a label"
@@ -109,7 +90,9 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
       ) : (
         <button
           className="history-label"
-          onClick={() => props.onSelect(props.item)}>
+          onClick={() => {
+            selectHistoryItem(props.item);
+          }}>
           {displayName}
         </button>
       )}
@@ -125,7 +108,7 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
         className={props.item.favorite ? 'favorited' : undefined}
         onClick={e => {
           e.stopPropagation();
-          historyContext.toggleFavorite(props.item);
+          toggleFavorite(props.item);
         }}
         aria-label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}>
         {starIcon}

@@ -22,6 +22,7 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useSchemaContext,
+  useSelectHistoryItem,
   useStorageContext,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
@@ -71,6 +72,7 @@ export {
   useMergeQuery,
   usePrettifyEditors,
   useSchemaContext,
+  useSelectHistoryItem,
   useStorageContext,
 };
 

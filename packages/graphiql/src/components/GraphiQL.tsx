@@ -62,11 +62,7 @@ import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
-import type {
-  Fetcher,
-  GetDefaultFieldNamesFn,
-  QueryStoreItem,
-} from '@graphiql/toolkit';
+import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 import { Tab, TabAddButton, Tabs } from './Tabs';
 
@@ -613,7 +609,7 @@ class GraphiQLWithContext extends React.Component<
           <div
             className="historyPaneWrap"
             style={{ width: '230px', zIndex: 7 }}>
-            <QueryHistory onSelect={this.handleSelectHistoryQuery} />
+            <QueryHistory />
           </div>
         )}
         <div className="editorWrap">
@@ -825,26 +821,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  handleSelectHistoryQuery = ({
-    query,
-    variables,
-    headers,
-    operationName,
-  }: QueryStoreItem) => {
-    if (query) {
-      setQuery(this.props, query);
-    }
-    if (variables) {
-      setVariables(this.props, variables);
-    }
-    if (headers) {
-      setHeaders(this.props, headers);
-    }
-    if (operationName) {
-      this.props.onEditOperationName?.(operationName);
-    }
-  };
 
   private handleResizeStart = (downEvent: React.MouseEvent) => {
     if (!this._didClickDragBar(downEvent)) {
@@ -1104,16 +1080,4 @@ function isChildComponentType<T extends ComponentType>(
   }
 
   return child.type === component;
-}
-
-function setQuery(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.queryEditor?.setValue(value);
-}
-
-function setVariables(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.variableEditor?.setValue(value);
-}
-
-function setHeaders(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.headerEditor?.setValue(value);
 }
