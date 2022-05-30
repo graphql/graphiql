@@ -37,6 +37,7 @@ import {
 import type {
   EditorContextType,
   ResponseTooltipType,
+  TabsState,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
@@ -89,6 +90,7 @@ export type {
   // editor
   EditorContextType,
   ResponseTooltipType,
+  TabsState,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
   UseResponseEditorArgs,

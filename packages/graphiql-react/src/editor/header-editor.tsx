@@ -108,6 +108,8 @@ export function useHeaderEditor({
     headerEditor,
     onEdit,
     shouldPersistHeaders ? STORAGE_KEY : null,
+    'headers',
+    useHeaderEditor,
   );
 
   useCompletion(headerEditor);
