@@ -97,7 +97,7 @@ export function useCompletion(editor: CodeMirrorEditor | null) {
   }, [editor, explorer, schema]);
 }
 
-export type EmptyCallback = () => void;
+type EmptyCallback = () => void;
 
 export function useKeyMap(
   editor: CodeMirrorEditor | null,

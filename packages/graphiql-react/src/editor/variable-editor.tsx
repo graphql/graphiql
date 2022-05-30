@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
+import { useExecutionContext } from '../execution';
 import { commonKeys, importCodeMirror } from './common';
 import { useEditorContext } from './context';
 import {
   EditCallback,
-  EmptyCallback,
   useChangeHandler,
   useCompletion,
   useKeyMap,
@@ -17,14 +17,12 @@ import { CodeMirrorType } from './types';
 export type UseVariableEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onRunQuery?: EmptyCallback;
   readOnly?: boolean;
 };
 
 export function useVariableEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onRunQuery,
   readOnly = false,
 }: UseVariableEditorArgs = {}) {
   const {
@@ -35,6 +33,7 @@ export function useVariableEditor({
     nonNull: true,
     caller: useVariableEditor,
   });
+  const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: useVariableEditor });
   const prettify = usePrettifyEditors({ caller: useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
@@ -132,7 +131,7 @@ export function useVariableEditor({
 
   useCompletion(variableEditor);
 
-  useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
+  useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(variableEditor, ['Shift-Ctrl-M'], merge);
 

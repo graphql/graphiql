@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
+import { useExecutionContext } from '../execution';
 import { commonKeys, importCodeMirror } from './common';
 import { useEditorContext } from './context';
 import {
   EditCallback,
-  EmptyCallback,
   useChangeHandler,
   useCompletion,
   useKeyMap,
@@ -16,7 +16,6 @@ import {
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
-  onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   shouldPersistHeaders?: boolean;
 };
@@ -24,7 +23,6 @@ export type UseHeaderEditorArgs = {
 export function useHeaderEditor({
   editorTheme = 'graphiql',
   onEdit,
-  onRunQuery,
   readOnly = false,
   shouldPersistHeaders = false,
 }: UseHeaderEditorArgs = {}) {
@@ -32,6 +30,7 @@ export function useHeaderEditor({
     nonNull: true,
     caller: useHeaderEditor,
   });
+  const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: useHeaderEditor });
   const prettify = usePrettifyEditors({ caller: useHeaderEditor });
   const ref = useRef<HTMLDivElement>(null);
@@ -114,7 +113,7 @@ export function useHeaderEditor({
 
   useCompletion(headerEditor);
 
-  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
+  useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(headerEditor, ['Shift-Ctrl-M'], merge);
 

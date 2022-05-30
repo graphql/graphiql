@@ -1,6 +1,8 @@
 import {
   EditorContext,
   EditorContextProvider,
+  ExecutionContext,
+  ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
   HistoryContext,
@@ -14,6 +16,7 @@ import {
   useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
+  useExecutionContext,
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
@@ -27,6 +30,7 @@ import {
 } from '@graphiql/react';
 import type {
   EditorContextType,
+  ExecutionContextType,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,
@@ -46,6 +50,8 @@ import { useEffect, useRef, useState } from 'react';
 export {
   EditorContext,
   EditorContextProvider,
+  ExecutionContext,
+  ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
   HistoryContext,
@@ -59,6 +65,7 @@ export {
   useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
+  useExecutionContext,
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
@@ -69,6 +76,7 @@ export {
 
 export type {
   EditorContextType,
+  ExecutionContextType,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,

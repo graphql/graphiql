@@ -336,7 +336,7 @@ const TestSubscriptionType = new GraphQLObjectType({
       args: {
         delay: delayArgument(600),
       },
-      async *subscribe(args) {
+      async *subscribe(root, args) {
         for (const hi of ['Hi', 'Bonjour', 'Hola', 'Ciao', 'Zdravo']) {
           if (args && args.delay) {
             await sleep(args.delay);
