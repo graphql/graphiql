@@ -28,7 +28,6 @@ import {
   useMergeQuery,
   usePrettifyEditors,
   useResizeEditor,
-  useSynchronizeValue,
 } from './hooks';
 import { CodeMirrorEditor, CodeMirrorType } from './types';
 import { normalizeWhitespace } from './whitespace';
@@ -36,7 +35,6 @@ import { normalizeWhitespace } from './whitespace';
 type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
-  defaultValue?: string;
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
   onEdit?: EditCallback;
@@ -45,11 +43,9 @@ export type UseQueryEditorArgs = {
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
-  value?: string;
 };
 
 export function useQueryEditor({
-  defaultValue = DEFAULT_VALUE,
   editorTheme = 'graphiql',
   externalFragments,
   onEdit,
@@ -58,13 +54,17 @@ export function useQueryEditor({
   onRunQuery,
   readOnly = false,
   validationRules,
-  value,
 }: UseQueryEditorArgs = {}) {
   const { schema } = useSchemaContext({
     nonNull: true,
     caller: useQueryEditor,
   });
-  const { queryEditor, setQueryEditor, variableEditor } = useEditorContext({
+  const {
+    initialQuery,
+    queryEditor,
+    setQueryEditor,
+    variableEditor,
+  } = useEditorContext({
     nonNull: true,
     caller: useQueryEditor,
   });
@@ -95,10 +95,6 @@ export function useQueryEditor({
     };
   }, [explorer]);
 
-  const initialValue = useRef(
-    value ?? storage?.get(STORAGE_KEY_QUERY) ?? defaultValue,
-  );
-
   useEffect(() => {
     let isActive = true;
 
@@ -124,7 +120,7 @@ export function useQueryEditor({
       }
 
       const newEditor = CodeMirror(container, {
-        value: initialValue.current || '',
+        value: initialQuery,
         lineNumbers: true,
         tabSize: 2,
         foldGutter: true,
@@ -218,7 +214,7 @@ export function useQueryEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, readOnly, setQueryEditor]);
+  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
 
   /**
    * We don't use the generic `useChangeHandler` hook here because we want to
@@ -320,8 +316,6 @@ export function useQueryEditor({
     codeMirrorRef,
   );
 
-  useSynchronizeValue(queryEditor, value);
-
   useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
@@ -412,39 +406,6 @@ function useSynchronizeExternalFragments(
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;
 
-const DEFAULT_VALUE = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that start
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
-#
-#       Run Query:  Ctrl-Enter (or press the play button above)
-#
-#   Auto Complete:  Ctrl-Space (or just start typing)
-#
-
-`;
-
-const STORAGE_KEY_QUERY = 'query';
+export const STORAGE_KEY_QUERY = 'query';
 
 const STORAGE_KEY_OPERATION_NAME = 'operationName';

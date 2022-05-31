@@ -82,13 +82,27 @@ export type {
   UseVariableEditorArgs,
 };
 
+type Name = 'query' | 'variable' | 'header' | 'response';
+
+const NAME_TO_INITIAL_VALUE: Record<
+  Name,
+  'initialQuery' | 'initialVariables' | 'initialHeaders' | undefined
+> = {
+  query: 'initialQuery',
+  variable: 'initialVariables',
+  header: 'initialHeaders',
+  response: undefined,
+};
+
 function useMockedEditor(
-  name: string,
+  name: Name,
   value?: string,
   onEdit?: (newValue: string) => void,
-  defaultValue?: string,
 ) {
-  const [code, setCode] = useState(value ?? defaultValue);
+  const editorContext = useEditorContext({ nonNull: true });
+  const [code, setCode] = useState(
+    value ?? editorContext[NAME_TO_INITIAL_VALUE[name]],
+  );
   const ref = useRef<HTMLDivElement>(null);
 
   const context = useEditorContext({ nonNull: true });
@@ -175,17 +189,14 @@ function useMockedEditor(
 
 export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor({
   onEdit,
-  value,
 }) {
-  return useMockedEditor('header', value, onEdit);
+  return useMockedEditor('header', undefined, onEdit);
 };
 
 export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
-  defaultValue = '# Welcome to GraphiQL',
   onEdit,
-  value,
 }) {
-  return useMockedEditor('query', value, onEdit, defaultValue);
+  return useMockedEditor('query', undefined, onEdit);
 };
 
 export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor({
@@ -196,7 +207,6 @@ export const useResponseEditor: typeof _useResponseEditor = function useResponse
 
 export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({
   onEdit,
-  value,
 }) {
-  return useMockedEditor('variable', value, onEdit);
+  return useMockedEditor('variable', undefined, onEdit);
 };
