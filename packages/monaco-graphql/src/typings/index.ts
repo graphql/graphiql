@@ -110,7 +110,7 @@ export type GraphQLLanguageConfig = {
   /**
    * External fragments to be used with completion and validation
    */
-  exteralFragmentDefinitions?: FragmentDefinitionNode[] | string;
+  externalFragmentDefinitions?: FragmentDefinitionNode[] | string;
   /**
    * Custom validation rules following `graphql` `ValidationRule` signature
    */

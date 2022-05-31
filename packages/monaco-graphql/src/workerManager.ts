@@ -78,7 +78,7 @@ export class WorkerManager {
             // only string based config can be passed from the main process
             languageConfig: {
               schemas: this._defaults.schemas?.map(getStringSchema),
-              exteralFragmentDefinitions: this._defaults
+              externalFragmentDefinitions: this._defaults
                 .externalFragmentDefinitions,
             },
           } as ICreateData,
