@@ -48,7 +48,6 @@
   "dependencies": {
     "@graphiql/react": "^0.2.1",
     "@graphiql/toolkit": "^0.6.0",
-    "set-value": "^4.1.0",
     "entities": "^2.0.0",
     "graphql-language-service": "^5.0.4",
     "markdown-it": "^12.2.0"

@@ -13,17 +13,15 @@ import React, {
 } from 'react';
 import {
   GraphQLSchema,
-  parse,
-  print,
-  visit,
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
 } from 'graphql';
-import { getFragmentDependenciesForAST } from 'graphql-language-service';
 
 import {
   EditorContextProvider,
+  ExecutionContextProvider,
+  ExecutionContextType,
   ExplorerContextProvider,
   HistoryContextProvider,
   SchemaContextProvider,
@@ -31,6 +29,7 @@ import {
   useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
+  useExecutionContext,
   useExplorerContext,
   useHistoryContext,
   useMergeQuery,
@@ -61,22 +60,12 @@ import { QueryHistory } from './QueryHistory';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
-import setValue from 'set-value';
 
-import {
-  formatError,
-  formatResult,
-  isAsyncIterable,
-  isObservable,
-} from '@graphiql/toolkit';
+import { formatError, formatResult } from '@graphiql/toolkit';
 import type {
   Fetcher,
-  FetcherResult,
-  FetcherResultPayload,
   GetDefaultFieldNamesFn,
   QueryStoreItem,
-  SyncFetcherResult,
-  Unsubscribable,
 } from '@graphiql/toolkit';
 
 import { Tab, TabAddButton, Tabs } from './Tabs';
@@ -312,17 +301,13 @@ export type GraphiQLProps = {
 };
 
 export type GraphiQLState = {
-  response?: string;
   editorFlex: number;
   secondaryEditorOpen: boolean;
   secondaryEditorHeight: number;
   variableEditorActive: boolean;
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
-  shouldPersistHeaders: boolean;
   docExplorerWidth: number;
-  isWaitingForResponse: boolean;
-  subscription?: Unsubscribable | null;
 };
 
 /**
@@ -334,6 +319,7 @@ export type GraphiQLState = {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   docExplorerOpen,
+  fetcher,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -344,31 +330,42 @@ export function GraphiQL({
   schemaDescription,
   ...props
 }: GraphiQLProps) {
+  // Ensure props are correct
+  if (typeof fetcher !== 'function') {
+    throw new TypeError('GraphiQL requires a fetcher function.');
+  }
+
   return (
     <StorageContextProvider storage={storage}>
-      <EditorContextProvider
-        defaultQuery={props.defaultQuery}
-        headers={props.headers}
-        query={props.query}
-        variables={props.variables}>
-        <SchemaContextProvider
-          dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-          fetcher={props.fetcher}
-          inputValueDeprecation={inputValueDeprecation}
-          introspectionQueryName={introspectionQueryName}
-          schema={schema}
-          schemaDescription={schemaDescription}>
-          <ExplorerContextProvider
-            isVisible={docExplorerOpen}
-            onToggleVisibility={onToggleDocs}>
-            <HistoryContextProvider
-              maxHistoryLength={maxHistoryLength}
-              onToggle={onToggleHistory}>
-              <GraphiQLConsumeContexts {...props} />
-            </HistoryContextProvider>
-          </ExplorerContextProvider>
-        </SchemaContextProvider>
-      </EditorContextProvider>
+      <HistoryContextProvider
+        maxHistoryLength={maxHistoryLength}
+        onToggle={onToggleHistory}>
+        <EditorContextProvider
+          defaultQuery={props.defaultQuery}
+          headers={props.headers}
+          query={props.query}
+          variables={props.variables}>
+          <SchemaContextProvider
+            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+            fetcher={fetcher}
+            inputValueDeprecation={inputValueDeprecation}
+            introspectionQueryName={introspectionQueryName}
+            schema={schema}
+            schemaDescription={schemaDescription}>
+            <ExecutionContextProvider
+              externalFragments={props.externalFragments}
+              fetcher={fetcher}
+              onEditOperationName={props.onEditOperationName}
+              shouldPersistHeaders={props.shouldPersistHeaders}>
+              <ExplorerContextProvider
+                isVisible={docExplorerOpen}
+                onToggleVisibility={onToggleDocs}>
+                <GraphiQLConsumeContexts {...props} />
+              </ExplorerContextProvider>
+            </ExecutionContextProvider>
+          </SchemaContextProvider>
+        </EditorContextProvider>
+      </HistoryContextProvider>
     </StorageContextProvider>
   );
 }
@@ -416,6 +413,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'dangerouslyAssumeSchemaIsValid'
   | 'defaultQuery'
   | 'docExplorerOpen'
+  | 'fetcher'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
@@ -433,6 +431,7 @@ function GraphiQLConsumeContexts({
   ...props
 }: GraphiQLWithContextProviderProps) {
   const editorContext = useEditorContext({ nonNull: true });
+  const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
   const historyContext = useHistoryContext();
   const schemaContext = useSchemaContext({ nonNull: true });
@@ -447,6 +446,7 @@ function GraphiQLConsumeContexts({
     <GraphiQLWithContext
       {...props}
       editorContext={editorContext}
+      executionContext={executionContext}
       explorerContext={explorerContext}
       historyContext={historyContext}
       schemaContext={schemaContext}
@@ -461,9 +461,10 @@ function GraphiQLConsumeContexts({
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
-  'onCopyQuery' | 'getDefaultFieldNames'
+  'fetcher' | 'getDefaultFieldNames' | 'onCopyQuery'
 > & {
   editorContext: EditorContextType;
+  executionContext: ExecutionContextType;
   explorerContext: ExplorerContextType | null;
   historyContext: HistoryContextType | null;
   schemaContext: SchemaContextType;
@@ -479,26 +480,12 @@ class GraphiQLWithContext extends React.Component<
   GraphiQLWithContextConsumerProps,
   GraphiQLState
 > {
-  // Ensure only the last executed editor query is rendered.
-  _editorQueryID = 0;
-
-  // Ensure the component is mounted to execute async setState
-  componentIsMounted: boolean;
-
   // refs
   graphiqlContainer: Maybe<HTMLDivElement>;
   editorBarComponent: Maybe<HTMLDivElement>;
 
   constructor(props: GraphiQLWithContextConsumerProps) {
     super(props);
-
-    // Ensure props are correct
-    if (typeof props.fetcher !== 'function') {
-      throw new TypeError('GraphiQL requires a fetcher function.');
-    }
-
-    // Disable setState when the component is not mounted
-    this.componentIsMounted = false;
 
     const variables =
       props.variables ?? props.storageContext?.get('variables') ?? undefined;
@@ -517,11 +504,9 @@ class GraphiQLWithContext extends React.Component<
     }
 
     const headerEditorEnabled = props.headerEditorEnabled ?? true;
-    const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
 
     // Initialize state
     this.state = {
-      response: '',
       editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -534,49 +519,17 @@ class GraphiQLWithContext extends React.Component<
       headerEditorActive:
         this.props.storageContext?.get('headerEditorActive') === 'true',
       headerEditorEnabled,
-      shouldPersistHeaders,
       docExplorerWidth:
         Number(this.props.storageContext?.get('docExplorerWidth')) ||
         DEFAULT_DOC_EXPLORER_WIDTH,
-      isWaitingForResponse: false,
-      subscription: null,
     };
   }
 
   componentDidMount() {
-    // Allow async state changes
-    this.componentIsMounted = true;
-
     if (typeof window !== 'undefined') {
       window.g = this;
     }
   }
-
-  UNSAFE_componentWillMount() {
-    this.componentIsMounted = false;
-  }
-
-  // TODO: these values should be updated in a reducer imo
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(
-    nextProps: GraphiQLWithContextConsumerProps,
-  ) {
-    let nextResponse = this.state.response;
-
-    if (nextProps.response !== undefined) {
-      nextResponse = nextProps.response;
-    }
-
-    this.setState({
-      response: nextResponse,
-    });
-  }
-
-  // Use it when the state change is async
-  // TODO: Annotate correctly this function
-  safeSetState = (nextState: any, callback?: any): void => {
-    this.componentIsMounted && this.setState(nextState, callback);
-  };
 
   render() {
     const children = React.Children.toArray(this.props.children);
@@ -668,11 +621,7 @@ class GraphiQLWithContext extends React.Component<
             {this.props.beforeTopBarContent}
             <div className="topBar">
               {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-              />
+              <ExecuteButton />
               {toolbar}
             </div>
             {this.props.explorerContext &&
@@ -699,30 +648,14 @@ class GraphiQLWithContext extends React.Component<
                   title={tab.title}
                   isCloseable={this.props.editorContext.tabs.length > 1}
                   onSelect={() => {
-                    this.handleStopQuery();
-
+                    this.props.executionContext.stop();
                     this.props.editorContext.changeTab(index);
-                    this.setState({
-                      response:
-                        this.props.editorContext.tabs[index].response ??
-                        undefined,
-                    });
                   }}
                   onClose={() => {
                     if (this.props.editorContext.activeTabIndex === index) {
-                      this.handleStopQuery();
+                      this.props.executionContext.stop();
                     }
-
                     this.props.editorContext.closeTab(index);
-                    this.setState({
-                      response:
-                        this.props.editorContext.tabs[
-                          Math.max(
-                            this.props.editorContext.activeTabIndex - 1,
-                            0,
-                          )
-                        ].response ?? undefined,
-                    });
                   }}
                   tabProps={{
                     'aria-controls': 'sessionWrap',
@@ -733,7 +666,6 @@ class GraphiQLWithContext extends React.Component<
               <TabAddButton
                 onClick={() => {
                   this.props.editorContext.addTab();
-                  this.setState({ response: undefined });
                 }}
               />
             </Tabs>
@@ -754,7 +686,6 @@ class GraphiQLWithContext extends React.Component<
                 externalFragments={this.props.externalFragments}
                 onEdit={this.handleEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
-                onRunQuery={this.handleEditorRunQuery}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
               />
@@ -797,7 +728,6 @@ class GraphiQLWithContext extends React.Component<
                 </div>
                 <VariableEditor
                   onEdit={this.handleEditVariables}
-                  onRunQuery={this.handleEditorRunQuery}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                   active={this.state.variableEditorActive}
@@ -807,7 +737,6 @@ class GraphiQLWithContext extends React.Component<
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
                     onEdit={this.handleEditHeaders}
-                    onRunQuery={this.handleEditorRunQuery}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
                   />
@@ -815,13 +744,13 @@ class GraphiQLWithContext extends React.Component<
               </section>
             </div>
             <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
+              {this.props.executionContext.isFetching && (
                 <div className="spinner-container">
                   <div className="spinner" />
                 </div>
               )}
               <ResultViewer
-                value={this.state.response}
+                value={this.props.response}
                 editorTheme={this.props.editorTheme}
                 ResponseTooltip={this.props.ResultsTooltip}
               />
@@ -897,300 +826,6 @@ class GraphiQLWithContext extends React.Component<
 
   // Private methods
 
-  private async _fetchQuery(
-    query: string,
-    variables: string | undefined,
-    headers: string | undefined,
-    operationName: string | undefined,
-    shouldPersistHeaders: boolean,
-    cb: (value: FetcherResult) => any,
-  ): Promise<null | Unsubscribable> {
-    const fetcher = this.props.fetcher;
-    let jsonVariables = null;
-    let jsonHeaders = null;
-
-    try {
-      jsonVariables =
-        variables && variables.trim() !== '' ? JSON.parse(variables) : null;
-    } catch (error) {
-      throw new Error(
-        `Variables are invalid JSON: ${(error as Error).message}.`,
-      );
-    }
-
-    if (typeof jsonVariables !== 'object') {
-      throw new Error('Variables are not a JSON object.');
-    }
-
-    try {
-      jsonHeaders =
-        headers && headers.trim() !== '' ? JSON.parse(headers) : null;
-    } catch (error) {
-      throw new Error(`Headers are invalid JSON: ${(error as Error).message}.`);
-    }
-
-    if (typeof jsonHeaders !== 'object') {
-      throw new Error('Headers are not a JSON object.');
-    }
-
-    const documentAST =
-      this.props.editorContext.queryEditor?.documentAST ?? undefined;
-    // TODO: memoize this
-    if (this.props.externalFragments) {
-      const externalFragments = new Map<string, FragmentDefinitionNode>();
-
-      if (Array.isArray(this.props.externalFragments)) {
-        this.props.externalFragments.forEach(def => {
-          externalFragments.set(def.name.value, def);
-        });
-      } else {
-        visit(parse(this.props.externalFragments, {}), {
-          FragmentDefinition(def) {
-            externalFragments.set(def.name.value, def);
-          },
-        });
-      }
-
-      const fragmentDependencies = documentAST
-        ? getFragmentDependenciesForAST(documentAST, externalFragments)
-        : [];
-      if (fragmentDependencies.length > 0) {
-        query +=
-          '\n' +
-          fragmentDependencies
-            .map((node: FragmentDefinitionNode) => print(node))
-            .join('\n');
-      }
-    }
-
-    const fetch = fetcher(
-      { query, variables: jsonVariables, operationName },
-      { headers: jsonHeaders, shouldPersistHeaders, documentAST },
-    );
-
-    return Promise.resolve<SyncFetcherResult>(fetch)
-      .then(value => {
-        if (isObservable(value)) {
-          // If the fetcher returned an Observable, then subscribe to it, calling
-          // the callback on each next value, and handling both errors and the
-          // completion of the Observable. Returns a Subscription object.
-          const subscription = value.subscribe({
-            next: cb,
-            error: (error: Error) => {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                response: error ? formatError(error) : undefined,
-                subscription: null,
-              });
-            },
-            complete: () => {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                subscription: null,
-              });
-            },
-          });
-
-          return subscription;
-        } else if (isAsyncIterable(value)) {
-          (async () => {
-            try {
-              for await (const result of value) {
-                cb(result);
-              }
-              this.safeSetState({
-                isWaitingForResponse: false,
-                subscription: null,
-              });
-            } catch (error) {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                response: error ? formatError(error as Error) : undefined,
-                subscription: null,
-              });
-            }
-          })();
-
-          return {
-            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
-          };
-        } else {
-          cb(value);
-          return null;
-        }
-      })
-      .catch(error => {
-        this.safeSetState({
-          isWaitingForResponse: false,
-          response: error ? formatError(error) : undefined,
-        });
-        return null;
-      });
-  }
-
-  handleRunQuery = async (selectedOperationName?: string) => {
-    this._editorQueryID++;
-    const queryID = this._editorQueryID;
-
-    // Use the edited query after autoCompleteLeafs() runs or,
-    // in case autoCompletion fails (the function returns undefined),
-    // the current query from the editor.
-    const editedQuery =
-      this.props.autoCompleteLeafs() || getQuery(this.props) || '';
-    const variables = getVariables(this.props);
-    const headers = getHeaders(this.props);
-    const shouldPersistHeaders = this.state.shouldPersistHeaders;
-    let operationName =
-      this.props.editorContext.queryEditor?.operationName ?? undefined;
-
-    // If an operation was explicitly provided, different from the current
-    // operation name, then report that it changed.
-    if (selectedOperationName && selectedOperationName !== operationName) {
-      operationName = selectedOperationName;
-      if (this.props.editorContext.queryEditor) {
-        this.props.editorContext.queryEditor.operationName = selectedOperationName;
-      }
-      this.props.onEditOperationName?.(operationName);
-    }
-
-    try {
-      this.setState({ isWaitingForResponse: true, response: undefined });
-
-      this.props.historyContext?.addToHistory({
-        query: editedQuery,
-        variables,
-        headers,
-        operationName,
-      });
-
-      // when dealing with defer or stream, we need to aggregate results
-      let fullResponse: FetcherResultPayload = { data: {} };
-
-      // _fetchQuery may return a subscription.
-      const subscription = await this._fetchQuery(
-        editedQuery,
-        variables,
-        headers,
-        operationName,
-        shouldPersistHeaders,
-        (result: FetcherResult) => {
-          if (queryID === this._editorQueryID) {
-            let maybeMultipart = Array.isArray(result) ? result : false;
-            if (
-              !maybeMultipart &&
-              typeof result === 'object' &&
-              result !== null &&
-              'hasNext' in result
-            ) {
-              maybeMultipart = [result];
-            }
-
-            if (maybeMultipart) {
-              const payload: FetcherResultPayload = { data: fullResponse.data };
-              const maybeErrors = [
-                ...(fullResponse?.errors || []),
-                ...maybeMultipart
-                  .map(i => i.errors)
-                  .flat()
-                  .filter(Boolean),
-              ];
-
-              if (maybeErrors.length) {
-                payload.errors = maybeErrors;
-              }
-
-              for (const part of maybeMultipart) {
-                // We pull out errors here, so we dont include it later
-                const { path, data, errors: _errors, ...rest } = part;
-                if (path) {
-                  if (!data) {
-                    throw new Error(
-                      `Expected part to contain a data property, but got ${part}`,
-                    );
-                  }
-
-                  setValue(payload.data, path, data, { merge: true });
-                } else if (data) {
-                  // If there is no path, we don't know what to do with the payload,
-                  // so we just set it.
-                  payload.data = part.data;
-                }
-
-                // Ensures we also bring extensions and alike along for the ride
-                fullResponse = {
-                  ...payload,
-                  ...rest,
-                };
-              }
-
-              this.setState({
-                isWaitingForResponse: false,
-                response: formatResult(fullResponse),
-              });
-            } else {
-              const response = formatResult(result);
-              this.setState({
-                isWaitingForResponse: false,
-                response,
-              });
-              this.props.editorContext.updateActiveTabValues({ response });
-            }
-          }
-        },
-      );
-
-      this.setState({ subscription });
-    } catch (error) {
-      this.setState({
-        isWaitingForResponse: false,
-        response: (error as Error).message,
-      });
-    }
-  };
-
-  handleStopQuery = () => {
-    const subscription = this.state.subscription;
-    this.setState({
-      isWaitingForResponse: false,
-      subscription: null,
-    });
-    if (subscription) {
-      subscription.unsubscribe();
-    }
-  };
-
-  private _runQueryAtCursor() {
-    if (this.state.subscription) {
-      this.handleStopQuery();
-      return;
-    }
-
-    let operationName;
-    const operations = this.props.editorContext.queryEditor?.operations;
-    if (operations) {
-      const editor = this.getQueryEditor();
-      if (editor && editor.hasFocus()) {
-        const cursor = editor.getCursor();
-        const cursorIndex = editor.indexFromPos(cursor);
-
-        // Loop through all operations to see if one contains the cursor.
-        for (let i = 0; i < operations.length; i++) {
-          const operation = operations[i];
-          if (
-            operation.loc &&
-            operation.loc.start <= cursorIndex &&
-            operation.loc.end >= cursorIndex
-          ) {
-            operationName = operation.name && operation.name.value;
-            break;
-          }
-        }
-      }
-    }
-
-    this.handleRunQuery(operationName);
-  }
-
   handleEditQuery = (value: string) => {
     this.props.onEditQuery?.(
       value,
@@ -1208,10 +843,6 @@ class GraphiQLWithContext extends React.Component<
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }
-  };
-
-  handleEditorRunQuery = () => {
-    this._runQueryAtCursor();
   };
 
   handleSelectHistoryQuery = ({
@@ -1494,24 +1125,12 @@ function isChildComponentType<T extends ComponentType>(
   return child.type === component;
 }
 
-function getQuery(props: GraphiQLWithContextConsumerProps) {
-  return props.editorContext.queryEditor?.getValue();
-}
-
 function setQuery(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.queryEditor?.setValue(value);
 }
 
-function getVariables(props: GraphiQLWithContextConsumerProps) {
-  return props.editorContext.variableEditor?.getValue();
-}
-
 function setVariables(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.variableEditor?.setValue(value);
-}
-
-function getHeaders(props: GraphiQLWithContextConsumerProps) {
-  return props.editorContext.headerEditor?.getValue();
 }
 
 function setHeaders(props: GraphiQLWithContextConsumerProps, value: string) {

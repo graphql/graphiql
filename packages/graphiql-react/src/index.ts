@@ -14,6 +14,11 @@ import {
   useVariableEditor,
 } from './editor';
 import {
+  ExecutionContext,
+  ExecutionContextProvider,
+  useExecutionContext,
+} from './execution';
+import {
   ExplorerContext,
   ExplorerContextProvider,
   useExplorerContext,
@@ -43,6 +48,7 @@ import type {
   UseResponseEditorArgs,
   UseVariableEditorArgs,
 } from './editor';
+import type { ExecutionContextType } from './execution';
 import type {
   ExplorerContextType,
   ExplorerFieldDef,
@@ -68,6 +74,10 @@ export {
   useQueryEditor,
   useResponseEditor,
   useVariableEditor,
+  // execution
+  ExecutionContext,
+  ExecutionContextProvider,
+  useExecutionContext,
   // explorer
   ExplorerContext,
   ExplorerContextProvider,
@@ -95,6 +105,8 @@ export type {
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   UseVariableEditorArgs,
+  // execution
+  ExecutionContextType,
   // explorer
   ExplorerContextType,
   ExplorerFieldDef,

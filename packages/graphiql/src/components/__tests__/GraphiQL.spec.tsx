@@ -287,6 +287,7 @@ describe('GraphiQL', () => {
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+    await wait();
 
     fireEvent.change(
       container.querySelector('[aria-label="Query Variables"] .mockCodeMirror'),
@@ -316,6 +317,7 @@ describe('GraphiQL', () => {
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+    await wait();
 
     fireEvent.click(getByText('Request Headers'));
 

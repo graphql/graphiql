@@ -8,6 +8,7 @@ import type {
 import { getOperationFacts } from 'graphql-language-service';
 import { MutableRefObject, useEffect, useRef } from 'react';
 
+import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
 import { useSchemaContext } from '../schema';
@@ -21,7 +22,6 @@ import {
 import {
   CopyQueryCallback,
   EditCallback,
-  EmptyCallback,
   useCompletion,
   useCopyQuery,
   useKeyMap,
@@ -40,7 +40,6 @@ export type UseQueryEditorArgs = {
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
   onCopyQuery?: CopyQueryCallback;
-  onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
 };
@@ -51,7 +50,6 @@ export function useQueryEditor({
   onEdit,
   onEditOperationName,
   onCopyQuery,
-  onRunQuery,
   readOnly = false,
   validationRules,
 }: UseQueryEditorArgs = {}) {
@@ -69,6 +67,7 @@ export function useQueryEditor({
     nonNull: true,
     caller: useQueryEditor,
   });
+  const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
   const copy = useCopyQuery({ caller: useQueryEditor, onCopyQuery });
@@ -322,7 +321,7 @@ export function useQueryEditor({
 
   useCompletion(queryEditor);
 
-  useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
+  useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
   useKeyMap(
     queryEditor,

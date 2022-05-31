@@ -4,34 +4,22 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React, { useContext, useState } from 'react';
+import { useEditorContext, useExecutionContext } from '@graphiql/react';
 import { OperationDefinitionNode } from 'graphql';
-import { EditorContext } from '@graphiql/react';
+import React, { useState } from 'react';
 
-type ExecuteButtonProps = {
-  isRunning: boolean;
-  onStop: () => void;
-  onRun: (value?: string) => void;
-};
-
-export function ExecuteButton({
-  isRunning,
-  onStop,
-  onRun,
-}: ExecuteButtonProps) {
-  const editorContext = useContext(EditorContext);
-  if (!editorContext) {
-    throw new Error(
-      'Tried to render the `ExecuteButton` component without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
+export function ExecuteButton() {
+  const { queryEditor } = useEditorContext({ nonNull: true });
+  const { isFetching, run, stop, subscription } = useExecutionContext({
+    nonNull: true,
+  });
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
   );
 
-  const operations = editorContext.queryEditor?.operations || [];
+  const isRunning = isFetching || Boolean(subscription);
+  const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1;
 
   return (
@@ -79,9 +67,9 @@ export function ExecuteButton({
           isRunning || !hasOptions
             ? () => {
                 if (isRunning) {
-                  onStop();
+                  stop();
                 } else {
-                  onRun();
+                  run();
                 }
               }
             : undefined
@@ -109,7 +97,7 @@ export function ExecuteButton({
                 onMouseOut={() => setHighlight(null)}
                 onMouseUp={() => {
                   setOptionsOpen(false);
-                  onRun(operation.name && operation.name.value);
+                  run(operation.name && operation.name.value);
                 }}>
                 {opName}
               </li>
