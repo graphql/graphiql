@@ -122,23 +122,6 @@ export function useKeyMap(
   }, [editor, keys, callback]);
 }
 
-export function useResizeEditor(
-  editor: CodeMirrorEditor | null,
-  ref: RefObject<HTMLDivElement>,
-) {
-  const sizeRef = useRef<number>();
-  useEffect(() => {
-    if (!ref.current || !editor) {
-      return;
-    }
-    const size = ref.current.clientHeight;
-    if (size !== sizeRef.current) {
-      editor.setSize(null, null); // TODO: added the args here. double check no effects. might be version issue
-    }
-    sizeRef.current = size;
-  });
-}
-
 export type CopyQueryCallback = (query: string) => void;
 
 export function useCopyQuery({

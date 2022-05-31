@@ -156,6 +156,7 @@ function useMockedEditor(
       setValue(newValue: string) {
         setCode(newValue);
       },
+      refresh() {},
     });
   });
 

@@ -28,7 +28,6 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
-  useResizeEditor,
 } from './hooks';
 import { CodeMirrorEditor, CodeMirrorType } from './types';
 import { normalizeWhitespace } from './whitespace';
@@ -337,8 +336,6 @@ export function useQueryEditor({
     prettify,
   );
   useKeyMap(queryEditor, ['Shift-Ctrl-M'], merge);
-
-  useResizeEditor(queryEditor, ref);
 
   return ref;
 }

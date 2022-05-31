@@ -10,7 +10,6 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
-  useResizeEditor,
 } from './hooks';
 
 export type UseHeaderEditorArgs = {
@@ -116,8 +115,6 @@ export function useHeaderEditor({
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(headerEditor, ['Shift-Ctrl-M'], merge);
-
-  useResizeEditor(headerEditor, ref);
 
   return ref;
 }
