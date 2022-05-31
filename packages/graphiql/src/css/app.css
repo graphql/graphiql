@@ -118,6 +118,7 @@
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  width: 100%;
   z-index: 3;
 }
 
@@ -129,9 +130,7 @@
 .graphiql-container .docExplorerResizer {
   cursor: col-resize;
   height: 100%;
-  left: -5px;
   position: absolute;
-  top: 0;
   width: 10px;
   z-index: 10;
 }

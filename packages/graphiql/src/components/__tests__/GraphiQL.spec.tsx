@@ -130,7 +130,7 @@ describe('GraphiQL', () => {
   });
   it('defaults to closed docExplorer', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-    expect(container.querySelector('.docExplorerWrap')).not.toBeInTheDocument();
+    expect(container.querySelector('.docExplorerWrap')).not.toBeVisible();
   });
 
   it('accepts a defaultVariableEditorOpen param', () => {
@@ -526,9 +526,14 @@ describe('GraphiQL', () => {
   });
 
   it('allows for resizing the doc explorer correctly', () => {
-    const spy = jest
+    // Mock the drag bar width
+    const clientWidthSpy = jest
       .spyOn(Element.prototype, 'clientWidth', 'get')
-      .mockReturnValue(1200);
+      .mockReturnValue(0);
+    // Mock the container width
+    const boundingClientRectSpy = jest
+      .spyOn(Element.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ left: 0, right: 1200 });
 
     const { container, getByLabelText } = render(
       <GraphiQL fetcher={noOpFetcher} />,
@@ -550,11 +555,13 @@ describe('GraphiQL', () => {
 
     fireEvent.mouseUp(docExplorerResizer);
 
-    expect(container.querySelector('.docExplorerWrap').style.width).toBe(
-      '403px',
-    );
+    // 797 / (1200 - 797) = 1.977667493796526
+    expect(
+      container.querySelector('.editorWrap').parentElement.style.flex,
+    ).toBe('1.977667493796526');
 
-    spy.mockRestore();
+    clientWidthSpy.mockRestore();
+    boundingClientRectSpy.mockRestore();
   });
 
   describe('Tabs', () => {

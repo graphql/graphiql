@@ -38,9 +38,10 @@ type OnClickReference = (reference: SchemaReference) => void;
 export type UseQueryEditorArgs = {
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
+  onClickReference?: OnClickReference;
+  onCopyQuery?: CopyQueryCallback;
   onEdit?(value: string, documentAST?: DocumentNode): void;
   onEditOperationName?: EditCallback;
-  onCopyQuery?: CopyQueryCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
 };
@@ -48,9 +49,10 @@ export type UseQueryEditorArgs = {
 export function useQueryEditor({
   editorTheme = 'graphiql',
   externalFragments,
+  onClickReference,
+  onCopyQuery,
   onEdit,
   onEditOperationName,
-  onCopyQuery,
   readOnly = false,
   validationRules,
 }: UseQueryEditorArgs = {}) {
@@ -93,8 +95,9 @@ export function useQueryEditor({
       } else if (reference.kind === 'EnumValue' && reference.type) {
         explorer.push({ name: reference.type.name, def: reference.type });
       }
+      onClickReference?.(reference);
     };
-  }, [explorer]);
+  }, [explorer, onClickReference]);
 
   useEffect(() => {
     let isActive = true;
