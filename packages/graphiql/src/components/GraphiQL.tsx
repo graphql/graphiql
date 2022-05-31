@@ -45,6 +45,7 @@ import type {
   ResponseTooltipType,
   SchemaContextType,
   StorageContextType,
+  TabsState,
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
@@ -79,9 +80,6 @@ import type {
 } from '@graphiql/toolkit';
 
 import { Tab, TabAddButton, Tabs } from './Tabs';
-import { fuzzyExtractOperationTitle } from '../utility/fuzzyExtractOperationTitle';
-import { idFromTabContents } from '../utility/id-from-tab-contents';
-import { guid } from '../utility/guid';
 
 const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
@@ -325,23 +323,6 @@ export type GraphiQLState = {
   docExplorerWidth: number;
   isWaitingForResponse: boolean;
   subscription?: Unsubscribable | null;
-  tabs: TabsState;
-};
-
-type TabState = {
-  id: string;
-  hash: string;
-  title: string;
-  query: string | undefined;
-  variables: string | undefined;
-  headers: string | undefined;
-  operationName: string | undefined;
-  response: string | undefined;
-};
-
-type TabsState = {
-  activeTabIndex: number;
-  tabs: Array<TabState>;
 };
 
 /**
@@ -433,12 +414,14 @@ GraphiQL.MenuItem = ToolbarMenuItem;
 type GraphiQLWithContextProviderProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
+  | 'defaultQuery'
   | 'docExplorerOpen'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
   | 'onToggleDocs'
   | 'onToggleHistory'
+  | 'query'
   | 'schema'
   | 'schemaDescription'
   | 'storage'
@@ -517,22 +500,11 @@ class GraphiQLWithContext extends React.Component<
     // Disable setState when the component is not mounted
     this.componentIsMounted = false;
 
-    const query =
-      props.query ??
-      props.storageContext?.get('query') ??
-      props.defaultQuery ??
-      defaultQuery;
-
     const variables =
       props.variables ?? props.storageContext?.get('variables') ?? undefined;
 
     const headers =
       props.headers ?? props.storageContext?.get('headers') ?? undefined;
-
-    const operationName =
-      props.operationName ??
-      props.storageContext?.get('operationName') ??
-      undefined;
 
     // initial secondary editor pane open
     let secondaryEditorOpen;
@@ -547,76 +519,9 @@ class GraphiQLWithContext extends React.Component<
     const headerEditorEnabled = props.headerEditorEnabled ?? true;
     const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
 
-    const initialTabHash = idFromTabContents({
-      query,
-      variables,
-      headers,
-    });
-
-    const initialTab: TabState = {
-      id: guid(),
-      hash: initialTabHash,
-      title: '<untitled>',
-      query,
-      variables,
-      headers,
-      operationName,
-      response: undefined,
-    };
-
-    let rawTabState: string | null = null;
-    // only load tab state if tabs are enabled
-    if (this.props.tabs) {
-      rawTabState = this.props.storageContext?.get('tabState') ?? null;
-    }
-
-    let tabsState: TabsState;
-    if (rawTabState === null) {
-      tabsState = {
-        activeTabIndex: 0,
-        tabs: [initialTab],
-      };
-    } else {
-      tabsState = JSON.parse(rawTabState);
-      let queryParameterOperationIsWithinTabs = false;
-      for (const tab of tabsState.tabs) {
-        // ensure property is present
-        tab.query = tab.query!;
-        tab.variables = tab.variables!;
-        tab.headers = shouldPersistHeaders ? tab.headers! : undefined;
-        tab.response = undefined;
-        tab.operationName = undefined;
-
-        tab.id = guid();
-
-        tab.hash = idFromTabContents(tab);
-
-        if (tab.hash === initialTabHash) {
-          queryParameterOperationIsWithinTabs = true;
-        }
-      }
-
-      if (queryParameterOperationIsWithinTabs === false) {
-        tabsState.tabs.push(initialTab);
-        tabsState.activeTabIndex = tabsState.tabs.length - 1;
-      }
-    }
-
-    let activeTab = tabsState.tabs[0];
-    let index = 0;
-    for (const tab of tabsState.tabs) {
-      if (tab.hash === initialTabHash) {
-        tabsState.activeTabIndex = index;
-        activeTab = tab;
-        break;
-      }
-      index++;
-    }
-
     // Initialize state
     this.state = {
-      tabs: tabsState,
-      response: activeTab?.response,
+      response: '',
       editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
       secondaryEditorOpen,
       secondaryEditorHeight:
@@ -671,48 +576,6 @@ class GraphiQLWithContext extends React.Component<
   // TODO: Annotate correctly this function
   safeSetState = (nextState: any, callback?: any): void => {
     this.componentIsMounted && this.setState(nextState, callback);
-  };
-
-  private persistTabsState = () => {
-    if (this.props.tabs) {
-      this.props.storageContext?.set(
-        'tabState',
-        JSON.stringify(this.state.tabs, (key, value) =>
-          key === 'response' ||
-          (!this.state.shouldPersistHeaders && key === 'headers')
-            ? undefined
-            : value,
-        ),
-      );
-      if (typeof this.props.tabs === 'object') {
-        this.props.tabs.onTabChange?.(this.state.tabs);
-      }
-    }
-  };
-
-  private makeHandleOnSelectTab = (index: number) => () => {
-    this.handleStopQuery();
-    this.setState(
-      state => stateOnSelectTabReducer(index, state, this.props),
-      this.persistTabsState,
-    );
-  };
-
-  private makeHandleOnCloseTab = (index: number) => () => {
-    if (this.state.tabs.activeTabIndex === index) {
-      this.handleStopQuery();
-    }
-    this.setState(
-      state => stateOnCloseTabReducer(index, state, this.props),
-      this.persistTabsState,
-    );
-  };
-
-  private handleOnAddTab = () => {
-    this.setState(
-      state => stateOnTabAddReducer(state, this.props),
-      this.persistTabsState,
-    );
   };
 
   render() {
@@ -785,7 +648,6 @@ class GraphiQLWithContext extends React.Component<
         ? this.state.secondaryEditorHeight
         : undefined,
     };
-    const tabsState = this.state.tabs;
 
     return (
       <div
@@ -830,21 +692,50 @@ class GraphiQLWithContext extends React.Component<
               tabsProps={{
                 'aria-label': 'Select active operation',
               }}>
-              {tabsState.tabs.map((tab, index) => (
+              {this.props.editorContext.tabs.map((tab, index) => (
                 <Tab
                   key={tab.id}
-                  isActive={index === tabsState.activeTabIndex}
+                  isActive={index === this.props.editorContext.activeTabIndex}
                   title={tab.title}
-                  isCloseable={tabsState.tabs.length > 1}
-                  onSelect={this.makeHandleOnSelectTab(index)}
-                  onClose={this.makeHandleOnCloseTab(index)}
+                  isCloseable={this.props.editorContext.tabs.length > 1}
+                  onSelect={() => {
+                    this.handleStopQuery();
+
+                    this.props.editorContext.changeTab(index);
+                    this.setState({
+                      response:
+                        this.props.editorContext.tabs[index].response ??
+                        undefined,
+                    });
+                  }}
+                  onClose={() => {
+                    if (this.props.editorContext.activeTabIndex === index) {
+                      this.handleStopQuery();
+                    }
+
+                    this.props.editorContext.closeTab(index);
+                    this.setState({
+                      response:
+                        this.props.editorContext.tabs[
+                          Math.max(
+                            this.props.editorContext.activeTabIndex - 1,
+                            0,
+                          )
+                        ].response ?? undefined,
+                    });
+                  }}
                   tabProps={{
                     'aria-controls': 'sessionWrap',
                     id: `session-tab-${index}`,
                   }}
                 />
               ))}
-              <TabAddButton onClick={this.handleOnAddTab} />
+              <TabAddButton
+                onClick={() => {
+                  this.props.editorContext.addTab();
+                  this.setState({ response: undefined });
+                }}
+              />
             </Tabs>
           ) : null}
           <div
@@ -854,7 +745,7 @@ class GraphiQLWithContext extends React.Component<
             role="tabpanel"
             id="sessionWrap"
             className="editorBar"
-            aria-labelledby={`session-tab-${tabsState.activeTabIndex}`}
+            aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
             onDoubleClick={this.handleResetResize}
             onMouseDown={this.handleResizeStart}>
             <div className="queryWrap" style={queryWrapStyle}>
@@ -1238,26 +1129,11 @@ class GraphiQLWithContext extends React.Component<
               });
             } else {
               const response = formatResult(result);
-              this.setState(
-                state => ({
-                  ...state,
-                  tabs: {
-                    ...state.tabs,
-                    tabs: state.tabs.tabs.map((tab, index) => {
-                      if (index !== state.tabs.activeTabIndex) {
-                        return tab;
-                      }
-                      return {
-                        ...tab,
-                        response,
-                      };
-                    }),
-                  },
-                  isWaitingForResponse: false,
-                  response,
-                }),
-                this.persistTabsState,
-              );
+              this.setState({
+                isWaitingForResponse: false,
+                response,
+              });
+              this.props.editorContext.updateActiveTabValues({ response });
             }
           }
         },
@@ -1316,17 +1192,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   handleEditQuery = (value: string) => {
-    this.setState(
-      state => ({
-        ...state,
-        tabs: tabsStateEditQueryReducer(
-          value,
-          state.tabs,
-          this.props.editorContext.queryEditor?.operationName ?? undefined,
-        ),
-      }),
-      this.persistTabsState,
-    );
     this.props.onEditQuery?.(
       value,
       this.props.editorContext.queryEditor?.documentAST ?? undefined,
@@ -1334,26 +1199,12 @@ class GraphiQLWithContext extends React.Component<
   };
 
   handleEditVariables = (value: string) => {
-    this.setState(
-      state => ({
-        ...state,
-        tabs: tabsStateEditVariablesReducer(value, state.tabs),
-      }),
-      this.persistTabsState,
-    );
     if (this.props.onEditVariables) {
       this.props.onEditVariables(value);
     }
   };
 
   handleEditHeaders = (value: string) => {
-    this.setState(
-      state => ({
-        ...state,
-        tabs: tabsStateEditHeadersReducer(value, state.tabs),
-      }),
-      this.persistTabsState,
-    );
     if (this.props.onEditHeaders) {
       this.props.onEditHeaders(value);
     }
@@ -1628,39 +1479,6 @@ function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
 
 GraphiQLFooter.displayName = 'GraphiQLFooter';
 
-const defaultQuery = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that start
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
-#
-#       Run Query:  Ctrl-Enter (or press the play button above)
-#
-#   Auto Complete:  Ctrl-Space (or just start typing)
-#
-
-`;
-
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(
   child: any,
@@ -1674,203 +1492,6 @@ function isChildComponentType<T extends ComponentType>(
   }
 
   return child.type === component;
-}
-
-function tabsStateEditHeadersReducer(
-  value: string,
-  state: TabsState,
-): TabsState {
-  return {
-    ...state,
-    tabs: state.tabs.map((tab, index) => {
-      if (index !== state.activeTabIndex) {
-        return tab;
-      }
-      return {
-        ...tab,
-        headers: value,
-        hash: idFromTabContents({
-          query: tab.query,
-          headers: value,
-          variables: tab.variables,
-        }),
-      };
-    }),
-  };
-}
-
-function tabsStateEditVariablesReducer(
-  value: string,
-  state: TabsState,
-): TabsState {
-  return {
-    ...state,
-    tabs: state.tabs.map((tab, index) => {
-      if (index !== state.activeTabIndex) {
-        return tab;
-      }
-      return {
-        ...tab,
-        variables: value,
-        hash: idFromTabContents({
-          query: tab.query,
-          headers: tab.headers,
-          variables: value,
-        }),
-      };
-    }),
-  };
-}
-
-function tabsStateEditQueryReducer(
-  value: string,
-  state: TabsState,
-  operationName?: string,
-): TabsState {
-  return {
-    ...state,
-    tabs: state.tabs.map((tab, index) => {
-      if (index !== state.activeTabIndex) {
-        return tab;
-      }
-      return {
-        ...tab,
-        title: operationName ?? fuzzyExtractOperationTitle(value),
-        query: value,
-        hash: idFromTabContents({
-          query: value,
-          headers: tab.headers,
-          variables: tab.variables,
-        }),
-      };
-    }),
-  };
-}
-
-function stateOnSelectTabReducer(
-  index: number,
-  state: GraphiQLState,
-  props: GraphiQLWithContextConsumerProps,
-): GraphiQLState {
-  const query = getQuery(props);
-  const variables = getVariables(props);
-  const headers = getHeaders(props);
-  const operationName = getOperationName(props);
-
-  const oldActiveTabIndex = state.tabs.activeTabIndex;
-  const tabs = state.tabs.tabs.map((currentTab, tabIndex) => {
-    if (tabIndex !== oldActiveTabIndex) {
-      return currentTab;
-    }
-
-    return {
-      ...currentTab,
-      query,
-      variables,
-      operationName,
-      headers,
-      response: state.response,
-      hash: idFromTabContents({
-        query,
-        variables,
-        headers,
-      }),
-    };
-  });
-
-  const newActiveTab = state.tabs.tabs[index];
-
-  setQuery(props, newActiveTab.query || '');
-  setVariables(props, newActiveTab.variables || '');
-  setHeaders(props, newActiveTab.headers || '');
-  setOperationName(props, newActiveTab.operationName);
-
-  return {
-    ...state,
-    response: newActiveTab.response,
-    tabs: { ...state.tabs, tabs, activeTabIndex: index },
-  };
-}
-
-function stateOnCloseTabReducer(
-  index: number,
-  state: GraphiQLState,
-  props: GraphiQLWithContextConsumerProps,
-): GraphiQLState {
-  const newActiveTabIndex =
-    state.tabs.activeTabIndex > 0 ? state.tabs.activeTabIndex - 1 : 0;
-  const newTabsState = {
-    ...state.tabs,
-    activeTabIndex: newActiveTabIndex,
-    tabs: state.tabs.tabs.filter((_tab, i) => index !== i),
-  };
-  const activeTab = newTabsState.tabs[newActiveTabIndex];
-  setQuery(props, activeTab.query || '');
-  setVariables(props, activeTab.variables || '');
-  setHeaders(props, activeTab.headers || '');
-  setOperationName(props, activeTab.operationName);
-  return {
-    ...state,
-    response: activeTab.response,
-    tabs: newTabsState,
-  };
-}
-
-function stateOnTabAddReducer(
-  state: GraphiQLState,
-  props: GraphiQLWithContextConsumerProps,
-): GraphiQLState {
-  const query = getQuery(props);
-  const variables = getVariables(props);
-  const headers = getHeaders(props);
-  const operationName = getOperationName(props);
-
-  const oldActiveTabIndex = state.tabs.activeTabIndex;
-
-  const newTab: TabState = {
-    id: guid(),
-    title: '<untitled>',
-    headers: '',
-    variables: '',
-    query: '',
-    operationName: '',
-    response: '',
-    hash: idFromTabContents({
-      query: '',
-      variables: '',
-      headers: '',
-    }),
-  };
-
-  const tabs = state.tabs.tabs.map((tab, index) => {
-    if (index !== oldActiveTabIndex) {
-      return tab;
-    }
-
-    return {
-      ...tab,
-      query,
-      headers,
-      variables,
-      operationName,
-      response: state.response,
-    };
-  });
-
-  setQuery(props, newTab.query || '');
-  setVariables(props, newTab.variables || '');
-  setHeaders(props, newTab.headers || '');
-  setOperationName(props, newTab.operationName);
-
-  return {
-    ...state,
-    response: newTab.response,
-    tabs: {
-      ...state.tabs,
-      activeTabIndex: state.tabs.tabs.length,
-      tabs: [...tabs, newTab],
-    },
-  };
 }
 
 function getQuery(props: GraphiQLWithContextConsumerProps) {
@@ -1895,17 +1516,4 @@ function getHeaders(props: GraphiQLWithContextConsumerProps) {
 
 function setHeaders(props: GraphiQLWithContextConsumerProps, value: string) {
   props.editorContext.headerEditor?.setValue(value);
-}
-
-function getOperationName(props: GraphiQLWithContextConsumerProps) {
-  return props.editorContext.queryEditor?.operationName ?? undefined;
-}
-
-function setOperationName(
-  props: GraphiQLWithContextConsumerProps,
-  value: string | null | undefined,
-) {
-  if (props.editorContext.queryEditor) {
-    props.editorContext.queryEditor.operationName = value ?? null;
-  }
 }

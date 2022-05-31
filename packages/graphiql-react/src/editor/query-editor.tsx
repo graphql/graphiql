@@ -1,4 +1,4 @@
-import { getSelectedOperationName } from '@graphiql/toolkit';
+import { getSelectedOperationName, StorageAPI } from '@graphiql/toolkit';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import type {
   FragmentDefinitionNode,
@@ -64,6 +64,7 @@ export function useQueryEditor({
     queryEditor,
     setQueryEditor,
     variableEditor,
+    updateActiveTabValues,
   } = useEditorContext({
     nonNull: true,
     caller: useQueryEditor,
@@ -233,40 +234,37 @@ export function useQueryEditor({
         schema,
         editorInstance.getValue(),
       );
-      if (!operationFacts) {
-        return;
-      }
 
       // Update operation name should any query names change.
       const operationName = getSelectedOperationName(
         editorInstance.operations ?? undefined,
         editorInstance.operationName ?? undefined,
-        operationFacts.operations,
+        operationFacts?.operations,
       );
 
       // Store the operation facts on editor properties
-      editorInstance.documentAST = operationFacts.documentAST;
+      editorInstance.documentAST = operationFacts?.documentAST ?? null;
       editorInstance.operationName = operationName ?? null;
-      editorInstance.operations = operationFacts.operations;
-      editorInstance.variableToType = operationFacts.variableToType ?? null;
+      editorInstance.operations = operationFacts?.operations ?? null;
+      editorInstance.variableToType = operationFacts?.variableToType ?? null;
 
       // Update variable types for the variable editor
       if (variableEditor) {
         variableEditor.state.lint.linterOptions.variableToType =
-          operationFacts.variableToType;
+          operationFacts?.variableToType;
         variableEditor.options.lint.variableToType =
-          operationFacts.variableToType;
+          operationFacts?.variableToType;
         variableEditor.options.hintOptions.variableToType =
-          operationFacts.variableToType;
+          operationFacts?.variableToType;
         codeMirrorRef.current?.signal(variableEditor, 'change', variableEditor);
       }
 
-      return { ...operationFacts, operationName };
+      return operationFacts ? { ...operationFacts, operationName } : null;
     }
 
     const handleChange = debounce(
       100,
-      (editorInstance: CodeMirrorEditorWithOperationFacts, change: any) => {
+      (editorInstance: CodeMirrorEditorWithOperationFacts) => {
         const query = editorInstance.getValue();
         storage?.set(STORAGE_KEY_QUERY, query);
 
@@ -287,6 +285,11 @@ export function useQueryEditor({
         ) {
           onEditOperationName(operationFacts.operationName);
         }
+
+        updateActiveTabValues({
+          query,
+          operationName: operationFacts?.operationName ?? null,
+        });
       },
     ) as (editorInstance: CodeMirrorEditor) => void;
 
@@ -302,6 +305,7 @@ export function useQueryEditor({
     schema,
     storage,
     variableEditor,
+    updateActiveTabValues,
   ]);
 
   useSynchronizeSchema(queryEditor, schema ?? null, codeMirrorRef);

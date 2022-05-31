@@ -29,8 +29,12 @@ export function useChangeHandler(
   editor: CodeMirrorEditor | null,
   callback: EditCallback | undefined,
   storageKey: string | null,
+  tabProperty: 'variables' | 'headers',
+  caller: Function,
 ) {
+  const { updateActiveTabValues } = useEditorContext({ nonNull: true, caller });
   const storage = useStorageContext();
+
   useEffect(() => {
     if (!editor) {
       return;
@@ -43,14 +47,26 @@ export function useChangeHandler(
       storage.set(storageKey, value);
     });
 
+    const updateTab = debounce(100, (value: string) => {
+      updateActiveTabValues({ [tabProperty]: value });
+    });
+
     const handleChange = (editorInstance: CodeMirrorEditor) => {
       const newValue = editorInstance.getValue();
-      callback?.(newValue);
       store(newValue);
+      updateTab(newValue);
+      callback?.(newValue);
     };
     editor.on('change', handleChange);
     return () => editor.off('change', handleChange);
-  }, [callback, editor, storage, storageKey]);
+  }, [
+    callback,
+    editor,
+    storage,
+    storageKey,
+    tabProperty,
+    updateActiveTabValues,
+  ]);
 }
 
 export function useCompletion(editor: CodeMirrorEditor | null) {

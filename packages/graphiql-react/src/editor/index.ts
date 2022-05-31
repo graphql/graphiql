@@ -23,6 +23,7 @@ import type {
   ResponseTooltipType,
   UseResponseEditorArgs,
 } from './response-editor';
+import type { TabsState } from './tabs';
 import type { UseVariableEditorArgs } from './variable-editor';
 
 export {
@@ -44,6 +45,7 @@ export {
 export type {
   EditorContextType,
   ResponseTooltipType,
+  TabsState,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
   UseResponseEditorArgs,

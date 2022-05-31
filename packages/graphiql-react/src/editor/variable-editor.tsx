@@ -122,7 +122,13 @@ export function useVariableEditor({
     };
   }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
 
-  useChangeHandler(variableEditor, onEdit, STORAGE_KEY);
+  useChangeHandler(
+    variableEditor,
+    onEdit,
+    STORAGE_KEY,
+    'variables',
+    useVariableEditor,
+  );
 
   useCompletion(variableEditor);
 
