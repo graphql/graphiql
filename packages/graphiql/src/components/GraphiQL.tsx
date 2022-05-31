@@ -291,7 +291,6 @@ export type GraphiQLProps = {
 export type GraphiQLState = {
   variableEditorActive: boolean;
   headerEditorActive: boolean;
-  headerEditorEnabled: boolean;
 };
 
 /**
@@ -566,8 +565,6 @@ class GraphiQLWithContext extends React.Component<
   constructor(props: GraphiQLWithContextConsumerProps) {
     super(props);
 
-    const headerEditorEnabled = props.headerEditorEnabled ?? true;
-
     // Initialize state
     this.state = {
       variableEditorActive:
@@ -577,7 +574,6 @@ class GraphiQLWithContext extends React.Component<
           : true,
       headerEditorActive:
         this.props.storageContext?.get('headerEditorActive') === 'true',
-      headerEditorEnabled,
     };
   }
 
@@ -795,7 +791,7 @@ class GraphiQLWithContext extends React.Component<
                           }}>
                           Query Variables
                         </div>
-                        {this.state.headerEditorEnabled && (
+                        {this.props.headerEditorEnabled && (
                           <div
                             style={{
                               marginLeft: '20px',
@@ -833,7 +829,7 @@ class GraphiQLWithContext extends React.Component<
                           readOnly={this.props.readOnly}
                           active={this.state.variableEditorActive}
                         />
-                        {this.state.headerEditorEnabled && (
+                        {this.props.headerEditorEnabled && (
                           <HeaderEditor
                             active={this.state.headerEditorActive}
                             editorTheme={this.props.editorTheme}
