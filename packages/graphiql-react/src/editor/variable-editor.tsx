@@ -1,8 +1,8 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { StorageContext } from '../storage';
+import { useStorageContext } from '../storage';
 import { commonKeys, importCodeMirror } from './common';
-import { EditorContext } from './context';
+import { useEditorContext } from './context';
 import {
   EditCallback,
   EmptyCallback,
@@ -29,18 +29,18 @@ export function useVariableEditor({
   readOnly = false,
   value,
 }: UseVariableEditorArgs = {}) {
-  const context = useContext(EditorContext);
-  const storage = useContext(StorageContext);
+  const {
+    merge,
+    prettify,
+    variableEditor,
+    setVariableEditor,
+  } = useEditorContext({
+    nonNull: true,
+    caller: useVariableEditor,
+  });
+  const storage = useStorageContext();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
-
-  if (!context) {
-    throw new Error(
-      'Tried to call the `useVariableEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
-  const { variableEditor, setVariableEditor } = context;
 
   const initialValue = useRef(value ?? storage?.get(STORAGE_KEY) ?? '');
 
@@ -133,8 +133,8 @@ export function useVariableEditor({
   useCompletion(variableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(variableEditor, ['Shift-Ctrl-P'], context.prettify);
-  useKeyMap(variableEditor, ['Shift-Ctrl-M'], context.merge);
+  useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
+  useKeyMap(variableEditor, ['Shift-Ctrl-M'], merge);
 
   useResizeEditor(variableEditor, ref);
 

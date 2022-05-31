@@ -1,15 +1,8 @@
 import { HistoryStore, QueryStoreItem, StorageAPI } from '@graphiql/toolkit';
-import {
-  createContext,
-  ReactNode,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
-import { StorageContext } from './storage';
+import { useStorageContext } from './storage';
+import { createContextHook, createNullableContext } from './utility/context';
 
 export type HistoryContextType = {
   addToHistory(operation: {
@@ -41,7 +34,9 @@ export type HistoryContextType = {
   }): void;
 };
 
-export const HistoryContext = createContext<HistoryContextType | null>(null);
+export const HistoryContext = createNullableContext<HistoryContextType>(
+  'HistoryContext',
+);
 
 type HistoryContextProviderProps = {
   children: ReactNode;
@@ -50,7 +45,7 @@ type HistoryContextProviderProps = {
 };
 
 export function HistoryContextProvider(props: HistoryContextProviderProps) {
-  const storage = useContext(StorageContext);
+  const storage = useStorageContext();
   const historyStore = useRef(
     new HistoryStore(
       // Fall back to a noop storage when the StorageContext is empty
@@ -158,6 +153,8 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     </HistoryContext.Provider>
   );
 }
+
+export const useHistoryContext = createContextHook(HistoryContext);
 
 const DEFAULT_HISTORY_LENGTH = 20;
 const STORAGE_KEY = 'historyPaneOpen';

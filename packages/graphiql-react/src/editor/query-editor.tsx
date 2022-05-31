@@ -6,15 +6,18 @@ import type {
   ValidationRule,
 } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
-import { MutableRefObject, useContext, useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 
-import { ExplorerContext } from '../explorer';
+import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
-import { useSchemaWithError } from '../schema';
-import { StorageContext } from '../storage';
+import { useSchemaContext } from '../schema';
+import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { commonKeys, importCodeMirror } from './common';
-import { CodeMirrorEditorWithOperationFacts, EditorContext } from './context';
+import {
+  CodeMirrorEditorWithOperationFacts,
+  useEditorContext,
+} from './context';
 import {
   EditCallback,
   EmptyCallback,
@@ -51,20 +54,25 @@ export function useQueryEditor({
   validationRules,
   value,
 }: UseQueryEditorArgs = {}) {
-  const { schema } = useSchemaWithError('hook', 'useQueryEditor');
-  const editorContext = useContext(EditorContext);
-  const storage = useContext(StorageContext);
-  const explorer = useContext(ExplorerContext);
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: useQueryEditor,
+  });
+  const {
+    copy,
+    merge,
+    prettify,
+    queryEditor,
+    setQueryEditor,
+    variableEditor,
+  } = useEditorContext({
+    nonNull: true,
+    caller: useQueryEditor,
+  });
+  const storage = useStorageContext();
+  const explorer = useExplorerContext();
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
-
-  if (!editorContext) {
-    throw new Error(
-      'Tried to call the `useQueryEditor` hook without the necessary context. Make sure that the `EditorContextProvider` from `@graphiql/react` is rendered higher in the tree.',
-    );
-  }
-
-  const { queryEditor, setQueryEditor, variableEditor } = editorContext;
 
   const onClickReferenceRef = useRef<OnClickReference>(() => {});
   useEffect(() => {
@@ -315,7 +323,7 @@ export function useQueryEditor({
   useCompletion(queryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], onRunQuery);
-  useKeyMap(queryEditor, ['Shift-Ctrl-C'], editorContext.copy);
+  useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
   useKeyMap(
     queryEditor,
     [
@@ -323,9 +331,9 @@ export function useQueryEditor({
       // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy
       'Shift-Ctrl-F',
     ],
-    editorContext.prettify,
+    prettify,
   );
-  useKeyMap(queryEditor, ['Shift-Ctrl-M'], editorContext.merge);
+  useKeyMap(queryEditor, ['Shift-Ctrl-M'], merge);
 
   useResizeEditor(queryEditor, ref);
 

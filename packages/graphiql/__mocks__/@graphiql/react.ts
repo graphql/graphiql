@@ -11,11 +11,14 @@ import {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
-  useExplorerNavStack,
+  useEditorContext,
+  useExplorerContext,
+  useHistoryContext,
+  useSchemaContext,
+  useStorageContext,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
   useResponseEditor as _useResponseEditor,
-  useSchema,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
 import type {
@@ -33,7 +36,7 @@ import type {
   UseQueryEditorArgs,
   UseVariableEditorArgs,
 } from '@graphiql/react';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export {
   EditorContext,
@@ -48,8 +51,11 @@ export {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
-  useExplorerNavStack,
-  useSchema,
+  useEditorContext,
+  useExplorerContext,
+  useHistoryContext,
+  useSchemaContext,
+  useStorageContext,
 };
 
 export type {
@@ -77,7 +83,7 @@ function useMockedEditor(
   const [code, setCode] = useState(value ?? defaultValue);
   const ref = useRef<HTMLDivElement>(null);
 
-  const context = useContext(EditorContext);
+  const context = useEditorContext({ nonNull: true });
   const setEditor =
     context[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
 

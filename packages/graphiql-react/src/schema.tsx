@@ -15,17 +15,16 @@ import {
   validateSchema,
 } from 'graphql';
 import {
-  createContext,
   Dispatch,
   ReactNode,
   SetStateAction,
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { EditorContext } from '../editor';
+
+import { createContextHook, createNullableContext } from './utility/context';
 
 /**
  * There's a semantic difference between `null` and `undefined`:
@@ -46,14 +45,9 @@ export type SchemaContextType = {
   validationErrors: readonly GraphQLError[] | null;
 };
 
-export const SchemaContext = createContext<SchemaContextType>({
-  fetchError: null,
-  isFetching: false,
-  schema: null,
-  setFetchError() {},
-  setSchema() {},
-  validationErrors: null,
-});
+export const SchemaContext = createNullableContext<SchemaContextType>(
+  'SchemaContext',
+);
 
 type SchemaContextProviderProps = {
   children: ReactNode;
@@ -81,13 +75,6 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Keep a ref to the current headers
    */
   const headersRef = useRef(parseHeaderString(props.initialHeaders));
-  const { headerEditor } = useContext(EditorContext);
-  useEffect(() => {
-    if (!headerEditor) {
-      return;
-    }
-    headersRef.current = parseHeaderString(headerEditor.getValue());
-  }, [headerEditor]);
 
   /**
    * Get introspection query for settings given via props
@@ -245,6 +232,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     </SchemaContext.Provider>
   );
 }
+
+export const useSchemaContext = createContextHook(SchemaContext);
 
 type IntrospectionArgs = {
   inputValueDeprecation?: boolean;

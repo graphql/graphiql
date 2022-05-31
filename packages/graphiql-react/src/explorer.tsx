@@ -5,17 +5,17 @@ import type {
   GraphQLNamedType,
 } from 'graphql';
 import {
-  createContext,
   ReactNode,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import { useSchemaWithError } from './schema';
-import { StorageContext } from './storage';
+import { useSchemaContext } from './schema';
+
+import { useStorageContext } from './storage';
+import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExplorerFieldDef =
   | GraphQLField<{}, {}, {}>
@@ -51,7 +51,9 @@ export type ExplorerContextType = {
   showSearch(search: string): void;
 };
 
-export const ExplorerContext = createContext<ExplorerContextType | null>(null);
+export const ExplorerContext = createNullableContext<ExplorerContextType>(
+  'ExplorerContext',
+);
 
 type ExplorerContextProviderProps = {
   children: ReactNode;
@@ -60,11 +62,11 @@ type ExplorerContextProviderProps = {
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
-  const { isFetching } = useSchemaWithError(
-    'component',
-    'ExplorerContextProvider',
-  );
-  const storage = useContext(StorageContext);
+  const { isFetching } = useSchemaContext({
+    nonNull: true,
+    caller: ExplorerContextProvider,
+  });
+  const storage = useStorageContext();
 
   const [isVisible, setIsVisible] = useState(
     props.isVisible ?? storage?.get(STORAGE_KEY) === 'true' ?? false,
@@ -155,8 +157,6 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
   );
 }
 
-export function useExplorerNavStack() {
-  return useContext(ExplorerContext);
-}
+export const useExplorerContext = createContextHook(ExplorerContext);
 
 const STORAGE_KEY = 'docExplorerOpen';
