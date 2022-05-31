@@ -139,21 +139,21 @@ describe('GraphiQL', () => {
     );
     const queryVariables = container1.querySelector('.variable-editor');
 
-    expect(queryVariables.style.height).toEqual('');
+    expect(queryVariables).not.toBeVisible();
 
     const secondaryEditorTitle = container1.querySelector(
       '#secondary-editor-title',
     );
     fireEvent.mouseDown(secondaryEditorTitle);
-    fireEvent.mouseMove(secondaryEditorTitle);
-    expect(queryVariables.style.height).toEqual('200px');
+    fireEvent.mouseMove(secondaryEditorTitle, { buttons: 1, clientY: 50 });
+    expect(queryVariables).toBeVisible();
 
     const { container: container2 } = render(
       <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
     expect(
-      container2.querySelector('[aria-label="Query Variables"]')?.style.height,
-    ).toEqual('200px');
+      container2.querySelector('[aria-label="Query Variables"]'),
+    ).toBeVisible();
 
     const { container: container3 } = render(
       <GraphiQL
@@ -163,7 +163,7 @@ describe('GraphiQL', () => {
       />,
     );
     const queryVariables3 = container3.querySelector('.variable-editor');
-    expect(queryVariables3?.style.height).toEqual('');
+    expect(queryVariables3).not.toBeVisible();
   });
 
   it('defaults to closed history panel', () => {

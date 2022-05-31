@@ -154,7 +154,7 @@
 .graphiql-container .secondary-editor {
   display: flex;
   flex-direction: column;
-  height: 30px;
+  height: 100%;
   position: relative;
 }
 
@@ -163,6 +163,7 @@
   border-bottom: 1px solid #d6d6d6;
   border-top: 1px solid #e0e0e0;
   color: #777;
+  cursor: row-resize;
   font-variant: small-caps;
   font-weight: bold;
   letter-spacing: 1px;

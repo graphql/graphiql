@@ -18,13 +18,3 @@ export function getLeft(initialElem: HTMLElement) {
   }
   return pt;
 }
-
-export function getTop(initialElem: HTMLElement) {
-  let pt = 0;
-  let elem = initialElem;
-  while (elem.offsetParent) {
-    pt += elem.offsetTop;
-    elem = elem.offsetParent as HTMLElement;
-  }
-  return pt;
-}

@@ -63,7 +63,7 @@ import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { getLeft, getTop } from '../utility/elementPosition';
+import { getLeft } from '../utility/elementPosition';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
@@ -301,8 +301,6 @@ export type GraphiQLProps = {
 };
 
 export type GraphiQLState = {
-  secondaryEditorOpen: boolean;
-  secondaryEditorHeight: number;
   variableEditorActive: boolean;
   headerEditorActive: boolean;
   headerEditorEnabled: boolean;
@@ -510,6 +508,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'defaultQuery'
   | 'docExplorerOpen'
   | 'fetcher'
+  | 'headers'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
@@ -519,6 +518,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'schema'
   | 'schemaDescription'
   | 'storage'
+  | 'variables'
 >;
 
 const GraphiQLConsumeContexts = forwardRef<
@@ -586,29 +586,10 @@ class GraphiQLWithContext extends React.Component<
   constructor(props: GraphiQLWithContextConsumerProps) {
     super(props);
 
-    const variables =
-      props.variables ?? props.storageContext?.get('variables') ?? undefined;
-
-    const headers =
-      props.headers ?? props.storageContext?.get('headers') ?? undefined;
-
-    // initial secondary editor pane open
-    let secondaryEditorOpen;
-    if (props.defaultVariableEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultVariableEditorOpen;
-    } else if (props.defaultSecondaryEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultSecondaryEditorOpen;
-    } else {
-      secondaryEditorOpen = Boolean(variables || headers);
-    }
-
     const headerEditorEnabled = props.headerEditorEnabled ?? true;
 
     // Initialize state
     this.state = {
-      secondaryEditorOpen,
-      secondaryEditorHeight:
-        Number(this.props.storageContext?.get('secondaryEditorHeight')) || 200,
       variableEditorActive:
         this.props.storageContext?.get('variableEditorActive') === 'true' ||
         props.headerEditorEnabled
@@ -681,13 +662,6 @@ class GraphiQLWithContext extends React.Component<
     const docExplorerWrapClasses =
       'docExplorerWrap' +
       (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-
-    const secondaryEditorOpen = this.state.secondaryEditorOpen;
-    const secondaryEditorStyle = {
-      height: secondaryEditorOpen
-        ? this.state.secondaryEditorHeight
-        : undefined,
-    };
 
     return (
       <div
@@ -767,36 +741,58 @@ class GraphiQLWithContext extends React.Component<
             direction="horizontal"
             storageKey="editorFlex"
             first={
-              <div className="queryWrap">
-                <QueryEditor
-                  editorTheme={this.props.editorTheme}
-                  externalFragments={this.props.externalFragments}
-                  onEdit={this.props.onEditQuery}
-                  onEditOperationName={this.props.onEditOperationName}
-                  readOnly={this.props.readOnly}
-                  validationRules={this.props.validationRules}
-                />
-                <section
-                  className="variable-editor secondary-editor"
-                  style={secondaryEditorStyle}
-                  aria-label={
-                    this.state.variableEditorActive
-                      ? 'Query Variables'
-                      : 'Request Headers'
-                  }>
+              <DragResizeContainer
+                className="queryWrap"
+                direction="vertical"
+                storageKey="secondaryEditorFlex"
+                initiallyHidden={(() => {
+                  // initial secondary editor pane open
+                  if (this.props.defaultVariableEditorOpen !== undefined) {
+                    return this.props.defaultVariableEditorOpen
+                      ? undefined
+                      : 'second';
+                  }
+
+                  if (this.props.defaultSecondaryEditorOpen !== undefined) {
+                    return this.props.defaultSecondaryEditorOpen
+                      ? undefined
+                      : 'second';
+                  }
+
+                  return this.props.editorContext.initialVariables ||
+                    this.props.editorContext.initialHeaders
+                    ? undefined
+                    : 'second';
+                })()}
+                defaultSizeRelation={3}
+                sizeThresholdSecond={60}
+                first={
+                  <QueryEditor
+                    editorTheme={this.props.editorTheme}
+                    externalFragments={this.props.externalFragments}
+                    onEdit={this.props.onEditQuery}
+                    onEditOperationName={this.props.onEditOperationName}
+                    readOnly={this.props.readOnly}
+                    validationRules={this.props.validationRules}
+                  />
+                }
+                dragBar={({ hiddenElement, reset }) => (
                   <div
                     className="secondary-editor-title variable-editor-title"
-                    id="secondary-editor-title"
-                    style={{
-                      cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
-                    }}
-                    onMouseDown={this.handleSecondaryEditorResizeStart}>
+                    id="secondary-editor-title">
                     <div
                       className={`variable-editor-title-text${
                         this.state.variableEditorActive ? ' active' : ''
                       }`}
-                      onClick={this.handleOpenVariableEditorTab}
-                      onMouseDown={this.handleTabClickPropagation}>
+                      onClick={() => {
+                        if (hiddenElement === 'second') {
+                          reset();
+                        }
+                        this.setState({
+                          headerEditorActive: false,
+                          variableEditorActive: true,
+                        });
+                      }}>
                       Query Variables
                     </div>
                     {this.state.headerEditorEnabled && (
@@ -807,29 +803,46 @@ class GraphiQLWithContext extends React.Component<
                         className={`variable-editor-title-text${
                           this.state.headerEditorActive ? ' active' : ''
                         }`}
-                        onClick={this.handleOpenHeaderEditorTab}
-                        onMouseDown={this.handleTabClickPropagation}>
+                        onClick={() => {
+                          if (hiddenElement === 'second') {
+                            reset();
+                          }
+                          this.setState({
+                            headerEditorActive: true,
+                            variableEditorActive: false,
+                          });
+                        }}>
                         Request Headers
                       </div>
                     )}
                   </div>
-                  <VariableEditor
-                    onEdit={this.props.onEditVariables}
-                    editorTheme={this.props.editorTheme}
-                    readOnly={this.props.readOnly}
-                    active={this.state.variableEditorActive}
-                  />
-                  {this.state.headerEditorEnabled && (
-                    <HeaderEditor
-                      active={this.state.headerEditorActive}
+                )}
+                second={
+                  <section
+                    className="variable-editor secondary-editor"
+                    aria-label={
+                      this.state.variableEditorActive
+                        ? 'Query Variables'
+                        : 'Request Headers'
+                    }>
+                    <VariableEditor
+                      onEdit={this.props.onEditVariables}
                       editorTheme={this.props.editorTheme}
-                      onEdit={this.props.onEditHeaders}
                       readOnly={this.props.readOnly}
-                      shouldPersistHeaders={this.props.shouldPersistHeaders}
+                      active={this.state.variableEditorActive}
                     />
-                  )}
-                </section>
-              </div>
+                    {this.state.headerEditorEnabled && (
+                      <HeaderEditor
+                        active={this.state.headerEditorActive}
+                        editorTheme={this.props.editorTheme}
+                        onEdit={this.props.onEditHeaders}
+                        readOnly={this.props.readOnly}
+                        shouldPersistHeaders={this.props.shouldPersistHeaders}
+                      />
+                    )}
+                  </section>
+                }
+              />
             }
             dragBar={<div className="editor-drag-bar" />}
             second={
@@ -952,88 +965,6 @@ class GraphiQLWithContext extends React.Component<
         JSON.stringify(this.state.docExplorerWidth),
       ),
     )();
-  };
-
-  // Prevent clicking on the tab button from propagating to the resizer.
-  private handleTabClickPropagation: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-    downEvent.stopPropagation();
-  };
-
-  private handleOpenHeaderEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: true,
-      variableEditorActive: false,
-      secondaryEditorOpen: true,
-    });
-  };
-
-  private handleOpenVariableEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: false,
-      variableEditorActive: true,
-      secondaryEditorOpen: true,
-    });
-  };
-
-  private handleSecondaryEditorResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-
-    let didMove = false;
-    const wasOpen = this.state.secondaryEditorOpen;
-    const hadHeight = this.state.secondaryEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      didMove = true;
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          secondaryEditorOpen: false,
-          secondaryEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          secondaryEditorOpen: true,
-          secondaryEditorHeight: bottomSize,
-        });
-      }
-      debounce(500, () =>
-        this.props.storageContext?.set(
-          'secondaryEditorHeight',
-          JSON.stringify(this.state.secondaryEditorHeight),
-        ),
-      )();
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ secondaryEditorOpen: !wasOpen });
-      }
-
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   };
 }
 
