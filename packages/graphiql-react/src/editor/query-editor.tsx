@@ -19,10 +19,14 @@ import {
   useEditorContext,
 } from './context';
 import {
+  CopyQueryCallback,
   EditCallback,
   EmptyCallback,
   useCompletion,
+  useCopyQuery,
   useKeyMap,
+  useMergeQuery,
+  usePrettifyEditors,
   useResizeEditor,
   useSynchronizeValue,
 } from './hooks';
@@ -37,6 +41,7 @@ export type UseQueryEditorArgs = {
   externalFragments?: string | FragmentDefinitionNode[];
   onEdit?: EditCallback;
   onEditOperationName?: EditCallback;
+  onCopyQuery?: CopyQueryCallback;
   onRunQuery?: EmptyCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
@@ -49,6 +54,7 @@ export function useQueryEditor({
   externalFragments,
   onEdit,
   onEditOperationName,
+  onCopyQuery,
   onRunQuery,
   readOnly = false,
   validationRules,
@@ -58,19 +64,15 @@ export function useQueryEditor({
     nonNull: true,
     caller: useQueryEditor,
   });
-  const {
-    copy,
-    merge,
-    prettify,
-    queryEditor,
-    setQueryEditor,
-    variableEditor,
-  } = useEditorContext({
+  const { queryEditor, setQueryEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: useQueryEditor,
   });
   const storage = useStorageContext();
   const explorer = useExplorerContext();
+  const copy = useCopyQuery({ caller: useQueryEditor, onCopyQuery });
+  const merge = useMergeQuery({ caller: useQueryEditor });
+  const prettify = usePrettifyEditors({ caller: useQueryEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 

@@ -6,6 +6,12 @@ import {
   useEditorContext,
 } from './context';
 import { useHeaderEditor } from './header-editor';
+import {
+  useAutoCompleteLeafs,
+  useCopyQuery,
+  useMergeQuery,
+  usePrettifyEditors,
+} from './hooks';
 import { useQueryEditor } from './query-editor';
 import { useResponseEditor } from './response-editor';
 import { useVariableEditor } from './variable-editor';
@@ -24,8 +30,12 @@ export {
   ImagePreview,
   EditorContext,
   EditorContextProvider,
+  useAutoCompleteLeafs,
+  useCopyQuery,
   useEditorContext,
   useHeaderEditor,
+  useMergeQuery,
+  usePrettifyEditors,
   useQueryEditor,
   useResponseEditor,
   useVariableEditor,

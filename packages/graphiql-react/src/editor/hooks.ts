@@ -1,7 +1,7 @@
-import { mergeAst } from '@graphiql/toolkit';
+import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
-import { GraphQLSchema, parse, print } from 'graphql';
+import { parse, print } from 'graphql';
 import { RefObject, useCallback, useEffect, useRef } from 'react';
 
 import { useExplorerContext } from '../explorer';
@@ -9,7 +9,7 @@ import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
 import { onHasCompletion } from './completion';
-import { CodeMirrorEditorWithOperationFacts } from './context';
+import { useEditorContext } from './context';
 import { CodeMirrorEditor } from './types';
 
 export function useSynchronizeValue(
@@ -123,13 +123,19 @@ export function useResizeEditor(
   });
 }
 
+export type CopyQueryCallback = (query: string) => void;
+
 export function useCopyQuery({
-  queryEditor,
+  caller,
   onCopyQuery,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  onCopyQuery?(query: string): void;
-}) {
+  caller?: Function;
+  onCopyQuery?: CopyQueryCallback;
+} = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useCopyQuery,
+  });
   return useCallback(() => {
     if (!queryEditor) {
       return;
@@ -142,13 +148,12 @@ export function useCopyQuery({
   }, [queryEditor, onCopyQuery]);
 }
 
-export function useMergeQuery({
-  queryEditor,
-  schema,
-}: {
-  queryEditor?: CodeMirrorEditorWithOperationFacts | null;
-  schema: GraphQLSchema | null | undefined;
-}) {
+export function useMergeQuery({ caller }: { caller?: Function } = {}) {
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useMergeQuery,
+  });
+  const { schema } = useSchemaContext({ nonNull: true, caller: useMergeQuery });
   return useCallback(() => {
     const documentAST = queryEditor?.documentAST;
     const query = queryEditor?.getValue();
@@ -161,14 +166,14 @@ export function useMergeQuery({
 }
 
 export function usePrettifyEditors({
-  queryEditor,
-  variableEditor,
-  headerEditor,
+  caller,
 }: {
-  queryEditor: CodeMirrorEditorWithOperationFacts | null;
-  variableEditor: CodeMirrorEditor | null;
-  headerEditor: CodeMirrorEditor | null;
-}) {
+  caller?: Function;
+} = {}) {
+  const { queryEditor, headerEditor, variableEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || usePrettifyEditors,
+  });
   return useCallback(() => {
     if (variableEditor) {
       const variableEditorContent = variableEditor.getValue();
@@ -212,4 +217,59 @@ export function usePrettifyEditors({
       }
     }
   }, [queryEditor, variableEditor, headerEditor]);
+}
+
+export function useAutoCompleteLeafs({
+  getDefaultFieldNames,
+  caller,
+}: { getDefaultFieldNames?: GetDefaultFieldNamesFn; caller?: Function } = {}) {
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: caller || useAutoCompleteLeafs,
+  });
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: caller || useAutoCompleteLeafs,
+  });
+  return useCallback(() => {
+    if (!queryEditor) {
+      return;
+    }
+
+    const query = queryEditor.getValue();
+    const { insertions, result } = fillLeafs(
+      schema,
+      query,
+      getDefaultFieldNames,
+    );
+    if (insertions && insertions.length > 0) {
+      queryEditor.operation(() => {
+        const cursor = queryEditor.getCursor();
+        const cursorIndex = queryEditor.indexFromPos(cursor);
+        queryEditor.setValue(result || '');
+        let added = 0;
+        const markers = insertions.map(({ index, string }) =>
+          queryEditor.markText(
+            queryEditor.posFromIndex(index + added),
+            queryEditor.posFromIndex(index + (added += string.length)),
+            {
+              className: 'autoInsertedLeaf',
+              clearOnEnter: true,
+              title: 'Automatically added leaf fields',
+            },
+          ),
+        );
+        setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
+        let newCursorIndex = cursorIndex;
+        insertions.forEach(({ index, string }) => {
+          if (index < cursorIndex) {
+            newCursorIndex += string.length;
+          }
+        });
+        queryEditor.setCursor(queryEditor.posFromIndex(newCursorIndex));
+      });
+    }
+
+    return result;
+  }, [getDefaultFieldNames, queryEditor, schema]);
 }
