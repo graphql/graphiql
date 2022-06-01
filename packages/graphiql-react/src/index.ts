@@ -33,6 +33,7 @@ export {
   useHistoryContext,
   useSelectHistoryItem,
 } from './history';
+export * from './icons';
 export {
   SchemaContext,
   SchemaContextProvider,

@@ -1,4 +1,6 @@
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -54,6 +56,8 @@ import type {
 import React, { useEffect, useRef, useState } from 'react';
 
 export {
+  ChevronDownIcon,
+  ChevronUpIcon,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
