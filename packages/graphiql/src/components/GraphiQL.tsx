@@ -363,7 +363,11 @@ export const GraphiQL: ForwardRefExoticComponent<
         <EditorContextProvider
           defaultQuery={props.defaultQuery}
           headers={props.headers}
+          onTabChange={
+            typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
+          }
           query={props.query}
+          shouldPersistHeaders={props.shouldPersistHeaders}
           variables={props.variables}>
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
