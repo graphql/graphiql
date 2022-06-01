@@ -10,6 +10,9 @@ import React, {
   PropsWithChildren,
   MouseEventHandler,
   ReactNode,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
 } from 'react';
 import {
   GraphQLSchema,
@@ -62,11 +65,7 @@ import find from '../utility/find';
 import { getLeft, getTop } from '../utility/elementPosition';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
-import type {
-  Fetcher,
-  GetDefaultFieldNamesFn,
-  QueryStoreItem,
-} from '@graphiql/toolkit';
+import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 import { Tab, TabAddButton, Tabs } from './Tabs';
 
@@ -316,20 +315,41 @@ export type GraphiQLState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export function GraphiQL({
-  dangerouslyAssumeSchemaIsValid,
-  docExplorerOpen,
-  fetcher,
-  inputValueDeprecation,
-  introspectionQueryName,
-  maxHistoryLength,
-  onToggleHistory,
-  onToggleDocs,
-  storage,
-  schema,
-  schemaDescription,
-  ...props
-}: GraphiQLProps) {
+
+export const GraphiQL: ForwardRefExoticComponent<
+  GraphiQLProps & RefAttributes<GraphiQLWithContext>
+> & {
+  formatResult(result: any): string;
+  formatError(error: any): string;
+  Logo: typeof GraphiQLLogo;
+  Toolbar: typeof GraphiQLToolbar;
+  Footer: typeof GraphiQLFooter;
+  QueryEditor: typeof QueryEditor;
+  VariableEditor: typeof VariableEditor;
+  HeaderEditor: typeof HeaderEditor;
+  ResultViewer: typeof ResultViewer;
+  Button: typeof ToolbarButton;
+  ToolbarButton: typeof ToolbarButton;
+  Group: typeof ToolbarGroup;
+  Menu: typeof ToolbarMenu;
+  MenuItem: typeof ToolbarMenuItem;
+} = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQL(
+  {
+    dangerouslyAssumeSchemaIsValid,
+    docExplorerOpen,
+    fetcher,
+    inputValueDeprecation,
+    introspectionQueryName,
+    maxHistoryLength,
+    onToggleHistory,
+    onToggleDocs,
+    storage,
+    schema,
+    schemaDescription,
+    ...props
+  },
+  ref,
+) {
   // Ensure props are correct
   if (typeof fetcher !== 'function') {
     throw new TypeError('GraphiQL requires a fetcher function.');
@@ -360,7 +380,7 @@ export function GraphiQL({
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
-                <GraphiQLConsumeContexts {...props} />
+                <GraphiQLConsumeContexts {...props} ref={ref} />
               </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
@@ -368,7 +388,7 @@ export function GraphiQL({
       </HistoryContextProvider>
     </StorageContextProvider>
   );
-}
+}) as any;
 
 GraphiQL.formatResult = (result: any): string => {
   console.warn(
@@ -425,11 +445,13 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'storage'
 >;
 
-function GraphiQLConsumeContexts({
-  getDefaultFieldNames,
-  onCopyQuery,
-  ...props
-}: GraphiQLWithContextProviderProps) {
+const GraphiQLConsumeContexts = forwardRef<
+  GraphiQLWithContext,
+  GraphiQLWithContextProviderProps
+>(function GraphiQLConsumeContexts(
+  { getDefaultFieldNames, onCopyQuery, ...props },
+  ref,
+) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
@@ -455,9 +477,10 @@ function GraphiQLConsumeContexts({
       copy={copy}
       merge={merge}
       prettify={prettify}
+      ref={ref}
     />
   );
-}
+});
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
@@ -613,7 +636,7 @@ class GraphiQLWithContext extends React.Component<
           <div
             className="historyPaneWrap"
             style={{ width: '230px', zIndex: 7 }}>
-            <QueryHistory onSelect={this.handleSelectHistoryQuery} />
+            <QueryHistory />
           </div>
         )}
         <div className="editorWrap">
@@ -684,7 +707,7 @@ class GraphiQLWithContext extends React.Component<
               <QueryEditor
                 editorTheme={this.props.editorTheme}
                 externalFragments={this.props.externalFragments}
-                onEdit={this.handleEditQuery}
+                onEdit={this.props.onEditQuery}
                 onEditOperationName={this.props.onEditOperationName}
                 readOnly={this.props.readOnly}
                 validationRules={this.props.validationRules}
@@ -727,7 +750,7 @@ class GraphiQLWithContext extends React.Component<
                   )}
                 </div>
                 <VariableEditor
-                  onEdit={this.handleEditVariables}
+                  onEdit={this.props.onEditVariables}
                   editorTheme={this.props.editorTheme}
                   readOnly={this.props.readOnly}
                   active={this.state.variableEditorActive}
@@ -736,7 +759,7 @@ class GraphiQLWithContext extends React.Component<
                   <HeaderEditor
                     active={this.state.headerEditorActive}
                     editorTheme={this.props.editorTheme}
-                    onEdit={this.handleEditHeaders}
+                    onEdit={this.props.onEditHeaders}
                     readOnly={this.props.readOnly}
                     shouldPersistHeaders={this.props.shouldPersistHeaders}
                   />
@@ -778,6 +801,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   getQueryEditor() {
+    console.warn(
+      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
+    );
     return this.props.editorContext.queryEditor || null;
   }
 
@@ -787,6 +813,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getVariableEditor() {
+    console.warn(
+      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
+    );
     return this.props.editorContext.variableEditor || null;
   }
 
@@ -796,6 +825,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public getHeaderEditor() {
+    console.warn(
+      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
+    );
     return this.props.editorContext.headerEditor || null;
   }
 
@@ -805,6 +837,9 @@ class GraphiQLWithContext extends React.Component<
    * @public
    */
   public refresh() {
+    console.warn(
+      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
+    );
     this.props.editorContext.queryEditor?.refresh();
     this.props.editorContext.variableEditor?.refresh();
     this.props.editorContext.headerEditor?.refresh();
@@ -825,45 +860,6 @@ class GraphiQLWithContext extends React.Component<
   }
 
   // Private methods
-
-  handleEditQuery = (value: string) => {
-    this.props.onEditQuery?.(
-      value,
-      this.props.editorContext.queryEditor?.documentAST ?? undefined,
-    );
-  };
-
-  handleEditVariables = (value: string) => {
-    if (this.props.onEditVariables) {
-      this.props.onEditVariables(value);
-    }
-  };
-
-  handleEditHeaders = (value: string) => {
-    if (this.props.onEditHeaders) {
-      this.props.onEditHeaders(value);
-    }
-  };
-
-  handleSelectHistoryQuery = ({
-    query,
-    variables,
-    headers,
-    operationName,
-  }: QueryStoreItem) => {
-    if (query) {
-      setQuery(this.props, query);
-    }
-    if (variables) {
-      setVariables(this.props, variables);
-    }
-    if (headers) {
-      setHeaders(this.props, headers);
-    }
-    if (operationName) {
-      this.props.onEditOperationName?.(operationName);
-    }
-  };
 
   private handleResizeStart = (downEvent: React.MouseEvent) => {
     if (!this._didClickDragBar(downEvent)) {
@@ -1123,16 +1119,4 @@ function isChildComponentType<T extends ComponentType>(
   }
 
   return child.type === component;
-}
-
-function setQuery(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.queryEditor?.setValue(value);
-}
-
-function setVariables(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.variableEditor?.setValue(value);
-}
-
-function setHeaders(props: GraphiQLWithContextConsumerProps, value: string) {
-  props.editorContext.headerEditor?.setValue(value);
 }

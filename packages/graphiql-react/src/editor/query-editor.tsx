@@ -1,6 +1,7 @@
-import { getSelectedOperationName, StorageAPI } from '@graphiql/toolkit';
+import { getSelectedOperationName } from '@graphiql/toolkit';
 import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import type {
+  DocumentNode,
   FragmentDefinitionNode,
   GraphQLSchema,
   ValidationRule,
@@ -37,7 +38,7 @@ type OnClickReference = (reference: SchemaReference) => void;
 export type UseQueryEditorArgs = {
   editorTheme?: string;
   externalFragments?: string | FragmentDefinitionNode[];
-  onEdit?: EditCallback;
+  onEdit?(value: string, documentAST?: DocumentNode): void;
   onEditOperationName?: EditCallback;
   onCopyQuery?: CopyQueryCallback;
   readOnly?: boolean;
@@ -276,7 +277,7 @@ export function useQueryEditor({
         }
 
         // Invoke callback props only after the operation facts have been updated
-        onEdit?.(query);
+        onEdit?.(query, operationFacts?.documentAST);
         if (
           onEditOperationName &&
           operationFacts?.operationName !== undefined &&

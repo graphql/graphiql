@@ -27,6 +27,7 @@ import {
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
+  useSelectHistoryItem,
 } from './history';
 import {
   SchemaContext,
@@ -86,6 +87,7 @@ export {
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
+  useSelectHistoryItem,
   // schema
   SchemaContext,
   SchemaContextProvider,
