@@ -1,0 +1,98 @@
+/**
+ * We render markdown in the following places:
+ * - In the hint tooltip when typing in the query editor (field description 
+ *   and optionally deprecation reason).
+ * - In the info tooltip when hovering over a field in the query editor
+ *   (field description any optionally deprecation reason).
+ */
+
+.CodeMirror-hint-information-description,
+.CodeMirror-hint-information-deprecation-reason,
+.CodeMirror-info .info-description,
+.CodeMirror-info .info-deprecation {
+  & blockquote {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: var(--px-8);
+  }
+
+  & code,
+  & pre {
+    border-radius: var(--border-radius-4);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-inline-code);
+  }
+
+  & code {
+    padding: var(--px-2);
+  }
+
+  & pre {
+    overflow: auto;
+    padding: var(--px-6) var(--px-8);
+  }
+
+  & pre code {
+    background-color: initial;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  & ol,
+  & ul {
+    padding-left: var(--px-16);
+  }
+
+  & ol {
+    list-style-type: decimal;
+  }
+
+  & ul {
+    list-style-type: disc;
+  }
+
+  & img {
+    border-radius: var(--border-radius-4);
+    max-height: 120px;
+    max-width: 100%;
+  }
+}
+
+.CodeMirror-hint-information-description,
+.CodeMirror-info .info-description {
+  & a {
+    color: var(--color-pink);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  & blockquote {
+    border-left: 1.5px solid var(--color-neutral-40);
+  }
+
+  & code,
+  & pre {
+    background-color: var(--color-neutral-7);
+    color: var(--color-neutral-100);
+  }
+}
+
+.CodeMirror-hint-information-deprecation-reason,
+.CodeMirror-info .info-deprecation {
+  & a {
+    color: var(--color-orche);
+    text-decoration: underline;
+  }
+
+  & blockquote {
+    border-left: 1.5px solid var(--color-orche);
+  }
+
+  & code,
+  & pre {
+    background-color: var(--color-orche-background-dark);
+  }
+}

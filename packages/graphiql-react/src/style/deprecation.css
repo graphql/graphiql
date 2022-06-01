@@ -1,0 +1,38 @@
+/**
+ * We show deprecations in the following places:
+ * - In the hint tooltip when typing in the query editor.
+ * - In the info tooltip when hovering over a field in the query editor.
+ */
+
+.CodeMirror-hint-information-deprecation,
+.CodeMirror-info .info-deprecation {
+  background-color: var(--color-orche-background);
+  border: 1px solid var(--color-orche);
+  border-radius: var(--border-radius-4);
+  color: var(--color-orche);
+  margin-top: var(--px-12);
+  padding: var(--px-6) var(--px-8);
+}
+
+.CodeMirror-hint-information-deprecation-label,
+.CodeMirror-info .info-deprecation-label {
+  font-size: var(--font-size-hint);
+  font-weight: var(--font-weight-medium);
+}
+
+.CodeMirror-hint-information-deprecation-reason,
+.CodeMirror-info .info-deprecation-reason {
+  margin-top: var(--px-6);
+
+  & > * {
+    margin: var(--px-8) 0;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+}

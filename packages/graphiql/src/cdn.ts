@@ -10,15 +10,9 @@ import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
 import '@graphiql/react/font/roboto.css';
 import '@graphiql/react/font/fira-code.css';
+import '@graphiql/react/dist/style.css';
 import './css/app.css';
-import './css/codemirror.css';
-import './css/foldgutter.css';
-import './css/info.css';
-import './css/jump.css';
-import './css/lint.css';
 import './css/loading.css';
-import './css/show-hint.css';
-
 import './css/doc-explorer.css';
 import './css/history.css';
 

@@ -1,10 +1,7 @@
 .graphiql-container,
 .graphiql-container button,
 .graphiql-container input {
-  color: #141823;
-  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular',
-    'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande',
-    arial, sans-serif;
+  color: var(--color-neutral-100);
   font-size: 14px;
 }
 
@@ -29,7 +26,6 @@
 }
 
 .graphiql-container .title em {
-  font-family: georgia;
   font-size: 19px;
 }
 
@@ -202,28 +198,12 @@
   width: 12px;
 }
 
-/* No `.graphiql-container` here so themes can overwrite */
-.result-window .CodeMirror.cm-s-graphiql {
-  background: #f6f7f8;
-}
-
-.graphiql-container .result-window .CodeMirror-gutters {
-  background-color: #f6f7f8;
-  border: none;
-}
-
 .editor-drag-bar {
   width: 12px;
   background-color: #eeeeee;
   border-left: 1px solid #e0e0e0;
   border-right: 1px solid #e0e0e0;
   cursor: col-resize;
-}
-
-.graphiql-container .result-window .CodeMirror-foldgutter,
-.graphiql-container .result-window .CodeMirror-foldgutter-open:after,
-.graphiql-container .result-window .CodeMirror-foldgutter-folded:after {
-  padding-left: 3px;
 }
 
 .graphiql-container .toolbar-button {
@@ -390,55 +370,6 @@
   fill: #fff;
 }
 
-.graphiql-container .CodeMirror-scroll {
-  overflow-scrolling: touch;
-}
-
-.graphiql-container .CodeMirror {
-  color: #141823;
-  font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-  font-size: 13px;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.graphiql-container .CodeMirror-lines {
-  padding: 20px 0;
-}
-
-.CodeMirror-hint-information .content {
-  box-orient: vertical;
-  color: #141823;
-  display: flex;
-  font-family: system, -apple-system, 'San Francisco', '.SFNSDisplay-Regular',
-    'Segoe UI', Segoe, 'Segoe WP', 'Helvetica Neue', helvetica, 'Lucida Grande',
-    arial, sans-serif;
-  font-size: 13px;
-  line-clamp: 3;
-  line-height: 16px;
-  max-height: 48px;
-  overflow: hidden;
-  text-overflow: -o-ellipsis-lastline;
-}
-
-.CodeMirror-hint-information .content p:first-child {
-  margin-top: 0;
-}
-
-.CodeMirror-hint-information .content p:last-child {
-  margin-bottom: 0;
-}
-
-.CodeMirror-hint-information .infoType {
-  color: #ca9800;
-  cursor: pointer;
-  display: inline;
-  margin-right: 0.5em;
-}
-
 .autoInsertedLeaf.cm-property {
   animation-duration: 6s;
   animation-name: insertionFade;
@@ -460,29 +391,6 @@
     background: #fbffc9;
     border-color: #f0f3c0;
   }
-}
-
-div.CodeMirror-lint-tooltip {
-  background-color: white;
-  border-radius: 2px;
-  border: 0;
-  color: #141823;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-  font-size: 13px;
-  line-height: 16px;
-  max-width: 430px;
-  opacity: 0;
-  padding: 8px 10px;
-  transition: opacity 0.15s;
-  white-space: pre-wrap;
-}
-
-div.CodeMirror-lint-tooltip > * {
-  padding-left: 23px;
-}
-
-div.CodeMirror-lint-tooltip > * + * {
-  margin-top: 12px;
 }
 
 .graphiql-container .variable-editor-title-text {
@@ -612,99 +520,4 @@ div.CodeMirror-lint-tooltip > * + * {
 
 .graphiql-container .tab-add:active {
   background: rgba(0, 0, 0, 0.1);
-}
-
-/* COLORS */
-
-.graphiql-container .CodeMirror-foldmarker {
-  border-radius: 4px;
-  background: #08f;
-  background: linear-gradient(#43a8ff, #0f83e8);
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-  color: white;
-  font-family: arial;
-  font-size: 12px;
-  line-height: 0;
-  margin: 0 3px;
-  padding: 0px 4px 1px;
-  text-shadow: 0 -1px rgba(0, 0, 0, 0.1);
-}
-
-.graphiql-container div.CodeMirror span.CodeMirror-matchingbracket {
-  color: #555;
-  text-decoration: underline;
-}
-
-.graphiql-container div.CodeMirror span.CodeMirror-nonmatchingbracket {
-  color: #f00;
-}
-
-/* Comment */
-.cm-comment {
-  color: #666;
-}
-
-/* Punctuation */
-.cm-punctuation {
-  color: #555;
-}
-
-/* Keyword */
-.cm-keyword {
-  color: #b11a04;
-}
-
-/* OperationName, FragmentName */
-.cm-def {
-  color: #d2054e;
-}
-
-/* FieldName */
-.cm-property {
-  color: #1f61a0;
-}
-
-/* FieldAlias */
-.cm-qualifier {
-  color: #1c92a9;
-}
-
-/* ArgumentName and ObjectFieldName */
-.cm-attribute {
-  color: #8b2bb9;
-}
-
-/* Number */
-.cm-number {
-  color: #2882f9;
-}
-
-/* String */
-.cm-string {
-  color: #d64292;
-}
-
-/* Boolean */
-.cm-builtin {
-  color: #d47509;
-}
-
-/* EnumValue */
-.cm-string-2 {
-  color: #0b7fc7;
-}
-
-/* Variable */
-.cm-variable {
-  color: #397d13;
-}
-
-/* Directive */
-.cm-meta {
-  color: #b33086;
-}
-
-/* Type */
-.cm-atom {
-  color: #ca9800;
 }
