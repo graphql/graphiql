@@ -15,7 +15,7 @@ type ResizableElement = 'first' | 'second';
 type CallbackArgs = {
   hiddenElement: ResizableElement | null;
   hide(element: ResizableElement): void;
-  reset(): void;
+  show(): void;
 };
 
 type Callback = (args: CallbackArgs) => ReactNode;
@@ -48,9 +48,15 @@ export function DragResizeContainer({
   storageKey?: string;
 } & JSX.IntrinsicElements['div']) {
   const storage = useStorageContext();
-  const firstRef = useRef<HTMLDivElement>(null);
-  const dragBarRef = useRef<HTMLDivElement>(null);
-  const secondRef = useRef<HTMLDivElement>(null);
+
+  const store = useCallback(
+    debounce(500, (value: string) => {
+      if (storage && storageKey) {
+        storage.set(storageKey, value);
+      }
+    }),
+    [storage, storageKey],
+  );
 
   const [hiddenElement, _setHiddenElement] = useState<ResizableElement | null>(
     () => {
@@ -74,6 +80,10 @@ export function DragResizeContainer({
     [onHiddenElementChange],
   );
 
+  const firstRef = useRef<HTMLDivElement>(null);
+  const dragBarRef = useRef<HTMLDivElement>(null);
+  const secondRef = useRef<HTMLDivElement>(null);
+
   const defaultFlexRef = useRef(`${defaultSizeRelation}`);
 
   /**
@@ -96,42 +106,77 @@ export function DragResizeContainer({
     }
   }, [storage, storageKey]);
 
+  const hide = useCallback((resizableElement: ResizableElement) => {
+    const element =
+      resizableElement === 'first' ? firstRef.current : secondRef.current;
+    if (!element) {
+      return;
+    }
+
+    // We hide elements off screen because of codemirror. If the page is loaded
+    // and the codemirror container would have zero width, the layout isn't
+    // instant pretty. By always giving the editor some width we avoid any
+    // layout shifts when the editor reappears.
+    element.style.left = '-1000px';
+    element.style.position = 'absolute';
+    element.style.opacity = '0';
+    element.style.height = '500px';
+    element.style.width = '500px';
+
+    // Make sure that the flex value of the first item is at least equal to one
+    // so that the entire space of the parent element is filled up
+    if (firstRef.current) {
+      const flex = parseFloat(firstRef.current.style.flex);
+      if (!Number.isFinite(flex) || flex < 1) {
+        firstRef.current.style.flex = '1';
+      }
+      firstRef.current.style.flex;
+    }
+  }, []);
+
+  const show = useCallback(
+    (resizableElement: ResizableElement) => {
+      const element =
+        resizableElement === 'first' ? firstRef.current : secondRef.current;
+      if (!element) {
+        return;
+      }
+
+      element.style.width = '';
+      element.style.height = '';
+      element.style.opacity = '';
+      element.style.position = '';
+      element.style.left = '';
+
+      if (firstRef.current && storage && storageKey) {
+        const storedValue = storage?.get(storageKey);
+        if (
+          storedValue &&
+          storedValue !== HIDE_FIRST &&
+          storedValue !== HIDE_SECOND
+        ) {
+          firstRef.current.style.flex = storedValue;
+        }
+      }
+    },
+    [storage, storageKey],
+  );
+
   /**
    * Hide and show items when state changes
    */
   useLayoutEffect(() => {
-    if (firstRef.current) {
-      if (hiddenElement === 'first') {
-        hide(firstRef.current);
-      } else {
-        show(firstRef.current);
-      }
+    if (hiddenElement === 'first') {
+      hide('first');
+    } else {
+      show('first');
     }
-    if (secondRef.current) {
-      if (hiddenElement === 'second') {
-        hide(secondRef.current);
-      } else {
-        show(secondRef.current);
-      }
+    if (hiddenElement === 'second') {
+      hide('second');
+    } else {
+      show('second');
     }
-  }, [hiddenElement]);
-
-  const store = useCallback(
-    debounce(500, (value: string) => {
-      if (storage && storageKey) {
-        storage.set(storageKey, value);
-      }
-    }),
-    [storage, storageKey],
-  );
-
-  const reset = useCallback(() => {
-    if (firstRef.current) {
-      firstRef.current.style.flex = defaultFlexRef.current;
-    }
-    store(defaultFlexRef.current);
-    setHiddenElement(null);
-  }, [setHiddenElement, store]);
+  }, [hiddenElement, hide, show]);
 
   useEffect(() => {
     if (!dragBarRef.current || !firstRef.current || !secondRef.current) {
@@ -201,6 +246,14 @@ export function DragResizeContainer({
 
     dragBarContainer.addEventListener('mousedown', handleMouseDown);
 
+    function reset() {
+      if (firstRef.current) {
+        firstRef.current.style.flex = defaultFlexRef.current;
+      }
+      store(defaultFlexRef.current);
+      setHiddenElement(null);
+    }
+
     dragBarContainer.addEventListener('dblclick', reset);
 
     return () => {
@@ -209,7 +262,6 @@ export function DragResizeContainer({
     };
   }, [
     direction,
-    reset,
     setHiddenElement,
     sizeThresholdFirst,
     sizeThresholdSecond,
@@ -225,8 +277,14 @@ export function DragResizeContainer({
 
   const callbackArgs: CallbackArgs = {
     hiddenElement,
-    hide: setHiddenElement,
-    reset,
+    // When programmatically hiding and showing elements we don't update the
+    // stored value. That way we can restore the exact size.
+    hide(element) {
+      setHiddenElement(element);
+    },
+    show() {
+      setHiddenElement(null);
+    },
   };
 
   return (
@@ -247,26 +305,6 @@ export function DragResizeContainer({
       </div>
     </div>
   );
-}
-
-function hide(element: HTMLDivElement) {
-  // We hide elements off screen because of codemirror. If the page is loaded
-  // and the codemirror container would have zero width, the layout isn't
-  // instant pretty. By always giving the editor some width we avoid any
-  // layout shifts when the editor reappears.
-  element.style.left = '-1000px';
-  element.style.position = 'absolute';
-  element.style.opacity = '0';
-  element.style.height = '500px';
-  element.style.width = '500px';
-}
-
-function show(element: HTMLDivElement) {
-  element.style.width = '';
-  element.style.height = '';
-  element.style.opacity = '';
-  element.style.position = '';
-  element.style.left = '';
 }
 
 const DEFAULT_FLEX = 1;

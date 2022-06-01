@@ -663,7 +663,7 @@ class GraphiQLWithContext extends React.Component<
                       className="docExplorerShow"
                       onClick={() => {
                         this.props.explorerContext?.show();
-                        docResize.reset();
+                        docResize.show();
                       }}
                       aria-label="Open Documentation Explorer">
                       Docs
@@ -751,7 +751,7 @@ class GraphiQLWithContext extends React.Component<
                         externalFragments={this.props.externalFragments}
                         onClickReference={() => {
                           if (docResize.hiddenElement === 'second') {
-                            docResize.reset();
+                            docResize.show();
                           }
                         }}
                         onCopyQuery={this.props.onCopyQuery}
@@ -775,7 +775,7 @@ class GraphiQLWithContext extends React.Component<
                             if (
                               secondaryEditorResize.hiddenElement === 'second'
                             ) {
-                              secondaryEditorResize.reset();
+                              secondaryEditorResize.show();
                             }
                             this.setState(
                               {
@@ -802,7 +802,7 @@ class GraphiQLWithContext extends React.Component<
                               if (
                                 secondaryEditorResize.hiddenElement === 'second'
                               ) {
-                                secondaryEditorResize.reset();
+                                secondaryEditorResize.show();
                               }
                               this.setState(
                                 {
