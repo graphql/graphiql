@@ -98,18 +98,29 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
       let query = autoCompleteLeafs() || queryEditor.getValue();
 
       const variablesString = variableEditor?.getValue();
-      const variables = tryParseJson(
-        variablesString,
-        'Variables are invalid JSON',
-      );
-      if (typeof variables !== 'object') {
-        throw new Error('Variables are not a JSON object.');
+      let variables: Record<string, unknown> | undefined;
+      try {
+        variables = tryParseJsonObject({
+          json: variablesString,
+          errorMessageParse: 'Variables are invalid JSON',
+          errorMessageType: 'Variables are not a JSON object.',
+        });
+      } catch (error) {
+        setResponse(error instanceof Error ? error.message : `${error}`);
+        return;
       }
 
       const headersString = headerEditor?.getValue();
-      const headers = tryParseJson(headersString, 'Headers are invalid JSON');
-      if (typeof headers !== 'object') {
-        throw new Error('Headers are not a JSON object.');
+      let headers: Record<string, unknown> | undefined;
+      try {
+        headers = tryParseJsonObject({
+          json: headersString,
+          errorMessageParse: 'Headers are invalid JSON',
+          errorMessageType: 'Headers are not a JSON object.',
+        });
+      } catch (error) {
+        setResponse(error instanceof Error ? error.message : `${error}`);
+        return;
       }
 
       const selectedOperationName =
@@ -356,14 +367,29 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
 
 export const useExecutionContext = createContextHook(ExecutionContext);
 
-function tryParseJson(str: string | undefined, errorMessage: string) {
-  let parsed: Record<string, unknown> | string | number | boolean | null = null;
+function tryParseJsonObject({
+  json,
+  errorMessageParse,
+  errorMessageType,
+}: {
+  json: string | undefined;
+  errorMessageParse: string;
+  errorMessageType: string;
+}) {
+  let parsed: Record<string, any> | undefined = undefined;
   try {
-    parsed = str && str.trim() !== '' ? JSON.parse(str) : null;
+    parsed = json && json.trim() !== '' ? JSON.parse(json) : undefined;
   } catch (error) {
     throw new Error(
-      `${errorMessage}: ${error instanceof Error ? error.message : error}.`,
+      `${errorMessageParse}: ${
+        error instanceof Error ? error.message : error
+      }.`,
     );
+  }
+  const isObject =
+    typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+  if (parsed !== undefined && !isObject) {
+    throw new Error(errorMessageType);
   }
   return parsed;
 }
