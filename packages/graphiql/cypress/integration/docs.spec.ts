@@ -5,7 +5,7 @@ describe('GraphiQL DocExplorer - button', () => {
     cy.visit(`/`);
   });
   it('Toggles doc pane on', () => {
-    cy.get('.docExplorerShow').click();
+    cy.get('.graphiql-sidebar button').eq(0).click();
     cy.get('.doc-explorer').should('be.visible');
   });
 
@@ -19,7 +19,7 @@ describe('GraphiQL DocExplorer - button', () => {
 describe('GraphiQL DocExplorer - search', () => {
   before(() => {
     cy.visit(`/`);
-    cy.get('.docExplorerShow').click();
+    cy.get('.graphiql-sidebar button').eq(0).click();
   });
 
   it('Searches docs for values', () => {
@@ -66,7 +66,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Allows clearing the search', () => {
     cy.visit(`/`);
-    cy.get('.docExplorerShow').click();
+    cy.get('.graphiql-sidebar button').eq(0).click();
     cy.get('label.search-box input').type('test');
     cy.get('.search-box-clear').click();
     cy.get('.doc-category-title').should('have.text', 'root types');
@@ -77,7 +77,7 @@ describe('GraphiQL DocExplorer - search', () => {
 describe('GraphQL DocExplorer - deprecated fields', () => {
   before(() => {
     cy.visit(`/`);
-    cy.get('.docExplorerShow').click();
+    cy.get('.graphiql-sidebar button').eq(0).click();
   });
   it('should show deprecated fields category title', () => {
     cy.get('.doc-category>.doc-category-item').first().find('a').click();

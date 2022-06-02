@@ -145,12 +145,8 @@ export function useDragResize({
 
       if (firstRef.current && storage && storageKey) {
         const storedValue = storage?.get(storageKey);
-        if (
-          storedValue &&
-          storedValue !== HIDE_FIRST &&
-          storedValue !== HIDE_SECOND
-        ) {
-          firstRef.current.style.flex = storedValue;
+        if (storedValue !== HIDE_FIRST && storedValue !== HIDE_SECOND) {
+          firstRef.current.style.flex = storedValue || defaultFlexRef.current;
         }
       }
     },

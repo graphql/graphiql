@@ -542,29 +542,29 @@ describe('GraphiQL', () => {
       .spyOn(Element.prototype, 'getBoundingClientRect')
       .mockReturnValue({ left: 0, right: 1200 });
 
-    const { container, getByLabelText } = render(
-      <GraphiQL fetcher={noOpFetcher} />,
+    const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+    fireEvent.click(
+      container.querySelector('[title="Show Documentation Explorer"]'),
     );
+    const dragBar = container.querySelectorAll(
+      '.graphiql-horizontal-drag-bar',
+    )[0];
 
-    fireEvent.click(getByLabelText(/Open Documentation Explorer/i));
-    const docExplorerResizer = container.querySelector(
-      '.docExplorerResizer',
-    ) as Element;
-
-    fireEvent.mouseDown(docExplorerResizer, {
+    fireEvent.mouseDown(dragBar, {
       clientX: 3,
     });
 
-    fireEvent.mouseMove(docExplorerResizer, {
+    fireEvent.mouseMove(dragBar, {
       buttons: 1,
       clientX: 800,
     });
 
-    fireEvent.mouseUp(docExplorerResizer);
+    fireEvent.mouseUp(dragBar);
 
     // 797 / (1200 - 797) = 1.977667493796526
     expect(
-      container.querySelector('.editorWrap').parentElement.style.flex,
+      container.querySelector('.docExplorerWrap').parentElement.style.flex,
     ).toBe('1.977667493796526');
 
     clientWidthSpy.mockRestore();
