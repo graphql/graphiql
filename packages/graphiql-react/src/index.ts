@@ -39,7 +39,7 @@ import {
   StorageContextProvider,
   useStorageContext,
 } from './storage';
-import { DragResizeContainer } from './utility/resize';
+import { useDragResize } from './utility/resize';
 
 import type {
   EditorContextType,
@@ -98,7 +98,7 @@ export {
   StorageContextProvider,
   useStorageContext,
   // utility/resize
-  DragResizeContainer,
+  useDragResize,
 };
 
 export type {

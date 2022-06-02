@@ -1,8 +1,8 @@
 import {
-  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -12,33 +12,7 @@ import debounce from './debounce';
 
 type ResizableElement = 'first' | 'second';
 
-type CallbackArgs = {
-  hiddenElement: ResizableElement | null;
-  hide(element: ResizableElement): void;
-  show(): void;
-};
-
-type Callback = (args: CallbackArgs) => ReactNode;
-
-export function DragResizeContainer({
-  first,
-  dragBar,
-  second,
-
-  defaultSizeRelation = DEFAULT_FLEX,
-  direction,
-  initiallyHidden,
-  onHiddenElementChange,
-  sizeThresholdFirst = 100,
-  sizeThresholdSecond = 100,
-  storageKey,
-
-  ...divProps
-}: {
-  first: ReactNode | Callback;
-  dragBar: ReactNode | Callback;
-  second: ReactNode | Callback;
-
+type UseDragResizeArgs = {
   defaultSizeRelation?: number;
   direction: 'horizontal' | 'vertical';
   initiallyHidden?: ResizableElement;
@@ -46,7 +20,17 @@ export function DragResizeContainer({
   sizeThresholdFirst?: number;
   sizeThresholdSecond?: number;
   storageKey?: string;
-} & JSX.IntrinsicElements['div']) {
+};
+
+export function useDragResize({
+  defaultSizeRelation = DEFAULT_FLEX,
+  direction,
+  initiallyHidden,
+  onHiddenElementChange,
+  sizeThresholdFirst = 100,
+  sizeThresholdSecond = 100,
+  storageKey,
+}: UseDragResizeArgs) {
   const storage = useStorageContext();
 
   const store = useCallback(
@@ -94,17 +78,28 @@ export function DragResizeContainer({
       storage && storageKey
         ? storage.get(storageKey) || defaultFlexRef.current
         : defaultFlexRef.current;
+    const flexDirection = direction === 'horizontal' ? 'row' : 'column';
 
     if (firstRef.current) {
+      firstRef.current.style.display = 'flex';
+      firstRef.current.style.flexDirection = flexDirection;
       firstRef.current.style.flex =
         storedValue === HIDE_FIRST || storedValue === HIDE_SECOND
           ? defaultFlexRef.current
           : storedValue;
     }
+
     if (secondRef.current) {
+      secondRef.current.style.display = 'flex';
+      secondRef.current.style.flexDirection = flexDirection;
       secondRef.current.style.flex = '1';
     }
-  }, [storage, storageKey]);
+
+    if (dragBarRef.current) {
+      dragBarRef.current.style.display = 'flex';
+      dragBarRef.current.style.flexDirection = flexDirection;
+    }
+  }, [direction, storage, storageKey]);
 
   const hide = useCallback((resizableElement: ResizableElement) => {
     const element =
@@ -268,42 +263,15 @@ export function DragResizeContainer({
     store,
   ]);
 
-  // This makes sure that the children are stretched to full width or height,
-  // depending on the resize direction.
-  const flexStyles = {
-    display: 'flex',
-    flexDirection: direction === 'horizontal' ? 'row' : 'column',
-  } as const;
-
-  const callbackArgs: CallbackArgs = {
-    hiddenElement,
-    // When programmatically hiding and showing elements we don't update the
-    // stored value. That way we can restore the exact size.
-    hide(element) {
-      setHiddenElement(element);
-    },
-    show() {
-      setHiddenElement(null);
-    },
-  };
-
-  return (
-    <div
-      {...divProps}
-      style={{
-        display: 'flex',
-        flexDirection: direction === 'horizontal' ? 'row' : 'column',
-      }}>
-      <div ref={firstRef} style={flexStyles}>
-        {typeof first === 'function' ? first(callbackArgs) : first}
-      </div>
-      <div ref={dragBarRef} style={flexStyles}>
-        {typeof dragBar === 'function' ? dragBar(callbackArgs) : dragBar}
-      </div>
-      <div ref={secondRef} style={flexStyles}>
-        {typeof second === 'function' ? second(callbackArgs) : second}
-      </div>
-    </div>
+  return useMemo(
+    () => ({
+      dragBarRef,
+      hiddenElement,
+      firstRef,
+      setHiddenElement,
+      secondRef,
+    }),
+    [hiddenElement, setHiddenElement],
   );
 }
 

@@ -21,7 +21,6 @@ import {
 } from 'graphql';
 
 import {
-  DragResizeContainer,
   EditorContextProvider,
   ExecutionContextProvider,
   ExecutionContextType,
@@ -31,6 +30,7 @@ import {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
@@ -518,6 +518,45 @@ const GraphiQLConsumeContexts = forwardRef<
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
+  const docResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'horizontal',
+    initiallyHidden: explorerContext?.isVisible ? undefined : 'second',
+    onHiddenElementChange: resizableElement => {
+      if (resizableElement === 'second') {
+        explorerContext?.hide();
+      } else {
+        explorerContext?.show();
+      }
+    },
+    sizeThresholdSecond: 200,
+    storageKey: 'docExplorerFlex',
+  });
+  const editorResize = useDragResize({
+    direction: 'horizontal',
+    storageKey: 'editorFlex',
+  });
+  const secondaryEditorResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'vertical',
+    initiallyHidden: (() => {
+      // initial secondary editor pane open
+      if (props.defaultVariableEditorOpen !== undefined) {
+        return props.defaultVariableEditorOpen ? undefined : 'second';
+      }
+
+      if (props.defaultSecondaryEditorOpen !== undefined) {
+        return props.defaultSecondaryEditorOpen ? undefined : 'second';
+      }
+
+      return editorContext.initialVariables || editorContext.initialHeaders
+        ? undefined
+        : 'second';
+    })(),
+    sizeThresholdSecond: 60,
+    storageKey: 'secondaryEditorFlex',
+  });
+
   return (
     <GraphiQLWithContext
       {...props}
@@ -531,6 +570,9 @@ const GraphiQLConsumeContexts = forwardRef<
       copy={copy}
       merge={merge}
       prettify={prettify}
+      docResize={docResize}
+      editorResize={editorResize}
+      secondaryEditorResize={secondaryEditorResize}
       ref={ref}
     />
   );
@@ -551,6 +593,10 @@ type GraphiQLWithContextConsumerProps = Omit<
   copy(): void;
   merge(): void;
   prettify(): void;
+
+  docResize: ReturnType<typeof useDragResize>;
+  editorResize: ReturnType<typeof useDragResize>;
+  secondaryEditorResize: ReturnType<typeof useDragResize>;
 };
 
 export type GraphiQLState = {
@@ -620,264 +666,215 @@ class GraphiQLWithContext extends React.Component<
     );
 
     return (
-      <DragResizeContainer
-        // Props passed to div
-        data-testid="graphiql-container"
-        className="graphiql-container"
-        // Resize specific props
-        defaultSizeRelation={3}
-        direction="horizontal"
-        initiallyHidden={
-          this.props.explorerContext?.isVisible ? undefined : 'second'
-        }
-        onHiddenElementChange={resizableElement => {
-          if (resizableElement === 'second') {
-            this.props.explorerContext?.hide();
-          } else {
-            this.props.explorerContext?.show();
-          }
-        }}
-        sizeThresholdSecond={200}
-        storageKey="docExplorerFlex"
-        // Child elements
-        first={docResize => (
-          <>
-            {this.props.historyContext?.isVisible && (
-              <div
-                className="historyPaneWrap"
-                style={{ width: '230px', zIndex: 7 }}>
-                <QueryHistory />
+      <div data-testid="graphiql-container" className="graphiql-container">
+        <div ref={this.props.docResize.firstRef}>
+          {this.props.historyContext?.isVisible && (
+            <div
+              className="historyPaneWrap"
+              style={{ width: '230px', zIndex: 7 }}>
+              <QueryHistory />
+            </div>
+          )}
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              {this.props.beforeTopBarContent}
+              <div className="topBar">
+                {logo}
+                <ExecuteButton />
+                {toolbar}
               </div>
-            )}
-            <div className="editorWrap">
-              <div className="topBarWrap">
-                {this.props.beforeTopBarContent}
-                <div className="topBar">
-                  {logo}
-                  <ExecuteButton />
-                  {toolbar}
-                </div>
-                {this.props.explorerContext &&
-                  !this.props.explorerContext.isVisible && (
-                    <button
-                      className="docExplorerShow"
-                      onClick={() => {
-                        this.props.explorerContext?.show();
-                        docResize.show();
-                      }}
-                      aria-label="Open Documentation Explorer">
-                      Docs
-                    </button>
-                  )}
-              </div>
-              {this.props.tabs ? (
-                <Tabs
-                  tabsProps={{
-                    'aria-label': 'Select active operation',
-                  }}>
-                  {this.props.editorContext.tabs.map((tab, index) => (
-                    <Tab
-                      key={tab.id}
-                      isActive={
-                        index === this.props.editorContext.activeTabIndex
-                      }
-                      title={tab.title}
-                      isCloseable={this.props.editorContext.tabs.length > 1}
-                      onSelect={() => {
-                        this.props.executionContext.stop();
-                        this.props.editorContext.changeTab(index);
-                      }}
-                      onClose={() => {
-                        if (this.props.editorContext.activeTabIndex === index) {
-                          this.props.executionContext.stop();
-                        }
-                        this.props.editorContext.closeTab(index);
-                      }}
-                      tabProps={{
-                        'aria-controls': 'sessionWrap',
-                        id: `session-tab-${index}`,
-                      }}
-                    />
-                  ))}
-                  <TabAddButton
+              {this.props.explorerContext &&
+                !this.props.explorerContext.isVisible && (
+                  <button
+                    className="docExplorerShow"
                     onClick={() => {
-                      this.props.editorContext.addTab();
+                      this.props.explorerContext?.show();
+                      this.props.docResize.setHiddenElement(null);
+                    }}
+                    aria-label="Open Documentation Explorer">
+                    Docs
+                  </button>
+                )}
+            </div>
+            {this.props.tabs ? (
+              <Tabs
+                tabsProps={{
+                  'aria-label': 'Select active operation',
+                }}>
+                {this.props.editorContext.tabs.map((tab, index) => (
+                  <Tab
+                    key={tab.id}
+                    isActive={index === this.props.editorContext.activeTabIndex}
+                    title={tab.title}
+                    isCloseable={this.props.editorContext.tabs.length > 1}
+                    onSelect={() => {
+                      this.props.executionContext.stop();
+                      this.props.editorContext.changeTab(index);
+                    }}
+                    onClose={() => {
+                      if (this.props.editorContext.activeTabIndex === index) {
+                        this.props.executionContext.stop();
+                      }
+                      this.props.editorContext.closeTab(index);
+                    }}
+                    tabProps={{
+                      'aria-controls': 'sessionWrap',
+                      id: `session-tab-${index}`,
                     }}
                   />
-                </Tabs>
-              ) : null}
-              <DragResizeContainer
-                // Props passed to div
-                role="tabpanel"
-                id="sessionWrap"
-                className="editorBar"
-                aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
-                // Resize specific props
-                direction="horizontal"
-                storageKey="editorFlex"
-                // Child elements
-                first={
-                  <DragResizeContainer
-                    // Props passed to div
-                    className="queryWrap"
-                    // Resize specific props
-                    defaultSizeRelation={3}
-                    direction="vertical"
-                    initiallyHidden={(() => {
-                      // initial secondary editor pane open
-                      if (this.props.defaultVariableEditorOpen !== undefined) {
-                        return this.props.defaultVariableEditorOpen
-                          ? undefined
-                          : 'second';
-                      }
-
-                      if (this.props.defaultSecondaryEditorOpen !== undefined) {
-                        return this.props.defaultSecondaryEditorOpen
-                          ? undefined
-                          : 'second';
-                      }
-
-                      return this.props.editorContext.initialVariables ||
-                        this.props.editorContext.initialHeaders
-                        ? undefined
-                        : 'second';
-                    })()}
-                    sizeThresholdSecond={60}
-                    storageKey="secondaryEditorFlex"
-                    // Child elements
-                    first={
-                      <QueryEditor
-                        editorTheme={this.props.editorTheme}
-                        externalFragments={this.props.externalFragments}
-                        onClickReference={() => {
-                          if (docResize.hiddenElement === 'second') {
-                            docResize.show();
-                          }
-                        }}
-                        onCopyQuery={this.props.onCopyQuery}
-                        onEdit={this.props.onEditQuery}
-                        onEditOperationName={this.props.onEditOperationName}
-                        readOnly={this.props.readOnly}
-                        validationRules={this.props.validationRules}
-                      />
-                    }
-                    dragBar={secondaryEditorResize => (
+                ))}
+                <TabAddButton
+                  onClick={() => {
+                    this.props.editorContext.addTab();
+                  }}
+                />
+              </Tabs>
+            ) : null}
+            <div
+              role="tabpanel"
+              id="sessionWrap"
+              className="editorBar"
+              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
+              <div ref={this.props.editorResize.firstRef}>
+                <div className="queryWrap">
+                  <div ref={this.props.secondaryEditorResize.firstRef}>
+                    <QueryEditor
+                      editorTheme={this.props.editorTheme}
+                      externalFragments={this.props.externalFragments}
+                      onClickReference={() => {
+                        if (this.props.docResize.hiddenElement === 'second') {
+                          this.props.docResize.setHiddenElement(null);
+                        }
+                      }}
+                      onCopyQuery={this.props.onCopyQuery}
+                      onEdit={this.props.onEditQuery}
+                      onEditOperationName={this.props.onEditOperationName}
+                      readOnly={this.props.readOnly}
+                      validationRules={this.props.validationRules}
+                    />
+                  </div>
+                  <div ref={this.props.secondaryEditorResize.dragBarRef}>
+                    <div
+                      className="secondary-editor-title variable-editor-title"
+                      id="secondary-editor-title">
                       <div
-                        className="secondary-editor-title variable-editor-title"
-                        id="secondary-editor-title">
+                        className={`variable-editor-title-text${
+                          this.state.activeSecondaryEditor === 'variable'
+                            ? ' active'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          if (
+                            this.props.secondaryEditorResize.hiddenElement ===
+                            'second'
+                          ) {
+                            this.props.secondaryEditorResize.setHiddenElement(
+                              null,
+                            );
+                          }
+                          this.setState(
+                            {
+                              activeSecondaryEditor: 'variable',
+                            },
+                            () => {
+                              this.props.editorContext.variableEditor?.refresh();
+                            },
+                          );
+                        }}>
+                        Query Variables
+                      </div>
+                      {this.props.headerEditorEnabled && (
                         <div
+                          style={{
+                            marginLeft: '20px',
+                          }}
                           className={`variable-editor-title-text${
-                            this.state.activeSecondaryEditor === 'variable'
+                            this.state.activeSecondaryEditor === 'header'
                               ? ' active'
                               : ''
                           }`}
                           onClick={() => {
                             if (
-                              secondaryEditorResize.hiddenElement === 'second'
+                              this.props.secondaryEditorResize.hiddenElement ===
+                              'second'
                             ) {
-                              secondaryEditorResize.show();
+                              this.props.secondaryEditorResize.setHiddenElement(
+                                null,
+                              );
                             }
                             this.setState(
                               {
-                                activeSecondaryEditor: 'variable',
+                                activeSecondaryEditor: 'header',
                               },
                               () => {
-                                this.props.editorContext.variableEditor?.refresh();
+                                this.props.editorContext.headerEditor?.refresh();
                               },
                             );
                           }}>
-                          Query Variables
+                          Request Headers
                         </div>
-                        {this.props.headerEditorEnabled && (
-                          <div
-                            style={{
-                              marginLeft: '20px',
-                            }}
-                            className={`variable-editor-title-text${
-                              this.state.activeSecondaryEditor === 'header'
-                                ? ' active'
-                                : ''
-                            }`}
-                            onClick={() => {
-                              if (
-                                secondaryEditorResize.hiddenElement === 'second'
-                              ) {
-                                secondaryEditorResize.show();
-                              }
-                              this.setState(
-                                {
-                                  activeSecondaryEditor: 'header',
-                                },
-                                () => {
-                                  this.props.editorContext.headerEditor?.refresh();
-                                },
-                              );
-                            }}>
-                            Request Headers
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    second={
-                      <section
-                        className="variable-editor secondary-editor"
-                        aria-label={
-                          this.state.activeSecondaryEditor === 'variable'
-                            ? 'Query Variables'
-                            : 'Request Headers'
-                        }>
-                        <VariableEditor
-                          onEdit={this.props.onEditVariables}
-                          editorTheme={this.props.editorTheme}
-                          readOnly={this.props.readOnly}
-                          active={
-                            this.state.activeSecondaryEditor === 'variable'
-                          }
-                        />
-                        {this.props.headerEditorEnabled && (
-                          <HeaderEditor
-                            active={
-                              this.state.activeSecondaryEditor === 'header'
-                            }
-                            editorTheme={this.props.editorTheme}
-                            onEdit={this.props.onEditHeaders}
-                            readOnly={this.props.readOnly}
-                            shouldPersistHeaders={
-                              this.props.shouldPersistHeaders
-                            }
-                          />
-                        )}
-                      </section>
-                    }
-                  />
-                }
-                dragBar={<div className="editor-drag-bar" />}
-                second={
-                  <div className="resultWrap">
-                    {this.props.executionContext.isFetching && (
-                      <div className="spinner-container">
-                        <div className="spinner" />
-                      </div>
-                    )}
-                    <ResultViewer
-                      value={this.props.response}
-                      editorTheme={this.props.editorTheme}
-                      ResponseTooltip={this.props.ResultsTooltip}
-                    />
-                    {footer}
+                      )}
+                    </div>
                   </div>
-                }
-              />
+                  <div ref={this.props.secondaryEditorResize.secondRef}>
+                    <section
+                      className="variable-editor secondary-editor"
+                      aria-label={
+                        this.state.activeSecondaryEditor === 'variable'
+                          ? 'Query Variables'
+                          : 'Request Headers'
+                      }>
+                      <VariableEditor
+                        onEdit={this.props.onEditVariables}
+                        editorTheme={this.props.editorTheme}
+                        readOnly={this.props.readOnly}
+                        active={this.state.activeSecondaryEditor === 'variable'}
+                      />
+                      {this.props.headerEditorEnabled && (
+                        <HeaderEditor
+                          active={this.state.activeSecondaryEditor === 'header'}
+                          editorTheme={this.props.editorTheme}
+                          onEdit={this.props.onEditHeaders}
+                          readOnly={this.props.readOnly}
+                          shouldPersistHeaders={this.props.shouldPersistHeaders}
+                        />
+                      )}
+                    </section>
+                  </div>
+                </div>
+              </div>
+              <div ref={this.props.editorResize.dragBarRef}>
+                <div className="editor-drag-bar" />
+              </div>
+              <div ref={this.props.editorResize.secondRef}>
+                <div className="resultWrap">
+                  {this.props.executionContext.isFetching && (
+                    <div className="spinner-container">
+                      <div className="spinner" />
+                    </div>
+                  )}
+                  <ResultViewer
+                    value={this.props.response}
+                    editorTheme={this.props.editorTheme}
+                    ResponseTooltip={this.props.ResultsTooltip}
+                  />
+                  {footer}
+                </div>
+              </div>
             </div>
-          </>
-        )}
-        dragBar={<div className="docExplorerResizer" />}
-        second={({ hide }) => (
-          <div className="docExplorerWrap">
-            <DocExplorer onClose={() => hide('second')} />
           </div>
-        )}
-      />
+        </div>
+        <div ref={this.props.docResize.dragBarRef}>
+          <div className="docExplorerResizer" />
+        </div>
+        <div ref={this.props.docResize.secondRef}>
+          <div className="docExplorerWrap">
+            <DocExplorer
+              onClose={() => this.props.docResize.setHiddenElement('second')}
+            />
+          </div>
+        </div>
+      </div>
     );
   }
 

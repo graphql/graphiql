@@ -1,5 +1,4 @@
 import {
-  DragResizeContainer,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -16,6 +15,7 @@ import {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
@@ -50,7 +50,6 @@ import type {
 import { useEffect, useRef, useState } from 'react';
 
 export {
-  DragResizeContainer,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -67,6 +66,7 @@ export {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
