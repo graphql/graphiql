@@ -137,12 +137,12 @@ describe('GraphiQL', () => {
     const { container: container1 } = render(
       <GraphiQL fetcher={noOpFetcher} />,
     );
-    const queryVariables = container1.querySelector('.variable-editor');
+    const queryVariables = container1.querySelector('.graphiql-editor-tool');
 
     expect(queryVariables).not.toBeVisible();
 
     const secondaryEditorTitle = container1.querySelector(
-      '#secondary-editor-title',
+      '.graphiql-editor-tools',
     );
     fireEvent.mouseDown(secondaryEditorTitle);
     fireEvent.mouseMove(secondaryEditorTitle, { buttons: 1, clientY: 50 });
@@ -151,9 +151,7 @@ describe('GraphiQL', () => {
     const { container: container2 } = render(
       <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
-    expect(
-      container2.querySelector('[aria-label="Query Variables"]'),
-    ).toBeVisible();
+    expect(container2.querySelector('[aria-label="Variables"]')).toBeVisible();
 
     const { container: container3 } = render(
       <GraphiQL
@@ -162,7 +160,7 @@ describe('GraphiQL', () => {
         defaultVariableEditorOpen={false}
       />,
     );
-    const queryVariables3 = container3.querySelector('.variable-editor');
+    const queryVariables3 = container3.querySelector('.graphiql-editor-tool');
     expect(queryVariables3).not.toBeVisible();
   });
 
@@ -290,7 +288,7 @@ describe('GraphiQL', () => {
     await wait();
 
     fireEvent.change(
-      container.querySelector('[aria-label="Query Variables"] .mockCodeMirror'),
+      container.querySelector('[aria-label="Variables"] .mockCodeMirror'),
       {
         target: { value: mockVariables2 },
       },
@@ -319,10 +317,10 @@ describe('GraphiQL', () => {
     expect(container.querySelectorAll('.history-label')).toHaveLength(1);
     await wait();
 
-    fireEvent.click(getByText('Request Headers'));
+    fireEvent.click(getByText('Headers'));
 
     fireEvent.change(
-      container.querySelector('[aria-label="Request Headers"] .mockCodeMirror'),
+      container.querySelector('[aria-label="Headers"] .mockCodeMirror'),
       {
         target: { value: mockHeaders2 },
       },
@@ -503,8 +501,8 @@ describe('GraphiQL', () => {
 
     await wait();
 
-    const dragBar = container.querySelector('.editor-drag-bar');
-    const queryWrap = container.querySelector('.queryWrap');
+    const dragBar = container.querySelector('.graphiql-horizontal-drag-bar');
+    const editors = container.querySelector('.graphiql-editors');
 
     fireEvent.mouseDown(dragBar, {
       button: 0,
@@ -519,7 +517,7 @@ describe('GraphiQL', () => {
     fireEvent.mouseUp(dragBar);
 
     // 700 / (900 - 700) = 3.5
-    expect(queryWrap.parentElement.style.flex).toEqual('3.5');
+    expect(editors.parentElement.style.flex).toEqual('3.5');
 
     clientWidthSpy.mockRestore();
     boundingClientRectSpy.mockRestore();
