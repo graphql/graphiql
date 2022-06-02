@@ -370,29 +370,6 @@
   fill: #fff;
 }
 
-.autoInsertedLeaf.cm-property {
-  animation-duration: 6s;
-  animation-name: insertionFade;
-  border-bottom: 2px solid rgba(255, 255, 255, 0);
-  border-radius: 2px;
-  margin: -2px -4px -1px;
-  padding: 2px 4px 1px;
-}
-
-@keyframes insertionFade {
-  from,
-  to {
-    background: rgba(255, 255, 255, 0);
-    border-color: rgba(255, 255, 255, 0);
-  }
-
-  15%,
-  85% {
-    background: #fbffc9;
-    border-color: #f0f3c0;
-  }
-}
-
 .graphiql-container .variable-editor-title-text {
   cursor: pointer;
   display: inline-block;

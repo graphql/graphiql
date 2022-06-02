@@ -6,6 +6,7 @@ import '../style/lint.css';
 import '../style/hint.css';
 import '../style/info.css';
 import '../style/jump.css';
+import '../style/auto-insertion.css';
 
 export function QueryEditor(props: UseQueryEditorArgs) {
   const ref = useQueryEditor(props);
