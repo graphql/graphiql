@@ -1,12 +1,12 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-import { useEditorContext, useExecutionContext } from '@graphiql/react';
 import { OperationDefinitionNode } from 'graphql';
-import React, { useState } from 'react';
+import { useState } from 'react';
+
+import { useEditorContext } from '../editor';
+import { useExecutionContext } from '../execution';
+import { PlayIcon, StopIcon } from '../icons';
+import { Dropdown } from '../ui';
+
+import './execute.css';
 
 export function ExecuteButton() {
   const { queryEditor } = useEditorContext({ nonNull: true });
@@ -23,10 +23,10 @@ export function ExecuteButton() {
   const hasOptions = operations.length > 1;
 
   return (
-    <div className="execute-button-wrap">
+    <div className="graphiql-execute-button-wrapper">
       <button
         type="button"
-        className="execute-button"
+        className="graphiql-execute-button"
         onMouseDown={
           // Allow mouse down if there is no running query, there are options
           // for which operation to run, and the dropdown is currently closed.
@@ -75,22 +75,16 @@ export function ExecuteButton() {
             : undefined
         }
         title="Execute Query (Ctrl-Enter)">
-        <svg width="34" height="34">
-          {isRunning ? (
-            <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" />
-          ) : (
-            <path d="M 11 9 L 24 16 L 11 23 z" />
-          )}
-        </svg>
+        {isRunning ? <StopIcon /> : <PlayIcon />}
       </button>
       {hasOptions && optionsOpen ? (
-        <ul className="execute-options">
+        <Dropdown>
           {operations.map((operation, i) => {
             const opName = operation.name
               ? operation.name.value
               : `<Unnamed ${operation.operation}>`;
             return (
-              <li
+              <Dropdown.Item
                 key={`${opName}-${i}`}
                 className={operation === highlight ? 'selected' : undefined}
                 onMouseOver={() => setHighlight(operation)}
@@ -100,10 +94,10 @@ export function ExecuteButton() {
                   run(operation.name?.value);
                 }}>
                 {opName}
-              </li>
+              </Dropdown.Item>
             );
           })}
-        </ul>
+        </Dropdown>
       ) : null}
     </div>
   );
