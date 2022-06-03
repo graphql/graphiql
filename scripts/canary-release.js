@@ -24,25 +24,45 @@ const execOpts = { stderr: 'inherit', stdout: 'inherit' };
 
 const git = async (...commands) => execa('git', commands, execOpts);
 
-async function preReleaseVSCode(version) {
-  try {
-    await execa(
-      'yarn',
-      ['workspace', `vscode-graphql`, 'run', 'release', '--pre'],
-      execOpts,
-    );
-  } catch (err) {
-    console.error('vscode-graphql pre-release failed on publish:', err);
-    process.exit(1);
-  }
-  try {
-    await git('add', `packages/vscode-graphql/package.json`);
-    await git('commit', `-m`, `pre-release \`vscode-graphql@${version}\``);
-    await git('push');
-  } catch (err) {
-    console.error('vscode-graphql pre-release failed on git command:', err);
-    process.exit(1);
-  }
+// TODO: canary --pre releases for vscode ?
+//
+// async function preReleaseVSCode(version) {
+//   try {
+//     await execa(
+//       'yarn',
+//       ['workspace', `vscode-graphql`, 'run', 'release', '--pre'],
+//       execOpts,
+//     );
+//   } catch (err) {
+//     console.error('vscode-graphql pre-release failed on publish:', err);
+//     process.exit(1);
+//   }
+//   try {
+//     await git('add', `packages/vscode-graphql/package.json`);
+//     await git('commit', `-m`, `pre-release \`vscode-graphql@${version}\``);
+//     await git('push');
+//   } catch (err) {
+//     console.error('vscode-graphql pre-release failed on git command:', err);
+//     process.exit(1);
+//   }
+// }
+
+function getRelevantChangesets(baseBranch) {
+  const comparePoint = cp
+    .spawnSync('git', ['merge-base', `origin/${baseBranch}`, 'HEAD'])
+    .stdout.toString()
+    .trim();
+  const listModifiedFiles = cp
+    .spawnSync('git', ['diff', '--name-only', comparePoint])
+    .stdout.toString()
+    .trim()
+    .split('\n');
+
+  const items = listModifiedFiles
+    .filter(f => f.startsWith('.changeset'))
+    .map(f => basename(f, '.md'));
+
+  return items;
 }
 
 async function updateVersions() {
@@ -100,6 +120,7 @@ async function updateVersions() {
         false,
         true,
       );
+      // TODO: get this working
       // if(vscodeRelease) {
       //   await preReleaseVSCode(vscodeRelease)
       // }
