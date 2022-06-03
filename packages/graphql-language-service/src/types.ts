@@ -49,7 +49,7 @@ export type {
 export interface GraphQLCache {
   getGraphQLConfig: () => GraphQLConfig;
 
-  getProjectForFile: (uri: string) => GraphQLProjectConfig;
+  getProjectForFile: (uri: string) => GraphQLProjectConfig | void;
 
   getObjectTypeDependencies: (
     query: string,

@@ -65,11 +65,21 @@ import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
 import { Logger } from './Logger';
 import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
 import { tmpdir } from 'os';
-import { GraphQLExtensionDeclaration } from 'graphql-config';
+import {
+  ConfigEmptyError,
+  ConfigInvalidError,
+  ConfigNotFoundError,
+  GraphQLExtensionDeclaration,
+  LoaderNoResultError,
+  ProjectNotFoundError,
+} from 'graphql-config';
 import type { LoadConfigOptions } from './types';
 import { promisify } from 'util';
 
 const writeFileAsync = promisify(writeFile);
+
+const configDocLink =
+  'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
 
 // import dotenv config as early as possible for graphql-config cjs pattern
 require('dotenv').config();
@@ -89,6 +99,7 @@ export class MessageProcessor {
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
   _isInitialized: boolean;
+  _isGraphQLConfigMissing: boolean | null = null;
   _willShutdown: boolean;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
@@ -226,16 +237,69 @@ export class MessageProcessor {
       }, this._settings.load ?? {}),
       rootDir,
     };
-    // reload the graphql cache
-    this._graphQLCache = await getGraphQLCache({
-      parser: this._parser,
-      loadConfigOptions: this._loadConfigOptions,
-    });
-    this._languageService = new GraphQLLanguageService(this._graphQLCache);
-    if (this._graphQLCache?.getGraphQLConfig) {
-      const config = this._graphQLCache.getGraphQLConfig();
-      await this._cacheAllProjectFiles(config);
+    try {
+      // reload the graphql cache
+      this._graphQLCache = await getGraphQLCache({
+        parser: this._parser,
+        loadConfigOptions: this._loadConfigOptions,
+
+        logger: this._logger,
+      });
+      this._languageService = new GraphQLLanguageService(this._graphQLCache);
+      if (this._graphQLConfig || this._graphQLCache?.getGraphQLConfig) {
+        const config =
+          this._graphQLConfig ?? this._graphQLCache.getGraphQLConfig();
+        await this._cacheAllProjectFiles(config);
+      }
+      this._isInitialized = true;
+    } catch (err) {
+      this._handleConfigError({ err });
     }
+  }
+  _handleConfigError({ err }: { err: unknown; uri?: string }) {
+    if (err instanceof ConfigNotFoundError) {
+      // TODO: obviously this needs to become a map by workspace from uri
+      // for workspaces support
+      this._isGraphQLConfigMissing = true;
+
+      this._logConfigError(err.message);
+      return;
+    } else if (err instanceof ProjectNotFoundError) {
+      this._logConfigError(
+        'Project not found for this file - make sure that a schema is present',
+      );
+    } else if (err instanceof ConfigInvalidError) {
+      this._logConfigError(`Invalid configuration\n${err.message}`);
+    } else if (err instanceof ConfigEmptyError) {
+      this._logConfigError(err.message);
+    } else if (err instanceof LoaderNoResultError) {
+      this._logConfigError(err.message);
+    } else {
+      this._logConfigError(
+        // @ts-expect-error
+        err?.message ?? err?.toString(),
+      );
+    }
+
+    // force a no-op for all other language feature requests.
+    //
+    // TODO: contextually disable language features based on whether config is present
+    // Ideally could do this when sending initialization message, but extension settings are not available
+    // then, which are needed in order to initialize the language server (graphql-config loadConfig settings, for example)
+    this._isInitialized = false;
+
+    // set this to false here so that if we don't have a missing config file issue anymore
+    // we can keep re-trying to load the config, so that on the next add or save event,
+    // it can keep retrying the language service
+    this._isGraphQLConfigMissing = false;
+  }
+
+  _logConfigError(errorMessage: string) {
+    this._logger.error(
+      `WARNING: graphql-config error, only highlighting is enabled:\n` +
+        errorMessage +
+        `\nfor more information on using 'graphql-config' with 'graphql-language-service-server', \nsee the documentation at ${configDocLink}`,
+    );
   }
 
   async handleDidOpenOrSaveNotification(
@@ -247,16 +311,17 @@ export class MessageProcessor {
      */
     try {
       if (!this._isInitialized || !this._graphQLCache) {
-        if (!this._settings) {
+        // don't try to initialize again if we've already tried
+        // and the graphql config file or package.json entry isn't even there
+        if (this._isGraphQLConfigMissing !== true) {
           // then initial call to update graphql config
           await this._updateGraphQLConfig();
-          this._isInitialized = true;
         } else {
           return null;
         }
       }
     } catch (err) {
-      this._logger.warn(err);
+      this._logger.error(err);
     }
 
     // Here, we set the workspace settings in memory,
@@ -301,36 +366,43 @@ export class MessageProcessor {
         contents = cachedDocument.contents;
       }
     }
-    const project = this._graphQLCache.getProjectForFile(uri);
-
-    if (
-      this._isInitialized &&
-      this._graphQLCache &&
-      project.extensions?.languageService?.enableValidation !== false
-    ) {
-      await Promise.all(
-        contents.map(async ({ query, range }) => {
-          const results = await this._languageService.getDiagnostics(
-            query,
-            uri,
-            this._isRelayCompatMode(query),
+    if (!this._graphQLCache) {
+      return { uri, diagnostics };
+    } else {
+      try {
+        const project = this._graphQLCache.getProjectForFile(uri);
+        if (
+          this._isInitialized &&
+          this._graphQLCache &&
+          project?.extensions?.languageService?.enableValidation !== false
+        ) {
+          await Promise.all(
+            contents.map(async ({ query, range }) => {
+              const results = await this._languageService.getDiagnostics(
+                query,
+                uri,
+                this._isRelayCompatMode(query),
+              );
+              if (results && results.length > 0) {
+                diagnostics.push(
+                  ...processDiagnosticsMessage(results, query, range),
+                );
+              }
+            }),
           );
-          if (results && results.length > 0) {
-            diagnostics.push(
-              ...processDiagnosticsMessage(results, query, range),
-            );
-          }
-        }),
-      );
+        }
 
-      this._logger.log(
-        JSON.stringify({
-          type: 'usage',
-          messageType: 'textDocument/didOpen',
-          projectName: project && project.name,
-          fileName: uri,
-        }),
-      );
+        this._logger.log(
+          JSON.stringify({
+            type: 'usage',
+            messageType: 'textDocument/didOpenOrSave',
+            projectName: project?.name,
+            fileName: uri,
+          }),
+        );
+      } catch (err) {
+        this._handleConfigError({ err, uri });
+      }
     }
 
     return { uri, diagnostics };
@@ -383,7 +455,7 @@ export class MessageProcessor {
     const project = this._graphQLCache.getProjectForFile(uri);
     const diagnostics: Diagnostic[] = [];
 
-    if (project.extensions?.languageService?.enableValidation !== false) {
+    if (project?.extensions?.languageService?.enableValidation !== false) {
       // Send the diagnostics onChange as well
       await Promise.all(
         contents.map(async ({ query, range }) => {
@@ -441,7 +513,6 @@ export class MessageProcessor {
     if (this._textDocumentCache.has(uri)) {
       this._textDocumentCache.delete(uri);
     }
-
     const project = this._graphQLCache.getProjectForFile(uri);
 
     this._logger.log(
@@ -605,7 +676,9 @@ export class MessageProcessor {
           const project = this._graphQLCache.getProjectForFile(uri);
           let diagnostics: Diagnostic[] = [];
 
-          if (project.extensions?.languageService?.enableValidation !== false) {
+          if (
+            project?.extensions?.languageService?.enableValidation !== false
+          ) {
             diagnostics = (
               await Promise.all(
                 contents.map(async ({ query, range }) => {
@@ -751,7 +824,7 @@ export class MessageProcessor {
   async handleDocumentSymbolRequest(
     params: DocumentSymbolParams,
   ): Promise<Array<SymbolInformation>> {
-    if (!this._isInitialized) {
+    if (!this._isInitialized || !this._graphQLCache) {
       return [];
     }
 
@@ -795,6 +868,9 @@ export class MessageProcessor {
   async handleWorkspaceSymbolRequest(
     params: WorkspaceSymbolParams,
   ): Promise<Array<SymbolInformation>> {
+    if (!this._isInitialized || !this._graphQLCache) {
+      return [];
+    }
     // const config = await this._graphQLCache.getGraphQLConfig();
     // await this._cacheAllProjectFiles(config);
 
