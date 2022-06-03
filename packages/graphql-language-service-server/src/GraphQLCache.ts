@@ -35,6 +35,7 @@ import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
+import { Logger } from './Logger';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -59,10 +60,12 @@ const {
 
 export async function getGraphQLCache({
   parser,
+  logger,
   loadConfigOptions,
   config,
 }: {
   parser: typeof parseDocument;
+  logger: Logger;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
@@ -74,6 +77,7 @@ export async function getGraphQLCache({
     configDir: loadConfigOptions.rootDir as string,
     config: graphQLConfig as GraphQLConfig,
     parser,
+    logger,
   });
 }
 
@@ -86,15 +90,18 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
+  _logger: Logger;
 
   constructor({
     configDir,
     config,
     parser,
+    logger,
   }: {
     configDir: Uri;
     config: GraphQLConfig;
     parser: typeof parseDocument;
+    logger: Logger;
   }) {
     this._configDir = configDir;
     this._graphQLConfig = config;
@@ -104,12 +111,21 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
     this._parser = parser;
+    this._logger = logger;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getProjectForFile = (uri: string): GraphQLProjectConfig => {
-    return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
+    try {
+      return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
+    } catch (err) {
+      this._logger.error(
+        `there was an error loading the project config for this file ${err}`,
+      );
+      // @ts-expect-error
+      return null;
+    }
   };
 
   getFragmentDependencies = async (
