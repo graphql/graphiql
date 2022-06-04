@@ -5,9 +5,12 @@ import _DocsIcon from './docs.svg';
 import _HistoryIcon from './history.svg';
 import _KeyboardShortcutIcon from './keyboard-shortcut.svg';
 import _MergeIcon from './merge.svg';
+import _PenIcon from './pen.svg';
 import _PlayIcon from './play.svg';
 import _PrettifyIcon from './prettify.svg';
 import _SettingsIcon from './settings.svg';
+import _StarFilledIcon from './star-filled.svg';
+import _StarIcon from './star.svg';
 import _StopIcon from './stop.svg';
 
 export const ChevronDownIcon = generateIcon(
@@ -23,9 +26,12 @@ export const KeyboardShortcutIcon = generateIcon(
   'keyboard shortcut icon',
 );
 export const MergeIcon = generateIcon(_MergeIcon, 'merge icon');
+export const PenIcon = generateIcon(_PenIcon, 'pen icon');
 export const PlayIcon = generateIcon(_PlayIcon, 'play icon');
 export const PrettifyIcon = generateIcon(_PrettifyIcon, 'prettify icon');
 export const SettingsIcon = generateIcon(_SettingsIcon, 'settings icon');
+export const StarFilledIcon = generateIcon(_StarFilledIcon, 'filled star icon');
+export const StarIcon = generateIcon(_StarIcon, 'star icon');
 export const StopIcon = generateIcon(_StopIcon, 'stop icon');
 
 function generateIcon(RawComponent: any, title: string) {
