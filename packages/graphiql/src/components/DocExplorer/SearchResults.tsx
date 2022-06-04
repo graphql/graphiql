@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import React, { memo, ReactNode } from 'react';
 import { GraphQLSchema, GraphQLNamedType } from 'graphql';
 
 import Argument from './Argument';
@@ -19,22 +19,12 @@ type SearchResultsProps = {
   onClickField: OnClickFieldFunction;
 };
 
-export default class SearchResults extends React.Component<
-  SearchResultsProps,
-  {}
-> {
-  shouldComponentUpdate(nextProps: SearchResultsProps) {
-    return (
-      this.props.schema !== nextProps.schema ||
-      this.props.searchValue !== nextProps.searchValue
-    );
-  }
-
-  render() {
-    const searchValue = this.props.searchValue;
-    const withinType = this.props.withinType;
-    const schema = this.props.schema;
-    const onClickField = this.props.onClickField;
+export default memo(
+  function SearchResults(props: SearchResultsProps) {
+    const searchValue = props.searchValue;
+    const withinType = props.withinType;
+    const schema = props.schema;
+    const onClickField = props.onClickField;
 
     const matchedWithin: ReactNode[] = [];
     const matchedTypes: ReactNode[] = [];
@@ -148,8 +138,11 @@ export default class SearchResults extends React.Component<
         {matchedFields}
       </div>
     );
-  }
-}
+  },
+  (prevProps, nextProps) =>
+    prevProps.schema === nextProps.schema &&
+    prevProps.searchValue === nextProps.searchValue,
+);
 
 function isMatch(sourceText: string, searchValue: string) {
   try {

@@ -5,7 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import React, { memo, ReactNode, useState } from 'react';
 import {
   GraphQLSchema,
   GraphQLObjectType,
@@ -29,31 +29,13 @@ type TypeDocProps = {
   onClickField: OnClickFieldFunction;
 };
 
-type TypeDocState = {
-  showDeprecated: boolean;
-};
+export default memo(
+  function TypeDoc(props: TypeDocProps) {
+    const [showDeprecated, setShowDeprecated] = useState(false);
 
-export default class TypeDoc extends React.Component<
-  TypeDocProps,
-  TypeDocState
-> {
-  constructor(props: TypeDocProps) {
-    super(props);
-    this.state = { showDeprecated: false };
-  }
-
-  shouldComponentUpdate(nextProps: TypeDocProps, nextState: TypeDocState) {
-    return (
-      this.props.type !== nextProps.type ||
-      this.props.schema !== nextProps.schema ||
-      this.state.showDeprecated !== nextState.showDeprecated
-    );
-  }
-
-  render() {
-    const schema = this.props.schema;
-    const type = this.props.type;
-    const onClickField = this.props.onClickField;
+    const schema = props.schema;
+    const type = props.type;
+    const onClickField = props.onClickField;
 
     let typesTitle: string | null = null;
     let types: readonly (GraphQLObjectType | GraphQLInterfaceType)[] = [];
@@ -111,8 +93,12 @@ export default class TypeDoc extends React.Component<
         deprecatedFieldsDef = (
           <div id="doc-deprecated-fields" className="doc-category">
             <div className="doc-category-title">deprecated fields</div>
-            {!this.state.showDeprecated ? (
-              <button className="show-btn" onClick={this.handleShowDeprecated}>
+            {!showDeprecated ? (
+              <button
+                className="show-btn"
+                onClick={() => {
+                  setShowDeprecated(true);
+                }}>
                 Show deprecated fields...
               </button>
             ) : (
@@ -152,8 +138,12 @@ export default class TypeDoc extends React.Component<
         deprecatedValuesDef = (
           <div className="doc-category">
             <div className="doc-category-title">deprecated values</div>
-            {!this.state.showDeprecated ? (
-              <button className="show-btn" onClick={this.handleShowDeprecated}>
+            {!showDeprecated ? (
+              <button
+                className="show-btn"
+                onClick={() => {
+                  setShowDeprecated(true);
+                }}>
                 Show deprecated values...
               </button>
             ) : (
@@ -182,10 +172,10 @@ export default class TypeDoc extends React.Component<
         {!(type instanceof GraphQLObjectType) && typesDef}
       </div>
     );
-  }
-
-  handleShowDeprecated = () => this.setState({ showDeprecated: true });
-}
+  },
+  (prevProps, nextProps) =>
+    prevProps.type === nextProps.type && prevProps.schema === nextProps.schema,
+);
 
 type FieldProps = {
   type: GraphQLNamedType;
