@@ -146,6 +146,7 @@ function normalizeWhitespace(str: string) {
 Cypress.Commands.add(
   'assertLinterMarkWithMessage',
   (text, severity, message) => {
+    cy.wait(100);
     cy.contains(text)
       .should('have.class', 'CodeMirror-lint-mark')
       .and('have.class', `CodeMirror-lint-mark-${severity}`);
