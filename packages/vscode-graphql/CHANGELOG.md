@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.4.10
+
+### Patch Changes
+
+- [#2474](https://github.com/graphql/graphiql/pull/2474) [`70bc61ee`](https://github.com/graphql/graphiql/commit/70bc61ee78787132d5572ef5d1e81e7d6e3b13d2) Thanks [@acao](https://github.com/acao)! - Fix bug with typed parameters on the gql/graphql/etc tagged templates!
+
 ## 0.4.8
 
 ### Patch Changes
