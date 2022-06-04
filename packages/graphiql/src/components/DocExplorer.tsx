@@ -7,11 +7,7 @@
 
 import React, { ReactNode } from 'react';
 import { isType } from 'graphql';
-import {
-  ExplorerFieldDef,
-  useExplorerContext,
-  useSchemaContext,
-} from '@graphiql/react';
+import { useExplorerContext, useSchemaContext } from '@graphiql/react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -36,15 +32,11 @@ export function DocExplorer(props: DocExplorerProps) {
     schema,
     validationErrors,
   } = useSchemaContext({ nonNull: true });
-  const { explorerNavStack, hide, pop, push, showSearch } = useExplorerContext({
+  const { explorerNavStack, hide, pop, showSearch } = useExplorerContext({
     nonNull: true,
   });
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
-
-  function handleClickField(field: ExplorerFieldDef) {
-    push({ name: field.name, def: field });
-  }
 
   let content: ReactNode = null;
   if (fetchError) {
@@ -67,11 +59,11 @@ export function DocExplorer(props: DocExplorerProps) {
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
   } else if (navItem.search) {
-    content = <SearchResults onClickField={handleClickField} />;
+    content = <SearchResults />;
   } else if (explorerNavStack.length === 1) {
     content = <SchemaDoc />;
   } else if (isType(navItem.def)) {
-    content = <TypeDoc onClickField={handleClickField} />;
+    content = <TypeDoc />;
   } else if (navItem.def) {
     content = <FieldDoc />;
   }

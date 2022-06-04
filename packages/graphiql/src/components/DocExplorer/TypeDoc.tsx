@@ -25,13 +25,9 @@ import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
-import { OnClickFieldFunction } from './types';
+import FieldLink from './FieldLink';
 
-type TypeDocProps = {
-  onClickField: OnClickFieldFunction;
-};
-
-export default function TypeDoc(props: TypeDocProps) {
+export default function TypeDoc() {
   const { schema } = useSchemaContext({ nonNull: true });
   const { explorerNavStack } = useExplorerContext({ nonNull: true });
   const [showDeprecated, setShowDeprecated] = useState(false);
@@ -42,8 +38,6 @@ export default function TypeDoc(props: TypeDocProps) {
   if (!schema || !isType(type)) {
     return null;
   }
-
-  const onClickField = props.onClickField;
 
   let typesTitle: string | null = null;
   let types: readonly (GraphQLObjectType | GraphQLInterfaceType)[] = [];
@@ -84,12 +78,7 @@ export default function TypeDoc(props: TypeDocProps) {
         {fields
           .filter(field => !field.deprecationReason)
           .map(field => (
-            <Field
-              key={field.name}
-              type={type}
-              field={field}
-              onClickField={onClickField}
-            />
+            <Field key={field.name} type={type} field={field} />
           ))}
       </div>
     );
@@ -111,12 +100,7 @@ export default function TypeDoc(props: TypeDocProps) {
             </button>
           ) : (
             deprecatedFields.map(field => (
-              <Field
-                key={field.name}
-                type={type}
-                field={field}
-                onClickField={onClickField}
-              />
+              <Field key={field.name} type={type} field={field} />
             ))
           )}
         </div>
@@ -185,17 +169,12 @@ export default function TypeDoc(props: TypeDocProps) {
 type FieldProps = {
   type: GraphQLNamedType;
   field: ExplorerFieldDef;
-  onClickField: OnClickFieldFunction;
 };
 
-function Field({ type, field, onClickField }: FieldProps) {
+function Field({ field }: FieldProps) {
   return (
     <div className="doc-category-item">
-      <a
-        className="field-name"
-        onClick={event => onClickField(field, type, event)}>
-        {field.name}
-      </a>
+      <FieldLink field={field} />
       {'args' in field &&
         field.args &&
         field.args.length > 0 && [

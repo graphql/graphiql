@@ -9,14 +9,10 @@ import React, { ReactNode } from 'react';
 
 import Argument from './Argument';
 import TypeLink from './TypeLink';
-import { OnClickFieldFunction } from './types';
 import { useExplorerContext, useSchemaContext } from '@graphiql/react';
+import FieldLink from './FieldLink';
 
-type SearchResultsProps = {
-  onClickField: OnClickFieldFunction;
-};
-
-export default function SearchResults(props: SearchResultsProps) {
+export default function SearchResults() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });
   const { schema } = useSchemaContext({ nonNull: true });
 
@@ -28,7 +24,6 @@ export default function SearchResults(props: SearchResultsProps) {
 
   const searchValue = navItem.search;
   const withinType = navItem.def;
-  const onClickField = props.onClickField;
 
   const matchedWithin: ReactNode[] = [];
   const matchedTypes: ReactNode[] = [];
@@ -82,11 +77,7 @@ export default function SearchResults(props: SearchResultsProps) {
         const match = (
           <div className="doc-category-item" key={typeName + '.' + fieldName}>
             {withinType !== type && [<TypeLink key="type" type={type} />, '.']}
-            <a
-              className="field-name"
-              onClick={event => onClickField(field, type, event)}>
-              {field.name}
-            </a>
+            <FieldLink field={field} />
             {matchingArgs && [
               '(',
               <span key="args">
