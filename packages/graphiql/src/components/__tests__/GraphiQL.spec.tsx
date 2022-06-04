@@ -130,7 +130,7 @@ describe('GraphiQL', () => {
   });
   it('defaults to closed docExplorer', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-    expect(container.querySelector('.docExplorerWrap')).not.toBeInTheDocument();
+    expect(container.querySelector('.docExplorerWrap')).not.toBeVisible();
   });
 
   it('accepts a defaultVariableEditorOpen param', () => {
@@ -139,21 +139,21 @@ describe('GraphiQL', () => {
     );
     const queryVariables = container1.querySelector('.variable-editor');
 
-    expect(queryVariables.style.height).toEqual('');
+    expect(queryVariables).not.toBeVisible();
 
     const secondaryEditorTitle = container1.querySelector(
       '#secondary-editor-title',
     );
     fireEvent.mouseDown(secondaryEditorTitle);
-    fireEvent.mouseMove(secondaryEditorTitle);
-    expect(queryVariables.style.height).toEqual('200px');
+    fireEvent.mouseMove(secondaryEditorTitle, { buttons: 1, clientY: 50 });
+    expect(queryVariables).toBeVisible();
 
     const { container: container2 } = render(
       <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
     );
     expect(
-      container2.querySelector('[aria-label="Query Variables"]')?.style.height,
-    ).toEqual('200px');
+      container2.querySelector('[aria-label="Query Variables"]'),
+    ).toBeVisible();
 
     const { container: container3 } = render(
       <GraphiQL
@@ -163,7 +163,7 @@ describe('GraphiQL', () => {
       />,
     );
     const queryVariables3 = container3.querySelector('.variable-editor');
-    expect(queryVariables3?.style.height).toEqual('');
+    expect(queryVariables3).not.toBeVisible();
   });
 
   it('defaults to closed history panel', () => {
@@ -490,40 +490,50 @@ describe('GraphiQL', () => {
   });
 
   it('readjusts the query wrapper flex style field when the result panel is resized', async () => {
-    const spy = jest
+    // Mock the drag bar width
+    const clientWitdhSpy = jest
       .spyOn(Element.prototype, 'clientWidth', 'get')
-      .mockReturnValue(900);
+      .mockReturnValue(0);
+    // Mock the container width
+    const boundingClientRectSpy = jest
+      .spyOn(Element.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ left: 0, right: 900 });
 
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
     await wait();
 
-    const codeMirrorGutter = container.querySelector(
-      '.result-window .CodeMirror-gutter',
-    );
+    const dragBar = container.querySelector('.editor-drag-bar');
     const queryWrap = container.querySelector('.queryWrap');
 
-    fireEvent.mouseDown(codeMirrorGutter, {
+    fireEvent.mouseDown(dragBar, {
       button: 0,
       ctrlKey: false,
     });
 
-    fireEvent.mouseMove(codeMirrorGutter, {
+    fireEvent.mouseMove(dragBar, {
       buttons: 1,
       clientX: 700,
     });
 
-    fireEvent.mouseUp(codeMirrorGutter);
+    fireEvent.mouseUp(dragBar);
 
-    expect(queryWrap.style.flex).toEqual('3.5');
+    // 700 / (900 - 700) = 3.5
+    expect(queryWrap.parentElement.style.flex).toEqual('3.5');
 
-    spy.mockRestore();
+    clientWitdhSpy.mockRestore();
+    boundingClientRectSpy.mockRestore();
   });
 
   it('allows for resizing the doc explorer correctly', () => {
-    const spy = jest
+    // Mock the drag bar width
+    const clientWidthSpy = jest
       .spyOn(Element.prototype, 'clientWidth', 'get')
-      .mockReturnValue(1200);
+      .mockReturnValue(0);
+    // Mock the container width
+    const boundingClientRectSpy = jest
+      .spyOn(Element.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ left: 0, right: 1200 });
 
     const { container, getByLabelText } = render(
       <GraphiQL fetcher={noOpFetcher} />,
@@ -545,11 +555,13 @@ describe('GraphiQL', () => {
 
     fireEvent.mouseUp(docExplorerResizer);
 
-    expect(container.querySelector('.docExplorerWrap').style.width).toBe(
-      '403px',
-    );
+    // 797 / (1200 - 797) = 1.977667493796526
+    expect(
+      container.querySelector('.editorWrap').parentElement.style.flex,
+    ).toBe('1.977667493796526');
 
-    spy.mockRestore();
+    clientWidthSpy.mockRestore();
+    boundingClientRectSpy.mockRestore();
   });
 
   describe('Tabs', () => {

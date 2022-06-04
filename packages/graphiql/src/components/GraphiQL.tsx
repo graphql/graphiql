@@ -8,7 +8,6 @@
 import React, {
   ComponentType,
   PropsWithChildren,
-  MouseEventHandler,
   ReactNode,
   forwardRef,
   ForwardRefExoticComponent,
@@ -31,6 +30,7 @@ import {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
@@ -57,19 +57,15 @@ import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { QueryEditor } from './QueryEditor';
 import { VariableEditor } from './VariableEditor';
 import { HeaderEditor } from './HeaderEditor';
-import { ResultViewer, RESULT_VIEWER_ID } from './ResultViewer';
+import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { getLeft, getTop } from '../utility/elementPosition';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 import { Tab, TabAddButton, Tabs } from './Tabs';
-
-const DEFAULT_DOC_EXPLORER_WIDTH = 350;
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
@@ -86,13 +82,6 @@ if (majorVersion < 16) {
 declare namespace window {
   export let g: GraphiQL;
 }
-
-export type Maybe<T> = T | null | undefined;
-
-type OnMouseMoveFn = Maybe<
-  (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
->;
-type OnMouseUpFn = Maybe<() => void>;
 
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
@@ -299,16 +288,6 @@ export type GraphiQLProps = {
   children?: ReactNode;
 };
 
-export type GraphiQLState = {
-  editorFlex: number;
-  secondaryEditorOpen: boolean;
-  secondaryEditorHeight: number;
-  variableEditorActive: boolean;
-  headerEditorActive: boolean;
-  headerEditorEnabled: boolean;
-  docExplorerWidth: number;
-};
-
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
  * browser viewport.
@@ -510,6 +489,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'defaultQuery'
   | 'docExplorerOpen'
   | 'fetcher'
+  | 'headers'
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
@@ -519,15 +499,13 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'schema'
   | 'schemaDescription'
   | 'storage'
+  | 'variables'
 >;
 
 const GraphiQLConsumeContexts = forwardRef<
   GraphiQLWithContext,
   GraphiQLWithContextProviderProps
->(function GraphiQLConsumeContexts(
-  { getDefaultFieldNames, onCopyQuery, ...props },
-  ref,
-) {
+>(function GraphiQLConsumeContexts({ getDefaultFieldNames, ...props }, ref) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
@@ -536,9 +514,48 @@ const GraphiQLConsumeContexts = forwardRef<
   const storageContext = useStorageContext();
 
   const autoCompleteLeafs = useAutoCompleteLeafs({ getDefaultFieldNames });
-  const copy = useCopyQuery({ onCopyQuery });
+  const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
+
+  const docResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'horizontal',
+    initiallyHidden: explorerContext?.isVisible ? undefined : 'second',
+    onHiddenElementChange: resizableElement => {
+      if (resizableElement === 'second') {
+        explorerContext?.hide();
+      } else {
+        explorerContext?.show();
+      }
+    },
+    sizeThresholdSecond: 200,
+    storageKey: 'docExplorerFlex',
+  });
+  const editorResize = useDragResize({
+    direction: 'horizontal',
+    storageKey: 'editorFlex',
+  });
+  const secondaryEditorResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'vertical',
+    initiallyHidden: (() => {
+      // initial secondary editor pane open
+      if (props.defaultVariableEditorOpen !== undefined) {
+        return props.defaultVariableEditorOpen ? undefined : 'second';
+      }
+
+      if (props.defaultSecondaryEditorOpen !== undefined) {
+        return props.defaultSecondaryEditorOpen ? undefined : 'second';
+      }
+
+      return editorContext.initialVariables || editorContext.initialHeaders
+        ? undefined
+        : 'second';
+    })(),
+    sizeThresholdSecond: 60,
+    storageKey: 'secondaryEditorFlex',
+  });
 
   return (
     <GraphiQLWithContext
@@ -553,6 +570,9 @@ const GraphiQLConsumeContexts = forwardRef<
       copy={copy}
       merge={merge}
       prettify={prettify}
+      docResize={docResize}
+      editorResize={editorResize}
+      secondaryEditorResize={secondaryEditorResize}
       ref={ref}
     />
   );
@@ -560,7 +580,7 @@ const GraphiQLConsumeContexts = forwardRef<
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
-  'fetcher' | 'getDefaultFieldNames' | 'onCopyQuery'
+  'fetcher' | 'getDefaultFieldNames'
 > & {
   editorContext: EditorContextType;
   executionContext: ExecutionContextType;
@@ -573,55 +593,25 @@ type GraphiQLWithContextConsumerProps = Omit<
   copy(): void;
   merge(): void;
   prettify(): void;
+
+  docResize: ReturnType<typeof useDragResize>;
+  editorResize: ReturnType<typeof useDragResize>;
+  secondaryEditorResize: ReturnType<typeof useDragResize>;
+};
+
+export type GraphiQLState = {
+  activeSecondaryEditor: 'variable' | 'header';
 };
 
 class GraphiQLWithContext extends React.Component<
   GraphiQLWithContextConsumerProps,
   GraphiQLState
 > {
-  // refs
-  graphiqlContainer: Maybe<HTMLDivElement>;
-  editorBarComponent: Maybe<HTMLDivElement>;
-
   constructor(props: GraphiQLWithContextConsumerProps) {
     super(props);
 
-    const variables =
-      props.variables ?? props.storageContext?.get('variables') ?? undefined;
-
-    const headers =
-      props.headers ?? props.storageContext?.get('headers') ?? undefined;
-
-    // initial secondary editor pane open
-    let secondaryEditorOpen;
-    if (props.defaultVariableEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultVariableEditorOpen;
-    } else if (props.defaultSecondaryEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultSecondaryEditorOpen;
-    } else {
-      secondaryEditorOpen = Boolean(variables || headers);
-    }
-
-    const headerEditorEnabled = props.headerEditorEnabled ?? true;
-
     // Initialize state
-    this.state = {
-      editorFlex: Number(this.props.storageContext?.get('editorFlex')) || 1,
-      secondaryEditorOpen,
-      secondaryEditorHeight:
-        Number(this.props.storageContext?.get('secondaryEditorHeight')) || 200,
-      variableEditorActive:
-        this.props.storageContext?.get('variableEditorActive') === 'true' ||
-        props.headerEditorEnabled
-          ? this.props.storageContext?.get('headerEditorActive') !== 'true'
-          : true,
-      headerEditorActive:
-        this.props.storageContext?.get('headerEditorActive') === 'true',
-      headerEditorEnabled,
-      docExplorerWidth:
-        Number(this.props.storageContext?.get('docExplorerWidth')) ||
-        DEFAULT_DOC_EXPLORER_WIDTH,
-    };
+    this.state = { activeSecondaryEditor: 'variable' };
   }
 
   render() {
@@ -675,192 +665,215 @@ class GraphiQLWithContext extends React.Component<
       isChildComponentType(child, GraphiQL.Footer),
     );
 
-    const queryWrapStyle = {
-      WebkitFlex: this.state.editorFlex,
-      flex: this.state.editorFlex,
-    };
-
-    const docWrapStyle = {
-      display: 'block',
-      width: this.state.docExplorerWidth,
-    };
-    const docExplorerWrapClasses =
-      'docExplorerWrap' +
-      (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-
-    const secondaryEditorOpen = this.state.secondaryEditorOpen;
-    const secondaryEditorStyle = {
-      height: secondaryEditorOpen
-        ? this.state.secondaryEditorHeight
-        : undefined,
-    };
-
     return (
-      <div
-        ref={n => {
-          this.graphiqlContainer = n;
-        }}
-        data-testid="graphiql-container"
-        className="graphiql-container">
-        {this.props.historyContext?.isVisible && (
-          <div
-            className="historyPaneWrap"
-            style={{ width: '230px', zIndex: 7 }}>
-            <QueryHistory />
-          </div>
-        )}
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            {this.props.beforeTopBarContent}
-            <div className="topBar">
-              {logo}
-              <ExecuteButton />
-              {toolbar}
+      <div data-testid="graphiql-container" className="graphiql-container">
+        <div ref={this.props.docResize.firstRef}>
+          {this.props.historyContext?.isVisible && (
+            <div
+              className="historyPaneWrap"
+              style={{ width: '230px', zIndex: 7 }}>
+              <QueryHistory />
             </div>
-            {this.props.explorerContext &&
-              !this.props.explorerContext.isVisible && (
-                <button
-                  className="docExplorerShow"
-                  onClick={() => {
-                    this.props.explorerContext?.show();
-                  }}
-                  aria-label="Open Documentation Explorer">
-                  Docs
-                </button>
-              )}
-          </div>
-          {this.props.tabs ? (
-            <Tabs
-              tabsProps={{
-                'aria-label': 'Select active operation',
-              }}>
-              {this.props.editorContext.tabs.map((tab, index) => (
-                <Tab
-                  key={tab.id}
-                  isActive={index === this.props.editorContext.activeTabIndex}
-                  title={tab.title}
-                  isCloseable={this.props.editorContext.tabs.length > 1}
-                  onSelect={() => {
-                    this.props.executionContext.stop();
-                    this.props.editorContext.changeTab(index);
-                  }}
-                  onClose={() => {
-                    if (this.props.editorContext.activeTabIndex === index) {
+          )}
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              {this.props.beforeTopBarContent}
+              <div className="topBar">
+                {logo}
+                <ExecuteButton />
+                {toolbar}
+              </div>
+              {this.props.explorerContext &&
+                !this.props.explorerContext.isVisible && (
+                  <button
+                    className="docExplorerShow"
+                    onClick={() => {
+                      this.props.explorerContext?.show();
+                      this.props.docResize.setHiddenElement(null);
+                    }}
+                    aria-label="Open Documentation Explorer">
+                    Docs
+                  </button>
+                )}
+            </div>
+            {this.props.tabs ? (
+              <Tabs
+                tabsProps={{
+                  'aria-label': 'Select active operation',
+                }}>
+                {this.props.editorContext.tabs.map((tab, index) => (
+                  <Tab
+                    key={tab.id}
+                    isActive={index === this.props.editorContext.activeTabIndex}
+                    title={tab.title}
+                    isCloseable={this.props.editorContext.tabs.length > 1}
+                    onSelect={() => {
                       this.props.executionContext.stop();
-                    }
-                    this.props.editorContext.closeTab(index);
-                  }}
-                  tabProps={{
-                    'aria-controls': 'sessionWrap',
-                    id: `session-tab-${index}`,
+                      this.props.editorContext.changeTab(index);
+                    }}
+                    onClose={() => {
+                      if (this.props.editorContext.activeTabIndex === index) {
+                        this.props.executionContext.stop();
+                      }
+                      this.props.editorContext.closeTab(index);
+                    }}
+                    tabProps={{
+                      'aria-controls': 'sessionWrap',
+                      id: `session-tab-${index}`,
+                    }}
+                  />
+                ))}
+                <TabAddButton
+                  onClick={() => {
+                    this.props.editorContext.addTab();
                   }}
                 />
-              ))}
-              <TabAddButton
-                onClick={() => {
-                  this.props.editorContext.addTab();
-                }}
-              />
-            </Tabs>
-          ) : null}
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            role="tabpanel"
-            id="sessionWrap"
-            className="editorBar"
-            aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                editorTheme={this.props.editorTheme}
-                externalFragments={this.props.externalFragments}
-                onEdit={this.props.onEditQuery}
-                onEditOperationName={this.props.onEditOperationName}
-                readOnly={this.props.readOnly}
-                validationRules={this.props.validationRules}
-              />
-              <section
-                className="variable-editor secondary-editor"
-                style={secondaryEditorStyle}
-                aria-label={
-                  this.state.variableEditorActive
-                    ? 'Query Variables'
-                    : 'Request Headers'
-                }>
-                <div
-                  className="secondary-editor-title variable-editor-title"
-                  id="secondary-editor-title"
-                  style={{
-                    cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleSecondaryEditorResizeStart}>
-                  <div
-                    className={`variable-editor-title-text${
-                      this.state.variableEditorActive ? ' active' : ''
-                    }`}
-                    onClick={this.handleOpenVariableEditorTab}
-                    onMouseDown={this.handleTabClickPropagation}>
-                    Query Variables
-                  </div>
-                  {this.state.headerEditorEnabled && (
-                    <div
-                      style={{
-                        marginLeft: '20px',
+              </Tabs>
+            ) : null}
+            <div
+              role="tabpanel"
+              id="sessionWrap"
+              className="editorBar"
+              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
+              <div ref={this.props.editorResize.firstRef}>
+                <div className="queryWrap">
+                  <div ref={this.props.secondaryEditorResize.firstRef}>
+                    <QueryEditor
+                      editorTheme={this.props.editorTheme}
+                      externalFragments={this.props.externalFragments}
+                      onClickReference={() => {
+                        if (this.props.docResize.hiddenElement === 'second') {
+                          this.props.docResize.setHiddenElement(null);
+                        }
                       }}
-                      className={`variable-editor-title-text${
-                        this.state.headerEditorActive ? ' active' : ''
-                      }`}
-                      onClick={this.handleOpenHeaderEditorTab}
-                      onMouseDown={this.handleTabClickPropagation}>
-                      Request Headers
+                      onCopyQuery={this.props.onCopyQuery}
+                      onEdit={this.props.onEditQuery}
+                      onEditOperationName={this.props.onEditOperationName}
+                      readOnly={this.props.readOnly}
+                      validationRules={this.props.validationRules}
+                    />
+                  </div>
+                  <div ref={this.props.secondaryEditorResize.dragBarRef}>
+                    <div
+                      className="secondary-editor-title variable-editor-title"
+                      id="secondary-editor-title">
+                      <div
+                        className={`variable-editor-title-text${
+                          this.state.activeSecondaryEditor === 'variable'
+                            ? ' active'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          if (
+                            this.props.secondaryEditorResize.hiddenElement ===
+                            'second'
+                          ) {
+                            this.props.secondaryEditorResize.setHiddenElement(
+                              null,
+                            );
+                          }
+                          this.setState(
+                            {
+                              activeSecondaryEditor: 'variable',
+                            },
+                            () => {
+                              this.props.editorContext.variableEditor?.refresh();
+                            },
+                          );
+                        }}>
+                        Query Variables
+                      </div>
+                      {this.props.headerEditorEnabled && (
+                        <div
+                          style={{
+                            marginLeft: '20px',
+                          }}
+                          className={`variable-editor-title-text${
+                            this.state.activeSecondaryEditor === 'header'
+                              ? ' active'
+                              : ''
+                          }`}
+                          onClick={() => {
+                            if (
+                              this.props.secondaryEditorResize.hiddenElement ===
+                              'second'
+                            ) {
+                              this.props.secondaryEditorResize.setHiddenElement(
+                                null,
+                              );
+                            }
+                            this.setState(
+                              {
+                                activeSecondaryEditor: 'header',
+                              },
+                              () => {
+                                this.props.editorContext.headerEditor?.refresh();
+                              },
+                            );
+                          }}>
+                          Request Headers
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div ref={this.props.secondaryEditorResize.secondRef}>
+                    <section
+                      className="variable-editor secondary-editor"
+                      aria-label={
+                        this.state.activeSecondaryEditor === 'variable'
+                          ? 'Query Variables'
+                          : 'Request Headers'
+                      }>
+                      <VariableEditor
+                        onEdit={this.props.onEditVariables}
+                        editorTheme={this.props.editorTheme}
+                        readOnly={this.props.readOnly}
+                        active={this.state.activeSecondaryEditor === 'variable'}
+                      />
+                      {this.props.headerEditorEnabled && (
+                        <HeaderEditor
+                          active={this.state.activeSecondaryEditor === 'header'}
+                          editorTheme={this.props.editorTheme}
+                          onEdit={this.props.onEditHeaders}
+                          readOnly={this.props.readOnly}
+                          shouldPersistHeaders={this.props.shouldPersistHeaders}
+                        />
+                      )}
+                    </section>
+                  </div>
+                </div>
+              </div>
+              <div ref={this.props.editorResize.dragBarRef}>
+                <div className="editor-drag-bar" />
+              </div>
+              <div ref={this.props.editorResize.secondRef}>
+                <div className="resultWrap">
+                  {this.props.executionContext.isFetching && (
+                    <div className="spinner-container">
+                      <div className="spinner" />
                     </div>
                   )}
-                </div>
-                <VariableEditor
-                  onEdit={this.props.onEditVariables}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                  active={this.state.variableEditorActive}
-                />
-                {this.state.headerEditorEnabled && (
-                  <HeaderEditor
-                    active={this.state.headerEditorActive}
+                  <ResultViewer
+                    value={this.props.response}
                     editorTheme={this.props.editorTheme}
-                    onEdit={this.props.onEditHeaders}
-                    readOnly={this.props.readOnly}
-                    shouldPersistHeaders={this.props.shouldPersistHeaders}
+                    ResponseTooltip={this.props.ResultsTooltip}
                   />
-                )}
-              </section>
-            </div>
-            <div className="resultWrap">
-              {this.props.executionContext.isFetching && (
-                <div className="spinner-container">
-                  <div className="spinner" />
+                  {footer}
                 </div>
-              )}
-              <ResultViewer
-                value={this.props.response}
-                editorTheme={this.props.editorTheme}
-                ResponseTooltip={this.props.ResultsTooltip}
-              />
-              {footer}
+              </div>
             </div>
           </div>
         </div>
-        {this.props.explorerContext?.isVisible && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
+        <div ref={this.props.docResize.dragBarRef}>
+          <div className="docExplorerResizer" />
+        </div>
+        <div ref={this.props.docResize.secondRef}>
+          <div className="docExplorerWrap">
+            <DocExplorer
+              onClose={() => this.props.docResize.setHiddenElement('second')}
             />
-            <DocExplorer />
           </div>
-        )}
+        </div>
       </div>
     );
   }
@@ -889,217 +902,6 @@ class GraphiQLWithContext extends React.Component<
   public autoCompleteLeafs() {
     return this.props.autoCompleteLeafs();
   }
-
-  // Private methods
-
-  private handleResizeStart = (downEvent: React.MouseEvent) => {
-    if (!this._didClickDragBar(downEvent)) {
-      return;
-    }
-
-    downEvent.preventDefault();
-
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
-      const rightSize = editorBar.clientWidth - leftSize;
-      this.setState({ editorFlex: leftSize / rightSize });
-      debounce(500, () =>
-        this.props.storageContext?.set(
-          'editorFlex',
-          JSON.stringify(this.state.editorFlex),
-        ),
-      )();
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
-
-  handleResetResize = () => {
-    this.setState({ editorFlex: 1 });
-    this.props.storageContext?.set(
-      'editorFlex',
-      JSON.stringify(this.state.editorFlex),
-    );
-  };
-
-  private _didClickDragBar(event: React.MouseEvent) {
-    // Only for primary unmodified clicks
-    if (event.button !== 0 || event.ctrlKey) {
-      return false;
-    }
-    const target = event.target;
-    if (!(target instanceof Element)) {
-      return false;
-    }
-    // We use codemirror's gutter as the drag bar.
-    if (target.className.indexOf('CodeMirror-gutter') !== 0) {
-      return false;
-    }
-    // Specifically the result window's drag bar.
-    const resultWindow = target.closest('section');
-    return resultWindow ? resultWindow.id === RESULT_VIEWER_ID : false;
-  }
-
-  private handleDocsResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-
-    const hadWidth = this.state.docExplorerWidth;
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      const app = this.graphiqlContainer as HTMLElement;
-      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
-      const docsSize = app.clientWidth - cursorPos;
-
-      if (docsSize < 100) {
-        this.props.explorerContext?.hide();
-      } else {
-        this.props.explorerContext?.show();
-        this.setState({ docExplorerWidth: Math.min(docsSize, 650) });
-        debounce(500, () =>
-          this.props.storageContext?.set(
-            'docExplorerWidth',
-            JSON.stringify(this.state.docExplorerWidth),
-          ),
-        )();
-      }
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      if (this.props.explorerContext && !this.props.explorerContext.isVisible) {
-        this.setState({ docExplorerWidth: hadWidth });
-        debounce(500, () =>
-          this.props.storageContext?.set(
-            'docExplorerWidth',
-            JSON.stringify(this.state.docExplorerWidth),
-          ),
-        )();
-      }
-
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove!);
-    document.addEventListener('mouseup', onMouseUp);
-  };
-
-  private handleDocsResetResize = () => {
-    this.setState({
-      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
-    });
-    debounce(500, () =>
-      this.props.storageContext?.set(
-        'docExplorerWidth',
-        JSON.stringify(this.state.docExplorerWidth),
-      ),
-    )();
-  };
-
-  // Prevent clicking on the tab button from propagating to the resizer.
-  private handleTabClickPropagation: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-    downEvent.stopPropagation();
-  };
-
-  private handleOpenHeaderEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: true,
-      variableEditorActive: false,
-      secondaryEditorOpen: true,
-    });
-  };
-
-  private handleOpenVariableEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: false,
-      variableEditorActive: true,
-      secondaryEditorOpen: true,
-    });
-  };
-
-  private handleSecondaryEditorResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-
-    let didMove = false;
-    const wasOpen = this.state.secondaryEditorOpen;
-    const hadHeight = this.state.secondaryEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      didMove = true;
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          secondaryEditorOpen: false,
-          secondaryEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          secondaryEditorOpen: true,
-          secondaryEditorHeight: bottomSize,
-        });
-      }
-      debounce(500, () =>
-        this.props.storageContext?.set(
-          'secondaryEditorHeight',
-          JSON.stringify(this.state.secondaryEditorHeight),
-        ),
-      )();
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ secondaryEditorOpen: !wasOpen });
-      }
-
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL.

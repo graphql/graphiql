@@ -106,7 +106,6 @@
 }
 
 .graphiql-container .resultWrap {
-  border-left: solid 1px #e0e0e0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -119,6 +118,7 @@
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  width: 100%;
   z-index: 3;
 }
 
@@ -130,9 +130,7 @@
 .graphiql-container .docExplorerResizer {
   cursor: col-resize;
   height: 100%;
-  left: -5px;
   position: absolute;
-  top: 0;
   width: 10px;
   z-index: 10;
 }
@@ -155,7 +153,7 @@
 .graphiql-container .secondary-editor {
   display: flex;
   flex-direction: column;
-  height: 30px;
+  height: 100%;
   position: relative;
 }
 
@@ -164,6 +162,7 @@
   border-bottom: 1px solid #d6d6d6;
   border-top: 1px solid #e0e0e0;
   color: #777;
+  cursor: row-resize;
   font-variant: small-caps;
   font-weight: bold;
   letter-spacing: 1px;
@@ -209,8 +208,15 @@
 }
 
 .graphiql-container .result-window .CodeMirror-gutters {
+  background-color: #f6f7f8;
+  border: none;
+}
+
+.editor-drag-bar {
+  width: 12px;
   background-color: #eeeeee;
-  border-color: #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   cursor: col-resize;
 }
 

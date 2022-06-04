@@ -15,6 +15,7 @@ import {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
@@ -65,6 +66,7 @@ export {
   StorageContextProvider,
   useAutoCompleteLeafs,
   useCopyQuery,
+  useDragResize,
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
@@ -154,6 +156,7 @@ function useMockedEditor(
       setValue(newValue: string) {
         setCode(newValue);
       },
+      refresh() {},
     });
   });
 

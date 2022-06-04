@@ -121,7 +121,7 @@ Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
   cy.visitWithOp(op);
   cy.clickExecuteQuery();
   cy.wait(timeout);
-  cy.get('section#graphiql-result-viewer').should(element => {
+  cy.get('section.result-window').should(element => {
     expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
       JSON.stringify(mockSuccess, null, 2),
     );

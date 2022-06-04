@@ -10,7 +10,6 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
-  useResizeEditor,
 } from './hooks';
 import { CodeMirrorType } from './types';
 
@@ -134,8 +133,6 @@ export function useVariableEditor({
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
   useKeyMap(variableEditor, ['Shift-Ctrl-M'], merge);
-
-  useResizeEditor(variableEditor, ref);
 
   return ref;
 }

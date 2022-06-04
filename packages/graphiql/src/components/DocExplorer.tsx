@@ -19,13 +19,17 @@ import SearchBox from './DocExplorer/SearchBox';
 import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 
+type DocExplorerProps = {
+  onClose?(): void;
+};
+
 /**
  * DocExplorer
  *
  * Shows documentations for GraphQL definitions from the schema.
  *
  */
-export function DocExplorer() {
+export function DocExplorer(props: DocExplorerProps) {
   const {
     fetchError,
     isFetching,
@@ -122,6 +126,7 @@ export function DocExplorer() {
             className="docExplorerHide"
             onClick={() => {
               hide();
+              props.onClose?.();
             }}
             aria-label="Close Documentation Explorer">
             {'\u2715'}

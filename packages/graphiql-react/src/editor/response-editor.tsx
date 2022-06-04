@@ -7,7 +7,7 @@ import { useSchemaContext } from '../schema';
 import { commonKeys, importCodeMirror } from './common';
 import { ImagePreview } from './components';
 import { useEditorContext } from './context';
-import { useResizeEditor, useSynchronizeValue } from './hooks';
+import { useSynchronizeValue } from './hooks';
 import { CodeMirrorEditor } from './types';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
@@ -120,8 +120,6 @@ export function useResponseEditor({
   }, [editorTheme, setResponseEditor]);
 
   useSynchronizeValue(responseEditor, value);
-
-  useResizeEditor(responseEditor, ref);
 
   useEffect(() => {
     if (fetchError) {
