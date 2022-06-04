@@ -6,20 +6,24 @@
  */
 
 import React from 'react';
-import { GraphQLArgument, DirectiveNode } from 'graphql';
-import { ExplorerFieldDef } from '@graphiql/react';
+import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
+import { useExplorerContext } from '@graphiql/react';
 
 import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 
-type FieldDocProps = {
-  field: ExplorerFieldDef;
-};
-
-export default function FieldDoc({ field }: FieldDocProps) {
+export default function FieldDoc() {
+  const { explorerNavStack } = useExplorerContext({ nonNull: true });
   const [showDeprecated, handleShowDeprecated] = React.useState(false);
+
+  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const field = navItem.def;
+  if (!field || isType(field)) {
+    return null;
+  }
+
   let argsDef;
   let deprecatedArgsDef;
   if (field && 'args' in field && field.args.length > 0) {

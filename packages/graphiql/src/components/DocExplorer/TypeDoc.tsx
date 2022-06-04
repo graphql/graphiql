@@ -5,17 +5,21 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { memo, ReactNode, useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
-  GraphQLSchema,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
   GraphQLEnumValue,
   GraphQLNamedType,
+  isType,
 } from 'graphql';
-import { ExplorerFieldDef } from '@graphiql/react';
+import {
+  ExplorerFieldDef,
+  useExplorerContext,
+  useSchemaContext,
+} from '@graphiql/react';
 
 import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
@@ -24,158 +28,159 @@ import DefaultValue from './DefaultValue';
 import { OnClickFieldFunction } from './types';
 
 type TypeDocProps = {
-  schema: GraphQLSchema;
-  type: GraphQLNamedType;
   onClickField: OnClickFieldFunction;
 };
 
-export default memo(
-  function TypeDoc(props: TypeDocProps) {
-    const [showDeprecated, setShowDeprecated] = useState(false);
+export default function TypeDoc(props: TypeDocProps) {
+  const { schema } = useSchemaContext({ nonNull: true });
+  const { explorerNavStack } = useExplorerContext({ nonNull: true });
+  const [showDeprecated, setShowDeprecated] = useState(false);
 
-    const schema = props.schema;
-    const type = props.type;
-    const onClickField = props.onClickField;
+  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const type = navItem.def;
 
-    let typesTitle: string | null = null;
-    let types: readonly (GraphQLObjectType | GraphQLInterfaceType)[] = [];
-    if (type instanceof GraphQLUnionType) {
-      typesTitle = 'possible types';
-      types = schema.getPossibleTypes(type);
-    } else if (type instanceof GraphQLInterfaceType) {
-      typesTitle = 'implementations';
-      types = schema.getPossibleTypes(type);
-    } else if (type instanceof GraphQLObjectType) {
-      typesTitle = 'implements';
-      types = type.getInterfaces();
-    }
+  if (!schema || !isType(type)) {
+    return null;
+  }
 
-    let typesDef;
-    if (types && types.length > 0) {
-      typesDef = (
-        <div id="doc-types" className="doc-category">
-          <div className="doc-category-title">{typesTitle}</div>
-          {types.map(subtype => (
-            <div key={subtype.name} className="doc-category-item">
-              <TypeLink type={subtype} />
-            </div>
+  const onClickField = props.onClickField;
+
+  let typesTitle: string | null = null;
+  let types: readonly (GraphQLObjectType | GraphQLInterfaceType)[] = [];
+  if (type instanceof GraphQLUnionType) {
+    typesTitle = 'possible types';
+    types = schema.getPossibleTypes(type);
+  } else if (type instanceof GraphQLInterfaceType) {
+    typesTitle = 'implementations';
+    types = schema.getPossibleTypes(type);
+  } else if (type instanceof GraphQLObjectType) {
+    typesTitle = 'implements';
+    types = type.getInterfaces();
+  }
+
+  let typesDef;
+  if (types && types.length > 0) {
+    typesDef = (
+      <div id="doc-types" className="doc-category">
+        <div className="doc-category-title">{typesTitle}</div>
+        {types.map(subtype => (
+          <div key={subtype.name} className="doc-category-item">
+            <TypeLink type={subtype} />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // InputObject and Object
+  let fieldsDef;
+  let deprecatedFieldsDef;
+  if (type && 'getFields' in type) {
+    const fieldMap = type.getFields();
+    const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
+    fieldsDef = (
+      <div id="doc-fields" className="doc-category">
+        <div className="doc-category-title">fields</div>
+        {fields
+          .filter(field => !field.deprecationReason)
+          .map(field => (
+            <Field
+              key={field.name}
+              type={type}
+              field={field}
+              onClickField={onClickField}
+            />
           ))}
-        </div>
-      );
-    }
+      </div>
+    );
 
-    // InputObject and Object
-    let fieldsDef;
-    let deprecatedFieldsDef;
-    if (type && 'getFields' in type) {
-      const fieldMap = type.getFields();
-      const fields = Object.keys(fieldMap).map(name => fieldMap[name]);
-      fieldsDef = (
-        <div id="doc-fields" className="doc-category">
-          <div className="doc-category-title">fields</div>
-          {fields
-            .filter(field => !field.deprecationReason)
-            .map(field => (
+    const deprecatedFields = fields.filter(field =>
+      Boolean(field.deprecationReason),
+    );
+    if (deprecatedFields.length > 0) {
+      deprecatedFieldsDef = (
+        <div id="doc-deprecated-fields" className="doc-category">
+          <div className="doc-category-title">deprecated fields</div>
+          {!showDeprecated ? (
+            <button
+              className="show-btn"
+              onClick={() => {
+                setShowDeprecated(true);
+              }}>
+              Show deprecated fields...
+            </button>
+          ) : (
+            deprecatedFields.map(field => (
               <Field
                 key={field.name}
                 type={type}
                 field={field}
                 onClickField={onClickField}
               />
-            ))}
+            ))
+          )}
         </div>
       );
-
-      const deprecatedFields = fields.filter(field =>
-        Boolean(field.deprecationReason),
-      );
-      if (deprecatedFields.length > 0) {
-        deprecatedFieldsDef = (
-          <div id="doc-deprecated-fields" className="doc-category">
-            <div className="doc-category-title">deprecated fields</div>
-            {!showDeprecated ? (
-              <button
-                className="show-btn"
-                onClick={() => {
-                  setShowDeprecated(true);
-                }}>
-                Show deprecated fields...
-              </button>
-            ) : (
-              deprecatedFields.map(field => (
-                <Field
-                  key={field.name}
-                  type={type}
-                  field={field}
-                  onClickField={onClickField}
-                />
-              ))
-            )}
-          </div>
-        );
-      }
     }
+  }
 
-    let valuesDef: ReactNode;
-    let deprecatedValuesDef: ReactNode;
-    if (type instanceof GraphQLEnumType) {
-      const values = type.getValues();
-      valuesDef = (
-        <div className="doc-category">
-          <div className="doc-category-title">values</div>
-          {values
-            .filter(value => Boolean(!value.deprecationReason))
-            .map(value => (
-              <EnumValue key={value.name} value={value} />
-            ))}
-        </div>
-      );
-
-      const deprecatedValues = values.filter(value =>
-        Boolean(value.deprecationReason),
-      );
-      if (deprecatedValues.length > 0) {
-        deprecatedValuesDef = (
-          <div className="doc-category">
-            <div className="doc-category-title">deprecated values</div>
-            {!showDeprecated ? (
-              <button
-                className="show-btn"
-                onClick={() => {
-                  setShowDeprecated(true);
-                }}>
-                Show deprecated values...
-              </button>
-            ) : (
-              deprecatedValues.map(value => (
-                <EnumValue key={value.name} value={value} />
-              ))
-            )}
-          </div>
-        );
-      }
-    }
-
-    return (
-      <div>
-        <MarkdownContent
-          className="doc-type-description"
-          markdown={
-            ('description' in type && type.description) || 'No Description'
-          }
-        />
-        {type instanceof GraphQLObjectType && typesDef}
-        {fieldsDef}
-        {deprecatedFieldsDef}
-        {valuesDef}
-        {deprecatedValuesDef}
-        {!(type instanceof GraphQLObjectType) && typesDef}
+  let valuesDef: ReactNode;
+  let deprecatedValuesDef: ReactNode;
+  if (type instanceof GraphQLEnumType) {
+    const values = type.getValues();
+    valuesDef = (
+      <div className="doc-category">
+        <div className="doc-category-title">values</div>
+        {values
+          .filter(value => Boolean(!value.deprecationReason))
+          .map(value => (
+            <EnumValue key={value.name} value={value} />
+          ))}
       </div>
     );
-  },
-  (prevProps, nextProps) =>
-    prevProps.type === nextProps.type && prevProps.schema === nextProps.schema,
-);
+
+    const deprecatedValues = values.filter(value =>
+      Boolean(value.deprecationReason),
+    );
+    if (deprecatedValues.length > 0) {
+      deprecatedValuesDef = (
+        <div className="doc-category">
+          <div className="doc-category-title">deprecated values</div>
+          {!showDeprecated ? (
+            <button
+              className="show-btn"
+              onClick={() => {
+                setShowDeprecated(true);
+              }}>
+              Show deprecated values...
+            </button>
+          ) : (
+            deprecatedValues.map(value => (
+              <EnumValue key={value.name} value={value} />
+            ))
+          )}
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div>
+      <MarkdownContent
+        className="doc-type-description"
+        markdown={
+          ('description' in type && type.description) || 'No Description'
+        }
+      />
+      {type instanceof GraphQLObjectType && typesDef}
+      {fieldsDef}
+      {deprecatedFieldsDef}
+      {valuesDef}
+      {deprecatedValuesDef}
+      {!(type instanceof GraphQLObjectType) && typesDef}
+    </div>
+  );
+}
 
 type FieldProps = {
   type: GraphQLNamedType;

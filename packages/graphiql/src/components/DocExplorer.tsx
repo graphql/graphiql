@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode } from 'react';
-import { isType, GraphQLNamedType } from 'graphql';
+import { isType } from 'graphql';
 import {
   ExplorerFieldDef,
   useExplorerContext,
@@ -67,26 +67,13 @@ export function DocExplorer(props: DocExplorerProps) {
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
   } else if (navItem.search) {
-    content = (
-      <SearchResults
-        searchValue={navItem.search}
-        withinType={navItem.def as GraphQLNamedType}
-        schema={schema}
-        onClickField={handleClickField}
-      />
-    );
+    content = <SearchResults onClickField={handleClickField} />;
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDoc schema={schema} />;
+    content = <SchemaDoc />;
   } else if (isType(navItem.def)) {
-    content = (
-      <TypeDoc
-        schema={schema}
-        type={navItem.def}
-        onClickField={handleClickField}
-      />
-    );
+    content = <TypeDoc onClickField={handleClickField} />;
   } else if (navItem.def) {
-    content = <FieldDoc field={navItem.def} />;
+    content = <FieldDoc />;
   }
 
   const shouldSearchBoxAppear =

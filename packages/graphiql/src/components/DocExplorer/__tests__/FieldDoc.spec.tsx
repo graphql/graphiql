@@ -5,18 +5,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import {
-  ExplorerContext,
-  ExplorerContextType,
-  ExplorerNavStackItem,
-} from '@graphiql/react';
+import { ExplorerContext, ExplorerFieldDef } from '@graphiql/react';
 import {
   // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-import React, { ComponentProps } from 'react';
+import React from 'react';
 
 import FieldDoc from '../FieldDoc';
 import { mockExplorerContextValue } from './test-utils';
@@ -69,14 +65,14 @@ const exampleObject = new GraphQLObjectType({
   },
 });
 
-function FieldDocWithContext(props: ComponentProps<typeof FieldDoc>) {
+function FieldDocWithContext(props: { field: ExplorerFieldDef }) {
   return (
     <ExplorerContext.Provider
       value={mockExplorerContextValue({
         name: props.field.name,
         def: props.field,
       })}>
-      <FieldDoc {...props} />
+      <FieldDoc />
     </ExplorerContext.Provider>
   );
 }

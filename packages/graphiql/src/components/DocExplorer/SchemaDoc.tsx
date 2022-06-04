@@ -8,14 +8,16 @@
 import React from 'react';
 import TypeLink from './TypeLink';
 import MarkdownContent from './MarkdownContent';
-import { GraphQLSchema } from 'graphql';
-
-type SchemaDocProps = {
-  schema: GraphQLSchema;
-};
+import { useSchemaContext } from '@graphiql/react';
 
 // Render the top level Schema
-export default function SchemaDoc({ schema }: SchemaDocProps) {
+export default function SchemaDoc() {
+  const { schema } = useSchemaContext({ nonNull: true });
+
+  if (!schema) {
+    return null;
+  }
+
   const queryType = schema.getQueryType();
   const mutationType = schema.getMutationType && schema.getMutationType();
   const subscriptionType =

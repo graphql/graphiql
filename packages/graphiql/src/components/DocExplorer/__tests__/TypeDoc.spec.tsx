@@ -5,13 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { ExplorerContext } from '@graphiql/react';
+import { ExplorerContext, SchemaContext } from '@graphiql/react';
 import {
   // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
-import { GraphQLType } from 'graphql';
+import { GraphQLNamedType } from 'graphql';
 import React, { ComponentProps } from 'react';
 
 import {
@@ -23,26 +23,34 @@ import {
 import TypeDoc from '../TypeDoc';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
-function TypeDocWithContext(props: ComponentProps<typeof TypeDoc>) {
+function TypeDocWithContext(
+  props: ComponentProps<typeof TypeDoc> & { type: GraphQLNamedType },
+) {
   return (
-    <ExplorerContext.Provider
-      value={mockExplorerContextValue({
-        name: unwrapType(props.type).name,
-        def: props.type,
-      })}>
-      <TypeDoc {...props} />
-    </ExplorerContext.Provider>
+    <SchemaContext.Provider
+      value={{
+        fetchError: null,
+        isFetching: false,
+        schema: ExampleSchema,
+        setFetchError() {},
+        setSchema() {},
+        validationErrors: null,
+      }}>
+      <ExplorerContext.Provider
+        value={mockExplorerContextValue({
+          name: unwrapType(props.type).name,
+          def: props.type,
+        })}>
+        <TypeDoc {...props} />
+      </ExplorerContext.Provider>
+    </SchemaContext.Provider>
   );
 }
 
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {
     const { container } = render(
-      <TypeDocWithContext
-        schema={ExampleSchema}
-        type={ExampleQuery}
-        onClickField={jest.fn()}
-      />,
+      <TypeDocWithContext type={ExampleQuery} onClickField={jest.fn()} />,
     );
     const description = container.querySelectorAll('.doc-type-description');
     expect(description).toHaveLength(1);
@@ -60,11 +68,7 @@ describe('TypeDoc', () => {
 
   it('renders deprecated fields when you click to see them', () => {
     const { container } = render(
-      <TypeDocWithContext
-        schema={ExampleSchema}
-        type={ExampleQuery}
-        onClickField={jest.fn()}
-      />,
+      <TypeDocWithContext type={ExampleQuery} onClickField={jest.fn()} />,
     );
     let cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(3);
@@ -83,11 +87,7 @@ describe('TypeDoc', () => {
 
   it('renders a Union type', () => {
     const { container } = render(
-      <TypeDocWithContext
-        schema={ExampleSchema}
-        type={ExampleUnion}
-        onClickField={jest.fn()}
-      />,
+      <TypeDocWithContext type={ExampleUnion} onClickField={jest.fn()} />,
     );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
       'possible types',
@@ -96,11 +96,7 @@ describe('TypeDoc', () => {
 
   it('renders an Enum type', () => {
     const { container } = render(
-      <TypeDocWithContext
-        schema={ExampleSchema}
-        type={ExampleEnum}
-        onClickField={jest.fn()}
-      />,
+      <TypeDocWithContext type={ExampleEnum} onClickField={jest.fn()} />,
     );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
       'values',
@@ -112,11 +108,7 @@ describe('TypeDoc', () => {
 
   it('shows deprecated enum values on click', () => {
     const { getByText, container } = render(
-      <TypeDocWithContext
-        schema={ExampleSchema}
-        type={ExampleEnum}
-        onClickField={jest.fn()}
-      />,
+      <TypeDocWithContext type={ExampleEnum} onClickField={jest.fn()} />,
     );
     const showBtn = getByText('Show deprecated values...');
     expect(showBtn).toBeInTheDocument();
