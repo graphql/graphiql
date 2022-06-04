@@ -1,0 +1,64 @@
+.graphiql-history-header {
+  font-size: var(--font-size-h2);
+}
+
+.graphiql-history-items {
+  margin: var(--px-16) 0 0;
+  list-style: none;
+  padding: 0;
+}
+
+.graphiql-history-item {
+  border-radius: var(--border-radius-4);
+  color: var(--color-neutral-60);
+  display: flex;
+  font-size: var(--font-size-inline-code);
+  font-family: var(--font-family-mono);
+  height: 34px;
+
+  &:hover {
+    color: var(--color-neutral-100);
+    background-color: var(--color-neutral-7);
+  }
+
+  &:not(:first-child) {
+    margin-top: var(--px-4);
+  }
+}
+
+button.graphiql-history-item-label {
+  flex: 1;
+  padding: var(--px-8) var(--px-10);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button.graphiql-history-item-action {
+  align-items: center;
+  color: var(--color-neutral-60);
+  display: flex;
+  padding: var(--px-8) var(--px-6);
+
+  &:hover {
+    color: var(--color-neutral-100);
+  }
+
+  & > svg {
+    height: 14px;
+    pointer-events: none;
+    width: 14px;
+  }
+}
+
+.graphiql-history-item > input {
+  border: none;
+  flex: 1;
+  margin: 0;
+  padding: var(--px-8) var(--px-12);
+  width: 100%;
+
+  &:focus {
+    outline: var(--color-pink) auto 1px;
+  }
+}

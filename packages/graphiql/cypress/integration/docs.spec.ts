@@ -11,7 +11,7 @@ describe('GraphiQL DocExplorer - button', () => {
 
   it('Toggles doc pane back off', () => {
     // there are two components with .docExplorerHide, one in query history
-    cy.get('.docExplorerWrap button.docExplorerHide').click();
+    cy.get('.graphiql-plugin button.docExplorerHide').click();
     cy.get('.doc-explorer').should('not.be.visible');
   });
 });

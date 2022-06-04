@@ -30,6 +30,7 @@
   --font-size-inline-code: calc(13rem / 16);
   --font-size-body: calc(15rem / 16);
   --font-size-h4: calc(18rem / 16);
+  --font-size-h2: calc(29rem / 16);
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --line-height: 1.5;
@@ -39,6 +40,7 @@
   --px-4: 4px;
   --px-6: 6px;
   --px-8: 8px;
+  --px-10: 10px;
   --px-12: 12px;
   --px-16: 16px;
 
@@ -61,7 +63,8 @@
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
-.graphiql-container button {
+.graphiql-container:is(button),
+.graphiql-container:is(input) {
   color: var(--color-neutral-100);
   font-family: var(--font-family);
   font-size: var(--font-size-body);
