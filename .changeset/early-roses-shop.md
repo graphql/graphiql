@@ -2,4 +2,4 @@
 '@graphiql/react': minor
 ---
 
-Add `DragResizeContainer` utility component
+Add `useDragResize` utility hook
