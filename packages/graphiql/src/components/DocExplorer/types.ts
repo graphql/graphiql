@@ -4,7 +4,6 @@ import {
   GraphQLInterfaceType,
   GraphQLInputObjectType,
   GraphQLType,
-  GraphQLNamedType,
 } from 'graphql';
 import { ExplorerFieldDef } from '@graphiql/react';
 
@@ -17,12 +16,3 @@ export type OnClickFieldFunction = (
     | GraphQLType,
   event?: MouseEvent,
 ) => void;
-
-export type OnClickTypeFunction = (
-  type: GraphQLNamedType,
-  event?: MouseEvent<HTMLAnchorElement>,
-) => void;
-
-export type OnClickFieldOrTypeFunction =
-  | OnClickFieldFunction
-  | OnClickTypeFunction;

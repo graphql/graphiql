@@ -42,15 +42,11 @@ export function DocExplorer(props: DocExplorerProps) {
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
 
-  function handleClickType(type: GraphQLNamedType) {
-    push({ name: type.name, def: type });
-  }
-
   function handleClickField(field: ExplorerFieldDef) {
     push({ name: field.name, def: field });
   }
 
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (fetchError) {
     content = <div className="error-container">Error fetching schema</div>;
   } else if (validationErrors) {
@@ -76,23 +72,21 @@ export function DocExplorer(props: DocExplorerProps) {
         searchValue={navItem.search}
         withinType={navItem.def as GraphQLNamedType}
         schema={schema}
-        onClickType={handleClickType}
         onClickField={handleClickField}
       />
     );
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDoc schema={schema} onClickType={handleClickType} />;
+    content = <SchemaDoc schema={schema} />;
   } else if (isType(navItem.def)) {
     content = (
       <TypeDoc
         schema={schema}
         type={navItem.def}
-        onClickType={handleClickType}
         onClickField={handleClickField}
       />
     );
-  } else {
-    content = <FieldDoc field={navItem.def} onClickType={handleClickType} />;
+  } else if (navItem.def) {
+    content = <FieldDoc field={navItem.def} />;
   }
 
   const shouldSearchBoxAppear =

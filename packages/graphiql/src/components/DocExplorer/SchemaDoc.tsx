@@ -9,15 +9,13 @@ import React from 'react';
 import TypeLink from './TypeLink';
 import MarkdownContent from './MarkdownContent';
 import { GraphQLSchema } from 'graphql';
-import { OnClickTypeFunction } from './types';
 
 type SchemaDocProps = {
   schema: GraphQLSchema;
-  onClickType: OnClickTypeFunction;
 };
 
 // Render the top level Schema
-export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {
+export default function SchemaDoc({ schema }: SchemaDocProps) {
   const queryType = schema.getQueryType();
   const mutationType = schema.getMutationType && schema.getMutationType();
   const subscriptionType =
@@ -34,23 +32,25 @@ export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {
       />
       <div className="doc-category">
         <div className="doc-category-title">root types</div>
-        <div className="doc-category-item">
-          <span className="keyword">query</span>
-          {': '}
-          <TypeLink type={queryType} onClick={onClickType} />
-        </div>
+        {queryType ? (
+          <div className="doc-category-item">
+            <span className="keyword">query</span>
+            {': '}
+            <TypeLink type={queryType} />
+          </div>
+        ) : null}
         {mutationType && (
           <div className="doc-category-item">
             <span className="keyword">mutation</span>
             {': '}
-            <TypeLink type={mutationType} onClick={onClickType} />
+            <TypeLink type={mutationType} />
           </div>
         )}
         {subscriptionType && (
           <div className="doc-category-item">
             <span className="keyword">subscription</span>
             {': '}
-            <TypeLink type={subscriptionType} onClick={onClickType} />
+            <TypeLink type={subscriptionType} />
           </div>
         )}
       </div>

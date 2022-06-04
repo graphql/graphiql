@@ -10,13 +10,12 @@ import { GraphQLSchema, GraphQLNamedType } from 'graphql';
 
 import Argument from './Argument';
 import TypeLink from './TypeLink';
-import { OnClickFieldFunction, OnClickTypeFunction } from './types';
+import { OnClickFieldFunction } from './types';
 
 type SearchResultsProps = {
   schema: GraphQLSchema;
   withinType?: GraphQLNamedType;
   searchValue: string;
-  onClickType: OnClickTypeFunction;
   onClickField: OnClickFieldFunction;
 };
 
@@ -35,7 +34,6 @@ export default class SearchResults extends React.Component<
     const searchValue = this.props.searchValue;
     const withinType = this.props.withinType;
     const schema = this.props.schema;
-    const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
 
     const matchedWithin: ReactNode[] = [];
@@ -63,7 +61,7 @@ export default class SearchResults extends React.Component<
       if (withinType !== type && isMatch(typeName, searchValue)) {
         matchedTypes.push(
           <div className="doc-category-item" key={typeName}>
-            <TypeLink type={type} onClick={onClickType} />
+            <TypeLink type={type} />
           </div>,
         );
       }
@@ -90,7 +88,7 @@ export default class SearchResults extends React.Component<
           const match = (
             <div className="doc-category-item" key={typeName + '.' + fieldName}>
               {withinType !== type && [
-                <TypeLink key="type" type={type} onClick={onClickType} />,
+                <TypeLink key="type" type={type} />,
                 '.',
               ]}
               <a
@@ -105,7 +103,6 @@ export default class SearchResults extends React.Component<
                     <Argument
                       key={arg.name}
                       arg={arg}
-                      onClickType={onClickType}
                       showDefaultValue={false}
                     />
                   ))}

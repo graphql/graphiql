@@ -5,57 +5,61 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import {
+  ExplorerContext,
+  ExplorerContextType,
+  ExplorerNavStackItem,
+} from '@graphiql/react';
+import {
+  // @ts-expect-error
+  fireEvent,
+  render,
+} from '@testing-library/react';
+import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
+import React, { ComponentProps } from 'react';
 
 import FieldDoc from '../FieldDoc';
-
-import { GraphQLString, GraphQLObjectType } from 'graphql';
+import { mockExplorerContextValue } from './test-utils';
 
 const exampleObject = new GraphQLObjectType({
   name: 'Query',
   fields: {
     string: {
-      name: 'simpleStringField',
       type: GraphQLString,
     },
     stringWithArgs: {
-      name: 'stringWithArgs',
       type: GraphQLString,
       description: 'Example String field with arguments',
       args: {
         stringArg: {
-          name: 'stringArg',
           type: GraphQLString,
         },
         deprecatedStringArg: {
-          name: 'deprecatedStringArg',
           type: GraphQLString,
           deprecationReason: 'no longer used',
         },
       },
     },
     stringWithDirective: {
-      name: 'stringWithDirective',
       type: GraphQLString,
       astNode: {
-        kind: 'FieldDefinition',
+        kind: Kind.FIELD_DEFINITION,
         name: {
-          kind: 'Name',
+          kind: Kind.NAME,
           value: 'stringWithDirective',
         },
         type: {
-          kind: 'NamedType',
+          kind: Kind.NAMED_TYPE,
           name: {
-            kind: 'Name',
+            kind: Kind.NAME,
             value: 'GraphQLString',
           },
         },
         directives: [
           {
-            kind: 'Directive',
+            kind: Kind.DIRECTIVE,
             name: {
-              kind: 'Name',
+              kind: Kind.NAME,
               value: 'development',
             },
           },
@@ -65,13 +69,22 @@ const exampleObject = new GraphQLObjectType({
   },
 });
 
+function FieldDocWithContext(props: ComponentProps<typeof FieldDoc>) {
+  return (
+    <ExplorerContext.Provider
+      value={mockExplorerContextValue({
+        name: props.field.name,
+        def: props.field,
+      })}>
+      <FieldDoc {...props} />
+    </ExplorerContext.Provider>
+  );
+}
+
 describe('FieldDoc', () => {
   it('should render a simple string field', () => {
     const { container } = render(
-      <FieldDoc
-        field={exampleObject.getFields().string}
-        onClickType={jest.fn()}
-      />,
+      <FieldDocWithContext field={exampleObject.getFields().string} />,
     );
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'No Description',
@@ -82,10 +95,7 @@ describe('FieldDoc', () => {
 
   it('should re-render on field change', () => {
     const { container, rerender } = render(
-      <FieldDoc
-        field={exampleObject.getFields().string}
-        onClickType={jest.fn()}
-      />,
+      <FieldDocWithContext field={exampleObject.getFields().string} />,
     );
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'No Description',
@@ -94,10 +104,7 @@ describe('FieldDoc', () => {
     expect(container.querySelector('.arg')).not.toBeInTheDocument();
 
     rerender(
-      <FieldDoc
-        field={exampleObject.getFields().stringWithArgs}
-        onClickType={jest.fn()}
-      />,
+      <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
     expect(container.querySelector('.type-name')).toHaveTextContent('String');
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
@@ -107,10 +114,7 @@ describe('FieldDoc', () => {
 
   it('should render a string field with arguments', () => {
     const { container } = render(
-      <FieldDoc
-        field={exampleObject.getFields().stringWithArgs}
-        onClickType={jest.fn()}
-      />,
+      <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
     expect(container.querySelector('.type-name')).toHaveTextContent('String');
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
@@ -131,9 +135,8 @@ describe('FieldDoc', () => {
 
   it('should render a string field with directives', () => {
     const { container } = render(
-      <FieldDoc
+      <FieldDocWithContext
         field={exampleObject.getFields().stringWithDirective}
-        onClickType={jest.fn()}
       />,
     );
     expect(container.querySelector('.type-name')).toHaveTextContent('String');

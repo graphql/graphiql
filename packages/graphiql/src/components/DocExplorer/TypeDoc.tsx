@@ -12,8 +12,8 @@ import {
   GraphQLInterfaceType,
   GraphQLUnionType,
   GraphQLEnumType,
-  GraphQLType,
   GraphQLEnumValue,
+  GraphQLNamedType,
 } from 'graphql';
 import { ExplorerFieldDef } from '@graphiql/react';
 
@@ -21,12 +21,11 @@ import Argument from './Argument';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
-import { OnClickTypeFunction, OnClickFieldFunction } from './types';
+import { OnClickFieldFunction } from './types';
 
 type TypeDocProps = {
   schema: GraphQLSchema;
-  type: GraphQLType;
-  onClickType: OnClickTypeFunction;
+  type: GraphQLNamedType;
   onClickField: OnClickFieldFunction;
 };
 
@@ -54,7 +53,6 @@ export default class TypeDoc extends React.Component<
   render() {
     const schema = this.props.schema;
     const type = this.props.type;
-    const onClickType = this.props.onClickType;
     const onClickField = this.props.onClickField;
 
     let typesTitle: string | null = null;
@@ -77,7 +75,7 @@ export default class TypeDoc extends React.Component<
           <div className="doc-category-title">{typesTitle}</div>
           {types.map(subtype => (
             <div key={subtype.name} className="doc-category-item">
-              <TypeLink type={subtype} onClick={onClickType} />
+              <TypeLink type={subtype} />
             </div>
           ))}
         </div>
@@ -100,7 +98,6 @@ export default class TypeDoc extends React.Component<
                 key={field.name}
                 type={type}
                 field={field}
-                onClickType={onClickType}
                 onClickField={onClickField}
               />
             ))}
@@ -124,7 +121,6 @@ export default class TypeDoc extends React.Component<
                   key={field.name}
                   type={type}
                   field={field}
-                  onClickType={onClickType}
                   onClickField={onClickField}
                 />
               ))
@@ -192,13 +188,12 @@ export default class TypeDoc extends React.Component<
 }
 
 type FieldProps = {
-  type: GraphQLType;
+  type: GraphQLNamedType;
   field: ExplorerFieldDef;
-  onClickType: OnClickTypeFunction;
   onClickField: OnClickFieldFunction;
 };
 
-function Field({ type, field, onClickType, onClickField }: FieldProps) {
+function Field({ type, field, onClickField }: FieldProps) {
   return (
     <div className="doc-category-item">
       <a
@@ -214,13 +209,13 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
             {field.args
               .filter(arg => !arg.deprecationReason)
               .map(arg => (
-                <Argument key={arg.name} arg={arg} onClickType={onClickType} />
+                <Argument key={arg.name} arg={arg} />
               ))}
           </span>,
           ')',
         ]}
       {': '}
-      <TypeLink type={field.type} onClick={onClickType} />
+      <TypeLink type={field.type} />
       <DefaultValue field={field} />
       {field.description && (
         <MarkdownContent

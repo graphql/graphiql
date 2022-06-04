@@ -9,24 +9,18 @@ import React from 'react';
 import { GraphQLArgument } from 'graphql';
 import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
-import { OnClickTypeFunction } from './types';
 
 type ArgumentProps = {
   arg: GraphQLArgument;
-  onClickType: OnClickTypeFunction;
   showDefaultValue?: boolean;
 };
 
-export default function Argument({
-  arg,
-  onClickType,
-  showDefaultValue,
-}: ArgumentProps) {
+export default function Argument({ arg, showDefaultValue }: ArgumentProps) {
   return (
     <span className="arg">
       <span className="arg-name">{arg.name}</span>
       {': '}
-      <TypeLink type={arg.type} onClick={onClickType} />
+      <TypeLink type={arg.type} />
       {showDefaultValue !== false && <DefaultValue field={arg} />}
     </span>
   );
