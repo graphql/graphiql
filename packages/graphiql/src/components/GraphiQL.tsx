@@ -84,7 +84,7 @@ if (majorVersion < 16) {
 }
 
 declare namespace window {
-  export let g: GraphiQLWithContext;
+  export let g: GraphiQL;
 }
 
 export type Maybe<T> = T | null | undefined;
@@ -315,25 +315,131 @@ export type GraphiQLState = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
+export class GraphiQL extends React.Component<GraphiQLProps> {
+  ref: GraphiQLWithContext | null = null;
 
-export const GraphiQL: ForwardRefExoticComponent<
+  constructor(props: GraphiQLProps) {
+    super(props);
+  }
+
+  componentDidMount() {
+    if (typeof window !== 'undefined') {
+      window.g = this;
+    }
+  }
+
+  render() {
+    return (
+      <GraphiQLProviders
+        {...this.props}
+        ref={node => {
+          this.ref = node;
+        }}
+      />
+    );
+  }
+
+  /**
+   * Get the query editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getQueryEditor() {
+    console.warn(
+      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
+    );
+    return this.ref?.getQueryEditor() || null;
+  }
+
+  /**
+   * Get the variable editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getVariableEditor() {
+    console.warn(
+      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
+    );
+    return this.ref?.getVariableEditor() || null;
+  }
+
+  /**
+   * Get the header editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getHeaderEditor() {
+    console.warn(
+      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
+    );
+    return this.ref?.getHeaderEditor() || null;
+  }
+
+  /**
+   * Refresh all CodeMirror instances.
+   *
+   * @public
+   */
+  public refresh() {
+    console.warn(
+      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
+    );
+    this.ref?.refresh();
+  }
+
+  /**
+   * Inspect the query, automatically filling in selection sets for non-leaf
+   * fields which do not yet have them.
+   *
+   * @public
+   */
+  public autoCompleteLeafs() {
+    console.warn(
+      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
+    );
+    return this.ref?.autoCompleteLeafs();
+  }
+
+  // Static methods
+
+  static formatResult = (result: any): string => {
+    console.warn(
+      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatResult(result);
+  };
+
+  static formatError = (error: any): string => {
+    console.warn(
+      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatError(error);
+  };
+
+  // Export main windows/panes to be used separately if desired.
+  static Logo = GraphiQLLogo;
+  static Toolbar = GraphiQLToolbar;
+  static Footer = GraphiQLFooter;
+  static QueryEditor = QueryEditor;
+  static VariableEditor = VariableEditor;
+  static HeaderEditor = HeaderEditor;
+  static ResultViewer = ResultViewer;
+
+  // Add a button to the Toolbar.
+  static Button = ToolbarButton;
+  static ToolbarButton = ToolbarButton; // Don't break existing API.
+
+  // Add a group of buttons to the Toolbar
+  static Group = ToolbarGroup;
+
+  // Add a menu of items to the Toolbar.
+  static Menu = ToolbarMenu;
+  static MenuItem = ToolbarMenuItem;
+}
+
+const GraphiQLProviders: ForwardRefExoticComponent<
   GraphiQLProps & RefAttributes<GraphiQLWithContext>
-> & {
-  formatResult(result: any): string;
-  formatError(error: any): string;
-  Logo: typeof GraphiQLLogo;
-  Toolbar: typeof GraphiQLToolbar;
-  Footer: typeof GraphiQLFooter;
-  QueryEditor: typeof QueryEditor;
-  VariableEditor: typeof VariableEditor;
-  HeaderEditor: typeof HeaderEditor;
-  ResultViewer: typeof ResultViewer;
-  Button: typeof ToolbarButton;
-  ToolbarButton: typeof ToolbarButton;
-  Group: typeof ToolbarGroup;
-  Menu: typeof ToolbarMenu;
-  MenuItem: typeof ToolbarMenuItem;
-} = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQL(
+> = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQLProviders(
   {
     dangerouslyAssumeSchemaIsValid,
     docExplorerOpen,
@@ -393,40 +499,6 @@ export const GraphiQL: ForwardRefExoticComponent<
     </StorageContextProvider>
   );
 }) as any;
-
-GraphiQL.formatResult = (result: any): string => {
-  console.warn(
-    'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
-  );
-  return formatResult(result);
-};
-
-GraphiQL.formatError = (error: any): string => {
-  console.warn(
-    'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
-  );
-  return formatError(error);
-};
-
-// Export main windows/panes to be used separately if desired.
-GraphiQL.Logo = GraphiQLLogo;
-GraphiQL.Toolbar = GraphiQLToolbar;
-GraphiQL.Footer = GraphiQLFooter;
-GraphiQL.QueryEditor = QueryEditor;
-GraphiQL.VariableEditor = VariableEditor;
-GraphiQL.HeaderEditor = HeaderEditor;
-GraphiQL.ResultViewer = ResultViewer;
-
-// Add a button to the Toolbar.
-GraphiQL.Button = ToolbarButton;
-GraphiQL.ToolbarButton = ToolbarButton; // Don't break existing API.
-
-// Add a group of buttons to the Toolbar
-GraphiQL.Group = ToolbarGroup;
-
-// Add a menu of items to the Toolbar.
-GraphiQL.Menu = ToolbarMenu;
-GraphiQL.MenuItem = ToolbarMenuItem;
 
 // Add a select-option input to the Toolbar.
 // GraphiQL.Select = ToolbarSelect;
@@ -550,12 +622,6 @@ class GraphiQLWithContext extends React.Component<
         Number(this.props.storageContext?.get('docExplorerWidth')) ||
         DEFAULT_DOC_EXPLORER_WIDTH,
     };
-  }
-
-  componentDidMount() {
-    if (typeof window !== 'undefined') {
-      window.g = this;
-    }
   }
 
   render() {
@@ -799,67 +865,28 @@ class GraphiQLWithContext extends React.Component<
     );
   }
 
-  /**
-   * Get the query editor CodeMirror instance.
-   *
-   * @public
-   */
-  getQueryEditor() {
-    console.warn(
-      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
-    );
+  // Public methods
+
+  public getQueryEditor() {
     return this.props.editorContext.queryEditor || null;
   }
 
-  /**
-   * Get the variable editor CodeMirror instance.
-   *
-   * @public
-   */
   public getVariableEditor() {
-    console.warn(
-      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
-    );
     return this.props.editorContext.variableEditor || null;
   }
 
-  /**
-   * Get the header editor CodeMirror instance.
-   *
-   * @public
-   */
   public getHeaderEditor() {
-    console.warn(
-      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
-    );
     return this.props.editorContext.headerEditor || null;
   }
 
-  /**
-   * Refresh all CodeMirror instances.
-   *
-   * @public
-   */
   public refresh() {
-    console.warn(
-      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
-    );
     this.props.editorContext.queryEditor?.refresh();
     this.props.editorContext.variableEditor?.refresh();
     this.props.editorContext.headerEditor?.refresh();
     this.props.editorContext.responseEditor?.refresh();
   }
 
-  /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   *
-   * @public
-   */
   public autoCompleteLeafs() {
-    console.warn(
-      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
-    );
     return this.props.autoCompleteLeafs();
   }
 
