@@ -247,6 +247,10 @@ const myQuery =
 
 - the output channel occasionally shows "definition not found" when you first start the language service, but once the definition cache is built for each project, definition lookup will work. so if a "peek definition" fails when you first start the editor or when you first install the extension, just try the definition lookup again.
 
+## Attribution
+
+Thanks to apollo for their [graphql-vscode grammars](https://github.com/apollographql/vscode-graphql/blob/main/syntaxes/graphql.js.json)! We have borrowed from these on several occasions. If you are looking for the most replete set of vscode grammars for writing your own extension, look no further!
+
 ## Development
 
 This plugin uses the [GraphQL language server](https://github.com/graphql/graphql-language-service-server)
