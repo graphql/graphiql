@@ -5,27 +5,29 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode, useState } from 'react';
-import {
-  GraphQLObjectType,
-  GraphQLInterfaceType,
-  GraphQLUnionType,
-  GraphQLEnumType,
-  GraphQLEnumValue,
-  GraphQLNamedType,
-  isType,
-} from 'graphql';
 import {
   ExplorerFieldDef,
   useExplorerContext,
   useSchemaContext,
 } from '@graphiql/react';
+import {
+  GraphQLEnumValue,
+  GraphQLInterfaceType,
+  GraphQLNamedType,
+  GraphQLObjectType,
+  isEnumType,
+  isInterfaceType,
+  isNamedType,
+  isObjectType,
+  isUnionType,
+} from 'graphql';
+import React, { ReactNode, useState } from 'react';
 
 import Argument from './Argument';
-import MarkdownContent from './MarkdownContent';
-import TypeLink from './TypeLink';
 import DefaultValue from './DefaultValue';
 import FieldLink from './FieldLink';
+import MarkdownContent from './MarkdownContent';
+import TypeLink from './TypeLink';
 
 export default function TypeDoc() {
   const { schema } = useSchemaContext({ nonNull: true });
@@ -35,19 +37,19 @@ export default function TypeDoc() {
   const navItem = explorerNavStack[explorerNavStack.length - 1];
   const type = navItem.def;
 
-  if (!schema || !isType(type)) {
+  if (!schema || !isNamedType(type)) {
     return null;
   }
 
   let typesTitle: string | null = null;
   let types: readonly (GraphQLObjectType | GraphQLInterfaceType)[] = [];
-  if (type instanceof GraphQLUnionType) {
+  if (isUnionType(type)) {
     typesTitle = 'possible types';
     types = schema.getPossibleTypes(type);
-  } else if (type instanceof GraphQLInterfaceType) {
+  } else if (isInterfaceType(type)) {
     typesTitle = 'implementations';
     types = schema.getPossibleTypes(type);
-  } else if (type instanceof GraphQLObjectType) {
+  } else if (isObjectType(type)) {
     typesTitle = 'implements';
     types = type.getInterfaces();
   }
@@ -110,7 +112,7 @@ export default function TypeDoc() {
 
   let valuesDef: ReactNode;
   let deprecatedValuesDef: ReactNode;
-  if (type instanceof GraphQLEnumType) {
+  if (isEnumType(type)) {
     const values = type.getValues();
     valuesDef = (
       <div className="doc-category">
@@ -156,12 +158,12 @@ export default function TypeDoc() {
           ('description' in type && type.description) || 'No Description'
         }
       />
-      {type instanceof GraphQLObjectType && typesDef}
+      {isObjectType(type) && typesDef}
       {fieldsDef}
       {deprecatedFieldsDef}
       {valuesDef}
       {deprecatedValuesDef}
-      {!(type instanceof GraphQLObjectType) && typesDef}
+      {!isObjectType(type) && typesDef}
     </div>
   );
 }

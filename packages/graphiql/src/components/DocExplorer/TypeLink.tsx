@@ -5,10 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { GraphQLList, GraphQLNonNull, GraphQLType } from 'graphql';
-
 import { useExplorerContext } from '@graphiql/react';
+import { GraphQLType, isListType, isNonNullType } from 'graphql';
+import React from 'react';
 
 type TypeLinkProps = {
   type: GraphQLType;
@@ -22,14 +21,14 @@ export default function TypeLink(props: TypeLinkProps) {
   }
 
   const type = props.type;
-  if (type instanceof GraphQLNonNull) {
+  if (isNonNullType(type)) {
     return (
       <>
         <TypeLink type={type.ofType} />!
       </>
     );
   }
-  if (type instanceof GraphQLList) {
+  if (isListType(type)) {
     return (
       <>
         [<TypeLink type={type.ofType} />]
