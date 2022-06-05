@@ -17,7 +17,3 @@ if [ "$CI" != true ]; then
 fi;
 
 yarn lint && yarn build && yarn build-bundles && yarn test && yarn e2e;
-
-# attempt a release against vscode-graphql and any workspace that specifies 'release'
-# if semantic release incremented the version it will publish
-(wsrun -m -s release --changedSince main || true);
