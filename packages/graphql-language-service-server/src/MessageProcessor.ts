@@ -81,9 +81,6 @@ const writeFileAsync = promisify(writeFile);
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
 
-// import dotenv config as early as possible for graphql-config cjs pattern
-require('dotenv').config();
-
 type CachedDocumentType = {
   version: number;
   contents: CachedContent[];
