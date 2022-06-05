@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.4.0
+
+### Minor Changes
+
+- [#2461](https://github.com/graphql/graphiql/pull/2461) [`7dfe3ece`](https://github.com/graphql/graphiql/commit/7dfe3ece4e8ab6b3400888f7f357e394db63439d) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add `useDragResize` utility hook
+
 ## 0.3.0
 
 ### Minor Changes

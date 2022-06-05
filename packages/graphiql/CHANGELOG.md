@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.9.6
+
+### Patch Changes
+
+- [#2475](https://github.com/graphql/graphiql/pull/2475) [`d6558e43`](https://github.com/graphql/graphiql/commit/d6558e43bd24a3af7c5f78dbae572bd8ca7b3995) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix using the `GraphiQL` export as type by exporting a class again
+
+* [#2461](https://github.com/graphql/graphiql/pull/2461) [`7dfe3ece`](https://github.com/graphql/graphiql/commit/7dfe3ece4e8ab6b3400888f7f357e394db63439d) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Use the `useDragResize` hook from `@graphiql/react` for the sizing of the editors and the docs explorer
+
+* Updated dependencies [[`7dfe3ece`](https://github.com/graphql/graphiql/commit/7dfe3ece4e8ab6b3400888f7f357e394db63439d)]:
+  - @graphiql/react@0.4.0
+
 ## 1.9.5
 
 ### Patch Changes
