@@ -53,7 +53,7 @@
     "jest": "jest",
     "license-check": "jsgl --local ./",
     "lint": "yarn eslint && yarn lint-check && yarn pretty-check",
-    "lint-check": "eslint --print-config .eslintrc.js",
+    "lint-check": "eslint-config-prettier .eslintrc.js",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
