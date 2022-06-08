@@ -28,8 +28,9 @@ describe('createGraphiQLFetcher', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-  it('returns fetcher without websocket client by default', async () => {
+  it('returns fetcher without websocket client by default', () => {
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
+    createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([
       [{ enableIncrementalDelivery: true, url: serverURL }, fetch],
