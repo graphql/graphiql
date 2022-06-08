@@ -44,8 +44,7 @@ const wait = () =>
     .then(() => Promise.resolve())
     .then(() => Promise.resolve());
 
-const sleep = (delay: number = 600) =>
-  new Promise(res => setTimeout(res, delay));
+const sleep = (delay = 600) => new Promise(res => setTimeout(res, delay));
 
 beforeEach(() => {
   window.localStorage.clear();

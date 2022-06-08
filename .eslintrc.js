@@ -151,6 +151,7 @@ module.exports = {
     // 'require-await': 1,
     'vars-on-top': 0,
     yoda: 1,
+    '@typescript-eslint/no-inferrable-types': 'error',
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
