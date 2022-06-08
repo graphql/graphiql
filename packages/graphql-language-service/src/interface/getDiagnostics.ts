@@ -34,11 +34,11 @@ import { IRange } from '../types';
 // this doesn't work without the 'as', kinda goofy
 
 export const SEVERITY = {
-  Error: 'Error' as 'Error',
-  Warning: 'Warning' as 'Warning',
-  Information: 'Information' as 'Information',
-  Hint: 'Hint' as 'Hint',
-};
+  Error: 'Error',
+  Warning: 'Warning',
+  Information: 'Information',
+  Hint: 'Hint',
+} as const;
 
 export type Severity = typeof SEVERITY;
 
