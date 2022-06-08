@@ -14,13 +14,8 @@ import { initialize } from 'monaco-editor/esm/vs/editor/editor.worker';
 import { GraphQLWorker } from './GraphQLWorker';
 
 self.onmessage = () => {
-  try {
-    initialize(
-      (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) => {
-        return new GraphQLWorker(ctx, createData);
-      },
-    );
-  } catch (err) {
-    throw err;
-  }
+  initialize(
+    (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) =>
+      new GraphQLWorker(ctx, createData),
+  );
 };

@@ -15,14 +15,9 @@ import type { ICreateData } from 'monaco-graphql/esm/typings';
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';
 
 self.onmessage = () => {
-  try {
-    // ignore the first message
-    worker.initialize(
-      (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) => {
-        return new GraphQLWorker(ctx, createData);
-      },
-    );
-  } catch (err) {
-    throw err;
-  }
+  // ignore the first message
+  worker.initialize(
+    (ctx: WorkerNamespace.IWorkerContext, createData: ICreateData) =>
+      new GraphQLWorker(ctx, createData),
+  );
 };
