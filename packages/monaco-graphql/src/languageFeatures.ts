@@ -21,6 +21,7 @@ import * as monaco from 'monaco-editor';
 import { editor } from 'monaco-editor/esm/vs/editor/editor.api';
 import { CompletionItemKind as lsCompletionItemKind } from 'graphql-language-service';
 import { getModelLanguageId, GraphQLWorkerCompletionItem } from './utils';
+
 export interface WorkerAccessor {
   (...more: Uri[]): Thenable<GraphQLWorker>;
 }
@@ -159,61 +160,42 @@ export class DiagnosticsAdapter {
 }
 
 const mKind = monaco.languages.CompletionItemKind;
-export function toCompletionItemKind(kind: lsCompletionItemKind) {
-  switch (kind) {
-    case lsCompletionItemKind.Text:
-      return mKind.Text;
-    case lsCompletionItemKind.Method:
-      return mKind.Method;
-    case lsCompletionItemKind.Function:
-      return mKind.Function;
-    case lsCompletionItemKind.Constructor:
-      return mKind.Constructor;
-    case lsCompletionItemKind.Field:
-      return mKind.Field;
-    case lsCompletionItemKind.Variable:
-      return mKind.Variable;
-    case lsCompletionItemKind.Class:
-      return mKind.Class;
-    case lsCompletionItemKind.Interface:
-      return mKind.Interface;
-    case lsCompletionItemKind.Module:
-      return mKind.Module;
-    case lsCompletionItemKind.Property:
-      return mKind.Property;
-    case lsCompletionItemKind.Unit:
-      return mKind.Unit;
-    case lsCompletionItemKind.Value:
-      return mKind.Value;
-    case lsCompletionItemKind.Enum:
-      return mKind.Enum;
-    case lsCompletionItemKind.Keyword:
-      return mKind.Keyword;
-    case lsCompletionItemKind.Snippet:
-      return mKind.Snippet;
-    case lsCompletionItemKind.Color:
-      return mKind.Color;
-    case lsCompletionItemKind.File:
-      return mKind.File;
-    case lsCompletionItemKind.Reference:
-      return mKind.Reference;
-    case lsCompletionItemKind.Folder:
-      return mKind.Folder;
-    case lsCompletionItemKind.EnumMember:
-      return mKind.EnumMember;
-    case lsCompletionItemKind.Constant:
-      return mKind.Constant;
-    case lsCompletionItemKind.Struct:
-      return mKind.Struct;
-    case lsCompletionItemKind.Event:
-      return mKind.Event;
-    case lsCompletionItemKind.Operator:
-      return mKind.Operator;
-    case lsCompletionItemKind.TypeParameter:
-      return mKind.TypeParameter;
-    default:
-      return mKind.Text;
-  }
+
+const kindMap: Record<
+  lsCompletionItemKind,
+  monaco.languages.CompletionItemKind
+> = {
+  [lsCompletionItemKind.Text]: mKind.Text,
+  [lsCompletionItemKind.Method]: mKind.Method,
+  [lsCompletionItemKind.Function]: mKind.Function,
+  [lsCompletionItemKind.Constructor]: mKind.Constructor,
+  [lsCompletionItemKind.Field]: mKind.Field,
+  [lsCompletionItemKind.Variable]: mKind.Variable,
+  [lsCompletionItemKind.Class]: mKind.Class,
+  [lsCompletionItemKind.Interface]: mKind.Interface,
+  [lsCompletionItemKind.Module]: mKind.Module,
+  [lsCompletionItemKind.Property]: mKind.Property,
+  [lsCompletionItemKind.Unit]: mKind.Unit,
+  [lsCompletionItemKind.Value]: mKind.Value,
+  [lsCompletionItemKind.Enum]: mKind.Enum,
+  [lsCompletionItemKind.Keyword]: mKind.Keyword,
+  [lsCompletionItemKind.Snippet]: mKind.Snippet,
+  [lsCompletionItemKind.Color]: mKind.Color,
+  [lsCompletionItemKind.File]: mKind.File,
+  [lsCompletionItemKind.Reference]: mKind.Reference,
+  [lsCompletionItemKind.Folder]: mKind.Folder,
+  [lsCompletionItemKind.EnumMember]: mKind.EnumMember,
+  [lsCompletionItemKind.Constant]: mKind.Constant,
+  [lsCompletionItemKind.Struct]: mKind.Struct,
+  [lsCompletionItemKind.Event]: mKind.Event,
+  [lsCompletionItemKind.Operator]: mKind.Operator,
+  [lsCompletionItemKind.TypeParameter]: mKind.TypeParameter,
+};
+
+export function toCompletionItemKind(
+  kind: lsCompletionItemKind,
+): monaco.languages.CompletionItemKind {
+  return kind in kindMap ? kindMap[kind] : mKind.Text;
 }
 
 export function toCompletion(
@@ -276,6 +258,7 @@ export class DocumentFormattingAdapter
   constructor(private _worker: WorkerAccessor) {
     this._worker = _worker;
   }
+
   async provideDocumentFormattingEdits(
     document: editor.ITextModel,
     _options: monaco.languages.FormattingOptions,
