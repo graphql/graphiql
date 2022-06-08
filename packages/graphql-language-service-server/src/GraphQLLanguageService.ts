@@ -14,6 +14,7 @@ import {
   TypeDefinitionNode,
   NamedTypeNode,
   ValidationRule,
+  FieldNode,
 } from 'graphql';
 
 import {
@@ -34,8 +35,11 @@ import {
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForNamedType,
+  getDefinitionQueryResultForField,
   DefinitionQueryResult,
   getASTNodeAtPosition,
+  getTokenAtPosition,
+  getTypeInfo,
 } from 'graphql-language-service';
 
 import { GraphQLConfig, GraphQLProjectConfig } from 'graphql-config';
@@ -47,6 +51,7 @@ import {
 } from 'vscode-languageserver-types';
 
 import { Kind, parse, print } from 'graphql';
+import { Logger } from './Logger';
 
 const {
   FRAGMENT_DEFINITION,
@@ -66,6 +71,7 @@ const {
   FRAGMENT_SPREAD,
   OPERATION_DEFINITION,
   NAMED_TYPE,
+  FIELD,
 } = Kind;
 
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
@@ -99,10 +105,13 @@ function getKind(tree: OutlineTree) {
 export class GraphQLLanguageService {
   _graphQLCache: GraphQLCache;
   _graphQLConfig: GraphQLConfig;
+  _logger: Logger;
 
-  constructor(cache: GraphQLCache) {
+  constructor(cache: GraphQLCache, logger: Logger) {
     this._graphQLCache = cache;
     this._graphQLConfig = cache.getGraphQLConfig();
+
+    this._logger = logger;
   }
 
   getConfigForURI(uri: Uri) {
@@ -152,7 +161,8 @@ export class GraphQLLanguageService {
           return false;
         });
       }
-    } catch (error) {
+    } catch (err) {
+      const error = err as any;
       const range = getRange(error.locations[0], document);
       return [
         {
@@ -304,6 +314,16 @@ export class GraphQLLanguageService {
             filePath,
             projectConfig,
           );
+
+        case FIELD:
+          return this._getDefinitionForField(
+            query,
+            ast,
+            node,
+            filePath,
+            projectConfig,
+            position,
+          );
       }
     }
     return null;
@@ -402,6 +422,42 @@ export class GraphQLLanguageService {
     );
 
     return result;
+  }
+
+  async _getDefinitionForField(
+    query: string,
+    _ast: DocumentNode,
+    _node: FieldNode,
+    _filePath: Uri,
+    projectConfig: GraphQLProjectConfig,
+    position: IPosition,
+  ) {
+    const token = getTokenAtPosition(query, position);
+    const schema = await this._graphQLCache.getSchema(projectConfig.name);
+
+    const typeInfo = getTypeInfo(schema!, token.state);
+    const fieldName = typeInfo.fieldDef?.name;
+
+    if (typeInfo && fieldName) {
+      const parentTypeName = (typeInfo.parentType as any).toString();
+
+      const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
+        projectConfig,
+      );
+
+      // TODO: need something like getObjectTypeDependenciesForAST?
+      const dependencies = [...objectTypeDefinitions.values()];
+
+      const result = await getDefinitionQueryResultForField(
+        fieldName,
+        parentTypeName,
+        dependencies,
+      );
+
+      return result;
+    }
+
+    return null;
   }
 
   async _getDefinitionForFragmentSpread(
