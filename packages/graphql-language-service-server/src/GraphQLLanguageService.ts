@@ -262,7 +262,12 @@ export class GraphQLLanguageService {
         position,
         undefined,
         fragmentInfo,
-        { uri: filePath },
+        {
+          uri: filePath,
+          fillLeafsOnComplete:
+            projectConfig?.extensions?.languageService?.fillLeafsOnComplete ??
+            false,
+        },
       );
     }
     return [];

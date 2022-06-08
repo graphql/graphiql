@@ -115,6 +115,12 @@ export type GraphQLLanguageConfig = {
    * Custom validation rules following `graphql` `ValidationRule` signature
    */
   customValidationRules?: ValidationRule[];
+  /**
+   * Should field leafs be automatically expanded & filled on autocomplete?
+   *
+   * NOTE: this can be annoying with required arguments
+   */
+  fillLeafsOnComplete?: boolean;
 };
 
 export interface IDisposable {

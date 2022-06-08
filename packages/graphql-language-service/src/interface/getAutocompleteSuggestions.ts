@@ -552,14 +552,17 @@ function getSuggestionsForFieldNames(
           kind: CompletionItemKind.Field,
           type: field.type,
         };
-        // TODO: fillLeafs capability
-        const insertText = getInsertText(field);
 
-        if (insertText) {
-          suggestion.insertText = field.name + insertText;
-          suggestion.insertTextFormat = InsertTextFormat.Snippet;
-          suggestion.command = SuggestionCommand;
+        if (options?.fillLeafsOnComplete) {
+          // TODO: fillLeafs capability
+          const insertText = getInsertText(field);
+          if (insertText) {
+            suggestion.insertText = field.name + insertText;
+            suggestion.insertTextFormat = InsertTextFormat.Snippet;
+            suggestion.command = SuggestionCommand;
+          }
         }
+
         return suggestion;
       }),
     );
