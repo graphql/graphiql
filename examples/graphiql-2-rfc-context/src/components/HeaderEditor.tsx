@@ -202,7 +202,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
    * Public API for retrieving the DOM client height for this component.
    */
   getClientHeight() {
-    return this._node && this._node.clientHeight;
+    return this._node?.clientHeight;
   }
 
   private _onKeyUp = (_cm: CodeMirror.Editor, event: KeyboardEvent) => {

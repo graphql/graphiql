@@ -19,9 +19,8 @@ type SchemaDocProps = {
 // Render the top level Schema
 export default function SchemaDoc({ schema, onClickType }: SchemaDocProps) {
   const queryType = schema.getQueryType();
-  const mutationType = schema.getMutationType && schema.getMutationType();
-  const subscriptionType =
-    schema.getSubscriptionType && schema.getSubscriptionType();
+  const mutationType = schema.getMutationType?.();
+  const subscriptionType = schema.getSubscriptionType?.();
 
   return (
     <div>

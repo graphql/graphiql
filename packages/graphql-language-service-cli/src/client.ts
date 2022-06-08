@@ -43,14 +43,14 @@ export default function main(
   command: string,
   argv: { [key: string]: string },
 ): void {
-  const filePath = argv.file && argv.file.trim();
+  const filePath = argv.file?.trim();
   invariant(
     argv.text || argv.file,
     'A path to the GraphQL file or its contents is required.',
   );
 
   const text = ensureText(argv.text, filePath);
-  const schemaPath = argv.schemaPath && argv.schemaPath.trim();
+  const schemaPath = argv.schemaPath?.trim();
 
   let exitCode;
   switch (command) {

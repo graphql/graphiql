@@ -144,6 +144,7 @@ module.exports = {
     'no-useless-escape': 1,
     'no-useless-return': 0,
     'no-void': 1,
+    '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
     'no-with': 1,
     radix: 1,

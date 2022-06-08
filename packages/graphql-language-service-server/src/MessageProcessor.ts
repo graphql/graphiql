@@ -474,7 +474,7 @@ export class MessageProcessor {
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didChange',
-        projectName: project && project.name,
+        projectName: project?.name,
         fileName: uri,
       }),
     );
@@ -516,7 +516,7 @@ export class MessageProcessor {
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/didClose',
-        projectName: project && project.name,
+        projectName: project?.name,
         fileName: uri,
       }),
     );
@@ -568,7 +568,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(toPosition(position))) {
+      if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -595,7 +595,7 @@ export class MessageProcessor {
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/completion',
-        projectName: project && project.name,
+        projectName: project?.name,
         fileName: textDocument.uri,
       }),
     );
@@ -620,7 +620,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(toPosition(position))) {
+      if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -698,7 +698,7 @@ export class MessageProcessor {
             JSON.stringify({
               type: 'usage',
               messageType: 'workspace/didChangeWatchedFiles',
-              projectName: project && project.name,
+              projectName: project?.name,
               fileName: uri,
             }),
           );
@@ -743,7 +743,7 @@ export class MessageProcessor {
 
     const found = cachedDocument.contents.find(content => {
       const currentRange = content.range;
-      if (currentRange && currentRange.containsPosition(toPosition(position))) {
+      if (currentRange?.containsPosition(toPosition(position))) {
         return true;
       }
     });
@@ -811,7 +811,7 @@ export class MessageProcessor {
       JSON.stringify({
         type: 'usage',
         messageType: 'textDocument/definition',
-        projectName: project && project.name,
+        projectName: project?.name,
         fileName: textDocument.uri,
       }),
     );

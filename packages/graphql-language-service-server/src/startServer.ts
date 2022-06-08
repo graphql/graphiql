@@ -149,7 +149,7 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  if (options && options.method) {
+  if (options?.method) {
     const stderrOnly = options.method === 'stream';
     const logger = new Logger(options.tmpDir, stderrOnly);
 

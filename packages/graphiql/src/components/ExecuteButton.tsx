@@ -97,7 +97,7 @@ export function ExecuteButton() {
                 onMouseOut={() => setHighlight(null)}
                 onMouseUp={() => {
                   setOptionsOpen(false);
-                  run(operation.name && operation.name.value);
+                  run(operation.name?.value);
                 }}>
                 {opName}
               </li>

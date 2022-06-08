@@ -141,7 +141,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
               operation.loc.start <= cursorIndex &&
               operation.loc.end >= cursorIndex
             ) {
-              return operation.name && operation.name.value;
+              return operation.name?.value;
             }
           }
 

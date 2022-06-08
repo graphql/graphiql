@@ -22,7 +22,7 @@ export default function getSelectedOperationName(
   }
 
   // If a previous selection still exists, continue to use it.
-  const names = operations.map(op => op.name && op.name.value);
+  const names = operations.map(op => op.name?.value);
   if (
     prevSelectedOperationName &&
     names.indexOf(prevSelectedOperationName) !== -1
@@ -32,7 +32,7 @@ export default function getSelectedOperationName(
 
   // If a previous selection was the Nth operation, use the same Nth.
   if (prevSelectedOperationName && prevOperations) {
-    const prevNames = prevOperations.map(op => op.name && op.name.value);
+    const prevNames = prevOperations.map(op => op.name?.value);
     const prevIndex = prevNames.indexOf(prevSelectedOperationName);
     if (prevIndex !== -1 && prevIndex < names.length) {
       return names[prevIndex];

@@ -32,11 +32,11 @@ export function uniqueBy<T>(
     if (item.kind === 'Field') {
       const uniqueValue = iteratee(item);
       const existing = FilteredMap.get(uniqueValue);
-      if (item.directives && item.directives.length) {
+      if (item.directives?.length) {
         // Cannot inline fields with directives (yet)
         const itemClone = { ...item };
         result.push(itemClone);
-      } else if (existing && existing.selectionSet && item.selectionSet) {
+      } else if (existing?.selectionSet && item.selectionSet) {
         // Merge the selection sets
         existing.selectionSet.selections = [
           ...existing.selectionSet.selections,

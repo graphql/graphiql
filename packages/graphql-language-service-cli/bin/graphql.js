@@ -7,7 +7,7 @@
  * the root directory of this source tree.
  */
 
-if (process && process.env) {
+if (process?.env) {
   process.env.GRAPHQL_NO_NAME_WARNING = true;
 }
 
