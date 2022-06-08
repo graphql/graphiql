@@ -161,7 +161,10 @@ export class DiagnosticsAdapter {
 
 const mKind = monaco.languages.CompletionItemKind;
 
-const kindMap = {
+const kindMap: Record<
+  lsCompletionItemKind,
+  monaco.languages.CompletionItemKind
+> = {
   [lsCompletionItemKind.Text]: mKind.Text,
   [lsCompletionItemKind.Method]: mKind.Method,
   [lsCompletionItemKind.Function]: mKind.Function,
@@ -189,8 +192,10 @@ const kindMap = {
   [lsCompletionItemKind.TypeParameter]: mKind.TypeParameter,
 };
 
-export function toCompletionItemKind(kind: lsCompletionItemKind) {
-  return kindMap[kind] || mKind.Text;
+export function toCompletionItemKind(
+  kind: lsCompletionItemKind,
+): monaco.languages.CompletionItemKind {
+  return kind in kindMap ? kindMap[kind] : mKind.Text;
 }
 
 export function toCompletion(
