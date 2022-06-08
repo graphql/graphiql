@@ -51,7 +51,7 @@ const statusBarUIElements = {
 
 // const statusBarItem = window.createStatusBarItem(StatusBarAlignment.Right, 0);
 let extensionStatus: Status = Status.RUNNING;
-let serverRunning: boolean = true; // TODO: See comment with client.onNotification("init".....
+let serverRunning = true; // TODO: See comment with client.onNotification("init".....
 
 const statusBarActivationLanguageIds = [
   'graphql',

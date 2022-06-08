@@ -50,7 +50,7 @@ export class HeaderEditor extends React.Component<HeaderEditorProps> {
   editor: (CM.Editor & { options: any }) | null = null;
   cachedValue: string;
   private _node: HTMLElement | null = null;
-  ignoreChangeEvent: boolean = false;
+  ignoreChangeEvent = false;
   constructor(props: HeaderEditorProps) {
     super(props);
 

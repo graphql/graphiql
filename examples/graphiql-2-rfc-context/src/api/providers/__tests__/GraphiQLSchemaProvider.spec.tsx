@@ -25,7 +25,7 @@ const configDir = path.join(
 const renderSchemaProvider = (props: SchemaProviderProps) =>
   renderProvider(SchemaProvider, SchemaContext, props);
 
-const wait = async (delay: number = 1000) => setTimeout(Promise.resolve, delay);
+const wait = async (delay = 1000) => setTimeout(Promise.resolve, delay);
 
 describe('GraphiQLSchemaProvider', () => {
   beforeEach(() => {

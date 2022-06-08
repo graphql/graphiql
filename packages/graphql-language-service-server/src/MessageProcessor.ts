@@ -105,7 +105,7 @@ export class MessageProcessor {
   _tmpUriBase: string;
   _tmpDirBase: string;
   _loadConfigOptions: LoadConfigOptions;
-  _schemaCacheInit: boolean = false;
+  _schemaCacheInit = false;
   _rootPath: string = process.cwd();
   _settings: any;
 
@@ -934,7 +934,7 @@ export class MessageProcessor {
   }
   _getTmpProjectPath(
     project: GraphQLProjectConfig,
-    prependWithProtocol: boolean = true,
+    prependWithProtocol = true,
     appendPath?: string,
   ) {
     const baseDir = this._graphQLCache.getGraphQLConfig().dirpath;
