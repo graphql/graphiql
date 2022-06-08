@@ -131,7 +131,8 @@ export default class CharacterStream implements CharacterStreamInterface {
       ) {
         if (consume) {
           this._start = this._pos;
-          if (token?.length) {
+          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
+          if (token && token.length) {
             this._pos += token.length;
           }
         }
