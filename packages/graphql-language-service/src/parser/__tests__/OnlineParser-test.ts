@@ -838,7 +838,7 @@ describe('onlineParser', () => {
     });
 
     it('parses subscription with inline fragment', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(/* GraphQL */ `
         subscription SomeSubscription {
           someSubscription {
             ... on SomeType {
@@ -872,7 +872,7 @@ describe('onlineParser', () => {
     });
 
     it('parses subscription with fragment spread', () => {
-      const { t, stream } = getUtils(`
+      const { t } = getUtils(/* GraphQL */ `
         subscription SomeSubscription {
           someSubscription {
             ...SomeFragment @someDirective

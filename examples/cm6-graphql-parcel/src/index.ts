@@ -8,6 +8,7 @@ const state = EditorState.create({
   extensions: [basicSetup, StreamLanguage.define(graphql)],
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const view = new EditorView({
   state,
   parent: document.querySelector('#editor')!,

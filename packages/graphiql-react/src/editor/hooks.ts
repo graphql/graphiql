@@ -2,7 +2,7 @@ import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { useSchemaContext } from '../schema';

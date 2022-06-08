@@ -73,7 +73,7 @@ describe('GraphiQLSchemaProvider', () => {
     const provider = await renderSchemaProvider({
       config: { uri: 'https://bad' },
     });
-    const { schema, isLoading } = getProviderData(provider);
+    const { schema } = getProviderData(provider);
     expect(schema).toBeFalsy();
     const { hasError, error } = getProviderData(provider);
     expect(hasError).toBeTruthy();
