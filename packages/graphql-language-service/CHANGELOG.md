@@ -1,5 +1,13 @@
 # graphql-language-service
 
+## 5.0.5
+
+### Patch Changes
+
+- [#2486](https://github.com/graphql/graphiql/pull/2486) [`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa) Thanks [@stonexer](https://github.com/stonexer)! - definition support for operation fields ✨
+
+  you can now jump to the applicable object type definition for query/mutation/subscription fields!
+
 ## 5.0.4
 
 ### Patch Changes
