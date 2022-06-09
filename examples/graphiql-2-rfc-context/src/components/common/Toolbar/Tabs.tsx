@@ -58,7 +58,7 @@ const Tabs = ({ tabs, active, onChange, children }: TabsProps) => {
           </Tab>
         ))}
       </WithDividers>
-      {children && children[active]}
+      {children?.[active]}
     </React.Fragment>
   );
 };

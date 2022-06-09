@@ -65,8 +65,7 @@ export class ToolbarSelect extends React.Component<
         }
         const onChildSelect =
           child.props.onSelect ||
-          (this.props.onSelect &&
-            this.props.onSelect.bind(null, child.props.value, i));
+          this.props.onSelect?.bind(null, child.props.value, i);
         return (
           <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />
         );

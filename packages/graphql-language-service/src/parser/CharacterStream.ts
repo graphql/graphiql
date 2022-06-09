@@ -117,7 +117,7 @@ export default class CharacterStream implements CharacterStreamInterface {
       token = pattern;
     } else if (pattern instanceof RegExp) {
       match = this._sourceText.slice(this._pos).match(pattern);
-      token = match && match[0];
+      token = match?.[0];
     }
 
     if (match != null) {
@@ -131,6 +131,7 @@ export default class CharacterStream implements CharacterStreamInterface {
       ) {
         if (consume) {
           this._start = this._pos;
+          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
           if (token && token.length) {
             this._pos += token.length;
           }

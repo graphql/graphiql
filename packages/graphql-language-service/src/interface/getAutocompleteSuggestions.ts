@@ -561,7 +561,7 @@ function getSuggestionsForFragmentTypeConditions(
       const namedType = getNamedType(type);
       return {
         label: String(type),
-        documentation: (namedType && namedType.description) || '',
+        documentation: namedType?.description || '',
         kind: CompletionItemKind.Field,
       };
     }),
@@ -738,7 +738,7 @@ function getSuggestionsForDirective(
   schema: GraphQLSchema,
   _kind: string,
 ): Array<CompletionItem> {
-  if (state.prevState && state.prevState.kind) {
+  if (state.prevState?.kind) {
     const directives = schema
       .getDirectives()
       .filter(directive => canUseDirective(state.prevState, directive));
@@ -882,7 +882,7 @@ export function canUseDirective(
     case RuleKinds.INPUT_DEF:
       return locations.indexOf(DirectiveLocation.INPUT_OBJECT) !== -1;
     case RuleKinds.INPUT_VALUE_DEF:
-      const prevStateKind = state.prevState && state.prevState.kind;
+      const prevStateKind = state.prevState?.kind;
       switch (prevStateKind) {
         case RuleKinds.ARGUMENTS_DEF:
           return (
@@ -989,7 +989,7 @@ export function getTypeInfo(
               break;
             // TODO: needs more tests
             case RuleKinds.ALIASED_FIELD: {
-              const name = state.prevState && state.prevState.name;
+              const name = state.prevState?.name;
               if (!name) {
                 argDefs = null;
                 break;
@@ -1020,7 +1020,7 @@ export function getTypeInfo(
             }
           }
         }
-        inputType = argDef && argDef.type;
+        inputType = argDef?.type;
         break;
       // TODO: needs tests
       case RuleKinds.ENUM_VALUE:
@@ -1049,7 +1049,7 @@ export function getTypeInfo(
       case RuleKinds.OBJECT_FIELD:
         const objectField =
           state.name && objectFieldDefs ? objectFieldDefs[state.name] : null;
-        inputType = objectField && objectField.type;
+        inputType = objectField?.type;
 
         break;
       case RuleKinds.NAMED_TYPE:

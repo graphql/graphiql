@@ -272,7 +272,7 @@ export class LanguageService {
       try {
         const documentAST = this.parse(documentText);
         const operationFacts = getOperationASTFacts(documentAST, schema.schema);
-        if (operationFacts && operationFacts.variableToType) {
+        if (operationFacts?.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType, options);
         }
       } catch (err) {}

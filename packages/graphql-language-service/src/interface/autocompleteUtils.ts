@@ -70,7 +70,7 @@ export function forEachState(
 ): void {
   const reverseStateStack = [];
   let state: State | null | undefined = stack;
-  while (state && state.kind) {
+  while (state?.kind) {
     reverseStateStack.push(state);
     state = state.prevState;
   }

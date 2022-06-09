@@ -330,7 +330,7 @@ function type(style: string) {
     style,
     match: (token: Token) => token.kind === 'Name',
     update(state: State, token: Token) {
-      if (state.prevState && state.prevState.prevState) {
+      if (state.prevState?.prevState) {
         state.name = token.value;
         state.prevState.prevState.type = token.value;
       }

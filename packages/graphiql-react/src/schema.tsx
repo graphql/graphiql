@@ -167,7 +167,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
           return;
         }
 
-        if (result && result.data && '__schema' in result.data) {
+        if (result?.data && '__schema' in result.data) {
           try {
             const newSchema = buildClientSchema(
               result.data as IntrospectionQuery,

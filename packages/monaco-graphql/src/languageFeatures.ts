@@ -110,7 +110,7 @@ export class DiagnosticsAdapter {
   }
 
   public dispose(): void {
-    this._disposables.forEach(d => d && d.dispose());
+    this._disposables.forEach(d => d?.dispose());
     this._disposables = [];
   }
 

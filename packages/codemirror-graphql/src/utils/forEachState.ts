@@ -13,7 +13,7 @@ import type { State, Maybe } from 'graphql-language-service';
 export default function forEachState(stack: State, fn: (state: State) => void) {
   const reverseStateStack = [];
   let state: Maybe<State> = stack;
-  while (state && state.kind) {
+  while (state?.kind) {
     reverseStateStack.push(state);
     state = state.prevState;
   }

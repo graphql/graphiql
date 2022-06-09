@@ -69,7 +69,7 @@ export function QueryEditor(props: QueryEditorProps) {
       if (!ignoreChangeEvent) {
         cachedValueRef.current = editor.getValue();
         session.changeOperation(cachedValueRef.current);
-        props.onEdit && props.onEdit(cachedValueRef.current);
+        props.onEdit?.(cachedValueRef.current);
       }
     });
 

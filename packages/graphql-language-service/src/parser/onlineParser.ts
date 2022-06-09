@@ -103,7 +103,7 @@ function getToken(
 
   // Remember initial indentation
   if (stream.sol()) {
-    const tabSize = (editorConfig && editorConfig.tabSize) || 2;
+    const tabSize = editorConfig?.tabSize || 2;
     state.indentLevel = Math.floor(stream.indentation() / tabSize);
   }
 
@@ -171,9 +171,9 @@ function getToken(
           : null
         : state.rule[state.step];
 
-    // Seperator between list elements if necessary.
+    // Separator between list elements if necessary.
     if (state.needsSeperator) {
-      expected = expected && expected?.separator;
+      expected = expected?.separator;
     }
 
     if (expected) {
@@ -189,7 +189,7 @@ function getToken(
       }
 
       // Otherwise, match a Terminal.
-      if (expected.match && expected.match(token)) {
+      if (expected.match?.(token)) {
         if (expected.update) {
           expected.update(state, token);
         }
@@ -304,7 +304,7 @@ function advanceRule(state: State, successful: boolean): undefined {
       if (isList(state)) {
         // @ts-ignore
         // TODO: ParseRules as numerical index
-        if (state.rule && state.rule[state.step].separator) {
+        if (state.rule?.[state.step].separator) {
           state.needsSeperator = !state.needsSeperator;
         }
       } else {
@@ -320,6 +320,7 @@ function isList(state: State): boolean | null | undefined {
     Array.isArray(state.rule) &&
     typeof state.rule[state.step] !== 'string' &&
     (state.rule[state.step] as Rule);
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
   return step && step.isList;
 }
 

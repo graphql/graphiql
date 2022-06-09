@@ -117,13 +117,13 @@ switch (command) {
     });
 
     const options: { [key: string]: any } = {};
-    if (argv && argv.port) {
+    if (argv?.port) {
       options.port = argv.port;
     }
-    if (argv && argv.method) {
+    if (argv?.method) {
       options.method = argv.method;
     }
-    if (argv && argv.configDir) {
+    if (argv?.configDir) {
       options.configDir = argv.configDir;
     }
     try {
