@@ -59,7 +59,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.4.0",
-    "@testing-library/react": "9.4.1",
+    "@testing-library/react": "13.3.0",
     "@types/codemirror": "^5.60.5",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^14.14.22",

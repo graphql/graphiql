@@ -198,7 +198,7 @@ export function useQueryEditor({
         }
       });
 
-      newEditor.on('beforeChange', (editorInstance, change) => {
+      newEditor.on('beforeChange', (_editorInstance, change) => {
         // The update function is only present on non-redo, non-undo events.
         if (change.origin === 'paste') {
           const text = change.text.map(normalizeWhitespace);

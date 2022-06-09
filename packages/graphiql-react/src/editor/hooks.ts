@@ -2,7 +2,7 @@ import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
-import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useExplorerContext } from '../explorer';
 import { useSchemaContext } from '../schema';
@@ -160,7 +160,7 @@ export function useMergeQuery({ caller }: { caller?: Function } = {}) {
       return;
     }
 
-    queryEditor.setValue(print(mergeAst(documentAST, schema)));
+    queryEditor?.setValue(print(mergeAst(documentAST, schema)));
   }, [queryEditor, schema]);
 }
 

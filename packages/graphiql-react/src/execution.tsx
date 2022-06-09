@@ -18,11 +18,7 @@ import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
 
-import {
-  useAutoCompleteLeafs,
-  useEditorContext,
-  UseQueryEditorArgs,
-} from './editor';
+import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { EditCallback } from './editor/hooks';
 import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';

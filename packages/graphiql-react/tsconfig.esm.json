@@ -1,0 +1,30 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./esm",
+    "composite": false,
+    "jsx": "react",
+    "baseUrl": ".",
+    "target": "es5"
+  },
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/**",
+    "**/dist/**.*",
+    "**/*.spec.ts",
+    "**/*.spec.js",
+    "**/*-test.ts",
+    "**/*-test.js",
+    "**/*.stories.js",
+    "**/*.stories.ts"
+  ],
+  "references": [
+    {
+      "path": "../graphiql-toolkit"
+    },
+    {
+      "path": "../codemirror-graphql"
+    }
+  ]
+}
