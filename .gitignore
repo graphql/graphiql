@@ -17,8 +17,6 @@ dist
 esm
 bundle
 cypress/screenshots
-node_modules/
-npm-debug.log
 lerna-debug.log
 **/tsconfig.tsbuildinfo
 **/*.tsbuildinfo
@@ -26,6 +24,7 @@ lerna-debug.log
 .yarnrc
 yarn-1.18.0.js
 *.orig
+.idea/
 
 # Local Netlify folder
 .netlify
