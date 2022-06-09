@@ -242,7 +242,10 @@ export class MessageProcessor {
 
         logger: this._logger,
       });
-      this._languageService = new GraphQLLanguageService(this._graphQLCache);
+      this._languageService = new GraphQLLanguageService(
+        this._graphQLCache,
+        this._logger,
+      );
       if (this._graphQLConfig || this._graphQLCache?.getGraphQLConfig) {
         const config =
           this._graphQLConfig ?? this._graphQLCache.getGraphQLConfig();

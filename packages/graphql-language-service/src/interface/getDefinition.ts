@@ -15,6 +15,8 @@ import {
   NamedTypeNode,
   TypeDefinitionNode,
   Location,
+  ObjectTypeDefinitionNode,
+  FieldDefinitionNode,
 } from 'graphql';
 
 import { Definition, FragmentInfo, Uri, ObjectTypeInfo } from '../types';
@@ -67,6 +69,42 @@ export async function getDefinitionQueryResultForNamedType(
   return {
     definitions,
     queryRange: definitions.map(_ => getRange(text, node)),
+  };
+}
+
+export async function getDefinitionQueryResultForField(
+  fieldName: string,
+  typeName: string,
+  dependencies: Array<ObjectTypeInfo>,
+): Promise<DefinitionQueryResult> {
+  const defNodes = dependencies.filter(
+    ({ definition }) => definition.name && definition.name.value === typeName,
+  );
+
+  if (defNodes.length === 0) {
+    throw Error(`Definition not found for GraphQL type ${typeName}`);
+  }
+
+  const definitions: Array<Definition> = [];
+
+  defNodes.forEach(({ filePath, content, definition }) => {
+    const fieldDefinition = (definition as ObjectTypeDefinitionNode).fields?.find(
+      item => item.name.value === fieldName,
+    );
+
+    if (fieldDefinition == null) {
+      return null;
+    }
+
+    definitions.push(
+      getDefinitionForFieldDefinition(filePath || '', content, fieldDefinition),
+    );
+  });
+
+  return {
+    definitions,
+    // TODO: seems like it's not using
+    queryRange: [],
   };
 }
 
@@ -132,6 +170,24 @@ function getDefinitionForNodeDefinition(
   path: Uri,
   text: string,
   definition: TypeDefinitionNode,
+): Definition {
+  const name = definition.name;
+  assert(name, 'Expected ASTNode to have a Name.');
+  return {
+    path,
+    position: getPosition(text, definition),
+    range: getRange(text, definition),
+    name: name.value || '',
+    language: LANGUAGE,
+    // This is a file inside the project root, good enough for now
+    projectRoot: path,
+  };
+}
+
+function getDefinitionForFieldDefinition(
+  path: Uri,
+  text: string,
+  definition: FieldDefinitionNode,
 ): Definition {
   const name = definition.name;
   assert(name, 'Expected ASTNode to have a Name.');

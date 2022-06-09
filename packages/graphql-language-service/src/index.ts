@@ -20,6 +20,7 @@ export {
   getDefinitionQueryResultForDefinitionNode,
   getDefinitionQueryResultForFragmentSpread,
   getDefinitionQueryResultForNamedType,
+  getDefinitionQueryResultForField,
   getDefinitionState,
   getDiagnostics,
   getFieldDef,

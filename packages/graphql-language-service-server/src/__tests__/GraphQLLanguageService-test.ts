@@ -13,6 +13,7 @@ import { GraphQLConfig } from 'graphql-config';
 import { GraphQLLanguageService } from '../GraphQLLanguageService';
 import { SymbolKind } from 'vscode-languageserver-protocol';
 import { Position } from 'graphql-language-service';
+import { Logger } from '../Logger';
 
 const MOCK_CONFIG = {
   filepath: join(__dirname, '.graphqlrc.yml'),
@@ -38,22 +39,49 @@ describe('GraphQLLanguageService', () => {
     },
 
     getObjectTypeDefinitions() {
-      return {
-        Episode: {
-          filePath: 'fake file path',
-          content: 'fake file content',
-          definition: {
-            name: {
-              value: 'Episode',
-            },
+      const definitions = new Map();
 
-            loc: {
-              start: 293,
-              end: 335,
-            },
+      definitions.set('Episode', {
+        filePath: 'fake file path',
+        content: 'fake file content',
+        definition: {
+          name: {
+            value: 'Episode',
+          },
+
+          loc: {
+            start: 293,
+            end: 335,
           },
         },
-      };
+      });
+
+      definitions.set('Human', {
+        filePath: 'fake file path',
+        content: 'fake file content',
+        definition: {
+          name: {
+            value: 'Human',
+          },
+
+          fields: [
+            {
+              name: { value: 'name' },
+              loc: {
+                start: 293,
+                end: 335,
+              },
+            },
+          ],
+
+          loc: {
+            start: 293,
+            end: 335,
+          },
+        },
+      });
+
+      return definitions;
     },
 
     getObjectTypeDependenciesForAST() {
@@ -72,13 +100,30 @@ describe('GraphQLLanguageService', () => {
             },
           },
         },
+        {
+          filePath: 'fake file path',
+          content: 'fake file content',
+          definition: {
+            name: {
+              value: 'Human',
+            },
+
+            loc: {
+              start: 293,
+              end: 335,
+            },
+          },
+        },
       ];
     },
   };
 
   let languageService: GraphQLLanguageService;
   beforeEach(() => {
-    languageService = new GraphQLLanguageService(mockCache as any);
+    languageService = new GraphQLLanguageService(
+      mockCache as any,
+      new Logger(),
+    );
   });
 
   it('runs diagnostic service as expected', async () => {
@@ -116,6 +161,16 @@ describe('GraphQLLanguageService', () => {
     const definitionQueryResult = await languageService.getDefinition(
       'type Query { hero(episode: Episode): Character }',
       { line: 0, character: 28 } as Position,
+      './queries/definitionQuery.graphql',
+    );
+    // @ts-ignore
+    expect(definitionQueryResult.definitions.length).toEqual(1);
+  });
+
+  it('runs definition service on field as expected', async () => {
+    const definitionQueryResult = await languageService.getDefinition(
+      'query XXX { human { name } }',
+      { line: 0, character: 21 } as Position,
       './queries/definitionQuery.graphql',
     );
     // @ts-ignore
