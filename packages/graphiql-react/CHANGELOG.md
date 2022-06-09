@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [[`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa)]:
+  - graphql-language-service@5.0.5
+  - codemirror-graphql@1.3.1
+
 ## 0.4.0
 
 ### Minor Changes
