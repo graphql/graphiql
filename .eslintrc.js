@@ -148,6 +148,7 @@ module.exports = {
     'no-warning-comments': 0,
     'no-with': 1,
     radix: 1,
+    '@typescript-eslint/prefer-as-const': 'error',
     'require-await': 0,
     // 'require-await': 1,
     'vars-on-top': 0,
