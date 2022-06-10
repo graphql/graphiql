@@ -83,6 +83,7 @@ module.exports = {
     'valid-typeof': 'error',
 
     // Best Practices (http://eslint.org/docs/rules/#best-practices)
+    'no-useless-catch': 'error',
     'accessor-pairs': 1,
     'array-callback-return': 0,
     'block-scoped-var': 0,
