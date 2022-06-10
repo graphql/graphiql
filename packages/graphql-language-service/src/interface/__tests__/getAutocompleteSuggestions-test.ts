@@ -9,7 +9,7 @@
 
 import { CompletionItem } from 'graphql-language-service';
 
-import fs, { readSync } from 'fs';
+import fs from 'fs';
 import {
   buildSchema,
   FragmentDefinitionNode,

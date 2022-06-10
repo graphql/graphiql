@@ -185,7 +185,7 @@ const Person = new GraphQLObjectType({
     },
     friends: {
       type: new GraphQLList(Person),
-      async *resolve(_value, args) {
+      async *resolve(_value, _args) {
         const names = ['James', 'Mary', 'John', 'Patrica']; // Top 4 names https://www.ssa.gov/oact/babynames/decades/century.html
         for (const name of names) {
           await sleep(100);

@@ -170,7 +170,13 @@ module.exports = {
     'no-undef-init': 0,
     'no-undef': 1,
     'no-undefined': 0,
-    'no-unused-vars': [1, { args: 'none' }],
+
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+    ],
+
     'no-use-before-define': 0,
 
     // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
@@ -332,13 +338,6 @@ module.exports = {
       },
       rules: {
         'jest/no-conditional-expect': 0,
-      },
-    },
-    // Rules for TypeScript only
-    {
-      files: ['*.ts', '*.tsx'],
-      rules: {
-        'no-unused-vars': 'off',
       },
     },
     {

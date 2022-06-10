@@ -64,7 +64,7 @@ describe('MessageProcessor', () => {
         return [{ label: `${query} at ${uri}` }];
       },
       // @ts-ignore
-      getDiagnostics: (query, uri) => {
+      getDiagnostics: (_query, _uri) => {
         return [];
       },
       getDocumentSymbols: async (_query: string, uri: string) => {
@@ -352,7 +352,6 @@ describe('MessageProcessor', () => {
     });
 
     it('handles config requests with no config', async () => {
-      const customConfigName = 'custom-config-name.yml';
       messageProcessor._settings = {};
 
       await messageProcessor.handleDidChangeConfiguration({

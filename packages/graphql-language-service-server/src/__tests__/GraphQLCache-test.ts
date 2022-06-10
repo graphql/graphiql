@@ -29,8 +29,6 @@ function wihtoutASTNode(definition: any) {
   return result;
 }
 
-const fileExtensions = ['js', 'ts', 'graphql'];
-
 describe('GraphQLCache', () => {
   const configDir = __dirname;
   let graphQLRC;
@@ -55,7 +53,7 @@ describe('GraphQLCache', () => {
 
   describe('getGraphQLCache', () => {
     it('should apply extensions', async () => {
-      const extension: GraphQLExtensionDeclaration = config => {
+      const extension: GraphQLExtensionDeclaration = _config => {
         return {
           name: 'extension-used', // Just adding a key to the config to demo extension usage
         };

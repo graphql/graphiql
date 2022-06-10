@@ -187,7 +187,7 @@ export const expectDirective = (
   utils: Utils,
   { name, onKind, args = [] }: Args,
 ) => {
-  const { t, stream } = utils;
+  const { t } = utils;
   t.meta('@', { kind: 'Directive' });
   t.meta(name);
 

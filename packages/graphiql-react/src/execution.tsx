@@ -18,11 +18,7 @@ import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
 
-import {
-  useAutoCompleteLeafs,
-  useEditorContext,
-  UseQueryEditorArgs,
-} from './editor';
+import { useAutoCompleteLeafs, useEditorContext } from './editor';
 import { EditCallback } from './editor/hooks';
 import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
@@ -236,7 +232,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
 
             for (const part of maybeMultipart) {
               // We pull out errors here, so we dont include it later
-              const { path, data, errors: _errors, ...rest } = part;
+              const { path, data, errors, ...rest } = part;
               if (path) {
                 if (!data) {
                   throw new Error(

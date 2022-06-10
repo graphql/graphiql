@@ -23,7 +23,7 @@ declare namespace Cypress {
     | { data: any; hasNext?: boolean }
     | { error: any[] }
     | { errors: any[] };
-  interface Chainable<Subject = any> {
+  interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')

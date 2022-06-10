@@ -59,7 +59,6 @@ import {
   State,
   RuleKinds,
   RuleKind,
-  _RuleKinds,
   ContextTokenForCodeMirror,
 } from '../parser';
 

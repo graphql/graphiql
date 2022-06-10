@@ -8,7 +8,7 @@ const state = EditorState.create({
   extensions: [basicSetup, StreamLanguage.define(graphql)],
 });
 
-const view = new EditorView({
+new EditorView({
   state,
   parent: document.querySelector('#editor')!,
 });

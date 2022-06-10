@@ -19,17 +19,6 @@ import {
 import { createClient } from 'graphql-ws';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-const exampleWithSubscripton = /* GraphQL */ `
-  subscription Example {
-    example
-  }
-  query SomethingElse {
-    example
-  }
-`;
-
-const exampleWithSubscriptonNode = parse(exampleWithSubscripton);
-
 const serverURL = 'http://localhost:3000/graphql';
 const wssURL = 'ws://localhost:3000/graphql';
 
@@ -39,9 +28,9 @@ describe('createGraphiQLFetcher', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
-  it('returns fetcher without websocket client by default', async () => {
+  it('returns fetcher without websocket client by default', () => {
     createWebsocketsFetcherFromUrl.mockReturnValue(true);
-    const fetcher = createGraphiQLFetcher({ url: serverURL });
+    createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([
       [{ enableIncrementalDelivery: true, url: serverURL }, fetch],
