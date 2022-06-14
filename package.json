@@ -16,11 +16,11 @@
       "eslint --fix",
       "prettier --write",
       "jest --passWithNoTests",
-      "yarn cspell --gitignore '**/*.{js,ts,jsx,tsx}'"
+      "yarn cspell --gitignore"
     ],
     "*.{md,html,json,css}": [
       "prettier --write",
-      "yarn cspell --gitignore '**/*.{md,html,json,css}'"
+      "yarn cspell --gitignore"
     ]
   },
   "husky": {
