@@ -1,7 +1,7 @@
 import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import { EditorChange } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
-import { print } from 'graphql';
+import { parse, print } from 'graphql';
 import { useCallback, useEffect } from 'react';
 
 import { useExplorerContext } from '../explorer';
@@ -208,22 +208,12 @@ export function usePrettifyEditors({
     }
 
     if (queryEditor) {
-      import('prettier/standalone').then(({ default: prettier }) => {
-        import('prettier/parser-graphql').then(({ default: graphqlPlugin }) => {
-          try {
-            const editorContent = queryEditor.getValue();
-            const prettifiedEditorContent = prettier.format(editorContent, {
-              parser: 'graphql',
-              plugins: [graphqlPlugin],
-            });
-            if (prettifiedEditorContent !== editorContent) {
-              queryEditor.setValue(prettifiedEditorContent);
-            }
-          } catch {
-            // as always on format, no-op on parser failures
-          }
-        });
-      });
+      const editorContent = queryEditor.getValue();
+      const prettifiedEditorContent = print(parse(editorContent));
+
+      if (prettifiedEditorContent !== editorContent) {
+        queryEditor.setValue(prettifiedEditorContent);
+      }
     }
   }, [queryEditor, variableEditor, headerEditor]);
 }
