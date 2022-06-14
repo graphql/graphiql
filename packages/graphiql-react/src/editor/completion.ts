@@ -1,11 +1,6 @@
 import type { Editor, EditorChange } from 'codemirror';
 import escapeHTML from 'escape-html';
-import {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLSchema,
-  GraphQLType,
-} from 'graphql';
+import { GraphQLSchema, GraphQLType, isListType, isNonNullType } from 'graphql';
 
 import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
@@ -117,10 +112,10 @@ export function onHasCompletion(
 }
 
 function renderType(type: GraphQLType): string {
-  if (type instanceof GraphQLNonNull) {
+  if (isNonNullType(type)) {
     return `${renderType(type.ofType)}!`;
   }
-  if (type instanceof GraphQLList) {
+  if (isListType(type)) {
     return `[${renderType(type.ofType)}]`;
   }
   return `<a class="typeName">${escapeHTML(type.name)}</a>`;

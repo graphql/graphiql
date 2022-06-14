@@ -6,12 +6,8 @@
  */
 
 import React, { ReactNode } from 'react';
-import { isType, GraphQLNamedType } from 'graphql';
-import {
-  ExplorerFieldDef,
-  useExplorerContext,
-  useSchemaContext,
-} from '@graphiql/react';
+import { GraphQLSchema, isType } from 'graphql';
+import { useExplorerContext, useSchemaContext } from '@graphiql/react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -21,6 +17,14 @@ import TypeDoc from './DocExplorer/TypeDoc';
 
 type DocExplorerProps = {
   onClose?(): void;
+  /**
+   * @deprecated Passing a schema prop directly to this component will be
+   * removed in the next major version. Instead you need to wrap this component
+   * with the `SchemaContextProvider` from `@graphiql/react`. This context
+   * provider accepts a `schema` prop that you can use to skip fetching the
+   * schema with an introspection request.
+   */
+  schema?: GraphQLSchema | null;
 };
 
 /**
@@ -33,24 +37,19 @@ export function DocExplorer(props: DocExplorerProps) {
   const {
     fetchError,
     isFetching,
-    schema,
+    schema: schemaFromContext,
     validationErrors,
   } = useSchemaContext({ nonNull: true });
-  const { explorerNavStack, hide, pop, push, showSearch } = useExplorerContext({
+  const { explorerNavStack, hide, pop, showSearch } = useExplorerContext({
     nonNull: true,
   });
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
 
-  function handleClickType(type: GraphQLNamedType) {
-    push({ name: type.name, def: type });
-  }
+  // The schema passed via props takes precedence until we remove the prop
+  const schema = props.schema === undefined ? schemaFromContext : props.schema;
 
-  function handleClickField(field: ExplorerFieldDef) {
-    push({ name: field.name, def: field });
-  }
-
-  let content: ReactNode;
+  let content: ReactNode = null;
   if (fetchError) {
     content = <div className="error-container">Error fetching schema</div>;
   } else if (validationErrors) {
@@ -71,28 +70,13 @@ export function DocExplorer(props: DocExplorerProps) {
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
   } else if (navItem.search) {
-    content = (
-      <SearchResults
-        searchValue={navItem.search}
-        withinType={navItem.def as GraphQLNamedType}
-        schema={schema}
-        onClickType={handleClickType}
-        onClickField={handleClickField}
-      />
-    );
+    content = <SearchResults />;
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDoc schema={schema} onClickType={handleClickType} />;
+    content = <SchemaDoc />;
   } else if (isType(navItem.def)) {
-    content = (
-      <TypeDoc
-        schema={schema}
-        type={navItem.def}
-        onClickType={handleClickType}
-        onClickField={handleClickField}
-      />
-    );
-  } else {
-    content = <FieldDoc field={navItem.def} onClickType={handleClickType} />;
+    content = <TypeDoc />;
+  } else if (navItem.def) {
+    content = <FieldDoc />;
   }
 
   const shouldSearchBoxAppear =

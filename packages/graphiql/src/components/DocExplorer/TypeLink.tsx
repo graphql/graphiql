@@ -5,43 +5,45 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { useExplorerContext } from '@graphiql/react';
+import { GraphQLType, isListType, isNonNullType } from 'graphql';
 import React from 'react';
-import {
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLType,
-  GraphQLNamedType,
-} from 'graphql';
-import { OnClickTypeFunction } from './types';
-
-import { Maybe } from '../../types';
 
 type TypeLinkProps = {
-  type?: Maybe<GraphQLType>;
-  onClick?: OnClickTypeFunction;
+  type: GraphQLType;
 };
 
 export default function TypeLink(props: TypeLinkProps) {
-  const onClick = props.onClick ? props.onClick : () => null;
-  return renderType(props.type, onClick);
-}
+  const { push } = useExplorerContext({ nonNull: true, caller: TypeLink });
 
-function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
-  if (type instanceof GraphQLNonNull) {
-    return <span>{renderType(type.ofType, onClick)}!</span>;
+  if (!props.type) {
+    return null;
   }
-  if (type instanceof GraphQLList) {
-    return <span>[{renderType(type.ofType, onClick)}]</span>;
+
+  const type = props.type;
+  if (isNonNullType(type)) {
+    return (
+      <>
+        <TypeLink type={type.ofType} />!
+      </>
+    );
+  }
+  if (isListType(type)) {
+    return (
+      <>
+        [<TypeLink type={type.ofType} />]
+      </>
+    );
   }
   return (
     <a
       className="type-name"
       onClick={event => {
         event.preventDefault();
-        onClick(type as GraphQLNamedType, event);
+        push({ name: type.name, def: type });
       }}
       href="#">
-      {type?.name}
+      {type.name}
     </a>
   );
 }
