@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode } from 'react';
-import { isType } from 'graphql';
+import { GraphQLSchema, isType } from 'graphql';
 import { useExplorerContext, useSchemaContext } from '@graphiql/react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
@@ -17,6 +17,14 @@ import TypeDoc from './DocExplorer/TypeDoc';
 
 type DocExplorerProps = {
   onClose?(): void;
+  /**
+   * @deprecated Passing a schema prop directly to this component will be
+   * removed in the next major version. Instead you need to wrap this component
+   * with the `SchemaContextProvider` from `@graphiql/react`. This context
+   * provider accepts a `schema` prop that you can use to skip fetching the
+   * schema with an introspection request.
+   */
+  schema?: GraphQLSchema | null;
 };
 
 /**
@@ -29,7 +37,7 @@ export function DocExplorer(props: DocExplorerProps) {
   const {
     fetchError,
     isFetching,
-    schema,
+    schema: schemaFromContext,
     validationErrors,
   } = useSchemaContext({ nonNull: true });
   const { explorerNavStack, hide, pop, showSearch } = useExplorerContext({
@@ -37,6 +45,9 @@ export function DocExplorer(props: DocExplorerProps) {
   });
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
+
+  // The schema passed via props takes precedence until we remove the prop
+  const schema = props.schema === undefined ? schemaFromContext : props.schema;
 
   let content: ReactNode = null;
   if (fetchError) {
