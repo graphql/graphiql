@@ -85,9 +85,52 @@ export function onHasCompletion(
             'CodeMirror-hint-information-deprecation-reason';
           deprecation.appendChild(deprecationReason);
 
+          /**
+           * This is a bit hacky: By default, codemirror renders all hints
+           * inside a single container element. The only possibility to add
+           * something into this list is to add to the container element (which
+           * is a `ul` element).
+           *
+           * However, in the UI we want to have a two-column layout for the
+           * hints:
+           * - The first column contains the actual hints, i.e. the things that
+           *   are returned from the `hint` module from `codemirror-graphql`.
+           * - The second column contains the description and optionally the
+           *   deprecation reason for the given field.
+           *
+           * We solve this with a CSS grid layout that has an auto number of
+           * rows and two columns. All the hints go in the first column, and
+           * the description container (which is the `information` element
+           * here) goes in the second column. To make the hints scrollable, the
+           * container element has `overflow-y: auto`.
+           *
+           * Now here comes the crux: When scrolling down the list of hints we
+           * still want the description to be "sticky" to the top. We can't
+           * solve this with `position: sticky` as the container element itself
+           * is already positioned absolutely.
+           *
+           * There are two things to the solution here:
+           * - We add another `overflow: auto` to the `information` element.
+           *   This makes it scrollable on its own if the description or
+           *   deprecation reason is higher that the container element.
+           * - We add an `onscroll` handler to the container element. When the
+           *   user scrolls here we dynamically adjust the top padding of the
+           *   information element such that it looks like it's sticking to
+           *   the top. (Since the `information` element has some padding by
+           *   default we also have to make sure to use this as baseline for
+           *   the total padding.)
+           */
+          const defaultInformationPadding =
+            parseInt(
+              window
+                .getComputedStyle(information)
+                .paddingBottom.replace(/px$/, ''),
+              10,
+            ) || 0;
           const handleScroll = () => {
             if (information) {
-              information.style.paddingTop = hintsUl.scrollTop + 12 + 'px';
+              information.style.paddingTop =
+                hintsUl.scrollTop + defaultInformationPadding + 'px';
             }
           };
           hintsUl.addEventListener('scroll', handleScroll);
