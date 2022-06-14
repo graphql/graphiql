@@ -40,7 +40,7 @@
   }
   /* Name (OperationDefinition), FragmentName */
   & .cm-def {
-    color: var(--color-purple);
+    color: var(--color-teal);
   }
   /* Punctuator (except `$` and `@`) */
   & .cm-punctuation {
@@ -52,7 +52,7 @@
   }
   /* NamedType */
   & .cm-atom {
-    color: var(--color-pink);
+    color: var(--color-teal);
   }
   /* IntValue, FloatValue */
   & .cm-number {
@@ -76,7 +76,7 @@
   }
   /* Name (Directive) */
   & .cm-meta {
-    color: var(--color-pink);
+    color: var(--color-teal);
   }
   /* Name (Alias, Field without Alias) */
   & .cm-property {
