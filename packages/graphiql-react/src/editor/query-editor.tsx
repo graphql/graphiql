@@ -29,7 +29,7 @@ import {
   useMergeQuery,
   usePrettifyEditors,
 } from './hooks';
-import { CodeMirrorEditor, CodeMirrorType } from './types';
+import { CodeMirrorEditor, CodeMirrorType, KeyMap } from './types';
 import { normalizeWhitespace } from './whitespace';
 
 type OnClickReference = (reference: SchemaReference) => void;
@@ -43,10 +43,12 @@ export type UseQueryEditorArgs = {
   onEditOperationName?: EditCallback;
   readOnly?: boolean;
   validationRules?: ValidationRule[];
+  keyMap?: KeyMap;
 };
 
 export function useQueryEditor({
   editorTheme = 'graphiql',
+  keyMap,
   externalFragments,
   onClickReference,
   onCopyQuery,
@@ -129,7 +131,7 @@ export function useQueryEditor({
         foldGutter: true,
         mode: 'graphql',
         theme: editorTheme,
-        keyMap: 'sublime',
+        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,

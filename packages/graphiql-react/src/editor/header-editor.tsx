@@ -11,16 +11,19 @@ import {
   useMergeQuery,
   usePrettifyEditors,
 } from './hooks';
+import { KeyMap } from './types';
 
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
   readOnly?: boolean;
   shouldPersistHeaders?: boolean;
+  keyMap?: KeyMap;
 };
 
 export function useHeaderEditor({
   editorTheme = 'graphiql',
+  keyMap,
   onEdit,
   readOnly = false,
   shouldPersistHeaders = false,
@@ -57,7 +60,7 @@ export function useHeaderEditor({
         tabSize: 2,
         mode: { name: 'javascript', json: true },
         theme: editorTheme,
-        keyMap: 'sublime',
+        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,

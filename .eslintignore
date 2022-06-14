@@ -58,6 +58,7 @@ working-group/
 **/codemirror-graphql/lint.*
 **/codemirror-graphql/info.*
 **/codemirror-graphql/hint.*
+**/codemirror-graphql/cm6-legacy
 **/codemirror-graphql/__tests__
 
 # Vendored files
