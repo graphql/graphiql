@@ -1,8 +1,11 @@
 export {
   EditorContext,
   EditorContextProvider,
+  HeaderEditor,
   ImagePreview,
   onHasCompletion,
+  QueryEditor,
+  ResponseEditor,
   useAutoCompleteLeafs,
   useCopyQuery,
   useEditorContext,
@@ -12,6 +15,7 @@ export {
   useQueryEditor,
   useResponseEditor,
   useVariableEditor,
+  VariableEditor,
 } from './editor';
 export {
   ExecutionContext,
@@ -63,11 +67,5 @@ export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 
 import './style/root.css';
-import './editor/style/codemirror.css';
-import './editor/style/lint.css';
-import './editor/style/hint.css';
-import './editor/style/fold.css';
-import './editor/style/info.css';
-import './editor/style/jump.css';
 import './style/markdown.css';
 import './style/deprecation.css';

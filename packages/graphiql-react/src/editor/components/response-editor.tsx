@@ -1,20 +1,10 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
+import { useResponseEditor, UseResponseEditorArgs } from '../response-editor';
 
-import { useResponseEditor, UseResponseEditorArgs } from '@graphiql/react';
-import React from 'react';
+import '../style/codemirror.css';
+import '../style/fold.css';
+import '../style/info.css';
 
-/**
- * ResultViewer
- *
- * Maintains an instance of CodeMirror for viewing a GraphQL response.
- *
- */
-export function ResultViewer(props: UseResponseEditorArgs) {
+export function ResponseEditor(props: UseResponseEditorArgs) {
   const ref = useResponseEditor(props);
   return (
     <section
