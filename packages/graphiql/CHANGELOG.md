@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.9.8
+
+### Patch Changes
+
+- [#2499](https://github.com/graphql/graphiql/pull/2499) [`731b3b72`](https://github.com/graphql/graphiql/commit/731b3b72e9f087a3b429ef5e8143219a0dcf7f00) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - fix the default value for the `headerEditorEnabled` prop to be `true`
+
 ## 1.9.7
 
 ### Patch Changes
