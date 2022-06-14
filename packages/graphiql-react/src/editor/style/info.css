@@ -54,17 +54,5 @@
     color: var(--color-neutral-60);
     margin-top: var(--px-12);
     overflow: hidden;
-
-    & > * {
-      margin: var(--px-12) 0;
-    }
-
-    & > :first-child {
-      margin-top: 0;
-    }
-
-    & > :last-child {
-      margin-bottom: 0;
-    }
   }
 }
