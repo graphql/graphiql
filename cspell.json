@@ -9,8 +9,5 @@
       "addWords": true
     }
   ],
-  "ignorePaths": [
-    "**/node_modules/**",
-    "packages/graphiql-2-rfc-context/src/locales/ru"
-  ]
+  "ignorePaths": ["examples/graphiql-2-rfc-context/src/locales/ru"]
 }
