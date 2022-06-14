@@ -37,8 +37,7 @@
     "escape-html": "^1.0.3",
     "graphql-language-service": "^5.0.5",
     "markdown-it": "^12.2.0",
-    "set-value": "^4.1.0",
-    "prettier": "^2.7.0"
+    "set-value": "^4.1.0"
   },
   "devDependencies": {
     "@types/codemirror": "^5.60.5",
