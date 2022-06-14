@@ -11,16 +11,18 @@ import {
   useMergeQuery,
   usePrettifyEditors,
 } from './hooks';
-import { CodeMirrorType } from './types';
+import { CodeMirrorType, KeyMap } from './types';
 
 export type UseVariableEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
   readOnly?: boolean;
+  keyMap?: KeyMap;
 };
 
 export function useVariableEditor({
   editorTheme = 'graphiql',
+  keyMap,
   onEdit,
   readOnly = false,
 }: UseVariableEditorArgs = {}) {
@@ -64,7 +66,7 @@ export function useVariableEditor({
         tabSize: 2,
         mode: 'graphql-variables',
         theme: editorTheme,
-        keyMap: 'sublime',
+        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,

@@ -8,7 +8,7 @@ import { commonKeys, importCodeMirror } from './common';
 import { ImagePreview } from './components';
 import { useEditorContext } from './context';
 import { useSynchronizeValue } from './hooks';
-import { CodeMirrorEditor } from './types';
+import { CodeMirrorEditor, KeyMap } from './types';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
 
@@ -16,11 +16,13 @@ export type UseResponseEditorArgs = {
   ResponseTooltip?: ResponseTooltipType;
   editorTheme?: string;
   value?: string;
+  keyMap?: KeyMap;
 };
 
 export function useResponseEditor({
   ResponseTooltip,
   editorTheme = 'graphiql',
+  keyMap,
   value,
 }: UseResponseEditorArgs = {}) {
   const { fetchError, validationErrors } = useSchemaContext({
@@ -103,7 +105,7 @@ export function useResponseEditor({
         readOnly: true,
         theme: editorTheme,
         mode: 'graphql-results',
-        keyMap: 'sublime',
+        keyMap: keyMap ?? 'sublime',
         foldGutter: true,
         gutters: ['CodeMirror-foldgutter'],
         // @ts-expect-error

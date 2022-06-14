@@ -48,6 +48,7 @@ import type {
   SchemaContextType,
   StorageContextType,
   TabsState,
+  KeyMap,
 } from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
@@ -203,10 +204,20 @@ export type GraphiQLProps = {
    */
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
   /**
-   * The codemirror editor theme you'd like to use
+   * The CodeMirror 5 editor theme you'd like to use
    *
    */
   editorTheme?: string;
+  /**
+   * The CodeMirror 5 editor keybindings you'd like to use
+   *
+   * Note: may be deprecated for monaco
+   *
+   * See: https://codemirror.net/5/doc/manual.html#option_keyMap
+   *
+   * @default 'sublime'
+   */
+  keyMap?: KeyMap;
   /**
    * On history pane toggle event
    */
@@ -748,6 +759,7 @@ class GraphiQLWithContext extends React.Component<
                           this.props.docResize.setHiddenElement(null);
                         }
                       }}
+                      keyMap={this.props.keyMap}
                       onCopyQuery={this.props.onCopyQuery}
                       onEdit={this.props.onEditQuery}
                       onEditOperationName={this.props.onEditOperationName}
@@ -831,6 +843,7 @@ class GraphiQLWithContext extends React.Component<
                         editorTheme={this.props.editorTheme}
                         readOnly={this.props.readOnly}
                         active={this.state.activeSecondaryEditor === 'variable'}
+                        keyMap={this.props.keyMap}
                       />
                       {headerEditorEnabled && (
                         <HeaderEditor
@@ -839,6 +852,7 @@ class GraphiQLWithContext extends React.Component<
                           onEdit={this.props.onEditHeaders}
                           readOnly={this.props.readOnly}
                           shouldPersistHeaders={this.props.shouldPersistHeaders}
+                          keyMap={this.props.keyMap}
                         />
                       )}
                     </section>
@@ -859,6 +873,7 @@ class GraphiQLWithContext extends React.Component<
                     value={this.props.response}
                     editorTheme={this.props.editorTheme}
                     ResponseTooltip={this.props.ResultsTooltip}
+                    keyMap={this.props.keyMap}
                   />
                   {footer}
                 </div>
