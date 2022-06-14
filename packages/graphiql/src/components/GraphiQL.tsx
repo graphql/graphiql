@@ -665,6 +665,8 @@ class GraphiQLWithContext extends React.Component<
       isChildComponentType(child, GraphiQL.Footer),
     );
 
+    const headerEditorEnabled = this.props.headerEditorEnabled ?? true;
+
     return (
       <div data-testid="graphiql-container" className="graphiql-container">
         <div ref={this.props.docResize.firstRef}>
@@ -783,7 +785,7 @@ class GraphiQLWithContext extends React.Component<
                         }}>
                         Query Variables
                       </div>
-                      {this.props.headerEditorEnabled && (
+                      {headerEditorEnabled && (
                         <div
                           style={{
                             marginLeft: '20px',
@@ -830,7 +832,7 @@ class GraphiQLWithContext extends React.Component<
                         readOnly={this.props.readOnly}
                         active={this.state.activeSecondaryEditor === 'variable'}
                       />
-                      {this.props.headerEditorEnabled && (
+                      {headerEditorEnabled && (
                         <HeaderEditor
                           active={this.state.activeSecondaryEditor === 'header'}
                           editorTheme={this.props.editorTheme}
