@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.0.6
+
+### Patch Changes
+
+- [#2506](https://github.com/graphql/graphiql/pull/2506) [`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c) Thanks [@acao](https://github.com/acao)! - Remove redundant check, trigger LSP release
+
 ## 5.0.5
 
 ### Patch Changes

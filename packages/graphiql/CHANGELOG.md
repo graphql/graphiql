@@ -1,5 +1,15 @@
 # Change Log
 
+## 1.9.9
+
+### Patch Changes
+
+- [#2501](https://github.com/graphql/graphiql/pull/2501) [`5437ee61`](https://github.com/graphql/graphiql/commit/5437ee61e1ba6cd28ccc1cb3543df1ea788278f4) Thanks [@acao](https://github.com/acao)! - Allow Codemirror 5 `keyMap` to be defined, default `vim` or `emacs` allowed in addition to the original default of `sublime`.
+
+- Updated dependencies [[`5437ee61`](https://github.com/graphql/graphiql/commit/5437ee61e1ba6cd28ccc1cb3543df1ea788278f4), [`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c)]:
+  - @graphiql/react@0.4.2
+  - graphql-language-service@5.0.6
+
 ## 1.9.8
 
 ### Patch Changes

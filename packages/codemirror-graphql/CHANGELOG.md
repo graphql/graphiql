@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies [[`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c)]:
+  - graphql-language-service@5.0.6
+
 ## 1.3.1
 
 ### Patch Changes
