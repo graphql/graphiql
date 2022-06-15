@@ -373,7 +373,6 @@ export class MessageProcessor {
         const project = this._graphQLCache.getProjectForFile(uri);
         if (
           this._isInitialized &&
-          this._graphQLCache &&
           project?.extensions?.languageService?.enableValidation !== false
         ) {
           await Promise.all(
