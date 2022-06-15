@@ -361,7 +361,7 @@ class GraphiQLInternals extends React.Component<
             console: variables,
           }}
           navPanels={[
-            // TODO: rewrite this for plugin API
+            // eslint-disable-next-line no-constant-condition -- TODO: rewrite this for plugin API
             ...(true
               ? [
                   {
@@ -375,8 +375,7 @@ class GraphiQLInternals extends React.Component<
                   },
                 ]
               : []),
-            // TODO: rewrite this for plugin API
-
+            // eslint-disable-next-line no-constant-condition -- TODO: rewrite this for plugin API
             ...(true
               ? [
                   {

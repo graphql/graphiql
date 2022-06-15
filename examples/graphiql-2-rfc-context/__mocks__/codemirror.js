@@ -29,7 +29,7 @@ function CodeMirror(node, { value, ...options }) {
     },
 
     off(event) {
-      if (_eventListeners.hasOwnProperty(event)) {
+      if (Object.prototype.hasOwnProperty.call(_eventListeners, event)) {
         const updatedEventListeners = {};
         for (const e in _eventListeners) {
           if (e !== event) {
