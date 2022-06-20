@@ -55,7 +55,7 @@ describe('graphql-mode', () => {
   });
 
   it('returns "invalidchar" message when there is no matching token', () => {
-    CodeMirror.runMode('qauery name', 'graphql', (token, style) => {
+    CodeMirror.runMode('invalidKeyword name', 'graphql', (token, style) => {
       if (token.trim()) {
         expect(style).toBe('invalidchar');
       }

@@ -806,7 +806,7 @@ describe('graphql-hint', () => {
         'fragment Qux on TestUnion { name } ' +
         'fragment Nrf on Test { id } ' +
         'fragment Quux on TestInputObject { string } ' +
-        'fragment Corge on Grault { garply }',
+        'fragment Abc on Xyz { abcdef }',
       { line: 0, ch: 31 },
     );
     const list = [
@@ -862,7 +862,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it('provides correct field name suggestion inside typeless inline fragment', async () => {
+  it('provides correct field name suggestion inside type-less inline fragment', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on First { ... { ',
       { line: 0, ch: 30 },

@@ -55,7 +55,7 @@
 ### Features
 
 - add \_\_typename field suggestion against object type - (#903) @yoshiakis
-- Update sortText logic, so that field sort is schema driven rather than alphabetically sorted - (#884) @ganenome
+- Update sortText logic, so that field sort is schema driven rather than alphabetically sorted - (#884) @ganemone
 
 ### Chores
 

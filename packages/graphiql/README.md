@@ -156,7 +156,7 @@ The most minimal way to set up GraphiQL is a single index.html file:
 **Notes**:
 
 - the inlined styles are important for ensuring GraphiQL is visible and fills the canvas.
-- using `React.createElement` directly is belaborous, so follow the webpack instructions above for more highly customized implementation
+- using `React.createElement` directly is laborious, so follow the webpack instructions above for more highly customized implementation
 - we can use [`GraphiQL.createFetcher`](https://github.com/graphql/graphiql/tree/main/packages/graphiql-toolkit/docs/create-fetcher.md) in the UMD bundle only, so that it can be tree shaken out for modules
 
 ### GraphiQL for my GraphQL Service/HTTP Server/Etc

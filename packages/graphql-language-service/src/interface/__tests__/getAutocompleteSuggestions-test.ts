@@ -486,7 +486,7 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'secretBackstory', detail: 'String' },
       ]);
 
-      // Typeless inline fragment assumes the type automatically
+      // Type-less inline fragment assumes the type automatically
       expect(
         testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
       ).toEqual([

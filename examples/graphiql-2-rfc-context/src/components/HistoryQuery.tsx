@@ -94,7 +94,6 @@ class HistoryQuerySource extends React.Component<
           {'\u270e'}
         </button>
         <button
-          className={this.props.favorite ? 'favorited' : undefined}
           onClick={this.handleStarClick.bind(this)}
           aria-label={
             this.props.favorite ? t('Remove favorite') : t('Add favorite')

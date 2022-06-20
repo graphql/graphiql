@@ -330,7 +330,7 @@ function unsuccessful(state: State): void {
   // until the entire stack of rules is empty.
   while (
     state.rule &&
-    // TODO: not sure how to fix this performantly
+    // TODO: not sure how to fix this in a performant way
     // @ts-ignore
     !(Array.isArray(state.rule) && state.rule[state.step].ofRule)
   ) {

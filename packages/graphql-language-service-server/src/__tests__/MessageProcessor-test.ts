@@ -624,11 +624,11 @@ query Test {
   it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
 // @flow
-import randomthing from 'package';
+import randomThing from 'package';
 import type {B} from 'B';
 import A from './A';
 
-const QUERY = randomthing\`
+const QUERY = randomThing\`
 query Test {
   test {
     value
@@ -647,11 +647,11 @@ export function Example(arg: string) {}`;
   it('an unparsable JS/TS file does not throw and bring down the server', async () => {
     const text = `
 // @flow
-import type randomthing fro 'package';
+import type randomThing fro 'package';
 import type {B} from 'B';
 im port A from './A';
 
-con  QUERY = randomthing\`
+con  QUERY = randomThing\`
 query Test {
   test {
     value

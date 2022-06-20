@@ -164,7 +164,7 @@ export type GraphiQLProps = {
    */
   headerEditorEnabled?: boolean;
   /**
-   * Should user header changes be persisted to localstorage?
+   * Should user header changes be persisted to localStorage?
    * default: false
    */
   shouldPersistHeaders?: boolean;

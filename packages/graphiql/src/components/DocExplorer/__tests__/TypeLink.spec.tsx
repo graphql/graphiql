@@ -47,7 +47,7 @@ describe('TypeLink', () => {
     expect(container.querySelectorAll('a')).toHaveLength(1);
     expect(container.querySelector('a')).toHaveClass('type-name');
   });
-  it('should render a nonnull type', () => {
+  it('should render a non-null type', () => {
     const { container } = render(<TypeLinkWithContext type={nonNullType} />);
     expect(container).toHaveTextContent('String!');
     expect(container.querySelectorAll('span')).toHaveLength(1);

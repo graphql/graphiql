@@ -111,7 +111,6 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
         {'\u270e'}
       </button>
       <button
-        className={props.item.favorite ? 'favorited' : undefined}
         onClick={e => {
           e.stopPropagation();
           toggleFavorite(props.item);

@@ -189,7 +189,7 @@ export type DiagnosticSettings = {
    * @example
    * ```ts
    * validateVariablesJSON: {
-   *   "monaco://myoperation.graphql": ["monaco://myvariables.json"]
+   *   "monaco://my-operation.graphql": ["monaco://my-variables.json"]
    *  }
    * ```
    */

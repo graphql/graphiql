@@ -33,7 +33,7 @@ describe('MergeAst', () => {
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQuery);
   });
 
-  it('inlines simple nested fragment', () => {
+  it('does inline simple nested fragment', () => {
     const query = `
       query Test {
         ...Fragment1
@@ -56,7 +56,7 @@ describe('MergeAst', () => {
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
 
-  it('inlines triple nested fragment', () => {
+  it('does inline triple nested fragment', () => {
     const query = `
       query Test {
         ...Fragment1
@@ -91,7 +91,7 @@ describe('MergeAst', () => {
     expect(parseMergeAndPrint(query, schema)).toBe(mergedQueryWithSchema);
   });
 
-  it('inlines multiple fragments', () => {
+  it('does inline multiple fragments', () => {
     const query = `
       query Test {
         ...Fragment1

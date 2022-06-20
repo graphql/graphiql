@@ -139,7 +139,7 @@ describe('GraphQLCache', () => {
 
   describe('getFragmentDependencies', () => {
     const duckContent = `fragment Duck on Duck {
-      cuack
+      quack
     }`;
     const duckDefinition = parse(duckContent).definitions[0];
 

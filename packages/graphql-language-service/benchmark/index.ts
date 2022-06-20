@@ -141,5 +141,5 @@ runSplitTest('kitchen-sink:split', kitchenSchema);
 
 runWholeTest('github:whole', githubSchema);
 
-runGraphqlParserTest('kitchen-sink:graphqljs', kitchenSchema);
-runGraphqlParserTest('github:graphqljs', githubSchema);
+runGraphqlParserTest('kitchen-sink:graphql-js', kitchenSchema);
+runGraphqlParserTest('github:graphql-js', githubSchema);

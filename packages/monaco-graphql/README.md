@@ -231,7 +231,7 @@ monaco.languages.graphql.api;
 import 'monaco-graphql';
 
 // also this
-import { languges } from 'monaco-editor';
+import { languages } from 'monaco-editor';
 // now the api will be available on the `monaco.languages` global
 languages.graphql.api;
 ```
@@ -380,7 +380,7 @@ You can add any `LanguageServiceConfig` ([typedoc](https://graphiql-test.netlify
 
 This is because we can't pass non-static configuration to the existing worker programmatically, so you must import these and build the worker custom with those functions. Part of the (worthwhile) cost of crossing runtimes!
 
-you'll want to create your own `mygraphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
+you'll want to create your own `my-graphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
 
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
@@ -414,7 +414,7 @@ then, in your application:
 import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
 
 // specify the path to your language worker
-import GraphQLWorker from 'worker-loader!./mygraphql.worker';
+import GraphQLWorker from 'worker-loader!./my-graphql.worker';
 
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
@@ -432,7 +432,7 @@ or, if you have webpack configured for it:
 window.MonacoEnvironment = {
   getWorkerUrl(_workerId: string, label: string) {
     if (label === 'graphql') {
-      return 'mygraphql.worker.js';
+      return 'my-graphql.worker.js';
     }
     return 'editor.worker.js';
   },
@@ -451,7 +451,7 @@ export default defineConfig({
       customWorker: [
         {
           label: 'graphql',
-          entry: 'mygraphql.worker.js',
+          entry: 'my-graphql.worker.js',
         },
       ],
     }),

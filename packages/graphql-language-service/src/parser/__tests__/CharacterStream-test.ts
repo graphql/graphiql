@@ -286,7 +286,7 @@ describe('CharacterStream', () => {
   });
 
   describe('indentation', () => {
-    it('returns 0 for no indendation', () => {
+    it('returns 0 for no indentation', () => {
       const source = 'scalar Foo';
       const stream = new CharacterStream(source);
 

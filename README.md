@@ -124,7 +124,7 @@ By default, all typescript packages target `es6`.
 
 `graphql-language-service-server` and `graphql-language-service-cli` are made for the node runtime, so they target `es2017`
 
-`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserlistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `regenerator-runtime` or special babel configuration.
+`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserslistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `regenerator-runtime` or special babel configuration.
 
 ### [`.browserslistrc`](./.browserslistrc):
 

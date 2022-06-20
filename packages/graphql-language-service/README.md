@@ -10,7 +10,7 @@
 
 This package brings together all the dependencies for building out web or desktop IDE services for the GraphQL Language.
 
-It is named as such to match the convention of other vscode languageservices.
+It is named as such to match the convention of other vscode language services.
 
 ## Interface
 
