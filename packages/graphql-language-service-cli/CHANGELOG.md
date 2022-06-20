@@ -190,7 +190,7 @@
 
 - [`f82bd7a9`](https://github.com/graphql/graphiql/commit/f82bd7a931eb5fa9a33e59d417303706844c9063) [#2055](https://github.com/graphql/graphiql/pull/2055) Thanks [@acao](https://github.com/acao)! - this fixes the URI scheme related bugs and make sure schema as sdl config works again.
 
-  `fileURLToPath` had been introduced by a contributor and I didnt test properly, it broke sdl file loading!
+  `fileURLToPath` had been introduced by a contributor and I didn't test properly, it broke sdl file loading!
 
   definitions, autocomplete, diagnostics, etc should work again
   also hides the more verbose logging output for now
@@ -344,7 +344,7 @@
 
 ### Bug Fixes
 
-- pre-cacheing schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
+- pre-caching schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
 
 ### Features
 
@@ -412,9 +412,9 @@
 
 ### Features
 
-- **cli:** recommend matching commmands ([#1420](https://github.com/graphql/graphiql/issues/1420)) ([0fbae82](https://github.com/graphql/graphiql/commit/0fbae828ced2e8b95016268805654cde8322b076))
+- **cli:** recommend matching commands ([#1420](https://github.com/graphql/graphiql/issues/1420)) ([0fbae82](https://github.com/graphql/graphiql/commit/0fbae828ced2e8b95016268805654cde8322b076))
 - **graphql-config:** add graphql config extensions ([#1118](https://github.com/graphql/graphiql/issues/1118)) ([2a77e47](https://github.com/graphql/graphiql/commit/2a77e47719ec9181a00183a08ffa11287b8fd2f5))
-- capture unknown commands making use of the inhouse s… ([#1417](https://github.com/graphql/graphiql/issues/1417)) ([dd12a6b](https://github.com/graphql/graphiql/commit/dd12a6b903976ce8d35cf91d3c9606450f1c0990))
+- capture unknown commands making use of the in-house s… ([#1417](https://github.com/graphql/graphiql/issues/1417)) ([dd12a6b](https://github.com/graphql/graphiql/commit/dd12a6b903976ce8d35cf91d3c9606450f1c0990))
 - use new GraphQL Config ([#1342](https://github.com/graphql/graphiql/issues/1342)) ([e45838f](https://github.com/graphql/graphiql/commit/e45838f5ba579e05b20f1a147ce431478ffad9aa))
 
 ## [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@2.3.4...graphql-language-service@2.4.0-alpha.1) (2020-01-18)
@@ -443,7 +443,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 
@@ -499,7 +499,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 
@@ -555,7 +555,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 

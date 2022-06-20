@@ -1,6 +1,6 @@
 ## Description
 
-This is an extremely naive & minimalistic implementation of `monaco-graphql` with `react` using `vite` as a bundler.
+This is an extremely naive & minimalist implementation of `monaco-graphql` with `react` using `vite` as a bundler.
 
 This workspace could be used to help us prototype components & hooks for `@graphiql/react`
 

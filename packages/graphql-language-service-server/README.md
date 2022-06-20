@@ -161,8 +161,8 @@ export default {
       schema: [
         // internally in `graphql-config`, an attempt will be made to combine these schemas into one in-memory schema to use for validation, lookup, etc
         'http://localhost:8080',
-        './myproject/schema.graphql',
-        './myproject/schema.ts',
+        './my-project/schema.graphql',
+        './my-project/schema.ts',
         '@customDirective(arg: String!)',
         'scalar CustomScalar',
       ],
@@ -194,7 +194,7 @@ export default {
 
 You can specify any of these settings globally as above, or per project. Read the graphql-config docs to learn more about this!
 
-For secrets (headers, urls, etc), you can import `dotenv()` and set a basepath as you wish in your `graphql-config` file to preload `process.env` variables.
+For secrets (headers, urls, etc), you can import `dotenv()` and set a base path as you wish in your `graphql-config` file to pre-load `process.env` variables.
 
 ### Troubleshooting notes
 

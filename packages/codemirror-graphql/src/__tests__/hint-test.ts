@@ -806,7 +806,7 @@ describe('graphql-hint', () => {
         'fragment Qux on TestUnion { name } ' +
         'fragment Nrf on Test { id } ' +
         'fragment Quux on TestInputObject { string } ' +
-        'fragment Corge on Grault { garply }',
+        'fragment Abc on Xyz { abcdef }',
       { line: 0, ch: 31 },
     );
     const list = [
@@ -862,7 +862,7 @@ describe('graphql-hint', () => {
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
 
-  it('provides correct field name suggestion inside typeless inline fragment', async () => {
+  it('provides correct field name suggestion inside type-less inline fragment', async () => {
     const suggestions = await getHintSuggestions(
       'fragment Foo on First { ... { ',
       { line: 0, ch: 30 },
@@ -1037,7 +1037,7 @@ describe('graphql-hint', () => {
     const expectedSuggestions = getExpectedSuggestions(list);
     expect(suggestions?.list).toEqual(expectedSuggestions);
   });
-  it('provides no suggestinos', async () => {
+  it('provides no suggestions', async () => {
     const list: IHint[] = [];
     const expectedSuggestions = getExpectedSuggestions(list);
 
@@ -1092,7 +1092,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions7?.list).toEqual(expectedSuggestions);
   });
-  it('provides variable completion for argments', async () => {
+  it('provides variable completion for arguments', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },
@@ -1107,7 +1107,7 @@ describe('graphql-hint', () => {
     );
     expect(suggestions9?.list).toEqual(expectedSuggestions);
   });
-  it('provides variable completion for argments with $', async () => {
+  it('provides variable completion for arguments with $', async () => {
     const expectedSuggestions = getExpectedSuggestions([
       { text: 'string', type: GraphQLString },
       { text: 'listString', type: new GraphQLList(GraphQLString) },

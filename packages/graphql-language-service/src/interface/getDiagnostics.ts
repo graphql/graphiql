@@ -126,7 +126,7 @@ export function validateQuery(
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
 }
 
-// General utility for map-cating (aka flat-mapping).
+// General utility for mapping-and-concatenating (aka flat-mapping).
 function mapCat<T>(
   array: ReadonlyArray<T>,
   mapper: (item: T) => Array<any>,

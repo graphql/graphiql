@@ -332,7 +332,7 @@ export function useQueryEditor({
     queryEditor,
     [
       'Shift-Ctrl-P',
-      // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to Pretiffy
+      // Shift-Ctrl-P is hard coded in Firefox for private browsing so adding an alternative to prettify
       'Shift-Ctrl-F',
     ],
     prettify,

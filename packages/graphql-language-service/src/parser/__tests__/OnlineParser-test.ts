@@ -26,7 +26,7 @@ describe('onlineParser', () => {
             separator: undefined,
           },
         ],
-        needsSeperator: false,
+        needsSeparator: false,
         prevState: {
           level: 0,
           step: 0,
@@ -34,7 +34,7 @@ describe('onlineParser', () => {
           kind: null,
           type: null,
           rule: null,
-          needsSeperator: false,
+          needsSeparator: false,
           prevState: null,
         },
       });
@@ -308,7 +308,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses a fragment defination`, () => {
+    it(`parses a fragment definition`, () => {
       const { t } = getUtils(`
         fragment SomeFragment on SomeType {
           someField
@@ -328,7 +328,7 @@ describe('onlineParser', () => {
       t.eol();
     });
 
-    it(`parses a fragment defination with a directive`, () => {
+    it(`parses a fragment definition with a directive`, () => {
       const { t } = getUtils(`
         fragment SomeFragment on SomeType @someDirective {
           someField

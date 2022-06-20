@@ -25,7 +25,7 @@ In order for the attack to take place, the user must load a vulnerable schema in
 
 By default, the schema URL is _not_ attacker-controllable in `graphiql` or in its suggested implementations or examples, leaving only very complex attack vectors.
 
-If a custom implementation of `graphiql`'s `fetcher` allows the schema URL to be set dynamically, such as a URL query parameter like `?endpoint=` in `graphql-playground`, or a database provided value, then this custom `graphiql` implementation is _vulnerable to phishing attacks_, and thus much more readily available, low or no privelege level xss attacks. The URLs could look like any generic looking graphql schema URL.
+If a custom implementation of `graphiql`'s `fetcher` allows the schema URL to be set dynamically, such as a URL query parameter like `?endpoint=` in `graphql-playground`, or a database provided value, then this custom `graphiql` implementation is _vulnerable to phishing attacks_, and thus much more readily available, low or no privilege level xss attacks. The URLs could look like any generic looking graphql schema URL.
 
 Because this exposes an XSS attack surface, it would be possible for a threat actor to exfiltrate user credentials, data, etc. using arbitrary malicious scripts, without it being known to the user.
 

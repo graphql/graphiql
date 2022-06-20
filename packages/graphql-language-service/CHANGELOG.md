@@ -18,7 +18,7 @@
 
 ### Patch Changes
 
-- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plauging users for two years now, sorry!
+- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plaguing users for two years now, sorry!
 
 ## 5.0.3
 
@@ -69,7 +69,7 @@
 
 ### Patch Changes
 
-- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LangugeService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
+- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LanguageService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
 
 ## 4.1.2
 
@@ -107,7 +107,7 @@
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
     - when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
-  - The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
+  - The exported mode api for configuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
   #### New Features
 
@@ -120,7 +120,7 @@
   - web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
   - the editor now supports multiple graphql models, configurable against multiple schema configurations
 
-  * You can now use `intializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
+  * You can now use `initializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
 
 ### Patch Changes
 

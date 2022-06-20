@@ -84,7 +84,7 @@ describe('getAutocompleteSuggestions', () => {
     schema = buildSchema(schemaIDL);
   });
 
-  // Returns a soreted autocomplete suggestions in an increasing order.
+  // Returns a sorted autocomplete suggestions in an increasing order.
   function testSuggestions(
     query: string,
     point: Position,
@@ -486,7 +486,7 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'secretBackstory', detail: 'String' },
       ]);
 
-      // Typeless inline fragment assumes the type automatically
+      // Type-less inline fragment assumes the type automatically
       expect(
         testSuggestions('fragment Foo on Droid { ... { ', new Position(0, 30)),
       ).toEqual([

@@ -1,4 +1,3 @@
 {
-  "npm.packageManager": "yarn",
-  "cSpell.words": ["graphqlrc"]
+  "npm.packageManager": "yarn"
 }

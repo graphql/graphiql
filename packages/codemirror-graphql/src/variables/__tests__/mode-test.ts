@@ -78,7 +78,7 @@ describe('graphql-variables-mode', () => {
   });
 
   it('returns "invalidchar" message when there is no matching token', () => {
-    CodeMirror.runMode('herp derp', 'graphql-variables', (token, style) => {
+    CodeMirror.runMode('nope', 'graphql-variables', (token, style) => {
       if (token.trim()) {
         expect(style).toBe('invalidchar');
       }

@@ -22,12 +22,12 @@ export const fixtures = [
       }`,
   },
   {
-    desc: 'inlines simple nested fragment',
+    desc: 'does inline simple nested fragment',
     query: `
       query Test {
         ...Fragment1
       }
-      
+
       fragment Fragment1 on Test {
         id
       }`,
@@ -43,7 +43,7 @@ export const fixtures = [
       }`,
   },
   {
-    desc: 'inlines triple nested fragment',
+    desc: 'does inline triple nested fragment',
     query: `
       query Test {
         ...Fragment1
@@ -76,7 +76,7 @@ export const fixtures = [
       }`,
   },
   {
-    desc: 'inlines multiple fragments',
+    desc: 'does inline multiple fragments',
     query: `
       query Test {
         ...Fragment1

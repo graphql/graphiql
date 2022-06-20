@@ -17,7 +17,7 @@ Lots of new improvements happening! We now have a [`CHANGELOG.md`](https://githu
 - Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
 - Load the extension inside `gql`/`graphql` fenced code blocks in markdown files
 - NO LONGER SUPPORTED - execute query/mutation/subscription operations, embedded or in graphql files - we will be recommending other extensions for this.
-- pre-load schema and document defintitions
+- pre-load schema and document definitions
 - Support [`graphql-config`](https://graphql-config.com/) files with one project and multiple projects (multi-workspace roots with multiple graphql config files not yet supported)
 - the language service re-starts on saved changes to vscode settings and/or graphql config!
 

@@ -60,7 +60,7 @@
 
 ### Patch Changes
 
-- [#2437](https://github.com/graphql/graphiql/pull/2437) [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move preffity query functionality to editor context in `@graphiql/react`
+- [#2437](https://github.com/graphql/graphiql/pull/2437) [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move prettify query functionality to editor context in `@graphiql/react`
 
 * [#2435](https://github.com/graphql/graphiql/pull/2435) [`89f0244f`](https://github.com/graphql/graphiql/commit/89f0244f7b7cdf01c168638a09f5137788401995) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the logic for deriving operation facts from the current query to `@graphiql/react` and store these facts as properties on the query editor instance
 
@@ -644,7 +644,7 @@
 
 ### Bug Fixes
 
-- dont use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
+- don't use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
 
 ## [1.0.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.2...graphiql@1.0.3) (2020-06-24)
 
@@ -662,7 +662,7 @@
 
 - more server side rendering fixes ([#1581](https://github.com/graphql/graphiql/issues/1581)) ([881a19f](https://github.com/graphql/graphiql/commit/881a19fbd5fbe5f65678de8074e593be7deb2ede)), closes [#1573](https://github.com/graphql/graphiql/issues/1573)
 - network cancellation for 1.0 ([#1582](https://github.com/graphql/graphiql/issues/1582)) ([ad3cc0d](https://github.com/graphql/graphiql/commit/ad3cc0d1567ea49ff5677d4cd8524e5e072b605e))
-- Set headers to localstorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
+- Set headers to localStorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
 
 ## [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
 
@@ -758,7 +758,7 @@
 
 - deprecate support for 15, support react 16 features ([#1107](https://github.com/graphql/graphiql/issues/1107)) ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
 - **graphiql-theming:** Toolbar component ([#1203](https://github.com/graphql/graphiql/issues/1203)) by [@walaura](https://github.com/walaura) ([adb73f5](https://github.com/graphql/graphiql/commit/adb73f5))
-- [new-ui] Tabs & Tabbars ([#1198](https://github.com/graphql/graphiql/issues/1198)) ([033f971](https://github.com/graphql/graphiql/commit/033f971)) by [@walaura](https://github.com/walaura)
+- [new-ui] Tabs & Tab-bars ([#1198](https://github.com/graphql/graphiql/issues/1198)) ([033f971](https://github.com/graphql/graphiql/commit/033f971)) by [@walaura](https://github.com/walaura)
 - replace use of enzyme with react-testing-library ([#1144](https://github.com/graphql/graphiql/issues/1144)) by [@ryan-m-walker](https://github.com/ryan-m-walker) ([de73d6c](https://github.com/graphql/graphiql/commit/de73d6c))
 - storybook+theme-ui for the new design ([#1145](https://github.com/graphql/graphiql/issues/1145)) ([7f97c0c](https://github.com/graphql/graphiql/commit/7f97c0c)) by [@walaura](https://github.com/walaura)
 
@@ -841,7 +841,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.13.2 (2019-06-21)
 

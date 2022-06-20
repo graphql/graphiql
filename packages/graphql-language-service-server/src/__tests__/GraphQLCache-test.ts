@@ -23,7 +23,7 @@ import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { parseDocument } from '../parseDocument';
 import type { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service';
 
-function wihtoutASTNode(definition: any) {
+function withoutASTNode(definition: any) {
   const result = { ...definition };
   delete result.astNode;
   return result;
@@ -110,7 +110,7 @@ describe('GraphQLCache', () => {
       const schema = (await cache.getSchema(
         'testWithCustomDirectives',
       )) as GraphQLSchema;
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+      expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
@@ -124,7 +124,7 @@ describe('GraphQLCache', () => {
 
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = (await cache.getSchema('testWithSchema')) as GraphQLSchema;
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+      expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
@@ -139,7 +139,7 @@ describe('GraphQLCache', () => {
 
   describe('getFragmentDependencies', () => {
     const duckContent = `fragment Duck on Duck {
-      cuack
+      quack
     }`;
     const duckDefinition = parse(duckContent).definitions[0];
 

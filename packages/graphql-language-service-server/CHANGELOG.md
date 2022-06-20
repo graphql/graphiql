@@ -59,7 +59,7 @@
 
 ### Patch Changes
 
-- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plauging users for two years now, sorry!
+- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plaguing users for two years now, sorry!
 
 - Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
   - graphql-language-service@5.0.4
@@ -203,7 +203,7 @@
 
 - [`f82bd7a9`](https://github.com/graphql/graphiql/commit/f82bd7a931eb5fa9a33e59d417303706844c9063) [#2055](https://github.com/graphql/graphiql/pull/2055) Thanks [@acao](https://github.com/acao)! - this fixes the URI scheme related bugs and make sure schema as sdl config works again.
 
-  `fileURLToPath` had been introduced by a contributor and I didnt test properly, it broke sdl file loading!
+  `fileURLToPath` had been introduced by a contributor and I didn't test properly, it broke sdl file loading!
 
   definitions, autocomplete, diagnostics, etc should work again
   also hides the more verbose logging output for now
@@ -236,7 +236,7 @@
 
 ### Patch Changes
 
-- [`7e98c6ff`](https://github.com/graphql/graphiql/commit/7e98c6fff3b1c62954c9c8d902ac64ddbf23fc5d) Thanks [@acao](https://github.com/acao)! - ugprade graphql-language-service-server to use graphql-config 4.1.0!
+- [`7e98c6ff`](https://github.com/graphql/graphiql/commit/7e98c6fff3b1c62954c9c8d902ac64ddbf23fc5d) Thanks [@acao](https://github.com/acao)! - upgrade graphql-language-service-server to use graphql-config 4.1.0!
   adds support for .ts and .toml config files in the language server, amongst many other improvements!
 
 ## 2.7.1
@@ -379,7 +379,7 @@
 
 ### Bug Fixes
 
-- pre-cacheing schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
+- pre-caching schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
 
 ### Features
 
@@ -498,7 +498,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.0.1 (2017-03-29)
 
@@ -506,7 +506,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.0.1 (2017-03-29)
 
@@ -514,7 +514,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.0.1 (2017-03-29)
 

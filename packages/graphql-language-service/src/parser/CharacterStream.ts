@@ -154,10 +154,10 @@ export default class CharacterStream implements CharacterStreamInterface {
     const match = this._sourceText.match(/\s*/);
     let indent = 0;
     if (match && match.length !== 0) {
-      const whitespaces = match[0];
+      const whiteSpaces = match[0];
       let pos = 0;
-      while (whitespaces.length > pos) {
-        if (whitespaces.charCodeAt(pos) === 9) {
+      while (whiteSpaces.length > pos) {
+        if (whiteSpaces.charCodeAt(pos) === 9) {
           indent += 2;
         } else {
           indent++;

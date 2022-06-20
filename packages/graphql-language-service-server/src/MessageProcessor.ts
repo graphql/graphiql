@@ -416,7 +416,7 @@ export class MessageProcessor {
     // For every `textDocument/didChange` event, keep a cache of textDocuments
     // with version information up-to-date, so that the textDocument contents
     // may be used during performing language service features,
-    // e.g. autocompletions.
+    // e.g. auto-completions.
     if (
       !params ||
       !params.textDocument ||
@@ -970,7 +970,7 @@ export class MessageProcessor {
         try {
           this._cacheSchemaFile(uri, project);
         } catch (err) {
-          // this string may be an SDL string even, how do we even evaluate this? haha
+          // this string may be an SDL string even, how do we even evaluate this?
         }
       }
     } catch (err) {}
@@ -1123,7 +1123,7 @@ export class MessageProcessor {
   }
   /**
    * This should only be run on initialize() really.
-   * Cacheing all the document files upfront could be expensive.
+   * Caching all the document files upfront could be expensive.
    * @param config {GraphQLConfig}
    */
   async _cacheAllProjectFiles(config: GraphQLConfig) {

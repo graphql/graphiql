@@ -18,7 +18,7 @@
 
 ### Minor Changes
 
-- [#2457](https://github.com/graphql/graphiql/pull/2457) [`8241f56d`](https://github.com/graphql/graphiql/commit/8241f56d78642223949ae717c584accbbe844d17) Thanks [@B2o5T](https://github.com/B2o5T)! - rename `exteralFragmentDefinitions` to `externalFragmentDefinitions`
+- [#2457](https://github.com/graphql/graphiql/pull/2457) [`8241f56d`](https://github.com/graphql/graphiql/commit/8241f56d78642223949ae717c584accbbe844d17) Thanks [@B2o5T](https://github.com/B2o5T)! - fix typo in `externalFragmentDefinitions`
 
 ## 1.0.17
 
@@ -109,7 +109,7 @@
 
 ### Patch Changes
 
-- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LangugeService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
+- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LanguageService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
 
 - Updated dependencies [[`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8)]:
   - graphql-language-service@4.1.3
@@ -156,7 +156,7 @@
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
     - when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
-  - The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
+  - The exported mode api for configuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
   #### New Features
 
@@ -169,7 +169,7 @@
   - web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
   - the editor now supports multiple graphql models, configurable against multiple schema configurations
 
-  * You can now use `intializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
+  * You can now use `initializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
 
 ### Patch Changes
 
@@ -181,7 +181,7 @@
 
 ### Patch Changes
 
-- [`989fca69`](https://github.com/graphql/graphiql/commit/989fca693385aa408bcfe18cde34934a5aea5dce) [#2070](https://github.com/graphql/graphiql/pull/2070) Thanks [@acao](https://github.com/acao)! - Fix a bug with variable completion with duplicate `$` across the ecosytem. Introduce more `triggerCharacters` across monaco and the LSP server for autocompletion in far more cases
+- [`989fca69`](https://github.com/graphql/graphiql/commit/989fca693385aa408bcfe18cde34934a5aea5dce) [#2070](https://github.com/graphql/graphiql/pull/2070) Thanks [@acao](https://github.com/acao)! - Fix a bug with variable completion with duplicate `$` across the ecosystem. Introduce more `triggerCharacters` across monaco and the LSP server for autocompletion in far more cases
 
 - Updated dependencies [[`df57cd25`](https://github.com/graphql/graphiql/commit/df57cd2556302d6aa5dd140e7bee3f7bdab4deb1)]:
   - graphql-language-service@3.2.5
@@ -248,7 +248,7 @@
 
 ### Minor Changes
 
-- [`fec37c6b`](https://github.com/graphql/graphiql/commit/fec37c6b2953e177bea99d4cbf993c9b253198ba) [#1952](https://github.com/graphql/graphiql/pull/1952) Thanks [@Nishchit14](https://github.com/Nishchit14)! - devDependancy and peerDependancy of monaco-graphql has been upgraded for monaco-editor. monaco-graphql is now supporting latest version of monaco-editor which is v0.27.0
+- [`fec37c6b`](https://github.com/graphql/graphiql/commit/fec37c6b2953e177bea99d4cbf993c9b253198ba) [#1952](https://github.com/graphql/graphiql/pull/1952) Thanks [@Nishchit14](https://github.com/Nishchit14)! - devDependency and peerDependency of monaco-graphql has been upgraded for monaco-editor. monaco-graphql is now supporting latest version of monaco-editor which is v0.27.0
 
 ### Patch Changes
 

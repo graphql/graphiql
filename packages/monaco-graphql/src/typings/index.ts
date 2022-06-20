@@ -33,7 +33,7 @@ export type BaseSchemaConfig = {
 export type SchemaConfig = {
   /**
    * A unique uri string for this schema.
-   * Model data will evenetually be set for this URI for definition lookup
+   * Model data will eventually be set for this URI for definition lookup
    */
   uri: string;
   /**
@@ -189,7 +189,7 @@ export type DiagnosticSettings = {
    * @example
    * ```ts
    * validateVariablesJSON: {
-   *   "monaco://myoperation.graphql": ["monaco://myvariables.json"]
+   *   "monaco://my-operation.graphql": ["monaco://my-variables.json"]
    *  }
    * ```
    */

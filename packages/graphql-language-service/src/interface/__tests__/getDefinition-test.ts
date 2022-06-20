@@ -97,7 +97,7 @@ describe('getDefinition', () => {
       }`;
       const fragment = `# Fragment goes here
       fragment Duck on Duck {
-        cuack
+        quack
       }`;
       // @ts-ignore
       const fragmentSpread = parse(query).definitions[0].selectionSet

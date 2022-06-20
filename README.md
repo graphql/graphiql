@@ -124,7 +124,7 @@ By default, all typescript packages target `es6`.
 
 `graphql-language-service-server` and `graphql-language-service-cli` are made for the node runtime, so they target `es2017`
 
-`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserlistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `rengenerator-runtime` or special babel configuration.
+`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserslistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `regenerator-runtime` or special babel configuration.
 
 ### [`.browserslistrc`](./.browserslistrc):
 
@@ -162,7 +162,7 @@ You can find [detailed information here](https://github.com/graphql/graphql-wg/t
 
 ## Maintainers
 
-Maintainers of this repository regulary review PRs and issues and help advance the GraphiQL roadmap
+Maintainers of this repository regularly review PRs and issues and help advance the GraphiQL roadmap
 
 ### Alumni
 
@@ -185,7 +185,7 @@ Originally this was three separate repositories
 
 ### Fielding Proposals!
 
-The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scaleable, interoperable and extensible.
+The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scalable, interoperable and extensible.
 Feel free to open a PR to create a document in the `/proposals/` directory.
 Eventually we hope to move these to a repo that serves this purpose.
 

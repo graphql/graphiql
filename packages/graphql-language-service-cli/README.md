@@ -93,7 +93,7 @@ The node executable contains several commands: `server` and the command-line lan
 ```
 Usage: graphql-lsp <command> <file>
 
-[-h | --help][-c | --configdir] {configDir}
+[-h | --help][-c | --configDir] {configDir}
 [-t | --text] {textBuffer}
 [-f | --file] {filePath}
 [-s | --schema] {schemaPath}

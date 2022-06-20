@@ -15,10 +15,12 @@
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix",
       "prettier --write",
-      "jest --passWithNoTests"
+      "jest --passWithNoTests",
+      "yarn cspell --gitignore"
     ],
     "*.{md,html,json,css}": [
-      "prettier --write"
+      "prettier --write",
+      "yarn cspell --gitignore"
     ]
   },
   "husky": {
@@ -52,8 +54,9 @@
     "format": "yarn eslint --fix && yarn pretty",
     "jest": "jest",
     "license-check": "jsgl --local ./",
-    "lint": "yarn eslint && yarn lint-check && yarn pretty-check",
+    "lint": "yarn eslint && yarn lint-check && yarn pretty-check && yarn lint-cspell",
     "lint-check": "eslint-config-prettier .eslintrc.js",
+    "lint-cspell": "cspell --gitignore '**/*.{js,ts,jsx,tsx,md,html,json,css}'",
     "lint-fix": "yarn eslint --fix",
     "postbuild": "yarn workspace codemirror-graphql run postbuild",
     "prebuild-bundles": "yarn build-bundles-clean",
@@ -111,6 +114,7 @@
     "copy": "^0.3.2",
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "cspell": "^5.15.2",
     "cypress": "^4.7.0",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
