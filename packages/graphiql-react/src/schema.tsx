@@ -29,7 +29,7 @@ import { createContextHook, createNullableContext } from './utility/context';
 
 /**
  * There's a semantic difference between `null` and `undefined`:
- * - When `null` is passed explicitly as prop, GraphiQL will run schemaless
+ * - When `null` is passed explicitly as prop, GraphiQL will run schema-less
  *   (i.e. it will never attempt to fetch the schema, even when calling the
  *   `useFetchSchema` hook).
  * - When `schema` is `undefined` GraphiQL will attempt to fetch the schema

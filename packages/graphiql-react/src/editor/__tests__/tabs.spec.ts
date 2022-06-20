@@ -13,14 +13,14 @@ describe('fuzzyExtractionOperationTitle', () => {
       );
     });
     it('should extract query names with numbers', () => {
-      expect(fuzzyExtractOperationName('query My_3xampleQuery() {}')).toEqual(
-        'My_3xampleQuery',
+      expect(fuzzyExtractOperationName('query My_3ExampleQuery() {}')).toEqual(
+        'My_3ExampleQuery',
       );
     });
     it('should extract mutation names with numbers', () => {
       expect(
-        fuzzyExtractOperationName('mutation My_3xampleQuery() {}'),
-      ).toEqual('My_3xampleQuery');
+        fuzzyExtractOperationName('mutation My_3ExampleQuery() {}'),
+      ).toEqual('My_3ExampleQuery');
     });
   });
   describe('with space prefix', () => {
@@ -35,14 +35,14 @@ describe('fuzzyExtractionOperationTitle', () => {
       );
     });
     it('should extract query names with numbers', () => {
-      expect(fuzzyExtractOperationName(' query My_3xampleQuery() {}')).toEqual(
-        'My_3xampleQuery',
+      expect(fuzzyExtractOperationName(' query My_3ExampleQuery() {}')).toEqual(
+        'My_3ExampleQuery',
       );
     });
     it('should extract mutation names with numbers', () => {
       expect(
-        fuzzyExtractOperationName(' mutation My_3xampleQuery() {}'),
-      ).toEqual('My_3xampleQuery');
+        fuzzyExtractOperationName(' mutation My_3ExampleQuery() {}'),
+      ).toEqual('My_3ExampleQuery');
     });
   });
 
@@ -51,7 +51,7 @@ describe('fuzzyExtractionOperationTitle', () => {
   });
   it('should not extract query names with comments', () => {
     expect(
-      fuzzyExtractOperationName('# query My_3xampleQuery() {}'),
+      fuzzyExtractOperationName('# query My_3ExampleQuery() {}'),
     ).toBeNull();
   });
 });

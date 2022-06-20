@@ -172,6 +172,27 @@ MARKDOWNIT
 inno
 devx
 unparsable
+codegen
+proto
+prototype
+tabpanel
+labelledby
+tablist
+nvim
+intellij
+openvsx
+outdir
+
+// config files
+cosmicconfig
+graphqlconfig
+acmerc
+envrc
+
+// font names
+roboto
+fira
+SFNS
 
 // packages/graphql-language-service-parser/benchmark/fixtures/github.graphql
 Labelable
@@ -201,6 +222,15 @@ vsode
 inhouse
 configdir
 
+// packages/vscode-graphql/grammars
+singleline
+nulltype
+selectionset
+nrtbf
+listvalues
+objectvalues
+resi
+
 // It's a typo character, but I haven't fixed it because fixing it will break the test.
 qeury
 qauery
@@ -209,6 +239,9 @@ qauery
 matchbrackets
 closebrackets
 languges
+
+// packages
+ovsx
 
 // person name
 gracenoah
@@ -273,6 +306,21 @@ cshaver
 Suchanek
 danielleletarte
 francisu
+jonathanawesome
+thomasheyenbrock
+Heyenbrock
+sergeichestakov
+chentsulin
+benjdlambert
+Alireza
+Haghshenas
+hatappi
+stonexer
+retrodaredevil
+elken
+waterfoul
+Aumy
+markusjwetzel
 
 // organization
 Medellín
@@ -282,5 +330,3 @@ Maint
 Colmena
 Novvum
 Zerno
-
-

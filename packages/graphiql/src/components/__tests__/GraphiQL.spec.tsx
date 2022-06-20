@@ -490,7 +490,7 @@ describe('GraphiQL', () => {
 
   it('readjusts the query wrapper flex style field when the result panel is resized', async () => {
     // Mock the drag bar width
-    const clientWitdhSpy = jest
+    const clientWidthSpy = jest
       .spyOn(Element.prototype, 'clientWidth', 'get')
       .mockReturnValue(0);
     // Mock the container width
@@ -520,7 +520,7 @@ describe('GraphiQL', () => {
     // 700 / (900 - 700) = 3.5
     expect(queryWrap.parentElement.style.flex).toEqual('3.5');
 
-    clientWitdhSpy.mockRestore();
+    clientWidthSpy.mockRestore();
     boundingClientRectSpy.mockRestore();
   });
 

@@ -11,7 +11,7 @@
 
 ### Minor Changes
 
-- [#2457](https://github.com/graphql/graphiql/pull/2457) [`8241f56d`](https://github.com/graphql/graphiql/commit/8241f56d78642223949ae717c584accbbe844d17) Thanks [@B2o5T](https://github.com/B2o5T)! - rename `exteralFragmentDefinitions` to `externalFragmentDefinitions`
+- [#2457](https://github.com/graphql/graphiql/pull/2457) [`8241f56d`](https://github.com/graphql/graphiql/commit/8241f56d78642223949ae717c584accbbe844d17) Thanks [@B2o5T](https://github.com/B2o5T)! - fix typo in `externalFragmentDefinitions`
 
 ## 1.0.17
 

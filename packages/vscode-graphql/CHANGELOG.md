@@ -90,7 +90,7 @@
 
 ### Minor Changes
 
-- [#2276](https://github.com/graphql/graphiql/pull/2276) [`6973a20b`](https://github.com/graphql/graphiql/commit/6973a20bcd12a599acca7c5d6671ac49def2768c) Thanks [@acao](https://github.com/acao)! - Simplified, merged with monorepo, dropped operation execution feature, we will reccomend an alternative instead.
+- [#2276](https://github.com/graphql/graphiql/pull/2276) [`6973a20b`](https://github.com/graphql/graphiql/commit/6973a20bcd12a599acca7c5d6671ac49def2768c) Thanks [@acao](https://github.com/acao)! - Simplified, merged with monorepo, dropped operation execution feature, we will recommend an alternative instead.
 
 ### Patch Changes
 
@@ -107,7 +107,7 @@
 
 ### Patch Changes
 
-- [#448](https://github.com/graphql/vscode-graphql/pull/448) [`f894dad`](https://github.com/graphql/vscode-graphql/commit/f894daddfe7382f7eb8e9c921c54904255a3557c) Thanks [@acao](https://github.com/acao)! - ugprade graphql-language-service-server to the latest patch version for windows path fix
+- [#448](https://github.com/graphql/vscode-graphql/pull/448) [`f894dad`](https://github.com/graphql/vscode-graphql/commit/f894daddfe7382f7eb8e9c921c54904255a3557c) Thanks [@acao](https://github.com/acao)! - upgrade graphql-language-service-server to the latest patch version for windows path fix
 
 * [#436](https://github.com/graphql/vscode-graphql/pull/436) [`2370607`](https://github.com/graphql/vscode-graphql/commit/23706071c6338c05e951783a3e7dfd5000da6d02) Thanks [@orta](https://github.com/orta)! - Adds support for making clicking on the graphql status item show the output channel
 
@@ -165,7 +165,7 @@ Remove `node_modules` from bundle after adding `esbuild` to make the extension b
 
 # 0.3.24
 
-Add highlighting and langauge support for `.mjs`, `.cjs`, `.es6`, `.esm` and other similar extensions
+Add highlighting and language support for `.mjs`, `.cjs`, `.es6`, `.esm` and other similar extensions
 
 # 0.3.23
 
@@ -200,7 +200,7 @@ LSP bugfixes:
 
 - require `dotenv` in the server runtime (for loading graphql config values), and allow a `graphql-config.dotEnvPath` configuration to specify specific paths
 - reload server on workspace configuration changes
-- reload severside `graphql-config` and language service on config file changes. definitions cache/etc will be rebuilt
+- reload sever-side `graphql-config` and language service on config file changes. definitions cache/etc will be rebuilt
   - note: client not configured to reload on graphql config changes yet (i.e endpoints)
 - accept all `graphql-config.loadConfig()` options
 
@@ -227,7 +227,7 @@ LSP bugfixes:
 
 # 0.3.2
 
-- #213: bugfix for input validation on operation exection
+- #213: bugfix for input validation on operation execution
 
 # 0.3.1 🎉
 
