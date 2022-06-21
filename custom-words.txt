@@ -139,23 +139,29 @@ eslintignore
 filesfor
 flowtests
 foldgutter
+foldmarker
 ghapi
 graphqlconfig
 graphqlrc
 graphqls
+invalidchar
 languageservice
+linenumber
 linenumbers
 linkify
 listvalues
+matchingbracket
 modulemap
 myschema
 newhope
 nocheck
 nocursor
+nonmatchingbracket
 nrtbf
 nulltype
 nvim
 objectvalues
+orche
 outdir
 outlineable
 postbuild
@@ -180,7 +186,9 @@ websockets
 
 
 // fonts
+fira
 menlo
+roboto
 
 // locations
 givatayim
