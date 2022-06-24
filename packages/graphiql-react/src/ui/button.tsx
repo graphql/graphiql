@@ -1,10 +1,10 @@
 import './button.css';
 
-export function UnstyledButton(props: JSX.IntrinsicElements['button']) {
+export function UnStyledButton(props: JSX.IntrinsicElements['button']) {
   return (
     <button
       {...props}
-      className={`graphiql-unstyled ${props.className || ''}`.trim()}
+      className={`graphiql-un-styled ${props.className || ''}`.trim()}
     />
   );
 }

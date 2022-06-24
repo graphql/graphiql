@@ -2,4 +2,4 @@
 '@graphiql/react': minor
 ---
 
-Add `UnstyledButton` UI component
+Add `UnStyledButton` UI component

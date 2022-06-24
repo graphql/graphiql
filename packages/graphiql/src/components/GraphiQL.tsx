@@ -33,7 +33,7 @@ import {
   ResponseEditor,
   SchemaContextProvider,
   StorageContextProvider,
-  UnstyledButton,
+  UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
   useDragResize,
@@ -777,7 +777,7 @@ class GraphiQLWithContext extends React.Component<
                   <div ref={this.props.editorToolsResize.dragBarRef}>
                     <div className="graphiql-editor-tools">
                       <div className="graphiql-editor-tools-tabs">
-                        <UnstyledButton
+                        <UnStyledButton
                           className={`graphiql-editor-tools-tab-button ${
                             this.state.activeSecondaryEditor === 'variable'
                               ? ' active'
@@ -802,9 +802,9 @@ class GraphiQLWithContext extends React.Component<
                             );
                           }}>
                           Variables
-                        </UnstyledButton>
+                        </UnStyledButton>
                         {this.props.headerEditorEnabled ? (
-                          <UnstyledButton
+                          <UnStyledButton
                             className={
                               this.state.activeSecondaryEditor === 'header'
                                 ? ' active'
@@ -829,10 +829,10 @@ class GraphiQLWithContext extends React.Component<
                               );
                             }}>
                             Headers
-                          </UnstyledButton>
+                          </UnStyledButton>
                         ) : null}
                       </div>
-                      <UnstyledButton
+                      <UnStyledButton
                         onClick={() => {
                           if (
                             this.props.editorToolsResize.hiddenElement ===
@@ -851,7 +851,7 @@ class GraphiQLWithContext extends React.Component<
                         ) : (
                           <ChevronDownIcon className="graphiql-chevron-icon" />
                         )}
-                      </UnstyledButton>
+                      </UnStyledButton>
                     </div>
                   </div>
                   <div ref={this.props.editorToolsResize.secondRef}>
