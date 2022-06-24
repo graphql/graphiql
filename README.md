@@ -166,22 +166,33 @@ Maintainers of this repository regularly review PRs and issues and help advance 
 
 ### Alumni
 
-Originally this was three separate repositories
+Without these amazing past maintainers, where would we be?!
 
 - [@leebyron](https://github.com/leebyron) - original author of all libraries
 - [@asiandrummer](https://github.com/asiandrummer) - original creator of GraphiQL
 - [@wincent](https://github.com/wincent) - early co-author and maintainer
 - [@lostplan](https://github.com/lostplan) - maintained the language service ecosystem until about 2017
 - [@IvanGoncharov](https://github.com/ivangoncharov) - maintainer and transitional mentor to @acao and others
+- [@orta](https://github.com/orta) - has helped with so many parts of the project over the years, and provided the original redesign!
+- [@divyenduz](https://github.com/divyenduz) - the original creator of `vscode-graphql`, and contributor to much of the ecosystem. Thanks Divy!
 
 ### Active
 
+Maintainers who are active (to varying degrees):
+
 - [@imolorhe](https://github.com/imolorhe)
 - [@yoshiakis](https://github.com/yoshiakis)
-- [@dotansimha](https://github.com/dotansimha)
 - [@urigo](https://github.com/urigo)
 - [@timsuchanek](https://github.com/timsuchanek)
+- [@thomasheyenbrock](https://github.com/thomasheyenbrock)
+- [@n1ru4l](https://github.com/n1ru4l)
 - [@acao](https://github.com/acao)
+- [@stonexer](https://github.com/stonexer)
+- [@B2o5T](https://github.com/B2o5T)
+- [@dotansimha](https://github.com/dotansimha)
+- [@saihaj](https://github.com/saihaj)
+
+> Thank you graphql community for all the help & support! - @acao
 
 ### Fielding Proposals!
 

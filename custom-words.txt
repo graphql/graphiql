@@ -91,6 +91,7 @@ willstott
 wincent
 yoshiakis
 zouxuoz
+Divy
 
 // packages and tools
 argparse
