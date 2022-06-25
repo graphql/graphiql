@@ -141,7 +141,8 @@ export class MessageProcessor {
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     this._tmpUriBase = URI.file(this._tmpDirBase).toString();
-    this._loadConfigOptions = loadConfigOptions;
+    // use legacy mode by default for backwards compatibility
+    this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
     if (
       loadConfigOptions.extensions &&
       loadConfigOptions.extensions?.length > 0
