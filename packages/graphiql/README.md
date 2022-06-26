@@ -187,7 +187,7 @@ GraphiQL supports customization in UI and behavior by accepting React props and 
 
 `fetcher` is the only required prop for `<GraphiQL />`.
 
-For props documentation, see the [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops)
+For props documentation, see the [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops-1)
 
 ### Children (this pattern will be dropped in 2.0.0)
 
