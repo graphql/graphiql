@@ -1210,7 +1210,7 @@ function processDiagnosticsMessage(
   const lastLineLength = queryLines[totalLines - 1].length;
   const lastCharacterPosition = new Position(totalLines, lastLineLength);
   const processedResults = results.filter(diagnostic =>
-    // @ts-ignore
+    // @ts-expect-error
     diagnostic.range.end.lessThanOrEqualTo(lastCharacterPosition),
   );
 

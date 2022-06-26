@@ -33,7 +33,7 @@ jest.mock('fs', () => ({
 describe('MessageProcessor', () => {
   const logger = new Logger(tmpdir());
   const messageProcessor = new MessageProcessor({
-    // @ts-ignore
+    // @ts-expect-error
     connection: {},
     logger,
     fileExtensions: ['js'],
@@ -55,15 +55,16 @@ describe('MessageProcessor', () => {
     messageProcessor._settings = { load: {} };
     messageProcessor._graphQLCache = new GraphQLCache({
       configDir: __dirname,
+      // @ts-expect-error
       config: gqlConfig,
       parser: parseDocument,
     });
     messageProcessor._languageService = {
-      // @ts-ignore
+      // @ts-expect-error
       getAutocompleteSuggestions: (query, position, uri) => {
         return [{ label: `${query} at ${uri}` }];
       },
-      // @ts-ignore
+      // @ts-expect-error
       getDiagnostics: (_query, _uri) => {
         return [];
       },
@@ -114,9 +115,9 @@ describe('MessageProcessor', () => {
   });
 
   let getConfigurationReturnValue = {};
-  // @ts-ignore
+  // @ts-expect-error
   messageProcessor._connection = {
-    // @ts-ignore
+    // @ts-expect-error
     get workspace() {
       return {
         getConfiguration: async () => {
@@ -138,7 +139,7 @@ describe('MessageProcessor', () => {
 
   it('initializes properly and opens a file', async () => {
     const { capabilities } = await messageProcessor.handleInitializeRequest(
-      // @ts-ignore
+      // @ts-expect-error
       {
         rootPath: __dirname,
       },
@@ -147,6 +148,7 @@ describe('MessageProcessor', () => {
     );
     expect(capabilities.definitionProvider).toEqual(true);
     expect(capabilities.workspaceSymbolProvider).toEqual(true);
+    // @ts-expect-error
     expect(capabilities.completionProvider.resolveProvider).toEqual(true);
     expect(capabilities.textDocumentSync).toEqual(1);
   });
@@ -240,7 +242,7 @@ describe('MessageProcessor', () => {
 
     const result = await messageProcessor.handleDidChangeNotification({
       textDocument: {
-        // @ts-ignore
+        // @ts-expect-error
         text: textDocumentTestString,
         uri,
         version: 1,
@@ -251,13 +253,17 @@ describe('MessageProcessor', () => {
       ],
     });
     // Query fixed, no more errors
+    // @ts-expect-error
     expect(result.diagnostics.length).toEqual(0);
   });
 
   it('does not crash on null value returned in response to workspace configuration', async () => {
     const previousConfigurationValue = getConfigurationReturnValue;
+    // @ts-expect-error
+
     getConfigurationReturnValue = null;
     await expect(
+      // @ts-expect-error
       messageProcessor.handleDidChangeConfiguration(),
     ).resolves.toStrictEqual({});
     getConfigurationReturnValue = previousConfigurationValue;

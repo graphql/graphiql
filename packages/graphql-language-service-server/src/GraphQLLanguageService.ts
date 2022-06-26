@@ -359,14 +359,14 @@ export class GraphQLLanguageService {
       }
 
       output.push({
-        // @ts-ignore
+        // @ts-expect-error
         name: tree.representativeName,
         kind: getKind(tree),
         location: {
           uri: filePath,
           range: {
             start: tree.startPosition,
-            // @ts-ignore
+            // @ts-expect-error
             end: tree.endPosition,
           },
         },

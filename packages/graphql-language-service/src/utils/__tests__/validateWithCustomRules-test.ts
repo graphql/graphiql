@@ -32,7 +32,7 @@ describe('validateWithCustomRules', () => {
     const customRules = [
       (context: ValidationContext) => ({
         Argument(node: ArgumentNode) {
-          // @ts-ignore
+          // @ts-expect-error
           if (!/^\d+$/.test(node.value.value)) {
             context.reportError(
               new GraphQLError(

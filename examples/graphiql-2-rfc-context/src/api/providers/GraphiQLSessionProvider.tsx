@@ -50,7 +50,7 @@ export const initialState: SessionState = {
   operationLoading: true,
   operationErrors: null,
   operations: [],
-  // @ts-ignore
+  // @ts-expect-error
   editors: {},
 };
 

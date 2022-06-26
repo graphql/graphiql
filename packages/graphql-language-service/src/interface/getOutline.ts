@@ -95,7 +95,7 @@ export function getOutline(documentText: string): Outline | null {
   const outlineTrees = (visit(ast, {
     leave(node) {
       if (visitorFns !== undefined && node.kind in visitorFns) {
-        // @ts-ignore
+        // @ts-expect-error
         return visitorFns[node.kind](node);
       }
       return null;

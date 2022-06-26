@@ -2,12 +2,11 @@ import * as monaco from 'monaco-editor';
 
 // NOTE: using loader syntax because Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
-// @ts-ignore
 import GraphQLWorker from 'monaco-graphql/esm/graphql.worker';
 
 const GRAPHQL_LANGUAGE_ID = 'graphql';
 
-// @ts-ignore
+// @ts-expect-error
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === GRAPHQL_LANGUAGE_ID) {

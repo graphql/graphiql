@@ -430,7 +430,7 @@ class GraphiQLInternals extends React.Component<
       this.props.getDefaultFieldNames,
     );
     if (insertions && insertions.length > 0) {
-      // @ts-ignore
+      // @ts-expect-error
       const editor = this.getQueryEditor();
       if (editor) {
         editor.operation(() => {

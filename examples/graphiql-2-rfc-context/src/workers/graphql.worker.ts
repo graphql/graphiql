@@ -7,7 +7,7 @@
 
 import type { worker as WorkerNamespace } from 'monaco-editor';
 
-// @ts-ignore
+// @ts-expect-error
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import type { ICreateData } from 'monaco-graphql/esm/typings';

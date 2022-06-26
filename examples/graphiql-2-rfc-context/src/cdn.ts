@@ -8,6 +8,6 @@ import { GraphiQL } from './components/GraphiQL';
 export default GraphiQL;
 
 if (typeof window !== 'undefined') {
-  // @ts-ignore
+  // @ts-expect-error
   window.GraphiQL = GraphiQL;
 }

@@ -25,7 +25,7 @@ describe('getDefinition', () => {
       }
       `;
       const parsedQuery = parse(query);
-      // @ts-ignore
+      // @ts-expect-error
       const namedTypeDefinition = parsedQuery.definitions[0].fields[0].type;
 
       const result = await getDefinitionQueryResultForNamedType(
@@ -36,7 +36,7 @@ describe('getDefinition', () => {
 
         [
           {
-            // @ts-ignore
+            // @ts-expect-error
             file: 'someFile',
             content: query,
             definition: {
@@ -64,7 +64,7 @@ describe('getDefinition', () => {
       scalar Json
       `;
       const parsedQuery = parse(query);
-      // @ts-ignore
+      // @ts-expect-error
       const namedTypeDefinition = parsedQuery.definitions[0].fields[0].type;
 
       const result = await getDefinitionQueryResultForNamedType(
@@ -75,7 +75,7 @@ describe('getDefinition', () => {
 
         [
           {
-            // @ts-ignore
+            // @ts-expect-error
             file: 'someFile',
             content: query,
             definition: {
@@ -99,7 +99,7 @@ describe('getDefinition', () => {
       fragment Duck on Duck {
         quack
       }`;
-      // @ts-ignore
+      // @ts-expect-error
       const fragmentSpread = parse(query).definitions[0].selectionSet
         .selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
@@ -110,7 +110,7 @@ describe('getDefinition', () => {
           {
             file: 'someFile',
             content: fragment,
-            // @ts-ignore
+            // @ts-expect-error
             definition: fragmentDefinition,
           },
         ],

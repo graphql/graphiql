@@ -52,10 +52,9 @@ export class DiagnosticsAdapter {
         defaults.diagnosticSettings?.validateVariablesJSON &&
         defaults.diagnosticSettings.validateVariablesJSON[modelUri];
 
-      let handle: number;
+      let handle: NodeJS.Timeout;
       this._listener[modelUri] = model.onDidChangeContent(() => {
         clearTimeout(handle);
-        // @ts-ignore
         handle = setTimeout(() => {
           this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);

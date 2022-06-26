@@ -126,14 +126,13 @@ export function SchemaProvider({
   const loadCurrentSchema = useCallback(async () => {
     dispatch(schemaRequestedAction());
     try {
+      // @ts-expect-error
       const { api: GraphQLAPI } = await import(
         'monaco-graphql/esm/monaco.contribution'
       );
 
-      // @ts-ignore
       const schema: GraphQLSchema = await GraphQLAPI.getSchema();
       console.log('schema fetched');
-      // @ts-ignore
       dispatch(schemaSucceededAction(defaultSchemaBuilder(schema)));
     } catch (error) {
       console.error(error);
@@ -146,7 +145,7 @@ export function SchemaProvider({
       const {
         api: GraphQLAPI,
       } = require('monaco-graphql/esm/monaco.contribution');
-      // @ts-ignore
+      // @ts-expect-error
       GraphQLAPI.setSchemaConfig(state.config);
     }
     setTimeout(() => {

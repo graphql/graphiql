@@ -163,7 +163,7 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 28 } as Position,
       './queries/definitionQuery.graphql',
     );
-    // @ts-ignore
+    // @ts-expect-error
     expect(definitionQueryResult.definitions.length).toEqual(1);
   });
 
@@ -173,7 +173,7 @@ describe('GraphQLLanguageService', () => {
       { line: 0, character: 21 } as Position,
       './queries/definitionQuery.graphql',
     );
-    // @ts-ignore
+    // @ts-expect-error
     expect(definitionQueryResult.definitions.length).toEqual(1);
   });
 

@@ -73,7 +73,7 @@ function renderType(into: string[], t: GraphQLInputType | GraphQLInputField) {
     text(into, '!');
   } else if (isListType(t)) {
     text(into, '[');
-    // @ts-ignore
+    // @ts-expect-error
     renderType(into, t.ofType);
     text(into, ']');
   } else {

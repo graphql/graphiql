@@ -167,11 +167,12 @@ module.exports = {
     'no-restricted-globals': 0,
     'no-shadow-restricted-names': 1,
     'no-shadow': 1,
-    'no-undef-init': 0,
-    'no-undef': 1,
+    // these rules are disabled because the typescript compiler
+    // won't even build with undefined variables
+    'no-undef': 0,
     'no-undefined': 0,
-
     'no-unused-vars': 'off',
+    // this allows us to ignore unused function parameters if they are prefixed with _
     '@typescript-eslint/no-unused-vars': [
       'error',
       { argsIgnorePattern: '^_', ignoreRestSiblings: true },

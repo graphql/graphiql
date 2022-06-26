@@ -384,7 +384,7 @@ you'll want to create your own `my-graphql.worker.ts` file, and add your custom 
 
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
-// @ts-ignore
+// @ts-expect-error
 import * as worker from 'monaco-editor/esm/vs/editor/editor.worker';
 
 import { GraphQLWorker } from 'monaco-graphql/esm/GraphQLWorker';

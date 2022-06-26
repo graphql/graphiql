@@ -339,7 +339,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     if (typeof documents === 'string') {
       pattern = documents;
     } else if (documents.length === 1) {
-      // @ts-ignore
+      // @ts-expect-error
       pattern = documents[0];
     } else {
       pattern = `{${documents.join(',')}}`;

@@ -156,7 +156,7 @@ function annotations(
         'GraphQL validation error requires locations.',
       );
 
-      // @ts-ignore
+      // @ts-expect-error
       // https://github.com/microsoft/TypeScript/pull/32695
       const loc = error.locations[0];
       const highlightLoc = getLocation(highlightNode);
@@ -199,10 +199,10 @@ export function getRange(location: SourceLocation, queryText: string): IRange {
 
   invariant(stream, 'Expected Parser stream to be available.');
   const line = location.line - 1;
-  // @ts-ignore
+  // @ts-expect-error
   // https://github.com/microsoft/TypeScript/pull/32695
   const start = stream.getStartOfToken();
-  // @ts-ignore
+  // @ts-expect-error
   // https://github.com/microsoft/TypeScript/pull/32695
   const end = stream.getCurrentPosition();
   return new Range(new Position(line, start), new Position(line, end));
@@ -219,7 +219,7 @@ function getLocation(node: any): Location {
   const typeCastedNode = node as ASTNode;
   const location = typeCastedNode.loc;
   invariant(location, 'Expected ASTNode to have a location.');
-  // @ts-ignore
+  // @ts-expect-error
   // https://github.com/microsoft/TypeScript/pull/32695
   return location;
 }

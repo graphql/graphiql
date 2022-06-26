@@ -39,7 +39,7 @@ export function formatError(error: GenericError): string {
       errors: error.map((e: InputError) => handleSingleError(e)),
     });
   }
-  // @ts-ignore
+  // @ts-expect-error
   return stringify({ errors: handleSingleError(error) });
 }
 

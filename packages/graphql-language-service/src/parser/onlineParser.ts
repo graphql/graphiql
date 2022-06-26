@@ -219,7 +219,7 @@ function getToken(
 function assign(to: Object, from: Object): Object {
   const keys = Object.keys(from);
   for (let i = 0; i < keys.length; i++) {
-    // @ts-ignore
+    // @ts-expect-error
     // TODO: ParseRules as numerical index
     to[keys[i]] = from[keys[i]];
   }
@@ -270,7 +270,7 @@ function advanceRule(state: State, successful: boolean): undefined {
   // If this is advancing successfully and the current state is a list, give
   // it an opportunity to repeat itself.
   if (isList(state) && state.rule) {
-    // @ts-ignore
+    // @ts-expect-error
     // TODO: ParseRules as numerical index
     const step = state.rule[state.step];
     if (step.separator) {
@@ -302,7 +302,7 @@ function advanceRule(state: State, successful: boolean): undefined {
     if (state.rule) {
       // Do not advance a List step so it has the opportunity to repeat itself.
       if (isList(state)) {
-        // @ts-ignore
+        // @ts-expect-error
         // TODO: ParseRules as numerical index
         if (state.rule?.[state.step].separator) {
           state.needsSeparator = !state.needsSeparator;
@@ -331,7 +331,7 @@ function unsuccessful(state: State): void {
   while (
     state.rule &&
     // TODO: not sure how to fix this in a performant way
-    // @ts-ignore
+    // @ts-expect-error
     !(Array.isArray(state.rule) && state.rule[state.step].ofRule)
   ) {
     popRule(state);
@@ -351,7 +351,7 @@ function lex(
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);
   for (let i = 0; i < kinds.length; i++) {
-    // @ts-ignore
+    // @ts-expect-error
     // TODO: ParseRules as numerical index
     const match = stream.match(lexRules[kinds[i]]);
     if (match && match instanceof Array) {

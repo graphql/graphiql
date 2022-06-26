@@ -146,7 +146,7 @@ export const createLegacyWebsocketsFetcher = (legacyWsClient: {
 }) => (graphQLParams: FetcherParams) => {
   const observable = legacyWsClient.request(graphQLParams);
   return makeAsyncIterableIteratorFromSink<ExecutionResult>(
-    // @ts-ignore
+    // @ts-expect-error
     sink => observable.subscribe(sink).unsubscribe,
   );
 };

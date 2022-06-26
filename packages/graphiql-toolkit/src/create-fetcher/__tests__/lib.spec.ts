@@ -48,18 +48,22 @@ describe('createWebsocketsFetcherFromUrl', () => {
   });
 
   it('creates a websockets client using provided url', () => {
+    // @ts-expect-error
+
     createClient.mockReturnValue(true);
     createWebsocketsFetcherFromUrl('wss://example.com');
-    // @ts-ignore
+    // @ts-expect-error
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
 
   it('creates a websockets client using provided url that fails', async () => {
+    // @ts-expect-error
+
     createClient.mockReturnValue(false);
     expect(
       await createWebsocketsFetcherFromUrl('wss://example.com'),
     ).toThrowError();
-    // @ts-ignore
+    // @ts-expect-error
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
 });
@@ -72,20 +76,20 @@ describe('getWsFetcher', () => {
     createClient.mockReturnValue(true);
     getWsFetcher({
       url: '',
-      // @ts-ignore
+      // @ts-expect-error
       wsClient: true,
     });
-    // @ts-ignore
+    // @ts-expect-error
     expect(createClient.mock.calls).toHaveLength(0);
   });
   it('creates a subscriptions-transports-ws observable when custom legacyClient option is provided', () => {
     createClient.mockReturnValue(true);
     getWsFetcher({
       url: '',
-      // @ts-ignore
+      // @ts-expect-error
       legacyClient: true,
     });
-    // @ts-ignore
+    // @ts-expect-error
     expect(createClient.mock.calls).toHaveLength(0);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });

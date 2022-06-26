@@ -27,7 +27,7 @@ describe('getASTNodeAtPosition', () => {
     const node = getASTNodeAtPosition(doc, ast, point);
     expect(node).not.toBeUndefined();
     if (node != null) {
-      // @ts-ignore
+      // @ts-expect-error
       expect(node.name.value).toEqual('field');
     }
   });
@@ -46,7 +46,7 @@ describe('getASTNodeAtPosition', () => {
     const node = getASTNodeAtPosition(doc, ast, point);
     expect(node).not.toBeUndefined();
     if (node != null) {
-      // @ts-ignore
+      // @ts-expect-error
       expect(node.name.value).toEqual('field');
     }
   });
