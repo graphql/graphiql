@@ -2,7 +2,9 @@ export function getMockStorage() {
   let store = {};
   return {
     getItem(key) {
-      return store.hasOwnProperty(key) ? store[key] : null;
+      return Object.prototype.hasOwnProperty.call(store, key)
+        ? store[key]
+        : null;
     },
     setItem(key, value) {
       store[key] = value.toString();
@@ -11,7 +13,7 @@ export function getMockStorage() {
       store = {};
     },
     removeItem(key) {
-      if (store.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(store, key)) {
         const updatedStore = {};
         for (const k in store) {
           if (k !== key) {

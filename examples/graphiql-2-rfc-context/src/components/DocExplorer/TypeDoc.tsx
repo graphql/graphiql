@@ -235,11 +235,7 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
   );
 }
 
-type EnumValue = {
-  value: GraphQLEnumValue;
-};
-
-function EnumValue({ value }: EnumValue) {
+function EnumValue({ value }: { value: GraphQLEnumValue }) {
   return (
     <div className="doc-category-item">
       <div className="enum-value">{value.name}</div>
