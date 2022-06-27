@@ -2,4 +2,4 @@
 '@graphiql/react': minor
 ---
 
-Add icons to `@graphiql/react`
+Add svg icons to `@graphiql/react`
