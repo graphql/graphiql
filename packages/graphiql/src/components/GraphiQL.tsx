@@ -778,11 +778,11 @@ class GraphiQLWithContext extends React.Component<
                     <div className="graphiql-editor-tools">
                       <div className="graphiql-editor-tools-tabs">
                         <UnStyledButton
-                          className={`graphiql-editor-tools-tab-button ${
+                          className={
                             this.state.activeSecondaryEditor === 'variable'
-                              ? ' active'
+                              ? 'active'
                               : ''
-                          }`}
+                          }
                           onClick={() => {
                             if (
                               this.props.editorToolsResize.hiddenElement ===
@@ -807,7 +807,7 @@ class GraphiQLWithContext extends React.Component<
                           <UnStyledButton
                             className={
                               this.state.activeSecondaryEditor === 'header'
-                                ? ' active'
+                                ? 'active'
                                 : ''
                             }
                             onClick={() => {
