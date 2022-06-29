@@ -1,0 +1,123 @@
+@import url('codemirror/lib/codemirror.css');
+
+/* Make the editors fill up their container and make them scrollable */
+.CodeMirror {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+/* Override font settings */
+.CodeMirror {
+  font-family: var(--font-family-mono);
+}
+
+/* Reset any background color */
+.CodeMirror,
+.CodeMirror-gutters {
+  background: none;
+  background-color: transparent;
+}
+
+/* No padding around line number */
+.CodeMirror-linenumber {
+  padding: 0;
+}
+
+/* No border between gutter and editor */
+.CodeMirror-gutters {
+  border: none;
+}
+
+/**
+ * Editor theme
+ */
+
+.cm-s-graphiql {
+  /* OperationType, `fragment`, `on` */
+  & .cm-keyword {
+    color: var(--color-pink);
+  }
+  /* Name (OperationDefinition), FragmentName */
+  & .cm-def {
+    color: var(--color-teal);
+  }
+  /* Punctuator (except `$` and `@`) */
+  & .cm-punctuation {
+    color: var(--color-neutral-60);
+  }
+  /* Variable */
+  & .cm-variable {
+    color: var(--color-purple);
+  }
+  /* NamedType */
+  & .cm-atom {
+    color: var(--color-teal);
+  }
+  /* IntValue, FloatValue */
+  & .cm-number {
+    color: var(--color-green);
+  }
+  /* StringValue */
+  & .cm-string {
+    color: var(--color-orche);
+  }
+  /* BooleanValue */
+  & .cm-builtin {
+    color: var(--color-green);
+  }
+  /* EnumValue */
+  & .cm-string-2 {
+    color: var(--color-purple);
+  }
+  /* Name (ObjectField, Argument) */
+  & .cm-attribute {
+    color: var(--color-blue);
+  }
+  /* Name (Directive) */
+  & .cm-meta {
+    color: var(--color-teal);
+  }
+  /* Name (Alias, Field without Alias) */
+  & .cm-property {
+    color: var(--color-blue);
+  }
+  /* Name (Field with Alias) */
+  & .cm-qualifier {
+    color: var(--color-purple);
+  }
+  /* Comment */
+  & .cm-comment {
+    color: var(--color-neutral-40);
+  }
+  /* Whitespace */
+  & .cm-ws {
+    color: var(--color-neutral-40);
+  }
+  /* Invalid characters */
+  & .cm-invalidchar {
+    color: var(--color-red);
+  }
+
+  /* Cursor */
+  & .CodeMirror-cursor {
+    border-left: 2px solid var(--color-neutral-60);
+  }
+
+  /* Color for line numbers and fold-gutters */
+  & .CodeMirror-linenumber {
+    color: var(--color-neutral-40);
+  }
+}
+
+/* Matching bracket colors */
+div.CodeMirror span.CodeMirror-matchingbracket,
+div.CodeMirror span.CodeMirror-nonmatchingbracket {
+  color: var(--color-neutral-40);
+}
+
+/* Selected text blocks */
+.CodeMirror-selected,
+.CodeMirror-focused .CodeMirror-selected {
+  background: var(--color-neutral-15);
+}
