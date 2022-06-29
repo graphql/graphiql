@@ -5,6 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import React from 'react';
+
 /**
  * GraphiQL
  */
@@ -32,8 +34,6 @@ export type {
  * Components
  */
 
-export { QueryEditor } from './components/QueryEditor';
-export { VariableEditor } from './components/VariableEditor';
 export { DocExplorer } from './components/DocExplorer';
 
 /**
@@ -47,7 +47,11 @@ export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 /**
  * Legacy exports
  */
-import { onHasCompletion as _onHasCompletion } from '@graphiql/react';
+import {
+  onHasCompletion as _onHasCompletion,
+  QueryEditor as OrigQueryEditor,
+  VariableEditor as OrigVariableEditor,
+} from '@graphiql/react';
 import {
   fillLeafs as _fillLeafs,
   getSelectedOperationName as _getSelectedOperationName,
@@ -60,6 +64,21 @@ export const onHasCompletion: typeof _onHasCompletion =
       'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
     );
     return _onHasCompletion(...args);
+  };
+
+export const QueryEditor: typeof OrigQueryEditor = function QueryEditor(props) {
+  console.warn(
+    'Importing `QueryEditor` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `QueryEditor` component provided by the `@graphiql/react` package.',
+  );
+  return <OrigQueryEditor {...props} />;
+};
+
+export const VariableEditor: typeof OrigVariableEditor =
+  function VariableEditor(props) {
+    console.warn(
+      'Importing `VariableEditor` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `VariableEditor` component provided by the `@graphiql/react` package.',
+    );
+    return <OrigVariableEditor {...props} />;
   };
 
 export const fillLeafs: typeof _fillLeafs = function fillLeafs(...args) {
