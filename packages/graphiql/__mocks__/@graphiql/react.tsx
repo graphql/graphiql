@@ -25,6 +25,10 @@ import {
   useSchemaContext,
   useSelectHistoryItem,
   useStorageContext,
+  HeaderEditor as _HeaderEditor,
+  QueryEditor as _QueryEditor,
+  ResponseEditor as _ResponseEditor,
+  VariableEditor as _VariableEditor,
   useHeaderEditor as _useHeaderEditor,
   useQueryEditor as _useQueryEditor,
   useResponseEditor as _useResponseEditor,
@@ -47,7 +51,7 @@ import type {
   UseQueryEditorArgs,
   UseVariableEditorArgs,
 } from '@graphiql/react';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export {
   EditorContext,
@@ -224,4 +228,28 @@ export const useVariableEditor: typeof _useVariableEditor = function useVariable
   onEdit,
 }) {
   return useMockedEditor('variable', undefined, onEdit);
+};
+
+export const HeaderEditor: typeof _HeaderEditor = function HeaderEditor(props) {
+  const ref = useHeaderEditor(props);
+  return <div ref={ref} />;
+};
+
+export const QueryEditor: typeof _QueryEditor = function QueryEditor(props) {
+  const ref = useQueryEditor(props);
+  return <div data-testid="query-editor" ref={ref} />;
+};
+
+export const ResponseEditor: typeof _ResponseEditor = function ResponseEditor(
+  props,
+) {
+  const ref = useResponseEditor(props);
+  return <div ref={ref} />;
+};
+
+export const VariableEditor: typeof _VariableEditor = function VariableEditor(
+  props,
+) {
+  const ref = useVariableEditor(props);
+  return <div ref={ref} />;
 };

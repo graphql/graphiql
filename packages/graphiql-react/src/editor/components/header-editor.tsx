@@ -1,20 +1,10 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-import { useHeaderEditor, UseHeaderEditorArgs } from '@graphiql/react';
-import React from 'react';
+import { useHeaderEditor, UseHeaderEditorArgs } from '../header-editor';
+
+import '../style/codemirror.css';
+import '../style/fold.css';
 
 type HeaderEditorProps = UseHeaderEditorArgs & { active?: boolean };
 
-/**
- * HeaderEditor
- *
- * An instance of CodeMirror for editing headers to be passed with the GraphQL request.
- *
- */
 export function HeaderEditor({ active, ...hookArgs }: HeaderEditorProps) {
   const ref = useHeaderEditor(hookArgs);
   return (
