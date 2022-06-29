@@ -46,7 +46,7 @@ describe('DocExplorer', () => {
         <DocExplorerWithContext />
       </SchemaContext.Provider>,
     );
-    const spinner = container.querySelectorAll('.spinner-container');
+    const spinner = container.querySelectorAll('.graphiql-spinner');
     expect(spinner).toHaveLength(1);
   });
   it('renders with null schema', () => {

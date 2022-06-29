@@ -1,8 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import reactSvgPlugin from 'vite-plugin-react-svg';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    reactSvgPlugin({
+      defaultExport: 'component',
+      expandProps: 'end',
+      titleProp: true,
+    }),
+  ],
   esbuild: {
     // We use function names for generating readable error messages, so we want
     // them to be preserved when building and minifying.

@@ -33,12 +33,12 @@ describe('GraphiQL On Initialization', () => {
       '.graphiql-container',
       '.topBarWrap',
       '.editorWrap',
-      '.queryWrap',
-      '.resultWrap',
-      '.variable-editor',
+      '.graphiql-editors',
+      '.graphiql-response',
+      '.graphiql-editor-tool',
     ];
     cy.visit(`/`);
-    cy.get('.query-editor').contains('# Welcome to GraphiQL');
+    cy.get('.graphiql-query-editor').contains('# Welcome to GraphiQL');
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
   });
 
