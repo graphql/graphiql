@@ -4,7 +4,9 @@ describe('Tabs', () => {
     cy.get('#session-tab-0').should('have.text', '<untitled>');
 
     // Enter a query without operation name
-    cy.get('.query-editor textarea').type('{id', { force: true }).wait(500);
+    cy.get('.graphiql-query-editor textarea')
+      .type('{id', { force: true })
+      .wait(500);
     cy.get('#session-tab-0').should('have.text', '<untitled>');
 
     // Run the query
@@ -14,19 +16,19 @@ describe('Tabs', () => {
     cy.get('.tab-add').click();
 
     // Enter a query
-    cy.get('.query-editor textarea')
+    cy.get('.graphiql-query-editor textarea')
       .type('query Foo {image', { force: true })
       .wait(500);
     cy.get('#session-tab-1').should('have.text', 'Foo');
 
     // Enter variables
-    cy.get('.variable-editor textarea')
+    cy.get('.graphiql-editor-tool textarea')
       .eq(0)
       .type('{"someVar":42', { force: true });
 
     // Enter headers
-    cy.contains('Request Headers').click();
-    cy.get('.variable-editor textarea')
+    cy.contains('Headers').click();
+    cy.get('.graphiql-editor-tool textarea')
       .eq(1)
       .type('{"someHeader":"someValue"', { force: true });
 

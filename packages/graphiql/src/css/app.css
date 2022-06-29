@@ -88,27 +88,6 @@
   width: 9px;
 }
 
-.graphiql-container .editorBar {
-  display: flex;
-  flex-direction: row;
-  flex: 1;
-  max-height: 100%;
-}
-
-.graphiql-container .queryWrap {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.graphiql-container .resultWrap {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  flex-basis: 1em;
-  position: relative;
-}
-
 .graphiql-container .docExplorerWrap,
 .graphiql-container .historyPaneWrap {
   background: white;
@@ -141,39 +120,6 @@
   line-height: 14px;
 }
 
-.graphiql-container div .query-editor {
-  flex: 1;
-  position: relative;
-}
-
-.graphiql-container .secondary-editor {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: relative;
-}
-
-.graphiql-container .secondary-editor-title {
-  background: #eeeeee;
-  border-bottom: 1px solid #d6d6d6;
-  border-top: 1px solid #e0e0e0;
-  color: #777;
-  cursor: row-resize;
-  font-variant: small-caps;
-  font-weight: bold;
-  letter-spacing: 1px;
-  line-height: 14px;
-  padding: 6px 0 8px 43px;
-  text-transform: lowercase;
-  user-select: none;
-}
-
-.graphiql-container .codemirrorWrap {
-  flex: 1;
-  height: 100%;
-  position: relative;
-}
-
 .graphiql-container .result-window {
   flex: 1;
   height: 100%;
@@ -196,14 +142,6 @@
   position: absolute;
   top: -1px;
   width: 12px;
-}
-
-.editor-drag-bar {
-  width: 12px;
-  background-color: #eeeeee;
-  border-left: 1px solid #e0e0e0;
-  border-right: 1px solid #e0e0e0;
-  cursor: col-resize;
 }
 
 .graphiql-container .toolbar-button {
@@ -368,16 +306,6 @@
 .graphiql-container .toolbar-select-options > li:active > svg,
 .graphiql-container .toolbar-select-options > li:hover > svg {
   fill: #fff;
-}
-
-.graphiql-container .variable-editor-title-text {
-  cursor: pointer;
-  display: inline-block;
-  color: gray;
-}
-
-.graphiql-container .variable-editor-title-text.active {
-  color: #000;
 }
 
 .graphiql-container .tabs {

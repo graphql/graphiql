@@ -1,0 +1,13 @@
+button.graphiql-un-styled {
+  all: unset;
+  border-radius: var(--border-radius-4);
+  cursor: pointer;
+
+  &:active {
+    background-color: var(--color-neutral-7);
+  }
+
+  &:focus {
+    outline: var(--color-neutral-15) auto 1px;
+  }
+}
