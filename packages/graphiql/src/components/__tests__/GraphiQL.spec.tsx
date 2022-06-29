@@ -108,7 +108,8 @@ describe('GraphiQL', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
     await wait();
     expect(
-      container.querySelector('.query-editor .mockCodeMirror').value,
+      container.querySelector('[data-testid="query-editor"] .mockCodeMirror')
+        .value,
     ).toContain('# Welcome to GraphiQL');
   });
 
@@ -118,7 +119,7 @@ describe('GraphiQL', () => {
     );
     await wait();
     expect(
-      container.querySelector('.query-editor .mockCodeMirror'),
+      container.querySelector('[data-testid="query-editor"] .mockCodeMirror'),
     ).toHaveValue('GraphQL Party!!');
   });
   it('accepts a docExplorerOpen prop', () => {
@@ -258,7 +259,7 @@ describe('GraphiQL', () => {
     expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
 
     fireEvent.change(
-      container.querySelector('[aria-label="Query Editor"] .mockCodeMirror'),
+      container.querySelector('[data-testid="query-editor"] .mockCodeMirror'),
       {
         target: { value: mockQuery2 },
       },
