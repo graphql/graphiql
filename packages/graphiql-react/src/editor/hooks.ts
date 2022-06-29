@@ -255,7 +255,7 @@ export function useAutoCompleteLeafs({
             queryEditor.posFromIndex(index + added),
             queryEditor.posFromIndex(index + (added += string.length)),
             {
-              className: 'autoInsertedLeaf',
+              className: 'auto-inserted-leaf',
               clearOnEnter: true,
               title: 'Automatically added leaf fields',
             },
