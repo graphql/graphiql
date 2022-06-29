@@ -198,6 +198,42 @@ const Person = new GraphQLObjectType({
 
 const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
 
+const longDescription = `
+The \`longDescriptionType\` field on the \`Test\` type has a long, verbose, description to test inline field docs.
+
+> We want to test several \`markdown\` styles!
+
+Check out [Markdown](https://www.markdownguide.org/) by the way.
+
+Some notes:
+- Lists
+- work
+  - also nested
+  - and with very very very very very very very very very very long items that span multiple lines
+- you get the gist
+
+To-Do's:
+1. Open GraphiQL
+2. Write a query
+   1. Maybe add some variables
+   2. Could also add headers
+3. Send the request
+
+Example quey:
+\`\`\`graphql
+{
+  test {
+    id
+  }
+  hasArgs(string: "very very very very very long string")
+}
+\`\`\`
+
+And we have a cool logo:
+
+![](/images/logo.svg)
+`.trim();
+
 const TestType = new GraphQLObjectType({
   name: 'Test',
   description: 'Test type for testing\n New line works',
@@ -244,14 +280,11 @@ const TestType = new GraphQLObjectType({
     },
     longDescriptionType: {
       type: TestType,
-      description:
-        '`longDescriptionType` field from `Test` type, which ' +
-        'has a long, verbose, description to test inline field docs',
+      description: longDescription,
       resolve: () => ({}),
     },
     union: {
       type: TestUnion,
-      description: '> union field from Test type, block-quoted.',
       resolve: () => ({}),
     },
     id: {
@@ -275,6 +308,12 @@ const TestType = new GraphQLObjectType({
       type: TestType,
       description: 'This field is an example of a deprecated field',
       deprecationReason: 'No longer in use, try `test` instead.',
+    },
+    alsoDeprecated: {
+      type: TestType,
+      description:
+        'This field is an example of a deprecated field with markdown in its deprecation reason',
+      deprecationReason: longDescription,
     },
     hasArgs: {
       type: GraphQLString,
