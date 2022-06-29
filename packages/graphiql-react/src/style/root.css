@@ -1,0 +1,61 @@
+.graphiql-container,
+.CodeMirror-info,
+.CodeMirror-lint-tooltip {
+  /* Colors */
+  --color-pink: #d60690;
+  --color-purple: #6e6acf;
+  --color-blue: #007eea;
+  --color-orche: #d37f00;
+  --color-red: #f85b30;
+  --color-green: #2bab7c;
+  --color-teal: #009fb8;
+  --color-neutral-100: #3b4b68;
+  --color-neutral-60: #8993a4;
+  --color-neutral-40: #b1b7c3;
+  --color-neutral-15: #e2e4e8;
+  --color-neutral-10: #ebedf0;
+  --color-neutral-7: #f1f2f4;
+  --color-neutral-0: #ffffff;
+
+  --color-pink-background: rgb(214, 6, 144, 0.1);
+  --color-orche-background: rgba(211, 127, 0, 0.07);
+  --color-orche-background-dark: rgba(211, 127, 0, 0.12);
+
+  /* Font */
+  --font-family: 'Roboto', sans-serif;
+  --font-family-mono: 'Fira Code', monospace;
+  --font-size-hint: calc(12rem / 16);
+  --font-size-inline-code: calc(13rem / 16);
+  --font-size-body: calc(15rem / 16);
+  --font-size-h4: calc(18rem / 16);
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --line-height: 1.5;
+
+  /* Spacing */
+  --px-2: 2px;
+  --px-4: 4px;
+  --px-6: 6px;
+  --px-8: 8px;
+  --px-12: 12px;
+  --px-16: 16px;
+
+  /* Border radius */
+  --border-radius-4: 4px;
+  --border-radius-8: 8px;
+
+  /* Box shadow */
+  --box-shadow: 0px 6px 20px rgba(59, 76, 106, 0.13),
+    0px 1.34018px 4.46726px rgba(59, 76, 106, 0.0774939),
+    0px 0.399006px 1.33002px rgba(59, 76, 106, 0.0525061);
+}
+
+.graphiql-container,
+.CodeMirror-info,
+.CodeMirror-lint-tooltip,
+.graphiql-container button {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  font-weight: var(----font-weight-regular);
+  line-height: var(--line-height);
+}
