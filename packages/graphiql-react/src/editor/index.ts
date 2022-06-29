@@ -1,5 +1,11 @@
 export { onHasCompletion } from './completion';
-export { ImagePreview } from './components';
+export {
+  HeaderEditor,
+  ImagePreview,
+  QueryEditor,
+  ResponseEditor,
+  VariableEditor,
+} from './components';
 export {
   EditorContext,
   EditorContextProvider,
