@@ -68,8 +68,12 @@ const resultConfig = {
             },
           },
           'css-loader',
-          'postcss-loader',
         ],
+      },
+      {
+        test: /\.css$/,
+        exclude: /graphiql-react/,
+        use: ['postcss-loader'],
       },
     ],
   },
@@ -103,20 +107,6 @@ const resultConfig = {
     modules: [rootPath('node_modules'), rootPath('../', '../', 'node_modules')],
   },
 };
-
-const cssLoaders = [
-  {
-    loader: MiniCssExtractPlugin.loader,
-    options: {
-      hmr: isHMR,
-    },
-  },
-  'css-loader',
-];
-
-if (!isDev) {
-  cssLoaders.push('postcss-loader');
-}
 
 if (process.env.ANALYZE) {
   resultConfig.plugins.push(

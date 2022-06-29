@@ -1,0 +1,18 @@
+.auto-inserted-leaf.cm-property {
+  animation-duration: 6s;
+  animation-name: insertionFade;
+  border-radius: var(--border-radius-4);
+  padding: var(--px-2);
+}
+
+@keyframes insertionFade {
+  from,
+  to {
+    background-color: none;
+  }
+
+  15%,
+  85% {
+    background-color: var(--color-orche-background);
+  }
+}
