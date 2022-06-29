@@ -41,8 +41,10 @@
   --px-16: 16px;
 
   /* Border radius */
+  --border-radius-2: 2px;
   --border-radius-4: 4px;
   --border-radius-8: 8px;
+  --border-radius-12: 12px;
 
   /* Box shadow */
   --box-shadow: 0px 6px 20px rgba(59, 76, 106, 0.13),
