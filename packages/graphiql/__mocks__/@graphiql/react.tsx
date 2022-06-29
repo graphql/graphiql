@@ -1,4 +1,6 @@
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -13,6 +15,7 @@ import {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
+  UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
   useDragResize,
@@ -54,6 +57,8 @@ import type {
 import React, { useEffect, useRef, useState } from 'react';
 
 export {
+  ChevronDownIcon,
+  ChevronUpIcon,
   EditorContext,
   EditorContextProvider,
   ExecutionContext,
@@ -68,6 +73,7 @@ export {
   SchemaContextProvider,
   StorageContext,
   StorageContextProvider,
+  UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
   useDragResize,

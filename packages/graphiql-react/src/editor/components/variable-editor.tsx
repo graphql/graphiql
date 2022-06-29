@@ -6,21 +6,12 @@ import '../style/lint.css';
 import '../style/hint.css';
 
 type VariableEditorProps = UseVariableEditorArgs & {
-  active?: boolean;
+  isHidden?: boolean;
 };
 
-export function VariableEditor({ active, ...hookArgs }: VariableEditorProps) {
+export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
   const ref = useVariableEditor(hookArgs);
   return (
-    <div
-      className="codemirrorWrap"
-      // This horrible hack is necessary because a simple display none toggle
-      // causes one of the editors' gutters to break otherwise.
-      style={{
-        position: active ? 'relative' : 'absolute',
-        visibility: active ? 'visible' : 'hidden',
-      }}
-      ref={ref}
-    />
+    <div className={`graphiql-editor${isHidden ? ' hidden' : ''}`} ref={ref} />
   );
 }
