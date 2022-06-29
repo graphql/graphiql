@@ -74,18 +74,27 @@ CodeMirror.registerHelper(
       (kind === 'Field' && step === 0 && typeInfo.fieldDef) ||
       (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
     ) {
+      const header = document.createElement('div');
+      header.className = 'CodeMirror-info-header';
+      renderField(header, typeInfo, options);
       const into = document.createElement('div');
-      renderField(into, typeInfo, options);
+      into.appendChild(header);
       renderDescription(into, options, typeInfo.fieldDef as any);
       return into;
     } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+      const header = document.createElement('div');
+      header.className = 'CodeMirror-info-header';
+      renderDirective(header, typeInfo, options);
       const into = document.createElement('div');
-      renderDirective(into, typeInfo, options);
+      into.appendChild(header);
       renderDescription(into, options, typeInfo.directiveDef);
       return into;
     } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+      const header = document.createElement('div');
+      header.className = 'CodeMirror-info-header';
+      renderArg(header, typeInfo, options);
       const into = document.createElement('div');
-      renderArg(into, typeInfo, options);
+      into.appendChild(header);
       renderDescription(into, options, typeInfo.argDef);
       return into;
     } else if (
@@ -93,8 +102,11 @@ CodeMirror.registerHelper(
       typeInfo.enumValue &&
       typeInfo.enumValue.description
     ) {
+      const header = document.createElement('div');
+      header.className = 'CodeMirror-info-header';
+      renderEnumValue(header, typeInfo, options);
       const into = document.createElement('div');
-      renderEnumValue(into, typeInfo, options);
+      into.appendChild(header);
       renderDescription(into, options, typeInfo.enumValue);
       return into;
     } else if (
@@ -102,8 +114,11 @@ CodeMirror.registerHelper(
       typeInfo.type &&
       (typeInfo.type as GraphQLObjectType).description
     ) {
+      const header = document.createElement('div');
+      header.className = 'CodeMirror-info-header';
+      renderType(header, typeInfo, options, typeInfo.type);
       const into = document.createElement('div');
-      renderType(into, typeInfo, options, typeInfo.type);
+      into.appendChild(header);
       renderDescription(into, options, typeInfo.type);
       return into;
     }
@@ -125,10 +140,6 @@ function renderQualifiedField(
   options: GraphQLInfoOptions,
 ) {
   const fieldName = typeInfo.fieldDef?.name || '';
-  if (fieldName.slice(0, 2) !== '__') {
-    renderType(into, typeInfo, options, typeInfo.parentType);
-    text(into, '.');
-  }
   text(into, fieldName, 'field-name', options, getFieldReference(typeInfo));
 }
 
@@ -146,27 +157,9 @@ function renderArg(
   typeInfo: TypeInfo,
   options: GraphQLInfoOptions,
 ) {
-  if (typeInfo.directiveDef) {
-    renderDirective(into, typeInfo, options);
-  } else if (typeInfo.fieldDef) {
-    renderQualifiedField(into, typeInfo, options);
-  }
-
   const name = typeInfo.argDef?.name || '';
-  text(into, '(');
   text(into, name, 'arg-name', options, getArgumentReference(typeInfo));
   renderTypeAnnotation(into, typeInfo, options, typeInfo.inputType);
-  text(into, ')');
-}
-
-function renderTypeAnnotation(
-  into: HTMLElement,
-  typeInfo: TypeInfo,
-  options: GraphQLInfoOptions,
-  t: Maybe<GraphQLType>,
-) {
-  text(into, ': ');
-  renderType(into, typeInfo, options, t);
 }
 
 function renderEnumValue(
@@ -178,6 +171,33 @@ function renderEnumValue(
   renderType(into, typeInfo, options, typeInfo.inputType);
   text(into, '.');
   text(into, name, 'enum-value', options, getEnumValueReference(typeInfo));
+}
+
+function renderTypeAnnotation(
+  into: HTMLElement,
+  typeInfo: TypeInfo,
+  options: GraphQLInfoOptions,
+  t: Maybe<GraphQLType>,
+) {
+  const typeSpan = document.createElement('span');
+  typeSpan.className = 'type-name-pill';
+  if (t instanceof GraphQLNonNull) {
+    renderType(typeSpan, typeInfo, options, t.ofType);
+    text(typeSpan, '!');
+  } else if (t instanceof GraphQLList) {
+    text(typeSpan, '[');
+    renderType(typeSpan, typeInfo, options, t.ofType);
+    text(typeSpan, ']');
+  } else {
+    text(
+      typeSpan,
+      t?.name || '',
+      'type-name',
+      options,
+      getTypeReference(typeInfo, t),
+    );
+  }
+  into.appendChild(typeSpan);
 }
 
 function renderType(
@@ -243,16 +263,21 @@ function renderDeprecation(
   if (reason) {
     const deprecationDiv = document.createElement('div');
     deprecationDiv.className = 'info-deprecation';
-    if (options.renderDescription) {
-      deprecationDiv.innerHTML = options.renderDescription(reason);
-    } else {
-      deprecationDiv.appendChild(document.createTextNode(reason));
-    }
+    into.appendChild(deprecationDiv);
+
     const label = document.createElement('span');
     label.className = 'info-deprecation-label';
-    label.appendChild(document.createTextNode('Deprecated: '));
-    deprecationDiv.insertBefore(label, deprecationDiv.firstChild);
-    into.appendChild(deprecationDiv);
+    label.appendChild(document.createTextNode('Deprecated'));
+    deprecationDiv.appendChild(label);
+
+    const reasonDiv = document.createElement('div');
+    reasonDiv.className = 'info-deprecation-reason';
+    if (options.renderDescription) {
+      reasonDiv.innerHTML = options.renderDescription(reason);
+    } else {
+      reasonDiv.appendChild(document.createTextNode(reason));
+    }
+    deprecationDiv.appendChild(reasonDiv);
   }
 }
 

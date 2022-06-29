@@ -1,0 +1,24 @@
+@import url('codemirror/addon/fold/foldgutter.css');
+
+.CodeMirror-foldgutter {
+  width: var(--px-12);
+}
+
+.CodeMirror-foldmarker {
+  background-color: var(--color-blue);
+  border-radius: var(--border-radius-4);
+  color: var(--color-neutral-0);
+  font-family: inherit;
+  margin: 0 var(--px-4);
+  padding: 0 var(--px-8);
+  text-shadow: none;
+}
+
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+  color: var(--color-neutral-40);
+
+  &::after {
+    margin: 0 var(--px-2);
+  }
+}
