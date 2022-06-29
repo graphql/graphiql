@@ -26,7 +26,10 @@ import {
   ExecutionContextProvider,
   ExecutionContextType,
   ExplorerContextProvider,
+  HeaderEditor,
   HistoryContextProvider,
+  QueryEditor,
+  ResponseEditor,
   SchemaContextProvider,
   StorageContextProvider,
   useAutoCompleteLeafs,
@@ -40,6 +43,7 @@ import {
   usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
+  VariableEditor,
 } from '@graphiql/react';
 import type {
   EditorContextType,
@@ -56,10 +60,6 @@ import { ExecuteButton } from './ExecuteButton';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
-import { QueryEditor } from './QueryEditor';
-import { VariableEditor } from './VariableEditor';
-import { HeaderEditor } from './HeaderEditor';
-import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
 import find from '../utility/find';
@@ -416,7 +416,7 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
   static QueryEditor = QueryEditor;
   static VariableEditor = VariableEditor;
   static HeaderEditor = HeaderEditor;
-  static ResultViewer = ResultViewer;
+  static ResultViewer = ResponseEditor;
 
   // Add a button to the Toolbar.
   static Button = ToolbarButton;
@@ -907,7 +907,7 @@ class GraphiQLWithContext extends React.Component<
                       <div className="spinner" />
                     </div>
                   )}
-                  <ResultViewer
+                  <ResponseEditor
                     editorTheme={this.props.editorTheme}
                     ResponseTooltip={this.props.ResultsTooltip}
                     keyMap={this.props.keyMap}
