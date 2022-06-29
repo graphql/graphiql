@@ -10,7 +10,5 @@ import '../style/auto-insertion.css';
 
 export function QueryEditor(props: UseQueryEditorArgs) {
   const ref = useQueryEditor(props);
-  return (
-    <section className="query-editor" aria-label="Query Editor" ref={ref} />
-  );
+  return <div className="graphiql-editor" ref={ref} />;
 }
