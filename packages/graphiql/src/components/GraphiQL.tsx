@@ -22,6 +22,8 @@ import {
 } from 'graphql';
 
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   EditorContextProvider,
   ExecutionContextProvider,
   ExecutionContextType,
@@ -32,6 +34,7 @@ import {
   ResponseEditor,
   SchemaContextProvider,
   StorageContextProvider,
+  UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
   useDragResize,
@@ -553,7 +556,7 @@ const GraphiQLConsumeContexts = forwardRef<
     direction: 'horizontal',
     storageKey: 'editorFlex',
   });
-  const secondaryEditorResize = useDragResize({
+  const editorToolsResize = useDragResize({
     defaultSizeRelation: 3,
     direction: 'vertical',
     initiallyHidden: (() => {
@@ -589,7 +592,7 @@ const GraphiQLConsumeContexts = forwardRef<
       prettify={prettify}
       docResize={docResize}
       editorResize={editorResize}
-      secondaryEditorResize={secondaryEditorResize}
+      editorToolsResize={editorToolsResize}
       ref={ref}
     />
   );
@@ -613,7 +616,7 @@ type GraphiQLWithContextConsumerProps = Omit<
 
   docResize: ReturnType<typeof useDragResize>;
   editorResize: ReturnType<typeof useDragResize>;
-  secondaryEditorResize: ReturnType<typeof useDragResize>;
+  editorToolsResize: ReturnType<typeof useDragResize>;
 };
 
 export type GraphiQLState = {
@@ -737,7 +740,7 @@ class GraphiQLWithContext extends React.Component<
                       this.props.editorContext.closeTab(index);
                     }}
                     tabProps={{
-                      'aria-controls': 'sessionWrap',
+                      'aria-controls': 'graphiql-session',
                       id: `session-tab-${index}`,
                     }}
                   />
@@ -751,109 +754,134 @@ class GraphiQLWithContext extends React.Component<
             ) : null}
             <div
               role="tabpanel"
-              id="sessionWrap"
-              className="editorBar"
+              id="graphiql-session"
+              className="graphiql-session"
               aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
               <div ref={this.props.editorResize.firstRef}>
-                <div className="queryWrap">
-                  <div ref={this.props.secondaryEditorResize.firstRef}>
-                    <QueryEditor
-                      editorTheme={this.props.editorTheme}
-                      externalFragments={this.props.externalFragments}
-                      onClickReference={() => {
-                        if (this.props.docResize.hiddenElement === 'second') {
-                          this.props.docResize.setHiddenElement(null);
-                        }
-                      }}
-                      keyMap={this.props.keyMap}
-                      onCopyQuery={this.props.onCopyQuery}
-                      onEdit={this.props.onEditQuery}
-                      onEditOperationName={this.props.onEditOperationName}
-                      readOnly={this.props.readOnly}
-                      validationRules={this.props.validationRules}
-                    />
-                  </div>
-                  <div ref={this.props.secondaryEditorResize.dragBarRef}>
-                    <div
-                      className="secondary-editor-title variable-editor-title"
-                      id="secondary-editor-title">
-                      <div
-                        className={`variable-editor-title-text${
-                          this.state.activeSecondaryEditor === 'variable'
-                            ? ' active'
-                            : ''
-                        }`}
-                        onClick={() => {
-                          if (
-                            this.props.secondaryEditorResize.hiddenElement ===
-                            'second'
-                          ) {
-                            this.props.secondaryEditorResize.setHiddenElement(
-                              null,
-                            );
+                <div className="graphiql-editors">
+                  <div ref={this.props.editorToolsResize.firstRef}>
+                    <section
+                      className="graphiql-query-editor"
+                      aria-label="Query Editor">
+                      <QueryEditor
+                        editorTheme={this.props.editorTheme}
+                        externalFragments={this.props.externalFragments}
+                        keyMap={this.props.keyMap}
+                        onClickReference={() => {
+                          if (this.props.docResize.hiddenElement === 'second') {
+                            this.props.docResize.setHiddenElement(null);
                           }
-                          this.setState(
-                            {
-                              activeSecondaryEditor: 'variable',
-                            },
-                            () => {
-                              this.props.editorContext.variableEditor?.refresh();
-                            },
-                          );
-                        }}>
-                        Query Variables
-                      </div>
-                      {headerEditorEnabled && (
-                        <div
-                          style={{
-                            marginLeft: '20px',
-                          }}
-                          className={`variable-editor-title-text${
-                            this.state.activeSecondaryEditor === 'header'
-                              ? ' active'
+                        }}
+                        onCopyQuery={this.props.onCopyQuery}
+                        onEdit={this.props.onEditQuery}
+                        onEditOperationName={this.props.onEditOperationName}
+                        readOnly={this.props.readOnly}
+                        validationRules={this.props.validationRules}
+                      />
+                    </section>
+                  </div>
+                  <div ref={this.props.editorToolsResize.dragBarRef}>
+                    <div className="graphiql-editor-tools">
+                      <div className="graphiql-editor-tools-tabs">
+                        <UnStyledButton
+                          className={
+                            this.state.activeSecondaryEditor === 'variable'
+                              ? 'active'
                               : ''
-                          }`}
+                          }
                           onClick={() => {
                             if (
-                              this.props.secondaryEditorResize.hiddenElement ===
+                              this.props.editorToolsResize.hiddenElement ===
                               'second'
                             ) {
-                              this.props.secondaryEditorResize.setHiddenElement(
+                              this.props.editorToolsResize.setHiddenElement(
                                 null,
                               );
                             }
                             this.setState(
                               {
-                                activeSecondaryEditor: 'header',
+                                activeSecondaryEditor: 'variable',
                               },
                               () => {
-                                this.props.editorContext.headerEditor?.refresh();
+                                this.props.editorContext.variableEditor?.refresh();
                               },
                             );
                           }}>
-                          Request Headers
-                        </div>
-                      )}
+                          Variables
+                        </UnStyledButton>
+                        {this.props.headerEditorEnabled ? (
+                          <UnStyledButton
+                            className={
+                              this.state.activeSecondaryEditor === 'header'
+                                ? 'active'
+                                : ''
+                            }
+                            onClick={() => {
+                              if (
+                                this.props.editorToolsResize.hiddenElement ===
+                                'second'
+                              ) {
+                                this.props.editorToolsResize.setHiddenElement(
+                                  null,
+                                );
+                              }
+                              this.setState(
+                                {
+                                  activeSecondaryEditor: 'header',
+                                },
+                                () => {
+                                  this.props.editorContext.headerEditor?.refresh();
+                                },
+                              );
+                            }}>
+                            Headers
+                          </UnStyledButton>
+                        ) : null}
+                      </div>
+                      <UnStyledButton
+                        onClick={() => {
+                          if (
+                            this.props.editorToolsResize.hiddenElement ===
+                            'second'
+                          ) {
+                            this.props.editorToolsResize.setHiddenElement(null);
+                          } else {
+                            this.props.editorToolsResize.setHiddenElement(
+                              'second',
+                            );
+                          }
+                        }}>
+                        {this.props.editorToolsResize.hiddenElement ===
+                        'second' ? (
+                          <ChevronUpIcon className="graphiql-chevron-icon" />
+                        ) : (
+                          <ChevronDownIcon className="graphiql-chevron-icon" />
+                        )}
+                      </UnStyledButton>
                     </div>
                   </div>
-                  <div ref={this.props.secondaryEditorResize.secondRef}>
+                  <div ref={this.props.editorToolsResize.secondRef}>
                     <section
-                      className="variable-editor secondary-editor"
+                      className="graphiql-editor-tool"
                       aria-label={
                         this.state.activeSecondaryEditor === 'variable'
-                          ? 'Query Variables'
-                          : 'Request Headers'
+                          ? 'Variables'
+                          : 'Headers'
                       }>
                       <VariableEditor
                         onEdit={this.props.onEditVariables}
                         editorTheme={this.props.editorTheme}
                         readOnly={this.props.readOnly}
-                        active={this.state.activeSecondaryEditor === 'variable'}
+                        isHidden={
+                          this.state.activeSecondaryEditor !== 'variable'
+                        }
                         keyMap={this.props.keyMap}
                       />
                       {headerEditorEnabled && (
                         <HeaderEditor
-                          active={this.state.activeSecondaryEditor === 'header'}
+                          isHidden={
+                            this.state.activeSecondaryEditor !== 'header'
+                          }
                           editorTheme={this.props.editorTheme}
                           onEdit={this.props.onEditHeaders}
                           readOnly={this.props.readOnly}
@@ -866,15 +894,13 @@ class GraphiQLWithContext extends React.Component<
                 </div>
               </div>
               <div ref={this.props.editorResize.dragBarRef}>
-                <div className="editor-drag-bar" />
+                <div className="graphiql-horizontal-drag-bar" />
               </div>
               <div ref={this.props.editorResize.secondRef}>
-                <div className="resultWrap">
-                  {this.props.executionContext.isFetching && (
-                    <div className="spinner-container">
-                      <div className="spinner" />
-                    </div>
-                  )}
+                <div className="graphiql-response">
+                  {this.props.executionContext.isFetching ? (
+                    <div className="graphiql-spinner" />
+                  ) : null}
                   <ResponseEditor
                     value={this.props.response}
                     editorTheme={this.props.editorTheme}
