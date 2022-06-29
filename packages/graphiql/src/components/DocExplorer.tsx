@@ -60,11 +60,7 @@ export function DocExplorer(props: DocExplorerProps) {
     );
   } else if (isFetching) {
     // Schema is undefined when it is being loaded via introspection.
-    content = (
-      <div className="spinner-container">
-        <div className="spinner" />
-      </div>
-    );
+    content = <div className="graphiql-spinner" />;
   } else if (!schema) {
     // Schema is null when it explicitly does not exist, typically due to
     // an error during introspection.
