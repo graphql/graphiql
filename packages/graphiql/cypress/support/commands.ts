@@ -68,14 +68,14 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 Cypress.Commands.add(
   'assertHasValues',
   ({ query, variables, variablesString, headersString, response }: Op) => {
-    cy.get('.query-editor').should(element => {
+    cy.get('.graphiql-query-editor').should(element => {
       expect(normalize(element.get(0).innerText)).to.equal(
         codeWithLineNumbers(query),
       );
     });
     if (typeof variables !== 'undefined') {
-      cy.contains('Query Variables').click();
-      cy.get('.variable-editor .codemirrorWrap')
+      cy.contains('Variables').click();
+      cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
         .should(element => {
           expect(normalize(element.get(0).innerText)).to.equal(
@@ -84,8 +84,8 @@ Cypress.Commands.add(
         });
     }
     if (typeof variablesString !== 'undefined') {
-      cy.contains('Query Variables').click();
-      cy.get('.variable-editor .codemirrorWrap')
+      cy.contains('Variables').click();
+      cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(0)
         .should(element => {
           expect(normalize(element.get(0).innerText)).to.equal(
@@ -94,8 +94,8 @@ Cypress.Commands.add(
         });
     }
     if (typeof headersString !== 'undefined') {
-      cy.contains('Request Headers').click();
-      cy.get('.variable-editor .codemirrorWrap')
+      cy.contains('Headers').click();
+      cy.get('.graphiql-editor-tool .graphiql-editor')
         .eq(1)
         .should(element => {
           expect(normalize(element.get(0).innerText)).to.equal(
