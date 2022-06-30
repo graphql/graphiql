@@ -130,7 +130,7 @@ export function useVariableEditor({
     useVariableEditor,
   );
 
-  useCompletion(variableEditor);
+  useCompletion(variableEditor, useVariableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);
