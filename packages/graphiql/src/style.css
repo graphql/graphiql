@@ -17,9 +17,6 @@
   flex: 1;
   flex-direction: column;
 }
-.graphiql-container .graphiql-editors .CodeMirror-gutters {
-  background-color: var(--color-neutral-0);
-}
 
 /* The response view */
 .graphiql-container .graphiql-response {

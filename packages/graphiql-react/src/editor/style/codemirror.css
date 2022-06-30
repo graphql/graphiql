@@ -12,11 +12,11 @@
   font-family: var(--font-family-mono);
 }
 
-/* Reset any background color */
+/* Set default background color */
 .CodeMirror,
 .CodeMirror-gutters {
   background: none;
-  background-color: transparent;
+  background-color: var(--color-neutral-0);
 }
 
 /* No padding around line number */
