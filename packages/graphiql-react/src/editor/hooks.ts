@@ -69,8 +69,11 @@ export function useChangeHandler(
   ]);
 }
 
-export function useCompletion(editor: CodeMirrorEditor | null) {
-  const { schema } = useSchemaContext({ nonNull: true, caller: useCompletion });
+export function useCompletion(
+  editor: CodeMirrorEditor | null,
+  caller: Function,
+) {
+  const { schema } = useSchemaContext({ nonNull: true, caller });
   const explorer = useExplorerContext();
   useEffect(() => {
     if (!editor) {

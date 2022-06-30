@@ -324,7 +324,7 @@ export function useQueryEditor({
     codeMirrorRef,
   );
 
-  useCompletion(queryEditor);
+  useCompletion(queryEditor, useQueryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);

@@ -113,7 +113,7 @@ export function useHeaderEditor({
     useHeaderEditor,
   );
 
-  useCompletion(headerEditor);
+  useCompletion(headerEditor, useHeaderEditor);
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);

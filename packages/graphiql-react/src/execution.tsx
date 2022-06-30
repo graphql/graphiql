@@ -51,7 +51,9 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
   const history = useHistoryContext();
-  const autoCompleteLeafs = useAutoCompleteLeafs();
+  const autoCompleteLeafs = useAutoCompleteLeafs({
+    caller: ExecutionContextProvider,
+  });
   const [isFetching, setIsFetching] = useState(false);
   const [subscription, setSubscription] = useState<Unsubscribable | null>(null);
   const queryIdRef = useRef(0);
