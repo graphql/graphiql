@@ -9,9 +9,13 @@ import { Dropdown } from '../ui';
 import './execute.css';
 
 export function ExecuteButton() {
-  const { queryEditor } = useEditorContext({ nonNull: true });
+  const { queryEditor } = useEditorContext({
+    nonNull: true,
+    caller: ExecuteButton,
+  });
   const { isFetching, run, stop, subscription } = useExecutionContext({
     nonNull: true,
+    caller: ExecuteButton,
   });
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
