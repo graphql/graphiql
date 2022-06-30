@@ -36,6 +36,7 @@ import {
   QueryEditor,
   ResponseEditor,
   SchemaContextProvider,
+  Spinner,
   StorageContextProvider,
   ToolbarButton,
   UnStyledButton,
@@ -890,9 +891,7 @@ class GraphiQLWithContext extends React.Component<
               </div>
               <div ref={this.props.editorResize.secondRef}>
                 <div className="graphiql-response">
-                  {this.props.executionContext.isFetching ? (
-                    <div className="graphiql-spinner" />
-                  ) : null}
+                  {this.props.executionContext.isFetching ? <Spinner /> : null}
                   <ResponseEditor
                     value={this.props.response}
                     editorTheme={this.props.editorTheme}
