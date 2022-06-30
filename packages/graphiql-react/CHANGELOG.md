@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.4.3
+
+### Patch Changes
+
+- [#2526](https://github.com/graphql/graphiql/pull/2526) [`26e44120`](https://github.com/graphql/graphiql/commit/26e44120a18d49af451c97619fe3386a65579e05) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add missing `caller` arguments to hook calls so that the error message printed when a context provider is missing is more accurate about the component or hook that caused the error
+
 ## 0.4.2
 
 ### Patch Changes

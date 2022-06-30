@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.9.10
+
+### Patch Changes
+
+- Updated dependencies [[`26e44120`](https://github.com/graphql/graphiql/commit/26e44120a18d49af451c97619fe3386a65579e05)]:
+  - @graphiql/react@0.4.3
+
 ## 1.9.9
 
 ### Patch Changes
