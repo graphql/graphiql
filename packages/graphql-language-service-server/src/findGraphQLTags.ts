@@ -100,10 +100,48 @@ export function findGraphQLTags(
   }
   const ast = parsedAST!;
 
+  const parseTemplateLiteral = (node: TemplateLiteral) => {
+    const loc = node.quasis[0].loc;
+    if (loc) {
+      if (node.quasis.length > 1) {
+        const last = node.quasis.pop();
+        if (last?.loc?.end) {
+          loc.end = last.loc.end;
+        }
+      }
+      const template =
+        node.quasis.length > 1
+          ? node.quasis.map(quasi => quasi.value.raw).join('')
+          : node.quasis[0].value.raw;
+      const range = new Range(
+        new Position(loc.start.line - 1, loc.start.column),
+        new Position(loc.end.line - 1, loc.end.column),
+      );
+      result.push({
+        tag: '',
+        template,
+        range,
+      });
+    }
+  };
+
   const visitors = {
     CallExpression: (node: Expression) => {
       if ('callee' in node) {
         const callee = node.callee;
+
+        if (
+          callee.type === 'Identifier' &&
+          getGraphQLTagName(callee) &&
+          'arguments' in node
+        ) {
+          const templateLiteral = node.arguments[0];
+          if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
+            parseTemplateLiteral(templateLiteral);
+            return;
+          }
+        }
+
         if (
           !(
             (callee.type === 'Identifier' &&
@@ -208,28 +246,7 @@ export function findGraphQLTags(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
       );
       if (hasGraphQLPrefix || hasGraphQLComment) {
-        const loc = node.quasis[0].loc;
-        if (loc) {
-          if (node.quasis.length > 1) {
-            const last = node.quasis.pop();
-            if (last?.loc?.end) {
-              loc.end = last.loc.end;
-            }
-          }
-          const template =
-            node.quasis.length > 1
-              ? node.quasis.map(quasi => quasi.value.raw).join('')
-              : node.quasis[0].value.raw;
-          const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
-          );
-          result.push({
-            tag: '',
-            template,
-            range,
-          });
-        }
+        parseTemplateLiteral(node);
       }
     },
   };
