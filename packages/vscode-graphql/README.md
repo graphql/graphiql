@@ -1,16 +1,12 @@
-# VSCode GraphQL
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql/CHANGELOG.md) | [Discord Channel](https://discord.gg/r4BxrAG6fN) | [LSP Server Docs](<[https://g](https://github.com/graphql/graphiql/blob/main/packages/graphql-language-service-server/README.md)>)
 
 GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
 
-> _Operation Execution will be available in a new extension_
-
-## Features
-
-Lots of new improvements happening! We now have a [`CHANGELOG.md`](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql/CHANGELOG.md#change-log)
-
 ### General features
+
+> _Operation Execution will be re-introduced in a new extension_
 
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
@@ -120,6 +116,8 @@ Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]` i
 <span id="legacy" />
 
 ### I can't load `.graphqlconfig` files anymore
+
+> Note: this option has been set to be enabled by default, however `graphql-config` maintainers do not want to continue to support the legacy format (mostly kept for companies where intellij users are stuck on the old config format), so please migrate to the new `graphql-config` format as soon as possible!
 
 If you need to use a legacy config file, then you just need to enable legacy mode for `graphql-config`:
 
@@ -255,14 +253,12 @@ Thanks to apollo for their [graphql-vscode grammars](https://github.com/apollogr
 
 This plugin uses the [GraphQL language server](https://github.com/graphql/graphql-language-service-server)
 
-1.  Clone the repository - https://github.com/graphql/vscode-graphql
-1.  `npm install`
-1.  Open it in VSCode
-1.  Go to the debugging section and run the launch program "Extension"
+1.  Clone the repository - https://github.com/graphql/graphiql
+1.  `yarn`
+1.  Run "VScode Extension" launcher in vscode
 1.  This will open another VSCode instance with extension enabled
 1.  Open a project with a graphql config file - ":electric_plug: graphql" in VSCode status bar indicates that the extension is in use
 1.  Logs for GraphQL language service will appear in output section under GraphQL Language Service
-    ![GraphQL Language Service Logging](https://s3-ap-southeast-1.amazonaws.com/divyendusingh/vscode-graphql/Screen+Shot+2018-06-25+at+12.31.57+PM.png)
 
 ### Contributing back to this project
 

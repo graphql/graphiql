@@ -8,7 +8,11 @@
     "Angel Gomez Salazar <agomezs@fb.com>"
   ],
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql#readme",
-  "repository": "https://github.com/graphql/graphiql",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/codemirror-graphql"
+  },
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:codemirror-graphql"
   },

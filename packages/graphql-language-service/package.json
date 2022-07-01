@@ -5,7 +5,11 @@
   "contributors": [
     "GraphQL Contributors"
   ],
-  "repository": "http://github.com/graphql/graphiql",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/graphql-language-service"
+  },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:languageservice"
