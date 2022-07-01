@@ -16,7 +16,7 @@
 .CodeMirror,
 .CodeMirror-gutters {
   background: none;
-  background-color: var(--color-neutral-0);
+  background-color: var(--editor-background, var(--color-neutral-0));
 }
 
 /* No padding around line number */
