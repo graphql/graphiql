@@ -2,6 +2,7 @@ import { useHeaderEditor, UseHeaderEditorArgs } from '../header-editor';
 
 import '../style/codemirror.css';
 import '../style/fold.css';
+import '../style/editor.css';
 
 type HeaderEditorProps = UseHeaderEditorArgs & { isHidden?: boolean };
 
