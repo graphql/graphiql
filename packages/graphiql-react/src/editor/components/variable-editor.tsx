@@ -4,6 +4,7 @@ import '../style/codemirror.css';
 import '../style/fold.css';
 import '../style/lint.css';
 import '../style/hint.css';
+import '../style/editor.css';
 
 type VariableEditorProps = UseVariableEditorArgs & {
   isHidden?: boolean;

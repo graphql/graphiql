@@ -1,0 +1,10 @@
+.graphiql-editor {
+  height: 100%;
+  position: relative;
+
+  &.hidden {
+    /* Just setting `display: none;` would break the editor gutters */
+    position: absolute;
+    visibility: hidden;
+  }
+}
