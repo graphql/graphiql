@@ -31,17 +31,6 @@
   padding: var(--px-16);
 }
 
-/* Any codemirror editor */
-.graphiql-container .graphiql-editor {
-  height: 100%;
-  position: relative;
-}
-.graphiql-container .graphiql-editor.hidden {
-  /* Just setting `display: none;` would break the editor gutters */
-  position: absolute;
-  visibility: hidden;
-}
-
 /* The tab bar for editor tools */
 .graphiql-container .graphiql-editor-tools {
   align-items: center;
