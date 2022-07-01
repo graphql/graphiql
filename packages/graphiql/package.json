@@ -6,7 +6,11 @@
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
-  "repository": "http://github.com/graphql/graphiql",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/graphiql"
+  },
   "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql"

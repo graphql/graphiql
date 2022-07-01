@@ -1,7 +1,7 @@
 # `graphql-language-service`
 
-[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html)
-[Discord Channel](https://discord.gg/wkQCKwazxj)
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/graphql-language-service/CHANGELOG.md) | [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html) |
+[Discord](https://discord.gg/wkQCKwazxj)
 
 > **Note**: Still mostly experimental, however it depends mostly on stable libraries.
 > **Migration Note**: As of 3.0.0, the LSP Server command line interface has been moved to [`graphql-language-service-cli`](../graphql-language-service-cli)

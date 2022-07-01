@@ -14,6 +14,12 @@
   "main": "dist/graphiql-react.cjs.js",
   "module": "dist/graphiql-react.es.js",
   "types": "types/index.d.ts",
+  "keywords": [
+    "react",
+    "graphql",
+    "sdk",
+    "codemirror"
+  ],
   "files": [
     "dist",
     "src",

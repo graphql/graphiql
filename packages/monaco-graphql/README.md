@@ -1,6 +1,6 @@
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/monaco-graphql/CHANGELOG.md) |
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html) |
 [Discord Channel](https://discord.gg/r4BxrAG6fN)
-
-# Monaco GraphQL
 
 GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want, or none!
 
