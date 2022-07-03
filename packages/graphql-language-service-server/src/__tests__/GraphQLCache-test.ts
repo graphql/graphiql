@@ -9,7 +9,9 @@
 
 jest.mock('cross-undici-fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
+  AbortController: global.AbortController,
 }));
+
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
@@ -72,8 +74,7 @@ describe('GraphQLCache', () => {
     });
   });
 
-  // TODO: figure out mocking undici
-  describe.skip('getSchema', () => {
+  describe('getSchema', () => {
     it('generates the schema correctly for the test app config', async () => {
       const schema = await cache.getSchema('testWithSchema');
       expect(schema instanceof GraphQLSchema).toEqual(true);

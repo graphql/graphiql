@@ -140,6 +140,13 @@ query Test {
 `);
   });
 
+  it('finds queries with nested graphql.experimental template tag expression', async () => {
+    const text = `const query = graphql.experimental\` query {} \``;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
   it('finds queries with nested template tag expressions', async () => {
     const text = `export default {
   else: () => gql\` query {} \`
@@ -151,11 +158,37 @@ query Test {
 
   it('finds queries with template tags inside call expressions', async () => {
     const text = `something({
-  else: () => gql\` query {} \`
+  else: () => graphql\` query {} \`
 })`;
 
     const contents = findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(` query {} `);
+  });
+
+  it('finds multiple queries in a single file', async () => {
+    const text = `something({
+  else: () => gql\` query {} \`
+})
+const query = graphql\`query myQuery {}\``;
+
+    const contents = findGraphQLTags(text, '.ts');
+
+    expect(contents.length).toEqual(2);
+
+    // let's double check that we're properly
+    // extracting the positions of each embedded string
+    expect(contents[0].range.start.line).toEqual(1);
+    expect(contents[0].range.start.character).toEqual(18);
+    expect(contents[0].range.end.line).toEqual(1);
+    expect(contents[0].range.end.character).toEqual(28);
+    expect(contents[0].template).toEqual(` query {} `);
+
+    // and the second string, with correct positional information!
+    expect(contents[1].range.start.line).toEqual(3);
+    expect(contents[1].range.start.character).toEqual(22);
+    expect(contents[1].range.end.line).toEqual(3);
+    expect(contents[1].range.end.character).toEqual(38);
+    expect(contents[1].template).toEqual(`query myQuery {}`);
   });
 
   it('ignores non gql tagged templates', async () => {
