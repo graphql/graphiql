@@ -108,6 +108,56 @@ query Test {
 `);
   });
 
+  it('finds queries in /* GraphQL */ prefixed templates', async () => {
+    const text = `
+import {gql} from 'react-apollo';
+import {B} from 'B';
+import A from './A';
+
+
+const QUERY: string = 
+/* GraphQL */ 
+\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`
+
+export function Example(arg: string) {}`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
+  it('finds queries with nested template tag expressions', async () => {
+    const text = `export default {
+  else: () => gql\` query {} \`
+}`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
+  it('finds queries with template tags inside call expressions', async () => {
+    const text = `something({
+  else: () => gql\` query {} \`
+})`;
+
+    const contents = findGraphQLTags(text, '.ts');
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
   it('ignores non gql tagged templates', async () => {
     const text = `
 // @flow
