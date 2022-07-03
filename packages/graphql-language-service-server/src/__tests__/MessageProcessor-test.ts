@@ -563,6 +563,36 @@ query Test {
 `);
   });
 
+  it('parseDocument finds queries in call expressions with template literals', async () => {
+    const text = `
+// @flow
+import {gql} from 'react-apollo';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = gql(\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`);
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.js');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
   it('parseDocument finds queries in #graphql-annotated templates', async () => {
     const text = `
 import {gql} from 'react-apollo';
@@ -637,6 +667,29 @@ query Test {
 }
 \${A.fragments.test}
 \`
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.js');
+    expect(contents.length).toEqual(0);
+  });
+
+  it('parseDocument ignores non gql call expressions with template literals', async () => {
+    const text = `
+// @flow
+import randomthing from 'package';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = randomthing(\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`);
 
 export function Example(arg: string) {}`;
 

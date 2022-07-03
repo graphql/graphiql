@@ -10,7 +10,6 @@
 import {
   Expression,
   TaggedTemplateExpression,
-  ObjectExpression,
   TemplateLiteral,
 } from '@babel/types';
 
@@ -26,12 +25,6 @@ const PARSER_OPTIONS: ParserOptions = {
   allowSuperOutsideMethod: true,
   sourceType: 'module',
   strictMode: false,
-};
-
-const CREATE_CONTAINER_FUNCTIONS: { [key: string]: boolean } = {
-  createFragmentContainer: true,
-  createPaginationContainer: true,
-  createRefetchContainer: true,
 };
 
 const DEFAULT_STABLE_TAGS = ['graphql', 'graphqls', 'gql'];
@@ -100,74 +93,50 @@ export function findGraphQLTags(
   }
   const ast = parsedAST!;
 
+  const parseTemplateLiteral = (node: TemplateLiteral) => {
+    const loc = node.quasis[0].loc;
+    if (loc) {
+      if (node.quasis.length > 1) {
+        const last = node.quasis.pop();
+        if (last?.loc?.end) {
+          loc.end = last.loc.end;
+        }
+      }
+      const template =
+        node.quasis.length > 1
+          ? node.quasis.map(quasi => quasi.value.raw).join('')
+          : node.quasis[0].value.raw;
+      const range = new Range(
+        new Position(loc.start.line - 1, loc.start.column),
+        new Position(loc.end.line - 1, loc.end.column),
+      );
+      result.push({
+        tag: '',
+        template,
+        range,
+      });
+    }
+  };
+
   const visitors = {
     CallExpression: (node: Expression) => {
       if ('callee' in node) {
         const callee = node.callee;
+
         if (
-          !(
-            (callee.type === 'Identifier' &&
-              CREATE_CONTAINER_FUNCTIONS[callee.name]) ||
-            (callee.type === 'MemberExpression' &&
-              callee.object.type === 'Identifier' &&
-              callee.object.name === 'Relay' &&
-              callee.property.type === 'Identifier' &&
-              CREATE_CONTAINER_FUNCTIONS[callee.property.name])
-          )
+          callee.type === 'Identifier' &&
+          getGraphQLTagName(callee) &&
+          'arguments' in node
         ) {
-          traverse(node, visitors);
-          return;
-        }
-
-        if ('arguments' in node) {
-          const fragments = node.arguments[1];
-          if (fragments.type === 'ObjectExpression') {
-            fragments.properties.forEach(
-              (property: ObjectExpression['properties'][0]) => {
-                if (
-                  'value' in property &&
-                  'loc' in property.value &&
-                  'tag' in property.value
-                ) {
-                  const tagName = getGraphQLTagName(property.value.tag);
-                  const template = getGraphQLText(property.value.quasi);
-                  if (tagName && property.value.loc) {
-                    const loc = property.value.loc;
-                    const range = new Range(
-                      new Position(loc.start.line - 1, loc.start.column),
-                      new Position(loc.end.line - 1, loc.end.column),
-                    );
-                    result.push({
-                      tag: tagName,
-                      template,
-                      range,
-                    });
-                  }
-                }
-              },
-            );
-          } else if ('tag' in fragments) {
-            const tagName = getGraphQLTagName(fragments.tag);
-            const template = getGraphQLText(fragments.quasi);
-            if (tagName && fragments.loc) {
-              const loc = fragments.loc;
-              const range = new Range(
-                new Position(loc.start.line - 1, loc.start.column),
-                new Position(loc.end.line - 1, loc.end.column),
-              );
-
-              result.push({
-                tag: tagName,
-                template,
-                range,
-              });
-            }
-          }
-          // Visit remaining arguments
-          for (let ii = 2; ii < node.arguments.length; ii++) {
-            visit(node.arguments[ii], visitors);
+          const templateLiteral = node.arguments[0];
+          if (templateLiteral && templateLiteral.type === 'TemplateLiteral') {
+            parseTemplateLiteral(templateLiteral);
+            return;
           }
         }
+
+        traverse(node, visitors);
+        return;
       }
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
@@ -208,28 +177,7 @@ export function findGraphQLTags(
         node.leadingComments?.[0]?.value.match(/^\s*GraphQL\s*$/),
       );
       if (hasGraphQLPrefix || hasGraphQLComment) {
-        const loc = node.quasis[0].loc;
-        if (loc) {
-          if (node.quasis.length > 1) {
-            const last = node.quasis.pop();
-            if (last?.loc?.end) {
-              loc.end = last.loc.end;
-            }
-          }
-          const template =
-            node.quasis.length > 1
-              ? node.quasis.map(quasi => quasi.value.raw).join('')
-              : node.quasis[0].value.raw;
-          const range = new Range(
-            new Position(loc.start.line - 1, loc.start.column),
-            new Position(loc.end.line - 1, loc.end.column),
-          );
-          result.push({
-            tag: '',
-            template,
-            range,
-          });
-        }
+        parseTemplateLiteral(node);
       }
     },
   };
@@ -265,11 +213,6 @@ function getGraphQLTagName(tag: Expression): string | null {
     return 'graphql.experimental';
   }
   return null;
-}
-
-function getGraphQLText(quasi: TemplateLiteral) {
-  const quasis = quasi.quasis;
-  return quasis[0].value.raw;
 }
 
 function visit(node: { [key: string]: any }, visitors: TagVisitors) {
