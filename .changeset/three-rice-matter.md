@@ -1,5 +1,7 @@
 ---
 'vscode-graphql': patch
+'graphql-language-service-server': patch
+'graphql-language-service-cli': patch
 ---
 
-Add gql call expressions support (highlight & language)
+Add ```gql(``)```, ```graphql(``)``` call expressions support for highlighting & language
