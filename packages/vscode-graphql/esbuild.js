@@ -3,6 +3,8 @@ const [, , arg] = process.argv;
 
 const logger = console;
 
+const isWatchMode = arg === '--watch';
+
 build({
   entryPoints: ['src/extension.ts', 'src/server/index.ts'],
   bundle: true,
@@ -12,7 +14,7 @@ build({
   external: ['vscode'],
   format: 'cjs',
   sourcemap: true,
-  watch: arg === '--watch',
+  watch: isWatchMode,
 })
   .then(({ errors, warnings }) => {
     if (warnings.length) {
@@ -21,8 +23,14 @@ build({
     if (errors.length) {
       logger.error(...errors);
     }
+
     logger.log('successfully bundled vscode-graphql 🚀');
-    process.exit();
+
+    if (isWatchMode) {
+      logger.log('watching... 🕰');
+    } else {
+      process.exit();
+    }
   })
   .catch(err => {
     logger.error(err);
