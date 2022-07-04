@@ -26,23 +26,26 @@ export type UseVariableEditorArgs = {
   keyMap?: KeyMap;
 };
 
-export function useVariableEditor({
-  editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
-  onEdit,
-  readOnly = false,
-}: UseVariableEditorArgs = {}) {
+export function useVariableEditor(
+  {
+    editorTheme = DEFAULT_EDITOR_THEME,
+    keyMap = DEFAULT_KEY_MAP,
+    onEdit,
+    readOnly = false,
+  }: UseVariableEditorArgs = {},
+  caller?: Function,
+) {
   const {
     initialVariables,
     variableEditor,
     setVariableEditor,
   } = useEditorContext({
     nonNull: true,
-    caller: useVariableEditor,
+    caller: caller || useVariableEditor,
   });
   const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: useVariableEditor });
-  const prettify = usePrettifyEditors({ caller: useVariableEditor });
+  const merge = useMergeQuery({ caller: caller || useVariableEditor });
+  const prettify = usePrettifyEditors({ caller: caller || useVariableEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 

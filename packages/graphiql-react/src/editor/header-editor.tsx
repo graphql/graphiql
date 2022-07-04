@@ -27,20 +27,23 @@ export type UseHeaderEditorArgs = {
   keyMap?: KeyMap;
 };
 
-export function useHeaderEditor({
-  editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
-  onEdit,
-  readOnly = false,
-  shouldPersistHeaders = false,
-}: UseHeaderEditorArgs = {}) {
+export function useHeaderEditor(
+  {
+    editorTheme = DEFAULT_EDITOR_THEME,
+    keyMap = DEFAULT_KEY_MAP,
+    onEdit,
+    readOnly = false,
+    shouldPersistHeaders = false,
+  }: UseHeaderEditorArgs = {},
+  caller?: Function,
+) {
   const { initialHeaders, headerEditor, setHeaderEditor } = useEditorContext({
     nonNull: true,
-    caller: useHeaderEditor,
+    caller: caller || useHeaderEditor,
   });
   const executionContext = useExecutionContext();
-  const merge = useMergeQuery({ caller: useHeaderEditor });
-  const prettify = usePrettifyEditors({ caller: useHeaderEditor });
+  const merge = useMergeQuery({ caller: caller || useHeaderEditor });
+  const prettify = usePrettifyEditors({ caller: caller || useHeaderEditor });
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
