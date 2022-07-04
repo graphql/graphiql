@@ -14,7 +14,7 @@ export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
     nonNull: true,
     caller: HeaderEditor,
   });
-  const ref = useHeaderEditor(hookArgs);
+  const ref = useHeaderEditor(hookArgs, HeaderEditor);
 
   useEffect(() => {
     if (headerEditor && !isHidden) {
