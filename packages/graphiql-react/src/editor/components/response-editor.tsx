@@ -6,7 +6,7 @@ import '../style/info.css';
 import '../style/editor.css';
 
 export function ResponseEditor(props: UseResponseEditorArgs) {
-  const ref = useResponseEditor(props);
+  const ref = useResponseEditor(props, ResponseEditor);
   return (
     <section
       className="result-window"
