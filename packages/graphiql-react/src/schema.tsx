@@ -224,7 +224,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
           setSchema(newSchema);
           onSchemaChange?.(newSchema);
         } catch (error) {
-          setFetchError(formatError(error as Error));
+          setFetchError(formatError(error));
         }
       })
       .catch(error => {

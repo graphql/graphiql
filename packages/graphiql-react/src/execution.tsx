@@ -302,23 +302,17 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             }),
           );
         } else if (isAsyncIterable(value)) {
-          (async () => {
-            try {
-              for await (const result of value) {
-                handleResponse(result);
-              }
-              setIsFetching(false);
-              setSubscription(null);
-            } catch (error) {
-              setIsFetching(false);
-              setResponse(
-                formatError(
-                  error instanceof Error ? error : new Error(`${error}`),
-                ),
-              );
-              setSubscription(null);
+          try {
+            for await (const result of value) {
+              handleResponse(result);
             }
-          })();
+            setIsFetching(false);
+            setSubscription(null);
+          } catch (error) {
+            setIsFetching(false);
+            setResponse(formatError(error));
+            setSubscription(null);
+          }
 
           setSubscription({
             unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
@@ -328,9 +322,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         }
       } catch (error) {
         setIsFetching(false);
-        setResponse(
-          formatError(error instanceof Error ? error : new Error(`${error}`)),
-        );
+        setResponse(formatError(error));
         setSubscription(null);
       }
     },
