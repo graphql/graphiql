@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+
+import { useEditorContext } from '../context';
 import { useVariableEditor, UseVariableEditorArgs } from '../variable-editor';
 
 import '../style/codemirror.css';
@@ -11,7 +14,18 @@ type VariableEditorProps = UseVariableEditorArgs & {
 };
 
 export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
+  const { variableEditor } = useEditorContext({
+    nonNull: true,
+    caller: VariableEditor,
+  });
   const ref = useVariableEditor(hookArgs);
+
+  useEffect(() => {
+    if (variableEditor && !isHidden) {
+      variableEditor.refresh();
+    }
+  }, [variableEditor, isHidden]);
+
   return (
     <div className={`graphiql-editor${isHidden ? ' hidden' : ''}`} ref={ref} />
   );
