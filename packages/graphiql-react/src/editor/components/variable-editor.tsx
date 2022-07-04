@@ -18,7 +18,7 @@ export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
     nonNull: true,
     caller: VariableEditor,
   });
-  const ref = useVariableEditor(hookArgs);
+  const ref = useVariableEditor(hookArgs, VariableEditor);
 
   useEffect(() => {
     if (variableEditor && !isHidden) {
