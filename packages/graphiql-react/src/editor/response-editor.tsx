@@ -23,19 +23,22 @@ export type UseResponseEditorArgs = {
   keyMap?: KeyMap;
 };
 
-export function useResponseEditor({
-  ResponseTooltip,
-  editorTheme = DEFAULT_EDITOR_THEME,
-  keyMap = DEFAULT_KEY_MAP,
-}: UseResponseEditorArgs = {}) {
+export function useResponseEditor(
+  {
+    ResponseTooltip,
+    editorTheme = DEFAULT_EDITOR_THEME,
+    keyMap = DEFAULT_KEY_MAP,
+  }: UseResponseEditorArgs = {},
+  caller?: Function,
+) {
   const { fetchError, validationErrors } = useSchemaContext({
     nonNull: true,
-    caller: useResponseEditor,
+    caller: caller || useResponseEditor,
   });
   const { initialResponse, responseEditor, setResponseEditor } =
     useEditorContext({
       nonNull: true,
-      caller: useResponseEditor,
+      caller: caller || useResponseEditor,
     });
   const ref = useRef<HTMLDivElement>(null);
 
