@@ -46,20 +46,23 @@ export type UseQueryEditorArgs = {
   keyMap?: KeyMap;
 };
 
-export function useQueryEditor({
-  editorTheme = 'graphiql',
-  keyMap,
-  externalFragments,
-  onClickReference,
-  onCopyQuery,
-  onEdit,
-  onEditOperationName,
-  readOnly = false,
-  validationRules,
-}: UseQueryEditorArgs = {}) {
+export function useQueryEditor(
+  {
+    editorTheme = 'graphiql',
+    keyMap,
+    externalFragments,
+    onClickReference,
+    onCopyQuery,
+    onEdit,
+    onEditOperationName,
+    readOnly = false,
+    validationRules,
+  }: UseQueryEditorArgs = {},
+  caller?: Function,
+) {
   const { schema } = useSchemaContext({
     nonNull: true,
-    caller: useQueryEditor,
+    caller: caller || useQueryEditor,
   });
   const {
     initialQuery,
@@ -69,14 +72,14 @@ export function useQueryEditor({
     updateActiveTabValues,
   } = useEditorContext({
     nonNull: true,
-    caller: useQueryEditor,
+    caller: caller || useQueryEditor,
   });
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
-  const copy = useCopyQuery({ caller: useQueryEditor, onCopyQuery });
-  const merge = useMergeQuery({ caller: useQueryEditor });
-  const prettify = usePrettifyEditors({ caller: useQueryEditor });
+  const copy = useCopyQuery({ caller: caller || useQueryEditor, onCopyQuery });
+  const merge = useMergeQuery({ caller: caller || useQueryEditor });
+  const prettify = usePrettifyEditors({ caller: caller || useQueryEditor });
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
