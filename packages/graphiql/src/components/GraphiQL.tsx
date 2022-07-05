@@ -437,6 +437,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     inputValueDeprecation,
     introspectionQueryName,
     maxHistoryLength,
+    onSchemaChange,
     onToggleHistory,
     onToggleDocs,
     storage,
@@ -470,6 +471,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             fetcher={fetcher}
             inputValueDeprecation={inputValueDeprecation}
             introspectionQueryName={introspectionQueryName}
+            onSchemaChange={onSchemaChange}
             schema={schema}
             schemaDescription={schemaDescription}>
             <ExecutionContextProvider
@@ -504,6 +506,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
+  | 'onSchemaChange'
   | 'onToggleDocs'
   | 'onToggleHistory'
   | 'query'
