@@ -54,6 +54,7 @@ type SchemaContextProviderProps = {
   children: ReactNode;
   dangerouslyAssumeSchemaIsValid?: boolean;
   fetcher: Fetcher;
+  onSchemaChange?(schema: GraphQLSchema): void;
   schema?: GraphQLSchema | null;
 } & IntrospectionArgs;
 
@@ -101,7 +102,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const { fetcher } = props;
+  const { fetcher, onSchemaChange } = props;
   useEffect(() => {
     // Only introspect if there is no schema provided via props
     if (props.schema !== undefined) {
@@ -176,7 +177,13 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
             // prop and thus the state could have changed while introspecting,
             // so this avoids a race condition by prioritizing the state that
             // was set after the introspection request was initialized)
-            setSchema(current => (current === undefined ? newSchema : current));
+            setSchema(current => {
+              if (current === undefined) {
+                onSchemaChange?.(newSchema);
+                return newSchema;
+              }
+              return current;
+            });
           } catch (error) {
             setFetchError(formatError(error as Error));
           }
@@ -207,6 +214,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     introspectionQueryName,
     introspectionQuery,
     introspectionQuerySansSubscriptions,
+    onSchemaChange,
     props.schema,
   ]);
 
