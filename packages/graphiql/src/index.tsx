@@ -41,7 +41,6 @@ export { DocExplorer } from './components/DocExplorer';
  */
 export { ToolbarMenu, ToolbarMenuItem } from './components/ToolbarMenu';
 export { ToolbarButton } from './components/ToolbarButton';
-export { ToolbarGroup } from './components/ToolbarGroup';
 export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**
