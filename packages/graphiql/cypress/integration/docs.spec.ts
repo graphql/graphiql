@@ -68,6 +68,7 @@ describe('GraphiQL DocExplorer - search', () => {
     cy.visit(`/`);
     cy.get('.docExplorerShow').click();
     cy.get('label.search-box input').type('test');
+    cy.get('.doc-category-item').should('have.length', 7);
     cy.get('.search-box-clear').click();
     cy.get('.doc-category-title').should('have.text', 'root types');
     cy.get('label.search-box input').should('have.value', '');
