@@ -127,24 +127,6 @@
   position: relative;
 }
 
-.graphiql-container .footer {
-  background: #f6f7f8;
-  border-left: 1px solid #e0e0e0;
-  border-top: 1px solid #e0e0e0;
-  margin-left: 12px;
-  position: relative;
-}
-
-.graphiql-container .footer:before {
-  background: #eeeeee;
-  bottom: 0;
-  content: ' ';
-  left: -13px;
-  position: absolute;
-  top: -1px;
-  width: 12px;
-}
-
 .graphiql-container .toolbar-button {
   background: #fdfdfd;
   background: linear-gradient(#f9f9f9, #ececec);
