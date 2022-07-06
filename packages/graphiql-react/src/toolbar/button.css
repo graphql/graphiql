@@ -1,0 +1,13 @@
+button.graphiql-toolbar-button {
+  display: block;
+  height: var(--toolbar-width);
+  width: var(--toolbar-width);
+
+  &.error {
+    background: var(--color-red-background);
+  }
+
+  & > svg {
+    pointer-events: none;
+  }
+}
