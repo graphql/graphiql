@@ -127,92 +127,11 @@
   position: relative;
 }
 
-.graphiql-container .toolbar-button {
-  background: #fdfdfd;
-  background: linear-gradient(#f9f9f9, #ececec);
-  border: 0;
-  border-radius: 3px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.7), inset 0 1px #fff;
-  color: #555;
-  cursor: pointer;
-  display: inline-block;
-  margin: 0 5px;
-  padding: 3px 11px 5px;
-  text-decoration: none;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 150px;
-}
-
-.graphiql-container .toolbar-button:active {
-  background: linear-gradient(#ececec, #d5d5d5);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.1), inset 0 1px 1px 1px rgba(0, 0, 0, 0.12),
-    inset 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.graphiql-container .toolbar-button.error {
-  background: linear-gradient(#fdf3f3, #e6d6d7);
-  color: #b00;
-}
-
-.graphiql-container .toolbar-button-group {
-  margin: 0 5px;
-  white-space: nowrap;
-}
-
-.graphiql-container .toolbar-button-group > * {
-  margin: 0;
-}
-
-.graphiql-container .toolbar-button-group > *:not(:last-child) {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.graphiql-container .toolbar-button-group > *:not(:first-child) {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  margin-left: -1px;
-}
-
-.graphiql-container .execute-button-wrap {
-  height: 34px;
-  margin: 0 14px 0 28px;
-  position: relative;
-}
-
-.graphiql-container .execute-button {
-  background: linear-gradient(#fdfdfd, #d2d3d6);
-  border-radius: 17px;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  box-shadow: 0 1px 0 #fff;
-  cursor: pointer;
-  fill: #444;
-  height: 34px;
-  margin: 0;
-  padding: 0;
-  width: 34px;
-}
-
-.graphiql-container .toolbar-button > svg,
-.graphiql-container .execute-button svg {
-  pointer-events: none;
-}
-
-.graphiql-container .execute-button:active {
-  background: linear-gradient(#e6e6e6, #c3c3c3);
-  box-shadow: 0 1px 0 #fff, inset 0 0 2px rgba(0, 0, 0, 0.2),
-    inset 0 0 6px rgba(0, 0, 0, 0.1);
-}
-
 .graphiql-container .toolbar-menu,
 .graphiql-container .toolbar-select {
   position: relative;
 }
 
-.graphiql-container .execute-options,
 .graphiql-container .toolbar-menu-items,
 .graphiql-container .toolbar-select-options {
   background: #fff;
@@ -221,12 +140,6 @@
   padding: 6px 0;
   position: absolute;
   z-index: 100;
-}
-
-.graphiql-container .execute-options {
-  min-width: 100px;
-  top: 37px;
-  left: -1px;
 }
 
 .graphiql-container .toolbar-menu-items {
@@ -252,7 +165,6 @@
   visibility: visible;
 }
 
-.graphiql-container .execute-options > li,
 .graphiql-container .toolbar-menu-items > li,
 .graphiql-container .toolbar-select-options > li {
   cursor: pointer;
@@ -264,7 +176,6 @@
   white-space: nowrap;
 }
 
-.graphiql-container .execute-options > li.selected,
 .graphiql-container .toolbar-menu-items > li.hover,
 .graphiql-container .toolbar-menu-items > li:active,
 .graphiql-container .toolbar-menu-items > li:hover,

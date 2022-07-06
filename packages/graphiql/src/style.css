@@ -18,23 +18,50 @@
   flex-direction: column;
 }
 
-/* The query editor */
+/* The query editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
   border-bottom: 1px solid var(--color-neutral-15);
+  display: flex;
   flex: 1;
   padding: var(--px-16);
+}
+
+/* The query editor */
+.graphiql-container .graphiql-query-editor-wrapper {
+  display: flex;
+  flex: 1;
+}
+
+/* The vertical toolbar next to the query editor */
+.graphiql-container .graphiql-toolbar {
+  margin-left: var(--px-16);
+  width: var(--toolbar-width);
+}
+.graphiql-container .graphiql-toolbar > * + * {
+  margin-top: var(--px-8);
+}
+
+/* The toolbar icons */
+.graphiql-toolbar-icon {
+  color: var(--color-neutral-40);
+  display: block;
+  height: calc(var(--toolbar-width) - (var(--px-8) * 2));
+  padding: var(--px-8);
+  width: calc(var(--toolbar-width) - (var(--px-8) * 2));
 }
 
 /* The tab bar for editor tools */
 .graphiql-container .graphiql-editor-tools {
   align-items: center;
-  color: var(--color-neutral-60);
   cursor: row-resize;
   display: flex;
   justify-content: space-between;
   padding: var(--px-8);
 }
-.graphiql-container .graphiql-editor-tools .active {
+.graphiql-container .graphiql-editor-tools button {
+  color: var(--color-neutral-60);
+}
+.graphiql-container .graphiql-editor-tools button.active {
   color: var(--color-neutral-100);
 }
 
