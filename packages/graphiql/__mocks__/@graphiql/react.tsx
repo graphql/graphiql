@@ -1,33 +1,5 @@
 import {
-  ChevronDownIcon,
-  ChevronUpIcon,
-  EditorContext,
-  EditorContextProvider,
-  ExecutionContext,
-  ExecutionContextProvider,
-  ExplorerContext,
-  ExplorerContextProvider,
-  HistoryContext,
-  HistoryContextProvider,
-  ImagePreview,
-  onHasCompletion,
-  SchemaContext,
-  SchemaContextProvider,
-  StorageContext,
-  StorageContextProvider,
-  UnStyledButton,
-  useAutoCompleteLeafs,
-  useCopyQuery,
-  useDragResize,
   useEditorContext,
-  useExecutionContext,
-  useExplorerContext,
-  useHistoryContext,
-  useMergeQuery,
-  usePrettifyEditors,
-  useSchemaContext,
-  useSelectHistoryItem,
-  useStorageContext,
   HeaderEditor as _HeaderEditor,
   QueryEditor as _QueryEditor,
   ResponseEditor as _ResponseEditor,
@@ -37,30 +9,16 @@ import {
   useResponseEditor as _useResponseEditor,
   useVariableEditor as _useVariableEditor,
 } from '@graphiql/react';
-import type {
-  EditorContextType,
-  ExecutionContextType,
-  ExplorerContextType,
-  ExplorerFieldDef,
-  ExplorerNavStack,
-  ExplorerNavStackItem,
-  HistoryContextType,
-  ResponseTooltipType,
-  SchemaContextType,
-  StorageContextType,
-  TabsState,
-  UseHeaderEditorArgs,
-  UseResponseEditorArgs,
-  UseQueryEditorArgs,
-  UseVariableEditorArgs,
-} from '@graphiql/react';
 import React, { useEffect, useRef, useState } from 'react';
 
 export {
   ChevronDownIcon,
   ChevronUpIcon,
+  CopyIcon,
+  Dropdown,
   EditorContext,
   EditorContextProvider,
+  ExecuteButton,
   ExecutionContext,
   ExecutionContextProvider,
   ExplorerContext,
@@ -69,10 +27,15 @@ export {
   HistoryContextProvider,
   ImagePreview,
   onHasCompletion,
+  MergeIcon,
+  PlayIcon,
+  PrettifyIcon,
   SchemaContext,
   SchemaContextProvider,
+  StopIcon,
   StorageContext,
   StorageContextProvider,
+  ToolbarButton,
   UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
@@ -86,7 +49,7 @@ export {
   useSchemaContext,
   useSelectHistoryItem,
   useStorageContext,
-};
+} from '@graphiql/react';
 
 export type {
   EditorContextType,
@@ -104,7 +67,7 @@ export type {
   UseResponseEditorArgs,
   UseQueryEditorArgs,
   UseVariableEditorArgs,
-};
+} from '@graphiql/react';
 
 type Name = 'query' | 'variable' | 'header' | 'response';
 

@@ -1,0 +1,30 @@
+.graphiql-execute-button-wrapper {
+  position: relative;
+}
+
+.graphiql-execute-button {
+  background-color: var(--color-pink);
+  border: none;
+  border-radius: var(--border-radius-8);
+  cursor: pointer;
+  height: var(--toolbar-width);
+  padding: 0;
+  width: var(--toolbar-width);
+
+  &:active {
+    background-color: var(--color-pink-dark);
+  }
+
+  &:focus {
+    outline: var(--color-pink-dark) auto 1px;
+  }
+
+  & > svg {
+    color: var(--color-neutral-0);
+    display: block;
+    height: var(--px-16);
+    margin: auto;
+    pointer-events: none;
+    width: var(--px-16);
+  }
+}
