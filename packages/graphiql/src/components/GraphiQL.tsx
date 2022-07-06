@@ -1008,7 +1008,7 @@ GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
-  return <div className="footer">{props.children}</div>;
+  return <div className="graphiql-footer">{props.children}</div>;
 }
 
 GraphiQLFooter.displayName = 'GraphiQLFooter';
