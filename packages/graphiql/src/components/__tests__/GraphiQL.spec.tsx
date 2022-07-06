@@ -464,7 +464,9 @@ describe('GraphiQL', () => {
           </GraphiQL>,
         );
 
-        expect(container.querySelectorAll('.footer button')).toHaveLength(1);
+        expect(
+          container.querySelectorAll('.graphiql-footer button'),
+        ).toHaveLength(1);
       });
 
       it('can be overridden using a named component', () => {
@@ -482,7 +484,9 @@ describe('GraphiQL', () => {
         );
 
         expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
-        expect(container.querySelectorAll('.footer button')).toHaveLength(1);
+        expect(
+          container.querySelectorAll('.graphiql-footer button'),
+        ).toHaveLength(1);
       });
     });
   });
