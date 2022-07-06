@@ -52,7 +52,7 @@ Cypress.Commands.add('getCy', cyName => {
 });
 
 Cypress.Commands.add('clickExecuteQuery', () => {
-  return cy.get('.execute-button').click();
+  return cy.get('.graphiql-execute-button').click();
 });
 
 Cypress.Commands.add('clickPrettify', () => {

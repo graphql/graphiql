@@ -10,7 +10,7 @@ describe('Tabs', () => {
     cy.get('#session-tab-0').should('have.text', '<untitled>');
 
     // Run the query
-    cy.get('.execute-button').click().wait(500);
+    cy.clickExecuteQuery().wait(500);
 
     // Open a new tab
     cy.get('.tab-add').click();
@@ -33,7 +33,7 @@ describe('Tabs', () => {
       .type('{"someHeader":"someValue"', { force: true });
 
     // Run the query
-    cy.get('.execute-button').click().wait(500);
+    cy.clickExecuteQuery().wait(500);
 
     // Switch back to the first tab
     cy.get('#session-tab-0').click();
