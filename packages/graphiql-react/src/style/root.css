@@ -18,8 +18,10 @@
   --color-neutral-0: #ffffff;
 
   --color-pink-background: rgb(214, 6, 144, 0.1);
+  --color-pink-dark: #ab0573;
   --color-orche-background: rgba(211, 127, 0, 0.07);
   --color-orche-background-dark: rgba(211, 127, 0, 0.12);
+  --color-red-background: rgba(248, 91, 48, 0.12);
 
   /* Font */
   --font-family: 'Roboto', sans-serif;
@@ -50,6 +52,9 @@
   --box-shadow: 0px 6px 20px rgba(59, 76, 106, 0.13),
     0px 1.34018px 4.46726px rgba(59, 76, 106, 0.0774939),
     0px 0.399006px 1.33002px rgba(59, 76, 106, 0.0525061);
+
+  /* Layout */
+  --toolbar-width: 40px;
 }
 
 .graphiql-container,
