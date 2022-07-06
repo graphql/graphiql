@@ -24,16 +24,21 @@ import {
 import {
   ChevronDownIcon,
   ChevronUpIcon,
+  CopyIcon,
   EditorContextProvider,
+  ExecuteButton,
   ExecutionContextProvider,
   ExecutionContextType,
   ExplorerContextProvider,
   HeaderEditor,
   HistoryContextProvider,
+  MergeIcon,
+  PrettifyIcon,
   QueryEditor,
   ResponseEditor,
   SchemaContextProvider,
   StorageContextProvider,
+  ToolbarButton,
   UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
@@ -59,9 +64,7 @@ import type {
   KeyMap,
 } from '@graphiql/react';
 
-import { ExecuteButton } from './ExecuteButton';
-import { ToolbarButton } from './ToolbarButton';
-import { ToolbarGroup } from './ToolbarGroup';
+import { ToolbarButton as LegacyToolbarButton } from './ToolbarButton';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
@@ -421,13 +424,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
   static HeaderEditor = HeaderEditor;
   static ResultViewer = ResponseEditor;
 
-  // Add a button to the Toolbar.
-  static Button = ToolbarButton;
-  static ToolbarButton = ToolbarButton; // Don't break existing API.
-
-  // Add a group of buttons to the Toolbar
-  static Group = ToolbarGroup;
-
   // Add a menu of items to the Toolbar.
   static Menu = ToolbarMenu;
   static MenuItem = ToolbarMenuItem;
@@ -666,46 +662,38 @@ class GraphiQLWithContext extends React.Component<
     const toolbar = find(children, child =>
       isChildComponentType(child, GraphiQL.Toolbar),
     ) || (
-      <GraphiQL.Toolbar>
+      <>
         <ToolbarButton
           onClick={() => {
             this.props.prettify();
           }}
           title="Prettify Query (Shift-Ctrl-P)"
-          label="Prettify"
-        />
+          aria-label="Prettify"
+        >
+          <PrettifyIcon className="graphiql-toolbar-icon" />
+        </ToolbarButton>
         <ToolbarButton
           onClick={() => {
             this.props.merge();
           }}
           title="Merge Query (Shift-Ctrl-M)"
-          label="Merge"
-        />
+          aria-label="Merge"
+        >
+          <MergeIcon className="graphiql-toolbar-icon" />
+        </ToolbarButton>
         <ToolbarButton
           onClick={() => {
             this.props.copy();
           }}
           title="Copy Query (Shift-Ctrl-C)"
-          label="Copy"
-        />
-        <ToolbarButton
-          onClick={() => this.props.historyContext?.toggle()}
-          title={
-            this.props.historyContext?.isVisible
-              ? 'Hide History'
-              : 'Show History'
-          }
-          label="History"
-        />
-        <ToolbarButton
-          onClick={() => this.props.schemaContext.introspect()}
-          title="Fetch GraphQL schema using introspection (Shift-Ctrl-R)"
-          label="Introspect"
-        />
+          aria-label="Copy"
+        >
+          <CopyIcon className="graphiql-toolbar-icon" />
+        </ToolbarButton>
         {this.props.toolbar?.additionalContent
           ? this.props.toolbar.additionalContent
           : null}
-      </GraphiQL.Toolbar>
+      </>
     );
 
     const footer = find(children, child =>
@@ -730,8 +718,20 @@ class GraphiQLWithContext extends React.Component<
               {this.props.beforeTopBarContent}
               <div className="topBar">
                 {logo}
-                <ExecuteButton />
-                {toolbar}
+                <LegacyToolbarButton
+                  onClick={() => this.props.historyContext?.toggle()}
+                  title={
+                    this.props.historyContext?.isVisible
+                      ? 'Hide History'
+                      : 'Show History'
+                  }
+                  label="History"
+                />
+                <LegacyToolbarButton
+                  onClick={() => this.props.schemaContext.introspect()}
+                  title="Fetch GraphQL schema using introspection (Shift-Ctrl-R)"
+                  label="Introspect"
+                />
               </div>
               {this.props.explorerContext &&
                 !this.props.explorerContext.isVisible && (
@@ -795,18 +795,30 @@ class GraphiQLWithContext extends React.Component<
                       className="graphiql-query-editor"
                       aria-label="Query Editor"
                     >
-                      <QueryEditor
-                        editorTheme={this.props.editorTheme}
-                        keyMap={this.props.keyMap}
-                        onClickReference={() => {
-                          if (this.props.docResize.hiddenElement === 'second') {
-                            this.props.docResize.setHiddenElement(null);
-                          }
-                        }}
-                        onCopyQuery={this.props.onCopyQuery}
-                        onEdit={this.props.onEditQuery}
-                        readOnly={this.props.readOnly}
-                      />
+                      <div className="graphiql-query-editor-wrapper">
+                        <QueryEditor
+                          editorTheme={this.props.editorTheme}
+                          keyMap={this.props.keyMap}
+                          onClickReference={() => {
+                            if (
+                              this.props.docResize.hiddenElement === 'second'
+                            ) {
+                              this.props.docResize.setHiddenElement(null);
+                            }
+                          }}
+                          onCopyQuery={this.props.onCopyQuery}
+                          onEdit={this.props.onEditQuery}
+                          readOnly={this.props.readOnly}
+                        />
+                        <div
+                          className="graphiql-toolbar"
+                          role="toolbar"
+                          aria-label="Editor Commands"
+                        >
+                          <ExecuteButton />
+                          {toolbar}
+                        </div>
+                      </div>
                     </section>
                   </div>
                   <div ref={this.props.editorToolsResize.dragBarRef}>
@@ -993,11 +1005,8 @@ GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
-  return (
-    <div className="toolbar" role="toolbar" aria-label="Editor Commands">
-      {props.children}
-    </div>
-  );
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return <>{props.children}</>;
 }
 
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
