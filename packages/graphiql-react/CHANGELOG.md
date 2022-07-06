@@ -1,5 +1,15 @@
 # @graphiql/react
 
+## 0.5.0
+
+### Minor Changes
+
+- [#2541](https://github.com/graphql/graphiql/pull/2541) [`788d84ef`](https://github.com/graphql/graphiql/commit/788d84ef2784188981f1b4cfb78fba24153bf0cb) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add `onSchemaChange` callback prop to the `SchemaContextProvider` component
+
+### Patch Changes
+
+- [#2545](https://github.com/graphql/graphiql/pull/2545) [`8ce5b483`](https://github.com/graphql/graphiql/commit/8ce5b483ee190b5f5dd84eaf42e5d1359ce185e6) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid top-level dynamic imports from `codemirror` that break importing the package in non-browser environments
+
 ## 0.4.3
 
 ### Patch Changes

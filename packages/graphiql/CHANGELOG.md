@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.9.11
+
+### Patch Changes
+
+- [#2541](https://github.com/graphql/graphiql/pull/2541) [`788d84ef`](https://github.com/graphql/graphiql/commit/788d84ef2784188981f1b4cfb78fba24153bf0cb) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix the `onSchemaChange` prop, it is now again called after the schema is fetched (this was broken since v1.9.3)
+
+- Updated dependencies [[`8ce5b483`](https://github.com/graphql/graphiql/commit/8ce5b483ee190b5f5dd84eaf42e5d1359ce185e6), [`788d84ef`](https://github.com/graphql/graphiql/commit/788d84ef2784188981f1b4cfb78fba24153bf0cb)]:
+  - @graphiql/react@0.5.0
+
 ## 1.9.10
 
 ### Patch Changes
