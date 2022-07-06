@@ -44,6 +44,7 @@ export {
   StorageContextProvider,
   useStorageContext,
 } from './storage';
+export * from './toolbar';
 export * from './ui';
 export { useDragResize } from './utility/resize';
 
