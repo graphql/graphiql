@@ -6,8 +6,9 @@
  *  This source code is licensed under the MIT license found in the
  *  LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
+import { ToolbarButton } from '@graphiql/react';
 import { render, fireEvent } from '@testing-library/react';
+import React from 'react';
 import { GraphiQL, Fetcher } from '../GraphiQL';
 import {
   mockQuery1,
@@ -423,20 +424,22 @@ describe('GraphiQL', () => {
         const { container } = render(
           <GraphiQL fetcher={noOpFetcher}>
             <GraphiQL.Toolbar>
-              <GraphiQL.Button />
+              <ToolbarButton />
             </GraphiQL.Toolbar>
           </GraphiQL>,
         );
 
         expect(
-          container.querySelectorAll('[role="toolbar"] .toolbar-button'),
+          container.querySelectorAll(
+            '[role="toolbar"] .graphiql-toolbar-button',
+          ),
         ).toHaveLength(1);
       });
 
       it('can be overridden using a named component', () => {
         const WrappedToolbar = wrap(
           <GraphiQL.Toolbar>
-            <GraphiQL.Button />
+            <ToolbarButton />
           </GraphiQL.Toolbar>,
         );
         WrappedToolbar.displayName = 'GraphiQLToolbar';
@@ -449,7 +452,9 @@ describe('GraphiQL', () => {
 
         expect(container.querySelector('.test-wrapper')).toBeInTheDocument();
         expect(
-          container.querySelectorAll('[role="toolbar"] button'),
+          container.querySelectorAll(
+            '[role="toolbar"] .graphiql-toolbar-button',
+          ),
         ).toHaveLength(1);
       });
     });
@@ -459,7 +464,7 @@ describe('GraphiQL', () => {
         const { container } = render(
           <GraphiQL fetcher={noOpFetcher}>
             <GraphiQL.Footer>
-              <GraphiQL.Button />
+              <ToolbarButton />
             </GraphiQL.Footer>
           </GraphiQL>,
         );
@@ -472,7 +477,7 @@ describe('GraphiQL', () => {
       it('can be overridden using a named component', () => {
         const WrappedFooter = wrap(
           <GraphiQL.Footer data-test-selector="override-footer">
-            <GraphiQL.Button />
+            <ToolbarButton />
           </GraphiQL.Footer>,
         );
         WrappedFooter.displayName = 'GraphiQLFooter';
