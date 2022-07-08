@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.7.29
+
+### Patch Changes
+
+- [#2553](https://github.com/graphql/graphiql/pull/2553) [`edc1c964`](https://github.com/graphql/graphiql/commit/edc1c96477cc2fbc2b6ac5d6195b8f9766a8c5d4) Thanks [@acao](https://github.com/acao)! - Fix error with LSP crash for CLI users #2230. `vscode-graphql` not impacted - rather, `nvim.coc`, maybe other clients who use CLI directly). recreation of #2546 by [@xuanduc987](https://github.com/xuanduc987, thank you!)
+
 ## 2.7.28
 
 ### Patch Changes
