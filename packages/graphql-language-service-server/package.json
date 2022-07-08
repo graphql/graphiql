@@ -44,6 +44,8 @@
     "nullthrows": "^1.0.0",
     "vscode-jsonrpc": "^5.0.1",
     "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver-protocol": "~3.15.3",
+    "vscode-languageserver-types": "~3.15.1",
     "fast-glob": "^3.2.7",
     "vscode-uri": "^3.0.2",
     "glob": "^7.2.0",
@@ -53,7 +55,6 @@
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
     "graphql": "^16.4.0",
-    "vscode-languageserver-protocol": "^3.15.3",
     "vscode-languageserver-types": "^3.15.1"
   }
 }

@@ -93,6 +93,7 @@ wincent
 yoshiakis
 zouxuoz
 Divy
+xuanduc
 
 // packages and tools
 argparse
@@ -235,3 +236,4 @@ typeahead
 typeaheads
 unparsable
 randomthing
+
