@@ -1,0 +1,147 @@
+{
+  "fileTypes": ["python"],
+  "injectionSelector": "L:source.python -string -comment",
+  "patterns": [
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "\\s+(gql)\\s*\\(\\s*(''')",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function"
+        },
+        "2": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "end": "(''')",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "\\s+(gql)\\s*\\(\\s*(\"\"\")",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function"
+        },
+        "2": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "end": "(\"\"\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "\\s+(gql)\\s*\\(\\s*$",
+      "beginCaptures": {
+        "1": {
+          "name": "entity.name.function"
+        }
+      },
+      "end": "\\)|,",
+      "patterns": [
+        {
+          "begin": "^\\s*(''')",
+          "beginCaptures": {
+            "1": {
+              "name": "string.quoted.multi.python"
+            }
+          },
+          "end": "(''')",
+          "endCaptures": {
+            "1": {
+              "name": "string.quoted.multi.python"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.graphql"
+            }
+          ]
+        },
+        {
+          "begin": "^\\s*(\"\"\")",
+          "beginCaptures": {
+            "1": {
+              "name": "string.quoted.multi.python"
+            }
+          },
+          "end": "(\"\"\")",
+          "endCaptures": {
+            "1": {
+              "name": "string.quoted.multi.python"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.graphql"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(''')(#graphql)",
+      "beginCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        },
+        "2": {
+          "name": "comment.line.graphql.js"
+        }
+      },
+      "end": "(''')",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "(\"\"\")(#graphql)",
+      "beginCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        },
+        "2": {
+          "name": "comment.line.graphql.js"
+        }
+      },
+      "end": "(\"\"\")",
+      "endCaptures": {
+        "1": {
+          "name": "string.quoted.multi.python"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    }
+  ],
+  "scopeName": "inline.graphql.python"
+}
