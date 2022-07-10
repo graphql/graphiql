@@ -11,6 +11,8 @@ import type {
   CompletionItem as CompletionItemType,
 } from 'vscode-languageserver-types';
 
+export { InsertTextFormat } from 'vscode-languageserver-types';
+
 import type { ASTNode, GraphQLSchema } from 'graphql';
 
 import type {

@@ -110,10 +110,11 @@ if (!command) {
 switch (command) {
   case 'server':
     process.on('uncaughtException', error => {
-      process.stdout.write(
+      process.stderr.write(
         'An error was thrown from GraphQL language service: ' + String(error),
       );
-      process.exit(0);
+      // don't exit at all if there is an uncaughtException
+      // process.exit(0);
     });
 
     const options: { [key: string]: any } = {};

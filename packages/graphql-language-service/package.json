@@ -35,7 +35,7 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "vscode-languageserver-types": "^3.15.1",
+    "vscode-languageserver-types": "^3.17.1",
     "nullthrows": "^1.0.0"
   },
   "devDependencies": {
