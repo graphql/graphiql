@@ -42,10 +42,8 @@
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
     "nullthrows": "^1.0.0",
-    "vscode-jsonrpc": "^5.0.1",
-    "vscode-languageserver": "^6.1.1",
-    "vscode-languageserver-protocol": "~3.15.3",
-    "vscode-languageserver-types": "~3.15.1",
+    "vscode-languageserver": "^8.0.1",
+    "vscode-jsonrpc": "^8.0.1",
     "fast-glob": "^3.2.7",
     "vscode-uri": "^3.0.2",
     "glob": "^7.2.0",
@@ -54,7 +52,6 @@
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
-    "graphql": "^16.4.0",
-    "vscode-languageserver-types": "^3.15.1"
+    "graphql": "^16.4.0"
   }
 }
