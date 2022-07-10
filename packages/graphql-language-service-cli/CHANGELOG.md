@@ -1,5 +1,18 @@
 # graphql-language-service-cli
 
+## 3.3.0
+
+### Minor Changes
+
+- [#2557](https://github.com/graphql/graphiql/pull/2557) [`3304606d`](https://github.com/graphql/graphiql/commit/3304606d5130a745cbdab0e6c9182e75101ddde9) Thanks [@acao](https://github.com/acao)! - upgrades the `vscode-languageserver` and `vscode-jsonrpc` reference implementations for the lsp server to the latest. also upgrades `vscode-languageclient` in `vscode-graphql` to the latest 8.0.1. seems to work fine for IPC in `vscode-graphql` at least!
+
+  hopefully this solves #2230 once and for all!
+
+### Patch Changes
+
+- Updated dependencies [[`3304606d`](https://github.com/graphql/graphiql/commit/3304606d5130a745cbdab0e6c9182e75101ddde9)]:
+  - graphql-language-service-server@2.8.0
+
 ## 3.2.30
 
 ### Patch Changes
