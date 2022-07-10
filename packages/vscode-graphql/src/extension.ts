@@ -7,17 +7,19 @@ import {
 } from 'vscode';
 
 import {
-  LanguageClient,
   LanguageClientOptions,
   ServerOptions,
   TransportKind,
   RevealOutputChannelOn,
-} from 'vscode-languageclient';
+  LanguageClient,
+} from 'vscode-languageclient/node';
 
 import * as path from 'path';
 import { createStatusBar, initStatusBar } from './apis/statusBar';
 
-export function activate(context: ExtensionContext) {
+let client: LanguageClient;
+
+export async function activate(context: ExtensionContext) {
   const outputChannel: OutputChannel = window.createOutputChannel(
     'GraphQL Language Server',
   );
@@ -90,16 +92,18 @@ export function activate(context: ExtensionContext) {
     },
   };
 
-  const client = new LanguageClient(
+  client = new LanguageClient(
     'vscode-graphql',
-    'GraphQL Language Server',
     serverOptions,
     clientOptions,
     debug,
   );
 
-  let clientLSPDisposable = client.start();
-  context.subscriptions.push(clientLSPDisposable);
+  const statusBarItem = createStatusBar();
+  context.subscriptions.push(statusBarItem);
+
+  await client.start();
+  initStatusBar(statusBarItem, client, window.activeTextEditor);
 
   const commandShowOutputChannel = commands.registerCommand(
     'vscode-graphql.showOutputChannel',
@@ -108,28 +112,22 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(commandShowOutputChannel);
 
-  const statusBarItem = createStatusBar();
-  context.subscriptions.push(statusBarItem);
-  client.onReady().then(() => {
-    initStatusBar(statusBarItem, client, window.activeTextEditor);
-  });
-
   commands.registerCommand('vscode-graphql.restart', async () => {
     outputChannel.appendLine(`Stopping GraphQL LSP`);
     await client.stop();
 
-    clientLSPDisposable.dispose();
-
     outputChannel.appendLine(`Restarting GraphQL LSP`);
-    clientLSPDisposable = client.start();
-    context.subscriptions.push(clientLSPDisposable);
-
+    await client.start();
     outputChannel.appendLine(`GraphQL LSP restarted`);
   });
 }
 
 export function deactivate() {
-  console.log('Extension "vscode-graphql" has been de-activated!!');
+  if (!client) {
+    return undefined;
+  }
+  console.log('Extension "vscode-graphql" will be de-activated!!');
+  return client.stop();
 }
 
 function getConfig() {

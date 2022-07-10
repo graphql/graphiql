@@ -38,7 +38,6 @@ import {
   WorkspaceSymbolRequest,
   createConnection,
   Connection,
-  DidSaveTextDocumentParams,
 } from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
@@ -304,7 +303,7 @@ async function addHandlers({
   );
   connection.onNotification(
     DidSaveTextDocumentNotification.type,
-    async (params: DidSaveTextDocumentParams) => {
+    async params => {
       const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
         params,
       );
