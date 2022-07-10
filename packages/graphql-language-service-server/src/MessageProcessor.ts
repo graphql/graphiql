@@ -32,7 +32,7 @@ import type {
   DidSaveTextDocumentParams,
   DidOpenTextDocumentParams,
   DidChangeConfigurationParams,
-} from 'vscode-languageserver-protocol';
+} from 'vscode-languageserver/node';
 
 import type {
   Diagnostic,
@@ -53,9 +53,9 @@ import type {
   DocumentSymbolParams,
   SymbolInformation,
   WorkspaceSymbolParams,
-  IConnection,
+  Connection,
   DidChangeConfigurationRegistrationOptions,
-} from 'vscode-languageserver';
+} from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
@@ -90,7 +90,7 @@ function toPosition(position: VscodePosition): IPosition {
 }
 
 export class MessageProcessor {
-  _connection: IConnection;
+  _connection: Connection;
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
   _languageService!: GraphQLLanguageService;
@@ -126,7 +126,7 @@ export class MessageProcessor {
     config?: GraphQLConfig;
     parser?: typeof parseDocument;
     tmpDir?: string;
-    connection: IConnection;
+    connection: Connection;
   }) {
     this._connection = connection;
     this._textDocumentCache = new Map();
@@ -154,10 +154,10 @@ export class MessageProcessor {
       mkdirp(this._tmpDirBase);
     }
   }
-  get connection(): IConnection {
+  get connection(): Connection {
     return this._connection;
   }
-  set connection(connection: IConnection) {
+  set connection(connection: Connection) {
     this._connection = connection;
   }
 

@@ -6,10 +6,6 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import {
-  CompletionItemKind,
-  InsertTextFormat,
-} from 'vscode-languageserver-types';
 
 import {
   FragmentDefinitionNode,
@@ -31,7 +27,13 @@ import {
   isNonNullType,
 } from 'graphql';
 
-import { CompletionItem, AllTypeInfo, IPosition } from '../types';
+import {
+  CompletionItem,
+  AllTypeInfo,
+  IPosition,
+  CompletionItemKind,
+  InsertTextFormat,
+} from '../types';
 
 import {
   GraphQLBoolean,

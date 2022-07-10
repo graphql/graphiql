@@ -16,7 +16,7 @@ import {
   SocketMessageWriter,
   StreamMessageReader,
   StreamMessageWriter,
-} from 'vscode-jsonrpc';
+} from 'vscode-jsonrpc/node';
 
 import {
   CompletionRequest,
@@ -37,8 +37,8 @@ import {
   PublishDiagnosticsParams,
   WorkspaceSymbolRequest,
   createConnection,
-  IConnection,
-} from 'vscode-languageserver';
+  Connection,
+} from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
 import {
@@ -228,7 +228,7 @@ async function initializeHandlers({
   writer,
   logger,
   options,
-}: InitializerParams): Promise<IConnection> {
+}: InitializerParams): Promise<Connection> {
   try {
     const connection = createConnection(reader, writer);
 
@@ -243,7 +243,7 @@ async function initializeHandlers({
 
 function reportDiagnostics(
   diagnostics: PublishDiagnosticsParams | null,
-  connection: IConnection,
+  connection: Connection,
 ) {
   if (diagnostics) {
     connection.sendNotification(
@@ -254,7 +254,7 @@ function reportDiagnostics(
 }
 
 type HandlerOptions = {
-  connection: IConnection;
+  connection: Connection;
   logger: Logger;
   config?: GraphQLConfig;
   parser?: typeof parseDocument;

@@ -126,11 +126,8 @@ describe('getAutocompleteSuggestions', () => {
       { label: 'skip' },
     ];
 
-    console.log({ graphQLVersion });
-
     // TODO: remove this once defer and stream are merged to `graphql`
     if (graphQLVersion.startsWith('16.0.0-experimental-stream-defer')) {
-      console.log('expect stream');
       expectedDirectiveSuggestions.push({ label: 'stream' }, { label: 'test' });
     } else {
       expectedDirectiveSuggestions.push({ label: 'test' });
