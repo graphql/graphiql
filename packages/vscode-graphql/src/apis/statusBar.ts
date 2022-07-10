@@ -6,6 +6,7 @@ import {
   ThemeColor,
   version,
 } from 'vscode';
+
 import { LanguageClient, State } from 'vscode-languageclient/node';
 
 enum Status {
