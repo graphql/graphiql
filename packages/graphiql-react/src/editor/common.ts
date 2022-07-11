@@ -30,7 +30,7 @@ export async function importCodeMirror(
     // function (e.g. parcel) or an object containing a `default` property
     typeof c === 'function' ? c : c.default,
   );
-  const allAddons =
+  await Promise.all(
     options?.useCommonAddons === false
       ? addons
       : [
@@ -46,7 +46,7 @@ export async function importCodeMirror(
           // @ts-expect-error
           import('codemirror/keymap/sublime'),
           ...addons,
-        ];
-  await Promise.all(allAddons.map(addon => addon));
+        ],
+  );
   return CodeMirror;
 }
