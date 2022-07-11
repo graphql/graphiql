@@ -1,3 +1,44 @@
+/* Everything */
+.graphiql-container {
+  display: flex;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* The sidebar */
+.graphiql-container .graphiql-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--px-8);
+  width: var(--sidebar-width);
+}
+.graphiql-container .graphiql-sidebar button {
+  color: var(--color-neutral-60);
+  height: var(--sidebar-width);
+  width: var(--sidebar-width);
+}
+.graphiql-container .graphiql-sidebar button.active {
+  color: var(--color-neutral-100);
+}
+.graphiql-container .graphiql-sidebar button:not(:first-child) {
+  margin-top: var(--px-4);
+}
+.graphiql-container .graphiql-sidebar button > svg {
+  height: calc(var(--sidebar-width) - (2 * var(--px-12)));
+  padding: var(--px-12);
+  pointer-events: none;
+  width: calc(var(--sidebar-width) - (2 * var(--px-12)));
+}
+
+/* The main content, i.e. everything except the sidebar */
+.graphiql-container .graphiql-main {
+  display: flex;
+  flex: 1;
+}
+
 /* The whole session, i.e. editors and response */
 .graphiql-container .graphiql-session {
   background-color: var(--color-neutral-7);
@@ -150,4 +191,17 @@
   height: var(--px-12);
   padding: var(--px-12);
   width: var(--px-12);
+}
+
+/* Generic spin animation */
+.graphiql-spin {
+  animation: spin 1s linear 0s infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

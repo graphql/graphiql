@@ -54,6 +54,7 @@
     0px 0.399006px 1.33002px rgba(59, 76, 106, 0.0525061);
 
   /* Layout */
+  --sidebar-width: 44px;
   --toolbar-width: 40px;
 }
 
@@ -61,6 +62,7 @@
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
 .graphiql-container button {
+  color: var(--color-neutral-100);
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: var(----font-weight-regular);
