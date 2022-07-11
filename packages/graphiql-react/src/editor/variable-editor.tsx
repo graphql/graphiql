@@ -120,7 +120,7 @@ export function useVariableEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
+  }, [editorTheme, initialVariables, keyMap, readOnly, setVariableEditor]);
 
   useChangeHandler(
     variableEditor,

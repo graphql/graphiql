@@ -219,7 +219,7 @@ export function useQueryEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
+  }, [editorTheme, initialQuery, keyMap, readOnly, setQueryEditor]);
 
   /**
    * We don't use the generic `useChangeHandler` hook here because we want to

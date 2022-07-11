@@ -103,7 +103,7 @@ export function useHeaderEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+  }, [editorTheme, initialHeaders, keyMap, readOnly, setHeaderEditor]);
 
   useChangeHandler(
     headerEditor,
