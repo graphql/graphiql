@@ -40,7 +40,6 @@ export { DocExplorer } from './components/DocExplorer';
  * Toolbar
  */
 export { ToolbarMenu, ToolbarMenuItem } from './components/ToolbarMenu';
-export { ToolbarButton } from './components/ToolbarButton';
 export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**

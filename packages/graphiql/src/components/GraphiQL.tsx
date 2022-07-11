@@ -24,6 +24,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
+  DocsIcon,
   EditorContextProvider,
   ExecuteButton,
   ExecutionContextProvider,
@@ -31,11 +32,14 @@ import {
   ExplorerContextProvider,
   HeaderEditor,
   HistoryContextProvider,
+  HistoryIcon,
+  KeyboardShortcutIcon,
   MergeIcon,
   PrettifyIcon,
   QueryEditor,
   ResponseEditor,
   SchemaContextProvider,
+  SettingsIcon,
   StorageContextProvider,
   ToolbarButton,
   UnStyledButton,
@@ -63,7 +67,6 @@ import type {
   KeyMap,
 } from '@graphiql/react';
 
-import { ToolbarButton as LegacyToolbarButton } from './ToolbarButton';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
@@ -532,11 +535,11 @@ const GraphiQLConsumeContexts = forwardRef<
   const prettify = usePrettifyEditors();
 
   const docResize = useDragResize({
-    defaultSizeRelation: 3,
+    defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
-    initiallyHidden: explorerContext?.isVisible ? undefined : 'second',
+    initiallyHidden: explorerContext?.isVisible ? undefined : 'first',
     onHiddenElementChange: resizableElement => {
-      if (resizableElement === 'second') {
+      if (resizableElement === 'first') {
         explorerContext?.hide();
       } else {
         explorerContext?.show();
@@ -676,105 +679,142 @@ class GraphiQLWithContext extends React.Component<
 
     return (
       <div data-testid="graphiql-container" className="graphiql-container">
-        <div ref={this.props.docResize.firstRef}>
-          {this.props.historyContext?.isVisible && (
-            <div
-              className="historyPaneWrap"
-              style={{ width: '230px', zIndex: 7 }}>
-              <QueryHistory />
-            </div>
-          )}
-          <div className="editorWrap">
-            <div className="topBarWrap">
-              {this.props.beforeTopBarContent}
-              <div className="topBar">
-                {logo}
-                <LegacyToolbarButton
-                  onClick={() => this.props.historyContext?.toggle()}
-                  title={
-                    this.props.historyContext?.isVisible
-                      ? 'Hide History'
-                      : 'Show History'
+        <div className="graphiql-sidebar">
+          <div>
+            {this.props.explorerContext ? (
+              <UnStyledButton
+                className={this.props.explorerContext.isVisible ? 'active' : ''}
+                onClick={() => {
+                  if (this.props.explorerContext?.isVisible) {
+                    this.props.explorerContext?.hide();
+                    this.props.docResize.setHiddenElement('first');
+                  } else {
+                    this.props.explorerContext?.show();
+                    this.props.docResize.setHiddenElement(null);
                   }
-                  label="History"
-                />
-              </div>
-              {this.props.explorerContext &&
-                !this.props.explorerContext.isVisible && (
-                  <button
-                    className="docExplorerShow"
-                    onClick={() => {
-                      this.props.explorerContext?.show();
-                      this.props.docResize.setHiddenElement(null);
-                    }}
-                    aria-label="Open Documentation Explorer">
-                    Docs
-                  </button>
-                )}
+                }}
+                title={
+                  this.props.explorerContext.isVisible
+                    ? 'Hide Documentation Explorer'
+                    : 'Show Documentation Explorer'
+                }>
+                <DocsIcon />
+              </UnStyledButton>
+            ) : null}
+            {this.props.historyContext ? (
+              <UnStyledButton
+                className={this.props.historyContext.isVisible ? 'active' : ''}
+                onClick={() => this.props.historyContext?.toggle()}
+                title={
+                  this.props.historyContext.isVisible
+                    ? 'Hide History'
+                    : 'Show History'
+                }>
+                <HistoryIcon />
+              </UnStyledButton>
+            ) : null}
+          </div>
+          <div>
+            <UnStyledButton>
+              <KeyboardShortcutIcon />
+            </UnStyledButton>
+            <UnStyledButton>
+              <SettingsIcon />
+            </UnStyledButton>
+          </div>
+        </div>
+        <div className="graphiql-main">
+          <div ref={this.props.docResize.firstRef}>
+            <div className="docExplorerWrap">
+              <DocExplorer
+                onClose={() => this.props.docResize.setHiddenElement('first')}
+              />
             </div>
-            {this.props.tabs ? (
-              <Tabs
-                tabsProps={{
-                  'aria-label': 'Select active operation',
-                }}>
-                {this.props.editorContext.tabs.map((tab, index) => (
-                  <Tab
-                    key={tab.id}
-                    isActive={index === this.props.editorContext.activeTabIndex}
-                    title={tab.title}
-                    isCloseable={this.props.editorContext.tabs.length > 1}
-                    onSelect={() => {
-                      this.props.executionContext.stop();
-                      this.props.editorContext.changeTab(index);
-                    }}
-                    onClose={() => {
-                      if (this.props.editorContext.activeTabIndex === index) {
-                        this.props.executionContext.stop();
+          </div>
+          <div ref={this.props.docResize.dragBarRef}>
+            {this.props.explorerContext?.isVisible ? (
+              <div className="graphiql-horizontal-drag-bar" />
+            ) : null}
+          </div>
+          <div ref={this.props.docResize.secondRef}>
+            {this.props.historyContext?.isVisible && (
+              <div
+                className="historyPaneWrap"
+                style={{ width: '230px', zIndex: 7 }}>
+                <QueryHistory />
+              </div>
+            )}
+            <div className="editorWrap">
+              <div className="topBarWrap">
+                {this.props.beforeTopBarContent}
+                <div className="topBar">{logo}</div>
+              </div>
+              {this.props.tabs ? (
+                <Tabs
+                  tabsProps={{
+                    'aria-label': 'Select active operation',
+                  }}>
+                  {this.props.editorContext.tabs.map((tab, index) => (
+                    <Tab
+                      key={tab.id}
+                      isActive={
+                        index === this.props.editorContext.activeTabIndex
                       }
-                      this.props.editorContext.closeTab(index);
-                    }}
-                    tabProps={{
-                      'aria-controls': 'graphiql-session',
-                      id: `session-tab-${index}`,
+                      title={tab.title}
+                      isCloseable={this.props.editorContext.tabs.length > 1}
+                      onSelect={() => {
+                        this.props.executionContext.stop();
+                        this.props.editorContext.changeTab(index);
+                      }}
+                      onClose={() => {
+                        if (this.props.editorContext.activeTabIndex === index) {
+                          this.props.executionContext.stop();
+                        }
+                        this.props.editorContext.closeTab(index);
+                      }}
+                      tabProps={{
+                        'aria-controls': 'graphiql-session',
+                        id: `session-tab-${index}`,
+                      }}
+                    />
+                  ))}
+                  <TabAddButton
+                    onClick={() => {
+                      this.props.editorContext.addTab();
                     }}
                   />
-                ))}
-                <TabAddButton
-                  onClick={() => {
-                    this.props.editorContext.addTab();
-                  }}
-                />
-              </Tabs>
-            ) : null}
-            <div
-              role="tabpanel"
-              id="graphiql-session"
-              className="graphiql-session"
-              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
-              <div ref={this.props.editorResize.firstRef}>
-                <div className="graphiql-editors">
-                  <div ref={this.props.editorToolsResize.firstRef}>
-                    <section
-                      className="graphiql-query-editor"
-                      aria-label="Query Editor">
-                      <div className="graphiql-query-editor-wrapper">
-                        <QueryEditor
-                          editorTheme={this.props.editorTheme}
-                          externalFragments={this.props.externalFragments}
-                          keyMap={this.props.keyMap}
-                          onClickReference={() => {
-                            if (
-                              this.props.docResize.hiddenElement === 'second'
-                            ) {
-                              this.props.docResize.setHiddenElement(null);
-                            }
-                          }}
-                          onCopyQuery={this.props.onCopyQuery}
-                          onEdit={this.props.onEditQuery}
-                          onEditOperationName={this.props.onEditOperationName}
-                          readOnly={this.props.readOnly}
-                          validationRules={this.props.validationRules}
-                        />
+                </Tabs>
+              ) : null}
+              <div
+                role="tabpanel"
+                id="graphiql-session"
+                className="graphiql-session"
+                aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
+                <div ref={this.props.editorResize.firstRef}>
+                  <div className="graphiql-editors">
+                    <div ref={this.props.editorToolsResize.firstRef}>
+                      <section
+                        className="graphiql-query-editor"
+                        aria-label="Query Editor">
+                        <div className="graphiql-query-editor-wrapper">
+                          <QueryEditor
+                            editorTheme={this.props.editorTheme}
+                            externalFragments={this.props.externalFragments}
+                            keyMap={this.props.keyMap}
+                            onClickReference={() => {
+                              if (
+                                this.props.docResize.hiddenElement === 'first'
+                              ) {
+                                this.props.docResize.setHiddenElement(null);
+                              }
+                            }}
+                            onCopyQuery={this.props.onCopyQuery}
+                            onEdit={this.props.onEditQuery}
+                            onEditOperationName={this.props.onEditOperationName}
+                            readOnly={this.props.readOnly}
+                            validationRules={this.props.validationRules}
+                          />
+                        </div>
                         <div
                           className="graphiql-toolbar"
                           role="toolbar"
@@ -782,37 +822,14 @@ class GraphiQLWithContext extends React.Component<
                           <ExecuteButton />
                           {toolbar}
                         </div>
-                      </div>
-                    </section>
-                  </div>
-                  <div ref={this.props.editorToolsResize.dragBarRef}>
-                    <div className="graphiql-editor-tools">
-                      <div className="graphiql-editor-tools-tabs">
-                        <UnStyledButton
-                          className={
-                            this.state.activeSecondaryEditor === 'variable'
-                              ? 'active'
-                              : ''
-                          }
-                          onClick={() => {
-                            if (
-                              this.props.editorToolsResize.hiddenElement ===
-                              'second'
-                            ) {
-                              this.props.editorToolsResize.setHiddenElement(
-                                null,
-                              );
-                            }
-                            this.setState({
-                              activeSecondaryEditor: 'variable',
-                            });
-                          }}>
-                          Variables
-                        </UnStyledButton>
-                        {this.props.headerEditorEnabled ? (
+                      </section>
+                    </div>
+                    <div ref={this.props.editorToolsResize.dragBarRef}>
+                      <div className="graphiql-editor-tools">
+                        <div className="graphiql-editor-tools-tabs">
                           <UnStyledButton
                             className={
-                              this.state.activeSecondaryEditor === 'header'
+                              this.state.activeSecondaryEditor === 'variable'
                                 ? 'active'
                                 : ''
                             }
@@ -826,96 +843,107 @@ class GraphiQLWithContext extends React.Component<
                                 );
                               }
                               this.setState({
-                                activeSecondaryEditor: 'header',
+                                activeSecondaryEditor: 'variable',
                               });
                             }}>
-                            Headers
+                            Variables
                           </UnStyledButton>
-                        ) : null}
-                      </div>
-                      <UnStyledButton
-                        onClick={() => {
-                          if (
-                            this.props.editorToolsResize.hiddenElement ===
-                            'second'
-                          ) {
-                            this.props.editorToolsResize.setHiddenElement(null);
-                          } else {
+                          {headerEditorEnabled ? (
+                            <UnStyledButton
+                              className={
+                                this.state.activeSecondaryEditor === 'header'
+                                  ? 'active'
+                                  : ''
+                              }
+                              onClick={() => {
+                                if (
+                                  this.props.editorToolsResize.hiddenElement ===
+                                  'second'
+                                ) {
+                                  this.props.editorToolsResize.setHiddenElement(
+                                    null,
+                                  );
+                                }
+                                this.setState({
+                                  activeSecondaryEditor: 'header',
+                                });
+                              }}>
+                              Headers
+                            </UnStyledButton>
+                          ) : null}
+                        </div>
+                        <UnStyledButton
+                          onClick={() => {
                             this.props.editorToolsResize.setHiddenElement(
-                              'second',
+                              this.props.editorToolsResize.hiddenElement ===
+                                'second'
+                                ? null
+                                : 'second',
                             );
-                          }
-                        }}>
-                        {this.props.editorToolsResize.hiddenElement ===
-                        'second' ? (
-                          <ChevronUpIcon className="graphiql-chevron-icon" />
-                        ) : (
-                          <ChevronDownIcon className="graphiql-chevron-icon" />
-                        )}
-                      </UnStyledButton>
+                          }}>
+                          {this.props.editorToolsResize.hiddenElement ===
+                          'second' ? (
+                            <ChevronUpIcon className="graphiql-chevron-icon" />
+                          ) : (
+                            <ChevronDownIcon className="graphiql-chevron-icon" />
+                          )}
+                        </UnStyledButton>
+                      </div>
                     </div>
-                  </div>
-                  <div ref={this.props.editorToolsResize.secondRef}>
-                    <section
-                      className="graphiql-editor-tool"
-                      aria-label={
-                        this.state.activeSecondaryEditor === 'variable'
-                          ? 'Variables'
-                          : 'Headers'
-                      }>
-                      <VariableEditor
-                        onEdit={this.props.onEditVariables}
-                        editorTheme={this.props.editorTheme}
-                        readOnly={this.props.readOnly}
-                        isHidden={
-                          this.state.activeSecondaryEditor !== 'variable'
-                        }
-                        keyMap={this.props.keyMap}
-                      />
-                      {headerEditorEnabled && (
-                        <HeaderEditor
-                          isHidden={
-                            this.state.activeSecondaryEditor !== 'header'
-                          }
+                    <div ref={this.props.editorToolsResize.secondRef}>
+                      <section
+                        className="graphiql-editor-tool"
+                        aria-label={
+                          this.state.activeSecondaryEditor === 'variable'
+                            ? 'Variables'
+                            : 'Headers'
+                        }>
+                        <VariableEditor
+                          onEdit={this.props.onEditVariables}
                           editorTheme={this.props.editorTheme}
-                          onEdit={this.props.onEditHeaders}
                           readOnly={this.props.readOnly}
-                          shouldPersistHeaders={this.props.shouldPersistHeaders}
+                          isHidden={
+                            this.state.activeSecondaryEditor !== 'variable'
+                          }
                           keyMap={this.props.keyMap}
                         />
-                      )}
-                    </section>
+                        {headerEditorEnabled && (
+                          <HeaderEditor
+                            isHidden={
+                              this.state.activeSecondaryEditor !== 'header'
+                            }
+                            editorTheme={this.props.editorTheme}
+                            onEdit={this.props.onEditHeaders}
+                            readOnly={this.props.readOnly}
+                            shouldPersistHeaders={
+                              this.props.shouldPersistHeaders
+                            }
+                            keyMap={this.props.keyMap}
+                          />
+                        )}
+                      </section>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div ref={this.props.editorResize.dragBarRef}>
-                <div className="graphiql-horizontal-drag-bar" />
-              </div>
-              <div ref={this.props.editorResize.secondRef}>
-                <div className="graphiql-response">
-                  {this.props.executionContext.isFetching ? (
-                    <div className="graphiql-spinner" />
-                  ) : null}
-                  <ResponseEditor
-                    value={this.props.response}
-                    editorTheme={this.props.editorTheme}
-                    ResponseTooltip={this.props.ResultsTooltip}
-                    keyMap={this.props.keyMap}
-                  />
-                  {footer}
+                <div ref={this.props.editorResize.dragBarRef}>
+                  <div className="graphiql-horizontal-drag-bar" />
+                </div>
+                <div ref={this.props.editorResize.secondRef}>
+                  <div className="graphiql-response">
+                    {this.props.executionContext.isFetching ? (
+                      <div className="graphiql-spinner" />
+                    ) : null}
+                    <ResponseEditor
+                      value={this.props.response}
+                      editorTheme={this.props.editorTheme}
+                      ResponseTooltip={this.props.ResultsTooltip}
+                      keyMap={this.props.keyMap}
+                    />
+                    {footer}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div ref={this.props.docResize.dragBarRef}>
-          <div className="docExplorerResizer" />
-        </div>
-        <div ref={this.props.docResize.secondRef}>
-          <div className="docExplorerWrap">
-            <DocExplorer
-              onClose={() => this.props.docResize.setHiddenElement('second')}
-            />
           </div>
         </div>
       </div>
