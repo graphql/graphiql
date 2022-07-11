@@ -874,18 +874,12 @@ class GraphiQLWithContext extends React.Component<
                         </div>
                         <UnStyledButton
                           onClick={() => {
-                            if (
+                            this.props.editorToolsResize.setHiddenElement(
                               this.props.editorToolsResize.hiddenElement ===
-                              'second'
-                            ) {
-                              this.props.editorToolsResize.setHiddenElement(
-                                null,
-                              );
-                            } else {
-                              this.props.editorToolsResize.setHiddenElement(
-                                'second',
-                              );
-                            }
+                                'second'
+                                ? null
+                                : 'second',
+                            );
                           }}>
                           {this.props.editorToolsResize.hiddenElement ===
                           'second' ? (
