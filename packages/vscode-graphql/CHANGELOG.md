@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.6.0
+
+### Minor Changes
+
+- [#2556](https://github.com/graphql/graphiql/pull/2556) [`e04dd9c7`](https://github.com/graphql/graphiql/commit/e04dd9c774cfdb2897e48a67ab854c4a4bdaa9ef) Thanks [@qw-in](https://github.com/qw-in)! - Add support for syntax highlighting in python files
+
 ## 0.5.0
 
 ### Minor Changes
