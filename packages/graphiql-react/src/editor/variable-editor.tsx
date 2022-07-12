@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
-import { commonKeys, importCodeMirror } from './common';
+import {
+  commonKeys,
+  DEFAULT_EDITOR_THEME,
+  DEFAULT_KEY_MAP,
+  importCodeMirror,
+} from './common';
 import { useEditorContext } from './context';
 import {
   EditCallback,
@@ -10,6 +15,7 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
+  useSynchronizeOption,
 } from './hooks';
 import { CodeMirrorType, KeyMap } from './types';
 
@@ -21,8 +27,8 @@ export type UseVariableEditorArgs = {
 };
 
 export function useVariableEditor({
-  editorTheme = 'graphiql',
-  keyMap,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
 }: UseVariableEditorArgs = {}) {
@@ -66,7 +72,6 @@ export function useVariableEditor({
         tabSize: 2,
         mode: 'graphql-variables',
         theme: editorTheme,
-        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -120,7 +125,9 @@ export function useVariableEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialVariables, keyMap, readOnly, setVariableEditor]);
+  }, [editorTheme, initialVariables, readOnly, setVariableEditor]);
+
+  useSynchronizeOption(variableEditor, 'keyMap', keyMap);
 
   useChangeHandler(
     variableEditor,

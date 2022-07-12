@@ -1,5 +1,5 @@
 import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
-import { EditorChange } from 'codemirror';
+import type { EditorChange, EditorConfiguration } from 'codemirror';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
 import { useCallback, useEffect } from 'react';
@@ -21,6 +21,18 @@ export function useSynchronizeValue(
       editor.setValue(value);
     }
   }, [editor, value]);
+}
+
+export function useSynchronizeOption<K extends keyof EditorConfiguration>(
+  editor: CodeMirrorEditor | null,
+  option: K,
+  value: EditorConfiguration[K],
+) {
+  useEffect(() => {
+    if (editor) {
+      editor.setOption(option, value);
+    }
+  }, [editor, option, value]);
 }
 
 export type EditCallback = (value: string) => void;
