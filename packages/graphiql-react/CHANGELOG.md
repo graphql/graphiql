@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.5.1
+
+### Patch Changes
+
+- [#2561](https://github.com/graphql/graphiql/pull/2561) [`08346cba`](https://github.com/graphql/graphiql/commit/08346cba136825341881f9dfefc62a60d748e0ee) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add missing effect dependencies to make sure editors are recreated when changing the `keyMap` prop
+
 ## 0.5.0
 
 ### Minor Changes
