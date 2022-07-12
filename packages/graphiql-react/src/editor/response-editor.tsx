@@ -4,10 +4,15 @@ import { ComponentType, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { useSchemaContext } from '../schema';
 
-import { commonKeys, importCodeMirror } from './common';
+import {
+  commonKeys,
+  DEFAULT_EDITOR_THEME,
+  DEFAULT_KEY_MAP,
+  importCodeMirror,
+} from './common';
 import { ImagePreview } from './components';
 import { useEditorContext } from './context';
-import { useSynchronizeValue } from './hooks';
+import { useSynchronizeOption, useSynchronizeValue } from './hooks';
 import { CodeMirrorEditor, KeyMap } from './types';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
@@ -21,8 +26,8 @@ export type UseResponseEditorArgs = {
 
 export function useResponseEditor({
   ResponseTooltip,
-  editorTheme = 'graphiql',
-  keyMap,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
   value,
 }: UseResponseEditorArgs = {}) {
   const { fetchError, validationErrors } = useSchemaContext({
@@ -105,7 +110,6 @@ export function useResponseEditor({
         readOnly: true,
         theme: editorTheme,
         mode: 'graphql-results',
-        keyMap: keyMap ?? 'sublime',
         foldGutter: true,
         gutters: ['CodeMirror-foldgutter'],
         // @ts-expect-error
@@ -120,6 +124,8 @@ export function useResponseEditor({
       isActive = false;
     };
   }, [editorTheme, setResponseEditor]);
+
+  useSynchronizeOption(responseEditor, 'keyMap', keyMap);
 
   useSynchronizeValue(responseEditor, value);
 

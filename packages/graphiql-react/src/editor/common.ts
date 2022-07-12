@@ -1,3 +1,8 @@
+import { KeyMap } from './types';
+
+export const DEFAULT_EDITOR_THEME = 'graphiql';
+export const DEFAULT_KEY_MAP: KeyMap = 'sublime';
+
 let isMacOs = false;
 
 if (typeof window === 'object') {

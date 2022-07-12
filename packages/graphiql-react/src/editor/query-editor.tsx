@@ -15,7 +15,12 @@ import { markdown } from '../markdown';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
-import { commonKeys, importCodeMirror } from './common';
+import {
+  commonKeys,
+  DEFAULT_EDITOR_THEME,
+  DEFAULT_KEY_MAP,
+  importCodeMirror,
+} from './common';
 import {
   CodeMirrorEditorWithOperationFacts,
   useEditorContext,
@@ -28,6 +33,7 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
+  useSynchronizeOption,
 } from './hooks';
 import { CodeMirrorEditor, CodeMirrorType, KeyMap } from './types';
 import { normalizeWhitespace } from './whitespace';
@@ -47,8 +53,8 @@ export type UseQueryEditorArgs = {
 };
 
 export function useQueryEditor({
-  editorTheme = 'graphiql',
-  keyMap,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
   externalFragments,
   onClickReference,
   onCopyQuery,
@@ -131,7 +137,6 @@ export function useQueryEditor({
         foldGutter: true,
         mode: 'graphql',
         theme: editorTheme,
-        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -219,7 +224,9 @@ export function useQueryEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialQuery, keyMap, readOnly, setQueryEditor]);
+  }, [editorTheme, initialQuery, readOnly, setQueryEditor]);
+
+  useSynchronizeOption(queryEditor, 'keyMap', keyMap);
 
   /**
    * We don't use the generic `useChangeHandler` hook here because we want to

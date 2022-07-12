@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
-import { commonKeys, importCodeMirror } from './common';
+import {
+  commonKeys,
+  DEFAULT_EDITOR_THEME,
+  DEFAULT_KEY_MAP,
+  importCodeMirror,
+} from './common';
 import { useEditorContext } from './context';
 import {
   EditCallback,
@@ -10,6 +15,7 @@ import {
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
+  useSynchronizeOption,
 } from './hooks';
 import { KeyMap } from './types';
 
@@ -22,8 +28,8 @@ export type UseHeaderEditorArgs = {
 };
 
 export function useHeaderEditor({
-  editorTheme = 'graphiql',
-  keyMap,
+  editorTheme = DEFAULT_EDITOR_THEME,
+  keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
   shouldPersistHeaders = false,
@@ -60,7 +66,6 @@ export function useHeaderEditor({
         tabSize: 2,
         mode: { name: 'javascript', json: true },
         theme: editorTheme,
-        keyMap: keyMap ?? 'sublime',
         autoCloseBrackets: true,
         matchBrackets: true,
         showCursorWhenSelecting: true,
@@ -103,7 +108,9 @@ export function useHeaderEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, initialHeaders, keyMap, readOnly, setHeaderEditor]);
+  }, [editorTheme, initialHeaders, readOnly, setHeaderEditor]);
+
+  useSynchronizeOption(headerEditor, 'keyMap', keyMap);
 
   useChangeHandler(
     headerEditor,
