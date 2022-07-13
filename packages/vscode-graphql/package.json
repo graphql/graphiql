@@ -119,6 +119,16 @@
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
+      },
+      {
+        "injectTo": [
+          "text.html.php"
+        ],
+        "scopeName": "inline.graphql.php",
+        "path": "./grammars/graphql.php.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
       }
     ],
     "snippets": [
