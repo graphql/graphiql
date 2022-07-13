@@ -24,6 +24,18 @@
   &:not(:first-child) {
     margin-top: var(--px-4);
   }
+
+  & > input {
+    border: none;
+    flex: 1;
+    margin: 0;
+    padding: var(--px-8) var(--px-12);
+    width: 100%;
+
+    &:focus {
+      outline: var(--color-pink) auto 1px;
+    }
+  }
 }
 
 button.graphiql-history-item-label {
@@ -51,14 +63,6 @@ button.graphiql-history-item-action {
   }
 }
 
-.graphiql-history-item > input {
-  border: none;
-  flex: 1;
-  margin: 0;
-  padding: var(--px-8) var(--px-12);
-  width: 100%;
-
-  &:focus {
-    outline: var(--color-pink) auto 1px;
-  }
+.graphiql-history-item-spacer {
+  height: var(--px-16);
 }
