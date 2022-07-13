@@ -1,5 +1,5 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from '../editor';
 import { PenIcon, StarFilledIcon, StarIcon } from '../icons';
@@ -10,22 +10,28 @@ import './style.css';
 
 export function History() {
   const { items } = useHistoryContext({ nonNull: true });
-
+  const reversedItems = items.slice().reverse();
   return (
     <section aria-label="History" className="graphiql-history">
       <div className="graphiql-history-header">History</div>
       <ul className="graphiql-history-items">
-        {items
-          .slice()
-          .reverse()
-          .map((item, i) => {
-            return (
-              <HistoryItem
-                key={`${i}:${item.label || item.query}`}
-                item={item}
-              />
-            );
-          })}
+        {reversedItems.map((item, i) => {
+          return (
+            <Fragment key={`${i}:${item.label || item.query}`}>
+              <HistoryItem item={item} />
+              {/**
+               * The (reversed) items are ordered in a way that all favourites
+               * come first, so if the next item is not a favourite anymore we
+               * place a spacer between them to separate these groups.
+               */}
+              {item.favorite &&
+              reversedItems[i + 1] &&
+              !reversedItems[i + 1].favorite ? (
+                <div className="graphiql-history-item-spacer" />
+              ) : null}
+            </Fragment>
+          );
+        })}
       </ul>
     </section>
   );
