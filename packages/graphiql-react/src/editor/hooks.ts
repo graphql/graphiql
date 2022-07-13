@@ -63,7 +63,16 @@ export function useChangeHandler(
       updateActiveTabValues({ [tabProperty]: value });
     });
 
-    const handleChange = (editorInstance: CodeMirrorEditor) => {
+    const handleChange = (
+      editorInstance: CodeMirrorEditor,
+      changeObj: EditorChange | undefined,
+    ) => {
+      // When we signal a change manually without actually changing anything
+      // we don't want to invoke the callback.
+      if (!changeObj) {
+        return;
+      }
+
       const newValue = editorInstance.getValue();
       store(newValue);
       updateTab(newValue);
