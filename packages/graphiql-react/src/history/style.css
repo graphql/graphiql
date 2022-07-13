@@ -25,6 +25,36 @@
     margin-top: var(--px-4);
   }
 
+  &.editable {
+    background-color: var(--color-pink-background);
+
+    & > input {
+      background: transparent;
+      padding: 0 var(--px-10);
+
+      &::placeholder {
+        color: var(--color-neutral-60);
+      }
+    }
+
+    & > button {
+      color: var(--color-pink);
+      padding: 0 var(--px-10);
+
+      &:active {
+        background-color: var(--color-pink-background-dark);
+      }
+
+      &:focus {
+        outline: var(--color-pink) auto 1px;
+      }
+
+      & > svg {
+        display: block;
+      }
+    }
+  }
+
   & > input {
     border: none;
     flex: 1;
