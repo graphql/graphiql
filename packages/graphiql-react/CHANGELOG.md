@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.5.2
+
+### Patch Changes
+
+- [#2565](https://github.com/graphql/graphiql/pull/2565) [`f581b437`](https://github.com/graphql/graphiql/commit/f581b437e5bdab6f3ad817d230ee6d1b410bb591) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Don't invoke editor change callbacks when manually signaling "empty" changes.
+
 ## 0.5.1
 
 ### Patch Changes
