@@ -20,8 +20,8 @@ export function History() {
             <Fragment key={`${i}:${item.label || item.query}`}>
               <HistoryItem item={item} />
               {/**
-               * The (reversed) items are ordered in a way that all favourites
-               * come first, so if the next item is not a favourite anymore we
+               * The (reversed) items are ordered in a way that all favorites
+               * come first, so if the next item is not a favorite anymore we
                * place a spacer between them to separate these groups.
                */}
               {item.favorite &&
