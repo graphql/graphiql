@@ -1,5 +1,6 @@
 import _ChevronDownIcon from './chevron-down.svg';
 import _ChevronUpIcon from './chevron-up.svg';
+import _CloseIcon from './close.svg';
 import _CopyIcon from './copy.svg';
 import _DocsIcon from './docs.svg';
 import _HistoryIcon from './history.svg';
@@ -18,6 +19,7 @@ export const ChevronDownIcon = generateIcon(
   'chevron down icon',
 );
 export const ChevronUpIcon = generateIcon(_ChevronUpIcon, 'chevron up icon');
+export const CloseIcon = generateIcon(_CloseIcon, 'close icon');
 export const CopyIcon = generateIcon(_CopyIcon, 'copy icon');
 export const DocsIcon = generateIcon(_DocsIcon, 'docs icon');
 export const HistoryIcon = generateIcon(_HistoryIcon, 'history icon');

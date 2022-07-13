@@ -18,6 +18,7 @@
   --color-neutral-0: #ffffff;
 
   --color-pink-background: rgb(214, 6, 144, 0.1);
+  --color-pink-background-dark: rgb(214, 6, 144, 0.15);
   --color-pink-dark: #ab0573;
   --color-orche-background: rgba(211, 127, 0, 0.07);
   --color-orche-background-dark: rgba(211, 127, 0, 0.12);
@@ -63,11 +64,20 @@
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
-.graphiql-container:is(button),
-.graphiql-container:is(input) {
+.graphiql-container:is(button) {
   color: var(--color-neutral-100);
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   font-weight: var(----font-weight-regular);
   line-height: var(--line-height);
+}
+
+.graphiql-container input {
+  color: var(--color-neutral-100);
+  font-family: var(--font-family);
+  font-size: var(--font-size-caption);
+}
+
+.graphiql-container input::placeholder {
+  color: var(--color-neutral-60);
 }

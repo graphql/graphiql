@@ -2,7 +2,7 @@ import { QueryStoreItem } from '@graphiql/toolkit';
 import { Fragment, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from '../editor';
-import { PenIcon, StarFilledIcon, StarIcon } from '../icons';
+import { CloseIcon, PenIcon, StarFilledIcon, StarIcon } from '../icons';
 import { UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
@@ -50,12 +50,13 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     nonNull: true,
     caller: HistoryItem,
   });
-  const editField = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [isEditable, setIsEditable] = useState(false);
 
   useEffect(() => {
-    if (isEditable && editField.current) {
-      editField.current.focus();
+    if (isEditable && inputRef.current) {
+      inputRef.current.focus();
     }
   }, [isEditable]);
 
@@ -67,24 +68,39 @@ export function HistoryItem(props: QueryHistoryItemProps) {
   return (
     <li className={'graphiql-history-item' + (isEditable ? ' editable' : '')}>
       {isEditable ? (
-        <input
-          type="text"
-          defaultValue={props.item.label}
-          ref={editField}
-          onBlur={e => {
-            e.stopPropagation();
-            setIsEditable(false);
-            editLabel({ ...props.item, label: e.target.value });
-          }}
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              e.stopPropagation();
+        <>
+          <input
+            type="text"
+            defaultValue={props.item.label}
+            ref={inputRef}
+            onKeyDown={e => {
+              if (e.keyCode === 27) {
+                // Escape
+                setIsEditable(false);
+              } else if (e.keyCode === 13) {
+                // Enter
+                setIsEditable(false);
+                editLabel({ ...props.item, label: e.currentTarget.value });
+              }
+            }}
+            placeholder="Type a label"
+          />
+          <UnStyledButton
+            ref={buttonRef}
+            onClick={() => {
               setIsEditable(false);
-              editLabel({ ...props.item, label: e.currentTarget.value });
-            }
-          }}
-          placeholder="Type a label"
-        />
+              editLabel({ ...props.item, label: inputRef.current?.value });
+            }}>
+            Save
+          </UnStyledButton>
+          <UnStyledButton
+            ref={buttonRef}
+            onClick={() => {
+              setIsEditable(false);
+            }}>
+            <CloseIcon />
+          </UnStyledButton>
+        </>
       ) : (
         <>
           <UnStyledButton
