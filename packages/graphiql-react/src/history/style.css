@@ -30,7 +30,12 @@
 
     & > input {
       background: transparent;
+      border: none;
+      flex: 1;
+      margin: 0;
+      outline: none;
       padding: 0 var(--px-10);
+      width: 100%;
 
       &::placeholder {
         color: var(--color-neutral-60);
@@ -52,18 +57,6 @@
       & > svg {
         display: block;
       }
-    }
-  }
-
-  & > input {
-    border: none;
-    flex: 1;
-    margin: 0;
-    padding: var(--px-8) var(--px-12);
-    width: 100%;
-
-    &:focus {
-      outline: var(--color-pink) auto 1px;
     }
   }
 }
