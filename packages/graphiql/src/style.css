@@ -137,6 +137,14 @@
   border-top: 1px solid var(--color-neutral-15);
 }
 
+/* The plugin container */
+.graphiql-container .graphiql-plugin {
+  border-left: 1px solid var(--color-neutral-15);
+  flex: 1;
+  max-width: calc(100% - 2 * var(--px-16));
+  padding: var(--px-16);
+}
+
 /* Generic loading spinner */
 .graphiql-container .graphiql-spinner {
   height: 56px;
