@@ -2,8 +2,7 @@
   background: white;
 }
 
-.graphiql-container .doc-explorer-title-bar,
-.graphiql-container .history-title-bar {
+.graphiql-container .doc-explorer-title-bar {
   cursor: default;
   display: flex;
   height: 34px;
@@ -13,8 +12,7 @@
   user-select: none;
 }
 
-.graphiql-container .doc-explorer-title,
-.graphiql-container .history-title {
+.graphiql-container .doc-explorer-title {
   flex: 1;
   font-weight: bold;
   overflow-x: hidden;
@@ -54,17 +52,11 @@
   position: relative;
 }
 
-.graphiql-container .doc-explorer-contents,
-.graphiql-container .history-contents {
+.graphiql-container .doc-explorer-contents {
   background-color: #ffffff;
   border-top: 1px solid #d6d6d6;
-  bottom: 0;
-  left: 0;
   overflow-y: auto;
   padding: 20px 15px;
-  position: absolute;
-  right: 0;
-  top: 47px;
 }
 
 .graphiql-container .doc-type-description p:first-child,

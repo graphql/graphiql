@@ -1,17 +1,8 @@
-import {
-  HistoryContext,
-  HistoryContextProvider,
-  useHistoryContext,
-} from './context';
-import { useSelectHistoryItem } from './hooks';
-
-import type { HistoryContextType } from './context';
-
+export { History } from './components';
 export {
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
-  useSelectHistoryItem,
-};
+} from './context';
 
-export type { HistoryContextType };
+export type { HistoryContextType } from './context';

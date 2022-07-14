@@ -28,10 +28,10 @@ export {
   useExplorerContext,
 } from './explorer';
 export {
+  History,
   HistoryContext,
   HistoryContextProvider,
   useHistoryContext,
-  useSelectHistoryItem,
 } from './history';
 export * from './icons';
 export {
