@@ -127,11 +127,11 @@ describe('GraphiQL', () => {
     const { container } = render(
       <GraphiQL fetcher={noOpFetcher} docExplorerOpen />,
     );
-    expect(container.querySelector('.docExplorerWrap')).toBeInTheDocument();
+    expect(container.querySelector('.graphiql-plugin')).toBeInTheDocument();
   });
   it('defaults to closed docExplorer', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-    expect(container.querySelector('.docExplorerWrap')).not.toBeVisible();
+    expect(container.querySelector('.graphiql-plugin')).not.toBeVisible();
   });
 
   it('accepts a defaultVariableEditorOpen param', () => {
@@ -167,7 +167,9 @@ describe('GraphiQL', () => {
 
   it('defaults to closed history panel', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-    expect(container.querySelector('.historyPaneWrap')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.graphiql-history'),
+    ).not.toBeInTheDocument();
   });
 
   it('will save history item even when history panel is closed', () => {
@@ -182,7 +184,9 @@ describe('GraphiQL', () => {
     );
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
     fireEvent.click(getByTitle('Show History'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(1);
   });
 
   it('adds a history item when the execute query function button is clicked', () => {
@@ -197,7 +201,9 @@ describe('GraphiQL', () => {
     );
     fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(1);
   });
 
   it('will not save invalid queries', () => {
@@ -206,7 +212,9 @@ describe('GraphiQL', () => {
     );
     fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(0);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(0);
   });
 
   it('will save if there was not a previously saved query', () => {
@@ -221,7 +229,9 @@ describe('GraphiQL', () => {
     );
     fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(1);
   });
 
   it('will not save a query if the query is the same as previous query', () => {
@@ -236,9 +246,13 @@ describe('GraphiQL', () => {
     );
     fireEvent.click(getByTitle('Show History'));
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(1);
     fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('.graphiql-history-items li'),
+    ).toHaveLength(1);
   });
 
   it('will save if new query is different than previous query', async () => {
@@ -255,7 +269,9 @@ describe('GraphiQL', () => {
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-contents li')).toHaveLength(1);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      1,
+    );
 
     fireEvent.change(
       container.querySelector('[data-testid="query-editor"] .mockCodeMirror'),
@@ -268,7 +284,9 @@ describe('GraphiQL', () => {
     await sleep(150);
 
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      2,
+    );
   });
 
   it('will save query if variables are different', async () => {
@@ -285,7 +303,9 @@ describe('GraphiQL', () => {
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      1,
+    );
     await wait();
 
     fireEvent.change(
@@ -296,7 +316,9 @@ describe('GraphiQL', () => {
     );
 
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      2,
+    );
   });
 
   it('will save query if headers are different', async () => {
@@ -315,7 +337,9 @@ describe('GraphiQL', () => {
     fireEvent.click(getByTitle('Show History'));
     const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-label')).toHaveLength(1);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      1,
+    );
     await wait();
 
     fireEvent.click(getByText('Headers'));
@@ -328,7 +352,9 @@ describe('GraphiQL', () => {
     );
 
     fireEvent.click(executeQueryButton);
-    expect(container.querySelectorAll('.history-label')).toHaveLength(2);
+    expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
+      2,
+    );
   });
 
   describe('children overrides', () => {
@@ -564,7 +590,7 @@ describe('GraphiQL', () => {
 
     // 797 / (1200 - 797) = 1.977667493796526
     expect(
-      container.querySelector('.docExplorerWrap').parentElement.style.flex,
+      container.querySelector('.graphiql-plugin').parentElement.style.flex,
     ).toBe('1.977667493796526');
 
     clientWidthSpy.mockRestore();
