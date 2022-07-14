@@ -12,6 +12,7 @@ import {
   GraphQLError,
   GraphQLSchema,
   IntrospectionQuery,
+  isSchema,
   validateSchema,
 } from 'graphql';
 import {
@@ -55,7 +56,7 @@ type SchemaContextProviderProps = {
   dangerouslyAssumeSchemaIsValid?: boolean;
   fetcher: Fetcher;
   onSchemaChange?(schema: GraphQLSchema): void;
-  schema?: GraphQLSchema | null;
+  schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
 export function SchemaContextProvider(props: SchemaContextProviderProps) {
@@ -63,9 +64,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     nonNull: true,
     caller: SchemaContextProvider,
   });
-  const [schema, setSchema] = useState<MaybeGraphQLSchema>(
-    props.schema || null,
-  );
+  const [schema, setSchema] = useState<MaybeGraphQLSchema>();
   const [isFetching, setIsFetching] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
@@ -73,7 +72,13 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Synchronize prop changes with state
    */
   useEffect(() => {
-    setSchema(props.schema);
+    setSchema(
+      isSchema(props.schema) ||
+        props.schema === null ||
+        props.schema === undefined
+        ? props.schema
+        : undefined,
+    );
   }, [props.schema]);
 
   /**
@@ -104,46 +109,58 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    */
   const { fetcher, onSchemaChange } = props;
   useEffect(() => {
-    // Only introspect if there is no schema provided via props
-    if (props.schema !== undefined) {
+    /**
+     * Only introspect if there is no schema provided via props. If the
+     * prop is passed an introspection result, we do continue but skip the
+     * introspection request.
+     */
+    if (isSchema(props.schema) || props.schema === null) {
       return;
     }
 
     let isActive = true;
 
-    const parsedHeaders = parseHeaderString(headersRef.current);
-    if (!parsedHeaders.isValidJSON) {
-      setFetchError('Introspection failed as headers are invalid.');
-      return;
-    }
+    const maybeIntrospectionData = props.schema;
+    async function introspect() {
+      if (maybeIntrospectionData) {
+        // No need to introspect if we already have the data
+        return maybeIntrospectionData;
+      }
 
-    const fetcherOpts: FetcherOpts = parsedHeaders.headers
-      ? { headers: parsedHeaders.headers }
-      : {};
+      const parsedHeaders = parseHeaderString(headersRef.current);
+      if (!parsedHeaders.isValidJSON) {
+        setFetchError('Introspection failed as headers are invalid.');
+        return;
+      }
 
-    const fetch = fetcherReturnToPromise(
-      fetcher(
-        {
-          query: introspectionQuery,
-          operationName: introspectionQueryName,
-        },
-        fetcherOpts,
-      ),
-    );
+      const fetcherOpts: FetcherOpts = parsedHeaders.headers
+        ? { headers: parsedHeaders.headers }
+        : {};
 
-    if (!isPromise(fetch)) {
-      setFetchError('Fetcher did not return a Promise for introspection.');
-      return;
-    }
+      const fetch = fetcherReturnToPromise(
+        fetcher(
+          {
+            query: introspectionQuery,
+            operationName: introspectionQueryName,
+          },
+          fetcherOpts,
+        ),
+      );
 
-    setIsFetching(true);
+      if (!isPromise(fetch)) {
+        setFetchError('Fetcher did not return a Promise for introspection.');
+        return;
+      }
 
-    fetch
-      .then(result => {
-        if (typeof result === 'object' && result !== null && 'data' in result) {
-          return result;
-        }
+      setIsFetching(true);
 
+      let result = await fetch;
+
+      if (
+        typeof result !== 'object' ||
+        result === null ||
+        !('data' in result)
+      ) {
         // Try the stock introspection query first, falling back on the
         // sans-subscriptions query for services which do not yet support it.
         const fetch2 = fetcherReturnToPromise(
@@ -160,41 +177,44 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
             'Fetcher did not return a Promise for introspection.',
           );
         }
-        return fetch2;
-      })
-      .then(result => {
+        result = await fetch2;
+      }
+
+      setIsFetching(false);
+
+      if (result?.data && '__schema' in result.data) {
+        return result.data as IntrospectionQuery;
+      }
+
+      // handle as if it were an error if the fetcher response is not a string or response.data is not present
+      const responseString =
+        typeof result === 'string' ? result : formatResult(result);
+      setFetchError(responseString);
+    }
+
+    introspect()
+      .then(introspectionData => {
         // Don't continue if the effect has already been cleaned up
-        if (!isActive) {
+        if (!isActive || !introspectionData) {
           return;
         }
 
-        if (result?.data && '__schema' in result.data) {
-          try {
-            const newSchema = buildClientSchema(
-              result.data as IntrospectionQuery,
-            );
-            // Only override the schema in state if it's still `undefined` (the
-            // prop and thus the state could have changed while introspecting,
-            // so this avoids a race condition by prioritizing the state that
-            // was set after the introspection request was initialized)
-            setSchema(current => {
-              if (current === undefined) {
-                onSchemaChange?.(newSchema);
-                return newSchema;
-              }
-              return current;
-            });
-          } catch (error) {
-            setFetchError(formatError(error as Error));
-          }
-        } else {
-          // handle as if it were an error if the fetcher response is not a string or response.data is not present
-          const responseString =
-            typeof result === 'string' ? result : formatResult(result);
-          setFetchError(responseString);
+        try {
+          const newSchema = buildClientSchema(introspectionData);
+          // Only override the schema in state if it's still `undefined` (the
+          // prop and thus the state could have changed while introspecting,
+          // so this avoids a race condition by prioritizing the state that
+          // was set after the introspection request was initialized)
+          setSchema(current => {
+            if (current === undefined) {
+              onSchemaChange?.(newSchema);
+              return newSchema;
+            }
+            return current;
+          });
+        } catch (error) {
+          setFetchError(formatError(error as Error));
         }
-
-        setIsFetching(false);
       })
       .catch(error => {
         // Don't continue if the effect has already been cleaned up
