@@ -32,6 +32,7 @@ import {
   ExecutionContextType,
   ExplorerContextProvider,
   HeaderEditor,
+  History,
   HistoryContextProvider,
   HistoryIcon,
   KeyboardShortcutIcon,
@@ -70,7 +71,6 @@ import type {
 
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import { DocExplorer } from './DocExplorer';
-import { QueryHistory } from './QueryHistory';
 import find from '../utility/find';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
@@ -537,15 +537,17 @@ const GraphiQLConsumeContexts = forwardRef<
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
-  const docResize = useDragResize({
+  const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
-    initiallyHidden: explorerContext?.isVisible ? undefined : 'first',
+    initiallyHidden:
+      explorerContext?.isVisible || historyContext?.isVisible
+        ? undefined
+        : 'first',
     onHiddenElementChange: resizableElement => {
       if (resizableElement === 'first') {
         explorerContext?.hide();
-      } else {
-        explorerContext?.show();
+        historyContext?.hide();
       }
     },
     sizeThresholdSecond: 200,
@@ -589,7 +591,7 @@ const GraphiQLConsumeContexts = forwardRef<
       copy={copy}
       merge={merge}
       prettify={prettify}
-      docResize={docResize}
+      pluginResize={pluginResize}
       editorResize={editorResize}
       editorToolsResize={editorToolsResize}
       ref={ref}
@@ -613,7 +615,7 @@ type GraphiQLWithContextConsumerProps = Omit<
   merge(): void;
   prettify(): void;
 
-  docResize: ReturnType<typeof useDragResize>;
+  pluginResize: ReturnType<typeof useDragResize>;
   editorResize: ReturnType<typeof useDragResize>;
   editorToolsResize: ReturnType<typeof useDragResize>;
 };
@@ -690,10 +692,13 @@ class GraphiQLWithContext extends React.Component<
                 onClick={() => {
                   if (this.props.explorerContext?.isVisible) {
                     this.props.explorerContext?.hide();
-                    this.props.docResize.setHiddenElement('first');
+                    this.props.pluginResize.setHiddenElement('first');
                   } else {
                     this.props.explorerContext?.show();
-                    this.props.docResize.setHiddenElement(null);
+                    this.props.pluginResize.setHiddenElement(null);
+                    if (this.props.historyContext?.isVisible) {
+                      this.props.historyContext.hide();
+                    }
                   }
                 }}
                 title={
@@ -707,7 +712,20 @@ class GraphiQLWithContext extends React.Component<
             {this.props.historyContext ? (
               <UnStyledButton
                 className={this.props.historyContext.isVisible ? 'active' : ''}
-                onClick={() => this.props.historyContext?.toggle()}
+                onClick={() => {
+                  if (!this.props.historyContext) {
+                    return;
+                  }
+                  this.props.historyContext.toggle();
+                  if (this.props.historyContext.isVisible) {
+                    this.props.pluginResize.setHiddenElement('first');
+                  } else {
+                    this.props.pluginResize.setHiddenElement(null);
+                    if (this.props.explorerContext?.isVisible) {
+                      this.props.explorerContext.hide();
+                    }
+                  }
+                }}
                 title={
                   this.props.historyContext.isVisible
                     ? 'Hide History'
@@ -727,26 +745,31 @@ class GraphiQLWithContext extends React.Component<
           </div>
         </div>
         <div className="graphiql-main">
-          <div ref={this.props.docResize.firstRef}>
-            <div className="docExplorerWrap">
-              <DocExplorer
-                onClose={() => this.props.docResize.setHiddenElement('first')}
-              />
+          <div
+            ref={this.props.pluginResize.firstRef}
+            style={{
+              // Make sure the container shrinks when containing long
+              // non-breaking texts
+              minWidth: '200px',
+            }}>
+            <div className="graphiql-plugin">
+              {this.props.explorerContext?.isVisible ? (
+                <DocExplorer
+                  onClose={() =>
+                    this.props.pluginResize.setHiddenElement('first')
+                  }
+                />
+              ) : null}
+              {this.props.historyContext?.isVisible ? <History /> : null}
             </div>
           </div>
-          <div ref={this.props.docResize.dragBarRef}>
-            {this.props.explorerContext?.isVisible ? (
+          <div ref={this.props.pluginResize.dragBarRef}>
+            {this.props.explorerContext?.isVisible ||
+            this.props.historyContext?.isVisible ? (
               <div className="graphiql-horizontal-drag-bar" />
             ) : null}
           </div>
-          <div ref={this.props.docResize.secondRef}>
-            {this.props.historyContext?.isVisible && (
-              <div
-                className="historyPaneWrap"
-                style={{ width: '230px', zIndex: 7 }}>
-                <QueryHistory />
-              </div>
-            )}
+          <div ref={this.props.pluginResize.secondRef}>
             <div className="editorWrap">
               <div className="topBarWrap">
                 {this.props.beforeTopBarContent}
@@ -806,9 +829,10 @@ class GraphiQLWithContext extends React.Component<
                             keyMap={this.props.keyMap}
                             onClickReference={() => {
                               if (
-                                this.props.docResize.hiddenElement === 'first'
+                                this.props.pluginResize.hiddenElement ===
+                                'first'
                               ) {
-                                this.props.docResize.setHiddenElement(null);
+                                this.props.pluginResize.setHiddenElement(null);
                               }
                             }}
                             onCopyQuery={this.props.onCopyQuery}
