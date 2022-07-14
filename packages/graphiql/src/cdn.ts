@@ -16,7 +16,6 @@ import './style.css';
 // Legacy styles
 import './css/app.css';
 import './css/doc-explorer.css';
-import './css/history.css';
 
 import { GraphiQL } from './components/GraphiQL';
 // add the static function here for CDN only. otherwise, doing this in the component could

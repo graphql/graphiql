@@ -72,15 +72,6 @@
   width: 9px;
 }
 
-.graphiql-container .docExplorerWrap,
-.graphiql-container .historyPaneWrap {
-  background: white;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
-  position: relative;
-  width: 100%;
-  z-index: 3;
-}
-
 .graphiql-container .historyPaneWrap {
   min-width: 230px;
   z-index: 5;
@@ -157,9 +148,7 @@
 .graphiql-container .toolbar-menu-items > li:hover,
 .graphiql-container .toolbar-select-options > li.hover,
 .graphiql-container .toolbar-select-options > li:active,
-.graphiql-container .toolbar-select-options > li:hover,
-.graphiql-container .history-contents > li:hover,
-.graphiql-container .history-contents > li:active {
+.graphiql-container .toolbar-select-options > li:hover {
   background: #e10098;
   color: #fff;
 }

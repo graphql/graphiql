@@ -24,6 +24,7 @@ export {
   ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  History,
   HistoryContext,
   HistoryContextProvider,
   HistoryIcon,
@@ -96,9 +97,8 @@ function useMockedEditor(
   );
   const ref = useRef<HTMLDivElement>(null);
 
-  const context = useEditorContext({ nonNull: true });
   const setEditor =
-    context[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
+    editorContext[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
 
   const getValueRef = useRef<() => string>();
   useEffect(() => {
