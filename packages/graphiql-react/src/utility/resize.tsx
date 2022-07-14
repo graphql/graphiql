@@ -42,7 +42,7 @@ export function useDragResize({
     [storage, storageKey],
   );
 
-  const [hiddenElement, _setHiddenElement] = useState<ResizableElement | null>(
+  const [hiddenElement, setHiddenElement] = useState<ResizableElement | null>(
     () => {
       const storedValue =
         storage && storageKey ? storage.get(storageKey) : null;
@@ -56,12 +56,14 @@ export function useDragResize({
     },
   );
 
-  const setHiddenElement = useCallback(
+  const setHiddenElementWithCallback = useCallback(
     (element: ResizableElement | null) => {
-      _setHiddenElement(element);
-      onHiddenElementChange?.(element);
+      if (element !== hiddenElement) {
+        setHiddenElement(element);
+        onHiddenElementChange?.(element);
+      }
     },
-    [onHiddenElementChange],
+    [hiddenElement, onHiddenElementChange],
   );
 
   const firstRef = useRef<HTMLDivElement>(null);
@@ -210,16 +212,16 @@ export function useDragResize({
 
         if (firstSize < sizeThresholdFirst) {
           // Hide the first display
-          setHiddenElement('first');
+          setHiddenElementWithCallback('first');
           store(HIDE_FIRST);
         } else if (secondSize < sizeThresholdSecond) {
           // Hide the second display
-          setHiddenElement('second');
+          setHiddenElementWithCallback('second');
           store(HIDE_SECOND);
         } else {
           // Show both and adjust the flex value of the first one (the flex
           // value for the second one is always `1`)
-          setHiddenElement(null);
+          setHiddenElementWithCallback(null);
           const newFlex = `${firstSize / secondSize}`;
           firstContainer.style.flex = newFlex;
           store(newFlex);
@@ -242,7 +244,7 @@ export function useDragResize({
         firstRef.current.style.flex = defaultFlexRef.current;
       }
       store(defaultFlexRef.current);
-      setHiddenElement(null);
+      setHiddenElementWithCallback(null);
     }
 
     dragBarContainer.addEventListener('dblclick', reset);
@@ -253,7 +255,7 @@ export function useDragResize({
     };
   }, [
     direction,
-    setHiddenElement,
+    setHiddenElementWithCallback,
     sizeThresholdFirst,
     sizeThresholdSecond,
     store,
