@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 export {
   ChevronDownIcon,
   ChevronUpIcon,
+  CloseIcon,
   CopyIcon,
   DocsIcon,
   Dropdown,
@@ -24,6 +25,7 @@ export {
   ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  History,
   HistoryContext,
   HistoryContextProvider,
   HistoryIcon,
@@ -31,12 +33,15 @@ export {
   KeyboardShortcutIcon,
   onHasCompletion,
   MergeIcon,
+  PenIcon,
   PlayIcon,
   PrettifyIcon,
   ReloadIcon,
   SchemaContext,
   SchemaContextProvider,
   SettingsIcon,
+  StarFilledIcon,
+  StarIcon,
   StopIcon,
   StorageContext,
   StorageContextProvider,
@@ -52,7 +57,6 @@ export {
   useMergeQuery,
   usePrettifyEditors,
   useSchemaContext,
-  useSelectHistoryItem,
   useStorageContext,
 } from '@graphiql/react';
 
@@ -88,9 +92,8 @@ function useMockedEditor(name: Name, onEdit?: (newValue: string) => void) {
   const [code, setCode] = useState(editorContext[NAME_TO_INITIAL_VALUE[name]]);
   const ref = useRef<HTMLDivElement>(null);
 
-  const context = useEditorContext({ nonNull: true });
   const setEditor =
-    context[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
+    editorContext[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
 
   const getValueRef = useRef<() => string>(() => code);
   useEffect(() => {

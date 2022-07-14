@@ -1,26 +1,6 @@
 import { version as graphqlVersion } from 'graphql/version';
 
 describe('Linting', () => {
-  it('Marks GraphQL syntax errors as error', () => {
-    cy.visitWithOp({
-      query: /* GraphQL */ `
-        {
-          doesNotExist
-          test {
-            id
-          }
-          +++
-        }
-      `,
-    }).assertLinterMarkWithMessage(
-      '+++',
-      'error',
-      graphqlVersion.startsWith('15.')
-        ? 'Syntax Error: Cannot parse the unexpected character "+".'
-        : 'Syntax Error: Unexpected character: "+".',
-    );
-  });
-
   it('Does not mark valid fields', () => {
     cy.visitWithOp({
       query: /* GraphQL */ `
@@ -155,6 +135,26 @@ describe('Linting', () => {
       '"42"',
       'error',
       'Type "TestInput" must be an Object.',
+    );
+  });
+
+  it('Marks GraphQL syntax errors as error', () => {
+    cy.visitWithOp({
+      query: /* GraphQL */ `
+        {
+          doesNotExist
+          test {
+            id
+          }
+          +++
+        }
+      `,
+    }).assertLinterMarkWithMessage(
+      '+++',
+      'error',
+      graphqlVersion.startsWith('15.')
+        ? 'Syntax Error: Cannot parse the unexpected character "+".'
+        : 'Syntax Error: Unexpected character: "+".',
     );
   });
 });
