@@ -1,0 +1,133 @@
+{
+  "name": "vscode-graphql-syntax",
+  "version": "1.0.2",
+  "displayName": "GraphQL Syntax",
+  "description": "Adds support for highlighting graphql in files and embedded with template strings or other delimiters with javascript, typescript, markdown, python, php, reason, ocaml, rescript",
+  "publisher": "GraphQL",
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "contributors": [
+    {
+      "name": "Divyendu Singh",
+      "url": "https://www.divyendusingh.com/"
+    }
+  ],
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "graphql",
+        "extensions": [
+          ".gql",
+          ".graphql",
+          ".graphqls"
+        ],
+        "aliases": [
+          "GraphQL",
+          "graphql"
+        ],
+        "configuration": "./language/language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "graphql",
+        "path": "./grammars/graphql.json",
+        "scopeName": "source.graphql"
+      },
+      {
+        "injectTo": [
+          "source.js",
+          "source.ts",
+          "source.js.jsx",
+          "source.tsx",
+          "source.vue",
+          "source.svelte"
+        ],
+        "scopeName": "inline.graphql",
+        "path": "./grammars/graphql.js.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.reason",
+          "source.ocaml"
+        ],
+        "scopeName": "inline.graphql.re",
+        "path": "./grammars/graphql.re.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.rescript"
+        ],
+        "scopeName": "inline.graphql.res",
+        "path": "./grammars/graphql.rescript.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "scopeName": "markdown.graphql.codeblock",
+        "path": "./grammars/graphql.markdown.codeblock.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "source.python"
+        ],
+        "scopeName": "inline.graphql.python",
+        "path": "./grammars/graphql.python.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      },
+      {
+        "injectTo": [
+          "text.html.php"
+        ],
+        "scopeName": "inline.graphql.php",
+        "path": "./grammars/graphql.php.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.graphql": "graphql"
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "graphql",
+        "path": "./snippets/graphql.json"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/vscode-syntax"
+  },
+  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-syntax/README.md",
+  "galleryBanner": {
+    "color": "#032539",
+    "theme": "dark"
+  },
+  "scripts": {
+    "vsce:package": "vsce package --yarn",
+    "vsce:prepublish": "npm run vsce:package",
+    "vsce:publish": "vsce publish --yarn",
+    "open-vsx:publish": "ovsx publish",
+    "release": "npm run vsce:publish && npm run open-vsx:publish"
+  }
+}
