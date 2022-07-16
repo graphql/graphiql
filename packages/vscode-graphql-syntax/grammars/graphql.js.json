@@ -70,7 +70,7 @@
     {
       "name": "taggedTemplates",
       "contentName": "meta.embedded.block.graphql",
-      "begin": "(`)(#graphql)",
+      "begin": "(`|')(#graphql)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.string.template.begin.js"
@@ -79,7 +79,7 @@
           "name": "comment.line.graphql.js"
         }
       },
-      "end": "`",
+      "end": "(`|')",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.template.end.js"

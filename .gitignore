@@ -16,6 +16,8 @@ packages/graphiql/typedoc
 dist
 esm
 bundle
+*.vsix
+
 cypress/screenshots
 lerna-debug.log
 **/tsconfig.tsbuildinfo
