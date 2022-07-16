@@ -184,7 +184,7 @@ export function useMergeQuery({ caller }: { caller?: Function } = {}) {
       return;
     }
 
-    queryEditor.setValue(print(mergeAst(documentAST, schema)));
+    queryEditor?.setValue(print(mergeAst(documentAST, schema)));
   }, [queryEditor, schema]);
 }
 

@@ -1,4 +1,5 @@
 {
+  "extends": "../../resources/tsconfig.base.cjs.json",
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -16,8 +17,14 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "types",
-    "outDir": "tsc"
+    "outDir": "dist"
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [
+    { "path": "./tsconfig.node.json" },
+    { "path": "../graphiql-toolkit" },
+    {
+      "path": "../codemirror-graphql"
+    }
+  ]
 }

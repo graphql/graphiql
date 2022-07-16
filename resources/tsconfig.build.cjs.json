@@ -9,6 +9,9 @@
       "path": "../packages/graphiql-toolkit"
     },
     {
+      "path": "../packages/graphiql-react"
+    },
+    {
       "path": "../packages/monaco-graphql"
     },
     {
