@@ -119,6 +119,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     }
 
     let isActive = true;
+    setSchema(undefined);
 
     const maybeIntrospectionData = props.schema;
     async function introspect() {
