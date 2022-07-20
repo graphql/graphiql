@@ -18,6 +18,7 @@ import {
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
+  IntrospectionQuery,
 } from 'graphql';
 
 import {
@@ -106,9 +107,11 @@ export type GraphiQLProps = {
    */
   fetcher: Fetcher;
   /**
-   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema introspection.
+   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema
+   * introspection. This prop also accepts the result of an introspection query
+   * which will be used to create a `GraphQLSchema`
    */
-  schema?: GraphQLSchema | null;
+  schema?: GraphQLSchema | IntrospectionQuery | null;
   /**
    * An array of graphql ValidationRules
    */
