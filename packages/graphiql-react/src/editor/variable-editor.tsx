@@ -10,6 +10,7 @@ import {
 import { useEditorContext } from './context';
 import {
   EditCallback,
+  OnClickReference,
   useChangeHandler,
   useCompletion,
   useKeyMap,
@@ -21,15 +22,17 @@ import { CodeMirrorType, KeyMap } from './types';
 
 export type UseVariableEditorArgs = {
   editorTheme?: string;
+  keyMap?: KeyMap;
+  onClickReference?: OnClickReference;
   onEdit?: EditCallback;
   readOnly?: boolean;
-  keyMap?: KeyMap;
 };
 
 export function useVariableEditor(
   {
     editorTheme = DEFAULT_EDITOR_THEME,
     keyMap = DEFAULT_KEY_MAP,
+    onClickReference,
     onEdit,
     readOnly = false,
   }: UseVariableEditorArgs = {},
@@ -137,7 +140,7 @@ export function useVariableEditor(
     useVariableEditor,
   );
 
-  useCompletion(variableEditor, useVariableEditor);
+  useCompletion(variableEditor, onClickReference || null, useVariableEditor);
 
   useKeyMap(variableEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(variableEditor, ['Shift-Ctrl-P'], prettify);

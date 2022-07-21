@@ -1,5 +1,6 @@
 import { fillLeafs, GetDefaultFieldNamesFn, mergeAst } from '@graphiql/toolkit';
 import type { EditorChange, EditorConfiguration } from 'codemirror';
+import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import copyToClipboard from 'copy-to-clipboard';
 import { parse, print } from 'graphql';
 import { useCallback, useEffect } from 'react';
@@ -90,8 +91,11 @@ export function useChangeHandler(
   ]);
 }
 
+export type OnClickReference = (reference: SchemaReference) => void;
+
 export function useCompletion(
   editor: CodeMirrorEditor | null,
+  callback: OnClickReference | null,
   caller: Function,
 ) {
   const { schema } = useSchemaContext({ nonNull: true, caller });
@@ -105,7 +109,9 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      onHasCompletion(instance, changeObj, schema, explorer);
+      onHasCompletion(instance, changeObj, schema, explorer, type => {
+        callback?.({ kind: 'Type', type, schema: schema || undefined });
+      });
     };
     editor.on(
       // @ts-expect-error @TODO additional args for hasCompletion event
@@ -118,7 +124,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [editor, explorer, schema]);
+  }, [callback, editor, explorer, schema]);
 }
 
 type EmptyCallback = () => void;
