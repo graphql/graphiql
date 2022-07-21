@@ -11,7 +11,6 @@ import { useEditorContext } from './context';
 import {
   EditCallback,
   useChangeHandler,
-  useCompletion,
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
@@ -21,10 +20,10 @@ import { KeyMap } from './types';
 
 export type UseHeaderEditorArgs = {
   editorTheme?: string;
+  keyMap?: KeyMap;
   onEdit?: EditCallback;
   readOnly?: boolean;
   shouldPersistHeaders?: boolean;
-  keyMap?: KeyMap;
 };
 
 export function useHeaderEditor(
@@ -122,8 +121,6 @@ export function useHeaderEditor(
     'headers',
     useHeaderEditor,
   );
-
-  useCompletion(headerEditor, useHeaderEditor);
 
   useKeyMap(headerEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(headerEditor, ['Shift-Ctrl-P'], prettify);
