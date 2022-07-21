@@ -1,6 +1,12 @@
 import type { Editor, EditorChange } from 'codemirror';
 import type { IHint } from 'codemirror-graphql/hint';
-import { GraphQLSchema, GraphQLType, isListType, isNonNullType } from 'graphql';
+import {
+  GraphQLNamedType,
+  GraphQLSchema,
+  GraphQLType,
+  isListType,
+  isNonNullType,
+} from 'graphql';
 
 import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
@@ -15,6 +21,7 @@ export function onHasCompletion(
   data: EditorChange | undefined,
   schema: GraphQLSchema | null | undefined,
   explorer: ExplorerContextType | null,
+  callback?: (type: GraphQLNamedType) => void,
 ) {
   importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
     let information: HTMLDivElement | null;
@@ -232,6 +239,7 @@ export function onHasCompletion(
     if (type) {
       explorer.show();
       explorer.push({ name: type.name, def: type });
+      callback?.(type);
     }
   }
 }
