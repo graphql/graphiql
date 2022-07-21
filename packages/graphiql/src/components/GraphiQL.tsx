@@ -683,6 +683,12 @@ class GraphiQLWithContext extends React.Component<
 
     const headerEditorEnabled = this.props.headerEditorEnabled ?? true;
 
+    const onClickReference = () => {
+      if (this.props.pluginResize.hiddenElement === 'first') {
+        this.props.pluginResize.setHiddenElement(null);
+      }
+    };
+
     return (
       <div data-testid="graphiql-container" className="graphiql-container">
         <div className="graphiql-sidebar">
@@ -837,14 +843,7 @@ class GraphiQLWithContext extends React.Component<
                             editorTheme={this.props.editorTheme}
                             externalFragments={this.props.externalFragments}
                             keyMap={this.props.keyMap}
-                            onClickReference={() => {
-                              if (
-                                this.props.pluginResize.hiddenElement ===
-                                'first'
-                              ) {
-                                this.props.pluginResize.setHiddenElement(null);
-                              }
-                            }}
+                            onClickReference={onClickReference}
                             onCopyQuery={this.props.onCopyQuery}
                             onEdit={this.props.onEditQuery}
                             onEditOperationName={this.props.onEditOperationName}
@@ -936,26 +935,27 @@ class GraphiQLWithContext extends React.Component<
                             : 'Headers'
                         }>
                         <VariableEditor
-                          onEdit={this.props.onEditVariables}
                           editorTheme={this.props.editorTheme}
-                          readOnly={this.props.readOnly}
                           isHidden={
                             this.state.activeSecondaryEditor !== 'variable'
                           }
                           keyMap={this.props.keyMap}
+                          onEdit={this.props.onEditVariables}
+                          onClickReference={onClickReference}
+                          readOnly={this.props.readOnly}
                         />
                         {headerEditorEnabled && (
                           <HeaderEditor
+                            editorTheme={this.props.editorTheme}
                             isHidden={
                               this.state.activeSecondaryEditor !== 'header'
                             }
-                            editorTheme={this.props.editorTheme}
+                            keyMap={this.props.keyMap}
                             onEdit={this.props.onEditHeaders}
                             readOnly={this.props.readOnly}
                             shouldPersistHeaders={
                               this.props.shouldPersistHeaders
                             }
-                            keyMap={this.props.keyMap}
                           />
                         )}
                       </section>
