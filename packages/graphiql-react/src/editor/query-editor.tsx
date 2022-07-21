@@ -33,6 +33,7 @@ import {
 } from './context';
 import {
   CopyQueryCallback,
+  OnClickReference,
   useCompletion,
   useCopyQuery,
   useKeyMap,
@@ -42,8 +43,6 @@ import {
 } from './hooks';
 import { CodeMirrorEditor, CodeMirrorType, KeyMap } from './types';
 import { normalizeWhitespace } from './whitespace';
-
-type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
   editorTheme?: string;
@@ -335,7 +334,7 @@ export function useQueryEditor(
     codeMirrorRef,
   );
 
-  useCompletion(queryEditor, useQueryEditor);
+  useCompletion(queryEditor, onClickReference || null, useQueryEditor);
 
   const run = executionContext?.run;
   const runAtCursor = useCallback(() => {
