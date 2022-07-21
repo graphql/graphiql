@@ -28,6 +28,7 @@ import {
 import {
   CopyQueryCallback,
   EditCallback,
+  OnClickReference,
   useCompletion,
   useCopyQuery,
   useKeyMap,
@@ -37,8 +38,6 @@ import {
 } from './hooks';
 import { CodeMirrorEditor, CodeMirrorType, KeyMap } from './types';
 import { normalizeWhitespace } from './whitespace';
-
-type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
   editorTheme?: string;
@@ -332,7 +331,7 @@ export function useQueryEditor(
     codeMirrorRef,
   );
 
-  useCompletion(queryEditor, useQueryEditor);
+  useCompletion(queryEditor, onClickReference || null, useQueryEditor);
 
   useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
