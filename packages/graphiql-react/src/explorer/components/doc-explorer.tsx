@@ -59,7 +59,7 @@ export function DocExplorer(props: DocExplorerProps) {
   } else if (isType(navItem.def)) {
     content = <TypeDocumentation type={navItem.def} />;
   } else if (navItem.def) {
-    content = <FieldDocumentation />;
+    content = <FieldDocumentation field={navItem.def} />;
   }
 
   let prevName;

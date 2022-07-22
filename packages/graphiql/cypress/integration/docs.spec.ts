@@ -103,10 +103,10 @@ if (!version.includes('15.5')) {
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
     cy.get('.graphiql-doc-explorer-field-name').contains('hasArgs').click();
-    cy.get('#doc-deprecated-args>.doc-category-title')
-      .last()
-      .should('have.text', 'deprecated arguments');
-    cy.get('.show-btn').click();
+    cy.contains('Show Deprecated Arguments').click();
+    cy.get('.graphiql-doc-explorer-section-title').contains(
+      'Deprecated Arguments',
+    );
     cy.get('.graphiql-markdown-deprecation').should(
       'have.text',
       'deprecated argument\n',
