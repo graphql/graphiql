@@ -6,6 +6,7 @@
  */
 
 import {
+  DefaultValue,
   ExplorerFieldDef,
   FieldLink,
   TypeLink,
@@ -26,7 +27,6 @@ import {
 import React, { ReactNode, useState } from 'react';
 
 import Argument from './Argument';
-import DefaultValue from './DefaultValue';
 import MarkdownContent from './MarkdownContent';
 
 export default function TypeDoc() {

@@ -23,6 +23,7 @@ export {
   useExecutionContext,
 } from './execution';
 export {
+  DefaultValue,
   ExplorerContext,
   ExplorerContextProvider,
   FieldLink,
