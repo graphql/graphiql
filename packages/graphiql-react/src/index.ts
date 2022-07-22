@@ -24,6 +24,7 @@ export {
 } from './execution';
 export {
   DefaultValue,
+  Directive,
   ExplorerContext,
   ExplorerContextProvider,
   FieldLink,

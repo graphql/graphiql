@@ -146,8 +146,8 @@ describe('FieldDoc', () => {
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
-    expect(container.querySelector('#development')).toHaveTextContent(
-      '@development',
-    );
+    expect(
+      container.querySelector('.graphiql-doc-explorer-directive'),
+    ).toHaveTextContent('@development');
   });
 });

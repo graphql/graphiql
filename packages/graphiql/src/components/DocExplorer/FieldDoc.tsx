@@ -5,12 +5,11 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { TypeLink, useExplorerContext } from '@graphiql/react';
+import { Directive, TypeLink, useExplorerContext } from '@graphiql/react';
 import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
 import React from 'react';
 
 import Argument from './Argument';
-import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 
 export default function FieldDoc() {

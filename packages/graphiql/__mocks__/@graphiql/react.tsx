@@ -16,6 +16,7 @@ export {
   ChevronUpIcon,
   CopyIcon,
   DefaultValue,
+  Directive,
   DocsIcon,
   Dropdown,
   EditorContext,
