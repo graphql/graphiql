@@ -88,7 +88,9 @@ describe('FieldDoc', () => {
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
-    expect(container.querySelector('.arg')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).not.toBeInTheDocument();
   });
 
   it('should re-render on field change', () => {
@@ -101,7 +103,9 @@ describe('FieldDoc', () => {
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
-    expect(container.querySelector('.arg')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).not.toBeInTheDocument();
 
     rerender(
       <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
@@ -124,10 +128,12 @@ describe('FieldDoc', () => {
     expect(
       container.querySelector('.graphiql-markdown-description'),
     ).toHaveTextContent('Example String field with arguments');
-    expect(container.querySelectorAll('.arg')).toHaveLength(1);
-    expect(container.querySelector('.arg')).toHaveTextContent(
-      'stringArg: String',
-    );
+    expect(
+      container.querySelectorAll('.graphiql-doc-explorer-argument'),
+    ).toHaveLength(1);
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).toHaveTextContent('stringArg: String');
     // by default, the deprecation docs should be hidden
     expect(
       container.querySelectorAll('.graphiql-markdown-deprecation'),

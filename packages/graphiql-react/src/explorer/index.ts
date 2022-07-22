@@ -1,3 +1,4 @@
+export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
 export { Directive } from './components/directive';
 export { FieldLink } from './components/field-link';

@@ -6,15 +6,14 @@
  */
 
 import {
+  Argument,
   Directive,
   MarkdownContent,
   TypeLink,
   useExplorerContext,
 } from '@graphiql/react';
-import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
+import { DirectiveNode, isType } from 'graphql';
 import React from 'react';
-
-import Argument from './Argument';
 
 export default function FieldDoc() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });
@@ -34,22 +33,8 @@ export default function FieldDoc() {
         <div className="doc-category-title">arguments</div>
         {field.args
           .filter(arg => !arg.deprecationReason)
-          .map((arg: GraphQLArgument) => (
-            <div key={arg.name} className="doc-category-item">
-              <div>
-                <Argument arg={arg} />
-              </div>
-              {arg.description ? (
-                <MarkdownContent type="description">
-                  {arg.description}
-                </MarkdownContent>
-              ) : null}
-              {arg && 'deprecationReason' in arg && arg.deprecationReason ? (
-                <MarkdownContent type="deprecation">
-                  {arg.deprecationReason}
-                </MarkdownContent>
-              ) : null}
-            </div>
+          .map(arg => (
+            <Argument key={arg.name} arg={arg} />
           ))}
       </div>
     );
@@ -67,23 +52,7 @@ export default function FieldDoc() {
               Show deprecated arguments...
             </button>
           ) : (
-            deprecatedArgs.map((arg, i) => (
-              <div key={i}>
-                <div>
-                  <Argument arg={arg} />
-                </div>
-                {arg.description ? (
-                  <MarkdownContent type="description">
-                    {arg.description}
-                  </MarkdownContent>
-                ) : null}
-                {arg && 'deprecationReason' in arg && arg.deprecationReason ? (
-                  <MarkdownContent type="deprecation">
-                    {arg.deprecationReason}
-                  </MarkdownContent>
-                ) : null}
-              </div>
-            ))
+            deprecatedArgs.map(arg => <Argument key={arg.name} arg={arg} />)
           )}
         </div>
       );

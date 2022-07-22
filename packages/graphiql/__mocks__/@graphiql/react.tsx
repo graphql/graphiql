@@ -12,6 +12,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 
 export {
+  Argument,
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,

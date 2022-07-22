@@ -23,6 +23,7 @@ export {
   useExecutionContext,
 } from './execution';
 export {
+  Argument,
   DefaultValue,
   Directive,
   ExplorerContext,

@@ -6,14 +6,13 @@
  */
 
 import {
+  Argument,
   FieldLink,
   TypeLink,
   useExplorerContext,
   useSchemaContext,
 } from '@graphiql/react';
 import React, { ReactNode } from 'react';
-
-import Argument from './Argument';
 
 export default function SearchResults() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });

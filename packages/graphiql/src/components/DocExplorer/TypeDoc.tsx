@@ -6,6 +6,7 @@
  */
 
 import {
+  Argument,
   DefaultValue,
   ExplorerFieldDef,
   FieldLink,
@@ -26,8 +27,6 @@ import {
   isUnionType,
 } from 'graphql';
 import React, { ReactNode, useState } from 'react';
-
-import Argument from './Argument';
 
 export default function TypeDoc() {
   const { schema } = useSchemaContext({ nonNull: true });
