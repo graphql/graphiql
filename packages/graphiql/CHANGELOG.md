@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.10.0
+
+### Minor Changes
+
+- [#2574](https://github.com/graphql/graphiql/pull/2574) [`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Allow passing introspection data to the `schema` prop of the `GraphiQL` component
+
+### Patch Changes
+
+- Updated dependencies [[`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1), [`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1)]:
+  - @graphiql/react@0.6.0
+
 ## 1.9.13
 
 ### Patch Changes
