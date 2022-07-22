@@ -44,7 +44,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates back to search results when existing', () => {
     cy.get('.doc-explorer-back').click();
-    cy.get('.doc-explorer-title').should('have.text', 'Documentation Explorer');
+    cy.get('.doc-explorer-title').should('have.text', 'Docs');
   });
 
   it('Retains the parent search value', () => {
