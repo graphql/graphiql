@@ -42,6 +42,7 @@ export {
   StorageContext,
   StorageContextProvider,
   ToolbarButton,
+  TypeLink,
   UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,

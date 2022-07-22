@@ -7,6 +7,7 @@
 
 import {
   ExplorerFieldDef,
+  TypeLink,
   useExplorerContext,
   useSchemaContext,
 } from '@graphiql/react';
@@ -27,7 +28,6 @@ import Argument from './Argument';
 import DefaultValue from './DefaultValue';
 import FieldLink from './FieldLink';
 import MarkdownContent from './MarkdownContent';
-import TypeLink from './TypeLink';
 
 export default function TypeDoc() {
   const { schema } = useSchemaContext({ nonNull: true });

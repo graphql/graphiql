@@ -5,14 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import { TypeLink, useExplorerContext } from '@graphiql/react';
 import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
-import { useExplorerContext } from '@graphiql/react';
+import React from 'react';
 
 import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
-import TypeLink from './TypeLink';
 
 export default function FieldDoc() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });

@@ -5,10 +5,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { TypeLink, useSchemaContext } from '@graphiql/react';
 import React from 'react';
-import TypeLink from './TypeLink';
+
 import MarkdownContent from './MarkdownContent';
-import { useSchemaContext } from '@graphiql/react';
 
 // Render the top level Schema
 export default function SchemaDoc() {

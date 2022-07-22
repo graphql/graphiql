@@ -5,9 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import { TypeLink } from '@graphiql/react';
 import { GraphQLArgument } from 'graphql';
-import TypeLink from './TypeLink';
+import React from 'react';
 import DefaultValue from './DefaultValue';
 
 type ArgumentProps = {

@@ -85,7 +85,9 @@ describe('FieldDoc', () => {
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'No Description',
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
     expect(container.querySelector('.arg')).not.toBeInTheDocument();
   });
 
@@ -96,13 +98,17 @@ describe('FieldDoc', () => {
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'No Description',
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
     expect(container.querySelector('.arg')).not.toBeInTheDocument();
 
     rerender(
       <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'Example String field with arguments',
     );
@@ -112,7 +118,9 @@ describe('FieldDoc', () => {
     const { container } = render(
       <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
     expect(container.querySelector('.doc-type-description')).toHaveTextContent(
       'Example String field with arguments',
     );
@@ -135,7 +143,9 @@ describe('FieldDoc', () => {
         field={exampleObject.getFields().stringWithDirective}
       />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
     expect(container.querySelector('#development')).toHaveTextContent(
       '@development',
     );

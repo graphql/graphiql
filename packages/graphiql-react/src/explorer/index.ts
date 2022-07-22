@@ -1,3 +1,4 @@
+export { TypeLink } from './components/type-link';
 export {
   ExplorerContext,
   ExplorerContextProvider,
