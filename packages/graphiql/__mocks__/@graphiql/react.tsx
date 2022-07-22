@@ -37,6 +37,7 @@ export {
   SchemaContext,
   SchemaContextProvider,
   SettingsIcon,
+  Spinner,
   StopIcon,
   StorageContext,
   StorageContextProvider,
@@ -52,7 +53,6 @@ export {
   useMergeQuery,
   usePrettifyEditors,
   useSchemaContext,
-  useSelectHistoryItem,
   useStorageContext,
 } from '@graphiql/react';
 
@@ -92,15 +92,20 @@ function useMockedEditor(
   onEdit?: (newValue: string) => void,
 ) {
   const editorContext = useEditorContext({ nonNull: true });
-  const [code, setCode] = useState(
-    value ?? editorContext[NAME_TO_INITIAL_VALUE[name]],
-  );
+  const [code, setCode] = useState(() => {
+    const initialValueProp = NAME_TO_INITIAL_VALUE[name];
+    return (
+      value ??
+      (initialValueProp ? editorContext[initialValueProp] : undefined) ??
+      ''
+    );
+  });
   const ref = useRef<HTMLDivElement>(null);
 
   const setEditor =
     editorContext[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
 
-  const getValueRef = useRef<() => string>();
+  const getValueRef = useRef<() => string>(() => code);
   useEffect(() => {
     getValueRef.current = () => code;
   }, [code]);
@@ -179,28 +184,28 @@ function useMockedEditor(
   return ref;
 }
 
-export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor({
-  onEdit,
-}) {
-  return useMockedEditor('header', undefined, onEdit);
+export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor(
+  props,
+) {
+  return useMockedEditor('header', undefined, props?.onEdit);
 };
 
-export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
-  onEdit,
-}) {
-  return useMockedEditor('query', undefined, onEdit);
+export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor(
+  props,
+) {
+  return useMockedEditor('query', undefined, props?.onEdit);
 };
 
-export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor({
-  value,
-}) {
-  return useMockedEditor('response', value);
+export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor(
+  props,
+) {
+  return useMockedEditor('response', props?.value);
 };
 
-export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({
-  onEdit,
-}) {
-  return useMockedEditor('variable', undefined, onEdit);
+export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor(
+  props,
+) {
+  return useMockedEditor('variable', undefined, props?.onEdit);
 };
 
 export const HeaderEditor: typeof _HeaderEditor = function HeaderEditor(props) {
