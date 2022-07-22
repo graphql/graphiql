@@ -14,6 +14,7 @@ import React, { useEffect, useRef, useState } from 'react';
 export {
   Argument,
   ArgumentIcon,
+  Button,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronUpIcon,
