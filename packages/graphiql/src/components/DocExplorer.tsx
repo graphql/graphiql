@@ -5,9 +5,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ReactNode } from 'react';
+import { Spinner, useExplorerContext, useSchemaContext } from '@graphiql/react';
 import { GraphQLSchema, isType } from 'graphql';
-import { useExplorerContext, useSchemaContext } from '@graphiql/react';
+import React, { ReactNode } from 'react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
@@ -60,7 +60,7 @@ export function DocExplorer(props: DocExplorerProps) {
     );
   } else if (isFetching) {
     // Schema is undefined when it is being loaded via introspection.
-    content = <div className="graphiql-spinner" />;
+    content = <Spinner />;
   } else if (!schema) {
     // Schema is null when it explicitly does not exist, typically due to
     // an error during introspection.
