@@ -70,7 +70,7 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
     cy.get('.graphiql-sidebar button').eq(0).click();
   });
   it('should show deprecated fields category title', () => {
-    cy.get('.doc-category>.doc-category-item').first().find('a').click();
+    cy.get('.graphiql-doc-explorer-type-name').first().click();
     cy.wait(300);
     cy.get('.doc-category>.doc-category-title')
       .last()

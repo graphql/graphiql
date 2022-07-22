@@ -55,7 +55,7 @@ export function DocExplorer(props: DocExplorerProps) {
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDocumentation />;
+    content = <SchemaDocumentation schema={schema} />;
   } else if (isType(navItem.def)) {
     content = <TypeDocumentation />;
   } else if (navItem.def) {
