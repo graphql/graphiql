@@ -37,6 +37,7 @@ export {
   ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  ExplorerSection,
   FieldDocumentation,
   FieldIcon,
   FieldLink,

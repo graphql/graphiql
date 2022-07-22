@@ -29,6 +29,7 @@ export {
   DocExplorer,
   ExplorerContext,
   ExplorerContextProvider,
+  ExplorerSection,
   FieldDocumentation,
   FieldLink,
   SchemaDocumentation,

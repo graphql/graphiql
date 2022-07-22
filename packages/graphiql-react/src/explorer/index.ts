@@ -6,6 +6,7 @@ export { FieldDocumentation } from './components/field-documentation';
 export { FieldLink } from './components/field-link';
 export { SchemaDocumentation } from './components/schema-documentation';
 export { Search } from './components/search';
+export { ExplorerSection } from './components/section';
 export { TypeDocumentation } from './components/type-documentation';
 export { TypeLink } from './components/type-link';
 export {
