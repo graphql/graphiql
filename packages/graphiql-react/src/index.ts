@@ -74,4 +74,3 @@ export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 
 import './style/root.css';
-import './style/markdown.css';

@@ -61,7 +61,7 @@ describe('GraphiQL DocExplorer - search', () => {
       .click();
 
     cy.get('.doc-explorer-title').should('have.text', 'isTest');
-    cy.get('.doc-type-description').should(
+    cy.get('.graphiql-markdown-description').should(
       'have.text',
       'Is this a test schema? Sure it is.\n',
     );
@@ -95,10 +95,10 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
 
     const deprecated = cy.get('.doc-category').last();
     deprecated
-      .get('.field-short-description')
+      .get('.graphiql-markdown-description')
       .should('contain.text', 'This field is an example of a deprecated field');
     deprecated
-      .get('.doc-deprecation')
+      .get('.graphiql-markdown-deprecation')
       .should(
         'contain.html',
         '<p>No longer in use, try <code>test</code> instead.</p>',
@@ -122,6 +122,9 @@ describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
       .last()
       .should('have.text', 'deprecated arguments');
     cy.get('.show-btn').click();
-    cy.get('.doc-deprecation').should('have.text', 'deprecated argument\n');
+    cy.get('.graphiql-markdown-deprecation').should(
+      'have.text',
+      'deprecated argument\n',
+    );
   });
 });

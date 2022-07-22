@@ -34,6 +34,7 @@ export {
   ImagePreview,
   KeyboardShortcutIcon,
   onHasCompletion,
+  MarkdownContent,
   MergeIcon,
   PlayIcon,
   PrettifyIcon,
