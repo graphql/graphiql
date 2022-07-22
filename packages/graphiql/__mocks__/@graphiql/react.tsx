@@ -40,6 +40,7 @@ export {
   SchemaContext,
   SchemaContextProvider,
   SettingsIcon,
+  Spinner,
   StarFilledIcon,
   StarIcon,
   StopIcon,
