@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
+import { GraphQLSchema } from 'graphql';
 
 import { SchemaContext, SchemaContextType } from '../../../schema';
 import { ExplorerContextProvider } from '../../context';
 import { DocExplorer } from '../doc-explorer';
-import { ExampleSchema } from './example-schema';
 
 const defaultSchemaContext: SchemaContextType = {
   fetchError: null,
   isFetching: false,
-  schema: ExampleSchema,
+  schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
   setFetchError() {},
   setSchema() {},
   validationErrors: null,

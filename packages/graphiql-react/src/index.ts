@@ -25,6 +25,7 @@ export {
 export {
   Argument,
   DefaultValue,
+  DeprecationReason,
   Directive,
   DocExplorer,
   ExplorerContext,

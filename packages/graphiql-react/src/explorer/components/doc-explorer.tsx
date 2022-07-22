@@ -57,7 +57,7 @@ export function DocExplorer(props: DocExplorerProps) {
   } else if (explorerNavStack.length === 1) {
     content = <SchemaDocumentation schema={schema} />;
   } else if (isType(navItem.def)) {
-    content = <TypeDocumentation />;
+    content = <TypeDocumentation type={navItem.def} />;
   } else if (navItem.def) {
     content = <FieldDocumentation />;
   }

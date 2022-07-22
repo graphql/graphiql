@@ -1,5 +1,6 @@
 export { Argument } from './components/argument';
 export { DefaultValue } from './components/default-value';
+export { DeprecationReason } from './components/deprecation-reason';
 export { Directive } from './components/directive';
 export { DocExplorer } from './components/doc-explorer';
 export { FieldDocumentation } from './components/field-documentation';

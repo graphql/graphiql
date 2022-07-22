@@ -65,27 +65,28 @@ describe('GraphiQL DocExplorer - search', () => {
 });
 
 describe('GraphQL DocExplorer - deprecated fields', () => {
-  before(() => {
-    cy.visit(`/`);
-    cy.get('.graphiql-sidebar button').eq(0).click();
-  });
-  it('should show deprecated fields category title', () => {
-    cy.get('.graphiql-doc-explorer-type-name').first().click();
-    cy.wait(300);
-    cy.get('.doc-category>.doc-category-title')
-      .last()
-      .should('have.text', 'deprecated fields');
-  });
   it('should show deprecated fields details when expanding', () => {
-    cy.get('.show-btn').click();
+    cy.visit(`/`);
+    // Open doc explorer
+    cy.get('.graphiql-sidebar button').eq(0).click();
 
-    const deprecated = cy.get('.doc-category').last();
-    deprecated
-      .get('.graphiql-markdown-description')
-      .should('contain.text', 'This field is an example of a deprecated field');
-    deprecated
-      .get('.graphiql-markdown-deprecation')
-      .should(
+    // Select query type
+    cy.get('.graphiql-doc-explorer-type-name').first().click();
+
+    // Show deprecated fields
+    cy.contains('Show Deprecated Fields').click();
+
+    // Assert that title is shown
+    cy.get('.graphiql-doc-explorer-section-title').contains(
+      'Deprecated Fields',
+    );
+
+    // Assert that the deprecated field is shown correctly
+    cy.get('.graphiql-doc-explorer-field-name')
+      .contains('deprecatedField')
+      .closest('.graphiql-doc-explorer-item')
+      .should('contain.text', 'This field is an example of a deprecated field')
+      .and(
         'contain.html',
         '<p>No longer in use, try <code>test</code> instead.</p>',
       );
@@ -101,9 +102,7 @@ if (!version.includes('15.5')) {
 
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
-    cy.get('#doc-fields .doc-category-item a.graphiql-doc-explorer-field-name')
-      .last()
-      .click();
+    cy.get('.graphiql-doc-explorer-field-name').contains('hasArgs').click();
     cy.get('#doc-deprecated-args>.doc-category-title')
       .last()
       .should('have.text', 'deprecated arguments');
