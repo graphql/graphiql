@@ -1,3 +1,4 @@
+export { FieldLink } from './components/field-link';
 export { TypeLink } from './components/type-link';
 export {
   ExplorerContext,

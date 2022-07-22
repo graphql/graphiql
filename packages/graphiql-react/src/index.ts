@@ -25,6 +25,7 @@ export {
 export {
   ExplorerContext,
   ExplorerContextProvider,
+  FieldLink,
   TypeLink,
   useExplorerContext,
 } from './explorer';

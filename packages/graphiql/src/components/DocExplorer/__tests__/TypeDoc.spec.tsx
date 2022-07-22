@@ -71,9 +71,9 @@ describe('TypeDoc', () => {
 
     cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(4);
-    expect(container.querySelectorAll('.field-name')[3]).toHaveTextContent(
-      'deprecatedField',
-    );
+    expect(
+      container.querySelectorAll('.graphiql-doc-explorer-field-name')[3],
+    ).toHaveTextContent('deprecatedField');
     expect(container.querySelector('.doc-deprecation')).toHaveTextContent(
       'example deprecation reason',
     );

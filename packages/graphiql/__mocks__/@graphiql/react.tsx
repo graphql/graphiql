@@ -24,6 +24,7 @@ export {
   ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  FieldLink,
   History,
   HistoryContext,
   HistoryContextProvider,

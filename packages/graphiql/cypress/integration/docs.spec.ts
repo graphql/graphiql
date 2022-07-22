@@ -39,7 +39,10 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Shows "other results" section', () => {
     cy.get('.doc-category-title').should('have.text', 'other results');
-    cy.get('.doc-category .field-name').should('have.text', 'hasArgs');
+    cy.get('.doc-category .graphiql-doc-explorer-field-name').should(
+      'have.text',
+      'hasArgs',
+    );
   });
 
   it('Navigates back to search results when existing', () => {
@@ -112,7 +115,9 @@ if (!version.includes('15.5')) {
 
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
-    cy.get('#doc-fields .doc-category-item a.field-name').last().click();
+    cy.get('#doc-fields .doc-category-item a.graphiql-doc-explorer-field-name')
+      .last()
+      .click();
     cy.get('#doc-deprecated-args>.doc-category-title')
       .last()
       .should('have.text', 'deprecated arguments');

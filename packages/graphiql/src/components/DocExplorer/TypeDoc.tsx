@@ -7,6 +7,7 @@
 
 import {
   ExplorerFieldDef,
+  FieldLink,
   TypeLink,
   useExplorerContext,
   useSchemaContext,
@@ -26,7 +27,6 @@ import React, { ReactNode, useState } from 'react';
 
 import Argument from './Argument';
 import DefaultValue from './DefaultValue';
-import FieldLink from './FieldLink';
 import MarkdownContent from './MarkdownContent';
 
 export default function TypeDoc() {

@@ -6,6 +6,7 @@
  */
 
 import {
+  FieldLink,
   TypeLink,
   useExplorerContext,
   useSchemaContext,
@@ -13,7 +14,6 @@ import {
 import React, { ReactNode } from 'react';
 
 import Argument from './Argument';
-import FieldLink from './FieldLink';
 
 export default function SearchResults() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });
