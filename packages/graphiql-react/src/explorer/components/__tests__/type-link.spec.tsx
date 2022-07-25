@@ -1,20 +1,13 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import { ExplorerContext } from '@graphiql/react';
 import {
   // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
 import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
-import React, { ComponentProps } from 'react';
+import { ComponentProps } from 'react';
 
-import TypeLink from '../TypeLink';
+import { ExplorerContext } from '../../context';
+import { TypeLink } from '../type-link';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
 const nonNullType = new GraphQLNonNull(GraphQLString);
@@ -31,9 +24,11 @@ function TypeLinkWithContext(props: ComponentProps<typeof TypeLink>) {
       <TypeLink {...props} />
       {/* Print the top of the current nav stack for test assertions */}
       <ExplorerContext.Consumer>
-        {({ explorerNavStack }) => (
+        {context => (
           <span data-testid="nav-stack">
-            {JSON.stringify(explorerNavStack[explorerNavStack.length + 1])}
+            {JSON.stringify(
+              context!.explorerNavStack[context!.explorerNavStack.length + 1],
+            )}
           </span>
         )}
       </ExplorerContext.Consumer>
@@ -46,7 +41,6 @@ describe('TypeLink', () => {
     const { container } = render(<TypeLinkWithContext type={GraphQLString} />);
     expect(container).toHaveTextContent('String');
     expect(container.querySelectorAll('a')).toHaveLength(1);
-    expect(container.querySelector('a')).toHaveClass('type-name');
   });
   it('should render a non-null type', () => {
     const { container } = render(<TypeLinkWithContext type={nonNullType} />);
