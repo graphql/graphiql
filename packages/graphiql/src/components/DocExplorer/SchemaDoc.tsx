@@ -5,10 +5,8 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import { MarkdownContent, TypeLink, useSchemaContext } from '@graphiql/react';
 import React from 'react';
-import TypeLink from './TypeLink';
-import MarkdownContent from './MarkdownContent';
-import { useSchemaContext } from '@graphiql/react';
 
 // Render the top level Schema
 export default function SchemaDoc() {
@@ -24,13 +22,10 @@ export default function SchemaDoc() {
 
   return (
     <div>
-      <MarkdownContent
-        className="doc-type-description"
-        markdown={
-          schema.description ||
-          'A GraphQL schema provides a root type for each kind of operation.'
-        }
-      />
+      <MarkdownContent type="description">
+        {schema.description ||
+          'A GraphQL schema provides a root type for each kind of operation.'}
+      </MarkdownContent>
       <div className="doc-category">
         <div className="doc-category-title">root types</div>
         {queryType ? (

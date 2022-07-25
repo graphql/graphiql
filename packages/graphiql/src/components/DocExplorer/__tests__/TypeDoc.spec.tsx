@@ -49,7 +49,9 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {
     const { container } = render(<TypeDocWithContext type={ExampleQuery} />);
-    const description = container.querySelectorAll('.doc-type-description');
+    const description = container.querySelectorAll(
+      '.graphiql-markdown-description',
+    );
     expect(description).toHaveLength(1);
     expect(description[0]).toHaveTextContent('Query description\nSecond line', {
       normalizeWhitespace: false,
@@ -72,12 +74,12 @@ describe('TypeDoc', () => {
 
     cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(4);
-    expect(container.querySelectorAll('.field-name')[3]).toHaveTextContent(
-      'deprecatedField',
-    );
-    expect(container.querySelector('.doc-deprecation')).toHaveTextContent(
-      'example deprecation reason',
-    );
+    expect(
+      container.querySelectorAll('.graphiql-doc-explorer-field-name')[3],
+    ).toHaveTextContent('deprecatedField');
+    expect(
+      container.querySelector('.graphiql-markdown-deprecation'),
+    ).toHaveTextContent('example deprecation reason');
   });
 
   it('renders a Union type', () => {
@@ -115,8 +117,8 @@ describe('TypeDoc', () => {
     enums = container.querySelectorAll('.enum-value');
     expect(enums).toHaveLength(3);
     expect(enums[2]).toHaveTextContent('value3');
-    expect(container.querySelector('.doc-deprecation')).toHaveTextContent(
-      'Only two are needed',
-    );
+    expect(
+      container.querySelector('.graphiql-markdown-deprecation'),
+    ).toHaveTextContent('Only two are needed');
   });
 });
