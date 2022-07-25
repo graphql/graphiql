@@ -6,6 +6,8 @@
  *   (field description any optionally deprecation reason).
  */
 
+.graphiql-markdown-description,
+.graphiql-markdown-deprecation,
 .CodeMirror-hint-information-description,
 .CodeMirror-hint-information-deprecation-reason,
 .CodeMirror-info .info-description,
@@ -66,6 +68,7 @@
   }
 }
 
+.graphiql-markdown-description,
 .CodeMirror-hint-information-description,
 .CodeMirror-info .info-description {
   & a {
@@ -92,6 +95,7 @@
   }
 }
 
+.graphiql-markdown-deprecation,
 .CodeMirror-hint-information-deprecation-reason,
 .CodeMirror-info .info-deprecation {
   & a {
@@ -111,6 +115,10 @@
   & > * {
     margin: var(--px-8) 0;
   }
+}
+
+.graphiql-markdown-preview > :not(:first-child) {
+  display: none;
 }
 
 /**

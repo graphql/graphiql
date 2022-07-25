@@ -5,12 +5,14 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import {
+  Argument,
+  FieldLink,
+  TypeLink,
+  useExplorerContext,
+  useSchemaContext,
+} from '@graphiql/react';
 import React, { ReactNode } from 'react';
-
-import Argument from './Argument';
-import TypeLink from './TypeLink';
-import { useExplorerContext, useSchemaContext } from '@graphiql/react';
-import FieldLink from './FieldLink';
 
 export default function SearchResults() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });

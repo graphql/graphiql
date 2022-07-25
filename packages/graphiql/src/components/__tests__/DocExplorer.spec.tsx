@@ -67,8 +67,8 @@ describe('DocExplorer', () => {
     );
     const error = container.querySelectorAll('.error-container');
     expect(error).toHaveLength(0);
-    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
-      'GraphQL Schema for testing',
-    );
+    expect(
+      container.querySelector('.graphiql-markdown-description'),
+    ).toHaveTextContent('GraphQL Schema for testing');
   });
 });
