@@ -6,7 +6,12 @@
  */
 
 import {
+  Argument,
+  DefaultValue,
   ExplorerFieldDef,
+  FieldLink,
+  MarkdownContent,
+  TypeLink,
   useExplorerContext,
   useSchemaContext,
 } from '@graphiql/react';
@@ -22,12 +27,6 @@ import {
   isUnionType,
 } from 'graphql';
 import React, { ReactNode, useState } from 'react';
-
-import Argument from './Argument';
-import DefaultValue from './DefaultValue';
-import FieldLink from './FieldLink';
-import MarkdownContent from './MarkdownContent';
-import TypeLink from './TypeLink';
 
 export default function TypeDoc() {
   const { schema } = useSchemaContext({ nonNull: true });
@@ -152,12 +151,9 @@ export default function TypeDoc() {
 
   return (
     <div>
-      <MarkdownContent
-        className="doc-type-description"
-        markdown={
-          ('description' in type && type.description) || 'No Description'
-        }
-      />
+      <MarkdownContent type="description">
+        {('description' in type && type.description) || 'No Description'}
+      </MarkdownContent>
       {isObjectType(type) && typesDef}
       {fieldsDef}
       {deprecatedFieldsDef}
@@ -193,18 +189,16 @@ function Field({ field }: FieldProps) {
       {': '}
       <TypeLink type={field.type} />
       <DefaultValue field={field} />
-      {field.description && (
-        <MarkdownContent
-          className="field-short-description"
-          markdown={field.description}
-        />
-      )}
-      {'deprecationReason' in field && field.deprecationReason && (
-        <MarkdownContent
-          className="doc-deprecation"
-          markdown={field.deprecationReason}
-        />
-      )}
+      {field.description ? (
+        <MarkdownContent type="description">
+          {field.description}
+        </MarkdownContent>
+      ) : null}
+      {'deprecationReason' in field && field.deprecationReason ? (
+        <MarkdownContent type="deprecation">
+          {field.deprecationReason}
+        </MarkdownContent>
+      ) : null}
     </div>
   );
 }
@@ -217,16 +211,16 @@ function EnumValue({ value }: EnumValueProps) {
   return (
     <div className="doc-category-item">
       <div className="enum-value">{value.name}</div>
-      <MarkdownContent
-        className="doc-value-description"
-        markdown={value.description}
-      />
-      {value.deprecationReason && (
-        <MarkdownContent
-          className="doc-deprecation"
-          markdown={value.deprecationReason}
-        />
-      )}
+      {value.description ? (
+        <MarkdownContent type="description">
+          {value.description}
+        </MarkdownContent>
+      ) : null}
+      {value.deprecationReason ? (
+        <MarkdownContent type="deprecation">
+          {value.deprecationReason}
+        </MarkdownContent>
+      ) : null}
     </div>
   );
 }
