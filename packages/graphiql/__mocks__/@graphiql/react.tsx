@@ -12,10 +12,13 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 
 export {
+  Argument,
   ChevronDownIcon,
   ChevronUpIcon,
   CloseIcon,
   CopyIcon,
+  DefaultValue,
+  Directive,
   DocsIcon,
   Dropdown,
   EditorContext,
@@ -25,6 +28,7 @@ export {
   ExecutionContextProvider,
   ExplorerContext,
   ExplorerContextProvider,
+  FieldLink,
   History,
   HistoryContext,
   HistoryContextProvider,
@@ -32,6 +36,7 @@ export {
   ImagePreview,
   KeyboardShortcutIcon,
   onHasCompletion,
+  MarkdownContent,
   MergeIcon,
   PenIcon,
   PlayIcon,
@@ -47,6 +52,7 @@ export {
   StorageContext,
   StorageContextProvider,
   ToolbarButton,
+  TypeLink,
   UnStyledButton,
   useAutoCompleteLeafs,
   useCopyQuery,
