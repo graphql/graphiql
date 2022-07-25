@@ -41,6 +41,7 @@ export {
   PrettifyIcon,
   SchemaContext,
   SchemaContextProvider,
+  Search,
   SettingsIcon,
   Spinner,
   StopIcon,
