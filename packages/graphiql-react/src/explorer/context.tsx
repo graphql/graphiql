@@ -12,10 +12,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useSchemaContext } from './schema';
+import { useSchemaContext } from '../schema';
 
-import { useStorageContext } from './storage';
-import { createContextHook, createNullableContext } from './utility/context';
+import { useStorageContext } from '../storage';
+import { createContextHook, createNullableContext } from '../utility/context';
 
 export type ExplorerFieldDef =
   | GraphQLField<{}, {}, {}>
@@ -37,7 +37,7 @@ export type ExplorerNavStack = [
 
 const initialNavStackItem: ExplorerNavStackItem = {
   name: 'Schema',
-  title: 'Documentation Explorer',
+  title: 'Docs',
 };
 
 export type ExplorerContextType = {

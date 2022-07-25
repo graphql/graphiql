@@ -1,0 +1,12 @@
+.graphiql-doc-explorer-field-name {
+  color: var(--color-blue);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: var(--color-blue) auto 1px;
+  }
+}

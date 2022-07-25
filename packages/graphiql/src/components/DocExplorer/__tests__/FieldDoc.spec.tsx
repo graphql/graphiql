@@ -82,49 +82,67 @@ describe('FieldDoc', () => {
     const { container } = render(
       <FieldDocWithContext field={exampleObject.getFields().string} />,
     );
-    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
-      'No Description',
-    );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
-    expect(container.querySelector('.arg')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.graphiql-markdown-description'),
+    ).toHaveTextContent('No Description');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).not.toBeInTheDocument();
   });
 
   it('should re-render on field change', () => {
     const { container, rerender } = render(
       <FieldDocWithContext field={exampleObject.getFields().string} />,
     );
-    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
-      'No Description',
-    );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
-    expect(container.querySelector('.arg')).not.toBeInTheDocument();
+    expect(
+      container.querySelector('.graphiql-markdown-description'),
+    ).toHaveTextContent('No Description');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).not.toBeInTheDocument();
 
     rerender(
       <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
-    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
-      'Example String field with arguments',
-    );
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-markdown-description'),
+    ).toHaveTextContent('Example String field with arguments');
   });
 
   it('should render a string field with arguments', () => {
     const { container } = render(
       <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
-    expect(container.querySelector('.doc-type-description')).toHaveTextContent(
-      'Example String field with arguments',
-    );
-    expect(container.querySelectorAll('.arg')).toHaveLength(1);
-    expect(container.querySelector('.arg')).toHaveTextContent(
-      'stringArg: String',
-    );
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-markdown-description'),
+    ).toHaveTextContent('Example String field with arguments');
+    expect(
+      container.querySelectorAll('.graphiql-doc-explorer-argument'),
+    ).toHaveLength(1);
+    expect(
+      container.querySelector('.graphiql-doc-explorer-argument'),
+    ).toHaveTextContent('stringArg: String');
     // by default, the deprecation docs should be hidden
-    expect(container.querySelectorAll('.doc-deprecation')).toHaveLength(0);
+    expect(
+      container.querySelectorAll('.graphiql-markdown-deprecation'),
+    ).toHaveLength(0);
     // make sure deprecation is present
     fireEvent.click(container.querySelector('.show-btn'));
-    const deprecationDocs = container.querySelectorAll('.doc-deprecation');
+    const deprecationDocs = container.querySelectorAll(
+      '.graphiql-markdown-deprecation',
+    );
     expect(deprecationDocs).toHaveLength(1);
     expect(deprecationDocs[0]).toHaveTextContent('no longer used');
   });
@@ -135,9 +153,11 @@ describe('FieldDoc', () => {
         field={exampleObject.getFields().stringWithDirective}
       />,
     );
-    expect(container.querySelector('.type-name')).toHaveTextContent('String');
-    expect(container.querySelector('#development')).toHaveTextContent(
-      '@development',
-    );
+    expect(
+      container.querySelector('.graphiql-doc-explorer-type-name'),
+    ).toHaveTextContent('String');
+    expect(
+      container.querySelector('.graphiql-doc-explorer-directive'),
+    ).toHaveTextContent('@development');
   });
 });
