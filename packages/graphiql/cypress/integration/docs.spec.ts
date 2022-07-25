@@ -39,12 +39,15 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Shows "other results" section', () => {
     cy.get('.doc-category-title').should('have.text', 'other results');
-    cy.get('.doc-category .field-name').should('have.text', 'hasArgs');
+    cy.get('.doc-category .graphiql-doc-explorer-field-name').should(
+      'have.text',
+      'hasArgs',
+    );
   });
 
   it('Navigates back to search results when existing', () => {
     cy.get('.doc-explorer-back').click();
-    cy.get('.doc-explorer-title').should('have.text', 'Documentation Explorer');
+    cy.get('.doc-explorer-title').should('have.text', 'Docs');
   });
 
   it('Retains the parent search value', () => {
@@ -58,7 +61,7 @@ describe('GraphiQL DocExplorer - search', () => {
       .click();
 
     cy.get('.doc-explorer-title').should('have.text', 'isTest');
-    cy.get('.doc-type-description').should(
+    cy.get('.graphiql-markdown-description').should(
       'have.text',
       'Is this a test schema? Sure it is.\n',
     );
@@ -92,10 +95,10 @@ describe('GraphQL DocExplorer - deprecated fields', () => {
 
     const deprecated = cy.get('.doc-category').last();
     deprecated
-      .get('.field-short-description')
+      .get('.graphiql-markdown-description')
       .should('contain.text', 'This field is an example of a deprecated field');
     deprecated
-      .get('.doc-deprecation')
+      .get('.graphiql-markdown-deprecation')
       .should(
         'contain.html',
         '<p>No longer in use, try <code>test</code> instead.</p>',
@@ -112,11 +115,16 @@ if (!version.includes('15.5')) {
 
 describeOrSkip('GraphQL DocExplorer - deprecated arguments', () => {
   it('should show deprecated arguments category title', () => {
-    cy.get('#doc-fields .doc-category-item a.field-name').last().click();
+    cy.get('#doc-fields .doc-category-item a.graphiql-doc-explorer-field-name')
+      .last()
+      .click();
     cy.get('#doc-deprecated-args>.doc-category-title')
       .last()
       .should('have.text', 'deprecated arguments');
     cy.get('.show-btn').click();
-    cy.get('.doc-deprecation').should('have.text', 'deprecated argument\n');
+    cy.get('.graphiql-markdown-deprecation').should(
+      'have.text',
+      'deprecated argument\n',
+    );
   });
 });

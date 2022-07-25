@@ -5,14 +5,15 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
+import {
+  Argument,
+  Directive,
+  MarkdownContent,
+  TypeLink,
+  useExplorerContext,
+} from '@graphiql/react';
+import { DirectiveNode, isType } from 'graphql';
 import React from 'react';
-import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
-import { useExplorerContext } from '@graphiql/react';
-
-import Argument from './Argument';
-import Directive from './Directive';
-import MarkdownContent from './MarkdownContent';
-import TypeLink from './TypeLink';
 
 export default function FieldDoc() {
   const { explorerNavStack } = useExplorerContext({ nonNull: true });
@@ -32,22 +33,8 @@ export default function FieldDoc() {
         <div className="doc-category-title">arguments</div>
         {field.args
           .filter(arg => !arg.deprecationReason)
-          .map((arg: GraphQLArgument) => (
-            <div key={arg.name} className="doc-category-item">
-              <div>
-                <Argument arg={arg} />
-              </div>
-              <MarkdownContent
-                className="doc-value-description"
-                markdown={arg.description}
-              />
-              {arg && 'deprecationReason' in arg && (
-                <MarkdownContent
-                  className="doc-deprecation"
-                  markdown={arg?.deprecationReason}
-                />
-              )}
-            </div>
+          .map(arg => (
+            <Argument key={arg.name} arg={arg} />
           ))}
       </div>
     );
@@ -67,23 +54,7 @@ export default function FieldDoc() {
               Show deprecated arguments...
             </button>
           ) : (
-            deprecatedArgs.map((arg, i) => (
-              <div key={i}>
-                <div>
-                  <Argument arg={arg} />
-                </div>
-                <MarkdownContent
-                  className="doc-value-description"
-                  markdown={arg.description}
-                />
-                {arg && 'deprecationReason' in arg && (
-                  <MarkdownContent
-                    className="doc-deprecation"
-                    markdown={arg?.deprecationReason}
-                  />
-                )}
-              </div>
-            ))
+            deprecatedArgs.map(arg => <Argument key={arg.name} arg={arg} />)
           )}
         </div>
       );
@@ -108,16 +79,14 @@ export default function FieldDoc() {
 
   return (
     <div>
-      <MarkdownContent
-        className="doc-type-description"
-        markdown={field.description || 'No Description'}
-      />
-      {field && 'deprecationReason' in field && (
-        <MarkdownContent
-          className="doc-deprecation"
-          markdown={field.deprecationReason}
-        />
-      )}
+      <MarkdownContent type="description">
+        {field.description || 'No Description'}
+      </MarkdownContent>
+      {field && 'deprecationReason' in field && field.deprecationReason ? (
+        <MarkdownContent type="deprecation">
+          {field.deprecationReason}
+        </MarkdownContent>
+      ) : null}
       <div className="doc-category">
         <div className="doc-category-title">type</div>
         <TypeLink type={field.type} />
