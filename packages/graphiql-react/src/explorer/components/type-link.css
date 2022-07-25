@@ -1,0 +1,12 @@
+.graphiql-doc-explorer-type-name {
+  color: var(--color-orche);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    outline: var(--color-orche) auto 1px;
+  }
+}
