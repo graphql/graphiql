@@ -128,7 +128,6 @@
     "husky": "^4.2.3",
     "jest": "^27",
     "jest-environment-jsdom": "^27.5.1",
-    "jest-environment-jsdom-global": "^3.0.0",
     "jest-environment-node": "^27",
     "js-green-licenses": "3.0.0",
     "lint-staged": "^10.1.2",
