@@ -1,29 +1,22 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import { ExplorerContext, SchemaContext } from '@graphiql/react';
 import {
   // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
 import { GraphQLNamedType } from 'graphql';
-import React from 'react';
 
+import { SchemaContext } from '../../../schema';
+import { ExplorerContext } from '../../context';
+import { TypeDocumentation } from '../type-documentation';
 import {
-  ExampleSchema,
-  ExampleQuery,
-  ExampleUnion,
   ExampleEnum,
-} from '../../__tests__/ExampleSchema';
-import TypeDoc from '../TypeDoc';
+  ExampleQuery,
+  ExampleSchema,
+  ExampleUnion,
+} from './example-schema';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
-function TypeDocWithContext(props: { type: GraphQLNamedType }) {
+function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
   return (
     <SchemaContext.Provider
       value={{
@@ -39,7 +32,7 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
           name: unwrapType(props.type).name,
           def: props.type,
         })}>
-        <TypeDoc />
+        <TypeDocumentation />
       </ExplorerContext.Provider>
     </SchemaContext.Provider>
   );
@@ -47,7 +40,9 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
 
 describe('TypeDoc', () => {
   it('renders a top-level query object type', () => {
-    const { container } = render(<TypeDocWithContext type={ExampleQuery} />);
+    const { container } = render(
+      <TypeDocumentationWithContext type={ExampleQuery} />,
+    );
     const description = container.querySelectorAll(
       '.graphiql-markdown-description',
     );
@@ -65,7 +60,9 @@ describe('TypeDoc', () => {
   });
 
   it('renders deprecated fields when you click to see them', () => {
-    const { container } = render(<TypeDocWithContext type={ExampleQuery} />);
+    const { container } = render(
+      <TypeDocumentationWithContext type={ExampleQuery} />,
+    );
     let cats = container.querySelectorAll('.doc-category-item');
     expect(cats).toHaveLength(3);
 
@@ -82,14 +79,18 @@ describe('TypeDoc', () => {
   });
 
   it('renders a Union type', () => {
-    const { container } = render(<TypeDocWithContext type={ExampleUnion} />);
+    const { container } = render(
+      <TypeDocumentationWithContext type={ExampleUnion} />,
+    );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
       'possible types',
     );
   });
 
   it('renders an Enum type', () => {
-    const { container } = render(<TypeDocWithContext type={ExampleEnum} />);
+    const { container } = render(
+      <TypeDocumentationWithContext type={ExampleEnum} />,
+    );
     expect(container.querySelector('.doc-category-title')).toHaveTextContent(
       'values',
     );
@@ -100,7 +101,7 @@ describe('TypeDoc', () => {
 
   it('shows deprecated enum values on click', () => {
     const { getByText, container } = render(
-      <TypeDocWithContext type={ExampleEnum} />,
+      <TypeDocumentationWithContext type={ExampleEnum} />,
     );
     const showBtn = getByText('Show deprecated values...');
     expect(showBtn).toBeInTheDocument();
