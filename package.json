@@ -102,7 +102,6 @@
     "@types/node": "^14.14.22",
     "@types/prettier": "^2.0.0",
     "@types/react": "^17.0.37",
-    "@types/theme-ui": "^0.3.1",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
