@@ -6,13 +6,12 @@ describe('GraphiQL DocExplorer - button', () => {
   });
   it('Toggles doc pane on', () => {
     cy.get('.graphiql-sidebar button').eq(0).click();
-    cy.get('.doc-explorer').should('be.visible');
+    cy.get('.graphiql-doc-explorer').should('be.visible');
   });
 
   it('Toggles doc pane back off', () => {
-    // there are two components with .docExplorerHide, one in query history
-    cy.get('.graphiql-plugin button.docExplorerHide').click();
-    cy.get('.doc-explorer').should('not.be.visible');
+    cy.get('.graphiql-sidebar button').eq(0).click();
+    cy.get('.graphiql-doc-explorer').should('not.be.visible');
   });
 });
 
@@ -30,7 +29,7 @@ describe('GraphiQL DocExplorer - search', () => {
 
   it('Navigates to a docs entry on selecting a search result', () => {
     cy.get('[data-reach-combobox-option]').eq(4).children().click();
-    cy.get('.doc-explorer-title').should('have.text', 'TestInput');
+    cy.get('.graphiql-doc-explorer-title').should('have.text', 'TestInput');
   });
 
   it('Allows searching fields within a type', () => {
@@ -45,10 +44,14 @@ describe('GraphiQL DocExplorer - search', () => {
     cy.get('[data-reach-combobox-option]').contains('hasArgs');
   });
 
-  it('Navigates back and closes popover', () => {
-    cy.get('.doc-explorer-back').click();
-    cy.get('.doc-explorer-title').should('have.text', 'Docs');
+  it('Closes popover when blurring input', () => {
+    cy.get('[data-reach-combobox-input]').blur();
     cy.get('[data-reach-combobox-popover]').should('have.attr', 'hidden');
+  });
+
+  it('Navigates back', () => {
+    cy.get('.graphiql-doc-explorer-back').click();
+    cy.get('.graphiql-doc-explorer-title').should('have.text', 'Docs');
   });
 
   it('Type fields link to their own docs entry', () => {
@@ -56,7 +59,7 @@ describe('GraphiQL DocExplorer - search', () => {
     cy.wait(250);
     cy.get('[data-reach-combobox-option]').last().click();
 
-    cy.get('.doc-explorer-title').should('have.text', 'isTest');
+    cy.get('.graphiql-doc-explorer-title').should('have.text', 'isTest');
     cy.get('.graphiql-markdown-description').should(
       'have.text',
       'Is this a test schema? Sure it is.\n',
