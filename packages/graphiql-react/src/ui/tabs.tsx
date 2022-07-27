@@ -1,67 +1,66 @@
-function TabCloseButton(props: { onClick: () => void }) {
-  return (
-    <div
-      role="button"
-      aria-pressed={false}
-      className="close"
-      aria-label="Close Tab"
-      title="Close Tab"
-      onClick={ev => {
-        ev.stopPropagation();
-        props.onClick();
-      }}
-    />
-  );
-}
+import { CloseIcon } from '../icons';
+import { compose } from '../utility/compose';
+import { UnStyledButton } from './button';
+
+import './tabs.css';
 
 type TabProps = {
-  isActive: boolean;
-  title: string;
-  isCloseable: boolean;
-  onSelect: () => void;
-  onClose: () => void;
-  tabProps?: React.ButtonHTMLAttributes<{}>;
+  isActive?: boolean;
 };
 
-/**
- * Generic tab component that implements wai-aria tab spec
- */
-export function Tab(props: TabProps): React.ReactElement {
+export function Tab({
+  isActive,
+  ...props
+}: TabProps & JSX.IntrinsicElements['div']) {
   return (
-    <button
-      {...props.tabProps}
+    <div
+      {...props}
       role="tab"
+      aria-selected={isActive}
+      className={compose(
+        'graphiql-tab',
+        isActive ? 'graphiql-tab-active' : '',
+        props.className,
+      )}>
+      {props.children}
+    </div>
+  );
+}
+
+function TabButton(props: JSX.IntrinsicElements['button']) {
+  return (
+    <UnStyledButton
+      {...props}
       type="button"
-      aria-selected={props.isActive}
-      title={props.title}
-      className={`tab${props.isActive ? ' active' : ''}`}
-      onClick={props.onSelect}>
-      {props.title}
-      {props.isCloseable ? (
-        <TabCloseButton onClick={() => props.onClose()} />
-      ) : null}
-    </button>
+      className={compose('graphiql-tab-button', props.className)}>
+      {props.children}
+    </UnStyledButton>
   );
 }
 
-export function TabAddButton(props: { onClick: () => void }) {
+Tab.Button = TabButton;
+
+function TabClose(props: JSX.IntrinsicElements['button']) {
   return (
-    <button onClick={props.onClick} className="tab-add" title="Create new tab">
-      <span>+</span>
-    </button>
+    <UnStyledButton
+      aria-label="Close Tab"
+      title="Close Tab"
+      {...props}
+      type="button"
+      className={compose('graphiql-tab-close', props.className)}>
+      <CloseIcon />
+    </UnStyledButton>
   );
 }
 
-type TabsProps = {
-  children: Array<React.ReactNode>;
-  tabsProps?: React.HTMLAttributes<{}>;
-};
-/**
- * Generic tablist component that implements wai-aria tab spec
- */
-export function Tabs(props: TabsProps) {
+Tab.Close = TabClose;
+
+export function Tabs(props: JSX.IntrinsicElements['div']) {
   return (
-    <div role="tablist" className="tabs" {...props.tabsProps}>
+    <div
+      {...props}
+      role="tablist"
+      className={compose('graphiql-tabs', props.className)}>
       {props.children}
     </div>
   );
