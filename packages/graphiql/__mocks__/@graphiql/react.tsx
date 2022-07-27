@@ -15,6 +15,7 @@ export {
   Argument,
   ArgumentIcon,
   Button,
+  ButtonGroup,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronUpIcon,
