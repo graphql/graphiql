@@ -802,13 +802,7 @@ class GraphiQLWithContext extends React.Component<
             }}
           >
             <div className="graphiql-plugin">
-              {this.props.explorerContext?.isVisible ? (
-                <DocExplorer
-                  onClose={() =>
-                    this.props.pluginResize.setHiddenElement('first')
-                  }
-                />
-              ) : null}
+              {this.props.explorerContext?.isVisible ? <DocExplorer /> : null}
               {this.props.historyContext?.isVisible ? <History /> : null}
             </div>
           </div>
