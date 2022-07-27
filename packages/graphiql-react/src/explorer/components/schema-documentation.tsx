@@ -1,16 +1,12 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
+import { useSchemaContext } from '../../schema';
+import { MarkdownContent } from '../../ui';
+import { TypeLink } from './type-link';
 
-import { MarkdownContent, TypeLink, useSchemaContext } from '@graphiql/react';
-import React from 'react';
-
-// Render the top level Schema
-export default function SchemaDoc() {
-  const { schema } = useSchemaContext({ nonNull: true });
+export function SchemaDocumentation() {
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: SchemaDocumentation,
+  });
 
   if (!schema) {
     return null;

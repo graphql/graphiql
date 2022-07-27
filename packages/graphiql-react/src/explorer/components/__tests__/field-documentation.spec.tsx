@@ -1,20 +1,12 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import { ExplorerContext, ExplorerFieldDef } from '@graphiql/react';
 import {
   // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-import React from 'react';
+import { ExplorerContext, ExplorerFieldDef } from '../../context';
 
-import FieldDoc from '../FieldDoc';
+import { FieldDocumentation } from '../field-documentation';
 import { mockExplorerContextValue } from './test-utils';
 
 const exampleObject = new GraphQLObjectType({
@@ -65,7 +57,7 @@ const exampleObject = new GraphQLObjectType({
   },
 });
 
-function FieldDocWithContext(props: { field: ExplorerFieldDef }) {
+function FieldDocumentationWithContext(props: { field: ExplorerFieldDef }) {
   return (
     <ExplorerContext.Provider
       value={mockExplorerContextValue({
@@ -73,7 +65,7 @@ function FieldDocWithContext(props: { field: ExplorerFieldDef }) {
         def: props.field,
       })}
     >
-      <FieldDoc />
+      <FieldDocumentation />
     </ExplorerContext.Provider>
   );
 }
@@ -81,7 +73,9 @@ function FieldDocWithContext(props: { field: ExplorerFieldDef }) {
 describe('FieldDoc', () => {
   it('should render a simple string field', () => {
     const { container } = render(
-      <FieldDocWithContext field={exampleObject.getFields().string} />,
+      <FieldDocumentationWithContext
+        field={exampleObject.getFields().string}
+      />,
     );
     expect(
       container.querySelector('.graphiql-markdown-description'),
@@ -96,7 +90,9 @@ describe('FieldDoc', () => {
 
   it('should re-render on field change', () => {
     const { container, rerender } = render(
-      <FieldDocWithContext field={exampleObject.getFields().string} />,
+      <FieldDocumentationWithContext
+        field={exampleObject.getFields().string}
+      />,
     );
     expect(
       container.querySelector('.graphiql-markdown-description'),
@@ -109,7 +105,9 @@ describe('FieldDoc', () => {
     ).not.toBeInTheDocument();
 
     rerender(
-      <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
+      <FieldDocumentationWithContext
+        field={exampleObject.getFields().stringWithArgs}
+      />,
     );
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
@@ -121,7 +119,9 @@ describe('FieldDoc', () => {
 
   it('should render a string field with arguments', () => {
     const { container } = render(
-      <FieldDocWithContext field={exampleObject.getFields().stringWithArgs} />,
+      <FieldDocumentationWithContext
+        field={exampleObject.getFields().stringWithArgs}
+      />,
     );
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
@@ -150,7 +150,7 @@ describe('FieldDoc', () => {
 
   it('should render a string field with directives', () => {
     const { container } = render(
-      <FieldDocWithContext
+      <FieldDocumentationWithContext
         field={exampleObject.getFields().stringWithDirective}
       />,
     );

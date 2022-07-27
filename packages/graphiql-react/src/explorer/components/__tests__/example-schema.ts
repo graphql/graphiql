@@ -11,10 +11,7 @@ import {
 export const ExampleInterface = new GraphQLInterfaceType({
   name: 'exampleInterface',
   fields: {
-    name: {
-      name: 'nameField',
-      type: GraphQLString,
-    },
+    name: { type: GraphQLString },
   },
 });
 
@@ -31,14 +28,8 @@ export const ExampleUnionType1 = new GraphQLObjectType({
   name: 'Union_Type_1',
   interfaces: [ExampleInterface],
   fields: {
-    name: {
-      name: 'nameField',
-      type: GraphQLString,
-    },
-    enum: {
-      name: 'enumField',
-      type: ExampleEnum,
-    },
+    name: { type: GraphQLString },
+    enum: { type: ExampleEnum },
   },
 });
 
@@ -46,14 +37,8 @@ export const ExampleUnionType2 = new GraphQLObjectType({
   name: 'Union_Type_2',
   interfaces: [ExampleInterface],
   fields: {
-    name: {
-      name: 'nameField',
-      type: GraphQLString,
-    },
-    string: {
-      name: 'stringField',
-      type: GraphQLString,
-    },
+    name: { type: GraphQLString },
+    string: { type: GraphQLString },
   },
 });
 
@@ -66,26 +51,15 @@ export const ExampleQuery = new GraphQLObjectType({
   name: 'Query',
   description: 'Query description\n Second line',
   fields: {
-    string: {
-      name: 'exampleString',
-      type: GraphQLString,
-    },
-    union: {
-      name: 'exampleUnion',
-      type: ExampleUnion,
-    },
+    string: { type: GraphQLString },
+    union: { type: ExampleUnion },
     fieldWithArgs: {
-      name: 'exampleWithArgs',
       type: GraphQLString,
       args: {
-        stringArg: {
-          name: 'exampleStringArg',
-          type: GraphQLString,
-        },
+        stringArg: { type: GraphQLString },
       },
     },
     deprecatedField: {
-      name: 'booleanField',
       type: GraphQLBoolean,
       deprecationReason: 'example deprecation reason',
     },
