@@ -176,7 +176,7 @@ Without these amazing past maintainers, where would we be?!
 
 ### Active
 
-Maintainers who are active (to varying degrees):
+Maintainers who are currently active (to varying degrees, please contact us via our discord channels!):
 
 - [@imolorhe](https://github.com/imolorhe)
 - [@yoshiakis](https://github.com/yoshiakis)
@@ -189,8 +189,9 @@ Maintainers who are active (to varying degrees):
 - [@B2o5T](https://github.com/B2o5T)
 - [@dotansimha](https://github.com/dotansimha)
 - [@saihaj](https://github.com/saihaj)
+- [@jonathanawesome](https://github.com/jonathanawesome)
 
-> Thank you graphql community for all the help & support! - @acao
+> Thank you graphql community for all the help & support! I did it all for you, and I couldn't have done it without you ❤️ - @acao
 
 ### Fielding Proposals!
 
