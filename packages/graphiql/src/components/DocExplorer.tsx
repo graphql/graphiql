@@ -5,14 +5,17 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { Spinner, useExplorerContext, useSchemaContext } from '@graphiql/react';
+import {
+  Search,
+  Spinner,
+  useExplorerContext,
+  useSchemaContext,
+} from '@graphiql/react';
 import { GraphQLSchema, isType } from 'graphql';
 import React, { ReactNode } from 'react';
 
 import FieldDoc from './DocExplorer/FieldDoc';
 import SchemaDoc from './DocExplorer/SchemaDoc';
-import SearchBox from './DocExplorer/SearchBox';
-import SearchResults from './DocExplorer/SearchResults';
 import TypeDoc from './DocExplorer/TypeDoc';
 
 type DocExplorerProps = {
@@ -40,7 +43,7 @@ export function DocExplorer(props: DocExplorerProps) {
     schema: schemaFromContext,
     validationErrors,
   } = useSchemaContext({ nonNull: true });
-  const { explorerNavStack, hide, pop, showSearch } = useExplorerContext({
+  const { explorerNavStack, hide, pop } = useExplorerContext({
     nonNull: true,
   });
 
@@ -65,8 +68,6 @@ export function DocExplorer(props: DocExplorerProps) {
     // Schema is null when it explicitly does not exist, typically due to
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
-  } else if (navItem.search) {
-    content = <SearchResults />;
   } else if (explorerNavStack.length === 1) {
     content = <SchemaDoc />;
   } else if (isType(navItem.def)) {
@@ -74,10 +75,6 @@ export function DocExplorer(props: DocExplorerProps) {
   } else if (navItem.def) {
     content = <FieldDoc />;
   }
-
-  const shouldSearchBoxAppear =
-    explorerNavStack.length === 1 ||
-    (isType(navItem.def) && 'getFields' in navItem.def);
 
   let prevName;
   if (explorerNavStack.length > 1) {
@@ -114,13 +111,7 @@ export function DocExplorer(props: DocExplorerProps) {
         </div>
       </div>
       <div className="doc-explorer-contents">
-        {shouldSearchBoxAppear && (
-          <SearchBox
-            value={navItem.search}
-            placeholder={`Search ${navItem.name}...`}
-            onSearch={showSearch}
-          />
-        )}
+        <Search key={navItem.def?.name || '__schema'} />
         {content}
       </div>
     </section>
