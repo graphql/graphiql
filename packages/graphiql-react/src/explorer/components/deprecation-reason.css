@@ -1,0 +1,12 @@
+.graphiql-doc-explorer-deprecation {
+  background-color: var(--color-orche-background);
+  border: 1px solid var(--color-orche);
+  border-radius: var(--px-4);
+  color: var(--color-orche);
+  padding: var(--px-8);
+}
+
+.graphiql-doc-explorer-deprecation-label {
+  font-size: var(--font-size-hint);
+  font-weight: var(--font-weight-medium);
+}
