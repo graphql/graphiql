@@ -1,6 +1,7 @@
-import { GraphQLType, isListType, isNonNullType } from 'graphql';
+import { GraphQLType } from 'graphql';
 
 import { useExplorerContext } from '../context';
+import { renderType } from './utils';
 
 import './type-link.css';
 
@@ -15,30 +16,15 @@ export function TypeLink(props: TypeLinkProps) {
     return null;
   }
 
-  const type = props.type;
-  if (isNonNullType(type)) {
-    return (
-      <>
-        <TypeLink type={type.ofType} />!
-      </>
-    );
-  }
-  if (isListType(type)) {
-    return (
-      <>
-        [<TypeLink type={type.ofType} />]
-      </>
-    );
-  }
-  return (
+  return renderType(props.type, namedType => (
     <a
       className="graphiql-doc-explorer-type-name"
       onClick={event => {
         event.preventDefault();
-        push({ name: type.name, def: type });
+        push({ name: namedType.name, def: namedType });
       }}
       href="#">
-      {type.name}
+      {namedType.name}
     </a>
-  );
+  ));
 }
