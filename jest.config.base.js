@@ -1,9 +1,9 @@
 const path = require('path');
 
-module.exports = (dir, env = 'dom') => {
+module.exports = (dir, env = 'jsdom') => {
   const package = require(`${dir}/package.json`);
   const setupFilesAfterEnv = [];
-  if (env === 'dom') {
+  if (env === 'jsdom') {
     setupFilesAfterEnv.push(path.join(__dirname, '/resources/test.config.js'));
   }
   return {
@@ -26,8 +26,7 @@ module.exports = (dir, env = 'dom') => {
       '^example-([^/]+)': `${__dirname}/examples/$1/src`,
     },
     testMatch: ['**/*[-.](spec|test).[jt]s?(x)', '!**/cypress/**'],
-    testEnvironment:
-      env === 'dom' ? require.resolve('jest-environment-jsdom') : `node`,
+    testEnvironment: env,
     testPathIgnorePatterns: ['node_modules', 'dist', 'cypress'],
     collectCoverageFrom: ['**/src/**/*.{js,jsx,ts,tsx}'],
     coveragePathIgnorePatterns: [
