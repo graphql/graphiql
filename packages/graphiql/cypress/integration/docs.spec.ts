@@ -23,58 +23,44 @@ describe('GraphiQL DocExplorer - search', () => {
   });
 
   it('Searches docs for values', () => {
-    cy.get('label.search-box input').type('test');
-    cy.get('.doc-category-item').should('have.length', 7);
+    cy.get('[data-reach-combobox-input]').type('test');
+    cy.get('[data-reach-combobox-popover]').should('not.have.attr', 'hidden');
+    cy.get('[data-reach-combobox-option]').should('have.length', 7);
   });
 
   it('Navigates to a docs entry on selecting a search result', () => {
-    cy.get('.doc-search-items>.doc-category-item').eq(4).children().click();
+    cy.get('[data-reach-combobox-option]').eq(4).children().click();
     cy.get('.doc-explorer-title').should('have.text', 'TestInput');
   });
 
   it('Allows searching fields within a type', () => {
-    cy.get('label.search-box input').type('list');
-    cy.get('.doc-category-item').should('have.length', 8);
+    cy.get('[data-reach-combobox-input]').type('list');
+    cy.get('[data-reach-combobox-option]').should('have.length', 14);
   });
 
   it('Shows "other results" section', () => {
-    cy.get('.doc-category-title').should('have.text', 'other results');
-    cy.get('.doc-category .graphiql-doc-explorer-field-name').should(
-      'have.text',
-      'hasArgs',
-    );
+    cy.get(
+      '[data-reach-combobox-popover] .graphiql-doc-explorer-search-divider',
+    ).should('have.text', 'Other results');
+    cy.get('[data-reach-combobox-option]').contains('hasArgs');
   });
 
-  it('Navigates back to search results when existing', () => {
+  it('Navigates back and closes popover', () => {
     cy.get('.doc-explorer-back').click();
     cy.get('.doc-explorer-title').should('have.text', 'Docs');
-  });
-
-  it('Retains the parent search value', () => {
-    cy.get('label.search-box input').should('have.value', 'test');
+    cy.get('[data-reach-combobox-popover]').should('have.attr', 'hidden');
   });
 
   it('Type fields link to their own docs entry', () => {
-    cy.get('.doc-search-items>.doc-category-item')
-      .last()
-      .find('a:nth-child(2)')
-      .click();
+    cy.get('[data-reach-combobox-input]').type('test');
+    cy.wait(250);
+    cy.get('[data-reach-combobox-option]').last().click();
 
     cy.get('.doc-explorer-title').should('have.text', 'isTest');
     cy.get('.graphiql-markdown-description').should(
       'have.text',
       'Is this a test schema? Sure it is.\n',
     );
-  });
-
-  it('Allows clearing the search', () => {
-    cy.visit(`/`);
-    cy.get('.graphiql-sidebar button').eq(0).click();
-    cy.get('label.search-box input').type('test');
-    cy.get('.doc-category-item').should('have.length', 7);
-    cy.get('.search-box-clear').click();
-    cy.get('.doc-category-title').should('have.text', 'root types');
-    cy.get('label.search-box input').should('have.value', '');
   });
 });
 

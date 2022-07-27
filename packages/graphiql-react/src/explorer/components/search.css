@@ -1,0 +1,102 @@
+@import url('@reach/combobox/styles.css');
+
+[data-reach-combobox] {
+  color: var(--color-neutral-60);
+
+  &:not([data-state='idle']) {
+    border-radius: var(--border-radius-4);
+    box-shadow: var(--box-shadow);
+    color: var(--color-neutral-100);
+
+    & .graphiql-doc-explorer-search-input {
+      background: var(--color-neutral-0);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+.graphiql-doc-explorer-search-input {
+  align-items: center;
+  background-color: var(--color-neutral-7);
+  border-radius: var(--border-radius-4);
+  display: flex;
+  padding: var(--px-8) var(--px-12);
+}
+
+[data-reach-combobox-input] {
+  border: none;
+  background-color: transparent;
+  margin-left: var(--px-4);
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+[data-reach-combobox-popover] {
+  border: none;
+  border-bottom-left-radius: var(--border-radius-4);
+  border-bottom-right-radius: var(--border-radius-4);
+  border-top: 1px solid var(--color-neutral-15);
+  max-height: 400px;
+  overflow-y: auto;
+
+  /**
+   * This makes sure that the logic for auto-scrolling the search results when
+   * using keyboard navigation works properly (we use `offsetTop` there).
+   */
+  position: relative;
+}
+
+[data-reach-combobox-list] {
+  font-size: var(--font-size-body);
+  padding: var(--px-4);
+}
+
+[data-reach-combobox-option] {
+  border-radius: var(--border-radius-4);
+  color: var(--color-neutral-60);
+  overflow-x: hidden;
+  padding: var(--px-8) var(--px-12);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &[data-highlighted] {
+    background-color: var(--color-neutral-7);
+  }
+
+  &:hover {
+    background-color: var(--color-neutral-10);
+  }
+
+  & + & {
+    margin-top: var(--px-4);
+  }
+}
+
+.graphiql-doc-explorer-search-type {
+  color: var(--color-blue);
+}
+
+.graphiql-doc-explorer-search-field {
+  color: var(--color-orche);
+}
+
+.graphiql-doc-explorer-search-argument {
+  color: var(--color-purple);
+}
+
+.graphiql-doc-explorer-search-divider {
+  color: var(--color-neutral-60);
+  font-size: var(--font-size-hint);
+  font-weight: var(--font-weight-medium);
+  margin-top: var(--px-8);
+  padding: var(--px-8) var(--px-12);
+}
+
+.graphiql-doc-explorer-search-empty {
+  color: var(--color-neutral-60);
+  padding: var(--px-8) var(--px-12);
+}

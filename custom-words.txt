@@ -65,6 +65,7 @@ browserslist
 changesets
 codemirror
 codesandbox
+combobox
 commitlint
 cosmicconfig
 dompurify
