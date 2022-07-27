@@ -13,9 +13,6 @@ import '@graphiql/react/font/fira-code.css';
 import '@graphiql/react/dist/style.css';
 import './style.css';
 
-// Legacy styles
-import './css/app.css';
-
 import { GraphiQL } from './components/GraphiQL';
 // add the static function here for CDN only. otherwise, doing this in the component could
 // add unwanted dependencies to the bundle.

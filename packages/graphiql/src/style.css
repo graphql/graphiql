@@ -39,15 +39,57 @@
   flex: 1;
 }
 
-/* The whole session, i.e. editors and response */
-.graphiql-container .graphiql-session {
+/* The current session and tabs */
+.graphiql-container .graphiql-sessions {
   background-color: var(--color-neutral-7);
   /* Adding the 8px of padding to the inner border radius of the query editor */
   border-radius: calc(var(--border-radius-12) + var(--px-8));
   display: flex;
+  flex-direction: column;
   flex: 1;
   max-height: 100%;
-  padding: var(--px-8);
+  margin: var(--px-16);
+  margin-left: 0;
+}
+
+/* The session header containing tabs and the logo */
+.graphiql-container .graphiql-session-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  height: var(--session-header-height);
+}
+
+/* The button to add a new tab */
+button.graphiql-tab-add {
+  margin-left: var(--px-12);
+}
+button.graphiql-tab-add > svg {
+  color: var(--color-neutral-60);
+  display: block;
+  height: var(--px-16);
+  width: var(--px-16);
+}
+
+/* The right-hand-side of the session header */
+.graphiql-container .graphiql-session-header-right {
+  align-items: center;
+  display: flex;
+}
+
+/* The GraphiQL logo */
+.graphiql-container .graphiql-logo {
+  color: var(--color-neutral-60);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-medium);
+  padding: var(--px-12) var(--px-16);
+}
+
+/* The editor of the session */
+.graphiql-container .graphiql-session {
+  display: flex;
+  flex: 1;
+  padding: 0 var(--px-8) var(--px-8);
 }
 
 /* All editors (query, variable, headers) */
@@ -57,6 +99,9 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+}
+.graphiql-container .graphiql-editors.full-height {
+  margin-top: calc(var(--px-8) - var(--session-header-height));
 }
 
 /* The query editor and the toolbar */
@@ -126,6 +171,7 @@
 
 /* The response view */
 .graphiql-container .graphiql-response {
+  --editor-background: var(--color-neutral-7);
   display: flex;
   flex: 1;
   flex-direction: column;

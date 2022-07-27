@@ -1,25 +1,26 @@
 describe('Tabs', () => {
   it('Should store editor contents when switching between tabs', () => {
     cy.visit('/?query=');
-    cy.get('#session-tab-0').should('have.text', '<untitled>');
+
+    // Assert that no tab visible when there's only one session
+    cy.get('#graphiql-session-tab-0').should('not.exist');
 
     // Enter a query without operation name
     cy.get('.graphiql-query-editor textarea')
       .type('{id', { force: true })
       .wait(500);
-    cy.get('#session-tab-0').should('have.text', '<untitled>');
 
     // Run the query
     cy.clickExecuteQuery().wait(500);
 
     // Open a new tab
-    cy.get('.tab-add').click();
+    cy.get('.graphiql-tab-add').click();
 
     // Enter a query
     cy.get('.graphiql-query-editor textarea')
       .type('query Foo {image', { force: true })
       .wait(500);
-    cy.get('#session-tab-1').should('have.text', 'Foo');
+    cy.get('#graphiql-session-tab-1').should('have.text', 'Foo');
 
     // Enter variables
     cy.get('.graphiql-editor-tool textarea')
@@ -36,11 +37,11 @@ describe('Tabs', () => {
     cy.clickExecuteQuery().wait(500);
 
     // Switch back to the first tab
-    cy.get('#session-tab-0').click();
+    cy.get('#graphiql-session-tab-0').click();
 
     // Assert tab titles
-    cy.get('#session-tab-0').should('have.text', '<untitled>');
-    cy.get('#session-tab-1').should('have.text', 'Foo');
+    cy.get('#graphiql-session-tab-0').should('have.text', '<untitled>');
+    cy.get('#graphiql-session-tab-1').should('have.text', 'Foo');
 
     // Assert editor values
     cy.assertHasValues({
@@ -51,11 +52,11 @@ describe('Tabs', () => {
     });
 
     // Switch back to the second tab
-    cy.get('#session-tab-1').click();
+    cy.get('#graphiql-session-tab-1').click();
 
     // Assert tab titles
-    cy.get('#session-tab-0').should('have.text', '<untitled>');
-    cy.get('#session-tab-1').should('have.text', 'Foo');
+    cy.get('#graphiql-session-tab-0').should('have.text', '<untitled>');
+    cy.get('#graphiql-session-tab-1').should('have.text', 'Foo');
 
     // Assert editor values
     cy.assertHasValues({
@@ -66,10 +67,10 @@ describe('Tabs', () => {
     });
 
     // Close tab
-    cy.get('#session-tab-1 .close').click();
+    cy.get('#graphiql-session-tab-1 + .graphiql-tab-close').click();
 
-    // Assert tab titles
-    cy.get('#session-tab-0').should('have.text', '<untitled>');
+    // Assert that no tab visible when there's only one session
+    cy.get('#graphiql-session-tab-0').should('not.exist');
 
     // Assert editor values
     cy.assertHasValues({
