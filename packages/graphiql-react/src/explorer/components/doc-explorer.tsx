@@ -1,22 +1,13 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import {
-  Search,
-  Spinner,
-  useExplorerContext,
-  useSchemaContext,
-} from '@graphiql/react';
 import { GraphQLSchema, isType } from 'graphql';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
-import FieldDoc from './DocExplorer/FieldDoc';
-import SchemaDoc from './DocExplorer/SchemaDoc';
-import TypeDoc from './DocExplorer/TypeDoc';
+import { useSchemaContext } from '../../schema';
+import { Spinner } from '../../ui';
+import { useExplorerContext } from '../context';
+import { FieldDocumentation } from './field-documentation';
+import { SchemaDocumentation } from './schema-documentation';
+import { Search } from './search';
+import { TypeDocumentation } from './type-documentation';
 
 type DocExplorerProps = {
   onClose?(): void;
@@ -30,21 +21,16 @@ type DocExplorerProps = {
   schema?: GraphQLSchema | null;
 };
 
-/**
- * DocExplorer
- *
- * Shows documentations for GraphQL definitions from the schema.
- *
- */
 export function DocExplorer(props: DocExplorerProps) {
   const {
     fetchError,
     isFetching,
     schema: schemaFromContext,
     validationErrors,
-  } = useSchemaContext({ nonNull: true });
+  } = useSchemaContext({ nonNull: true, caller: DocExplorer });
   const { explorerNavStack, hide, pop } = useExplorerContext({
     nonNull: true,
+    caller: DocExplorer,
   });
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
@@ -69,11 +55,11 @@ export function DocExplorer(props: DocExplorerProps) {
     // an error during introspection.
     content = <div className="error-container">No Schema Available</div>;
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDoc />;
+    content = <SchemaDocumentation />;
   } else if (isType(navItem.def)) {
-    content = <TypeDoc />;
+    content = <TypeDocumentation />;
   } else if (navItem.def) {
-    content = <FieldDoc />;
+    content = <FieldDocumentation />;
   }
 
   let prevName;

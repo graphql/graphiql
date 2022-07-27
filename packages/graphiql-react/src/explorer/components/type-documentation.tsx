@@ -1,20 +1,3 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-
-import {
-  Argument,
-  DefaultValue,
-  ExplorerFieldDef,
-  FieldLink,
-  MarkdownContent,
-  TypeLink,
-  useExplorerContext,
-  useSchemaContext,
-} from '@graphiql/react';
 import {
   GraphQLEnumValue,
   GraphQLInterfaceType,
@@ -26,11 +9,25 @@ import {
   isObjectType,
   isUnionType,
 } from 'graphql';
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-export default function TypeDoc() {
-  const { schema } = useSchemaContext({ nonNull: true });
-  const { explorerNavStack } = useExplorerContext({ nonNull: true });
+import { useSchemaContext } from '../../schema';
+import { MarkdownContent } from '../../ui';
+import { ExplorerFieldDef, useExplorerContext } from '../context';
+import { Argument } from './argument';
+import { DefaultValue } from './default-value';
+import { FieldLink } from './field-link';
+import { TypeLink } from './type-link';
+
+export function TypeDocumentation() {
+  const { schema } = useSchemaContext({
+    nonNull: true,
+    caller: TypeDocumentation,
+  });
+  const { explorerNavStack } = useExplorerContext({
+    nonNull: true,
+    caller: TypeDocumentation,
+  });
   const [showDeprecated, setShowDeprecated] = useState(false);
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
