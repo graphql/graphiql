@@ -45,6 +45,9 @@ import {
   SettingsIcon,
   Spinner,
   StorageContextProvider,
+  Tab,
+  TabAddButton,
+  Tabs,
   ToolbarButton,
   UnStyledButton,
   useAutoCompleteLeafs,
@@ -76,8 +79,6 @@ import find from '../utility/find';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
-
-import { Tab, TabAddButton, Tabs } from './Tabs';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
