@@ -1,9 +1,3 @@
-import React from 'react';
-
-/**
- * TODO: extract with other components to @graphiql/react
- */
-
 function TabCloseButton(props: { onClick: () => void }) {
   return (
     <div
@@ -20,7 +14,7 @@ function TabCloseButton(props: { onClick: () => void }) {
   );
 }
 
-export type TabProps = {
+type TabProps = {
   isActive: boolean;
   title: string;
   isCloseable: boolean;
@@ -59,7 +53,7 @@ export function TabAddButton(props: { onClick: () => void }) {
   );
 }
 
-export type TabsProps = {
+type TabsProps = {
   children: Array<React.ReactNode>;
   tabsProps?: React.HTMLAttributes<{}>;
 };
