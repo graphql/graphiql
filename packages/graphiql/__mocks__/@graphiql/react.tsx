@@ -89,6 +89,7 @@ export {
   usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
+  useTheme,
 } from '@graphiql/react';
 
 export type {
