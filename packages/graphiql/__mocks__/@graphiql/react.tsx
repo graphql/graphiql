@@ -25,6 +25,7 @@ export {
   DeprecatedEnumValueIcon,
   DeprecatedFieldIcon,
   DeprecationReason,
+  Dialog,
   Directive,
   DirectiveIcon,
   DocExplorer,
