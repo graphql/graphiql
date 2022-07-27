@@ -1,6 +1,7 @@
-import { GraphQLSchema, isType } from 'graphql';
+import { isType } from 'graphql';
 import { ReactNode } from 'react';
 
+import { ChevronLeftIcon } from '../../icons';
 import { useSchemaContext } from '../../schema';
 import { Spinner } from '../../ui';
 import { useExplorerContext } from '../context';
@@ -9,41 +10,27 @@ import { SchemaDocumentation } from './schema-documentation';
 import { Search } from './search';
 import { TypeDocumentation } from './type-documentation';
 
-type DocExplorerProps = {
-  onClose?(): void;
-  /**
-   * @deprecated Passing a schema prop directly to this component will be
-   * removed in the next major version. Instead you need to wrap this component
-   * with the `SchemaContextProvider` from `@graphiql/react`. This context
-   * provider accepts a `schema` prop that you can use to skip fetching the
-   * schema with an introspection request.
-   */
-  schema?: GraphQLSchema | null;
-};
+import './doc-explorer.css';
 
-export function DocExplorer(props: DocExplorerProps) {
-  const {
-    fetchError,
-    isFetching,
-    schema: schemaFromContext,
-    validationErrors,
-  } = useSchemaContext({ nonNull: true, caller: DocExplorer });
-  const { explorerNavStack, hide, pop } = useExplorerContext({
+export function DocExplorer() {
+  const { fetchError, isFetching, schema, validationErrors } = useSchemaContext(
+    { nonNull: true, caller: DocExplorer },
+  );
+  const { explorerNavStack, pop } = useExplorerContext({
     nonNull: true,
     caller: DocExplorer,
   });
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
 
-  // The schema passed via props takes precedence until we remove the prop
-  const schema = props.schema === undefined ? schemaFromContext : props.schema;
-
   let content: ReactNode = null;
   if (fetchError) {
-    content = <div className="error-container">Error fetching schema</div>;
+    content = (
+      <div className="graphiql-doc-explorer-error">Error fetching schema</div>
+    );
   } else if (validationErrors.length > 0) {
     content = (
-      <div className="error-container">
+      <div className="graphiql-doc-explorer-error">
         Schema is invalid: {validationErrors[0].message}
       </div>
     );
@@ -53,13 +40,17 @@ export function DocExplorer(props: DocExplorerProps) {
   } else if (!schema) {
     // Schema is null when it explicitly does not exist, typically due to
     // an error during introspection.
-    content = <div className="error-container">No Schema Available</div>;
+    content = (
+      <div className="graphiql-doc-explorer-error">
+        No GraphQL schema available
+      </div>
+    );
   } else if (explorerNavStack.length === 1) {
-    content = <SchemaDocumentation />;
+    content = <SchemaDocumentation schema={schema} />;
   } else if (isType(navItem.def)) {
-    content = <TypeDocumentation />;
+    content = <TypeDocumentation type={navItem.def} />;
   } else if (navItem.def) {
-    content = <FieldDocumentation />;
+    content = <FieldDocumentation field={navItem.def} />;
   }
 
   let prevName;
@@ -69,42 +60,31 @@ export function DocExplorer(props: DocExplorerProps) {
 
   return (
     <section
-      className="doc-explorer"
-      key={navItem.name}
+      className="graphiql-doc-explorer"
       aria-label="Documentation Explorer"
     >
-      <div className="doc-explorer-title-bar">
-        {prevName && (
-          <button
-            type="button"
-            className="doc-explorer-back"
-            onClick={pop}
-            aria-label={`Go back to ${prevName}`}
-          >
-            {prevName}
-          </button>
-        )}
-        <div className="doc-explorer-title">
-          {navItem.title || navItem.name}
+      <div className="graphiql-doc-explorer-header">
+        <div className="graphiql-doc-explorer-header-content">
+          {prevName && (
+            <a
+              href="#"
+              className="graphiql-doc-explorer-back"
+              onClick={pop}
+              aria-label={`Go back to ${prevName}`}
+            >
+              <ChevronLeftIcon />
+              {prevName}
+            </a>
+          )}
+          <div className="graphiql-doc-explorer-title">
+            {navItem.title || navItem.name}
+          </div>
         </div>
-        <div className="doc-explorer-rhs">
-          <button
-            type="button"
-            className="docExplorerHide"
-            onClick={() => {
-              hide();
-              props.onClose?.();
-            }}
-            aria-label="Close Documentation Explorer"
-          >
-            {'\u2715'}
-          </button>
+        <div className="graphiql-doc-explorer-search">
+          <Search key={navItem.name} />
         </div>
       </div>
-      <div className="doc-explorer-contents">
-        <Search key={navItem.def?.name || '__schema'} />
-        {content}
-      </div>
+      <div className="graphiql-doc-explorer-content">{content}</div>
     </section>
   );
 }
