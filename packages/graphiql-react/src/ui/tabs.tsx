@@ -12,6 +12,7 @@ export function Tab(props: TabProps & JSX.IntrinsicElements['div']) {
   return (
     <div
       {...props}
+      role="tab"
       aria-selected={props.isActive}
       className={compose(
         'graphiql-tab',
