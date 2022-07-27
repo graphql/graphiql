@@ -25,10 +25,12 @@ export {
 export {
   Argument,
   DefaultValue,
+  DeprecationReason,
   Directive,
   DocExplorer,
   ExplorerContext,
   ExplorerContextProvider,
+  ExplorerSection,
   FieldDocumentation,
   FieldLink,
   SchemaDocumentation,
