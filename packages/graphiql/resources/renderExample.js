@@ -104,9 +104,7 @@ ReactDOM.render(
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
-    tabs: {
-      onTabChange: onTabChange,
-    },
+    onTabChange,
   }),
   document.getElementById('graphiql'),
 );
