@@ -38,6 +38,7 @@ import {
   HistoryIcon,
   KeyboardShortcutIcon,
   MergeIcon,
+  PlusIcon,
   PrettifyIcon,
   QueryEditor,
   ReloadIcon,
@@ -47,7 +48,6 @@ import {
   Spinner,
   StorageContextProvider,
   Tab,
-  TabAddButton,
   Tabs,
   ToolbarButton,
   UnStyledButton,
@@ -293,23 +293,11 @@ export type GraphiQLProps = {
    * Callback that is invoked once a remote schema has been fetched.
    */
   onSchemaChange?: (schema: GraphQLSchema) => void;
-  /**
-   * Content to place before the top bar (logo).
-   */
-  beforeTopBarContent?: React.ReactElement | null;
 
   /**
-   * Whether tabs should be enabled.
-   * default: false
+   * Callback that is invoked onTabChange.
    */
-  tabs?:
-    | boolean
-    | {
-        /**
-         * Callback that is invoked onTabChange.
-         */
-        onTabChange?: (tab: TabsState) => void;
-      };
+  onTabChange?: (tab: TabsState) => void;
 
   children?: ReactNode;
 };
@@ -449,6 +437,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     maxHistoryLength,
     onEditOperationName,
     onSchemaChange,
+    onTabChange,
     onToggleHistory,
     onToggleDocs,
     operationName,
@@ -480,9 +469,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
           externalFragments={externalFragments}
           headers={headers}
           onEditOperationName={onEditOperationName}
-          onTabChange={
-            typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
-          }
+          onTabChange={onTabChange}
           query={query}
           response={response}
           shouldPersistHeaders={shouldPersistHeaders}
@@ -533,6 +520,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'maxHistoryLength'
   | 'onEditOperationName'
   | 'onSchemaChange'
+  | 'onTabChange'
   | 'onToggleDocs'
   | 'onToggleHistory'
   | 'operationName'
@@ -814,56 +802,83 @@ class GraphiQLWithContext extends React.Component<
             ) : null}
           </div>
           <div ref={this.props.pluginResize.secondRef}>
-            <div className="editorWrap">
-              <div className="topBarWrap">
-                {this.props.beforeTopBarContent}
-                <div className="topBar">{logo}</div>
-              </div>
-              {this.props.tabs ? (
-                <Tabs
-                  tabsProps={{
-                    'aria-label': 'Select active operation',
-                  }}
-                >
-                  {this.props.editorContext.tabs.map((tab, index) => (
-                    <Tab
-                      key={tab.id}
-                      isActive={
-                        index === this.props.editorContext.activeTabIndex
-                      }
-                      title={tab.title}
-                      isCloseable={this.props.editorContext.tabs.length > 1}
-                      onSelect={() => {
-                        this.props.executionContext.stop();
-                        this.props.editorContext.changeTab(index);
-                      }}
-                      onClose={() => {
-                        if (this.props.editorContext.activeTabIndex === index) {
-                          this.props.executionContext.stop();
-                        }
-                        this.props.editorContext.closeTab(index);
-                      }}
-                      tabProps={{
-                        'aria-controls': 'graphiql-session',
-                        id: `session-tab-${index}`,
-                      }}
-                    />
-                  ))}
-                  <TabAddButton
-                    onClick={() => {
-                      this.props.editorContext.addTab();
-                    }}
-                  />
+            <div className="graphiql-sessions">
+              <div className="graphiql-session-header">
+                <Tabs aria-label="Select active operation">
+                  {this.props.editorContext.tabs.length > 1 ? (
+                    <>
+                      {this.props.editorContext.tabs.map((tab, index) => (
+                        <Tab
+                          key={tab.id}
+                          isActive={
+                            index === this.props.editorContext.activeTabIndex
+                          }
+                          title={tab.title}
+                        >
+                          <Tab.Button
+                            aria-controls="graphiql-session"
+                            id={`graphiql-session-tab-${index}`}
+                            onClick={() => {
+                              this.props.executionContext.stop();
+                              this.props.editorContext.changeTab(index);
+                            }}
+                          >
+                            {tab.title}
+                          </Tab.Button>
+                          <Tab.Close
+                            onClick={() => {
+                              if (
+                                this.props.editorContext.activeTabIndex ===
+                                index
+                              ) {
+                                this.props.executionContext.stop();
+                              }
+                              this.props.editorContext.closeTab(index);
+                            }}
+                          />
+                        </Tab>
+                      ))}
+                      <UnStyledButton
+                        type="button"
+                        className="graphiql-tab-add"
+                        onClick={() => {
+                          this.props.editorContext.addTab();
+                        }}
+                      >
+                        <PlusIcon />
+                      </UnStyledButton>
+                    </>
+                  ) : null}
                 </Tabs>
-              ) : null}
+                <div className="graphiql-session-header-right">
+                  {this.props.editorContext.tabs.length === 1 ? (
+                    <UnStyledButton
+                      type="button"
+                      className="graphiql-tab-add"
+                      onClick={() => {
+                        this.props.editorContext.addTab();
+                      }}
+                    >
+                      <PlusIcon />
+                    </UnStyledButton>
+                  ) : null}
+                  <div className="graphiql-logo">{logo}</div>
+                </div>
+              </div>
               <div
                 role="tabpanel"
                 id="graphiql-session"
                 className="graphiql-session"
-                aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
+                aria-labelledby={`graphiql-session-tab-${this.props.editorContext.activeTabIndex}`}
               >
                 <div ref={this.props.editorResize.firstRef}>
-                  <div className="graphiql-editors">
+                  <div
+                    className={`graphiql-editors${
+                      this.props.editorContext.tabs.length === 1
+                        ? ' full-height'
+                        : ''
+                    }`}
+                  >
                     <div ref={this.props.editorToolsResize.firstRef}>
                       <section
                         className="graphiql-query-editor"

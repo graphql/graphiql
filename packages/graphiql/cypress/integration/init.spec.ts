@@ -31,8 +31,7 @@ describe('GraphiQL On Initialization', () => {
     const containers = [
       '#graphiql',
       '.graphiql-container',
-      '.topBarWrap',
-      '.editorWrap',
+      '.graphiql-sessions',
       '.graphiql-editors',
       '.graphiql-response',
       '.graphiql-editor-tool',

@@ -61,6 +61,7 @@
   /* Layout */
   --sidebar-width: 44px;
   --toolbar-width: 40px;
+  --session-header-height: 51px;
 }
 
 .graphiql-container,
