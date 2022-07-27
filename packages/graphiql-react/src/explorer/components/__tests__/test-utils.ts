@@ -13,7 +13,6 @@ export function mockExplorerContextValue(
     push() {},
     reset() {},
     show() {},
-    showSearch() {},
   };
 }
 
