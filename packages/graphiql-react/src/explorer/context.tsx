@@ -25,7 +25,6 @@ export type ExplorerFieldDef =
 export type ExplorerNavStackItem = {
   name: string;
   title?: string;
-  search?: string;
   def?: GraphQLNamedType | ExplorerFieldDef;
 };
 
@@ -48,7 +47,6 @@ export type ExplorerContextType = {
   pop(): void;
   reset(): void;
   show(): void;
-  showSearch(search: string): void;
 };
 
 export const ExplorerContext =
@@ -121,14 +119,6 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     setIsVisible(true);
   }, [onToggleVisibility, storage]);
 
-  const showSearch = useCallback((search: string) => {
-    setNavStack(currentState => {
-      const lastItem = currentState[currentState.length - 1];
-      const allButLastItem = currentState.slice(0, -1) as ExplorerNavStack;
-      return [...allButLastItem, { ...lastItem, search }] as ExplorerNavStack;
-    });
-  }, []);
-
   useEffect(() => {
     if (isFetching) {
       reset();
@@ -144,9 +134,8 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
       pop,
       reset,
       show,
-      showSearch,
     }),
-    [hide, isVisible, navStack, push, pop, reset, show, showSearch],
+    [hide, isVisible, navStack, push, pop, reset, show],
   );
 
   return (
