@@ -3,17 +3,20 @@ import {
   fireEvent,
   render,
 } from '@testing-library/react';
-import { GraphQLNamedType } from 'graphql';
+import {
+  GraphQLBoolean,
+  GraphQLEnumType,
+  GraphQLInterfaceType,
+  GraphQLNamedType,
+  GraphQLObjectType,
+  GraphQLSchema,
+  GraphQLString,
+  GraphQLUnionType,
+} from 'graphql';
 
 import { SchemaContext } from '../../../schema';
 import { ExplorerContext } from '../../context';
 import { TypeDocumentation } from '../type-documentation';
-import {
-  ExampleEnum,
-  ExampleQuery,
-  ExampleSchema,
-  ExampleUnion,
-} from './example-schema';
 import { mockExplorerContextValue, unwrapType } from './test-utils';
 
 function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
@@ -33,13 +36,13 @@ function TypeDocumentationWithContext(props: { type: GraphQLNamedType }) {
           name: unwrapType(props.type).name,
           def: props.type,
         })}>
-        <TypeDocumentation />
+        <TypeDocumentation type={props.type} />
       </ExplorerContext.Provider>
     </SchemaContext.Provider>
   );
 }
 
-describe('TypeDoc', () => {
+describe('TypeDocumentation', () => {
   it('renders a top-level query object type', () => {
     const { container } = render(
       <TypeDocumentationWithContext type={ExampleQuery} />,
@@ -52,7 +55,7 @@ describe('TypeDoc', () => {
       normalizeWhitespace: false,
     });
 
-    const cats = container.querySelectorAll('.doc-category-item');
+    const cats = container.querySelectorAll('.graphiql-doc-explorer-item');
     expect(cats[0]).toHaveTextContent('string: String');
     expect(cats[1]).toHaveTextContent('union: exampleUnion');
     expect(cats[2]).toHaveTextContent(
@@ -61,15 +64,15 @@ describe('TypeDoc', () => {
   });
 
   it('renders deprecated fields when you click to see them', () => {
-    const { container } = render(
+    const { container, getByText } = render(
       <TypeDocumentationWithContext type={ExampleQuery} />,
     );
-    let cats = container.querySelectorAll('.doc-category-item');
+    let cats = container.querySelectorAll('.graphiql-doc-explorer-item');
     expect(cats).toHaveLength(3);
 
-    fireEvent.click(container.querySelector('.show-btn')!);
+    fireEvent.click(getByText('Show Deprecated Fields'));
 
-    cats = container.querySelectorAll('.doc-category-item');
+    cats = container.querySelectorAll('.graphiql-doc-explorer-item');
     expect(cats).toHaveLength(4);
     expect(
       container.querySelectorAll('.graphiql-doc-explorer-field-name')[3],
@@ -83,19 +86,25 @@ describe('TypeDoc', () => {
     const { container } = render(
       <TypeDocumentationWithContext type={ExampleUnion} />,
     );
-    expect(container.querySelector('.doc-category-title')).toHaveTextContent(
-      'possible types',
+    const title = container.querySelector(
+      '.graphiql-doc-explorer-section-title',
     );
+    title.removeChild(title.childNodes[0]);
+    expect(title).toHaveTextContent('Possible Types');
   });
 
   it('renders an Enum type', () => {
     const { container } = render(
       <TypeDocumentationWithContext type={ExampleEnum} />,
     );
-    expect(container.querySelector('.doc-category-title')).toHaveTextContent(
-      'values',
+    const title = container.querySelector(
+      '.graphiql-doc-explorer-section-title',
     );
-    const enums = container.querySelectorAll('.enum-value');
+    title.removeChild(title.childNodes[0]);
+    expect(title).toHaveTextContent('Enum Values');
+    const enums = container.querySelectorAll(
+      '.graphiql-doc-explorer-enum-value',
+    );
     expect(enums[0]).toHaveTextContent('value1');
     expect(enums[1]).toHaveTextContent('value2');
   });
@@ -104,22 +113,96 @@ describe('TypeDoc', () => {
     const { getByText, container } = render(
       <TypeDocumentationWithContext type={ExampleEnum} />,
     );
-    const showBtn = getByText('Show deprecated values...');
+    const showBtn = getByText('Show Deprecated Values');
     expect(showBtn).toBeInTheDocument();
-    const titles = container.querySelectorAll('.doc-category-title');
-    expect(titles[0]).toHaveTextContent('values');
-    expect(titles[1]).toHaveTextContent('deprecated values');
-    let enums = container.querySelectorAll('.enum-value');
+
+    const title = container.querySelector(
+      '.graphiql-doc-explorer-section-title',
+    );
+    title.removeChild(title.childNodes[0]);
+    expect(title).toHaveTextContent('Enum Values');
+
+    let enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
     expect(enums).toHaveLength(2);
 
     // click button to show deprecated enum values
     fireEvent.click(showBtn);
     expect(showBtn).not.toBeInTheDocument();
-    enums = container.querySelectorAll('.enum-value');
+
+    const deprecatedTitle = container.querySelectorAll(
+      '.graphiql-doc-explorer-section-title',
+    )[1];
+    deprecatedTitle.removeChild(deprecatedTitle.childNodes[0]);
+    expect(deprecatedTitle).toHaveTextContent('Deprecated Enum Values');
+
+    enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
     expect(enums).toHaveLength(3);
     expect(enums[2]).toHaveTextContent('value3');
     expect(
       container.querySelector('.graphiql-markdown-deprecation'),
     ).toHaveTextContent('Only two are needed');
   });
+});
+
+const ExampleInterface = new GraphQLInterfaceType({
+  name: 'exampleInterface',
+  fields: {
+    name: { type: GraphQLString },
+  },
+});
+
+const ExampleEnum = new GraphQLEnumType({
+  name: 'exampleEnum',
+  values: {
+    value1: { value: 'Value 1' },
+    value2: { value: 'Value 2' },
+    value3: { value: 'Value 3', deprecationReason: 'Only two are needed' },
+  },
+});
+
+const ExampleUnionType1 = new GraphQLObjectType({
+  name: 'Union_Type_1',
+  interfaces: [ExampleInterface],
+  fields: {
+    name: { type: GraphQLString },
+    enum: { type: ExampleEnum },
+  },
+});
+
+const ExampleUnionType2 = new GraphQLObjectType({
+  name: 'Union_Type_2',
+  interfaces: [ExampleInterface],
+  fields: {
+    name: { type: GraphQLString },
+    string: { type: GraphQLString },
+  },
+});
+
+const ExampleUnion = new GraphQLUnionType({
+  name: 'exampleUnion',
+  types: [ExampleUnionType1, ExampleUnionType2],
+});
+
+const ExampleQuery = new GraphQLObjectType({
+  name: 'Query',
+  description: 'Query description\n Second line',
+  fields: {
+    string: { type: GraphQLString },
+    union: { type: ExampleUnion },
+    fieldWithArgs: {
+      type: GraphQLString,
+      args: {
+        stringArg: { type: GraphQLString },
+      },
+    },
+    deprecatedField: {
+      type: GraphQLBoolean,
+      deprecationReason: 'example deprecation reason',
+    },
+  },
+});
+
+const ExampleSchema = new GraphQLSchema({
+  query: ExampleQuery,
+  description: 'GraphQL Schema for testing',
 });

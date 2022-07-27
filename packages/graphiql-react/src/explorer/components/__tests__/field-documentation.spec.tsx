@@ -4,8 +4,8 @@ import {
   render,
 } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
-import { ExplorerContext, ExplorerFieldDef } from '../../context';
 
+import { ExplorerContext, ExplorerFieldDef } from '../../context';
 import { FieldDocumentation } from '../field-documentation';
 import { mockExplorerContextValue } from './test-utils';
 
@@ -64,12 +64,12 @@ function FieldDocumentationWithContext(props: { field: ExplorerFieldDef }) {
         name: props.field.name,
         def: props.field,
       })}>
-      <FieldDocumentation />
+      <FieldDocumentation field={props.field} />
     </ExplorerContext.Provider>
   );
 }
 
-describe('FieldDoc', () => {
+describe('FieldDocumentation', () => {
   it('should render a simple string field', () => {
     const { container } = render(
       <FieldDocumentationWithContext
@@ -78,7 +78,7 @@ describe('FieldDoc', () => {
     );
     expect(
       container.querySelector('.graphiql-markdown-description'),
-    ).toHaveTextContent('No Description');
+    ).not.toBeInTheDocument();
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
@@ -95,7 +95,7 @@ describe('FieldDoc', () => {
     );
     expect(
       container.querySelector('.graphiql-markdown-description'),
-    ).toHaveTextContent('No Description');
+    ).not.toBeInTheDocument();
     expect(
       container.querySelector('.graphiql-doc-explorer-type-name'),
     ).toHaveTextContent('String');
@@ -117,7 +117,7 @@ describe('FieldDoc', () => {
   });
 
   it('should render a string field with arguments', () => {
-    const { container } = render(
+    const { container, getByText } = render(
       <FieldDocumentationWithContext
         field={exampleObject.getFields().stringWithArgs}
       />,
@@ -139,7 +139,7 @@ describe('FieldDoc', () => {
       container.querySelectorAll('.graphiql-markdown-deprecation'),
     ).toHaveLength(0);
     // make sure deprecation is present
-    fireEvent.click(container.querySelector('.show-btn'));
+    fireEvent.click(getByText('Show Deprecated Arguments'));
     const deprecationDocs = container.querySelectorAll(
       '.graphiql-markdown-deprecation',
     );
