@@ -1,23 +1,18 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
+import { isType } from 'graphql';
+import { useState } from 'react';
 
-import {
-  Argument,
-  Directive,
-  MarkdownContent,
-  TypeLink,
-  useExplorerContext,
-} from '@graphiql/react';
-import { DirectiveNode, isType } from 'graphql';
-import React from 'react';
+import { MarkdownContent } from '../../ui';
+import { useExplorerContext } from '../context';
+import { Argument } from './argument';
+import { Directive } from './directive';
+import { TypeLink } from './type-link';
 
-export default function FieldDoc() {
-  const { explorerNavStack } = useExplorerContext({ nonNull: true });
-  const [showDeprecated, handleShowDeprecated] = React.useState(false);
+export function FieldDocumentation() {
+  const { explorerNavStack } = useExplorerContext({
+    nonNull: true,
+    caller: FieldDocumentation,
+  });
+  const [showDeprecated, handleShowDeprecated] = useState(false);
 
   const navItem = explorerNavStack[explorerNavStack.length - 1];
   const field = navItem.def;
@@ -64,7 +59,7 @@ export default function FieldDoc() {
     directivesDef = (
       <div id="doc-directives" className="doc-category">
         <div className="doc-category-title">directives</div>
-        {field.astNode.directives.map((directive: DirectiveNode) => (
+        {field.astNode.directives.map(directive => (
           <div key={directive.name.value} className="doc-category-item">
             <div>
               <Directive directive={directive} />
