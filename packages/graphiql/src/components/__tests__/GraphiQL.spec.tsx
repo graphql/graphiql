@@ -598,51 +598,58 @@ describe('GraphiQL', () => {
   });
 
   describe('Tabs', () => {
-    it('not enabled by default', () => {
+    it('show tabs if there are more than one', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
-      expect(container.querySelector('.tabs')).not.toBeInTheDocument();
-    });
-    it('enable tabs via "tabs" property boolean', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      expect(container.querySelector('.tabs')).toBeInTheDocument();
-    });
-    it('enable tabs via "tabs" property object', () => {
-      const { container } = render(
-        <GraphiQL fetcher={noOpFetcher} tabs={{}} />,
-      );
-      expect(container.querySelector('.tabs')).toBeInTheDocument();
-    });
-    it('only one tab is open by default', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      expect(container.querySelectorAll('.tabs .tab')).toHaveLength(1);
-    });
-    it('single tab has no close button', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      expect(container.querySelector('.tab .close')).not.toBeInTheDocument();
-    });
-    it('open multiple tabs', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      expect(container.querySelectorAll('.tabs .tab')).toHaveLength(1);
-      fireEvent.click(container.querySelector('.tab-add'));
-      expect(container.querySelectorAll('.tabs .tab')).toHaveLength(2);
-      fireEvent.click(container.querySelector('.tab-add'));
-      expect(container.querySelectorAll('.tabs .tab')).toHaveLength(3);
+
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+      ).toHaveLength(0);
+
+      fireEvent.click(container.querySelector('.graphiql-tab-add'));
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+      ).toHaveLength(2);
+
+      fireEvent.click(container.querySelector('.graphiql-tab-add'));
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+      ).toHaveLength(3);
     });
     it('each tab has a close button when multiple tabs are open', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      expect(container.querySelectorAll('.tab .close')).toHaveLength(0);
-      fireEvent.click(container.querySelector('.tab-add'));
-      expect(container.querySelectorAll('.tab .close')).toHaveLength(2);
-      fireEvent.click(container.querySelector('.tab-add'));
-      expect(container.querySelectorAll('.tab .close')).toHaveLength(3);
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      expect(
+        container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
+      ).toHaveLength(0);
+
+      fireEvent.click(container.querySelector('.graphiql-tab-add'));
+      expect(
+        container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
+      ).toHaveLength(2);
+
+      fireEvent.click(container.querySelector('.graphiql-tab-add'));
+      expect(
+        container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
+      ).toHaveLength(3);
     });
     it('close button removes a tab', () => {
-      const { container } = render(<GraphiQL fetcher={noOpFetcher} tabs />);
-      fireEvent.click(container.querySelector('.tab-add'));
-      expect(container.querySelectorAll('.tab .close')).toHaveLength(2);
-      fireEvent.click(container.querySelector('.tab .close'));
-      expect(container.querySelectorAll('.tabs .tab')).toHaveLength(1);
-      expect(container.querySelectorAll('.tab .close')).toHaveLength(0);
+      const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
+
+      fireEvent.click(container.querySelector('.graphiql-tab-add'));
+
+      expect(
+        container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
+      ).toHaveLength(2);
+
+      fireEvent.click(
+        container.querySelector('.graphiql-tab .graphiql-tab-close'),
+      );
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+      ).toHaveLength(0);
+      expect(
+        container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
+      ).toHaveLength(0);
     });
   });
 });

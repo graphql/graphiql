@@ -18,6 +18,7 @@ import _MagnifyingGlassIcon from './magnifying-glass.svg';
 import _MergeIcon from './merge.svg';
 import _PenIcon from './pen.svg';
 import _PlayIcon from './play.svg';
+import _PlusIcon from './plus.svg';
 import _PrettifyIcon from './prettify.svg';
 import _RootTypeIcon from './root-type.svg';
 import _SettingsIcon from './settings.svg';
@@ -67,6 +68,7 @@ export const MagnifyingGlassIcon = generateIcon(
 export const MergeIcon = generateIcon(_MergeIcon, 'merge icon');
 export const PenIcon = generateIcon(_PenIcon, 'pen icon');
 export const PlayIcon = generateIcon(_PlayIcon, 'play icon');
+export const PlusIcon = generateIcon(_PlusIcon, 'plus icon');
 export const PrettifyIcon = generateIcon(_PrettifyIcon, 'prettify icon');
 export const RootTypeIcon = generateIcon(_RootTypeIcon, 'root type icon');
 export const SettingsIcon = generateIcon(_SettingsIcon, 'settings icon');
