@@ -42,6 +42,7 @@ export {
   ReloadIcon,
   SchemaContext,
   SchemaContextProvider,
+  Search,
   SettingsIcon,
   Spinner,
   StopIcon,

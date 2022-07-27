@@ -5,6 +5,7 @@ import _CopyIcon from './copy.svg';
 import _DocsIcon from './docs.svg';
 import _HistoryIcon from './history.svg';
 import _KeyboardShortcutIcon from './keyboard-shortcut.svg';
+import _MagnifyingGlassIcon from './magnifying-glass.svg';
 import _MergeIcon from './merge.svg';
 import _PenIcon from './pen.svg';
 import _PlayIcon from './play.svg';
@@ -27,6 +28,10 @@ export const HistoryIcon = generateIcon(_HistoryIcon, 'history icon');
 export const KeyboardShortcutIcon = generateIcon(
   _KeyboardShortcutIcon,
   'keyboard shortcut icon',
+);
+export const MagnifyingGlassIcon = generateIcon(
+  _MagnifyingGlassIcon,
+  'magnifying glass icon',
 );
 export const MergeIcon = generateIcon(_MergeIcon, 'merge icon');
 export const PenIcon = generateIcon(_PenIcon, 'pen icon');
