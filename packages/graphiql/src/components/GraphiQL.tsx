@@ -25,6 +25,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
+  DocExplorer,
   DocsIcon,
   EditorContextProvider,
   ExecuteButton,
@@ -72,7 +73,6 @@ import type {
 } from '@graphiql/react';
 
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
-import { DocExplorer } from './DocExplorer';
 import find from '../utility/find';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
