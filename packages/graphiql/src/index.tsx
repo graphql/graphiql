@@ -30,11 +30,6 @@ export type {
   Storage,
   SyncFetcherResult,
 } from '@graphiql/toolkit';
-/**
- * Components
- */
-
-export { DocExplorer } from './components/DocExplorer';
 
 /**
  * Toolbar
