@@ -1,19 +1,9 @@
-/**
- *  Copyright (c) 2021 GraphQL Contributors.
- *
- *  This source code is licensed under the MIT license found in the
- *  LICENSE file in the root directory of this source tree.
- */
-import React from 'react';
 import { render } from '@testing-library/react';
-import {
-  ExplorerContextProvider,
-  SchemaContext,
-  SchemaContextType,
-} from '@graphiql/react';
 
-import { DocExplorer } from '../DocExplorer';
-import { ExampleSchema } from './ExampleSchema';
+import { SchemaContext, SchemaContextType } from '../../../schema';
+import { ExplorerContextProvider } from '../../context';
+import { DocExplorer } from '../doc-explorer';
+import { ExampleSchema } from './example-schema';
 
 const defaultSchemaContext: SchemaContextType = {
   fetchError: null,
