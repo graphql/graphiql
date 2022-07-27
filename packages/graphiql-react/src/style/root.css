@@ -31,6 +31,7 @@
   --font-size-inline-code: calc(13rem / 16);
   --font-size-body: calc(15rem / 16);
   --font-size-h4: calc(18rem / 16);
+  --font-size-h3: calc(22rem / 16);
   --font-size-h2: calc(29rem / 16);
   --font-weight-regular: 400;
   --font-weight-medium: 500;
@@ -44,6 +45,7 @@
   --px-10: 10px;
   --px-12: 12px;
   --px-16: 16px;
+  --px-20: 20px;
 
   /* Border radius */
   --border-radius-2: 2px;
