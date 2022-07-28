@@ -15,6 +15,7 @@ export {
   Argument,
   ArgumentIcon,
   Button,
+  ButtonGroup,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronUpIcon,
@@ -89,6 +90,7 @@ export {
   usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
+  useTheme,
 } from '@graphiql/react';
 
 export type {
@@ -103,6 +105,7 @@ export type {
   SchemaContextType,
   StorageContextType,
   TabsState,
+  Theme,
   UseHeaderEditorArgs,
   UseResponseEditorArgs,
   UseQueryEditorArgs,
