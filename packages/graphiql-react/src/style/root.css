@@ -1,6 +1,7 @@
 .graphiql-container,
 .CodeMirror-info,
-.CodeMirror-lint-tooltip {
+.CodeMirror-lint-tooltip,
+reach-portal {
   /* Colors */
   --color-pink: #d60690;
   --color-purple: #6e6acf;
@@ -23,6 +24,8 @@
   --color-orche-background: rgba(211, 127, 0, 0.07);
   --color-orche-background-dark: rgba(211, 127, 0, 0.12);
   --color-red-background: rgba(248, 91, 48, 0.12);
+  --color-green-background: rgba(43, 171, 124, 0.12);
+  --color-neutral-background: rgba(59, 75, 104, 0.1);
 
   /* Font */
   --font-family: 'Roboto', sans-serif;
@@ -46,6 +49,7 @@
   --px-12: 12px;
   --px-16: 16px;
   --px-20: 20px;
+  --px-24: 24px;
 
   /* Border radius */
   --border-radius-2: 2px;
@@ -67,6 +71,7 @@
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
+reach-portal,
 .graphiql-container:is(button) {
   color: var(--color-neutral-100);
   font-family: var(--font-family);
