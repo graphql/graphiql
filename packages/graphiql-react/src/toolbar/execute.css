@@ -20,7 +20,7 @@
   }
 
   & > svg {
-    color: var(--color-neutral-0);
+    color: white;
     display: block;
     height: var(--px-16);
     margin: auto;
