@@ -22,33 +22,43 @@ import {
 } from 'graphql';
 
 import {
+  Button,
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
+  Dialog,
   DocExplorer,
   DocsIcon,
   EditorContextProvider,
+  EditorContextType,
   ExecuteButton,
   ExecutionContextProvider,
   ExecutionContextType,
   ExplorerContextProvider,
+  ExplorerContextType,
   HeaderEditor,
   History,
   HistoryContextProvider,
+  HistoryContextType,
   HistoryIcon,
   KeyboardShortcutIcon,
+  KeyMap,
   MergeIcon,
   PlusIcon,
   PrettifyIcon,
   QueryEditor,
   ReloadIcon,
   ResponseEditor,
+  ResponseTooltipType,
   SchemaContextProvider,
+  SchemaContextType,
   SettingsIcon,
   Spinner,
   StorageContextProvider,
+  StorageContextType,
   Tab,
   Tabs,
+  TabsState,
   ToolbarButton,
   UnStyledButton,
   useAutoCompleteLeafs,
@@ -63,16 +73,6 @@ import {
   useSchemaContext,
   useStorageContext,
   VariableEditor,
-} from '@graphiql/react';
-import type {
-  EditorContextType,
-  ExplorerContextType,
-  HistoryContextType,
-  ResponseTooltipType,
-  SchemaContextType,
-  StorageContextType,
-  TabsState,
-  KeyMap,
 } from '@graphiql/react';
 
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
@@ -635,6 +635,8 @@ type GraphiQLWithContextConsumerProps = Omit<
 
 export type GraphiQLState = {
   activeSecondaryEditor: 'variable' | 'header';
+  showSettings: boolean;
+  clearStorageStatus: 'success' | 'error' | null;
 };
 
 class GraphiQLWithContext extends React.Component<
@@ -645,7 +647,11 @@ class GraphiQLWithContext extends React.Component<
     super(props);
 
     // Initialize state
-    this.state = { activeSecondaryEditor: 'variable' };
+    this.state = {
+      activeSecondaryEditor: 'variable',
+      showSettings: false,
+      clearStorageStatus: null,
+    };
   }
 
   render() {
@@ -773,7 +779,11 @@ class GraphiQLWithContext extends React.Component<
             <UnStyledButton>
               <KeyboardShortcutIcon />
             </UnStyledButton>
-            <UnStyledButton>
+            <UnStyledButton
+              onClick={() => {
+                this.setState({ showSettings: true });
+              }}
+            >
               <SettingsIcon />
             </UnStyledButton>
           </div>
@@ -1022,6 +1032,59 @@ class GraphiQLWithContext extends React.Component<
             </div>
           </div>
         </div>
+        <Dialog
+          isOpen={this.state.showSettings}
+          onDismiss={() => {
+            this.setState({
+              showSettings: false,
+              clearStorageStatus: null,
+            });
+          }}
+        >
+          <div className="graphiql-dialog-header">
+            <div className="graphiql-dialog-title">Settings</div>
+            <Dialog.Close
+              onClick={() => {
+                this.setState({
+                  showSettings: false,
+                  clearStorageStatus: null,
+                });
+              }}
+            />
+          </div>
+          {this.props.storageContext ? (
+            <div className="graphiql-dialog-section">
+              <div>
+                <div className="graphiql-dialog-section-title">
+                  Clear storage
+                </div>
+                <div className="graphiql-dialog-section-caption">
+                  Remove all locally stored data and start fresh.
+                </div>
+              </div>
+              <div>
+                <Button
+                  state={this.state.clearStorageStatus || undefined}
+                  disabled={this.state.clearStorageStatus === 'success'}
+                  onClick={() => {
+                    try {
+                      this.props.storageContext?.clear();
+                      this.setState({ clearStorageStatus: 'success' });
+                    } catch {
+                      this.setState({ clearStorageStatus: 'error' });
+                    }
+                  }}
+                >
+                  {this.state.clearStorageStatus === 'success'
+                    ? 'Cleared data'
+                    : this.state.clearStorageStatus === 'error'
+                    ? 'Failed'
+                    : 'Clear data'}
+                </Button>
+              </div>
+            </div>
+          ) : null}
+        </Dialog>
       </div>
     );
   }
