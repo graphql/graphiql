@@ -6,6 +6,7 @@ import {
   OutputChannel,
   TextDocument,
   Uri,
+  WorkspaceFolder,
 } from 'vscode';
 
 import {
@@ -21,6 +22,39 @@ import { createStatusBar, initStatusBar } from './apis/statusBar';
 
 const clients: Map<string, LanguageClient> = new Map();
 
+let _sortedWorkspaceFolders: string[];
+function sortedWorkspaceFolders(): string[] {
+  if (_sortedWorkspaceFolders === undefined) {
+    _sortedWorkspaceFolders =
+      workspace.workspaceFolders
+        ?.map(folder => {
+          const result = folder.uri.toString();
+          return result.endsWith('/') ? result : `${result}/`;
+        })
+        .sort((a, b) => {
+          return a.length - b.length;
+        }) ?? [];
+  }
+  return _sortedWorkspaceFolders;
+}
+workspace.onDidChangeWorkspaceFolders(() => {
+  _sortedWorkspaceFolders.length = 0;
+});
+
+function getOuterMostWorkspaceFolder(folder: WorkspaceFolder): WorkspaceFolder {
+  const sorted = sortedWorkspaceFolders();
+  let uri = folder.uri.toString();
+  if (!uri.endsWith('/')) {
+    uri += '/';
+  }
+  for (const element of sorted) {
+    if (uri.startsWith(element)) {
+      return workspace.getWorkspaceFolder(Uri.parse(element))!;
+    }
+  }
+  return folder;
+}
+
 export async function activate(context: ExtensionContext) {
   const outputChannel: OutputChannel = window.createOutputChannel(
     'GraphQL Language Server',
@@ -29,7 +63,7 @@ export async function activate(context: ExtensionContext) {
   const statusBarItem = createStatusBar();
   context.subscriptions.push(statusBarItem);
 
-  async function onDidOpenTextDocument(document: TextDocument): Promise<void> {
+  function onDidOpenTextDocument(document: TextDocument): void {
     const config = getConfig(document.uri);
     const { debug } = config;
     if (debug) {
@@ -39,8 +73,12 @@ export async function activate(context: ExtensionContext) {
     const serverPath = path.join('out', 'server', 'index.js');
     const serverModule = context.asAbsolutePath(serverPath);
 
-    const folder = workspace.getWorkspaceFolder(document.uri);
-    if (folder === undefined || clients.has(folder.uri.toString())) {
+    const originalFolder = workspace.getWorkspaceFolder(document.uri);
+    if (originalFolder === undefined) {
+      return;
+    }
+    const folder = getOuterMostWorkspaceFolder(originalFolder);
+    if (clients.has(folder.uri.toString())) {
       return;
     }
 
@@ -131,7 +169,7 @@ export async function activate(context: ExtensionContext) {
       debug,
     );
 
-    await client.start();
+    client.start();
     clients.set(folder.uri.toString(), client);
     initStatusBar(statusBarItem, client, window.activeTextEditor);
   }
