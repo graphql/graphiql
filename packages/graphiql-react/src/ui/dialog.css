@@ -1,0 +1,34 @@
+@import url('@reach/dialog/styles.css');
+
+[data-reach-dialog-overlay] {
+  align-items: center;
+  background-color: var(--color-neutral-background);
+  display: flex;
+  justify-content: center;
+  /**
+   * CodeMirror has a `z-index` set for the container of the scrollbar of the
+   * editor, so we have to add one here to make sure that the dialog is shown
+   * above the editor scrollbar (if they are visible).
+   */
+  z-index: 10;
+}
+
+[data-reach-dialog-content] {
+  background-color: var(--color-neutral-0);
+  border-radius: var(--border-radius-12);
+  box-shadow: var(--box-shadow);
+  margin: 0;
+  max-height: 80vh;
+  max-width: 80vw;
+  overflow: auto;
+  padding: 0;
+  width: unset;
+}
+
+.graphiql-dialog-close > svg {
+  color: var(--color-neutral-60);
+  display: block;
+  height: var(--px-12);
+  padding: var(--px-12);
+  width: var(--px-12);
+}
