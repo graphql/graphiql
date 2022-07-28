@@ -124,3 +124,55 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-focused .CodeMirror-selected {
   background: var(--color-neutral-15);
 }
+
+/* Position the search dialog */
+.CodeMirror-dialog {
+  background: inherit;
+  color: inherit;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  padding: var(--px-2) var(--px-6);
+  position: absolute;
+  z-index: 6;
+}
+.CodeMirror-dialog-top {
+  border-bottom: 1px solid var(--color-neutral-15);
+  padding-bottom: var(--px-12);
+  top: 0;
+}
+.CodeMirror-dialog-bottom {
+  border-top: 1px solid var(--color-neutral-15);
+  bottom: 0;
+  padding-top: var(--px-12);
+}
+
+/* Hide the search hint */
+.CodeMirror-search-hint {
+  display: none;
+}
+
+/* Style the input field for searching */
+.CodeMirror-dialog input {
+  border: 1px solid var(--color-neutral-15);
+  border-radius: var(--border-radius-4);
+  padding: var(--px-4);
+}
+.CodeMirror-dialog input:focus {
+  outline: var(--color-pink) solid 2px;
+}
+
+/* Set the highlight color for search results */
+.cm-searching {
+  background-color: var(--color-orche-background);
+  /**
+   * When cycling through search results, CodeMirror overlays the current 
+   * selection with another element that has the .CodeMirror-selected class
+   * applied. This adds another background color (see above), but this extra
+   * box does not quite match the height of this element. To match them up we
+   * add some extra padding here. (Note that this doesn't affect the line
+   * height of the CodeMirror editor as all line wrappers have a fixed height.)
+   */
+  padding-bottom: 1.5px;
+  padding-top: 0.5px;
+}
