@@ -23,6 +23,7 @@ import {
 
 import {
   Button,
+  ButtonGroup,
   ChevronDownIcon,
   ChevronUpIcon,
   CopyIcon,
@@ -59,6 +60,7 @@ import {
   Tab,
   Tabs,
   TabsState,
+  Theme,
   ToolbarButton,
   UnStyledButton,
   useAutoCompleteLeafs,
@@ -72,6 +74,7 @@ import {
   usePrettifyEditors,
   useSchemaContext,
   useStorageContext,
+  useTheme,
   VariableEditor,
 } from '@graphiql/react';
 
@@ -528,6 +531,8 @@ const GraphiQLConsumeContexts = forwardRef<
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
+  const { theme, setTheme } = useTheme();
+
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
@@ -585,6 +590,8 @@ const GraphiQLConsumeContexts = forwardRef<
       pluginResize={pluginResize}
       editorResize={editorResize}
       editorToolsResize={editorToolsResize}
+      theme={theme}
+      setTheme={setTheme}
       ref={ref}
     />
   );
@@ -609,6 +616,9 @@ type GraphiQLWithContextConsumerProps = Omit<
   pluginResize: ReturnType<typeof useDragResize>;
   editorResize: ReturnType<typeof useDragResize>;
   editorToolsResize: ReturnType<typeof useDragResize>;
+
+  theme: Theme;
+  setTheme(theme: Theme): void;
 };
 
 export type GraphiQLState = {
@@ -1015,6 +1025,39 @@ class GraphiQLWithContext extends React.Component<
                 });
               }}
             />
+          </div>
+          <div className="graphiql-dialog-section">
+            <div>
+              <div className="graphiql-dialog-section-title">Theme</div>
+              <div className="graphiql-dialog-section-caption">
+                Adjust how the interface looks like.
+              </div>
+            </div>
+            <div>
+              <ButtonGroup>
+                <Button
+                  className={this.props.theme === null ? 'active' : ''}
+                  onClick={() => {
+                    this.props.setTheme(null);
+                  }}>
+                  System
+                </Button>
+                <Button
+                  className={this.props.theme === 'light' ? 'active' : ''}
+                  onClick={() => {
+                    this.props.setTheme('light');
+                  }}>
+                  Light
+                </Button>
+                <Button
+                  className={this.props.theme === 'dark' ? 'active' : ''}
+                  onClick={() => {
+                    this.props.setTheme('dark');
+                  }}>
+                  Dark
+                </Button>
+              </ButtonGroup>
+            </div>
           </div>
           {this.props.storageContext ? (
             <div className="graphiql-dialog-section">

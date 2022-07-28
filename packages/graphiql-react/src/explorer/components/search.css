@@ -36,6 +36,7 @@
 }
 
 [data-reach-combobox-popover] {
+  background-color: var(--color-neutral-0);
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
   border-bottom-right-radius: var(--border-radius-4);
@@ -69,6 +70,10 @@
 
   &:hover {
     background-color: var(--color-neutral-10);
+  }
+
+  &[data-highlighted]:hover {
+    background-color: var(--color-neutral-15);
   }
 
   & + & {
