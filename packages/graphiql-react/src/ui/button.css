@@ -28,4 +28,11 @@ button.graphiql-button {
   &:focus {
     outline: var(--color-neutral-15) auto 1px;
   }
+
+  &.graphiql-button-success {
+    background-color: var(--color-green-background);
+  }
+  &.graphiql-button-error {
+    background-color: var(--color-red-background);
+  }
 }
