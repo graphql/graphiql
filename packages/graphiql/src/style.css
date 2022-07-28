@@ -231,3 +231,40 @@ button.graphiql-tab-add > svg {
     transform: rotate(360deg);
   }
 }
+
+/* The header of the settings dialog */
+reach-portal .graphiql-dialog-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: var(--px-24);
+}
+
+/* The title of the settings dialog */
+reach-portal .graphiql-dialog-title {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+}
+
+/* A section inside the settings dialog */
+reach-portal .graphiql-dialog-section {
+  align-items: center;
+  border-top: 1px solid var(--color-neutral-15);
+  display: flex;
+  justify-content: space-between;
+  padding: var(--px-24);
+}
+reach-portal .graphiql-dialog-section > :not(:first-child) {
+  margin-left: var(--px-24);
+}
+
+/* The section title in the settings dialog */
+reach-portal .graphiql-dialog-section-title {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-medium);
+}
+
+/* The section caption in the settings dialog */
+reach-portal .graphiql-dialog-section-caption {
+  color: var(--color-neutral-60);
+}

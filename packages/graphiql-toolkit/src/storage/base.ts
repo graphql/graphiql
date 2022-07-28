@@ -2,6 +2,7 @@ export type Storage = {
   getItem(key: string): string | null;
   removeItem(key: string): void;
   setItem(key: string, value: string): void;
+  clear(): void;
   length: number;
 };
 
@@ -76,6 +77,12 @@ export class StorageAPI {
     }
 
     return { isQuotaError: quotaError, error };
+  }
+
+  clear() {
+    if (this.storage) {
+      this.storage.clear();
+    }
   }
 }
 
