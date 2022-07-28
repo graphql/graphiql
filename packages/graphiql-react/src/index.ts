@@ -56,6 +56,7 @@ export {
   StorageContextProvider,
   useStorageContext,
 } from './storage';
+export { useTheme } from './theme';
 export * from './toolbar';
 export * from './ui';
 export { useDragResize } from './utility/resize';
@@ -80,5 +81,6 @@ export type {
 export type { HistoryContextType } from './history';
 export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
+export type { Theme } from './theme';
 
 import './style/root.css';
