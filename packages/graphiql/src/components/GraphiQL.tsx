@@ -96,10 +96,6 @@ if (majorVersion < 16) {
   );
 }
 
-declare namespace window {
-  export let g: GraphiQL;
-}
-
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
@@ -316,12 +312,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
 
   constructor(props: GraphiQLProps) {
     super(props);
-  }
-
-  componentDidMount() {
-    if (typeof window !== 'undefined') {
-      window.g = this;
-    }
   }
 
   render() {
@@ -623,6 +613,7 @@ type GraphiQLWithContextConsumerProps = Omit<
 
 export type GraphiQLState = {
   activeSecondaryEditor: 'variable' | 'header';
+  showShortKeys: boolean;
   showSettings: boolean;
   clearStorageStatus: 'success' | 'error' | null;
 };
@@ -637,6 +628,7 @@ class GraphiQLWithContext extends React.Component<
     // Initialize state
     this.state = {
       activeSecondaryEditor: 'variable',
+      showShortKeys: false,
       showSettings: false,
       clearStorageStatus: null,
     };
@@ -694,6 +686,13 @@ class GraphiQLWithContext extends React.Component<
         this.props.pluginResize.setHiddenElement(null);
       }
     };
+
+    const modifier =
+      window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
+        <code className="graphiql-key">Cmd</code>
+      ) : (
+        <code className="graphiql-key">Ctrl</code>
+      );
 
     return (
       <div data-testid="graphiql-container" className="graphiql-container">
@@ -758,7 +757,10 @@ class GraphiQLWithContext extends React.Component<
                 }
               />
             </UnStyledButton>
-            <UnStyledButton>
+            <UnStyledButton
+              onClick={() => {
+                this.setState({ showShortKeys: true });
+              }}>
               <KeyboardShortcutIcon />
             </UnStyledButton>
             <UnStyledButton
@@ -1007,6 +1009,62 @@ class GraphiQLWithContext extends React.Component<
             </div>
           </div>
         </div>
+        <Dialog
+          isOpen={this.state.showShortKeys}
+          onDismiss={() => {
+            this.setState({ showShortKeys: false });
+          }}>
+          <div className="graphiql-dialog-header">
+            <div className="graphiql-dialog-title">Short Keys</div>
+            <Dialog.Close
+              onClick={() => {
+                this.setState({ showShortKeys: false });
+              }}
+            />
+          </div>
+          <div className="graphiql-dialog-section">
+            <ul className="graphiql-short-keys">
+              <li>
+                {modifier}
+                {' + '}
+                <code className="graphiql-key">F</code> : Search in editor
+              </li>
+              <li>
+                {modifier}
+                {' + '}
+                <code className="graphiql-key">K</code> : Search in
+                documentation
+              </li>
+              <li>
+                {modifier}
+                {' + '}
+                <code className="graphiql-key">Enter</code> : Execute query
+              </li>
+              <li>
+                <code className="graphiql-key">Ctrl</code>
+                {' + '}
+                <code className="graphiql-key">Shift</code>
+                {' + '}
+                <code className="graphiql-key">P</code> : Prettify editors
+              </li>
+              <li>
+                <code className="graphiql-key">Ctrl</code>
+                {' + '}
+                <code className="graphiql-key">Shift</code>
+                {' + '}
+                <code className="graphiql-key">M</code> : Merge fragments
+                definitions into operation definition
+              </li>
+              <li>
+                <code className="graphiql-key">Ctrl</code>
+                {' + '}
+                <code className="graphiql-key">Shift</code>
+                {' + '}
+                <code className="graphiql-key">C</code> : Copy query
+              </li>
+            </ul>
+          </div>
+        </Dialog>
         <Dialog
           isOpen={this.state.showSettings}
           onDismiss={() => {
