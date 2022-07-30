@@ -1,8 +1,8 @@
 {
   "name": "vscode-graphql-syntax",
   "version": "1.0.2",
-  "displayName": "GraphQL Syntax",
-  "description": "Adds support for highlighting graphql in files and embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
+  "displayName": "GraphQL: Syntax Highlighting",
+  "description": "Adds syntax highlighting support for .graphql & embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
   "publisher": "GraphQL",
   "license": "MIT",
   "engines": {
@@ -20,8 +20,7 @@
     "theme": "dark"
   },
   "categories": [
-    "Programming Languages",
-    "Snippets"
+    "Programming Languages"
   ],
   "contributes": {
     "languages": [
@@ -110,12 +109,6 @@
         "embeddedLanguages": {
           "meta.embedded.block.graphql": "graphql"
         }
-      }
-    ],
-    "snippets": [
-      {
-        "language": "graphql",
-        "path": "./snippets/graphql.json"
       }
     ]
   },

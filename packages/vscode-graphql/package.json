@@ -1,10 +1,9 @@
 {
   "name": "vscode-graphql",
   "version": "0.6.0",
-  "preview": true,
   "private": true,
   "license": "MIT",
-  "displayName": "GraphQL",
+  "displayName": "GraphQL: Language Feature Support",
   "keywords": [
     "graphql",
     "lsp",
@@ -52,7 +51,7 @@
   ],
   "main": "./out/extension",
   "extensionDependencies": [
-    "GraphQL.syntax"
+    "GraphQL.vscode-graphql-syntax"
   ],
   "contributes": {
     "snippets": [
