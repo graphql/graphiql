@@ -169,8 +169,7 @@
             "null"
           ],
           "default": false,
-          "description": "Enable debug logs",
-          "scope": "resource"
+          "description": "Enable debug logs"
         },
         "vscode-graphql.cacheSchemaFileForLookup": {
           "type": [

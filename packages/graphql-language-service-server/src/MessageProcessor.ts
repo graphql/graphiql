@@ -7,64 +7,62 @@
  *
  */
 
-import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
-import * as path from 'path';
 import glob from 'fast-glob';
-import { URI } from 'vscode-uri';
+import { existsSync, readFileSync, writeFile, writeFileSync } from 'fs';
 import {
   CachedContent,
-  Uri,
+  FileChangeTypeKind,
   GraphQLConfig,
   GraphQLProjectConfig,
-  FileChangeTypeKind,
-  Range,
-  Position,
   IPosition,
+  Position,
+  Range,
+  Uri,
 } from 'graphql-language-service';
+import mkdirp from 'mkdirp';
+import * as path from 'path';
+import { URI } from 'vscode-uri';
 
 import { GraphQLLanguageService } from './GraphQLLanguageService';
 
 import type {
   CompletionParams,
+  DidChangeConfigurationParams,
+  DidOpenTextDocumentParams,
+  DidSaveTextDocumentParams,
   FileEvent,
   VersionedTextDocumentIdentifier,
-  DidSaveTextDocumentParams,
-  DidOpenTextDocumentParams,
-  DidChangeConfigurationParams,
 } from 'vscode-languageserver/node';
 
 import type {
-  Diagnostic,
+  CancellationToken,
   CompletionItem,
   CompletionList,
-  CancellationToken,
+  Connection,
+  Diagnostic,
+  DidChangeConfigurationRegistrationOptions,
+  DidChangeTextDocumentParams,
+  DidChangeWatchedFilesParams,
+  DidCloseTextDocumentParams,
+  DocumentSymbolParams,
   Hover,
+  InitializeParams,
   InitializeResult,
   Location,
-  PublishDiagnosticsParams,
-  DidChangeTextDocumentParams,
-  DidCloseTextDocumentParams,
-  DidChangeWatchedFilesParams,
-  InitializeParams,
-  Range as RangeType,
   Position as VscodePosition,
-  TextDocumentPositionParams,
-  DocumentSymbolParams,
+  PublishDiagnosticsParams,
+  Range as RangeType,
   SymbolInformation,
+  TextDocumentPositionParams,
   WorkspaceSymbolParams,
-  Connection,
-  DidChangeConfigurationRegistrationOptions,
 } from 'vscode-languageserver/node';
 
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { getGraphQLCache, GraphQLCache } from './GraphQLCache';
-import { parseDocument, DEFAULT_SUPPORTED_EXTENSIONS } from './parseDocument';
+import { DEFAULT_SUPPORTED_EXTENSIONS, parseDocument } from './parseDocument';
 
-import { Logger } from './Logger';
-import { printSchema, visit, parse, FragmentDefinitionNode } from 'graphql';
-import { tmpdir } from 'os';
+import { FragmentDefinitionNode, parse, printSchema, visit } from 'graphql';
 import {
   ConfigEmptyError,
   ConfigInvalidError,
@@ -73,8 +71,10 @@ import {
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
-import type { LoadConfigOptions } from './types';
+import { tmpdir } from 'os';
 import { promisify } from 'util';
+import { Logger } from './Logger';
+import type { LoadConfigOptions } from './types';
 
 const writeFileAsync = promisify(writeFile);
 
@@ -89,7 +89,7 @@ function toPosition(position: VscodePosition): IPosition {
   return new Position(position.line, position.character);
 }
 
-export class MessageProcessor {
+class WorkspaceMessageProcessor {
   _connection: Connection;
   _graphQLCache!: GraphQLCache;
   _graphQLConfig: GraphQLConfig | undefined;
@@ -97,50 +97,40 @@ export class MessageProcessor {
   _textDocumentCache: Map<string, CachedDocumentType>;
   _isInitialized: boolean;
   _isGraphQLConfigMissing: boolean | null = null;
-  _willShutdown: boolean;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
   _parser: (text: string, uri: string) => CachedContent[];
   _tmpDir: string;
-  _tmpUriBase: string;
   _tmpDirBase: string;
   _loadConfigOptions: LoadConfigOptions;
-  _schemaCacheInit = false;
-  _rootPath: string = process.cwd();
+  _rootPath: string;
   _settings: any;
 
   constructor({
     logger,
-    fileExtensions,
-    graphqlFileExtensions,
     loadConfigOptions,
     config,
     parser,
     tmpDir,
     connection,
+    rootPath,
   }: {
     logger: Logger;
-    fileExtensions: string[];
-    graphqlFileExtensions: string[];
     loadConfigOptions: LoadConfigOptions;
     config?: GraphQLConfig;
-    parser?: typeof parseDocument;
-    tmpDir?: string;
+    parser: (text: string, uri: string) => CachedContent[];
+    tmpDir: string;
     connection: Connection;
+    rootPath: string;
   }) {
     this._connection = connection;
     this._textDocumentCache = new Map();
     this._isInitialized = false;
-    this._willShutdown = false;
     this._logger = logger;
     this._graphQLConfig = config;
-    this._parser = (text, uri) => {
-      const p = parser ?? parseDocument;
-      return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
-    };
-    this._tmpDir = tmpDir || tmpdir();
+    this._parser = parser;
+    this._tmpDir = tmpDir;
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
-    this._tmpUriBase = URI.file(this._tmpDirBase).toString();
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
     if (
@@ -153,71 +143,17 @@ export class MessageProcessor {
     if (!existsSync(this._tmpDirBase)) {
       mkdirp(this._tmpDirBase);
     }
-  }
-  get connection(): Connection {
-    return this._connection;
-  }
-  set connection(connection: Connection) {
-    this._connection = connection;
-  }
-
-  async handleInitializeRequest(
-    params: InitializeParams,
-    _token?: CancellationToken,
-    configDir?: string,
-  ): Promise<InitializeResult> {
-    if (!params) {
-      throw new Error('`params` argument is required to initialize.');
-    }
-
-    const serverCapabilities: InitializeResult = {
-      capabilities: {
-        workspaceSymbolProvider: true,
-        documentSymbolProvider: true,
-        completionProvider: {
-          resolveProvider: true,
-          triggerCharacters: [' ', ':', '$', '(', '@'],
-        },
-        definitionProvider: true,
-        textDocumentSync: 1,
-        hoverProvider: true,
-        workspace: {
-          workspaceFolders: {
-            supported: true,
-            changeNotifications: true,
-          },
-        },
-      },
-    };
-
-    this._rootPath = configDir
-      ? configDir.trim()
-      : params.rootUri || this._rootPath;
-    if (!this._rootPath) {
-      this._logger.warn(
-        'no rootPath configured in extension or server, defaulting to cwd',
-      );
-    }
-    if (!serverCapabilities) {
-      throw new Error('GraphQL Language Server is not initialized.');
-    }
-
-    this._logger.info(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'initialize',
-      }),
-    );
-
-    return serverCapabilities;
+    this._rootPath = rootPath;
   }
 
   async _updateGraphQLConfig() {
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
+      scopeUri: this._rootPath,
     });
     const vscodeSettings = await this._connection.workspace.getConfiguration({
       section: 'vscode-graphql',
+      scopeUri: this._rootPath,
     });
     if (settings?.dotEnvPath) {
       require('dotenv').config({ path: settings.dotEnvPath });
@@ -484,18 +420,6 @@ export class MessageProcessor {
 
     return { uri, diagnostics };
   }
-  async handleDidChangeConfiguration(
-    _params: DidChangeConfigurationParams,
-  ): Promise<DidChangeConfigurationRegistrationOptions> {
-    await this._updateGraphQLConfig();
-    this._logger.log(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'workspace/didChangeConfiguration',
-      }),
-    );
-    return {};
-  }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
     if (!this._isInitialized || !this._graphQLCache) {
@@ -523,15 +447,6 @@ export class MessageProcessor {
         fileName: uri,
       }),
     );
-  }
-
-  handleShutdownRequest(): void {
-    this._willShutdown = true;
-    return;
-  }
-
-  handleExitNotification(): void {
-    process.exit(this._willShutdown ? 0 : 1);
   }
 
   validateDocumentAndPosition(params: CompletionParams): void {
@@ -650,76 +565,66 @@ export class MessageProcessor {
     };
   }
 
-  async handleWatchedFilesChangedNotification(
-    params: DidChangeWatchedFilesParams,
-  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
+  async handleWatchedFileChangedNotification(
+    change: FileEvent,
+  ): Promise<PublishDiagnosticsParams | undefined> {
     if (!this._isInitialized || !this._graphQLCache) {
-      return null;
-    }
+      throw Error('No cache available for handleWatchedFilesChanged');
+    } else if (
+      change.type === FileChangeTypeKind.Created ||
+      change.type === FileChangeTypeKind.Changed
+    ) {
+      const uri = change.uri;
 
-    return Promise.all(
-      params.changes.map(async (change: FileEvent) => {
-        if (!this._isInitialized || !this._graphQLCache) {
-          throw Error('No cache available for handleWatchedFilesChanged');
-        } else if (
-          change.type === FileChangeTypeKind.Created ||
-          change.type === FileChangeTypeKind.Changed
-        ) {
-          const uri = change.uri;
+      const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
+      const contents = this._parser(text, uri);
 
-          const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
-          const contents = this._parser(text, uri);
+      await this._updateFragmentDefinition(uri, contents);
+      await this._updateObjectTypeDefinition(uri, contents);
 
-          await this._updateFragmentDefinition(uri, contents);
-          await this._updateObjectTypeDefinition(uri, contents);
+      const project = this._graphQLCache.getProjectForFile(uri);
+      let diagnostics: Diagnostic[] = [];
 
-          const project = this._graphQLCache.getProjectForFile(uri);
-          let diagnostics: Diagnostic[] = [];
-
-          if (
-            project?.extensions?.languageService?.enableValidation !== false
-          ) {
-            diagnostics = (
-              await Promise.all(
-                contents.map(async ({ query, range }) => {
-                  const results = await this._languageService.getDiagnostics(
-                    query,
-                    uri,
-                    this._isRelayCompatMode(query),
-                  );
-                  if (results && results.length > 0) {
-                    return processDiagnosticsMessage(results, query, range);
-                  } else {
-                    return [];
-                  }
-                }),
-              )
-            ).reduce((left, right) => left.concat(right), diagnostics);
-          }
-
-          this._logger.log(
-            JSON.stringify({
-              type: 'usage',
-              messageType: 'workspace/didChangeWatchedFiles',
-              projectName: project?.name,
-              fileName: uri,
+      if (project?.extensions?.languageService?.enableValidation !== false) {
+        diagnostics = (
+          await Promise.all(
+            contents.map(async ({ query, range }) => {
+              const results = await this._languageService.getDiagnostics(
+                query,
+                uri,
+                this._isRelayCompatMode(query),
+              );
+              if (results && results.length > 0) {
+                return processDiagnosticsMessage(results, query, range);
+              } else {
+                return [];
+              }
             }),
-          );
-          return { uri, diagnostics };
-        } else if (change.type === FileChangeTypeKind.Deleted) {
-          this._graphQLCache.updateFragmentDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().dirpath,
-            change.uri,
-            false,
-          );
-          this._graphQLCache.updateObjectTypeDefinitionCache(
-            this._graphQLCache.getGraphQLConfig().dirpath,
-            change.uri,
-            false,
-          );
-        }
-      }),
-    );
+          )
+        ).reduce((left, right) => left.concat(right), diagnostics);
+      }
+
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'workspace/didChangeWatchedFiles',
+          projectName: project?.name,
+          fileName: uri,
+        }),
+      );
+      return { uri, diagnostics };
+    } else if (change.type === FileChangeTypeKind.Deleted) {
+      this._graphQLCache.updateFragmentDefinitionCache(
+        this._graphQLCache.getGraphQLConfig().dirpath,
+        change.uri,
+        false,
+      );
+      this._graphQLCache.updateObjectTypeDefinitionCache(
+        this._graphQLCache.getGraphQLConfig().dirpath,
+        change.uri,
+        false,
+      );
+    }
   }
 
   async handleDefinitionRequest(
@@ -843,27 +748,6 @@ export class MessageProcessor {
       textDocument.uri,
     );
   }
-
-  // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
-  //    if (!this._isInitialized) {
-  //      return [];
-  //    }
-
-  //    if (!params || !params.textDocument) {
-  //      throw new Error('`textDocument` argument is required.');
-  //    }
-
-  //    const textDocument = params.textDocument;
-  //    const cachedDocument = this._getCachedDocument(textDocument.uri);
-  //    if (!cachedDocument) {
-  //      throw new Error('A cached document cannot be found.');
-  //    }
-  //    return this._languageService.getReferences(
-  //      cachedDocument.contents[0].query,
-  //      params.position,
-  //      textDocument.uri,
-  //    );
-  // }
 
   async handleWorkspaceSymbolRequest(
     params: WorkspaceSymbolParams,
@@ -1198,6 +1082,324 @@ export class MessageProcessor {
       version: textDocument.version ?? 0,
       contents,
     });
+  }
+}
+
+export class MessageProcessor {
+  _connection: Connection;
+  _graphQLConfig: GraphQLConfig | undefined;
+  _willShutdown: boolean;
+  _logger: Logger;
+  _parser: (text: string, uri: string) => CachedContent[];
+  _tmpDir: string;
+  _loadConfigOptions: LoadConfigOptions;
+  _rootPath: string = process.cwd();
+  _sortedWorkspaceUris: string[] = [];
+  _processors: Map<string, WorkspaceMessageProcessor> = new Map();
+
+  constructor({
+    logger,
+    fileExtensions,
+    graphqlFileExtensions,
+    loadConfigOptions,
+    config,
+    parser,
+    tmpDir,
+    connection,
+  }: {
+    logger: Logger;
+    fileExtensions: string[];
+    graphqlFileExtensions: string[];
+    loadConfigOptions: LoadConfigOptions;
+    config?: GraphQLConfig;
+    parser?: typeof parseDocument;
+    tmpDir?: string;
+    connection: Connection;
+  }) {
+    this._connection = connection;
+    this._willShutdown = false;
+    this._logger = logger;
+    this._graphQLConfig = config;
+    this._parser = (text, uri) => {
+      const p = parser ?? parseDocument;
+      return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
+    };
+    this._tmpDir = tmpDir || tmpdir();
+
+    const tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
+    // use legacy mode by default for backwards compatibility
+    this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
+
+    if (!existsSync(tmpDirBase)) {
+      mkdirp(tmpDirBase);
+    }
+  }
+  get connection(): Connection {
+    return this._connection;
+  }
+  set connection(connection: Connection) {
+    this._connection = connection;
+  }
+
+  async handleInitializeRequest(
+    params: InitializeParams,
+    _token?: CancellationToken,
+    configDir?: string,
+  ): Promise<InitializeResult> {
+    if (!params) {
+      throw new Error('`params` argument is required to initialize.');
+    }
+
+    const serverCapabilities: InitializeResult = {
+      capabilities: {
+        workspaceSymbolProvider: true,
+        documentSymbolProvider: true,
+        completionProvider: {
+          resolveProvider: true,
+          triggerCharacters: [' ', ':', '$', '(', '@'],
+        },
+        definitionProvider: true,
+        textDocumentSync: 1,
+        hoverProvider: true,
+        workspace: {
+          workspaceFolders: {
+            supported: true,
+            changeNotifications: true,
+          },
+        },
+      },
+    };
+
+    this._sortedWorkspaceUris = params.workspaceFolders
+      ?.map(ws => ws.uri)
+      .sort((a, b) => b.length - a.length) ?? [
+      URI.file(
+        configDir ? configDir.trim() : params.rootUri || this._rootPath,
+      ).toString(),
+    ];
+
+    this._sortedWorkspaceUris.forEach(uri => {
+      this._processors.set(
+        uri,
+        new WorkspaceMessageProcessor({
+          connection: this._connection,
+          loadConfigOptions: this._loadConfigOptions,
+          logger: this._logger,
+          parser: this._parser,
+          tmpDir: this._tmpDir,
+          config: this._graphQLConfig,
+          rootPath: URI.parse(uri).fsPath,
+        }),
+      );
+    });
+
+    if (!serverCapabilities) {
+      throw new Error('GraphQL Language Server is not initialized.');
+    }
+
+    this._logger.info(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'initialize',
+      }),
+    );
+
+    return serverCapabilities;
+  }
+
+  _findWorkspaceProcessor(uri: string): WorkspaceMessageProcessor | undefined {
+    const workspace = this._sortedWorkspaceUris.find(wsUri =>
+      uri.startsWith(wsUri),
+    );
+    return this._processors.get(workspace ?? '');
+  }
+
+  async handleDidOpenOrSaveNotification(
+    params: DidSaveTextDocumentParams | DidOpenTextDocumentParams,
+  ): Promise<PublishDiagnosticsParams | null> {
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` argument is required.');
+    }
+    const { uri } = params.textDocument;
+    return (
+      this._findWorkspaceProcessor(uri)?.handleDidOpenOrSaveNotification(
+        params,
+      ) ?? { uri, diagnostics: [] }
+    );
+  }
+
+  async handleDidChangeNotification(
+    params: DidChangeTextDocumentParams,
+  ): Promise<PublishDiagnosticsParams | null> {
+    // For every `textDocument/didChange` event, keep a cache of textDocuments
+    // with version information up-to-date, so that the textDocument contents
+    // may be used during performing language service features,
+    // e.g. auto-completions.
+    if (
+      !params ||
+      !params.textDocument ||
+      !params.contentChanges ||
+      !params.textDocument.uri
+    ) {
+      throw new Error(
+        '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
+      );
+    }
+    return (
+      this._findWorkspaceProcessor(
+        params.textDocument.uri,
+      )?.handleDidChangeNotification(params) ?? null
+    );
+  }
+
+  async handleDidChangeConfiguration(
+    _params: DidChangeConfigurationParams,
+  ): Promise<DidChangeConfigurationRegistrationOptions> {
+    await Promise.all(
+      Array.from(this._processors.values()).map(processor =>
+        processor._updateGraphQLConfig(),
+      ),
+    );
+    this._logger.log(
+      JSON.stringify({
+        type: 'usage',
+        messageType: 'workspace/didChangeConfiguration',
+      }),
+    );
+    return {};
+  }
+
+  handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
+    // For every `textDocument/didClose` event, delete the cached entry.
+    // This is to keep a low memory usage && switch the source of truth to
+    // the file on disk.
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` is required.');
+    }
+    const { uri } = params.textDocument;
+    this._findWorkspaceProcessor(uri)?.handleDidCloseNotification(params);
+  }
+
+  handleShutdownRequest(): void {
+    this._willShutdown = true;
+    return;
+  }
+
+  handleExitNotification(): void {
+    process.exit(this._willShutdown ? 0 : 1);
+  }
+
+  validateDocumentAndPosition(params: CompletionParams): void {
+    if (
+      !params ||
+      !params.textDocument ||
+      !params.textDocument.uri ||
+      !params.position
+    ) {
+      throw new Error(
+        '`textDocument`, `textDocument.uri`, and `position` arguments are required.',
+      );
+    }
+  }
+
+  async handleCompletionRequest(
+    params: CompletionParams,
+  ): Promise<CompletionList | Array<CompletionItem>> {
+    this.validateDocumentAndPosition(params);
+
+    return (
+      this._findWorkspaceProcessor(
+        params.textDocument.uri,
+      )?.handleCompletionRequest(params) ?? []
+    );
+  }
+
+  async handleHoverRequest(params: TextDocumentPositionParams): Promise<Hover> {
+    this.validateDocumentAndPosition(params);
+
+    return (
+      this._findWorkspaceProcessor(params.textDocument.uri)?.handleHoverRequest(
+        params,
+      ) ?? {
+        contents: [],
+      }
+    );
+  }
+
+  async handleWatchedFilesChangedNotification(
+    params: DidChangeWatchedFilesParams,
+  ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
+    return Promise.all(
+      params.changes.map(async (change: FileEvent) => {
+        return (
+          this._findWorkspaceProcessor(
+            change.uri,
+          )?.handleWatchedFileChangedNotification(change) ?? undefined
+        );
+      }),
+    );
+  }
+
+  async handleDefinitionRequest(
+    params: TextDocumentPositionParams,
+    _token?: CancellationToken,
+  ): Promise<Array<Location>> {
+    if (!params || !params.textDocument || !params.position) {
+      throw new Error('`textDocument` and `position` arguments are required.');
+    }
+    return (
+      this._findWorkspaceProcessor(
+        params.textDocument.uri,
+      )?.handleDefinitionRequest(params, _token) ?? []
+    );
+  }
+
+  async handleDocumentSymbolRequest(
+    params: DocumentSymbolParams,
+  ): Promise<Array<SymbolInformation>> {
+    if (!params || !params.textDocument) {
+      throw new Error('`textDocument` argument is required.');
+    }
+
+    return (
+      this._findWorkspaceProcessor(
+        params.textDocument.uri,
+      )?.handleDocumentSymbolRequest(params) ?? []
+    );
+  }
+
+  // async handleReferencesRequest(params: ReferenceParams): Promise<Location[]> {
+  //    if (!this._isInitialized) {
+  //      return [];
+  //    }
+
+  //    if (!params || !params.textDocument) {
+  //      throw new Error('`textDocument` argument is required.');
+  //    }
+
+  //    const textDocument = params.textDocument;
+  //    const cachedDocument = this._getCachedDocument(textDocument.uri);
+  //    if (!cachedDocument) {
+  //      throw new Error('A cached document cannot be found.');
+  //    }
+  //    return this._languageService.getReferences(
+  //      cachedDocument.contents[0].query,
+  //      params.position,
+  //      textDocument.uri,
+  //    );
+  // }
+
+  async handleWorkspaceSymbolRequest(
+    params: WorkspaceSymbolParams,
+  ): Promise<Array<SymbolInformation>> {
+    // const config = await this._graphQLCache.getGraphQLConfig();
+    // await this._cacheAllProjectFiles(config);
+
+    return Promise.all(
+      Array.from(this._processors.values()).flatMap(processor =>
+        processor.handleWorkspaceSymbolRequest(params),
+      ),
+    ).then(symbolsList => symbolsList.flat());
   }
 }
 
