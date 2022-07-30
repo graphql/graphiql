@@ -2,17 +2,23 @@
   "name": "vscode-graphql-syntax",
   "version": "1.0.2",
   "displayName": "GraphQL Syntax",
-  "description": "Adds support for highlighting graphql in files and embedded with template strings or other delimiters with javascript, typescript, markdown, python, php, reason, ocaml, rescript",
+  "description": "Adds support for highlighting graphql in files and embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
   "publisher": "GraphQL",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.63.0"
   },
+  "icon": "assets/images/logo.png",
   "contributors": [
     {
       "name": "Divyendu Singh",
       "url": "https://www.divyendusingh.com/"
     }
   ],
+  "galleryBanner": {
+    "color": "#032539",
+    "theme": "dark"
+  },
   "categories": [
     "Programming Languages",
     "Snippets"
@@ -119,10 +125,6 @@
     "directory": "packages/vscode-syntax"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-syntax/README.md",
-  "galleryBanner": {
-    "color": "#032539",
-    "theme": "dark"
-  },
   "scripts": {
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",

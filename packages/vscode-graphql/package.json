@@ -51,7 +51,9 @@
     "workspaceContains:**/package.json"
   ],
   "main": "./out/extension",
-  "extensionDependencies": ["GraphQL.syntax"],
+  "extensionDependencies": [
+    "GraphQL.syntax"
+  ],
   "contributes": {
     "snippets": [
       {

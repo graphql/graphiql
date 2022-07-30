@@ -6,7 +6,11 @@
     },
     "Type definition": {
       "prefix": "typ",
-      "body": ["type ${1:TypeName} ${2:implements ${3:IName}${4: , ${5:IName}}}{", "\t$5", "}"]
+      "body": [
+        "type ${1:TypeName} ${2:implements ${3:IName}${4: , ${5:IName}}}{",
+        "\t$5",
+        "}"
+      ]
     },
     "Input Field definition": {
       "prefix": "inp",

@@ -1,6 +1,6 @@
 [Changelog](https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql/CHANGELOG.md) | [Discord Channel](https://discord.gg/r4BxrAG6fN) | [LSP Server Docs](https://github.com/graphql/graphiql/blob/main/packages/graphql-language-service-server/README.md)
 
-GraphQL extension VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
+GraphQL extension for VSCode built with the aim to tightly integrate the GraphQL Ecosystem with VSCode for an awesome developer experience.
 
 ![](https://camo.githubusercontent.com/97dc1080d5e6883c4eec3eaa6b7d0f29802e6b4b/687474703a2f2f672e7265636f726469742e636f2f497379504655484e5a342e676966)
 
