@@ -106,22 +106,22 @@ export function findGraphQLTags(
   let parsedASTs: { [key: string]: any }[] = [];
 
   if (isVue) {
-    const result = parseVueSFC(text);
-    if (result.type === 'error') {
+    const parseVueSFCResult = parseVueSFC(text);
+    if (parseVueSFCResult.type === 'error') {
       logger.error(
         `Could not parse the Vue file at ${uri} to extract the graphql tags:`,
       );
-      for (const error of result.errors) {
+      for (const error of parseVueSFCResult.errors) {
         logger.error(String(error));
       }
       return [];
     }
 
-    if (result.scriptAst !== undefined) {
-      parsedASTs.push(...result.scriptAst);
+    if (parseVueSFCResult.scriptAst !== undefined) {
+      parsedASTs.push(...parseVueSFCResult.scriptAst);
     }
-    if (result.scriptSetupAst !== undefined) {
-      parsedASTs.push(...result.scriptSetupAst);
+    if (parseVueSFCResult.scriptSetupAst !== undefined) {
+      parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
   } else {
     const isTypeScript = ext === '.ts' || ext === '.tsx';
