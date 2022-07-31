@@ -63,7 +63,7 @@ describe('MessageProcessor', () => {
   beforeEach(async () => {
     const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
     // loadConfig.mockRestore();
-    const workspaceUri = pathToFileURL('.').toString();
+    const workspaceUri = pathToFileURL(__dirname).toString();
     messageProcessor._sortedWorkspaceUris = [workspaceUri];
 
     messageProcessor._processors = new Map([
@@ -337,38 +337,107 @@ describe('MessageProcessor', () => {
     const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
 
     beforeEach(() => {
+      workspaceMessageProcessor._projectCacheStatuses = new Map();
       mockReadFileSync.mockReturnValue('');
-      workspaceMessageProcessor._updateGraphQLConfig = jest.fn();
+      // workspaceMessageProcessor._loadAndCacheProjectConfig = jest.fn();
+      workspaceMessageProcessor._cacheSchemaFilesForProject = jest.fn();
     });
     it('updates config for standard config filename changes', async () => {
+      workspaceMessageProcessor._initializeConfig = jest.fn();
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
-          uri: `${pathToFileURL('.')}/.graphql.config.js`,
+          uri: `${pathToFileURL(__dirname)}/.graphql.config.js`,
           languageId: 'js',
           version: 0,
           text: '',
         },
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalled();
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalled();
+    });
+
+    it('does not rebuild project cache on second change to a file', async () => {
+      workspaceMessageProcessor._initializeConfig = jest.fn();
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL(__dirname)}/test.graphql`,
+          languageId: 'graphql',
+          version: 0,
+          text: '',
+        },
+      });
+
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalledTimes(
+        0,
+      );
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalledTimes(1);
+
+      // make a 2nd change
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL(__dirname)}/test.graphql`,
+          languageId: 'graphql',
+          version: 1,
+          text: '{ id }',
+        },
+      });
+
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalledTimes(
+        0,
+      );
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalledTimes(1);
+
+      // make a 3rd change
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL(__dirname)}/test.graphql`,
+          languageId: 'graphql',
+          version: 2,
+          text: '{ id title }',
+        },
+      });
+
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalledTimes(
+        0,
+      );
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalledTimes(1);
     });
 
     it('updates config for custom config filename changes', async () => {
       const customConfigName = 'custom-config-name.yml';
-      workspaceMessageProcessor._settings = {
+
+      const newSettings = {
         load: { fileName: customConfigName },
       };
 
+      workspaceMessageProcessor._settings = newSettings;
+      workspaceMessageProcessor._initializeConfig = jest.fn();
+
+      await messageProcessor.handleDidChangeConfiguration({
+        settings: [newSettings],
+      });
+
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
-          uri: `${pathToFileURL('.')}/${customConfigName}`,
+          uri: `${pathToFileURL(__dirname)}/${customConfigName}`,
           languageId: 'js',
           version: 0,
           text: '',
         },
       });
-
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalled();
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalled();
     });
 
     it('handles config requests with no config', async () => {
@@ -378,18 +447,18 @@ describe('MessageProcessor', () => {
         settings: [],
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
-
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
-          uri: `${pathToFileURL('.')}/.graphql.config.js`,
+          uri: `${pathToFileURL(__dirname)}/.graphql.config.js`,
           languageId: 'js',
           version: 0,
           text: '',
         },
       });
-
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(workspaceMessageProcessor._initializeConfig).toHaveBeenCalled();
+      expect(
+        workspaceMessageProcessor._cacheSchemaFilesForProject,
+      ).toHaveBeenCalled();
     });
   });
 
@@ -742,20 +811,20 @@ query Test {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      messageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._loadConfigOptions = jest.fn();
     });
 
     it('skips config updates for normal file changes', async () => {
       await messageProcessor.handleWatchedFilesChangedNotification({
         changes: [
           {
-            uri: `${pathToFileURL('.')}/foo.graphql`,
+            uri: `${queryPathUri}/test.graphql`,
             type: FileChangeType.Changed,
           },
         ],
       });
 
-      expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
+      expect(messageProcessor._loadConfigOptions).not.toBeCalled();
     });
   });
 });
