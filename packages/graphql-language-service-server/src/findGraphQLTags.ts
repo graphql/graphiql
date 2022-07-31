@@ -78,8 +78,6 @@ function parseVueSFC(
     return { type: 'error', errors };
   }
 
-  console.log(descriptor.script?.scriptAst);
-
   let scriptBlock: VueParser.SFCScriptBlock | null = null;
   try {
     scriptBlock = VueParser.compileScript(descriptor, { id: 'foobar' });
