@@ -29,7 +29,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --emitDeclarationOnly && vite build",
-    "preview": "vite preview"
+    "build:watch": "tsc --emitDeclarationOnly && vite build --watch"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",
