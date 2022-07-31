@@ -3,7 +3,7 @@
 }
 
 .graphiql-execute-button {
-  background-color: var(--color-pink);
+  background-color: var(--color-primary-100);
   border: none;
   border-radius: var(--border-radius-8);
   cursor: pointer;
@@ -12,11 +12,11 @@
   width: var(--toolbar-width);
 
   &:active {
-    background-color: var(--color-pink-dark);
+    background-color: var(--color-primary-80);
   }
 
   &:focus {
-    outline: var(--color-pink-dark) auto 1px;
+    outline: var(--color-primary-80) auto 1px;
   }
 
   & > svg {

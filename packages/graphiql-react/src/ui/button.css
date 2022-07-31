@@ -33,6 +33,6 @@ button.graphiql-button {
     background-color: var(--color-green-background);
   }
   &.graphiql-button-error {
-    background-color: var(--color-red-background);
+    background-color: var(--color-error-7);
   }
 }

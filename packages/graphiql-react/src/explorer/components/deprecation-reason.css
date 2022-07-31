@@ -1,8 +1,8 @@
 .graphiql-doc-explorer-deprecation {
-  background-color: var(--color-orche-background);
-  border: 1px solid var(--color-orche);
+  background-color: var(--color-warning-7);
+  border: 1px solid var(--color-warning-15);
   border-radius: var(--px-4);
-  color: var(--color-orche);
+  color: var(--color-warning-100);
   padding: var(--px-8);
 }
 

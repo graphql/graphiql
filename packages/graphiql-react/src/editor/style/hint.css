@@ -29,8 +29,8 @@
   }
 }
 li.CodeMirror-hint-active {
-  background: var(--color-pink-background);
-  color: var(--color-pink);
+  background: var(--color-primary-10);
+  color: var(--color-primary-100);
 }
 
 /* Sidebar with additional information */

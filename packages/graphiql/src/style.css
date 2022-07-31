@@ -16,18 +16,22 @@
   padding: var(--px-8);
   width: var(--sidebar-width);
 }
+
 .graphiql-container .graphiql-sidebar button {
   color: var(--color-neutral-60);
   height: var(--sidebar-width);
   width: var(--sidebar-width);
 }
+
 .graphiql-container .graphiql-sidebar button.active {
   color: var(--color-neutral-100);
 }
+
 .graphiql-container .graphiql-sidebar button:not(:first-child) {
   margin-top: var(--px-4);
 }
-.graphiql-container .graphiql-sidebar button > svg {
+
+.graphiql-container .graphiql-sidebar button>svg {
   height: calc(var(--sidebar-width) - (2 * var(--px-12)));
   padding: var(--px-12);
   pointer-events: none;
@@ -65,7 +69,8 @@
 button.graphiql-tab-add {
   margin-left: var(--px-12);
 }
-button.graphiql-tab-add > svg {
+
+button.graphiql-tab-add>svg {
   color: var(--color-neutral-60);
   display: block;
   height: var(--px-16);
@@ -101,6 +106,7 @@ button.graphiql-tab-add > svg {
   flex: 1;
   flex-direction: column;
 }
+
 .graphiql-container .graphiql-editors.full-height {
   margin-top: calc(var(--px-8) - var(--session-header-height));
 }
@@ -124,7 +130,8 @@ button.graphiql-tab-add > svg {
   margin-left: var(--px-16);
   width: var(--toolbar-width);
 }
-.graphiql-container .graphiql-toolbar > * + * {
+
+.graphiql-container .graphiql-toolbar>*+* {
   margin-top: var(--px-8);
 }
 
@@ -145,9 +152,11 @@ button.graphiql-tab-add > svg {
   justify-content: space-between;
   padding: var(--px-8);
 }
+
 .graphiql-container .graphiql-editor-tools button {
   color: var(--color-neutral-60);
 }
+
 .graphiql-container .graphiql-editor-tools button.active {
   color: var(--color-neutral-100);
 }
@@ -157,10 +166,12 @@ button.graphiql-tab-add > svg {
   cursor: auto;
   display: flex;
 }
-.graphiql-container .graphiql-editor-tools-tabs > button {
+
+.graphiql-container .graphiql-editor-tools-tabs>button {
   padding: var(--px-8) var(--px-12);
 }
-.graphiql-container .graphiql-editor-tools-tabs > button + button {
+
+.graphiql-container .graphiql-editor-tools-tabs>button+button {
   margin-left: var(--px-8);
 }
 
@@ -173,6 +184,7 @@ button.graphiql-tab-add > svg {
 /* The response view */
 .graphiql-container .graphiql-response {
   --editor-background: var(--color-neutral-7);
+  background-color: "transparent";
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -198,6 +210,7 @@ button.graphiql-tab-add > svg {
   width: var(--px-12);
   cursor: col-resize;
 }
+
 .graphiql-container .graphiql-horizontal-drag-bar:hover::after {
   border: var(--px-2) solid var(--color-neutral-15);
   border-radius: var(--border-radius-2);
@@ -242,7 +255,8 @@ reach-portal .graphiql-dialog-section {
   justify-content: space-between;
   padding: var(--px-24);
 }
-reach-portal .graphiql-dialog-section > :not(:first-child) {
+
+reach-portal .graphiql-dialog-section> :not(:first-child) {
   margin-left: var(--px-24);
 }
 

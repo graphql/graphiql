@@ -26,7 +26,7 @@
   }
 
   &.editable {
-    background-color: var(--color-pink-background);
+    background-color: var(--color-primary);
 
     & > input {
       background: transparent;
@@ -43,15 +43,15 @@
     }
 
     & > button {
-      color: var(--color-pink);
+      color: var(--color-primary-100);
       padding: 0 var(--px-10);
 
       &:active {
-        background-color: var(--color-pink-background-dark);
+        background-color: var(--color-primary-60);
       }
 
       &:focus {
-        outline: var(--color-pink) auto 1px;
+        outline: var(--color-primary-100) auto 1px;
       }
 
       & > svg {

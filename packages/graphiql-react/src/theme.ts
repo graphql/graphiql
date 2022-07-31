@@ -8,7 +8,9 @@ import { useStorageContext } from './storage';
 export type Theme = 'light' | 'dark' | null;
 
 /**
- * Initial attempt @ theme colors / alpha values
+ * Initial attempt @ theme colors / alpha values. 
+ * Not a huge fan of adding this whole bit into a single file.
+ * Should probably refactor/shuffle all of the hooks into a /hooks directory as part of a larger refactor/shuffle.
  */
 type HexValue = `#${string}`;
 
@@ -26,6 +28,16 @@ export type DesignTokens = {
   colors?: ColorTokens;
 };
 
+const defaultColorTokens: DesignTokens["colors"] = {
+  neutral: "#3b4b68",
+  primary: "#d60690",
+  secondary: "#6e6acf",
+  info: "#007eea",
+  warning: "#d37f00",
+  error: "#f85b30",
+  success: "#2bab7c",
+}
+
 const hexToRGB = ({ hex, alpha }: { hex: HexValue; alpha: number }) => {
   const r = '0x' + hex[1] + hex[2];
   const g = '0x' + hex[3] + hex[4];
@@ -33,7 +45,6 @@ const hexToRGB = ({ hex, alpha }: { hex: HexValue; alpha: number }) => {
 
   return 'rgba(' + Number(r) + ',' + Number(g) + ',' + Number(b) + ',' + Number(alpha) + ')';
 };
-
 
 const setNeutralPalette = ({baseColor}: {baseColor: HexValue}) => {
   document.documentElement.style.setProperty(`--color-neutral-100`, hexToRGB({hex: baseColor, alpha: 1}));
@@ -48,10 +59,13 @@ const setNeutralPalette = ({baseColor}: {baseColor: HexValue}) => {
 const setPalette = ({baseColor, name}: {baseColor: HexValue; name: string}) => {
   document.documentElement.style.setProperty(`--color-${name}-100`, hexToRGB({hex: baseColor, alpha: 1}));
   document.documentElement.style.setProperty(`--color-${name}-60`, hexToRGB({hex: baseColor, alpha: .60}));
+  document.documentElement.style.setProperty(`--color-${name}-15`, hexToRGB({hex: baseColor, alpha: .15}));
   document.documentElement.style.setProperty(`--color-${name}-10`, hexToRGB({hex: baseColor, alpha: .10}));
+  document.documentElement.style.setProperty(`--color-${name}-7`, hexToRGB({hex: baseColor, alpha: .07}));  
 }
 
-const setThemeColors = ({colors}:{colors: ColorTokens}) => {
+
+const setThemeColors = ({ colors }:{ colors: ColorTokens }) => {
   Object.entries(colors).forEach(color => {
     const [name, value] = color;
     if (name === "neutral") {
@@ -107,7 +121,7 @@ export function useTheme() {
   );
 
 
-  return useMemo(() => ({ theme, setTheme, setThemeColors }), [theme, setTheme]);
+  return useMemo(() => ({ theme, setTheme, setThemeColors, defaultColorTokens }), [theme, setTheme]);
 }
 
 const STORAGE_KEY = 'theme';

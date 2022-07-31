@@ -1,5 +1,5 @@
 .graphiql-doc-explorer-field-name {
-  color: var(--color-blue);
+  color: var(--color-info-100);
   text-decoration: none;
 
   &:hover {
@@ -7,6 +7,6 @@
   }
 
   &:focus {
-    outline: var(--color-blue) auto 1px;
+    outline: var(--color-info-100) auto 1px;
   }
 }

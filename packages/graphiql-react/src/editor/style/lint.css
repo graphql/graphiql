@@ -12,60 +12,60 @@
   background-position: 0 95%;
 }
 .cm-s-graphiql .CodeMirror-lint-mark-error {
-  color: var(--color-red);
+  color: var(--color-error-100);
 }
 .CodeMirror-lint-mark-error {
   background-image: linear-gradient(
       45deg,
       transparent 65%,
-      var(--color-red) 80%,
+      var(--color-error-100) 80%,
       transparent 90%
     ),
     linear-gradient(
       135deg,
       transparent 5%,
-      var(--color-red) 15%,
+      var(--color-error-100) 15%,
       transparent 25%
     ),
     linear-gradient(
       135deg,
       transparent 45%,
-      var(--color-red) 55%,
+      var(--color-error-100) 55%,
       transparent 65%
     ),
     linear-gradient(
       45deg,
       transparent 25%,
-      var(--color-red) 35%,
+      var(--color-error-100) 35%,
       transparent 50%
     );
 }
 .cm-s-graphiql .CodeMirror-lint-mark-warning {
-  color: var(--color-orche);
+  color: var(--color-warning-100);
 }
 .CodeMirror-lint-mark-warning {
   background-image: linear-gradient(
       45deg,
       transparent 65%,
-      var(--color-orche) 80%,
+      var(--color-warning-100) 80%,
       transparent 90%
     ),
     linear-gradient(
       135deg,
       transparent 5%,
-      var(--color-orche) 15%,
+      var(--color-warning-100) 15%,
       transparent 25%
     ),
     linear-gradient(
       135deg,
       transparent 45%,
-      var(--color-orche) 55%,
+      var(--color-warning-100) 55%,
       transparent 65%
     ),
     linear-gradient(
       45deg,
       transparent 25%,
-      var(--color-orche) 35%,
+      var(--color-warning-100) 35%,
       transparent 50%
     );
 }
@@ -88,8 +88,8 @@
   padding: 0;
 }
 .CodeMirror-lint-message-error {
-  color: var(--color-red);
+  color: var(--color-error-100);
 }
 .CodeMirror-lint-message-warning {
-  color: var(--color-orche);
+  color: var(--color-warning-100);
 }

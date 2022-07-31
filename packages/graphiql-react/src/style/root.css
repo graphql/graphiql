@@ -1,34 +1,47 @@
-.graphiql-container,
-.CodeMirror-info,
-.CodeMirror-lint-tooltip,
-reach-portal {
+:root {
   /* Colors */
-  --color-pink: #d60690;
-  --color-purple: #6e6acf;
-  --color-blue: #007eea;
-  --color-orche: #d37f00;
-  --color-red: #f85b30;
-  --color-green: #2bab7c;
   --color-teal: #009fb8;
-  --color-neutral-100: #3b4b68;
-  --color-neutral-60: #8993a4;
-  --color-neutral-40: #b1b7c3;
-  --color-neutral-15: #e2e4e8;
-  --color-neutral-10: #ebedf0;
-  --color-neutral-7: #f1f2f4;
-  --color-neutral-0: #ffffff;
+  /* replaced by --color-primary */
+  /* --color-pink: #d60690; */
+  /* replaced by --color-secondary */
+  /* --color-purple: #6e6acf; */
+  /* replaced by --color-info */
+  /* --color-blue: #007eea; */
+  /* replaced by --color-warning */
+  /* --color-orche: #d37f00; */
+  /* replaced by --color-error */
+  /* --color-red: #f85b30; */
+  /* replaced by --color-success */
+  /* --color-green: #2bab7c; */
+  /* replaced by --color-neutral-* */
+  /* --color-neutral-100: #3b4b68; */
+  /* --color-neutral-60: #8993a4; */
+  /* --color-neutral-40: #b1b7c3; */
+  /* --color-neutral-15: #e2e4e8; */
+  /* --color-neutral-10: #ebedf0; */
+  /* --color-neutral-7: #f1f2f4; */
+  /* --color-neutral-0: #ffffff; */
 
-  --color-pink-background: rgb(214, 6, 144, 0.1);
-  --color-pink-background-dark: rgb(214, 6, 144, 0.15);
-  --color-pink-dark: #ab0573;
-  --color-orche-background: rgba(211, 127, 0, 0.07);
-  --color-orche-background-dark: rgba(211, 127, 0, 0.12);
-  --color-red-background: rgba(248, 91, 48, 0.12);
-  --color-green-background: rgba(43, 171, 124, 0.12);
-  --color-neutral-background: rgba(59, 75, 104, 0.1);
+  /* replaced by --color-primary-10 */
+  /* --color-pink-background: rgb(214, 6, 144, 0.1); */
+  /* replaced by --color-primary-60 */
+  /* --color-pink-background-dark: rgb(214, 6, 144, 0.15); */
+  /* replaced by --color-primary-80 */
+  /* --color-pink-dark: #ab0573; */
+  /* replaced by --color-warning-7 */
+  /* --color-orche-background: rgba(211, 127, 0, 0.07); */
+  /* replaced by --color-warning-15 */
+  /* --color-orche-background-dark: rgba(211, 127, 0, 0.12); */
+  /* replaced by --color-error-7 */
+  /* --color-red-background: rgba(248, 91, 48, 0.12); */
+  /* replaced by --color-success-7 */
+  /* --color-green-background: rgba(43, 171, 124, 0.12); */
+  /* see comment in /src/ui/dialog.css */
+  /* --color-neutral-background: rgba(59, 75, 104, 0.1); */
 
   /* Font */
-  --font-family: 'Roboto', sans-serif;
+  --font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+    helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial, sans-serif;
   --font-family-mono: 'Fira Code', monospace;
   --font-size-hint: calc(12rem / 16);
   --font-size-inline-code: calc(13rem / 16);
@@ -69,14 +82,15 @@ reach-portal {
 }
 
 @media (prefers-color-scheme: dark) {
+
   body:not(.graphiql-light) .graphiql-container,
   body:not(.graphiql-light) .CodeMirror-info,
   body:not(.graphiql-light) .CodeMirror-lint-tooltip,
   body:not(.graphiql-light) reach-portal {
-    --color-pink: #ff5895;
+    /* --color-pink: #ff5895;
     --color-purple: #918cff;
     --color-blue: #6fbcff;
-    --color-orche: #ffcc99;
+    --color-orche: #ffcc99; */
     --color-neutral-100: #b7c2d7;
     --color-neutral-60: #5a687f;
     --color-neutral-40: #465877;
@@ -85,7 +99,7 @@ reach-portal {
     --color-neutral-7: #293242;
     --color-neutral-0: #222b39;
 
-    --color-pink-dark: #ff357f;
+    /* --color-pink-dark: #ff357f; */
   }
 }
 
@@ -93,10 +107,10 @@ body.graphiql-dark .graphiql-container,
 body.graphiql-dark .CodeMirror-info,
 body.graphiql-dark .CodeMirror-lint-tooltip,
 body.graphiql-dark reach-portal {
-  --color-pink: #ff5895;
+  /* --color-pink: #ff5895;
   --color-purple: #918cff;
   --color-blue: #6fbcff;
-  --color-orche: #ffcc99;
+  --color-orche: #ffcc99; */
   --color-neutral-100: #b7c2d7;
   --color-neutral-60: #5a687f;
   --color-neutral-40: #465877;
@@ -105,7 +119,7 @@ body.graphiql-dark reach-portal {
   --color-neutral-7: #293242;
   --color-neutral-0: #222b39;
 
-  --color-pink-dark: #ff357f;
+  /* --color-pink-dark: #ff357f; */
 }
 
 .graphiql-container,

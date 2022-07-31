@@ -4,7 +4,7 @@ button.graphiql-toolbar-button {
   width: var(--toolbar-width);
 
   &.error {
-    background: var(--color-red-background);
+    background: var(--color-error-7);
   }
 
   & > svg {

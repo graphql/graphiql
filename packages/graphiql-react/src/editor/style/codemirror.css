@@ -16,7 +16,8 @@
 .CodeMirror,
 .CodeMirror-gutters {
   background: none;
-  background-color: var(--editor-background, var(--color-neutral-0));
+  /* uncommenting because bg colors are set at lower levels  */
+  /* background-color: var(--editor-background, var(--color-neutral-0)); */
 }
 
 /* No padding around line number */
@@ -39,67 +40,82 @@
 
   /* OperationType, `fragment`, `on` */
   & .cm-keyword {
-    color: var(--color-pink);
+    color: var(--color-primary-100);
   }
+
   /* Name (OperationDefinition), FragmentName */
   & .cm-def {
     color: var(--color-teal);
   }
+
   /* Punctuator (except `$` and `@`) */
   & .cm-punctuation {
     color: var(--color-neutral-60);
   }
+
   /* Variable */
   & .cm-variable {
-    color: var(--color-purple);
+    color: var(--color-secondary-100);
   }
+
   /* NamedType */
   & .cm-atom {
     color: var(--color-teal);
   }
+
   /* IntValue, FloatValue */
   & .cm-number {
-    color: var(--color-green);
+    color: var(--color-success-100);
   }
+
   /* StringValue */
   & .cm-string {
-    color: var(--color-orche);
+    color: var(--color-warning-100);
   }
+
   /* BooleanValue */
   & .cm-builtin {
-    color: var(--color-green);
+    color: var(--color-success-100);
   }
+
   /* EnumValue */
   & .cm-string-2 {
-    color: var(--color-purple);
+    color: var(--color-secondary-100);
   }
+
   /* Name (ObjectField, Argument) */
   & .cm-attribute {
-    color: var(--color-blue);
+    color: var(--color-info-100);
   }
+
   /* Name (Directive) */
   & .cm-meta {
     color: var(--color-teal);
   }
+
   /* Name (Alias, Field without Alias) */
   & .cm-property {
-    color: var(--color-blue);
+    color: var(--color-info-100);
   }
+
   /* Name (Field with Alias) */
   & .cm-qualifier {
-    color: var(--color-purple);
+    color: var(--color-secondary-100);
   }
+
   /* Comment */
   & .cm-comment {
     color: var(--color-neutral-40);
   }
+
   /* Whitespace */
   & .cm-ws {
     color: var(--color-neutral-40);
   }
+
   /* Invalid characters */
   & .cm-invalidchar {
-    color: var(--color-red);
+    color: var(--color-error-100);
   }
 
   /* Cursor */
@@ -136,11 +152,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   position: absolute;
   z-index: 6;
 }
+
 .CodeMirror-dialog-top {
   border-bottom: 1px solid var(--color-neutral-15);
   padding-bottom: var(--px-12);
   top: 0;
 }
+
 .CodeMirror-dialog-bottom {
   border-top: 1px solid var(--color-neutral-15);
   bottom: 0;
@@ -158,13 +176,14 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
 }
+
 .CodeMirror-dialog input:focus {
-  outline: var(--color-pink) solid 2px;
+  outline: var(--color-primary-100) solid 2px;
 }
 
 /* Set the highlight color for search results */
 .cm-searching {
-  background-color: var(--color-orche-background);
+  background-color: var(--color-warning-7);
   /**
    * When cycling through search results, CodeMirror overlays the current 
    * selection with another element that has the .CodeMirror-selected class

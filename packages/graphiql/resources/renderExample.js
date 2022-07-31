@@ -111,6 +111,10 @@ ReactDOM.render(
     tabs: {
       onTabChange: onTabChange,
     },
+    colors: {
+      // neutral: "#141e12",
+      // error: "#FF0000",
+    }
   }),
   document.getElementById('graphiql'),
 );

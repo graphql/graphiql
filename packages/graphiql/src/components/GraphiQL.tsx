@@ -82,6 +82,7 @@ import find from '../utility/find';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
+import { DesignTokens } from '@graphiql/react/types/theme';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
@@ -300,6 +301,11 @@ export type GraphiQLProps = {
    * Callback that is invoked onTabChange.
    */
   onTabChange?: (tab: TabsState) => void;
+  
+  /** 
+   * Customize the base color tokens
+  */
+  colors?: DesignTokens["colors"];
 
   children?: ReactNode;
 };
@@ -530,18 +536,9 @@ const GraphiQLConsumeContexts = forwardRef<
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
-  const { theme, setTheme, setThemeColors } = useTheme();
+  const { theme, setTheme, setThemeColors, defaultColorTokens } = useTheme();
 
-  setThemeColors({colors: {
-    neutral: "#3b4b68",
-    primary: "#d60690",
-    secondary: "#6e6acf",
-    info: "#007eea",
-    warning: "#d37f00",
-    error: "#f85b30",
-    success: "#2bab7c",
-  }})
-
+  setThemeColors({ colors: { ...defaultColorTokens, ...props.colors }})
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,

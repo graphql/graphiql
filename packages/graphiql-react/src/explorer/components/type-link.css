@@ -1,5 +1,5 @@
 .graphiql-doc-explorer-type-name {
-  color: var(--color-orche);
+  color: var(--color-warning-100);
   text-decoration: none;
 
   &:hover {
@@ -7,6 +7,6 @@
   }
 
   &:focus {
-    outline: var(--color-orche) auto 1px;
+    outline: var(--color-warning-100) auto 1px;
   }
 }
