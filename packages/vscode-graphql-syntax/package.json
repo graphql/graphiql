@@ -1,6 +1,6 @@
 {
   "name": "vscode-graphql-syntax",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "displayName": "GraphQL: Syntax Highlighting",
   "description": "Adds syntax highlighting support for .graphql & embedded support for javascript, typescript, vue, markdown, python, php, reason, ocaml and rescript",
   "publisher": "GraphQL",
@@ -115,9 +115,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
-    "directory": "packages/vscode-syntax"
+    "directory": "packages/vscode-graphql-syntax"
   },
-  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-syntax/README.md",
+  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
   "scripts": {
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
