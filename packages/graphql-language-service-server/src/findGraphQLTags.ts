@@ -63,15 +63,14 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'logicalAssignment',
 ];
 
-function parseVueSFC(
-  source: string,
-):
+type ParseVueSFCResult =
   | { type: 'error'; errors: Error[] }
   | {
       type: 'ok';
       scriptSetupAst?: import('@babel/types').Statement[];
       scriptAst?: import('@babel/types').Statement[];
-    } {
+    };
+function parseVueSFC(source: string): ParseVueSFCResult {
   const { errors, descriptor } = VueParser.parse(source);
 
   if (errors.length !== 0) {
