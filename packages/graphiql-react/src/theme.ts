@@ -7,6 +7,62 @@ import { useStorageContext } from './storage';
  */
 export type Theme = 'light' | 'dark' | null;
 
+/**
+ * Initial attempt @ theme colors / alpha values
+ */
+type HexValue = `#${string}`;
+
+type ColorTokens = {
+  neutral?: HexValue;
+  primary?: HexValue;
+  secondary?: HexValue;
+  error?: HexValue;
+  warning?: HexValue;
+  info?: HexValue;
+  success?: HexValue;
+}
+
+export type DesignTokens = {
+  colors?: ColorTokens;
+};
+
+const hexToRGB = ({ hex, alpha }: { hex: HexValue; alpha: number }) => {
+  const r = '0x' + hex[1] + hex[2];
+  const g = '0x' + hex[3] + hex[4];
+  const b = '0x' + hex[5] + hex[6];
+
+  return 'rgba(' + Number(r) + ',' + Number(g) + ',' + Number(b) + ',' + Number(alpha) + ')';
+};
+
+
+const setNeutralPalette = ({baseColor}: {baseColor: HexValue}) => {
+  document.documentElement.style.setProperty(`--color-neutral-100`, hexToRGB({hex: baseColor, alpha: 1}));
+  document.documentElement.style.setProperty(`--color-neutral-60`, hexToRGB({hex: baseColor, alpha: .60}));
+  document.documentElement.style.setProperty(`--color-neutral-40`, hexToRGB({hex: baseColor, alpha: .40}));
+  document.documentElement.style.setProperty(`--color-neutral-15`, hexToRGB({hex: baseColor, alpha: .15}));
+  document.documentElement.style.setProperty(`--color-neutral-10`, hexToRGB({hex: baseColor, alpha: .10}));
+  document.documentElement.style.setProperty(`--color-neutral-7`, hexToRGB({hex: baseColor, alpha: .07}));
+  document.documentElement.style.setProperty(`--color-neutral-0`, hexToRGB({hex: `#ffffff`, alpha: 1}));
+}
+
+const setPalette = ({baseColor, name}: {baseColor: HexValue; name: string}) => {
+  document.documentElement.style.setProperty(`--color-${name}-100`, hexToRGB({hex: baseColor, alpha: 1}));
+  document.documentElement.style.setProperty(`--color-${name}-60`, hexToRGB({hex: baseColor, alpha: .60}));
+  document.documentElement.style.setProperty(`--color-${name}-10`, hexToRGB({hex: baseColor, alpha: .10}));
+}
+
+const setThemeColors = ({colors}:{colors: ColorTokens}) => {
+  Object.entries(colors).forEach(color => {
+    const [name, value] = color;
+    if (name === "neutral") {
+      setNeutralPalette({baseColor: value})
+    } else {
+      setPalette({baseColor: value, name})
+    }
+  });
+}
+
+
 export function useTheme() {
   const storageContext = useStorageContext();
 
@@ -50,7 +106,8 @@ export function useTheme() {
     [storageContext],
   );
 
-  return useMemo(() => ({ theme, setTheme }), [theme, setTheme]);
+
+  return useMemo(() => ({ theme, setTheme, setThemeColors }), [theme, setTheme]);
 }
 
 const STORAGE_KEY = 'theme';

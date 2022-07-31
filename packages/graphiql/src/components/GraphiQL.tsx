@@ -530,7 +530,18 @@ const GraphiQLConsumeContexts = forwardRef<
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
 
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, setThemeColors } = useTheme();
+
+  setThemeColors({colors: {
+    neutral: "#3b4b68",
+    primary: "#d60690",
+    secondary: "#6e6acf",
+    info: "#007eea",
+    warning: "#d37f00",
+    error: "#f85b30",
+    success: "#2bab7c",
+  }})
+
 
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
