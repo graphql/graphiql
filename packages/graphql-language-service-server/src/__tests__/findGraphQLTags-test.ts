@@ -191,6 +191,28 @@ query {id}
 query {id}`);
   });
 
+  it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', async () => {
+    const text = `
+<script lang="tsx">
+import { defineComponent } from 'vue';
+
+gql\`
+query {id}
+\`;
+
+export default defineComponent({
+  setup() {
+    return () => <div>Hello</div>
+  }
+});
+</script>
+`;
+
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
   it('finds multiple queries in a single file', async () => {
     const text = `something({
   else: () => gql\` query {} \`
