@@ -145,7 +145,7 @@ export function findGraphQLTags(
     }
   }
 
-  const asts = parsedASTs!;
+  const asts = parsedASTs;
 
   const parseTemplateLiteral = (node: TemplateLiteral) => {
     const loc = node.quasis[0].loc;
