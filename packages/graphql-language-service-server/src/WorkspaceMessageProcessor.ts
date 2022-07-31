@@ -302,25 +302,9 @@ export class WorkspaceMessageProcessor {
     } else {
       try {
         const project = this._graphQLCache.getProjectForFile(uri);
-        if (
-          this._isInitialized &&
-          project?.extensions?.languageService?.enableValidation !== false
-        ) {
-          await Promise.all(
-            contents.map(async ({ query, range }) => {
-              const results = await this._languageService.getDiagnostics(
-                query,
-                uri,
-                this._isRelayCompatMode(query),
-              );
-              if (results && results.length > 0) {
-                diagnostics.push(
-                  ...processDiagnosticsMessage(results, query, range),
-                );
-              }
-            }),
-          );
-        }
+        diagnostics.push(
+          ...(await this._createDiagnostics(uri, contents, project)),
+        );
 
         this._logger.log(
           JSON.stringify({
@@ -383,25 +367,7 @@ export class WorkspaceMessageProcessor {
     await this._updateObjectTypeDefinition(uri, contents);
 
     const project = this._graphQLCache.getProjectForFile(uri);
-    const diagnostics: Diagnostic[] = [];
-
-    if (project?.extensions?.languageService?.enableValidation !== false) {
-      // Send the diagnostics onChange as well
-      await Promise.all(
-        contents.map(async ({ query, range }) => {
-          const results = await this._languageService.getDiagnostics(
-            query,
-            uri,
-            this._isRelayCompatMode(query),
-          );
-          if (results && results.length > 0) {
-            diagnostics.push(
-              ...processDiagnosticsMessage(results, query, range),
-            );
-          }
-        }),
-      );
-    }
+    const diagnostics = await this._createDiagnostics(uri, contents, project);
 
     this._logger.log(
       JSON.stringify({
@@ -577,26 +543,7 @@ export class WorkspaceMessageProcessor {
       await this._updateObjectTypeDefinition(uri, contents);
 
       const project = this._graphQLCache.getProjectForFile(uri);
-      let diagnostics: Diagnostic[] = [];
-
-      if (project?.extensions?.languageService?.enableValidation !== false) {
-        diagnostics = (
-          await Promise.all(
-            contents.map(async ({ query, range }) => {
-              const results = await this._languageService.getDiagnostics(
-                query,
-                uri,
-                this._isRelayCompatMode(query),
-              );
-              if (results && results.length > 0) {
-                return processDiagnosticsMessage(results, query, range);
-              } else {
-                return [];
-              }
-            }),
-          )
-        ).reduce((left, right) => left.concat(right), diagnostics);
-      }
+      const diagnostics = await this._createDiagnostics(uri, contents, project);
 
       this._logger.log(
         JSON.stringify({
@@ -1076,6 +1023,36 @@ export class WorkspaceMessageProcessor {
       version: textDocument.version ?? 0,
       contents,
     });
+  }
+
+  async _createDiagnostics(
+    uri: string,
+    contents: CachedContent[],
+    project: GraphQLProjectConfig | null,
+  ): Promise<Diagnostic[]> {
+    if (
+      !this._isInitialized ||
+      project?.extensions?.languageService?.enableValidation === false
+    ) {
+      return [];
+    }
+
+    return (
+      await Promise.all(
+        contents.map(async ({ query, range }) => {
+          const results = await this._languageService.getDiagnostics(
+            query,
+            uri,
+            this._isRelayCompatMode(query),
+          );
+          if (results && results.length > 0) {
+            return processDiagnosticsMessage(results, query, range);
+          } else {
+            return [];
+          }
+        }),
+      )
+    ).reduce((left, right) => left.concat(right));
   }
 }
 
