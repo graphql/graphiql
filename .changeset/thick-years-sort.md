@@ -1,5 +1,7 @@
 ---
 "vscode-graphql": patch
+"graphql-language-service-server": patch
+"graphql-language-service-cli": patch
 ---
 
 support vscode multi-root workspaces! creates an LSP server instance for each workspace.
