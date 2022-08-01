@@ -1,16 +1,25 @@
 {
   "name": "vscode-graphql",
   "version": "0.6.0",
-  "preview": true,
   "private": true,
   "license": "MIT",
-  "displayName": "GraphQL",
+  "displayName": "GraphQL: Language Feature Support",
   "keywords": [
     "graphql",
     "lsp",
     "graph"
   ],
-  "description": "GraphQL extension for VSCode adds syntax highlighting, validation, and language features like go to definition, hover information and autocompletion for graphql projects. This extension also works with queries annotated with gql tags or comments.",
+  "contributors": [
+    {
+      "name": "Divyendu Singh",
+      "url": "https://www.divyendusingh.com/"
+    },
+    {
+      "name": "Orta",
+      "url": "https://orta.io/"
+    }
+  ],
+  "description": "GraphQL LSP extension that adds autocompletion, validation, go to definition, hover, outline and more.",
   "icon": "assets/images/logo.png",
   "repository": {
     "type": "git",
@@ -28,7 +37,6 @@
   },
   "categories": [
     "Programming Languages",
-    "Snippets",
     "Linters",
     "Other"
   ],
@@ -42,95 +50,10 @@
     "workspaceContains:**/package.json"
   ],
   "main": "./out/extension",
+  "extensionDependencies": [
+    "GraphQL.vscode-graphql-syntax"
+  ],
   "contributes": {
-    "languages": [
-      {
-        "id": "graphql",
-        "extensions": [
-          ".gql",
-          ".graphql",
-          ".graphqls"
-        ],
-        "aliases": [
-          "GraphQL",
-          "graphql"
-        ],
-        "configuration": "./language/language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "graphql",
-        "path": "./grammars/graphql.json",
-        "scopeName": "source.graphql"
-      },
-      {
-        "injectTo": [
-          "source.js",
-          "source.ts",
-          "source.js.jsx",
-          "source.tsx",
-          "source.vue",
-          "source.svelte"
-        ],
-        "scopeName": "inline.graphql",
-        "path": "./grammars/graphql.js.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "source.reason",
-          "source.ocaml"
-        ],
-        "scopeName": "inline.graphql.re",
-        "path": "./grammars/graphql.re.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "source.rescript"
-        ],
-        "scopeName": "inline.graphql.res",
-        "path": "./grammars/graphql.rescript.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "text.html.markdown"
-        ],
-        "scopeName": "markdown.graphql.codeblock",
-        "path": "./grammars/graphql.markdown.codeblock.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "source.python"
-        ],
-        "scopeName": "inline.graphql.python",
-        "path": "./grammars/graphql.python.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      },
-      {
-        "injectTo": [
-          "text.html.php"
-        ],
-        "scopeName": "inline.graphql.php",
-        "path": "./grammars/graphql.php.json",
-        "embeddedLanguages": {
-          "meta.embedded.block.graphql": "graphql"
-        }
-      }
-    ],
     "snippets": [
       {
         "language": "graphql",
