@@ -1085,6 +1085,16 @@ class GraphiQLWithContext extends React.Component<
                   </td>
                   <td>Copy query</td>
                 </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">R</code>
+                  </td>
+                  <td>Re-fetch schema using introspection</td>
+                </tr>
               </tbody>
             </table>
           </div>
