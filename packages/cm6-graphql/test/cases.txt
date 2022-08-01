@@ -1,0 +1,144 @@
+# Simple query
+
+{ hello }
+
+==>
+
+Document(OperationDefinition(SelectionSet(Selection(Field(Name)))))
+
+# Named query
+
+query a { hello }
+
+==>
+
+Document(OperationDefinition(OperationType,Name,SelectionSet(Selection(Field(Name)))))
+
+# Nested query
+
+query {
+  node {
+    id
+  }
+}
+
+==>
+
+Document(OperationDefinition(OperationType,SelectionSet(Selection(Field(Name,SelectionSet(Selection(Field(Name))))))))
+
+# Query with argument
+
+{
+  node(id: 4) {
+    id,
+    name
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(
+    SelectionSet(Selection(Field(Name,Arguments(Argument(Name,IntValue)),SelectionSet(Selection(Field(Name)),Selection(Field(Name))))))
+  )
+)
+
+# Multiple query nesting
+
+{
+  categories(id: "1") {
+    name
+    products {
+      name
+      vendor {
+        products {
+          name
+        }
+      }
+    }
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(
+    SelectionSet(
+      Selection(Field(Name,Arguments(Argument(Name,StringValue)),SelectionSet(
+        Selection(Field(Name)),
+        Selection(Field(Name,SelectionSet(
+          Selection(Field(Name)),
+          Selection(Field(Name,SelectionSet(
+            Selection(Field(Name,SelectionSet(
+              Selection(Field(Name)),
+            ))),
+          ))),
+        ))),
+      ))),
+    )
+  )
+)
+
+# Query of fields with arguments
+
+{
+  vendors(productname: "Coconut") {
+    name
+  }
+  products(price:9.99) {
+    id
+  }
+  categories(id: ALL) {
+    parent
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(
+    SelectionSet(
+      Selection(Field(Name,Arguments(Argument(Name,StringValue)),SelectionSet(
+        Selection(Field(Name)),
+      ))),
+      Selection(Field(Name,Arguments(Argument(Name,FloatValue)),SelectionSet(
+        Selection(Field(Name)),
+      ))),
+      Selection(Field(Name,Arguments(Argument(Name,EnumValue)),SelectionSet(
+        Selection(Field(Name)),
+      ))),
+    )
+  )
+)
+
+# Multiple named queries
+
+query a { hello }
+query b { bye }
+mutation c($val: String!) {
+  addAnother(value: $val) {
+    name
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(
+    OperationType,Name,SelectionSet(
+      Selection(Field(Name)),
+    )
+  ),
+  OperationDefinition(
+    OperationType,Name,SelectionSet(
+      Selection(Field(Name)),
+    )
+  ),
+  OperationDefinition(
+    OperationType,Name,VariableDefinitions(VariableDefinition(Variable,NonNullType(NamedType(Name)))),SelectionSet(
+      Selection(Field(Name,Arguments(Argument(Name,Variable)),SelectionSet(
+        Selection(Field(Name)),
+      ))),
+    )
+  )
+)

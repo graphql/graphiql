@@ -1,11 +1,31 @@
-import { EditorState, EditorView, basicSetup } from '@codemirror/basic-setup';
-import { StreamLanguage } from '@codemirror/language';
-import { graphql } from 'codemirror-graphql/cm6-legacy/mode';
+import { EditorState } from '@codemirror/state';
+import { EditorView, lineNumbers } from '@codemirror/view';
+import { history } from '@codemirror/commands';
+import { autocompletion, closeBrackets } from '@codemirror/autocomplete';
+import { bracketMatching, syntaxHighlighting } from '@codemirror/language';
+import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
+import { graphql } from 'cm6-graphql';
 import query from './sample-query';
+import { TestSchema } from './testSchema';
 
 const state = EditorState.create({
   doc: query,
-  extensions: [basicSetup, StreamLanguage.define(graphql)],
+  extensions: [
+    bracketMatching(),
+    closeBrackets(),
+    history(),
+    autocompletion(),
+    lineNumbers(),
+    oneDark,
+    syntaxHighlighting(oneDarkHighlightStyle),
+    graphql(TestSchema, {
+      onShowInDocs(field, type, parentType) {
+        alert(
+          `Showing in docs.: Field: ${field}, Type: ${type}, ParentType: ${parentType}`,
+        );
+      },
+    }),
+  ],
 });
 
 new EditorView({

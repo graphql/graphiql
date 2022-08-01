@@ -8,7 +8,8 @@
       "packages/*",
       "examples/graphiql-webpack",
       "examples/monaco-graphql-webpack",
-      "examples/monaco-graphql-react-vite"
+      "examples/monaco-graphql-react-vite",
+      "examples/cm6-graphql-parcel"
     ]
   },
   "lint-staged": {

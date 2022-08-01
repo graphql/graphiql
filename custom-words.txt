@@ -107,6 +107,8 @@ vite
 vitejs
 wonka
 wsrun
+lezer
+buildhelper
 
 
 // identifiers used in code and configs
