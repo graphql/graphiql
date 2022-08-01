@@ -28,6 +28,7 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
     <SchemaContext.Provider
       value={{
         fetchError: null,
+        introspect() {},
         isFetching: false,
         schema: ExampleSchema,
         setFetchError() {},
