@@ -1023,80 +1023,94 @@ class GraphiQLWithContext extends React.Component<
             />
           </div>
           <div className="graphiql-dialog-section">
-            <table className="graphiql-table">
-              <thead>
-                <tr>
-                  <th>Short key</th>
-                  <th>Function</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    {modifier}
-                    {' + '}
-                    <code className="graphiql-key">F</code>
-                  </td>
-                  <td>Search in editor</td>
-                </tr>
-                <tr>
-                  <td>
-                    {modifier}
-                    {' + '}
-                    <code className="graphiql-key">K</code>
-                  </td>
-                  <td>Search in documentation</td>
-                </tr>
-                <tr>
-                  <td>
-                    {modifier}
-                    {' + '}
-                    <code className="graphiql-key">Enter</code>
-                  </td>
-                  <td>Execute query</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code className="graphiql-key">Ctrl</code>
-                    {' + '}
-                    <code className="graphiql-key">Shift</code>
-                    {' + '}
-                    <code className="graphiql-key">P</code>
-                  </td>
-                  <td>Prettify editors</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code className="graphiql-key">Ctrl</code>
-                    {' + '}
-                    <code className="graphiql-key">Shift</code>
-                    {' + '}
-                    <code className="graphiql-key">M</code>
-                  </td>
-                  <td>Merge fragments definitions into operation definition</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code className="graphiql-key">Ctrl</code>
-                    {' + '}
-                    <code className="graphiql-key">Shift</code>
-                    {' + '}
-                    <code className="graphiql-key">C</code>
-                  </td>
-                  <td>Copy query</td>
-                </tr>
-                <tr>
-                  <td>
-                    <code className="graphiql-key">Ctrl</code>
-                    {' + '}
-                    <code className="graphiql-key">Shift</code>
-                    {' + '}
-                    <code className="graphiql-key">R</code>
-                  </td>
-                  <td>Re-fetch schema using introspection</td>
-                </tr>
-              </tbody>
-            </table>
+            <div>
+              <table className="graphiql-table">
+                <thead>
+                  <tr>
+                    <th>Short key</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">F</code>
+                    </td>
+                    <td>Search in editor</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">K</code>
+                    </td>
+                    <td>Search in documentation</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">Enter</code>
+                    </td>
+                    <td>Execute query</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">P</code>
+                    </td>
+                    <td>Prettify editors</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">M</code>
+                    </td>
+                    <td>
+                      Merge fragments definitions into operation definition
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">C</code>
+                    </td>
+                    <td>Copy query</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">R</code>
+                    </td>
+                    <td>Re-fetch schema using introspection</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>
+                The editors use{' '}
+                <a
+                  href="https://codemirror.net/5/doc/manual.html#keymaps"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  CodeMirror Key Maps
+                </a>{' '}
+                that add more short keys. The default is <code>sublime</code>.
+              </p>
+            </div>
           </div>
         </Dialog>
         <Dialog

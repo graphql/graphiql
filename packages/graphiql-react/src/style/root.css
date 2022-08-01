@@ -111,21 +111,31 @@ body.graphiql-dark reach-portal {
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
-reach-portal,
-.graphiql-container:is(button) {
-  color: var(--color-neutral-100);
-  font-family: var(--font-family);
-  font-size: var(--font-size-body);
-  font-weight: var(----font-weight-regular);
-  line-height: var(--line-height);
-}
+reach-portal {
+  &,
+  &:is(button) {
+    color: var(--color-neutral-100);
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    font-weight: var(----font-weight-regular);
+    line-height: var(--line-height);
+  }
 
-.graphiql-container input {
-  color: var(--color-neutral-100);
-  font-family: var(--font-family);
-  font-size: var(--font-size-caption);
-}
+  & input {
+    color: var(--color-neutral-100);
+    font-family: var(--font-family);
+    font-size: var(--font-size-caption);
 
-.graphiql-container input::placeholder {
-  color: var(--color-neutral-60);
+    &::placeholder {
+      color: var(--color-neutral-60);
+    }
+  }
+
+  & a {
+    color: var(--color-pink);
+
+    &:visited {
+      color: var(--color-pink-dark);
+    }
+  }
 }
