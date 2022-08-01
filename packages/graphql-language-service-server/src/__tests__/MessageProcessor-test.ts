@@ -6,10 +6,10 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { Position, Range } from 'graphql-language-service';
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
+import { Position, Range } from 'graphql-language-service';
 
 import { MessageProcessor } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';
@@ -22,9 +22,8 @@ import { loadConfig } from 'graphql-config';
 
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
-import { pathToFileURL } from 'url';
 import { Logger } from '../Logger';
-import { WorkspaceMessageProcessor } from '../WorkspaceMessageProcessor';
+import { pathToFileURL } from 'url';
 
 jest.mock('fs', () => ({
   ...jest.requireActual<typeof import('fs')>('fs'),
@@ -50,33 +49,16 @@ describe('MessageProcessor', () => {
   }
   `;
 
-  const workspaceMessageProcessor = new WorkspaceMessageProcessor({
-    // @ts-ignore
-    connection: {},
-    loadConfigOptions: { rootDir: __dirname },
-    logger,
-    parser: messageProcessor._parser,
-    tmpDir: messageProcessor._tmpDir,
-    rootPath: __dirname,
-  });
-
   beforeEach(async () => {
     const gqlConfig = await loadConfig({ rootDir: __dirname, extensions: [] });
     // loadConfig.mockRestore();
-    const workspaceUri = pathToFileURL('.').toString();
-    messageProcessor._sortedWorkspaceUris = [workspaceUri];
-
-    messageProcessor._processors = new Map([
-      [workspaceUri, workspaceMessageProcessor],
-    ]);
-    workspaceMessageProcessor._graphQLConfig = gqlConfig;
-    workspaceMessageProcessor._settings = { load: {} };
-    workspaceMessageProcessor._graphQLCache = new GraphQLCache({
+    messageProcessor._settings = { load: {} };
+    messageProcessor._graphQLCache = new GraphQLCache({
       configDir: __dirname,
       config: gqlConfig,
       parser: parseDocument,
     });
-    workspaceMessageProcessor._languageService = {
+    messageProcessor._languageService = {
       // @ts-ignore
       getAutocompleteSuggestions: (query, position, uri) => {
         return [{ label: `${query} at ${uri}` }];
@@ -133,7 +115,7 @@ describe('MessageProcessor', () => {
 
   let getConfigurationReturnValue = {};
   // @ts-ignore
-  workspaceMessageProcessor._connection = {
+  messageProcessor._connection = {
     // @ts-ignore
     get workspace() {
       return {
@@ -152,7 +134,7 @@ describe('MessageProcessor', () => {
     },
   };
 
-  workspaceMessageProcessor._isInitialized = true;
+  messageProcessor._isInitialized = true;
 
   it('initializes properly and opens a file', async () => {
     const { capabilities } = await messageProcessor.handleInitializeRequest(
@@ -172,7 +154,7 @@ describe('MessageProcessor', () => {
   it('runs completion requests properly', async () => {
     const uri = `${queryPathUri}/test2.graphql`;
     const query = 'test';
-    workspaceMessageProcessor._textDocumentCache.set(uri, {
+    messageProcessor._textDocumentCache.set(uri, {
       version: 0,
       contents: [
         {
@@ -211,7 +193,7 @@ describe('MessageProcessor', () => {
       },
     };
 
-    workspaceMessageProcessor._textDocumentCache.set(uri, {
+    messageProcessor._textDocumentCache.set(uri, {
       version: 0,
       contents: [
         {
@@ -239,7 +221,7 @@ describe('MessageProcessor', () => {
 
   it('properly changes the file cache with the didChange handler', async () => {
     const uri = `${queryPathUri}/test.graphql`;
-    workspaceMessageProcessor._textDocumentCache.set(uri, {
+    messageProcessor._textDocumentCache.set(uri, {
       version: 1,
       contents: [
         {
@@ -312,7 +294,7 @@ describe('MessageProcessor', () => {
         version: 1,
       },
     };
-    workspaceMessageProcessor._getCachedDocument = (_uri: string) => ({
+    messageProcessor._getCachedDocument = (_uri: string) => ({
       version: 1,
       contents: [
         {
@@ -338,7 +320,7 @@ describe('MessageProcessor', () => {
 
     beforeEach(() => {
       mockReadFileSync.mockReturnValue('');
-      workspaceMessageProcessor._updateGraphQLConfig = jest.fn();
+      messageProcessor._updateGraphQLConfig = jest.fn();
     });
     it('updates config for standard config filename changes', async () => {
       await messageProcessor.handleDidOpenOrSaveNotification({
@@ -350,14 +332,12 @@ describe('MessageProcessor', () => {
         },
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
 
     it('updates config for custom config filename changes', async () => {
       const customConfigName = 'custom-config-name.yml';
-      workspaceMessageProcessor._settings = {
-        load: { fileName: customConfigName },
-      };
+      messageProcessor._settings = { load: { fileName: customConfigName } };
 
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
@@ -368,17 +348,17 @@ describe('MessageProcessor', () => {
         },
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
 
     it('handles config requests with no config', async () => {
-      workspaceMessageProcessor._settings = {};
+      messageProcessor._settings = {};
 
       await messageProcessor.handleDidChangeConfiguration({
         settings: [],
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
 
       await messageProcessor.handleDidOpenOrSaveNotification({
         textDocument: {
@@ -389,7 +369,7 @@ describe('MessageProcessor', () => {
         },
       });
 
-      expect(workspaceMessageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
   });
 
