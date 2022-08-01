@@ -270,14 +270,13 @@ reach-portal .graphiql-dialog-section-caption {
   color: var(--color-neutral-60);
 }
 
-/* The list of short keys in the short-key dialog */
-reach-portal .graphiql-short-keys {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+reach-portal .graphiql-table {
+  border-collapse: collapse;
+  width: 100%;
 }
-reach-portal .graphiql-short-keys > li + li {
-  margin-top: var(--px-12);
+reach-portal .graphiql-table :is(th, td) {
+  border: 1px solid var(--color-neutral-15);
+  padding: var(--px-8) var(--px-12);
 }
 
 /* A single key the short-key dialog */

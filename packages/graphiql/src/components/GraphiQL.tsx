@@ -1023,46 +1023,70 @@ class GraphiQLWithContext extends React.Component<
             />
           </div>
           <div className="graphiql-dialog-section">
-            <ul className="graphiql-short-keys">
-              <li>
-                {modifier}
-                {' + '}
-                <code className="graphiql-key">F</code> : Search in editor
-              </li>
-              <li>
-                {modifier}
-                {' + '}
-                <code className="graphiql-key">K</code> : Search in
-                documentation
-              </li>
-              <li>
-                {modifier}
-                {' + '}
-                <code className="graphiql-key">Enter</code> : Execute query
-              </li>
-              <li>
-                <code className="graphiql-key">Ctrl</code>
-                {' + '}
-                <code className="graphiql-key">Shift</code>
-                {' + '}
-                <code className="graphiql-key">P</code> : Prettify editors
-              </li>
-              <li>
-                <code className="graphiql-key">Ctrl</code>
-                {' + '}
-                <code className="graphiql-key">Shift</code>
-                {' + '}
-                <code className="graphiql-key">M</code> : Merge fragments
-                definitions into operation definition
-              </li>
-              <li>
-                <code className="graphiql-key">Ctrl</code>
-                {' + '}
-                <code className="graphiql-key">Shift</code>
-                {' + '}
-                <code className="graphiql-key">C</code> : Copy query
-              </li>
-            </ul>
+            <table className="graphiql-table">
+              <thead>
+                <tr>
+                  <th>Short key</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">F</code>
+                  </td>
+                  <td>Search in editor</td>
+                </tr>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">K</code>
+                  </td>
+                  <td>Search in documentation</td>
+                </tr>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">Enter</code>
+                  </td>
+                  <td>Execute query</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">P</code>
+                  </td>
+                  <td>Prettify editors</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">M</code>
+                  </td>
+                  <td>Merge fragments definitions into operation definition</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">C</code>
+                  </td>
+                  <td>Copy query</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </Dialog>
         <Dialog
