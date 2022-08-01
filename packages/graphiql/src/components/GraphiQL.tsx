@@ -672,6 +672,11 @@ class GraphiQLWithContext extends React.Component<
           }
           label="History"
         />
+        <ToolbarButton
+          onClick={() => this.props.schemaContext.introspect()}
+          title="Fetch GraphQL schema using introspection (Shift-Ctrl-R)"
+          label="Introspect"
+        />
         {this.props.toolbar?.additionalContent
           ? this.props.toolbar.additionalContent
           : null}
