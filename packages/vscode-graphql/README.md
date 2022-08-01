@@ -10,7 +10,7 @@ GraphQL extension for VSCode built with the aim to tightly integrate the GraphQL
 
 - Load the extension on detecting `graphql-config file` at root level or in a parent level directory
 - Load the extension in `.graphql`, `.gql files`
-- Load the extension on detecting `gql` tag in js, ts, jsx, tsx, vue files
+- Load the extension detecting `gql` tag in js, ts, jsx, tsx, vue files
 - Load the extension inside `gql`/`graphql` fenced code blocks in markdown files
 - NO LONGER SUPPORTED - execute query/mutation/subscription operations, embedded or in graphql files - we will be recommending other extensions for this.
 - pre-load schema and document definitions

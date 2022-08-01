@@ -120,7 +120,6 @@ export class GraphQLLanguageService {
     if (config) {
       return config;
     }
-    throw Error(`No config found for uri: ${uri}`);
   }
 
   public async getDiagnostics(
@@ -243,6 +242,9 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<Array<CompletionItem>> {
     const projectConfig = this.getConfigForURI(filePath);
+    if (!projectConfig) {
+      return [];
+    }
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
     const fragmentDefinitions = await this._graphQLCache.getFragmentDefinitions(
       projectConfig,
@@ -271,6 +273,9 @@ export class GraphQLLanguageService {
     options?: HoverConfig,
   ): Promise<Hover['contents']> {
     const projectConfig = this.getConfigForURI(filePath);
+    if (!projectConfig) {
+      return '';
+    }
     const schema = await this._graphQLCache.getSchema(projectConfig.name);
 
     if (schema) {
@@ -285,6 +290,9 @@ export class GraphQLLanguageService {
     filePath: Uri,
   ): Promise<DefinitionQueryResult | null> {
     const projectConfig = this.getConfigForURI(filePath);
+    if (!projectConfig) {
+      return null;
+    }
 
     let ast;
     try {
