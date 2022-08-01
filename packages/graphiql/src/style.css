@@ -179,6 +179,12 @@ button.graphiql-tab-add > svg {
   position: relative;
 }
 
+/* The results editor wrapping container */
+.graphiql-container .graphiql-response .result-window {
+  position: relative;
+  flex: 1 1 100%;
+}
+
 /* The footer below the response view */
 .graphiql-container .graphiql-footer {
   border-top: 1px solid var(--color-neutral-15);
