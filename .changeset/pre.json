@@ -1,9 +1,0 @@
-{
-  "mode": "pre",
-  "tag": "next",
-  "initialVersions": {
-    "graphql-language-service-cli": "3.3.0",
-    "graphql-language-service-server": "2.8.0"
-  },
-  "changesets": []
-}
