@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
 
 jobs:
   publish-canary:
@@ -14,15 +18,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
-      - name: Checkout Main
-        uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-      - name: Use Node
-        uses: actions/setup-node@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Setup NPM credentials
         run: echo "//registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN" >> ~/.npmrc

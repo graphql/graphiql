@@ -6,10 +6,11 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
+import { AbortController as MockAbortController } from 'node-abort-controller';
 
 jest.mock('@whatwg-node/fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
-  AbortController: global.AbortController,
+  AbortController: MockAbortController,
   TextDecoder: global.TextDecoder,
 }));
 

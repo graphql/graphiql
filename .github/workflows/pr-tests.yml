@@ -10,41 +10,32 @@ jobs:
   unit:
     name: Unit Tests
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node: ['12', '14', '16', '17', '18']
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Use Node
-        uses: actions/setup-node@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Build
         run: yarn build
-    # disabled because the graphiql test suites need more work
-    # for this coverage to matter
-    # also PR comment clutter!
-    # left the config file for when we re-enable
-    #
-    # - name: Run Unit Tests
-    #   run: yarn test --coverage
+
+      - name: Run Unit Tests
+        run: yarn test
 
   e2e:
     name: Cypress E2E Suite
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-        
-      - name: Use Node
-        uses: actions/setup-node@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Run E2E suite
         run: yarn e2e

@@ -2,6 +2,13 @@ name: Lint & Build PR
 on: 
   pull_request:
     types: [opened, synchronize]
+    # TODO: ignore this after setting up a separate task to link markdown
+    # and to ignore eslint/prettier issues in examples
+    # paths-ignore:
+    #   - '**.md'
+    #   - 'examples'
+    #   - '!examples/monaco-graphql-webpack'
+
       
 jobs:
   lint:
@@ -9,12 +16,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Use Node
-        uses: actions/setup-node@v2
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Eslint
         run: yarn lint
@@ -27,11 +34,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Use Node
-        uses: actions/setup-node@v2
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Tyescript Build
         run: yarn build
