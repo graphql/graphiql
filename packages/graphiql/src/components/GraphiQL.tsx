@@ -96,10 +96,6 @@ if (majorVersion < 16) {
   );
 }
 
-declare namespace window {
-  export let g: GraphiQL;
-}
-
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
@@ -316,12 +312,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
 
   constructor(props: GraphiQLProps) {
     super(props);
-  }
-
-  componentDidMount() {
-    if (typeof window !== 'undefined') {
-      window.g = this;
-    }
   }
 
   render() {
@@ -645,6 +635,7 @@ type GraphiQLWithContextConsumerProps = Omit<
 
 export type GraphiQLState = {
   activeSecondaryEditor: 'variable' | 'header';
+  showShortKeys: boolean;
   showSettings: boolean;
   clearStorageStatus: 'success' | 'error' | null;
 };
@@ -659,6 +650,7 @@ class GraphiQLWithContext extends React.Component<
     // Initialize state
     this.state = {
       activeSecondaryEditor: 'variable',
+      showShortKeys: false,
       showSettings: false,
       clearStorageStatus: null,
     };
@@ -719,6 +711,13 @@ class GraphiQLWithContext extends React.Component<
         this.props.pluginResize.setHiddenElement(null);
       }
     };
+
+    const modifier =
+      window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
+        <code className="graphiql-key">Cmd</code>
+      ) : (
+        <code className="graphiql-key">Ctrl</code>
+      );
 
     return (
       <div data-testid="graphiql-container" className="graphiql-container">
@@ -786,7 +785,11 @@ class GraphiQLWithContext extends React.Component<
                 }
               />
             </UnStyledButton>
-            <UnStyledButton>
+            <UnStyledButton
+              onClick={() => {
+                this.setState({ showShortKeys: true });
+              }}
+            >
               <KeyboardShortcutIcon />
             </UnStyledButton>
             <UnStyledButton
@@ -1042,6 +1045,113 @@ class GraphiQLWithContext extends React.Component<
             </div>
           </div>
         </div>
+        <Dialog
+          isOpen={this.state.showShortKeys}
+          onDismiss={() => {
+            this.setState({ showShortKeys: false });
+          }}
+        >
+          <div className="graphiql-dialog-header">
+            <div className="graphiql-dialog-title">Short Keys</div>
+            <Dialog.Close
+              onClick={() => {
+                this.setState({ showShortKeys: false });
+              }}
+            />
+          </div>
+          <div className="graphiql-dialog-section">
+            <div>
+              <table className="graphiql-table">
+                <thead>
+                  <tr>
+                    <th>Short key</th>
+                    <th>Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">F</code>
+                    </td>
+                    <td>Search in editor</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">K</code>
+                    </td>
+                    <td>Search in documentation</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {modifier}
+                      {' + '}
+                      <code className="graphiql-key">Enter</code>
+                    </td>
+                    <td>Execute query</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">P</code>
+                    </td>
+                    <td>Prettify editors</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">M</code>
+                    </td>
+                    <td>
+                      Merge fragments definitions into operation definition
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">C</code>
+                    </td>
+                    <td>Copy query</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <code className="graphiql-key">Ctrl</code>
+                      {' + '}
+                      <code className="graphiql-key">Shift</code>
+                      {' + '}
+                      <code className="graphiql-key">R</code>
+                    </td>
+                    <td>Re-fetch schema using introspection</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>
+                The editors use{' '}
+                <a
+                  href="https://codemirror.net/5/doc/manual.html#keymaps"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  CodeMirror Key Maps
+                </a>{' '}
+                that add more short keys. This instance of Graph<em>i</em>QL
+                uses <code>{this.props.keyMap || 'sublime'}</code>.
+              </p>
+            </div>
+          </div>
+        </Dialog>
         <Dialog
           isOpen={this.state.showSettings}
           onDismiss={() => {
