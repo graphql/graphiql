@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.8.1
+
+### Patch Changes
+
+- [#2623](https://github.com/graphql/graphiql/pull/2623) [`12cf4db0`](https://github.com/graphql/graphiql/commit/12cf4db006d1c058460bc04f51d8743fe1ac63bb) Thanks [@acao](https://github.com/acao)! - In #2624, fix introspection schema fetching regression in lsp server, and fix for users writing new .gql/.graphql files
+
 ## 2.8.0
 
 ### Minor Changes
