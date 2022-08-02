@@ -135,10 +135,6 @@ string : X = gql`
 
 We actually support other languages than this! just need to extend this readme even further! 🥵
 
-## Publishing Notes
-
-Note: this extension has temporarily been published from [this PR](https://github.com/graphql/graphiql/pull/2573) until we are ready to re-release `vscode-graphql` with it as well.
-
 ## Contributing
 
 Feel free to open a PR to fix, enhance any language support, or even add new languages 😍
