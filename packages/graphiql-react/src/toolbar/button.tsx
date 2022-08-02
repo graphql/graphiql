@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import { UnStyledButton } from '../ui';
 
 import './button.css';
 
-export function ToolbarButton(props: JSX.IntrinsicElements['button']) {
+export const ToolbarButton = forwardRef<
+  HTMLButtonElement,
+  JSX.IntrinsicElements['button']
+>((props, ref) => {
   const [error, setError] = useState<Error | null>(null);
   return (
     <UnStyledButton
       {...props}
+      ref={ref}
       className={
         'graphiql-toolbar-button' +
         (error ? ' error' : '') +
@@ -30,4 +34,5 @@ export function ToolbarButton(props: JSX.IntrinsicElements['button']) {
       aria-invalid={error ? 'true' : props['aria-invalid']}
     />
   );
-}
+});
+ToolbarButton.displayName = 'ToolbarButton';
