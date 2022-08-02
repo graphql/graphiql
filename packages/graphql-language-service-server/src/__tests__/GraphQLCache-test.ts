@@ -7,9 +7,10 @@
  *
  */
 
-jest.mock('cross-undici-fetch', () => ({
+jest.mock('@whatwg-node/fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
   AbortController: global.AbortController,
+  TextDecoder: global.TextDecoder,
 }));
 
 import { GraphQLSchema } from 'graphql/type';
