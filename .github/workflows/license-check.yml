@@ -12,11 +12,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Use Node
-        uses: actions/setup-node@v2
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: License Check
         run: yarn license-check

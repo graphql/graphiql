@@ -10,17 +10,13 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@master
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
-          fetch-depth: 0
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@master
-
-      - name: Yarn Install
-        uses: bahmutov/npm-install@v1
+          node-version: 'current'
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile --immutable
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
