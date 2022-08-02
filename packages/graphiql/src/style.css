@@ -269,3 +269,19 @@ reach-portal .graphiql-dialog-section-title {
 reach-portal .graphiql-dialog-section-caption {
   color: var(--color-neutral-60);
 }
+
+reach-portal .graphiql-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+reach-portal .graphiql-table :is(th, td) {
+  border: 1px solid var(--color-neutral-15);
+  padding: var(--px-8) var(--px-12);
+}
+
+/* A single key the short-key dialog */
+reach-portal .graphiql-key {
+  background-color: var(--color-neutral-10);
+  border-radius: var(--border-radius-4);
+  padding: var(--px-4);
+}
