@@ -3,4 +3,4 @@
 'vscode-graphql': patch
 ---
 
-Fix bugs for introspection schema fetching from the LSP, and users loading .gql/.graphql files
+In #2624, fix introspection schema fetching regression in lsp server, and fix for users writing new .gql/.graphql files
