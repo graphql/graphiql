@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
 
 jobs:
   publish-canary:

@@ -2,6 +2,10 @@ name: Build & Test PR w/ GraphQL Regressions
 on:
   pull_request:
     types: [opened, synchronize]
+    paths-ignore:
+      - '**.md'
+      - 'examples'
+      - '!examples/monaco-graphql-webpack'
 
 # TODO: test matrix?
 
