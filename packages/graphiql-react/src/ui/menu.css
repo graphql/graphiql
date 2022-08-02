@@ -1,0 +1,31 @@
+@import url('@reach/menu-button/styles.css');
+
+[data-reach-menu-list] {
+  background-color: var(--color-neutral-0);
+  box-shadow: var(--box-shadow);
+  border: none;
+  border-radius: var(--border-radius-8);
+  font-size: inherit;
+  max-width: 250px;
+  padding: var(--px-4);
+}
+
+[data-reach-menu-item] {
+  border-radius: var(--border-radius-4);
+  font-size: inherit;
+  margin: var(--px-4);
+  overflow: hidden;
+  padding: var(--px-6) var(--px-8);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &[data-selected],
+  &:hover {
+    background-color: var(--color-neutral-7);
+    color: inherit;
+  }
+
+  &:not(:first-child) {
+    margin-top: 0;
+  }
+}
