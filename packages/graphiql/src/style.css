@@ -182,7 +182,7 @@ button.graphiql-tab-add > svg {
 /* The results editor wrapping container */
 .graphiql-container .graphiql-response .result-window {
   position: relative;
-  flex: 1 1 100%;
+  flex: 1;
 }
 
 /* The footer below the response view */
