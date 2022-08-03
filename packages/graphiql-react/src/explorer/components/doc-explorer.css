@@ -4,9 +4,7 @@
   justify-content: space-between;
   position: relative;
 
-  &:focus-within
-    > .graphiql-doc-explorer-header-content
-    > *:not(a.graphiql-doc-explorer-back) {
+  &:focus-within .graphiql-doc-explorer-title {
     /* Hide the header when focussing the search input */
     visibility: hidden;
   }
@@ -51,6 +49,11 @@ a.graphiql-doc-explorer-back {
 
   &:hover {
     text-decoration: underline;
+  }
+
+  &:focus + .graphiql-doc-explorer-title {
+    /* Don't hide the header when focussing the back link */
+    visibility: unset;
   }
 
   & > svg {
