@@ -79,8 +79,6 @@ import {
   VariableEditor,
 } from '@graphiql/react';
 
-import find from '../utility/find';
-
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
@@ -561,11 +559,11 @@ class GraphiQLWithContext extends React.Component<
   render() {
     const children = React.Children.toArray(this.props.children);
 
-    const logo = find(children, child =>
+    const logo = children.find(child =>
       isChildComponentType(child, GraphiQL.Logo),
     ) || <GraphiQL.Logo />;
 
-    const toolbar = find(children, child =>
+    const toolbar = children.find(child =>
       isChildComponentType(child, GraphiQL.Toolbar),
     ) || (
       <>
@@ -596,7 +594,7 @@ class GraphiQLWithContext extends React.Component<
       </>
     );
 
-    const footer = find(children, child =>
+    const footer = children.find(child =>
       isChildComponentType(child, GraphiQL.Footer),
     );
 
