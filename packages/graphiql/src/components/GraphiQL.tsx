@@ -5,14 +5,7 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, {
-  ComponentType,
-  PropsWithChildren,
-  ReactNode,
-  forwardRef,
-  ForwardRefExoticComponent,
-  RefAttributes,
-} from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
 import {
   GraphQLSchema,
   ValidationRule,
@@ -305,21 +298,12 @@ export type GraphiQLProps = {
  * @see https://github.com/graphql/graphiql#usage
  */
 export class GraphiQL extends React.Component<GraphiQLProps> {
-  ref: GraphiQLWithContext | null = null;
-
   constructor(props: GraphiQLProps) {
     super(props);
   }
 
   render() {
-    return (
-      <GraphiQLProviders
-        {...this.props}
-        ref={node => {
-          this.ref = node;
-        }}
-      />
-    );
+    return <GraphiQLProviders {...this.props} />;
   }
 
   // Export main windows/panes to be used separately if desired.
@@ -332,30 +316,25 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
   static ResultViewer = ResponseEditor;
 }
 
-const GraphiQLProviders: ForwardRefExoticComponent<
-  GraphiQLProps & RefAttributes<GraphiQLWithContext>
-> = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQLProviders(
-  {
-    dangerouslyAssumeSchemaIsValid,
-    docExplorerOpen,
-    externalFragments,
-    fetcher,
-    inputValueDeprecation,
-    introspectionQueryName,
-    maxHistoryLength,
-    onSchemaChange,
-    onTabChange,
-    onToggleHistory,
-    onToggleDocs,
-    storage,
-    schema,
-    schemaDescription,
-    shouldPersistHeaders,
-    validationRules,
-    ...props
-  },
-  ref,
-) {
+function GraphiQLProviders({
+  dangerouslyAssumeSchemaIsValid,
+  docExplorerOpen,
+  externalFragments,
+  fetcher,
+  inputValueDeprecation,
+  introspectionQueryName,
+  maxHistoryLength,
+  onSchemaChange,
+  onTabChange,
+  onToggleHistory,
+  onToggleDocs,
+  storage,
+  schema,
+  schemaDescription,
+  shouldPersistHeaders,
+  validationRules,
+  ...props
+}: GraphiQLProps) {
   // Ensure props are correct
   if (typeof fetcher !== 'function') {
     throw new TypeError('GraphiQL requires a fetcher function.');
@@ -389,7 +368,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
-                <GraphiQLConsumeContexts {...props} ref={ref} />
+                <GraphiQLConsumeContexts {...props} />
               </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
@@ -397,7 +376,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
       </HistoryContextProvider>
     </StorageContextProvider>
   );
-}) as any;
+}
 
 // Add a select-option input to the Toolbar.
 // GraphiQL.Select = ToolbarSelect;
@@ -427,10 +406,10 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'variables'
 >;
 
-const GraphiQLConsumeContexts = forwardRef<
-  GraphiQLWithContext,
-  GraphiQLWithContextProviderProps
->(function GraphiQLConsumeContexts({ getDefaultFieldNames, ...props }, ref) {
+function GraphiQLConsumeContexts({
+  getDefaultFieldNames,
+  ...props
+}: GraphiQLWithContextProviderProps) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
@@ -504,10 +483,9 @@ const GraphiQLConsumeContexts = forwardRef<
       editorToolsResize={editorToolsResize}
       theme={theme}
       setTheme={setTheme}
-      ref={ref}
     />
   );
-});
+}
 
 type GraphiQLWithContextConsumerProps = Omit<
   GraphiQLWithContextProviderProps,
