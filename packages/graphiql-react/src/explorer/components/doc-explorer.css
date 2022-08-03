@@ -11,7 +11,7 @@
 }
 .graphiql-doc-explorer-header:focus-within
   > .graphiql-doc-explorer-header-content
-  > *:not(.graphiql-doc-explorer-back) {
+  > *:not(a.graphiql-doc-explorer-back) {
   /* Hide the header when focussing the search input */
   visibility: hidden;
 }
@@ -35,19 +35,25 @@
 }
 
 /* The back-button in the doc explorer */
-.graphiql-doc-explorer-back {
+a.graphiql-doc-explorer-back {
   align-items: center;
   color: var(--color-neutral-60);
   display: flex;
   text-decoration: none;
-}
-.graphiql-doc-explorer-back:hover {
-  text-decoration: underline;
-}
-.graphiql-doc-explorer-back > svg {
-  height: var(--px-8);
-  margin-right: var(--px-8);
-  width: var(--px-8);
+
+  &:visited {
+    color: var(--color-neutral-60);
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  & > svg {
+    height: var(--px-8);
+    margin-right: var(--px-8);
+    width: var(--px-8);
+  }
 }
 
 /* The title of the currently active page in the doc explorer */
