@@ -81,7 +81,6 @@ import {
 
 import find from '../utility/find';
 
-import { formatError, formatResult } from '@graphiql/toolkit';
 import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
@@ -324,83 +323,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
       />
     );
   }
-
-  /**
-   * Get the query editor CodeMirror instance.
-   *
-   * @public
-   */
-  public getQueryEditor() {
-    console.warn(
-      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
-    );
-    return this.ref?.getQueryEditor() || null;
-  }
-
-  /**
-   * Get the variable editor CodeMirror instance.
-   *
-   * @public
-   */
-  public getVariableEditor() {
-    console.warn(
-      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
-    );
-    return this.ref?.getVariableEditor() || null;
-  }
-
-  /**
-   * Get the header editor CodeMirror instance.
-   *
-   * @public
-   */
-  public getHeaderEditor() {
-    console.warn(
-      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
-    );
-    return this.ref?.getHeaderEditor() || null;
-  }
-
-  /**
-   * Refresh all CodeMirror instances.
-   *
-   * @public
-   */
-  public refresh() {
-    console.warn(
-      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
-    );
-    this.ref?.refresh();
-  }
-
-  /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   *
-   * @public
-   */
-  public autoCompleteLeafs() {
-    console.warn(
-      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
-    );
-    return this.ref?.autoCompleteLeafs();
-  }
-
-  // Static methods
-
-  static formatResult = (result: any): string => {
-    console.warn(
-      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
-    );
-    return formatResult(result);
-  };
-
-  static formatError = (error: any): string => {
-    console.warn(
-      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
-    );
-    return formatError(error);
-  };
 
   // Export main windows/panes to be used separately if desired.
   static Logo = GraphiQLLogo;
@@ -1247,31 +1169,6 @@ class GraphiQLWithContext extends React.Component<
         </Dialog>
       </div>
     );
-  }
-
-  // Public methods
-
-  public getQueryEditor() {
-    return this.props.editorContext.queryEditor || null;
-  }
-
-  public getVariableEditor() {
-    return this.props.editorContext.variableEditor || null;
-  }
-
-  public getHeaderEditor() {
-    return this.props.editorContext.headerEditor || null;
-  }
-
-  public refresh() {
-    this.props.editorContext.queryEditor?.refresh();
-    this.props.editorContext.variableEditor?.refresh();
-    this.props.editorContext.headerEditor?.refresh();
-    this.props.editorContext.responseEditor?.refresh();
-  }
-
-  public autoCompleteLeafs() {
-    return this.props.autoCompleteLeafs();
   }
 }
 

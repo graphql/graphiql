@@ -3,6 +3,8 @@
 ---
 
 BREAKING: The following static properties of the `GraphiQL` component have been removed:
+- `GraphiQL.formatResult`: You can use the function `formatResult` from `@graphiql/toolkit` instead.
+- `GraphiQL.formatError`: You can use the function `formatError` from `@graphiql/toolkit` instead.
 - `GraphiQL.Button`: You can use the `ToolbarButton` component from `@graphiql/react` instead.
 - `GraphiQL.ToolbarButton`: This exposed the same component as `GraphiQL.Button`.
 - `GraphiQL.Menu`: You can use the `ToolbarMenu` component from `@graphiql/react` instead.
