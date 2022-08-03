@@ -1,5 +1,7 @@
+@import url('@reach/listbox/styles.css');
 @import url('@reach/menu-button/styles.css');
 
+[data-reach-listbox-popover],
 [data-reach-menu-list] {
   background-color: hsl(var(--color-base));
   box-shadow: var(--box-shadow);
@@ -10,6 +12,7 @@
   padding: var(--px-4);
 }
 
+[data-reach-listbox-option],
 [data-reach-menu-item] {
   border-radius: var(--border-radius-4);
   font-size: inherit;
@@ -20,6 +23,7 @@
   white-space: nowrap;
 
   &[data-selected],
+  &[data-current-nav],
   &:hover {
     background-color: hsla(var(--color-neutral), 0.07);
     color: inherit;
@@ -28,4 +32,10 @@
   &:not(:first-child) {
     margin-top: 0;
   }
+}
+
+[data-reach-listbox-button] {
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
