@@ -5,7 +5,12 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { ComponentType, PropsWithChildren, ReactNode } from 'react';
+import React, {
+  ComponentType,
+  PropsWithChildren,
+  ReactNode,
+  useState,
+} from 'react';
 import {
   GraphQLSchema,
   ValidationRule,
@@ -518,637 +523,587 @@ export type GraphiQLState = {
   clearStorageStatus: 'success' | 'error' | null;
 };
 
-class GraphiQLWithContext extends React.Component<
-  GraphiQLWithContextConsumerProps,
-  GraphiQLState
-> {
-  constructor(props: GraphiQLWithContextConsumerProps) {
-    super(props);
+function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
+  const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
+    'variable' | 'header'
+  >('variable');
+  const [showDialog, setShowDialog] = useState<
+    'settings' | 'short-keys' | null
+  >(null);
+  const [clearStorageStatus, setClearStorageStatus] = useState<
+    'success' | 'error' | null
+  >(null);
 
-    // Initialize state
-    this.state = {
-      activeSecondaryEditor: 'variable',
-      showShortKeys: false,
-      showSettings: false,
-      clearStorageStatus: null,
-    };
-  }
+  const children = React.Children.toArray(props.children);
 
-  render() {
-    const children = React.Children.toArray(this.props.children);
+  const logo = children.find(child =>
+    isChildComponentType(child, GraphiQL.Logo),
+  ) || <GraphiQL.Logo />;
 
-    const logo = children.find(child =>
-      isChildComponentType(child, GraphiQL.Logo),
-    ) || <GraphiQL.Logo />;
+  const toolbar = children.find(child =>
+    isChildComponentType(child, GraphiQL.Toolbar),
+  ) || (
+    <>
+      <ToolbarButton
+        onClick={() => {
+          props.prettify();
+        }}
+        label="Prettify query (Shift-Ctrl-P)">
+        <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+      </ToolbarButton>
+      <ToolbarButton
+        onClick={() => {
+          props.merge();
+        }}
+        label="Merge fragments into query (Shift-Ctrl-M)">
+        <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+      </ToolbarButton>
+      <ToolbarButton
+        onClick={() => {
+          props.copy();
+        }}
+        label="Copy query (Shift-Ctrl-C)">
+        <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
+      </ToolbarButton>
+      {props.toolbar?.additionalContent
+        ? props.toolbar.additionalContent
+        : null}
+    </>
+  );
 
-    const toolbar = children.find(child =>
-      isChildComponentType(child, GraphiQL.Toolbar),
-    ) || (
-      <>
-        <ToolbarButton
-          onClick={() => {
-            this.props.prettify();
-          }}
-          label="Prettify query (Shift-Ctrl-P)">
-          <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => {
-            this.props.merge();
-          }}
-          label="Merge fragments into query (Shift-Ctrl-M)">
-          <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => {
-            this.props.copy();
-          }}
-          label="Copy query (Shift-Ctrl-C)">
-          <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
-        </ToolbarButton>
-        {this.props.toolbar?.additionalContent
-          ? this.props.toolbar.additionalContent
-          : null}
-      </>
+  const footer = children.find(child =>
+    isChildComponentType(child, GraphiQL.Footer),
+  );
+
+  const headerEditorEnabled = props.headerEditorEnabled ?? true;
+
+  const onClickReference = () => {
+    if (props.pluginResize.hiddenElement === 'first') {
+      props.pluginResize.setHiddenElement(null);
+    }
+  };
+
+  const modifier =
+    window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
+      <code className="graphiql-key">Cmd</code>
+    ) : (
+      <code className="graphiql-key">Ctrl</code>
     );
 
-    const footer = children.find(child =>
-      isChildComponentType(child, GraphiQL.Footer),
-    );
-
-    const headerEditorEnabled = this.props.headerEditorEnabled ?? true;
-
-    const onClickReference = () => {
-      if (this.props.pluginResize.hiddenElement === 'first') {
-        this.props.pluginResize.setHiddenElement(null);
-      }
-    };
-
-    const modifier =
-      window.navigator.platform.toLowerCase().indexOf('mac') === 0 ? (
-        <code className="graphiql-key">Cmd</code>
-      ) : (
-        <code className="graphiql-key">Ctrl</code>
-      );
-
-    return (
-      <div data-testid="graphiql-container" className="graphiql-container">
-        <div className="graphiql-sidebar">
-          <div>
-            {this.props.explorerContext ? (
-              <Tooltip
-                label={
-                  this.props.explorerContext.isVisible
+  return (
+    <div data-testid="graphiql-container" className="graphiql-container">
+      <div className="graphiql-sidebar">
+        <div>
+          {props.explorerContext ? (
+            <Tooltip
+              label={
+                props.explorerContext.isVisible
+                  ? 'Hide Documentation Explorer'
+                  : 'Show Documentation Explorer'
+              }>
+              <UnStyledButton
+                className={props.explorerContext.isVisible ? 'active' : ''}
+                onClick={() => {
+                  if (props.explorerContext?.isVisible) {
+                    props.explorerContext?.hide();
+                    props.pluginResize.setHiddenElement('first');
+                  } else {
+                    props.explorerContext?.show();
+                    props.pluginResize.setHiddenElement(null);
+                    if (props.historyContext?.isVisible) {
+                      props.historyContext.hide();
+                    }
+                  }
+                }}
+                aria-label={
+                  props.explorerContext.isVisible
                     ? 'Hide Documentation Explorer'
                     : 'Show Documentation Explorer'
                 }>
-                <UnStyledButton
-                  className={
-                    this.props.explorerContext.isVisible ? 'active' : ''
+                <DocsIcon aria-hidden="true" />
+              </UnStyledButton>
+            </Tooltip>
+          ) : null}
+          {props.historyContext ? (
+            <Tooltip
+              label={
+                props.historyContext.isVisible ? 'Hide History' : 'Show History'
+              }>
+              <UnStyledButton
+                className={props.historyContext.isVisible ? 'active' : ''}
+                onClick={() => {
+                  if (!props.historyContext) {
+                    return;
                   }
-                  onClick={() => {
-                    if (this.props.explorerContext?.isVisible) {
-                      this.props.explorerContext?.hide();
-                      this.props.pluginResize.setHiddenElement('first');
-                    } else {
-                      this.props.explorerContext?.show();
-                      this.props.pluginResize.setHiddenElement(null);
-                      if (this.props.historyContext?.isVisible) {
-                        this.props.historyContext.hide();
-                      }
+                  props.historyContext.toggle();
+                  if (props.historyContext.isVisible) {
+                    props.pluginResize.setHiddenElement('first');
+                  } else {
+                    props.pluginResize.setHiddenElement(null);
+                    if (props.explorerContext?.isVisible) {
+                      props.explorerContext.hide();
                     }
-                  }}
-                  aria-label={
-                    this.props.explorerContext.isVisible
-                      ? 'Hide Documentation Explorer'
-                      : 'Show Documentation Explorer'
-                  }>
-                  <DocsIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
-            ) : null}
-            {this.props.historyContext ? (
-              <Tooltip
-                label={
-                  this.props.historyContext.isVisible
+                  }
+                }}
+                aria-label={
+                  props.historyContext.isVisible
                     ? 'Hide History'
                     : 'Show History'
                 }>
-                <UnStyledButton
-                  className={
-                    this.props.historyContext.isVisible ? 'active' : ''
-                  }
-                  onClick={() => {
-                    if (!this.props.historyContext) {
-                      return;
-                    }
-                    this.props.historyContext.toggle();
-                    if (this.props.historyContext.isVisible) {
-                      this.props.pluginResize.setHiddenElement('first');
-                    } else {
-                      this.props.pluginResize.setHiddenElement(null);
-                      if (this.props.explorerContext?.isVisible) {
-                        this.props.explorerContext.hide();
-                      }
-                    }
-                  }}
-                  aria-label={
-                    this.props.historyContext.isVisible
-                      ? 'Hide History'
-                      : 'Show History'
-                  }>
-                  <HistoryIcon aria-hidden="true" />
-                </UnStyledButton>
-              </Tooltip>
-            ) : null}
-          </div>
-          <div>
-            <Tooltip label="Re-fetch GraphQL schema">
-              <UnStyledButton
-                disabled={this.props.schemaContext.isFetching}
-                onClick={() => this.props.schemaContext.introspect()}
-                aria-label="Re-fetch GraphQL schema">
-                <ReloadIcon
-                  className={
-                    this.props.schemaContext.isFetching ? 'graphiql-spin' : ''
-                  }
-                  aria-hidden="true"
-                />
+                <HistoryIcon aria-hidden="true" />
               </UnStyledButton>
             </Tooltip>
-            <Tooltip label="Open short keys dialog">
-              <UnStyledButton
-                onClick={() => {
-                  this.setState({ showShortKeys: true });
-                }}
-                aria-label="Open short keys dialog">
-                <KeyboardShortcutIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-            <Tooltip label="Open settings dialog">
-              <UnStyledButton
-                onClick={() => {
-                  this.setState({ showSettings: true });
-                }}
-                aria-label="Open settings dialog">
-                <SettingsIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
+          ) : null}
+        </div>
+        <div>
+          <Tooltip label="Re-fetch GraphQL schema">
+            <UnStyledButton
+              disabled={props.schemaContext.isFetching}
+              onClick={() => props.schemaContext.introspect()}
+              aria-label="Re-fetch GraphQL schema">
+              <ReloadIcon
+                className={
+                  props.schemaContext.isFetching ? 'graphiql-spin' : ''
+                }
+                aria-hidden="true"
+              />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open short keys dialog">
+            <UnStyledButton
+              onClick={() => {
+                setShowDialog('short-keys');
+              }}
+              aria-label="Open short keys dialog">
+              <KeyboardShortcutIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip label="Open settings dialog">
+            <UnStyledButton
+              onClick={() => {
+                setShowDialog('settings');
+              }}
+              aria-label="Open settings dialog">
+              <SettingsIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
+        </div>
+      </div>
+      <div className="graphiql-main">
+        <div
+          ref={props.pluginResize.firstRef}
+          style={{
+            // Make sure the container shrinks when containing long
+            // non-breaking texts
+            minWidth: '200px',
+          }}>
+          <div className="graphiql-plugin">
+            {props.explorerContext?.isVisible ? <DocExplorer /> : null}
+            {props.historyContext?.isVisible ? <History /> : null}
           </div>
         </div>
-        <div className="graphiql-main">
-          <div
-            ref={this.props.pluginResize.firstRef}
-            style={{
-              // Make sure the container shrinks when containing long
-              // non-breaking texts
-              minWidth: '200px',
-            }}>
-            <div className="graphiql-plugin">
-              {this.props.explorerContext?.isVisible ? <DocExplorer /> : null}
-              {this.props.historyContext?.isVisible ? <History /> : null}
-            </div>
-          </div>
-          <div ref={this.props.pluginResize.dragBarRef}>
-            {this.props.explorerContext?.isVisible ||
-            this.props.historyContext?.isVisible ? (
-              <div className="graphiql-horizontal-drag-bar" />
-            ) : null}
-          </div>
-          <div ref={this.props.pluginResize.secondRef}>
-            <div className="graphiql-sessions">
-              <div className="graphiql-session-header">
-                <Tabs aria-label="Select active operation">
-                  {this.props.editorContext.tabs.length > 1 ? (
-                    <>
-                      {this.props.editorContext.tabs.map((tab, index) => (
-                        <Tab
-                          key={tab.id}
-                          isActive={
-                            index === this.props.editorContext.activeTabIndex
-                          }>
-                          <Tab.Button
-                            aria-controls="graphiql-session"
-                            id={`graphiql-session-tab-${index}`}
-                            onClick={() => {
-                              this.props.executionContext.stop();
-                              this.props.editorContext.changeTab(index);
-                            }}>
-                            {tab.title}
-                          </Tab.Button>
-                          <Tab.Close
-                            onClick={() => {
-                              if (
-                                this.props.editorContext.activeTabIndex ===
-                                index
-                              ) {
-                                this.props.executionContext.stop();
-                              }
-                              this.props.editorContext.closeTab(index);
-                            }}
-                          />
-                        </Tab>
-                      ))}
-                      <Tooltip label="Add tab">
-                        <UnStyledButton
-                          className="graphiql-tab-add"
+        <div ref={props.pluginResize.dragBarRef}>
+          {props.explorerContext?.isVisible ||
+          props.historyContext?.isVisible ? (
+            <div className="graphiql-horizontal-drag-bar" />
+          ) : null}
+        </div>
+        <div ref={props.pluginResize.secondRef}>
+          <div className="graphiql-sessions">
+            <div className="graphiql-session-header">
+              <Tabs aria-label="Select active operation">
+                {props.editorContext.tabs.length > 1 ? (
+                  <>
+                    {props.editorContext.tabs.map((tab, index) => (
+                      <Tab
+                        key={tab.id}
+                        isActive={index === props.editorContext.activeTabIndex}>
+                        <Tab.Button
+                          aria-controls="graphiql-session"
+                          id={`graphiql-session-tab-${index}`}
                           onClick={() => {
-                            this.props.editorContext.addTab();
+                            props.executionContext.stop();
+                            props.editorContext.changeTab(index);
+                          }}>
+                          {tab.title}
+                        </Tab.Button>
+                        <Tab.Close
+                          onClick={() => {
+                            if (props.editorContext.activeTabIndex === index) {
+                              props.executionContext.stop();
+                            }
+                            props.editorContext.closeTab(index);
                           }}
-                          aria-label="Add tab">
-                          <PlusIcon aria-hidden="true" />
-                        </UnStyledButton>
-                      </Tooltip>
-                    </>
-                  ) : null}
-                </Tabs>
-                <div className="graphiql-session-header-right">
-                  {this.props.editorContext.tabs.length === 1 ? (
+                        />
+                      </Tab>
+                    ))}
                     <Tooltip label="Add tab">
                       <UnStyledButton
                         className="graphiql-tab-add"
                         onClick={() => {
-                          this.props.editorContext.addTab();
+                          props.editorContext.addTab();
                         }}
                         aria-label="Add tab">
                         <PlusIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
-                  ) : null}
-                  <div className="graphiql-logo">{logo}</div>
-                </div>
+                  </>
+                ) : null}
+              </Tabs>
+              <div className="graphiql-session-header-right">
+                {props.editorContext.tabs.length === 1 ? (
+                  <Tooltip label="Add tab">
+                    <UnStyledButton
+                      className="graphiql-tab-add"
+                      onClick={() => {
+                        props.editorContext.addTab();
+                      }}
+                      aria-label="Add tab">
+                      <PlusIcon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                ) : null}
+                <div className="graphiql-logo">{logo}</div>
               </div>
-              <div
-                role="tabpanel"
-                id="graphiql-session"
-                className="graphiql-session"
-                aria-labelledby={`graphiql-session-tab-${this.props.editorContext.activeTabIndex}`}>
-                <div ref={this.props.editorResize.firstRef}>
-                  <div
-                    className={`graphiql-editors${
-                      this.props.editorContext.tabs.length === 1
-                        ? ' full-height'
-                        : ''
-                    }`}>
-                    <div ref={this.props.editorToolsResize.firstRef}>
-                      <section
-                        className="graphiql-query-editor"
-                        aria-label="Query Editor">
-                        <div className="graphiql-query-editor-wrapper">
-                          <QueryEditor
-                            editorTheme={this.props.editorTheme}
-                            keyMap={this.props.keyMap}
-                            onClickReference={onClickReference}
-                            onCopyQuery={this.props.onCopyQuery}
-                            onEdit={this.props.onEditQuery}
-                            onEditOperationName={this.props.onEditOperationName}
-                            readOnly={this.props.readOnly}
-                          />
-                        </div>
-                        <div
-                          className="graphiql-toolbar"
-                          role="toolbar"
-                          aria-label="Editor Commands">
-                          <ExecuteButton />
-                          {toolbar}
-                        </div>
-                      </section>
-                    </div>
-                    <div ref={this.props.editorToolsResize.dragBarRef}>
-                      <div className="graphiql-editor-tools">
-                        <div className="graphiql-editor-tools-tabs">
+            </div>
+            <div
+              role="tabpanel"
+              id="graphiql-session"
+              className="graphiql-session"
+              aria-labelledby={`graphiql-session-tab-${props.editorContext.activeTabIndex}`}>
+              <div ref={props.editorResize.firstRef}>
+                <div
+                  className={`graphiql-editors${
+                    props.editorContext.tabs.length === 1 ? ' full-height' : ''
+                  }`}>
+                  <div ref={props.editorToolsResize.firstRef}>
+                    <section
+                      className="graphiql-query-editor"
+                      aria-label="Query Editor">
+                      <div className="graphiql-query-editor-wrapper">
+                        <QueryEditor
+                          editorTheme={props.editorTheme}
+                          keyMap={props.keyMap}
+                          onClickReference={onClickReference}
+                          onCopyQuery={props.onCopyQuery}
+                          onEdit={props.onEditQuery}
+                          onEditOperationName={props.onEditOperationName}
+                          readOnly={props.readOnly}
+                        />
+                      </div>
+                      <div
+                        className="graphiql-toolbar"
+                        role="toolbar"
+                        aria-label="Editor Commands">
+                        <ExecuteButton />
+                        {toolbar}
+                      </div>
+                    </section>
+                  </div>
+                  <div ref={props.editorToolsResize.dragBarRef}>
+                    <div className="graphiql-editor-tools">
+                      <div className="graphiql-editor-tools-tabs">
+                        <UnStyledButton
+                          className={
+                            activeSecondaryEditor === 'variable' ? 'active' : ''
+                          }
+                          onClick={() => {
+                            if (
+                              props.editorToolsResize.hiddenElement === 'second'
+                            ) {
+                              props.editorToolsResize.setHiddenElement(null);
+                            }
+                            setActiveSecondaryEditor('variable');
+                          }}>
+                          Variables
+                        </UnStyledButton>
+                        {headerEditorEnabled ? (
                           <UnStyledButton
                             className={
-                              this.state.activeSecondaryEditor === 'variable'
-                                ? 'active'
-                                : ''
+                              activeSecondaryEditor === 'header' ? 'active' : ''
                             }
                             onClick={() => {
                               if (
-                                this.props.editorToolsResize.hiddenElement ===
+                                props.editorToolsResize.hiddenElement ===
                                 'second'
                               ) {
-                                this.props.editorToolsResize.setHiddenElement(
-                                  null,
-                                );
+                                props.editorToolsResize.setHiddenElement(null);
                               }
-                              this.setState({
-                                activeSecondaryEditor: 'variable',
-                              });
+                              setActiveSecondaryEditor('header');
                             }}>
-                            Variables
+                            Headers
                           </UnStyledButton>
-                          {headerEditorEnabled ? (
-                            <UnStyledButton
-                              className={
-                                this.state.activeSecondaryEditor === 'header'
-                                  ? 'active'
-                                  : ''
-                              }
-                              onClick={() => {
-                                if (
-                                  this.props.editorToolsResize.hiddenElement ===
-                                  'second'
-                                ) {
-                                  this.props.editorToolsResize.setHiddenElement(
-                                    null,
-                                  );
-                                }
-                                this.setState({
-                                  activeSecondaryEditor: 'header',
-                                });
-                              }}>
-                              Headers
-                            </UnStyledButton>
-                          ) : null}
-                        </div>
-                        <Tooltip
-                          label={
-                            this.props.editorToolsResize.hiddenElement ===
-                            'second'
+                        ) : null}
+                      </div>
+                      <Tooltip
+                        label={
+                          props.editorToolsResize.hiddenElement === 'second'
+                            ? 'Show editor tools'
+                            : 'Hide editor tools'
+                        }>
+                        <UnStyledButton
+                          onClick={() => {
+                            props.editorToolsResize.setHiddenElement(
+                              props.editorToolsResize.hiddenElement === 'second'
+                                ? null
+                                : 'second',
+                            );
+                          }}
+                          aria-label={
+                            props.editorToolsResize.hiddenElement === 'second'
                               ? 'Show editor tools'
                               : 'Hide editor tools'
                           }>
-                          <UnStyledButton
-                            onClick={() => {
-                              this.props.editorToolsResize.setHiddenElement(
-                                this.props.editorToolsResize.hiddenElement ===
-                                  'second'
-                                  ? null
-                                  : 'second',
-                              );
-                            }}
-                            aria-label={
-                              this.props.editorToolsResize.hiddenElement ===
-                              'second'
-                                ? 'Show editor tools'
-                                : 'Hide editor tools'
-                            }>
-                            {this.props.editorToolsResize.hiddenElement ===
-                            'second' ? (
-                              <ChevronUpIcon
-                                className="graphiql-chevron-icon"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <ChevronDownIcon
-                                className="graphiql-chevron-icon"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </UnStyledButton>
-                        </Tooltip>
-                      </div>
+                          {props.editorToolsResize.hiddenElement ===
+                          'second' ? (
+                            <ChevronUpIcon
+                              className="graphiql-chevron-icon"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <ChevronDownIcon
+                              className="graphiql-chevron-icon"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </UnStyledButton>
+                      </Tooltip>
                     </div>
-                    <div ref={this.props.editorToolsResize.secondRef}>
-                      <section
-                        className="graphiql-editor-tool"
-                        aria-label={
-                          this.state.activeSecondaryEditor === 'variable'
-                            ? 'Variables'
-                            : 'Headers'
-                        }>
-                        <VariableEditor
-                          editorTheme={this.props.editorTheme}
-                          isHidden={
-                            this.state.activeSecondaryEditor !== 'variable'
-                          }
-                          keyMap={this.props.keyMap}
-                          onEdit={this.props.onEditVariables}
-                          onClickReference={onClickReference}
-                          readOnly={this.props.readOnly}
+                  </div>
+                  <div ref={props.editorToolsResize.secondRef}>
+                    <section
+                      className="graphiql-editor-tool"
+                      aria-label={
+                        activeSecondaryEditor === 'variable'
+                          ? 'Variables'
+                          : 'Headers'
+                      }>
+                      <VariableEditor
+                        editorTheme={props.editorTheme}
+                        isHidden={activeSecondaryEditor !== 'variable'}
+                        keyMap={props.keyMap}
+                        onEdit={props.onEditVariables}
+                        onClickReference={onClickReference}
+                        readOnly={props.readOnly}
+                      />
+                      {headerEditorEnabled && (
+                        <HeaderEditor
+                          editorTheme={props.editorTheme}
+                          isHidden={activeSecondaryEditor !== 'header'}
+                          keyMap={props.keyMap}
+                          onEdit={props.onEditHeaders}
+                          readOnly={props.readOnly}
                         />
-                        {headerEditorEnabled && (
-                          <HeaderEditor
-                            editorTheme={this.props.editorTheme}
-                            isHidden={
-                              this.state.activeSecondaryEditor !== 'header'
-                            }
-                            keyMap={this.props.keyMap}
-                            onEdit={this.props.onEditHeaders}
-                            readOnly={this.props.readOnly}
-                          />
-                        )}
-                      </section>
-                    </div>
+                      )}
+                    </section>
                   </div>
                 </div>
-                <div ref={this.props.editorResize.dragBarRef}>
-                  <div className="graphiql-horizontal-drag-bar" />
-                </div>
-                <div ref={this.props.editorResize.secondRef}>
-                  <div className="graphiql-response">
-                    {this.props.executionContext.isFetching ? (
-                      <Spinner />
-                    ) : null}
-                    <ResponseEditor
-                      value={this.props.response}
-                      editorTheme={this.props.editorTheme}
-                      ResponseTooltip={this.props.ResultsTooltip}
-                      keyMap={this.props.keyMap}
-                    />
-                    {footer}
-                  </div>
+              </div>
+              <div ref={props.editorResize.dragBarRef}>
+                <div className="graphiql-horizontal-drag-bar" />
+              </div>
+              <div ref={props.editorResize.secondRef}>
+                <div className="graphiql-response">
+                  {props.executionContext.isFetching ? <Spinner /> : null}
+                  <ResponseEditor
+                    value={props.response}
+                    editorTheme={props.editorTheme}
+                    ResponseTooltip={props.ResultsTooltip}
+                    keyMap={props.keyMap}
+                  />
+                  {footer}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <Dialog
-          isOpen={this.state.showShortKeys}
-          onDismiss={() => {
-            this.setState({ showShortKeys: false });
-          }}>
-          <div className="graphiql-dialog-header">
-            <div className="graphiql-dialog-title">Short Keys</div>
-            <Dialog.Close
-              onClick={() => {
-                this.setState({ showShortKeys: false });
-              }}
-            />
-          </div>
-          <div className="graphiql-dialog-section">
-            <div>
-              <table className="graphiql-table">
-                <thead>
-                  <tr>
-                    <th>Short key</th>
-                    <th>Function</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">F</code>
-                    </td>
-                    <td>Search in editor</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">K</code>
-                    </td>
-                    <td>Search in documentation</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {modifier}
-                      {' + '}
-                      <code className="graphiql-key">Enter</code>
-                    </td>
-                    <td>Execute query</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">P</code>
-                    </td>
-                    <td>Prettify editors</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">M</code>
-                    </td>
-                    <td>
-                      Merge fragments definitions into operation definition
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">C</code>
-                    </td>
-                    <td>Copy query</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <code className="graphiql-key">Ctrl</code>
-                      {' + '}
-                      <code className="graphiql-key">Shift</code>
-                      {' + '}
-                      <code className="graphiql-key">R</code>
-                    </td>
-                    <td>Re-fetch schema using introspection</td>
-                  </tr>
-                </tbody>
-              </table>
-              <p>
-                The editors use{' '}
-                <a
-                  href="https://codemirror.net/5/doc/manual.html#keymaps"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  CodeMirror Key Maps
-                </a>{' '}
-                that add more short keys. This instance of Graph<em>i</em>QL
-                uses <code>{this.props.keyMap || 'sublime'}</code>.
-              </p>
-            </div>
-          </div>
-        </Dialog>
-        <Dialog
-          isOpen={this.state.showSettings}
-          onDismiss={() => {
-            this.setState({
-              showSettings: false,
-              clearStorageStatus: null,
-            });
-          }}>
-          <div className="graphiql-dialog-header">
-            <div className="graphiql-dialog-title">Settings</div>
-            <Dialog.Close
-              onClick={() => {
-                this.setState({
-                  showSettings: false,
-                  clearStorageStatus: null,
-                });
-              }}
-            />
-          </div>
-          <div className="graphiql-dialog-section">
-            <div>
-              <div className="graphiql-dialog-section-title">Theme</div>
-              <div className="graphiql-dialog-section-caption">
-                Adjust how the interface looks like.
-              </div>
-            </div>
-            <div>
-              <ButtonGroup>
-                <Button
-                  className={this.props.theme === null ? 'active' : ''}
-                  onClick={() => {
-                    this.props.setTheme(null);
-                  }}>
-                  System
-                </Button>
-                <Button
-                  className={this.props.theme === 'light' ? 'active' : ''}
-                  onClick={() => {
-                    this.props.setTheme('light');
-                  }}>
-                  Light
-                </Button>
-                <Button
-                  className={this.props.theme === 'dark' ? 'active' : ''}
-                  onClick={() => {
-                    this.props.setTheme('dark');
-                  }}>
-                  Dark
-                </Button>
-              </ButtonGroup>
-            </div>
-          </div>
-          {this.props.storageContext ? (
-            <div className="graphiql-dialog-section">
-              <div>
-                <div className="graphiql-dialog-section-title">
-                  Clear storage
-                </div>
-                <div className="graphiql-dialog-section-caption">
-                  Remove all locally stored data and start fresh.
-                </div>
-              </div>
-              <div>
-                <Button
-                  state={this.state.clearStorageStatus || undefined}
-                  disabled={this.state.clearStorageStatus === 'success'}
-                  onClick={() => {
-                    try {
-                      this.props.storageContext?.clear();
-                      this.setState({ clearStorageStatus: 'success' });
-                    } catch {
-                      this.setState({ clearStorageStatus: 'error' });
-                    }
-                  }}>
-                  {this.state.clearStorageStatus === 'success'
-                    ? 'Cleared data'
-                    : this.state.clearStorageStatus === 'error'
-                    ? 'Failed'
-                    : 'Clear data'}
-                </Button>
-              </div>
-            </div>
-          ) : null}
-        </Dialog>
       </div>
-    );
-  }
+      <Dialog
+        isOpen={showDialog === 'short-keys'}
+        onDismiss={() => {
+          setShowDialog(null);
+        }}>
+        <div className="graphiql-dialog-header">
+          <div className="graphiql-dialog-title">Short Keys</div>
+          <Dialog.Close
+            onClick={() => {
+              setShowDialog(null);
+            }}
+          />
+        </div>
+        <div className="graphiql-dialog-section">
+          <div>
+            <table className="graphiql-table">
+              <thead>
+                <tr>
+                  <th>Short key</th>
+                  <th>Function</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">F</code>
+                  </td>
+                  <td>Search in editor</td>
+                </tr>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">K</code>
+                  </td>
+                  <td>Search in documentation</td>
+                </tr>
+                <tr>
+                  <td>
+                    {modifier}
+                    {' + '}
+                    <code className="graphiql-key">Enter</code>
+                  </td>
+                  <td>Execute query</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">P</code>
+                  </td>
+                  <td>Prettify editors</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">M</code>
+                  </td>
+                  <td>Merge fragments definitions into operation definition</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">C</code>
+                  </td>
+                  <td>Copy query</td>
+                </tr>
+                <tr>
+                  <td>
+                    <code className="graphiql-key">Ctrl</code>
+                    {' + '}
+                    <code className="graphiql-key">Shift</code>
+                    {' + '}
+                    <code className="graphiql-key">R</code>
+                  </td>
+                  <td>Re-fetch schema using introspection</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              The editors use{' '}
+              <a
+                href="https://codemirror.net/5/doc/manual.html#keymaps"
+                target="_blank"
+                rel="noopener noreferrer">
+                CodeMirror Key Maps
+              </a>{' '}
+              that add more short keys. This instance of Graph<em>i</em>QL uses{' '}
+              <code>{props.keyMap || 'sublime'}</code>.
+            </p>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog
+        isOpen={showDialog === 'settings'}
+        onDismiss={() => {
+          setShowDialog(null);
+          setClearStorageStatus(null);
+        }}>
+        <div className="graphiql-dialog-header">
+          <div className="graphiql-dialog-title">Settings</div>
+          <Dialog.Close
+            onClick={() => {
+              setShowDialog(null);
+              setClearStorageStatus(null);
+            }}
+          />
+        </div>
+        <div className="graphiql-dialog-section">
+          <div>
+            <div className="graphiql-dialog-section-title">Theme</div>
+            <div className="graphiql-dialog-section-caption">
+              Adjust how the interface looks like.
+            </div>
+          </div>
+          <div>
+            <ButtonGroup>
+              <Button
+                className={props.theme === null ? 'active' : ''}
+                onClick={() => {
+                  props.setTheme(null);
+                }}>
+                System
+              </Button>
+              <Button
+                className={props.theme === 'light' ? 'active' : ''}
+                onClick={() => {
+                  props.setTheme('light');
+                }}>
+                Light
+              </Button>
+              <Button
+                className={props.theme === 'dark' ? 'active' : ''}
+                onClick={() => {
+                  props.setTheme('dark');
+                }}>
+                Dark
+              </Button>
+            </ButtonGroup>
+          </div>
+        </div>
+        {props.storageContext ? (
+          <div className="graphiql-dialog-section">
+            <div>
+              <div className="graphiql-dialog-section-title">Clear storage</div>
+              <div className="graphiql-dialog-section-caption">
+                Remove all locally stored data and start fresh.
+              </div>
+            </div>
+            <div>
+              <Button
+                state={clearStorageStatus || undefined}
+                disabled={clearStorageStatus === 'success'}
+                onClick={() => {
+                  try {
+                    props.storageContext?.clear();
+                    setClearStorageStatus('success');
+                  } catch {
+                    setClearStorageStatus('error');
+                  }
+                }}>
+                {clearStorageStatus === 'success'
+                  ? 'Cleared data'
+                  : clearStorageStatus === 'error'
+                  ? 'Failed'
+                  : 'Clear data'}
+              </Button>
+            </div>
+          </div>
+        ) : null}
+      </Dialog>
+    </div>
+  );
 }
 
-// // Configure the UI by providing this Component as a child of GraphiQL.
+// Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
   return (
     <div className="title">
