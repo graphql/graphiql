@@ -34,7 +34,6 @@ export type {
 /**
  * Toolbar
  */
-export { ToolbarMenu, ToolbarMenuItem } from './components/ToolbarMenu';
 export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**

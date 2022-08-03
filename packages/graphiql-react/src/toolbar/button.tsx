@@ -1,6 +1,7 @@
 import { forwardRef, useState } from 'react';
 
 import { UnStyledButton } from '../ui';
+import { compose } from '../utility/compose';
 
 import './button.css';
 
@@ -13,11 +14,11 @@ export const ToolbarButton = forwardRef<
     <UnStyledButton
       {...props}
       ref={ref}
-      className={
-        'graphiql-toolbar-button' +
-        (error ? ' error' : '') +
-        (props.className ? ' ' + props.className : '')
-      }
+      className={compose(
+        'graphiql-toolbar-button',
+        error ? 'error' : '',
+        props.className,
+      )}
       onClick={event => {
         try {
           props.onClick?.(event);

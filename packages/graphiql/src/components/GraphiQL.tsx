@@ -78,7 +78,6 @@ import {
   VariableEditor,
 } from '@graphiql/react';
 
-import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
 import find from '../utility/find';
 
 import { formatError, formatResult } from '@graphiql/toolkit';
@@ -410,10 +409,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
   static VariableEditor = VariableEditor;
   static HeaderEditor = HeaderEditor;
   static ResultViewer = ResponseEditor;
-
-  // Add a menu of items to the Toolbar.
-  static Menu = ToolbarMenu;
-  static MenuItem = ToolbarMenuItem;
 }
 
 const GraphiQLProviders: ForwardRefExoticComponent<
