@@ -2,10 +2,6 @@ a.graphiql-doc-explorer-field-name {
   color: var(--color-blue);
   text-decoration: none;
 
-  &:visited {
-    color: var(--color-blue);
-  }
-
   &:hover {
     text-decoration: underline;
   }

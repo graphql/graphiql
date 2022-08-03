@@ -2,10 +2,6 @@ a.graphiql-doc-explorer-type-name {
   color: var(--color-orche);
   text-decoration: none;
 
-  &:visited {
-    color: var(--color-orche);
-  }
-
   &:hover {
     text-decoration: underline;
   }
