@@ -29,16 +29,12 @@ import {
   DocExplorer,
   DocsIcon,
   EditorContextProvider,
-  EditorContextType,
   ExecuteButton,
   ExecutionContextProvider,
-  ExecutionContextType,
   ExplorerContextProvider,
-  ExplorerContextType,
   HeaderEditor,
   History,
   HistoryContextProvider,
-  HistoryContextType,
   HistoryIcon,
   KeyboardShortcutIcon,
   KeyMap,
@@ -50,19 +46,15 @@ import {
   ResponseEditor,
   ResponseTooltipType,
   SchemaContextProvider,
-  SchemaContextType,
   SettingsIcon,
   Spinner,
   StorageContextProvider,
-  StorageContextType,
   Tab,
   Tabs,
   TabsState,
-  Theme,
   ToolbarButton,
   Tooltip,
   UnStyledButton,
-  useAutoCompleteLeafs,
   useCopyQuery,
   useDragResize,
   useEditorContext,
@@ -373,7 +365,7 @@ function GraphiQLProviders({
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
-                <GraphiQLConsumeContexts {...props} />
+                <GraphiQLWithContext {...props} />
               </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
@@ -411,10 +403,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'variables'
 >;
 
-function GraphiQLConsumeContexts({
-  getDefaultFieldNames,
-  ...props
-}: GraphiQLWithContextProviderProps) {
+function GraphiQLWithContext(props: GraphiQLWithContextProviderProps) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const explorerContext = useExplorerContext();
@@ -422,7 +411,6 @@ function GraphiQLConsumeContexts({
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
 
-  const autoCompleteLeafs = useAutoCompleteLeafs({ getDefaultFieldNames });
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
   const prettify = usePrettifyEditors();
@@ -470,60 +458,6 @@ function GraphiQLConsumeContexts({
     storageKey: 'secondaryEditorFlex',
   });
 
-  return (
-    <GraphiQLWithContext
-      {...props}
-      editorContext={editorContext}
-      executionContext={executionContext}
-      explorerContext={explorerContext}
-      historyContext={historyContext}
-      schemaContext={schemaContext}
-      storageContext={storageContext}
-      autoCompleteLeafs={autoCompleteLeafs}
-      copy={copy}
-      merge={merge}
-      prettify={prettify}
-      pluginResize={pluginResize}
-      editorResize={editorResize}
-      editorToolsResize={editorToolsResize}
-      theme={theme}
-      setTheme={setTheme}
-    />
-  );
-}
-
-type GraphiQLWithContextConsumerProps = Omit<
-  GraphiQLWithContextProviderProps,
-  'fetcher' | 'getDefaultFieldNames'
-> & {
-  editorContext: EditorContextType;
-  executionContext: ExecutionContextType;
-  explorerContext: ExplorerContextType | null;
-  historyContext: HistoryContextType | null;
-  schemaContext: SchemaContextType;
-  storageContext: StorageContextType | null;
-
-  autoCompleteLeafs(): string | undefined;
-  copy(): void;
-  merge(): void;
-  prettify(): void;
-
-  pluginResize: ReturnType<typeof useDragResize>;
-  editorResize: ReturnType<typeof useDragResize>;
-  editorToolsResize: ReturnType<typeof useDragResize>;
-
-  theme: Theme;
-  setTheme(theme: Theme): void;
-};
-
-export type GraphiQLState = {
-  activeSecondaryEditor: 'variable' | 'header';
-  showShortKeys: boolean;
-  showSettings: boolean;
-  clearStorageStatus: 'success' | 'error' | null;
-};
-
-function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
     'variable' | 'header'
   >('variable');
@@ -545,24 +479,16 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
   ) || (
     <>
       <ToolbarButton
-        onClick={() => {
-          props.prettify();
-        }}
+        onClick={() => prettify()}
         label="Prettify query (Shift-Ctrl-P)">
         <PrettifyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       <ToolbarButton
-        onClick={() => {
-          props.merge();
-        }}
+        onClick={() => merge()}
         label="Merge fragments into query (Shift-Ctrl-M)">
         <MergeIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      <ToolbarButton
-        onClick={() => {
-          props.copy();
-        }}
-        label="Copy query (Shift-Ctrl-C)">
+      <ToolbarButton onClick={() => copy()} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
       {props.toolbar?.additionalContent
@@ -578,8 +504,8 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
   const headerEditorEnabled = props.headerEditorEnabled ?? true;
 
   const onClickReference = () => {
-    if (props.pluginResize.hiddenElement === 'first') {
-      props.pluginResize.setHiddenElement(null);
+    if (pluginResize.hiddenElement === 'first') {
+      pluginResize.setHiddenElement(null);
     }
   };
 
@@ -594,29 +520,29 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
         <div>
-          {props.explorerContext ? (
+          {explorerContext ? (
             <Tooltip
               label={
-                props.explorerContext.isVisible
+                explorerContext.isVisible
                   ? 'Hide Documentation Explorer'
                   : 'Show Documentation Explorer'
               }>
               <UnStyledButton
-                className={props.explorerContext.isVisible ? 'active' : ''}
+                className={explorerContext.isVisible ? 'active' : ''}
                 onClick={() => {
-                  if (props.explorerContext?.isVisible) {
-                    props.explorerContext?.hide();
-                    props.pluginResize.setHiddenElement('first');
+                  if (explorerContext?.isVisible) {
+                    explorerContext?.hide();
+                    pluginResize.setHiddenElement('first');
                   } else {
-                    props.explorerContext?.show();
-                    props.pluginResize.setHiddenElement(null);
-                    if (props.historyContext?.isVisible) {
-                      props.historyContext.hide();
+                    explorerContext?.show();
+                    pluginResize.setHiddenElement(null);
+                    if (historyContext?.isVisible) {
+                      historyContext.hide();
                     }
                   }
                 }}
                 aria-label={
-                  props.explorerContext.isVisible
+                  explorerContext.isVisible
                     ? 'Hide Documentation Explorer'
                     : 'Show Documentation Explorer'
                 }>
@@ -624,31 +550,29 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
               </UnStyledButton>
             </Tooltip>
           ) : null}
-          {props.historyContext ? (
+          {historyContext ? (
             <Tooltip
               label={
-                props.historyContext.isVisible ? 'Hide History' : 'Show History'
+                historyContext.isVisible ? 'Hide History' : 'Show History'
               }>
               <UnStyledButton
-                className={props.historyContext.isVisible ? 'active' : ''}
+                className={historyContext.isVisible ? 'active' : ''}
                 onClick={() => {
-                  if (!props.historyContext) {
+                  if (!historyContext) {
                     return;
                   }
-                  props.historyContext.toggle();
-                  if (props.historyContext.isVisible) {
-                    props.pluginResize.setHiddenElement('first');
+                  historyContext.toggle();
+                  if (historyContext.isVisible) {
+                    pluginResize.setHiddenElement('first');
                   } else {
-                    props.pluginResize.setHiddenElement(null);
-                    if (props.explorerContext?.isVisible) {
-                      props.explorerContext.hide();
+                    pluginResize.setHiddenElement(null);
+                    if (explorerContext?.isVisible) {
+                      explorerContext.hide();
                     }
                   }
                 }}
                 aria-label={
-                  props.historyContext.isVisible
-                    ? 'Hide History'
-                    : 'Show History'
+                  historyContext.isVisible ? 'Hide History' : 'Show History'
                 }>
                 <HistoryIcon aria-hidden="true" />
               </UnStyledButton>
@@ -658,31 +582,25 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
         <div>
           <Tooltip label="Re-fetch GraphQL schema">
             <UnStyledButton
-              disabled={props.schemaContext.isFetching}
-              onClick={() => props.schemaContext.introspect()}
+              disabled={schemaContext.isFetching}
+              onClick={() => schemaContext.introspect()}
               aria-label="Re-fetch GraphQL schema">
               <ReloadIcon
-                className={
-                  props.schemaContext.isFetching ? 'graphiql-spin' : ''
-                }
+                className={schemaContext.isFetching ? 'graphiql-spin' : ''}
                 aria-hidden="true"
               />
             </UnStyledButton>
           </Tooltip>
           <Tooltip label="Open short keys dialog">
             <UnStyledButton
-              onClick={() => {
-                setShowDialog('short-keys');
-              }}
+              onClick={() => setShowDialog('short-keys')}
               aria-label="Open short keys dialog">
               <KeyboardShortcutIcon aria-hidden="true" />
             </UnStyledButton>
           </Tooltip>
           <Tooltip label="Open settings dialog">
             <UnStyledButton
-              onClick={() => {
-                setShowDialog('settings');
-              }}
+              onClick={() => setShowDialog('settings')}
               aria-label="Open settings dialog">
               <SettingsIcon aria-hidden="true" />
             </UnStyledButton>
@@ -691,48 +609,47 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
       </div>
       <div className="graphiql-main">
         <div
-          ref={props.pluginResize.firstRef}
+          ref={pluginResize.firstRef}
           style={{
             // Make sure the container shrinks when containing long
             // non-breaking texts
             minWidth: '200px',
           }}>
           <div className="graphiql-plugin">
-            {props.explorerContext?.isVisible ? <DocExplorer /> : null}
-            {props.historyContext?.isVisible ? <History /> : null}
+            {explorerContext?.isVisible ? <DocExplorer /> : null}
+            {historyContext?.isVisible ? <History /> : null}
           </div>
         </div>
-        <div ref={props.pluginResize.dragBarRef}>
-          {props.explorerContext?.isVisible ||
-          props.historyContext?.isVisible ? (
+        <div ref={pluginResize.dragBarRef}>
+          {explorerContext?.isVisible || historyContext?.isVisible ? (
             <div className="graphiql-horizontal-drag-bar" />
           ) : null}
         </div>
-        <div ref={props.pluginResize.secondRef}>
+        <div ref={pluginResize.secondRef}>
           <div className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs aria-label="Select active operation">
-                {props.editorContext.tabs.length > 1 ? (
+                {editorContext.tabs.length > 1 ? (
                   <>
-                    {props.editorContext.tabs.map((tab, index) => (
+                    {editorContext.tabs.map((tab, index) => (
                       <Tab
                         key={tab.id}
-                        isActive={index === props.editorContext.activeTabIndex}>
+                        isActive={index === editorContext.activeTabIndex}>
                         <Tab.Button
                           aria-controls="graphiql-session"
                           id={`graphiql-session-tab-${index}`}
                           onClick={() => {
-                            props.executionContext.stop();
-                            props.editorContext.changeTab(index);
+                            executionContext.stop();
+                            editorContext.changeTab(index);
                           }}>
                           {tab.title}
                         </Tab.Button>
                         <Tab.Close
                           onClick={() => {
-                            if (props.editorContext.activeTabIndex === index) {
-                              props.executionContext.stop();
+                            if (editorContext.activeTabIndex === index) {
+                              executionContext.stop();
                             }
-                            props.editorContext.closeTab(index);
+                            editorContext.closeTab(index);
                           }}
                         />
                       </Tab>
@@ -740,9 +657,7 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                     <Tooltip label="Add tab">
                       <UnStyledButton
                         className="graphiql-tab-add"
-                        onClick={() => {
-                          props.editorContext.addTab();
-                        }}
+                        onClick={() => editorContext.addTab()}
                         aria-label="Add tab">
                         <PlusIcon aria-hidden="true" />
                       </UnStyledButton>
@@ -751,13 +666,11 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                 ) : null}
               </Tabs>
               <div className="graphiql-session-header-right">
-                {props.editorContext.tabs.length === 1 ? (
+                {editorContext.tabs.length === 1 ? (
                   <Tooltip label="Add tab">
                     <UnStyledButton
                       className="graphiql-tab-add"
-                      onClick={() => {
-                        props.editorContext.addTab();
-                      }}
+                      onClick={() => editorContext.addTab()}
                       aria-label="Add tab">
                       <PlusIcon aria-hidden="true" />
                     </UnStyledButton>
@@ -770,13 +683,13 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
               role="tabpanel"
               id="graphiql-session"
               className="graphiql-session"
-              aria-labelledby={`graphiql-session-tab-${props.editorContext.activeTabIndex}`}>
-              <div ref={props.editorResize.firstRef}>
+              aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}>
+              <div ref={editorResize.firstRef}>
                 <div
                   className={`graphiql-editors${
-                    props.editorContext.tabs.length === 1 ? ' full-height' : ''
+                    editorContext.tabs.length === 1 ? ' full-height' : ''
                   }`}>
-                  <div ref={props.editorToolsResize.firstRef}>
+                  <div ref={editorToolsResize.firstRef}>
                     <section
                       className="graphiql-query-editor"
                       aria-label="Query Editor">
@@ -800,7 +713,7 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                       </div>
                     </section>
                   </div>
-                  <div ref={props.editorToolsResize.dragBarRef}>
+                  <div ref={editorToolsResize.dragBarRef}>
                     <div className="graphiql-editor-tools">
                       <div className="graphiql-editor-tools-tabs">
                         <UnStyledButton
@@ -808,10 +721,8 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                             activeSecondaryEditor === 'variable' ? 'active' : ''
                           }
                           onClick={() => {
-                            if (
-                              props.editorToolsResize.hiddenElement === 'second'
-                            ) {
-                              props.editorToolsResize.setHiddenElement(null);
+                            if (editorToolsResize.hiddenElement === 'second') {
+                              editorToolsResize.setHiddenElement(null);
                             }
                             setActiveSecondaryEditor('variable');
                           }}>
@@ -824,10 +735,9 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                             }
                             onClick={() => {
                               if (
-                                props.editorToolsResize.hiddenElement ===
-                                'second'
+                                editorToolsResize.hiddenElement === 'second'
                               ) {
-                                props.editorToolsResize.setHiddenElement(null);
+                                editorToolsResize.setHiddenElement(null);
                               }
                               setActiveSecondaryEditor('header');
                             }}>
@@ -837,25 +747,24 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                       </div>
                       <Tooltip
                         label={
-                          props.editorToolsResize.hiddenElement === 'second'
+                          editorToolsResize.hiddenElement === 'second'
                             ? 'Show editor tools'
                             : 'Hide editor tools'
                         }>
                         <UnStyledButton
                           onClick={() => {
-                            props.editorToolsResize.setHiddenElement(
-                              props.editorToolsResize.hiddenElement === 'second'
+                            editorToolsResize.setHiddenElement(
+                              editorToolsResize.hiddenElement === 'second'
                                 ? null
                                 : 'second',
                             );
                           }}
                           aria-label={
-                            props.editorToolsResize.hiddenElement === 'second'
+                            editorToolsResize.hiddenElement === 'second'
                               ? 'Show editor tools'
                               : 'Hide editor tools'
                           }>
-                          {props.editorToolsResize.hiddenElement ===
-                          'second' ? (
+                          {editorToolsResize.hiddenElement === 'second' ? (
                             <ChevronUpIcon
                               className="graphiql-chevron-icon"
                               aria-hidden="true"
@@ -870,7 +779,7 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                       </Tooltip>
                     </div>
                   </div>
-                  <div ref={props.editorToolsResize.secondRef}>
+                  <div ref={editorToolsResize.secondRef}>
                     <section
                       className="graphiql-editor-tool"
                       aria-label={
@@ -899,12 +808,12 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                   </div>
                 </div>
               </div>
-              <div ref={props.editorResize.dragBarRef}>
+              <div ref={editorResize.dragBarRef}>
                 <div className="graphiql-horizontal-drag-bar" />
               </div>
-              <div ref={props.editorResize.secondRef}>
+              <div ref={editorResize.secondRef}>
                 <div className="graphiql-response">
-                  {props.executionContext.isFetching ? <Spinner /> : null}
+                  {executionContext.isFetching ? <Spinner /> : null}
                   <ResponseEditor
                     value={props.response}
                     editorTheme={props.editorTheme}
@@ -920,16 +829,10 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
       </div>
       <Dialog
         isOpen={showDialog === 'short-keys'}
-        onDismiss={() => {
-          setShowDialog(null);
-        }}>
+        onDismiss={() => setShowDialog(null)}>
         <div className="graphiql-dialog-header">
           <div className="graphiql-dialog-title">Short Keys</div>
-          <Dialog.Close
-            onClick={() => {
-              setShowDialog(null);
-            }}
-          />
+          <Dialog.Close onClick={() => setShowDialog(null)} />
         </div>
         <div className="graphiql-dialog-section">
           <div>
@@ -1046,30 +949,24 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
           <div>
             <ButtonGroup>
               <Button
-                className={props.theme === null ? 'active' : ''}
-                onClick={() => {
-                  props.setTheme(null);
-                }}>
+                className={theme === null ? 'active' : ''}
+                onClick={() => setTheme(null)}>
                 System
               </Button>
               <Button
-                className={props.theme === 'light' ? 'active' : ''}
-                onClick={() => {
-                  props.setTheme('light');
-                }}>
+                className={theme === 'light' ? 'active' : ''}
+                onClick={() => setTheme('light')}>
                 Light
               </Button>
               <Button
-                className={props.theme === 'dark' ? 'active' : ''}
-                onClick={() => {
-                  props.setTheme('dark');
-                }}>
+                className={theme === 'dark' ? 'active' : ''}
+                onClick={() => setTheme('dark')}>
                 Dark
               </Button>
             </ButtonGroup>
           </div>
         </div>
-        {props.storageContext ? (
+        {storageContext ? (
           <div className="graphiql-dialog-section">
             <div>
               <div className="graphiql-dialog-section-title">Clear storage</div>
@@ -1083,7 +980,7 @@ function GraphiQLWithContext(props: GraphiQLWithContextConsumerProps) {
                 disabled={clearStorageStatus === 'success'}
                 onClick={() => {
                   try {
-                    props.storageContext?.clear();
+                    storageContext?.clear();
                     setClearStorageStatus('success');
                   } catch {
                     setClearStorageStatus('error');
