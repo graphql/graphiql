@@ -294,22 +294,7 @@ export type GraphiQLProps = {
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component<GraphiQLProps> {
-  constructor(props: GraphiQLProps) {
-    super(props);
-  }
-
-  render() {
-    return <GraphiQLProviders {...this.props} />;
-  }
-
-  // Export main windows/panes to be used separately if desired.
-  static Logo = GraphiQLLogo;
-  static Toolbar = GraphiQLToolbar;
-  static Footer = GraphiQLFooter;
-}
-
-function GraphiQLProviders({
+export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   docExplorerOpen,
   externalFragments,
@@ -319,12 +304,12 @@ function GraphiQLProviders({
   maxHistoryLength,
   onSchemaChange,
   onTabChange,
-  onToggleHistory,
   onToggleDocs,
-  storage,
+  onToggleHistory,
   schema,
   schemaDescription,
   shouldPersistHeaders,
+  storage,
   validationRules,
   ...props
 }: GraphiQLProps) {
@@ -370,6 +355,10 @@ function GraphiQLProviders({
     </StorageContextProvider>
   );
 }
+// Export main windows/panes to be used separately if desired.
+GraphiQL.Logo = GraphiQLLogo;
+GraphiQL.Toolbar = GraphiQLToolbar;
+GraphiQL.Footer = GraphiQLFooter;
 
 // Add a select-option input to the Toolbar.
 // GraphiQL.Select = ToolbarSelect;
