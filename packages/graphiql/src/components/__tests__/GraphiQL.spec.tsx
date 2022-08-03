@@ -173,7 +173,7 @@ describe('GraphiQL', () => {
   });
 
   it('will save history item even when history panel is closed', () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL
         query={mockQuery1}
         variables={mockVariables1}
@@ -182,15 +182,15 @@ describe('GraphiQL', () => {
         fetcher={noOpFetcher}
       />,
     );
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
-    fireEvent.click(getByTitle('Show History'));
+    fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
+    fireEvent.click(getByLabelText('Show History'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(1);
   });
 
   it('adds a history item when the execute query function button is clicked', () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL
         query={mockQuery1}
         variables={mockVariables1}
@@ -199,26 +199,26 @@ describe('GraphiQL', () => {
         fetcher={noOpFetcher}
       />,
     );
-    fireEvent.click(getByTitle('Show History'));
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(getByLabelText('Show History'));
+    fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(1);
   });
 
   it('will not save invalid queries', () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL query={mockBadQuery} fetcher={noOpFetcher} />,
     );
-    fireEvent.click(getByTitle('Show History'));
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(getByLabelText('Show History'));
+    fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(0);
   });
 
   it('will save if there was not a previously saved query', () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         operationName={mockOperationName1}
@@ -227,15 +227,15 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
-    fireEvent.click(getByTitle('Show History'));
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(getByLabelText('Show History'));
+    fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(1);
   });
 
-  it('will not save a query if the query is the same as previous query', () => {
-    const { getByTitle, container } = render(
+  it('will not save a query if the query is the same as previous query', async () => {
+    const { getByLabelText, findByLabelText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         operationName={mockOperationName1}
@@ -244,19 +244,19 @@ describe('GraphiQL', () => {
         headers={mockHeaders1}
       />,
     );
-    fireEvent.click(getByTitle('Show History'));
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(getByLabelText('Show History'));
+    fireEvent.click(getByLabelText('Execute query (Ctrl-Enter)'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(1);
-    fireEvent.click(getByTitle('Execute Query (Ctrl-Enter)'));
+    fireEvent.click(await findByLabelText('Execute query (Ctrl-Enter)'));
     expect(
       container.querySelectorAll('.graphiql-history-items li'),
     ).toHaveLength(1);
   });
 
   it('will save if new query is different than previous query', async () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         operationName={mockOperationName1}
@@ -266,8 +266,8 @@ describe('GraphiQL', () => {
       />,
     );
     await wait();
-    fireEvent.click(getByTitle('Show History'));
-    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(getByLabelText('Show History'));
+    const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
       1,
@@ -290,7 +290,7 @@ describe('GraphiQL', () => {
   });
 
   it('will save query if variables are different', async () => {
-    const { getByTitle, container } = render(
+    const { getByLabelText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         operationName={mockOperationName1}
@@ -300,8 +300,8 @@ describe('GraphiQL', () => {
       />,
     );
     await wait();
-    fireEvent.click(getByTitle('Show History'));
-    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(getByLabelText('Show History'));
+    const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
       1,
@@ -322,7 +322,7 @@ describe('GraphiQL', () => {
   });
 
   it('will save query if headers are different', async () => {
-    const { getByTitle, getByText, container } = render(
+    const { getByLabelText, getByText, container } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         operationName={mockOperationName1}
@@ -334,8 +334,8 @@ describe('GraphiQL', () => {
     );
     await wait();
 
-    fireEvent.click(getByTitle('Show History'));
-    const executeQueryButton = getByTitle('Execute Query (Ctrl-Enter)');
+    fireEvent.click(getByLabelText('Show History'));
+    const executeQueryButton = getByLabelText('Execute query (Ctrl-Enter)');
     fireEvent.click(executeQueryButton);
     expect(container.querySelectorAll('.graphiql-history-item')).toHaveLength(
       1,
@@ -571,7 +571,7 @@ describe('GraphiQL', () => {
     const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
     fireEvent.click(
-      container.querySelector('[title="Show Documentation Explorer"]'),
+      container.querySelector('[aria-label="Show Documentation Explorer"]'),
     );
     const dragBar = container.querySelectorAll(
       '.graphiql-horizontal-drag-bar',

@@ -24,7 +24,6 @@ button.graphiql-execute-button {
     display: block;
     height: var(--px-16);
     margin: auto;
-    pointer-events: none;
     width: var(--px-16);
   }
 }

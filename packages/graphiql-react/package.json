@@ -42,6 +42,7 @@
     "@reach/dialog": "^0.17.0",
     "@reach/listbox": "^0.17.0",
     "@reach/menu-button": "^0.17.0",
+    "@reach/tooltip": "^0.17.0",
     "@reach/visually-hidden": "^0.17.0",
     "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.0.0-next.2",

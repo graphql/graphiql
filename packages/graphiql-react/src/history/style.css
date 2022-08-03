@@ -81,7 +81,6 @@ button.graphiql-history-item-action {
 
   & > svg {
     height: 14px;
-    pointer-events: none;
     width: 14px;
   }
 }

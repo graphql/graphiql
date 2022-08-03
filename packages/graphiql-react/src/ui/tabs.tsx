@@ -3,6 +3,7 @@ import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
 import { compose } from '../utility/compose';
 import { UnStyledButton } from './button';
+import { Tooltip } from './tooltip';
 
 import './tabs.css';
 
@@ -45,15 +46,16 @@ TabButton.displayName = 'Tab.Button';
 
 const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
   (props, ref) => (
-    <UnStyledButton
-      aria-label="Close Tab"
-      title="Close Tab"
-      {...props}
-      ref={ref}
-      type="button"
-      className={compose('graphiql-tab-close', props.className)}>
-      <CloseIcon />
-    </UnStyledButton>
+    <Tooltip label="Close Tab">
+      <UnStyledButton
+        aria-label="Close Tab"
+        {...props}
+        ref={ref}
+        type="button"
+        className={compose('graphiql-tab-close', props.className)}>
+        <CloseIcon />
+      </UnStyledButton>
+    </Tooltip>
   ),
 );
 TabClose.displayName = 'Tab.Close';
