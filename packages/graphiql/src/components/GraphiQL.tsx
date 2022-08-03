@@ -360,10 +360,6 @@ GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
 GraphiQL.Footer = GraphiQLFooter;
 
-// Add a select-option input to the Toolbar.
-// GraphiQL.Select = ToolbarSelect;
-// GraphiQL.SelectOption = ToolbarSelectOption;
-
 type GraphiQLWithContextProviderProps = Omit<
   GraphiQLProps,
   | 'dangerouslyAssumeSchemaIsValid'
