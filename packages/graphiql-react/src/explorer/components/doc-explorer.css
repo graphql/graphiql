@@ -3,17 +3,18 @@
   display: flex;
   justify-content: space-between;
   position: relative;
+
+  &:focus-within
+    > .graphiql-doc-explorer-header-content
+    > *:not(a.graphiql-doc-explorer-back) {
+    /* Hide the header when focussing the search input */
+    visibility: hidden;
+  }
 }
 .graphiql-doc-explorer-header-content {
   display: flex;
   flex-direction: column;
   min-width: 0;
-}
-.graphiql-doc-explorer-header:focus-within
-  > .graphiql-doc-explorer-header-content
-  > *:not(a.graphiql-doc-explorer-back) {
-  /* Hide the header when focussing the search input */
-  visibility: hidden;
 }
 
 /* The search input in the header of the doc explorer */
@@ -22,16 +23,19 @@
   position: absolute;
   right: 0;
   top: 0;
-}
-.graphiql-doc-explorer-search:focus-within {
-  left: 0;
-}
-.graphiql-doc-explorer-search [data-reach-combobox-input] {
-  height: 24px;
-  width: 4ch;
-}
-.graphiql-doc-explorer-search [data-reach-combobox-input]:focus {
-  width: 100%;
+
+  &:focus-within {
+    left: 0;
+  }
+
+  & [data-reach-combobox-input] {
+    height: 24px;
+    width: 4ch;
+  }
+
+  & [data-reach-combobox-input]:focus {
+    width: 100%;
+  }
 }
 
 /* The back-button in the doc explorer */
@@ -63,10 +67,10 @@ a.graphiql-doc-explorer-back {
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-.graphiql-doc-explorer-title:not(:first-child) {
-  font-size: var(--font-size-h3);
-  margin-top: var(--px-8);
+  &:not(:first-child) {
+    font-size: var(--font-size-h3);
+    margin-top: var(--px-8);
+  }
 }
 
 /* The contents of the currently active page in the doc explorer */
