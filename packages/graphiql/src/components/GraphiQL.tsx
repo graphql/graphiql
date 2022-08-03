@@ -307,10 +307,6 @@ export class GraphiQL extends React.Component<GraphiQLProps> {
   static Logo = GraphiQLLogo;
   static Toolbar = GraphiQLToolbar;
   static Footer = GraphiQLFooter;
-  static QueryEditor = QueryEditor;
-  static VariableEditor = VariableEditor;
-  static HeaderEditor = HeaderEditor;
-  static ResultViewer = ResponseEditor;
 }
 
 function GraphiQLProviders({
