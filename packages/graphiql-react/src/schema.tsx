@@ -19,6 +19,7 @@ import {
   Dispatch,
   ReactNode,
   SetStateAction,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -32,14 +33,15 @@ import { createContextHook, createNullableContext } from './utility/context';
  * There's a semantic difference between `null` and `undefined`:
  * - When `null` is passed explicitly as prop, GraphiQL will run schema-less
  *   (i.e. it will never attempt to fetch the schema, even when calling the
- *   `useFetchSchema` hook).
+ *   `introspect` function).
  * - When `schema` is `undefined` GraphiQL will attempt to fetch the schema
- *   when calling `useFetchSchema`.
+ *   when calling `introspect`.
  */
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
 export type SchemaContextType = {
   fetchError: string | null;
+  introspect(): void;
   isFetching: boolean;
   schema: MaybeGraphQLSchema;
   setFetchError: Dispatch<SetStateAction<string | null>>;
@@ -69,6 +71,12 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   const [fetchError, setFetchError] = useState<string | null>(null);
 
   /**
+   * A counter that is incremented each time introspection is triggered or the
+   * schema state is updated.
+   */
+  const counterRef = useRef(0);
+
+  /**
    * Synchronize prop changes with state
    */
   useEffect(() => {
@@ -79,6 +87,12 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
         ? props.schema
         : undefined,
     );
+
+    /**
+     * Increment the counter so that in-flight introspection requests don't
+     * override this change.
+     */
+    counterRef.current++;
   }, [props.schema]);
 
   /**
@@ -108,7 +122,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Fetch the schema
    */
   const { fetcher, onSchemaChange } = props;
-  useEffect(() => {
+  const introspect = useCallback(() => {
     /**
      * Only introspect if there is no schema provided via props. If the
      * prop is passed an introspection result, we do continue but skip the
@@ -118,11 +132,12 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       return;
     }
 
-    let isActive = true;
+    const counter = ++counterRef.current;
+
     setSchema(undefined);
 
     const maybeIntrospectionData = props.schema;
-    async function introspect() {
+    async function fetchIntrospectionData() {
       if (maybeIntrospectionData) {
         // No need to introspect if we already have the data
         return maybeIntrospectionData;
@@ -193,43 +208,37 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       setFetchError(responseString);
     }
 
-    introspect()
+    fetchIntrospectionData()
       .then(introspectionData => {
-        // Don't continue if the effect has already been cleaned up
-        if (!isActive || !introspectionData) {
+        console.log(counter, counterRef.current);
+        /**
+         * Don't continue if another introspection request has been started in
+         * the meantime or if there is no introspection data.
+         */
+        if (counter !== counterRef.current || !introspectionData) {
           return;
         }
 
         try {
           const newSchema = buildClientSchema(introspectionData);
-          // Only override the schema in state if it's still `undefined` (the
-          // prop and thus the state could have changed while introspecting,
-          // so this avoids a race condition by prioritizing the state that
-          // was set after the introspection request was initialized)
-          setSchema(current => {
-            if (current === undefined) {
-              onSchemaChange?.(newSchema);
-              return newSchema;
-            }
-            return current;
-          });
+          setSchema(newSchema);
+          onSchemaChange?.(newSchema);
         } catch (error) {
           setFetchError(formatError(error as Error));
         }
       })
       .catch(error => {
-        // Don't continue if the effect has already been cleaned up
-        if (!isActive) {
+        /**
+         * Don't continue if another introspection request has been started in
+         * the meantime.
+         */
+        if (counter !== counterRef.current) {
           return;
         }
 
         setFetchError(formatError(error));
         setIsFetching(false);
       });
-
-    return () => {
-      isActive = false;
-    };
   }, [
     fetcher,
     introspectionQueryName,
@@ -238,6 +247,26 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
     onSchemaChange,
     props.schema,
   ]);
+
+  /**
+   * Trigger introspection automatically
+   */
+  useEffect(() => {
+    introspect();
+  }, [introspect]);
+
+  /**
+   * Trigger introspection manually via short key
+   */
+  useEffect(() => {
+    function triggerIntrospection(event: KeyboardEvent) {
+      if (event.keyCode === 82 && event.shiftKey && event.ctrlKey) {
+        introspect();
+      }
+    }
+    window.addEventListener('keydown', triggerIntrospection);
+    return () => window.removeEventListener('keydown', triggerIntrospection);
+  });
 
   /**
    * Derive validation errors from the schema
@@ -256,13 +285,14 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   const value = useMemo(
     () => ({
       fetchError,
+      introspect,
       isFetching,
       schema,
       setFetchError,
       setSchema,
       validationErrors,
     }),
-    [fetchError, isFetching, schema, validationErrors],
+    [fetchError, introspect, isFetching, schema, validationErrors],
   );
 
   return (

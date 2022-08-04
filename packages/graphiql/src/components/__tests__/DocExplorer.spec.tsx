@@ -17,6 +17,7 @@ import { ExampleSchema } from './ExampleSchema';
 
 const defaultSchemaContext: SchemaContextType = {
   fetchError: null,
+  introspect() {},
   isFetching: false,
   schema: ExampleSchema,
   setFetchError() {},
