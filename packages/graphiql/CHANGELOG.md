@@ -1,5 +1,16 @@
 # Change Log
 
+## 1.11.0
+
+### Minor Changes
+
+- [#2618](https://github.com/graphql/graphiql/pull/2618) [`4c814506`](https://github.com/graphql/graphiql/commit/4c814506183579b78731659d871cd4b0ba93305a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a toolbar button for manually triggering introspection
+
+### Patch Changes
+
+- Updated dependencies [[`4c814506`](https://github.com/graphql/graphiql/commit/4c814506183579b78731659d871cd4b0ba93305a)]:
+  - @graphiql/react@0.7.0
+
 ## 1.10.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.7.0
+
+### Minor Changes
+
+- [#2618](https://github.com/graphql/graphiql/pull/2618) [`4c814506`](https://github.com/graphql/graphiql/commit/4c814506183579b78731659d871cd4b0ba93305a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a method `introspect` to the schema context and provide a short key (`Shift-Ctrl-R`) for triggering introspection
+
 ## 0.6.0
 
 ### Minor Changes
