@@ -32,6 +32,8 @@ import {
   ExecuteButton,
   ExecutionContextProvider,
   ExplorerContextProvider,
+  GraphiQLProvider,
+  GraphiQLProviderProps,
   HeaderEditor,
   History,
   HistoryContextProvider,
@@ -48,7 +50,6 @@ import {
   SchemaContextProvider,
   SettingsIcon,
   Spinner,
-  StorageContextProvider,
   Tab,
   Tabs,
   TabsState,
@@ -92,7 +93,7 @@ export type GraphiQLToolbarConfig = {
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = {
+export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
   /**
    * Required. A function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable
    * which resolves to the GraphQL parsed JSON response.
@@ -137,12 +138,6 @@ export type GraphiQLProps = {
    * provide a json string that controls the results editor state
    */
   response?: string;
-  /**
-   * Provide a custom storage API, as an alternative to localStorage.
-   * [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html
-   * default: StorageAPI
-   */
-  storage?: Storage;
   /**
    * The defaultQuery present when the editor is first loaded
    * and the user has no local query editing state
@@ -327,7 +322,7 @@ export function GraphiQL({
   }
 
   return (
-    <StorageContextProvider storage={storage}>
+    <GraphiQLProvider storage={storage}>
       <HistoryContextProvider
         maxHistoryLength={maxHistoryLength}
         onToggle={onToggleHistory}
@@ -367,7 +362,7 @@ export function GraphiQL({
           </SchemaContextProvider>
         </EditorContextProvider>
       </HistoryContextProvider>
-    </StorageContextProvider>
+    </GraphiQLProvider>
   );
 }
 // Export main windows/panes to be used separately if desired.

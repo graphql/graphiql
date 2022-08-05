@@ -47,6 +47,7 @@ export {
   HistoryContextProvider,
   useHistoryContext,
 } from './history';
+export { GraphiQLProvider } from './provider';
 export {
   SchemaContext,
   SchemaContextProvider,
@@ -82,6 +83,10 @@ export type {
   ExplorerNavStackItem,
 } from './explorer';
 export type { HistoryContextType } from './history';
+export type { GraphiQLProviderProps } from './provider';
 export type { SchemaContextType } from './schema';
-export type { StorageContextType } from './storage';
+export type {
+  StorageContextType,
+  StorageContextProviderProps,
+} from './storage';
 export type { Theme } from './theme';
