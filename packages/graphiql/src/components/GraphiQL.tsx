@@ -11,13 +11,7 @@ import React, {
   ReactNode,
   useState,
 } from 'react';
-import {
-  GraphQLSchema,
-  ValidationRule,
-  FragmentDefinitionNode,
-  DocumentNode,
-  IntrospectionQuery,
-} from 'graphql';
+import { GraphQLSchema, DocumentNode, IntrospectionQuery } from 'graphql';
 
 import {
   Button,
@@ -28,7 +22,6 @@ import {
   Dialog,
   DocExplorer,
   DocsIcon,
-  EditorContextProvider,
   ExecuteButton,
   ExecutionContextProvider,
   ExplorerContextProvider,
@@ -51,7 +44,6 @@ import {
   Spinner,
   Tab,
   Tabs,
-  TabsState,
   ToolbarButton,
   Tooltip,
   UnStyledButton,
@@ -111,38 +103,10 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   schema?: GraphQLSchema | IntrospectionQuery | null;
   /**
-   * An array of graphql ValidationRules
-   */
-  validationRules?: ValidationRule[];
-  /**
-   * Optionally provide the query in a controlled-component manner. This will override the user state.
-   *
-   * If you just want to provide a different initial query, use `defaultQuery`
-   */
-  query?: string;
-  /**
-   * Same as above. provide a json string that controls the present variables editor state.
-   */
-  variables?: string;
-  /**
-   * provide a json string that controls the headers editor state
-   */
-  headers?: string;
-  /**
    * The operationName to use when executing the current operation.
    * Overrides the dropdown when multiple operations are present.
    */
   operationName?: string;
-  /**
-   * provide a json string that controls the results editor state
-   */
-  response?: string;
-  /**
-   * The defaultQuery present when the editor is first loaded
-   * and the user has no local query editing state
-   * @default "A really long graphql # comment that welcomes you to GraphiQL"
-   */
-  defaultQuery?: string;
   /**
    * Should the variables editor be open by default?
    * default: true
@@ -160,16 +124,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   headerEditorEnabled?: boolean;
   /**
-   * Should user header changes be persisted to localStorage?
-   * default: false
-   */
-  shouldPersistHeaders?: boolean;
-  /**
-   * Provide an array of fragment nodes or a string to append to queries,
-   * and for validation and completion
-   */
-  externalFragments?: string | FragmentDefinitionNode[];
-  /**
    * Handler for when a user copies a query
    */
   onCopyQuery?: (query?: string) => void;
@@ -185,10 +139,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    * Handler for when a user edits headers.
    */
   onEditHeaders?: (value: string) => void;
-  /**
-   * Handler for when a user edits operation names
-   */
-  onEditOperationName?: (operationName: string) => void;
   /**
    * Handler for when the user toggles the doc pane
    */
@@ -264,10 +214,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    * Callback that is invoked once a remote schema has been fetched.
    */
   onSchemaChange?: (schema: GraphQLSchema) => void;
-  /**
-   * Callback that is invoked onTabChange.
-   */
-  onTabChange?: (tab: TabsState) => void;
 
   children?: ReactNode;
 };
@@ -292,15 +238,15 @@ export function GraphiQL({
   onEditOperationName,
   onSchemaChange,
   onTabChange,
-  onToggleHistory,
   onToggleDocs,
+  onToggleHistory,
   operationName,
   query,
   response,
-  storage,
   schema,
   schemaDescription,
   shouldPersistHeaders,
+  storage,
   validationRules,
   variables,
   ...props
@@ -312,44 +258,41 @@ export function GraphiQL({
 
   return (
     <GraphiQLProvider
+      defaultQuery={defaultQuery}
+      externalFragments={externalFragments}
+      headers={headers}
       maxHistoryLength={maxHistoryLength}
+      onEditOperationName={onEditOperationName}
+      onTabChange={onTabChange}
       onToggleHistory={onToggleHistory}
+      query={query}
+      response={response}
+      shouldPersistHeaders={shouldPersistHeaders}
       storage={storage}
+      validationRules={validationRules}
+      variables={variables}
     >
-      <EditorContextProvider
-        defaultQuery={defaultQuery}
-        externalFragments={externalFragments}
-        headers={headers}
-        onEditOperationName={onEditOperationName}
-        onTabChange={onTabChange}
-        query={query}
-        response={response}
-        shouldPersistHeaders={shouldPersistHeaders}
-        validationRules={validationRules}
-        variables={variables}
+      <SchemaContextProvider
+        dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+        fetcher={fetcher}
+        inputValueDeprecation={inputValueDeprecation}
+        introspectionQueryName={introspectionQueryName}
+        onSchemaChange={onSchemaChange}
+        schema={schema}
+        schemaDescription={schemaDescription}
       >
-        <SchemaContextProvider
-          dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+        <ExecutionContextProvider
           fetcher={fetcher}
-          inputValueDeprecation={inputValueDeprecation}
-          introspectionQueryName={introspectionQueryName}
-          onSchemaChange={onSchemaChange}
-          schema={schema}
-          schemaDescription={schemaDescription}
+          operationName={operationName}
         >
-          <ExecutionContextProvider
-            fetcher={fetcher}
-            operationName={operationName}
+          <ExplorerContextProvider
+            isVisible={docExplorerOpen}
+            onToggleVisibility={onToggleDocs}
           >
-            <ExplorerContextProvider
-              isVisible={docExplorerOpen}
-              onToggleVisibility={onToggleDocs}
-            >
-              <GraphiQLInterface {...props} />
-            </ExplorerContextProvider>
-          </ExecutionContextProvider>
-        </SchemaContextProvider>
-      </EditorContextProvider>
+            <GraphiQLInterface {...props} />
+          </ExplorerContextProvider>
+        </ExecutionContextProvider>
+      </SchemaContextProvider>
     </GraphiQLProvider>
   );
 }

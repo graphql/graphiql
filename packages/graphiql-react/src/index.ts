@@ -67,6 +67,7 @@ export * from './toolbar';
 
 export type {
   EditorContextType,
+  EditorContextProviderProps,
   ResponseTooltipType,
   TabsState,
   UseHeaderEditorArgs,

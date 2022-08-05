@@ -1,14 +1,22 @@
+import { EditorContextProvider, EditorContextProviderProps } from './editor';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
-export type GraphiQLProviderProps = HistoryContextProviderProps &
+export type GraphiQLProviderProps = EditorContextProviderProps &
+  HistoryContextProviderProps &
   StorageContextProviderProps;
 
 export function GraphiQLProvider({
   children,
+  defaultQuery,
+  headers,
   maxHistoryLength,
+  onTabChange,
   onToggleHistory,
+  query,
+  shouldPersistHeaders,
   storage,
+  variables,
 }: GraphiQLProviderProps) {
   return (
     <StorageContextProvider storage={storage}>
@@ -16,7 +24,16 @@ export function GraphiQLProvider({
         maxHistoryLength={maxHistoryLength}
         onToggleHistory={onToggleHistory}
       >
-        {children}
+        <EditorContextProvider
+          defaultQuery={defaultQuery}
+          headers={headers}
+          onTabChange={onTabChange}
+          query={query}
+          shouldPersistHeaders={shouldPersistHeaders}
+          variables={variables}
+        >
+          {children}
+        </EditorContextProvider>
       </HistoryContextProvider>
     </StorageContextProvider>
   );

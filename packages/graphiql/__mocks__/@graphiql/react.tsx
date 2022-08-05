@@ -100,6 +100,7 @@ export {
 
 export type {
   EditorContextType,
+  EditorContextProviderProps,
   ExecutionContextType,
   ExplorerContextType,
   ExplorerFieldDef,
