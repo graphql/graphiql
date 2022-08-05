@@ -134,8 +134,8 @@ reach-portal {
   & a {
     color: var(--color-pink);
 
-    &:visited {
-      color: var(--color-pink-dark);
+    &:focus {
+      outline: var(--color-pink) auto 1px;
     }
   }
 }
