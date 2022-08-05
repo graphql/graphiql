@@ -12,11 +12,10 @@ describe('IncrementalDelivery support via fetcher', () => {
     };
 
     it('Expects a subscription to resolve', () => {
-      cy.assertQueryResult(
-        { query: testSubscription, variables: { delay: 0 } },
-        mockSubscriptionSuccess,
-        1200,
-      );
+      cy.visitWithOp({ query: testSubscription, variables: { delay: 0 } });
+      cy.clickExecuteQuery();
+      cy.wait(1200);
+      cy.assertQueryResult(mockSubscriptionSuccess);
     });
   });
 });

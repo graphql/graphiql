@@ -77,8 +77,12 @@ function getSchemaUrl() {
 
   if (isDev) {
     // This supports an e2e test which ensures that invalid schemas do not load.
-    if (parameters.bad && parameters.bad === 'true') {
+    if (parameters.bad === 'true') {
       return '/bad/graphql';
+    } else if (parameters['http-error'] === 'true') {
+      return '/http-error/graphql';
+    } else if (parameters['graphql-error'] === 'true') {
+      return '/graphql-error/graphql';
     } else {
       return '/graphql';
     }
