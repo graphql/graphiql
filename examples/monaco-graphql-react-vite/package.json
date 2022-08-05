@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@graphiql/toolkit": "^0.6.0",
+    "@graphiql/toolkit": "^0.6.1",
     "graphql-language-service": "^5.0.6",
     "monaco-graphql": "^1.1.2",
     "react": "^17.0.2",
