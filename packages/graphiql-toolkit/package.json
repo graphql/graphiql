@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/toolkit",
-  "version": "1.0.0-next.1",
+  "version": "1.0.0-next.2",
   "description": "Utility to build a fetcher for GraphiQL",
   "contributors": [
     "Rikki Schulte <rikki.schulte@gmail.com> (https://rikki.dev)"
