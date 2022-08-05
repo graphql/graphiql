@@ -59,20 +59,16 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
       const delay = 100;
       const timeout = mockStreamSuccess.data.streamable.length * (delay * 1.5);
 
-      cy.visit(`/?query=${testStreamQuery}`);
-      cy.assertQueryResult(
-        { query: testStreamQuery, variables: { delay } },
-        mockStreamSuccess,
-        timeout,
-      );
+      cy.visitWithOp({ query: testStreamQuery, variables: { delay } });
+      cy.clickExecuteQuery();
+      cy.wait(timeout);
+      cy.assertQueryResult(mockStreamSuccess);
     });
 
     it('Expects a quick stream to resolve in a single increment', () => {
-      cy.visit(`/?query=${testStreamQuery}`);
-      cy.assertQueryResult(
-        { query: testStreamQuery, variables: { delay: 0 } },
-        mockStreamSuccess,
-      );
+      cy.visitWithOp({ query: testStreamQuery, variables: { delay: 0 } });
+      cy.clickExecuteQuery();
+      cy.assertQueryResult(mockStreamSuccess);
     });
   });
 
@@ -92,21 +88,19 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
         }
       `;
 
-      cy.visit(`/?query=${testQuery}`);
-      cy.assertQueryResult(
-        { query: testQuery, variables: { delay } },
-        {
-          data: {
-            deferrable: {
-              normalString: 'Nice',
-              deferredString:
-                'Oops, this took 1 seconds longer than I thought it would!',
-            },
+      cy.visitWithOp({ query: testQuery, variables: { delay } });
+      cy.clickExecuteQuery();
+      cy.wait(timeout);
+      cy.assertQueryResult({
+        data: {
+          deferrable: {
+            normalString: 'Nice',
+            deferredString:
+              'Oops, this took 1 seconds longer than I thought it would!',
           },
-          hasNext: false,
         },
-        timeout,
-      );
+        hasNext: false,
+      });
     });
 
     it('Expects to merge types when members arrive at different times', () => {
@@ -142,38 +136,36 @@ describeOrSkip('IncrementalDelivery support via fetcher', () => {
         }
       `;
 
-      cy.visit(`/?query=${testQuery}`);
-      cy.assertQueryResult(
-        { query: testQuery, variables: { delay } },
-        {
-          data: {
-            person: {
-              name: 'Mark',
-              friends: [
-                {
-                  name: 'James',
-                  age: 1000,
-                },
-                {
-                  name: 'Mary',
-                  age: 1000,
-                },
-                {
-                  name: 'John',
-                  age: 1000,
-                },
-                {
-                  name: 'Patrica',
-                  age: 1000,
-                },
-              ],
-              age: 1000,
-            },
+      cy.visitWithOp({ query: testQuery, variables: { delay } });
+      cy.clickExecuteQuery();
+      cy.wait(timeout);
+      cy.assertQueryResult({
+        data: {
+          person: {
+            name: 'Mark',
+            friends: [
+              {
+                name: 'James',
+                age: 1000,
+              },
+              {
+                name: 'Mary',
+                age: 1000,
+              },
+              {
+                name: 'John',
+                age: 1000,
+              },
+              {
+                name: 'Patrica',
+                age: 1000,
+              },
+            ],
+            age: 1000,
           },
-          hasNext: false,
         },
-        timeout,
-      );
+        hasNext: false,
+      });
     });
   });
 });

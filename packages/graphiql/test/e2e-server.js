@@ -9,6 +9,7 @@
 const express = require('express');
 const path = require('path');
 const { graphqlHTTP } = require('express-graphql');
+const { GraphQLError } = require('graphql');
 const schema = require('./schema');
 const app = express();
 const { schema: badSchema } = require('./bad-schema');
@@ -26,6 +27,16 @@ app.get(
 
 app.post('/bad/graphql', (_req, res, next) => {
   res.json({ data: badSchema });
+  next();
+});
+
+app.post('/http-error/graphql', (_req, res, next) => {
+  res.status(502).send('Bad Gateway');
+  next();
+});
+
+app.post('/graphql-error/graphql', (_req, res, next) => {
+  res.json({ errors: [new GraphQLError('Something unexpected happened...')] });
   next();
 });
 

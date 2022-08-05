@@ -43,7 +43,9 @@ describe('GraphiQL On Initialization', () => {
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {
-    cy.assertQueryResult({ query: testQuery }, mockSuccess);
+    cy.visitWithOp({ query: testQuery });
+    cy.clickExecuteQuery();
+    cy.assertQueryResult(mockSuccess);
   });
   it('Shows the expected error when the schema is invalid', () => {
     cy.visit(`/?bad=true`);

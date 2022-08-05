@@ -34,11 +34,7 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
-    assertQueryResult(
-      op: Op,
-      expectedResult: MockResult,
-      timeout?: number,
-    ): Chainable<Element>;
+    assertQueryResult(expectedResult: MockResult): Chainable<Element>;
     assertLinterMarkWithMessage(
       text: string,
       severity: 'error' | 'warning',
@@ -117,13 +113,10 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
-  cy.visitWithOp(op);
-  cy.clickExecuteQuery();
-  cy.wait(timeout);
+Cypress.Commands.add('assertQueryResult', expectedResult => {
   cy.get('section.result-window').should(element => {
     expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
-      JSON.stringify(mockSuccess, null, 2),
+      JSON.stringify(expectedResult, null, 2),
     );
   });
 });
