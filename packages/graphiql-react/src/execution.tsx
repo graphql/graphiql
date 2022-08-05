@@ -302,6 +302,10 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             }),
           );
         } else if (isAsyncIterable(value)) {
+          setSubscription({
+            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
+          });
+
           try {
             for await (const result of value) {
               handleResponse(result);
@@ -313,10 +317,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             setResponse(formatError(error));
             setSubscription(null);
           }
-
-          setSubscription({
-            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
-          });
         } else {
           handleResponse(value);
         }
