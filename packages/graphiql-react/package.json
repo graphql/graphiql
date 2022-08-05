@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "1.0.0-next.1",
+  "version": "1.0.0-next.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -37,13 +37,13 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^1.0.0-next.1",
+    "@graphiql/toolkit": "^1.0.0-next.2",
     "@reach/combobox": "^0.17.0",
     "@reach/dialog": "^0.17.0",
     "@reach/menu-button": "^0.17.0",
     "@reach/visually-hidden": "^0.17.0",
     "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.0.0-next.1",
+    "codemirror-graphql": "^2.0.0-next.2",
     "copy-to-clipboard": "^3.2.0",
     "graphql-language-service": "^5.0.6",
     "markdown-it": "^12.2.0",
