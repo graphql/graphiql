@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.6.1
+
+### Patch Changes
+
+- [#2535](https://github.com/graphql/graphiql/pull/2535) [`ea732ea8`](https://github.com/graphql/graphiql/commit/ea732ea8e12272c998f1467af8b3b88b6b508e12) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix error formatting for websocket requests and make error formatting more generic in general
+
 ## 0.6.0
 
 ### Minor Changes
