@@ -36,7 +36,6 @@ import {
   GraphiQLProviderProps,
   HeaderEditor,
   History,
-  HistoryContextProvider,
   HistoryIcon,
   KeyboardShortcutIcon,
   KeyMap,
@@ -215,10 +214,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   keyMap?: KeyMap;
   /**
-   * On history pane toggle event
-   */
-  onToggleHistory?: (historyPaneOpen: boolean) => void;
-  /**
    * Custom results tooltip component
    */
   ResultsTooltip?: ResponseTooltipType;
@@ -266,15 +261,9 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   toolbar?: GraphiQLToolbarConfig;
   /**
-   * Max query history to retain
-   * default: 20
-   */
-  maxHistoryLength?: number;
-  /**
    * Callback that is invoked once a remote schema has been fetched.
    */
   onSchemaChange?: (schema: GraphQLSchema) => void;
-
   /**
    * Callback that is invoked onTabChange.
    */
@@ -322,46 +311,45 @@ export function GraphiQL({
   }
 
   return (
-    <GraphiQLProvider storage={storage}>
-      <HistoryContextProvider
-        maxHistoryLength={maxHistoryLength}
-        onToggle={onToggleHistory}
+    <GraphiQLProvider
+      maxHistoryLength={maxHistoryLength}
+      onToggleHistory={onToggleHistory}
+      storage={storage}
+    >
+      <EditorContextProvider
+        defaultQuery={defaultQuery}
+        externalFragments={externalFragments}
+        headers={headers}
+        onEditOperationName={onEditOperationName}
+        onTabChange={onTabChange}
+        query={query}
+        response={response}
+        shouldPersistHeaders={shouldPersistHeaders}
+        validationRules={validationRules}
+        variables={variables}
       >
-        <EditorContextProvider
-          defaultQuery={defaultQuery}
-          externalFragments={externalFragments}
-          headers={headers}
-          onEditOperationName={onEditOperationName}
-          onTabChange={onTabChange}
-          query={query}
-          response={response}
-          shouldPersistHeaders={shouldPersistHeaders}
-          validationRules={validationRules}
-          variables={variables}
+        <SchemaContextProvider
+          dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+          fetcher={fetcher}
+          inputValueDeprecation={inputValueDeprecation}
+          introspectionQueryName={introspectionQueryName}
+          onSchemaChange={onSchemaChange}
+          schema={schema}
+          schemaDescription={schemaDescription}
         >
-          <SchemaContextProvider
-            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+          <ExecutionContextProvider
             fetcher={fetcher}
-            inputValueDeprecation={inputValueDeprecation}
-            introspectionQueryName={introspectionQueryName}
-            onSchemaChange={onSchemaChange}
-            schema={schema}
-            schemaDescription={schemaDescription}
+            operationName={operationName}
           >
-            <ExecutionContextProvider
-              fetcher={fetcher}
-              operationName={operationName}
+            <ExplorerContextProvider
+              isVisible={docExplorerOpen}
+              onToggleVisibility={onToggleDocs}
             >
-              <ExplorerContextProvider
-                isVisible={docExplorerOpen}
-                onToggleVisibility={onToggleDocs}
-              >
-                <GraphiQLInterface {...props} />
-              </ExplorerContextProvider>
-            </ExecutionContextProvider>
-          </SchemaContextProvider>
-        </EditorContextProvider>
-      </HistoryContextProvider>
+              <GraphiQLInterface {...props} />
+            </ExplorerContextProvider>
+          </ExecutionContextProvider>
+        </SchemaContextProvider>
+      </EditorContextProvider>
     </GraphiQLProvider>
   );
 }

@@ -107,6 +107,7 @@ export type {
   ExplorerNavStackItem,
   GraphiQLProviderProps,
   HistoryContextType,
+  HistoryContextProviderProps,
   ResponseTooltipType,
   SchemaContextType,
   StorageContextType,

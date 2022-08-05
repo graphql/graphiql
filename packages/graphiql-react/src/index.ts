@@ -82,7 +82,10 @@ export type {
   ExplorerNavStack,
   ExplorerNavStackItem,
 } from './explorer';
-export type { HistoryContextType } from './history';
+export type {
+  HistoryContextType,
+  HistoryContextProviderProps,
+} from './history';
 export type { GraphiQLProviderProps } from './provider';
 export type { SchemaContextType } from './schema';
 export type {
