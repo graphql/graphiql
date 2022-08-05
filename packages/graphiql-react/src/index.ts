@@ -88,7 +88,7 @@ export type {
   HistoryContextProviderProps,
 } from './history';
 export type { GraphiQLProviderProps } from './provider';
-export type { SchemaContextType } from './schema';
+export type { SchemaContextType, SchemaContextProviderProps } from './schema';
 export type {
   StorageContextType,
   StorageContextProviderProps,

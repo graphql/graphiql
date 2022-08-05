@@ -1,19 +1,28 @@
 import { EditorContextProvider, EditorContextProviderProps } from './editor';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
+import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
 export type GraphiQLProviderProps = EditorContextProviderProps &
   HistoryContextProviderProps &
+  SchemaContextProviderProps &
   StorageContextProviderProps;
 
 export function GraphiQLProvider({
   children,
+  dangerouslyAssumeSchemaIsValid,
   defaultQuery,
+  fetcher,
   headers,
+  inputValueDeprecation,
+  introspectionQueryName,
   maxHistoryLength,
+  onSchemaChange,
   onTabChange,
   onToggleHistory,
   query,
+  schema,
+  schemaDescription,
   shouldPersistHeaders,
   storage,
   variables,
@@ -32,7 +41,17 @@ export function GraphiQLProvider({
           shouldPersistHeaders={shouldPersistHeaders}
           variables={variables}
         >
-          {children}
+          <SchemaContextProvider
+            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+            fetcher={fetcher}
+            inputValueDeprecation={inputValueDeprecation}
+            introspectionQueryName={introspectionQueryName}
+            onSchemaChange={onSchemaChange}
+            schema={schema}
+            schemaDescription={schemaDescription}
+          >
+            {children}
+          </SchemaContextProvider>
         </EditorContextProvider>
       </HistoryContextProvider>
     </StorageContextProvider>

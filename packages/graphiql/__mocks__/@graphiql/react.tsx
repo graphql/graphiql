@@ -111,6 +111,7 @@ export type {
   HistoryContextProviderProps,
   ResponseTooltipType,
   SchemaContextType,
+  SchemaContextProviderProps,
   StorageContextType,
   StorageContextProviderProps,
   TabsState,

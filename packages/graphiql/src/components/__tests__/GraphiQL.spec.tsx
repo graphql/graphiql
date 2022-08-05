@@ -57,7 +57,7 @@ describe('GraphiQL', () => {
   it('should throw error without fetcher', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => render(<GraphiQL />)).toThrowError(
-      'GraphiQL requires a fetcher function',
+      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
     );
     spy.mockRestore();
   });

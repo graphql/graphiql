@@ -11,7 +11,7 @@ import React, {
   ReactNode,
   useState,
 } from 'react';
-import { GraphQLSchema, DocumentNode, IntrospectionQuery } from 'graphql';
+import { DocumentNode } from 'graphql';
 
 import {
   Button,
@@ -39,7 +39,6 @@ import {
   ReloadIcon,
   ResponseEditor,
   ResponseTooltipType,
-  SchemaContextProvider,
   SettingsIcon,
   Spinner,
   Tab,
@@ -96,12 +95,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    *  **Required.**
    */
   fetcher: Fetcher;
-  /**
-   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema
-   * introspection. This prop also accepts the result of an introspection query
-   * which will be used to create a `GraphQLSchema`
-   */
-  schema?: GraphQLSchema | IntrospectionQuery | null;
   /**
    * The operationName to use when executing the current operation.
    * Overrides the dropdown when multiple operations are present.
@@ -168,35 +161,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   ResultsTooltip?: ResponseTooltipType;
   /**
-   * decide whether schema responses should be validated.
-   *
-   * default: false
-   */
-  dangerouslyAssumeSchemaIsValid?: boolean;
-  /**
-   * Enable new introspectionQuery option `inputValueDeprecation`
-   * DANGER: your server must be configured to support this new feature,
-   * or else introspection will fail with an invalid query
-   *
-   * default: false
-   */
-  inputValueDeprecation?: boolean;
-  /**
-   * Enable new introspectionQuery option `schemaDescription`, which expects the `__Schema.description` field
-   * DANGER: your server must be configured to support a `__Schema.description` field on
-   * introspection or it will fail with an invalid query.
-   *
-   * default: false
-   */
-  schemaDescription?: boolean;
-  /**
-   * OperationName to use for introspection queries
-   *
-   * default: false
-   *
-   */
-  introspectionQueryName?: string;
-  /**
    * Set codemirror editors to readOnly state
    */
   readOnly?: boolean;
@@ -210,10 +174,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    * Custom toolbar configuration
    */
   toolbar?: GraphiQLToolbarConfig;
-  /**
-   * Callback that is invoked once a remote schema has been fetched.
-   */
-  onSchemaChange?: (schema: GraphQLSchema) => void;
 
   children?: ReactNode;
 };
@@ -253,46 +213,42 @@ export function GraphiQL({
 }: GraphiQLProps) {
   // Ensure props are correct
   if (typeof fetcher !== 'function') {
-    throw new TypeError('GraphiQL requires a fetcher function.');
+    throw new TypeError(
+      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
+    );
   }
 
   return (
     <GraphiQLProvider
+      dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
       externalFragments={externalFragments}
+      fetcher={fetcher}
       headers={headers}
+      inputValueDeprecation={inputValueDeprecation}
+      introspectionQueryName={introspectionQueryName}
       maxHistoryLength={maxHistoryLength}
       onEditOperationName={onEditOperationName}
+      onSchemaChange={onSchemaChange}
       onTabChange={onTabChange}
       onToggleHistory={onToggleHistory}
       query={query}
       response={response}
+      schema={schema}
+      schemaDescription={schemaDescription}
       shouldPersistHeaders={shouldPersistHeaders}
       storage={storage}
       validationRules={validationRules}
       variables={variables}
     >
-      <SchemaContextProvider
-        dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-        fetcher={fetcher}
-        inputValueDeprecation={inputValueDeprecation}
-        introspectionQueryName={introspectionQueryName}
-        onSchemaChange={onSchemaChange}
-        schema={schema}
-        schemaDescription={schemaDescription}
-      >
-        <ExecutionContextProvider
-          fetcher={fetcher}
-          operationName={operationName}
+      <ExecutionContextProvider fetcher={fetcher} operationName={operationName}>
+        <ExplorerContextProvider
+          isVisible={docExplorerOpen}
+          onToggleVisibility={onToggleDocs}
         >
-          <ExplorerContextProvider
-            isVisible={docExplorerOpen}
-            onToggleVisibility={onToggleDocs}
-          >
-            <GraphiQLInterface {...props} />
-          </ExplorerContextProvider>
-        </ExecutionContextProvider>
-      </SchemaContextProvider>
+          <GraphiQLInterface {...props} />
+        </ExplorerContextProvider>
+      </ExecutionContextProvider>
     </GraphiQLProvider>
   );
 }
