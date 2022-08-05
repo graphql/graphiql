@@ -1,3 +1,5 @@
+import './style/root.css';
+
 export {
   EditorContext,
   EditorContextProvider,
@@ -82,5 +84,3 @@ export type { HistoryContextType } from './history';
 export type { SchemaContextType } from './schema';
 export type { StorageContextType } from './storage';
 export type { Theme } from './theme';
-
-import './style/root.css';
