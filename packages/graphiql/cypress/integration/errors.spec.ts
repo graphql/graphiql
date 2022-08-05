@@ -1,3 +1,5 @@
+import { version } from 'graphql';
+
 describe('Errors', () => {
   it('Should show an error when the HTTP request fails', () => {
     cy.visit('/?http-error=true');
@@ -30,7 +32,9 @@ describe('Errors', () => {
      */
     cy.get('section.result-window').should(element => {
       expect(element.get(0).innerText).to.contain(
-        'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.domain)>\\" does not.',
+        version.startsWith('16.')
+          ? 'Names must only contain [_a-zA-Z0-9] but \\"<img src=x onerror=alert(document.domain)>\\" does not.'
+          : 'Names must match /^[_a-zA-Z][_a-zA-Z0-9]*$/ but \\"<img src=x onerror=alert(document.domain)>\\" does not.',
       );
     });
   });
