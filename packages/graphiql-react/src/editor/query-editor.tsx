@@ -7,7 +7,7 @@ import type {
   ValidationRule,
 } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useMemo, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
@@ -42,7 +42,6 @@ type OnClickReference = (reference: SchemaReference) => void;
 
 export type UseQueryEditorArgs = {
   editorTheme?: string;
-  externalFragments?: string | FragmentDefinitionNode[];
   onClickReference?: OnClickReference;
   onCopyQuery?: CopyQueryCallback;
   onEdit?(value: string, documentAST?: DocumentNode): void;
@@ -55,7 +54,6 @@ export type UseQueryEditorArgs = {
 export function useQueryEditor({
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
-  externalFragments,
   onClickReference,
   onCopyQuery,
   onEdit,
@@ -68,6 +66,7 @@ export function useQueryEditor({
     caller: useQueryEditor,
   });
   const {
+    externalFragments,
     initialQuery,
     queryEditor,
     setQueryEditor,
@@ -396,25 +395,29 @@ function useSynchronizeValidationRules(
 
 function useSynchronizeExternalFragments(
   editor: CodeMirrorEditor | null,
-  externalFragments: string | FragmentDefinitionNode[] | undefined,
+  externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
+  const externalFragmentList = useMemo(() => [...externalFragments.values()], [
+    externalFragments,
+  ]);
+
   useEffect(() => {
     if (!editor) {
       return;
     }
 
     const didChange =
-      editor.options.lint.externalFragments !== externalFragments;
+      editor.options.lint.externalFragments !== externalFragmentList;
 
-    editor.state.lint.linterOptions.externalFragments = externalFragments;
-    editor.options.lint.externalFragments = externalFragments;
-    editor.options.hintOptions.externalFragments = externalFragments;
+    editor.state.lint.linterOptions.externalFragments = externalFragmentList;
+    editor.options.lint.externalFragments = externalFragmentList;
+    editor.options.hintOptions.externalFragments = externalFragmentList;
 
     if (didChange && codeMirrorRef.current) {
       codeMirrorRef.current.signal(editor, 'change', editor);
     }
-  }, [editor, externalFragments, codeMirrorRef]);
+  }, [editor, externalFragmentList, codeMirrorRef]);
 }
 
 const AUTO_COMPLETE_AFTER_KEY = /^[a-zA-Z0-9_@(]$/;

@@ -7,13 +7,7 @@ import {
   isObservable,
   Unsubscribable,
 } from '@graphiql/toolkit';
-import {
-  ExecutionResult,
-  FragmentDefinitionNode,
-  parse,
-  print,
-  visit,
-} from 'graphql';
+import { ExecutionResult, FragmentDefinitionNode, print } from 'graphql';
 import { getFragmentDependenciesForAST } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
@@ -36,7 +30,6 @@ export const ExecutionContext = createNullableContext<ExecutionContextType>(
 
 type ExecutionContextProviderProps = {
   children: ReactNode;
-  externalFragments?: FragmentDefinitionNode[] | string;
   fetcher: Fetcher;
   onEditOperationName?: EditCallback;
   shouldPersistHeaders?: boolean;
@@ -44,6 +37,7 @@ type ExecutionContextProviderProps = {
 
 export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
   const {
+    externalFragments,
     headerEditor,
     queryEditor,
     responseEditor,
@@ -64,12 +58,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setSubscription(null);
   }, [subscription]);
 
-  const {
-    externalFragments,
-    fetcher,
-    onEditOperationName,
-    shouldPersistHeaders,
-  } = props;
+  const { fetcher, onEditOperationName, shouldPersistHeaders } = props;
   const run = useCallback<ExecutionContextType['run']>(
     async _selectedOperationName => {
       if (!queryEditor || !responseEditor) {
@@ -158,24 +147,10 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
       }
 
       if (externalFragments) {
-        const externalFragmentsMap = new Map<string, FragmentDefinitionNode>();
-
-        if (Array.isArray(externalFragments)) {
-          externalFragments.forEach(def => {
-            externalFragmentsMap.set(def.name.value, def);
-          });
-        } else {
-          visit(parse(externalFragments, {}), {
-            FragmentDefinition(def) {
-              externalFragmentsMap.set(def.name.value, def);
-            },
-          });
-        }
-
         const fragmentDependencies = queryEditor.documentAST
           ? getFragmentDependenciesForAST(
               queryEditor.documentAST,
-              externalFragmentsMap,
+              externalFragments,
             )
           : [];
         if (fragmentDependencies.length > 0) {

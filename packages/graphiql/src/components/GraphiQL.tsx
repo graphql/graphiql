@@ -436,6 +436,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
   {
     dangerouslyAssumeSchemaIsValid,
     docExplorerOpen,
+    externalFragments,
     fetcher,
     inputValueDeprecation,
     introspectionQueryName,
@@ -462,6 +463,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
         onToggle={onToggleHistory}>
         <EditorContextProvider
           defaultQuery={props.defaultQuery}
+          externalFragments={externalFragments}
           headers={props.headers}
           onTabChange={
             typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
@@ -478,7 +480,6 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             schema={schema}
             schemaDescription={schemaDescription}>
             <ExecutionContextProvider
-              externalFragments={props.externalFragments}
               fetcher={fetcher}
               onEditOperationName={props.onEditOperationName}
               shouldPersistHeaders={props.shouldPersistHeaders}>
@@ -504,6 +505,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'dangerouslyAssumeSchemaIsValid'
   | 'defaultQuery'
   | 'docExplorerOpen'
+  | 'externalFragments'
   | 'fetcher'
   | 'headers'
   | 'inputValueDeprecation'
@@ -764,7 +766,6 @@ class GraphiQLWithContext extends React.Component<
                   <div ref={this.props.secondaryEditorResize.firstRef}>
                     <QueryEditor
                       editorTheme={this.props.editorTheme}
-                      externalFragments={this.props.externalFragments}
                       onClickReference={() => {
                         if (this.props.docResize.hiddenElement === 'second') {
                           this.props.docResize.setHiddenElement(null);
