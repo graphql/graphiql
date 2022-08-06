@@ -59,6 +59,8 @@ export type EditorContextType = {
 
   externalFragments: Map<string, FragmentDefinitionNode>;
   validationRules: ValidationRule[];
+
+  shouldPersistHeaders: boolean;
 };
 
 export const EditorContext = createNullableContext<EditorContextType>(
@@ -241,6 +243,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
       externalFragments,
       validationRules,
+
+      shouldPersistHeaders: props.shouldPersistHeaders || false,
     }),
     [
       tabState,
@@ -256,6 +260,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
       externalFragments,
       validationRules,
+
+      props.shouldPersistHeaders,
     ],
   );
 

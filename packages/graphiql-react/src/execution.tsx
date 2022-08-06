@@ -32,7 +32,6 @@ type ExecutionContextProviderProps = {
   children: ReactNode;
   fetcher: Fetcher;
   onEditOperationName?: EditCallback;
-  shouldPersistHeaders?: boolean;
 };
 
 export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
@@ -41,6 +40,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     headerEditor,
     queryEditor,
     responseEditor,
+    shouldPersistHeaders,
     variableEditor,
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
@@ -58,7 +58,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setSubscription(null);
   }, [subscription]);
 
-  const { fetcher, onEditOperationName, shouldPersistHeaders } = props;
+  const { fetcher, onEditOperationName } = props;
   const run = useCallback<ExecutionContextType['run']>(
     async _selectedOperationName => {
       if (!queryEditor || !responseEditor) {

@@ -23,7 +23,6 @@ export type UseHeaderEditorArgs = {
   editorTheme?: string;
   onEdit?: EditCallback;
   readOnly?: boolean;
-  shouldPersistHeaders?: boolean;
   keyMap?: KeyMap;
 };
 
@@ -32,9 +31,13 @@ export function useHeaderEditor({
   keyMap = DEFAULT_KEY_MAP,
   onEdit,
   readOnly = false,
-  shouldPersistHeaders = false,
 }: UseHeaderEditorArgs = {}) {
-  const { initialHeaders, headerEditor, setHeaderEditor } = useEditorContext({
+  const {
+    initialHeaders,
+    headerEditor,
+    setHeaderEditor,
+    shouldPersistHeaders,
+  } = useEditorContext({
     nonNull: true,
     caller: useHeaderEditor,
   });

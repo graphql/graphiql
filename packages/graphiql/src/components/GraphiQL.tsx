@@ -447,6 +447,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     storage,
     schema,
     schemaDescription,
+    shouldPersistHeaders,
     validationRules,
     ...props
   },
@@ -470,7 +471,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
           }
           query={props.query}
-          shouldPersistHeaders={props.shouldPersistHeaders}
+          shouldPersistHeaders={shouldPersistHeaders}
           validationRules={validationRules}
           variables={props.variables}>
           <SchemaContextProvider
@@ -483,8 +484,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             schemaDescription={schemaDescription}>
             <ExecutionContextProvider
               fetcher={fetcher}
-              onEditOperationName={props.onEditOperationName}
-              shouldPersistHeaders={props.shouldPersistHeaders}>
+              onEditOperationName={props.onEditOperationName}>
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
@@ -519,6 +519,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'query'
   | 'schema'
   | 'schemaDescription'
+  | 'shouldPersistHeaders'
   | 'storage'
   | 'validationRules'
   | 'variables'
@@ -865,7 +866,6 @@ class GraphiQLWithContext extends React.Component<
                           editorTheme={this.props.editorTheme}
                           onEdit={this.props.onEditHeaders}
                           readOnly={this.props.readOnly}
-                          shouldPersistHeaders={this.props.shouldPersistHeaders}
                           keyMap={this.props.keyMap}
                         />
                       )}
