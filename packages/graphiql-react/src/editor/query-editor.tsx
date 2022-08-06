@@ -47,7 +47,6 @@ export type UseQueryEditorArgs = {
   onEdit?(value: string, documentAST?: DocumentNode): void;
   onEditOperationName?: EditCallback;
   readOnly?: boolean;
-  validationRules?: ValidationRule[];
   keyMap?: KeyMap;
 };
 
@@ -59,7 +58,6 @@ export function useQueryEditor({
   onEdit,
   onEditOperationName,
   readOnly = false,
-  validationRules,
 }: UseQueryEditorArgs = {}) {
   const { schema } = useSchemaContext({
     nonNull: true,
@@ -70,6 +68,7 @@ export function useQueryEditor({
     initialQuery,
     queryEditor,
     setQueryEditor,
+    validationRules,
     variableEditor,
     updateActiveTabValues,
   } = useEditorContext({

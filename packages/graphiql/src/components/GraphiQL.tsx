@@ -447,6 +447,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     storage,
     schema,
     schemaDescription,
+    validationRules,
     ...props
   },
   ref,
@@ -470,6 +471,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
           }
           query={props.query}
           shouldPersistHeaders={props.shouldPersistHeaders}
+          validationRules={validationRules}
           variables={props.variables}>
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
@@ -518,6 +520,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'schema'
   | 'schemaDescription'
   | 'storage'
+  | 'validationRules'
   | 'variables'
 >;
 
@@ -776,7 +779,6 @@ class GraphiQLWithContext extends React.Component<
                       onEdit={this.props.onEditQuery}
                       onEditOperationName={this.props.onEditOperationName}
                       readOnly={this.props.readOnly}
-                      validationRules={this.props.validationRules}
                     />
                   </div>
                   <div ref={this.props.secondaryEditorResize.dragBarRef}>

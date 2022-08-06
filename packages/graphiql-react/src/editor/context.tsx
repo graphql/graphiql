@@ -3,6 +3,7 @@ import {
   FragmentDefinitionNode,
   OperationDefinitionNode,
   parse,
+  ValidationRule,
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
@@ -57,6 +58,7 @@ export type EditorContextType = {
   initialVariables: string;
 
   externalFragments: Map<string, FragmentDefinitionNode>;
+  validationRules: ValidationRule[];
 };
 
 export const EditorContext = createNullableContext<EditorContextType>(
@@ -71,6 +73,7 @@ type EditorContextProviderProps = {
   onTabChange?(tabs: TabsState): void;
   query?: string;
   shouldPersistHeaders?: boolean;
+  validationRules?: ValidationRule[];
   variables?: string;
 };
 
@@ -213,6 +216,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     return map;
   }, [props.externalFragments]);
 
+  const validationRules = useMemo(() => props.validationRules || [], [
+    props.validationRules,
+  ]);
+
   const value = useMemo<EditorContextType>(
     () => ({
       ...tabState,
@@ -233,6 +240,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       ...initialValues.current,
 
       externalFragments,
+      validationRules,
     }),
     [
       tabState,
@@ -247,6 +255,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       variableEditor,
 
       externalFragments,
+      validationRules,
     ],
   );
 
