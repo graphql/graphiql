@@ -1,0 +1,11 @@
+@import url('@reach/tooltip/styles.css');
+
+[data-reach-tooltip] {
+  background: hsl(var(--color-base));
+  border: none;
+  border-radius: var(--border-radius-4);
+  box-shadow: var(--box-shadow);
+  color: hsl(var(--color-neutral));
+  font-size: inherit;
+  padding: var(--px-4) var(--px-6);
+}

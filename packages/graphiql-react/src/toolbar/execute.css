@@ -2,7 +2,7 @@
   position: relative;
 }
 
-.graphiql-execute-button {
+button.graphiql-execute-button {
   background-color: hsl(var(--color-primary));
   border: none;
   border-radius: var(--border-radius-8);
@@ -24,7 +24,6 @@
     display: block;
     height: var(--px-16);
     margin: auto;
-    pointer-events: none;
     width: var(--px-16);
   }
 }

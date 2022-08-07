@@ -47,7 +47,6 @@ export {
   HistoryContextProvider,
   useHistoryContext,
 } from './history';
-export * from './icons';
 export {
   SchemaContext,
   SchemaContextProvider,
@@ -59,9 +58,11 @@ export {
   useStorageContext,
 } from './storage';
 export { useTheme } from './theme';
-export * from './toolbar';
-export * from './ui';
 export { useDragResize } from './utility/resize';
+
+export * from './icons';
+export * from './ui';
+export * from './toolbar';
 
 export type {
   EditorContextType,
