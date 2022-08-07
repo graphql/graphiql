@@ -30,7 +30,6 @@
 .graphiql-container .graphiql-sidebar button > svg {
   height: calc(var(--sidebar-width) - (2 * var(--px-12)));
   padding: var(--px-12);
-  pointer-events: none;
   width: calc(var(--sidebar-width) - (2 * var(--px-12)));
 }
 
@@ -290,4 +289,9 @@ reach-portal .graphiql-key {
   background-color: hsla(var(--color-neutral), 0.1);
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
+}
+
+/* Avoid showing native tooltips for icons with titles */
+.graphiql-container svg {
+  pointer-events: none;
 }

@@ -1,3 +1,4 @@
+.graphiql-un-styled,
 button.graphiql-un-styled {
   all: unset;
   border-radius: var(--border-radius-4);
@@ -12,6 +13,7 @@ button.graphiql-un-styled {
   }
 }
 
+.graphiql-button,
 button.graphiql-button {
   background-color: hsla(var(--color-neutral), 0.07);
   border: none;

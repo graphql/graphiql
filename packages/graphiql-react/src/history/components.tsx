@@ -3,7 +3,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 
 import { useEditorContext } from '../editor';
 import { CloseIcon, PenIcon, StarFilledIcon, StarIcon } from '../icons';
-import { UnStyledButton } from '../ui';
+import { Tooltip, UnStyledButton } from '../ui';
 import { useHistoryContext } from './context';
 
 import './style.css';
@@ -118,28 +118,40 @@ export function HistoryItem(props: QueryHistoryItemProps) {
           >
             {displayName}
           </UnStyledButton>
-          <UnStyledButton
-            type="button"
-            className="graphiql-history-item-action"
-            title="Edit label"
-            onClick={e => {
-              e.stopPropagation();
-              setIsEditable(true);
-            }}
+          <Tooltip label="Edit label">
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-action"
+              onClick={e => {
+                e.stopPropagation();
+                setIsEditable(true);
+              }}
+              aria-label="Edit label"
+            >
+              <PenIcon aria-hidden="true" />
+            </UnStyledButton>
+          </Tooltip>
+          <Tooltip
+            label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}
           >
-            <PenIcon />
-          </UnStyledButton>
-          <UnStyledButton
-            type="button"
-            className="graphiql-history-item-action"
-            onClick={e => {
-              e.stopPropagation();
-              toggleFavorite(props.item);
-            }}
-            title={props.item.favorite ? 'Remove favorite' : 'Add favorite'}
-          >
-            {props.item.favorite ? <StarFilledIcon /> : <StarIcon />}
-          </UnStyledButton>
+            <UnStyledButton
+              type="button"
+              className="graphiql-history-item-action"
+              onClick={e => {
+                e.stopPropagation();
+                toggleFavorite(props.item);
+              }}
+              aria-label={
+                props.item.favorite ? 'Remove favorite' : 'Add favorite'
+              }
+            >
+              {props.item.favorite ? (
+                <StarFilledIcon aria-hidden="true" />
+              ) : (
+                <StarIcon aria-hidden="true" />
+              )}
+            </UnStyledButton>
+          </Tooltip>
         </>
       )}
     </li>
