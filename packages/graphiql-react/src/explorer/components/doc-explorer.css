@@ -84,9 +84,9 @@ a.graphiql-doc-explorer-back {
 
 /* Error message */
 .graphiql-doc-explorer-error {
-  background-color: hsla(var(--color-red), 0.15);
-  border: 1px solid hsl(var(--color-red));
+  background-color: hsla(var(--color-error), 0.15);
+  border: 1px solid hsl(var(--color-error));
   border-radius: var(--border-radius-8);
-  color: hsl(var(--color-red));
+  color: hsl(var(--color-error));
   padding: var(--px-8) var(--px-12);
 }

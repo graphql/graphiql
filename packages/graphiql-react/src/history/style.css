@@ -26,7 +26,7 @@
   }
 
   &.editable {
-    background-color: hsla(var(--color-pink), 0.1);
+    background-color: hsla(var(--color-primary), 0.1);
 
     & > input {
       background: transparent;
@@ -43,15 +43,15 @@
     }
 
     & > button {
-      color: hsl(var(--color-pink));
+      color: hsl(var(--color-primary));
       padding: 0 var(--px-10);
 
       &:active {
-        background-color: hsla(var(--color-pink), 0.15);
+        background-color: hsla(var(--color-primary), 0.15);
       }
 
       &:focus {
-        outline: hsl(var(--color-pink)) auto 1px;
+        outline: hsl(var(--color-primary)) auto 1px;
       }
 
       & > svg {
