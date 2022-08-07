@@ -5,7 +5,7 @@
 }
 
 .CodeMirror-foldmarker {
-  background-color: hsl(var(--color-blue));
+  background-color: hsl(var(--color-info));
   border-radius: var(--border-radius-4);
   color: hsl(var(--color-base));
   font-family: inherit;

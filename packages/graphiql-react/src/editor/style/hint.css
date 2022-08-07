@@ -29,8 +29,8 @@
   }
 }
 li.CodeMirror-hint-active {
-  background: hsla(var(--color-pink), 0.1);
-  color: hsl(var(--color-pink));
+  background: hsla(var(--color-primary), 0.1);
+  color: hsl(var(--color-primary));
 }
 
 /* Sidebar with additional information */
