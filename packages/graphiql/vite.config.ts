@@ -9,6 +9,19 @@ const { schema: badSchema } = require('./test/bad-schema');
 const Router = require('router');
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+      output: {
+        // Provide global variables to use in the UMD build
+        // for externalized deps
+        globals: {
+          'vue': 'React',
+          'react-dom': 'ReactDOM'
+        }
+      }
+    }
+  },
   plugins: [
     // reactRefresh(),
     // visualizer()

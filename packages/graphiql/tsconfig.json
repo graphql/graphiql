@@ -12,7 +12,6 @@
   },
   "include": ["src"],
   "exclude": [
-    "src/main.tsx",
     "**/__tests__/**",
     "**/dist/**.*",
     "**/*.spec.ts",
