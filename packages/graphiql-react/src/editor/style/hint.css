@@ -2,7 +2,7 @@
 
 /* Popup styles */
 .CodeMirror-hints {
-  background: var(--color-neutral-0);
+  background: hsl(var(--color-base));
   border: none;
   border-radius: var(--border-radius-8);
   box-shadow: var(--box-shadow);
@@ -18,7 +18,7 @@
 /* Autocomplete items */
 .CodeMirror-hint {
   border-radius: var(--border-radius-4);
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   grid-column: 1 / 2;
   margin: var(--px-4);
   /* Override element style added by codemirror */
@@ -29,13 +29,13 @@
   }
 }
 li.CodeMirror-hint-active {
-  background: var(--color-pink-background);
-  color: var(--color-pink);
+  background: hsla(var(--color-pink), 0.1);
+  color: hsl(var(--color-pink));
 }
 
 /* Sidebar with additional information */
 .CodeMirror-hint-information {
-  border-left: 1px solid var(--color-neutral-15);
+  border-left: 1px solid hsla(var(--color-neutral), 0.15);
   grid-column: 2 / 3;
   grid-row: 1 / 99999;
   /* Same as the popup as a whole minus padding */
@@ -52,9 +52,9 @@ li.CodeMirror-hint-active {
   font-weight: var(--font-weight-medium);
 }
 .CodeMirror-hint-information-type-name-pill {
-  border: 1px solid var(--color-neutral-40);
+  border: 1px solid hsla(var(--color-neutral), 0.4);
   border-radius: var(--border-radius-4);
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   margin-left: var(--px-6);
   padding: var(--px-4);
 }
@@ -67,6 +67,6 @@ li.CodeMirror-hint-active {
   }
 }
 .CodeMirror-hint-information-description {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   margin-top: var(--px-12);
 }

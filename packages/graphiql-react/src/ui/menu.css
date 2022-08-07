@@ -1,7 +1,7 @@
 @import url('@reach/menu-button/styles.css');
 
 [data-reach-menu-list] {
-  background-color: var(--color-neutral-0);
+  background-color: hsl(var(--color-base));
   box-shadow: var(--box-shadow);
   border: none;
   border-radius: var(--border-radius-8);
@@ -21,7 +21,7 @@
 
   &[data-selected],
   &:hover {
-    background-color: var(--color-neutral-7);
+    background-color: hsla(var(--color-neutral), 0.07);
     color: inherit;
   }
 

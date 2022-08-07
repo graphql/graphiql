@@ -1,5 +1,5 @@
 a.graphiql-doc-explorer-type-name {
-  color: var(--color-orche);
+  color: hsl(var(--color-orche));
   text-decoration: none;
 
   &:hover {
@@ -7,6 +7,6 @@ a.graphiql-doc-explorer-type-name {
   }
 
   &:focus {
-    outline: var(--color-orche) auto 1px;
+    outline: hsl(var(--color-orche)) auto 1px;
   }
 }
