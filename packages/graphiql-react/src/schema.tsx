@@ -210,7 +210,6 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 
     fetchIntrospectionData()
       .then(introspectionData => {
-        console.log(counter, counterRef.current);
         /**
          * Don't continue if another introspection request has been started in
          * the meantime or if there is no introspection data.

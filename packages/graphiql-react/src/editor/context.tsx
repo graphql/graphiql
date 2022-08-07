@@ -1,4 +1,11 @@
-import { DocumentNode, OperationDefinitionNode } from 'graphql';
+import {
+  DocumentNode,
+  FragmentDefinitionNode,
+  OperationDefinitionNode,
+  parse,
+  ValidationRule,
+  visit,
+} from 'graphql';
 import { VariableToType } from 'graphql-language-service';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 
@@ -49,6 +56,11 @@ export type EditorContextType = {
   initialHeaders: string;
   initialQuery: string;
   initialVariables: string;
+
+  externalFragments: Map<string, FragmentDefinitionNode>;
+  validationRules: ValidationRule[];
+
+  shouldPersistHeaders: boolean;
 };
 
 export const EditorContext = createNullableContext<EditorContextType>(
@@ -58,10 +70,12 @@ export const EditorContext = createNullableContext<EditorContextType>(
 type EditorContextProviderProps = {
   children: ReactNode;
   defaultQuery?: string;
+  externalFragments?: string | FragmentDefinitionNode[];
   headers?: string;
   onTabChange?(tabs: TabsState): void;
   query?: string;
   shouldPersistHeaders?: boolean;
+  validationRules?: ValidationRule[];
   variables?: string;
 };
 
@@ -184,6 +198,30 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     initialVariables: storedEditorValues.variables ?? '',
   });
 
+  const externalFragments = useMemo(() => {
+    const map = new Map<string, FragmentDefinitionNode>();
+    if (Array.isArray(props.externalFragments)) {
+      for (const fragment of props.externalFragments) {
+        map.set(fragment.name.value, fragment);
+      }
+    } else if (typeof props.externalFragments === 'string') {
+      visit(parse(props.externalFragments, {}), {
+        FragmentDefinition(fragment) {
+          map.set(fragment.name.value, fragment);
+        },
+      });
+    } else if (props.externalFragments) {
+      throw new Error(
+        'The `externalFragments` prop must either be a string that contains the fragment definitions in SDL or a list of FragmentDefinitionNode objects.',
+      );
+    }
+    return map;
+  }, [props.externalFragments]);
+
+  const validationRules = useMemo(() => props.validationRules || [], [
+    props.validationRules,
+  ]);
+
   const value = useMemo<EditorContextType>(
     () => ({
       ...tabState,
@@ -202,6 +240,11 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       setVariableEditor,
 
       ...initialValues.current,
+
+      externalFragments,
+      validationRules,
+
+      shouldPersistHeaders: props.shouldPersistHeaders || false,
     }),
     [
       tabState,
@@ -214,6 +257,11 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       queryEditor,
       responseEditor,
       variableEditor,
+
+      externalFragments,
+      validationRules,
+
+      props.shouldPersistHeaders,
     ],
   );
 

@@ -436,6 +436,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
   {
     dangerouslyAssumeSchemaIsValid,
     docExplorerOpen,
+    externalFragments,
     fetcher,
     inputValueDeprecation,
     introspectionQueryName,
@@ -446,6 +447,8 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     storage,
     schema,
     schemaDescription,
+    shouldPersistHeaders,
+    validationRules,
     ...props
   },
   ref,
@@ -462,12 +465,14 @@ const GraphiQLProviders: ForwardRefExoticComponent<
         onToggle={onToggleHistory}>
         <EditorContextProvider
           defaultQuery={props.defaultQuery}
+          externalFragments={externalFragments}
           headers={props.headers}
           onTabChange={
             typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
           }
           query={props.query}
-          shouldPersistHeaders={props.shouldPersistHeaders}
+          shouldPersistHeaders={shouldPersistHeaders}
+          validationRules={validationRules}
           variables={props.variables}>
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
@@ -478,10 +483,8 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             schema={schema}
             schemaDescription={schemaDescription}>
             <ExecutionContextProvider
-              externalFragments={props.externalFragments}
               fetcher={fetcher}
-              onEditOperationName={props.onEditOperationName}
-              shouldPersistHeaders={props.shouldPersistHeaders}>
+              onEditOperationName={props.onEditOperationName}>
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
@@ -504,6 +507,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'dangerouslyAssumeSchemaIsValid'
   | 'defaultQuery'
   | 'docExplorerOpen'
+  | 'externalFragments'
   | 'fetcher'
   | 'headers'
   | 'inputValueDeprecation'
@@ -515,7 +519,9 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'query'
   | 'schema'
   | 'schemaDescription'
+  | 'shouldPersistHeaders'
   | 'storage'
+  | 'validationRules'
   | 'variables'
 >;
 
@@ -764,7 +770,6 @@ class GraphiQLWithContext extends React.Component<
                   <div ref={this.props.secondaryEditorResize.firstRef}>
                     <QueryEditor
                       editorTheme={this.props.editorTheme}
-                      externalFragments={this.props.externalFragments}
                       onClickReference={() => {
                         if (this.props.docResize.hiddenElement === 'second') {
                           this.props.docResize.setHiddenElement(null);
@@ -775,7 +780,6 @@ class GraphiQLWithContext extends React.Component<
                       onEdit={this.props.onEditQuery}
                       onEditOperationName={this.props.onEditOperationName}
                       readOnly={this.props.readOnly}
-                      validationRules={this.props.validationRules}
                     />
                   </div>
                   <div ref={this.props.secondaryEditorResize.dragBarRef}>
@@ -862,7 +866,6 @@ class GraphiQLWithContext extends React.Component<
                           editorTheme={this.props.editorTheme}
                           onEdit={this.props.onEditHeaders}
                           readOnly={this.props.readOnly}
-                          shouldPersistHeaders={this.props.shouldPersistHeaders}
                           keyMap={this.props.keyMap}
                         />
                       )}

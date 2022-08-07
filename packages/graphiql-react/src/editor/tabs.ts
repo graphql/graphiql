@@ -1,5 +1,5 @@
 import { StorageAPI } from '@graphiql/toolkit';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import debounce from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
@@ -157,10 +157,11 @@ export function useStoreTabs({
   storage: StorageAPI | null;
   shouldPersistHeaders?: boolean;
 }) {
-  const store = useCallback(
-    debounce(500, (value: string) => {
-      storage?.set(STORAGE_KEY, value);
-    }),
+  const store = useMemo(
+    () =>
+      debounce(500, (value: string) => {
+        storage?.set(STORAGE_KEY, value);
+      }),
     [storage],
   );
   return useCallback(
