@@ -118,10 +118,10 @@ describe('QueryHistoryItem', () => {
   });
 
   it('renders label input if the edit label button is clicked', () => {
-    const { container, getByTitle } = render(
+    const { container, getByLabelText } = render(
       <QueryHistoryItemWithContext {...getMockProps()} />,
     );
-    fireEvent.click(getByTitle('Edit label'));
+    fireEvent.click(getByLabelText('Edit label'));
     expect(container.querySelectorAll('li.editable').length).toBe(1);
     expect(container.querySelectorAll('input').length).toBe(1);
     expect(
