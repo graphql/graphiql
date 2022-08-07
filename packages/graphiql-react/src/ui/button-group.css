@@ -1,12 +1,15 @@
 .graphiql-button-group {
-  background-color: var(--color-neutral-7);
+  background-color: hsla(var(--color-neutral), 0.07);
   /* Border radius of button plus padding */
   border-radius: calc(var(--border-radius-4) + var(--px-4));
   display: flex;
   padding: var(--px-4);
 
-  & > button.graphiql-button.active {
-    background-color: var(--color-neutral-0);
+  & > button.graphiql-button {
+    background-color: transparent;
+    &.active {
+      background-color: hsl(var(--color-base));
+    }
   }
 
   & > * + * {
