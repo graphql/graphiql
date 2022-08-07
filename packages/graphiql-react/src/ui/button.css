@@ -30,9 +30,9 @@ button.graphiql-button {
   }
 
   &.graphiql-button-success {
-    background-color: hsla(var(--color-green), 0.15);
+    background-color: hsla(var(--color-success), 0.15);
   }
   &.graphiql-button-error {
-    background-color: hsla(var(--color-red), 0.15);
+    background-color: hsla(var(--color-error), 0.15);
   }
 }
