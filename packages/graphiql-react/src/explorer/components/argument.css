@@ -5,14 +5,14 @@
 }
 
 .graphiql-doc-explorer-argument-name {
-  color: var(--color-purple);
+  color: hsl(var(--color-purple));
 }
 
 .graphiql-doc-explorer-argument-deprecation {
-  background-color: var(--color-orche-background);
-  border: 1px solid var(--color-orche);
+  background-color: hsla(var(--color-orche), 0.07);
+  border: 1px solid hsl(var(--color-orche));
   border-radius: var(--border-radius-4);
-  color: var(--color-orche);
+  color: hsl(var(--color-orche));
   padding: var(--px-8);
 }
 
