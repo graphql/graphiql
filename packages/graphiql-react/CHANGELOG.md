@@ -1,5 +1,14 @@
 # @graphiql/react
 
+## 0.8.0
+
+### Minor Changes
+
+- [#2636](https://github.com/graphql/graphiql/pull/2636) [`62317e0b`](https://github.com/graphql/graphiql/commit/62317e0bae6d4ccf89d9e1e6607fd8feeb100078) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING:
+  - The `ExecutionContextProvider` and `QueryEditor` components no longer accept the `externalFragments` prop. Instead the prop can now be passed to the `EditorContextProvider` component. The provider component will normalize the prop value and provide a map of type `Map<string, FragmentDefinitionNode>` (using the fragment names as keys) as part of the value of the `EditorContext`.
+  - The `QueryEditor` component no longer accept the `validationRules` prop. Instead the prop can now be passed to the `EditorContextProvider` component. The provider component will provide the list of validation rules (empty if there are none) as part of the value of the `EditorContext`.
+  - The `ExecutionContextProvider` and `HeaderEditor` components no longer accept the `shouldPersistHeaders` prop. Instead the `EditorContextProvider` component now provides the value of its equally named prop as part of the value of the `EditorContext`.
+
 ## 0.7.1
 
 ### Patch Changes
