@@ -1,10 +1,15 @@
+import { forwardRef } from 'react';
+
 import './button-group.css';
 
-export function ButtonGroup(props: JSX.IntrinsicElements['div']) {
-  return (
-    <div
-      {...props}
-      className={`graphiql-button-group ${props.className || ''}`.trim()}
-    />
-  );
-}
+export const ButtonGroup = forwardRef<
+  HTMLDivElement,
+  JSX.IntrinsicElements['div']
+>((props, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    className={`graphiql-button-group ${props.className || ''}`.trim()}
+  />
+));
+ButtonGroup.displayName = 'ButtonGroup';

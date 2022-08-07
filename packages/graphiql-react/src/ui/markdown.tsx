@@ -1,4 +1,6 @@
+import { forwardRef } from 'react';
 import { markdown } from '../markdown';
+import { compose } from '../utility/compose';
 
 import './markdown.css';
 
@@ -8,13 +10,19 @@ type MarkdownContentProps = {
   type: 'description' | 'deprecation';
 };
 
-export function MarkdownContent(props: MarkdownContentProps) {
-  return (
-    <div
-      className={`graphiql-markdown-${props.type}${
-        props.onlyShowFirstChild ? ' graphiql-markdown-preview' : ''
-      }`}
-      dangerouslySetInnerHTML={{ __html: markdown.render(props.children) }}
-    />
-  );
-}
+export const MarkdownContent = forwardRef<
+  HTMLDivElement,
+  MarkdownContentProps & Omit<JSX.IntrinsicElements['div'], 'children'>
+>(({ children, onlyShowFirstChild, type, ...props }, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    className={compose(
+      `graphiql-markdown-${type}`,
+      onlyShowFirstChild ? ' graphiql-markdown-preview' : '',
+      props.className,
+    )}
+    dangerouslySetInnerHTML={{ __html: markdown.render(children) }}
+  />
+));
+MarkdownContent.displayName = 'MarkdownContent';

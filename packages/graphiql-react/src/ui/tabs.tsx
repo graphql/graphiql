@@ -1,4 +1,6 @@
+import { forwardRef } from 'react';
 import { CloseIcon } from '../icons';
+import { createComponentGroup } from '../utility/component-group';
 import { compose } from '../utility/compose';
 import { UnStyledButton } from './button';
 
@@ -8,64 +10,72 @@ type TabProps = {
   isActive?: boolean;
 };
 
-export function Tab({
-  isActive,
-  ...props
-}: TabProps & JSX.IntrinsicElements['div']) {
-  return (
-    <div
-      {...props}
-      role="tab"
-      aria-selected={isActive}
-      className={compose(
-        'graphiql-tab',
-        isActive ? 'graphiql-tab-active' : '',
-        props.className,
-      )}
-    >
-      {props.children}
-    </div>
-  );
-}
+const TabRoot = forwardRef<
+  HTMLDivElement,
+  TabProps & JSX.IntrinsicElements['div']
+>(({ isActive, ...props }, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    role="tab"
+    aria-selected={isActive}
+    className={compose(
+      'graphiql-tab',
+      isActive ? 'graphiql-tab-active' : '',
+      props.className,
+    )}
+  >
+    {props.children}
+  </div>
+));
+TabRoot.displayName = 'Tab';
 
-function TabButton(props: JSX.IntrinsicElements['button']) {
-  return (
-    <UnStyledButton
-      {...props}
-      type="button"
-      className={compose('graphiql-tab-button', props.className)}
-    >
-      {props.children}
-    </UnStyledButton>
-  );
-}
+const TabButton = forwardRef<
+  HTMLButtonElement,
+  JSX.IntrinsicElements['button']
+>((props, ref) => (
+  <UnStyledButton
+    {...props}
+    ref={ref}
+    type="button"
+    className={compose('graphiql-tab-button', props.className)}
+  >
+    {props.children}
+  </UnStyledButton>
+));
+TabButton.displayName = 'Tab.Button';
 
-Tab.Button = TabButton;
-
-function TabClose(props: JSX.IntrinsicElements['button']) {
-  return (
+const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
+  (props, ref) => (
     <UnStyledButton
       aria-label="Close Tab"
       title="Close Tab"
       {...props}
+      ref={ref}
       type="button"
       className={compose('graphiql-tab-close', props.className)}
     >
       <CloseIcon />
     </UnStyledButton>
-  );
-}
+  ),
+);
+TabClose.displayName = 'Tab.Close';
 
-Tab.Close = TabClose;
+export const Tab = createComponentGroup(TabRoot, {
+  Button: TabButton,
+  Close: TabClose,
+});
 
-export function Tabs(props: JSX.IntrinsicElements['div']) {
-  return (
+export const Tabs = forwardRef<HTMLDivElement, JSX.IntrinsicElements['div']>(
+  (props, ref) => (
     <div
       {...props}
+      ref={ref}
       role="tablist"
       className={compose('graphiql-tabs', props.className)}
     >
       {props.children}
     </div>
-  );
-}
+  ),
+);
+Tabs.displayName = 'Tabs';
