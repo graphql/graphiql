@@ -1,15 +1,15 @@
 @import url('@reach/combobox/styles.css');
 
 [data-reach-combobox] {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
 
   &:not([data-state='idle']) {
     border-radius: var(--border-radius-4);
     box-shadow: var(--box-shadow);
-    color: var(--color-neutral-100);
+    color: hsla(var(--color-neutral), 1);
 
     & .graphiql-doc-explorer-search-input {
-      background: var(--color-neutral-0);
+      background: hsl(var(--color-base));
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }
@@ -18,7 +18,7 @@
 
 .graphiql-doc-explorer-search-input {
   align-items: center;
-  background-color: var(--color-neutral-7);
+  background-color: hsla(var(--color-neutral), 0.07);
   border-radius: var(--border-radius-4);
   display: flex;
   padding: var(--px-8) var(--px-12);
@@ -36,11 +36,11 @@
 }
 
 [data-reach-combobox-popover] {
-  background-color: var(--color-neutral-0);
+  background-color: hsl(var(--color-base));
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
   border-bottom-right-radius: var(--border-radius-4);
-  border-top: 1px solid var(--color-neutral-15);
+  border-top: 1px solid hsla(var(--color-neutral), 0.15);
   max-height: 400px;
   overflow-y: auto;
 
@@ -58,22 +58,22 @@
 
 [data-reach-combobox-option] {
   border-radius: var(--border-radius-4);
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   overflow-x: hidden;
   padding: var(--px-8) var(--px-12);
   text-overflow: ellipsis;
   white-space: nowrap;
 
   &[data-highlighted] {
-    background-color: var(--color-neutral-7);
+    background-color: hsla(var(--color-neutral), 0.07);
   }
 
   &:hover {
-    background-color: var(--color-neutral-10);
+    background-color: hsla(var(--color-neutral), 0.1);
   }
 
   &[data-highlighted]:hover {
-    background-color: var(--color-neutral-15);
+    background-color: hsla(var(--color-neutral), 0.15);
   }
 
   & + & {
@@ -82,19 +82,19 @@
 }
 
 .graphiql-doc-explorer-search-type {
-  color: var(--color-blue);
+  color: hsl(var(--color-blue));
 }
 
 .graphiql-doc-explorer-search-field {
-  color: var(--color-orche);
+  color: hsl(var(--color-orche));
 }
 
 .graphiql-doc-explorer-search-argument {
-  color: var(--color-purple);
+  color: hsl(var(--color-purple));
 }
 
 .graphiql-doc-explorer-search-divider {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   font-size: var(--font-size-hint);
   font-weight: var(--font-weight-medium);
   margin-top: var(--px-8);
@@ -102,6 +102,6 @@
 }
 
 .graphiql-doc-explorer-search-empty {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   padding: var(--px-8) var(--px-12);
 }
