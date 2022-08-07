@@ -82,15 +82,15 @@
 }
 
 .graphiql-doc-explorer-search-type {
-  color: hsl(var(--color-blue));
+  color: hsl(var(--color-info));
 }
 
 .graphiql-doc-explorer-search-field {
-  color: hsl(var(--color-orche));
+  color: hsl(var(--color-warning));
 }
 
 .graphiql-doc-explorer-search-argument {
-  color: hsl(var(--color-purple));
+  color: hsl(var(--color-secondary));
 }
 
 .graphiql-doc-explorer-search-divider {

@@ -39,11 +39,11 @@
 
   /* OperationType, `fragment`, `on` */
   & .cm-keyword {
-    color: hsl(var(--color-pink));
+    color: hsl(var(--color-primary));
   }
   /* Name (OperationDefinition), FragmentName */
   & .cm-def {
-    color: hsl(var(--color-teal));
+    color: hsl(var(--color-tertiary));
   }
   /* Punctuator (except `$` and `@`) */
   & .cm-punctuation {
@@ -51,43 +51,43 @@
   }
   /* Variable */
   & .cm-variable {
-    color: hsl(var(--color-purple));
+    color: hsl(var(--color-secondary));
   }
   /* NamedType */
   & .cm-atom {
-    color: hsl(var(--color-teal));
+    color: hsl(var(--color-tertiary));
   }
   /* IntValue, FloatValue */
   & .cm-number {
-    color: hsl(var(--color-green));
+    color: hsl(var(--color-success));
   }
   /* StringValue */
   & .cm-string {
-    color: hsl(var(--color-orche));
+    color: hsl(var(--color-warning));
   }
   /* BooleanValue */
   & .cm-builtin {
-    color: hsl(var(--color-green));
+    color: hsl(var(--color-success));
   }
   /* EnumValue */
   & .cm-string-2 {
-    color: hsl(var(--color-purple));
+    color: hsl(var(--color-secondary));
   }
   /* Name (ObjectField, Argument) */
   & .cm-attribute {
-    color: hsl(var(--color-blue));
+    color: hsl(var(--color-info));
   }
   /* Name (Directive) */
   & .cm-meta {
-    color: hsl(var(--color-teal));
+    color: hsl(var(--color-tertiary));
   }
   /* Name (Alias, Field without Alias) */
   & .cm-property {
-    color: hsl(var(--color-blue));
+    color: hsl(var(--color-info));
   }
   /* Name (Field with Alias) */
   & .cm-qualifier {
-    color: hsl(var(--color-purple));
+    color: hsl(var(--color-secondary));
   }
   /* Comment */
   & .cm-comment {
@@ -99,7 +99,7 @@
   }
   /* Invalid characters */
   & .cm-invalidchar {
-    color: hsl(var(--color-red));
+    color: hsl(var(--color-error));
   }
 
   /* Cursor */
@@ -159,12 +159,12 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
   padding: var(--px-4);
 }
 .CodeMirror-dialog input:focus {
-  outline: hsl(var(--color-pink)) solid 2px;
+  outline: hsl(var(--color-primary)) solid 2px;
 }
 
 /* Set the highlight color for search results */
 .cm-searching {
-  background-color: hsla(var(--color-orche), 0.07);
+  background-color: hsla(var(--color-warning), 0.07);
   /**
    * When cycling through search results, CodeMirror overlays the current 
    * selection with another element that has the .CodeMirror-selected class
