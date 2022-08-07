@@ -4,35 +4,35 @@ button.graphiql-un-styled {
   cursor: pointer;
 
   &:active {
-    background-color: var(--color-neutral-7);
+    background-color: hsla(var(--color-neutral), 0.07);
   }
 
   &:focus {
-    outline: var(--color-neutral-15) auto 1px;
+    outline: hsla(var(--color-neutral), 0.15) auto 1px;
   }
 }
 
 button.graphiql-button {
-  background-color: var(--color-neutral-7);
+  background-color: hsla(var(--color-neutral), 0.07);
   border: none;
   border-radius: var(--border-radius-4);
-  color: var(--color-neutral-100);
+  color: hsla(var(--color-neutral), 1);
   cursor: pointer;
   font-size: var(--font-size-body);
   padding: var(--px-8) var(--px-12);
 
   &:active {
-    background-color: var(--color-neutral-10);
+    background-color: hsla(var(--color-neutral), 0.1);
   }
 
   &:focus {
-    outline: var(--color-neutral-15) auto 1px;
+    outline: hsla(var(--color-neutral), 0.15) auto 1px;
   }
 
   &.graphiql-button-success {
-    background-color: var(--color-green-background);
+    background-color: hsla(var(--color-green), 0.15);
   }
   &.graphiql-button-error {
-    background-color: var(--color-red-background);
+    background-color: hsla(var(--color-red), 0.15);
   }
 }

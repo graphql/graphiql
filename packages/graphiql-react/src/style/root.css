@@ -3,29 +3,15 @@
 .CodeMirror-lint-tooltip,
 reach-portal {
   /* Colors */
-  --color-pink: #d60690;
-  --color-purple: #6e6acf;
-  --color-blue: #007eea;
-  --color-orche: #d37f00;
-  --color-red: #f85b30;
-  --color-green: #2bab7c;
-  --color-teal: #009fb8;
-  --color-neutral-100: #3b4b68;
-  --color-neutral-60: #8993a4;
-  --color-neutral-40: #b1b7c3;
-  --color-neutral-15: #e2e4e8;
-  --color-neutral-10: #ebedf0;
-  --color-neutral-7: #f1f2f4;
-  --color-neutral-0: #ffffff;
-
-  --color-pink-background: rgb(214, 6, 144, 0.1);
-  --color-pink-background-dark: rgb(214, 6, 144, 0.15);
-  --color-pink-dark: #ab0573;
-  --color-orche-background: rgba(211, 127, 0, 0.07);
-  --color-orche-background-dark: rgba(211, 127, 0, 0.12);
-  --color-red-background: rgba(248, 91, 48, 0.12);
-  --color-green-background: rgba(43, 171, 124, 0.12);
-  --color-neutral-background: rgba(59, 75, 104, 0.1);
+  --color-pink: 320, 95%, 43%;
+  --color-purple: 242, 51%, 61%;
+  --color-blue: 208, 100%, 46%;
+  --color-orche: 36, 100%, 41%;
+  --color-red: 13, 93%, 58%;
+  --color-green: 158, 60%, 42%;
+  --color-teal: 188, 100%, 36%;
+  --color-neutral: 219, 28%, 32%;
+  --color-base: 219, 28%, 100%;
 
   /* Font */
   --font-family: 'Roboto', sans-serif;
@@ -73,19 +59,12 @@ reach-portal {
   body:not(.graphiql-light) .CodeMirror-info,
   body:not(.graphiql-light) .CodeMirror-lint-tooltip,
   body:not(.graphiql-light) reach-portal {
-    --color-pink: #ff5895;
-    --color-purple: #918cff;
-    --color-blue: #6fbcff;
-    --color-orche: #ffcc99;
-    --color-neutral-100: #b7c2d7;
-    --color-neutral-60: #5a687f;
-    --color-neutral-40: #465877;
-    --color-neutral-15: #2d384c;
-    --color-neutral-10: #26303f;
-    --color-neutral-7: #293242;
-    --color-neutral-0: #222b39;
-
-    --color-pink-dark: #ff357f;
+    --color-pink: 338, 100%, 67%;
+    --color-purple: 243, 100%, 77%;
+    --color-blue: 208, 100%, 72%;
+    --color-orche: 30, 100%, 80%;
+    --color-neutral: 219, 29%, 78%;
+    --color-base: 219, 29%, 18%;
   }
 }
 
@@ -93,19 +72,12 @@ body.graphiql-dark .graphiql-container,
 body.graphiql-dark .CodeMirror-info,
 body.graphiql-dark .CodeMirror-lint-tooltip,
 body.graphiql-dark reach-portal {
-  --color-pink: #ff5895;
-  --color-purple: #918cff;
-  --color-blue: #6fbcff;
-  --color-orche: #ffcc99;
-  --color-neutral-100: #b7c2d7;
-  --color-neutral-60: #5a687f;
-  --color-neutral-40: #465877;
-  --color-neutral-15: #2d384c;
-  --color-neutral-10: #26303f;
-  --color-neutral-7: #293242;
-  --color-neutral-0: #222b39;
-
-  --color-pink-dark: #ff357f;
+  --color-pink: 338, 100%, 67%;
+  --color-purple: 243, 100%, 77%;
+  --color-blue: 208, 100%, 72%;
+  --color-orche: 30, 100%, 80%;
+  --color-neutral: 219, 29%, 78%;
+  --color-base: 219, 29%, 18%;
 }
 
 .graphiql-container,
@@ -114,7 +86,7 @@ body.graphiql-dark reach-portal {
 reach-portal {
   &,
   &:is(button) {
-    color: var(--color-neutral-100);
+    color: hsla(var(--color-neutral), 1);
     font-family: var(--font-family);
     font-size: var(--font-size-body);
     font-weight: var(----font-weight-regular);
@@ -122,20 +94,20 @@ reach-portal {
   }
 
   & input {
-    color: var(--color-neutral-100);
+    color: hsla(var(--color-neutral), 1);
     font-family: var(--font-family);
     font-size: var(--font-size-caption);
 
     &::placeholder {
-      color: var(--color-neutral-60);
+      color: hsla(var(--color-neutral), 0.6);
     }
   }
 
   & a {
-    color: var(--color-pink);
+    color: hsl(var(--color-pink));
 
     &:focus {
-      outline: var(--color-pink) auto 1px;
+      outline: hsl(var(--color-pink)) auto 1px;
     }
   }
 }
