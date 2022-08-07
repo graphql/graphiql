@@ -3,7 +3,7 @@
 }
 
 .graphiql-execute-button {
-  background-color: hsl(var(--color-pink));
+  background-color: hsl(var(--color-primary));
   border: none;
   border-radius: var(--border-radius-8);
   cursor: pointer;
@@ -12,11 +12,11 @@
   width: var(--toolbar-width);
 
   &:active {
-    background-color: hsla(var(--color-pink), 0.8);
+    background-color: hsla(var(--color-primary), 0.8);
   }
 
   &:focus {
-    outline: hsla(var(--color-pink), 0.8) auto 1px;
+    outline: hsla(var(--color-primary), 0.8) auto 1px;
   }
 
   & > svg {
