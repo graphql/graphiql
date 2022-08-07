@@ -1,6 +1,6 @@
 /* Everything */
 .graphiql-container {
-  background-color: var(--color-neutral-0);
+  background-color: hsl(var(--color-base));
   display: flex;
   height: 100%;
   margin: 0;
@@ -17,12 +17,12 @@
   width: var(--sidebar-width);
 }
 .graphiql-container .graphiql-sidebar button {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   height: var(--sidebar-width);
   width: var(--sidebar-width);
 }
 .graphiql-container .graphiql-sidebar button.active {
-  color: var(--color-neutral-100);
+  color: hsla(var(--color-neutral), 1);
 }
 .graphiql-container .graphiql-sidebar button:not(:first-child) {
   margin-top: var(--px-4);
@@ -42,7 +42,7 @@
 
 /* The current session and tabs */
 .graphiql-container .graphiql-sessions {
-  background-color: var(--color-neutral-7);
+  background-color: hsla(var(--color-neutral), 0.07);
   /* Adding the 8px of padding to the inner border radius of the query editor */
   border-radius: calc(var(--border-radius-12) + var(--px-8));
   display: flex;
@@ -66,7 +66,7 @@ button.graphiql-tab-add {
   margin-left: var(--px-12);
 }
 button.graphiql-tab-add > svg {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   display: block;
   height: var(--px-16);
   width: var(--px-16);
@@ -80,7 +80,7 @@ button.graphiql-tab-add > svg {
 
 /* The GraphiQL logo */
 .graphiql-container .graphiql-logo {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   font-size: var(--font-size-h4);
   font-weight: var(--font-weight-medium);
   padding: var(--px-12) var(--px-16);
@@ -95,7 +95,7 @@ button.graphiql-tab-add > svg {
 
 /* All editors (query, variable, headers) */
 .graphiql-container .graphiql-editors {
-  background-color: var(--color-neutral-0);
+  background-color: hsl(var(--color-base));
   border-radius: calc(var(--border-radius-12));
   display: flex;
   flex: 1;
@@ -107,7 +107,7 @@ button.graphiql-tab-add > svg {
 
 /* The query editor and the toolbar */
 .graphiql-container .graphiql-query-editor {
-  border-bottom: 1px solid var(--color-neutral-15);
+  border-bottom: 1px solid hsla(var(--color-neutral), 0.15);
   display: flex;
   flex: 1;
   padding: var(--px-16);
@@ -130,7 +130,7 @@ button.graphiql-tab-add > svg {
 
 /* The toolbar icons */
 .graphiql-toolbar-icon {
-  color: var(--color-neutral-40);
+  color: hsla(var(--color-neutral), 0.4);
   display: block;
   height: calc(var(--toolbar-width) - (var(--px-8) * 2));
   padding: var(--px-8);
@@ -146,10 +146,10 @@ button.graphiql-tab-add > svg {
   padding: var(--px-8);
 }
 .graphiql-container .graphiql-editor-tools button {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
 }
 .graphiql-container .graphiql-editor-tools button.active {
-  color: var(--color-neutral-100);
+  color: hsla(var(--color-neutral), 1);
 }
 
 /* The tab buttons to switch between editor tools */
@@ -172,7 +172,7 @@ button.graphiql-tab-add > svg {
 
 /* The response view */
 .graphiql-container .graphiql-response {
-  --editor-background: var(--color-neutral-7);
+  --editor-background: transparent;
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -187,12 +187,12 @@ button.graphiql-tab-add > svg {
 
 /* The footer below the response view */
 .graphiql-container .graphiql-footer {
-  border-top: 1px solid var(--color-neutral-15);
+  border-top: 1px solid hsla(var(--color-neutral), 0.15);
 }
 
 /* The plugin container */
 .graphiql-container .graphiql-plugin {
-  border-left: 1px solid var(--color-neutral-15);
+  border-left: 1px solid hsla(var(--color-neutral), 0.15);
   flex: 1;
   max-width: calc(100% - 2 * var(--px-16));
   overflow-y: auto;
@@ -205,7 +205,7 @@ button.graphiql-tab-add > svg {
   cursor: col-resize;
 }
 .graphiql-container .graphiql-horizontal-drag-bar:hover::after {
-  border: var(--px-2) solid var(--color-neutral-15);
+  border: var(--px-2) solid hsla(var(--color-neutral), 0.15);
   border-radius: var(--border-radius-2);
   content: '';
   display: block;
@@ -219,7 +219,7 @@ button.graphiql-tab-add > svg {
 
 /* Generic icon style */
 .graphiql-container .graphiql-chevron-icon {
-  color: var(--color-neutral-40);
+  color: hsla(var(--color-neutral), 0.4);
   display: block;
   height: var(--px-12);
   padding: var(--px-12);
@@ -256,7 +256,7 @@ reach-portal .graphiql-dialog-title {
 /* A section inside the settings dialog */
 reach-portal .graphiql-dialog-section {
   align-items: center;
-  border-top: 1px solid var(--color-neutral-15);
+  border-top: 1px solid hsla(var(--color-neutral), 0.15);
   display: flex;
   justify-content: space-between;
   padding: var(--px-24);
@@ -273,7 +273,7 @@ reach-portal .graphiql-dialog-section-title {
 
 /* The section caption in the settings dialog */
 reach-portal .graphiql-dialog-section-caption {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
 }
 
 reach-portal .graphiql-table {
@@ -281,13 +281,13 @@ reach-portal .graphiql-table {
   width: 100%;
 }
 reach-portal .graphiql-table :is(th, td) {
-  border: 1px solid var(--color-neutral-15);
+  border: 1px solid hsla(var(--color-neutral), 0.15);
   padding: var(--px-8) var(--px-12);
 }
 
 /* A single key the short-key dialog */
 reach-portal .graphiql-key {
-  background-color: var(--color-neutral-10);
+  background-color: hsla(var(--color-neutral), 0.1);
   border-radius: var(--border-radius-4);
   padding: var(--px-4);
 }

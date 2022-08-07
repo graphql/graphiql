@@ -39,7 +39,7 @@
 /* The back-button in the doc explorer */
 a.graphiql-doc-explorer-back {
   align-items: center;
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   display: flex;
   text-decoration: none;
 
@@ -48,7 +48,7 @@ a.graphiql-doc-explorer-back {
   }
 
   &:focus {
-    outline: var(--color-neutral-60) auto 1px;
+    outline: hsla(var(--color-neutral), 0.6) auto 1px;
 
     & + .graphiql-doc-explorer-title {
       /* Don't hide the header when focussing the back link */
@@ -78,15 +78,15 @@ a.graphiql-doc-explorer-back {
 
 /* The contents of the currently active page in the doc explorer */
 .graphiql-doc-explorer-content > * {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   margin-top: var(--px-20);
 }
 
 /* Error message */
 .graphiql-doc-explorer-error {
-  background-color: var(--color-red-background);
-  border: 1px solid var(--color-red);
+  background-color: hsla(var(--color-red), 0.15);
+  border: 1px solid hsl(var(--color-red));
   border-radius: var(--border-radius-8);
-  color: var(--color-red);
+  color: hsl(var(--color-red));
   padding: var(--px-8) var(--px-12);
 }

@@ -2,7 +2,7 @@
 
 [data-reach-dialog-overlay] {
   align-items: center;
-  background-color: var(--color-neutral-background);
+  background-color: hsla(var(--color-neutral), 0.15);
   display: flex;
   justify-content: center;
   /**
@@ -14,7 +14,7 @@
 }
 
 [data-reach-dialog-content] {
-  background-color: var(--color-neutral-0);
+  background-color: hsl(var(--color-base));
   border-radius: var(--border-radius-12);
   box-shadow: var(--box-shadow);
   margin: 0;
@@ -26,7 +26,7 @@
 }
 
 .graphiql-dialog-close > svg {
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   display: block;
   height: var(--px-12);
   padding: var(--px-12);

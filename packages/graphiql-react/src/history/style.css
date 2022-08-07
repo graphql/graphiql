@@ -11,15 +11,15 @@
 
 .graphiql-history-item {
   border-radius: var(--border-radius-4);
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   display: flex;
   font-size: var(--font-size-inline-code);
   font-family: var(--font-family-mono);
   height: 34px;
 
   &:hover {
-    color: var(--color-neutral-100);
-    background-color: var(--color-neutral-7);
+    color: hsla(var(--color-neutral), 1);
+    background-color: hsla(var(--color-neutral), 0.07);
   }
 
   &:not(:first-child) {
@@ -27,7 +27,7 @@
   }
 
   &.editable {
-    background-color: var(--color-pink-background);
+    background-color: hsla(var(--color-pink), 0.1);
 
     & > input {
       background: transparent;
@@ -39,20 +39,20 @@
       width: 100%;
 
       &::placeholder {
-        color: var(--color-neutral-60);
+        color: hsla(var(--color-neutral), 0.6);
       }
     }
 
     & > button {
-      color: var(--color-pink);
+      color: hsl(var(--color-pink));
       padding: 0 var(--px-10);
 
       &:active {
-        background-color: var(--color-pink-background-dark);
+        background-color: hsla(var(--color-pink), 0.15);
       }
 
       &:focus {
-        outline: var(--color-pink) auto 1px;
+        outline: hsl(var(--color-pink)) auto 1px;
       }
 
       & > svg {
@@ -72,12 +72,12 @@ button.graphiql-history-item-label {
 
 button.graphiql-history-item-action {
   align-items: center;
-  color: var(--color-neutral-60);
+  color: hsla(var(--color-neutral), 0.6);
   display: flex;
   padding: var(--px-8) var(--px-6);
 
   &:hover {
-    color: var(--color-neutral-100);
+    color: hsla(var(--color-neutral), 1);
   }
 
   & > svg {
