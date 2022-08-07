@@ -12,60 +12,60 @@
   background-position: 0 95%;
 }
 .cm-s-graphiql .CodeMirror-lint-mark-error {
-  color: hsl(var(--color-red));
+  color: hsl(var(--color-error));
 }
 .CodeMirror-lint-mark-error {
   background-image: linear-gradient(
       45deg,
       transparent 65%,
-      hsl(var(--color-red)) 80%,
+      hsl(var(--color-error)) 80%,
       transparent 90%
     ),
     linear-gradient(
       135deg,
       transparent 5%,
-      hsl(var(--color-red)) 15%,
+      hsl(var(--color-error)) 15%,
       transparent 25%
     ),
     linear-gradient(
       135deg,
       transparent 45%,
-      hsl(var(--color-red)) 55%,
+      hsl(var(--color-error)) 55%,
       transparent 65%
     ),
     linear-gradient(
       45deg,
       transparent 25%,
-      hsl(var(--color-red)) 35%,
+      hsl(var(--color-error)) 35%,
       transparent 50%
     );
 }
 .cm-s-graphiql .CodeMirror-lint-mark-warning {
-  color: hsl(var(--color-orche));
+  color: hsl(var(--color-warning));
 }
 .CodeMirror-lint-mark-warning {
   background-image: linear-gradient(
       45deg,
       transparent 65%,
-      hsl(var(--color-orche)) 80%,
+      hsl(var(--color-warning)) 80%,
       transparent 90%
     ),
     linear-gradient(
       135deg,
       transparent 5%,
-      hsl(var(--color-orche)) 15%,
+      hsl(var(--color-warning)) 15%,
       transparent 25%
     ),
     linear-gradient(
       135deg,
       transparent 45%,
-      hsl(var(--color-orche)) 55%,
+      hsl(var(--color-warning)) 55%,
       transparent 65%
     ),
     linear-gradient(
       45deg,
       transparent 25%,
-      hsl(var(--color-orche)) 35%,
+      hsl(var(--color-warning)) 35%,
       transparent 50%
     );
 }
@@ -88,8 +88,8 @@
   padding: 0;
 }
 .CodeMirror-lint-message-error {
-  color: hsl(var(--color-red));
+  color: hsl(var(--color-error));
 }
 .CodeMirror-lint-message-warning {
-  color: hsl(var(--color-orche));
+  color: hsl(var(--color-warning));
 }
