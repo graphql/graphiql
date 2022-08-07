@@ -32,12 +32,6 @@ export type {
 } from '@graphiql/toolkit';
 
 /**
- * Toolbar
- */
-export { ToolbarMenu, ToolbarMenuItem } from './components/ToolbarMenu';
-export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
-
-/**
  * Legacy exports
  */
 import {
