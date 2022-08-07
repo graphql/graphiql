@@ -7,5 +7,5 @@
 }
 
 .graphiql-doc-explorer-enum-value {
-  color: hsl(var(--color-blue));
+  color: hsl(var(--color-info));
 }

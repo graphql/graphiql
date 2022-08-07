@@ -72,7 +72,7 @@
 .CodeMirror-hint-information-description,
 .CodeMirror-info .info-description {
   & a {
-    color: hsl(var(--color-pink));
+    color: hsl(var(--color-primary));
     text-decoration: none;
 
     &:hover {
@@ -99,17 +99,17 @@
 .CodeMirror-hint-information-deprecation-reason,
 .CodeMirror-info .info-deprecation {
   & a {
-    color: hsl(var(--color-orche));
+    color: hsl(var(--color-warning));
     text-decoration: underline;
   }
 
   & blockquote {
-    border-left: 1.5px solid hsl(var(--color-orche));
+    border-left: 1.5px solid hsl(var(--color-warning));
   }
 
   & code,
   & pre {
-    background-color: hsla(var(--color-orche), 0.15);
+    background-color: hsla(var(--color-warning), 0.15);
   }
 
   & > * {
@@ -129,10 +129,10 @@
 
 .CodeMirror-hint-information-deprecation,
 .CodeMirror-info .info-deprecation {
-  background-color: hsla(var(--color-orche), 0.07);
-  border: 1px solid hsl(var(--color-orche));
+  background-color: hsla(var(--color-warning), 0.07);
+  border: 1px solid hsl(var(--color-warning));
   border-radius: var(--border-radius-4);
-  color: hsl(var(--color-orche));
+  color: hsl(var(--color-warning));
   margin-top: var(--px-12);
   padding: var(--px-6) var(--px-8);
 }
