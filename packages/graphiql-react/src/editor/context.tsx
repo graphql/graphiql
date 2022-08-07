@@ -319,13 +319,13 @@ const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
 # Keyboard shortcuts:
 #
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
+#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
 #
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
+#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
 #
-#       Run Query:  Ctrl-Enter (or press the play button above)
+#        Run Query:  Ctrl-Enter (or press the play button)
 #
-#   Auto Complete:  Ctrl-Space (or just start typing)
+#    Auto Complete:  Ctrl-Space (or just start typing)
 #
 
 `;

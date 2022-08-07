@@ -1,0 +1,5 @@
+button.graphiql-toolbar-menu {
+  display: block;
+  height: var(--toolbar-width);
+  width: var(--toolbar-width);
+}

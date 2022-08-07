@@ -118,6 +118,7 @@ languageservice
 linenumber
 linenumbers
 linkify
+listbox
 listvalues
 matchingbracket
 modulemap
