@@ -7,7 +7,13 @@ import type {
   ValidationRule,
 } from 'graphql';
 import { getOperationFacts } from 'graphql-language-service';
-import { MutableRefObject, useEffect, useMemo, useRef } from 'react';
+import {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
@@ -27,7 +33,6 @@ import {
 } from './context';
 import {
   CopyQueryCallback,
-  EditCallback,
   useCompletion,
   useCopyQuery,
   useKeyMap,
@@ -45,7 +50,6 @@ export type UseQueryEditorArgs = {
   onClickReference?: OnClickReference;
   onCopyQuery?: CopyQueryCallback;
   onEdit?(value: string, documentAST?: DocumentNode): void;
-  onEditOperationName?: EditCallback;
   readOnly?: boolean;
   keyMap?: KeyMap;
 };
@@ -56,7 +60,6 @@ export function useQueryEditor({
   onClickReference,
   onCopyQuery,
   onEdit,
-  onEditOperationName,
   readOnly = false,
 }: UseQueryEditorArgs = {}) {
   const { schema } = useSchemaContext({
@@ -67,6 +70,7 @@ export function useQueryEditor({
     externalFragments,
     initialQuery,
     queryEditor,
+    setOperationName,
     setQueryEditor,
     validationRules,
     variableEditor,
@@ -255,7 +259,6 @@ export function useQueryEditor({
       editorInstance.documentAST = operationFacts?.documentAST ?? null;
       editorInstance.operationName = operationName ?? null;
       editorInstance.operations = operationFacts?.operations ?? null;
-      editorInstance.variableToType = operationFacts?.variableToType ?? null;
 
       // Update variable types for the variable editor
       if (variableEditor) {
@@ -277,6 +280,7 @@ export function useQueryEditor({
         const query = editorInstance.getValue();
         storage?.set(STORAGE_KEY_QUERY, query);
 
+        const currentOperationName = editorInstance.operationName;
         const operationFacts = getAndUpdateOperationFacts(editorInstance);
         if (operationFacts?.operationName !== undefined) {
           storage?.set(
@@ -288,11 +292,10 @@ export function useQueryEditor({
         // Invoke callback props only after the operation facts have been updated
         onEdit?.(query, operationFacts?.documentAST);
         if (
-          onEditOperationName &&
-          operationFacts?.operationName !== undefined &&
-          editorInstance.operationName !== operationFacts.operationName
+          operationFacts?.operationName &&
+          currentOperationName !== operationFacts.operationName
         ) {
-          onEditOperationName(operationFacts.operationName);
+          setOperationName(operationFacts.operationName);
         }
 
         updateActiveTabValues({
@@ -309,9 +312,9 @@ export function useQueryEditor({
     return () => queryEditor.off('change', handleChange);
   }, [
     onEdit,
-    onEditOperationName,
     queryEditor,
     schema,
+    setOperationName,
     storage,
     variableEditor,
     updateActiveTabValues,
@@ -331,7 +334,40 @@ export function useQueryEditor({
 
   useCompletion(queryEditor, useQueryEditor);
 
-  useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], executionContext?.run);
+  const run = executionContext?.run;
+  const runAtCursor = useCallback(() => {
+    if (
+      !run ||
+      !queryEditor ||
+      !queryEditor.operations ||
+      !queryEditor.hasFocus()
+    ) {
+      run?.();
+      return;
+    }
+
+    const cursorIndex = queryEditor.indexFromPos(queryEditor.getCursor());
+
+    // Loop through all operations to see if one contains the cursor.
+    let operationName: string | undefined;
+    for (const operation of queryEditor.operations) {
+      if (
+        operation.loc &&
+        operation.loc.start <= cursorIndex &&
+        operation.loc.end >= cursorIndex
+      ) {
+        operationName = operation.name?.value;
+      }
+    }
+
+    if (operationName && operationName !== queryEditor.operationName) {
+      setOperationName(operationName);
+    }
+
+    run();
+  }, [queryEditor, run, setOperationName]);
+
+  useKeyMap(queryEditor, ['Cmd-Enter', 'Ctrl-Enter'], runAtCursor);
   useKeyMap(queryEditor, ['Shift-Ctrl-C'], copy);
   useKeyMap(
     queryEditor,

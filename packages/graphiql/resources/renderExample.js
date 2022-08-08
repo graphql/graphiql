@@ -42,17 +42,11 @@ function onEditHeaders(newHeaders) {
   updateURL();
 }
 
-function onEditOperationName(newOperationName) {
-  parameters.operationName = newOperationName;
-  updateURL();
-}
-
 function onTabChange(tabsState) {
   const activeTab = tabsState.tabs[tabsState.activeTabIndex];
   parameters.query = activeTab.query;
   parameters.variables = activeTab.variables;
   parameters.headers = activeTab.headers;
-  parameters.operationName = activeTab.operationName;
   updateURL();
 }
 
@@ -103,12 +97,10 @@ ReactDOM.render(
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,
-    operationName: parameters.operationName,
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,
     defaultSecondaryEditorOpen: true,
-    onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,

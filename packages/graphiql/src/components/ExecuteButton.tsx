@@ -9,8 +9,14 @@ import { OperationDefinitionNode } from 'graphql';
 import React, { useState } from 'react';
 
 export function ExecuteButton() {
-  const { queryEditor } = useEditorContext({ nonNull: true });
-  const { isFetching, run, stop, subscription } = useExecutionContext({
+  const { queryEditor, setOperationName } = useEditorContext({ nonNull: true });
+  const {
+    isFetching,
+    operationName,
+    run,
+    stop,
+    subscription,
+  } = useExecutionContext({
     nonNull: true,
   });
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -20,7 +26,7 @@ export function ExecuteButton() {
 
   const isRunning = isFetching || Boolean(subscription);
   const operations = queryEditor?.operations || [];
-  const hasOptions = operations.length > 1;
+  const hasOptions = operations.length > 1 && typeof operationName !== 'string';
 
   return (
     <div className="execute-button-wrap">
@@ -97,7 +103,15 @@ export function ExecuteButton() {
                 onMouseOut={() => setHighlight(null)}
                 onMouseUp={() => {
                   setOptionsOpen(false);
-                  run(operation.name?.value);
+                  const operationName = operation.name?.value;
+                  if (
+                    queryEditor &&
+                    operationName &&
+                    operationName !== queryEditor.operationName
+                  ) {
+                    setOperationName(operationName);
+                  }
+                  run();
                 }}>
                 {opName}
               </li>
