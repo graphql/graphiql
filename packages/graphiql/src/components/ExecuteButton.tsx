@@ -10,7 +10,13 @@ import React, { useState } from 'react';
 
 export function ExecuteButton() {
   const { queryEditor, setOperationName } = useEditorContext({ nonNull: true });
-  const { isFetching, run, stop, subscription } = useExecutionContext({
+  const {
+    isFetching,
+    operationName,
+    run,
+    stop,
+    subscription,
+  } = useExecutionContext({
     nonNull: true,
   });
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -20,7 +26,7 @@ export function ExecuteButton() {
 
   const isRunning = isFetching || Boolean(subscription);
   const operations = queryEditor?.operations || [];
-  const hasOptions = operations.length > 1;
+  const hasOptions = operations.length > 1 && typeof operationName !== 'string';
 
   return (
     <div className="execute-button-wrap">

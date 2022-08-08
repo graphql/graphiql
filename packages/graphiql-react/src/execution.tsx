@@ -18,6 +18,7 @@ import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
   isFetching: boolean;
+  operationName: string | null;
   run(): void;
   stop(): void;
   subscription: Unsubscribable | null;
@@ -30,6 +31,7 @@ export const ExecutionContext = createNullableContext<ExecutionContextType>(
 type ExecutionContextProviderProps = {
   children: ReactNode;
   fetcher: Fetcher;
+  operationName?: string;
 };
 
 export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
@@ -126,11 +128,14 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setResponse('');
     setIsFetching(true);
 
+    const operationName =
+      props.operationName ?? queryEditor.operationName ?? undefined;
+
     history?.addToHistory({
       query,
       variables: variablesString,
       headers: headersString,
-      operationName: queryEditor.operationName ?? undefined,
+      operationName,
     });
 
     try {
@@ -205,7 +210,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         {
           query,
           variables,
-          operationName: queryEditor.operationName,
+          operationName,
         },
         {
           headers: headers ?? undefined,
@@ -267,6 +272,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     fetcher,
     headerEditor,
     history,
+    props.operationName,
     queryEditor,
     responseEditor,
     shouldPersistHeaders,
@@ -277,8 +283,14 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
   ]);
 
   const value = useMemo<ExecutionContextType>(
-    () => ({ isFetching, run, stop, subscription }),
-    [isFetching, run, stop, subscription],
+    () => ({
+      isFetching,
+      operationName: props.operationName ?? null,
+      run,
+      stop,
+      subscription,
+    }),
+    [isFetching, props.operationName, run, stop, subscription],
   );
 
   return (

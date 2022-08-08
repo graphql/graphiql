@@ -445,6 +445,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     onSchemaChange,
     onToggleHistory,
     onToggleDocs,
+    operationName,
     storage,
     schema,
     schemaDescription,
@@ -484,7 +485,9 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             onSchemaChange={onSchemaChange}
             schema={schema}
             schemaDescription={schemaDescription}>
-            <ExecutionContextProvider fetcher={fetcher}>
+            <ExecutionContextProvider
+              fetcher={fetcher}
+              operationName={operationName}>
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
@@ -517,6 +520,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'onSchemaChange'
   | 'onToggleDocs'
   | 'onToggleHistory'
+  | 'operationName'
   | 'query'
   | 'schema'
   | 'schemaDescription'
