@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.11.3
+
+### Patch Changes
+
+- [#2642](https://github.com/graphql/graphiql/pull/2642) [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix controlling the operation name sent with the request using the `operationName` prop
+
+- Updated dependencies [[`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b), [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b)]:
+  - @graphiql/react@0.9.0
+
 ## 1.11.2
 
 ### Patch Changes
