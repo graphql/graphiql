@@ -1,5 +1,13 @@
 # @graphiql/react
 
+## 0.9.0
+
+### Minor Changes
+
+- [#2642](https://github.com/graphql/graphiql/pull/2642) [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a new prop `operationName` to the `ExecutionContextProvider` component that controls the operation sent with the request
+
+* [#2642](https://github.com/graphql/graphiql/pull/2642) [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The `ExecutionContextProvider` and `QueryEditor` components no longer accepts the `onEditOperationName` prop. Instead you can now pass this prop to the `EditorContextProvider` component.
+
 ## 0.8.0
 
 ### Minor Changes
