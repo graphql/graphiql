@@ -82,6 +82,7 @@ export type {
 } from './execution';
 export type {
   ExplorerContextType,
+  ExplorerContextProviderProps,
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,

@@ -23,7 +23,6 @@ import {
   DocExplorer,
   DocsIcon,
   ExecuteButton,
-  ExplorerContextProvider,
   GraphiQLProvider,
   GraphiQLProviderProps,
   HeaderEditor,
@@ -114,10 +113,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   onEditHeaders?: (value: string) => void;
   /**
-   * Handler for when the user toggles the doc pane
-   */
-  onToggleDocs?: (docExplorerOpen: boolean) => void;
-  /**
    * The CodeMirror 5 editor theme you'd like to use
    *
    */
@@ -141,12 +136,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    */
   readOnly?: boolean;
   /**
-   * Toggle the doc explorer state by default/programmatically
-   *
-   * default: false
-   */
-  docExplorerOpen?: boolean;
-  /**
    * Custom toolbar configuration
    */
   toolbar?: GraphiQLToolbarConfig;
@@ -164,17 +153,17 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
-  docExplorerOpen,
   externalFragments,
   fetcher,
   headers,
   inputValueDeprecation,
   introspectionQueryName,
+  isDocExplorerVisible,
   maxHistoryLength,
   onEditOperationName,
   onSchemaChange,
   onTabChange,
-  onToggleDocs,
+  onToggleDocExplorerVisibility,
   onToggleHistory,
   operationName,
   query,
@@ -203,10 +192,12 @@ export function GraphiQL({
       headers={headers}
       inputValueDeprecation={inputValueDeprecation}
       introspectionQueryName={introspectionQueryName}
+      isDocExplorerVisible={isDocExplorerVisible}
       maxHistoryLength={maxHistoryLength}
       onEditOperationName={onEditOperationName}
       onSchemaChange={onSchemaChange}
       onTabChange={onTabChange}
+      onToggleDocExplorerVisibility={onToggleDocExplorerVisibility}
       onToggleHistory={onToggleHistory}
       operationName={operationName}
       query={query}
@@ -218,12 +209,7 @@ export function GraphiQL({
       validationRules={validationRules}
       variables={variables}
     >
-      <ExplorerContextProvider
-        isVisible={docExplorerOpen}
-        onToggleVisibility={onToggleDocs}
-      >
-        <GraphiQLInterface {...props} />
-      </ExplorerContextProvider>
+      <GraphiQLInterface {...props} />
     </GraphiQLProvider>
   );
 }

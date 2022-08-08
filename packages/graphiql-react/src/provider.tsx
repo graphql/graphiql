@@ -3,12 +3,17 @@ import {
   ExecutionContextProvider,
   ExecutionContextProviderProps,
 } from './execution';
+import {
+  ExplorerContextProvider,
+  ExplorerContextProviderProps,
+} from './explorer/context';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
 export type GraphiQLProviderProps = EditorContextProviderProps &
   ExecutionContextProviderProps &
+  ExplorerContextProviderProps &
   HistoryContextProviderProps &
   SchemaContextProviderProps &
   StorageContextProviderProps;
@@ -21,9 +26,11 @@ export function GraphiQLProvider({
   headers,
   inputValueDeprecation,
   introspectionQueryName,
+  isDocExplorerVisible,
   maxHistoryLength,
   onSchemaChange,
   onTabChange,
+  onToggleDocExplorerVisibility,
   onToggleHistory,
   operationName,
   query,
@@ -60,7 +67,12 @@ export function GraphiQLProvider({
               fetcher={fetcher}
               operationName={operationName}
             >
-              {children}
+              <ExplorerContextProvider
+                isDocExplorerVisible={isDocExplorerVisible}
+                onToggleDocExplorerVisibility={onToggleDocExplorerVisibility}
+              >
+                {children}
+              </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
         </EditorContextProvider>
