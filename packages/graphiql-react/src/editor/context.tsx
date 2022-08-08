@@ -53,6 +53,8 @@ export type EditorContextType = {
   setResponseEditor(newEditor: CodeMirrorEditor): void;
   setVariableEditor(newEditor: CodeMirrorEditor): void;
 
+  setOperationName(operationName: string): void;
+
   initialHeaders: string;
   initialQuery: string;
   initialVariables: string;
@@ -72,6 +74,7 @@ type EditorContextProviderProps = {
   defaultQuery?: string;
   externalFragments?: string | FragmentDefinitionNode[];
   headers?: string;
+  onEditOperationName?(operationName: string): void;
   onTabChange?(tabs: TabsState): void;
   query?: string;
   shouldPersistHeaders?: boolean;
@@ -190,6 +193,20 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     [onTabChange, storeTabs],
   );
 
+  const { onEditOperationName } = props;
+  const setOperationName = useCallback<EditorContextType['setOperationName']>(
+    operationName => {
+      if (!queryEditor) {
+        return;
+      }
+
+      queryEditor.operationName = operationName;
+      updateActiveTabValues({ operationName });
+      onEditOperationName?.(operationName);
+    },
+    [onEditOperationName, queryEditor, updateActiveTabValues],
+  );
+
   const defaultQuery =
     tabState.activeTabIndex > 0 ? '' : props.defaultQuery ?? DEFAULT_QUERY;
   const initialValues = useRef({
@@ -239,6 +256,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       setResponseEditor,
       setVariableEditor,
 
+      setOperationName,
+
       ...initialValues.current,
 
       externalFragments,
@@ -257,6 +276,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       queryEditor,
       responseEditor,
       variableEditor,
+
+      setOperationName,
 
       externalFragments,
       validationRules,

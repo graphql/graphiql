@@ -9,7 +9,7 @@ import { OperationDefinitionNode } from 'graphql';
 import React, { useState } from 'react';
 
 export function ExecuteButton() {
-  const { queryEditor } = useEditorContext({ nonNull: true });
+  const { queryEditor, setOperationName } = useEditorContext({ nonNull: true });
   const { isFetching, run, stop, subscription } = useExecutionContext({
     nonNull: true,
   });
@@ -97,7 +97,15 @@ export function ExecuteButton() {
                 onMouseOut={() => setHighlight(null)}
                 onMouseUp={() => {
                   setOptionsOpen(false);
-                  run(operation.name?.value);
+                  const operationName = operation.name?.value;
+                  if (
+                    queryEditor &&
+                    operationName &&
+                    operationName !== queryEditor.operationName
+                  ) {
+                    setOperationName(operationName);
+                  }
+                  run();
                 }}>
                 {opName}
               </li>

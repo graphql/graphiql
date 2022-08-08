@@ -441,6 +441,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     inputValueDeprecation,
     introspectionQueryName,
     maxHistoryLength,
+    onEditOperationName,
     onSchemaChange,
     onToggleHistory,
     onToggleDocs,
@@ -467,6 +468,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
           defaultQuery={props.defaultQuery}
           externalFragments={externalFragments}
           headers={props.headers}
+          onEditOperationName={onEditOperationName}
           onTabChange={
             typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
           }
@@ -482,9 +484,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             onSchemaChange={onSchemaChange}
             schema={schema}
             schemaDescription={schemaDescription}>
-            <ExecutionContextProvider
-              fetcher={fetcher}
-              onEditOperationName={props.onEditOperationName}>
+            <ExecutionContextProvider fetcher={fetcher}>
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
                 onToggleVisibility={onToggleDocs}>
@@ -513,6 +513,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'inputValueDeprecation'
   | 'introspectionQueryName'
   | 'maxHistoryLength'
+  | 'onEditOperationName'
   | 'onSchemaChange'
   | 'onToggleDocs'
   | 'onToggleHistory'
@@ -778,7 +779,6 @@ class GraphiQLWithContext extends React.Component<
                       keyMap={this.props.keyMap}
                       onCopyQuery={this.props.onCopyQuery}
                       onEdit={this.props.onEditQuery}
-                      onEditOperationName={this.props.onEditOperationName}
                       readOnly={this.props.readOnly}
                     />
                   </div>
