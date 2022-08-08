@@ -3,6 +3,7 @@ import {
   FetcherResultPayload,
   formatError,
   formatResult,
+  GetDefaultFieldNamesFn,
   isAsyncIterable,
   isObservable,
   Unsubscribable,
@@ -26,13 +27,38 @@ export type ExecutionContextType = {
 export const ExecutionContext =
   createNullableContext<ExecutionContextType>('ExecutionContext');
 
-type ExecutionContextProviderProps = {
+export type ExecutionContextProviderProps = {
   children: ReactNode;
+  /**
+   * A function which accepts GraphQL HTTP parameters and returns a `Promise`,
+   * `Observable` or `AsyncIterable` that returns the GraphQL response in
+   * parsed JSON format.
+   *
+   * We suggest using the `createGraphiQLFetcher` utility from `@graphiql/toolkit`
+   * to create these fetcher functions.
+   *
+   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
+   */
   fetcher: Fetcher;
+  /**
+   * A function to determine which field leafs are automatically added when
+   * trying to execute a query with missing selection sets. It will be called
+   * with the `GraphQLType` for which fields need to be added.
+   */
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  /**
+   * This prop sets the operation name that is passed with a GraphQL request.
+   */
   operationName?: string;
 };
 
 export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
+  if (!props.fetcher) {
+    throw new TypeError(
+      'The `ExecutionContextProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
+
   const {
     externalFragments,
     headerEditor,
@@ -44,6 +70,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
   const history = useHistoryContext();
   const autoCompleteLeafs = useAutoCompleteLeafs({
+    getDefaultFieldNames: props.getDefaultFieldNames,
     caller: ExecutionContextProvider,
   });
   const [isFetching, setIsFetching] = useState(false);

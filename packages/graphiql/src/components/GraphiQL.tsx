@@ -23,7 +23,6 @@ import {
   DocExplorer,
   DocsIcon,
   ExecuteButton,
-  ExecutionContextProvider,
   ExplorerContextProvider,
   GraphiQLProvider,
   GraphiQLProviderProps,
@@ -60,8 +59,6 @@ import {
   VariableEditor,
 } from '@graphiql/react';
 
-import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
-
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
@@ -84,22 +81,6 @@ export type GraphiQLToolbarConfig = {
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
 export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
-  /**
-   * Required. A function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable
-   * which resolves to the GraphQL parsed JSON response.
-   *
-   * We suggest using `@graphiql/toolkit` `createGraphiQLFetcher()` to cover most implementations,
-   * including custom headers, websockets and even incremental delivery for @defer and @stream.
-   *
-   * [`GraphiQL Create Fetcher documentation`](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher)
-   *  **Required.**
-   */
-  fetcher: Fetcher;
-  /**
-   * The operationName to use when executing the current operation.
-   * Overrides the dropdown when multiple operations are present.
-   */
-  operationName?: string;
   /**
    * Should the variables editor be open by default?
    * default: true
@@ -136,11 +117,6 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
    * Handler for when the user toggles the doc pane
    */
   onToggleDocs?: (docExplorerOpen: boolean) => void;
-  /**
-   * A custom function to determine which field leafs are automatically
-   * added when fill leafs command is used
-   */
-  getDefaultFieldNames?: GetDefaultFieldNamesFn;
   /**
    * The CodeMirror 5 editor theme you'd like to use
    *
@@ -232,6 +208,7 @@ export function GraphiQL({
       onSchemaChange={onSchemaChange}
       onTabChange={onTabChange}
       onToggleHistory={onToggleHistory}
+      operationName={operationName}
       query={query}
       response={response}
       schema={schema}
@@ -241,14 +218,12 @@ export function GraphiQL({
       validationRules={validationRules}
       variables={variables}
     >
-      <ExecutionContextProvider fetcher={fetcher} operationName={operationName}>
-        <ExplorerContextProvider
-          isVisible={docExplorerOpen}
-          onToggleVisibility={onToggleDocs}
-        >
-          <GraphiQLInterface {...props} />
-        </ExplorerContextProvider>
-      </ExecutionContextProvider>
+      <ExplorerContextProvider
+        isVisible={docExplorerOpen}
+        onToggleVisibility={onToggleDocs}
+      >
+        <GraphiQLInterface {...props} />
+      </ExplorerContextProvider>
     </GraphiQLProvider>
   );
 }

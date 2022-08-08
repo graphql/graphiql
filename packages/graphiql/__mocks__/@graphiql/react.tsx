@@ -102,6 +102,7 @@ export type {
   EditorContextType,
   EditorContextProviderProps,
   ExecutionContextType,
+  ExecutionContextProviderProps,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,

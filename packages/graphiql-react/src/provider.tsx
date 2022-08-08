@@ -1,9 +1,14 @@
 import { EditorContextProvider, EditorContextProviderProps } from './editor';
+import {
+  ExecutionContextProvider,
+  ExecutionContextProviderProps,
+} from './execution';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
 import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
 export type GraphiQLProviderProps = EditorContextProviderProps &
+  ExecutionContextProviderProps &
   HistoryContextProviderProps &
   SchemaContextProviderProps &
   StorageContextProviderProps;
@@ -20,6 +25,7 @@ export function GraphiQLProvider({
   onSchemaChange,
   onTabChange,
   onToggleHistory,
+  operationName,
   query,
   schema,
   schemaDescription,
@@ -50,7 +56,12 @@ export function GraphiQLProvider({
             schema={schema}
             schemaDescription={schemaDescription}
           >
-            {children}
+            <ExecutionContextProvider
+              fetcher={fetcher}
+              operationName={operationName}
+            >
+              {children}
+            </ExecutionContextProvider>
           </SchemaContextProvider>
         </EditorContextProvider>
       </HistoryContextProvider>

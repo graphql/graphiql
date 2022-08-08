@@ -76,7 +76,10 @@ export type {
   UseVariableEditorArgs,
   KeyMap,
 } from './editor';
-export type { ExecutionContextType } from './execution';
+export type {
+  ExecutionContextType,
+  ExecutionContextProviderProps,
+} from './execution';
 export type {
   ExplorerContextType,
   ExplorerFieldDef,
