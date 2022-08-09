@@ -79,69 +79,8 @@ export type GraphiQLToolbarConfig = {
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> & {
-  /**
-   * Should the variables editor be open by default?
-   * default: true
-   */
-  defaultVariableEditorOpen?: boolean;
-  /**
-   * Should the "secondary editor" that contains both headers or variables be open by default?
-   * default: true
-   */
-  defaultSecondaryEditorOpen?: boolean;
-  /**
-   * Should the headers editor even be enabled?
-   * Note that you can still pass custom headers in the fetcher
-   * default: true
-   */
-  headerEditorEnabled?: boolean;
-  /**
-   * Handler for when a user copies a query
-   */
-  onCopyQuery?: (query?: string) => void;
-  /**
-   * Handler for when a user edits a query.
-   */
-  onEditQuery?: (query?: string, documentAST?: DocumentNode) => void;
-  /**
-   * Handler for when a user edits variables.
-   */
-  onEditVariables?: (value: string) => void;
-  /**
-   * Handler for when a user edits headers.
-   */
-  onEditHeaders?: (value: string) => void;
-  /**
-   * The CodeMirror 5 editor theme you'd like to use
-   *
-   */
-  editorTheme?: string;
-  /**
-   * The CodeMirror 5 editor keybindings you'd like to use
-   *
-   * Note: may be deprecated for monaco
-   *
-   * See: https://codemirror.net/5/doc/manual.html#option_keyMap
-   *
-   * @default 'sublime'
-   */
-  keyMap?: KeyMap;
-  /**
-   * Custom results tooltip component
-   */
-  ResultsTooltip?: ResponseTooltipType;
-  /**
-   * Set codemirror editors to readOnly state
-   */
-  readOnly?: boolean;
-  /**
-   * Custom toolbar configuration
-   */
-  toolbar?: GraphiQLToolbarConfig;
-
-  children?: ReactNode;
-};
+export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
+  GraphiQLInterfaceProps;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -218,32 +157,68 @@ GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
 GraphiQL.Footer = GraphiQLFooter;
 
-export type GraphiQLInterfaceProps = Omit<
-  GraphiQLProps,
-  | 'dangerouslyAssumeSchemaIsValid'
-  | 'defaultQuery'
-  | 'docExplorerOpen'
-  | 'externalFragments'
-  | 'fetcher'
-  | 'headers'
-  | 'inputValueDeprecation'
-  | 'introspectionQueryName'
-  | 'maxHistoryLength'
-  | 'onEditOperationName'
-  | 'onSchemaChange'
-  | 'onTabChange'
-  | 'onToggleDocs'
-  | 'onToggleHistory'
-  | 'operationName'
-  | 'query'
-  | 'response'
-  | 'schema'
-  | 'schemaDescription'
-  | 'shouldPersistHeaders'
-  | 'storage'
-  | 'validationRules'
-  | 'variables'
->;
+export type GraphiQLInterfaceProps = {
+  children?: ReactNode;
+  /**
+   * Should the variables editor be open by default?
+   * default: true
+   */
+  defaultVariableEditorOpen?: boolean;
+  /**
+   * Should the "secondary editor" that contains both headers or variables be open by default?
+   * default: true
+   */
+  defaultSecondaryEditorOpen?: boolean;
+  /**
+   * Should the headers editor even be enabled?
+   * Note that you can still pass custom headers in the fetcher
+   * default: true
+   */
+  headerEditorEnabled?: boolean;
+  /**
+   * Handler for when a user copies a query
+   */
+  onCopyQuery?: (query?: string) => void;
+  /**
+   * Handler for when a user edits a query.
+   */
+  onEditQuery?: (query?: string, documentAST?: DocumentNode) => void;
+  /**
+   * Handler for when a user edits variables.
+   */
+  onEditVariables?: (value: string) => void;
+  /**
+   * Handler for when a user edits headers.
+   */
+  onEditHeaders?: (value: string) => void;
+  /**
+   * The CodeMirror 5 editor theme you'd like to use
+   *
+   */
+  editorTheme?: string;
+  /**
+   * The CodeMirror 5 editor keybindings you'd like to use
+   *
+   * Note: may be deprecated for monaco
+   *
+   * See: https://codemirror.net/5/doc/manual.html#option_keyMap
+   *
+   * @default 'sublime'
+   */
+  keyMap?: KeyMap;
+  /**
+   * Custom results tooltip component
+   */
+  ResultsTooltip?: ResponseTooltipType;
+  /**
+   * Set codemirror editors to readOnly state
+   */
+  readOnly?: boolean;
+  /**
+   * Custom toolbar configuration
+   */
+  toolbar?: GraphiQLToolbarConfig;
+};
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const editorContext = useEditorContext({ nonNull: true });
