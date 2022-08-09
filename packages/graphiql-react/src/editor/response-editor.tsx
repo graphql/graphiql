@@ -123,7 +123,7 @@ export function useResponseEditor({
     return () => {
       isActive = false;
     };
-  }, [editorTheme, setResponseEditor]);
+  }, [editorTheme, initialResponse, setResponseEditor]);
 
   useSynchronizeOption(responseEditor, 'keyMap', keyMap);
 
