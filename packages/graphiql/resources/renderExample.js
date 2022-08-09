@@ -100,7 +100,7 @@ ReactDOM.render(
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,
-    defaultSecondaryEditorOpen: true,
+    defaultEditorToolsVisibility: true,
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
