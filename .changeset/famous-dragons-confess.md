@@ -2,4 +2,7 @@
 '@graphiql/react': minor
 ---
 
-BREAKING: The `ExecutionContext` no longer contains the `subscription` property as this is only meant for internal use.
+BREAKING: The following context properties have been removed as they are only meant for internal use:
+- The `subscription` property of the `ExecutionContext`
+- The `setSchema` method of the `SchemaContext`
+- The `setFetchError` method of the `SchemaContext`
