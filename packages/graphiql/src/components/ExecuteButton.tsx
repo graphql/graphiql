@@ -10,16 +10,14 @@ import React, { useState } from 'react';
 
 export function ExecuteButton() {
   const { queryEditor, setOperationName } = useEditorContext({ nonNull: true });
-  const { isFetching, operationName, run, stop, subscription } =
-    useExecutionContext({
-      nonNull: true,
-    });
+  const { isFetching, operationName, run, stop } = useExecutionContext({
+    nonNull: true,
+  });
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
   );
 
-  const isRunning = isFetching || Boolean(subscription);
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
 
@@ -31,7 +29,7 @@ export function ExecuteButton() {
         onMouseDown={
           // Allow mouse down if there is no running query, there are options
           // for which operation to run, and the dropdown is currently closed.
-          !isRunning && hasOptions && !optionsOpen
+          !isFetching && hasOptions && !optionsOpen
             ? downEvent => {
                 let initialPress = true;
                 const downTarget = downEvent.currentTarget;
@@ -65,9 +63,9 @@ export function ExecuteButton() {
         onClick={
           // Allow click event if there is a running query or if there are not
           // options for which operation to run.
-          isRunning || !hasOptions
+          isFetching || !hasOptions
             ? () => {
-                if (isRunning) {
+                if (isFetching) {
                   stop();
                 } else {
                   run();
@@ -78,7 +76,7 @@ export function ExecuteButton() {
         title="Execute Query (Ctrl-Enter)"
       >
         <svg width="34" height="34">
-          {isRunning ? (
+          {isFetching ? (
             <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" />
           ) : (
             <path d="M 11 9 L 24 16 L 11 23 z" />
@@ -99,13 +97,13 @@ export function ExecuteButton() {
                 onMouseOut={() => setHighlight(null)}
                 onMouseUp={() => {
                   setOptionsOpen(false);
-                  const operationName = operation.name?.value;
+                  const selectedOperationName = operation.name?.value;
                   if (
                     queryEditor &&
-                    operationName &&
-                    operationName !== queryEditor.operationName
+                    selectedOperationName &&
+                    selectedOperationName !== queryEditor.operationName
                   ) {
-                    setOperationName(operationName);
+                    setOperationName(selectedOperationName);
                   }
                   run();
                 }}
