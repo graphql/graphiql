@@ -101,7 +101,7 @@ ReactDOM.render(
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,
     defaultEditorToolsVisibility: true,
-    headerEditorEnabled: true,
+    isHeadersEditorEnabled: true,
     shouldPersistHeaders: true,
     inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
     onTabChange,

@@ -181,11 +181,10 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     defaultEditorToolsVisibility: boolean | 'variables' | 'headers';
     /**
-     * Should the headers editor even be enabled?
-     * Note that you can still pass custom headers in the fetcher
-     * default: true
+     * Toggle if the headers editor should be shown inside the editor tools.
+     * @default true
      */
-    headerEditorEnabled?: boolean;
+    isHeadersEditorEnabled?: boolean;
     /**
      * Custom toolbar configuration
      */
@@ -260,7 +259,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     }
     return !editorContext.initialVariables &&
       editorContext.initialHeaders &&
-      headerEditorEnabled
+      isHeadersEditorEnabled
       ? 'headers'
       : 'variables';
   });
@@ -306,7 +305,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const headerEditorEnabled = props.headerEditorEnabled ?? true;
+  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
 
   const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
@@ -549,7 +548,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         >
                           Variables
                         </UnStyledButton>
-                        {headerEditorEnabled ? (
+                        {isHeadersEditorEnabled ? (
                           <UnStyledButton
                             className={
                               activeSecondaryEditor === 'headers'
@@ -622,7 +621,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         onClickReference={onClickReference}
                         readOnly={props.readOnly}
                       />
-                      {headerEditorEnabled && (
+                      {isHeadersEditorEnabled && (
                         <HeaderEditor
                           editorTheme={props.editorTheme}
                           isHidden={activeSecondaryEditor !== 'headers'}
