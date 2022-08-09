@@ -20,8 +20,6 @@ const defaultSchemaContext: SchemaContextType = {
   introspect() {},
   isFetching: false,
   schema: ExampleSchema,
-  setFetchError() {},
-  setSchema() {},
   validationErrors: null,
 };
 

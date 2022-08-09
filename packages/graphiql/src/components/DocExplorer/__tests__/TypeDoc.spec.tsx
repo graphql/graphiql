@@ -31,8 +31,6 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
         introspect() {},
         isFetching: false,
         schema: ExampleSchema,
-        setFetchError() {},
-        setSchema() {},
         validationErrors: null,
       }}
     >

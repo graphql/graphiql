@@ -16,9 +16,7 @@ import {
   validateSchema,
 } from 'graphql';
 import {
-  Dispatch,
   ReactNode,
-  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -44,8 +42,6 @@ export type SchemaContextType = {
   introspect(): void;
   isFetching: boolean;
   schema: MaybeGraphQLSchema;
-  setFetchError: Dispatch<SetStateAction<string | null>>;
-  setSchema: Dispatch<SetStateAction<MaybeGraphQLSchema>>;
   validationErrors: readonly GraphQLError[] | null;
 };
 
@@ -286,8 +282,6 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       introspect,
       isFetching,
       schema,
-      setFetchError,
-      setSchema,
       validationErrors,
     }),
     [fetchError, introspect, isFetching, schema, validationErrors],
