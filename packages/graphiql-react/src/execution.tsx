@@ -21,7 +21,6 @@ export type ExecutionContextType = {
   operationName: string | null;
   run(): void;
   stop(): void;
-  subscription: Unsubscribable | null;
 };
 
 export const ExecutionContext =
@@ -287,9 +286,8 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
       operationName: props.operationName ?? null,
       run,
       stop,
-      subscription,
     }),
-    [isFetching, props.operationName, run, stop, subscription],
+    [isFetching, props.operationName, run, stop],
   );
 
   return (
