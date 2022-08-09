@@ -57,6 +57,7 @@ export type EditorContextType = {
 
   initialHeaders: string;
   initialQuery: string;
+  initialResponse: string;
   initialVariables: string;
 
   externalFragments: Map<string, FragmentDefinitionNode>;
@@ -77,6 +78,7 @@ type EditorContextProviderProps = {
   onEditOperationName?(operationName: string): void;
   onTabChange?(tabs: TabsState): void;
   query?: string;
+  response?: string;
   shouldPersistHeaders?: boolean;
   validationRules?: ValidationRule[];
   variables?: string;
@@ -100,6 +102,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   useSynchronizeValue(headerEditor, props.headers);
   useSynchronizeValue(queryEditor, props.query);
+  useSynchronizeValue(responseEditor, props.response);
   useSynchronizeValue(variableEditor, props.variables);
 
   // We store this in state but never update it. By passing a function we only
@@ -212,6 +215,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const initialValues = useRef({
     initialHeaders: storedEditorValues.headers ?? '',
     initialQuery: storedEditorValues.query ?? defaultQuery,
+    initialResponse: props.response ?? '',
     initialVariables: storedEditorValues.variables ?? '',
   });
 

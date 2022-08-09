@@ -438,6 +438,7 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     docExplorerOpen,
     externalFragments,
     fetcher,
+    headers,
     inputValueDeprecation,
     introspectionQueryName,
     maxHistoryLength,
@@ -446,11 +447,14 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     onToggleHistory,
     onToggleDocs,
     operationName,
+    query,
+    response,
     storage,
     schema,
     schemaDescription,
     shouldPersistHeaders,
     validationRules,
+    variables,
     ...props
   },
   ref,
@@ -468,15 +472,16 @@ const GraphiQLProviders: ForwardRefExoticComponent<
         <EditorContextProvider
           defaultQuery={props.defaultQuery}
           externalFragments={externalFragments}
-          headers={props.headers}
+          headers={headers}
           onEditOperationName={onEditOperationName}
           onTabChange={
             typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
           }
-          query={props.query}
+          query={query}
+          response={response}
           shouldPersistHeaders={shouldPersistHeaders}
           validationRules={validationRules}
-          variables={props.variables}>
+          variables={variables}>
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
             fetcher={fetcher}
@@ -522,6 +527,7 @@ type GraphiQLWithContextProviderProps = Omit<
   | 'onToggleHistory'
   | 'operationName'
   | 'query'
+  | 'response'
   | 'schema'
   | 'schemaDescription'
   | 'shouldPersistHeaders'
@@ -888,7 +894,6 @@ class GraphiQLWithContext extends React.Component<
                     </div>
                   )}
                   <ResultViewer
-                    value={this.props.response}
                     editorTheme={this.props.editorTheme}
                     ResponseTooltip={this.props.ResultsTooltip}
                     keyMap={this.props.keyMap}
