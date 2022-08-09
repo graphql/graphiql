@@ -18,9 +18,23 @@ import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
+  /**
+   * If there is currently a GraphQL request in-flight. For long-running
+   * requests like subscriptions this will be `true` until the request is
+   * stopped manually.
+   */
   isFetching: boolean;
+  /**
+   * The operation name that will be sent with all GraphQL requests.
+   */
   operationName: string | null;
+  /**
+   * Start a GraphQL requests based of the current editor contents.
+   */
   run(): void;
+  /**
+   * Stop the GraphQL request that is currently in-flight.
+   */
   stop(): void;
 };
 
