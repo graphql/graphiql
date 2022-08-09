@@ -211,10 +211,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
 
-    const {
-      fragmentDefinitions,
-      graphQLFileMap,
-    } = await this.readAllGraphQLFiles(list);
+    const { fragmentDefinitions, graphQLFileMap } =
+      await this.readAllGraphQLFiles(list);
 
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
@@ -312,10 +310,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
       return this._typeDefinitionsCache.get(rootDir) || new Map();
     }
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
-    const {
-      objectTypeDefinitions,
-      graphQLFileMap,
-    } = await this.readAllGraphQLFiles(list);
+    const { objectTypeDefinitions, graphQLFileMap } =
+      await this.readAllGraphQLFiles(list);
     this._typeDefinitionsCache.set(rootDir, objectTypeDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 

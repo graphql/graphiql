@@ -34,9 +34,8 @@ export type HistoryContextType = {
   }): void;
 };
 
-export const HistoryContext = createNullableContext<HistoryContextType>(
-  'HistoryContext',
-);
+export const HistoryContext =
+  createNullableContext<HistoryContextType>('HistoryContext');
 
 type HistoryContextProviderProps = {
   children: ReactNode;
@@ -154,9 +153,8 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
   );
 }
 
-export const useHistoryContext = createContextHook<HistoryContextType>(
-  HistoryContext,
-);
+export const useHistoryContext =
+  createContextHook<HistoryContextType>(HistoryContext);
 
 const DEFAULT_HISTORY_LENGTH = 20;
 const STORAGE_KEY = 'historyPaneOpen';

@@ -35,9 +35,9 @@ export const Resizer: React.FC<ResizeProps> = props => {
   } = props;
 
   const handlerWidth = isNil(_handlerWidth) ? 16 : (_handlerWidth as number);
-  const handlerOffset = (isNil(_handlerOffset)
-    ? -handlerWidth / 2
-    : _handlerOffset) as number;
+  const handlerOffset = (
+    isNil(_handlerOffset) ? -handlerWidth / 2 : _handlerOffset
+  ) as number;
   const handlerZIndex = (isNil(_handlerZIndex) ? 10 : _handlerZIndex) as number;
 
   const [diffCoord, setDiffCoord] = useState<ResizingData['diffCoord']>(0);
@@ -120,7 +120,8 @@ export const Resizer: React.FC<ResizeProps> = props => {
       style={{
         position: 'relative',
         ...containerStyle,
-      }}>
+      }}
+    >
       <ResizeHandler
         dir={dir}
         className={handlerClassName}

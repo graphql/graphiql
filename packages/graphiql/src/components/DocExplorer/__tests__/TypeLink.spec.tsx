@@ -26,7 +26,8 @@ function TypeLinkWithContext(props: ComponentProps<typeof TypeLink>) {
       value={mockExplorerContextValue({
         name: unwrapType(props.type).name,
         def: unwrapType(props.type),
-      })}>
+      })}
+    >
       <TypeLink {...props} />
       {/* Print the top of the current nav stack for test assertions */}
       <ExplorerContext.Consumer>

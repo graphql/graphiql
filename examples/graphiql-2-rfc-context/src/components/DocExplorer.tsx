@@ -134,13 +134,15 @@ export class DocExplorer extends React.Component<
       <section
         className="doc-explorer"
         key={navItem.name}
-        aria-label="Documentation Explorer">
+        aria-label="Documentation Explorer"
+      >
         <div className="doc-explorer-title-bar">
           {prevName && (
             <button
               className="doc-explorer-back"
               onClick={this.handleNavBackClick}
-              aria-label={`Go back to ${prevName}`}>
+              aria-label={`Go back to ${prevName}`}
+            >
               {prevName}
             </button>
           )}

@@ -9,13 +9,13 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
-    "monaco-graphql": "^1.1.2",
     "graphql": "^16.4.0",
-    "prettier": "^2.0.4",
     "graphql-language-service": "^5.0.6",
     "json-schema": "^0.3.0",
     "jsonc-parser": "3.0.0",
-    "monaco-editor": "^0.31.0"
+    "monaco-editor": "^0.31.0",
+    "monaco-graphql": "^1.1.2",
+    "prettier": "^2.7.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -26,7 +26,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-react": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
-    "@types/prettier": "^2.0.0",
+    "@types/prettier": "^2.7.0",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.1",

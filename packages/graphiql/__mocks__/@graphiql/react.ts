@@ -187,11 +187,10 @@ function useMockedEditor(name: Name, onEdit?: (newValue: string) => void) {
   return ref;
 }
 
-export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor(
-  args,
-) {
-  return useMockedEditor('header', args?.onEdit);
-};
+export const useHeaderEditor: typeof _useHeaderEditor =
+  function useHeaderEditor(args) {
+    return useMockedEditor('header', args?.onEdit);
+  };
 
 export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor(
   args,
@@ -199,12 +198,12 @@ export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor(
   return useMockedEditor('query', args?.onEdit);
 };
 
-export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor() {
-  return useMockedEditor('response');
-};
+export const useResponseEditor: typeof _useResponseEditor =
+  function useResponseEditor() {
+    return useMockedEditor('response');
+  };
 
-export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor(
-  args,
-) {
-  return useMockedEditor('variable', args?.onEdit);
-};
+export const useVariableEditor: typeof _useVariableEditor =
+  function useVariableEditor(args) {
+    return useMockedEditor('variable', args?.onEdit);
+  };

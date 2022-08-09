@@ -32,14 +32,11 @@ export function useResponseEditor({
     nonNull: true,
     caller: useResponseEditor,
   });
-  const {
-    initialResponse,
-    responseEditor,
-    setResponseEditor,
-  } = useEditorContext({
-    nonNull: true,
-    caller: useResponseEditor,
-  });
+  const { initialResponse, responseEditor, setResponseEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: useResponseEditor,
+    });
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(

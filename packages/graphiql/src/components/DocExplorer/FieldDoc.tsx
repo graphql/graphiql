@@ -61,7 +61,8 @@ export default function FieldDoc() {
           {!showDeprecated ? (
             <button
               className="show-btn"
-              onClick={() => handleShowDeprecated(!showDeprecated)}>
+              onClick={() => handleShowDeprecated(!showDeprecated)}
+            >
               Show deprecated arguments...
             </button>
           ) : (

@@ -29,7 +29,8 @@ const ListRow = ({
         padding: padding ? ({ spaces }) => spaces.rowPadding : undefined,
         minHeight: ({ spaces }) => spaces.rowMinHeight,
       } as SxStyleProp
-    }>
+    }
+  >
     {children}
   </div>
 );
@@ -49,7 +50,8 @@ const List = ({ children }: ListPropTypes) => (
       '> *': {
         flex: '0 0 auto',
       },
-    }}>
+    }}
+  >
     {children}
   </div>
 );

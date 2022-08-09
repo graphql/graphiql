@@ -433,9 +433,10 @@ function useSynchronizeExternalFragments(
   externalFragments: Map<string, FragmentDefinitionNode>,
   codeMirrorRef: MutableRefObject<CodeMirrorType | undefined>,
 ) {
-  const externalFragmentList = useMemo(() => [...externalFragments.values()], [
-    externalFragments,
-  ]);
+  const externalFragmentList = useMemo(
+    () => [...externalFragments.values()],
+    [externalFragments],
+  );
 
   useEffect(() => {
     if (!editor) {

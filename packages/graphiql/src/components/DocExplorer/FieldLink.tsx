@@ -23,7 +23,8 @@ export default function FieldLink(props: FieldLinkProps) {
         event.preventDefault();
         push({ name: props.field.name, def: props.field });
       }}
-      href="#">
+      href="#"
+    >
       {props.field.name}
     </a>
   );

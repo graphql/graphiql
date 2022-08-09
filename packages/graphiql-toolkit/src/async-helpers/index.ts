@@ -54,13 +54,11 @@ function asyncIterableToPromise<T>(
     // Also support AsyncGenerator on Safari iOS.
     // As mentioned in the isAsyncIterable function there is no Symbol.asyncIterator available
     // so every AsyncIterable must be implemented using AsyncGenerator.
-    const iteratorReturn = ('return' in input
-      ? input
-      : input[Symbol.asyncIterator]()
+    const iteratorReturn = (
+      'return' in input ? input : input[Symbol.asyncIterator]()
     ).return?.bind(input);
-    const iteratorNext = ('next' in input
-      ? input
-      : input[Symbol.asyncIterator]()
+    const iteratorNext = (
+      'next' in input ? input : input[Symbol.asyncIterator]()
     ).next.bind(input);
 
     iteratorNext()

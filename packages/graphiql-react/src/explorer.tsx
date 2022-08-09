@@ -32,7 +32,7 @@ export type ExplorerNavStackItem = {
 // There's always at least one item in the nav stack
 export type ExplorerNavStack = [
   ExplorerNavStackItem,
-  ...ExplorerNavStackItem[]
+  ...ExplorerNavStackItem[],
 ];
 
 const initialNavStackItem: ExplorerNavStackItem = {
@@ -51,9 +51,8 @@ export type ExplorerContextType = {
   showSearch(search: string): void;
 };
 
-export const ExplorerContext = createNullableContext<ExplorerContextType>(
-  'ExplorerContext',
-);
+export const ExplorerContext =
+  createNullableContext<ExplorerContextType>('ExplorerContext');
 
 type ExplorerContextProviderProps = {
   children: ReactNode;

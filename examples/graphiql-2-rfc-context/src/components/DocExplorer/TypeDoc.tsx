@@ -202,7 +202,8 @@ function Field({ type, field, onClickType, onClickField }: FieldProps) {
     <div className="doc-category-item">
       <a
         className="field-name"
-        onClick={event => onClickField(field, type, event)}>
+        onClick={event => onClickField(field, type, event)}
+      >
         {field.name}
       </a>
       {'args' in field &&

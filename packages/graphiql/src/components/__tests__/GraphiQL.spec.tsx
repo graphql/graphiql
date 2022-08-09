@@ -335,9 +335,8 @@ describe('GraphiQL', () => {
     const MyFunctionalComponent = () => {
       return null;
     };
-    const wrap = component => () => (
-      <div className="test-wrapper">{component}</div>
-    );
+    const wrap = component => () =>
+      <div className="test-wrapper">{component}</div>;
 
     it('properly ignores fragments', () => {
       const myFragment = (

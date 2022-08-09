@@ -24,9 +24,8 @@ export type ExecutionContextType = {
   subscription: Unsubscribable | null;
 };
 
-export const ExecutionContext = createNullableContext<ExecutionContextType>(
-  'ExecutionContext',
-);
+export const ExecutionContext =
+  createNullableContext<ExecutionContextType>('ExecutionContext');
 
 type ExecutionContextProviderProps = {
   children: ReactNode;

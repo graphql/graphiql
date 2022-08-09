@@ -10,15 +10,10 @@ import React, { useState } from 'react';
 
 export function ExecuteButton() {
   const { queryEditor, setOperationName } = useEditorContext({ nonNull: true });
-  const {
-    isFetching,
-    operationName,
-    run,
-    stop,
-    subscription,
-  } = useExecutionContext({
-    nonNull: true,
-  });
+  const { isFetching, operationName, run, stop, subscription } =
+    useExecutionContext({
+      nonNull: true,
+    });
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [highlight, setHighlight] = useState<OperationDefinitionNode | null>(
     null,
@@ -80,7 +75,8 @@ export function ExecuteButton() {
               }
             : undefined
         }
-        title="Execute Query (Ctrl-Enter)">
+        title="Execute Query (Ctrl-Enter)"
+      >
         <svg width="34" height="34">
           {isRunning ? (
             <path d="M 10 10 L 23 10 L 23 23 L 10 23 z" />
@@ -112,7 +108,8 @@ export function ExecuteButton() {
                     setOperationName(operationName);
                   }
                   run();
-                }}>
+                }}
+              >
                 {opName}
               </li>
             );

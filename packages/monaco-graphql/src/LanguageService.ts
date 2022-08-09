@@ -47,9 +47,8 @@ export class LanguageService {
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
   private _parseOptions: ParseOptions | undefined = undefined;
   private _customValidationRules: ValidationRule[] | undefined = undefined;
-  private _externalFragmentDefinitionNodes:
-    | FragmentDefinitionNode[]
-    | null = null;
+  private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
+    null;
   private _externalFragmentDefinitionsString: string | null = null;
   constructor({
     parser,

@@ -43,7 +43,8 @@ describe('DocExplorer', () => {
           ...defaultSchemaContext,
           isFetching: true,
           schema: undefined,
-        }}>
+        }}
+      >
         <DocExplorerWithContext />
       </SchemaContext.Provider>,
     );

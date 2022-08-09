@@ -90,7 +90,8 @@ export function EditorsProvider(props: { children?: any }) {
       value={{
         ...state,
         loadEditor,
-      }}>
+      }}
+    >
       {props.children}
     </EditorContext.Provider>
   );

@@ -100,8 +100,8 @@ describe('getDefinition', () => {
         quack
       }`;
       // @ts-ignore
-      const fragmentSpread = parse(query).definitions[0].selectionSet
-        .selections[0];
+      const fragmentSpread =
+        parse(query).definitions[0].selectionSet.selections[0];
       const fragmentDefinition = parse(fragment).definitions[0];
       const result = await getDefinitionQueryResultForFragmentSpread(
         query,

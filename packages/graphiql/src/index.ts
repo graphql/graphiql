@@ -54,14 +54,13 @@ import {
   mergeAst as _mergeAst,
 } from '@graphiql/toolkit';
 
-export const onHasCompletion: typeof _onHasCompletion = function onHasCompletion(
-  ...args
-) {
-  console.warn(
-    'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
-  );
-  return _onHasCompletion(...args);
-};
+export const onHasCompletion: typeof _onHasCompletion =
+  function onHasCompletion(...args) {
+    console.warn(
+      'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
+    );
+    return _onHasCompletion(...args);
+  };
 
 export const fillLeafs: typeof _fillLeafs = function fillLeafs(...args) {
   console.warn(
@@ -70,14 +69,13 @@ export const fillLeafs: typeof _fillLeafs = function fillLeafs(...args) {
   return _fillLeafs(...args);
 };
 
-export const getSelectedOperationName: typeof _getSelectedOperationName = function getSelectedOperationName(
-  ...args
-) {
-  console.warn(
-    'Importing `getSelectedOperationName` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `getSelectedOperationName` function provided by the `@graphiql/toolkit` package.',
-  );
-  return _getSelectedOperationName(...args);
-};
+export const getSelectedOperationName: typeof _getSelectedOperationName =
+  function getSelectedOperationName(...args) {
+    console.warn(
+      'Importing `getSelectedOperationName` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `getSelectedOperationName` function provided by the `@graphiql/toolkit` package.',
+    );
+    return _getSelectedOperationName(...args);
+  };
 
 export const mergeAst: typeof _mergeAst = function mergeAst(...args) {
   console.warn(

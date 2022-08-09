@@ -126,14 +126,16 @@ export const GraphiQL: React.FC<GraphiQLProps> = props => {
       <EditorsProvider>
         <SchemaProvider
           fetcher={fetcher}
-          config={{ uri: props.uri, ...props.schemaConfig }}>
+          config={{ uri: props.uri, ...props.schemaConfig }}
+        >
           <SessionProvider fetcher={fetcher} sessionId={0}>
             <GraphiQLInternals
               {...{
                 formatResult,
                 formatError,
                 ...props,
-              }}>
+              }}
+            >
               {props.children}
             </GraphiQLInternals>
           </SessionProvider>
@@ -249,7 +251,8 @@ class GraphiQLInternals extends React.Component<
           <Tabs
             active={session?.currentTabs?.[name] as number}
             tabs={tabs}
-            onChange={tabId => session.changeTab(name, tabId)}>
+            onChange={tabId => session.changeTab(name, tabId)}
+          >
             {c}
           </Tabs>
         )}
@@ -299,7 +302,8 @@ class GraphiQLInternals extends React.Component<
       <section aria-label="Response Editor">
         <SessionTabs
           tabs={[`Response`, `Extensions`, `Playground`]}
-          name="results">
+          name="results"
+        >
           <>
             {this.state.isWaitingForResponse && (
               <div className="spinner-container">
@@ -395,11 +399,13 @@ class GraphiQLInternals extends React.Component<
                                 }
                               }}
                               storage={this._storage}
-                              queryID={this._editorQueryID}>
+                              queryID={this._editorQueryID}
+                            >
                               <button
                                 className="docExplorerHide"
                                 onClick={() => null}
-                                aria-label="Close History">
+                                aria-label="Close History"
+                              >
                                 {'\u2715'}
                               </button>
                             </QueryHistory>

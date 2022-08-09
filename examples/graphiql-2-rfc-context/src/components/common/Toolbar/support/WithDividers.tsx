@@ -45,7 +45,8 @@ const WithDividers = ({
         '[data-contains-divider] [data-is-divider]': {
           display: 'none',
         },
-      }}>
+      }}
+    >
       {Children.map(children, (child, index) => {
         const isFirst = index === 0;
         return (
@@ -57,7 +58,8 @@ const WithDividers = ({
                 padding && !isFirst
                   ? ({ spaces }) => spaces.rowPadding * 2
                   : undefined,
-            }}>
+            }}
+          >
             {!isFirst && (
               <Divider
                 innerSx={{

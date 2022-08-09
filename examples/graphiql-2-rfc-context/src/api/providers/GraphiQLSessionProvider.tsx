@@ -239,7 +239,8 @@ export function SessionProvider({
         changeTab,
         operationError,
         dispatch,
-      }}>
+      }}
+    >
       {children}
     </SessionContext.Provider>
   );

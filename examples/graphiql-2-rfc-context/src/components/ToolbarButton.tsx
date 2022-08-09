@@ -38,7 +38,8 @@ export class ToolbarButton extends React.Component<
         className={'toolbar-button' + (error ? ' error' : '')}
         onClick={this.handleClick}
         title={error ? error.message : this.props.title}
-        aria-invalid={error ? 'true' : 'false'}>
+        aria-invalid={error ? 'true' : 'false'}
+      >
         {this.props.label}
       </button>
     );

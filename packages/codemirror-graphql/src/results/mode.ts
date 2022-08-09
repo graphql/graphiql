@@ -33,7 +33,7 @@ CodeMirror.defineMode('graphql-results', config => {
   return {
     config,
     startState: parser.startState,
-    token: (parser.token as unknown) as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
+    token: parser.token as unknown as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
     indent,
     electricInput: /^\s*[}\]]/,
     fold: 'brace',

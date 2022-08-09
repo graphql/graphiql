@@ -49,7 +49,8 @@ const Card = ({
         gridTemplate: '100% / 100%',
         ...(innerSx ?? {}),
       } as SxStyleProp
-    }>
+    }
+  >
     {children}
   </div>
 );
@@ -73,7 +74,8 @@ const Layout = ({ nav, navPanels, session }: LayoutPropTypes) => {
           ? `'nav panels session' 100% / ${NAV_WIDTH} min-content minmax(${CONTENT_MIN_WIDTH}, 1fr)`
           : `'nav session' 100% / ${NAV_WIDTH} minmax(${CONTENT_MIN_WIDTH}, 1fr)`,
         height: '100%',
-      }}>
+      }}
+    >
       {nav && (
         <Card innerSx={{ gridArea: 'nav' }} transparent>
           {nav}
@@ -84,7 +86,8 @@ const Layout = ({ nav, navPanels, session }: LayoutPropTypes) => {
           sx={{
             gridArea: 'panels',
             ...gridBase,
-          }}>
+          }}
+        >
           {navPanels!.map(({ component, key, size }) => (
             <Card key={key} size={size}>
               {component}
@@ -99,7 +102,8 @@ const Layout = ({ nav, navPanels, session }: LayoutPropTypes) => {
             gridArea: 'session',
             gridAutoRows: '1fr',
             gridTemplateAreas: `'input response' 'console console'`,
-          }}>
+          }}
+        >
           <Card innerSx={{ gridArea: 'input' }}>{session.input}</Card>
           <Card innerSx={{ gridArea: 'response' }}>{session.response}</Card>
           <Card innerSx={{ gridArea: 'console' }}>{session.console}</Card>

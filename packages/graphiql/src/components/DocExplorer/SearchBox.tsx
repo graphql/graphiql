@@ -50,7 +50,8 @@ export default class SearchBox extends React.Component<
           <button
             className="search-box-clear"
             onClick={this.handleClear}
-            aria-label="Clear search input">
+            aria-label="Clear search input"
+          >
             {'\u2715'}
           </button>
         )}

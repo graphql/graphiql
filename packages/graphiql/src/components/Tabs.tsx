@@ -41,7 +41,8 @@ export function Tab(props: TabProps): React.ReactElement {
       aria-selected={props.isActive}
       title={props.title}
       className={`tab${props.isActive ? ' active' : ''}`}
-      onClick={props.onSelect}>
+      onClick={props.onSelect}
+    >
       {props.title}
       {props.isCloseable ? (
         <TabCloseButton onClick={() => props.onClose()} />
