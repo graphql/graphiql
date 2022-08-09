@@ -168,6 +168,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
       }
 
       setIsFetching(true);
+      // clear any previous fetch errors
+      setFetchError(null);
 
       let result = await fetch;
 
