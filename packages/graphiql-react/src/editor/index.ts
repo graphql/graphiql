@@ -32,4 +32,4 @@ export type {
 export type { TabsState } from './tabs';
 export type { UseVariableEditorArgs } from './variable-editor';
 
-export type { KeyMap } from './types';
+export type { CommonEditorProps, KeyMap, WriteableEditorProps } from './types';

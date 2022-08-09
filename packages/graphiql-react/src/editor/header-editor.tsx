@@ -9,20 +9,20 @@ import {
 } from './common';
 import { useEditorContext } from './context';
 import {
-  EditCallback,
   useChangeHandler,
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { KeyMap } from './types';
+import { WriteableEditorProps } from './types';
 
-export type UseHeaderEditorArgs = {
-  editorTheme?: string;
-  keyMap?: KeyMap;
-  onEdit?: EditCallback;
-  readOnly?: boolean;
+export type UseHeaderEditorArgs = WriteableEditorProps & {
+  /**
+   * Invoked when the contents of the headers editor change.
+   * @param value The new contents of the editor.
+   */
+  onEdit?(value: string): void;
 };
 
 export function useHeaderEditor(

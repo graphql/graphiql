@@ -66,15 +66,17 @@ export * from './ui';
 export * from './toolbar';
 
 export type {
+  CommonEditorProps,
   EditorContextType,
   EditorContextProviderProps,
+  KeyMap,
   ResponseTooltipType,
   TabsState,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   UseVariableEditorArgs,
-  KeyMap,
+  WriteableEditorProps,
 } from './editor';
 export type {
   ExecutionContextType,
