@@ -92,13 +92,15 @@ export function DocExplorer(props: DocExplorerProps) {
     <section
       className="doc-explorer"
       key={navItem.name}
-      aria-label="Documentation Explorer">
+      aria-label="Documentation Explorer"
+    >
       <div className="doc-explorer-title-bar">
         {prevName && (
           <button
             className="doc-explorer-back"
             onClick={pop}
-            aria-label={`Go back to ${prevName}`}>
+            aria-label={`Go back to ${prevName}`}
+          >
             {prevName}
           </button>
         )}
@@ -112,7 +114,8 @@ export function DocExplorer(props: DocExplorerProps) {
               hide();
               props.onClose?.();
             }}
-            aria-label="Close Documentation Explorer">
+            aria-label="Close Documentation Explorer"
+          >
             {'\u2715'}
           </button>
         </div>

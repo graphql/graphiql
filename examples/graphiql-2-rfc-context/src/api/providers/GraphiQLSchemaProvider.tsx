@@ -164,7 +164,8 @@ export function SchemaProvider({
         ...state,
         loadCurrentSchema,
         dispatch,
-      }}>
+      }}
+    >
       {props.children}
     </SchemaContext.Provider>
   );

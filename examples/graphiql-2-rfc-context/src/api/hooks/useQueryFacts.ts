@@ -15,8 +15,8 @@ import useOperation from './useOperation';
 export default function useQueryFacts() {
   const schema = useSchema();
   const { text } = useOperation();
-  return useMemo(() => (schema ? getOperationFacts(schema, text) : null), [
-    schema,
-    text,
-  ]);
+  return useMemo(
+    () => (schema ? getOperationFacts(schema, text) : null),
+    [schema, text],
+  );
 }

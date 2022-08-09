@@ -32,14 +32,11 @@ export function useVariableEditor({
   onEdit,
   readOnly = false,
 }: UseVariableEditorArgs = {}) {
-  const {
-    initialVariables,
-    variableEditor,
-    setVariableEditor,
-  } = useEditorContext({
-    nonNull: true,
-    caller: useVariableEditor,
-  });
+  const { initialVariables, variableEditor, setVariableEditor } =
+    useEditorContext({
+      nonNull: true,
+      caller: useVariableEditor,
+    });
   const executionContext = useExecutionContext();
   const merge = useMergeQuery({ caller: useVariableEditor });
   const prettify = usePrettifyEditors({ caller: useVariableEditor });

@@ -53,7 +53,8 @@ const Tabs = ({ tabs, active, onChange, children }: TabsProps) => {
           <Tab
             key={index}
             active={active === index}
-            onClick={() => onChange?.(index)}>
+            onClick={() => onChange?.(index)}
+          >
             {tab}
           </Tab>
         ))}

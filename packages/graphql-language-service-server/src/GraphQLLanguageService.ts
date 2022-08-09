@@ -186,10 +186,11 @@ export class GraphQLLanguageService {
       projectConfig,
     );
 
-    const fragmentDependencies = await this._graphQLCache.getFragmentDependencies(
-      document,
-      fragmentDefinitions,
-    );
+    const fragmentDependencies =
+      await this._graphQLCache.getFragmentDependencies(
+        document,
+        fragmentDefinitions,
+      );
 
     const dependenciesSource = fragmentDependencies.reduce(
       (prev, cur) => `${prev} ${print(cur.definition)}`,
@@ -400,14 +401,14 @@ export class GraphQLLanguageService {
     filePath: Uri,
     projectConfig: GraphQLProjectConfig,
   ): Promise<DefinitionQueryResult | null> {
-    const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
-      projectConfig,
-    );
+    const objectTypeDefinitions =
+      await this._graphQLCache.getObjectTypeDefinitions(projectConfig);
 
-    const dependencies = await this._graphQLCache.getObjectTypeDependenciesForAST(
-      ast,
-      objectTypeDefinitions,
-    );
+    const dependencies =
+      await this._graphQLCache.getObjectTypeDependenciesForAST(
+        ast,
+        objectTypeDefinitions,
+      );
 
     const localObjectTypeDefinitions = ast.definitions.filter(
       definition =>
@@ -418,9 +419,8 @@ export class GraphQLLanguageService {
         definition.kind === INTERFACE_TYPE_DEFINITION,
     );
 
-    const typeCastedDefs = (localObjectTypeDefinitions as any) as Array<
-      TypeDefinitionNode
-    >;
+    const typeCastedDefs =
+      localObjectTypeDefinitions as any as Array<TypeDefinitionNode>;
 
     const localOperationDefinitionInfos = typeCastedDefs.map(
       (definition: TypeDefinitionNode) => ({
@@ -456,9 +456,8 @@ export class GraphQLLanguageService {
     if (typeInfo && fieldName) {
       const parentTypeName = (typeInfo.parentType as any).toString();
 
-      const objectTypeDefinitions = await this._graphQLCache.getObjectTypeDefinitions(
-        projectConfig,
-      );
+      const objectTypeDefinitions =
+        await this._graphQLCache.getObjectTypeDefinitions(projectConfig);
 
       // TODO: need something like getObjectTypeDependenciesForAST?
       const dependencies = [...objectTypeDefinitions.values()];
@@ -495,9 +494,8 @@ export class GraphQLLanguageService {
       definition => definition.kind === FRAGMENT_DEFINITION,
     );
 
-    const typeCastedDefs = (localFragDefinitions as any) as Array<
-      FragmentDefinitionNode
-    >;
+    const typeCastedDefs =
+      localFragDefinitions as any as Array<FragmentDefinitionNode>;
 
     const localFragInfos = typeCastedDefs.map(
       (definition: FragmentDefinitionNode) => ({

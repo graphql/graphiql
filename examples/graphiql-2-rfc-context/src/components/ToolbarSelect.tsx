@@ -79,7 +79,8 @@ export class ToolbarSelect extends React.Component<
         ref={node => {
           this._node = node;
         }}
-        title={this.props.title}>
+        title={this.props.title}
+      >
         {selectedChild?.props.label}
         <svg width="13" height="10">
           <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
@@ -142,7 +143,8 @@ export function ToolbarSelectOption({
         e.currentTarget.className = '';
       }}
       onMouseDown={preventDefault}
-      onMouseUp={onSelect}>
+      onMouseUp={onSelect}
+    >
       {label}
       {selected && (
         <svg width="13" height="13">

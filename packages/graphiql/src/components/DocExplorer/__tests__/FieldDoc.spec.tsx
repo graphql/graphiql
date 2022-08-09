@@ -71,7 +71,8 @@ function FieldDocWithContext(props: { field: ExplorerFieldDef }) {
       value={mockExplorerContextValue({
         name: props.field.name,
         def: props.field,
-      })}>
+      })}
+    >
       <FieldDoc />
     </ExplorerContext.Provider>
   );

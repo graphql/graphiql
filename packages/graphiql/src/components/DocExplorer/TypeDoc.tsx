@@ -97,7 +97,8 @@ export default function TypeDoc() {
               className="show-btn"
               onClick={() => {
                 setShowDeprecated(true);
-              }}>
+              }}
+            >
               Show deprecated fields...
             </button>
           ) : (
@@ -137,7 +138,8 @@ export default function TypeDoc() {
               className="show-btn"
               onClick={() => {
                 setShowDeprecated(true);
-              }}>
+              }}
+            >
               Show deprecated values...
             </button>
           ) : (

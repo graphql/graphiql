@@ -47,7 +47,7 @@ const graphqlModeFactory: CodeMirror.ModeFactory<any> = config => {
   return {
     config,
     startState: parser.startState,
-    token: (parser.token as unknown) as NonNullable<
+    token: parser.token as unknown as NonNullable<
       CodeMirror.Mode<any>['token']
     >, // TODO: Check if the types are indeed compatible
     indent,

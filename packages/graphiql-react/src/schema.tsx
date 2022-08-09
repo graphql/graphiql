@@ -49,9 +49,8 @@ export type SchemaContextType = {
   validationErrors: readonly GraphQLError[] | null;
 };
 
-export const SchemaContext = createNullableContext<SchemaContextType>(
-  'SchemaContext',
-);
+export const SchemaContext =
+  createNullableContext<SchemaContextType>('SchemaContext');
 
 type SchemaContextProviderProps = {
   children: ReactNode;

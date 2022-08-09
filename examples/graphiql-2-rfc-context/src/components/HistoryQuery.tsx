@@ -84,20 +84,23 @@ class HistoryQuerySource extends React.Component<
         ) : (
           <button
             className="history-label"
-            onClick={this.handleClick.bind(this)}>
+            onClick={this.handleClick.bind(this)}
+          >
             {displayName}
           </button>
         )}
         <button
           onClick={this.handleEditClick.bind(this)}
-          aria-label={t('Edit label')}>
+          aria-label={t('Edit label')}
+        >
           {'\u270e'}
         </button>
         <button
           onClick={this.handleStarClick.bind(this)}
           aria-label={
             this.props.favorite ? t('Remove favorite') : t('Add favorite')
-          }>
+          }
+        >
           {starIcon}
         </button>
       </li>

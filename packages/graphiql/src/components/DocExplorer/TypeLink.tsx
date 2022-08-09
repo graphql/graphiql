@@ -42,7 +42,8 @@ export default function TypeLink(props: TypeLinkProps) {
         event.preventDefault();
         push({ name: type.name, def: type });
       }}
-      href="#">
+      href="#"
+    >
       {type.name}
     </a>
   );

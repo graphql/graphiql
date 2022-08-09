@@ -29,7 +29,8 @@ const Toolbar = ({
         display: 'flex',
         alignItems: 'stretch',
         justifyContent,
-      }}>
+      }}
+    >
       {needsExtraPadding ? (
         <WithDividers padding>{children}</WithDividers>
       ) : (

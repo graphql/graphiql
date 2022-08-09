@@ -78,7 +78,8 @@ export const ResizeHandler: React.FC<ResizeHandlerProps> = props => {
       style={{
         cursor: `${dir}-resize`,
         ...style,
-      }}>
+      }}
+    >
       {isDragging && (
         <style>{`
         * {

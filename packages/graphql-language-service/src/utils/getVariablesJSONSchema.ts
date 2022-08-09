@@ -303,11 +303,8 @@ export function getVariablesJSONSchema(
   if (variableToType) {
     // I would use a reduce here, but I wanted it to be readable.
     Object.entries(variableToType).forEach(([variableName, type]) => {
-      const {
-        definition,
-        required,
-        definitions,
-      } = getJSONSchemaFromGraphQLType(type, options);
+      const { definition, required, definitions } =
+        getJSONSchemaFromGraphQLType(type, options);
       jsonSchema.properties[variableName] = definition;
       if (required) {
         jsonSchema.required?.push(variableName);

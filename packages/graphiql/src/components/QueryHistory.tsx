@@ -26,7 +26,8 @@ export function QueryHistory() {
           <button
             className="docExplorerHide"
             onClick={() => hide()}
-            aria-label="Close History">
+            aria-label="Close History"
+          >
             {'\u2715'}
           </button>
         </div>
@@ -98,7 +99,8 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
           className="history-label"
           onClick={() => {
             selectHistoryItem(props.item);
-          }}>
+          }}
+        >
           {displayName}
         </button>
       )}
@@ -107,7 +109,8 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
           e.stopPropagation();
           setIsEditable(true);
         }}
-        aria-label="Edit label">
+        aria-label="Edit label"
+      >
         {'\u270e'}
       </button>
       <button
@@ -115,7 +118,8 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
           e.stopPropagation();
           toggleFavorite(props.item);
         }}
-        aria-label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}>
+        aria-label={props.item.favorite ? 'Remove favorite' : 'Add favorite'}
+      >
         {starIcon}
       </button>
     </li>

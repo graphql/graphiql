@@ -77,11 +77,9 @@ type OutlineTreeResult =
   | FieldNode[]
   | SelectionSetNode;
 
-type OutlineTreeConverterType = Partial<
-  {
-    [key in OutlineableKinds]: (node: any) => OutlineTreeResult;
-  }
->;
+type OutlineTreeConverterType = Partial<{
+  [key in OutlineableKinds]: (node: any) => OutlineTreeResult;
+}>;
 
 export function getOutline(documentText: string): Outline | null {
   let ast;
@@ -92,7 +90,7 @@ export function getOutline(documentText: string): Outline | null {
   }
 
   const visitorFns = outlineTreeConverter(documentText);
-  const outlineTrees = (visit(ast, {
+  const outlineTrees = visit(ast, {
     leave(node) {
       if (visitorFns !== undefined && node.kind in visitorFns) {
         // @ts-ignore
@@ -100,7 +98,7 @@ export function getOutline(documentText: string): Outline | null {
       }
       return null;
     },
-  }) as unknown) as OutlineTree[];
+  }) as unknown as OutlineTree[];
 
   return { outlineTrees };
 }
@@ -131,7 +129,7 @@ function outlineTreeConverter(docText: string): OutlineTreeConverterType {
       tokenizedText: [
         buildToken('keyword', node.operation),
         buildToken('whitespace', ' '),
-        buildToken('class-name', (node.name as unknown) as string),
+        buildToken('class-name', node.name as unknown as string),
       ],
       ...meta(node),
     }),

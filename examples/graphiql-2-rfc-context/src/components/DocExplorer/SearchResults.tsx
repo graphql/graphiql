@@ -95,7 +95,8 @@ export default class SearchResults extends React.Component<
               ]}
               <a
                 className="field-name"
-                onClick={event => onClickField(field, type, event)}>
+                onClick={event => onClickField(field, type, event)}
+              >
                 {field.name}
               </a>
               {matchingArgs && [

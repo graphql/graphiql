@@ -46,7 +46,8 @@ export const NavItem = ({
       ':active': {
         transform: 'scale(.95)',
       },
-    }}>
+    }}
+  >
     {children}
   </button>
 );
@@ -59,7 +60,8 @@ export const Nav = ({ children }: NavProps) => {
         gridAutoFlow: 'row',
         gridAutoRows: '2em',
         fontSize: '3em',
-      }}>
+      }}
+    >
       {children}
     </nav>
   );

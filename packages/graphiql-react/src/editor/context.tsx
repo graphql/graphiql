@@ -66,9 +66,8 @@ export type EditorContextType = {
   shouldPersistHeaders: boolean;
 };
 
-export const EditorContext = createNullableContext<EditorContextType>(
-  'EditorContext',
-);
+export const EditorContext =
+  createNullableContext<EditorContextType>('EditorContext');
 
 type EditorContextProviderProps = {
   children: ReactNode;
@@ -89,10 +88,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const [headerEditor, setHeaderEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
-  const [
-    queryEditor,
-    setQueryEditor,
-  ] = useState<CodeMirrorEditorWithOperationFacts | null>(null);
+  const [queryEditor, setQueryEditor] =
+    useState<CodeMirrorEditorWithOperationFacts | null>(null);
   const [responseEditor, setResponseEditor] = useState<CodeMirrorEditor | null>(
     null,
   );
@@ -239,9 +236,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     return map;
   }, [props.externalFragments]);
 
-  const validationRules = useMemo(() => props.validationRules || [], [
-    props.validationRules,
-  ]);
+  const validationRules = useMemo(
+    () => props.validationRules || [],
+    [props.validationRules],
+  );
 
   const value = useMemo<EditorContextType>(
     () => ({

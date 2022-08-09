@@ -48,7 +48,8 @@ export const Tabbar = () => (
             {'Component '}
             <small style={{ background: 'yellow', padding: 3 }}>2</small>
           </>,
-        ]}>
+        ]}
+      >
         <p>With</p>
         <p>a</p>
         <p>nested</p>

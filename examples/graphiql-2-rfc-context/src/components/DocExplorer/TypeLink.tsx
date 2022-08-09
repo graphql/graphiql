@@ -40,7 +40,8 @@ function renderType(type: Maybe<GraphQLType>, onClick: OnClickTypeFunction) {
         event.preventDefault();
         onClick(type as GraphQLNamedType, event);
       }}
-      href="#">
+      href="#"
+    >
       {type?.name}
     </a>
   );

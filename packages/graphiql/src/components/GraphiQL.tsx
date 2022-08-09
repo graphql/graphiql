@@ -468,7 +468,8 @@ const GraphiQLProviders: ForwardRefExoticComponent<
     <StorageContextProvider storage={storage}>
       <HistoryContextProvider
         maxHistoryLength={maxHistoryLength}
-        onToggle={onToggleHistory}>
+        onToggle={onToggleHistory}
+      >
         <EditorContextProvider
           defaultQuery={props.defaultQuery}
           externalFragments={externalFragments}
@@ -481,7 +482,8 @@ const GraphiQLProviders: ForwardRefExoticComponent<
           response={response}
           shouldPersistHeaders={shouldPersistHeaders}
           validationRules={validationRules}
-          variables={variables}>
+          variables={variables}
+        >
           <SchemaContextProvider
             dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
             fetcher={fetcher}
@@ -489,13 +491,16 @@ const GraphiQLProviders: ForwardRefExoticComponent<
             introspectionQueryName={introspectionQueryName}
             onSchemaChange={onSchemaChange}
             schema={schema}
-            schemaDescription={schemaDescription}>
+            schemaDescription={schemaDescription}
+          >
             <ExecutionContextProvider
               fetcher={fetcher}
-              operationName={operationName}>
+              operationName={operationName}
+            >
               <ExplorerContextProvider
                 isVisible={docExplorerOpen}
-                onToggleVisibility={onToggleDocs}>
+                onToggleVisibility={onToggleDocs}
+              >
                 <GraphiQLConsumeContexts {...props} ref={ref} />
               </ExplorerContextProvider>
             </ExecutionContextProvider>
@@ -712,7 +717,8 @@ class GraphiQLWithContext extends React.Component<
           {this.props.historyContext?.isVisible && (
             <div
               className="historyPaneWrap"
-              style={{ width: '230px', zIndex: 7 }}>
+              style={{ width: '230px', zIndex: 7 }}
+            >
               <QueryHistory />
             </div>
           )}
@@ -732,7 +738,8 @@ class GraphiQLWithContext extends React.Component<
                       this.props.explorerContext?.show();
                       this.props.docResize.setHiddenElement(null);
                     }}
-                    aria-label="Open Documentation Explorer">
+                    aria-label="Open Documentation Explorer"
+                  >
                     Docs
                   </button>
                 )}
@@ -741,7 +748,8 @@ class GraphiQLWithContext extends React.Component<
               <Tabs
                 tabsProps={{
                   'aria-label': 'Select active operation',
-                }}>
+                }}
+              >
                 {this.props.editorContext.tabs.map((tab, index) => (
                   <Tab
                     key={tab.id}
@@ -775,7 +783,8 @@ class GraphiQLWithContext extends React.Component<
               role="tabpanel"
               id="sessionWrap"
               className="editorBar"
-              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}>
+              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
+            >
               <div ref={this.props.editorResize.firstRef}>
                 <div className="queryWrap">
                   <div ref={this.props.secondaryEditorResize.firstRef}>
@@ -795,7 +804,8 @@ class GraphiQLWithContext extends React.Component<
                   <div ref={this.props.secondaryEditorResize.dragBarRef}>
                     <div
                       className="secondary-editor-title variable-editor-title"
-                      id="secondary-editor-title">
+                      id="secondary-editor-title"
+                    >
                       <div
                         className={`variable-editor-title-text${
                           this.state.activeSecondaryEditor === 'variable'
@@ -819,7 +829,8 @@ class GraphiQLWithContext extends React.Component<
                               this.props.editorContext.variableEditor?.refresh();
                             },
                           );
-                        }}>
+                        }}
+                      >
                         Query Variables
                       </div>
                       {headerEditorEnabled && (
@@ -849,7 +860,8 @@ class GraphiQLWithContext extends React.Component<
                                 this.props.editorContext.headerEditor?.refresh();
                               },
                             );
-                          }}>
+                          }}
+                        >
                           Request Headers
                         </div>
                       )}
@@ -862,7 +874,8 @@ class GraphiQLWithContext extends React.Component<
                         this.state.activeSecondaryEditor === 'variable'
                           ? 'Query Variables'
                           : 'Request Headers'
-                      }>
+                      }
+                    >
                       <VariableEditor
                         onEdit={this.props.onEditVariables}
                         editorTheme={this.props.editorTheme}

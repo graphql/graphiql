@@ -18,7 +18,8 @@ export default function Logo({ color = 'currentColor', size = 40 }: Props) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 400 400"
-      style={{ width: size, height: size, fill: color }}>
+      style={{ width: size, height: size, fill: color }}
+    >
       <path d="M57.468 302.66l-14.376-8.3 160.15-277.38 14.376 8.3z" />
       <path d="M39.8 272.2h320.3v16.6H39.8z" />
       <path d="M206.348 374.026l-160.21-92.5 8.3-14.376 160.21 92.5zM345.522 132.947l-160.21-92.5 8.3-14.376 160.21 92.5z" />

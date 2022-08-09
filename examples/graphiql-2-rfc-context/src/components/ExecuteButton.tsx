@@ -51,7 +51,8 @@ export function ExecuteButton(props: ExecuteButtonProps) {
               onMouseUp={() => {
                 setOptionsOpen(false);
                 session.executeOperation(operation?.name?.value);
-              }}>
+              }}
+            >
               {opName}
             </li>
           );
@@ -118,7 +119,8 @@ export function ExecuteButton(props: ExecuteButtonProps) {
         className="execute-button"
         onMouseDown={onMouseDown}
         onClick={onClick}
-        title={t('Execute Query (Ctrl-Enter)')}>
+        title={t('Execute Query (Ctrl-Enter)')}
+      >
         <svg width="34" height="34">
           {pathJSX}
         </svg>

@@ -49,7 +49,8 @@ export class ToolbarMenu extends React.Component<
             this._node = node;
           }
         }}
-        title={this.props.title}>
+        title={this.props.title}
+      >
         {this.props.label}
         <svg width="14" height="8">
           <path fill="#666" d="M 5 1.5 L 14 1.5 L 9.5 7 z" />
@@ -111,7 +112,8 @@ export const ToolbarMenuItem: FC<ToolbarMenuItemProps> = ({
       }}
       onMouseDown={preventDefault}
       onMouseUp={onSelect}
-      title={title}>
+      title={title}
+    >
       {label}
     </li>
   );

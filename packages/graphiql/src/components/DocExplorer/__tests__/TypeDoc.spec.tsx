@@ -34,12 +34,14 @@ function TypeDocWithContext(props: { type: GraphQLNamedType }) {
         setFetchError() {},
         setSchema() {},
         validationErrors: null,
-      }}>
+      }}
+    >
       <ExplorerContext.Provider
         value={mockExplorerContextValue({
           name: unwrapType(props.type).name,
           def: props.type,
-        })}>
+        })}
+      >
         <TypeDoc />
       </ExplorerContext.Provider>
     </SchemaContext.Provider>
