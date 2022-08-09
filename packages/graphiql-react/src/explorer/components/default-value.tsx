@@ -12,6 +12,9 @@ const printDefault = (ast?: ValueNode | null): string => {
 };
 
 type DefaultValueProps = {
+  /**
+   * The field or argument for which to render the default value.
+   */
   field: ExplorerFieldDef;
 };
 

@@ -73,6 +73,11 @@ if (majorVersion < 16) {
 }
 
 export type GraphiQLToolbarConfig = {
+  /**
+   * This content will be rendered after the built-in buttons of the toolbar.
+   * Note that this will not apply if you provide a completely custom toolbar
+   * (by passing `GraphiQL.Toolbar` as child to the `GraphiQL` component).
+   */
   additionalContent?: React.ReactNode;
 };
 
@@ -186,7 +191,8 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      */
     isHeadersEditorEnabled?: boolean;
     /**
-     * Custom toolbar configuration
+     * An object that allows configuration of the toolbar next to the query
+     * editor.
      */
     toolbar?: GraphiQLToolbarConfig;
   };

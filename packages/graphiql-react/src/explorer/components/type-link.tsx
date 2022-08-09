@@ -6,6 +6,9 @@ import { renderType } from './utils';
 import './type-link.css';
 
 type TypeLinkProps = {
+  /**
+   * The type that should be linked to.
+   */
   type: GraphQLType;
 };
 

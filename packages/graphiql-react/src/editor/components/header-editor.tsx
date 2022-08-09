@@ -7,7 +7,13 @@ import '../style/codemirror.css';
 import '../style/fold.css';
 import '../style/editor.css';
 
-type HeaderEditorProps = UseHeaderEditorArgs & { isHidden?: boolean };
+type HeaderEditorProps = UseHeaderEditorArgs & {
+  /**
+   * Visually hide the header editor.
+   * @default false
+   */
+  isHidden?: boolean;
+};
 
 export function HeaderEditor({ isHidden, ...hookArgs }: HeaderEditorProps) {
   const { headerEditor } = useEditorContext({

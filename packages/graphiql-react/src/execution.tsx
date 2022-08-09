@@ -3,7 +3,6 @@ import {
   FetcherResultPayload,
   formatError,
   formatResult,
-  GetDefaultFieldNamesFn,
   isAsyncIterable,
   isObservable,
   Unsubscribable,
@@ -14,6 +13,7 @@ import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import setValue from 'set-value';
 
 import { useAutoCompleteLeafs, useEditorContext } from './editor';
+import { UseAutoCompleteLeafsArgs } from './editor/hooks';
 import { useHistoryContext } from './history';
 import { createContextHook, createNullableContext } from './utility/context';
 
@@ -27,7 +27,10 @@ export type ExecutionContextType = {
 export const ExecutionContext =
   createNullableContext<ExecutionContextType>('ExecutionContext');
 
-export type ExecutionContextProviderProps = {
+export type ExecutionContextProviderProps = Pick<
+  UseAutoCompleteLeafsArgs,
+  'getDefaultFieldNames'
+> & {
   children: ReactNode;
   /**
    * A function which accepts GraphQL HTTP parameters and returns a `Promise`,
@@ -40,12 +43,6 @@ export type ExecutionContextProviderProps = {
    * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
    */
   fetcher: Fetcher;
-  /**
-   * A function to determine which field leafs are automatically added when
-   * trying to execute a query with missing selection sets. It will be called
-   * with the `GraphQLType` for which fields need to be added.
-   */
-  getDefaultFieldNames?: GetDefaultFieldNamesFn;
   /**
    * This prop sets the operation name that is passed with a GraphQL request.
    */
