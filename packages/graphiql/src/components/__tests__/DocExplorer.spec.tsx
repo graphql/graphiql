@@ -20,7 +20,7 @@ const defaultSchemaContext: SchemaContextType = {
   introspect() {},
   isFetching: false,
   schema: ExampleSchema,
-  validationErrors: null,
+  validationErrors: [],
 };
 
 function DocExplorerWithContext(

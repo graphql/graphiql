@@ -52,7 +52,7 @@ export function DocExplorer(props: DocExplorerProps) {
   let content: ReactNode = null;
   if (fetchError) {
     content = <div className="error-container">Error fetching schema</div>;
-  } else if (validationErrors) {
+  } else if (validationErrors.length > 0) {
     content = (
       <div className="error-container">
         Schema is invalid: {validationErrors[0].message}

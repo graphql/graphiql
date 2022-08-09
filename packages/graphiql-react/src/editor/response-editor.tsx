@@ -128,7 +128,7 @@ export function useResponseEditor({
     if (fetchError) {
       responseEditor?.setValue(fetchError);
     }
-    if (validationErrors) {
+    if (validationErrors.length > 0) {
       responseEditor?.setValue(formatError(validationErrors));
     }
   }, [responseEditor, fetchError, validationErrors]);
