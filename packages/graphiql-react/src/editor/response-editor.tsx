@@ -12,7 +12,7 @@ import {
 } from './common';
 import { ImagePreview } from './components';
 import { useEditorContext } from './context';
-import { useSynchronizeOption, useSynchronizeValue } from './hooks';
+import { useSynchronizeOption } from './hooks';
 import { CodeMirrorEditor, KeyMap } from './types';
 
 export type ResponseTooltipType = ComponentType<{ pos: Position }>;
@@ -20,7 +20,6 @@ export type ResponseTooltipType = ComponentType<{ pos: Position }>;
 export type UseResponseEditorArgs = {
   ResponseTooltip?: ResponseTooltipType;
   editorTheme?: string;
-  value?: string;
   keyMap?: KeyMap;
 };
 
@@ -28,13 +27,16 @@ export function useResponseEditor({
   ResponseTooltip,
   editorTheme = DEFAULT_EDITOR_THEME,
   keyMap = DEFAULT_KEY_MAP,
-  value,
 }: UseResponseEditorArgs = {}) {
   const { fetchError, validationErrors } = useSchemaContext({
     nonNull: true,
     caller: useResponseEditor,
   });
-  const { responseEditor, setResponseEditor } = useEditorContext({
+  const {
+    initialResponse,
+    responseEditor,
+    setResponseEditor,
+  } = useEditorContext({
     nonNull: true,
     caller: useResponseEditor,
   });
@@ -46,8 +48,6 @@ export function useResponseEditor({
   useEffect(() => {
     responseTooltipRef.current = ResponseTooltip;
   }, [ResponseTooltip]);
-
-  const initialValue = useRef(value);
 
   useEffect(() => {
     let isActive = true;
@@ -105,7 +105,7 @@ export function useResponseEditor({
       }
 
       const newEditor = CodeMirror(container, {
-        value: initialValue.current || '',
+        value: initialResponse,
         lineWrapping: true,
         readOnly: true,
         theme: editorTheme,
@@ -126,8 +126,6 @@ export function useResponseEditor({
   }, [editorTheme, setResponseEditor]);
 
   useSynchronizeOption(responseEditor, 'keyMap', keyMap);
-
-  useSynchronizeValue(responseEditor, value);
 
   useEffect(() => {
     if (fetchError) {

@@ -17,7 +17,7 @@ export function useSynchronizeValue(
   value: string | undefined,
 ) {
   useEffect(() => {
-    if (editor && typeof value !== 'undefined' && value !== editor.getValue()) {
+    if (editor && typeof value === 'string' && value !== editor.getValue()) {
       editor.setValue(value);
     }
   }, [editor, value]);
