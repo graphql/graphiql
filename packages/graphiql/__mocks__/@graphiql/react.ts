@@ -98,32 +98,23 @@ export type {
 
 type Name = 'query' | 'variable' | 'header' | 'response';
 
-const NAME_TO_INITIAL_VALUE: Record<
-  Name,
-  'initialQuery' | 'initialVariables' | 'initialHeaders' | undefined
-> = {
+const NAME_TO_INITIAL_VALUE = {
   query: 'initialQuery',
   variable: 'initialVariables',
   header: 'initialHeaders',
-  response: undefined,
-};
+  response: 'initialResponse',
+} as const;
 
-function useMockedEditor(
-  name: Name,
-  value?: string,
-  onEdit?: (newValue: string) => void,
-) {
+function useMockedEditor(name: Name, onEdit?: (newValue: string) => void) {
   const editorContext = useEditorContext({ nonNull: true });
-  const [code, setCode] = useState(
-    value ?? editorContext[NAME_TO_INITIAL_VALUE[name]],
-  );
+  const [code, setCode] = useState(editorContext[NAME_TO_INITIAL_VALUE[name]]);
   const ref = useRef<HTMLDivElement>(null);
 
   const context = useEditorContext({ nonNull: true });
   const setEditor =
     context[`set${name.slice(0, 1).toUpperCase()}${name.slice(1)}Editor`];
 
-  const getValueRef = useRef<() => string>();
+  const getValueRef = useRef<() => string>(() => code);
   useEffect(() => {
     getValueRef.current = () => code;
   }, [code]);
@@ -181,12 +172,6 @@ function useMockedEditor(
   }, [onEdit]);
 
   useEffect(() => {
-    if (value) {
-      setCode(value);
-    }
-  }, [value]);
-
-  useEffect(() => {
     if (!ref.current) {
       return;
     }
@@ -202,26 +187,24 @@ function useMockedEditor(
   return ref;
 }
 
-export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor({
-  onEdit,
-}) {
-  return useMockedEditor('header', undefined, onEdit);
+export const useHeaderEditor: typeof _useHeaderEditor = function useHeaderEditor(
+  args,
+) {
+  return useMockedEditor('header', args?.onEdit);
 };
 
-export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor({
-  onEdit,
-}) {
-  return useMockedEditor('query', undefined, onEdit);
+export const useQueryEditor: typeof _useQueryEditor = function useQueryEditor(
+  args,
+) {
+  return useMockedEditor('query', args?.onEdit);
 };
 
-export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor({
-  value,
-}) {
-  return useMockedEditor('response', value);
+export const useResponseEditor: typeof _useResponseEditor = function useResponseEditor() {
+  return useMockedEditor('response');
 };
 
-export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor({
-  onEdit,
-}) {
-  return useMockedEditor('variable', undefined, onEdit);
+export const useVariableEditor: typeof _useVariableEditor = function useVariableEditor(
+  args,
+) {
+  return useMockedEditor('variable', args?.onEdit);
 };
