@@ -72,7 +72,7 @@ When developing vscode extensions, just the above is enough to get started for y
 
 You _must_ provide a graphql config file
 
-Check out [graphql-config](https://graphql-config.com/introduction) to learn the many ways you can define your graphql config
+Check out [graphql-config](https://www.graphql-config.com/docs) to learn the many ways you can define your graphql config
 
 #### `.graphqlrc` or `.graphqlrc.yml/yaml` or `graphql.config.yml`
 
@@ -103,7 +103,7 @@ module.exports = { schema: 'https://localhost:8000' };
 
 #### custom `startServer`
 
-use graphql config [`loadConfig`](https://graphql-config.com/load-config) for further customization:
+use graphql config [`loadConfig`](https://www.graphql-config.com/docs/library/load-config) for further customization:
 
 ```ts
 import { loadConfig } from 'graphql-config'; // 3.0.0 or later!
