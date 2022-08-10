@@ -68,6 +68,7 @@ codemirror
 codesandbox
 commitlint
 cosmicconfig
+cspotcode
 dompurify
 dset
 esbuild
