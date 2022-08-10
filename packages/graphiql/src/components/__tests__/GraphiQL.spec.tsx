@@ -98,7 +98,7 @@ describe('GraphiQL', () => {
     expect(secondCalled).toEqual(true);
   });
 
-  it('should refetch schema after a fetchError', async () => {
+  it('should refresh schema with new fetcher after a fetchError', async () => {
     function firstFetcher() {
       return Promise.reject('Schema Error');
     }
