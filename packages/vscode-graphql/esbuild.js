@@ -11,11 +11,7 @@ build({
   minify: arg === '--minify',
   platform: 'node',
   outdir: 'out/',
-  external: [
-    'vscode',
-    '@cspotcode/source-map-support', // workaround for https://github.com/cspotcode/node-source-map-support/issues/43
-    './transpilers/swc.js', // suppresses warning via ts-node, but we won't be using it, so we can exclude it
-  ],
+  external: ['vscode'],
   format: 'cjs',
   sourcemap: true,
   watch: isWatchMode,
