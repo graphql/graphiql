@@ -1,0 +1,78 @@
+{
+    "name": "vscode-graphql-config",
+    "version": "0.1.0",
+    "displayName": "GraphQL: Config",
+    "description": "Retrieve and validate GraphQL Config",
+    "publisher": "GraphQL",
+    "license": "MIT",
+    "private": true,
+    "engines": {
+      "vscode": "^1.63.0"
+    },
+    "icon": "assets/images/logo.png",
+    "contributors": [
+      {
+        "name": "Divyendu Singh",
+        "url": "https://www.divyendusingh.com/"
+      }
+    ],
+    "galleryBanner": {
+      "color": "#032539",
+      "theme": "dark"
+    },
+    "categories": [
+      "Programming Languages"
+    ],
+    "activationEvents": [
+      "workspaceContains:**/.graphqlrc",
+      "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
+      "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
+      "workspaceContains:**/package.json",
+      "onCommand:vscode-graphql.isDebugging",
+      "onCommand:vscode-graphql.contentProvider",
+      "onLanguage:graphql"
+    ],
+    "contributes": {
+      "configuration": {
+        "title": "VSCode GraphQL: Inline Operation Execution",
+        "properties": {
+          "vscode-graphql.debug": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "default": false,
+            "description": "Enable debug logs"
+          },
+          "vscode-graphql.showExecCodelens": {
+            "type": [
+              "boolean"
+            ],
+            "description": "Show codelens to execute operations inline",
+            "default": true
+          },
+          "vscode-graphql.rejectUnauthorized": {
+            "type": [
+              "boolean"
+            ],
+            "description": "Fail the request on invalid certificate",
+            "default": true
+          }
+        }
+      }
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/graphql/graphiql",
+      "directory": "packages/vscode-graphql-syntax"
+    },
+    "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-syntax/README.md",
+    "scripts": {
+      "vsce:package": "vsce package --yarn",
+      "vsce:prepublish": "npm run vsce:package",
+      "vsce:publish": "vsce publish --yarn",
+      "open-vsx:publish": "ovsx publish",
+      "release": "npm run vsce:publish && npm run open-vsx:publish"
+    }
+  }
+  
