@@ -11,7 +11,7 @@ Please note that we require a signed GraphQL Specification Membership agreement 
 2. Check out your fork
 
    ```sh
-   git clone git@github.com:yournamehere/graphiql.git
+   git clone git@github.com:your-name-here/graphiql.git
    ```
 
 3. Install or Update all dependencies

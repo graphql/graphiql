@@ -34,7 +34,7 @@ CodeMirror.defineMode('graphql-variables', config => {
   return {
     config,
     startState: parser.startState,
-    token: (parser.token as unknown) as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
+    token: parser.token as unknown as CodeMirror.Mode<any>['token'], // TODO: Check if the types are indeed compatible
     indent,
     electricInput: /^\s*[}\]]/,
     fold: 'brace',
@@ -55,7 +55,7 @@ function indent(
 ) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
-  // Otherwise, use the top level, pre-emptively dedenting for close braces.
+  // Otherwise, use the top level, preemptively dedenting for close braces.
   const level =
     !levels || levels.length === 0
       ? state.indentLevel

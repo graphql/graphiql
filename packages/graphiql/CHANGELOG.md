@@ -1,5 +1,357 @@
 # Change Log
 
+## 1.11.3
+
+### Patch Changes
+
+- [#2642](https://github.com/graphql/graphiql/pull/2642) [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix controlling the operation name sent with the request using the `operationName` prop
+
+- Updated dependencies [[`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b), [`100af928`](https://github.com/graphql/graphiql/commit/100af9284de18ca89524c646e86854313c5d067b)]:
+  - @graphiql/react@0.9.0
+
+## 1.11.2
+
+### Patch Changes
+
+- Updated dependencies [[`62317e0b`](https://github.com/graphql/graphiql/commit/62317e0bae6d4ccf89d9e1e6607fd8feeb100078)]:
+  - @graphiql/react@0.8.0
+
+## 1.11.1
+
+### Patch Changes
+
+- Updated dependencies [[`ea732ea8`](https://github.com/graphql/graphiql/commit/ea732ea8e12272c998f1467af8b3b88b6b508e12)]:
+  - @graphiql/toolkit@0.6.1
+  - @graphiql/react@0.7.1
+
+## 1.11.0
+
+### Minor Changes
+
+- [#2618](https://github.com/graphql/graphiql/pull/2618) [`4c814506`](https://github.com/graphql/graphiql/commit/4c814506183579b78731659d871cd4b0ba93305a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a toolbar button for manually triggering introspection
+
+### Patch Changes
+
+- Updated dependencies [[`4c814506`](https://github.com/graphql/graphiql/commit/4c814506183579b78731659d871cd4b0ba93305a)]:
+  - @graphiql/react@0.7.0
+
+## 1.10.0
+
+### Minor Changes
+
+- [#2574](https://github.com/graphql/graphiql/pull/2574) [`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Allow passing introspection data to the `schema` prop of the `GraphiQL` component
+
+### Patch Changes
+
+- Updated dependencies [[`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1), [`0c98fa59`](https://github.com/graphql/graphiql/commit/0c98fa5924eadaee33713ccd8a9be6419d50cab1)]:
+  - @graphiql/react@0.6.0
+
+## 1.9.13
+
+### Patch Changes
+
+- Updated dependencies [[`f581b437`](https://github.com/graphql/graphiql/commit/f581b437e5bdab6f3ad817d230ee6d1b410bb591)]:
+  - @graphiql/react@0.5.2
+
+## 1.9.12
+
+### Patch Changes
+
+- Updated dependencies [[`08346cba`](https://github.com/graphql/graphiql/commit/08346cba136825341881f9dfefc62a60d748e0ee)]:
+  - @graphiql/react@0.5.1
+
+## 1.9.11
+
+### Patch Changes
+
+- [#2541](https://github.com/graphql/graphiql/pull/2541) [`788d84ef`](https://github.com/graphql/graphiql/commit/788d84ef2784188981f1b4cfb78fba24153bf0cb) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix the `onSchemaChange` prop, it is now again called after the schema is fetched (this was broken since v1.9.3)
+
+- Updated dependencies [[`8ce5b483`](https://github.com/graphql/graphiql/commit/8ce5b483ee190b5f5dd84eaf42e5d1359ce185e6), [`788d84ef`](https://github.com/graphql/graphiql/commit/788d84ef2784188981f1b4cfb78fba24153bf0cb)]:
+  - @graphiql/react@0.5.0
+
+## 1.9.10
+
+### Patch Changes
+
+- Updated dependencies [[`26e44120`](https://github.com/graphql/graphiql/commit/26e44120a18d49af451c97619fe3386a65579e05)]:
+  - @graphiql/react@0.4.3
+
+## 1.9.9
+
+### Patch Changes
+
+- [#2501](https://github.com/graphql/graphiql/pull/2501) [`5437ee61`](https://github.com/graphql/graphiql/commit/5437ee61e1ba6cd28ccc1cb3543df1ea788278f4) Thanks [@acao](https://github.com/acao)! - Allow Codemirror 5 `keyMap` to be defined, default `vim` or `emacs` allowed in addition to the original default of `sublime`.
+
+- Updated dependencies [[`5437ee61`](https://github.com/graphql/graphiql/commit/5437ee61e1ba6cd28ccc1cb3543df1ea788278f4), [`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c)]:
+  - @graphiql/react@0.4.2
+  - graphql-language-service@5.0.6
+
+## 1.9.8
+
+### Patch Changes
+
+- [#2499](https://github.com/graphql/graphiql/pull/2499) [`731b3b72`](https://github.com/graphql/graphiql/commit/731b3b72e9f087a3b429ef5e8143219a0dcf7f00) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - fix the default value for the `headerEditorEnabled` prop to be `true`
+
+## 1.9.7
+
+### Patch Changes
+
+- Updated dependencies [[`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa)]:
+  - graphql-language-service@5.0.5
+  - @graphiql/react@0.4.1
+
+## 1.9.6
+
+### Patch Changes
+
+- [#2475](https://github.com/graphql/graphiql/pull/2475) [`d6558e43`](https://github.com/graphql/graphiql/commit/d6558e43bd24a3af7c5f78dbae572bd8ca7b3995) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix using the `GraphiQL` export as type by exporting a class again
+
+* [#2461](https://github.com/graphql/graphiql/pull/2461) [`7dfe3ece`](https://github.com/graphql/graphiql/commit/7dfe3ece4e8ab6b3400888f7f357e394db63439d) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Use the `useDragResize` hook from `@graphiql/react` for the sizing of the editors and the docs explorer
+
+* Updated dependencies [[`7dfe3ece`](https://github.com/graphql/graphiql/commit/7dfe3ece4e8ab6b3400888f7f357e394db63439d)]:
+  - @graphiql/react@0.4.0
+
+## 1.9.5
+
+### Patch Changes
+
+- [#2453](https://github.com/graphql/graphiql/pull/2453) [`1b41e33c`](https://github.com/graphql/graphiql/commit/1b41e33c4a871a345836de58f415b7c461ced1f8) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add execution context to `@graphiql/react` and move over the logic from `graphiql`
+
+* [#2454](https://github.com/graphql/graphiql/pull/2454) [`a53bec64`](https://github.com/graphql/graphiql/commit/a53bec64b511fca2da828d7c0ff100e3a110aec1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate the public methods `getQueryEditor`, `getVariableEditor`, `getHeaderEditor`, and `refresh` on the `GraphiQL` class.
+
+- [#2451](https://github.com/graphql/graphiql/pull/2451) [`0659e96e`](https://github.com/graphql/graphiql/commit/0659e96e07f98d532619f29f52cba59e2d528327) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Always use the current value of the headers for the introspection request
+
+* [#2452](https://github.com/graphql/graphiql/pull/2452) [`ee0fd8bf`](https://github.com/graphql/graphiql/commit/ee0fd8bf4042053ec647080b83656dc5e54a7239) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move tab state from `graphiql` into editor context from `@graphiql/react`
+
+- [#2454](https://github.com/graphql/graphiql/pull/2454) [`a53bec64`](https://github.com/graphql/graphiql/commit/a53bec64b511fca2da828d7c0ff100e3a110aec1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Continue forwarding the ref to the class component to not break public methods
+
+* [#2449](https://github.com/graphql/graphiql/pull/2449) [`a0b02eda`](https://github.com/graphql/graphiql/commit/a0b02edaa629c6113c1c5518fd3aa05b355a1921) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Assume all context values are nullable and create hooks to consume individual contexts
+
+- [#2450](https://github.com/graphql/graphiql/pull/2450) [`1e6fc68b`](https://github.com/graphql/graphiql/commit/1e6fc68b73941544ee64e0499e459f9c7d39aa14) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Extract the `copy`, `merge`, `prettify`, and `autoCompleteLeafs` functions into hooks and remove these functions from the editor context value
+
+- Updated dependencies [[`1b41e33c`](https://github.com/graphql/graphiql/commit/1b41e33c4a871a345836de58f415b7c461ced1f8), [`0659e96e`](https://github.com/graphql/graphiql/commit/0659e96e07f98d532619f29f52cba59e2d528327), [`ee0fd8bf`](https://github.com/graphql/graphiql/commit/ee0fd8bf4042053ec647080b83656dc5e54a7239), [`a0b02eda`](https://github.com/graphql/graphiql/commit/a0b02edaa629c6113c1c5518fd3aa05b355a1921), [`1e6fc68b`](https://github.com/graphql/graphiql/commit/1e6fc68b73941544ee64e0499e459f9c7d39aa14)]:
+  - @graphiql/react@0.3.0
+
+## 1.9.4
+
+### Patch Changes
+
+- [#2437](https://github.com/graphql/graphiql/pull/2437) [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move prettify query functionality to editor context in `@graphiql/react`
+
+* [#2435](https://github.com/graphql/graphiql/pull/2435) [`89f0244f`](https://github.com/graphql/graphiql/commit/89f0244f7b7cdf01c168638a09f5137788401995) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the logic for deriving operation facts from the current query to `@graphiql/react` and store these facts as properties on the query editor instance
+
+- [#2437](https://github.com/graphql/graphiql/pull/2437) [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move copy query functionality to editor context in `@graphiql/react`
+
+* [#2437](https://github.com/graphql/graphiql/pull/2437) [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move merge query functionality to editor context in `@graphiql/react`
+
+- [#2436](https://github.com/graphql/graphiql/pull/2436) [`3e5295f0`](https://github.com/graphql/graphiql/commit/3e5295f0fd3b5f999643ea97e6cee706554f0b50) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Inline logic for clicking a reference to open the docs and remove the `onClickReference` and `onHintInformationRender` props of the editor components and hooks
+
+* [#2436](https://github.com/graphql/graphiql/pull/2436) [`3e5295f0`](https://github.com/graphql/graphiql/commit/3e5295f0fd3b5f999643ea97e6cee706554f0b50) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move visibility state for doc explorer from `graphiql` to the explorer context in `@graphiql/react`
+
+* Updated dependencies [[`89f0244f`](https://github.com/graphql/graphiql/commit/89f0244f7b7cdf01c168638a09f5137788401995), [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789), [`89f0244f`](https://github.com/graphql/graphiql/commit/89f0244f7b7cdf01c168638a09f5137788401995), [`3dae62fc`](https://github.com/graphql/graphiql/commit/3dae62fc871385e148a799cde55a52a5e6b41d19), [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789), [`1f933505`](https://github.com/graphql/graphiql/commit/1f9335051fffc9e6a6f950b6f8060ed521b56789), [`3e5295f0`](https://github.com/graphql/graphiql/commit/3e5295f0fd3b5f999643ea97e6cee706554f0b50), [`3e5295f0`](https://github.com/graphql/graphiql/commit/3e5295f0fd3b5f999643ea97e6cee706554f0b50)]:
+  - @graphiql/react@0.2.1
+
+## 1.9.3
+
+### Patch Changes
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `fillLeafs` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+* [#2413](https://github.com/graphql/graphiql/pull/2413) [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a `StorageContext` and a `HistoryContext` to `@graphiql/react` that replaces the logic in the `graphiql` package
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `mergeAst` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+* [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix sending multiple introspection requests when loading the page
+
+- [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate the `autoCompleteLeafs` method of the `GraphiQL` component in favor of the function provided by the `EditorContext` from `@graphiql/react`
+
+* [#2420](https://github.com/graphql/graphiql/pull/2420) [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a `SchemaContext` to `@graphiql/react` that replaces the logic for fetching and validating the schema in the `graphiql` package
+
+- [#2419](https://github.com/graphql/graphiql/pull/2419) [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the `getSelectedOperationName` utility function from `graphiql` into `@graphiql/toolkit` and deprecate the export from `graphiql`
+
+- Updated dependencies [[`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e), [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9), [`8be164b1`](https://github.com/graphql/graphiql/commit/8be164b1e158d00752d6d3f30630a797d07d08c9), [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e), [`3467cd33`](https://github.com/graphql/graphiql/commit/3467cd33264e0766a0a43cf53e52ec371df26962), [`84d8985b`](https://github.com/graphql/graphiql/commit/84d8985b87701133cc41fd424a24bb61c9b7272e)]:
+  - @graphiql/toolkit@0.6.0
+  - @graphiql/react@0.2.0
+
+## 1.9.2
+
+### Patch Changes
+
+- Updated dependencies [[`ebc864f0`](https://github.com/graphql/graphiql/commit/ebc864f0ab05000758cb2898daaa73a2f15255ec), [`ebc864f0`](https://github.com/graphql/graphiql/commit/ebc864f0ab05000758cb2898daaa73a2f15255ec)]:
+  - @graphiql/react@0.1.2
+
+## 1.9.1
+
+### Patch Changes
+
+- [#2423](https://github.com/graphql/graphiql/pull/2423) [`838e58da`](https://github.com/graphql/graphiql/commit/838e58dad652d8f5559af7b88d049b1c62348f2f) Thanks [@chentsulin](https://github.com/chentsulin)! - Fix peer dependency declaration by using `||` instead of `|` to link multiple major versions
+
+- Updated dependencies [[`838e58da`](https://github.com/graphql/graphiql/commit/838e58dad652d8f5559af7b88d049b1c62348f2f)]:
+  - @graphiql/react@0.1.1
+
+## 1.9.0
+
+### Minor Changes
+
+- [#2412](https://github.com/graphql/graphiql/pull/2412) [`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move QueryStore from `graphiql` package to `@graphiql/toolkit`
+
+* [#2412](https://github.com/graphql/graphiql/pull/2412) [`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move HistoryStore from `graphiql` package to `@graphiql/toolkit`
+
+- [#2409](https://github.com/graphql/graphiql/pull/2409) [`f2025ba0`](https://github.com/graphql/graphiql/commit/f2025ba06c5aa8e8ac68d29538ff135f3efc8e46) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the logic of the variable editor from the `graphiql` package into a hook `useVariableEditor` provided by `@graphiql/react`
+
+* [#2408](https://github.com/graphql/graphiql/pull/2408) [`d825bb75`](https://github.com/graphql/graphiql/commit/d825bb7569ca6b1ebbe534b893354645c790e003) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the logic of the query editor from the `graphiql` package into a hook `useQueryEditor` provided by `@graphiql/react`
+
+- [#2411](https://github.com/graphql/graphiql/pull/2411) [`ad448693`](https://github.com/graphql/graphiql/commit/ad4486934ba69247efd33ee500e30f8236ecd079) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move the logic of the result viewer from the `graphiql` package into a hook `useResponseEditor` provided by `@graphiql/react`
+
+* [#2370](https://github.com/graphql/graphiql/pull/2370) [`7f695b10`](https://github.com/graphql/graphiql/commit/7f695b104f9b25ba8c6d36f7827c475b297b7482) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Include the context provider for the explorer from `@graphiql/react` and replace the local state for the nav stack of the docs with methods provided by hooks from `@graphiql/react`.
+
+- [#2412](https://github.com/graphql/graphiql/pull/2412) [`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Move StorageAPI from `graphiql` package to `@graphiql/toolkit`
+
+* [#2404](https://github.com/graphql/graphiql/pull/2404) [`029ddf82`](https://github.com/graphql/graphiql/commit/029ddf82c29754ab8518ae7df66f9b25361a8247) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add a context provider for editors and move the logic of the headers editor from the `graphiql` package into a hook `useHeaderEditor` provided by `@graphiql/react`
+
+### Patch Changes
+
+- [#2418](https://github.com/graphql/graphiql/pull/2418) [`6d7fb6e6`](https://github.com/graphql/graphiql/commit/6d7fb6e6fa4734e2274d8875971613a8254674e3) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix persisting headers in tab state and avoid opening duplicate tabs when reloading
+
+- Updated dependencies [[`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29), [`bc3dc64c`](https://github.com/graphql/graphiql/commit/bc3dc64c37478ba6170c49c25fb755b4f2e020b2), [`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29), [`f2025ba0`](https://github.com/graphql/graphiql/commit/f2025ba06c5aa8e8ac68d29538ff135f3efc8e46), [`d825bb75`](https://github.com/graphql/graphiql/commit/d825bb7569ca6b1ebbe534b893354645c790e003), [`ad448693`](https://github.com/graphql/graphiql/commit/ad4486934ba69247efd33ee500e30f8236ecd079), [`7f695b10`](https://github.com/graphql/graphiql/commit/7f695b104f9b25ba8c6d36f7827c475b297b7482), [`c2e2f53d`](https://github.com/graphql/graphiql/commit/c2e2f53d3b2ae369feb68537f92c73bcfd962f29), [`029ddf82`](https://github.com/graphql/graphiql/commit/029ddf82c29754ab8518ae7df66f9b25361a8247)]:
+  - @graphiql/toolkit@0.5.0
+  - @graphiql/react@0.1.0
+
+## 1.8.10
+
+### Patch Changes
+
+- [#2397](https://github.com/graphql/graphiql/pull/2397) [`a63ff958`](https://github.com/graphql/graphiql/commit/a63ff958838cf4fcf31f7eaa3e3b022d02838f65) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - upgrade to React v17
+
+* [#2401](https://github.com/graphql/graphiql/pull/2401) [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - move async helper functions and formatting functions over into the @graphiql/toolkit package
+
+* Updated dependencies [[`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5), [`60a744b1`](https://github.com/graphql/graphiql/commit/60a744b1d73d1021afb7abeea1573f26178102b5)]:
+  - @graphiql/toolkit@0.4.5
+
+## 1.8.9
+
+### Patch Changes
+
+- [#2387](https://github.com/graphql/graphiql/pull/2387) [`e823697b`](https://github.com/graphql/graphiql/commit/e823697b5d47565671d5919be84f69919e70977f) Thanks [@benjie](https://github.com/benjie)! - Add 'children' type definition to various component props
+
+* [#2388](https://github.com/graphql/graphiql/pull/2388) [`d3ae074c`](https://github.com/graphql/graphiql/commit/d3ae074c9b9dae6ed4f69b0a79efaa0353dcea2d) Thanks [@benjie](https://github.com/benjie)! - Add 'pointer-events: none' to SVG style for dropdown arrow in GraphiQL.Menu component
+
+- [#2373](https://github.com/graphql/graphiql/pull/2373) [`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597) Thanks [@benjie](https://github.com/benjie)! - Fix TypeScript definition of FetcherParams to reflect that operationName is optional
+
+- Updated dependencies [[`5b2c1b20`](https://github.com/graphql/graphiql/commit/5b2c1b2054a70e8dca173f380f44766438cb5597)]:
+  - @graphiql/toolkit@0.4.4
+
+## 1.8.8
+
+### Patch Changes
+
+- Updated dependencies [[`2dec55f2`](https://github.com/graphql/graphiql/commit/2dec55f2c5e979cc7bb1adadff4fb063775b088c), [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - codemirror-graphql@1.3.0
+  - graphql-language-service@5.0.4
+
+## 1.8.7
+
+### Patch Changes
+
+- [#2316](https://github.com/graphql/graphiql/pull/2316) [`3d8510c8`](https://github.com/graphql/graphiql/commit/3d8510c87b9f0cc73f747ed4cd88e112f9fe65f7) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: With tabs enabled, if a subscription is restored from storage, a query request is sent instead
+
+## 1.8.6
+
+### Patch Changes
+
+- [#2312](https://github.com/graphql/graphiql/pull/2312) [`3c97cf63`](https://github.com/graphql/graphiql/commit/3c97cf63f0d6a8c27265905af1a2da243925ff01) Thanks [@AlirezaHaghshenas](https://github.com/AlirezaHaghshenas)! - Fix: After changing to a tab with a subscription, graphiql sends a query request
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+  - codemirror-graphql@1.2.17
+
+## 1.8.5
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+  - codemirror-graphql@1.2.16
+
+## 1.8.4
+
+### Patch Changes
+
+- [#2274](https://github.com/graphql/graphiql/pull/2274) [`12950380`](https://github.com/graphql/graphiql/commit/12950380e92c38f6eec23499e7fca5dc9dcd8216) Thanks [@B2o5T](https://github.com/B2o5T)! - turn `valid-typeof` as `error`, SSR fix
+
+- Updated dependencies [[`12950380`](https://github.com/graphql/graphiql/commit/12950380e92c38f6eec23499e7fca5dc9dcd8216)]:
+  - @graphiql/toolkit@0.4.3
+
+## 1.8.3
+
+### Patch Changes
+
+- [#2268](https://github.com/graphql/graphiql/pull/2268) [`b1886822`](https://github.com/graphql/graphiql/commit/b188682296ee04a87fbf09dc51385f127bffcec0) Thanks [@acao](https://github.com/acao)! - remove dependency on `global` for esbuild/etc users!
+
+* [#2265](https://github.com/graphql/graphiql/pull/2265) [`9458e10b`](https://github.com/graphql/graphiql/commit/9458e10ba24a6c919142ea1cebb409c7d055baf9) Thanks [@acao](https://github.com/acao)! - fix `codemirror` import bug for `onHasCompletion` for #2263. for esm/cjs users on autocomplete (umd bundle users not impacted)
+
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies [[`261f2044`](https://github.com/graphql/graphiql/commit/261f2044066412e40f9962bef55295f7c9c35aec)]:
+  - codemirror-graphql@1.2.15
+
+## 1.8.1
+
+### Patch Changes
+
+- [#2257](https://github.com/graphql/graphiql/pull/2257) [`6cc95851`](https://github.com/graphql/graphiql/commit/6cc9585119f33ba80f960da310f7ef2747b7bc38) Thanks [@acao](https://github.com/acao)! - _security fix:_ replace the vulnerable `dset` dependency with `set-value`
+
+  `dset` is vulnerable to prototype pollution attacks. this is only possible if you are doing all of the following:
+
+  1. running graphiql with an experimental graphql-js release tag that supports @stream and @defer
+  2. executing a properly @streamed or @deferred query ala IncrementalDelivery spec, with multipart chunks
+  3. consuming a malicious schema that contains field names like proto, prototype, or constructor that return malicious data designed to exploit a prototype pollution attack
+
+## 1.8.0
+
+### Minor Changes
+
+- [#2197](https://github.com/graphql/graphiql/pull/2197) [`3137a6c4`](https://github.com/graphql/graphiql/commit/3137a6c4333dad8db8a0eb980d6c6464c7292946) Thanks [@n1ru4l](https://github.com/n1ru4l)! - Now featuring: tabs! 🥳 🍾 just opt-in with new prop `<GraphiQL tabs />`.
+  You can also both opt-in and provide a handler via `<GraphiQL tabs={{ onTabsChange }} />`!
+
+### Patch Changes
+
+- [#2249](https://github.com/graphql/graphiql/pull/2249) [`1540fd3d`](https://github.com/graphql/graphiql/commit/1540fd3d0df553798e41a153c5f0386d9d52be01) Thanks [@acao](https://github.com/acao)! - Finally remove inline `require()` for codemirror addon imports, replace with modern dynamic `import()` (which enables `esbuild`, `vite`, etc).
+
+  This change should allow your bundler to code split codemirror-graphql and the codemirror addons based on which you import. For SSR support, GraphiQL must load these modules dynamically.
+
+  If you want to use other codemirror addons (vim, etc) for non-ssr you can just import them top level, or for SSR, you can just dynamically import them.
+
+## 1.7.2
+
+### Patch Changes
+
+- Updated dependencies [[`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa), [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa)]:
+  - graphql-language-service@5.0.1
+  - codemirror-graphql@1.2.14
+
+## 1.7.1
+
+### Patch Changes
+
+- Updated dependencies [[`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958)]:
+  - graphql-language-service@5.0.0
+  - codemirror-graphql@1.2.13
+
+## 1.7.0
+
+### Minor Changes
+
+- [#2221](https://github.com/graphql/graphiql/pull/2221) [`64826c87`](https://github.com/graphql/graphiql/commit/64826c8776dfc8394a65c98663d47cc3c9d397b9) Thanks [@dwwoelfel](https://github.com/dwwoelfel)! - Fix to trigger codemirror update when externalFragments prop changes [#2220](https://github.com/graphql/graphiql/pull/2220)
+
+* [#2213](https://github.com/graphql/graphiql/pull/2213) [`ba85bc24`](https://github.com/graphql/graphiql/commit/ba85bc242b8271cbd09ade9d69a93d86e4e1a49f) Thanks [@hatappi](https://github.com/hatappi)! - remove IE7 CSS star property hack
+
+### Patch Changes
+
+- [#2205](https://github.com/graphql/graphiql/pull/2205) [`91500d4e`](https://github.com/graphql/graphiql/commit/91500d4eba8b99bf779ff6ac899c814070c6dff3) Thanks [@francisu](https://github.com/francisu)! - Fixed problem where 'global' variable is referenced when it might not be present (#2155)
+
 ## 1.6.0
 
 ### Minor Changes
@@ -368,7 +720,7 @@
 
 ### Bug Fixes
 
-- dont use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
+- don't use initial query on every re-render ([#1663](https://github.com/graphql/graphiql/issues/1663)) ([5aa890f](https://github.com/graphql/graphiql/commit/5aa890f6e145a7ad49f82cc122e209a291060709))
 
 ## [1.0.3](https://github.com/graphql/graphiql/compare/graphiql@1.0.2...graphiql@1.0.3) (2020-06-24)
 
@@ -386,7 +738,7 @@
 
 - more server side rendering fixes ([#1581](https://github.com/graphql/graphiql/issues/1581)) ([881a19f](https://github.com/graphql/graphiql/commit/881a19fbd5fbe5f65678de8074e593be7deb2ede)), closes [#1573](https://github.com/graphql/graphiql/issues/1573)
 - network cancellation for 1.0 ([#1582](https://github.com/graphql/graphiql/issues/1582)) ([ad3cc0d](https://github.com/graphql/graphiql/commit/ad3cc0d1567ea49ff5677d4cd8524e5e072b605e))
-- Set headers to localstorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
+- Set headers to localStorage ([#1578](https://github.com/graphql/graphiql/issues/1578)) ([cc7a7e2](https://github.com/graphql/graphiql/commit/cc7a7e2f6d25d7e8150dc89c6984e6a04b01566b))
 
 ## [1.0.0](https://github.com/graphql/graphiql/compare/graphiql@1.0.0-alpha.13...graphiql@1.0.0) (2020-06-11)
 
@@ -482,7 +834,7 @@
 
 - deprecate support for 15, support react 16 features ([#1107](https://github.com/graphql/graphiql/issues/1107)) ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
 - **graphiql-theming:** Toolbar component ([#1203](https://github.com/graphql/graphiql/issues/1203)) by [@walaura](https://github.com/walaura) ([adb73f5](https://github.com/graphql/graphiql/commit/adb73f5))
-- [new-ui] Tabs & Tabbars ([#1198](https://github.com/graphql/graphiql/issues/1198)) ([033f971](https://github.com/graphql/graphiql/commit/033f971)) by [@walaura](https://github.com/walaura)
+- [new-ui] Tabs & Tab-bars ([#1198](https://github.com/graphql/graphiql/issues/1198)) ([033f971](https://github.com/graphql/graphiql/commit/033f971)) by [@walaura](https://github.com/walaura)
 - replace use of enzyme with react-testing-library ([#1144](https://github.com/graphql/graphiql/issues/1144)) by [@ryan-m-walker](https://github.com/ryan-m-walker) ([de73d6c](https://github.com/graphql/graphiql/commit/de73d6c))
 - storybook+theme-ui for the new design ([#1145](https://github.com/graphql/graphiql/issues/1145)) ([7f97c0c](https://github.com/graphql/graphiql/commit/7f97c0c)) by [@walaura](https://github.com/walaura)
 
@@ -565,7 +917,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.13.2 (2019-06-21)
 

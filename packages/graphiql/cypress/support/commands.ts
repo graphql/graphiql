@@ -10,18 +10,20 @@
 
 // / <reference types="cypress" />
 
+type Op = {
+  query: string;
+  variables?: Record<string, any>;
+  variablesString?: string;
+  headersString?: string;
+  response?: Record<string, any>;
+};
 declare namespace Cypress {
-  type Op = {
-    query: string;
-    variables?: Record<string, any>;
-    variablesString?: string;
-  };
   type MockResult =
     | { data: any }
     | { data: any; hasNext?: boolean }
     | { error: any[] }
     | { errors: any[] };
-  interface Chainable<Subject = any> {
+  interface Chainable {
     /**
      * Custom command to select DOM element by data-cy attribute.
      * @example cy.dataCy('greeting')
@@ -32,11 +34,11 @@ declare namespace Cypress {
     visitWithOp(op: Op): Chainable<Element>;
     clickPrettify(): Chainable<Element>;
     assertHasValues(op: Op): Chainable<Element>;
-    assertResult(result: MockResult): Chainable<Element>;
-    assertQueryResult(
-      op: Op,
-      expectedResult: MockResult,
-      timeout?: number,
+    assertQueryResult(expectedResult: MockResult): Chainable<Element>;
+    assertLinterMarkWithMessage(
+      text: string,
+      severity: 'error' | 'warning',
+      message?: string,
     ): Chainable<Element>;
   }
 }
@@ -65,40 +67,84 @@ Cypress.Commands.add('visitWithOp', ({ query, variables, variablesString }) => {
 
 Cypress.Commands.add(
   'assertHasValues',
-  ({ query, variables, variablesString }) => {
-    cy.window().then(w => {
-      // @ts-ignore
-      expect(w.g.getQueryEditor().getValue()).to.equal(query);
-      if (variables) {
-        // @ts-ignore
-        expect(w.g.getVariableEditor().getValue()).to.equal(
-          JSON.stringify(variables, null, 2),
-        );
-      }
-      if (variablesString) {
-        // @ts-ignore
-        expect(w.g.getVariableEditor().getValue()).to.equal(variablesString);
-      }
+  ({ query, variables, variablesString, headersString, response }: Op) => {
+    cy.get('.query-editor').should(element => {
+      expect(normalize(element.get(0).innerText)).to.equal(
+        codeWithLineNumbers(query),
+      );
     });
+    if (typeof variables !== 'undefined') {
+      cy.contains('Query Variables').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(0)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(JSON.stringify(variables, null, 2)),
+          );
+        });
+    }
+    if (typeof variablesString !== 'undefined') {
+      cy.contains('Query Variables').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(0)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(variablesString),
+          );
+        });
+    }
+    if (typeof headersString !== 'undefined') {
+      cy.contains('Request Headers').click();
+      cy.get('.variable-editor .codemirrorWrap')
+        .eq(1)
+        .should(element => {
+          expect(normalize(element.get(0).innerText)).to.equal(
+            codeWithLineNumbers(headersString),
+          );
+        });
+    }
+    if (typeof response !== 'undefined') {
+      cy.get('.result-window').should(element => {
+        expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
+          JSON.stringify(response, null, 2),
+        );
+      });
+    }
   },
 );
 
-Cypress.Commands.add('assertQueryResult', (op, mockSuccess, timeout = 200) => {
-  cy.visitWithOp(op);
-  cy.clickExecuteQuery();
-  cy.wait(timeout);
-  cy.window().then(w => {
-    // @ts-ignore
-    const value = w.g.resultComponent.viewer.getValue();
-    expect(value).to.deep.equal(JSON.stringify(mockSuccess, null, 2));
+Cypress.Commands.add('assertQueryResult', expectedResult => {
+  cy.get('section.result-window').should(element => {
+    expect(normalizeWhitespace(element.get(0).innerText)).to.equal(
+      JSON.stringify(expectedResult, null, 2),
+    );
   });
 });
 
-Cypress.Commands.add('assertResult', (expectedResult, timeout = 200) => {
-  cy.wait(timeout);
-  cy.window().then(w => {
-    // @ts-ignore
-    const value = w.g.resultComponent.viewer.getValue();
-    expect(value).to.deep.equal(JSON.stringify(expectedResult, null, 2));
-  });
-});
+function codeWithLineNumbers(code: string): string {
+  return code
+    .split('\n')
+    .map((line, i) => `${i + 1}\n${line}`)
+    .join('\n');
+}
+
+function normalize(str: string) {
+  return str.replace(/\u200b/g, '');
+}
+
+function normalizeWhitespace(str: string) {
+  return str.replace(/\u00a0/g, ' ');
+}
+
+Cypress.Commands.add(
+  'assertLinterMarkWithMessage',
+  (text, severity, message) => {
+    cy.contains(text)
+      .should('have.class', 'CodeMirror-lint-mark')
+      .and('have.class', `CodeMirror-lint-mark-${severity}`);
+    if (message) {
+      cy.contains(text).trigger('mouseover');
+      cy.contains(message);
+    }
+  },
+);

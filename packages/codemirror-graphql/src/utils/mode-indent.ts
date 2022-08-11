@@ -8,9 +8,9 @@
  */
 
 import CodeMirror from 'codemirror';
-import { State } from 'graphql-language-service-parser';
+import { State } from 'graphql-language-service';
 
-// Seems the electricInput type in @types/codemirror is wrong (i.e it is written as electricinput instead of electricInput)
+// Seems the electricInput type in @types/codemirror is wrong (i.e it is written all lowercase)
 export default function indent(
   this: CodeMirror.Mode<any> & {
     electricInput?: RegExp;
@@ -21,7 +21,7 @@ export default function indent(
 ) {
   const levels = state.levels;
   // If there is no stack of levels, use the current level.
-  // Otherwise, use the top level, pre-emptively dedenting for close braces.
+  // Otherwise, use the top level, preemptively dedenting for close braces.
   const level =
     !levels || levels.length === 0
       ? state.indentLevel

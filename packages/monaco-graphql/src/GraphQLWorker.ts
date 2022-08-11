@@ -61,7 +61,6 @@ export class GraphQLWorker {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
       if (!document) {
-        console.log('no document');
         return [];
       }
       const graphQLPosition = toGraphQLPosition(position);

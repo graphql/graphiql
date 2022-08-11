@@ -17,4 +17,4 @@ Prettifies the code base, or tests that it is already prettified. This script is
 ## Typescript Configs
 
 `.build.*` - used for project references
-`.base.*` - used for extends for downstream tsconfigs
+`.base.*` - used for extends for downstream tsconfig files

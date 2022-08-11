@@ -1,4 +1,4 @@
-[Discord Channel](https://discord.gg/NP5vbPeUFp)
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/graphql-toolkit/CHANGELOG.md) | [API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html) | [NPM](https://www.npmjs.com/package/@graphiql/toolkit) | [Discord](https://discord.gg/NP5vbPeUFp)
 
 # `@graphiql/toolkit`
 

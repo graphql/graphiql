@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const graphql = require('graphql');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -79,10 +80,12 @@ const resultConfig = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     }),
+
     new HtmlWebpackPlugin({
       template: relPath('index.html.ejs'),
       inject: 'head',
       filename: isDev && !isHMR ? 'dev.html' : 'index.html',
+      graphqlVersion: JSON.stringify(graphql.version),
     }),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
@@ -114,8 +117,6 @@ const cssLoaders = [
 if (!isDev) {
   cssLoaders.push('postcss-loader');
 }
-
-resultConfig.module.rules.push();
 
 if (process.env.ANALYZE) {
   resultConfig.plugins.push(

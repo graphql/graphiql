@@ -23,13 +23,10 @@ import {
   getDiagnostics,
   getHoverInformation,
   HoverConfig,
-} from 'graphql-language-service';
-
-import {
   getVariablesJSONSchema,
   getOperationASTFacts,
   JSONSchemaOptions,
-} from 'graphql-language-service-utils';
+} from 'graphql-language-service';
 
 import { defaultSchemaLoader } from './schemaLoader';
 
@@ -50,15 +47,14 @@ export class LanguageService {
   private _schemaLoader: SchemaLoader = defaultSchemaLoader;
   private _parseOptions: ParseOptions | undefined = undefined;
   private _customValidationRules: ValidationRule[] | undefined = undefined;
-  private _exteralFragmentDefinitionNodes:
-    | FragmentDefinitionNode[]
-    | null = null;
-  private _exteralFragmentDefinitionsString: string | null = null;
+  private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
+    null;
+  private _externalFragmentDefinitionsString: string | null = null;
   constructor({
     parser,
     schemas,
     parseOptions,
-    exteralFragmentDefinitions,
+    externalFragmentDefinitions,
     customValidationRules,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
@@ -76,11 +72,11 @@ export class LanguageService {
     if (customValidationRules) {
       this._customValidationRules = customValidationRules;
     }
-    if (exteralFragmentDefinitions) {
-      if (Array.isArray(exteralFragmentDefinitions)) {
-        this._exteralFragmentDefinitionNodes = exteralFragmentDefinitions;
+    if (externalFragmentDefinitions) {
+      if (Array.isArray(externalFragmentDefinitions)) {
+        this._externalFragmentDefinitionNodes = externalFragmentDefinitions;
       } else {
-        this._exteralFragmentDefinitionsString = exteralFragmentDefinitions;
+        this._externalFragmentDefinitionsString = externalFragmentDefinitions;
       }
     }
   }
@@ -131,25 +127,25 @@ export class LanguageService {
 
   public getExternalFragmentDefinitions(): FragmentDefinitionNode[] {
     if (
-      !this._exteralFragmentDefinitionNodes &&
-      this._exteralFragmentDefinitionsString
+      !this._externalFragmentDefinitionNodes &&
+      this._externalFragmentDefinitionsString
     ) {
       const definitionNodes: FragmentDefinitionNode[] = [];
       try {
-        visit(this._parser(this._exteralFragmentDefinitionsString), {
+        visit(this._parser(this._externalFragmentDefinitionsString), {
           FragmentDefinition(node) {
             definitionNodes.push(node);
           },
         });
       } catch (err) {
         throw Error(
-          `Failed parsing exteralFragmentDefinitions string:\n${this._exteralFragmentDefinitionsString}`,
+          `Failed parsing externalFragmentDefinitions string:\n${this._externalFragmentDefinitionsString}`,
         );
       }
 
-      this._exteralFragmentDefinitionNodes = definitionNodes;
+      this._externalFragmentDefinitionNodes = definitionNodes;
     }
-    return this._exteralFragmentDefinitionNodes as FragmentDefinitionNode[];
+    return this._externalFragmentDefinitionNodes as FragmentDefinitionNode[];
   }
 
   /**
@@ -232,7 +228,7 @@ export class LanguageService {
     customRules?: ValidationRule[],
   ) => {
     const schema = this.getSchemaForFile(uri);
-    if (!documentText || documentText.length < 1 || !schema?.schema) {
+    if (!documentText || documentText.trim().length < 2 || !schema?.schema) {
       return [];
     }
     return getDiagnostics(
@@ -275,7 +271,7 @@ export class LanguageService {
       try {
         const documentAST = this.parse(documentText);
         const operationFacts = getOperationASTFacts(documentAST, schema.schema);
-        if (operationFacts && operationFacts.variableToType) {
+        if (operationFacts?.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType, options);
         }
       } catch (err) {}

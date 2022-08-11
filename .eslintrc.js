@@ -34,10 +34,11 @@ module.exports = {
   },
 
   extends: [
-    'prettier',
+    'eslint:recommended',
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'prettier',
   ],
 
   globals: {
@@ -51,35 +52,12 @@ module.exports = {
 
   rules: {
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
-    'no-cond-assign': 1,
     'no-console': 1,
-    'no-constant-condition': [1, { checkLoops: false }],
-    'no-control-regex': 1,
-    'no-debugger': 1,
-    'no-dupe-args': 1,
-    'no-dupe-keys': 1,
-    'no-duplicate-case': 1,
-    'no-empty-character-class': 1,
+    'no-constant-binary-expression': 2,
     'no-empty': [1, { allowEmptyCatch: true }],
-    'no-ex-assign': 1,
-    'no-extra-boolean-cast': 1,
     'no-extra-parens': 0,
-    'no-func-assign': 1,
-    'no-inner-declarations': 1,
-    'no-invalid-regexp': 1,
-    'no-irregular-whitespace': 1,
-    'no-obj-calls': 1,
-    'no-prototype-builtins': 0,
-    'no-regex-spaces': 1,
-    'no-sparse-arrays': 1,
     'no-template-curly-in-string': 0,
-    'no-unexpected-multiline': 0, // prettier --list-different
-    'no-unreachable': 1,
-    'no-unsafe-finally': 1,
-    'no-unsafe-negation': 1,
-    'use-isnan': 1,
     'valid-jsdoc': 0,
-    'valid-typeof': 1,
 
     // Best Practices (http://eslint.org/docs/rules/#best-practices)
     'accessor-pairs': 1,
@@ -100,15 +78,12 @@ module.exports = {
     'no-div-regex': 1,
     'no-else-return': 0,
     'no-empty-function': 0,
-    'no-empty-pattern': 1,
     'no-eq-null': 0,
     'no-eval': 1,
     'no-extend-native': 1,
     'no-extra-bind': 1,
     'no-extra-label': 1,
-    'no-fallthrough': 1,
     'no-floating-decimal': 0, // prettier --list-different
-    'no-global-assign': 1,
     'no-implicit-coercion': 1,
     'no-implicit-globals': 0,
     'no-implied-eval': 1,
@@ -123,33 +98,30 @@ module.exports = {
     'no-new-wrappers': 1,
     'no-new': 1,
     'no-octal-escape': 1,
-    'no-octal': 1,
     'no-param-reassign': 1,
     'no-proto': 1,
-    'no-redeclare': [1, { builtinGlobals: true }],
     'no-restricted-properties': 0,
     'no-return-assign': 1,
     'no-return-await': 1,
     'no-script-url': 1,
-    'no-self-assign': 1,
     'no-self-compare': 1,
     'no-sequences': 1,
     'no-throw-literal': 1,
     'no-unmodified-loop-condition': 0,
     'no-unused-expressions': 0,
-    'no-unused-labels': 1,
     'no-useless-call': 1,
     'no-useless-concat': 1,
-    'no-useless-escape': 1,
     'no-useless-return': 0,
     'no-void': 1,
+    '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
-    'no-with': 1,
     radix: 1,
+    '@typescript-eslint/prefer-as-const': 'error',
     'require-await': 0,
     // 'require-await': 1,
     'vars-on-top': 0,
     yoda: 1,
+    '@typescript-eslint/no-inferrable-types': 'error',
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
@@ -157,15 +129,18 @@ module.exports = {
     // Variables (http://eslint.org/docs/rules/#variables)
     'init-declarations': 0,
     'no-catch-shadow': 1,
-    'no-delete-var': 1,
     'no-label-var': 1,
     'no-restricted-globals': 0,
-    'no-shadow-restricted-names': 1,
     'no-shadow': 1,
     'no-undef-init': 0,
-    'no-undef': 1,
     'no-undefined': 0,
-    'no-unused-vars': [1, { args: 'none' }],
+
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+    ],
+
     'no-use-before-define': 0,
 
     // Node.js and CommonJS (http://eslint.org/docs/rules/#nodejs-and-commonjs)
@@ -238,14 +213,8 @@ module.exports = {
 
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
     'arrow-body-style': 0,
-    'constructor-super': 1,
-    'no-class-assign': 1,
-    'no-const-assign': 1,
-    'no-dupe-class-members': 1,
     'no-duplicate-imports': 0,
-    'no-new-symbol': 1,
     'no-restricted-imports': 0,
-    'no-this-before-super': 1,
     'no-useless-computed-key': 1,
     'no-useless-constructor': 0,
     'no-useless-rename': 1,
@@ -257,7 +226,6 @@ module.exports = {
     'prefer-rest-params': 0,
     'prefer-spread': 1,
     'prefer-template': 0,
-    'require-yield': 0,
     'sort-imports': 0,
     'symbol-description': 1,
 
@@ -275,11 +243,12 @@ module.exports = {
     'prefer-object-spread/prefer-object-spread': 1,
 
     // react rules
+    'react/no-unused-state': 'error',
+    'react/jsx-curly-brace-presence': 'error',
     'react/jsx-boolean-value': 'error',
     'react/jsx-handler-names': 'error',
     'react/jsx-key': 'error',
     'react/jsx-no-duplicate-props': 'error',
-    'react/jsx-no-literals': 'error',
     'react/jsx-no-undef': 'error',
     'react/jsx-pascal-case': 'error',
     'react/jsx-uses-react': 'error',
@@ -296,6 +265,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'error',
     'react/self-closing-comp': 'error',
     'react/display-name': 'warn',
+    'react/jsx-no-useless-fragment': 'error',
     // Jest rules
     'jest/no-conditional-expect': 0,
   },
@@ -327,13 +297,6 @@ module.exports = {
         'jest/no-conditional-expect': 0,
       },
     },
-    // Rules for TypeScript only
-    {
-      files: ['*.ts', '*.tsx'],
-      rules: {
-        'no-unused-vars': 'off',
-      },
-    },
     {
       // Converted from 'dependencies' options in ancient config
       files: ['**/spec/**', '**/sample-*/**'],
@@ -347,6 +310,14 @@ module.exports = {
       rules: {
         'no-console': 0,
         'no-await-in-loop': 0,
+      },
+    },
+    {
+      // TODO: Remove this overrides after extending `plugin:@typescript-eslint/recommended` config
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        'no-redeclare': 'off', // ts(2451)
+        'no-undef': 'off', // ts(2304)
       },
     },
   ],

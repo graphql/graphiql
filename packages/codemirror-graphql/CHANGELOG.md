@@ -1,5 +1,64 @@
 # Change Log
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies [[`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c)]:
+  - graphql-language-service@5.0.6
+
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa)]:
+  - graphql-language-service@5.0.5
+
+## 1.3.0
+
+### Minor Changes
+
+- [#2369](https://github.com/graphql/graphiql/pull/2369) [`2dec55f2`](https://github.com/graphql/graphiql/commit/2dec55f2c5e979cc7bb1adadff4fb063775b088c) Thanks [@sergeichestakov](https://github.com/sergeichestakov)! - Moved @codemirror/language to peer dependencies and upgraded to 0.20.0
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service@5.0.4
+
+## 1.2.17
+
+### Patch Changes
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+
+## 1.2.16
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+
+## 1.2.15
+
+### Patch Changes
+
+- [#2261](https://github.com/graphql/graphiql/pull/2261) [`261f2044`](https://github.com/graphql/graphiql/commit/261f2044066412e40f9962bef55295f7c9c35aec) Thanks [@acao](https://github.com/acao)! - Fix typescript path resolution bug in codemirror-graphql
+
+## 1.2.14
+
+### Patch Changes
+
+- Updated dependencies [[`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa), [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa)]:
+  - graphql-language-service@5.0.1
+
+## 1.2.13
+
+### Patch Changes
+
+- Updated dependencies [[`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958)]:
+  - graphql-language-service@5.0.0
+
 ## 1.2.12
 
 ### Patch Changes
@@ -304,13 +363,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 # 0.10.0 (2019-10-04)
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 0.9.1-alpha.1 (2019-09-01)
 

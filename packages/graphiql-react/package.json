@@ -1,0 +1,59 @@
+{
+  "name": "@graphiql/react",
+  "version": "0.9.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-react"
+  },
+  "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
+  "bugs": {
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-react"
+  },
+  "license": "MIT",
+  "main": "dist/graphiql-react.cjs.js",
+  "module": "dist/graphiql-react.es.js",
+  "types": "types/index.d.ts",
+  "keywords": [
+    "react",
+    "graphql",
+    "sdk",
+    "codemirror"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "types"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --emitDeclarationOnly && vite build",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "graphql": "^15.5.0 || ^16.0.0",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "@graphiql/toolkit": "^0.6.1",
+    "codemirror": "^5.65.3",
+    "codemirror-graphql": "^1.3.2",
+    "copy-to-clipboard": "^3.2.0",
+    "escape-html": "^1.0.3",
+    "graphql-language-service": "^5.0.6",
+    "markdown-it": "^12.2.0",
+    "set-value": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/codemirror": "^5.60.5",
+    "@types/escape-html": "^1.0.1",
+    "@types/set-value": "^4.0.1",
+    "@vitejs/plugin-react": "^1.3.0",
+    "graphql": "^16.4.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5"
+  }
+}

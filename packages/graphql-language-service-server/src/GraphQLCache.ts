@@ -27,11 +27,15 @@ import {
   GraphQLConfig,
   GraphQLProjectConfig,
 } from 'graphql-config';
+
+import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
+
 import { parseDocument } from './parseDocument';
 import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
+import { Logger } from './Logger';
 
 // Maximum files to read when processing GraphQL files.
 const MAX_READS = 200;
@@ -56,10 +60,12 @@ const {
 
 export async function getGraphQLCache({
   parser,
+  logger,
   loadConfigOptions,
   config,
 }: {
   parser: typeof parseDocument;
+  logger: Logger;
   loadConfigOptions: LoadConfigOptions;
   config?: GraphQLConfig;
 }): Promise<GraphQLCache> {
@@ -71,6 +77,7 @@ export async function getGraphQLCache({
     configDir: loadConfigOptions.rootDir as string,
     config: graphQLConfig as GraphQLConfig,
     parser,
+    logger,
   });
 }
 
@@ -83,15 +90,18 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _fragmentDefinitionsCache: Map<Uri, Map<string, FragmentInfo>>;
   _typeDefinitionsCache: Map<Uri, Map<string, ObjectTypeInfo>>;
   _parser: typeof parseDocument;
+  _logger: Logger;
 
   constructor({
     configDir,
     config,
     parser,
+    logger,
   }: {
     configDir: Uri;
     config: GraphQLConfig;
     parser: typeof parseDocument;
+    logger: Logger;
   }) {
     this._configDir = configDir;
     this._graphQLConfig = config;
@@ -101,12 +111,21 @@ export class GraphQLCache implements GraphQLCacheInterface {
     this._typeDefinitionsCache = new Map();
     this._typeExtensionMap = new Map();
     this._parser = parser;
+    this._logger = logger;
   }
 
   getGraphQLConfig = (): GraphQLConfig => this._graphQLConfig;
 
   getProjectForFile = (uri: string): GraphQLProjectConfig => {
-    return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
+    try {
+      return this._graphQLConfig.getProjectForFile(URI.parse(uri).fsPath);
+    } catch (err) {
+      this._logger.error(
+        `there was an error loading the project config for this file ${err}`,
+      );
+      // @ts-expect-error
+      return null;
+    }
   };
 
   getFragmentDependencies = async (
@@ -192,10 +211,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
 
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
 
-    const {
-      fragmentDefinitions,
-      graphQLFileMap,
-    } = await this.readAllGraphQLFiles(list);
+    const { fragmentDefinitions, graphQLFileMap } =
+      await this.readAllGraphQLFiles(list);
 
     this._fragmentDefinitionsCache.set(rootDir, fragmentDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
@@ -293,10 +310,8 @@ export class GraphQLCache implements GraphQLCacheInterface {
       return this._typeDefinitionsCache.get(rootDir) || new Map();
     }
     const list = await this._readFilesFromInputDirs(rootDir, projectConfig);
-    const {
-      objectTypeDefinitions,
-      graphQLFileMap,
-    } = await this.readAllGraphQLFiles(list);
+    const { objectTypeDefinitions, graphQLFileMap } =
+      await this.readAllGraphQLFiles(list);
     this._typeDefinitionsCache.set(rootDir, objectTypeDefinitions);
     this._graphQLFileListCache.set(rootDir, graphQLFileMap);
 
@@ -359,7 +374,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
             .map(filePath => {
               // @TODO
               // so we have to force this here
-              // becase glob's DefinatelyTyped doesn't use fs.Stats here though
+              // because glob's DefinitelyTyped doesn't use fs.Stats here though
               // the docs indicate that is what's there :shrug:
               const cacheEntry = globResult.statCache[filePath] as fs.Stats;
               return {
@@ -456,7 +471,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (cache) {
         cache.delete(filePath);
       }
-    } else if (fileAndContent && fileAndContent.queries) {
+    } else if (fileAndContent?.queries) {
       this.updateFragmentDefinition(rootDir, filePath, fileAndContent.queries);
     }
   }
@@ -522,7 +537,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       if (cache) {
         cache.delete(filePath);
       }
-    } else if (fileAndContent && fileAndContent.queries) {
+    } else if (fileAndContent?.queries) {
       this.updateObjectTypeDefinition(
         rootDir,
         filePath,
@@ -653,7 +668,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
     schemaKey && this._schemaMap.delete(schemaKey);
   }
 
-  _getSchemaCacheKeyForProject(projectConfig: GraphQLProjectConfig) {
+  _getSchemaCacheKeyForProject(
+    projectConfig: GraphQLProjectConfig,
+  ): UnnormalizedTypeDefPointer {
     return projectConfig.schema;
   }
 

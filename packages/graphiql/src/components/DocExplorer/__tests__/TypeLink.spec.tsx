@@ -5,44 +5,72 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { ExplorerContext } from '@graphiql/react';
+import {
+  // @ts-expect-error
+  fireEvent,
+  render,
+} from '@testing-library/react';
+import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
+import React, { ComponentProps } from 'react';
 
 import TypeLink from '../TypeLink';
-
-import { GraphQLNonNull, GraphQLList, GraphQLString } from 'graphql';
+import { mockExplorerContextValue, unwrapType } from './test-utils';
 
 const nonNullType = new GraphQLNonNull(GraphQLString);
 const listType = new GraphQLList(GraphQLString);
 
+function TypeLinkWithContext(props: ComponentProps<typeof TypeLink>) {
+  return (
+    <ExplorerContext.Provider
+      value={mockExplorerContextValue({
+        name: unwrapType(props.type).name,
+        def: unwrapType(props.type),
+      })}
+    >
+      <TypeLink {...props} />
+      {/* Print the top of the current nav stack for test assertions */}
+      <ExplorerContext.Consumer>
+        {({ explorerNavStack }) => (
+          <span data-testid="nav-stack">
+            {JSON.stringify(explorerNavStack[explorerNavStack.length + 1])}
+          </span>
+        )}
+      </ExplorerContext.Consumer>
+    </ExplorerContext.Provider>
+  );
+}
+
 describe('TypeLink', () => {
   it('should render a string', () => {
-    const { container } = render(<TypeLink type={GraphQLString} />);
+    const { container } = render(<TypeLinkWithContext type={GraphQLString} />);
     expect(container).toHaveTextContent('String');
     expect(container.querySelectorAll('a')).toHaveLength(1);
     expect(container.querySelector('a')).toHaveClass('type-name');
   });
-  it('should render a nonnull type', () => {
-    const { container } = render(<TypeLink type={nonNullType} />);
+  it('should render a non-null type', () => {
+    const { container } = render(<TypeLinkWithContext type={nonNullType} />);
     expect(container).toHaveTextContent('String!');
     expect(container.querySelectorAll('span')).toHaveLength(1);
   });
   it('should render a list type', () => {
-    const { container } = render(<TypeLink type={listType} />);
+    const { container } = render(<TypeLinkWithContext type={listType} />);
     expect(container).toHaveTextContent('[String]');
     expect(container.querySelectorAll('span')).toHaveLength(1);
   });
-  it('should handle a click event', () => {
-    const op = jest.fn();
-    const { container } = render(<TypeLink type={listType} onClick={op} />);
+  it('should push to the nav stack on click', () => {
+    const { container, getByTestId } = render(
+      <TypeLinkWithContext type={listType} />,
+    );
     fireEvent.click(container.querySelector('a')!);
-    expect(op.mock.calls.length).toEqual(1);
-    expect(op.mock.calls[0][0]).toEqual(GraphQLString);
+    expect(getByTestId('nav-stack')).toHaveTextContent('');
   });
   it('should re-render on type change', () => {
-    const { container, rerender } = render(<TypeLink type={listType} />);
+    const { container, rerender } = render(
+      <TypeLinkWithContext type={listType} />,
+    );
     expect(container).toHaveTextContent('[String]');
-    rerender(<TypeLink type={GraphQLString} />);
+    rerender(<TypeLinkWithContext type={GraphQLString} />);
     expect(container).toHaveTextContent('String');
   });
 });

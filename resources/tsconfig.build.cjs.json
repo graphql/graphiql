@@ -9,25 +9,10 @@
       "path": "../packages/graphiql-toolkit"
     },
     {
-      "path": "../packages/graphiql"
-    },
-    {
       "path": "../packages/monaco-graphql"
     },
     {
       "path": "../packages/codemirror-graphql"
-    },
-    {
-      "path": "../packages/graphql-language-service-utils"
-    },
-    {
-      "path": "../packages/graphql-language-service-types"
-    },
-    {
-      "path": "../packages/graphql-language-service-parser"
-    },
-    {
-      "path": "../packages/graphql-language-service-interface"
     },
     {
       "path": "../packages/graphql-language-service"
@@ -37,6 +22,9 @@
     },
     {
       "path": "../packages/graphql-language-service-cli"
+    },
+    {
+      "path": "../packages/vscode-graphql"
     }
   ]
 }

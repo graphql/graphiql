@@ -1,12 +1,13 @@
 /* eslint-disable */
 const semver = require('semver');
+const { execa } = import('execa');
 const cp = require('child_process');
 const { basename } = require('path');
 
 const { read: readConfig } = require('@changesets/config');
 const readChangesets = require('@changesets/read').default;
-const assembleReleasePlan = require('@changesets/assemble-release-plan')
-  .default;
+const assembleReleasePlan =
+  require('@changesets/assemble-release-plan').default;
 const applyReleasePlan = require('@changesets/apply-release-plan').default;
 const { getPackages } = require('@manypkg/get-packages');
 
@@ -18,6 +19,33 @@ function getNewVersion(version, type) {
 
   return semver.inc(version, `pre${type}`, true, 'canary-' + gitHash);
 }
+
+const execOpts = { stderr: 'inherit', stdout: 'inherit' };
+
+const git = async (...commands) => execa('git', commands, execOpts);
+
+// TODO: canary --pre releases for vscode ?
+//
+// async function preReleaseVSCode(version) {
+//   try {
+//     await execa(
+//       'yarn',
+//       ['workspace', `vscode-graphql`, 'run', 'release', '--pre'],
+//       execOpts,
+//     );
+//   } catch (err) {
+//     console.error('vscode-graphql pre-release failed on publish:', err);
+//     process.exit(1);
+//   }
+//   try {
+//     await git('add', `packages/vscode-graphql/package.json`);
+//     await git('commit', `-m`, `pre-release \`vscode-graphql@${version}\``);
+//     await git('push');
+//   } catch (err) {
+//     console.error('vscode-graphql pre-release failed on git command:', err);
+//     process.exit(1);
+//   }
+// }
 
 function getRelevantChangesets(baseBranch) {
   const comparePoint = cp
@@ -45,6 +73,9 @@ async function updateVersions() {
   const changesets = (await readChangesets(cwd)).filter(change =>
     modifiedChangesets.includes(change.id),
   );
+  const isMain = process.env.GITHUB_REF_NAME?.includes('main');
+
+  let vscodeRelease = false;
 
   if (changesets.length === 0) {
     console.warn(
@@ -67,6 +98,13 @@ async function updateVersions() {
       process.exit(1);
     } else {
       for (const release of releasePlan.releases) {
+        if (
+          release.name.includes('vscode-graphql') &&
+          release.changesets?.type !== 'none'
+        ) {
+          // vsce pre-release only accept x.y.z versions
+          release.newVersion = vscodeRelease = semver.patch(release.oldVersion);
+        }
         if (release.type !== 'none') {
           release.newVersion = getNewVersion(release.oldVersion, release.type);
         }
@@ -82,6 +120,10 @@ async function updateVersions() {
         false,
         true,
       );
+      // TODO: get this working
+      // if(vscodeRelease) {
+      //   await preReleaseVSCode(vscodeRelease)
+      // }
     }
   }
 }

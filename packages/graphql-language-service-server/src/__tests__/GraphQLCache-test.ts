@@ -7,9 +7,12 @@
  *
  */
 
-jest.mock('cross-undici-fetch', () => ({
+jest.mock('@whatwg-node/fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
+  AbortController: global.AbortController,
+  TextDecoder: global.TextDecoder,
 }));
+
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
@@ -23,13 +26,11 @@ import { GraphQLCache, getGraphQLCache } from '../GraphQLCache';
 import { parseDocument } from '../parseDocument';
 import type { FragmentInfo, ObjectTypeInfo } from 'graphql-language-service';
 
-function wihtoutASTNode(definition: any) {
+function withoutASTNode(definition: any) {
   const result = { ...definition };
   delete result.astNode;
   return result;
 }
-
-const fileExtensions = ['js', 'ts', 'graphql'];
 
 describe('GraphQLCache', () => {
   const configDir = __dirname;
@@ -55,7 +56,7 @@ describe('GraphQLCache', () => {
 
   describe('getGraphQLCache', () => {
     it('should apply extensions', async () => {
-      const extension: GraphQLExtensionDeclaration = config => {
+      const extension: GraphQLExtensionDeclaration = _config => {
         return {
           name: 'extension-used', // Just adding a key to the config to demo extension usage
         };
@@ -74,8 +75,7 @@ describe('GraphQLCache', () => {
     });
   });
 
-  // TODO: figure out mocking undici
-  describe.skip('getSchema', () => {
+  describe('getSchema', () => {
     it('generates the schema correctly for the test app config', async () => {
       const schema = await cache.getSchema('testWithSchema');
       expect(schema instanceof GraphQLSchema).toEqual(true);
@@ -112,7 +112,7 @@ describe('GraphQLCache', () => {
       const schema = (await cache.getSchema(
         'testWithCustomDirectives',
       )) as GraphQLSchema;
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+      expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
@@ -126,7 +126,7 @@ describe('GraphQLCache', () => {
 
     it('extend the schema with appropriate custom directive 2', async () => {
       const schema = (await cache.getSchema('testWithSchema')) as GraphQLSchema;
-      expect(wihtoutASTNode(schema.getDirective('customDirective'))).toEqual(
+      expect(withoutASTNode(schema.getDirective('customDirective'))).toEqual(
         // objectContaining is used to pass this test without changing the code if more properties are added in GraphQLDirective class in the new version of graphql module.
         expect.objectContaining({
           args: [],
@@ -141,7 +141,7 @@ describe('GraphQLCache', () => {
 
   describe('getFragmentDependencies', () => {
     const duckContent = `fragment Duck on Duck {
-      cuack
+      quack
     }`;
     const duckDefinition = parse(duckContent).definitions[0];
 

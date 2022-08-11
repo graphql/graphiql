@@ -19,7 +19,7 @@ import {
   GraphQLInputFieldMap,
 } from 'graphql';
 import type { State, Maybe } from 'graphql-language-service';
-import { IHints } from 'src/hint';
+import { IHints } from '../hint';
 
 import forEachState from '../utils/forEachState';
 import hintList from '../utils/hintList';
@@ -70,7 +70,7 @@ CodeMirror.registerHelper(
     const token = editor.getTokenAt(cur);
 
     const results = getVariablesHint(cur, token, options);
-    if (results && results.list && results.list.length > 0) {
+    if (results?.list && results.list.length > 0) {
       results.from = CodeMirror.Pos(results.from.line, results.from.ch);
       results.to = CodeMirror.Pos(results.to.line, results.to.ch);
       CodeMirror.signal(editor, 'hasCompletion', editor, results, token);
@@ -201,7 +201,7 @@ function getTypeInfo(
     } else if (state.kind === 'ObjectField') {
       const objectField =
         state.name && info.fields ? info.fields[state.name] : null;
-      info.type = objectField && objectField.type;
+      info.type = objectField?.type;
     }
   });
 

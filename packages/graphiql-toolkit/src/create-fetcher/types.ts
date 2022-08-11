@@ -26,12 +26,17 @@ export type Unsubscribable = {
 
 export type FetcherParams = {
   query: string;
-  operationName: string;
+  operationName?: string | null;
   variables?: any;
 };
 
 export type FetcherOpts = {
   headers?: { [key: string]: any };
+  /**
+   * @deprecated This property will be removed in the next major version of
+   * `graphiql`, it just echoes back the value passed as prop to the `GraphiQL`
+   * component with a default value of `false`
+   */
   shouldPersistHeaders?: boolean;
   documentAST?: DocumentNode;
 };
@@ -92,7 +97,7 @@ export interface CreateFetcherOptions {
   wsClient?: Client;
   /**
    * `legacyWsClient` implementation that matches `subscriptions-transport-ws` signature,
-   * whether via `new SubcriptionsClient()` itself or another client with a similar signature.
+   * whether via `new SubscriptionsClient()` itself or another client with a similar signature.
    */
   legacyWsClient?: any;
   /**
@@ -103,7 +108,7 @@ export interface CreateFetcherOptions {
    * Headers you can provide statically.
    *
    * If you enable the headers editor and the user provides
-   * A header you set statically here, it will be overriden by their value.
+   * A header you set statically here, it will be overridden by their value.
    */
   headers?: Record<string, string>;
   /**

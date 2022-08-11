@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@graphiql/toolkit": "^0.4.2",
-    "graphql-language-service": "^4.1.5",
-    "monaco-graphql": "^1.0.10",
+    "@graphiql/toolkit": "^0.6.1",
+    "graphql-language-service": "^5.0.6",
+    "monaco-graphql": "^1.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "graphql": "^16.1.0",
     "jsonc-parser": "^3.0.0",
     "monaco-editor": "^0.31.0"
   },
@@ -15,14 +16,10 @@
     "vite": "^2.7.0",
     "@vitejs/plugin-react": "^1.1.1",
     "@types/react": "^17.0.37",
-    "vite-plugin-monaco-editor": "^1.0.10",
-    "path-browserify": "^1.0.1"
-  },
-  "peerDependencies": {
-    "graphql": "^16.1.0"
+    "vite-plugin-monaco-editor": "^1.0.10"
   },
   "scripts": {
     "start": "vite",
-    "build": "vite build"
+    "build-demo": "vite build"
   }
 }

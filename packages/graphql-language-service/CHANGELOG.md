@@ -1,5 +1,53 @@
 # graphql-language-service
 
+## 5.0.6
+
+### Patch Changes
+
+- [#2506](https://github.com/graphql/graphiql/pull/2506) [`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c) Thanks [@acao](https://github.com/acao)! - Remove redundant check, trigger LSP release
+
+## 5.0.5
+
+### Patch Changes
+
+- [#2486](https://github.com/graphql/graphiql/pull/2486) [`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa) Thanks [@stonexer](https://github.com/stonexer)! - definition support for operation fields ✨
+
+  you can now jump to the applicable object type definition for query/mutation/subscription fields!
+
+## 5.0.4
+
+### Patch Changes
+
+- [#2378](https://github.com/graphql/graphiql/pull/2378) [`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2) Thanks [@acao](https://github.com/acao)! - Trap all graphql parsing exceptions from (relatively) newly added logic. This should clear up bugs that have been plaguing users for two years now, sorry!
+
+## 5.0.3
+
+### Patch Changes
+
+- [#2291](https://github.com/graphql/graphiql/pull/2291) [`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - Target es6 for the languages services
+
+## 5.0.2
+
+### Patch Changes
+
+- [`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f) Thanks [@acao](https://github.com/acao)! - - upgrade `graphql-config` to latest in server
+  - remove `graphql-config` dependency from `vscode-graphql` and `graphql-language-service`
+  - fix `vscode-graphql` esbuild bundling bug in `vscode-graphql` [#2269](https://github.com/graphql/graphiql/issues/2269) by fixing `esbuild` version
+
+## 5.0.1
+
+### Patch Changes
+
+- [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa) Thanks [@acao](https://github.com/acao)! - fix lockfile and imports from LSP merge
+
+* [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa) Thanks [@acao](https://github.com/acao)! - default to es6 target across the language services, fix #2240
+
+## 5.0.0
+
+### Major Changes
+
+- [#2209](https://github.com/graphql/graphiql/pull/2209) [`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958) Thanks [@acao](https://github.com/acao)! - Retire parser, interface, utils and types packages, combine with graphql-language-service
+
 ## 4.1.5
 
 ### Patch Changes
@@ -21,7 +69,7 @@
 
 ### Patch Changes
 
-- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LangugeService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
+- [#2103](https://github.com/graphql/graphiql/pull/2103) [`a44772d6`](https://github.com/graphql/graphiql/commit/a44772d6af97254c4f159ea7237e842a3e3719e8) Thanks [@acao](https://github.com/acao)! - LanguageService should not be imported by `codemirror-graphql`, and thus `picomatch` should not be imported.
 
 ## 4.1.2
 
@@ -59,7 +107,7 @@
   - when specifying the language to an editor or model, **use `graphql` as the language id instead of `graphqlDev`**
     - the mode now extends the default basic language support from `monaco-editor` itself
     - when bundling, for syntax highlighting and basic language features, you must specify `graphql` in languages for your webpack or vite monaco plugins
-  - The exported mode api for configfuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
+  - The exported mode api for configuration been entirely rewritten. It is simple for now, but we will add more powerful methods to the `monaco.languages.api` over time :)
 
   #### New Features
 
@@ -72,7 +120,7 @@
   - web worker stability has been improved by contributors in previous patches, but removing remote schema loading vastly simplifies worker creation
   - the editor now supports multiple graphql models, configurable against multiple schema configurations
 
-  * You can now use `intializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
+  * You can now use `initializeMode()` to initialize the language mode & worker with the schema, but you can still lazily load it, and fall back on default monaco editor basic languages support
 
 ### Patch Changes
 

@@ -6,32 +6,36 @@
  */
 
 import React from 'react';
+import { GraphQLArgument, DirectiveNode, isType } from 'graphql';
+import { useExplorerContext } from '@graphiql/react';
+
 import Argument from './Argument';
 import Directive from './Directive';
 import MarkdownContent from './MarkdownContent';
 import TypeLink from './TypeLink';
-import { GraphQLArgument, DirectiveNode } from 'graphql';
-import { OnClickTypeFunction, FieldType } from './types';
 
-type FieldDocProps = {
-  field?: FieldType;
-  onClickType: OnClickTypeFunction;
-};
-
-export default function FieldDoc({ field, onClickType }: FieldDocProps) {
+export default function FieldDoc() {
+  const { explorerNavStack } = useExplorerContext({ nonNull: true });
   const [showDeprecated, handleShowDeprecated] = React.useState(false);
+
+  const navItem = explorerNavStack[explorerNavStack.length - 1];
+  const field = navItem.def;
+  if (!field || isType(field)) {
+    return null;
+  }
+
   let argsDef;
   let deprecatedArgsDef;
   if (field && 'args' in field && field.args.length > 0) {
     argsDef = (
       <div id="doc-args" className="doc-category">
-        <div className="doc-category-title">{'arguments'}</div>
+        <div className="doc-category-title">arguments</div>
         {field.args
           .filter(arg => !arg.deprecationReason)
           .map((arg: GraphQLArgument) => (
             <div key={arg.name} className="doc-category-item">
               <div>
-                <Argument arg={arg} onClickType={onClickType} />
+                <Argument arg={arg} />
               </div>
               <MarkdownContent
                 className="doc-value-description"
@@ -53,18 +57,19 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     if (deprecatedArgs.length > 0) {
       deprecatedArgsDef = (
         <div id="doc-deprecated-args" className="doc-category">
-          <div className="doc-category-title">{'deprecated arguments'}</div>
+          <div className="doc-category-title">deprecated arguments</div>
           {!showDeprecated ? (
             <button
               className="show-btn"
-              onClick={() => handleShowDeprecated(!showDeprecated)}>
-              {'Show deprecated arguments...'}
+              onClick={() => handleShowDeprecated(!showDeprecated)}
+            >
+              Show deprecated arguments...
             </button>
           ) : (
             deprecatedArgs.map((arg, i) => (
               <div key={i}>
                 <div>
-                  <Argument arg={arg} onClickType={onClickType} />
+                  <Argument arg={arg} />
                 </div>
                 <MarkdownContent
                   className="doc-value-description"
@@ -85,15 +90,10 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
   }
 
   let directivesDef;
-  if (
-    field &&
-    field.astNode &&
-    field.astNode.directives &&
-    field.astNode.directives.length > 0
-  ) {
+  if (field?.astNode?.directives && field.astNode.directives.length > 0) {
     directivesDef = (
       <div id="doc-directives" className="doc-category">
-        <div className="doc-category-title">{'directives'}</div>
+        <div className="doc-category-title">directives</div>
         {field.astNode.directives.map((directive: DirectiveNode) => (
           <div key={directive.name.value} className="doc-category-item">
             <div>
@@ -109,17 +109,17 @@ export default function FieldDoc({ field, onClickType }: FieldDocProps) {
     <div>
       <MarkdownContent
         className="doc-type-description"
-        markdown={field?.description || 'No Description'}
+        markdown={field.description || 'No Description'}
       />
       {field && 'deprecationReason' in field && (
         <MarkdownContent
           className="doc-deprecation"
-          markdown={field?.deprecationReason}
+          markdown={field.deprecationReason}
         />
       )}
       <div className="doc-category">
-        <div className="doc-category-title">{'type'}</div>
-        <TypeLink type={field?.type} onClick={onClickType} />
+        <div className="doc-category-title">type</div>
+        <TypeLink type={field.type} />
       </div>
       {argsDef}
       {directivesDef}

@@ -55,7 +55,7 @@
 ### Features
 
 - add \_\_typename field suggestion against object type - (#903) @yoshiakis
-- Update sortText logic, so that field sort is schema driven rather than alphabetically sorted - (#884) @ganenome
+- Update sortText logic, so that field sort is schema driven rather than alphabetically sorted - (#884) @ganemone
 
 ### Chores
 
@@ -100,7 +100,7 @@
 - Copy non-formatted query to avoid stripping out comments - #832 - @jaebradley
 - Normalizes no-break spaces - #781 - @zouxuoz
 - Prevents crashing on Shift-Alt-Space - #781 - @zouxuoz
-- Fix UI state change after favoriting a query - #747 - @benjie
+- Fix UI state change after favorite a query - #747 - @benjie
 
 ### Chores
 
@@ -144,10 +144,10 @@ You will now be importing async methods from gls-interface 2.0.0, thus your bund
 ### Chores
 
 - add graphql-js 0.13 to peer dependencies (graphql/graphql-language-service#241)
-- BREAKING: ugrade internal dependencies - gls-interface, gls-server and gls-utils to 2.0.0 @lostplan
+- BREAKING: upgrade internal dependencies - gls-interface, gls-server and gls-utils to 2.0.0 @lostplan
 
 ## GraphQL Language Service 2.0.0 - 11 Sep, 2018
 
 ### Chores
 
-- BREAKING: ugrade internal dependencies - gls-interface, gls-server and gls-utils to 2.0.0 @Sol
+- BREAKING: upgrade internal dependencies - gls-interface, gls-server and gls-utils to 2.0.0 @Sol

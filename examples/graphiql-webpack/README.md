@@ -2,7 +2,7 @@
 
 This example demonstrates how to transpile your own custom ES6 GraphiQL implementation with webpack and babel configuration.
 
-There is also a noconfig example with `create-react-app`:
+There is also a no-config example with `create-react-app`:
 
 [![Edit graphiql-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/graphiql-example-nhzvc)
 

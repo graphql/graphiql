@@ -1,7 +1,7 @@
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const isDev = process.env.NODE_ENV === 'development';
@@ -16,13 +16,8 @@ const resultConfig = {
   output: {
     path: rootPath('dist'),
     filename: '[name].js',
-    globalObject: 'self',
   },
   devtool: 'cheap-module-eval-source-map',
-  node: {
-    fs: 'empty',
-    module: 'empty',
-  },
   module: {
     rules: [
       // for graphql module, which uses .mjs
@@ -52,6 +47,15 @@ const resultConfig = {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: ['file-loader'],
       },
+      {
+        test: require.resolve('monaco-graphql/esm/graphql.worker.js'),
+        use: {
+          loader: 'worker-loader',
+          options: {
+            filename: 'graphql.worker.js',
+          },
+        },
+      },
     ],
   },
   plugins: [
@@ -78,14 +82,14 @@ const resultConfig = {
   },
 };
 
-// if (process.env.ANALYZE) {
-//   resultConfig.plugins.push(
-//     new BundleAnalyzerPlugin({
-//       analyzerMode: 'static',
-//       openAnalyzer: false,
-//       reportFilename: rootPath('build/analyzer.html'),
-//     }),
-//   );
-// }
+if (process.env.ANALYZE) {
+  resultConfig.plugins.push(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false,
+      reportFilename: rootPath('build/analyzer.html'),
+    }),
+  );
+}
 
 module.exports = resultConfig;

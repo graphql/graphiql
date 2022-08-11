@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "composite": true
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../packages/graphiql/tsconfig.esm.json"
+    }
+  ]
+}

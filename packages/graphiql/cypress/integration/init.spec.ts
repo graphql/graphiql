@@ -27,7 +27,7 @@ const mockSuccess = {
 };
 
 describe('GraphiQL On Initialization', () => {
-  it('Renders without error', () => {
+  it('Renders default value without error', () => {
     const containers = [
       '#graphiql',
       '.graphiql-container',
@@ -37,21 +37,21 @@ describe('GraphiQL On Initialization', () => {
       '.resultWrap',
       '.variable-editor',
     ];
-    cy.visit(`/?query=${testQuery}`);
+    cy.visit(`/`);
+    cy.get('.query-editor').contains('# Welcome to GraphiQL');
     containers.forEach(cSelector => cy.get(cSelector).should('be.visible'));
   });
 
   it('Executes a GraphQL query over HTTP that has the expected result', () => {
-    cy.assertQueryResult({ query: testQuery }, mockSuccess);
+    cy.visitWithOp({ query: testQuery });
+    cy.clickExecuteQuery();
+    cy.assertQueryResult(mockSuccess);
   });
   it('Shows the expected error when the schema is invalid', () => {
     cy.visit(`/?bad=true`);
     cy.wait(200);
-    cy.window().then(w => {
-      // @ts-ignore
-      const value = w.g.resultComponent.viewer.getValue();
-      // this message changes between graphql 15 & 16
-      expect(value).to.contain('Names must');
+    cy.get('section.result-window').should(element => {
+      expect(element.get(0).innerText).to.contain('Names must');
     });
   });
 });

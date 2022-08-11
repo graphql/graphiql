@@ -39,8 +39,8 @@ export const TestEnum = new GraphQLEnumType({
   },
 });
 
-export const TestInputObject: GraphQLInputObjectType = new GraphQLInputObjectType(
-  {
+export const TestInputObject: GraphQLInputObjectType =
+  new GraphQLInputObjectType({
     name: 'TestInput',
     fields: () => ({
       string: { type: GraphQLString },
@@ -59,8 +59,7 @@ export const TestInputObject: GraphQLInputObjectType = new GraphQLInputObjectTyp
       listEnum: { type: new GraphQLList(TestEnum) },
       listObject: { type: new GraphQLList(TestInputObject) },
     }),
-  },
-);
+  });
 
 const TestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'TestInterface',

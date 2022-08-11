@@ -1,9 +1,0 @@
-{
-  "extends": "../../resources/tsconfig.base.esm.json",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./esm"
-  },
-  "include": ["src"],
-  "exclude": ["**/__tests__/**", "**/*.spec.*"]
-}

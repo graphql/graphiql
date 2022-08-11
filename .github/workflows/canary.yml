@@ -10,6 +10,9 @@ jobs:
     name: Publish Canary
     runs-on: ubuntu-latest
     if: github.event.pull_request.head.repo.full_name == github.repository
+    env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout Main
         uses: actions/checkout@v2
@@ -28,9 +31,6 @@ jobs:
       - name: Release Canary
         id: canary
         uses: 'kamilkisiela/release-canary@master'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-script: 'yarn release:canary'

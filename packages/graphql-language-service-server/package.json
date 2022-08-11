@@ -1,13 +1,17 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.7.14",
+  "version": "2.8.1",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
     "Hyohyeon Jeong <asiandrummer@fb.com>",
     "Lee Byron <lee@leebyron.com> (http://leebyron.com/)"
   ],
-  "repository": "http://github.com/graphql/graphiql",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/graphql-language-service-server"
+  },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
@@ -33,22 +37,21 @@
     "@babel/types": "^7.17.0",
     "@babel/parser": "^7.17.3",
     "dotenv": "8.2.0",
-    "graphql-config": "^4.1.0",
-    "graphql-language-service": "^4.1.5",
-    "graphql-language-service-utils": "^2.7.1",
+    "graphql-config": "4.3.3",
+    "graphql-language-service": "^5.0.6",
     "mkdirp": "^1.0.4",
     "node-fetch": "^2.6.1",
     "nullthrows": "^1.0.0",
-    "vscode-jsonrpc": "^5.0.1",
-    "vscode-languageserver": "^6.1.1",
+    "vscode-languageserver": "^8.0.1",
+    "vscode-jsonrpc": "^8.0.1",
     "fast-glob": "^3.2.7",
     "vscode-uri": "^3.0.2",
-    "glob": "^7.2.0"
+    "glob": "^7.2.0",
+    "@graphql-tools/load": "^7.5.3"
   },
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
-    "graphql": "16.0.0-experimental-stream-defer.5",
-    "vscode-languageserver-protocol": "^3.15.3"
+    "graphql": "^16.4.0"
   }
 }

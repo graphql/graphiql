@@ -6,6 +6,7 @@ on:
       - main
 jobs:
   release:
+    environment: deploy
     name: Release
     runs-on: ubuntu-latest
     steps:
@@ -28,5 +29,11 @@ jobs:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: yarn release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # only use GH token here, because GITHUB_TOKEN is no longer allowed to create PRs
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # for vscode marketplace, see https://github.com/microsoft/vscode-vsce/blob/194d59b975523696362ead891dc0f3ddd277b3bd/README.md#linux
+          VSCE_PAT: ${{ secrets.PAT_TOKEN }}
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          # for ovsx, see https://github.com/eclipse/openvsx/blob/master/cli/README.md#publish-extensions
+          OVSX_PAT: ${{ secrets.OPEN_VSX_ACCESS_TOKEN }}

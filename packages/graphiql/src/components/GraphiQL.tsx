@@ -8,35 +8,51 @@
 import React, {
   ComponentType,
   PropsWithChildren,
-  MouseEventHandler,
-  Component,
-  FunctionComponent,
+  ReactNode,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
 } from 'react';
 import {
-  buildClientSchema,
   GraphQLSchema,
-  parse,
-  print,
-  visit,
-  OperationDefinitionNode,
-  GraphQLType,
   ValidationRule,
   FragmentDefinitionNode,
   DocumentNode,
-  GraphQLError,
-  GraphQLFormattedError,
   IntrospectionQuery,
-  getIntrospectionQuery,
 } from 'graphql';
-import copyToClipboard from 'copy-to-clipboard';
+
 import {
-  getFragmentDependenciesForAST,
-  getOperationFacts,
-  VariableToType,
-} from 'graphql-language-service';
+  EditorContextProvider,
+  ExecutionContextProvider,
+  ExecutionContextType,
+  ExplorerContextProvider,
+  HistoryContextProvider,
+  SchemaContextProvider,
+  StorageContextProvider,
+  useAutoCompleteLeafs,
+  useCopyQuery,
+  useDragResize,
+  useEditorContext,
+  useExecutionContext,
+  useExplorerContext,
+  useHistoryContext,
+  useMergeQuery,
+  usePrettifyEditors,
+  useSchemaContext,
+  useStorageContext,
+} from '@graphiql/react';
+import type {
+  EditorContextType,
+  ExplorerContextType,
+  HistoryContextType,
+  ResponseTooltipType,
+  SchemaContextType,
+  StorageContextType,
+  TabsState,
+  KeyMap,
+} from '@graphiql/react';
 
 import { ExecuteButton } from './ExecuteButton';
-import { ImagePreview } from './ImagePreview';
 import { ToolbarButton } from './ToolbarButton';
 import { ToolbarGroup } from './ToolbarGroup';
 import { ToolbarMenu, ToolbarMenuItem } from './ToolbarMenu';
@@ -46,32 +62,12 @@ import { HeaderEditor } from './HeaderEditor';
 import { ResultViewer } from './ResultViewer';
 import { DocExplorer } from './DocExplorer';
 import { QueryHistory } from './QueryHistory';
-import CodeMirrorSizer from '../utility/CodeMirrorSizer';
-import StorageAPI, { Storage } from '../utility/StorageAPI';
-import getSelectedOperationName from '../utility/getSelectedOperationName';
-import debounce from '../utility/debounce';
 import find from '../utility/find';
-import { GetDefaultFieldNamesFn, fillLeafs } from '../utility/fillLeafs';
-import { getLeft, getTop } from '../utility/elementPosition';
-import mergeAST from '../utility/mergeAst';
-import { introspectionQueryName } from '../utility/introspectionQueries';
-import { dset } from 'dset/merge';
 
-import type {
-  Fetcher,
-  FetcherResult,
-  FetcherReturnType,
-  FetcherOpts,
-  SyncFetcherResult,
-  Observable,
-  Unsubscribable,
-  FetcherResultPayload,
-} from '@graphiql/toolkit';
-import HistoryStore from '../utility/HistoryStore';
+import { formatError, formatResult } from '@graphiql/toolkit';
+import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
-import { validateSchema } from 'graphql';
-
-const DEFAULT_DOC_EXPLORER_WIDTH = 350;
+import { Tab, TabAddButton, Tabs } from './Tabs';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
@@ -85,28 +81,13 @@ if (majorVersion < 16) {
   );
 }
 
-declare namespace global {
+declare namespace window {
   export let g: GraphiQL;
 }
-
-export type Maybe<T> = T | null | undefined;
-
-type OnMouseMoveFn = Maybe<
-  (moveEvent: MouseEvent | React.MouseEvent<Element>) => void
->;
-type OnMouseUpFn = Maybe<() => void>;
 
 export type GraphiQLToolbarConfig = {
   additionalContent?: React.ReactNode;
 };
-
-export type GenericError =
-  | Error
-  | string
-  | readonly Error[]
-  | readonly string[]
-  | GraphQLError
-  | readonly GraphQLError[];
 
 /**
  * API docs for this live here:
@@ -126,9 +107,11 @@ export type GraphiQLProps = {
    */
   fetcher: Fetcher;
   /**
-   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema introspection.
+   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema
+   * introspection. This prop also accepts the result of an introspection query
+   * which will be used to create a `GraphQLSchema`
    */
-  schema?: GraphQLSchema | null;
+  schema?: GraphQLSchema | IntrospectionQuery | null;
   /**
    * An array of graphql ValidationRules
    */
@@ -148,12 +131,12 @@ export type GraphiQLProps = {
    */
   headers?: string;
   /**
-   * The operationName to use when executing the current opeartion.
+   * The operationName to use when executing the current operation.
    * Overrides the dropdown when multiple operations are present.
    */
   operationName?: string;
   /**
-   * privide a json string that controls the results editor state
+   * provide a json string that controls the results editor state
    */
   response?: string;
   /**
@@ -185,7 +168,7 @@ export type GraphiQLProps = {
    */
   headerEditorEnabled?: boolean;
   /**
-   * Should user header changes be persisted to localstorage?
+   * Should user header changes be persisted to localStorage?
    * default: false
    */
   shouldPersistHeaders?: boolean;
@@ -224,10 +207,20 @@ export type GraphiQLProps = {
    */
   getDefaultFieldNames?: GetDefaultFieldNamesFn;
   /**
-   * The codemirror editor theme you'd like to use
+   * The CodeMirror 5 editor theme you'd like to use
    *
    */
   editorTheme?: string;
+  /**
+   * The CodeMirror 5 editor keybindings you'd like to use
+   *
+   * Note: may be deprecated for monaco
+   *
+   * See: https://codemirror.net/5/doc/manual.html#option_keyMap
+   *
+   * @default 'sublime'
+   */
+  keyMap?: KeyMap;
   /**
    * On history pane toggle event
    */
@@ -235,7 +228,7 @@ export type GraphiQLProps = {
   /**
    * Custom results tooltip component
    */
-  ResultsTooltip?: typeof Component | FunctionComponent;
+  ResultsTooltip?: ResponseTooltipType;
   /**
    * decide whether schema responses should be validated.
    *
@@ -245,7 +238,7 @@ export type GraphiQLProps = {
   /**
    * Enable new introspectionQuery option `inputValueDeprecation`
    * DANGER: your server must be configured to support this new feature,
-   * or else introspecion will fail with an invalid query
+   * or else introspection will fail with an invalid query
    *
    * default: false
    */
@@ -270,7 +263,7 @@ export type GraphiQLProps = {
    */
   readOnly?: boolean;
   /**
-   * Toggle the doc explorer state by default/programatically
+   * Toggle the doc explorer state by default/programmatically
    *
    * default: false
    */
@@ -292,55 +285,21 @@ export type GraphiQLProps = {
    * Content to place before the top bar (logo).
    */
   beforeTopBarContent?: React.ReactElement | null;
-};
 
-export type GraphiQLState = {
-  schema?: GraphQLSchema | null;
-  query?: string;
-  variables?: string;
-  headers?: string;
-  operationName?: string;
-  docExplorerOpen: boolean;
-  response?: string;
-  editorFlex: number;
-  secondaryEditorOpen: boolean;
-  secondaryEditorHeight: number;
-  variableEditorActive: boolean;
-  headerEditorActive: boolean;
-  headerEditorEnabled: boolean;
-  shouldPersistHeaders: boolean;
-  historyPaneOpen: boolean;
-  schemaErrors?: readonly GraphQLError[];
-  docExplorerWidth: number;
-  isWaitingForResponse: boolean;
-  subscription?: Unsubscribable | null;
-  variableToType?: VariableToType;
-  operations?: OperationDefinitionNode[];
-  documentAST?: DocumentNode;
-  maxHistoryLength: number;
-};
+  /**
+   * Whether tabs should be enabled.
+   * default: false
+   */
+  tabs?:
+    | boolean
+    | {
+        /**
+         * Callback that is invoked onTabChange.
+         */
+        onTabChange?: (tab: TabsState) => void;
+      };
 
-const stringify = (obj: unknown): string => JSON.stringify(obj, null, 2);
-
-const formatSingleError = (error: Error): Error => ({
-  ...error,
-  // Raise these details even if they're non-enumerable
-  message: error.message,
-  stack: error.stack,
-});
-
-type InputError = Error | GraphQLError | string;
-
-const handleSingleError = (
-  error: InputError,
-): GraphQLFormattedError | Error | string => {
-  if (error instanceof GraphQLError) {
-    return error.toString();
-  }
-  if (error instanceof Error) {
-    return formatSingleError(error);
-  }
-  return error;
+  children?: ReactNode;
 };
 
 /**
@@ -349,573 +308,106 @@ const handleSingleError = (
  *
  * @see https://github.com/graphql/graphiql#usage
  */
-export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
-  /**
-   * Static Methods
-   */
-  static formatResult(result: any) {
-    return JSON.stringify(result, null, 2);
-  }
-
-  static formatError = (error: GenericError): string => {
-    if (Array.isArray(error)) {
-      return stringify({
-        errors: error.map((e: InputError) => handleSingleError(e)),
-      });
-    }
-    // @ts-ignore
-    return stringify({ errors: handleSingleError(error) });
-  };
-
-  // Ensure only the last executed editor query is rendered.
-  _editorQueryID = 0;
-  _storage: StorageAPI;
-  _introspectionQuery: string;
-  _introspectionQueryName: string;
-  _introspectionQuerySansSubscriptions: string;
-
-  codeMirrorSizer!: CodeMirrorSizer;
-  // Ensure the component is mounted to execute async setState
-  componentIsMounted: boolean;
-
-  // refs
-  docExplorerComponent: Maybe<DocExplorer>;
-  graphiqlContainer: Maybe<HTMLDivElement>;
-  resultComponent: Maybe<ResultViewer>;
-  variableEditorComponent: Maybe<VariableEditor>;
-  headerEditorComponent: Maybe<HeaderEditor>;
-  _queryHistory: Maybe<QueryHistory>;
-  _historyStore: Maybe<HistoryStore>;
-  editorBarComponent: Maybe<HTMLDivElement>;
-  queryEditorComponent: Maybe<QueryEditor>;
-  resultViewerElement: Maybe<HTMLElement>;
+export class GraphiQL extends React.Component<GraphiQLProps> {
+  ref: GraphiQLWithContext | null = null;
 
   constructor(props: GraphiQLProps) {
     super(props);
-
-    // Ensure props are correct
-    if (typeof props.fetcher !== 'function') {
-      throw new TypeError('GraphiQL requires a fetcher function.');
-    }
-
-    // Cache the storage instance
-    this._storage = new StorageAPI(props.storage);
-
-    const maxHistoryLength = props.maxHistoryLength ?? 20;
-
-    this._historyStore = new HistoryStore(this._storage, maxHistoryLength);
-
-    // Disable setState when the component is not mounted
-    this.componentIsMounted = false;
-
-    // Determine the initial query to display.
-    const query =
-      props.query !== undefined
-        ? props.query
-        : this._storage.get('query')
-        ? (this._storage.get('query') as string)
-        : props.defaultQuery !== undefined
-        ? props.defaultQuery
-        : defaultQuery;
-
-    // Get the initial query facts.
-    const queryFacts = getOperationFacts(props.schema, query);
-    // Determine the initial variables to display.
-    const variables =
-      props.variables !== undefined
-        ? props.variables
-        : this._storage.get('variables');
-
-    // Determine the initial headers to display.
-    const headers =
-      props.headers !== undefined
-        ? props.headers
-        : this._storage.get('headers');
-
-    // Determine the initial operationName to use.
-    const operationName =
-      props.operationName !== undefined
-        ? props.operationName
-        : getSelectedOperationName(
-            undefined,
-            this._storage.get('operationName') as string,
-            queryFacts && queryFacts.operations,
-          );
-
-    // prop can be supplied to open docExplorer initially
-    let docExplorerOpen = props.docExplorerOpen || false;
-
-    // but then local storage state overrides it
-    if (this._storage.get('docExplorerOpen')) {
-      docExplorerOpen = this._storage.get('docExplorerOpen') === 'true';
-    }
-
-    // initial secondary editor pane open
-    let secondaryEditorOpen;
-    if (props.defaultVariableEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultVariableEditorOpen;
-    } else if (props.defaultSecondaryEditorOpen !== undefined) {
-      secondaryEditorOpen = props.defaultSecondaryEditorOpen;
-    } else {
-      secondaryEditorOpen = Boolean(variables || headers);
-    }
-
-    const headerEditorEnabled = props.headerEditorEnabled ?? true;
-    const shouldPersistHeaders = props.shouldPersistHeaders ?? false;
-
-    let schema = props.schema;
-    let response = props.response;
-    let schemaErrors: readonly GraphQLError[] | undefined = undefined;
-    if (schema && !this.props.dangerouslyAssumeSchemaIsValid) {
-      const validationErrors = validateSchema(schema);
-      if (validationErrors && validationErrors.length > 0) {
-        // This is equivalent to handleSchemaErrors, but it's too early
-        // to call setState.
-        response = GraphiQL.formatError(validationErrors);
-        schema = undefined;
-        schemaErrors = validationErrors;
-      }
-    }
-
-    this._introspectionQuery = getIntrospectionQuery({
-      schemaDescription: props.schemaDescription ?? undefined,
-      inputValueDeprecation: props.inputValueDeprecation ?? undefined,
-    });
-
-    this._introspectionQueryName =
-      props.introspectionQueryName ?? introspectionQueryName;
-
-    // Some GraphQL services do not support subscriptions and fail an introspection
-    // query which includes the `subscriptionType` field as the stock introspection
-    // query does. This backup query removes that field.
-    this._introspectionQuerySansSubscriptions = this._introspectionQuery.replace(
-      'subscriptionType { name }',
-      '',
-    );
-
-    // Initialize state
-    this.state = {
-      schema,
-      query,
-      variables: variables as string,
-      headers: headers as string,
-      operationName,
-      docExplorerOpen,
-      schemaErrors,
-      response,
-      editorFlex: Number(this._storage.get('editorFlex')) || 1,
-      secondaryEditorOpen,
-      secondaryEditorHeight:
-        Number(this._storage.get('secondaryEditorHeight')) || 200,
-      variableEditorActive:
-        this._storage.get('variableEditorActive') === 'true' ||
-        props.headerEditorEnabled
-          ? this._storage.get('headerEditorActive') !== 'true'
-          : true,
-      headerEditorActive: this._storage.get('headerEditorActive') === 'true',
-      headerEditorEnabled,
-      shouldPersistHeaders,
-      historyPaneOpen: this._storage.get('historyPaneOpen') === 'true' || false,
-      docExplorerWidth:
-        Number(this._storage.get('docExplorerWidth')) ||
-        DEFAULT_DOC_EXPLORER_WIDTH,
-      isWaitingForResponse: false,
-      subscription: null,
-      maxHistoryLength,
-      ...queryFacts,
-    };
   }
 
   componentDidMount() {
-    // Allow async state changes
-    this.componentIsMounted = true;
-
-    // Only fetch schema via introspection if a schema has not been
-    // provided, including if `null` was provided.
-    if (this.state.schema === undefined) {
-      this.fetchSchema();
-    }
-
-    // Utility for keeping CodeMirror correctly sized.
-    this.codeMirrorSizer = new CodeMirrorSizer();
-
-    if (global !== undefined) {
-      global.g = this;
+    if (typeof window !== 'undefined') {
+      window.g = this;
     }
   }
-  UNSAFE_componentWillMount() {
-    this.componentIsMounted = false;
-  }
-  // TODO: these values should be updated in a reducer imo
-  // eslint-disable-next-line camelcase
-  UNSAFE_componentWillReceiveProps(nextProps: GraphiQLProps) {
-    let nextSchema = this.state.schema;
-    let nextQuery = this.state.query;
-    let nextVariables = this.state.variables;
-    let nextHeaders = this.state.headers;
-    let nextOperationName = this.state.operationName;
-    let nextResponse = this.state.response;
-
-    if (nextProps.schema !== undefined) {
-      nextSchema = nextProps.schema;
-    }
-    if (nextProps.query !== undefined && this.props.query !== nextProps.query) {
-      nextQuery = nextProps.query;
-    }
-    if (
-      nextProps.variables !== undefined &&
-      this.props.variables !== nextProps.variables
-    ) {
-      nextVariables = nextProps.variables;
-    }
-    if (
-      nextProps.headers !== undefined &&
-      this.props.headers !== nextProps.headers
-    ) {
-      nextHeaders = nextProps.headers;
-    }
-    if (nextProps.operationName !== undefined) {
-      nextOperationName = nextProps.operationName;
-    }
-    if (nextProps.response !== undefined) {
-      nextResponse = nextProps.response;
-    }
-    if (
-      nextQuery &&
-      nextSchema &&
-      (nextSchema !== this.state.schema ||
-        nextQuery !== this.state.query ||
-        nextOperationName !== this.state.operationName)
-    ) {
-      if (!this.props.dangerouslyAssumeSchemaIsValid) {
-        const validationErrors = validateSchema(nextSchema);
-        if (validationErrors && validationErrors.length > 0) {
-          this.handleSchemaErrors(validationErrors);
-          nextSchema = undefined;
-        }
-      }
-
-      const updatedQueryAttributes = this._updateQueryFacts(
-        nextQuery,
-        nextOperationName,
-        this.state.operations,
-        nextSchema,
-      );
-
-      if (updatedQueryAttributes !== undefined) {
-        nextOperationName = updatedQueryAttributes.operationName;
-
-        this.setState(updatedQueryAttributes);
-      }
-    }
-
-    // If schema is not supplied via props and the fetcher changed, then
-    // remove the schema so fetchSchema() will be called with the new fetcher.
-    if (
-      nextProps.schema === undefined &&
-      nextProps.fetcher !== this.props.fetcher
-    ) {
-      nextSchema = undefined;
-    }
-    this._storage.set('operationName', nextOperationName as string);
-    this.setState(
-      {
-        schema: nextSchema,
-        query: nextQuery,
-        variables: nextVariables,
-        headers: nextHeaders,
-        operationName: nextOperationName,
-        response: nextResponse,
-      },
-      () => {
-        if (this.state.schema === undefined) {
-          if (this.docExplorerComponent) {
-            this.docExplorerComponent.reset();
-          }
-
-          this.fetchSchema();
-        }
-      },
-    );
-  }
-
-  componentDidUpdate() {
-    // If this update caused DOM nodes to have changed sizes, update the
-    // corresponding CodeMirror instance sizes to match.
-    this.codeMirrorSizer.updateSizes([
-      this.queryEditorComponent,
-      this.variableEditorComponent,
-      this.headerEditorComponent,
-      this.resultComponent,
-    ]);
-  }
-
-  // Use it when the state change is async
-  // TODO: Annotate correctly this function
-  safeSetState = (nextState: any, callback?: any): void => {
-    this.componentIsMounted && this.setState(nextState, callback);
-  };
 
   render() {
-    const children = React.Children.toArray(this.props.children);
-
-    const logo = find(children, child =>
-      isChildComponentType(child, GraphiQL.Logo),
-    ) || <GraphiQL.Logo />;
-
-    const toolbar = find(children, child =>
-      isChildComponentType(child, GraphiQL.Toolbar),
-    ) || (
-      <GraphiQL.Toolbar>
-        <ToolbarButton
-          onClick={this.handlePrettifyQuery}
-          title="Prettify Query (Shift-Ctrl-P)"
-          label="Prettify"
-        />
-        <ToolbarButton
-          onClick={this.handleMergeQuery}
-          title="Merge Query (Shift-Ctrl-M)"
-          label="Merge"
-        />
-        <ToolbarButton
-          onClick={this.handleCopyQuery}
-          title="Copy Query (Shift-Ctrl-C)"
-          label="Copy"
-        />
-        <ToolbarButton
-          onClick={this.handleToggleHistory}
-          title="Show History"
-          label="History"
-        />
-        {this.props.toolbar?.additionalContent
-          ? this.props.toolbar.additionalContent
-          : null}
-      </GraphiQL.Toolbar>
-    );
-
-    const footer = find(children, child =>
-      isChildComponentType(child, GraphiQL.Footer),
-    );
-
-    const queryWrapStyle = {
-      WebkitFlex: this.state.editorFlex,
-      flex: this.state.editorFlex,
-    };
-
-    const docWrapStyle = {
-      display: 'block',
-      width: this.state.docExplorerWidth,
-    };
-    const docExplorerWrapClasses =
-      'docExplorerWrap' +
-      (this.state.docExplorerWidth < 200 ? ' doc-explorer-narrow' : '');
-
-    const historyPaneStyle = {
-      display: this.state.historyPaneOpen ? 'block' : 'none',
-      width: '230px',
-      zIndex: 7,
-    };
-
-    const secondaryEditorOpen = this.state.secondaryEditorOpen;
-    const secondaryEditorStyle = {
-      height: secondaryEditorOpen
-        ? this.state.secondaryEditorHeight
-        : undefined,
-    };
-
     return (
-      <div
-        ref={n => {
-          this.graphiqlContainer = n;
+      <GraphiQLProviders
+        {...this.props}
+        ref={node => {
+          this.ref = node;
         }}
-        className="graphiql-container">
-        {this.state.historyPaneOpen && (
-          <div className="historyPaneWrap" style={historyPaneStyle}>
-            <QueryHistory
-              ref={node => {
-                this._queryHistory = node;
-              }}
-              operationName={this.state.operationName}
-              query={this.state.query}
-              variables={this.state.variables}
-              onSelectQuery={this.handleSelectHistoryQuery}
-              storage={this._storage}
-              maxHistoryLength={this.state.maxHistoryLength}
-              queryID={this._editorQueryID}>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleHistory}
-                aria-label="Close History">
-                {'\u2715'}
-              </button>
-            </QueryHistory>
-          </div>
-        )}
-        <div className="editorWrap">
-          <div className="topBarWrap">
-            {this.props.beforeTopBarContent}
-            <div className="topBar">
-              {logo}
-              <ExecuteButton
-                isRunning={Boolean(this.state.subscription)}
-                onRun={this.handleRunQuery}
-                onStop={this.handleStopQuery}
-                operations={this.state.operations}
-              />
-              {toolbar}
-            </div>
-            {!this.state.docExplorerOpen && (
-              <button
-                className="docExplorerShow"
-                onClick={this.handleToggleDocs}
-                aria-label="Open Documentation Explorer">
-                {'Docs'}
-              </button>
-            )}
-          </div>
-          <div
-            ref={n => {
-              this.editorBarComponent = n;
-            }}
-            className="editorBar"
-            onDoubleClick={this.handleResetResize}
-            onMouseDown={this.handleResizeStart}>
-            <div className="queryWrap" style={queryWrapStyle}>
-              <QueryEditor
-                ref={n => {
-                  this.queryEditorComponent = n;
-                }}
-                schema={this.state.schema}
-                validationRules={this.props.validationRules}
-                value={this.state.query}
-                onEdit={this.handleEditQuery}
-                onHintInformationRender={this.handleHintInformationRender}
-                onClickReference={this.handleClickReference}
-                onCopyQuery={this.handleCopyQuery}
-                onPrettifyQuery={this.handlePrettifyQuery}
-                onMergeQuery={this.handleMergeQuery}
-                onRunQuery={this.handleEditorRunQuery}
-                editorTheme={this.props.editorTheme}
-                readOnly={this.props.readOnly}
-                externalFragments={this.props.externalFragments}
-              />
-              <section
-                className="variable-editor secondary-editor"
-                style={secondaryEditorStyle}
-                aria-label={
-                  this.state.variableEditorActive
-                    ? 'Query Variables'
-                    : 'Request Headers'
-                }>
-                <div
-                  className="secondary-editor-title variable-editor-title"
-                  id="secondary-editor-title"
-                  style={{
-                    cursor: secondaryEditorOpen ? 'row-resize' : 'n-resize',
-                  }}
-                  onMouseDown={this.handleSecondaryEditorResizeStart}>
-                  <div
-                    className={`variable-editor-title-text${
-                      this.state.variableEditorActive ? ' active' : ''
-                    }`}
-                    onClick={this.handleOpenVariableEditorTab}
-                    onMouseDown={this.handleTabClickPropogation}>
-                    {'Query Variables'}
-                  </div>
-                  {this.state.headerEditorEnabled && (
-                    <div
-                      style={{
-                        marginLeft: '20px',
-                      }}
-                      className={`variable-editor-title-text${
-                        this.state.headerEditorActive ? ' active' : ''
-                      }`}
-                      onClick={this.handleOpenHeaderEditorTab}
-                      onMouseDown={this.handleTabClickPropogation}>
-                      {'Request Headers'}
-                    </div>
-                  )}
-                </div>
-                <VariableEditor
-                  ref={n => {
-                    this.variableEditorComponent = n;
-                  }}
-                  value={this.state.variables}
-                  variableToType={this.state.variableToType}
-                  onEdit={this.handleEditVariables}
-                  onHintInformationRender={this.handleHintInformationRender}
-                  onPrettifyQuery={this.handlePrettifyQuery}
-                  onMergeQuery={this.handleMergeQuery}
-                  onRunQuery={this.handleEditorRunQuery}
-                  editorTheme={this.props.editorTheme}
-                  readOnly={this.props.readOnly}
-                  active={this.state.variableEditorActive}
-                />
-                {this.state.headerEditorEnabled && (
-                  <HeaderEditor
-                    ref={n => {
-                      this.headerEditorComponent = n;
-                    }}
-                    value={this.state.headers}
-                    onEdit={this.handleEditHeaders}
-                    onHintInformationRender={this.handleHintInformationRender}
-                    onPrettifyQuery={this.handlePrettifyQuery}
-                    onMergeQuery={this.handleMergeQuery}
-                    onRunQuery={this.handleEditorRunQuery}
-                    editorTheme={this.props.editorTheme}
-                    readOnly={this.props.readOnly}
-                    active={this.state.headerEditorActive}
-                  />
-                )}
-              </section>
-            </div>
-            <div className="resultWrap">
-              {this.state.isWaitingForResponse && (
-                <div className="spinner-container">
-                  <div className="spinner" />
-                </div>
-              )}
-              <ResultViewer
-                registerRef={n => {
-                  this.resultViewerElement = n;
-                }}
-                ref={c => {
-                  this.resultComponent = c;
-                }}
-                value={this.state.response}
-                editorTheme={this.props.editorTheme}
-                ResultsTooltip={this.props.ResultsTooltip}
-                ImagePreview={ImagePreview}
-              />
-              {footer}
-            </div>
-          </div>
-        </div>
-        {this.state.docExplorerOpen && (
-          <div className={docExplorerWrapClasses} style={docWrapStyle}>
-            <div
-              className="docExplorerResizer"
-              onDoubleClick={this.handleDocsResetResize}
-              onMouseDown={this.handleDocsResizeStart}
-            />
-            <DocExplorer
-              ref={c => {
-                this.docExplorerComponent = c;
-              }}
-              schemaErrors={this.state.schemaErrors}
-              schema={this.state.schema}>
-              <button
-                className="docExplorerHide"
-                onClick={this.handleToggleDocs}
-                aria-label="Close Documentation Explorer">
-                {'\u2715'}
-              </button>
-            </DocExplorer>
-          </div>
-        )}
-      </div>
+      />
     );
   }
+
+  /**
+   * Get the query editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getQueryEditor() {
+    console.warn(
+      'The method `GraphiQL.getQueryEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `query` prop. To react on changes of the editor value you can pass a callback to the `onEditQuery` prop.',
+    );
+    return this.ref?.getQueryEditor() || null;
+  }
+
+  /**
+   * Get the variable editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getVariableEditor() {
+    console.warn(
+      'The method `GraphiQL.getVariableEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `variables` prop. To react on changes of the editor value you can pass a callback to the `onEditVariables` prop.',
+    );
+    return this.ref?.getVariableEditor() || null;
+  }
+
+  /**
+   * Get the header editor CodeMirror instance.
+   *
+   * @public
+   */
+  public getHeaderEditor() {
+    console.warn(
+      'The method `GraphiQL.getHeaderEditor` is deprecated and will be removed in the next major version. To set the value of the editor you can use the `headers` prop. To react on changes of the editor value you can pass a callback to the `onEditHeaders` prop.',
+    );
+    return this.ref?.getHeaderEditor() || null;
+  }
+
+  /**
+   * Refresh all CodeMirror instances.
+   *
+   * @public
+   */
+  public refresh() {
+    console.warn(
+      'The method `GraphiQL.refresh` is deprecated and will be removed in the next major version. Already now, all editors should automatically refresh when their size changes.',
+    );
+    this.ref?.refresh();
+  }
+
+  /**
+   * Inspect the query, automatically filling in selection sets for non-leaf
+   * fields which do not yet have them.
+   *
+   * @public
+   */
+  public autoCompleteLeafs() {
+    console.warn(
+      'The method `GraphiQL.autoCompleteLeafs` is deprecated and will be removed in the next major version. Please switch to using the `autoCompleteLeafs` function provided by the `EditorContext` from the `@graphiql/react` package.',
+    );
+    return this.ref?.autoCompleteLeafs();
+  }
+
+  // Static methods
+
+  static formatResult = (result: any): string => {
+    console.warn(
+      'The function `GraphiQL.formatResult` is deprecated and will be removed in the next major version. Please switch to using the `formatResult` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatResult(result);
+  };
+
+  static formatError = (error: any): string => {
+    console.warn(
+      'The function `GraphiQL.formatError` is deprecated and will be removed in the next major version. Please switch to using the `formatError` function provided by the `@graphiql/toolkit` package.',
+    );
+    return formatError(error);
+  };
 
   // Export main windows/panes to be used separately if desired.
   static Logo = GraphiQLLogo;
@@ -936,991 +428,533 @@ export class GraphiQL extends React.Component<GraphiQLProps, GraphiQLState> {
   // Add a menu of items to the Toolbar.
   static Menu = ToolbarMenu;
   static MenuItem = ToolbarMenuItem;
+}
 
-  // Add a select-option input to the Toolbar.
-  // static Select = ToolbarSelect;
-  // static SelectOption = ToolbarSelectOption;
-
-  /**
-   * Get the query editor CodeMirror instance.
-   *
-   * @public
-   */
-  getQueryEditor() {
-    if (this.queryEditorComponent) {
-      return this.queryEditorComponent.getCodeMirror();
-    }
-    // return null
+const GraphiQLProviders: ForwardRefExoticComponent<
+  GraphiQLProps & RefAttributes<GraphiQLWithContext>
+> = forwardRef<GraphiQLWithContext, GraphiQLProps>(function GraphiQLProviders(
+  {
+    dangerouslyAssumeSchemaIsValid,
+    docExplorerOpen,
+    externalFragments,
+    fetcher,
+    headers,
+    inputValueDeprecation,
+    introspectionQueryName,
+    maxHistoryLength,
+    onEditOperationName,
+    onSchemaChange,
+    onToggleHistory,
+    onToggleDocs,
+    operationName,
+    query,
+    response,
+    storage,
+    schema,
+    schemaDescription,
+    shouldPersistHeaders,
+    validationRules,
+    variables,
+    ...props
+  },
+  ref,
+) {
+  // Ensure props are correct
+  if (typeof fetcher !== 'function') {
+    throw new TypeError('GraphiQL requires a fetcher function.');
   }
 
-  /**
-   * Get the variable editor CodeMirror instance.
-   *
-   * @public
-   */
-  public getVariableEditor() {
-    if (this.variableEditorComponent) {
-      return this.variableEditorComponent.getCodeMirror();
-    }
-    return null;
-  }
-
-  /**
-   * Get the header editor CodeMirror instance.
-   *
-   * @public
-   */
-  public getHeaderEditor() {
-    if (this.headerEditorComponent) {
-      return this.headerEditorComponent.getCodeMirror();
-    }
-    return null;
-  }
-
-  /**
-   * Refresh all CodeMirror instances.
-   *
-   * @public
-   */
-  public refresh() {
-    if (this.queryEditorComponent) {
-      this.queryEditorComponent.getCodeMirror().refresh();
-    }
-    if (this.variableEditorComponent) {
-      this.variableEditorComponent.getCodeMirror().refresh();
-    }
-    if (this.headerEditorComponent) {
-      this.headerEditorComponent.getCodeMirror().refresh();
-    }
-    if (this.resultComponent) {
-      this.resultComponent.getCodeMirror().refresh();
-    }
-  }
-
-  /**
-   * Inspect the query, automatically filling in selection sets for non-leaf
-   * fields which do not yet have them.
-   *
-   * @public
-   */
-  public autoCompleteLeafs() {
-    const { insertions, result } = fillLeafs(
-      this.state.schema,
-      this.state.query,
-      this.props.getDefaultFieldNames,
-    );
-    if (insertions && insertions.length > 0) {
-      const editor = this.getQueryEditor();
-      if (editor) {
-        editor.operation(() => {
-          const cursor = editor.getCursor();
-          const cursorIndex = editor.indexFromPos(cursor);
-          editor.setValue(result || '');
-          let added = 0;
-          const markers = insertions.map(({ index, string }) =>
-            editor.markText(
-              editor.posFromIndex(index + added),
-              editor.posFromIndex(index + (added += string.length)),
-              {
-                className: 'autoInsertedLeaf',
-                clearOnEnter: true,
-                title: 'Automatically added leaf fields',
-              },
-            ),
-          );
-          setTimeout(() => markers.forEach(marker => marker.clear()), 7000);
-          let newCursorIndex = cursorIndex;
-          insertions.forEach(({ index, string }) => {
-            if (index < cursorIndex) {
-              newCursorIndex += string.length;
-            }
-          });
-          editor.setCursor(editor.posFromIndex(newCursorIndex));
-        });
-      }
-    }
-
-    return result;
-  }
-
-  // Private methods
-
-  private fetchSchema() {
-    const fetcher = this.props.fetcher;
-
-    const fetcherOpts: FetcherOpts = {
-      shouldPersistHeaders: Boolean(this.props.shouldPersistHeaders),
-      documentAST: this.state.documentAST,
-    };
-    if (this.state.headers && this.state.headers.trim().length > 2) {
-      fetcherOpts.headers = JSON.parse(this.state.headers);
-      // if state is not present, but props are
-    } else if (this.props.headers) {
-      fetcherOpts.headers = JSON.parse(this.props.headers);
-    }
-
-    const fetch = fetcherReturnToPromise(
-      fetcher(
-        {
-          query: this._introspectionQuery,
-          operationName: this._introspectionQueryName,
-        },
-        fetcherOpts,
-      ),
-    );
-
-    if (!isPromise(fetch)) {
-      this.setState({
-        response: 'Fetcher did not return a Promise for introspection.',
-      });
-      return;
-    }
-
-    fetch
-      .then(result => {
-        if (typeof result !== 'string' && 'data' in result) {
-          return result;
-        }
-
-        // Try the stock introspection query first, falling back on the
-        // sans-subscriptions query for services which do not yet support it.
-        const fetch2 = fetcherReturnToPromise(
-          fetcher(
-            {
-              query: this._introspectionQuerySansSubscriptions,
-              operationName: this._introspectionQueryName,
-            },
-            fetcherOpts,
-          ),
-        );
-        if (!isPromise(fetch)) {
-          throw new Error(
-            'Fetcher did not return a Promise for introspection.',
-          );
-        }
-        return fetch2;
-      })
-      .then(result => {
-        // If a schema was provided while this fetch was underway, then
-        // satisfy the race condition by respecting the already
-        // provided schema.
-        if (this.state.schema !== undefined) {
-          return;
-        }
-
-        if (result && result.data && '__schema' in result?.data) {
-          let schema: GraphQLSchema | undefined = buildClientSchema(
-            result.data as IntrospectionQuery,
-          );
-          if (!this.props.dangerouslyAssumeSchemaIsValid) {
-            const errors = validateSchema(schema);
-            // if there are errors, don't set schema
-            if (errors && errors.length > 0) {
-              schema = undefined;
-              this.handleSchemaErrors(errors);
-            }
+  return (
+    <StorageContextProvider storage={storage}>
+      <HistoryContextProvider
+        maxHistoryLength={maxHistoryLength}
+        onToggle={onToggleHistory}
+      >
+        <EditorContextProvider
+          defaultQuery={props.defaultQuery}
+          externalFragments={externalFragments}
+          headers={headers}
+          onEditOperationName={onEditOperationName}
+          onTabChange={
+            typeof props.tabs === 'object' ? props.tabs.onTabChange : undefined
           }
-          if (schema) {
-            const queryFacts = getOperationFacts(schema, this.state.query);
-            this.safeSetState({
-              schema,
-              ...queryFacts,
-              schemaErrors: undefined,
-            });
-            this.props.onSchemaChange?.(schema);
-          }
-        } else {
-          // handle as if it were an error if the fetcher response is not a string or response.data is not present
-          const responseString =
-            typeof result === 'string' ? result : GraphiQL.formatResult(result);
-          this.handleSchemaErrors([responseString]);
-        }
-      })
-      .catch(error => {
-        this.handleSchemaErrors([error]);
-      });
-  }
+          query={query}
+          response={response}
+          shouldPersistHeaders={shouldPersistHeaders}
+          validationRules={validationRules}
+          variables={variables}
+        >
+          <SchemaContextProvider
+            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+            fetcher={fetcher}
+            inputValueDeprecation={inputValueDeprecation}
+            introspectionQueryName={introspectionQueryName}
+            onSchemaChange={onSchemaChange}
+            schema={schema}
+            schemaDescription={schemaDescription}
+          >
+            <ExecutionContextProvider
+              fetcher={fetcher}
+              operationName={operationName}
+            >
+              <ExplorerContextProvider
+                isVisible={docExplorerOpen}
+                onToggleVisibility={onToggleDocs}
+              >
+                <GraphiQLConsumeContexts {...props} ref={ref} />
+              </ExplorerContextProvider>
+            </ExecutionContextProvider>
+          </SchemaContextProvider>
+        </EditorContextProvider>
+      </HistoryContextProvider>
+    </StorageContextProvider>
+  );
+}) as any;
 
-  private handleSchemaErrors(
-    schemaErrors: readonly GraphQLError[] | readonly string[],
-  ) {
-    this.safeSetState({
-      response: schemaErrors ? GraphiQL.formatError(schemaErrors) : undefined,
-      schema: undefined,
-      schemaErrors,
-    });
-  }
+// Add a select-option input to the Toolbar.
+// GraphiQL.Select = ToolbarSelect;
+// GraphiQL.SelectOption = ToolbarSelectOption;
 
-  private async _fetchQuery(
-    query: string,
-    variables: string,
-    headers: string,
-    operationName: string,
-    shouldPersistHeaders: boolean,
-    cb: (value: FetcherResult) => any,
-  ): Promise<null | Unsubscribable> {
-    const fetcher = this.props.fetcher;
-    let jsonVariables = null;
-    let jsonHeaders = null;
+type GraphiQLWithContextProviderProps = Omit<
+  GraphiQLProps,
+  | 'dangerouslyAssumeSchemaIsValid'
+  | 'defaultQuery'
+  | 'docExplorerOpen'
+  | 'externalFragments'
+  | 'fetcher'
+  | 'headers'
+  | 'inputValueDeprecation'
+  | 'introspectionQueryName'
+  | 'maxHistoryLength'
+  | 'onEditOperationName'
+  | 'onSchemaChange'
+  | 'onToggleDocs'
+  | 'onToggleHistory'
+  | 'operationName'
+  | 'query'
+  | 'response'
+  | 'schema'
+  | 'schemaDescription'
+  | 'shouldPersistHeaders'
+  | 'storage'
+  | 'validationRules'
+  | 'variables'
+>;
 
-    try {
-      jsonVariables =
-        variables && variables.trim() !== '' ? JSON.parse(variables) : null;
-    } catch (error) {
-      throw new Error(
-        `Variables are invalid JSON: ${(error as Error).message}.`,
-      );
-    }
+const GraphiQLConsumeContexts = forwardRef<
+  GraphiQLWithContext,
+  GraphiQLWithContextProviderProps
+>(function GraphiQLConsumeContexts({ getDefaultFieldNames, ...props }, ref) {
+  const editorContext = useEditorContext({ nonNull: true });
+  const executionContext = useExecutionContext({ nonNull: true });
+  const explorerContext = useExplorerContext();
+  const historyContext = useHistoryContext();
+  const schemaContext = useSchemaContext({ nonNull: true });
+  const storageContext = useStorageContext();
 
-    if (typeof jsonVariables !== 'object') {
-      throw new Error('Variables are not a JSON object.');
-    }
+  const autoCompleteLeafs = useAutoCompleteLeafs({ getDefaultFieldNames });
+  const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
+  const merge = useMergeQuery();
+  const prettify = usePrettifyEditors();
 
-    try {
-      jsonHeaders =
-        headers && headers.trim() !== '' ? JSON.parse(headers) : null;
-    } catch (error) {
-      throw new Error(`Headers are invalid JSON: ${(error as Error).message}.`);
-    }
-
-    if (typeof jsonHeaders !== 'object') {
-      throw new Error('Headers are not a JSON object.');
-    }
-    // TODO: memoize this
-    if (this.props.externalFragments) {
-      const externalFragments = new Map<string, FragmentDefinitionNode>();
-
-      if (Array.isArray(this.props.externalFragments)) {
-        this.props.externalFragments.forEach(def => {
-          externalFragments.set(def.name.value, def);
-        });
+  const docResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'horizontal',
+    initiallyHidden: explorerContext?.isVisible ? undefined : 'second',
+    onHiddenElementChange: resizableElement => {
+      if (resizableElement === 'second') {
+        explorerContext?.hide();
       } else {
-        visit(parse(this.props.externalFragments, {}), {
-          FragmentDefinition(def) {
-            externalFragments.set(def.name.value, def);
-          },
-        });
+        explorerContext?.show();
       }
-      const fragmentDependencies = getFragmentDependenciesForAST(
-        this.state.documentAST!,
-        externalFragments,
-      );
-      if (fragmentDependencies.length > 0) {
-        query +=
-          '\n' +
-          fragmentDependencies
-            .map((node: FragmentDefinitionNode) => print(node))
-            .join('\n');
-      }
-    }
-
-    const fetch = fetcher(
-      {
-        query,
-        variables: jsonVariables,
-        operationName,
-      },
-      {
-        headers: jsonHeaders,
-        shouldPersistHeaders,
-        documentAST: this.state.documentAST,
-      },
-    );
-
-    return Promise.resolve<SyncFetcherResult>(fetch)
-      .then(value => {
-        if (isObservable(value)) {
-          // If the fetcher returned an Observable, then subscribe to it, calling
-          // the callback on each next value, and handling both errors and the
-          // completion of the Observable. Returns a Subscription object.
-          const subscription = value.subscribe({
-            next: cb,
-            error: (error: Error) => {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                response: error ? GraphiQL.formatError(error) : undefined,
-                subscription: null,
-              });
-            },
-            complete: () => {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                subscription: null,
-              });
-            },
-          });
-
-          return subscription;
-        } else if (isAsyncIterable(value)) {
-          (async () => {
-            try {
-              for await (const result of value) {
-                cb(result);
-              }
-              this.safeSetState({
-                isWaitingForResponse: false,
-                subscription: null,
-              });
-            } catch (error) {
-              this.safeSetState({
-                isWaitingForResponse: false,
-                response: error
-                  ? GraphiQL.formatError(error as Error)
-                  : undefined,
-                subscription: null,
-              });
-            }
-          })();
-
-          return {
-            unsubscribe: () => value[Symbol.asyncIterator]().return?.(),
-          };
-        } else {
-          cb(value);
-          return null;
-        }
-      })
-      .catch(error => {
-        this.safeSetState({
-          isWaitingForResponse: false,
-          response: error ? GraphiQL.formatError(error) : undefined,
-        });
-        return null;
-      });
-  }
-
-  handleClickReference = (reference: GraphQLType) => {
-    this.setState({ docExplorerOpen: true }, () => {
-      if (this.docExplorerComponent) {
-        this.docExplorerComponent.showDocForReference(reference);
-      }
-    });
-    this._storage.set(
-      'docExplorerOpen',
-      JSON.stringify(this.state.docExplorerOpen),
-    );
-  };
-
-  handleRunQuery = async (selectedOperationName?: string) => {
-    this._editorQueryID++;
-    const queryID = this._editorQueryID;
-
-    // Use the edited query after autoCompleteLeafs() runs or,
-    // in case autoCompletion fails (the function returns undefined),
-    // the current query from the editor.
-    const editedQuery = this.autoCompleteLeafs() || this.state.query;
-    const variables = this.state.variables;
-    const headers = this.state.headers;
-    const shouldPersistHeaders = this.state.shouldPersistHeaders;
-    let operationName = this.state.operationName;
-
-    // If an operation was explicitly provided, different from the current
-    // operation name, then report that it changed.
-    if (selectedOperationName && selectedOperationName !== operationName) {
-      operationName = selectedOperationName;
-      this.handleEditOperationName(operationName);
-    }
-
-    try {
-      this.setState({
-        isWaitingForResponse: true,
-        response: undefined,
-        operationName,
-      });
-      this._storage.set('operationName', operationName as string);
-
-      if (this._queryHistory) {
-        this._queryHistory.onUpdateHistory(
-          editedQuery,
-          variables,
-          headers,
-          operationName,
-        );
-      } else {
-        if (this._historyStore) {
-          this._historyStore.updateHistory(
-            editedQuery,
-            variables,
-            headers,
-            operationName,
-          );
-        }
+    },
+    sizeThresholdSecond: 200,
+    storageKey: 'docExplorerFlex',
+  });
+  const editorResize = useDragResize({
+    direction: 'horizontal',
+    storageKey: 'editorFlex',
+  });
+  const secondaryEditorResize = useDragResize({
+    defaultSizeRelation: 3,
+    direction: 'vertical',
+    initiallyHidden: (() => {
+      // initial secondary editor pane open
+      if (props.defaultVariableEditorOpen !== undefined) {
+        return props.defaultVariableEditorOpen ? undefined : 'second';
       }
 
-      // when dealing with defer or stream, we need to aggregate results
-      let fullResponse: FetcherResultPayload = { data: {} };
-
-      // _fetchQuery may return a subscription.
-      const subscription = await this._fetchQuery(
-        editedQuery as string,
-        variables as string,
-        headers as string,
-        operationName as string,
-        shouldPersistHeaders as boolean,
-        (result: FetcherResult) => {
-          if (queryID === this._editorQueryID) {
-            let maybeMultipart = Array.isArray(result) ? result : false;
-            if (
-              !maybeMultipart &&
-              typeof result !== 'string' &&
-              result !== null &&
-              'hasNext' in result
-            ) {
-              maybeMultipart = [result];
-            }
-
-            if (maybeMultipart) {
-              const payload: FetcherResultPayload = { data: fullResponse.data };
-              const maybeErrors = [
-                ...(fullResponse?.errors || []),
-                ...maybeMultipart
-                  .map(i => i.errors)
-                  .flat()
-                  .filter(Boolean),
-              ];
-
-              if (maybeErrors.length) {
-                payload.errors = maybeErrors;
-              }
-
-              for (const part of maybeMultipart) {
-                // We pull out errors here, so we dont include it later
-                const { path, data, errors: _errors, ...rest } = part;
-                if (path) {
-                  if (!data) {
-                    throw new Error(
-                      `Expected part to contain a data property, but got ${part}`,
-                    );
-                  }
-
-                  dset(payload.data, path, data);
-                } else if (data) {
-                  // If there is no path, we don't know what to do with the payload,
-                  // so we just set it.
-                  payload.data = part.data;
-                }
-
-                // Ensures we also bring extensions and alike along for the ride
-                fullResponse = {
-                  ...payload,
-                  ...rest,
-                };
-              }
-
-              this.setState({
-                isWaitingForResponse: false,
-                response: GraphiQL.formatResult(fullResponse),
-              });
-            } else {
-              this.setState({
-                isWaitingForResponse: false,
-                response: GraphiQL.formatResult(result),
-              });
-            }
-          }
-        },
-      );
-
-      this.setState({ subscription });
-    } catch (error) {
-      this.setState({
-        isWaitingForResponse: false,
-        response: (error as Error).message,
-      });
-    }
-  };
-
-  handleStopQuery = () => {
-    const subscription = this.state.subscription;
-    this.setState({
-      isWaitingForResponse: false,
-      subscription: null,
-    });
-    if (subscription) {
-      subscription.unsubscribe();
-    }
-  };
-
-  private _runQueryAtCursor() {
-    if (this.state.subscription) {
-      this.handleStopQuery();
-      return;
-    }
-
-    let operationName;
-    const operations = this.state.operations;
-    if (operations) {
-      const editor = this.getQueryEditor();
-      if (editor && editor.hasFocus()) {
-        const cursor = editor.getCursor();
-        const cursorIndex = editor.indexFromPos(cursor);
-
-        // Loop through all operations to see if one contains the cursor.
-        for (let i = 0; i < operations.length; i++) {
-          const operation = operations[i];
-          if (
-            operation.loc &&
-            operation.loc.start <= cursorIndex &&
-            operation.loc.end >= cursorIndex
-          ) {
-            operationName = operation.name && operation.name.value;
-            break;
-          }
-        }
+      if (props.defaultSecondaryEditorOpen !== undefined) {
+        return props.defaultSecondaryEditorOpen ? undefined : 'second';
       }
-    }
 
-    this.handleRunQuery(operationName);
-  }
-
-  handlePrettifyQuery = () => {
-    const editor = this.getQueryEditor();
-    const editorContent = editor?.getValue() ?? '';
-    const prettifiedEditorContent = print(parse(editorContent));
-
-    if (prettifiedEditorContent !== editorContent) {
-      editor?.setValue(prettifiedEditorContent);
-    }
-
-    const variableEditor = this.getVariableEditor();
-    const variableEditorContent = variableEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedVariableEditorContent = JSON.stringify(
-        JSON.parse(variableEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedVariableEditorContent !== variableEditorContent) {
-        variableEditor?.setValue(prettifiedVariableEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-
-    const headerEditor = this.getHeaderEditor();
-    const headerEditorContent = headerEditor?.getValue() ?? '';
-
-    try {
-      const prettifiedHeaderEditorContent = JSON.stringify(
-        JSON.parse(headerEditorContent),
-        null,
-        2,
-      );
-      if (prettifiedHeaderEditorContent !== headerEditorContent) {
-        headerEditor?.setValue(prettifiedHeaderEditorContent);
-      }
-    } catch {
-      /* Parsing JSON failed, skip prettification */
-    }
-  };
-
-  handleMergeQuery = () => {
-    const editor = this.getQueryEditor() as CodeMirror.Editor;
-    const query = editor.getValue();
-
-    if (!query) {
-      return;
-    }
-
-    const ast = this.state.documentAST!;
-    editor.setValue(print(mergeAST(ast, this.state.schema)));
-  };
-
-  handleEditQuery = debounce(100, (value: string) => {
-    const queryFacts = this._updateQueryFacts(
-      value,
-      this.state.operationName,
-      this.state.operations,
-      this.state.schema,
-    );
-    this.setState({
-      query: value,
-      ...queryFacts,
-    });
-    this._storage.set('query', value);
-    if (this.props.onEditQuery) {
-      return this.props.onEditQuery(value, queryFacts?.documentAST);
-    }
+      return editorContext.initialVariables || editorContext.initialHeaders
+        ? undefined
+        : 'second';
+    })(),
+    sizeThresholdSecond: 60,
+    storageKey: 'secondaryEditorFlex',
   });
 
-  handleCopyQuery = () => {
-    const editor = this.getQueryEditor();
-    const query = editor && editor.getValue();
+  return (
+    <GraphiQLWithContext
+      {...props}
+      editorContext={editorContext}
+      executionContext={executionContext}
+      explorerContext={explorerContext}
+      historyContext={historyContext}
+      schemaContext={schemaContext}
+      storageContext={storageContext}
+      autoCompleteLeafs={autoCompleteLeafs}
+      copy={copy}
+      merge={merge}
+      prettify={prettify}
+      docResize={docResize}
+      editorResize={editorResize}
+      secondaryEditorResize={secondaryEditorResize}
+      ref={ref}
+    />
+  );
+});
 
-    if (!query) {
-      return;
-    }
+type GraphiQLWithContextConsumerProps = Omit<
+  GraphiQLWithContextProviderProps,
+  'fetcher' | 'getDefaultFieldNames'
+> & {
+  editorContext: EditorContextType;
+  executionContext: ExecutionContextType;
+  explorerContext: ExplorerContextType | null;
+  historyContext: HistoryContextType | null;
+  schemaContext: SchemaContextType;
+  storageContext: StorageContextType | null;
 
-    copyToClipboard(query);
+  autoCompleteLeafs(): string | undefined;
+  copy(): void;
+  merge(): void;
+  prettify(): void;
 
-    if (this.props.onCopyQuery) {
-      return this.props.onCopyQuery(query);
-    }
-  };
+  docResize: ReturnType<typeof useDragResize>;
+  editorResize: ReturnType<typeof useDragResize>;
+  secondaryEditorResize: ReturnType<typeof useDragResize>;
+};
 
-  private _updateQueryFacts = (
-    query: string,
-    operationName?: string,
-    prevOperations?: OperationDefinitionNode[],
-    schema?: GraphQLSchema | null,
-  ) => {
-    const queryFacts = getOperationFacts(schema, query);
-    if (queryFacts) {
-      // Update operation name should any query names change.
-      const updatedOperationName = getSelectedOperationName(
-        prevOperations,
-        operationName,
-        queryFacts.operations,
-      );
+export type GraphiQLState = {
+  activeSecondaryEditor: 'variable' | 'header';
+};
 
-      // Report changing of operationName if it changed.
-      const onEditOperationName = this.props.onEditOperationName;
-      if (
-        onEditOperationName &&
-        updatedOperationName &&
-        operationName !== updatedOperationName
-      ) {
-        onEditOperationName(updatedOperationName);
-      }
+class GraphiQLWithContext extends React.Component<
+  GraphiQLWithContextConsumerProps,
+  GraphiQLState
+> {
+  constructor(props: GraphiQLWithContextConsumerProps) {
+    super(props);
 
-      return {
-        operationName: updatedOperationName,
-        ...queryFacts,
-      };
-    }
-  };
-
-  handleEditVariables = (value: string) => {
-    this.setState({ variables: value });
-    debounce(500, () => this._storage.set('variables', value))();
-    if (this.props.onEditVariables) {
-      this.props.onEditVariables(value);
-    }
-  };
-
-  handleEditHeaders = (value: string) => {
-    this.setState({ headers: value });
-    this.props.shouldPersistHeaders &&
-      debounce(500, () => this._storage.set('headers', value))();
-    if (this.props.onEditHeaders) {
-      this.props.onEditHeaders(value);
-    }
-  };
-
-  handleEditOperationName = (operationName: string) => {
-    const onEditOperationName = this.props.onEditOperationName;
-    if (onEditOperationName) {
-      onEditOperationName(operationName);
-    }
-  };
-
-  handleHintInformationRender = (elem: HTMLDivElement) => {
-    elem.addEventListener('click', this._onClickHintInformation);
-
-    let onRemoveFn: EventListener;
-    elem.addEventListener(
-      'DOMNodeRemoved',
-      (onRemoveFn = () => {
-        elem.removeEventListener('DOMNodeRemoved', onRemoveFn);
-        elem.removeEventListener('click', this._onClickHintInformation);
-      }),
-    );
-  };
-
-  handleEditorRunQuery = () => {
-    this._runQueryAtCursor();
-  };
-
-  private _onClickHintInformation = (
-    event: MouseEvent | React.MouseEvent<HTMLDivElement>,
-  ) => {
-    if (
-      event?.currentTarget &&
-      'className' in event.currentTarget &&
-      event.currentTarget.className === 'typeName'
-    ) {
-      const typeName = event.currentTarget.innerHTML;
-      const schema = this.state.schema;
-      if (schema) {
-        const type = schema.getType(typeName);
-        if (type) {
-          this.setState({ docExplorerOpen: true }, () => {
-            if (this.docExplorerComponent) {
-              this.docExplorerComponent.showDoc(type);
-            }
-          });
-          debounce(500, () =>
-            this._storage.set(
-              'docExplorerOpen',
-              JSON.stringify(this.state.docExplorerOpen),
-            ),
-          )();
-        }
-      }
-    }
-  };
-
-  handleToggleDocs = () => {
-    if (typeof this.props.onToggleDocs === 'function') {
-      this.props.onToggleDocs(!this.state.docExplorerOpen);
-    }
-    this._storage.set(
-      'docExplorerOpen',
-      JSON.stringify(!this.state.docExplorerOpen),
-    );
-    this.setState({ docExplorerOpen: !this.state.docExplorerOpen });
-  };
-
-  handleToggleHistory = () => {
-    if (typeof this.props.onToggleHistory === 'function') {
-      this.props.onToggleHistory(!this.state.historyPaneOpen);
-    }
-    this._storage.set(
-      'historyPaneOpen',
-      JSON.stringify(!this.state.historyPaneOpen),
-    );
-    this.setState({ historyPaneOpen: !this.state.historyPaneOpen });
-  };
-
-  handleSelectHistoryQuery = (
-    query?: string,
-    variables?: string,
-    headers?: string,
-    operationName?: string,
-  ) => {
-    if (query) {
-      this.handleEditQuery(query);
-    }
-    if (variables) {
-      this.handleEditVariables(variables);
-    }
-    if (headers) {
-      this.handleEditHeaders(headers);
-    }
-    if (operationName) {
-      this.handleEditOperationName(operationName);
-    }
-  };
-
-  private handleResizeStart = (downEvent: React.MouseEvent) => {
-    if (!this._didClickDragBar(downEvent)) {
-      return;
-    }
-
-    downEvent.preventDefault();
-
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
-      const rightSize = editorBar.clientWidth - leftSize;
-      this.setState({ editorFlex: leftSize / rightSize });
-      debounce(500, () =>
-        this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex)),
-      )();
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
-
-  handleResetResize = () => {
-    this.setState({ editorFlex: 1 });
-    this._storage.set('editorFlex', JSON.stringify(this.state.editorFlex));
-  };
-
-  private _didClickDragBar(event: React.MouseEvent) {
-    // Only for primary unmodified clicks
-    if (event.button !== 0 || event.ctrlKey) {
-      return false;
-    }
-    let target = event.target as Element;
-    // We use codemirror's gutter as the drag bar.
-    if (target.className.indexOf('CodeMirror-gutter') !== 0) {
-      return false;
-    }
-    // Specifically the result window's drag bar.
-    const resultWindow = this.resultViewerElement;
-    while (target) {
-      if (target === resultWindow) {
-        return true;
-      }
-      target = target.parentNode as Element;
-    }
-    return false;
+    // Initialize state
+    this.state = { activeSecondaryEditor: 'variable' };
   }
 
-  private handleDocsResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
+  render() {
+    const children = React.Children.toArray(this.props.children);
 
-    const hadWidth = this.state.docExplorerWidth;
-    const offset = downEvent.clientX - getLeft(downEvent.target as HTMLElement);
+    const logo = find(children, child =>
+      isChildComponentType(child, GraphiQL.Logo),
+    ) || <GraphiQL.Logo />;
 
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
+    const toolbar = find(children, child =>
+      isChildComponentType(child, GraphiQL.Toolbar),
+    ) || (
+      <GraphiQL.Toolbar>
+        <ToolbarButton
+          onClick={() => {
+            this.props.prettify();
+          }}
+          title="Prettify Query (Shift-Ctrl-P)"
+          label="Prettify"
+        />
+        <ToolbarButton
+          onClick={() => {
+            this.props.merge();
+          }}
+          title="Merge Query (Shift-Ctrl-M)"
+          label="Merge"
+        />
+        <ToolbarButton
+          onClick={() => {
+            this.props.copy();
+          }}
+          title="Copy Query (Shift-Ctrl-C)"
+          label="Copy"
+        />
+        <ToolbarButton
+          onClick={() => this.props.historyContext?.toggle()}
+          title={
+            this.props.historyContext?.isVisible
+              ? 'Hide History'
+              : 'Show History'
+          }
+          label="History"
+        />
+        <ToolbarButton
+          onClick={() => this.props.schemaContext.introspect()}
+          title="Fetch GraphQL schema using introspection (Shift-Ctrl-R)"
+          label="Introspect"
+        />
+        {this.props.toolbar?.additionalContent
+          ? this.props.toolbar.additionalContent
+          : null}
+      </GraphiQL.Toolbar>
+    );
 
-      const app = this.graphiqlContainer as HTMLElement;
-      const cursorPos = moveEvent.clientX - getLeft(app) - offset;
-      const docsSize = app.clientWidth - cursorPos;
+    const footer = find(children, child =>
+      isChildComponentType(child, GraphiQL.Footer),
+    );
 
-      if (docsSize < 100) {
-        if (typeof this.props.onToggleDocs === 'function') {
-          this.props.onToggleDocs(!this.state.docExplorerOpen);
-        }
-        this._storage.set(
-          'docExplorerOpen',
-          JSON.stringify(this.state.docExplorerOpen),
-        );
-        this.setState({ docExplorerOpen: false });
-      } else {
-        this.setState({
-          docExplorerOpen: true,
-          docExplorerWidth: Math.min(docsSize, 650),
-        });
-        debounce(500, () =>
-          this._storage.set(
-            'docExplorerWidth',
-            JSON.stringify(this.state.docExplorerWidth),
-          ),
-        )();
-      }
-      this._storage.set(
-        'docExplorerOpen',
-        JSON.stringify(this.state.docExplorerOpen),
-      );
-    };
+    const headerEditorEnabled = this.props.headerEditorEnabled ?? true;
 
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!this.state.docExplorerOpen) {
-        this.setState({ docExplorerWidth: hadWidth });
-        debounce(500, () =>
-          this._storage.set(
-            'docExplorerWidth',
-            JSON.stringify(this.state.docExplorerWidth),
-          ),
-        )();
-      }
+    return (
+      <div data-testid="graphiql-container" className="graphiql-container">
+        <div ref={this.props.docResize.firstRef}>
+          {this.props.historyContext?.isVisible && (
+            <div
+              className="historyPaneWrap"
+              style={{ width: '230px', zIndex: 7 }}
+            >
+              <QueryHistory />
+            </div>
+          )}
+          <div className="editorWrap">
+            <div className="topBarWrap">
+              {this.props.beforeTopBarContent}
+              <div className="topBar">
+                {logo}
+                <ExecuteButton />
+                {toolbar}
+              </div>
+              {this.props.explorerContext &&
+                !this.props.explorerContext.isVisible && (
+                  <button
+                    className="docExplorerShow"
+                    onClick={() => {
+                      this.props.explorerContext?.show();
+                      this.props.docResize.setHiddenElement(null);
+                    }}
+                    aria-label="Open Documentation Explorer"
+                  >
+                    Docs
+                  </button>
+                )}
+            </div>
+            {this.props.tabs ? (
+              <Tabs
+                tabsProps={{
+                  'aria-label': 'Select active operation',
+                }}
+              >
+                {this.props.editorContext.tabs.map((tab, index) => (
+                  <Tab
+                    key={tab.id}
+                    isActive={index === this.props.editorContext.activeTabIndex}
+                    title={tab.title}
+                    isCloseable={this.props.editorContext.tabs.length > 1}
+                    onSelect={() => {
+                      this.props.executionContext.stop();
+                      this.props.editorContext.changeTab(index);
+                    }}
+                    onClose={() => {
+                      if (this.props.editorContext.activeTabIndex === index) {
+                        this.props.executionContext.stop();
+                      }
+                      this.props.editorContext.closeTab(index);
+                    }}
+                    tabProps={{
+                      'aria-controls': 'sessionWrap',
+                      id: `session-tab-${index}`,
+                    }}
+                  />
+                ))}
+                <TabAddButton
+                  onClick={() => {
+                    this.props.editorContext.addTab();
+                  }}
+                />
+              </Tabs>
+            ) : null}
+            <div
+              role="tabpanel"
+              id="sessionWrap"
+              className="editorBar"
+              aria-labelledby={`session-tab-${this.props.editorContext.activeTabIndex}`}
+            >
+              <div ref={this.props.editorResize.firstRef}>
+                <div className="queryWrap">
+                  <div ref={this.props.secondaryEditorResize.firstRef}>
+                    <QueryEditor
+                      editorTheme={this.props.editorTheme}
+                      onClickReference={() => {
+                        if (this.props.docResize.hiddenElement === 'second') {
+                          this.props.docResize.setHiddenElement(null);
+                        }
+                      }}
+                      keyMap={this.props.keyMap}
+                      onCopyQuery={this.props.onCopyQuery}
+                      onEdit={this.props.onEditQuery}
+                      readOnly={this.props.readOnly}
+                    />
+                  </div>
+                  <div ref={this.props.secondaryEditorResize.dragBarRef}>
+                    <div
+                      className="secondary-editor-title variable-editor-title"
+                      id="secondary-editor-title"
+                    >
+                      <div
+                        className={`variable-editor-title-text${
+                          this.state.activeSecondaryEditor === 'variable'
+                            ? ' active'
+                            : ''
+                        }`}
+                        onClick={() => {
+                          if (
+                            this.props.secondaryEditorResize.hiddenElement ===
+                            'second'
+                          ) {
+                            this.props.secondaryEditorResize.setHiddenElement(
+                              null,
+                            );
+                          }
+                          this.setState(
+                            {
+                              activeSecondaryEditor: 'variable',
+                            },
+                            () => {
+                              this.props.editorContext.variableEditor?.refresh();
+                            },
+                          );
+                        }}
+                      >
+                        Query Variables
+                      </div>
+                      {headerEditorEnabled && (
+                        <div
+                          style={{
+                            marginLeft: '20px',
+                          }}
+                          className={`variable-editor-title-text${
+                            this.state.activeSecondaryEditor === 'header'
+                              ? ' active'
+                              : ''
+                          }`}
+                          onClick={() => {
+                            if (
+                              this.props.secondaryEditorResize.hiddenElement ===
+                              'second'
+                            ) {
+                              this.props.secondaryEditorResize.setHiddenElement(
+                                null,
+                              );
+                            }
+                            this.setState(
+                              {
+                                activeSecondaryEditor: 'header',
+                              },
+                              () => {
+                                this.props.editorContext.headerEditor?.refresh();
+                              },
+                            );
+                          }}
+                        >
+                          Request Headers
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div ref={this.props.secondaryEditorResize.secondRef}>
+                    <section
+                      className="variable-editor secondary-editor"
+                      aria-label={
+                        this.state.activeSecondaryEditor === 'variable'
+                          ? 'Query Variables'
+                          : 'Request Headers'
+                      }
+                    >
+                      <VariableEditor
+                        onEdit={this.props.onEditVariables}
+                        editorTheme={this.props.editorTheme}
+                        readOnly={this.props.readOnly}
+                        active={this.state.activeSecondaryEditor === 'variable'}
+                        keyMap={this.props.keyMap}
+                      />
+                      {headerEditorEnabled && (
+                        <HeaderEditor
+                          active={this.state.activeSecondaryEditor === 'header'}
+                          editorTheme={this.props.editorTheme}
+                          onEdit={this.props.onEditHeaders}
+                          readOnly={this.props.readOnly}
+                          keyMap={this.props.keyMap}
+                        />
+                      )}
+                    </section>
+                  </div>
+                </div>
+              </div>
+              <div ref={this.props.editorResize.dragBarRef}>
+                <div className="editor-drag-bar" />
+              </div>
+              <div ref={this.props.editorResize.secondRef}>
+                <div className="resultWrap">
+                  {this.props.executionContext.isFetching && (
+                    <div className="spinner-container">
+                      <div className="spinner" />
+                    </div>
+                  )}
+                  <ResultViewer
+                    editorTheme={this.props.editorTheme}
+                    ResponseTooltip={this.props.ResultsTooltip}
+                    keyMap={this.props.keyMap}
+                  />
+                  {footer}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div ref={this.props.docResize.dragBarRef}>
+          <div className="docExplorerResizer" />
+        </div>
+        <div ref={this.props.docResize.secondRef}>
+          <div className="docExplorerWrap">
+            <DocExplorer
+              onClose={() => this.props.docResize.setHiddenElement('second')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
+  // Public methods
 
-    document.addEventListener('mousemove', onMouseMove!);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  public getQueryEditor() {
+    return this.props.editorContext.queryEditor || null;
+  }
 
-  private handleDocsResetResize = () => {
-    this.setState({
-      docExplorerWidth: DEFAULT_DOC_EXPLORER_WIDTH,
-    });
-    debounce(500, () =>
-      this._storage.set(
-        'docExplorerWidth',
-        JSON.stringify(this.state.docExplorerWidth),
-      ),
-    )();
-  };
+  public getVariableEditor() {
+    return this.props.editorContext.variableEditor || null;
+  }
 
-  // Prevent clicking on the tab button from propagating to the resizer.
-  private handleTabClickPropogation: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-    downEvent.stopPropagation();
-  };
+  public getHeaderEditor() {
+    return this.props.editorContext.headerEditor || null;
+  }
 
-  private handleOpenHeaderEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: true,
-      variableEditorActive: false,
-      secondaryEditorOpen: true,
-    });
-  };
+  public refresh() {
+    this.props.editorContext.queryEditor?.refresh();
+    this.props.editorContext.variableEditor?.refresh();
+    this.props.editorContext.headerEditor?.refresh();
+    this.props.editorContext.responseEditor?.refresh();
+  }
 
-  private handleOpenVariableEditorTab: MouseEventHandler<
-    HTMLDivElement
-  > = _clickEvent => {
-    this.setState({
-      headerEditorActive: false,
-      variableEditorActive: true,
-      secondaryEditorOpen: true,
-    });
-  };
-
-  private handleSecondaryEditorResizeStart: MouseEventHandler<
-    HTMLDivElement
-  > = downEvent => {
-    downEvent.preventDefault();
-
-    let didMove = false;
-    const wasOpen = this.state.secondaryEditorOpen;
-    const hadHeight = this.state.secondaryEditorHeight;
-    const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
-
-    let onMouseMove: OnMouseMoveFn = moveEvent => {
-      if (moveEvent.buttons === 0) {
-        return onMouseUp!();
-      }
-
-      didMove = true;
-
-      const editorBar = this.editorBarComponent as HTMLElement;
-      const topSize = moveEvent.clientY - getTop(editorBar) - offset;
-      const bottomSize = editorBar.clientHeight - topSize;
-      if (bottomSize < 60) {
-        this.setState({
-          secondaryEditorOpen: false,
-          secondaryEditorHeight: hadHeight,
-        });
-      } else {
-        this.setState({
-          secondaryEditorOpen: true,
-          secondaryEditorHeight: bottomSize,
-        });
-      }
-      debounce(500, () =>
-        this._storage.set(
-          'secondaryEditorHeight',
-          JSON.stringify(this.state.secondaryEditorHeight),
-        ),
-      )();
-    };
-
-    let onMouseUp: OnMouseUpFn = () => {
-      if (!didMove) {
-        this.setState({ secondaryEditorOpen: !wasOpen });
-      }
-
-      document.removeEventListener('mousemove', onMouseMove!);
-      document.removeEventListener('mouseup', onMouseUp!);
-      onMouseMove = null;
-      onMouseUp = null;
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+  public autoCompleteLeafs() {
+    return this.props.autoCompleteLeafs();
+  }
 }
 
 // // Configure the UI by providing this Component as a child of GraphiQL.
@@ -1929,14 +963,15 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
     <div className="title">
       {props.children || (
         <span>
-          {'Graph'}
-          <em>{'i'}</em>
-          {'QL'}
+          Graph
+          <em>i</em>
+          QL
         </span>
       )}
     </div>
   );
 }
+
 GraphiQLLogo.displayName = 'GraphiQLLogo';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
@@ -1947,128 +982,15 @@ function GraphiQLToolbar<TProps>(props: PropsWithChildren<TProps>) {
     </div>
   );
 }
+
 GraphiQLToolbar.displayName = 'GraphiQLToolbar';
 
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLFooter<TProps>(props: PropsWithChildren<TProps>) {
   return <div className="footer">{props.children}</div>;
 }
+
 GraphiQLFooter.displayName = 'GraphiQLFooter';
-
-const defaultQuery = `# Welcome to GraphiQL
-#
-# GraphiQL is an in-browser tool for writing, validating, and
-# testing GraphQL queries.
-#
-# Type queries into this side of the screen, and you will see intelligent
-# typeaheads aware of the current GraphQL type schema and live syntax and
-# validation errors highlighted within the text.
-#
-# GraphQL queries typically start with a "{" character. Lines that start
-# with a # are ignored.
-#
-# An example GraphQL query might look like:
-#
-#     {
-#       field(arg: "value") {
-#         subField
-#       }
-#     }
-#
-# Keyboard shortcuts:
-#
-#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)
-#
-#     Merge Query:  Shift-Ctrl-M (or press the merge button above)
-#
-#       Run Query:  Ctrl-Enter (or press the play button above)
-#
-#   Auto Complete:  Ctrl-Space (or just start typing)
-#
-
-`;
-
-// Duck-type promise detection.
-function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
-  return typeof value === 'object' && typeof value.then === 'function';
-}
-
-// Duck-type Observable.take(1).toPromise()
-function observableToPromise<T>(observable: Observable<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const subscription = observable.subscribe({
-      next: v => {
-        resolve(v);
-        subscription.unsubscribe();
-      },
-      error: reject,
-      complete: () => {
-        reject(new Error('no value resolved'));
-      },
-    });
-  });
-}
-
-// Duck-type observable detection.
-function isObservable<T>(value: any): value is Observable<T> {
-  return (
-    typeof value === 'object' &&
-    'subscribe' in value &&
-    typeof value.subscribe === 'function'
-  );
-}
-
-function isAsyncIterable(input: unknown): input is AsyncIterable<unknown> {
-  return (
-    typeof input === 'object' &&
-    input !== null &&
-    // Some browsers still don't have Symbol.asyncIterator implemented (iOS Safari)
-    // That means every custom AsyncIterable must be built using a AsyncGeneratorFunction (async function * () {})
-    ((input as any)[Symbol.toStringTag] === 'AsyncGenerator' ||
-      Symbol.asyncIterator in input)
-  );
-}
-
-function asyncIterableToPromise<T>(
-  input: AsyncIterable<T> | AsyncIterableIterator<T>,
-): Promise<T> {
-  return new Promise((resolve, reject) => {
-    // Also support AsyncGenerator on Safari iOS.
-    // As mentioned in the isAsyncIterable function there is no Symbol.asyncIterator available
-    // so every AsyncIterable must be implemented using AsyncGenerator.
-    const iteratorReturn = ('return' in input
-      ? input
-      : input[Symbol.asyncIterator]()
-    ).return?.bind(input);
-    const iteratorNext = ('next' in input
-      ? input
-      : input[Symbol.asyncIterator]()
-    ).next.bind(input);
-
-    iteratorNext()
-      .then(result => {
-        resolve(result.value);
-        // ensure cleanup
-        iteratorReturn?.();
-      })
-      .catch(err => {
-        reject(err);
-      });
-  });
-}
-
-function fetcherReturnToPromise(
-  fetcherResult: FetcherReturnType,
-): Promise<FetcherResult> {
-  return Promise.resolve(fetcherResult).then(fetcherResult => {
-    if (isAsyncIterable(fetcherResult)) {
-      return asyncIterableToPromise(fetcherResult);
-    } else if (isObservable(fetcherResult)) {
-      return observableToPromise(fetcherResult);
-    }
-    return fetcherResult;
-  });
-}
 
 // Determines if the React child is of the same type of the provided React component
 function isChildComponentType<T extends ComponentType>(

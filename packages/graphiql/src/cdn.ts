@@ -23,7 +23,7 @@ import './css/history.css';
 import { GraphiQL } from './components/GraphiQL';
 // add the static function here for CDN only. otherwise, doing this in the component could
 // add unwanted dependencies to the bundle.
-// @ts-ignore
+// @ts-expect-error
 GraphiQL.createFetcher = createGraphiQLFetcher;
 
 export default GraphiQL;

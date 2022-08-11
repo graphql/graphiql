@@ -9,7 +9,7 @@
 import { tmpdir } from 'os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
-import { Position, Range } from 'graphql-language-service-utils';
+import { Position, Range } from 'graphql-language-service';
 
 import { MessageProcessor } from '../MessageProcessor';
 import { parseDocument } from '../parseDocument';
@@ -64,7 +64,7 @@ describe('MessageProcessor', () => {
         return [{ label: `${query} at ${uri}` }];
       },
       // @ts-ignore
-      getDiagnostics: (query, uri) => {
+      getDiagnostics: (_query, _uri) => {
         return [];
       },
       getDocumentSymbols: async (_query: string, uri: string) => {
@@ -350,6 +350,27 @@ describe('MessageProcessor', () => {
 
       expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
     });
+
+    it('handles config requests with no config', async () => {
+      messageProcessor._settings = {};
+
+      await messageProcessor.handleDidChangeConfiguration({
+        settings: [],
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+
+      await messageProcessor.handleDidOpenOrSaveNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/.graphql.config.js`,
+          languageId: 'js',
+          version: 0,
+          text: '',
+        },
+      });
+
+      expect(messageProcessor._updateGraphQLConfig).toHaveBeenCalled();
+    });
   });
 
   it('parseDocument finds queries in tagged templates', async () => {
@@ -542,6 +563,36 @@ query Test {
 `);
   });
 
+  it('parseDocument finds queries in call expressions with template literals', async () => {
+    const text = `
+// @flow
+import {gql} from 'react-apollo';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = gql(\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`);
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.js');
+    expect(contents[0].query).toEqual(`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+`);
+  });
+
   it('parseDocument finds queries in #graphql-annotated templates', async () => {
     const text = `
 import {gql} from 'react-apollo';
@@ -603,11 +654,11 @@ query Test {
   it('parseDocument ignores non gql tagged templates', async () => {
     const text = `
 // @flow
-import randomthing from 'package';
+import randomThing from 'package';
 import type {B} from 'B';
 import A from './A';
 
-const QUERY = randomthing\`
+const QUERY = randomThing\`
 query Test {
   test {
     value
@@ -623,14 +674,37 @@ export function Example(arg: string) {}`;
     expect(contents.length).toEqual(0);
   });
 
+  it('parseDocument ignores non gql call expressions with template literals', async () => {
+    const text = `
+// @flow
+import randomthing from 'package';
+import type {B} from 'B';
+import A from './A';
+
+const QUERY = randomthing(\`
+query Test {
+  test {
+    value
+    ...FragmentsComment
+  }
+}
+\${A.fragments.test}
+\`);
+
+export function Example(arg: string) {}`;
+
+    const contents = parseDocument(text, 'test.js');
+    expect(contents.length).toEqual(0);
+  });
+
   it('an unparsable JS/TS file does not throw and bring down the server', async () => {
     const text = `
 // @flow
-import type randomthing fro 'package';
+import type randomThing fro 'package';
 import type {B} from 'B';
 im port A from './A';
 
-con  QUERY = randomthing\`
+con  QUERY = randomThing\`
 query Test {
   test {
     value

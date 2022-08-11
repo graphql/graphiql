@@ -1,5 +1,156 @@
 # graphql-language-service-cli
 
+## 3.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`12cf4db0`](https://github.com/graphql/graphiql/commit/12cf4db006d1c058460bc04f51d8743fe1ac63bb)]:
+  - graphql-language-service-server@2.8.1
+
+## 3.3.0
+
+### Minor Changes
+
+- [#2557](https://github.com/graphql/graphiql/pull/2557) [`3304606d`](https://github.com/graphql/graphiql/commit/3304606d5130a745cbdab0e6c9182e75101ddde9) Thanks [@acao](https://github.com/acao)! - upgrades the `vscode-languageserver` and `vscode-jsonrpc` reference implementations for the lsp server to the latest. also upgrades `vscode-languageclient` in `vscode-graphql` to the latest 8.0.1. seems to work fine for IPC in `vscode-graphql` at least!
+
+  hopefully this solves #2230 once and for all!
+
+### Patch Changes
+
+- Updated dependencies [[`3304606d`](https://github.com/graphql/graphiql/commit/3304606d5130a745cbdab0e6c9182e75101ddde9)]:
+  - graphql-language-service-server@2.8.0
+
+## 3.2.30
+
+### Patch Changes
+
+- [#2553](https://github.com/graphql/graphiql/pull/2553) [`edc1c964`](https://github.com/graphql/graphiql/commit/edc1c96477cc2fbc2b6ac5d6195b8f9766a8c5d4) Thanks [@acao](https://github.com/acao)! - Fix error with LSP crash for CLI users #2230. `vscode-graphql` not impacted - rather, `nvim.coc`, maybe other clients who use CLI directly). recreation of #2546 by [@xuanduc987](https://github.com/xuanduc987, thank you!)
+
+- Updated dependencies [[`edc1c964`](https://github.com/graphql/graphiql/commit/edc1c96477cc2fbc2b6ac5d6195b8f9766a8c5d4)]:
+  - graphql-language-service-server@2.7.29
+
+## 3.2.29
+
+### Patch Changes
+
+- [#2519](https://github.com/graphql/graphiql/pull/2519) [`de5d5a07`](https://github.com/graphql/graphiql/commit/de5d5a07891fd49241a5abbb17eaf377a015a0a8) Thanks [@acao](https://github.com/acao)! - enable graphql-config legacy mode by default in the LSP server
+
+* [#2509](https://github.com/graphql/graphiql/pull/2509) [`737d4184`](https://github.com/graphql/graphiql/commit/737d4184f3af1d8fe9d64eb1b7e23dfcfbe640ea) Thanks [@Chnapy](https://github.com/Chnapy)! - Add ` gql(``) `, ` graphql(``) ` call expressions support for highlighting & language
+
+* Updated dependencies [[`de5d5a07`](https://github.com/graphql/graphiql/commit/de5d5a07891fd49241a5abbb17eaf377a015a0a8), [`737d4184`](https://github.com/graphql/graphiql/commit/737d4184f3af1d8fe9d64eb1b7e23dfcfbe640ea)]:
+  - graphql-language-service-server@2.7.28
+
+## 3.2.28
+
+### Patch Changes
+
+- Updated dependencies [[`cccefa70`](https://github.com/graphql/graphiql/commit/cccefa70c0466d60e8496e1df61aeb1490af723c)]:
+  - graphql-language-service-server@2.7.27
+  - graphql-language-service@5.0.6
+
+## 3.2.27
+
+### Patch Changes
+
+- [#2486](https://github.com/graphql/graphiql/pull/2486) [`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa) Thanks [@stonexer](https://github.com/stonexer)! - definition support for operation fields ✨
+
+  you can now jump to the applicable object type definition for query/mutation/subscription fields!
+
+- Updated dependencies [[`c9c51b8a`](https://github.com/graphql/graphiql/commit/c9c51b8a98e1f0427272d3e9ad60989b32f1a1aa)]:
+  - graphql-language-service-server@2.7.26
+  - graphql-language-service@5.0.5
+
+## 3.2.26
+
+### Patch Changes
+
+- Updated dependencies [[`cf092f59`](https://github.com/graphql/graphiql/commit/cf092f5960eae250bb193b9011b2fb883f797a99)]:
+  - graphql-language-service-server@2.7.25
+
+## 3.2.25
+
+### Patch Changes
+
+- Updated dependencies [[`d0017a93`](https://github.com/graphql/graphiql/commit/d0017a93b818cf3119e51c2b6c4a19004f98e29b)]:
+  - graphql-language-service-server@2.7.24
+
+## 3.2.24
+
+### Patch Changes
+
+- Updated dependencies [[`6ca6a92d`](https://github.com/graphql/graphiql/commit/6ca6a92d0fd12af974683de9706c8e8e06c751c2)]:
+  - graphql-language-service-server@2.7.23
+
+## 3.2.23
+
+### Patch Changes
+
+- Updated dependencies [[`6db28447`](https://github.com/graphql/graphiql/commit/6db284479a14873fea3e359efd71be0b15ab3ee8), [`1bea864d`](https://github.com/graphql/graphiql/commit/1bea864d05dee04bb20c06dc3c3d68675b87a50a)]:
+  - graphql-language-service-server@2.7.22
+
+## 3.2.22
+
+### Patch Changes
+
+- Updated dependencies [[`d22f6111`](https://github.com/graphql/graphiql/commit/d22f6111a60af25727d8dbc1058c79607df76af2)]:
+  - graphql-language-service@5.0.4
+  - graphql-language-service-server@2.7.21
+
+## 3.2.21
+
+### Patch Changes
+
+- [#2291](https://github.com/graphql/graphiql/pull/2291) [`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902) Thanks [@retrodaredevil](https://github.com/retrodaredevil)! - Target es6 for the languages services
+
+- Updated dependencies [[`45cbc759`](https://github.com/graphql/graphiql/commit/45cbc759c732999e8b1eb4714d6047ab77c17902)]:
+  - graphql-language-service@5.0.3
+  - graphql-language-service-server@2.7.20
+
+## 3.2.20
+
+### Patch Changes
+
+- Updated dependencies [[`c36504a8`](https://github.com/graphql/graphiql/commit/c36504a804d8cc54a5136340152999b4a1a2c69f)]:
+  - graphql-language-service@5.0.2
+  - graphql-language-service-server@2.7.19
+
+## 3.2.19
+
+### Patch Changes
+
+- Updated dependencies [[`e15d1dae`](https://github.com/graphql/graphiql/commit/e15d1dae399a7d43d8d98f2ce431a9a1f0ba84ae)]:
+  - graphql-language-service-server@2.7.18
+
+## 3.2.18
+
+### Patch Changes
+
+- [#2267](https://github.com/graphql/graphiql/pull/2267) [`fe441272`](https://github.com/graphql/graphiql/commit/fe44127296f808e58407855c7f8806e04c8ddf03) Thanks [@elken](https://github.com/elken)! - Re-add `graphql-language-service-server` as a dep to `graphql-language-service-cli`
+
+## 3.2.17
+
+### Patch Changes
+
+- [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa) Thanks [@acao](https://github.com/acao)! - fix lockfile and imports from LSP merge
+
+- Updated dependencies [[`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa), [`3626f8d5`](https://github.com/graphql/graphiql/commit/3626f8d5012ee77a39e984ae347396cb00fcc6fa)]:
+  - graphql-language-service@5.0.1
+
+## 3.2.16
+
+### Patch Changes
+
+- Updated dependencies [[`2502a364`](https://github.com/graphql/graphiql/commit/2502a364b74dc754d92baa1579b536cf42139958)]:
+  - graphql-language-service@5.0.0
+  - graphql-language-service-server@2.7.16
+
+## 3.2.15
+
+### Patch Changes
+
+- Updated dependencies [[`ab83198f`](https://github.com/graphql/graphiql/commit/ab83198fa8b3c5453d3733982ee9ca8a2d6bca7a)]:
+  - graphql-language-service-server@2.7.15
+
 ## 3.2.14
 
 ### Patch Changes
@@ -79,7 +230,7 @@
 
 - [`f82bd7a9`](https://github.com/graphql/graphiql/commit/f82bd7a931eb5fa9a33e59d417303706844c9063) [#2055](https://github.com/graphql/graphiql/pull/2055) Thanks [@acao](https://github.com/acao)! - this fixes the URI scheme related bugs and make sure schema as sdl config works again.
 
-  `fileURLToPath` had been introduced by a contributor and I didnt test properly, it broke sdl file loading!
+  `fileURLToPath` had been introduced by a contributor and I didn't test properly, it broke sdl file loading!
 
   definitions, autocomplete, diagnostics, etc should work again
   also hides the more verbose logging output for now
@@ -233,7 +384,7 @@
 
 ### Bug Fixes
 
-- pre-cacheing schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
+- pre-caching schema bugs, new server config options ([#1636](https://github.com/graphql/graphiql/issues/1636)) ([d989456](https://github.com/graphql/graphiql/commit/d9894564c056134e15093956e0951dcefe061d76))
 
 ### Features
 
@@ -301,9 +452,9 @@
 
 ### Features
 
-- **cli:** recommend matching commmands ([#1420](https://github.com/graphql/graphiql/issues/1420)) ([0fbae82](https://github.com/graphql/graphiql/commit/0fbae828ced2e8b95016268805654cde8322b076))
+- **cli:** recommend matching commands ([#1420](https://github.com/graphql/graphiql/issues/1420)) ([0fbae82](https://github.com/graphql/graphiql/commit/0fbae828ced2e8b95016268805654cde8322b076))
 - **graphql-config:** add graphql config extensions ([#1118](https://github.com/graphql/graphiql/issues/1118)) ([2a77e47](https://github.com/graphql/graphiql/commit/2a77e47719ec9181a00183a08ffa11287b8fd2f5))
-- capture unknown commands making use of the inhouse s… ([#1417](https://github.com/graphql/graphiql/issues/1417)) ([dd12a6b](https://github.com/graphql/graphiql/commit/dd12a6b903976ce8d35cf91d3c9606450f1c0990))
+- capture unknown commands making use of the in-house s… ([#1417](https://github.com/graphql/graphiql/issues/1417)) ([dd12a6b](https://github.com/graphql/graphiql/commit/dd12a6b903976ce8d35cf91d3c9606450f1c0990))
 - use new GraphQL Config ([#1342](https://github.com/graphql/graphiql/issues/1342)) ([e45838f](https://github.com/graphql/graphiql/commit/e45838f5ba579e05b20f1a147ce431478ffad9aa))
 
 ## [2.4.0-alpha.1](https://github.com/graphql/graphiql/compare/graphql-language-service@2.3.4...graphql-language-service@2.4.0-alpha.1) (2020-01-18)
@@ -332,7 +483,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 
@@ -388,7 +539,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 
@@ -444,7 +595,7 @@
 
 ### Features
 
-- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
+- convert LSP from flow to typescript ([#957](https://github.com/graphql/graphiql/issues/957)) [@acao](https://github.com/acao) @Neitsch [@benjie](https://github.com/benjie) ([36ed669](https://github.com/graphql/graphiql/commit/36ed669))
 
 ## 2.0.1 (2019-05-14)
 

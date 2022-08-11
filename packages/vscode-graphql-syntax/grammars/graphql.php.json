@@ -1,0 +1,131 @@
+{
+  "fileTypes": ["php"],
+  "injectionSelector": "L:source -string -comment",
+  "patterns": [
+    {
+      "contentName": "meta.embedded.block.graphql",
+      "begin": "(<<<)\\s*(\"?)(GRAPHQL|GQL)(\\2)(\\s*)$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.begin.php"
+        },
+        "1": {
+          "name": "punctuation.definition.string.php"
+        },
+        "3": {
+          "name": "keyword.operator.heredoc.php"
+        },
+        "5": {
+          "name": "invalid.illegal.trailing-whitespace.php"
+        }
+      },
+      "end": "^\\s*(\\3)(?![A-Za-z0-9_\\x{7f}-\\x{10ffff}])",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.end.php"
+        },
+        "1": {
+          "name": "keyword.operator.heredoc.php"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "(<<<)\\s*'(GRAPHQL|GQL)'(\\s*)$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.begin.php"
+        },
+        "1": {
+          "name": "punctuation.definition.string.php"
+        },
+        "2": {
+          "name": "keyword.operator.nowdoc.php"
+        },
+        "3": {
+          "name": "invalid.illegal.trailing-whitespace.php"
+        }
+      },
+      "contentName": "source.graphql",
+      "end": "^\\s*(\\2)(?![A-Za-z0-9_\\x{7f}-\\x{10ffff}])",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.embedded.end.php"
+        },
+        "1": {
+          "name": "keyword.operator.nowdoc.php"
+        }
+      },
+      "name": "meta.embedded.graphql",
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "(/\\*\\*\\s*(@lang\\s*GraphQL|Graphi?QL|graphql)\\s*\\*/)\\s*(')",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.comment.php"
+        },
+        "3": {
+          "name": "punctuation.definition.string.begin.php"
+        }
+      },
+      "contentName": "source.graphql",
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.php"
+        }
+      },
+      "name": "meta.embedded.graphql",
+      "patterns": [
+        {
+          "include": "source.graphql"
+        }
+      ]
+    },
+    {
+      "begin": "((/\\*\\*|//)\\s*(@lang\\s*GraphQL|Graphi?QL|graphql)\\s*(\\*/)?)(\\s*)$",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.comment.php"
+        },
+        "5": {
+          "name": "invalid.illegal.trailing-whitespace.php"
+        }
+      },
+      "end": "(?<=')",
+      "patterns": [
+        {
+          "begin": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.php"
+            }
+          },
+          "contentName": "source.graphql",
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.php"
+            }
+          },
+          "name": "meta.embedded.graphql",
+          "patterns": [
+            {
+              "include": "source.graphql"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scopeName": "inline.graphql.php"
+}

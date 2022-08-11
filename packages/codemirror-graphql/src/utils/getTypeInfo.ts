@@ -88,7 +88,7 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
           info.type && state.name
             ? getFieldDef(schema, info.parentType, state.name)
             : null;
-        info.type = info.fieldDef && info.fieldDef.type;
+        info.type = info.fieldDef?.type;
         break;
       case 'SelectionSet':
         info.parentType = info.type ? getNamedType(info.type) : null;
@@ -119,7 +119,7 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
             }
           }
         }
-        info.inputType = info.argDef && info.argDef.type;
+        info.inputType = info.argDef?.type;
         break;
       case 'EnumValue':
         const enumType = info.inputType ? getNamedType(info.inputType) : null;
@@ -150,7 +150,7 @@ export default function getTypeInfo(schema: GraphQLSchema, tokenState: State) {
           state.name && info.objectFieldDefs
             ? info.objectFieldDefs[state.name]
             : null;
-        info.inputType = objectField && objectField.type;
+        info.inputType = objectField?.type;
         break;
       case 'NamedType':
         info.type = state.name ? schema.getType(state.name) : null;

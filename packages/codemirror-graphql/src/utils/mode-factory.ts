@@ -34,7 +34,7 @@ import indent from './mode-indent';
  *
  * This parsing algorithm allows for incremental online parsing within various
  * levels of the syntax tree and results in a structured `state` linked-list
- * which contains the relevant information to produce valuable typeaheads.
+ * which contains the relevant information to produce valuable typeahead.
  */
 const graphqlModeFactory: CodeMirror.ModeFactory<any> = config => {
   const parser = onlineParser({
@@ -47,7 +47,7 @@ const graphqlModeFactory: CodeMirror.ModeFactory<any> = config => {
   return {
     config,
     startState: parser.startState,
-    token: (parser.token as unknown) as NonNullable<
+    token: parser.token as unknown as NonNullable<
       CodeMirror.Mode<any>['token']
     >, // TODO: Check if the types are indeed compatible
     indent,

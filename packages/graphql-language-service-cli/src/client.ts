@@ -16,8 +16,9 @@ import {
   getAutocompleteSuggestions,
   getDiagnostics,
   getOutline,
+  Position,
 } from 'graphql-language-service';
-import { Position } from 'graphql-language-service-utils';
+
 import path from 'path';
 
 import type { CompletionItem, Diagnostic } from 'graphql-language-service';
@@ -42,14 +43,14 @@ export default function main(
   command: string,
   argv: { [key: string]: string },
 ): void {
-  const filePath = argv.file && argv.file.trim();
+  const filePath = argv.file?.trim();
   invariant(
     argv.text || argv.file,
     'A path to the GraphQL file or its contents is required.',
   );
 
   const text = ensureText(argv.text, filePath);
-  const schemaPath = argv.schemaPath && argv.schemaPath.trim();
+  const schemaPath = argv.schemaPath?.trim();
 
   let exitCode;
   switch (command) {
@@ -78,6 +79,14 @@ interface AutocompleteResultsMap {
   [i: number]: CompletionItem;
 }
 
+function formatUnknownError(error: unknown) {
+  let message: string | undefined;
+  if (error instanceof Error) {
+    message = error.stack;
+  }
+  return message ?? String(error);
+}
+
 function _getAutocompleteSuggestions(
   queryText: string,
   point: Position,
@@ -103,7 +112,7 @@ function _getAutocompleteSuggestions(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -118,7 +127,7 @@ function _getDiagnostics(
   schemaPath?: string,
 ): EXIT_CODE {
   try {
-    // `schema` is not strictly requied as GraphQL diagnostics may still notify
+    // `schema` is not strictly required as GraphQL diagnostics may still notify
     // whether the query text is syntactically valid.
     const schema = schemaPath ? generateSchema(schemaPath) : null;
     const resultArray = getDiagnostics(queryText, schema);
@@ -132,7 +141,7 @@ function _getDiagnostics(
     process.stdout.write(JSON.stringify(resultObject, null, 2));
     return GRAPHQL_SUCCESS_CODE;
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
 }
@@ -146,7 +155,7 @@ function _getOutline(queryText: string): EXIT_CODE {
       throw Error('Error parsing or no outline tree found');
     }
   } catch (error) {
-    process.stderr.write((error?.stack ?? String(error)) + '\n');
+    process.stderr.write(formatUnknownError(error) + '\n');
     return GRAPHQL_FAILURE_CODE;
   }
   return GRAPHQL_SUCCESS_CODE;
@@ -160,7 +169,7 @@ function ensureText(queryText: string, filePath: string): string {
     try {
       text = fs.readFileSync(filePath, 'utf8');
     } catch (error) {
-      throw new Error(error);
+      throw new Error(String(error));
     }
   }
   return text;
@@ -175,6 +184,6 @@ function generateSchema(schemaPath: string): GraphQLSchema {
     case '.json':
       return buildClientSchema(JSON.parse(schemaDSL));
     default:
-      throw new Error('Unsupported schema file extention');
+      throw new Error('Unsupported schema file extension');
   }
 }

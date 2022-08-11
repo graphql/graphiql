@@ -1,13 +1,9 @@
 import * as monaco from 'monaco-editor';
 
-// NOTE: using loader syntax becuase Yaml worker imports editor.worker directly and that
+// NOTE: using loader syntax because Yaml worker imports editor.worker directly and that
 // import shouldn't go through loader syntax.
 // @ts-ignore
-import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker';
-// @ts-ignore
-import JSONWorker from 'worker-loader!monaco-editor/esm/vs/language/json/json.worker';
-// @ts-ignore
-import GraphQLWorker from 'worker-loader!monaco-graphql/esm/graphql.worker';
+import GraphQLWorker from 'monaco-graphql/esm/graphql.worker';
 
 const GRAPHQL_LANGUAGE_ID = 'graphql';
 
@@ -15,12 +11,13 @@ const GRAPHQL_LANGUAGE_ID = 'graphql';
 window.MonacoEnvironment = {
   getWorker(_workerId: string, label: string) {
     if (label === GRAPHQL_LANGUAGE_ID) {
+      // @ts-expect-error
       return new GraphQLWorker();
     }
     if (label === 'json') {
-      return new JSONWorker();
+      return new Worker('/json.worker.js');
     }
-    return new EditorWorker();
+    return new Worker('/editor.worker.js');
   },
 };
 

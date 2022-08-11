@@ -32,9 +32,9 @@ export class WorkerManager {
     );
     this._lastUsedTime = 0;
     // this is where we re-start the worker on config changes
-    this._configChangeListener = this._defaults.onDidChange(() =>
-      this._stopWorker(),
-    );
+    this._configChangeListener = this._defaults.onDidChange(() => {
+      this._stopWorker();
+    });
     this._client = null;
   }
 
@@ -64,7 +64,7 @@ export class WorkerManager {
 
   private async _getClient(): Promise<GraphQLWorker> {
     this._lastUsedTime = Date.now();
-    if (!this._client) {
+    if (!this._client && !this._worker) {
       try {
         this._worker = monacoEditor.createWebWorker<GraphQLWorker>({
           // module that exports the create() method and returns a `GraphQLWorker` instance
@@ -78,8 +78,8 @@ export class WorkerManager {
             // only string based config can be passed from the main process
             languageConfig: {
               schemas: this._defaults.schemas?.map(getStringSchema),
-              exteralFragmentDefinitions: this._defaults
-                .externalFragmentDefinitions,
+              externalFragmentDefinitions:
+                this._defaults.externalFragmentDefinitions,
             },
           } as ICreateData,
         });

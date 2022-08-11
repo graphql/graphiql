@@ -38,10 +38,6 @@
   line-height: 14px;
 }
 
-.doc-explorer-narrow .doc-explorer-back {
-  width: 0;
-}
-
 .graphiql-container .doc-explorer-back:before {
   border-left: 2px solid #3b5998;
   border-top: 2px solid #3b5998;
@@ -69,10 +65,6 @@
   position: absolute;
   right: 0;
   top: 47px;
-}
-
-.graphiql-container .doc-explorer-contents {
-  min-width: 300px;
 }
 
 .graphiql-container .doc-type-description p:first-child,

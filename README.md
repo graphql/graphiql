@@ -39,11 +39,11 @@ The purpose of this monorepo is to give the GraphQL Community:
 
 ### Proposed Ecosystem
 
-As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain an sdk and plugins.
+As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain a sdk and plugins.
 
 ![Diagram of the proposed Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/proposed-ecosystem.jpg)
 
-## [GraphiQL](packages/graphiql#readme)
+## [`graphiql`](packages/graphiql#readme)
 
 > **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
@@ -65,26 +65,26 @@ The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMi
 
 ### How To Setup/Implement GraphiQL
 
-[codesandbox.io graphiql exmaple](https://codesandbox.io/s/graphiql-js-example-oc851)
+[codesandbox.io graphiql example](https://codesandbox.io/s/graphiql-js-example-oc851)
 [stackblitz.com graphiql example](https://stackblitz.com/edit/react-ts-jpnmod)
 
 **The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
-## [Monaco GraphQL](packages/monaco-graphql#readme)
+## [`monaco-graphql`](packages/monaco-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/monaco-graphql.svg)](https://npmjs.com/monaco-graphql)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/monaco-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/monaco-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/monaco-graphql)
 
 Provides monaco editor with a powerful, schema-driven graphql language mode.
 
-See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using github API
+See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain javascript demo using GitHub API
 
-## [CodeMirror GraphQL](packages/codemirror-graphql#readme)
+## [`codemirror-graphql`](packages/codemirror-graphql#readme)
 
 [![NPM](https://img.shields.io/npm/v/codemirror-graphql.svg)](https://npmjs.com/codemirror-graphql)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphiql)
+![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/codemirror-graphql)
 ![npm downloads](https://img.shields.io/npm/dm/codemirror-graphql?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
 
@@ -92,53 +92,29 @@ See the [webpack example](examples/monaco-graphql-webpack#readme) for a plain ja
 
 Provides CodeMirror with a parser mode for GraphQL along with a live linter and typeahead hinter powered by your GraphQL Schema
 
-## [GraphQL Language Service](packages/graphql-language-service#readme)
+## [`graphql-language-service`](packages/graphql-language-service#readme)
 
 [![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service)
 
-Provides a command-line interface for running [GraphQL Language Service Server](packages/graphql-language-service-server#readme) for various IDEs.
+Provides language services for [`graphql-language-service-server`](packages/graphql-language-service-server#readme) [`codemirror-graphql`](packages/codemirror-graphql) and [`monaco-graphql`](packages/monaco-graphql).
 
-## [GraphQL Language Service Server](packages/graphql-language-service-server#readme)
+## [`graphql-language-service-server`](packages/graphql-language-service-server#readme)
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service.svg)](https://npmjs.com/graphql-language-service)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-server.svg)](https://npmjs.com/graphql-language-service-server)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server)
 
-An almost fully LSP compliant server process backing the [GraphQL Language Service](packages/graphql-language-service#readme).
+Provides language services for LSP-based IDE extensions
 
-## [GraphQL Language Service Interface](packages/graphql-language-service-interface#readme)
+## [`graphql-language-service-server-cli`](packages/graphql-language-service-server-cli#readme)
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-interface.svg)](https://npmjs.com/graphql-language-service-interface)
-![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/graphql-language-service-interface)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-interface?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-server-cli.svg)](https://npmjs.com/graphql-language-service-server-cli)
+![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server-cli?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server-cli)
 
-Runtime agnostic Language Service used by [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) and [GraphQL Language Service Server](packages/graphql-language-service-server#readme)
-
-## [GraphQL Language Service Parser](packages/graphql-language-service-parser#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-parser.svg)](https://npmjs.com/graphql-language-service-parser)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-parser?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
-
-An online immutable parser for [GraphQL](http://graphql.org/), designed to be used as part of syntax-highlighting and code intelligence tools such as for the [GraphQL Language Service](packages/graphql-language-service#readme) and [codemirror-graphql](packages/codemirror-graphql#readme).
-
-## [GraphQL Language Service Types](packages/graphql-language-service-types#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-types.svg)](https://npmjs.com/graphql-language-service-types)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-types?label=npm%20downloads)
-
-[Flow](https://flowtype.org/) and Typescript type definitions for the [GraphQL Language Service](packages/graphql-language-service#readme).
-
-## [GraphQL Language Service Utilities](packages/graphql-language-service-utils#readme)
-
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-utils.svg)](https://npmjs.com/graphql-language-service-utils)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-parser?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/codemirror-graphql)
-
-Utilities to support the [GraphQL Language Service](packages/graphql-language-service#readme).
+Provides a CLI for the language service server
 
 ## Browser & Runtime Support
 
@@ -148,7 +124,7 @@ By default, all typescript packages target `es6`.
 
 `graphql-language-service-server` and `graphql-language-service-cli` are made for the node runtime, so they target `es2017`
 
-`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserlistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `rengenerator-runtime` or special babel configuration.
+`codemirror-graphql` and the `graphiql` browser bundle use the [`.browserslistrc`](./.browserslistrc), which targets modern browsers to keep bundle size small and keep the language services performant where async/await is used, and especially to avoid the requirement of `regenerator-runtime` or special babel configuration.
 
 ### [`.browserslistrc`](./.browserslistrc):
 
@@ -176,8 +152,6 @@ This repository is managed by EasyCLA. Project participants must sign the free [
 
 To initiate the signature process please open a PR against this repo. The EasyCLA bot will block the merge if we still need a membership agreement from you.
 
-Please note that EasyCLA is configured to accept commits from certain GitHub bots. These are approved on an exception basis once we are confident that any content they create is either generated by the bot itself or written by someone who has already signed the CLA (e.g., a project maintainer).
-
 Please note that EasyCLA is configured to accept commits from certain GitHub bots. These are approved on an exception basis once we are confident that any content they create is either unlikely to consist of copyrightable content or else was written by someone who has already signed the CLA (e.g., a project maintainer). The bots that have currently been approved as exceptions are:
 
 - github-actions (exclusively for the `changesets` Action)
@@ -186,30 +160,42 @@ You can find [detailed information here](https://github.com/graphql/graphql-wg/t
 
 ## Maintainers
 
-Maintainers of this repository regulary review PRs and issues and help advance the GraphiQL roadmap
+Maintainers of this repository regularly review PRs and issues and help advance the GraphiQL roadmap
 
 ### Alumni
 
-Originally this was three separate repositories
+Without these amazing past maintainers, where would we be?!
 
 - [@leebyron](https://github.com/leebyron) - original author of all libraries
 - [@asiandrummer](https://github.com/asiandrummer) - original creator of GraphiQL
 - [@wincent](https://github.com/wincent) - early co-author and maintainer
 - [@lostplan](https://github.com/lostplan) - maintained the language service ecosystem until about 2017
 - [@IvanGoncharov](https://github.com/ivangoncharov) - maintainer and transitional mentor to @acao and others
+- [@orta](https://github.com/orta) - has helped with so many parts of the project over the years, and provided the original redesign!
+- [@divyenduz](https://github.com/divyenduz) - the original creator of `vscode-graphql`, and contributor to much of the ecosystem. Thanks Divy!
 
 ### Active
 
+Maintainers who are currently active (to varying degrees, please contact us via our discord channels!):
+
 - [@imolorhe](https://github.com/imolorhe)
 - [@yoshiakis](https://github.com/yoshiakis)
-- [@dotansimha](https://github.com/dotansimha)
 - [@urigo](https://github.com/urigo)
 - [@timsuchanek](https://github.com/timsuchanek)
+- [@thomasheyenbrock](https://github.com/thomasheyenbrock)
+- [@n1ru4l](https://github.com/n1ru4l)
 - [@acao](https://github.com/acao)
+- [@stonexer](https://github.com/stonexer)
+- [@B2o5T](https://github.com/B2o5T)
+- [@dotansimha](https://github.com/dotansimha)
+- [@saihaj](https://github.com/saihaj)
+- [@jonathanawesome](https://github.com/jonathanawesome)
+
+> Thank you graphql community for all the help & support! I did it all for you, and I couldn't have done it without you ❤️ - @acao
 
 ### Fielding Proposals!
 
-The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scaleable, interoperable and extensible.
+The door is open for proposals for the new GraphiQL Plugin API, and other ideas on how to make the rest of the IDE ecosystem more performant, scalable, interoperable and extensible.
 Feel free to open a PR to create a document in the `/proposals/` directory.
 Eventually we hope to move these to a repo that serves this purpose.
 

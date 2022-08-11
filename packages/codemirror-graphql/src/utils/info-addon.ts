@@ -8,7 +8,7 @@
  */
 
 import CodeMirror from 'codemirror';
-import { GraphQLInfoOptions } from 'src/info';
+import { GraphQLInfoOptions } from '../info';
 
 CodeMirror.defineOption(
   'info',
@@ -46,7 +46,7 @@ function createState(options: GraphQLInfoOptions) {
 
 function getHoverTime(cm: CodeMirror.Editor) {
   const options = cm.state.info.options;
-  return (options && options.hoverTime) || 500;
+  return options?.hoverTime || 500;
 }
 
 function onMouseOver(cm: CodeMirror.Editor, e: MouseEvent) {

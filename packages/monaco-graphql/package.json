@@ -1,7 +1,7 @@
 {
   "name": "monaco-graphql",
   "description": "full service, official monaco mode for GraphQL",
-  "version": "1.0.10",
+  "version": "1.1.2",
   "license": "MIT",
   "main": "dist/monaco.contribution.js",
   "module": "esm/monaco.contribution.js",
@@ -26,14 +26,13 @@
     "src"
   ],
   "dependencies": {
-    "graphql-language-service": "^4.1.5",
-    "graphql-language-service-utils": "^2.7.1",
+    "graphql-language-service": "^5.0.6",
     "picomatch-browser": "^2.2.6"
   },
   "devDependencies": {
-    "graphql": "16.0.0-experimental-stream-defer.5",
+    "graphql": "^16.4.0",
     "monaco-editor": "^0.31.0",
-    "vscode-languageserver-types": "^3.15.1"
+    "vscode-languageserver-types": "^3.17.1"
   },
   "peerDependencies": {
     "graphql": "^15.5.0 || ^16.0.0",

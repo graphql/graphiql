@@ -16,7 +16,7 @@ import {
   SocketMessageWriter,
   StreamMessageReader,
   StreamMessageWriter,
-} from 'vscode-jsonrpc';
+} from 'vscode-jsonrpc/node';
 
 import {
   CompletionRequest,
@@ -25,6 +25,7 @@ import {
   DidOpenTextDocumentNotification,
   DidSaveTextDocumentNotification,
   DidChangeTextDocumentNotification,
+  DidChangeConfigurationNotification,
   DidCloseTextDocumentNotification,
   ExitNotification,
   HoverRequest,
@@ -36,8 +37,8 @@ import {
   PublishDiagnosticsParams,
   WorkspaceSymbolRequest,
   createConnection,
-  IConnection,
-} from 'vscode-languageserver';
+  Connection,
+} from 'vscode-languageserver/node';
 
 import { Logger } from './Logger';
 import {
@@ -97,7 +98,7 @@ export interface ServerOptions {
    */
   parser?: typeof parseDocument;
   /**
-   * the temporary directory that the server writes to for logs and cacheing schema
+   * the temporary directory that the server writes to for logs and caching schema
    */
   tmpDir?: string;
 }
@@ -148,7 +149,7 @@ const buildOptions = (options: ServerOptions): MappedServerOptions => {
 export default async function startServer(
   options: ServerOptions,
 ): Promise<void> {
-  if (options && options.method) {
+  if (options?.method) {
     const stderrOnly = options.method === 'stream';
     const logger = new Logger(options.tmpDir, stderrOnly);
 
@@ -210,7 +211,7 @@ export default async function startServer(
       serverWithHandlers.listen();
     } catch (err) {
       logger.error('There was a Graphql LSP handler exception:');
-      logger.error(err);
+      logger.error(String(err));
     }
   }
 }
@@ -227,7 +228,7 @@ async function initializeHandlers({
   writer,
   logger,
   options,
-}: InitializerParams): Promise<IConnection> {
+}: InitializerParams): Promise<Connection> {
   try {
     const connection = createConnection(reader, writer);
 
@@ -235,14 +236,14 @@ async function initializeHandlers({
     return connection;
   } catch (err) {
     logger.error('There was an error initializing the server connection');
-    logger.error(err);
+    logger.error(String(err));
     process.exit(1);
   }
 }
 
 function reportDiagnostics(
   diagnostics: PublishDiagnosticsParams | null,
-  connection: IConnection,
+  connection: Connection,
 ) {
   if (diagnostics) {
     connection.sendNotification(
@@ -253,7 +254,7 @@ function reportDiagnostics(
 }
 
 type HandlerOptions = {
-  connection: IConnection;
+  connection: Connection;
   logger: Logger;
   config?: GraphQLConfig;
   parser?: typeof parseDocument;
@@ -294,18 +295,16 @@ async function addHandlers({
   connection.onNotification(
     DidOpenTextDocumentNotification.type,
     async params => {
-      const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
-        params,
-      );
+      const diagnostics =
+        await messageProcessor.handleDidOpenOrSaveNotification(params);
       reportDiagnostics(diagnostics, connection);
     },
   );
   connection.onNotification(
     DidSaveTextDocumentNotification.type,
     async params => {
-      const diagnostics = await messageProcessor.handleDidOpenOrSaveNotification(
-        params,
-      );
+      const diagnostics =
+        await messageProcessor.handleDidOpenOrSaveNotification(params);
       reportDiagnostics(diagnostics, connection);
     },
   );
@@ -366,7 +365,7 @@ async function addHandlers({
     messageProcessor.handleWorkspaceSymbolRequest(params),
   );
 
-  connection.onDidChangeConfiguration(
-    messageProcessor.handleDidChangeConfiguration,
+  connection.onNotification(DidChangeConfigurationNotification.type, params =>
+    messageProcessor.handleDidChangeConfiguration(params),
   );
 }

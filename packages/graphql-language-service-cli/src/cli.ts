@@ -110,27 +110,28 @@ if (!command) {
 switch (command) {
   case 'server':
     process.on('uncaughtException', error => {
-      process.stdout.write(
+      process.stderr.write(
         'An error was thrown from GraphQL language service: ' + String(error),
       );
-      process.exit(0);
+      // don't exit at all if there is an uncaughtException
+      // process.exit(0);
     });
 
     const options: { [key: string]: any } = {};
-    if (argv && argv.port) {
+    if (argv?.port) {
       options.port = argv.port;
     }
-    if (argv && argv.method) {
+    if (argv?.method) {
       options.method = argv.method;
     }
-    if (argv && argv.configDir) {
+    if (argv?.configDir) {
       options.configDir = argv.configDir;
     }
     try {
       startServer(options);
     } catch (error) {
       const logger = new Logger();
-      logger.error(error);
+      logger.error(String(error));
     }
     break;
   default: {

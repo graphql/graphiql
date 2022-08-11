@@ -85,24 +85,18 @@ languages.json.jsonDefaults.setDiagnosticsOptions({
 const createEditor = (
   ref: React.MutableRefObject<null>,
   options: editor.IStandaloneEditorConstructionOptions,
-) => editor.create((ref.current as unknown) as HTMLElement, options);
+) => editor.create(ref.current as unknown as HTMLElement, options);
 
 export default function App() {
   const opsRef = React.useRef(null);
   const varsRef = React.useRef(null);
   const resultsRef = React.useRef(null);
-  const [
-    queryEditor,
-    setQueryEditor,
-  ] = React.useState<editor.IStandaloneCodeEditor | null>(null);
-  const [
-    variablesEditor,
-    setVariablesEditor,
-  ] = React.useState<editor.IStandaloneCodeEditor | null>(null);
-  const [
-    resultsViewer,
-    setResultsViewer,
-  ] = React.useState<editor.IStandaloneCodeEditor | null>(null);
+  const [queryEditor, setQueryEditor] =
+    React.useState<editor.IStandaloneCodeEditor | null>(null);
+  const [variablesEditor, setVariablesEditor] =
+    React.useState<editor.IStandaloneCodeEditor | null>(null);
+  const [resultsViewer, setResultsViewer] =
+    React.useState<editor.IStandaloneCodeEditor | null>(null);
   const [schema, setSchema] = React.useState<unknown | null>(null);
   const [loading, setLoading] = React.useState(false);
 
@@ -187,7 +181,7 @@ export default function App() {
             },
             schemas: [
               {
-                introspectionJSON: (data.data as unknown) as IntrospectionQuery,
+                introspectionJSON: data.data as unknown as IntrospectionQuery,
                 uri: 'myschema.graphql',
               },
             ],

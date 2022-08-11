@@ -105,7 +105,7 @@ CodeMirror.registerHelper(
       to: { line: cur.line, ch: token.end },
     };
 
-    if (results && results.list && results.list.length > 0) {
+    if (results?.list && results.list.length > 0) {
       results.from = CodeMirror.Pos(results.from.line, results.from.ch);
       results.to = CodeMirror.Pos(results.to.line, results.to.ch);
       CodeMirror.signal(editor, 'hasCompletion', editor, results, token);

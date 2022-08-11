@@ -106,7 +106,6 @@
 }
 
 .graphiql-container .resultWrap {
-  border-left: solid 1px #e0e0e0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -119,6 +118,7 @@
   background: white;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  width: 100%;
   z-index: 3;
 }
 
@@ -130,9 +130,7 @@
 .graphiql-container .docExplorerResizer {
   cursor: col-resize;
   height: 100%;
-  left: -5px;
   position: absolute;
-  top: 0;
   width: 10px;
   z-index: 10;
 }
@@ -155,7 +153,7 @@
 .graphiql-container .secondary-editor {
   display: flex;
   flex-direction: column;
-  height: 30px;
+  height: 100%;
   position: relative;
 }
 
@@ -164,6 +162,7 @@
   border-bottom: 1px solid #d6d6d6;
   border-top: 1px solid #e0e0e0;
   color: #777;
+  cursor: row-resize;
   font-variant: small-caps;
   font-weight: bold;
   letter-spacing: 1px;
@@ -209,8 +208,15 @@
 }
 
 .graphiql-container .result-window .CodeMirror-gutters {
+  background-color: #f6f7f8;
+  border: none;
+}
+
+.editor-drag-bar {
+  width: 12px;
   background-color: #eeeeee;
-  border-color: #e0e0e0;
+  border-left: 1px solid #e0e0e0;
+  border-right: 1px solid #e0e0e0;
   cursor: col-resize;
 }
 
@@ -289,6 +295,7 @@
   width: 34px;
 }
 
+.graphiql-container .toolbar-button > svg,
 .graphiql-container .execute-button svg {
   pointer-events: none;
 }
@@ -486,6 +493,125 @@ div.CodeMirror-lint-tooltip > * + * {
 
 .graphiql-container .variable-editor-title-text.active {
   color: #000;
+}
+
+.graphiql-container .tabs {
+  height: 42px;
+  background-image: linear-gradient(#f7f7f7, #e2e2e2);
+  display: flex;
+  align-items: center;
+}
+
+.graphiql-container .tab {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-right: 6px;
+  padding-left: 14px;
+  height: 100%;
+  color: rgba(0, 0, 0, 0.6);
+
+  border-left: 1px solid lightgray;
+  /*
+  Needed for `button` components.
+  */
+  border-top-style: none;
+  border-bottom-style: none;
+  border-right-style: none;
+}
+
+/*
+  If it's only one tab, we don't have the X button, so we want more padding.
+  In the .tabs container, we have one more child - the plus button.
+  So if this tab is first child and the second last at the same time,
+  this is the case we want to target.
+*/
+
+.graphiql-container .tab:first-child:nth-last-child(2) {
+  padding-right: 14px;
+}
+
+.graphiql-container .tab:hover {
+  background-image: linear-gradient(
+    rgba(245, 245, 245, 0.7),
+    rgba(215, 215, 215, 1)
+  );
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.graphiql-container .tab.active {
+  background-image: linear-gradient(
+    rgba(233, 233, 233, 0.7),
+    rgba(205, 205, 205, 1)
+  );
+  color: black;
+}
+
+/* {
+  background-image: linear-gradient(
+    rgba(223, 223, 223, 0.5),
+    rgba(196, 196, 196, 1)
+  );
+} */
+
+.graphiql-container .tab .close {
+  display: inline-block;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  margin-left: 6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.graphiql-container .tab:hover .close,
+.graphiql-container .tab.active .close {
+  opacity: 1;
+}
+
+.graphiql-container .tab .close::before {
+  content: '✕';
+  display: inline-block;
+  font-weight: bold;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.7);
+  height: 14px;
+}
+
+.graphiql-container .tab .close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.graphiql-container .tab .close:active {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.graphiql-container .tab-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  line-height: 1;
+  font-size: 26px;
+  padding: 0 8px;
+  height: 30px;
+  border-radius: 4px;
+  color: rgba(0, 0, 0, 0.5);
+  padding-bottom: 3px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.graphiql-container .tab-add:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.graphiql-container .tab-add:active {
+  background: rgba(0, 0, 0, 0.1);
 }
 
 /* COLORS */

@@ -24,8 +24,9 @@ export type {
   FetcherParams,
   FetcherResult,
   FetcherReturnType,
-  SyncFetcherResult,
   Observable,
+  Storage,
+  SyncFetcherResult,
 } from '@graphiql/toolkit';
 /**
  * Components
@@ -44,10 +45,41 @@ export { ToolbarGroup } from './components/ToolbarGroup';
 export { ToolbarSelect, ToolbarSelectOption } from './components/ToolbarSelect';
 
 /**
- * Utilities
+ * Legacy exports
  */
-export { fillLeafs } from './utility/fillLeafs';
-export { default as mergeAst } from './utility/mergeAst';
-export { default as getSelectedOperationName } from './utility/getSelectedOperationName';
-export { default as onHasCompletion } from './utility/onHasCompletion';
-export { Storage } from './utility/StorageAPI';
+import { onHasCompletion as _onHasCompletion } from '@graphiql/react';
+import {
+  fillLeafs as _fillLeafs,
+  getSelectedOperationName as _getSelectedOperationName,
+  mergeAst as _mergeAst,
+} from '@graphiql/toolkit';
+
+export const onHasCompletion: typeof _onHasCompletion =
+  function onHasCompletion(...args) {
+    console.warn(
+      'Importing `onHasCompletion` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `onHasCompletion` function provided by the `@graphiql/react` package.',
+    );
+    return _onHasCompletion(...args);
+  };
+
+export const fillLeafs: typeof _fillLeafs = function fillLeafs(...args) {
+  console.warn(
+    'Importing `fillLeafs` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `fillLeafs` function provided by the `@graphiql/toolkit` package.',
+  );
+  return _fillLeafs(...args);
+};
+
+export const getSelectedOperationName: typeof _getSelectedOperationName =
+  function getSelectedOperationName(...args) {
+    console.warn(
+      'Importing `getSelectedOperationName` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `getSelectedOperationName` function provided by the `@graphiql/toolkit` package.',
+    );
+    return _getSelectedOperationName(...args);
+  };
+
+export const mergeAst: typeof _mergeAst = function mergeAst(...args) {
+  console.warn(
+    'Importing `mergeAst` from `graphiql` is deprecated and will be removed in the next major version. Please switch to importing the `mergeAst` function provided by the `@graphiql/toolkit` package.',
+  );
+  return _mergeAst(...args);
+};

@@ -1,5 +1,3 @@
-const { buildClientSchema } = require('graphql');
-
 module.exports.schema = {
   __schema: {
     queryType: {

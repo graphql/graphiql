@@ -5,12 +5,13 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import React, { MouseEventHandler } from 'react';
+import React, { MouseEventHandler, ReactNode } from 'react';
 
 type ToolbarSelectProps = {
   title?: string;
   label?: string;
   onSelect?: (selection: string) => void;
+  children?: ReactNode;
 };
 
 type ToolbarSelectState = {
@@ -64,8 +65,7 @@ export class ToolbarSelect extends React.Component<
         }
         const onChildSelect =
           child.props.onSelect ||
-          (this.props.onSelect &&
-            this.props.onSelect.bind(null, child.props.value, i));
+          this.props.onSelect?.bind(null, child.props.value, i);
         return (
           <ToolbarSelectOption {...child.props} onSelect={onChildSelect} />
         );
@@ -79,7 +79,8 @@ export class ToolbarSelect extends React.Component<
         ref={node => {
           this._node = node;
         }}
-        title={this.props.title}>
+        title={this.props.title}
+      >
         {selectedChild?.props.label}
         <svg width="13" height="10">
           <path fill="#666" d="M 5 5 L 13 5 L 9 1 z" />
@@ -142,7 +143,8 @@ export function ToolbarSelectOption({
         e.currentTarget.className = '';
       }}
       onMouseDown={preventDefault}
-      onMouseUp={onSelect}>
+      onMouseUp={onSelect}
+    >
       {label}
       {selected && (
         <svg width="13" height="13">

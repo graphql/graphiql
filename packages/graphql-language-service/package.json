@@ -1,11 +1,15 @@
 {
   "name": "graphql-language-service",
-  "version": "4.1.5",
+  "version": "5.0.6",
   "description": "The official, runtime independent Language Service for GraphQL",
   "contributors": [
     "GraphQL Contributors"
   ],
-  "repository": "http://github.com/graphql/graphiql",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/graphql/graphiql",
+    "directory": "packages/graphql-language-service"
+  },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service#readme",
   "bugs": {
     "url": "https://github.com/graphql/graphiql/issues?q=issue+label:languageservice"
@@ -31,13 +35,22 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "graphql-language-service-interface": "^2.10.2",
-    "graphql-language-service-parser": "^1.10.4",
-    "graphql-language-service-types": "^1.8.7",
-    "graphql-language-service-utils": "^2.7.1"
+    "vscode-languageserver-types": "^3.17.1",
+    "nullthrows": "^1.0.0"
   },
   "devDependencies": {
     "@types/picomatch": "^2.3.0",
-    "graphql": "16.0.0-experimental-stream-defer.5"
+    "@types/benchmark": "^1.0.33",
+    "@types/json-schema": "7.0.9",
+    "benchmark": "^2.1.4",
+    "graphql": "^16.4.0",
+    "graphql-config": "4.3.3",
+    "lodash": "^4.17.15",
+    "platform": "^1.3.5",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.6.3"
+  },
+  "scripts": {
+    "benchmark": "ts-node benchmark/index.ts"
   }
 }

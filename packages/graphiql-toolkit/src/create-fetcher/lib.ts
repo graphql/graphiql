@@ -1,10 +1,10 @@
-import { DocumentNode, visit, GraphQLError } from 'graphql';
+import { DocumentNode, visit } from 'graphql';
 import { meros } from 'meros';
 import {
-  createClient,
   Client,
   ClientOptions,
   ExecutionResult,
+  createClient as createClientType,
 } from 'graphql-ws';
 import {
   isAsyncIterable,
@@ -19,6 +19,10 @@ import type {
   CreateFetcherOptions,
 } from './types';
 
+const errorHasCode = (err: unknown): err is { code: string } => {
+  return typeof err === 'object' && err !== null && 'code' in err;
+};
+
 /**
  * Returns true if the name matches a subscription in the AST
  *
@@ -28,7 +32,7 @@ import type {
  */
 export const isSubscriptionWithName = (
   document: DocumentNode,
-  name: string,
+  name: string | undefined,
 ): boolean => {
   let isSubscription = false;
   visit(document, {
@@ -51,24 +55,20 @@ export const isSubscriptionWithName = (
  * @param httpFetch {typeof fetch}
  * @returns {Fetcher}
  */
-export const createSimpleFetcher = (
-  options: CreateFetcherOptions,
-  httpFetch: typeof fetch,
-): Fetcher => async (
-  graphQLParams: FetcherParams,
-  fetcherOpts?: FetcherOpts,
-) => {
-  const data = await httpFetch(options.url, {
-    method: 'POST',
-    body: JSON.stringify(graphQLParams),
-    headers: {
-      'content-type': 'application/json',
-      ...options.headers,
-      ...fetcherOpts?.headers,
-    },
-  });
-  return data.json();
-};
+export const createSimpleFetcher =
+  (options: CreateFetcherOptions, httpFetch: typeof fetch): Fetcher =>
+  async (graphQLParams: FetcherParams, fetcherOpts?: FetcherOpts) => {
+    const data = await httpFetch(options.url, {
+      method: 'POST',
+      body: JSON.stringify(graphQLParams),
+      headers: {
+        'content-type': 'application/json',
+        ...options.headers,
+        ...fetcherOpts?.headers,
+      },
+    });
+    return data.json();
+  };
 
 export const createWebsocketsFetcherFromUrl = (
   url: string,
@@ -76,6 +76,10 @@ export const createWebsocketsFetcherFromUrl = (
 ) => {
   let wsClient;
   try {
+    const { createClient } = require('graphql-ws') as {
+      createClient: typeof createClientType;
+    };
+
     // TODO: defaults?
     wsClient = createClient({
       url,
@@ -83,6 +87,13 @@ export const createWebsocketsFetcherFromUrl = (
     });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
+    if (errorHasCode(err)) {
+      if (err.code === 'MODULE_NOT_FOUND') {
+        throw Error(
+          "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
+        );
+      }
+    }
     console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
   }
 };
@@ -93,31 +104,26 @@ export const createWebsocketsFetcherFromUrl = (
  * @param wsClient {Client}
  * @returns {Fetcher}
  */
-export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
-  graphQLParams: FetcherParams,
-) =>
-  makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
-    wsClient!.subscribe(graphQLParams, {
-      ...sink,
-      error: err => {
-        if (err instanceof Error) {
-          sink.error(err);
-        } else if (err instanceof CloseEvent) {
-          sink.error(
-            new Error(
-              `Socket closed with event ${err.code} ${err.reason || ''}`.trim(),
-            ),
-          );
-        } else {
-          sink.error(
-            new Error(
-              (err as GraphQLError[]).map(({ message }) => message).join(', '),
-            ),
-          );
-        }
-      },
-    }),
-  );
+export const createWebsocketsFetcherFromClient =
+  (wsClient: Client) => (graphQLParams: FetcherParams) =>
+    makeAsyncIterableIteratorFromSink<ExecutionResult>(sink =>
+      wsClient!.subscribe(graphQLParams, {
+        ...sink,
+        error: err => {
+          if (err instanceof CloseEvent) {
+            sink.error(
+              new Error(
+                `Socket closed with event ${err.code} ${
+                  err.reason || ''
+                }`.trim(),
+              ),
+            );
+          } else {
+            sink.error(err);
+          }
+        },
+      }),
+    );
 
 /**
  * Allow legacy websockets protocol client, but no definitions for it,
@@ -126,15 +132,15 @@ export const createWebsocketsFetcherFromClient = (wsClient: Client) => (
  * @param legacyWsClient
  * @returns
  */
-export const createLegacyWebsocketsFetcher = (legacyWsClient: {
-  request: (params: FetcherParams) => unknown;
-}) => (graphQLParams: FetcherParams) => {
-  const observable = legacyWsClient.request(graphQLParams);
-  return makeAsyncIterableIteratorFromSink<ExecutionResult>(
-    // @ts-ignore
-    sink => observable.subscribe(sink).unsubscribe,
-  );
-};
+export const createLegacyWebsocketsFetcher =
+  (legacyWsClient: { request: (params: FetcherParams) => unknown }) =>
+  (graphQLParams: FetcherParams) => {
+    const observable = legacyWsClient.request(graphQLParams);
+    return makeAsyncIterableIteratorFromSink<ExecutionResult>(
+      // @ts-ignore
+      sink => observable.subscribe(sink).unsubscribe,
+    );
+  };
 /**
  * create a fetcher with the `IncrementalDelivery` HTTP/S spec for
  * `@stream` and `@defer` support using `fetch-multipart-graphql`

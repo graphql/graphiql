@@ -25,34 +25,6 @@ search
     }
   });
 
-// If variables was provided, try to format it.
-if (parameters.variables) {
-  try {
-    parameters.variables = JSON.stringify(
-      JSON.parse(parameters.variables),
-      null,
-      2,
-    );
-  } catch (e) {
-    // Do nothing, we want to display the invalid JSON as a string, rather
-    // than present an error.
-  }
-}
-
-// If headers was provided, try to format it.
-if (parameters.headers) {
-  try {
-    parameters.headers = JSON.stringify(
-      JSON.parse(parameters.headers),
-      null,
-      2,
-    );
-  } catch (e) {
-    // Do nothing, we want to display the invalid JSON as a string, rather
-    // than present an error.
-  }
-}
-
 // When the query and variables string is edited, update the URL bar so
 // that it can be easily shared.
 function onEditQuery(newQuery) {
@@ -70,8 +42,11 @@ function onEditHeaders(newHeaders) {
   updateURL();
 }
 
-function onEditOperationName(newOperationName) {
-  parameters.operationName = newOperationName;
+function onTabChange(tabsState) {
+  const activeTab = tabsState.tabs[tabsState.activeTabIndex];
+  parameters.query = activeTab.query;
+  parameters.variables = activeTab.variables;
+  parameters.headers = activeTab.headers;
   updateURL();
 }
 
@@ -96,8 +71,12 @@ function getSchemaUrl() {
 
   if (isDev) {
     // This supports an e2e test which ensures that invalid schemas do not load.
-    if (parameters.bad && parameters.bad === 'true') {
+    if (parameters.bad === 'true') {
       return '/bad/graphql';
+    } else if (parameters['http-error'] === 'true') {
+      return '/http-error/graphql';
+    } else if (parameters['graphql-error'] === 'true') {
+      return '/graphql-error/graphql';
     } else {
       return '/graphql';
     }
@@ -118,15 +97,16 @@ ReactDOM.render(
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,
-    operationName: parameters.operationName,
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,
     defaultSecondaryEditorOpen: true,
-    onEditOperationName: onEditOperationName,
     headerEditorEnabled: true,
     shouldPersistHeaders: true,
-    inputValueDeprecation: true,
+    inputValueDeprecation: GraphQLVersion.includes('15.5') ? undefined : true,
+    tabs: {
+      onTabChange: onTabChange,
+    },
   }),
   document.getElementById('graphiql'),
 );

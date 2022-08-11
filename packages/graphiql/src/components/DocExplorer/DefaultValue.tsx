@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { astFromValue, print, ValueNode } from 'graphql';
-import { FieldType } from './types';
+import { ExplorerFieldDef } from '@graphiql/react';
 
 const printDefault = (ast?: ValueNode | null): string => {
   if (!ast) {
@@ -17,7 +17,7 @@ const printDefault = (ast?: ValueNode | null): string => {
 };
 
 type DefaultValueProps = {
-  field: FieldType;
+  field: ExplorerFieldDef;
 };
 
 export default function DefaultValue({ field }: DefaultValueProps) {

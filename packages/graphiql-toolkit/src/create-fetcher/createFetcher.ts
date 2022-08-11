@@ -17,7 +17,7 @@ import {
  */
 export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   let httpFetch;
-  if (typeof window !== null && window?.fetch) {
+  if (typeof window !== 'undefined' && window.fetch) {
     httpFetch = window.fetch;
   }
   if (
@@ -49,7 +49,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     }
     const isSubscription = isSubscriptionWithName(
       fetcherOpts?.documentAST!,
-      graphQLParams.operationName,
+      graphQLParams.operationName || undefined,
     );
     if (isSubscription) {
       if (!wsFetcher) {

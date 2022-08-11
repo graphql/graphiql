@@ -9,25 +9,10 @@
       "path": "../packages/graphiql-toolkit/tsconfig.esm.json"
     },
     {
-      "path": "../packages/graphiql/tsconfig.esm.json"
-    },
-    {
       "path": "../packages/codemirror-graphql/tsconfig.esm.json"
     },
     {
       "path": "../packages/monaco-graphql/tsconfig.esm.json"
-    },
-    {
-      "path": "../packages/graphql-language-service-utils/tsconfig.esm.json"
-    },
-    {
-      "path": "../packages/graphql-language-service-types/tsconfig.esm.json"
-    },
-    {
-      "path": "../packages/graphql-language-service-parser/tsconfig.esm.json"
-    },
-    {
-      "path": "../packages/graphql-language-service-interface/tsconfig.esm.json"
     },
     {
       "path": "../packages/graphql-language-service/tsconfig.esm.json"
