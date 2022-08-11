@@ -1,5 +1,18 @@
 # @graphiql/react
 
+## 0.10.0
+
+### Minor Changes
+
+- [#2651](https://github.com/graphql/graphiql/pull/2651) [`85d5af25`](https://github.com/graphql/graphiql/commit/85d5af25d77c29b7d02da90a431c8c15f610c22a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The following context properties have been removed as they are only meant for internal use:
+  - The `subscription` property of the `ExecutionContext`
+  - The `setSchema` method of the `SchemaContext`
+  - The `setFetchError` method of the `SchemaContext`
+
+* [#2652](https://github.com/graphql/graphiql/pull/2652) [`6ff0bab9`](https://github.com/graphql/graphiql/commit/6ff0bab978d63778b8ab4ba6e79fceb36c2db87f) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The `validationErrors` property of the `SchemaContext` is now always non-null. If the schema is valid then it will contain an empty list.
+
+- [#2644](https://github.com/graphql/graphiql/pull/2644) [`0aff68a6`](https://github.com/graphql/graphiql/commit/0aff68a645cceb6b9689e0f394e8bece01710efc) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The `ResponseEditor` component no longer accepts the prop `value`. Instead you can now pass the prop `response` to the `EditorContextProvider`. This aligns it with the API design of the other editor components.
+
 ## 0.9.0
 
 ### Minor Changes
