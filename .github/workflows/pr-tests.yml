@@ -25,14 +25,13 @@ jobs:
 
       - name: Build
         run: yarn build
-
-      - name: Run Unit Tests
-        run: yarn test --coverage
-
-      - name: Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          directory: coverage
+    # disabled because the graphiql test suites need more work
+    # for this coverage to matter
+    # also PR comment clutter!
+    # left the config file for when we re-enable
+    #
+    # - name: Run Unit Tests
+    #   run: yarn test --coverage
 
   e2e:
     name: Cypress E2E Suite

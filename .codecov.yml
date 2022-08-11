@@ -11,15 +11,3 @@ coverage:
     project: no
     patch: no
     changes: no
-
-flags:
-  graphiql:
-    paths:
-      - packages/graphiql/
-  graphql-language-service:
-    paths:
-      - packages/graphql-language-service
-
-  graphql-language-service-server:
-    paths:
-      - packages/graphql-language-service-server
