@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.8.3
+
+### Patch Changes
+
+- [#2664](https://github.com/graphql/graphiql/pull/2664) [`721425b3`](https://github.com/graphql/graphiql/commit/721425b3382e68dd4c7b883473e3eda38a9816ee) Thanks [@acao](https://github.com/acao)! - This reverts the bugfix for .graphqlrc.ts users, which broke the extension for schema url users
+
 ## 2.8.2
 
 ### Patch Changes
