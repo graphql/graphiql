@@ -196,6 +196,7 @@ paas
 //   these pop up when writing "GraphQL___"
 qlapi
 qlid
+qlide
 
 // other
 architecting
