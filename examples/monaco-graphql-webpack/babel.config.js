@@ -4,5 +4,8 @@ module.exports = {
     require.resolve('@babel/preset-typescript'),
     require.resolve('@babel/preset-react'),
   ],
-  plugins: [require.resolve('@babel/plugin-proposal-class-properties')],
+  plugins: [
+    require.resolve('@babel/plugin-proposal-class-properties'),
+    require.resolve('@babel/plugin-proposal-nullish-coalescing-operator'),
+  ],
 };

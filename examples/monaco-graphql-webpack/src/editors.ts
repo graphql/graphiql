@@ -42,12 +42,14 @@ query Example(
 
 const variablesString =
   localStorage.getItem('variables') ??
-  `{ 
-  "reviewEvent": "graphql", 
+  `{
+  "reviewEvent": "graphql",
   "name": true
 }`;
 
 const resultsString = `{}`;
+
+const schemaSdlString = localStorage.getItem('schema-sdl') ?? ``;
 
 const THEME = 'vs-dark';
 
@@ -91,6 +93,24 @@ export function createEditors() {
     },
   );
 
+  const schemaModel = monaco.editor.createModel(
+    schemaSdlString,
+    GRAPHQL_LANGUAGE_ID,
+    monaco.Uri.file('/1/schema.graphqls'),
+  );
+
+  const schemaEditor = monaco.editor.create(
+    document.getElementById('schema-sdl') as HTMLElement,
+    {
+      model: schemaModel,
+      formatOnPaste: true,
+      formatOnType: true,
+      folding: true,
+      theme: THEME,
+      language: GRAPHQL_LANGUAGE_ID,
+    },
+  );
+
   const resultsModel = monaco.editor.createModel(
     resultsString,
     'json',
@@ -113,7 +133,9 @@ export function createEditors() {
     operationEditor,
     variablesEditor,
     resultsEditor,
+    schemaEditor,
     operationModel,
     variablesModel,
+    schemaModel,
   };
 }

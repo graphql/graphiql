@@ -1,4 +1,9 @@
-import { getIntrospectionQuery } from 'graphql';
+import {
+  buildClientSchema,
+  getIntrospectionQuery,
+  printSchema,
+  parse,
+} from 'graphql';
 import type { SchemaConfig } from 'monaco-graphql/src/typings';
 import { Uri } from 'monaco-editor';
 
@@ -33,6 +38,8 @@ class MySchemaFetcher {
   private _options: typeof schemaOptions;
   private _currentSchema: typeof schemaOptions[0];
   private _schemaCache = new Map<string, SchemaConfig>();
+  private _schemaOverride = new Map<string, string>();
+
   constructor(options = schemaOptions) {
     this._options = options;
     this._currentSchema = schemaOptions[0];
@@ -49,7 +56,10 @@ class MySchemaFetcher {
   async getSchema() {
     const cacheItem = this._schemaCache.get(this._currentSchema.value);
     if (cacheItem) {
-      return cacheItem;
+      return {
+        ...cacheItem,
+        documentString: this.getOverride() || cacheItem.documentString,
+      };
     }
     return this.loadSchema();
   }
@@ -84,10 +94,15 @@ class MySchemaFetcher {
           2,
         ),
       });
+      const introspectionJSON = (await result.json()).data;
+      const documentString = printSchema(buildClientSchema(introspectionJSON));
       this._schemaCache.set(url, {
-        introspectionJSON: (await result.json()).data,
+        introspectionJSON,
+        documentString,
         uri: Uri.parse(url).toString(),
       });
+
+      this.clearOverride();
 
       setSchemaStatus('Schema Loaded');
     } catch {
@@ -98,7 +113,32 @@ class MySchemaFetcher {
   }
   async changeSchema(uri: string) {
     this._currentSchema = this._options.find(opt => opt.value === uri)!;
+    this.clearOverride();
     return this.getSchema();
+  }
+
+  getOverride() {
+    return this._schemaOverride.get(this._currentSchema.value);
+  }
+
+  clearOverride() {
+    this._schemaOverride.delete(this._currentSchema.value);
+  }
+
+  async overrideSchema(sdl: string) {
+    if (isValid(sdl)) {
+      this._schemaOverride.set(this._currentSchema.value, sdl);
+      return this.getSchema();
+    }
+  }
+}
+
+function isValid(sdl: string) {
+  try {
+    parse(sdl);
+    return true;
+  } catch {
+    return false;
   }
 }
 
