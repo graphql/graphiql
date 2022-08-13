@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 'current'
+          # TODO: fix vite bug for node 18 current
+          node-version: '16.x'
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
@@ -32,4 +33,4 @@ jobs:
           VSCE_PAT: ${{ secrets.PAT_TOKEN }}
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
           # for ovsx, see https://github.com/eclipse/openvsx/blob/master/cli/README.md#publish-extensions
-          OVSX_PAT: ${{ secrets.OPEN_VSX_ACCESS_TOKEN }}
+          OVSX_PAT: ${{ secrets.OPEN_VSX_TOKEN }}
