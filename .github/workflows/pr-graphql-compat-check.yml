@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
+          node-version: '16.x'
 
       - name: Force GraphQL ${{ matrix.release }} solution
         run: yarn repo:resolve graphql@${{ matrix.release }}
