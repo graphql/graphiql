@@ -1,7 +1,12 @@
 name: Build & Test PR w/ GraphQL Regressions
 on:
-  pull_request:
-    types: [opened, synchronize]
+  push:
+    # only on merge to main.
+    # it's rare that this workflow would
+    # show us an error, but when it does it's important!
+    branches:
+      - main
+    # don't run this regression suite if we don't need to
     paths-ignore:
       - '**.md'
       - 'examples'
@@ -22,7 +27,6 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 'current'
           cache: 'yarn'
 
       - name: Force GraphQL ${{ matrix.release }} solution

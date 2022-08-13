@@ -34,20 +34,21 @@
     "graphql": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
-    "@babel/types": "^7.17.0",
     "@babel/parser": "^7.17.3",
+    "@babel/types": "^7.17.0",
+    "@graphql-tools/load": "^7.5.3",
     "dotenv": "8.2.0",
+    "fast-glob": "^3.2.7",
+    "glob": "^7.2.0",
     "graphql-config": "4.3.0",
     "graphql-language-service": "^5.0.6",
     "mkdirp": "^1.0.4",
+    "node-abort-controller": "^3.0.1",
     "node-fetch": "^2.6.1",
     "nullthrows": "^1.0.0",
-    "vscode-languageserver": "^8.0.1",
     "vscode-jsonrpc": "^8.0.1",
-    "fast-glob": "^3.2.7",
-    "vscode-uri": "^3.0.2",
-    "glob": "^7.2.0",
-    "@graphql-tools/load": "^7.5.3"
+    "vscode-languageserver": "^8.0.1",
+    "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
