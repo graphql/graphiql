@@ -70,21 +70,29 @@ async function updateVersions() {
       false,
     );
 
+    for (const [key, release] of releasePlan.releases) {
+      // TODO: vscode
+      // if (
+      //   release.name.includes('vscode-graphql') &&
+      //   release.changesets?.type !== 'none'
+      // ) {
+      //   // vsce pre-release only accept x.y.z versions
+      //   release.newVersion = vscodeRelease = semver.patch(release.oldVersion);
+      // }
+      //
+      // ⚠️ IMPORTANT!!!! ⚠️
+      // skip non pre-release versions
+      // (in case next/ branch hasn't rebased, or there are un-released changes on main)
+      if (!release.newVersion.includes('next')) {
+        delete releasePlan.releases[key];
+      }
+      // ⚠️ IMPORTANT!!!! ⚠️
+    }
+
     if (releasePlan.releases.length === 0) {
       console.warn(noChangesWarning);
       process.exit(1);
     } else {
-      // TODO: vscode
-      //   for (const release of releasePlan.releases) {
-      //     if (
-      //       release.name.includes('vscode-graphql') &&
-      //       release.changesets?.type !== 'none'
-      //     ) {
-      //       // vsce pre-release only accept x.y.z versions
-      //       release.newVersion = vscodeRelease = semver.patch(release.oldVersion);
-      //     }
-      //   }
-
       await applyReleasePlan(
         releasePlan,
         packages,

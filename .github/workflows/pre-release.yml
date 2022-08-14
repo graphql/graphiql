@@ -11,7 +11,9 @@ jobs:
   publish-canary:
     name: Publish Pre-Release
     runs-on: ubuntu-latest
-    if:  startsWith(github.head_ref, 'next/')
+    # only on next/
+    # only on non-forked branches. IMPORTANT!!!!
+    if:  ${{ startsWith(github.head_ref, 'next/') && !github.event.pull_request.head.repo.fork }}
     env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
