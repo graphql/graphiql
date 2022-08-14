@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize]
     paths-ignore:
       - '**.md'
-      - 'examples'
+      - 'examples/**'
       - '!examples/monaco-graphql-webpack'
 jobs:
   unit:

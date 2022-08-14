@@ -9,7 +9,7 @@ on:
     # don't run this regression suite if we don't need to
     paths-ignore:
       - '**.md'
-      - 'examples'
+      - 'examples/**'
       - '!examples/monaco-graphql-webpack'
 
 # TODO: test matrix?

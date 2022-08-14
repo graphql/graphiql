@@ -4,10 +4,10 @@ on:
     types: [opened, synchronize]
     # TODO: ignore this after setting up a separate task to link markdown
     # and to ignore eslint/prettier issues in examples
-    # paths-ignore:
-    #   - '**.md'
-    #   - 'examples'
-    #   - '!examples/monaco-graphql-webpack'
+    paths-ignore:
+      - '**.md'
+      - 'examples/**'
+      - '!examples/monaco-graphql-webpack'
 
       
 jobs:

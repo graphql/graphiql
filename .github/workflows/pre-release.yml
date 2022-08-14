@@ -1,9 +1,7 @@
-name: Canary Release
+name: Pre-Release
 
 on:
   pull_request:
-    branches:
-      - main
     paths-ignore:
       - '**.md'
       - 'examples/**'
@@ -11,9 +9,9 @@ on:
 
 jobs:
   publish-canary:
-    name: Publish Canary
+    name: Publish Pre-Release
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if:  startsWith(github.head_ref, 'next/')
     env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

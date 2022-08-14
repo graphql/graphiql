@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'yarn.lock'
-      
+
 jobs:
   check:
     name: License Check
