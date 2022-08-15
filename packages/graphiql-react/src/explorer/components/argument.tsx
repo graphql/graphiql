@@ -7,8 +7,21 @@ import './argument.css';
 import { MarkdownContent } from '../../ui';
 
 type ArgumentProps = {
+  /**
+   * The argument that should be rendered.
+   */
   arg: GraphQLArgument;
+  /**
+   * Toggle if the default value for the argument is shown (if there is one)
+   * @default false
+   */
   showDefaultValue?: boolean;
+  /**
+   * Toggle whether to render the whole argument including description and
+   * deprecation reason (`false`) or to just render the argument name, type,
+   * and default value in a single line (`true`).
+   * @default false
+   */
   inline?: boolean;
 };
 
