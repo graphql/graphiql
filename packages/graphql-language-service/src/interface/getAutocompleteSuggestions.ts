@@ -147,7 +147,7 @@ export type AutocompleteSuggestionOptions = {
   fillLeafsOnComplete?: boolean;
   schema?: GraphQLSchema;
   uri?: string;
-  mode?: 'TypeSystem' | 'Executable';
+  mode?: GraphQLDocumentMode;
 };
 
 /**
@@ -172,12 +172,7 @@ export function getAutocompleteSuggestions(
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
-  const mode =
-    options?.mode ||
-    options?.uri?.endsWith('.graphqls') ||
-    hasTypeSystemDefinitions(queryText)
-      ? 'TypeSystem'
-      : 'Executable';
+  const mode = options?.mode || getDocumentMode(queryText, options?.uri);
 
   // relieve flow errors by checking if `state` exists
   if (!state) {
@@ -190,21 +185,14 @@ export function getAutocompleteSuggestions(
 
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
-    if (mode === 'TypeSystem') {
+    if (mode === GraphQLDocumentMode.TYPE_SYSTEM) {
       return getSuggestionsForTypeSystemDefinitions(token);
     }
     return getSuggestionsForExecutableDefinitions(token);
   }
 
   if (kind === RuleKinds.EXTEND_DEF) {
-    return hintList(token, [
-      { label: 'type', kind: CompletionItemKind.Function },
-      { label: 'interface', kind: CompletionItemKind.Function },
-      { label: 'union', kind: CompletionItemKind.Function },
-      { label: 'input', kind: CompletionItemKind.Function },
-      { label: 'scalar', kind: CompletionItemKind.Function },
-      { label: 'schema', kind: CompletionItemKind.Function },
-    ]);
+    return getSuggestionsForExtensionDefinitions(token);
   }
 
   if (
@@ -414,7 +402,10 @@ export function getAutocompleteSuggestions(
     );
   }
 
-  if (mode === 'TypeSystem' && kind === RuleKinds.NAMED_TYPE) {
+  if (
+    mode === GraphQLDocumentMode.TYPE_SYSTEM &&
+    kind === RuleKinds.NAMED_TYPE
+  ) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -473,6 +464,7 @@ const getInsertText = (field: GraphQLField<null, null>) => {
   return null;
 };
 
+// Helper functions to get suggestions for each kinds
 function getSuggestionsForTypeSystemDefinitions(token: ContextToken) {
   return hintList(token, [
     { label: 'extend', kind: CompletionItemKind.Function },
@@ -495,7 +487,17 @@ function getSuggestionsForExecutableDefinitions(token: ContextToken) {
   ]);
 }
 
-// Helper functions to get suggestions for each kinds
+function getSuggestionsForExtensionDefinitions(token: ContextToken) {
+  return hintList(token, [
+    { label: 'type', kind: CompletionItemKind.Function },
+    { label: 'interface', kind: CompletionItemKind.Function },
+    { label: 'union', kind: CompletionItemKind.Function },
+    { label: 'input', kind: CompletionItemKind.Function },
+    { label: 'scalar', kind: CompletionItemKind.Function },
+    { label: 'schema', kind: CompletionItemKind.Function },
+  ]);
+}
+
 function getSuggestionsForFieldNames(
   token: ContextToken,
   typeInfo: AllTypeInfo,
@@ -1267,4 +1269,21 @@ export function getTypeInfo(
     interfaceDef,
     objectTypeDef,
   };
+}
+
+enum GraphQLDocumentMode {
+  TYPE_SYSTEM = 'TYPE_SYSTEM',
+  EXECUTABLE = 'EXECUTABLE',
+}
+
+function getDocumentMode(
+  documentText: string,
+  uri?: string,
+): GraphQLDocumentMode {
+  if (uri?.endsWith('.graphqls')) {
+    return GraphQLDocumentMode.TYPE_SYSTEM;
+  }
+  return hasTypeSystemDefinitions(documentText)
+    ? GraphQLDocumentMode.TYPE_SYSTEM
+    : GraphQLDocumentMode.EXECUTABLE;
 }
