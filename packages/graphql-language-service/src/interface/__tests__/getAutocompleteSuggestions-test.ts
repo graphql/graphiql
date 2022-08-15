@@ -89,13 +89,15 @@ describe('getAutocompleteSuggestions', () => {
     query: string,
     point: Position,
     externalFragments?: FragmentDefinitionNode[],
+    uri?: string,
   ): Array<CompletionItem> {
     return getAutocompleteSuggestions(
       schema,
       query,
       point,
-      null,
+      undefined,
       externalFragments,
+      { uri },
     )
       .filter(
         field => !['__schema', '__type'].some(name => name === field.label),
@@ -244,6 +246,21 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
 
+    it('provides correct type suggestions for fragments', () => {
+      const result = testSuggestions('fragment test on ', new Position(0, 17));
+
+      expect(result).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Human' },
+        { label: 'Query' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]);
+    });
+
     it('provides correct field suggestions for fragments', () => {
       const result = testSuggestions(
         'fragment test on Human { ',
@@ -359,6 +376,7 @@ describe('getAutocompleteSuggestions', () => {
         { label: 'Query' },
         { label: 'TestInterface' },
         { label: 'TestType' },
+        { label: 'TestUnion' },
       ]);
     });
 
@@ -498,7 +516,98 @@ describe('getAutocompleteSuggestions', () => {
       ]);
     });
   });
+
   describe('with SDL types', () => {
+    it('provides correct initial keywords', () => {
+      expect(
+        testSuggestions('', new Position(0, 0), [], 'schema.graphqls'),
+      ).toEqual([
+        { label: 'extend' },
+        { label: 'input' },
+        { label: 'interface' },
+        { label: 'scalar' },
+        { label: 'schema' },
+        { label: 'type' },
+        { label: 'union' },
+      ]);
+    });
+
+    it('provides correct initial definition keywords', () => {
+      expect(
+        testSuggestions('type Type { field: String }\n\n', new Position(0, 31)),
+      ).toEqual([
+        { label: 'extend' },
+        { label: 'input' },
+        { label: 'interface' },
+        { label: 'scalar' },
+        { label: 'schema' },
+        { label: 'type' },
+        { label: 'union' },
+      ]);
+    });
+
+    it('provides correct extension keywords', () => {
+      expect(testSuggestions('extend ', new Position(0, 7))).toEqual([
+        { label: 'input' },
+        { label: 'interface' },
+        { label: 'scalar' },
+        { label: 'schema' },
+        { label: 'type' },
+        { label: 'union' },
+      ]);
+    });
+
+    it('provides scalars to be extended', () => {
+      expect(testSuggestions('extend scalar ', new Position(0, 14))).toEqual([
+        { label: 'Boolean' },
+        { label: 'Int' },
+        { label: 'String' },
+      ]);
+    });
+
+    it('provides object types to be extended', () => {
+      expect(testSuggestions('extend type ', new Position(0, 12))).toEqual([
+        { label: 'Droid' },
+        { label: 'Human' },
+        { label: 'Query' },
+        { label: 'TestType' },
+      ]);
+    });
+
+    it('does not provide object type names once extending a type', () => {
+      expect(
+        testSuggestions('extend type Query {', new Position(0, 19)),
+      ).toEqual([]);
+    });
+
+    it('provides interfaces to be extended', () => {
+      expect(
+        testSuggestions('extend interface ', new Position(0, 17)),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Character' },
+        { label: 'TestInterface' },
+      ]);
+    });
+
+    it('provides unions to be extended', () => {
+      expect(testSuggestions('extend union ', new Position(0, 13))).toEqual([
+        { label: 'TestUnion' },
+      ]);
+    });
+
+    it('provides enums to be extended', () => {
+      expect(testSuggestions('extend enum ', new Position(0, 12))).toEqual([
+        { label: 'Episode' },
+      ]);
+    });
+
+    it('provides input objects to be extended', () => {
+      expect(testSuggestions('extend input ', new Position(0, 13))).toEqual([
+        { label: 'InputType' },
+      ]);
+    });
+
     it('provides correct directive suggestions on definitions', () =>
       expect(testSuggestions('type Type @', new Position(0, 11))).toEqual([
         { label: 'onAllDefs' },
@@ -506,6 +615,7 @@ describe('getAutocompleteSuggestions', () => {
     it('provides correct suggestions on object fields', () =>
       expect(
         testSuggestions(`type Type {\n  aField: s`, new Position(0, 23)),
+        // FIXME: these are just input types, should suggest output types and [
       ).toEqual([{ label: 'Episode' }, { label: 'String' }]));
     it('provides correct suggestions on input object fields', () =>
       expect(

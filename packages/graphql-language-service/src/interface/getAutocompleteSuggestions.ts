@@ -25,6 +25,11 @@ import {
   GraphQLArgument,
   isListType,
   isNonNullType,
+  isScalarType,
+  isObjectType,
+  isUnionType,
+  isEnumType,
+  isInputObjectType,
 } from 'graphql';
 
 import {
@@ -51,6 +56,7 @@ import {
   isCompositeType,
   isInputType,
   visit,
+  BREAK,
   parse,
 } from 'graphql';
 
@@ -93,9 +99,55 @@ const collectFragmentDefs = (op: string | undefined) => {
   return externalFragments;
 };
 
+const typeSystemKinds: Kind[] = [
+  // TypeSystemDefinition
+  Kind.SCHEMA_DEFINITION,
+  Kind.OPERATION_TYPE_DEFINITION,
+  Kind.SCALAR_TYPE_DEFINITION,
+  Kind.OBJECT_TYPE_DEFINITION,
+  Kind.INTERFACE_TYPE_DEFINITION,
+  Kind.UNION_TYPE_DEFINITION,
+  Kind.ENUM_TYPE_DEFINITION,
+  Kind.INPUT_OBJECT_TYPE_DEFINITION,
+  Kind.DIRECTIVE_DEFINITION,
+  // TypeSystemExtension
+  Kind.SCHEMA_EXTENSION,
+  Kind.SCALAR_TYPE_EXTENSION,
+  Kind.OBJECT_TYPE_EXTENSION,
+  Kind.INTERFACE_TYPE_EXTENSION,
+  Kind.UNION_TYPE_EXTENSION,
+  Kind.ENUM_TYPE_EXTENSION,
+  Kind.INPUT_OBJECT_TYPE_EXTENSION,
+];
+
+const hasTypeSystemDefinitions = (sdl: string | undefined) => {
+  let hasTypeSystemDef = false;
+  if (sdl) {
+    try {
+      visit(parse(sdl), {
+        enter(node) {
+          if (node.kind === 'Document') {
+            return;
+          }
+          if (typeSystemKinds.includes(node.kind)) {
+            hasTypeSystemDef = true;
+            return BREAK;
+          }
+          return false;
+        },
+      });
+    } catch {
+      return hasTypeSystemDef;
+    }
+  }
+  return hasTypeSystemDef;
+};
+
 export type AutocompleteSuggestionOptions = {
   fillLeafsOnComplete?: boolean;
   schema?: GraphQLSchema;
+  uri?: string;
+  mode?: 'TypeSystem' | 'Executable';
 };
 
 /**
@@ -120,6 +172,13 @@ export function getAutocompleteSuggestions(
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
+  const mode =
+    options?.mode ||
+    options?.uri?.endsWith('.graphqls') ||
+    hasTypeSystemDefinitions(queryText)
+      ? 'TypeSystem'
+      : 'Executable';
+
   // relieve flow errors by checking if `state` exists
   if (!state) {
     return [];
@@ -128,15 +187,109 @@ export function getAutocompleteSuggestions(
   const kind = state.kind;
   const step = state.step;
   const typeInfo = getTypeInfo(schema, token.state);
+
   // Definition kinds
   if (kind === RuleKinds.DOCUMENT) {
+    if (mode === 'TypeSystem') {
+      return getSuggestionsForTypeSystemDefinitions(token);
+    }
+    return getSuggestionsForExecutableDefinitions(token);
+  }
+
+  if (kind === RuleKinds.EXTEND_DEF) {
     return hintList(token, [
-      { label: 'query', kind: CompletionItemKind.Function },
-      { label: 'mutation', kind: CompletionItemKind.Function },
-      { label: 'subscription', kind: CompletionItemKind.Function },
-      { label: 'fragment', kind: CompletionItemKind.Function },
-      { label: '{', kind: CompletionItemKind.Constructor },
+      { label: 'type', kind: CompletionItemKind.Function },
+      { label: 'interface', kind: CompletionItemKind.Function },
+      { label: 'union', kind: CompletionItemKind.Function },
+      { label: 'input', kind: CompletionItemKind.Function },
+      { label: 'scalar', kind: CompletionItemKind.Function },
+      { label: 'schema', kind: CompletionItemKind.Function },
     ]);
+  }
+
+  if (
+    state.prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
+    state.name
+  ) {
+    return hintList(token, []);
+  }
+
+  // extend scalar
+  if (state.prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(isScalarType)
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
+  // extend object type
+  if (state.prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(type => isObjectType(type) && !type.name.startsWith('__'))
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
+  // extend interface type
+  if (state.prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(isInterfaceType)
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
+  // extend union type
+  if (state.prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(isUnionType)
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
+  // extend enum type
+  if (state.prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(type => isEnumType(type) && !type.name.startsWith('__'))
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
+  // extend input object type
+  if (state.prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(isInputObjectType)
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
   }
 
   if (
@@ -261,6 +414,18 @@ export function getAutocompleteSuggestions(
     );
   }
 
+  if (mode === 'TypeSystem' && kind === RuleKinds.NAMED_TYPE) {
+    return hintList(
+      token,
+      Object.values(schema.getTypeMap())
+        .filter(type => !type.name.startsWith('__'))
+        .map(type => ({
+          label: type.name,
+          kind: CompletionItemKind.Function,
+        })),
+    );
+  }
+
   // Variable definition types
   if (
     (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
@@ -307,6 +472,28 @@ const getInsertText = (field: GraphQLField<null, null>) => {
   }
   return null;
 };
+
+function getSuggestionsForTypeSystemDefinitions(token: ContextToken) {
+  return hintList(token, [
+    { label: 'extend', kind: CompletionItemKind.Function },
+    { label: 'type', kind: CompletionItemKind.Function },
+    { label: 'interface', kind: CompletionItemKind.Function },
+    { label: 'union', kind: CompletionItemKind.Function },
+    { label: 'input', kind: CompletionItemKind.Function },
+    { label: 'scalar', kind: CompletionItemKind.Function },
+    { label: 'schema', kind: CompletionItemKind.Function },
+  ]);
+}
+
+function getSuggestionsForExecutableDefinitions(token: ContextToken) {
+  return hintList(token, [
+    { label: 'query', kind: CompletionItemKind.Function },
+    { label: 'mutation', kind: CompletionItemKind.Function },
+    { label: 'subscription', kind: CompletionItemKind.Function },
+    { label: 'fragment', kind: CompletionItemKind.Function },
+    { label: '{', kind: CompletionItemKind.Constructor },
+  ]);
+}
 
 // Helper functions to get suggestions for each kinds
 function getSuggestionsForFieldNames(
@@ -554,7 +741,9 @@ function getSuggestionsForFragmentTypeConditions(
     }
   } else {
     const typeMap = schema.getTypeMap();
-    possibleTypes = objectValues(typeMap).filter(isCompositeType);
+    possibleTypes = objectValues(typeMap).filter(
+      type => isCompositeType(type) && !type.name.startsWith('__'),
+    );
   }
   return hintList(
     token,
