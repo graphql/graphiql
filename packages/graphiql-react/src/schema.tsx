@@ -27,14 +27,6 @@ import {
 import { useEditorContext } from './editor';
 import { createContextHook, createNullableContext } from './utility/context';
 
-/**
- * There's a semantic difference between `null` and `undefined`:
- * - When `null` is passed explicitly as prop, GraphiQL will run schema-less
- *   (i.e. it will never attempt to fetch the schema, even when calling the
- *   `introspect` function).
- * - When `schema` is `undefined` GraphiQL will attempt to fetch the schema
- *   when calling `introspect`.
- */
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
 export type SchemaContextType = {
@@ -48,15 +40,64 @@ export type SchemaContextType = {
 export const SchemaContext =
   createNullableContext<SchemaContextType>('SchemaContext');
 
-type SchemaContextProviderProps = {
+export type SchemaContextProviderProps = {
   children: ReactNode;
+  /**
+   * This prop can be used to skip validating the GraphQL schema. This applies
+   * to both schemas fetched via introspection and schemas explicitly passed
+   * via the `schema` prop.
+   *
+   * IMPORTANT NOTE: Without validating the schema, GraphiQL and its components
+   * are vulnerable to numerous exploits and might break. Only use this prop if
+   * you have full control over the schema passed to GraphiQL.
+   *
+   * @default false
+   */
   dangerouslyAssumeSchemaIsValid?: boolean;
+  /**
+   * A function which accepts GraphQL HTTP parameters and returns a `Promise`,
+   * `Observable` or `AsyncIterable` that returns the GraphQL response in
+   * parsed JSON format.
+   *
+   * We suggest using the `createGraphiQLFetcher` utility from `@graphiql/toolkit`
+   * to create these fetcher functions.
+   *
+   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#creategraphiqlfetcher-2|`createGraphiQLFetcher`}
+   */
   fetcher: Fetcher;
+  /**
+   * Invoked after a new GraphQL schema was built. This includes both fetching
+   * the schema via introspection and passing the schema using the `schema`
+   * prop.
+   * @param schema The GraphQL schema that is now used for GraphiQL.
+   */
   onSchemaChange?(schema: GraphQLSchema): void;
+  /**
+   * Explicitly provide the GraphiQL schema that shall be used for GraphiQL.
+   * If this props is...
+   * - ...passed and the value is a GraphQL schema, it will be validated and
+   *   then used for GraphiQL if it is valid.
+   * - ...passed and the value is the result of an introspection query, a
+   *   GraphQL schema will be built from this introspection data, it will be
+   *   validated, and then used for GraphiQL if it is valid.
+   * - ...set to `null`, no introspection request will be triggered and
+   *   GraphiQL will run without a schema.
+   * - ...set to `undefined` or not set at all, an introspection request will
+   *   be triggered. If this request succeeds, a GraphQL schema will be built
+   *   from the returned introspection data, it will be validated, and then
+   *   used for GraphiQL if it is valid. If this request fails, GraphiQL will
+   *   run without a schema.
+   */
   schema?: GraphQLSchema | IntrospectionQuery | null;
 } & IntrospectionArgs;
 
 export function SchemaContextProvider(props: SchemaContextProviderProps) {
+  if (!props.fetcher) {
+    throw new TypeError(
+      'The `SchemaContextProvider` component requires a `fetcher` function to be passed as prop.',
+    );
+  }
+
   const { initialHeaders, headerEditor } = useEditorContext({
     nonNull: true,
     caller: SchemaContextProvider,
@@ -296,8 +337,23 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 export const useSchemaContext = createContextHook(SchemaContext);
 
 type IntrospectionArgs = {
+  /**
+   * Can be used to set the equally named option for introspecting a GraphQL
+   * server.
+   * @default false
+   * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
+   */
   inputValueDeprecation?: boolean;
+  /**
+   * Can be used to set a custom operation name for the introspection query.
+   */
   introspectionQueryName?: string;
+  /**
+   * Can be used to set the equally named option for introspecting a GraphQL
+   * server.
+   * @default false
+   * @see {@link https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts|Utility for creating the introspection query}
+   */
   schemaDescription?: boolean;
 };
 

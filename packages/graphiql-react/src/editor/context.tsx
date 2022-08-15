@@ -69,17 +69,80 @@ export type EditorContextType = {
 export const EditorContext =
   createNullableContext<EditorContextType>('EditorContext');
 
-type EditorContextProviderProps = {
+export type EditorContextProviderProps = {
   children: ReactNode;
+  /**
+   * The initial contents of the query editor when loading GraphiQL and there
+   * is no other source for the editor state. Other sources can be:
+   * - The `query` prop
+   * - The value persisted in storage
+   * These default contents will only be used for the first tab. When opening
+   * more tabs the query editor will start out empty.
+   */
   defaultQuery?: string;
+  /**
+   * With this prop you can pass so-called "external" fragments that will be
+   * included in the query document (depending on usage). You can either pass
+   * the fragments using SDL (passing a string) or you can pass a list of
+   * `FragmentDefinitionNode` objects.
+   */
   externalFragments?: string | FragmentDefinitionNode[];
+  /**
+   * This prop can be used to set the contents of the headers editor. Every
+   * time this prop changes, the contents of the headers editor are replaced.
+   * Note that the editor contents can be changed in between these updates by
+   * typing in the editor.
+   */
   headers?: string;
+  /**
+   * Invoked when the operation name changes. Possible triggers are:
+   * - Editing the contents of the query editor
+   * - Selecting a operation for execution in a document that contains multiple
+   *   operation definitions
+   * @param operationName The operation name after it has been changed.
+   */
   onEditOperationName?(operationName: string): void;
-  onTabChange?(tabs: TabsState): void;
+  /**
+   * Invoked when the state of the tabs changes. Possible triggers are:
+   * - Updating any editor contents inside the currently active tab
+   * - Adding a tab
+   * - Switching to a different tab
+   * - Closing a tab
+   * @param tabState The tabs state after it has been updated.
+   */
+  onTabChange?(tabState: TabsState): void;
+  /**
+   * This prop can be used to set the contents of the query editor. Every time
+   * this prop changes, the contents of the query editor are replaced. Note
+   * that the editor contents can be changed in between these updates by typing
+   * in the editor.
+   */
   query?: string;
+  /**
+   * This prop can be used to set the contents of the response editor. Every
+   * time this prop changes, the contents of the response editor are replaced.
+   * Note that the editor contents can change in between these updates by
+   * executing queries that will show a response.
+   */
   response?: string;
+  /**
+   * This prop toggles if the contents of the headers editor are persisted in
+   * storage.
+   * @default false
+   */
   shouldPersistHeaders?: boolean;
+  /**
+   * This prop accepts custom validation rules for GraphQL documents that are
+   * run against the contents of the query editor (in addition to the rules
+   * that are specified in the GraphQL spec).
+   */
   validationRules?: ValidationRule[];
+  /**
+   * This prop can be used to set the contents of the variables editor. Every
+   * time this prop changes, the contents of the variables editor are replaced.
+   * Note that the editor contents can be changed in between these updates by
+   * typing in the editor.
+   */
   variables?: string;
 };
 
