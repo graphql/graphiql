@@ -1,4 +1,3 @@
-export { onHasCompletion } from './completion';
 export {
   HeaderEditor,
   ImagePreview,

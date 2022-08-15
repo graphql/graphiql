@@ -2,7 +2,12 @@ import { MarkdownContent } from '../../ui';
 
 import './deprecation-reason.css';
 
-type DeprecationReasonProps = { children?: string | null };
+type DeprecationReasonProps = {
+  /**
+   * The deprecation reason as markdown string.
+   */
+  children?: string | null;
+};
 
 export function DeprecationReason(props: DeprecationReasonProps) {
   return props.children ? (

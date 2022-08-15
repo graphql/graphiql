@@ -5,7 +5,6 @@ export {
   EditorContextProvider,
   HeaderEditor,
   ImagePreview,
-  onHasCompletion,
   QueryEditor,
   ResponseEditor,
   useAutoCompleteLeafs,

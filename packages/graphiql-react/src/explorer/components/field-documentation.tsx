@@ -9,7 +9,12 @@ import { Directive } from './directive';
 import { ExplorerSection } from './section';
 import { TypeLink } from './type-link';
 
-type FieldDocumentationProps = { field: ExplorerFieldDef };
+type FieldDocumentationProps = {
+  /**
+   * The field or argument that should be rendered.
+   */
+  field: ExplorerFieldDef;
+};
 
 export function FieldDocumentation(props: FieldDocumentationProps) {
   return (

@@ -22,7 +22,12 @@ import { TypeLink } from './type-link';
 
 import './type-documentation.css';
 
-type TypeDocumentationProps = { type: GraphQLNamedType };
+type TypeDocumentationProps = {
+  /**
+   * The type that should be rendered.
+   */
+  type: GraphQLNamedType;
+};
 
 export function TypeDocumentation(props: TypeDocumentationProps) {
   return isNamedType(props.type) ? (
