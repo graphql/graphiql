@@ -6,6 +6,7 @@ import { parse, print } from 'graphql';
 import { useCallback, useEffect } from 'react';
 
 import { useExplorerContext } from '../explorer';
+import { usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
@@ -96,6 +97,7 @@ export function useCompletion(
 ) {
   const { schema } = useSchemaContext({ nonNull: true, caller });
   const explorer = useExplorerContext();
+  const plugin = usePluginContext();
   useEffect(() => {
     if (!editor) {
       return;
@@ -105,7 +107,7 @@ export function useCompletion(
       instance: CodeMirrorEditor,
       changeObj?: EditorChange,
     ) => {
-      onHasCompletion(instance, changeObj, schema, explorer, type => {
+      onHasCompletion(instance, changeObj, schema, explorer, plugin, type => {
         callback?.({ kind: 'Type', type, schema: schema || undefined });
       });
     };
@@ -120,7 +122,7 @@ export function useCompletion(
         'hasCompletion',
         handleCompletion,
       );
-  }, [callback, editor, explorer, schema]);
+  }, [callback, editor, explorer, plugin, schema]);
 }
 
 type EmptyCallback = () => void;

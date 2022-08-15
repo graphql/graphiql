@@ -7,12 +7,9 @@ export function mockExplorerContextValue(
 ): ExplorerContextType {
   return {
     explorerNavStack: [navStackItem],
-    hide() {},
-    isVisible: true,
     pop() {},
     push() {},
     reset() {},
-    show() {},
   };
 }
 
