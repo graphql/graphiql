@@ -3,6 +3,9 @@ import { DirectiveNode } from 'graphql';
 import './directive.css';
 
 type DirectiveProps = {
+  /**
+   * The directive that should be rendered.
+   */
   directive: DirectiveNode;
 };
 

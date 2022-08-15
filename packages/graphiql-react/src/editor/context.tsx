@@ -34,35 +34,109 @@ export type CodeMirrorEditorWithOperationFacts = CodeMirrorEditor & {
   variableToType: VariableToType | null;
 };
 
-export type EditorContextType = {
-  activeTabIndex: number;
-  tabs: TabState[];
+export type EditorContextType = TabsState & {
+  /**
+   * Add a new tab.
+   */
   addTab(): void;
+  /**
+   * Switch to a different tab.
+   * @param index The index of the tab that should be switched to.
+   */
   changeTab(index: number): void;
+  /**
+   * Close a tab. If the currently active tab is closed the tab before it will
+   * become active. If there is no tab before the closed one, the tab after it
+   * will become active.
+   * @param index The index of the tab that should be closed.
+   */
   closeTab(index: number): void;
+  /**
+   * Update the state for the tab that is currently active. This will be
+   * reflected in the `tabs` object and the state will be persisted in storage
+   * (if available).
+   * @param partialTab A partial tab state object that will override the
+   * current values. The properties `id`, `hash` and `title` cannot be changed.
+   */
   updateActiveTabValues(
     partialTab: Partial<Omit<TabState, 'id' | 'hash' | 'title'>>,
   ): void;
 
+  /**
+   * The CodeMirror editor instance for the headers editor.
+   */
   headerEditor: CodeMirrorEditor | null;
+  /**
+   * The CodeMirror editor instance for the query editor. This editor also
+   * stores the operation facts that are derived from the current editor
+   * contents.
+   */
   queryEditor: CodeMirrorEditorWithOperationFacts | null;
+  /**
+   * The CodeMirror editor instance for the response editor.
+   */
   responseEditor: CodeMirrorEditor | null;
+  /**
+   * The CodeMirror editor instance for the variables editor.
+   */
   variableEditor: CodeMirrorEditor | null;
+  /**
+   * Set the CodeMirror editor instance for the headers editor.
+   */
   setHeaderEditor(newEditor: CodeMirrorEditor): void;
+  /**
+   * Set the CodeMirror editor instance for the query editor.
+   */
   setQueryEditor(newEditor: CodeMirrorEditorWithOperationFacts): void;
+  /**
+   * Set the CodeMirror editor instance for the response editor.
+   */
   setResponseEditor(newEditor: CodeMirrorEditor): void;
+  /**
+   * Set the CodeMirror editor instance for the variables editor.
+   */
   setVariableEditor(newEditor: CodeMirrorEditor): void;
 
+  /**
+   * Changes the operation name and invokes the `onEditOperationName` callback.
+   */
   setOperationName(operationName: string): void;
 
+  /**
+   * The contents of the headers editor when initially rendering the provider
+   * component.
+   */
   initialHeaders: string;
+  /**
+   * The contents of the query editor when initially rendering the provider
+   * component.
+   */
   initialQuery: string;
+  /**
+   * The contents of the response editor when initially rendering the provider
+   * component.
+   */
   initialResponse: string;
+  /**
+   * The contents of the variables editor when initially rendering the provider
+   * component.
+   */
   initialVariables: string;
 
+  /**
+   * A map of fragment definitions using the fragment name as key which are
+   * made available to include in the query.
+   */
   externalFragments: Map<string, FragmentDefinitionNode>;
+  /**
+   * A list of custom validation rules that are run in addition to the rules
+   * provided by the GraphQL spec.
+   */
   validationRules: ValidationRule[];
 
+  /**
+   * If the contents of the headers editor are persisted in storage.
+   */
   shouldPersistHeaders: boolean;
 };
 

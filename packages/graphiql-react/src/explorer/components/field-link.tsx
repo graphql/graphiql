@@ -3,6 +3,9 @@ import { ExplorerFieldDef, useExplorerContext } from '../context';
 import './field-link.css';
 
 type FieldLinkProps = {
+  /**
+   * The field or argument that should be linked to.
+   */
   field: ExplorerFieldDef;
 };
 

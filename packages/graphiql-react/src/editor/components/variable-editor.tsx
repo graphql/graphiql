@@ -10,6 +10,10 @@ import '../style/hint.css';
 import '../style/editor.css';
 
 type VariableEditorProps = UseVariableEditorArgs & {
+  /**
+   * Visually hide the header editor.
+   * @default false
+   */
   isHidden?: boolean;
 };
 
