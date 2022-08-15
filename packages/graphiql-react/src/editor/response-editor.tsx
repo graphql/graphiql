@@ -13,19 +13,30 @@ import {
 import { ImagePreview } from './components';
 import { useEditorContext } from './context';
 import { useSynchronizeOption } from './hooks';
-import { CodeMirrorEditor, KeyMap } from './types';
+import { CodeMirrorEditor, CommonEditorProps } from './types';
 
-export type ResponseTooltipType = ComponentType<{ pos: Position }>;
+export type ResponseTooltipType = ComponentType<{
+  /**
+   * The position of the token in the editor contents.
+   */
+  pos: Position;
+  /**
+   * The token that has been hovered over.
+   */
+  token: Token;
+}>;
 
-export type UseResponseEditorArgs = {
-  ResponseTooltip?: ResponseTooltipType;
-  editorTheme?: string;
-  keyMap?: KeyMap;
+export type UseResponseEditorArgs = CommonEditorProps & {
+  /**
+   * Customize the tooltip when hovering over properties in the response
+   * editor.
+   */
+  responseTooltip?: ResponseTooltipType;
 };
 
 export function useResponseEditor(
   {
-    ResponseTooltip,
+    responseTooltip,
     editorTheme = DEFAULT_EDITOR_THEME,
     keyMap = DEFAULT_KEY_MAP,
   }: UseResponseEditorArgs = {},
@@ -43,11 +54,11 @@ export function useResponseEditor(
   const ref = useRef<HTMLDivElement>(null);
 
   const responseTooltipRef = useRef<ResponseTooltipType | undefined>(
-    ResponseTooltip,
+    responseTooltip,
   );
   useEffect(() => {
-    responseTooltipRef.current = ResponseTooltip;
-  }, [ResponseTooltip]);
+    responseTooltipRef.current = responseTooltip;
+  }, [responseTooltip]);
 
   useEffect(() => {
     let isActive = true;
@@ -81,7 +92,9 @@ export function useResponseEditor(
 
           const ResponseTooltipComponent = responseTooltipRef.current;
           if (ResponseTooltipComponent) {
-            infoElements.push(<ResponseTooltipComponent pos={pos} />);
+            infoElements.push(
+              <ResponseTooltipComponent pos={pos} token={token} />,
+            );
           }
 
           if (ImagePreview.shouldRender(token)) {

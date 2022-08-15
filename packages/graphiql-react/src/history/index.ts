@@ -5,4 +5,7 @@ export {
   useHistoryContext,
 } from './context';
 
-export type { HistoryContextType } from './context';
+export type {
+  HistoryContextType,
+  HistoryContextProviderProps,
+} from './context';

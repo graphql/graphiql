@@ -32,7 +32,6 @@ import {
   useEditorContext,
 } from './context';
 import {
-  CopyQueryCallback,
   OnClickReference,
   useCompletion,
   useCopyQuery,
@@ -41,16 +40,27 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { CodeMirrorEditor, CodeMirrorType, KeyMap } from './types';
+import {
+  CodeMirrorEditor,
+  CodeMirrorType,
+  WriteableEditorProps,
+} from './types';
 import { normalizeWhitespace } from './whitespace';
 
-export type UseQueryEditorArgs = {
-  editorTheme?: string;
+export type UseQueryEditorArgs = WriteableEditorProps & {
   onClickReference?: OnClickReference;
-  onCopyQuery?: CopyQueryCallback;
+  /**
+   * Invoked when the current contents of the query editor are copied to the
+   * clipboard.
+   * @param query The content that has been copied.
+   */
+  onCopyQuery?(query: string): void;
+  /**
+   * Invoked when the contents of the query editor change.
+   * @param value The new contents of the editor.
+   * @param documentAST The editor contents parsed into a GraphQL document.
+   */
   onEdit?(value: string, documentAST?: DocumentNode): void;
-  readOnly?: boolean;
-  keyMap?: KeyMap;
 };
 
 export function useQueryEditor(

@@ -52,10 +52,18 @@ export type ExplorerContextType = {
 export const ExplorerContext =
   createNullableContext<ExplorerContextType>('ExplorerContext');
 
-type ExplorerContextProviderProps = {
+export type ExplorerContextProviderProps = {
   children: ReactNode;
-  isVisible?: boolean;
-  onToggleVisibility?(isVisible: boolean): void;
+  /**
+   * This prop controls the visibility state of the doc explorer.
+   */
+  isDocExplorerVisible?: boolean;
+  /**
+   * Invoked when the visibility state of the doc explorer changes.
+   * @param isVisible The new visibility state of the doc explorer after the
+   * update.
+   */
+  onToggleDocExplorerVisibility?(isVisible: boolean): void;
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
@@ -66,22 +74,22 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
   const storage = useStorageContext();
 
   const [isVisible, setIsVisible] = useState(
-    props.isVisible ?? storage?.get(STORAGE_KEY) === 'true' ?? false,
+    props.isDocExplorerVisible ?? storage?.get(STORAGE_KEY) === 'true' ?? false,
   );
   const [navStack, setNavStack] = useState<ExplorerNavStack>([
     initialNavStackItem,
   ]);
 
-  const { onToggleVisibility } = props;
+  const { onToggleDocExplorerVisibility: onToggleVisibility } = props;
 
   const isInitialRender = useRef(true);
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
-    } else if (props.isVisible !== undefined) {
-      setIsVisible(props.isVisible);
+    } else if (props.isDocExplorerVisible !== undefined) {
+      setIsVisible(props.isDocExplorerVisible);
     }
-  }, [props.isVisible]);
+  }, [props.isDocExplorerVisible]);
 
   const hide = useCallback(() => {
     onToggleVisibility?.(false);

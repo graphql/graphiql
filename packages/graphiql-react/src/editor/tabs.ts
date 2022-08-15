@@ -5,19 +5,59 @@ import debounce from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
+/**
+ * This object describes the state of a single tab.
+ */
 export type TabState = {
+  /**
+   * A GUID value generated when the tab was created.
+   */
   id: string;
+  /**
+   * A hash that is unique for a combination of the contents of the query
+   * editor, the variable editor and the header editor (i.e. all the editor
+   * where the contents are persisted in storage).
+   */
   hash: string;
+  /**
+   * The title of the tab shown in the tab element.
+   */
   title: string;
+  /**
+   * The contents of the query editor of this tab.
+   */
   query: string | null;
+  /**
+   * The contents of the variable editor of this tab.
+   */
   variables: string | null;
+  /**
+   * The contents of the headers editor of this tab.
+   */
   headers: string | null;
+  /**
+   * The operation name derived from the contents of the query editor of this
+   * tab.
+   */
   operationName: string | null;
+  /**
+   * The contents of the response editor of this tab.
+   */
   response: string | null;
 };
 
+/**
+ * This object describes the state of all tabs.
+ */
 export type TabsState = {
+  /**
+   * A list of state objects for each tab.
+   */
   tabs: TabState[];
+  /**
+   * The index of the currently active tab with regards to the `tabs` list of
+   * this object.
+   */
   activeTabIndex: number;
 };
 
