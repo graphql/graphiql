@@ -8,8 +8,14 @@ export type StorageContextType = StorageAPI;
 export const StorageContext =
   createNullableContext<StorageContextType>('StorageContext');
 
-type StorageContextProviderProps = {
+export type StorageContextProviderProps = {
   children: ReactNode;
+  /**
+   * Provide a custom storage API.
+   * @default `localStorage``
+   * @see {@link https://graphiql-test.netlify.app/typedoc/modules/graphiql_toolkit.html#storage-2|API docs}
+   * for details on the required interface.
+   */
   storage?: Storage;
 };
 

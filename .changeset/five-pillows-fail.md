@@ -8,3 +8,4 @@ Add new components:
 - Toolbar components (`ExecuteButton`, `ToolbarButton`, `ToolbarMenu` and `ToolbarSelect`)
 - Docs components (`Argument`, `DefaultValue`, `DeprecationReason`, `Directive`, `DocExplorer`, `ExplorerSection`, `FieldDocumentation`, `FieldLink`, `SchemaDocumentation`, `Search`, `TypeDocumentation` and `TypeLink`)
 - `History` component
+- A `GraphiQLProvider` component that renders all other existing provider components from `@graphiql/react` for ease of use

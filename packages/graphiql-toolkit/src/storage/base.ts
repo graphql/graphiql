@@ -1,8 +1,36 @@
+/**
+ * This describes the attributes and methods that a store has to support in
+ * order to be used with GraphiQL. It closely resembles the `localStorage`
+ * API as it is the default storage used in GraphiQL.
+ */
 export type Storage = {
+  /**
+   * Retrieve an item from the store by its key.
+   * @param key The key of the item to retrieve.
+   * @returns {?string} The stored value for the given key if it exists, `null`
+   * otherwise.
+   */
   getItem(key: string): string | null;
-  removeItem(key: string): void;
+  /**
+   * Add a value to the store for a given key. If there already exists a value
+   * for the given key, this method will override the value.
+   * @param key The key to store the value for.
+   * @param value The value to store.
+   */
   setItem(key: string, value: string): void;
+  /**
+   * Remove the value for a given key from the store. If there is no value for
+   * the given key this method does nothing.
+   * @param key The key to remove the value from the store.
+   */
+  removeItem(key: string): void;
+  /**
+   * Remove all items from the store.
+   */
   clear(): void;
+  /**
+   * The number of items that are currently stored.
+   */
   length: number;
 };
 

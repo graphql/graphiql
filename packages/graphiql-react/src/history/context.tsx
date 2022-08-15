@@ -37,10 +37,19 @@ export type HistoryContextType = {
 export const HistoryContext =
   createNullableContext<HistoryContextType>('HistoryContext');
 
-type HistoryContextProviderProps = {
+export type HistoryContextProviderProps = {
   children: ReactNode;
+  /**
+   * The maximum number of executed operations to store.
+   * @default 20
+   */
   maxHistoryLength?: number;
-  onToggle?(isOpen: boolean): void;
+  /**
+   * Invoked when the visibility of the history UI changes.
+   * @param isVisible A boolean indicating if the history is now visible
+   * (`true`) or hidden (`false`).
+   */
+  onToggleHistory?(isVisible: boolean): void;
 };
 
 export function HistoryContextProvider(props: HistoryContextProviderProps) {
@@ -85,28 +94,28 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     [],
   );
 
-  const { onToggle } = props;
+  const { onToggleHistory } = props;
 
   const hide = useCallback(() => {
-    onToggle?.(false);
+    onToggleHistory?.(false);
     storage?.set(STORAGE_KEY, JSON.stringify(false));
     setIsVisible(false);
-  }, [onToggle, storage]);
+  }, [onToggleHistory, storage]);
 
   const show = useCallback(() => {
-    onToggle?.(true);
+    onToggleHistory?.(true);
     storage?.set(STORAGE_KEY, JSON.stringify(true));
     setIsVisible(true);
-  }, [onToggle, storage]);
+  }, [onToggleHistory, storage]);
 
   const toggle = useCallback(() => {
     setIsVisible(current => {
       const newValue = !current;
-      onToggle?.(newValue);
+      onToggleHistory?.(newValue);
       storage?.set(STORAGE_KEY, JSON.stringify(newValue));
       return newValue;
     });
-  }, [onToggle, storage]);
+  }, [onToggleHistory, storage]);
 
   const toggleFavorite: HistoryContextType['toggleFavorite'] = useCallback(
     ({ query, variables, headers, operationName, label, favorite }) => {
