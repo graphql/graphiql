@@ -79,6 +79,7 @@ export const AdditionalRuleKinds: _AdditionalRuleKinds = {
   INPUT_VALUE_DEF: 'InputValueDef',
   ARGUMENTS_DEF: 'ArgumentsDef',
   EXTEND_DEF: 'ExtendDef',
+  EXTENSION_DEFINITION: 'ExtensionDefinition',
   DIRECTIVE_DEF: 'DirectiveDef',
   IMPLEMENTS: 'Implements',
   VARIABLE_DEFINITIONS: 'VariableDefinitions',
@@ -109,6 +110,7 @@ export type _AdditionalRuleKinds = {
   INPUT_VALUE_DEF: 'InputValueDef';
   ARGUMENTS_DEF: 'ArgumentsDef';
   EXTEND_DEF: 'ExtendDef';
+  EXTENSION_DEFINITION: 'ExtensionDefinition';
   DIRECTIVE_DEF: 'DirectiveDef';
   IMPLEMENTS: 'Implements';
   VARIABLE_DEFINITIONS: 'VariableDefinitions';

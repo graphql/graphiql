@@ -303,7 +303,32 @@ export const ParseRules: { [name: string]: ParseRule } = {
     list('InputValueDef'),
     p('}'),
   ],
-  ExtendDef: [word('extend'), 'ObjectTypeDef'],
+  ExtendDef: [word('extend'), 'ExtensionDefinition'],
+  ExtensionDefinition(token: Token): RuleKind | void {
+    switch (token.value) {
+      case 'schema':
+        return Kind.SCHEMA_EXTENSION;
+      case 'scalar':
+        return Kind.SCALAR_TYPE_EXTENSION;
+      case 'type':
+        return Kind.OBJECT_TYPE_EXTENSION;
+      case 'interface':
+        return Kind.INTERFACE_TYPE_EXTENSION;
+      case 'union':
+        return Kind.UNION_TYPE_EXTENSION;
+      case 'enum':
+        return Kind.ENUM_TYPE_EXTENSION;
+      case 'input':
+        return Kind.INPUT_OBJECT_TYPE_EXTENSION;
+    }
+  },
+  [Kind.SCHEMA_EXTENSION]: ['SchemaDef'],
+  [Kind.SCALAR_TYPE_EXTENSION]: ['ScalarDef'],
+  [Kind.OBJECT_TYPE_EXTENSION]: ['ObjectTypeDef'],
+  [Kind.INTERFACE_TYPE_EXTENSION]: ['InterfaceDef'],
+  [Kind.UNION_TYPE_EXTENSION]: ['UnionDef'],
+  [Kind.ENUM_TYPE_EXTENSION]: ['EnumDef'],
+  [Kind.INPUT_OBJECT_TYPE_EXTENSION]: ['InputDef'],
 };
 
 // A keyword Token.
