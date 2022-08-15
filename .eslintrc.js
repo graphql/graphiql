@@ -131,7 +131,8 @@ module.exports = {
     'no-catch-shadow': 1,
     'no-label-var': 1,
     'no-restricted-globals': 0,
-    'no-shadow': 1,
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': 'error',
     'no-undef-init': 0,
     'no-undefined': 0,
 

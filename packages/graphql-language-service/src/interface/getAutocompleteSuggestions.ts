@@ -1271,7 +1271,7 @@ export function getTypeInfo(
   };
 }
 
-enum GraphQLDocumentMode {
+export enum GraphQLDocumentMode {
   TYPE_SYSTEM = 'TYPE_SYSTEM',
   EXECUTABLE = 'EXECUTABLE',
 }
