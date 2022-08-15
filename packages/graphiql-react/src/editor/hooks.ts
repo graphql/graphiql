@@ -36,11 +36,9 @@ export function useSynchronizeOption<K extends keyof EditorConfiguration>(
   }, [editor, option, value]);
 }
 
-export type EditCallback = (value: string) => void;
-
 export function useChangeHandler(
   editor: CodeMirrorEditor | null,
-  callback: EditCallback | undefined,
+  callback: ((value: string) => void) | undefined,
   storageKey: string | null,
   tabProperty: 'variables' | 'headers',
   caller: Function,
@@ -152,14 +150,12 @@ export function useKeyMap(
   }, [editor, keys, callback]);
 }
 
-export type CopyQueryCallback = (query: string) => void;
-
 export function useCopyQuery({
   caller,
   onCopyQuery,
 }: {
   caller?: Function;
-  onCopyQuery?: CopyQueryCallback;
+  onCopyQuery?: (query: string) => void;
 } = {}) {
   const { queryEditor } = useEditorContext({
     nonNull: true,

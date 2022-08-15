@@ -57,7 +57,7 @@ describe('GraphiQL', () => {
   it('should throw error without fetcher', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => render(<GraphiQL />)).toThrowError(
-      'GraphiQL requires a fetcher function',
+      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
     );
     spy.mockRestore();
   });
@@ -134,7 +134,7 @@ describe('GraphiQL', () => {
     expect(container.querySelector('.graphiql-plugin')).not.toBeVisible();
   });
 
-  it('accepts a defaultVariableEditorOpen param', () => {
+  it('can control the default editor tools visibility', () => {
     const { container: container1 } = render(
       <GraphiQL fetcher={noOpFetcher} />,
     );
@@ -150,18 +150,26 @@ describe('GraphiQL', () => {
     expect(queryVariables).toBeVisible();
 
     const { container: container2 } = render(
-      <GraphiQL fetcher={noOpFetcher} defaultVariableEditorOpen />,
+      <GraphiQL
+        fetcher={noOpFetcher}
+        defaultEditorToolsVisibility="variables"
+      />,
     );
     expect(container2.querySelector('[aria-label="Variables"]')).toBeVisible();
 
     const { container: container3 } = render(
+      <GraphiQL fetcher={noOpFetcher} defaultEditorToolsVisibility="headers" />,
+    );
+    expect(container3.querySelector('[aria-label="Headers"]')).toBeVisible();
+
+    const { container: container4 } = render(
       <GraphiQL
         fetcher={noOpFetcher}
         variables="{test: 'value'}"
-        defaultVariableEditorOpen={false}
+        defaultEditorToolsVisibility={false}
       />,
     );
-    const queryVariables3 = container3.querySelector('.graphiql-editor-tool');
+    const queryVariables3 = container4.querySelector('.graphiql-editor-tool');
     expect(queryVariables3).not.toBeVisible();
   });
 

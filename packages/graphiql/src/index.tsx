@@ -11,6 +11,7 @@
 
 import { GraphiQL, GraphiQLInterface } from './components/GraphiQL';
 export { GraphiQL, GraphiQLInterface };
+export { GraphiQLProvider } from '@graphiql/react';
 export default GraphiQL;
 
 /**
@@ -20,3 +21,4 @@ export type {
   GraphiQLProps,
   GraphiQLInterfaceProps,
 } from './components/GraphiQL';
+export type { GraphiQLProviderProps } from '@graphiql/react';
