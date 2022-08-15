@@ -89,11 +89,9 @@ export function useChangeHandler(
   ]);
 }
 
-export type OnClickReference = (reference: SchemaReference) => void;
-
 export function useCompletion(
   editor: CodeMirrorEditor | null,
-  callback: OnClickReference | null,
+  callback: ((reference: SchemaReference) => void) | null,
   caller: Function,
 ) {
   const { schema } = useSchemaContext({ nonNull: true, caller });
@@ -150,13 +148,20 @@ export function useKeyMap(
   }, [editor, keys, callback]);
 }
 
-export function useCopyQuery({
-  caller,
-  onCopyQuery,
-}: {
+export type UseCopyQueryArgs = {
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
   caller?: Function;
+  /**
+   * Invoked when the current contents of the query editor are copied to the
+   * clipboard.
+   * @param query The content that has been copied.
+   */
   onCopyQuery?: (query: string) => void;
-} = {}) {
+};
+
+export function useCopyQuery({ caller, onCopyQuery }: UseCopyQueryArgs = {}) {
   const { queryEditor } = useEditorContext({
     nonNull: true,
     caller: caller || useCopyQuery,
@@ -173,7 +178,14 @@ export function useCopyQuery({
   }, [queryEditor, onCopyQuery]);
 }
 
-export function useMergeQuery({ caller }: { caller?: Function } = {}) {
+type UseMergeQueryArgs = {
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
+  caller?: Function;
+};
+
+export function useMergeQuery({ caller }: UseMergeQueryArgs = {}) {
   const { queryEditor } = useEditorContext({
     nonNull: true,
     caller: caller || useMergeQuery,
@@ -190,11 +202,14 @@ export function useMergeQuery({ caller }: { caller?: Function } = {}) {
   }, [queryEditor, schema]);
 }
 
-export function usePrettifyEditors({
-  caller,
-}: {
+type UsePrettifyEditorsArgs = {
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
   caller?: Function;
-} = {}) {
+};
+
+export function usePrettifyEditors({ caller }: UsePrettifyEditorsArgs = {}) {
   const { queryEditor, headerEditor, variableEditor } = useEditorContext({
     nonNull: true,
     caller: caller || usePrettifyEditors,
@@ -244,10 +259,23 @@ export function usePrettifyEditors({
   }, [queryEditor, variableEditor, headerEditor]);
 }
 
+export type UseAutoCompleteLeafsArgs = {
+  /**
+   * A function to determine which field leafs are automatically added when
+   * trying to execute a query with missing selection sets. It will be called
+   * with the `GraphQLType` for which fields need to be added.
+   */
+  getDefaultFieldNames?: GetDefaultFieldNamesFn;
+  /**
+   * This is only meant to be used internally in `@graphiql/react`.
+   */
+  caller?: Function;
+};
+
 export function useAutoCompleteLeafs({
   getDefaultFieldNames,
   caller,
-}: { getDefaultFieldNames?: GetDefaultFieldNamesFn; caller?: Function } = {}) {
+}: UseAutoCompleteLeafsArgs = {}) {
   const { schema } = useSchemaContext({
     nonNull: true,
     caller: caller || useAutoCompleteLeafs,

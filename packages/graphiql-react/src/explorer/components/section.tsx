@@ -17,6 +17,10 @@ import './section.css';
 
 type ExplorerSectionProps = {
   children: ReactNode;
+  /**
+   * The title of the section, which will also determine the icon rendered next
+   * to the headline.
+   */
   title:
     | 'Root Types'
     | 'Fields'

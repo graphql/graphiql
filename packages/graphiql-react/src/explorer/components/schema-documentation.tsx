@@ -6,7 +6,12 @@ import { TypeLink } from './type-link';
 
 import './schema-documentation.css';
 
-type SchemaDocumentationProps = { schema: GraphQLSchema };
+type SchemaDocumentationProps = {
+  /**
+   * The schema that should be rendered.
+   */
+  schema: GraphQLSchema;
+};
 
 export function SchemaDocumentation(props: SchemaDocumentationProps) {
   const queryType = props.schema.getQueryType();
