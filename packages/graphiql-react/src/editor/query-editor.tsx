@@ -32,9 +32,9 @@ import {
   useEditorContext,
 } from './context';
 import {
-  OnClickReference,
   useCompletion,
   useCopyQuery,
+  UseCopyQueryArgs,
   useKeyMap,
   useMergeQuery,
   usePrettifyEditors,
@@ -47,21 +47,21 @@ import {
 } from './types';
 import { normalizeWhitespace } from './whitespace';
 
-export type UseQueryEditorArgs = WriteableEditorProps & {
-  onClickReference?: OnClickReference;
-  /**
-   * Invoked when the current contents of the query editor are copied to the
-   * clipboard.
-   * @param query The content that has been copied.
-   */
-  onCopyQuery?(query: string): void;
-  /**
-   * Invoked when the contents of the query editor change.
-   * @param value The new contents of the editor.
-   * @param documentAST The editor contents parsed into a GraphQL document.
-   */
-  onEdit?(value: string, documentAST?: DocumentNode): void;
-};
+export type UseQueryEditorArgs = WriteableEditorProps &
+  Pick<UseCopyQueryArgs, 'onCopyQuery'> & {
+    /**
+     * Invoked when a reference to the GraphQL schema (type or field) is clicked
+     * as part of the editor or one of its tooltips.
+     * @param reference The reference that has been clicked.
+     */
+    onClickReference?(reference: SchemaReference): void;
+    /**
+     * Invoked when the contents of the query editor change.
+     * @param value The new contents of the editor.
+     * @param documentAST The editor contents parsed into a GraphQL document.
+     */
+    onEdit?(value: string, documentAST?: DocumentNode): void;
+  };
 
 export function useQueryEditor(
   {
@@ -100,7 +100,9 @@ export function useQueryEditor(
   const ref = useRef<HTMLDivElement>(null);
   const codeMirrorRef = useRef<CodeMirrorType>();
 
-  const onClickReferenceRef = useRef<OnClickReference>(() => {});
+  const onClickReferenceRef = useRef<
+    NonNullable<UseQueryEditorArgs['onClickReference']>
+  >(() => {});
   useEffect(() => {
     onClickReferenceRef.current = reference => {
       if (!explorer) {

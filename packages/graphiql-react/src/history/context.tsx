@@ -5,12 +5,24 @@ import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
 
 export type HistoryContextType = {
+  /**
+   * Add an operation to the history.
+   * @param operation The operation that was executed, consisting of the query,
+   * variables, headers and the operation name.
+   */
   addToHistory(operation: {
     query?: string;
     variables?: string;
     headers?: string;
     operationName?: string;
   }): void;
+  /**
+   * Change the custom label of an item from the history.
+   * @param args An object containing the label (`undefined` if it should be
+   * unset) and properties that identify the history item that the label should
+   * be applied to. (This can result in the label being applied to multiple
+   * history items.)
+   */
   editLabel(args: {
     query?: string;
     variables?: string;
@@ -19,11 +31,33 @@ export type HistoryContextType = {
     label?: string;
     favorite?: boolean;
   }): void;
+  /**
+   * Hide the history.
+   */
   hide(): void;
+  /**
+   * If the history should be shown.
+   */
   isVisible: boolean;
+  /**
+   * The list of history items.
+   */
   items: readonly QueryStoreItem[];
+  /**
+   * Show the history.
+   */
   show(): void;
+  /**
+   * Toggle the visibility state of the history.
+   */
   toggle(): void;
+  /**
+   * Toggle the favorite state of an item from the history.
+   * @param args An object containing the favorite state (`undefined` if it
+   * should be unset) and properties that identify the history item that the
+   * label should be applied to. (This can result in the label being applied
+   * to multiple history items.)
+   */
   toggleFavorite(args: {
     query?: string;
     variables?: string;

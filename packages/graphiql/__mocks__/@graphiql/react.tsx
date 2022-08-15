@@ -56,7 +56,6 @@ export {
   MarkdownContent,
   Menu,
   MergeIcon,
-  onHasCompletion,
   PenIcon,
   PlayIcon,
   PlusIcon,

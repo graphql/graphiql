@@ -30,10 +30,32 @@ import { createContextHook, createNullableContext } from './utility/context';
 type MaybeGraphQLSchema = GraphQLSchema | null | undefined;
 
 export type SchemaContextType = {
+  /**
+   * Stores an error raised during introspecting or building the GraphQL schema
+   * from the introspection result.
+   */
   fetchError: string | null;
+  /**
+   * Trigger building the GraphQL schema. This might trigger an introspection
+   * request if no schema is passed via props and if using a schema is not
+   * explicitly disabled by passing `null` as value for the `schema` prop. If
+   * there is a schema (either fetched using introspection or passed via props)
+   * it will be validated, unless this is explicitly skipped using the
+   * `dangerouslyAssumeSchemaIsValid` prop.
+   */
   introspect(): void;
+  /**
+   * If there currently is an introspection request in-flight.
+   */
   isFetching: boolean;
+  /**
+   * The current GraphQL schema.
+   */
   schema: MaybeGraphQLSchema;
+  /**
+   * A list of errors from validating the current GraphQL schema. The schema is
+   * valid if and only if this list is empty.
+   */
   validationErrors: readonly GraphQLError[];
 };
 

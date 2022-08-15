@@ -1,3 +1,4 @@
+import type { SchemaReference } from 'codemirror-graphql/utils/SchemaReference';
 import { useEffect, useRef } from 'react';
 
 import { useExecutionContext } from '../execution';
@@ -9,7 +10,6 @@ import {
 } from './common';
 import { useEditorContext } from './context';
 import {
-  OnClickReference,
   useChangeHandler,
   useCompletion,
   useKeyMap,
@@ -20,7 +20,12 @@ import {
 import { CodeMirrorType, WriteableEditorProps } from './types';
 
 export type UseVariableEditorArgs = WriteableEditorProps & {
-  onClickReference?: OnClickReference;
+  /**
+   * Invoked when a reference to the GraphQL schema (type or field) is clicked
+   * as part of the editor or one of its tooltips.
+   * @param reference The reference that has been clicked.
+   */
+  onClickReference?(reference: SchemaReference): void;
   /**
    * Invoked when the contents of the variables editor change.
    * @param value The new contents of the editor.
