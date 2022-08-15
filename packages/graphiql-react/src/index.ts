@@ -47,6 +47,7 @@ export {
   HistoryContextProvider,
   useHistoryContext,
 } from './history';
+export { GraphiQLProvider } from './provider';
 export {
   SchemaContext,
   SchemaContextProvider,
@@ -65,23 +66,37 @@ export * from './ui';
 export * from './toolbar';
 
 export type {
+  CommonEditorProps,
+  EditorContextProviderProps,
   EditorContextType,
+  KeyMap,
   ResponseTooltipType,
   TabsState,
   UseHeaderEditorArgs,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
   UseVariableEditorArgs,
-  KeyMap,
+  WriteableEditorProps,
 } from './editor';
-export type { ExecutionContextType } from './execution';
 export type {
+  ExecutionContextProviderProps,
+  ExecutionContextType,
+} from './execution';
+export type {
+  ExplorerContextProviderProps,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,
 } from './explorer';
-export type { HistoryContextType } from './history';
-export type { SchemaContextType } from './schema';
-export type { StorageContextType } from './storage';
+export type {
+  HistoryContextProviderProps,
+  HistoryContextType,
+} from './history';
+export type { GraphiQLProviderProps } from './provider';
+export type { SchemaContextProviderProps, SchemaContextType } from './schema';
+export type {
+  StorageContextProviderProps,
+  StorageContextType,
+} from './storage';
 export type { Theme } from './theme';

@@ -18,6 +18,7 @@ export {
 
 export type {
   ExplorerContextType,
+  ExplorerContextProviderProps,
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,

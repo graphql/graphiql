@@ -9,7 +9,6 @@ import {
 } from './common';
 import { useEditorContext } from './context';
 import {
-  EditCallback,
   OnClickReference,
   useChangeHandler,
   useCompletion,
@@ -18,14 +17,15 @@ import {
   usePrettifyEditors,
   useSynchronizeOption,
 } from './hooks';
-import { CodeMirrorType, KeyMap } from './types';
+import { CodeMirrorType, WriteableEditorProps } from './types';
 
-export type UseVariableEditorArgs = {
-  editorTheme?: string;
-  keyMap?: KeyMap;
+export type UseVariableEditorArgs = WriteableEditorProps & {
   onClickReference?: OnClickReference;
-  onEdit?: EditCallback;
-  readOnly?: boolean;
+  /**
+   * Invoked when the contents of the variables editor change.
+   * @param value The new contents of the editor.
+   */
+  onEdit?(value: string): void;
 };
 
 export function useVariableEditor(

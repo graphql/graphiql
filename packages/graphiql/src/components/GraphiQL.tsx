@@ -11,13 +11,6 @@ import React, {
   ReactNode,
   useState,
 } from 'react';
-import {
-  GraphQLSchema,
-  ValidationRule,
-  FragmentDefinitionNode,
-  DocumentNode,
-  IntrospectionQuery,
-} from 'graphql';
 
 import {
   Button,
@@ -28,30 +21,23 @@ import {
   Dialog,
   DocExplorer,
   DocsIcon,
-  EditorContextProvider,
   ExecuteButton,
-  ExecutionContextProvider,
-  ExplorerContextProvider,
+  GraphiQLProvider,
+  GraphiQLProviderProps,
   HeaderEditor,
   History,
-  HistoryContextProvider,
   HistoryIcon,
   KeyboardShortcutIcon,
-  KeyMap,
   MergeIcon,
   PlusIcon,
   PrettifyIcon,
   QueryEditor,
   ReloadIcon,
   ResponseEditor,
-  ResponseTooltipType,
-  SchemaContextProvider,
   SettingsIcon,
   Spinner,
-  StorageContextProvider,
   Tab,
   Tabs,
-  TabsState,
   ToolbarButton,
   Tooltip,
   UnStyledButton,
@@ -60,16 +46,19 @@ import {
   useEditorContext,
   useExecutionContext,
   useExplorerContext,
+  UseHeaderEditorArgs,
   useHistoryContext,
   useMergeQuery,
   usePrettifyEditors,
+  UseQueryEditorArgs,
+  UseResponseEditorArgs,
   useSchemaContext,
   useStorageContext,
   useTheme,
+  UseVariableEditorArgs,
   VariableEditor,
+  WriteableEditorProps,
 } from '@graphiql/react';
-
-import type { Fetcher, GetDefaultFieldNamesFn } from '@graphiql/toolkit';
 
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
@@ -92,201 +81,8 @@ export type GraphiQLToolbarConfig = {
  *
  * https://graphiql-test.netlify.app/typedoc/modules/graphiql.html#graphiqlprops
  */
-export type GraphiQLProps = {
-  /**
-   * Required. A function which accepts GraphQL-HTTP parameters and returns a Promise, Observable or AsyncIterable
-   * which resolves to the GraphQL parsed JSON response.
-   *
-   * We suggest using `@graphiql/toolkit` `createGraphiQLFetcher()` to cover most implementations,
-   * including custom headers, websockets and even incremental delivery for @defer and @stream.
-   *
-   * [`GraphiQL Create Fetcher documentation`](https://graphiql-test.netlify.app/typedoc/modules/graphiql-toolkit.html#fetcher)
-   *  **Required.**
-   */
-  fetcher: Fetcher;
-  /**
-   * Optionally provide the `GraphQLSchema`. If present, GraphiQL skips schema
-   * introspection. This prop also accepts the result of an introspection query
-   * which will be used to create a `GraphQLSchema`
-   */
-  schema?: GraphQLSchema | IntrospectionQuery | null;
-  /**
-   * An array of graphql ValidationRules
-   */
-  validationRules?: ValidationRule[];
-  /**
-   * Optionally provide the query in a controlled-component manner. This will override the user state.
-   *
-   * If you just want to provide a different initial query, use `defaultQuery`
-   */
-  query?: string;
-  /**
-   * Same as above. provide a json string that controls the present variables editor state.
-   */
-  variables?: string;
-  /**
-   * provide a json string that controls the headers editor state
-   */
-  headers?: string;
-  /**
-   * The operationName to use when executing the current operation.
-   * Overrides the dropdown when multiple operations are present.
-   */
-  operationName?: string;
-  /**
-   * provide a json string that controls the results editor state
-   */
-  response?: string;
-  /**
-   * Provide a custom storage API, as an alternative to localStorage.
-   * [`Storage`](https://graphiql-test.netlify.app/typedoc/interfaces/graphiql.storage.html
-   * default: StorageAPI
-   */
-  storage?: Storage;
-  /**
-   * The defaultQuery present when the editor is first loaded
-   * and the user has no local query editing state
-   * @default "A really long graphql # comment that welcomes you to GraphiQL"
-   */
-  defaultQuery?: string;
-  /**
-   * Should the variables editor be open by default?
-   * default: true
-   */
-  defaultVariableEditorOpen?: boolean;
-  /**
-   * Should the "secondary editor" that contains both headers or variables be open by default?
-   * default: true
-   */
-  defaultSecondaryEditorOpen?: boolean;
-  /**
-   * Should the headers editor even be enabled?
-   * Note that you can still pass custom headers in the fetcher
-   * default: true
-   */
-  headerEditorEnabled?: boolean;
-  /**
-   * Should user header changes be persisted to localStorage?
-   * default: false
-   */
-  shouldPersistHeaders?: boolean;
-  /**
-   * Provide an array of fragment nodes or a string to append to queries,
-   * and for validation and completion
-   */
-  externalFragments?: string | FragmentDefinitionNode[];
-  /**
-   * Handler for when a user copies a query
-   */
-  onCopyQuery?: (query?: string) => void;
-  /**
-   * Handler for when a user edits a query.
-   */
-  onEditQuery?: (query?: string, documentAST?: DocumentNode) => void;
-  /**
-   * Handler for when a user edits variables.
-   */
-  onEditVariables?: (value: string) => void;
-  /**
-   * Handler for when a user edits headers.
-   */
-  onEditHeaders?: (value: string) => void;
-  /**
-   * Handler for when a user edits operation names
-   */
-  onEditOperationName?: (operationName: string) => void;
-  /**
-   * Handler for when the user toggles the doc pane
-   */
-  onToggleDocs?: (docExplorerOpen: boolean) => void;
-  /**
-   * A custom function to determine which field leafs are automatically
-   * added when fill leafs command is used
-   */
-  getDefaultFieldNames?: GetDefaultFieldNamesFn;
-  /**
-   * The CodeMirror 5 editor theme you'd like to use
-   *
-   */
-  editorTheme?: string;
-  /**
-   * The CodeMirror 5 editor keybindings you'd like to use
-   *
-   * Note: may be deprecated for monaco
-   *
-   * See: https://codemirror.net/5/doc/manual.html#option_keyMap
-   *
-   * @default 'sublime'
-   */
-  keyMap?: KeyMap;
-  /**
-   * On history pane toggle event
-   */
-  onToggleHistory?: (historyPaneOpen: boolean) => void;
-  /**
-   * Custom results tooltip component
-   */
-  ResultsTooltip?: ResponseTooltipType;
-  /**
-   * decide whether schema responses should be validated.
-   *
-   * default: false
-   */
-  dangerouslyAssumeSchemaIsValid?: boolean;
-  /**
-   * Enable new introspectionQuery option `inputValueDeprecation`
-   * DANGER: your server must be configured to support this new feature,
-   * or else introspection will fail with an invalid query
-   *
-   * default: false
-   */
-  inputValueDeprecation?: boolean;
-  /**
-   * Enable new introspectionQuery option `schemaDescription`, which expects the `__Schema.description` field
-   * DANGER: your server must be configured to support a `__Schema.description` field on
-   * introspection or it will fail with an invalid query.
-   *
-   * default: false
-   */
-  schemaDescription?: boolean;
-  /**
-   * OperationName to use for introspection queries
-   *
-   * default: false
-   *
-   */
-  introspectionQueryName?: string;
-  /**
-   * Set codemirror editors to readOnly state
-   */
-  readOnly?: boolean;
-  /**
-   * Toggle the doc explorer state by default/programmatically
-   *
-   * default: false
-   */
-  docExplorerOpen?: boolean;
-  /**
-   * Custom toolbar configuration
-   */
-  toolbar?: GraphiQLToolbarConfig;
-  /**
-   * Max query history to retain
-   * default: 20
-   */
-  maxHistoryLength?: number;
-  /**
-   * Callback that is invoked once a remote schema has been fetched.
-   */
-  onSchemaChange?: (schema: GraphQLSchema) => void;
-
-  /**
-   * Callback that is invoked onTabChange.
-   */
-  onTabChange?: (tab: TabsState) => void;
-
-  children?: ReactNode;
-};
+export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
+  GraphiQLInterfaceProps;
 
 /**
  * The top-level React component for GraphiQL, intended to encompass the entire
@@ -298,76 +94,66 @@ export type GraphiQLProps = {
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
-  docExplorerOpen,
   externalFragments,
   fetcher,
+  getDefaultFieldNames,
   headers,
   inputValueDeprecation,
   introspectionQueryName,
+  isDocExplorerVisible,
   maxHistoryLength,
   onEditOperationName,
   onSchemaChange,
   onTabChange,
+  onToggleDocExplorerVisibility,
   onToggleHistory,
-  onToggleDocs,
   operationName,
   query,
   response,
-  storage,
   schema,
   schemaDescription,
   shouldPersistHeaders,
+  storage,
   validationRules,
   variables,
   ...props
 }: GraphiQLProps) {
   // Ensure props are correct
   if (typeof fetcher !== 'function') {
-    throw new TypeError('GraphiQL requires a fetcher function.');
+    throw new TypeError(
+      'The `GraphiQL` component requires a `fetcher` function to be passed as prop.',
+    );
   }
 
   return (
-    <StorageContextProvider storage={storage}>
-      <HistoryContextProvider
-        maxHistoryLength={maxHistoryLength}
-        onToggle={onToggleHistory}
-      >
-        <EditorContextProvider
-          defaultQuery={defaultQuery}
-          externalFragments={externalFragments}
-          headers={headers}
-          onEditOperationName={onEditOperationName}
-          onTabChange={onTabChange}
-          query={query}
-          response={response}
-          shouldPersistHeaders={shouldPersistHeaders}
-          validationRules={validationRules}
-          variables={variables}
-        >
-          <SchemaContextProvider
-            dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
-            fetcher={fetcher}
-            inputValueDeprecation={inputValueDeprecation}
-            introspectionQueryName={introspectionQueryName}
-            onSchemaChange={onSchemaChange}
-            schema={schema}
-            schemaDescription={schemaDescription}
-          >
-            <ExecutionContextProvider
-              fetcher={fetcher}
-              operationName={operationName}
-            >
-              <ExplorerContextProvider
-                isVisible={docExplorerOpen}
-                onToggleVisibility={onToggleDocs}
-              >
-                <GraphiQLInterface {...props} />
-              </ExplorerContextProvider>
-            </ExecutionContextProvider>
-          </SchemaContextProvider>
-        </EditorContextProvider>
-      </HistoryContextProvider>
-    </StorageContextProvider>
+    <GraphiQLProvider
+      getDefaultFieldNames={getDefaultFieldNames}
+      dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
+      defaultQuery={defaultQuery}
+      externalFragments={externalFragments}
+      fetcher={fetcher}
+      headers={headers}
+      inputValueDeprecation={inputValueDeprecation}
+      introspectionQueryName={introspectionQueryName}
+      isDocExplorerVisible={isDocExplorerVisible}
+      maxHistoryLength={maxHistoryLength}
+      onEditOperationName={onEditOperationName}
+      onSchemaChange={onSchemaChange}
+      onTabChange={onTabChange}
+      onToggleDocExplorerVisibility={onToggleDocExplorerVisibility}
+      onToggleHistory={onToggleHistory}
+      operationName={operationName}
+      query={query}
+      response={response}
+      schema={schema}
+      schemaDescription={schemaDescription}
+      shouldPersistHeaders={shouldPersistHeaders}
+      storage={storage}
+      validationRules={validationRules}
+      variables={variables}
+    >
+      <GraphiQLInterface {...props} />
+    </GraphiQLProvider>
   );
 }
 // Export main windows/panes to be used separately if desired.
@@ -375,32 +161,37 @@ GraphiQL.Logo = GraphiQLLogo;
 GraphiQL.Toolbar = GraphiQLToolbar;
 GraphiQL.Footer = GraphiQLFooter;
 
-export type GraphiQLInterfaceProps = Omit<
-  GraphiQLProps,
-  | 'dangerouslyAssumeSchemaIsValid'
-  | 'defaultQuery'
-  | 'docExplorerOpen'
-  | 'externalFragments'
-  | 'fetcher'
-  | 'headers'
-  | 'inputValueDeprecation'
-  | 'introspectionQueryName'
-  | 'maxHistoryLength'
-  | 'onEditOperationName'
-  | 'onSchemaChange'
-  | 'onTabChange'
-  | 'onToggleDocs'
-  | 'onToggleHistory'
-  | 'operationName'
-  | 'query'
-  | 'response'
-  | 'schema'
-  | 'schemaDescription'
-  | 'shouldPersistHeaders'
-  | 'storage'
-  | 'validationRules'
-  | 'variables'
->;
+type AddSuffix<Obj extends Record<string, any>, Suffix extends string> = {
+  [Key in keyof Obj as `${string & Key}${Suffix}`]: Obj[Key];
+};
+
+export type GraphiQLInterfaceProps = WriteableEditorProps &
+  AddSuffix<Pick<UseQueryEditorArgs, 'onEdit'>, 'Query'> &
+  Pick<UseQueryEditorArgs, 'onCopyQuery'> &
+  AddSuffix<Pick<UseVariableEditorArgs, 'onEdit'>, 'Variables'> &
+  AddSuffix<Pick<UseHeaderEditorArgs, 'onEdit'>, 'Headers'> &
+  Pick<UseResponseEditorArgs, 'responseTooltip'> & {
+    children?: ReactNode;
+    /**
+     * Set the default state for the editor tools.
+     * - `false` hides the editor tools
+     * - `true` shows the editor tools
+     * - `'variables'` specifically shows the variables editor
+     * - `'headers'` specifically shows the headers editor
+     * By default the editor tools are initially shown when at least one of the
+     * editors has contents.
+     */
+    defaultEditorToolsVisibility?: boolean | 'variables' | 'headers';
+    /**
+     * Toggle if the headers editor should be shown inside the editor tools.
+     * @default true
+     */
+    isHeadersEditorEnabled?: boolean;
+    /**
+     * Custom toolbar configuration
+     */
+    toolbar?: GraphiQLToolbarConfig;
+  };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const editorContext = useEditorContext({ nonNull: true });
@@ -440,13 +231,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     defaultSizeRelation: 3,
     direction: 'vertical',
     initiallyHidden: (() => {
-      // initial secondary editor pane open
-      if (props.defaultVariableEditorOpen !== undefined) {
-        return props.defaultVariableEditorOpen ? undefined : 'second';
+      if (
+        props.defaultEditorToolsVisibility === 'variables' ||
+        props.defaultEditorToolsVisibility === 'headers'
+      ) {
+        return undefined;
       }
 
-      if (props.defaultSecondaryEditorOpen !== undefined) {
-        return props.defaultSecondaryEditorOpen ? undefined : 'second';
+      if (typeof props.defaultEditorToolsVisibility === 'boolean') {
+        return props.defaultEditorToolsVisibility ? undefined : 'second';
       }
 
       return editorContext.initialVariables || editorContext.initialHeaders
@@ -458,8 +251,20 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   });
 
   const [activeSecondaryEditor, setActiveSecondaryEditor] = useState<
-    'variable' | 'header'
-  >('variable');
+    'variables' | 'headers'
+  >(() => {
+    if (
+      props.defaultEditorToolsVisibility === 'variables' ||
+      props.defaultEditorToolsVisibility === 'headers'
+    ) {
+      return props.defaultEditorToolsVisibility;
+    }
+    return !editorContext.initialVariables &&
+      editorContext.initialHeaders &&
+      isHeadersEditorEnabled
+      ? 'headers'
+      : 'variables';
+  });
   const [showDialog, setShowDialog] = useState<
     'settings' | 'short-keys' | null
   >(null);
@@ -502,7 +307,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     isChildComponentType(child, GraphiQL.Footer),
   );
 
-  const headerEditorEnabled = props.headerEditorEnabled ?? true;
+  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
 
   const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
@@ -740,22 +545,26 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <UnStyledButton
                           type="button"
                           className={
-                            activeSecondaryEditor === 'variable' ? 'active' : ''
+                            activeSecondaryEditor === 'variables'
+                              ? 'active'
+                              : ''
                           }
                           onClick={() => {
                             if (editorToolsResize.hiddenElement === 'second') {
                               editorToolsResize.setHiddenElement(null);
                             }
-                            setActiveSecondaryEditor('variable');
+                            setActiveSecondaryEditor('variables');
                           }}
                         >
                           Variables
                         </UnStyledButton>
-                        {headerEditorEnabled ? (
+                        {isHeadersEditorEnabled ? (
                           <UnStyledButton
                             type="button"
                             className={
-                              activeSecondaryEditor === 'header' ? 'active' : ''
+                              activeSecondaryEditor === 'headers'
+                                ? 'active'
+                                : ''
                             }
                             onClick={() => {
                               if (
@@ -763,7 +572,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                               ) {
                                 editorToolsResize.setHiddenElement(null);
                               }
-                              setActiveSecondaryEditor('header');
+                              setActiveSecondaryEditor('headers');
                             }}
                           >
                             Headers
@@ -811,23 +620,23 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                     <section
                       className="graphiql-editor-tool"
                       aria-label={
-                        activeSecondaryEditor === 'variable'
+                        activeSecondaryEditor === 'variables'
                           ? 'Variables'
                           : 'Headers'
                       }
                     >
                       <VariableEditor
                         editorTheme={props.editorTheme}
-                        isHidden={activeSecondaryEditor !== 'variable'}
+                        isHidden={activeSecondaryEditor !== 'variables'}
                         keyMap={props.keyMap}
                         onEdit={props.onEditVariables}
                         onClickReference={onClickReference}
                         readOnly={props.readOnly}
                       />
-                      {headerEditorEnabled && (
+                      {isHeadersEditorEnabled && (
                         <HeaderEditor
                           editorTheme={props.editorTheme}
-                          isHidden={activeSecondaryEditor !== 'header'}
+                          isHidden={activeSecondaryEditor !== 'headers'}
                           keyMap={props.keyMap}
                           onEdit={props.onEditHeaders}
                           readOnly={props.readOnly}
@@ -845,7 +654,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                   {executionContext.isFetching ? <Spinner /> : null}
                   <ResponseEditor
                     editorTheme={props.editorTheme}
-                    ResponseTooltip={props.ResultsTooltip}
+                    responseTooltip={props.responseTooltip}
                     keyMap={props.keyMap}
                   />
                   {footer}

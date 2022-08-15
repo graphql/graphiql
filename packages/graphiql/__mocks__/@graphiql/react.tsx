@@ -43,6 +43,7 @@ export {
   FieldDocumentation,
   FieldIcon,
   FieldLink,
+  GraphiQLProvider,
   History,
   HistoryContext,
   HistoryContextProvider,
@@ -98,22 +99,32 @@ export {
 } from '@graphiql/react';
 
 export type {
+  CommonEditorProps,
+  EditorContextProviderProps,
   EditorContextType,
+  ExecutionContextProviderProps,
   ExecutionContextType,
+  ExplorerContextProviderProps,
   ExplorerContextType,
   ExplorerFieldDef,
   ExplorerNavStack,
   ExplorerNavStackItem,
+  GraphiQLProviderProps,
+  HistoryContextProviderProps,
   HistoryContextType,
+  KeyMap,
   ResponseTooltipType,
+  SchemaContextProviderProps,
   SchemaContextType,
+  StorageContextProviderProps,
   StorageContextType,
   TabsState,
   Theme,
   UseHeaderEditorArgs,
-  UseResponseEditorArgs,
   UseQueryEditorArgs,
+  UseResponseEditorArgs,
   UseVariableEditorArgs,
+  WriteableEditorProps,
 } from '@graphiql/react';
 
 type Name = 'query' | 'variable' | 'header' | 'response';
