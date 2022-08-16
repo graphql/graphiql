@@ -213,6 +213,7 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
+      { uri },
     );
   };
   /**

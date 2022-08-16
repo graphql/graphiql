@@ -262,6 +262,7 @@ export class GraphQLLanguageService {
         position,
         undefined,
         fragmentInfo,
+        { uri: filePath },
       );
     }
     return [];
