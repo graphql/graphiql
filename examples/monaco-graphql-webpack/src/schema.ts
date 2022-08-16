@@ -3,6 +3,7 @@ import {
   getIntrospectionQuery,
   printSchema,
   parse,
+  buildASTSchema,
 } from 'graphql';
 import type { SchemaConfig } from 'monaco-graphql/src/typings';
 import { Uri } from 'monaco-editor';
@@ -135,7 +136,8 @@ class MySchemaFetcher {
 
 function isValid(sdl: string) {
   try {
-    parse(sdl);
+    const ast = parse(sdl);
+    buildASTSchema(ast);
     return true;
   } catch {
     return false;
