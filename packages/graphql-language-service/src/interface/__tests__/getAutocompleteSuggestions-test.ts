@@ -614,12 +614,49 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on object fields', () =>
       expect(
-        testSuggestions(`type Type {\n  aField: s`, new Position(0, 23)),
-        // FIXME: these are just input types, should suggest output types and [
-      ).toEqual([{ label: 'Episode' }, { label: 'String' }]));
+        testSuggestions(
+          `type Type {\n  aField: s`,
+          new Position(0, 23),
+          [],
+          'schema.graphqls',
+        ),
+      ).toEqual([
+        { label: 'Episode' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
+    it('provides correct suggestions on object fields that are arrays', () =>
+      expect(
+        testSuggestions(
+          `type Type {\n  aField: []`,
+          new Position(0, 25),
+          [],
+          'schema.graphqls',
+        ),
+      ).toEqual([
+        { label: 'AnotherInterface' },
+        { label: 'Boolean' },
+        { label: 'Character' },
+        { label: 'Droid' },
+        { label: 'Episode' },
+        { label: 'Human' },
+        { label: 'Int' },
+        { label: 'Query' },
+        { label: 'String' },
+        { label: 'TestInterface' },
+        { label: 'TestType' },
+        { label: 'TestUnion' },
+      ]));
     it('provides correct suggestions on input object fields', () =>
       expect(
-        testSuggestions(`input Type {\n  aField: s`, new Position(0, 23)),
+        testSuggestions(
+          `input Type {\n  aField: s`,
+          new Position(0, 23),
+          [],
+          'schema.graphqls',
+        ),
       ).toEqual([{ label: 'Episode' }, { label: 'String' }]));
     it('provides correct directive suggestions on args definitions', () =>
       expect(

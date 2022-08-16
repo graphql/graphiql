@@ -30,6 +30,7 @@ import {
   isUnionType,
   isEnumType,
   isInputObjectType,
+  isOutputType,
 } from 'graphql';
 
 import {
@@ -402,19 +403,36 @@ export function getAutocompleteSuggestions(
     );
   }
 
+  const unwrappedState = unwrapType(state);
+
   if (
-    mode === GraphQLDocumentMode.TYPE_SYSTEM &&
-    kind === RuleKinds.NAMED_TYPE
+    (mode === GraphQLDocumentMode.TYPE_SYSTEM &&
+      !unwrappedState.needsAdvance &&
+      state.kind === RuleKinds.NAMED_TYPE) ||
+    state.kind === RuleKinds.LIST_TYPE
   ) {
-    return hintList(
-      token,
-      Object.values(schema.getTypeMap())
-        .filter(type => !type.name.startsWith('__'))
-        .map(type => ({
-          label: type.name,
-          kind: CompletionItemKind.Function,
-        })),
-    );
+    if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
+      return hintList(
+        token,
+        Object.values(schema.getTypeMap())
+          .filter(type => isOutputType(type) && !type.name.startsWith('__'))
+          .map(type => ({
+            label: type.name,
+            kind: CompletionItemKind.Function,
+          })),
+      );
+    }
+    if (unwrappedState.kind === RuleKinds.INPUT_VALUE_DEF) {
+      return hintList(
+        token,
+        Object.values(schema.getTypeMap())
+          .filter(type => isInputType(type) && !type.name.startsWith('__'))
+          .map(type => ({
+            label: type.name,
+            kind: CompletionItemKind.Function,
+          })),
+      );
+    }
   }
 
   // Variable definition types
@@ -1286,4 +1304,20 @@ function getDocumentMode(
   return hasTypeSystemDefinitions(documentText)
     ? GraphQLDocumentMode.TYPE_SYSTEM
     : GraphQLDocumentMode.EXECUTABLE;
+}
+
+function unwrapType(state: State): State {
+  if (
+    state.prevState &&
+    state.kind &&
+    ([
+      RuleKinds.NAMED_TYPE,
+      RuleKinds.LIST_TYPE,
+      RuleKinds.TYPE,
+      RuleKinds.NON_NULL_TYPE,
+    ] as RuleKind[]).includes(state.kind)
+  ) {
+    return unwrapType(state.prevState);
+  }
+  return state;
 }
