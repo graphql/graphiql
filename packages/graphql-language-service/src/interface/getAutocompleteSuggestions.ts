@@ -1310,12 +1310,14 @@ function unwrapType(state: State): State {
   if (
     state.prevState &&
     state.kind &&
-    ([
-      RuleKinds.NAMED_TYPE,
-      RuleKinds.LIST_TYPE,
-      RuleKinds.TYPE,
-      RuleKinds.NON_NULL_TYPE,
-    ] as RuleKind[]).includes(state.kind)
+    (
+      [
+        RuleKinds.NAMED_TYPE,
+        RuleKinds.LIST_TYPE,
+        RuleKinds.TYPE,
+        RuleKinds.NON_NULL_TYPE,
+      ] as RuleKind[]
+    ).includes(state.kind)
   ) {
     return unwrapType(state.prevState);
   }

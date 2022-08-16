@@ -581,13 +581,13 @@ describe('getAutocompleteSuggestions', () => {
     });
 
     it('provides interfaces to be extended', () => {
-      expect(
-        testSuggestions('extend interface ', new Position(0, 17)),
-      ).toEqual([
-        { label: 'AnotherInterface' },
-        { label: 'Character' },
-        { label: 'TestInterface' },
-      ]);
+      expect(testSuggestions('extend interface ', new Position(0, 17))).toEqual(
+        [
+          { label: 'AnotherInterface' },
+          { label: 'Character' },
+          { label: 'TestInterface' },
+        ],
+      );
     });
 
     it('provides unions to be extended', () => {
