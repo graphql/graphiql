@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.11.5
+
+### Patch Changes
+
+- [#2678](https://github.com/graphql/graphiql/pull/2678) [`b3470b99`](https://github.com/graphql/graphiql/commit/b3470b993bd4c1b90ab7831581de2021af1bb6b0) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add the attribute `type="button"` to all buttons
+
 ## 1.11.4
 
 ### Patch Changes
