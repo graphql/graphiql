@@ -60,6 +60,7 @@ export default function FieldDoc() {
           <div className="doc-category-title">deprecated arguments</div>
           {!showDeprecated ? (
             <button
+              type="button"
               className="show-btn"
               onClick={() => handleShowDeprecated(!showDeprecated)}
             >

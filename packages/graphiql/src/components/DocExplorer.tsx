@@ -97,6 +97,7 @@ export function DocExplorer(props: DocExplorerProps) {
       <div className="doc-explorer-title-bar">
         {prevName && (
           <button
+            type="button"
             className="doc-explorer-back"
             onClick={pop}
             aria-label={`Go back to ${prevName}`}
@@ -109,6 +110,7 @@ export function DocExplorer(props: DocExplorerProps) {
         </div>
         <div className="doc-explorer-rhs">
           <button
+            type="button"
             className="docExplorerHide"
             onClick={() => {
               hide();

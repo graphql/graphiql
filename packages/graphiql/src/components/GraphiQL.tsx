@@ -733,6 +733,7 @@ class GraphiQLWithContext extends React.Component<
               {this.props.explorerContext &&
                 !this.props.explorerContext.isVisible && (
                   <button
+                    type="button"
                     className="docExplorerShow"
                     onClick={() => {
                       this.props.explorerContext?.show();

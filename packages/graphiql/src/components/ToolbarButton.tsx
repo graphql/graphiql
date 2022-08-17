@@ -35,6 +35,7 @@ export class ToolbarButton extends React.Component<
     const { error } = this.state;
     return (
       <button
+        type="button"
         className={'toolbar-button' + (error ? ' error' : '')}
         onClick={this.handleClick}
         title={error ? error.message : this.props.title}
