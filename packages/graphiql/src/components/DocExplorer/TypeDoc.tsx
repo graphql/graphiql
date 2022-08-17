@@ -94,6 +94,7 @@ export default function TypeDoc() {
           <div className="doc-category-title">deprecated fields</div>
           {!showDeprecated ? (
             <button
+              type="button"
               className="show-btn"
               onClick={() => {
                 setShowDeprecated(true);
@@ -135,6 +136,7 @@ export default function TypeDoc() {
           <div className="doc-category-title">deprecated values</div>
           {!showDeprecated ? (
             <button
+              type="button"
               className="show-btn"
               onClick={() => {
                 setShowDeprecated(true);

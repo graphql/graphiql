@@ -24,6 +24,7 @@ export function QueryHistory() {
         <div className="history-title">History</div>
         <div className="doc-explorer-rhs">
           <button
+            type="button"
             className="docExplorerHide"
             onClick={() => hide()}
             aria-label="Close History"
@@ -96,6 +97,7 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
         />
       ) : (
         <button
+          type="button"
           className="history-label"
           onClick={() => {
             selectHistoryItem(props.item);
@@ -105,6 +107,7 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
         </button>
       )}
       <button
+        type="button"
         onClick={e => {
           e.stopPropagation();
           setIsEditable(true);
@@ -114,6 +117,7 @@ export function QueryHistoryItem(props: QueryHistoryItemProps) {
         {'\u270e'}
       </button>
       <button
+        type="button"
         onClick={e => {
           e.stopPropagation();
           toggleFavorite(props.item);

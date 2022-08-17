@@ -48,6 +48,7 @@ export default class SearchBox extends React.Component<
         />
         {this.state.value && (
           <button
+            type="button"
             className="search-box-clear"
             onClick={this.handleClear}
             aria-label="Clear search input"
