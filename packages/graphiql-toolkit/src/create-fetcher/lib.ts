@@ -164,8 +164,8 @@ export const createMultipartFetcher = (
         // the static provided headers
         ...fetcherOpts?.headers,
       },
-    }).then(response =>
-      meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(response, {
+    }).then(r =>
+      meros<Extract<ExecutionResultPayload, { hasNext: boolean }>>(r, {
         multiple: true,
       }),
     );

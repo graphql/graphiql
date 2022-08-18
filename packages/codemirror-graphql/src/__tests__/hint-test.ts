@@ -17,10 +17,6 @@ import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLString,
-  __Directive,
-  __EnumValue,
-  __Field,
-  __InputValue,
   __Schema,
   __Type,
 } from 'graphql';
@@ -614,30 +610,6 @@ describe('graphql-hint', () => {
       {
         text: 'SubscriptionType',
         description: 'This is a simple subscription type',
-      },
-      {
-        text: '__Schema',
-        description: __Schema.description,
-      },
-      {
-        text: '__Type',
-        description: __Type.description,
-      },
-      {
-        text: '__Field',
-        description: __Field.description,
-      },
-      {
-        text: '__InputValue',
-        description: __InputValue.description,
-      },
-      {
-        text: '__EnumValue',
-        description: __EnumValue.description,
-      },
-      {
-        text: '__Directive',
-        description: __Directive.description,
       },
     ];
     const expectedSuggestions = getExpectedSuggestions(list);

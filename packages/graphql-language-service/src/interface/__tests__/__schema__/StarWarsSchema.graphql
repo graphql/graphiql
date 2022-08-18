@@ -71,3 +71,5 @@ type Query {
   inputTypeTest(args: InputType = {key: "key"}): TestType
   deprecatedField: TestType @deprecated(reason: "Use test instead.")
 }
+
+union TestUnion = Droid | TestType

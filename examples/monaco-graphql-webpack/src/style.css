@@ -48,7 +48,11 @@ body {
 }
 #results {
   align-items: stretch;
-  height: 90vh;
+  height: 45vh;
+}
+#schema-sdl {
+  align-items: stretch;
+  height: 45vh;
 }
 
 /* Toolbar */

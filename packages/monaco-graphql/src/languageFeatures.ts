@@ -37,6 +37,7 @@ export class DiagnosticsAdapter {
     private _worker: WorkerAccessor,
   ) {
     this._worker = _worker;
+    let onChangeTimeout: ReturnType<typeof setTimeout>;
     const onModelAdd = (model: editor.IModel): void => {
       const modeId = getModelLanguageId(model);
       if (modeId !== this.defaults.languageId) {
@@ -52,16 +53,12 @@ export class DiagnosticsAdapter {
         defaults.diagnosticSettings?.validateVariablesJSON &&
         defaults.diagnosticSettings.validateVariablesJSON[modelUri];
 
-      let handle: number;
       this._listener[modelUri] = model.onDidChangeContent(() => {
-        clearTimeout(handle);
-        // @ts-ignore
-        handle = setTimeout(() => {
+        clearTimeout(onChangeTimeout);
+        onChangeTimeout = setTimeout(() => {
           this._doValidate(model.uri, modeId, jsonValidationForModel);
         }, 200);
       });
-
-      this._doValidate(model.uri, modeId, jsonValidationForModel);
     };
 
     const onModelRemoved = (model: editor.IModel): void => {
@@ -76,6 +73,11 @@ export class DiagnosticsAdapter {
     };
 
     this._disposables.push(editor.onDidCreateModel(onModelAdd));
+    this._disposables.push({
+      dispose: () => {
+        clearTimeout(onChangeTimeout);
+      },
+    });
     this._disposables.push(
       editor.onWillDisposeModel(model => {
         onModelRemoved(model);

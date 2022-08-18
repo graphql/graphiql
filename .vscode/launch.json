@@ -18,6 +18,23 @@
       ],
       "sourceMaps": true,
       "preLaunchTask": "watch-vscode"
+    },
+    {
+      "type": "node",
+      "name": "jest watch",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": [
+        "--config",
+        "jest.config.js",
+        "--color",
+        "--runInBand",
+        "--watch",
+        "${relativeFile}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

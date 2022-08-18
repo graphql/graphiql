@@ -47,8 +47,10 @@ async function render() {
       operationModel,
       operationEditor,
       variablesEditor,
+      schemaEditor,
       resultsEditor,
       variablesModel,
+      schemaModel,
     } = editors;
     const { schemaReloadButton, executeOpButton, schemaPicker } =
       renderToolbar(toolbar);
@@ -59,9 +61,12 @@ async function render() {
 
     const schema = await schemaFetcher.loadSchema();
     if (schema) {
+      console.log('loaded schema', schema);
       monacoGraphQLAPI.setSchemaConfig([
-        { ...schema, fileMatch: [operationUri] },
+        { ...schema, fileMatch: [operationUri, schemaModel.uri.toString()] },
       ]);
+
+      schemaEditor.setValue(schema.documentString || '');
     }
 
     monacoGraphQLAPI.setDiagnosticSettings({
@@ -86,6 +91,23 @@ async function render() {
         localStorage.setItem('variables', variablesModel.getValue());
       }, 200);
     });
+    schemaModel.onDidChangeContent(() => {
+      setTimeout(async () => {
+        const value = schemaModel.getValue();
+        localStorage.setItem('schema-sdl', value);
+
+        const nextSchema = await schemaFetcher.overrideSchema(value);
+
+        if (nextSchema) {
+          monacoGraphQLAPI?.setSchemaConfig([
+            {
+              ...nextSchema,
+              fileMatch: [operationUri, schemaModel.uri.toString()],
+            },
+          ]);
+        }
+      }, 200);
+    });
 
     /**
      * Choosing a new schema
@@ -104,6 +126,7 @@ async function render() {
                 fileMatch: [operationModel.uri.toString()],
               },
             ]);
+            schemaEditor.setValue(schemaResult.documentString || '');
           }
         }
       },
@@ -112,8 +135,11 @@ async function render() {
     /**
      * Reloading your schema
      */
-    schemaReloadButton.addEventListener('click', () => {
-      schemaFetcher.loadSchema().then();
+    schemaReloadButton.addEventListener('click', async () => {
+      const schemaResult = await schemaFetcher.loadSchema();
+      if (schemaResult) {
+        schemaEditor.setValue(schemaResult.documentString || '');
+      }
     });
 
     /**
