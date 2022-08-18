@@ -1,5 +1,11 @@
 # graphql-language-service
 
+## 5.1.0
+
+### Minor Changes
+
+- [#2654](https://github.com/graphql/graphiql/pull/2654) [`d6ff4d7a`](https://github.com/graphql/graphiql/commit/d6ff4d7a5d535a0c43fe5914016bac9ef0c2b782) Thanks [@cshaver](https://github.com/cshaver)! - Provide autocomplete suggestions for documents with type definitions
+
 ## 5.0.6
 
 ### Patch Changes
