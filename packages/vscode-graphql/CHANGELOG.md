@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.7.4
+
+### Patch Changes
+
+- Updated dependencies []:
+  - graphql-language-service-server@2.8.4
+
 ## 0.7.3
 
 ### Patch Changes
