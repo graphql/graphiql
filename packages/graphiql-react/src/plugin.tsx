@@ -104,9 +104,12 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     }
 
     for (const plugin of props.plugins || []) {
+      if (typeof plugin.title !== 'string' || !plugin.title) {
+        throw new Error('All GraphiQL plugins must have a unique title');
+      }
       if (pluginTitles[plugin.title]) {
         throw new Error(
-          `All GraphiQL plugins must have a unique name, found two plugins with the name '${plugin.title}'`,
+          `All GraphiQL plugins must have a unique title, found two plugins with the title '${plugin.title}'`,
         );
       } else {
         pluginList.push(plugin);
