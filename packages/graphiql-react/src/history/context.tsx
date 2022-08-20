@@ -32,25 +32,9 @@ export type HistoryContextType = {
     favorite?: boolean;
   }): void;
   /**
-   * Hide the history.
-   */
-  hide(): void;
-  /**
-   * If the history should be shown.
-   */
-  isVisible: boolean;
-  /**
    * The list of history items.
    */
   items: readonly QueryStoreItem[];
-  /**
-   * Show the history.
-   */
-  show(): void;
-  /**
-   * Toggle the visibility state of the history.
-   */
-  toggle(): void;
   /**
    * Toggle the favorite state of an item from the history.
    * @param args An object containing the favorite state (`undefined` if it
@@ -78,12 +62,6 @@ export type HistoryContextProviderProps = {
    * @default 20
    */
   maxHistoryLength?: number;
-  /**
-   * Invoked when the visibility of the history UI changes.
-   * @param isVisible A boolean indicating if the history is now visible
-   * (`true`) or hidden (`false`).
-   */
-  onToggleHistory?(isVisible: boolean): void;
 };
 
 export function HistoryContextProvider(props: HistoryContextProviderProps) {
@@ -96,9 +74,6 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     ),
   );
   const [items, setItems] = useState(historyStore.current?.queries || []);
-  const [isVisible, setIsVisible] = useState(
-    storage?.get(STORAGE_KEY) === 'true' || false,
-  );
 
   const addToHistory: HistoryContextType['addToHistory'] = useCallback(
     ({ query, variables, headers, operationName }) => {
@@ -128,29 +103,6 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
     [],
   );
 
-  const { onToggleHistory } = props;
-
-  const hide = useCallback(() => {
-    onToggleHistory?.(false);
-    storage?.set(STORAGE_KEY, JSON.stringify(false));
-    setIsVisible(false);
-  }, [onToggleHistory, storage]);
-
-  const show = useCallback(() => {
-    onToggleHistory?.(true);
-    storage?.set(STORAGE_KEY, JSON.stringify(true));
-    setIsVisible(true);
-  }, [onToggleHistory, storage]);
-
-  const toggle = useCallback(() => {
-    setIsVisible(current => {
-      const newValue = !current;
-      onToggleHistory?.(newValue);
-      storage?.set(STORAGE_KEY, JSON.stringify(newValue));
-      return newValue;
-    });
-  }, [onToggleHistory, storage]);
-
   const toggleFavorite: HistoryContextType['toggleFavorite'] = useCallback(
     ({ query, variables, headers, operationName, label, favorite }) => {
       historyStore.current.toggleFavorite(
@@ -167,26 +119,8 @@ export function HistoryContextProvider(props: HistoryContextProviderProps) {
   );
 
   const value = useMemo<HistoryContextType>(
-    () => ({
-      addToHistory,
-      editLabel,
-      hide,
-      isVisible,
-      items,
-      show,
-      toggle,
-      toggleFavorite,
-    }),
-    [
-      addToHistory,
-      editLabel,
-      hide,
-      isVisible,
-      items,
-      show,
-      toggle,
-      toggleFavorite,
-    ],
+    () => ({ addToHistory, editLabel, items, toggleFavorite }),
+    [addToHistory, editLabel, items, toggleFavorite],
   );
 
   return (
@@ -200,4 +134,3 @@ export const useHistoryContext =
   createContextHook<HistoryContextType>(HistoryContext);
 
 const DEFAULT_HISTORY_LENGTH = 20;
-const STORAGE_KEY = 'historyPaneOpen';

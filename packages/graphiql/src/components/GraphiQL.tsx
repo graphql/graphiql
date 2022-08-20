@@ -19,14 +19,10 @@ import {
   ChevronUpIcon,
   CopyIcon,
   Dialog,
-  DocExplorer,
-  DocsIcon,
   ExecuteButton,
   GraphiQLProvider,
   GraphiQLProviderProps,
   HeaderEditor,
-  History,
-  HistoryIcon,
   KeyboardShortcutIcon,
   MergeIcon,
   PlusIcon,
@@ -45,10 +41,9 @@ import {
   useDragResize,
   useEditorContext,
   useExecutionContext,
-  useExplorerContext,
   UseHeaderEditorArgs,
-  useHistoryContext,
   useMergeQuery,
+  usePluginContext,
   usePrettifyEditors,
   UseQueryEditorArgs,
   UseResponseEditorArgs,
@@ -105,14 +100,13 @@ export function GraphiQL({
   headers,
   inputValueDeprecation,
   introspectionQueryName,
-  isDocExplorerVisible,
   maxHistoryLength,
   onEditOperationName,
   onSchemaChange,
   onTabChange,
-  onToggleDocExplorerVisibility,
-  onToggleHistory,
+  onTogglePluginVisibility,
   operationName,
+  plugins,
   query,
   response,
   schema,
@@ -121,6 +115,7 @@ export function GraphiQL({
   storage,
   validationRules,
   variables,
+  visiblePlugin,
   ...props
 }: GraphiQLProps) {
   // Ensure props are correct
@@ -140,13 +135,13 @@ export function GraphiQL({
       headers={headers}
       inputValueDeprecation={inputValueDeprecation}
       introspectionQueryName={introspectionQueryName}
-      isDocExplorerVisible={isDocExplorerVisible}
       maxHistoryLength={maxHistoryLength}
       onEditOperationName={onEditOperationName}
       onSchemaChange={onSchemaChange}
       onTabChange={onTabChange}
-      onToggleDocExplorerVisibility={onToggleDocExplorerVisibility}
-      onToggleHistory={onToggleHistory}
+      onTogglePluginVisibility={onTogglePluginVisibility}
+      plugins={plugins}
+      visiblePlugin={visiblePlugin}
       operationName={operationName}
       query={query}
       response={response}
@@ -202,10 +197,9 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
-  const explorerContext = useExplorerContext();
-  const historyContext = useHistoryContext();
   const schemaContext = useSchemaContext({ nonNull: true });
   const storageContext = useStorageContext();
+  const pluginContext = usePluginContext();
 
   const copy = useCopyQuery({ onCopyQuery: props.onCopyQuery });
   const merge = useMergeQuery();
@@ -213,17 +207,15 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 
   const { theme, setTheme } = useTheme();
 
+  const PluginContent = pluginContext?.visiblePlugin?.content;
+
   const pluginResize = useDragResize({
     defaultSizeRelation: 1 / 3,
     direction: 'horizontal',
-    initiallyHidden:
-      explorerContext?.isVisible || historyContext?.isVisible
-        ? undefined
-        : 'first',
+    initiallyHidden: pluginContext?.visiblePlugin ? undefined : 'first',
     onHiddenElementChange: resizableElement => {
       if (resizableElement === 'first') {
-        explorerContext?.hide();
-        historyContext?.hide();
+        pluginContext?.setVisiblePlugin(null);
       }
     },
     sizeThresholdSecond: 200,
@@ -332,68 +324,33 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
         <div>
-          {explorerContext ? (
-            <Tooltip
-              label={
-                explorerContext.isVisible
-                  ? 'Hide Documentation Explorer'
-                  : 'Show Documentation Explorer'
-              }
-            >
-              <UnStyledButton
-                type="button"
-                className={explorerContext.isVisible ? 'active' : ''}
-                onClick={() => {
-                  if (explorerContext?.isVisible) {
-                    explorerContext?.hide();
-                    pluginResize.setHiddenElement('first');
-                  } else {
-                    explorerContext?.show();
-                    pluginResize.setHiddenElement(null);
-                    if (historyContext?.isVisible) {
-                      historyContext.hide();
-                    }
-                  }
-                }}
-                aria-label={
-                  explorerContext.isVisible
-                    ? 'Hide Documentation Explorer'
-                    : 'Show Documentation Explorer'
-                }
-              >
-                <DocsIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-          ) : null}
-          {historyContext ? (
-            <Tooltip
-              label={historyContext.isVisible ? 'Hide History' : 'Show History'}
-            >
-              <UnStyledButton
-                type="button"
-                className={historyContext.isVisible ? 'active' : ''}
-                onClick={() => {
-                  if (!historyContext) {
-                    return;
-                  }
-                  historyContext.toggle();
-                  if (historyContext.isVisible) {
-                    pluginResize.setHiddenElement('first');
-                  } else {
-                    pluginResize.setHiddenElement(null);
-                    if (explorerContext?.isVisible) {
-                      explorerContext.hide();
-                    }
-                  }
-                }}
-                aria-label={
-                  historyContext.isVisible ? 'Hide History' : 'Show History'
-                }
-              >
-                <HistoryIcon aria-hidden="true" />
-              </UnStyledButton>
-            </Tooltip>
-          ) : null}
+          {pluginContext
+            ? pluginContext?.plugins.map(plugin => {
+                const isVisible = plugin === pluginContext.visiblePlugin;
+                const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
+                const Icon = plugin.icon;
+                return (
+                  <Tooltip key={plugin.title} label={label}>
+                    <UnStyledButton
+                      type="button"
+                      className={isVisible ? 'active' : ''}
+                      onClick={() => {
+                        if (isVisible) {
+                          pluginContext.setVisiblePlugin(null);
+                          pluginResize.setHiddenElement('first');
+                        } else {
+                          pluginContext.setVisiblePlugin(plugin);
+                          pluginResize.setHiddenElement(null);
+                        }
+                      }}
+                      aria-label={label}
+                    >
+                      <Icon aria-hidden="true" />
+                    </UnStyledButton>
+                  </Tooltip>
+                );
+              })
+            : null}
         </div>
         <div>
           <Tooltip label="Re-fetch GraphQL schema">
@@ -439,12 +396,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           }}
         >
           <div className="graphiql-plugin">
-            {explorerContext?.isVisible ? <DocExplorer /> : null}
-            {historyContext?.isVisible ? <History /> : null}
+            {PluginContent ? <PluginContent /> : null}
           </div>
         </div>
         <div ref={pluginResize.dragBarRef}>
-          {explorerContext?.isVisible || historyContext?.isVisible ? (
+          {pluginContext?.visiblePlugin ? (
             <div className="graphiql-horizontal-drag-bar" />
           ) : null}
         </div>

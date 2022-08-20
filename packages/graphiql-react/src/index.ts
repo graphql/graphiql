@@ -46,6 +46,12 @@ export {
   HistoryContextProvider,
   useHistoryContext,
 } from './history';
+export {
+  DOC_EXPLORER_PLUGIN,
+  HISTORY_PLUGIN,
+  PluginContext,
+  usePluginContext,
+} from './plugin';
 export { GraphiQLProvider } from './provider';
 export {
   SchemaContext,
@@ -92,6 +98,11 @@ export type {
   HistoryContextProviderProps,
   HistoryContextType,
 } from './history';
+export type {
+  GraphiQLPlugin,
+  PluginContextType,
+  PluginContextProviderProps,
+} from './plugin';
 export type { GraphiQLProviderProps } from './provider';
 export type { SchemaContextProviderProps, SchemaContextType } from './schema';
 export type {
