@@ -4,17 +4,8 @@ import type {
   GraphQLInputField,
   GraphQLNamedType,
 } from 'graphql';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useSchemaContext } from '../schema';
-
-import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
 
 export type ExplorerFieldDef =
@@ -49,14 +40,6 @@ export type ExplorerContextType = {
    */
   explorerNavStack: ExplorerNavStack;
   /**
-   * Hide the doc explorer.
-   */
-  hide(): void;
-  /**
-   * If the doc explorer should be shown.
-   */
-  isVisible: boolean;
-  /**
    * Push an item to the navigation stack.
    * @param item The item that should be pushed to the stack.
    */
@@ -70,10 +53,6 @@ export type ExplorerContextType = {
    * the initial stack item.
    */
   reset(): void;
-  /**
-   * Show the doc explorer.
-   */
-  show(): void;
 };
 
 export const ExplorerContext =
@@ -81,16 +60,6 @@ export const ExplorerContext =
 
 export type ExplorerContextProviderProps = {
   children: ReactNode;
-  /**
-   * This prop controls the visibility state of the doc explorer.
-   */
-  isDocExplorerVisible?: boolean;
-  /**
-   * Invoked when the visibility state of the doc explorer changes.
-   * @param isVisible The new visibility state of the doc explorer after the
-   * update.
-   */
-  onToggleDocExplorerVisibility?(isVisible: boolean): void;
 };
 
 export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
@@ -98,31 +67,10 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     nonNull: true,
     caller: ExplorerContextProvider,
   });
-  const storage = useStorageContext();
 
-  const [isVisible, setIsVisible] = useState(
-    props.isDocExplorerVisible ?? storage?.get(STORAGE_KEY) === 'true' ?? false,
-  );
   const [navStack, setNavStack] = useState<ExplorerNavStack>([
     initialNavStackItem,
   ]);
-
-  const { onToggleDocExplorerVisibility: onToggleVisibility } = props;
-
-  const isInitialRender = useRef(true);
-  useEffect(() => {
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-    } else if (props.isDocExplorerVisible !== undefined) {
-      setIsVisible(props.isDocExplorerVisible);
-    }
-  }, [props.isDocExplorerVisible]);
-
-  const hide = useCallback(() => {
-    onToggleVisibility?.(false);
-    storage?.set(STORAGE_KEY, 'false');
-    setIsVisible(false);
-  }, [onToggleVisibility, storage]);
 
   const push = useCallback((item: ExplorerNavStackItem) => {
     setNavStack(currentState => {
@@ -148,12 +96,6 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
     );
   }, []);
 
-  const show = useCallback(() => {
-    onToggleVisibility?.(true);
-    storage?.set(STORAGE_KEY, 'true');
-    setIsVisible(true);
-  }, [onToggleVisibility, storage]);
-
   useEffect(() => {
     if (isFetching) {
       reset();
@@ -161,16 +103,8 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
   }, [isFetching, reset]);
 
   const value = useMemo<ExplorerContextType>(
-    () => ({
-      explorerNavStack: navStack,
-      hide,
-      isVisible,
-      push,
-      pop,
-      reset,
-      show,
-    }),
-    [hide, isVisible, navStack, push, pop, reset, show],
+    () => ({ explorerNavStack: navStack, push, pop, reset }),
+    [navStack, push, pop, reset],
   );
 
   return (
@@ -181,5 +115,3 @@ export function ExplorerContextProvider(props: ExplorerContextProviderProps) {
 }
 
 export const useExplorerContext = createContextHook(ExplorerContext);
-
-const STORAGE_KEY = 'docExplorerOpen';

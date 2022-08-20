@@ -18,6 +18,7 @@ import {
 import { useExecutionContext } from '../execution';
 import { useExplorerContext } from '../explorer';
 import { markdown } from '../markdown';
+import { DOC_EXPLORER_PLUGIN, usePluginContext } from '../plugin';
 import { useSchemaContext } from '../schema';
 import { useStorageContext } from '../storage';
 import debounce from '../utility/debounce';
@@ -94,6 +95,7 @@ export function useQueryEditor(
   const executionContext = useExecutionContext();
   const storage = useStorageContext();
   const explorer = useExplorerContext();
+  const plugin = usePluginContext();
   const copy = useCopyQuery({ caller: caller || useQueryEditor, onCopyQuery });
   const merge = useMergeQuery({ caller: caller || useQueryEditor });
   const prettify = usePrettifyEditors({ caller: caller || useQueryEditor });
@@ -105,10 +107,10 @@ export function useQueryEditor(
   >(() => {});
   useEffect(() => {
     onClickReferenceRef.current = reference => {
-      if (!explorer) {
+      if (!explorer || !plugin) {
         return;
       }
-      explorer.show();
+      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
       if (reference && reference.kind === 'Type') {
         explorer.push({ name: reference.type.name, def: reference.type });
       } else if (reference.kind === 'Field') {
@@ -120,7 +122,7 @@ export function useQueryEditor(
       }
       onClickReference?.(reference);
     };
-  }, [explorer, onClickReference]);
+  }, [explorer, onClickReference, plugin]);
 
   useEffect(() => {
     let isActive = true;
