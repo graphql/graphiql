@@ -8,6 +8,7 @@ import {
   ExplorerContextProviderProps,
 } from './explorer/context';
 import { HistoryContextProvider, HistoryContextProviderProps } from './history';
+import { PluginContextProvider, PluginContextProviderProps } from './plugin';
 import { SchemaContextProvider, SchemaContextProviderProps } from './schema';
 import { StorageContextProvider, StorageContextProviderProps } from './storage';
 
@@ -15,6 +16,7 @@ export type GraphiQLProviderProps = EditorContextProviderProps &
   ExecutionContextProviderProps &
   ExplorerContextProviderProps &
   HistoryContextProviderProps &
+  PluginContextProviderProps &
   SchemaContextProviderProps &
   StorageContextProviderProps;
 
@@ -28,14 +30,13 @@ export function GraphiQLProvider({
   headers,
   inputValueDeprecation,
   introspectionQueryName,
-  isDocExplorerVisible,
   maxHistoryLength,
   onEditOperationName,
   onSchemaChange,
   onTabChange,
-  onToggleDocExplorerVisibility,
-  onToggleHistory,
+  onTogglePluginVisibility,
   operationName,
+  plugins,
   query,
   response,
   schema,
@@ -44,13 +45,11 @@ export function GraphiQLProvider({
   storage,
   validationRules,
   variables,
+  visiblePlugin,
 }: GraphiQLProviderProps) {
   return (
     <StorageContextProvider storage={storage}>
-      <HistoryContextProvider
-        maxHistoryLength={maxHistoryLength}
-        onToggleHistory={onToggleHistory}
-      >
+      <HistoryContextProvider maxHistoryLength={maxHistoryLength}>
         <EditorContextProvider
           defaultQuery={defaultQuery}
           externalFragments={externalFragments}
@@ -77,11 +76,14 @@ export function GraphiQLProvider({
               fetcher={fetcher}
               operationName={operationName}
             >
-              <ExplorerContextProvider
-                isDocExplorerVisible={isDocExplorerVisible}
-                onToggleDocExplorerVisibility={onToggleDocExplorerVisibility}
-              >
-                {children}
+              <ExplorerContextProvider>
+                <PluginContextProvider
+                  onTogglePluginVisibility={onTogglePluginVisibility}
+                  plugins={plugins}
+                  visiblePlugin={visiblePlugin}
+                >
+                  {children}
+                </PluginContextProvider>
               </ExplorerContextProvider>
             </ExecutionContextProvider>
           </SchemaContextProvider>
