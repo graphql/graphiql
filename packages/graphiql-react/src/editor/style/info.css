@@ -1,8 +1,9 @@
 /* Popup styles */
 .CodeMirror-info {
   background-color: hsl(var(--color-base));
+  border: var(--popover-border);
   border-radius: var(--border-radius-8);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--popover-box-shadow);
   color: hsla(var(--color-neutral), 1);
   max-height: 300px;
   max-width: 400px;
