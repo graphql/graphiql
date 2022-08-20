@@ -15,8 +15,9 @@
 
 [data-reach-dialog-content] {
   background-color: hsl(var(--color-base));
+  border: var(--popover-border);
   border-radius: var(--border-radius-12);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--popover-box-shadow);
   margin: 0;
   max-height: 80vh;
   max-width: 80vw;

@@ -2,9 +2,9 @@
 
 [data-reach-tooltip] {
   background: hsl(var(--color-base));
-  border: none;
+  border: var(--popover-border);
   border-radius: var(--border-radius-4);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--popover-box-shadow);
   color: hsl(var(--color-neutral));
   font-size: inherit;
   padding: var(--px-4) var(--px-6);

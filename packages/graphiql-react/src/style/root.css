@@ -43,10 +43,11 @@ reach-portal {
   --border-radius-8: 8px;
   --border-radius-12: 12px;
 
-  /* Box shadow */
-  --box-shadow: 0px 6px 20px rgba(59, 76, 106, 0.13),
+  /* Popover styles (tooltip, dialog, etc) */
+  --popover-box-shadow: 0px 6px 20px rgba(59, 76, 106, 0.13),
     0px 1.34018px 4.46726px rgba(59, 76, 106, 0.0774939),
     0px 0.399006px 1.33002px rgba(59, 76, 106, 0.0525061);
+  --popover-border: none;
 
   /* Layout */
   --sidebar-width: 44px;
@@ -68,6 +69,9 @@ reach-portal {
     --color-error: 13, 100%, 58%;
     --color-neutral: 219, 29%, 78%;
     --color-base: 219, 29%, 18%;
+
+    --popover-box-shadow: none;
+    --popover-border: 1px solid hsl(var(--color-neutral));
   }
 }
 
@@ -84,6 +88,9 @@ body.graphiql-dark reach-portal {
   --color-error: 13, 100%, 58%;
   --color-neutral: 219, 29%, 78%;
   --color-base: 219, 29%, 18%;
+
+  --popover-box-shadow: none;
+  --popover-border: 1px solid hsl(var(--color-neutral));
 }
 
 .graphiql-container,

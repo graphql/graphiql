@@ -3,9 +3,9 @@
 /* Popup styles */
 .CodeMirror-hints {
   background: hsl(var(--color-base));
-  border: none;
+  border: var(--popover-border);
   border-radius: var(--border-radius-8);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--popover-box-shadow);
   display: grid;
   font-family: var(--font-family);
   font-size: var(--font-size-body);
