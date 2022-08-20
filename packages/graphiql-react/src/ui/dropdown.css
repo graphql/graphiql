@@ -4,9 +4,9 @@
 [data-reach-listbox-popover],
 [data-reach-menu-list] {
   background-color: hsl(var(--color-base));
-  box-shadow: var(--box-shadow);
-  border: none;
+  border: var(--popover-border);
   border-radius: var(--border-radius-8);
+  box-shadow: var(--popover-box-shadow);
   font-size: inherit;
   max-width: 250px;
   padding: var(--px-4);

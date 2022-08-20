@@ -73,9 +73,9 @@
 /* Popup styles */
 .CodeMirror-lint-tooltip {
   background-color: hsl(var(--color-base));
-  border: none;
+  border: var(--popover-border);
   border-radius: var(--border-radius-8);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--popover-box-shadow);
   font-size: var(--font-size-body);
   font-family: var(--font-family);
   max-width: 600px;

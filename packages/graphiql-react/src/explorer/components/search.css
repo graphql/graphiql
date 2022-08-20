@@ -4,8 +4,9 @@
   color: hsla(var(--color-neutral), 0.6);
 
   &:not([data-state='idle']) {
+    border: var(--popover-border);
     border-radius: var(--border-radius-4);
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--popover-box-shadow);
     color: hsla(var(--color-neutral), 1);
 
     & .graphiql-doc-explorer-search-input {
