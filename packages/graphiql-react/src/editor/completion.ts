@@ -10,6 +10,7 @@ import {
 
 import { ExplorerContextType } from '../explorer';
 import { markdown } from '../markdown';
+import { DOC_EXPLORER_PLUGIN, PluginContextType } from '../plugin';
 import { importCodeMirror } from './common';
 
 /**
@@ -21,6 +22,7 @@ export function onHasCompletion(
   data: EditorChange | undefined,
   schema: GraphQLSchema | null | undefined,
   explorer: ExplorerContextType | null,
+  plugin: PluginContextType | null,
   callback?: (type: GraphQLNamedType) => void,
 ) {
   importCodeMirror([], { useCommonAddons: false }).then(CodeMirror => {
@@ -230,14 +232,19 @@ export function onHasCompletion(
   });
 
   function onClickHintInformation(event: Event) {
-    if (!schema || !explorer || !(event.currentTarget instanceof HTMLElement)) {
+    if (
+      !schema ||
+      !explorer ||
+      !plugin ||
+      !(event.currentTarget instanceof HTMLElement)
+    ) {
       return;
     }
 
     const typeName = event.currentTarget.innerText;
     const type = schema.getType(typeName);
     if (type) {
-      explorer.show();
+      plugin.setVisiblePlugin(DOC_EXPLORER_PLUGIN);
       explorer.push({ name: type.name, def: type });
       callback?.(type);
     }
