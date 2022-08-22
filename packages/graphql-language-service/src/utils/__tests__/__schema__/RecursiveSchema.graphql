@@ -1,0 +1,21 @@
+schema {
+  query: query_root
+}
+
+input string_options {
+  _eq: String
+  _ilike: String
+}
+
+type issues {
+  name: String
+}
+
+input issues_where_input {
+  _and: [issues_where_input!]
+  name: string_options
+}
+
+type query_root {
+  issues(where: issues_where_input): [issues!]!
+}
