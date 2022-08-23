@@ -75,7 +75,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     headerEditor,
     queryEditor,
     responseEditor,
-    shouldPersistHeaders,
     variableEditor,
     updateActiveTabValues,
   } = useEditorContext({ nonNull: true, caller: ExecutionContextProvider });
@@ -250,7 +249,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         },
         {
           headers: headers ?? undefined,
-          shouldPersistHeaders,
           documentAST: queryEditor.documentAST ?? undefined,
         },
       );
@@ -311,7 +309,6 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     props.operationName,
     queryEditor,
     responseEditor,
-    shouldPersistHeaders,
     stop,
     subscription,
     updateActiveTabValues,
