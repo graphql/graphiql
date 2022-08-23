@@ -49,10 +49,7 @@ describe('createGraphiQLFetcher', () => {
     ]);
     const res = await fetcher(
       { query: getIntrospectionQuery(), operationName: 'IntrospectionQuery' },
-      {
-        documentAST: exampleIntrospectionDocument,
-        shouldPersistHeaders: false,
-      },
+      { documentAST: exampleIntrospectionDocument },
     );
     expect(res).toEqual('hey!');
   });
