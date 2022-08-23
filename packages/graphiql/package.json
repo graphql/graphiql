@@ -1,6 +1,6 @@
 {
   "name": "graphiql",
-  "version": "2.0.0-next.2",
+  "version": "2.0.0-next.3",
   "description": "An graphical interactive in-browser GraphQL IDE.",
   "contributors": [
     "Hyohyeon Jeong <asiandrummer@fb.com>",
@@ -50,8 +50,8 @@
     "webpack": "webpack --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/react": "^1.0.0-next.2",
-    "@graphiql/toolkit": "^1.0.0-next.2",
+    "@graphiql/react": "^1.0.0-next.3",
+    "@graphiql/toolkit": "^1.0.0-next.3",
     "entities": "^2.0.0",
     "graphql-language-service": "^5.1.0",
     "markdown-it": "^12.2.0"
