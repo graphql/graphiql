@@ -2,7 +2,7 @@
 
 # GraphQL IDE Monorepo
 
-> **Security Notice:** All versions of `graphiql` < `1.4.7` are vulnerable to an XSS attack in cases where the GraphQL server to which the GraphiQL web app connects is not trusted. Learn more [in the graphiql `security` docs directory](https://github.com/graphql/graphiql/blob/main/docs/security)
+> **Security Notice:** All versions of `graphiql` < `1.4.7` are vulnerable to an XSS attack in cases where the GraphQL server to which the GraphiQL web app connects is not trusted. Learn more [in the graphiql `security` docs directory](docs/security)
 
 > **Looking for the [GraphiQL Docs?](packages/graphiql/README.md)**: This is the root of the monorepo! The full GraphiQL docs are located at [`packages/graphiql`](packages/graphiql)
 
@@ -31,21 +31,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 - an example of how to use this ecosystem with GraphiQL.
 - examples of how to implement or extend GraphiQL.
 
-### Latest Stable Ecosystem
-
-`graphiql@1.0.x` and ecosystem are organized as below. Any further changes to `graphiql@1.0.x` are made against `1.0.0` branch
-
-![Diagram of the current Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/current-ecosystem.jpg)
-
-### Proposed Ecosystem
-
-As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain a sdk and plugins.
-
-![Diagram of the proposed Monorepo and third party ecosystem](https://raw.githubusercontent.com/graphql/graphiql/main/resources/images/proposed-ecosystem.jpg)
-
 ## [`graphiql`](packages/graphiql#readme)
-
-> **Breaking Changes & Improvements:** several interfaces are being dropped for new ones are arriving for GraphiQL 1.0.0! Read more in [this issue](https://github.com/graphql/graphiql/issues/1165)
 
 <!-- prettier-ignore -->
 > [![NPM](https://img.shields.io/npm/v/graphiql.svg)](https://npmjs.com/graphiql)
@@ -55,20 +41,13 @@ As we re-write for `graphiql@2.x` ecosystem, this monorepo will contain a sdk an
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 
-![Screenshot of GraphiQL with Doc Explorer Open](https://raw.githubusercontent.com/graphql/graphiql/main/packages/graphiql/resources/graphiql.jpg)
+![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.jpg)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the `main` branch.
 
 The GraphiQL IDE, implemented in React, currently using [GraphQL mode for CodeMirror](packages/codemirror-graphql#readme) & [GraphQL Language Service](packages/graphql-language-service#readme).
 
 **Learn more about [GraphiQL in `packages/graphiql/README.md`](packages/graphiql#readme)**
-
-### How To Setup/Implement GraphiQL
-
-[codesandbox.io graphiql example](https://codesandbox.io/s/graphiql-js-example-oc851)
-[stackblitz.com graphiql example](https://stackblitz.com/edit/react-ts-jpnmod)
-
-**The [GraphiQL Readme](packages/graphiql#readme) explains** some of the ways to implement GraphiQL, and we also have the [examples](examples) directory as well!
 
 ## [`monaco-graphql`](packages/monaco-graphql#readme)
 
