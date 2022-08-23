@@ -6,8 +6,9 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/monaco-graphql-webpack",
+      "examples/graphiql-explorer",
       "examples/graphiql-webpack",
+      "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-react-vite"
     ]
   },
@@ -102,6 +103,7 @@
     "@types/node": "^14.14.22",
     "@types/prettier": "^2.7.0",
     "@types/react": "^17.0.37",
+    "@types/react-dom": "^17.0.17",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
