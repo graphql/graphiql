@@ -1,5 +1,94 @@
 # Change Log
 
+## 2.0.0
+
+### Major Changes
+
+- [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: The `GraphiQL` component does no longer set a property `g` on the `window` object.
+
+* [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: Implement a new design for the GraphiQL UI. This changes both DOM structure and class names. We consider this a breaking change as custom GraphQL IDEs built on top of GraphiQL relied on these internals, e.g. overriding styles using certain class names.
+
+- [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: The following static properties of the `GraphiQL` component have been removed:
+  - `GraphiQL.formatResult`: You can use the function `formatResult` from `@graphiql/toolkit` instead.
+  - `GraphiQL.formatError`: You can use the function `formatError` from `@graphiql/toolkit` instead.
+  - `GraphiQL.QueryEditor`: You can use the `QueryEditor` component from `@graphiql/react` instead.
+  - `GraphiQL.VariableEditor`: You can use the `VariableEditor` component from `@graphiql/react` instead.
+  - `GraphiQL.HeaderEditor`: You can use the `HeaderEditor` component from `@graphiql/react` instead.
+  - `GraphiQL.ResultViewer`: You can use the `ResponseEditor` component from `@graphiql/react` instead.
+  - `GraphiQL.Button`: You can use the `ToolbarButton` component from `@graphiql/react` instead.
+  - `GraphiQL.ToolbarButton`: This exposed the same component as `GraphiQL.Button`.
+  - `GraphiQL.Menu`: You can use the `ToolbarMenu` component from `@graphiql/react` instead.
+  - `GraphiQL.MenuItem`: You can use the `ToolbarMenu.Item` component from `@graphiql/react` instead.
+  - `GraphiQL.Group`: Grouping multiple buttons side-by-side is not provided out-of-the box anymore in the new GraphiQL UI. If you want to implement a similar feature in the new vertical toolbar you can do so by adding your own styles for your custom toolbar elements. Example:
+    ```jsx
+    import { GraphiQL } from 'graphiql';
+    function CustomGraphiQL() {
+      return (
+        <GraphiQL>
+          <GraphiQL.Toolbar>
+            {/* Add custom styles for your buttons using the given class */}
+            <div className="button-group">
+              <button>1</button>
+              <button>2</button>
+              <button>3</button>
+            </div>
+          </GraphiQL.Toolbar>
+        </GraphiQL>
+      );
+    }
+    ```
+
+* [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: The following exports of the `graphiql` package have been removed:
+  - `DocExplorer`: Now exported from `@graphiql/react` as `DocExplorer`
+    - The `schema` prop has been removed, the component now uses the schema provided by the `ExplorerContext`
+  - `fillLeafs`: Now exported from `@graphiql/toolkit` as `fillLeafs`
+  - `getSelectedOperationName`: Now exported from `@graphiql/toolkit` as `getSelectedOperationName`
+  - `mergeAst`: Now exported from `@graphiql/toolkit` as `mergeAst`
+  - `onHasCompletion`: Now exported from `@graphiql/react` as `onHasCompletion`
+  - `QueryEditor`: Now exported from `@graphiql/react` as `QueryEditor`
+  - `ToolbarMenu`: Now exported from `@graphiql/react` as `ToolbarMenu`
+  - `ToolbarMenuItem`: Now exported from `@graphiql/react` as `ToolbarMenu.Item`
+  - `ToolbarSelect`: Now exported from `@graphiql/react` as `ToolbarListbox`
+  - `ToolbarSelectOption`: Now exported from `@graphiql/react` as `ToolbarListbox.Option`
+  - `VariableEditor`: Now exported from `@graphiql/react` as `VariableEditor`
+  - type `Fetcher`: Now exported from `@graphiql/toolkit`
+  - type `FetcherOpts`: Now exported from `@graphiql/toolkit`
+  - type `FetcherParams`: Now exported from `@graphiql/toolkit`
+  - type `FetcherResult`: Now exported from `@graphiql/toolkit`
+  - type `FetcherReturnType`: Now exported from `@graphiql/toolkit`
+  - type `Observable`: Now exported from `@graphiql/toolkit`
+  - type `Storage`: Now exported from `@graphiql/toolkit`
+  - type `SyncFetcherResult`: Now exported from `@graphiql/toolkit`
+
+- [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: The `GraphiQL` component has been refactored to be a function component. Attaching a ref to this component will no longer provide access to props, state or class methods. In order to interact with or change `GraphiQL` state you need to use the contexts and hooks provided by the `@graphiql/react` package. More details and examples can be found in the migration guide.
+
+* [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: The following props of the `GraphiQL` component have been changed:
+  - The props `defaultVariableEditorOpen` and `defaultSecondaryEditorOpen` have been merged into one prop `defaultEditorToolsVisibility`. The default behavior if this prop is not passed is that the editor tools are shown if at least one of the secondary editors has contents. You can pass the following values to the prop:
+    - Passing `false` hides the editor tools.
+    - Passing `true` shows the editor tools.
+    - Passing `"variables"` explicitly shows the variables editor.
+    - Passing `"headers"` explicitly shows the headers editor.
+  - The props `docExplorerOpen`, `onToggleDocs` and `onToggleHistory` have been removed. They are replaced by the more generic props `visiblePlugin` (for controlling which plugin is visible) and `onTogglePluginVisibility` (which is called each time the visibility of any plugin changes).
+  - The `headerEditorEnabled` prop has been renamed to `isHeadersEditorEnabled`.
+  - The `ResultsTooltip` prop has been renamed to `responseTooltip`.
+  - Tabs are now always enabled. The `tabs` prop has therefore been replaced with a prop `onTabChange`. If you used the `tabs` prop before to pass this function you can change your implementation like so:
+    ```diff
+    <GraphiQL
+    -  tabs={{ onTabChange: (tabState) => {/* do something */} }}
+    +  onTabChange={(tabState) => {/* do something */}}
+    />
+    ```
+
+### Minor Changes
+
+- [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - GraphiQL now ships with a dark theme. By default the interface respects the system settings, the theme can also be explicitly chosen via the new settings dialog.
+
+### Patch Changes
+
+- Updated dependencies [[`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279), [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279), [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279), [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279), [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279), [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279)]:
+  - @graphiql/react@0.11.0
+  - @graphiql/toolkit@0.7.0
+
 ## 1.11.6
 
 ### Patch Changes
