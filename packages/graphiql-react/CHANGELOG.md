@@ -1,5 +1,32 @@
 # @graphiql/react
 
+## 0.11.0
+
+### Minor Changes
+
+- [#2523](https://github.com/graphql/graphiql/pull/2523) [`e1c6e3bf`](https://github.com/graphql/graphiql/commit/e1c6e3bf1d0590a3564fab431f054468aa6141ff) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The `onHasCompletion` export has been removed as it is only meant to be used internally.
+
+* [#2523](https://github.com/graphql/graphiql/pull/2523) [`d1805200`](https://github.com/graphql/graphiql/commit/d1805200bba2a4237e40d27986ea0ba5adc33139) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add new components:
+  - UI components (`Button`, `ButtonGroup`, `Dialog`, `Menu`, `Spinner`, `Tab`, `Tabs`, `Tooltip`, `UnStyledButton` and lots of icon components)
+  - Editor components (`QueryEditor`, `VariableEditor`, `HeaderEditor` and `ResponseEditor`)
+  - Toolbar components (`ExecuteButton`, `ToolbarButton`, `ToolbarMenu` and `ToolbarSelect`)
+  - Docs components (`Argument`, `DefaultValue`, `DeprecationReason`, `Directive`, `DocExplorer`, `ExplorerSection`, `FieldDocumentation`, `FieldLink`, `SchemaDocumentation`, `Search`, `TypeDocumentation` and `TypeLink`)
+  - `History` component
+  - A `GraphiQLProvider` component that renders all other existing provider components from `@graphiql/react` for ease of use
+
+- [#2523](https://github.com/graphql/graphiql/pull/2523) [`b5a7bee1`](https://github.com/graphql/graphiql/commit/b5a7bee1c162771854c9bd4ba7e4c0a29a31b98a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: Add a new context provider for plugins. This induces changes to the following other contexts and their provider components:
+  - The property `isVisible` and the methods `hide` and `show` of the `ExplorerContext` have been removed. Also, the property `isVisible` and the methods `hide`, `show` and `toggle` of the `HistoryContext` have been removed. Visibility state of plugins is now part of the `PluginContext` using the `visiblePlugin` property. The visibility state can be altered using the `setVisiblePlugin` method of the `PluginContext`.
+  - The `isVisible` prop of the `ExplorerContextProvider` has been removed. For controlling the visibility state of plugins you can now use the `visiblePlugin` prop of the `PluginContextProvider`.
+  - The `onToggle` prop of the `HistoryContextProvider` and the `onToggleVisibility` prop of the `ExplorerContextProvider` have been removed. For listening on visibility changes for any plugin you can now use the `onTogglePluginVisibility` prop of the `PluginContextProvider`.
+
+* [#2523](https://github.com/graphql/graphiql/pull/2523) [`11c2778b`](https://github.com/graphql/graphiql/commit/11c2778b0d50b2380a9cd12bdaaa396ceee8f62a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - BREAKING: The `ResponseTooltip` prop of the `ResponseEditor` has been renamed to `responseTooltip`
+
+### Patch Changes
+
+- Updated dependencies [[`d1805200`](https://github.com/graphql/graphiql/commit/d1805200bba2a4237e40d27986ea0ba5adc33139), [`01cd313b`](https://github.com/graphql/graphiql/commit/01cd313bcb4f3d0c1b9f7539917225803f2109e3), [`41236709`](https://github.com/graphql/graphiql/commit/41236709749829ac69ffdc8cd81eb7a96e1695c6)]:
+  - codemirror-graphql@2.0.0
+  - @graphiql/toolkit@0.7.0
+
 ## 0.10.1
 
 ### Patch Changes
