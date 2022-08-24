@@ -1,5 +1,22 @@
 # @graphiql/toolkit
 
+## 0.7.0
+
+### Minor Changes
+
+- [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - BREAKING: Don't pass `shouldPersistHeaders` anymore when invoking the fetcher function. This value can be looked up by consuming the `EditorContext`:
+
+  ```js
+  import { useEditorContext } from '@graphiql/react';
+
+  function MyComponent() {
+    const { shouldPersistHeaders } = useEditorContext();
+    // Do things...
+  }
+  ```
+
+* [#2694](https://github.com/graphql/graphiql/pull/2694) [`e59ec32e`](https://github.com/graphql/graphiql/commit/e59ec32e7ccdf3f7f68656533555c63620826279) Thanks [@acao](https://github.com/acao)! - Add a `clear` method to `Storage` classes
+
 ## 0.6.1
 
 ### Patch Changes
