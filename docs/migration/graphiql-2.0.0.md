@@ -184,7 +184,3 @@ Here is a list of all the static properties that have been removed and their rep
 ### `window.g` has been removed
 
 In `graphiql@1.x` the `GraphiQL` class component stored a reference to itself on a global property named `g`. This property has been removed as refs don't exist for function components. (Also, the property was only intended for internal use like testing in the first place.)
-
-## Support for old `graphql` versions removed
-
-The minimum supported version of `graphql` is now `15.8.0`, older versions might not work anymore in combination with `graphiql@2`.
