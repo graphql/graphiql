@@ -49,8 +49,9 @@
     "codemirror": "^5.65.3",
     "graphql": "^15.5.0 || ^16.0.0"
   },
+  "// TEMPORARILY PINNED until we fix graphql 15 support": "",
   "dependencies": {
-    "graphql-language-service": "^5.1.0"
+    "graphql-language-service": "5.0.6"
   },
   "devDependencies": {
     "@codemirror/language": "^0.20.0",
