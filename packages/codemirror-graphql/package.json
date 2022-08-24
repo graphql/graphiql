@@ -47,7 +47,7 @@
   "peerDependencies": {
     "@codemirror/language": "^0.20.0",
     "codemirror": "^5.65.3",
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.8.0 || ^16.0.0"
   },
   "dependencies": {
     "graphql-language-service": "^5.1.0"

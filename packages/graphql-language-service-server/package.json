@@ -31,7 +31,7 @@
   "module": "esm/index.js",
   "typings": "esm/index.d.ts",
   "peerDependencies": {
-    "graphql": "^15.5.0 || ^16.0.0"
+    "graphql": "^15.8.0 || ^16.0.0"
   },
   "dependencies": {
     "@babel/parser": "^7.17.3",

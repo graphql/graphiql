@@ -1,16 +1,12 @@
 name: Build & Test PR w/ GraphQL Regressions
 on:
-  push:
-    # only on merge to main.
-    # it's rare that this workflow would
-    # show us an error, but when it does it's important!
-    branches:
-      - main
+  pull_request:
+    types: [opened, synchronize]
     # don't run this regression suite if we don't need to
     paths-ignore:
-      - '**.md'
-      - 'examples'
-      - '!examples/monaco-graphql-webpack'
+      - "**.md"
+      - "examples"
+      - "!examples/monaco-graphql-webpack"
 
 # TODO: test matrix?
 
@@ -20,14 +16,14 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        release: ['15.5.3', '^15.8.0', '16.1.0', '16.2.0', '16.3.0']
+        release: ["^15.8.0", "16.1.0", "16.2.0", "16.3.0"]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: "yarn"
           node-version: 16
 
       - name: Force GraphQL ${{ matrix.release }} solution
