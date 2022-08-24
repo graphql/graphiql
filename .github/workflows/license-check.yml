@@ -3,7 +3,7 @@ on:
   pull_request:
     paths:
       - 'yarn.lock'
-      
+
 jobs:
   check:
     name: License Check
@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 'current'
+          node-version: 16
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
