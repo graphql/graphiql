@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           # TODO: fix vite bug for node 18 current
-          node-version: '16.x'
+          node-version: 16
           cache: 'yarn'
       - run: yarn install --frozen-lockfile --immutable
 
