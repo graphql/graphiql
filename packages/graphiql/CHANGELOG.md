@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.1
+
+### Patch Changes
+
+- [#2699](https://github.com/graphql/graphiql/pull/2699) [`3b642aa3`](https://github.com/graphql/graphiql/commit/3b642aa31b306994e3052bb2454933307aa51426) Thanks [@patrick91](https://github.com/patrick91)! - Export hooks in CDN bundle
+
+* [#2700](https://github.com/graphql/graphiql/pull/2700) [`3acacf5b`](https://github.com/graphql/graphiql/commit/3acacf5b90040bbede30ad1a778e06bc969a5900) Thanks [@patrick91](https://github.com/patrick91)! - Fix cannot access `initialHeaders` before initialization
+
 ## 2.0.0
 
 ### Major Changes
