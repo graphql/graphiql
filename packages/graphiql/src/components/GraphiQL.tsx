@@ -195,6 +195,8 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
+  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
+
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
   const schemaContext = useSchemaContext({ nonNull: true });
@@ -304,8 +306,6 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const footer = children.find(child =>
     isChildComponentType(child, GraphiQL.Footer),
   );
-
-  const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
 
   const onClickReference = () => {
     if (pluginResize.hiddenElement === 'first') {
