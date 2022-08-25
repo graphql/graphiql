@@ -41,7 +41,7 @@ The purpose of this monorepo is to give the GraphQL Community:
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/min/graphiql/latest)
 > ![npm bundle size (version)](https://img.shields.io/bundlephobia/minzip/graphiql/latest)
 
-![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.jpg)
+![Screenshot of GraphiQL with Doc Explorer Open](packages/graphiql/resources/graphiql.png)
 
 _/ˈɡrafək(ə)l/_ A graphical interactive in-browser GraphQL IDE. [Try the live demo](http://graphql.org/swapi-graphql). We also have [a demo using our latest netlify build](http://graphiql-test.netlify.com) for the `main` branch.
 
