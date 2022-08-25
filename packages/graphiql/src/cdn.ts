@@ -14,9 +14,19 @@ import '@graphiql/react/dist/style.css';
 import './style.css';
 
 import { GraphiQL } from './components/GraphiQL';
+
+import {
+  useEditorContext,
+  useExecutionContext,
+  useSchemaContext,
+} from '@graphiql/react';
+
 // add the static function here for CDN only. otherwise, doing this in the component could
 // add unwanted dependencies to the bundle.
 // @ts-expect-error
 GraphiQL.createFetcher = createGraphiQLFetcher;
+GraphiQL.useEditorContext = useEditorContext;
+GraphiQL.useExecutionContext = useExecutionContext;
+GraphiQL.useSchemaContext = useSchemaContext;
 
 export default GraphiQL;
