@@ -25,8 +25,11 @@ import {
 // add unwanted dependencies to the bundle.
 // @ts-expect-error
 GraphiQL.createFetcher = createGraphiQLFetcher;
+// @ts-expect-error
 GraphiQL.useEditorContext = useEditorContext;
+// @ts-expect-error
 GraphiQL.useExecutionContext = useExecutionContext;
+// @ts-expect-error
 GraphiQL.useSchemaContext = useSchemaContext;
 
 export default GraphiQL;
