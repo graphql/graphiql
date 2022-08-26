@@ -7,7 +7,7 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -15,7 +15,7 @@ import { STORAGE_KEY as STORAGE_KEY_HEADERS } from './header-editor';
 import { useSynchronizeValue } from './hooks';
 import { STORAGE_KEY_QUERY } from './query-editor';
 import {
-  emptyTab,
+  createTab,
   getDefaultTabState,
   setPropertiesInActiveTab,
   TabsState,
@@ -239,22 +239,43 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   useSynchronizeValue(responseEditor, props.response);
   useSynchronizeValue(variableEditor, props.variables);
 
-  // We store this in state but never update it. By passing a function we only
-  // need to compute it lazily during the initial render.
-  const [storedEditorValues] = useState(() => ({
-    headers: props.headers ?? storage?.get(STORAGE_KEY_HEADERS) ?? null,
-    query: props.query ?? storage?.get(STORAGE_KEY_QUERY) ?? null,
-    variables: props.variables ?? storage?.get(STORAGE_KEY_VARIABLES) ?? null,
-  }));
-
-  const [tabState, setTabState] = useState<TabsState>(() =>
-    getDefaultTabState({ ...storedEditorValues, storage }),
-  );
-
   const storeTabs = useStoreTabs({
     storage,
     shouldPersistHeaders: props.shouldPersistHeaders,
   });
+
+  // We store this in state but never update it. By passing a function we only
+  // need to compute it lazily during the initial render.
+  const [initialState] = useState(() => {
+    const query = props.query ?? storage?.get(STORAGE_KEY_QUERY) ?? null;
+    const variables =
+      props.variables ?? storage?.get(STORAGE_KEY_VARIABLES) ?? null;
+    const headers = props.headers ?? storage?.get(STORAGE_KEY_HEADERS) ?? null;
+    const response = props.response ?? '';
+
+    const tabState = getDefaultTabState({
+      query,
+      variables,
+      headers,
+      defaultQuery: props.defaultQuery || DEFAULT_QUERY,
+      storage,
+    });
+    storeTabs(tabState);
+
+    return {
+      query:
+        query ??
+        (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
+        '',
+      variables: variables ?? '',
+      headers: headers ?? '',
+      response,
+      tabState,
+    };
+  });
+
+  const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
+
   const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
     queryEditor,
     variableEditor,
@@ -274,7 +295,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [...updatedValues.tabs, emptyTab()],
+        tabs: [...updatedValues.tabs, createTab()],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);
@@ -344,15 +365,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     [onEditOperationName, queryEditor, updateActiveTabValues],
   );
 
-  const defaultQuery =
-    tabState.activeTabIndex > 0 ? '' : props.defaultQuery ?? DEFAULT_QUERY;
-  const initialValues = useRef({
-    initialHeaders: storedEditorValues.headers ?? '',
-    initialQuery: storedEditorValues.query ?? defaultQuery,
-    initialResponse: props.response ?? '',
-    initialVariables: storedEditorValues.variables ?? '',
-  });
-
   const externalFragments = useMemo(() => {
     const map = new Map<string, FragmentDefinitionNode>();
     if (Array.isArray(props.externalFragments)) {
@@ -397,7 +409,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
       setOperationName,
 
-      ...initialValues.current,
+      initialQuery: initialState.query,
+      initialVariables: initialState.variables,
+      initialHeaders: initialState.headers,
+      initialResponse: initialState.response,
 
       externalFragments,
       validationRules,
@@ -417,6 +432,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       variableEditor,
 
       setOperationName,
+
+      initialState,
 
       externalFragments,
       validationRules,

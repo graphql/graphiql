@@ -62,11 +62,13 @@ export type TabsState = {
 };
 
 export function getDefaultTabState({
+  defaultQuery,
   headers,
   query,
   variables,
   storage,
 }: {
+  defaultQuery: string;
   headers: string | null;
   query: string | null;
   variables: string | null;
@@ -108,6 +110,7 @@ export function getDefaultTabState({
           operationName,
           response: null,
         });
+        parsed.activeTabIndex = parsed.tabs.length - 1;
       }
 
       return parsed;
@@ -115,8 +118,10 @@ export function getDefaultTabState({
       throw new Error('Storage for tabs is invalid');
     }
   } catch (err) {
-    storage?.set(STORAGE_KEY, '');
-    return { activeTabIndex: 0, tabs: [emptyTab()] };
+    return {
+      activeTabIndex: 0,
+      tabs: [createTab({ query: query ?? defaultQuery, variables, headers })],
+    };
   }
 }
 
@@ -252,14 +257,18 @@ export function useSetEditorValues({
   );
 }
 
-export function emptyTab(): TabState {
+export function createTab({
+  query = null,
+  variables = null,
+  headers = null,
+}: Partial<Pick<TabState, 'query' | 'variables' | 'headers'>> = {}): TabState {
   return {
     id: guid(),
-    hash: hashFromTabContents({ query: null, variables: null, headers: null }),
+    hash: hashFromTabContents({ query, variables, headers }),
     title: DEFAULT_TITLE,
-    query: null,
-    variables: null,
-    headers: null,
+    query,
+    variables,
+    headers,
     operationName: null,
     response: null,
   };
