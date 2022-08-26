@@ -5,7 +5,9 @@
 
   &.hidden {
     /* Just setting `display: none;` would break the editor gutters */
+    left: -9999px;
     position: absolute;
+    top: -9999px;
     visibility: hidden;
   }
 }
