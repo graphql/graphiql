@@ -108,6 +108,7 @@ export function getDefaultTabState({
           operationName,
           response: null,
         });
+        parsed.activeTabIndex = parsed.tabs.length - 1;
       }
 
       return parsed;
@@ -115,8 +116,10 @@ export function getDefaultTabState({
       throw new Error('Storage for tabs is invalid');
     }
   } catch (err) {
-    storage?.set(STORAGE_KEY, '');
-    return { activeTabIndex: 0, tabs: [emptyTab()] };
+    return {
+      activeTabIndex: 0,
+      tabs: [createTab({ query: query ?? DEFAULT_QUERY, variables, headers })],
+    };
   }
 }
 
@@ -252,14 +255,18 @@ export function useSetEditorValues({
   );
 }
 
-export function emptyTab(): TabState {
+export function createTab({
+  query = null,
+  variables = null,
+  headers = null,
+}: Partial<Pick<TabState, 'query' | 'variables' | 'headers'>> = {}): TabState {
   return {
     id: guid(),
-    hash: hashFromTabContents({ query: null, variables: null, headers: null }),
+    hash: hashFromTabContents({ query, variables, headers }),
     title: DEFAULT_TITLE,
-    query: null,
-    variables: null,
-    headers: null,
+    query,
+    variables,
+    headers,
     operationName: null,
     response: null,
   };
@@ -316,5 +323,38 @@ export function fuzzyExtractOperationName(str: string): string | null {
 }
 
 const DEFAULT_TITLE = '<untitled>';
+
+const DEFAULT_QUERY = `# Welcome to GraphiQL
+#
+# GraphiQL is an in-browser tool for writing, validating, and
+# testing GraphQL queries.
+#
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
+#
+# GraphQL queries typically start with a "{" character. Lines that start
+# with a # are ignored.
+#
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
+#
+#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
+#
+#        Run Query:  Ctrl-Enter (or press the play button)
+#
+#    Auto Complete:  Ctrl-Space (or just start typing)
+#
+
+`;
 
 const STORAGE_KEY = 'tabState';
