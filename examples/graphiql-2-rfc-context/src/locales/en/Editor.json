@@ -1,6 +1,0 @@
-{
-  "Welcome to GraphiQL": "# Welcome to GraphiQL\\r\\n#\\r\\n# GraphiQL is an in-browser tool for writing, validating, and\\r\\n# testing GraphQL queries.\\r\\n#\\r\\n# Type queries into this side of the screen, and you will see intelligent\\r\\n# typeaheads aware of the current GraphQL type schema and live syntax and\\r\\n# validation errors highlighted within the text.\\r\\n#\\r\\n# GraphQL queries typically start with a \\\"{\\\" character. Lines that start\\r\\n# with a # are ignored.\\r\\n#\\r\\n# An example GraphQL query might look like:\\r\\n#\\r\\n#     {\\r\\n#       field(arg: \\\"value\\\") {\\r\\n#         subField\\r\\n#       }\\r\\n#     }\\r\\n#\\r\\n# Keyboard shortcuts:\\r\\n#\\r\\n#  Prettify Query:  Shift-Ctrl-P (or press the prettify button above)\\r\\n#\\r\\n#     Merge Query:  Shift-Ctrl-M (or press the merge button above)\\r\\n#\\r\\n#       Run Query:  Ctrl-Enter (or press the play button above)\\r\\n#\\r\\n#   Auto Complete:  Ctrl-Space (or just start typing)\\r\\n#",
-  "Automatically added leaf fields": "Automatically added leaf fields",
-  "Query Variables": "Query Variables",
-  "Query Editor": "Query Editor"
-}

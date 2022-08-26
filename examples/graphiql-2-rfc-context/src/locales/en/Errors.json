@@ -1,7 +1,0 @@
-{
-  "Fetcher or uri property are required": "fetcher or uri property are required",
-  "Fetcher did not return a Promise for introspection": "Fetcher did not return a Promise for introspection.",
-  "Variables are invalid JSON": "Variables are invalid JSON.",
-  "Variables are not a JSON object": "Variables are not a JSON object.",
-  "no value resolved": "no value resolved"
-}
