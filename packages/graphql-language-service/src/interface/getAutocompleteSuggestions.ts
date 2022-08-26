@@ -973,7 +973,7 @@ export function getTokenAtPosition(
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (index === cursor.line) {
-      if (stream.getCurrentPosition() >= cursor.character) {
+      if (stream.getCurrentPosition() + 1 >= cursor.character) {
         styleAtCursor = style;
         stateAtCursor = { ...state };
         stringAtCursor = stream.current();
