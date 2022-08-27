@@ -85,6 +85,12 @@ button.graphiql-tab-add > svg {
   padding: var(--px-12) var(--px-16);
 }
 
+/* Undo default link styling for the default GraphiQL logo link */
+.graphiql-container .graphiql-logo .graphiql-logo-link {
+  color: hsla(var(--color-neutral), 0.6);
+  text-decoration: none;
+}
+
 /* The editor of the session */
 .graphiql-container .graphiql-session {
   display: flex;
