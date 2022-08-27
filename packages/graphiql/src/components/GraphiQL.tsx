@@ -815,11 +815,16 @@ function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
   return (
     <div className="title">
       {props.children || (
-        <span>
+        <a
+          className="graphiql-logo-link"
+          href="https://github.com/graphql/graphiql"
+          target="_blank"
+          rel="noreferrer"
+        >
           Graph
           <em>i</em>
           QL
-        </span>
+        </a>
       )}
     </div>
   );
