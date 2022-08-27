@@ -4,9 +4,20 @@
   justify-content: space-between;
   position: relative;
 
-  &:focus-within .graphiql-doc-explorer-title {
-    /* Hide the header when focussing the search input */
-    visibility: hidden;
+  &:focus-within {
+    & .graphiql-doc-explorer-title {
+      /* Hide the header when focussing the search input */
+      visibility: hidden;
+    }
+
+    & .graphiql-doc-explorer-back:not(:focus) {
+      /**
+        * Make the back link invisible when focussing the search input. Hiding
+        * it in any other way makes it impossible to focus the link by pressing
+        * Shift-Tab while the input is focussed.
+        */
+      color: transparent;
+    }
   }
 }
 .graphiql-doc-explorer-header-content {
