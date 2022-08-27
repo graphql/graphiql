@@ -1,5 +1,15 @@
 # @graphiql/react
 
+## 0.11.1
+
+### Patch Changes
+
+- [#2712](https://github.com/graphql/graphiql/pull/2712) [`d65f00ea`](https://github.com/graphql/graphiql/commit/d65f00ea2d158cf532d1c71844630c5d9ec13410) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Make sure the back link and title are hidden when focussing the input field for searching the docs
+
+* [#2708](https://github.com/graphql/graphiql/pull/2708) [`f15ee38d`](https://github.com/graphql/graphiql/commit/f15ee38d56e4f749c145e0a17f0ed8e9a6096ac2) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix computing the initial state for editor values and tabs to avoid duplicating tabs on page reload
+
+- [#2712](https://github.com/graphql/graphiql/pull/2712) [`d65f00ea`](https://github.com/graphql/graphiql/commit/d65f00ea2d158cf532d1c71844630c5d9ec13410) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Make sure hidden editors don't overflow
+
 ## 0.11.0
 
 ### Minor Changes
