@@ -10,7 +10,7 @@ import {
 import { styleTags, tags as t } from '@lezer/highlight';
 
 const nodesWithBraces =
-  'RootTypeDefinition InputFieldsDefinition EnumValuesDefinition FieldsDefinition SelectionSet';
+  'RootTypeDefinition InputFieldsDefinition EnumValuesDefinition FieldsDefinition SelectionSet { }';
 const keywords =
   'scalar type interface union enum input implements fragment extend schema directive on repeatable';
 const punctuations = '( ) { } : [ ]';

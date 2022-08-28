@@ -3,8 +3,6 @@
 
 // https://github.com/antlr/grammars-v4/blob/49469cb6906f4514be3c04ac0c61c78bc5a6e35a/graphql/GraphQL.g4
 
-// @top Program { Document }
-
 @precedence {
   vDef
 }

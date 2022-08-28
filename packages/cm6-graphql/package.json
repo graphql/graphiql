@@ -3,10 +3,8 @@
   "version": "0.0.0-alpha.0",
   "description": "GraphQL language support for CodeMirror",
   "scripts": {
-    "test": "mocha test/test.js",
     "prepare": "cm-buildhelper src/index.ts"
   },
-  "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "exports": {
@@ -28,8 +26,9 @@
     "@lezer/lr": "^1.1.0",
     "esbuild": "0.15.1",
     "graphql": "^16.5.0",
+    "graphql-language-service-interface": "2.8.4",
+    "graphql-language-service-parser": "1.10.4",
     "graphql-language-service-types": "1.8.2",
-    "mocha": "^9.0.1",
     "rollup": "^2.60.2",
     "rollup-plugin-dts": "^4.0.1",
     "rollup-plugin-esbuild": "^4.9.1",
@@ -39,9 +38,5 @@
   "peerDependencies": {
     "@codemirror/language": "6.0.0"
   },
-  "license": "MIT",
-  "dependencies": {
-    "graphql-language-service-interface": "2.8.4",
-    "graphql-language-service-parser": "1.9.2"
-  }
+  "license": "MIT"
 }
