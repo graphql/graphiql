@@ -52,28 +52,11 @@
       type="application/javascript"
     ></script>
     <script>
-      function graphQLFetcher(graphQLParams) {
-        return fetch(
-          'https://swapi-graphql.netlify.app/.netlify/functions/index',
-          {
-            method: 'post',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(graphQLParams),
-            credentials: 'omit',
-          },
-        ).then(function (response) {
-          return response.json().catch(function () {
-            return response.text();
-          });
-        });
-      }
-
       ReactDOM.render(
         React.createElement(GraphiQL, {
-          fetcher: graphQLFetcher,
+          fetcher: GraphiQL.createFetcher({
+            url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+          }),
           defaultEditorToolsVisibility: true,
         }),
         document.getElementById('graphiql'),
