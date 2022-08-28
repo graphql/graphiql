@@ -130,7 +130,7 @@ To define your own plugin, all you need is a JavaScript object with three proper
 
 You can pass a list of plugin objects to the `GraphiQL` component using the `plugins` prop. You can also control the visibility state of plugins using the `visiblePlugin` prop and react to changes of the plugin visibility state using the `onTogglePluginVisibility` prop.
 
-Inside the component you pass to `content` you can interact with the GraphiQL state using the hooks provided by `@graphiql/react`. As an example, check out how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in the [example folder](../../examples/graphiql-explorer) in this repo.
+Inside the component you pass to `content` you can interact with the GraphiQL state using the hooks provided by `@graphiql/react`. As an example, check out how you can integrate the OneGraph Explorer in GraphiQL using the plugin API in the [plugin package](../graphiql-plugin-explorer) in this repo.
 
 ### Theming
 
