@@ -973,7 +973,10 @@ export function getTokenAtPosition(
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
     if (index === cursor.line) {
-      if (stream.getCurrentPosition() + 1 >= cursor.character) {
+      if (
+        stream.getCurrentPosition() >= cursor.character ||
+        stream.sourceLength() < cursor.character
+      ) {
         styleAtCursor = style;
         stateAtCursor = { ...state };
         stringAtCursor = stream.current();
@@ -1310,14 +1313,12 @@ function unwrapType(state: State): State {
   if (
     state.prevState &&
     state.kind &&
-    (
-      [
-        RuleKinds.NAMED_TYPE,
-        RuleKinds.LIST_TYPE,
-        RuleKinds.TYPE,
-        RuleKinds.NON_NULL_TYPE,
-      ] as RuleKind[]
-    ).includes(state.kind)
+    ([
+      RuleKinds.NAMED_TYPE,
+      RuleKinds.LIST_TYPE,
+      RuleKinds.TYPE,
+      RuleKinds.NON_NULL_TYPE,
+    ] as RuleKind[]).includes(state.kind)
   ) {
     return unwrapType(state.prevState);
   }
