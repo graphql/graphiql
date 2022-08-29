@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.3
+
+### Patch Changes
+
+- [#2706](https://github.com/graphql/graphiql/pull/2706) [`ff20a381`](https://github.com/graphql/graphiql/commit/ff20a3818f10f648d7b8c18229138b0424b8b25c) Thanks [@mxstbr](https://github.com/mxstbr)! - Wrap the GraphiQL logo with a link to the repository
+
+* [#2715](https://github.com/graphql/graphiql/pull/2715) [`c922719e`](https://github.com/graphql/graphiql/commit/c922719e6b960776cd0a71f14d2b86c6bb69373c) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add the contents of `graphql` and `@graphiql/react` as static properties to the `GraphiQL` component in CDN bundles so that these modules can be reused from plugin CDN bundles.
+
 ## 2.0.2
 
 ### Patch Changes
