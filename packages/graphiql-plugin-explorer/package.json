@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "dist/graphiql-plugin-explorer.cjs.js",
   "module": "dist/graphiql-plugin-explorer.es.js",
   "types": "types/index.d.ts",
