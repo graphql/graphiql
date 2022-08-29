@@ -51,7 +51,7 @@ either will install the `graphql-lsp` bin globally
 
 ### GraphQL configuration file (`.graphqlrc.yml`)
 
-Check out [graphql-config](https://graphql-config.com/introduction)
+Check out [graphql-config](https://graphql-config.com/docs)
 
 The custom graphql language configurations are:
 
