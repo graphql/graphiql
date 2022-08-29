@@ -58,7 +58,7 @@
         var [query, setQuery] = React.useState(
           'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
         );
-        var explorerPlugin = useExplorerPlugin({
+        var explorerPlugin = GraphiQLPluginExplorer.useExplorerPlugin({
           query: query,
           onEdit: setQuery,
         });
