@@ -91,6 +91,23 @@ This generates a `graphql-ws` client using the provided url. Note that a server 
 
 provide your own subscriptions client. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `graphql-ws` `Client` signature.
 
+### `wsConnectionParams`
+
+provide your initial connection params.
+
+```ts
+
+const fetcher = createGraphiQLFetcher({
+   url: "https://localhost:3000",
+   subscriptionUrl: "https://localhost:3001",
+   wsConnectionParams: { Authorization: "token 1234" }
+})
+
+const App () {
+  return <GraphiQL fetcher={fetcher} />
+}
+```
+
 #### `legacyWsClient` or `legacyClient`
 
 provide a legacy subscriptions client using `subscriptions-transport-ws` protocol. bypasses `subscriptionUrl`. In theory, this could be any client using any transport, as long as it matches `subscriptions-transport-ws` `Client` signature.
