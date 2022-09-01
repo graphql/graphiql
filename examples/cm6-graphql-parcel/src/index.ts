@@ -24,6 +24,9 @@ const state = EditorState.create({
           `Showing in docs.: Field: ${field}, Type: ${type}, ParentType: ${parentType}`,
         );
       },
+      onFillAllFields(view, schema, _query, cursor, token) {
+        alert(`Filling all fields. Token: ${token}`);
+      },
     }),
   ],
 });
