@@ -117,6 +117,11 @@ export function Search() {
                 }
               });
             }
+
+            // We don't want for example "Escape" key presses to bubble up
+            // further. This could have other effects like closing a dialog
+            // that contains this component.
+            event.stopPropagation();
           }}
           placeholder="&#x2318; K"
           ref={inputRef}
