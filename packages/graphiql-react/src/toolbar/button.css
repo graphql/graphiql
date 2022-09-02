@@ -4,6 +4,6 @@ button.graphiql-toolbar-button {
   width: var(--toolbar-width);
 
   &.error {
-    background: hsla(var(--color-error), 0.15);
+    background: hsla(var(--color-error), var(--alpha-background-heavy));
   }
 }

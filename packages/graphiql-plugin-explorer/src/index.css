@@ -29,7 +29,7 @@
 
 .graphiql-explorer-root select {
   background-color: hsl(var(--color-base));
-  border: 1px solid hsla(var(--color-neutral), 0.6);
+  border: 1px solid hsla(var(--color-neutral), var(--alpha-secondary));
   border-radius: var(--border-radius-4);
   color: hsl(var(--color-neutral));
   margin: 0 var(--px-4);

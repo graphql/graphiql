@@ -16,7 +16,7 @@
 
 .CodeMirror-foldgutter-open,
 .CodeMirror-foldgutter-folded {
-  color: hsla(var(--color-neutral), 0.4);
+  color: hsla(var(--color-neutral), var(--alpha-tertiary));
 
   &::after {
     margin: 0 var(--px-2);

@@ -43,16 +43,16 @@
 
   /* Type names */
   & .type-name-pill {
-    border: 1px solid hsla(var(--color-neutral), 0.4);
+    border: 1px solid hsla(var(--color-neutral), var(--alpha-tertiary));
     border-radius: var(--border-radius-4);
-    color: hsla(var(--color-neutral), 0.6);
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
     margin-left: var(--px-6);
     padding: var(--px-4);
   }
 
   /* Descriptions */
   & .info-description {
-    color: hsla(var(--color-neutral), 0.6);
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
     margin-top: var(--px-12);
     overflow: hidden;
   }
