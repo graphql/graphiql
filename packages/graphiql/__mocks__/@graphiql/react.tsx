@@ -31,6 +31,7 @@ export {
   DirectiveIcon,
   DOC_EXPLORER_PLUGIN,
   DocExplorer,
+  DocsFilledIcon,
   DocsIcon,
   EditorContext,
   EditorContextProvider,

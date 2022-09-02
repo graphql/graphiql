@@ -8,6 +8,7 @@ import _DeprecatedArgumentIcon from './deprecated-argument.svg';
 import _DeprecatedEnumValueIcon from './deprecated-enum-value.svg';
 import _DeprecatedFieldIcon from './deprecated-field.svg';
 import _DirectiveIcon from './directive.svg';
+import _DocsFilledIcon from './docs-filled.svg';
 import _DocsIcon from './docs.svg';
 import _EnumValueIcon from './enum-value.svg';
 import _FieldIcon from './field.svg';
@@ -53,6 +54,7 @@ export const DeprecatedFieldIcon = generateIcon(
   'deprecated field icon',
 );
 export const DirectiveIcon = generateIcon(_DirectiveIcon, 'directive icon');
+export const DocsFilledIcon = generateIcon(_DocsFilledIcon, 'filled docs icon');
 export const DocsIcon = generateIcon(_DocsIcon, 'docs icon');
 export const EnumValueIcon = generateIcon(_EnumValueIcon, 'enum value icon');
 export const FieldIcon = generateIcon(_FieldIcon, 'field icon');
