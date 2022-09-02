@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { DocExplorer, useExplorerContext } from './explorer';
 import { History, useHistoryContext } from './history';
-import { DocsIcon, HistoryIcon } from './icons';
+import { DocsFilledIcon, DocsIcon, HistoryIcon } from './icons';
 import { useStorageContext } from './storage';
 import { createContextHook, createNullableContext } from './utility/context';
 
@@ -31,7 +31,14 @@ export type GraphiQLPlugin = {
 
 export const DOC_EXPLORER_PLUGIN: GraphiQLPlugin = {
   title: 'Documentation Explorer',
-  icon: DocsIcon,
+  icon: function Icon() {
+    const pluginContext = usePluginContext();
+    return pluginContext?.visiblePlugin === DOC_EXPLORER_PLUGIN ? (
+      <DocsFilledIcon />
+    ) : (
+      <DocsIcon />
+    );
+  },
   content: DocExplorer,
 };
 export const HISTORY_PLUGIN: GraphiQLPlugin = {
