@@ -435,6 +435,24 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         />
                       </Tab>
                     ))}
+                    <div>
+                      <Tooltip label="Add tab">
+                        <UnStyledButton
+                          type="button"
+                          className="graphiql-tab-add"
+                          onClick={() => editorContext.addTab()}
+                          aria-label="Add tab"
+                        >
+                          <PlusIcon aria-hidden="true" />
+                        </UnStyledButton>
+                      </Tooltip>
+                    </div>
+                  </>
+                ) : null}
+              </Tabs>
+              <div className="graphiql-session-header-right">
+                {editorContext.tabs.length === 1 ? (
+                  <div className="graphiql-add-tab-wrapper">
                     <Tooltip label="Add tab">
                       <UnStyledButton
                         type="button"
@@ -445,23 +463,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <PlusIcon aria-hidden="true" />
                       </UnStyledButton>
                     </Tooltip>
-                  </>
+                  </div>
                 ) : null}
-              </Tabs>
-              <div className="graphiql-session-header-right">
-                {editorContext.tabs.length === 1 ? (
-                  <Tooltip label="Add tab">
-                    <UnStyledButton
-                      type="button"
-                      className="graphiql-tab-add"
-                      onClick={() => editorContext.addTab()}
-                      aria-label="Add tab"
-                    >
-                      <PlusIcon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                ) : null}
-                <div className="graphiql-logo">{logo}</div>
+                {logo}
               </div>
             </div>
             <div
@@ -813,7 +817,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
 // Configure the UI by providing this Component as a child of GraphiQL.
 function GraphiQLLogo<TProps>(props: PropsWithChildren<TProps>) {
   return (
-    <div className="title">
+    <div className="graphiql-logo">
       {props.children || (
         <a
           className="graphiql-logo-link"

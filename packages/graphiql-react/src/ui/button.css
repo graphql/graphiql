@@ -4,8 +4,12 @@ button.graphiql-un-styled {
   border-radius: var(--border-radius-4);
   cursor: pointer;
 
-  &:active {
+  &:hover {
     background-color: hsla(var(--color-neutral), 0.07);
+  }
+
+  &:active {
+    background-color: hsla(var(--color-neutral), 0.1);
   }
 
   &:focus {
@@ -23,6 +27,7 @@ button.graphiql-button {
   font-size: var(--font-size-body);
   padding: var(--px-8) var(--px-12);
 
+  &:hover,
   &:active {
     background-color: hsla(var(--color-neutral), 0.1);
   }
