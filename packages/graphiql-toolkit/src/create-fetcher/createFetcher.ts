@@ -47,10 +47,12 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         fetcherOpts,
       );
     }
-    const isSubscription = isSubscriptionWithName(
-      fetcherOpts?.documentAST!,
-      graphQLParams.operationName || undefined,
-    );
+    const isSubscription = fetcherOpts?.documentAST
+      ? isSubscriptionWithName(
+          fetcherOpts.documentAST,
+          graphQLParams.operationName || undefined,
+        )
+      : false;
     if (isSubscription) {
       if (!wsFetcher) {
         throw Error(
