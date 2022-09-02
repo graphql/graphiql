@@ -51,7 +51,7 @@ declare module 'graphiql-explorer' {
       explorerActionsStyle?: CSSProperties;
       buttonStyle?: CSSProperties;
       actionButtonStyle?: CSSProperties;
-    };
+    } | null;
     showAttribution: boolean;
     hideActions?: boolean;
     externalFragments?: FragmentDefinitionNode[];
