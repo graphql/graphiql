@@ -62,7 +62,8 @@
 
 /* The button to add a new tab */
 button.graphiql-tab-add {
-  margin-left: var(--px-12);
+  height: 100%;
+  padding: 0 var(--px-4);
 }
 button.graphiql-tab-add > svg {
   color: hsla(var(--color-neutral), 0.6);
@@ -70,10 +71,13 @@ button.graphiql-tab-add > svg {
   height: var(--px-16);
   width: var(--px-16);
 }
+.graphiql-add-tab-wrapper {
+  padding: var(--px-12) 0;
+}
 
 /* The right-hand-side of the session header */
 .graphiql-container .graphiql-session-header-right {
-  align-items: center;
+  align-items: stretch;
   display: flex;
 }
 

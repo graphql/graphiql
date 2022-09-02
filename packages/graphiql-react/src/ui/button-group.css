@@ -7,8 +7,12 @@
 
   & > button.graphiql-button {
     background-color: transparent;
+    &:hover {
+      background-color: hsla(var(--color-neutral), 0.07);
+    }
     &.active {
       background-color: hsl(var(--color-base));
+      cursor: default;
     }
   }
 

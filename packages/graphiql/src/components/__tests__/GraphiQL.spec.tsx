@@ -387,7 +387,7 @@ describe('GraphiQL', () => {
       expect(
         container.querySelector('.graphiql-container'),
       ).toBeInTheDocument();
-      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
       expect(getByRole('toolbar')).toBeInTheDocument();
     });
 
@@ -401,7 +401,7 @@ describe('GraphiQL', () => {
       expect(
         container.querySelector('.graphiql-container'),
       ).toBeInTheDocument();
-      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
       expect(getByRole('toolbar')).toBeInTheDocument();
     });
 
@@ -421,7 +421,7 @@ describe('GraphiQL', () => {
       expect(
         container.querySelector('.graphiql-container'),
       ).toBeInTheDocument();
-      expect(container.querySelector('.title')).toBeInTheDocument();
+      expect(container.querySelector('.graphiql-logo')).toBeInTheDocument();
       expect(getByRole('toolbar')).toBeInTheDocument();
     });
 
