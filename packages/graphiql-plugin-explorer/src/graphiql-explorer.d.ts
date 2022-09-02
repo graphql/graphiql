@@ -9,7 +9,7 @@ declare module 'graphiql-explorer' {
     GraphQLSchema,
     ValueNode,
   } from 'graphql';
-  import { ComponentType, ReactNode } from 'react';
+  import { ComponentType, ReactNode, CSSProperties } from 'react';
 
   export type GraphiQLExplorerProps = {
     query: string;
@@ -47,11 +47,11 @@ declare module 'graphiql-explorer' {
     arrowClosed?: ReactNode | null;
     checkboxChecked?: ReactNode | null;
     checkboxUnchecked?: ReactNode | null;
-    styles?: ?{
-      explorerActionsStyle?: { [key: string]: any };
-      buttonStyle?: { [key: string]: any };
-      actionButtonStyle?: { [key: string]: any };
-    };
+    styles?: {
+      explorerActionsStyle?: CSSProperties;
+      buttonStyle?: CSSProperties;
+      actionButtonStyle?: CSSProperties;
+    } | null;
     showAttribution: boolean;
     hideActions?: boolean;
     externalFragments?: FragmentDefinitionNode[];
