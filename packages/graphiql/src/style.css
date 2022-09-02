@@ -106,6 +106,7 @@ button.graphiql-tab-add > svg {
 .graphiql-container .graphiql-editors {
   background-color: hsl(var(--color-base));
   border-radius: calc(var(--border-radius-12));
+  box-shadow: var(--popover-box-shadow);
   display: flex;
   flex: 1;
   flex-direction: column;

@@ -35,7 +35,7 @@
 
 .cm-s-graphiql {
   /* Default to punctuation */
-  color: hsla(var(--color-neutral), var(--alpha-secondary));
+  color: hsla(var(--color-neutral), var(--alpha-tertiary));
 
   /* OperationType, `fragment`, `on` */
   & .cm-keyword {
@@ -47,7 +47,7 @@
   }
   /* Punctuator (except `$` and `@`) */
   & .cm-punctuation {
-    color: hsla(var(--color-neutral), var(--alpha-secondary));
+    color: hsla(var(--color-neutral), var(--alpha-tertiary));
   }
   /* Variable */
   & .cm-variable {
@@ -91,7 +91,7 @@
   }
   /* Comment */
   & .cm-comment {
-    color: hsla(var(--color-neutral), var(--alpha-tertiary));
+    color: hsla(var(--color-neutral), var(--alpha-secondary));
   }
   /* Whitespace */
   & .cm-ws {
@@ -116,7 +116,7 @@
 /* Matching bracket colors */
 div.CodeMirror span.CodeMirror-matchingbracket,
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
-  color: hsla(var(--color-neutral), var(--alpha-tertiary));
+  color: hsl(var(--color-warning));
 }
 
 /* Selected text blocks */
