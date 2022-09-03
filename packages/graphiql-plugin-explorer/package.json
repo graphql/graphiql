@@ -4,6 +4,7 @@
   "main": "dist/graphiql-plugin-explorer.cjs.js",
   "module": "dist/graphiql-plugin-explorer.es.js",
   "types": "types/index.d.ts",
+  "license": "MIT",
   "keywords": [
     "react",
     "graphql",
