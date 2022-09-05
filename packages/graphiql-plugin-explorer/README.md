@@ -13,7 +13,7 @@ npm i -S @graphiql/plugin-explorer
 The following packages are peer dependencies, so make sure you have them installed as well:
 
 ```sh
-npm i -S react react-dom graphql @graphiql/react
+npm i -S react react-dom graphql
 ```
 
 ## Usage
