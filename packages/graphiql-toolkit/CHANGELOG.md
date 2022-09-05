@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.7.1
+
+### Patch Changes
+
+- [#2737](https://github.com/graphql/graphiql/pull/2737) [`48872a87`](https://github.com/graphql/graphiql/commit/48872a87e6edec0c301102baaf669ffcce043a13) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Handle execution when there is no document AST (because the query editor is empty or the query string contains syntax errors)
+
 ## 0.7.0
 
 ### Minor Changes

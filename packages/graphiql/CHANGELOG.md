@@ -1,5 +1,19 @@
 # Change Log
 
+## 2.0.4
+
+### Patch Changes
+
+- [#2745](https://github.com/graphql/graphiql/pull/2745) [`92a17490`](https://github.com/graphql/graphiql/commit/92a17490c3842b4f83ed1065b73a803f73d02a17) Thanks [@acao](https://github.com/acao)! - Specify MIT license for `@graphiql/plugin-explorer` `package.json`
+
+* [#2741](https://github.com/graphql/graphiql/pull/2741) [`0219eef3`](https://github.com/graphql/graphiql/commit/0219eef39146495749aca2487112db52fa3bb8fd) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Improved sizing of button for adding tabs
+
+- [#2746](https://github.com/graphql/graphiql/pull/2746) [`6f0fa98e`](https://github.com/graphql/graphiql/commit/6f0fa98eadf897c7eaf8eb89e49c46880d381033) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix CodeMirror editors overlapping other parts of the UI on certain browser-OS-combinations (e.g. Chrome on Windows)
+
+- Updated dependencies [[`98e14155`](https://github.com/graphql/graphiql/commit/98e14155c650ee7c5ac639e594eb47f0052b7fa9), [`48872a87`](https://github.com/graphql/graphiql/commit/48872a87e6edec0c301102baaf669ffcce043a13), [`7dfea94a`](https://github.com/graphql/graphiql/commit/7dfea94afc0cfe79b5080f10d840bfdce53f02d7), [`3aa1f39f`](https://github.com/graphql/graphiql/commit/3aa1f39f6df559b54f703937ed510c8ba1f21058), [`0219eef3`](https://github.com/graphql/graphiql/commit/0219eef39146495749aca2487112db52fa3bb8fd)]:
+  - @graphiql/react@0.12.0
+  - @graphiql/toolkit@0.7.1
+
 ## 2.0.3
 
 ### Patch Changes

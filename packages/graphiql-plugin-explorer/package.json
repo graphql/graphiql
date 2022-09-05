@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/graphiql-plugin-explorer.cjs.js",
   "module": "dist/graphiql-plugin-explorer.es.js",
   "types": "types/index.d.ts",
@@ -24,7 +24,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@graphiql/react": "^0.11.1",
+    "@graphiql/react": "^0.12.0",
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {

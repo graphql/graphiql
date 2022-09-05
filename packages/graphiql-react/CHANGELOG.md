@@ -1,5 +1,22 @@
 # @graphiql/react
 
+## 0.12.0
+
+### Minor Changes
+
+- [#2739](https://github.com/graphql/graphiql/pull/2739) [`98e14155`](https://github.com/graphql/graphiql/commit/98e14155c650ee7c5ac639e594eb47f0052b7fa9) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add `DocsFilledIcon` component and use show that icon in the sidebar when the docs plugin is visible
+
+### Patch Changes
+
+- [#2740](https://github.com/graphql/graphiql/pull/2740) [`7dfea94a`](https://github.com/graphql/graphiql/commit/7dfea94afc0cfe79b5080f10d840bfdce53f02d7) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Make SVG icon `stroke-width` consistent
+
+* [#2734](https://github.com/graphql/graphiql/pull/2734) [`3aa1f39f`](https://github.com/graphql/graphiql/commit/3aa1f39f6df559b54f703937ed510c8ba1f21058) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Stop propagating keyboard events too far upwards in the search component for the docs
+
+- [#2741](https://github.com/graphql/graphiql/pull/2741) [`0219eef3`](https://github.com/graphql/graphiql/commit/0219eef39146495749aca2487112db52fa3bb8fd) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add hover styles for buttons
+
+- Updated dependencies [[`48872a87`](https://github.com/graphql/graphiql/commit/48872a87e6edec0c301102baaf669ffcce043a13)]:
+  - @graphiql/toolkit@0.7.1
+
 ## 0.11.1
 
 ### Patch Changes
