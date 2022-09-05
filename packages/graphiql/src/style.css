@@ -179,6 +179,18 @@ button.graphiql-tab-add > svg {
   padding: var(--px-16);
 }
 
+/**
+   * The way CodeMirror editors are styled they overflow their containing
+   * element. For some OS-browser-combinations this might cause overlap issues,
+   * setting the position of this to `relative` makes sure this element will
+   * always be on top of any editors.
+   */
+.graphiql-container .graphiql-toolbar,
+.graphiql-container .graphiql-editor-tools,
+.graphiql-container .graphiql-editor-tool {
+  position: relative;
+}
+
 /* The response view */
 .graphiql-container .graphiql-response {
   --editor-background: transparent;
