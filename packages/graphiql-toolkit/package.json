@@ -33,6 +33,11 @@
     "graphql": "^15.5.0 || ^16.0.0",
     "graphql-ws": ">= 4.5.0"
   },
+  "peerDependenciesMeta": {
+    "graphql-ws": {
+      "optional": true
+    }
+  },
   "keywords": [
     "graphql",
     "graphiql"
