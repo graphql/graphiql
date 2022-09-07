@@ -30,8 +30,6 @@ export default class CharacterStream implements CharacterStreamInterface {
     this._sourceText = sourceText;
   }
 
-  public sourceLength = (): number => this._sourceText.length;
-
   public getStartOfToken = (): number => this._start;
 
   public getCurrentPosition = (): number => this._pos;
