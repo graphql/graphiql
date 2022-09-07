@@ -60,9 +60,18 @@ export class StorageAPI {
     } else if (storage === null) {
       // Passing `null` creates a noop storage
       this.storage = null;
+    } else if (typeof window !== 'undefined') {
+      this.storage = window.localStorage;
+      // We only want to clear the namespaced items
+      this.storage.clear = () => {
+        for (const key in window.localStorage) {
+          if (key.indexOf(`${STORAGE_NAMESPACE}:`) === 0) {
+            window.localStorage.removeItem(key);
+          }
+        }
+      };
     } else {
-      // When passing `undefined` we default to localStorage
-      this.storage = typeof window !== 'undefined' ? window.localStorage : null;
+      this.storage = null;
     }
   }
 
