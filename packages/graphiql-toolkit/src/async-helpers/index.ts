@@ -6,7 +6,11 @@ import {
 
 // Duck-type promise detection.
 export function isPromise<T>(value: Promise<T> | any): value is Promise<T> {
-  return typeof value === 'object' && typeof value.then === 'function';
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof value.then === 'function'
+  );
 }
 
 // Duck-type Observable.take(1).toPromise()
@@ -29,6 +33,7 @@ function observableToPromise<T>(observable: Observable<T>): Promise<T> {
 export function isObservable<T>(value: any): value is Observable<T> {
   return (
     typeof value === 'object' &&
+    value !== null &&
     'subscribe' in value &&
     typeof value.subscribe === 'function'
   );
