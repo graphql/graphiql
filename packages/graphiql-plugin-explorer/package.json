@@ -1,6 +1,11 @@
 {
   "name": "@graphiql/plugin-explorer",
   "version": "0.1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/graphiql-plugin-explorer"
+  },
   "main": "dist/graphiql-plugin-explorer.cjs.js",
   "module": "dist/graphiql-plugin-explorer.es.js",
   "types": "types/index.d.ts",
