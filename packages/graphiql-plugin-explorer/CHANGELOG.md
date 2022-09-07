@@ -1,5 +1,14 @@
 # @graphiql/plugin-explorer
 
+## 0.1.2
+
+### Patch Changes
+
+- [#2750](https://github.com/graphql/graphiql/pull/2750) [`cdc44aab`](https://github.com/graphql/graphiql/commit/cdc44aabdc549f5a0359b8f69506cc0c31661d16) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Remove `type` field from `package.json` to support both ES Modules and CommonJS
+
+- Updated dependencies []:
+  - @graphiql/react@0.12.1
+
 ## 0.1.1
 
 ### Patch Changes
