@@ -2,7 +2,7 @@
 
 [data-reach-dialog-overlay] {
   align-items: center;
-  background-color: hsla(var(--color-neutral), 0.15);
+  background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   display: flex;
   justify-content: center;
   /**
@@ -27,7 +27,7 @@
 }
 
 .graphiql-dialog-close > svg {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   display: block;
   height: var(--px-12);
   padding: var(--px-12);

@@ -25,7 +25,7 @@
   &[data-selected],
   &[data-current-nav],
   &:hover {
-    background-color: hsla(var(--color-neutral), 0.07);
+    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
     color: inherit;
   }
 

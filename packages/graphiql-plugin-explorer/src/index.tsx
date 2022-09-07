@@ -42,7 +42,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         <svg
           viewBox="0 -4 13 15"
           style={{
-            color: 'hsla(var(--color-neutral), 0.4)',
+            color: 'hsla(var(--color-neutral), var(--alpha-tertiary, 0.4))',
             marginRight: 'var(--px-4)',
             height: 'var(--px-16)',
             width: 'var(--px-16)',
@@ -58,7 +58,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         <svg
           viewBox="0 -2 13 15"
           style={{
-            color: 'hsla(var(--color-neutral), 0.4)',
+            color: 'hsla(var(--color-neutral), var(--alpha-tertiary, 0.4))',
             marginRight: 'var(--px-4)',
             height: 'var(--px-16)',
             width: 'var(--px-16)',
@@ -74,7 +74,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         <svg
           viewBox="0 0 15 15"
           style={{
-            color: 'hsla(var(--color-neutral), 0.4)',
+            color: 'hsla(var(--color-neutral), var(--alpha-tertiary, 0.4))',
             marginRight: 'var(--px-4)',
             height: 'var(--px-16)',
             width: 'var(--px-16)',
@@ -106,7 +106,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         buttonStyle: {
           backgroundColor: 'transparent',
           border: 'none',
-          color: 'hsla(var(--color-neutral), 0.6)',
+          color: 'hsla(var(--color-neutral), var(--alpha-secondary, 0.6))',
           cursor: 'pointer',
           fontSize: '1em',
         },
@@ -116,7 +116,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         actionButtonStyle: {
           backgroundColor: 'transparent',
           border: 'none',
-          color: 'hsla(var(--color-neutral), 0.6)',
+          color: 'hsla(var(--color-neutral), var(--alpha-secondary, 0.6))',
           cursor: 'pointer',
           fontSize: '1em',
         },

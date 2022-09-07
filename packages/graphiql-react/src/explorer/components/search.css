@@ -1,7 +1,7 @@
 @import url('@reach/combobox/styles.css');
 
 [data-reach-combobox] {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
 
   &:not([data-state='idle']) {
     border: var(--popover-border);
@@ -19,7 +19,7 @@
 
 .graphiql-doc-explorer-search-input {
   align-items: center;
-  background-color: hsla(var(--color-neutral), 0.07);
+  background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   border-radius: var(--border-radius-4);
   display: flex;
   padding: var(--px-8) var(--px-12);
@@ -41,7 +41,8 @@
   border: none;
   border-bottom-left-radius: var(--border-radius-4);
   border-bottom-right-radius: var(--border-radius-4);
-  border-top: 1px solid hsla(var(--color-neutral), 0.15);
+  border-top: 1px solid
+    hsla(var(--color-neutral), var(--alpha-background-heavy));
   max-height: 400px;
   overflow-y: auto;
 
@@ -59,22 +60,25 @@
 
 [data-reach-combobox-option] {
   border-radius: var(--border-radius-4);
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   overflow-x: hidden;
   padding: var(--px-8) var(--px-12);
   text-overflow: ellipsis;
   white-space: nowrap;
 
   &[data-highlighted] {
-    background-color: hsla(var(--color-neutral), 0.07);
+    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
   }
 
   &:hover {
-    background-color: hsla(var(--color-neutral), 0.1);
+    background-color: hsla(
+      var(--color-neutral),
+      var(--alpha-background-medium)
+    );
   }
 
   &[data-highlighted]:hover {
-    background-color: hsla(var(--color-neutral), 0.15);
+    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
   }
 
   & + & {
@@ -95,7 +99,7 @@
 }
 
 .graphiql-doc-explorer-search-divider {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   font-size: var(--font-size-hint);
   font-weight: var(--font-weight-medium);
   margin-top: var(--px-8);
@@ -103,6 +107,6 @@
 }
 
 .graphiql-doc-explorer-search-empty {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   padding: var(--px-8) var(--px-12);
 }

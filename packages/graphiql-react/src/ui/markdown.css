@@ -81,12 +81,12 @@
   }
 
   & blockquote {
-    border-left: 1.5px solid hsla(var(--color-neutral), 0.4);
+    border-left: 1.5px solid hsla(var(--color-neutral), var(--alpha-tertiary));
   }
 
   & code,
   & pre {
-    background-color: hsla(var(--color-neutral), 0.07);
+    background-color: hsla(var(--color-neutral), var(--alpha-background-light));
     color: hsla(var(--color-neutral), 1);
   }
 
@@ -109,7 +109,7 @@
 
   & code,
   & pre {
-    background-color: hsla(var(--color-warning), 0.15);
+    background-color: hsla(var(--color-warning), var(--alpha-background-heavy));
   }
 
   & > * {
@@ -129,7 +129,7 @@
 
 .CodeMirror-hint-information-deprecation,
 .CodeMirror-info .info-deprecation {
-  background-color: hsla(var(--color-warning), 0.07);
+  background-color: hsla(var(--color-warning), var(--alpha-background-light));
   border: 1px solid hsl(var(--color-warning));
   border-radius: var(--border-radius-4);
   color: hsl(var(--color-warning));

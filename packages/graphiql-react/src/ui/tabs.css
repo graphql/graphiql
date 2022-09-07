@@ -11,7 +11,7 @@
 .graphiql-tab {
   align-items: stretch;
   border-radius: var(--border-radius-8);
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   display: flex;
 
   & > button.graphiql-tab-close {
@@ -24,7 +24,7 @@
   }
 
   &.graphiql-tab-active {
-    background-color: hsla(var(--color-neutral), 0.15);
+    background-color: hsla(var(--color-neutral), var(--alpha-background-heavy));
     color: hsla(var(--color-neutral), 1);
   }
 }

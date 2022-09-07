@@ -50,7 +50,7 @@
 /* The back-button in the doc explorer */
 a.graphiql-doc-explorer-back {
   align-items: center;
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   display: flex;
   text-decoration: none;
 
@@ -59,7 +59,7 @@ a.graphiql-doc-explorer-back {
   }
 
   &:focus {
-    outline: hsla(var(--color-neutral), 0.6) auto 1px;
+    outline: hsla(var(--color-neutral), var(--alpha-secondary)) auto 1px;
 
     & + .graphiql-doc-explorer-title {
       /* Don't hide the header when focussing the back link */
@@ -89,13 +89,13 @@ a.graphiql-doc-explorer-back {
 
 /* The contents of the currently active page in the doc explorer */
 .graphiql-doc-explorer-content > * {
-  color: hsla(var(--color-neutral), 0.6);
+  color: hsla(var(--color-neutral), var(--alpha-secondary));
   margin-top: var(--px-20);
 }
 
 /* Error message */
 .graphiql-doc-explorer-error {
-  background-color: hsla(var(--color-error), 0.15);
+  background-color: hsla(var(--color-error), var(--alpha-background-heavy));
   border: 1px solid hsl(var(--color-error));
   border-radius: var(--border-radius-8);
   color: hsl(var(--color-error));

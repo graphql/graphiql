@@ -13,6 +13,13 @@ reach-portal {
   --color-neutral: 219, 28%, 32%;
   --color-base: 219, 28%, 100%;
 
+  /* Color alpha values */
+  --alpha-secondary: 0.6;
+  --alpha-tertiary: 0.4;
+  --alpha-background-heavy: 0.15;
+  --alpha-background-medium: 0.1;
+  --alpha-background-light: 0.07;
+
   /* Font */
   --font-family: 'Roboto', sans-serif;
   --font-family-mono: 'Fira Code', monospace;
@@ -112,7 +119,7 @@ reach-portal {
     font-size: var(--font-size-caption);
 
     &::placeholder {
-      color: hsla(var(--color-neutral), 0.6);
+      color: hsla(var(--color-neutral), var(--alpha-secondary));
     }
   }
 
