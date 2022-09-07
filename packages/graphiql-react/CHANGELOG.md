@@ -1,5 +1,12 @@
 # @graphiql/react
 
+## 0.12.1
+
+### Patch Changes
+
+- Updated dependencies [[`bfa90f24`](https://github.com/graphql/graphiql/commit/bfa90f249be4f68049c1bb81abfb524ae623313f), [`8ab5fcd0`](https://github.com/graphql/graphiql/commit/8ab5fcd0a8399a0f8eb1b569751dd0e8390b9679)]:
+  - @graphiql/toolkit@0.7.2
+
 ## 0.12.0
 
 ### Minor Changes

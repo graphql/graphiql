@@ -1,5 +1,13 @@
 # @graphiql/toolkit
 
+## 0.7.2
+
+### Patch Changes
+
+- [#2753](https://github.com/graphql/graphiql/pull/2753) [`bfa90f24`](https://github.com/graphql/graphiql/commit/bfa90f249be4f68049c1bb81abfb524ae623313f) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Mark the `graphql-ws` peer dependency as optional (as it's only needed when the fetcher needs to support subscriptions)
+
+* [#2751](https://github.com/graphql/graphiql/pull/2751) [`8ab5fcd0`](https://github.com/graphql/graphiql/commit/8ab5fcd0a8399a0f8eb1b569751dd0e8390b9679) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Correctly handle `null` in type-guard functions for `Promise` and `Observable`
+
 ## 0.7.1
 
 ### Patch Changes
