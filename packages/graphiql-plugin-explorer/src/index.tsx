@@ -30,7 +30,7 @@ function ExplorerPlugin(props: GraphiQLExplorerProps) {
         def: 'hsl(var(--color-tertiary))',
         property: 'hsl(var(--color-info))',
         qualifier: 'hsl(var(--color-secondary))',
-        attribute: 'hsl(var(--color-info))',
+        attribute: 'hsl(var(--color-tertiary))',
         number: 'hsl(var(--color-success))',
         string: 'hsl(var(--color-warning))',
         builtin: 'hsl(var(--color-success))',
