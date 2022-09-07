@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -36,7 +36,7 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@graphiql/toolkit": "^0.7.2",
+    "@graphiql/toolkit": "^0.7.3",
     "@reach/combobox": "^0.17.0",
     "@reach/dialog": "^0.17.0",
     "@reach/listbox": "^0.17.0",
