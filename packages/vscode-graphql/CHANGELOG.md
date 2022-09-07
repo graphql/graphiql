@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.7.5
+
+### Patch Changes
+
+- [#2759](https://github.com/graphql/graphiql/pull/2759) [`67b1e5e9`](https://github.com/graphql/graphiql/commit/67b1e5e933e3ca9e1f88d3ed6e1c70537c491e77) Thanks [@acao](https://github.com/acao)! - Fixes #2671 bug for SDL schema support and `.graphql` files! pin `vscode-languageclient` to 8.0.2 version. Thanks [@MariaSolOs](https://github.com/MariaSolOs) for the fix!
+
 ## 0.7.4
 
 ### Patch Changes
