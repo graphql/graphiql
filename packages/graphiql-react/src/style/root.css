@@ -14,8 +14,8 @@ reach-portal {
   --color-base: 219, 28%, 100%;
 
   /* Color alpha values */
-  --alpha-secondary: 0.6;
-  --alpha-tertiary: 0.4;
+  --alpha-secondary: 0.76;
+  --alpha-tertiary: 0.5;
   --alpha-background-heavy: 0.15;
   --alpha-background-medium: 0.1;
   --alpha-background-light: 0.07;
