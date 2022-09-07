@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.8.0
+
+### Minor Changes
+
+- [#2719](https://github.com/graphql/graphiql/pull/2719) [`e244b782`](https://github.com/graphql/graphiql/commit/e244b78291c2e2bb02d5753db82437926ebb4df4) Thanks [@andreialecu](https://github.com/andreialecu)! - Allow passing Headers for subscriptions into connection_init payload
+
 ## 0.7.3
 
 ### Patch Changes
