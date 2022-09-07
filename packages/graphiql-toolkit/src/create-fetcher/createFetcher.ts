@@ -35,7 +35,6 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
   // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
 
-  const wsFetcher = getWsFetcher(options);
   const httpFetcher = options.enableIncrementalDelivery
     ? createMultipartFetcher(options, httpFetch)
     : simpleFetcher;
@@ -54,6 +53,8 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
         )
       : false;
     if (isSubscription) {
+      const wsFetcher = getWsFetcher(options, fetcherOpts);
+
       if (!wsFetcher) {
         throw Error(
           `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
