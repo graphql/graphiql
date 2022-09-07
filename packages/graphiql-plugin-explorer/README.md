@@ -36,8 +36,6 @@ function GraphiQLWithExplorer() {
   const explorerPlugin = useExplorerPlugin({
     query,
     onEdit: setQuery,
-    getDefaultScalarArgValue,
-    makeDefaultArg,
   });
   return (
     <GraphiQL
