@@ -1,5 +1,13 @@
 # Change Log
 
+## 2.0.7
+
+### Patch Changes
+
+- Updated dependencies [[`e244b782`](https://github.com/graphql/graphiql/commit/e244b78291c2e2bb02d5753db82437926ebb4df4)]:
+  - @graphiql/toolkit@0.8.0
+  - @graphiql/react@0.13.1
+
 ## 2.0.6
 
 ### Patch Changes
