@@ -97,7 +97,7 @@ describe('getWsFetcher', () => {
       subscriptionUrl: 'wss://example',
     });
     expect(createClient.mock.calls[0]).toEqual([
-      { connectionParams: undefined, url: 'wss://example' },
+      { connectionParams: {}, url: 'wss://example' },
     ]);
     expect(SubscriptionClient.mock.calls).toHaveLength(0);
   });
