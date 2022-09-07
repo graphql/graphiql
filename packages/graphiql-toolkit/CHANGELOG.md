@@ -1,5 +1,11 @@
 # @graphiql/toolkit
 
+## 0.7.3
+
+### Patch Changes
+
+- [#2755](https://github.com/graphql/graphiql/pull/2755) [`674bf3f8`](https://github.com/graphql/graphiql/commit/674bf3f8ff321dfb8471b0f6e5419bb77ddc94af) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Only remove namespaced items when clearing `localStorage`
+
 ## 0.7.2
 
 ### Patch Changes

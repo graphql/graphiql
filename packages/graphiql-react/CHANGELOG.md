@@ -1,5 +1,21 @@
 # @graphiql/react
 
+## 0.13.0
+
+### Minor Changes
+
+- [#2735](https://github.com/graphql/graphiql/pull/2735) [`ca067d88`](https://github.com/graphql/graphiql/commit/ca067d88148c5d221d196790a997ad599038fad1) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add CSS variables for color alpha values:
+  - `--alpha-secondary`: A color for supplementary text that should be read but not be the main focus
+  - `--alpha-tertiary`: A color for supplementary text which is optional to read, i.e. the UI would function without the user reading this text
+  - `--alpha-background-light`, `--alpha-background-medium` and `--alpha-background-heavy`: Three alpha values used for backgrounds and borders that have different intensity
+
+### Patch Changes
+
+- [#2757](https://github.com/graphql/graphiql/pull/2757) [`32a70065`](https://github.com/graphql/graphiql/commit/32a70065434eaa7733e28cda0ea0e7d51952e62a) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Use different colors for field names and argument names
+
+- Updated dependencies [[`674bf3f8`](https://github.com/graphql/graphiql/commit/674bf3f8ff321dfb8471b0f6e5419bb77ddc94af)]:
+  - @graphiql/toolkit@0.7.3
+
 ## 0.12.1
 
 ### Patch Changes
