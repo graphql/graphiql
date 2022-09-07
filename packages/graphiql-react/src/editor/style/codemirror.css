@@ -75,7 +75,7 @@
   }
   /* Name (ObjectField, Argument) */
   & .cm-attribute {
-    color: hsl(var(--color-info));
+    color: hsl(var(--color-tertiary));
   }
   /* Name (Directive) */
   & .cm-meta {
