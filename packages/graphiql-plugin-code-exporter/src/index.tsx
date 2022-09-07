@@ -11,7 +11,7 @@ function ExporterPlugin(props: GraphiQLCodeExporterProps) {
   return <GraphiQLCodeExporter {...props} />;
 }
 
-export function useExplorerPlugin(props: GraphiQLCodeExporterProps) {
+export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
   const propsRef = useRef(props);
   propsRef.current = props;
   return useMemo<GraphiQLPlugin>(
