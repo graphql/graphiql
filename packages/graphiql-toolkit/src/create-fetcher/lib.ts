@@ -193,15 +193,18 @@ export const createMultipartFetcher = (
  * @param options {CreateFetcherOptions}
  * @returns
  */
-export const getWsFetcher = (options: CreateFetcherOptions) => {
+export const getWsFetcher = (
+  options: CreateFetcherOptions,
+  fetcherOpts: FetcherOpts | undefined,
+) => {
   if (options.wsClient) {
     return createWebsocketsFetcherFromClient(options.wsClient);
   }
   if (options.subscriptionUrl) {
-    return createWebsocketsFetcherFromUrl(
-      options.subscriptionUrl,
-      options.wsConnectionParams,
-    );
+    return createWebsocketsFetcherFromUrl(options.subscriptionUrl, {
+      ...options.wsConnectionParams,
+      ...fetcherOpts?.headers,
+    });
   }
   const legacyWebsocketsClient = options.legacyClient || options.legacyWsClient;
   if (legacyWebsocketsClient) {
