@@ -38,6 +38,7 @@ function GraphiQLWithExplorer() {
   const exporterPlugin = useCodeExporterPlugin({
     query,
     snippets,
+    codeMirrorTheme: 'graphiql',
   });
   return (
     <GraphiQL
