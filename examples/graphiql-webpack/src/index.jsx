@@ -9,6 +9,7 @@ import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
+import '@graphiql/plugin-code-exporter/dist/style.css';
 
 const App = () => {
   const [query, setQuery] = React.useState('');

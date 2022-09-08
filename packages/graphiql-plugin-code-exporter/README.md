@@ -25,7 +25,7 @@ import { GraphiQL } from 'graphiql';
 import { useState } from 'react';
 
 import 'graphiql/graphiql.css';
-import '@graphiql/plugin-explorer/dist/style.css';
+import '@graphiql/plugin-code-exporter/dist/style.css';
 
 const fetcher = createGraphiQLFetcher({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
