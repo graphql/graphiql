@@ -10,11 +10,6 @@ import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 
-const Logo = () => <span>My Corp</span>;
-
-// See GraphiQL Readme - Advanced Usage section for more examples like this
-GraphiQL.Logo = Logo;
-
 const App = () => {
   const [query, setQuery] = React.useState('');
   const explorerPlugin = useExplorerPlugin({

@@ -5,10 +5,27 @@ import GraphiQLCodeExporter, {
 } from 'graphiql-code-exporter';
 
 import './graphiql-code-exporter.d.ts';
+// TODO: Check if needed or if we should style everything ourselves
+// import 'graphiql-code-exporter/CodeExporter.css'
 import './index.css';
 
 function ExporterPlugin(props: GraphiQLCodeExporterProps) {
-  return <GraphiQLCodeExporter {...props} />;
+  const {
+    query = ``,
+    codeMirrorTheme = `graphiql`,
+    variables = ``,
+    context = {},
+    ...rest
+  } = props;
+  return (
+    <GraphiQLCodeExporter
+      query={query}
+      codeMirrorTheme={codeMirrorTheme}
+      variables={variables}
+      context={context}
+      {...rest}
+    />
+  );
 }
 
 export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
