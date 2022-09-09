@@ -99,6 +99,31 @@ describe('GraphiQL', () => {
     expect(secondCalled).toEqual(true);
   });
 
+  it('should refresh schema with new fetcher after a fetchError', async () => {
+    function firstFetcher() {
+      return Promise.reject('Schema Error');
+    }
+    function secondFetcher() {
+      return Promise.resolve(simpleIntrospection);
+    }
+
+    // Use a bad fetcher for our initial render
+    const { rerender, container } = render(<GraphiQL fetcher={firstFetcher} />);
+    await wait();
+
+    expect(
+      container.querySelector('.doc-explorer-contents .error-container'),
+    ).toBeTruthy();
+
+    // Re-render with valid fetcher
+    rerender(<GraphiQL fetcher={secondFetcher} />);
+    await wait();
+
+    expect(
+      container.querySelector('.doc-explorer-contents .error-container'),
+    ).not.toBeTruthy();
+  });
+
   it('should not throw error if schema missing and query provided', () => {
     expect(() =>
       render(<GraphiQL fetcher={noOpFetcher} query="{}" />),
