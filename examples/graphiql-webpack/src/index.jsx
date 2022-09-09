@@ -3,13 +3,55 @@ import 'regenerator-runtime/runtime.js';
 import * as React from 'react';
 import { render } from 'react-dom';
 import GraphiQL from 'graphiql';
-import snippets from 'graphiql-code-exporter/lib/snippets';
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';
+
+const removeQueryName = query =>
+  query.replace(
+    /^[^{(]+([{(])/,
+    (_match, openingCurlyBracketsOrParenthesis) =>
+      `query ${openingCurlyBracketsOrParenthesis}`,
+  );
+
+const getQuery = (arg, spaceCount) => {
+  const { operationDataList } = arg;
+  const { query } = operationDataList[0];
+  const anonymousQuery = removeQueryName(query);
+  return (
+    ` `.repeat(spaceCount) +
+    anonymousQuery.replace(/\n/g, `\n` + ` `.repeat(spaceCount))
+  );
+};
+
+const exampleSnippetOne = {
+  name: `Example One`,
+  language: `JavaScript`,
+  codeMirrorMode: `jsx`,
+  options: [],
+  generate: arg => `export const query = graphql\`
+${getQuery(arg, 2)}
+\`
+`,
+};
+
+const exampleSnippetTwo = {
+  name: `Example Two`,
+  language: `JavaScript`,
+  codeMirrorMode: `jsx`,
+  options: [],
+  generate: arg => `import { graphql } from 'graphql'
+
+export const query = graphql\`
+${getQuery(arg, 2)}
+\`
+`,
+};
+
+const snippets = [exampleSnippetOne, exampleSnippetTwo];
 
 const App = () => {
   const [query, setQuery] = React.useState('');
