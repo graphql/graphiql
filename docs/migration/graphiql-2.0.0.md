@@ -131,7 +131,7 @@ There are a couple more class methods that were intended to be private and were 
 - `handleRunQuery`: To execute a query, use the `run` method of the `ExecutionContext`. If you want to explicitly set an operation name, call the `setOperationName` method of the `EditorContext` provider before that (passing in the operation name string as argument).
 - `handleEditorRunQuery`: Use the `run` method of the `ExecutionContext`.
 - `handleStopQuery`: Use the `stop` method from the `ExecutionContext`.
-- `handlePrettifyQuery`: Use the `usePrettifyQuery` hook provided by `@graphiql/react` that returns this function.
+- `handlePrettifyQuery`: Use the `usePrettifyEditors` hook provided by `@graphiql/react` that returns this function.
 - `handleMergeQuery`: Use the `useMergeQuery` hook provided by `@graphiql/react` that returns this function.
 - `handleCopyQuery`: Use the `useCopyQuery` hook provided by `@graphiql/react` that returns this function.
 - `handleToggleDocs` and `handleToggleHistory`: Use the `setVisiblePlugin` method of the `PluginContext`.
