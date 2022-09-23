@@ -232,11 +232,9 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             };
           }
 
-          setIsFetching(false);
           setResponse(formatResult(fullResponse));
         } else {
           const response = formatResult(result);
-          setIsFetching(false);
           setResponse(response);
         }
       };
@@ -294,6 +292,9 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         }
       } else {
         handleResponse(value);
+        if (queryId === queryIdRef.current) {
+          setIsFetching(false);
+        }
       }
     } catch (error) {
       setIsFetching(false);
