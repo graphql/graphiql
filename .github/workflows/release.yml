@@ -33,7 +33,7 @@ jobs:
           publish: yarn release
         env:
           # only use GH token here, because GITHUB_TOKEN is no longer allowed to create PRs
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           # for vscode marketplace, see https://github.com/microsoft/vscode-vsce/blob/194d59b975523696362ead891dc0f3ddd277b3bd/README.md#linux
           VSCE_PAT: ${{ secrets.PAT_TOKEN }}
