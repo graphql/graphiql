@@ -9,6 +9,7 @@ jobs:
   release:
     permissions:
       contents: read # to checkout the code
+      pull-requests: write
 
     environment: deploy
     name: Release
