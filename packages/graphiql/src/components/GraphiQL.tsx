@@ -323,7 +323,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   return (
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
-        <div>
+        <div className="graphiql-sidebar-section">
           {pluginContext
             ? pluginContext?.plugins.map(plugin => {
                 const isVisible = plugin === pluginContext.visiblePlugin;
@@ -352,7 +352,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               })
             : null}
         </div>
-        <div>
+        <div className="graphiql-sidebar-section">
           <Tooltip label="Re-fetch GraphQL schema">
             <UnStyledButton
               type="button"
