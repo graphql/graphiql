@@ -1,6 +1,6 @@
 # GraphiQL Code Exporter Plugin
 
-This package provides a plugin that integrated the [`GraphiQL Code Exporter`](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
+This package provides a plugin that integrates the [`GraphiQL Code Exporter`](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
 
 ## Install
 
