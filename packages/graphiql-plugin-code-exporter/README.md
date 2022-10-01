@@ -53,4 +53,4 @@ function GraphiQLWithExplorer() {
 
 ## CDN bundles
 
-You can also use add this plugin when using the [CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the [example HTML file](examples/index.html) that shows how you can do this.
+You can also use this plugin when using the [CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the [example HTML file](examples/index.html) that shows how you can do this.
