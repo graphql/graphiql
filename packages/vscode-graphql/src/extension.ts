@@ -70,6 +70,7 @@ export async function activate(context: ExtensionContext) {
           // to save for the changes to take effect
           true,
         ),
+        // TODO: load ignore
         // These ignore node_modules and .git by default
         workspace.createFileSystemWatcher(
           '**/{*.graphql,*.graphqls,*.gql,*.js,*.mjs,*.cjs,*.esm,*.es,*.es6,*.jsx,*.ts,*.tsx}',

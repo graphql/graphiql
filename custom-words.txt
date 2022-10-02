@@ -94,7 +94,9 @@ typedoc
 undici
 vite
 vitejs
+wonka
 wsrun
+
 
 // identifiers used in code and configs
 acmerc
@@ -152,6 +154,7 @@ testid
 testonly
 typeof
 unfocus
+urql
 unnormalized
 unsubscribable
 websockets

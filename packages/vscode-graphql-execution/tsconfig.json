@@ -1,0 +1,20 @@
+{
+  "extends": "../../resources/tsconfig.base.esm.json",
+  "compilerOptions": {
+    "target": "ES2018",
+    "module": "CommonJS",
+    "composite": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    },
+    {
+      "path": "../graphql-language-service-server"
+    }
+  ],
+  "include": ["src"],
+  "exclude": ["**/__tests__/**", "**/*.spec.*"]
+}
