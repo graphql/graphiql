@@ -14,6 +14,18 @@ jest.mock('@whatwg-node/fetch', () => ({
   TextDecoder: global.TextDecoder,
 }));
 
+jest.mock('@ardatan/sync-fetch', () => ({
+  fetch: require('fetch-mock').fetchHandler,
+  AbortController: MockAbortController,
+  TextDecoder: global.TextDecoder,
+}));
+
+jest.mock('cross-fetch', () => ({
+  fetch: require('fetch-mock').fetchHandler,
+  AbortController: MockAbortController,
+  TextDecoder: global.TextDecoder,
+}));
+
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
