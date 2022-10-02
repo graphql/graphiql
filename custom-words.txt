@@ -152,6 +152,7 @@ testid
 testonly
 typeof
 unfocus
+urql
 unnormalized
 unsubscribable
 websockets

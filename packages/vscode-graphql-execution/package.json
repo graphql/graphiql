@@ -1,5 +1,5 @@
 {
-  "name": "vscode-graphql-executionution",
+  "name": "vscode-graphql-execution",
   "version": "0.1.0",
   "displayName": "GraphQL: Inline Operation Execution",
   "description": "Execute graphql operations from your code (revived!)",
@@ -80,7 +80,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
-    "directory": "packages/vscode-graphql-executionution"
+    "directory": "packages/vscode-graphql-execution"
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-inline-exec/README.md",
   "scripts": {
@@ -109,7 +109,7 @@
     "capitalize": "2.0.4",
     "dotenv": "10.0.0",
     "escape-html": "1.0.3",
-    "graphql-config": "4.3.4",
+    "graphql-config": "4.3.5",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "@whatwg-node/fetch": "0.2.8",
