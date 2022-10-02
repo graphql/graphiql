@@ -26,6 +26,8 @@ jest.mock('cross-fetch', () => ({
   TextDecoder: global.TextDecoder,
 }));
 
+jest.mock(fetch, () => require('fetch-mock').fetchHandler)
+
 import { GraphQLSchema } from 'graphql/type';
 import { parse } from 'graphql/language';
 import { loadConfig, GraphQLExtensionDeclaration } from 'graphql-config';
