@@ -51,7 +51,8 @@
   ],
   "main": "./out/extension",
   "extensionDependencies": [
-    "GraphQL.vscode-graphql-syntax"
+    "GraphQL.vscode-graphql-syntax",
+    "GraphQL.vscode-graphql-execution"
   ],
   "contributes": {
     "snippets": [
