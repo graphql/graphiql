@@ -1,0 +1,4 @@
+name: Monaco GraphQL Feature Request
+description: Request a feature for `monaco-graphql`
+title: "[monaco-graphql] <title>"
+labels: [monaco-graphql, enhancement]
