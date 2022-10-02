@@ -1,6 +1,6 @@
 ---
 name: GraphiQL Feature Request
-description: Request a feature for the graphiql web editor
+about: Request a feature for the graphiql web editor
 title: '[graphiql] <title>'
 labels: [graphiql, enhancement]
 ---
