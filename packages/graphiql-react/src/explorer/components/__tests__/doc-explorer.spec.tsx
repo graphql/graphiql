@@ -13,6 +13,14 @@ const defaultSchemaContext: SchemaContextType = {
   validationErrors: [],
 };
 
+const withErrorSchemaContext: SchemaContextType = {
+  fetchError: 'Error fetching schema',
+  introspect() {},
+  isFetching: false,
+  schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
+  validationErrors: [],
+};
+
 function DocExplorerWithContext() {
   return (
     <ExplorerContextProvider>
@@ -58,5 +66,25 @@ describe('DocExplorer', () => {
     expect(
       container.querySelector('.graphiql-markdown-description'),
     ).toHaveTextContent('GraphQL Schema for testing');
+  });
+  it('renders correctly with schema error', () => {
+    const { rerender, container } = render(
+      <SchemaContext.Provider value={withErrorSchemaContext}>
+        <DocExplorerWithContext />,
+      </SchemaContext.Provider>,
+    );
+
+    const error = container.querySelector('.graphiql-doc-explorer-error');
+
+    expect(error).toHaveTextContent('Error fetching schema');
+
+    rerender(
+      <SchemaContext.Provider value={defaultSchemaContext}>
+        <DocExplorerWithContext />,
+      </SchemaContext.Provider>,
+    );
+
+    const errors = container.querySelectorAll('.graphiql-doc-explorer-error');
+    expect(errors).toHaveLength(0);
   });
 });

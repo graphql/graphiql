@@ -108,11 +108,15 @@ describe('GraphiQL', () => {
     }
 
     // Use a bad fetcher for our initial render
-    const { rerender, container } = render(<GraphiQL fetcher={firstFetcher} />);
+    const { rerender, container, getByLabelText } = render(
+      <GraphiQL fetcher={firstFetcher} />,
+    );
     await wait();
 
+    fireEvent.click(getByLabelText('Show Documentation Explorer'));
+
     expect(
-      container.querySelector('.doc-explorer-contents .error-container'),
+      container.querySelector('.graphiql-doc-explorer-error'),
     ).toBeTruthy();
 
     // Re-render with valid fetcher
@@ -120,7 +124,7 @@ describe('GraphiQL', () => {
     await wait();
 
     expect(
-      container.querySelector('.doc-explorer-contents .error-container'),
+      container.querySelector('.graphiql-doc-explorer-error'),
     ).not.toBeTruthy();
   });
 
