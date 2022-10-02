@@ -12,14 +12,13 @@ import {
 import { GraphQLProjectConfig } from 'graphql-config';
 import { ASTNode, DocumentNode } from 'graphql/language';
 
-import nullthrows from 'nullthrows'
+import nullthrows from 'nullthrows';
 
 export type FragmentInfo = {
   filePath?: string;
   content: string;
   definition: FragmentDefinitionNode;
 };
-
 
 export class SourceHelper {
   private outputChannel: OutputChannel;
@@ -173,10 +172,7 @@ export class SourceHelper {
         const documentText = document.getText();
         processGraphQLString(documentText, 0);
         return documents;
-      } catch(err) {
-
-      }
-
+      } catch (err) {}
     }
 
     tags.forEach(tag => {
@@ -194,38 +190,38 @@ export class SourceHelper {
         }
         try {
           processGraphQLString(contents, result.index + tag.length + 1);
-        // no-op on exception, so that unparse-able source files
-        // don't break the extension while editing
+          // no-op on exception, so that unparse-able source files
+          // don't break the extension while editing
         } catch (e) {}
       }
     });
     return documents;
 
     function processGraphQLString(textString: string, offset: number) {
-        const ast = parse(textString);
-        const operations = ast.definitions.filter(
-          def => def.kind === 'OperationDefinition',
-        );
-        operations.forEach((op: any) => {
-          const filteredAst = {
-            ...ast,
-            definitions: ast.definitions.filter(def => {
-              if (def.kind === 'OperationDefinition' && def !== op) {
-                return false;
-              }
-              return true;
-            }),
-          };
-          documents.push({
-            content: print(filteredAst),
-            uri: document.uri.path,
-            position: document.positionAt(op.loc.start + offset),
-            definition: op,
-            ast: filteredAst,
-          });
+      const ast = parse(textString);
+      const operations = ast.definitions.filter(
+        def => def.kind === 'OperationDefinition',
+      );
+      operations.forEach((op: any) => {
+        const filteredAst = {
+          ...ast,
+          definitions: ast.definitions.filter(def => {
+            if (def.kind === 'OperationDefinition' && def !== op) {
+              return false;
+            }
+            return true;
+          }),
+        };
+        documents.push({
+          content: print(filteredAst),
+          uri: document.uri.path,
+          position: document.positionAt(op.loc.start + offset),
+          definition: op,
+          ast: filteredAst,
         });
-        // no-op, so that unparse-able source files
-        // don't break the extension while editing
+      });
+      // no-op, so that unparse-able source files
+      // don't break the extension while editing
     }
   }
 }
