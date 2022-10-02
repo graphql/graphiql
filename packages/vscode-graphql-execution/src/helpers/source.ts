@@ -100,6 +100,10 @@ export class SourceHelper {
     if (type === "String") {
       return value
     }
+    if(type === "ID") {
+      return value
+    }
+    console.log(type)
 
     // TODO: Does this note need to have an impact?
     // NOTE:

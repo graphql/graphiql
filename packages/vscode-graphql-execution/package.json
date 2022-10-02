@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "main": "./out/extension",
+  "main": "./dist/extension",
   "icon": "assets/images/logo.png",
   "contributors": [
     {
@@ -84,7 +84,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-inline-exec/README.md",
   "scripts": {
-    "compile": "node esbuild.js",
+    "compile": "yarn tsc",
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",
@@ -98,6 +98,7 @@
     "@types/node": "16.11.26",
     "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
+    "@types/escape-html": "^1.0.2",
     "@types/ws": "8.2.2",
     "esbuild": "0.15.1",
     "ovsx": "0.3.0",
@@ -109,11 +110,14 @@
     "capitalize": "2.0.4",
     "dotenv": "10.0.0",
     "escape-html": "1.0.3",
-    "graphql-config": "4.3.5",
+    "graphql-config": "4.3.0",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "@whatwg-node/fetch": "0.2.8",
     "ws": "8.8.1",
     "graphql": "^16.4.0"
+  },
+  "resolutions": {
+    "cosmiconfig": "^5.0.1"
   }
 }

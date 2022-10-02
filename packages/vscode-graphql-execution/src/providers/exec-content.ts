@@ -36,7 +36,7 @@ import {
   
     private html: string = "" // HTML document buffer
   
-    timeout = ms => new Promise(res => setTimeout(res, ms))
+    timeout = (ms: number )=> new Promise(res => setTimeout(res, ms))
   
     getCurrentHtml(): Promise<string> {
       return new Promise(resolve => {
@@ -189,7 +189,7 @@ import {
           }
   
           const endpoint = await this.loadEndpoint(projectConfig)
-          if (endpoint) {
+          if (endpoint?.url) {
             let variableDefinitionNodes: VariableDefinitionNode[] = []
             visit(this.literal.ast, {
               VariableDefinition(node: VariableDefinitionNode) {
@@ -229,10 +229,15 @@ import {
               })
             }
           }
+          else {
+            this.reportError(`Error: no endpoint url provided`)
+            return
+          }
         }
       } catch (err: unknown) {
         // @ts-expect-error
         this.reportError(`Error: graphql operation failed\n ${err.toString()}`)
+        return
       }
     }
     async loadConfig() {

@@ -8,11 +8,10 @@ const isWatchMode = arg === '--watch';
 build({
   entryPoints: ['src/extension.ts'],
   bundle: true,
-  treeShaking: true,
   minify: arg === '--minify',
   platform: 'node',
   outdir: 'out/',
-  external: ['vscode'],
+  external: ['vscode', 'ts-node', 'tslib'],
   format: 'cjs',
   sourcemap: true,
   watch: isWatchMode,
@@ -25,7 +24,7 @@ build({
       logger.error(...errors);
     }
 
-    logger.log('successfully bundled vscode-graphql-executionution 🚀');
+    logger.log('successfully bundled vscode-graphql-execution 🚀');
 
     if (isWatchMode) {
       logger.log('watching... 🕰');

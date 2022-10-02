@@ -1,5 +1,4 @@
 "use strict"
-import * as path from "path"
 import {
   workspace,
   ExtensionContext,
@@ -24,6 +23,7 @@ function getConfig() {
 }
 
 export function activate(context: ExtensionContext) {
+  console.log('activated!')
   const outputChannel: OutputChannel = window.createOutputChannel(
     "GraphQL Operation Execution",
   )
@@ -43,7 +43,7 @@ export function activate(context: ExtensionContext) {
   )
   context.subscriptions.push(commandShowOutputChannel)
 
-//   const settings = workspace.getConfiguration("vscode-graphql-execution")
+  // const settings = workspace.getConfiguration("vscode-graphql-execution")
 
   const registerCodeLens = () => {
     context.subscriptions.push(
@@ -60,13 +60,13 @@ export function activate(context: ExtensionContext) {
     )
   }
 
-//   if (settings.showExecCodelens) {
-//     registerCodeLens()
-//   }
+  // if (settings.showExecCodelens !== false) {
+    registerCodeLens()
+  // }
 
   workspace.onDidChangeConfiguration(() => {
     // const newSettings = workspace.getConfiguration("vscode-graphql-execution")
-    // if (newSettings.showExecCodeLens) {
+    // if (newSettings.showExecCodeLens !== false) {
       registerCodeLens()
     // }
   })

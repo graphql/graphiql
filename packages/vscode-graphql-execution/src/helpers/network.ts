@@ -1,6 +1,6 @@
 import { visit, OperationTypeNode, GraphQLError } from "graphql"
 import gql from "graphql-tag"
-import fetch from "@whatwg-node/fetch"
+import { fetch } from "@whatwg-node/fetch"
 import { Agent } from "https"
 import * as ws from "ws"
 import { pipe, subscribe } from "wonka"
@@ -56,9 +56,9 @@ export class NetworkHelper {
       })
       exchanges.push(
         subscriptionExchange({
-          forwardSubscription: operation => ({
+          forwardSubscription: op => ({
             subscribe: sink => ({
-              unsubscribe: wsClient.subscribe(operation, sink),
+              unsubscribe: wsClient.subscribe(op, sink),
             }),
           }),
         }),
@@ -67,8 +67,7 @@ export class NetworkHelper {
 
     return createClient({
       url: endpoint.url,
-      // @ts-expect-error
-      fetch,
+      fetch: global.fetch ?? fetch,
       fetchOptions: {
         headers: endpoint.headers as HeadersInit,
         // this is an option that's only available in `node-fetch`, not in the standard fetch API
@@ -169,8 +168,8 @@ export class NetworkHelper {
               )
             }
           }
-        } catch {
-          console.error("error executing operation")
+        } catch(err) {
+          this.outputChannel.appendLine(`error executing operation:\n${err}`)
         }
       }),
     )
