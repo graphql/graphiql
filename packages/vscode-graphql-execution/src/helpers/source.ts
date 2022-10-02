@@ -116,7 +116,7 @@ export class SourceHelper {
 
     // TODO: Does this note need to have an impact?
     // NOTE:
-    // -- We don't do anything for non-nulls - the backend will throw a meaninful error
+    // -- We don't do anything for non-nulls - the backend will throw a meaningful error
     // -- We treat custom types and lists similarly - as JSON - tedious for user to provide JSON but it works
     // -- We treat enums as string and that fits
 
@@ -190,7 +190,7 @@ export class SourceHelper {
         }
         try {
           processGraphQLString(contents, result.index + tag.length + 1);
-          // no-op on exception, so that unparse-able source files
+          // no-op on exception, so that non-parse-able source files
           // don't break the extension while editing
         } catch (e) {}
       }
@@ -220,7 +220,7 @@ export class SourceHelper {
           ast: filteredAst,
         });
       });
-      // no-op, so that unparse-able source files
+      // no-op, so that non-parse-able source files
       // don't break the extension while editing
     }
   }
