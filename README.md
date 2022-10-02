@@ -77,7 +77,7 @@ Provides CodeMirror with a parser mode for GraphQL along with a live linter and 
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service?label=npm%20downloads)
 ![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service)
 
-Provides language services for [`graphql-language-service-server`](packages/graphql-language-service-server#readme) [`codemirror-graphql`](packages/codemirror-graphql) and [`monaco-graphql`](packages/monaco-graphql).
+Provides language services for [`graphql-language-service-server`](packages/graphql-language-service-server#readme) [`codemirror-graphql`](packages/codemirror-graphql) and [`monaco-graphql`](packages/monaco-graphql). Previously published separately as the now-retired `graphql-language-service-interface`, `graphql-language-service-parser`, `graphql-language-service-utils` and `graphql-language-service-types`.
 
 ## [`graphql-language-service-server`](packages/graphql-language-service-server#readme)
 
