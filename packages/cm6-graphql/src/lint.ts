@@ -1,5 +1,5 @@
 import { Diagnostic, linter } from '@codemirror/lint';
-import { getDiagnostics } from 'graphql-language-service-interface';
+import { getDiagnostics } from 'graphql-language-service';
 import { Position, posToOffset } from './helpers';
 import { getSchema } from './state';
 

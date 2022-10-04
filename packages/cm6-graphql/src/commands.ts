@@ -1,8 +1,5 @@
 import { EditorView } from '@codemirror/view';
-import {
-  getTokenAtPosition,
-  getTypeInfo,
-} from 'graphql-language-service-interface';
+import { getTokenAtPosition, getTypeInfo } from 'graphql-language-service';
 import { offsetToPos } from './helpers';
 import { getOpts, getSchema } from './state';
 

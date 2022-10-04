@@ -1,5 +1,5 @@
 import { Completion, CompletionContext } from '@codemirror/autocomplete';
-import { getAutocompleteSuggestions } from 'graphql-language-service-interface';
+import { getAutocompleteSuggestions } from 'graphql-language-service';
 import { getOpts, getSchema } from './state';
 import { offsetToPos } from './helpers';
 import { graphqlLanguage } from './language';
