@@ -97,15 +97,17 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
   const explorerContext = useExplorerContext();
   const historyContext = useHistoryContext();
 
+  const hasExplorerContext = Boolean(explorerContext);
+  const hasHistoryContext = Boolean(historyContext);
   const plugins = useMemo(() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
 
-    if (explorerContext) {
+    if (hasExplorerContext) {
       pluginList.push(DOC_EXPLORER_PLUGIN);
       pluginTitles[DOC_EXPLORER_PLUGIN.title] = true;
     }
-    if (historyContext) {
+    if (hasHistoryContext) {
       pluginList.push(HISTORY_PLUGIN);
       pluginTitles[HISTORY_PLUGIN.title] = true;
     }
@@ -125,7 +127,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
     }
 
     return pluginList;
-  }, [explorerContext, historyContext, props.plugins]);
+  }, [hasExplorerContext, hasHistoryContext, props.plugins]);
 
   const [visiblePlugin, internalSetVisiblePlugin] =
     useState<GraphiQLPlugin | null>(() => {
