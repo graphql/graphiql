@@ -97,8 +97,8 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
   const explorerContext = useExplorerContext();
   const historyContext = useHistoryContext();
 
-  const hasExplorerContext = explorerContext !== null;
-  const hasHistoryContext = historyContext !== null;
+  const hasExplorerContext = Boolean(explorerContext);
+  const hasHistoryContext = Boolean(historyContext);
   const plugins = useMemo(() => {
     const pluginList: GraphiQLPlugin[] = [];
     const pluginTitles: Record<string, true> = {};
