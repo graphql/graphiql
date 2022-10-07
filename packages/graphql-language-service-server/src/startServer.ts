@@ -101,6 +101,10 @@ export interface ServerOptions {
    * the temporary directory that the server writes to for logs and caching schema
    */
   tmpDir?: string;
+  /**
+   * allow legacy decorators for the Babel parser
+   */
+  enableLegacyDecorators?: boolean;
 }
 
 /**
@@ -262,6 +266,7 @@ type HandlerOptions = {
   graphqlFileExtensions?: string[];
   tmpDir?: string;
   loadConfigOptions: LoadConfigOptions;
+  enableLegacyDecorators?: boolean
 };
 
 /**
@@ -279,6 +284,7 @@ async function addHandlers({
   graphqlFileExtensions,
   tmpDir,
   loadConfigOptions,
+  enableLegacyDecorators,
 }: HandlerOptions): Promise<void> {
   const messageProcessor = new MessageProcessor({
     logger,
@@ -290,6 +296,7 @@ async function addHandlers({
     tmpDir,
     loadConfigOptions,
     connection,
+    enableLegacyDecorators,
   });
 
   connection.onNotification(

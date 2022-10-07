@@ -108,6 +108,13 @@
           "description": "Fail the request on invalid certificate",
           "default": true
         },
+        "vscode-graphql.enableLegacyDecorators": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Allow legacy decorators for the Babel parser",
+          "default": false
+        },
         "graphql-config.load.rootDir": {
           "type": [
             "string"

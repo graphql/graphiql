@@ -45,6 +45,7 @@ export function parseDocument(
   fileExtensions: string[] = DEFAULT_SUPPORTED_EXTENSIONS,
   graphQLFileExtensions: string[] = DEFAULT_SUPPORTED_GRAPHQL_EXTENSIONS,
   logger: Logger = new Logger(),
+  enableLegacyDecorators?: boolean,
 ): CachedContent[] {
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
@@ -53,7 +54,7 @@ export function parseDocument(
     if (DEFAULT_TAGS.some(t => t === text)) {
       return [];
     }
-    const templates = findGraphQLTags(text, ext, uri, logger);
+    const templates = findGraphQLTags(text, ext, uri, logger, enableLegacyDecorators);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
   if (graphQLFileExtensions.some(e => e === ext)) {

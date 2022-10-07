@@ -40,7 +40,6 @@ const BABEL_PLUGINS: ParserPlugin[] = [
   'jsx',
   'doExpressions',
   'objectRestSpread',
-  ['decorators', { decoratorsBeforeExport: false }],
   'classProperties',
   'classPrivateProperties',
   'classPrivateMethods',
@@ -67,6 +66,7 @@ export function findGraphQLTags(
   ext: string,
   uri: string,
   logger: Logger,
+  enableLegacyDecorators?: boolean
 ): TagResult[] {
   const result: TagResult[] = [];
 
@@ -78,6 +78,13 @@ export function findGraphQLTags(
   } else {
     plugins?.push('flow', 'flowComments');
   }
+
+  if (enableLegacyDecorators) {
+    plugins?.push('decorators-legacy');
+  } else {
+    plugins?.push(['decorators', { decoratorsBeforeExport: false }]);
+  }
+
   PARSER_OPTIONS.plugins = plugins;
 
   let parsedAST: ReturnType<typeof parse> | undefined = undefined;
