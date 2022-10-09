@@ -8,7 +8,7 @@
   },
   "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-react#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-react"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/react"
   },
   "license": "MIT",
   "main": "dist/graphiql-react.cjs.js",
