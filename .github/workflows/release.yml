@@ -4,8 +4,11 @@ on:
   push:
     branches:
       - main
+permissions: {}
 jobs:
   release:
+    permissions:
+      contents: write # for changesets/action to git push 
     environment: deploy
     name: Release
     runs-on: ubuntu-latest
