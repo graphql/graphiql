@@ -352,13 +352,20 @@ export class WorkspaceMessageProcessor {
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
+      let hasPkgConfig = false;
+      try {
+        hasPkgConfig =
+          uri.endsWith('package.json') ??
+          JSON.parse(await readFile(uri, 'utf-8'))?.graphql;
+      } catch {
+        // if package.json is saved with a parsing error, let's ignore it
+      }
       const configMatchers = [
         'graphql.config',
         'graphqlrc',
-        'package.json',
         this._settings.load?.fileName,
       ].filter(Boolean);
-      if (configMatchers.some(v => uri.match(v)?.length)) {
+      if (configMatchers.some(v => uri.match(v)?.length) || hasPkgConfig) {
         this._logger.info(
           "graphql config changed. opening or saving a file will now re-initialize it's project cache",
         );
