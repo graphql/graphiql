@@ -1,0 +1,5 @@
+src/
+tsconfig.json
+yarn-error.log
+**/*.tsbuildinfo
+**/*.d.ts

@@ -82,9 +82,8 @@
     "url": "https://github.com/graphql/graphiql",
     "directory": "packages/vscode-graphql-execution"
   },
-  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-inline-exec/README.md",
+  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "compile": "yarn tsc",
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",
@@ -98,18 +97,15 @@
     "@types/node": "16.11.26",
     "@types/node-fetch": "3.0.3",
     "@types/vscode": "1.62.0",
-    "@types/escape-html": "^1.0.2",
     "@types/ws": "8.2.2",
-    "esbuild": "0.15.1",
+    "esbuild": "0.15.10",
     "ovsx": "0.3.0",
-    "vsce": "2.6.7"
+    "vsce": "^2.11.0"
   },
   "dependencies": {
     "@urql/core": "2.6.1",
-    "babel-polyfill": "6.26.0",
     "capitalize": "2.0.4",
     "dotenv": "10.0.0",
-    "escape-html": "1.0.3",
     "graphql-config": "4.3.0",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",

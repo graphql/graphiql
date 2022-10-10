@@ -25,6 +25,9 @@
     },
     {
       "path": "../packages/vscode-graphql"
+    },
+    {
+      "path": "../packages/vscode-graphql-execution"
     }
   ]
 }

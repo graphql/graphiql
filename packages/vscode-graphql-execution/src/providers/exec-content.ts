@@ -10,7 +10,6 @@ import {
   WebviewPanel,
   WorkspaceFolder,
 } from 'vscode';
-import escapeHtml from 'escape-html';
 import type { ExtractedTemplateLiteral } from '../helpers/source';
 import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
@@ -202,9 +201,9 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
           const updateCallback = (data: string, operation: string) => {
             if (operation === 'subscription') {
-              this.html = `<pre>${escapeHtml(data)}</pre>` + this.html;
+              this.html = `<pre>${data}</pre>` + this.html;
             } else {
-              this.html += `<pre>${escapeHtml(data)}</pre>`;
+              this.html += `<pre>${data}</pre>`;
             }
             this.update(this.uri);
             this.updatePanel();

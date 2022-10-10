@@ -91,7 +91,7 @@ export class SourceHelper {
             JSON.parse(value);
             return null;
           } catch {
-            return false;
+            return undefined;
           }
       }
     } catch {
