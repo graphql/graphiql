@@ -8,7 +8,9 @@
  */
 
 import glob from 'fast-glob';
-import { existsSync, readFileSync, writeFile, writeFileSync } from 'fs';
+import { existsSync } from 'fs';
+import { readFile, writeFile } from 'fs/promises';
+
 import {
   CachedContent,
   FileChangeTypeKind,
@@ -66,11 +68,8 @@ import {
   LoaderNoResultError,
   ProjectNotFoundError,
 } from 'graphql-config';
-import { promisify } from 'util';
 import { Logger } from './Logger';
 import type { LoadConfigOptions } from './types';
-
-const writeFileAsync = promisify(writeFile);
 
 const configDocLink =
   'https://www.npmjs.com/package/graphql-language-service-server#user-content-graphql-configuration-file';
@@ -82,6 +81,19 @@ type CachedDocumentType = {
 function toPosition(position: VscodePosition): IPosition {
   return new Position(position.line, position.character);
 }
+/**
+ * TODO: much of the logic in here that was added after 2020 or later
+ * later on should be moved to GraphQLLanguageService or GraphQLCache
+ * Also - test coverage took a hit with the init "cache warm"
+ *
+ * (see `MessageProcessor` file history where this came from)
+ */
+
+enum ProjectConfigCacheStatus {
+  'Loading' = 1,
+  'Loaded' = 2,
+  'Error' = 3,
+}
 
 export class WorkspaceMessageProcessor {
   _connection: Connection;
@@ -90,6 +102,7 @@ export class WorkspaceMessageProcessor {
   _languageService!: GraphQLLanguageService;
   _textDocumentCache: Map<string, CachedDocumentType>;
   _isInitialized: boolean;
+  _projectCacheStatuses: Map<string, ProjectConfigCacheStatus>;
   _isGraphQLConfigMissing: boolean | null = null;
   _logger: Logger;
   _extensions?: GraphQLExtensionDeclaration[];
@@ -127,6 +140,10 @@ export class WorkspaceMessageProcessor {
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     // use legacy mode by default for backwards compatibility
     this._loadConfigOptions = { legacy: true, ...loadConfigOptions };
+    // track whether we've warmed the cache for each project
+    // much more performant than loading them all at once when
+    // you load the first file s
+    this._projectCacheStatuses = new Map();
     if (
       loadConfigOptions.extensions &&
       loadConfigOptions.extensions?.length > 0
@@ -139,8 +156,7 @@ export class WorkspaceMessageProcessor {
     }
     this._rootPath = rootPath;
   }
-
-  async _updateGraphQLConfig() {
+  async _initializeConfig() {
     const settings = await this._connection.workspace.getConfiguration({
       section: 'graphql-config',
       scopeUri: this._rootPath,
@@ -177,20 +193,84 @@ export class WorkspaceMessageProcessor {
         this._graphQLCache,
         this._logger,
       );
-      if (this._graphQLConfig || this._graphQLCache?.getGraphQLConfig) {
-        const config =
-          this._graphQLConfig ?? this._graphQLCache.getGraphQLConfig();
-        await this._cacheAllProjectFiles(config);
-      }
-      this._isInitialized = true;
+      this._projectCacheStatuses = new Map();
+
+      // reset the project config caches so that they rebuild lazily
     } catch (err) {
       this._handleConfigError({ err });
     }
   }
+  /**
+   *
+   * @param uri
+   */
+  async _loadAndCacheProjectConfig(project: GraphQLProjectConfig) {
+    if (!this._graphQLCache) {
+      await this._initializeConfig();
+    }
+    if (this._graphQLCache) {
+      // TODO: we can do some really neat things with these statuses
+      // if we can send them to the client
+      try {
+        this._setProjectCacheStatus(
+          project.name,
+          ProjectConfigCacheStatus.Loading,
+        );
+
+        await this._cacheSchemaFilesForProject(project);
+        await this._cacheDocumentFilesforProject(project);
+
+        this._setProjectCacheStatus(
+          project.name,
+          ProjectConfigCacheStatus.Loaded,
+        );
+      } catch (err) {
+        this._setProjectCacheStatus(
+          project.name,
+          ProjectConfigCacheStatus.Error,
+        );
+      }
+    }
+  }
+
+  // encapsulate this for fun later 😜
+  _setProjectCacheStatus(
+    projectName: string,
+    cacheStatus: ProjectConfigCacheStatus,
+  ) {
+    this._logger.info(
+      `re-initializing project cache for ${projectName}: ${cacheStatus}`,
+    );
+    // TODO: tell the client about this for visual feedback some day?
+    // this._connection.sendNotification()
+    this._projectCacheStatuses.set(projectName, cacheStatus);
+  }
+  async _ensureProjectCached(project: GraphQLProjectConfig) {
+    // Lazily warm the cache when a file is opened or saved in that project
+    // this
+    try {
+      // only check has() here rather than the status,
+      // otherwise bad configs might try to keep re-loading,
+      // or pending requests might be duplicated or worse
+      // this means we only try once per project config
+      if (
+        this._isGraphQLConfigMissing !== true &&
+        !this._projectCacheStatuses?.has(project.name)
+      ) {
+        await this._loadAndCacheProjectConfig(project);
+      } else {
+        // don't try to initialize again if we've already tried
+        // and the graphql config file or package.json entry isn't even there
+        // then initial call to load the config for this file
+        return null;
+      }
+    } catch (err) {
+      this._logger.error(String(err));
+    }
+  }
+
   _handleConfigError({ err }: { err: unknown; uri?: string }) {
     if (err instanceof ConfigNotFoundError) {
-      // TODO: obviously this needs to become a map by workspace from uri
-      // for workspaces support
       this._isGraphQLConfigMissing = true;
 
       this._logConfigError(err.message);
@@ -240,20 +320,12 @@ export class WorkspaceMessageProcessor {
      * Initialize the LSP server when the first file is opened or saved,
      * so that we can access the user settings for config rootDir, etc
      */
-    try {
-      if (!this._isInitialized || !this._graphQLCache) {
-        // don't try to initialize again if we've already tried
-        // and the graphql config file or package.json entry isn't even there
-        if (this._isGraphQLConfigMissing !== true) {
-          // then initial call to update graphql config
-          await this._updateGraphQLConfig();
-        } else {
-          return null;
-        }
-      }
-    } catch (err) {
-      this._logger.error(String(err));
-    }
+
+    const project = this._graphQLCache.getProjectForFile(
+      params.textDocument.uri,
+    );
+
+    await this._ensureProjectCached(project);
 
     // Here, we set the workspace settings in memory,
     // and re-initialize the language service when a different
@@ -280,15 +352,25 @@ export class WorkspaceMessageProcessor {
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
+      let hasPkgConfig = false;
+      try {
+        hasPkgConfig =
+          uri.endsWith('package.json') ??
+          JSON.parse(await readFile(uri, 'utf-8'))?.graphql;
+      } catch {
+        // if package.json is saved with a parsing error, let's ignore it
+      }
       const configMatchers = [
         'graphql.config',
         'graphqlrc',
-        'package.json',
         this._settings.load?.fileName,
       ].filter(Boolean);
-      if (configMatchers.some(v => uri.match(v)?.length)) {
-        this._logger.info('updating graphql config');
-        this._updateGraphQLConfig();
+      if (configMatchers.some(v => uri.match(v)?.length) || hasPkgConfig) {
+        this._logger.info(
+          "graphql config changed. opening or saving a file will now re-initialize it's project cache",
+        );
+        this._initializeConfig();
+
         return { uri, diagnostics: [] };
       }
       // update graphql config only when graphql config is saved!
@@ -297,13 +379,12 @@ export class WorkspaceMessageProcessor {
         contents = cachedDocument.contents;
       }
     }
-    if (!this._graphQLCache) {
+    if (this._isGraphQLConfigMissing) {
       return { uri, diagnostics };
     } else {
       try {
-        const project = this._graphQLCache.getProjectForFile(uri);
         if (
-          this._isInitialized &&
+          this._projectCacheStatuses.get(project.name) &&
           project?.extensions?.languageService?.enableValidation !== false
         ) {
           await Promise.all(
@@ -341,7 +422,7 @@ export class WorkspaceMessageProcessor {
   async handleDidChangeNotification(
     params: DidChangeTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (this._isGraphQLConfigMissing ?? !this._graphQLCache) {
       return null;
     }
     // For every `textDocument/didChange` event, keep a cache of textDocuments
@@ -358,14 +439,19 @@ export class WorkspaceMessageProcessor {
         '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
       );
     }
-
+    const uri = params.textDocument.uri;
     const textDocument = params.textDocument;
     const contentChanges = params.contentChanges;
     const contentChange = contentChanges[contentChanges.length - 1];
 
+    const project = this._graphQLCache.getProjectForFile(uri);
+    await this._ensureProjectCached(project);
+
+    // TODO: is this a good idea? what if a bulk change is incomplete?
+    // we should re-parse the entire document string
+
     // As `contentChanges` is an array and we just want the
     // latest update to the text, grab the last entry from the array.
-    const uri = textDocument.uri;
 
     // If it's a .js file, try parsing the contents to see if GraphQL queries
     // exist. If not found, delete from the cache.
@@ -382,7 +468,6 @@ export class WorkspaceMessageProcessor {
     await this._updateFragmentDefinition(uri, contents);
     await this._updateObjectTypeDefinition(uri, contents);
 
-    const project = this._graphQLCache.getProjectForFile(uri);
     const diagnostics: Diagnostic[] = [];
 
     if (project?.extensions?.languageService?.enableValidation !== false) {
@@ -416,7 +501,7 @@ export class WorkspaceMessageProcessor {
   }
 
   handleDidCloseNotification(params: DidCloseTextDocumentParams): void {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (this._isGraphQLConfigMissing ?? !this._graphQLCache) {
       return;
     }
     // For every `textDocument/didClose` event, delete the cached entry.
@@ -569,16 +654,19 @@ export class WorkspaceMessageProcessor {
       change.type === FileChangeTypeKind.Changed
     ) {
       const uri = change.uri;
+      const project = this._graphQLCache.getProjectForFile(uri);
+      await this._ensureProjectCached(project);
 
-      const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
+      const text = await readFile(URI.parse(uri).fsPath, 'utf-8');
       const contents = this._parser(text, uri);
 
+      // first update cache
       await this._updateFragmentDefinition(uri, contents);
       await this._updateObjectTypeDefinition(uri, contents);
 
-      const project = this._graphQLCache.getProjectForFile(uri);
       let diagnostics: Diagnostic[] = [];
 
+      // then validate
       if (project?.extensions?.languageService?.enableValidation !== false) {
         diagnostics = (
           await Promise.all(
@@ -806,7 +894,7 @@ export class WorkspaceMessageProcessor {
       if (schemaDocument) {
         version = schemaDocument.version++;
       }
-      const schemaText = readFileSync(uri, { encoding: 'utf-8' });
+      const schemaText = await readFile(uri, { encoding: 'utf-8' });
       this._cacheSchemaText(schemaUri, schemaText, version);
     }
   }
@@ -938,14 +1026,14 @@ export class WorkspaceMessageProcessor {
         const cachedSchemaDoc = this._getCachedDocument(uri);
 
         if (!cachedSchemaDoc) {
-          await writeFileAsync(fsPath, schemaText, {
+          await writeFile(fsPath, schemaText, {
             encoding: 'utf-8',
           });
           await this._cacheSchemaText(uri, schemaText, 1);
         }
         // do we have a change in the getSchema result? if so, update schema cache
         if (cachedSchemaDoc) {
-          writeFileSync(fsPath, schemaText, {
+          await writeFile(fsPath, schemaText, {
             encoding: 'utf-8',
           });
           await this._cacheSchemaText(
