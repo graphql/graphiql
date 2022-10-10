@@ -28,6 +28,6 @@
         "kind": "build",
         "isDefault": true
       }
-    },
+    }
   ]
 }

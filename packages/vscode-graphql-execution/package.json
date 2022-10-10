@@ -84,9 +84,9 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "vsce:package": "vsce package",
+    "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
-    "vsce:publish": "vsce publish",
+    "vsce:publish": "vsce publish --yarn",
     "open-vsx:publish": "ovsx publish",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },

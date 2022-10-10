@@ -159,9 +159,9 @@
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
     "build-bundles": "npm run compile -- --sourcemap",
-    "vsce:package": "vsce package",
+    "vsce:package": "vsce package --yarn",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish",
+    "vsce:publish": "vsce publish --yarn",
     "open-vsx:publish": "ovsx publish",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
