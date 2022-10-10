@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.1.3
+
+### Patch Changes
+
+- [#2805](https://github.com/graphql/graphiql/pull/2805) [`e93a1484`](https://github.com/graphql/graphiql/commit/e93a1484683dc4011eb1c80f29c86ae12ba56b9f) Thanks [@acao](https://github.com/acao)! - ensure all node_modules resolve for exec extension with nohoist
+
 ## 0.1.2
 
 ### Patch Changes
