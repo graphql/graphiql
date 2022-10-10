@@ -159,18 +159,18 @@
     "vscode:prepublish": "npm run compile -- --minify",
     "compile": "node esbuild",
     "build-bundles": "npm run compile -- --sourcemap",
-    "vsce:package": "vsce package --yarn",
+    "vsce:package": "vsce package",
     "env:source": "export $(cat .envrc | xargs)",
-    "vsce:publish": "vsce publish --yarn",
+    "vsce:publish": "vsce publish",
     "open-vsx:publish": "ovsx publish",
     "release": "npm run vsce:publish && npm run open-vsx:publish"
   },
   "devDependencies": {
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
-    "esbuild": "0.15.1",
+    "esbuild": "0.15.10",
     "ovsx": "0.3.0",
-    "vsce": "^2.7.0"
+    "vsce": "^2.11.0"
   },
   "dependencies": {
     "graphql": "^16.4.0",

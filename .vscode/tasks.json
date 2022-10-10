@@ -14,6 +14,20 @@
         "kind": "build",
         "isDefault": true
       }
-    }
+    },
+    {
+      "label": "watch-vscode-exec",
+      "type": "npm",
+      "script": "watch-vscode-exec",
+      "problemMatcher": ["$tsc-watch"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
   ]
 }
