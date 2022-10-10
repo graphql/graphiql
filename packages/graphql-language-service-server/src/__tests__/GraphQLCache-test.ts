@@ -15,12 +15,6 @@ jest.mock('@whatwg-node/fetch', () => ({
   TextDecoder: global.TextDecoder,
 }));
 
-// jest.mock('cross-undici-fetch', () => ({
-//   fetch: require('fetch-mock').fetchHandler,
-//   AbortController: MockAbortController,
-//   TextDecoder: global.TextDecoder,
-// }));
-
 jest.mock('cross-fetch', () => ({
   fetch: require('fetch-mock').fetchHandler,
   AbortController: MockAbortController,

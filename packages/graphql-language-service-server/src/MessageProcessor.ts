@@ -216,19 +216,12 @@ export class MessageProcessor {
   }
 
   async handleDidChangeConfiguration(
-    params: DidChangeConfigurationParams,
+    _params: DidChangeConfigurationParams,
   ): Promise<DidChangeConfigurationRegistrationOptions> {
-    if (!params?.settings || params?.settings.length === 0) {
-      return {};
-    }
-
-    // reset all the workspace caches
-    // and prepare for them to lazily re-build based
-    // on where the user opens and saves files
     await Promise.all(
-      Array.from(this._processors.values()).map(async processor => {
-        await processor._initializeConfig();
-      }),
+      Array.from(this._processors.values()).map(processor =>
+        processor._updateGraphQLConfig(),
+      ),
     );
     this._logger.log(
       JSON.stringify({
