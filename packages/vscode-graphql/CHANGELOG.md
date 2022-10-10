@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.7.7
+
+### Patch Changes
+
+- [#2802](https://github.com/graphql/graphiql/pull/2802) [`d291b768`](https://github.com/graphql/graphiql/commit/d291b768203e59bb80ec5312563fdc16bd16aeae) Thanks [@acao](https://github.com/acao)! - fix bug with vscode-graphql-execution
+
 ## 0.7.6
 
 ### Patch Changes
