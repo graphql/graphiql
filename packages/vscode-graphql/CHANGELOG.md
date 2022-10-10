@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.7.9
+
+### Patch Changes
+
+- [#2806](https://github.com/graphql/graphiql/pull/2806) [`5b991dc9`](https://github.com/graphql/graphiql/commit/5b991dc9540b5cd2204428e7c3f684480d498908) Thanks [@acao](https://github.com/acao)! - disable exec extension in vscode-graphql until stable
+
 ## 0.7.8
 
 ### Patch Changes
