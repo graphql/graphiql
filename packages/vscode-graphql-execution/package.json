@@ -111,10 +111,24 @@
     "graphql-ws": "5.10.0",
     "@whatwg-node/fetch": "0.2.8",
     "ws": "8.8.1",
-    "graphql": "^16.4.0",
-    "nullthrows": "^1.1.1"
+    "graphql": "16.6.0",
+    "nullthrows": "1.1.1"
   },
   "resolutions": {
     "cosmiconfig": "^5.0.1"
+  },
+  "workspaces": {
+    "nohoist": [
+      "graphql",
+      "graphql-config",
+      "dotenv",
+      "graphql-ws",
+      "graphql-tag",
+      "@urql/core",
+      "ws",
+      "nullthrows",
+      "capitalize",
+      "@whatwg-node/fetch"
+    ]
   }
 }
