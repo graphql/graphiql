@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:lsp-server"
   },
   "license": "MIT",
   "files": [
