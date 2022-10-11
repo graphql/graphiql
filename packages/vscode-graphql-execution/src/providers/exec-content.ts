@@ -15,12 +15,7 @@ import { loadConfig, GraphQLProjectConfig } from 'graphql-config';
 import { visit, VariableDefinitionNode } from 'graphql';
 import { NetworkHelper } from '../helpers/network';
 import { SourceHelper, GraphQLScalarTSType } from '../helpers/source';
-
-import type {
-  Endpoints,
-  Endpoint,
-  // @ts-expect-error
-} from 'graphql-config/cjs/extensions/endpoints';
+import type { Endpoints, Endpoint } from 'graphql-config/extensions/endpoints';
 
 export type UserVariables = { [key: string]: GraphQLScalarTSType };
 

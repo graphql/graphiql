@@ -5,9 +5,7 @@ import { Agent } from 'https';
 import * as ws from 'ws';
 import { pipe, subscribe } from 'wonka';
 
-// @ts-expect-error
-import { Endpoint } from 'graphql-config/cjs/extensions/endpoints';
-
+import { Endpoint } from 'graphql-config/extensions/endpoints';
 import { OutputChannel, workspace } from 'vscode';
 import { GraphQLProjectConfig } from 'graphql-config';
 import { createClient as createWSClient, OperationResult } from 'graphql-ws';

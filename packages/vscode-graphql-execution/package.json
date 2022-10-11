@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "main": "./out/extension",
+  "main": "./dist/extension",
   "icon": "assets/images/logo.png",
   "contributors": [
     {
@@ -84,9 +84,6 @@
   },
   "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
   "scripts": {
-    "vscode:prepublish": "npm run compile -- --minify",
-    "compile": "node esbuild.js",
-    "compile:watch": "node esbuild.js --watch",
     "vsce:package": "vsce package --yarn",
     "vsce:prepublish": "npm run vsce:package",
     "vsce:publish": "vsce publish --yarn",
@@ -109,7 +106,7 @@
     "@urql/core": "2.6.1",
     "capitalize": "2.0.4",
     "dotenv": "10.0.0",
-    "graphql-config": "4.3.6",
+    "graphql-config": "4.3.0",
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "@whatwg-node/fetch": "0.2.8",

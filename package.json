@@ -141,6 +141,6 @@
     "wsrun": "^5.2.4"
   },
   "resolutions": {
-    "graphql-config": "4.3.6"
+    "graphql-config": "4.3.0"
   }
 }

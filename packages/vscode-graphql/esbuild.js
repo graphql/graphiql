@@ -11,7 +11,7 @@ build({
   minify: arg === '--minify',
   platform: 'node',
   outdir: 'out/',
-  external: ['vscode', 'ts-node'],
+  external: ['vscode'],
   format: 'cjs',
   sourcemap: true,
   watch: isWatchMode,
