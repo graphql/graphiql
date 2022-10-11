@@ -1,5 +1,11 @@
 # vscode-graphql-execution
 
+## 0.1.4
+
+### Patch Changes
+
+- [#2810](https://github.com/graphql/graphiql/pull/2810) [`f688422e`](https://github.com/graphql/graphiql/commit/f688422ed87ddd411cf3552fa6d9a5a367cd8662) Thanks [@acao](https://github.com/acao)! - fix graphql exec extension, upgrade `graphql-config`, fix issue with graphql-config cosmiconfig typescript config loader.
+
 ## 0.1.3
 
 ### Patch Changes
