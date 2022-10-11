@@ -3,10 +3,11 @@
 out/test/**
 src/**
 .gitignore
-node_modules
-!**/node_modules/ts-node
 tsconfig.json
 vsc-extension-quickstart.md
 tslint.json
 .github
 renovate.json
+*.tsbuildinfo
+esbuild.js
+dist/**
