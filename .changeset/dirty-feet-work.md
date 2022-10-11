@@ -4,4 +4,4 @@
 'vscode-graphql-execution': patch
 ---
 
-fix graphql exec extension, upgrade graphql-config
+fix graphql exec extension, upgrade `graphql-config`, fix issue with graphql-config cosmiconfig typescript config loader.

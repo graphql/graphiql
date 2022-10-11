@@ -3,4 +3,5 @@ tsconfig.json
 yarn-error.log
 **/*.tsbuildinfo
 **/*.d.ts
+node_modules
 !**/node_modules/ts-node

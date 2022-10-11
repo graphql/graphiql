@@ -6,7 +6,7 @@ const logger = console;
 const isWatchMode = arg === '--watch';
 
 build({
-  entryPoints: ['src/extension.ts'],
+  entryPoints: ['src/extension.ts', 'src/server/index.ts'],
   bundle: true,
   minify: arg === '--minify',
   platform: 'node',
