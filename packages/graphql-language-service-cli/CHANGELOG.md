@@ -1,5 +1,14 @@
 # graphql-language-service-cli
 
+## 3.3.8
+
+### Patch Changes
+
+- [#2812](https://github.com/graphql/graphiql/pull/2812) [`cf2e3061`](https://github.com/graphql/graphiql/commit/cf2e3061f67ef5cf6b890e217d20915d0eaec1bd) Thanks [@acao](https://github.com/acao)! - fix a bundling bug for vscode, rolling back graphql-config upgrade
+
+- Updated dependencies [[`cf2e3061`](https://github.com/graphql/graphiql/commit/cf2e3061f67ef5cf6b890e217d20915d0eaec1bd)]:
+  - graphql-language-service-server@2.8.8
+
 ## 3.3.7
 
 ### Patch Changes
