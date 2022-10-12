@@ -1,0 +1,134 @@
+{
+  "name": "vscode-graphql-execution",
+  "version": "0.1.5",
+  "displayName": "GraphQL: Inline Operation Execution",
+  "description": "Execute graphql operations from your code (revived!)",
+  "publisher": "GraphQL",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "main": "./dist/extension",
+  "icon": "assets/images/logo.png",
+  "contributors": [
+    {
+      "name": "Divyendu Singh",
+      "url": "https://www.divyendusingh.com/"
+    }
+  ],
+  "galleryBanner": {
+    "color": "#032539",
+    "theme": "dark"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/.graphqlrc",
+    "workspaceContains:**/.graphqlconfig",
+    "workspaceContains:**/.graphqlrc.{json,yaml,yml,js,ts,toml}",
+    "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
+    "workspaceContains:**/package.json",
+    "onCommand:vscode-graphql-execution.isDebugging",
+    "onCommand:vscode-graphql-execution.contentProvider",
+    "onLanguage:graphql"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "vscode-graphql-execution.isDebugging",
+        "title": "GraphQL Exec: Is Debugging?"
+      },
+      {
+        "command": "vscode-graphql-execution.showOutputChannel",
+        "title": "GraphQL Exec: Show output channel"
+      },
+      {
+        "command": "vscode-graphql-execution.contentProvider",
+        "title": "GraphQL Exec: Execute GraphQL Operations"
+      }
+    ],
+    "configuration": {
+      "title": "VSCode GraphQL: Inline Operation Execution",
+      "properties": {
+        "vscode-graphql-execution.debug": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "default": false,
+          "description": "Enable debug logs"
+        },
+        "vscode-graphql-execution.showExecCodelens": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Show codelens to execute operations inline",
+          "default": true
+        },
+        "vscode-graphql-execution.rejectUnauthorized": {
+          "type": [
+            "boolean"
+          ],
+          "description": "Fail the request on invalid certificate",
+          "default": true
+        }
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphql/graphiql",
+    "directory": "packages/vscode-graphql-execution"
+  },
+  "homepage": "https://github.com/graphql/graphiql/blob/main/packages/vscode-graphql-execution/README.md",
+  "scripts": {
+    "vsce:package": "vsce package --yarn",
+    "vsce:prepublish": "npm run vsce:package",
+    "vsce:publish": "vsce publish --yarn",
+    "open-vsx:publish": "ovsx publish",
+    "release": "npm run vsce:publish && npm run open-vsx:publish"
+  },
+  "devDependencies": {
+    "@types/capitalize": "2.0.0",
+    "@types/dotenv": "8.2.0",
+    "@types/mocha": "5.2.7",
+    "@types/node": "16.11.26",
+    "@types/node-fetch": "3.0.3",
+    "@types/vscode": "1.62.0",
+    "@types/ws": "8.2.2",
+    "esbuild": "0.15.10",
+    "ovsx": "0.3.0",
+    "vsce": "^2.11.0"
+  },
+  "dependencies": {
+    "@urql/core": "2.6.1",
+    "capitalize": "2.0.4",
+    "dotenv": "10.0.0",
+    "graphql-config": "4.3.0",
+    "graphql-tag": "2.12.6",
+    "graphql-ws": "5.10.0",
+    "@whatwg-node/fetch": "0.2.8",
+    "ws": "8.8.1",
+    "graphql": "16.6.0",
+    "nullthrows": "1.1.1"
+  },
+  "resolutions": {
+    "cosmiconfig": "^5.0.1"
+  },
+  "workspaces": {
+    "nohoist": [
+      "graphql",
+      "graphql-config",
+      "dotenv",
+      "graphql-ws",
+      "graphql-tag",
+      "@urql/core",
+      "ws",
+      "nullthrows",
+      "capitalize",
+      "@whatwg-node/fetch"
+    ]
+  }
+}

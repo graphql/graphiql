@@ -1,5 +1,21 @@
 # @graphiql/react
 
+## 0.13.3
+
+### Patch Changes
+
+- [#2791](https://github.com/graphql/graphiql/pull/2791) [`42700076`](https://github.com/graphql/graphiql/commit/4270007671ce52f6c2250739916083611748b657) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Make sure that the info overlay in editors is shown above the vertical scrollbar
+
+* [#2792](https://github.com/graphql/graphiql/pull/2792) [`36839800`](https://github.com/graphql/graphiql/commit/36839800de128b05d11c262036c8240390c72a14) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Avoid resetting visible plugin state when explorer or history context changes
+
+- [#2778](https://github.com/graphql/graphiql/pull/2778) [`905f2e5e`](https://github.com/graphql/graphiql/commit/905f2e5ea3f0b304d27ea583e250ed4baff5016e) Thanks [@jonathanawesome](https://github.com/jonathanawesome)! - Adds a box-model reset for all children of the `.graphiql-container` class. This change facilitated another change to the `--sidebar-width` variable.
+
+## 0.13.2
+
+### Patch Changes
+
+- [#2653](https://github.com/graphql/graphiql/pull/2653) [`39b4668d`](https://github.com/graphql/graphiql/commit/39b4668d43176526d37ecf07d8c86901d53e0d80) Thanks [@dylanowen](https://github.com/dylanowen)! - Fix `fetchError` not being cleared when a new `fetcher` is used
+
 ## 0.13.1
 
 ### Patch Changes

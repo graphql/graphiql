@@ -12,6 +12,7 @@
   padding: var(--px-12);
   position: fixed;
   transition: opacity 0.15s;
+  z-index: 10;
 
   /* Link styles */
   & a {

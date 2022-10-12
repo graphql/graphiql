@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.8.4",
+  "version": "2.8.8",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service-server#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:language-server"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:lsp-server"
   },
   "license": "MIT",
   "files": [
@@ -53,6 +53,7 @@
   "devDependencies": {
     "@types/mkdirp": "^1.0.1",
     "cross-env": "^7.0.2",
-    "graphql": "^16.4.0"
+    "graphql": "^16.4.0",
+    "cross-fetch": "^3.1.5"
   }
 }

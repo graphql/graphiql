@@ -12,7 +12,7 @@
   },
   "homepage": "http://github.com/graphql/graphiql/tree/master/packages/graphiql-toolkit#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphiql-toolkit"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:@graphiql/toolkit"
   },
   "license": "MIT",
   "main": "dist/index.js",

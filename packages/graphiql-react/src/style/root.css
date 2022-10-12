@@ -1,3 +1,8 @@
+/* a very simple box-model reset, intentionally does not include pseudo elements */
+.graphiql-container * {
+  box-sizing: border-box;
+}
+
 .graphiql-container,
 .CodeMirror-info,
 .CodeMirror-lint-tooltip,
@@ -57,7 +62,7 @@ reach-portal {
   --popover-border: none;
 
   /* Layout */
-  --sidebar-width: 44px;
+  --sidebar-width: 60px;
   --toolbar-width: 40px;
   --session-header-height: 51px;
 }

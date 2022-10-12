@@ -127,11 +127,11 @@ Here is a list of all public class methods that existed in `graphiql@1` and its 
 
 There are a couple more class methods that were intended to be private and were already removed starting in `graphiql@1.9.0`. Since they were not actually marked with `private`, here's an extension to the above list for these methods:
 
-- `handleClickReference`: This was a callback method triggered when clicking on a type or field. It would open the doc explorer for the clicked reference. If you want to manually mimic this behavior you can use the `push` method from the `ExplorerContext` to add an item to the navigation stack of the doc explorer, and you can use the `setVisiblePlugin` method of the `PluginContext` to show the doc explorer plugin (by passing the `DOC_EXPLORER_PLUGIN` object provided by `@graphiql/react`).
+- `handleClickReference`: This was a callback method triggered when clicking on a type or field. It would open the doc explorer for the clicked reference. If you want to manually mimic this behavior you can use the `push` method from the `ExplorerContext` to add an item to the navigation stack of the doc explorer, and you can use the `setVisiblePlugin` method of the `PluginContext` (use the `usePluginContext()` hook to access this) to show the doc explorer plugin (by passing the `DOC_EXPLORER_PLUGIN` object provided by `@graphiql/react`).
 - `handleRunQuery`: To execute a query, use the `run` method of the `ExecutionContext`. If you want to explicitly set an operation name, call the `setOperationName` method of the `EditorContext` provider before that (passing in the operation name string as argument).
 - `handleEditorRunQuery`: Use the `run` method of the `ExecutionContext`.
 - `handleStopQuery`: Use the `stop` method from the `ExecutionContext`.
-- `handlePrettifyQuery`: Use the `usePrettifyQuery` hook provided by `@graphiql/react` that returns this function.
+- `handlePrettifyQuery`: Use the `usePrettifyEditors` hook provided by `@graphiql/react` that returns this function.
 - `handleMergeQuery`: Use the `useMergeQuery` hook provided by `@graphiql/react` that returns this function.
 - `handleCopyQuery`: Use the `useCopyQuery` hook provided by `@graphiql/react` that returns this function.
 - `handleToggleDocs` and `handleToggleHistory`: Use the `setVisiblePlugin` method of the `PluginContext`.

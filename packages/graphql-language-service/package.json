@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/graphql/graphiql/tree/main/packages/graphql-language-service#readme",
   "bugs": {
-    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:languageservice"
+    "url": "https://github.com/graphql/graphiql/issues?q=issue+label:graphql-language-service"
   },
   "license": "MIT",
   "files": [

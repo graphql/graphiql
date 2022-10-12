@@ -1,5 +1,61 @@
 # Change Log
 
+## 0.7.12
+
+### Patch Changes
+
+- [#2812](https://github.com/graphql/graphiql/pull/2812) [`cf2e3061`](https://github.com/graphql/graphiql/commit/cf2e3061f67ef5cf6b890e217d20915d0eaec1bd) Thanks [@acao](https://github.com/acao)! - fix a bundling bug for vscode, rolling back graphql-config upgrade
+
+- Updated dependencies [[`cf2e3061`](https://github.com/graphql/graphiql/commit/cf2e3061f67ef5cf6b890e217d20915d0eaec1bd)]:
+  - graphql-language-service-server@2.8.8
+
+## 0.7.11
+
+### Patch Changes
+
+- [#2810](https://github.com/graphql/graphiql/pull/2810) [`f688422e`](https://github.com/graphql/graphiql/commit/f688422ed87ddd411cf3552fa6d9a5a367cd8662) Thanks [@acao](https://github.com/acao)! - fix graphql exec extension, upgrade `graphql-config`, fix issue with graphql-config cosmiconfig typescript config loader.
+
+- Updated dependencies [[`f688422e`](https://github.com/graphql/graphiql/commit/f688422ed87ddd411cf3552fa6d9a5a367cd8662)]:
+  - graphql-language-service-server@2.8.7
+
+## 0.7.10
+
+### Patch Changes
+
+- [#2808](https://github.com/graphql/graphiql/pull/2808) [`a2071504`](https://github.com/graphql/graphiql/commit/a20715046fe7684bb9b17fbc9f5637b44e5210d6) Thanks [@acao](https://github.com/acao)! - fix graphql config init bug
+
+- Updated dependencies [[`a2071504`](https://github.com/graphql/graphiql/commit/a20715046fe7684bb9b17fbc9f5637b44e5210d6)]:
+  - graphql-language-service-server@2.8.6
+
+## 0.7.9
+
+### Patch Changes
+
+- [#2806](https://github.com/graphql/graphiql/pull/2806) [`5b991dc9`](https://github.com/graphql/graphiql/commit/5b991dc9540b5cd2204428e7c3f684480d498908) Thanks [@acao](https://github.com/acao)! - disable exec extension in vscode-graphql until stable
+
+## 0.7.8
+
+### Patch Changes
+
+- [#2616](https://github.com/graphql/graphiql/pull/2616) [`b0d7f06c`](https://github.com/graphql/graphiql/commit/b0d7f06cf9ec6fd6b1dcb61dd0273e37dd546ed5) Thanks [@acao](https://github.com/acao)! - support vscode multi-root workspaces! creates an LSP server instance for each workspace.
+
+  WARNING: large-scale vscode workspaces usage, and this in tandem with `graphql.config.*` multi-project configs could lead to excessive system resource usage. Optimizations coming soon.
+
+- Updated dependencies [[`b0d7f06c`](https://github.com/graphql/graphiql/commit/b0d7f06cf9ec6fd6b1dcb61dd0273e37dd546ed5)]:
+  - graphql-language-service-server@2.8.5
+
+## 0.7.7
+
+### Patch Changes
+
+- [#2802](https://github.com/graphql/graphiql/pull/2802) [`d291b768`](https://github.com/graphql/graphiql/commit/d291b768203e59bb80ec5312563fdc16bd16aeae) Thanks [@acao](https://github.com/acao)! - fix bug with vscode-graphql-execution
+
+## 0.7.6
+
+### Patch Changes
+
+- [#2665](https://github.com/graphql/graphiql/pull/2665) [`324fbedb`](https://github.com/graphql/graphiql/commit/324fbedb96839cff105a28fce4be0757044ba5a9) Thanks [@acao](https://github.com/acao)! - Port the inline query execution capability from the original `vscode-graphql` repository as promised. More improvements to come!
+
 ## 0.7.5
 
 ### Patch Changes
