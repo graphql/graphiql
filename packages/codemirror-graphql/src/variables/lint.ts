@@ -170,9 +170,9 @@ function validateValue(
 
     // Look for missing non-nullable fields.
     Object.keys(type.getFields()).forEach(fieldName => {
+      const field = type.getFields()[fieldName];
       if (!providedFields[fieldName]) {
-        const fieldType = type.getFields()[fieldName].type;
-        if (fieldType instanceof GraphQLNonNull) {
+        if (field.type instanceof GraphQLNonNull && !field.defaultValue) {
           fieldErrors.push([
             valueAST,
             `Object of type "${type}" is missing required field "${fieldName}".`,
