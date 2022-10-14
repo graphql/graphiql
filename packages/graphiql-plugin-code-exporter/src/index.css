@@ -75,29 +75,41 @@
   }
   & .toolbar-menu-items {
     background-color: hsl(var(--color-base)) !important;
+    border: var(--popover-border);
+    border-radius: var(--border-radius-8);
     box-shadow: var(--popover-box-shadow) !important;
-    margin: 0;
-    padding: var(--px-8) 0;
+    padding: var(--px-4);
+    max-width: 250px;
+    font-size: inherit;
+    display: block;
+    white-space: nowrap;
+    outline: none;
     position: absolute;
     z-index: 100;
     margin-top: var(--px-8);
     visibility: hidden;
     left: 0;
-    & .open {
+    &.open {
       visibility: visible;
     }
     & > li {
       cursor: pointer;
       display: block;
-      margin: none;
-      max-width: 300px;
+      color: inherit;
+      font: inherit;
+      text-decoration: initial;
+      border-radius: var(--border-radius-4);
+      margin: var(--px-4);
       overflow: hidden;
-      padding: 2px 20px 4px 11px;
+      padding: var(--px-6) var(--px-8);
       text-overflow: ellipsis;
       white-space: nowrap;
-      color: hsla(var(--color-neutral), 1) !important;
       &:hover {
-        color: hsla(var(--color-primary), 1) !important;
+        color: inherit;
+        background-color: hsla(
+          var(--color-neutral),
+          var(--alpha-background-light)
+        );
       }
     }
   }
