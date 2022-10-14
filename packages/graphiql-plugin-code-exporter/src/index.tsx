@@ -1,4 +1,4 @@
-import { GraphiQLPlugin } from '@graphiql/react';
+import type { GraphiQLPlugin } from '@graphiql/react';
 import { useMemo, useRef } from 'react';
 import GraphiQLCodeExporter, {
   GraphiQLCodeExporterProps,
@@ -6,10 +6,6 @@ import GraphiQLCodeExporter, {
 
 import './graphiql-code-exporter.d.ts';
 import './index.css';
-
-function ExporterPlugin(props: GraphiQLCodeExporterProps) {
-  return <GraphiQLCodeExporter {...props} />;
-}
 
 export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
   const propsRef = useRef(props);
@@ -32,7 +28,7 @@ export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
           />
         </svg>
       ),
-      content: () => <ExporterPlugin {...propsRef.current} />,
+      content: () => <GraphiQLCodeExporter {...propsRef.current} />,
     }),
     [],
   );

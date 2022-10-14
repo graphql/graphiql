@@ -12,11 +12,10 @@ export default defineConfig({
       formats: ['cjs', 'es', 'umd'],
     },
     rollupOptions: {
-      external: ['@graphiql/react', 'graphql', 'react', 'react-dom'],
+      external: ['graphql', 'react', 'react-dom'],
       output: {
         chunkFileNames: '[name].[format].js',
         globals: {
-          '@graphiql/react': 'GraphiQL.React',
           graphql: 'GraphiQL.GraphQL',
           react: 'React',
           'react-dom': 'ReactDOM',
