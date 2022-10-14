@@ -1,6 +1,6 @@
 # GraphiQL Code Exporter Plugin
 
-This package provides a plugin that integrates the [`GraphiQL Code Exporter`](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
+This package provides a plugin that integrates the [GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
 
 ## Install
 
@@ -18,6 +18,8 @@ npm i -S react react-dom graphql
 
 ## Usage
 
+See [GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter) for all details on available `props` and how to [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+
 ```jsx
 import { useCodeExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
@@ -31,7 +33,52 @@ const fetcher = createGraphiQLFetcher({
   url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
 });
 
-const snippets = [`your-custom-snippets`];
+/*
+Example code for snippets. See https://github.com/OneGraph/graphiql-code-exporter#snippets for details
+*/
+
+const removeQueryName = query =>
+  query.replace(
+    /^[^{(]+([{(])/,
+    (_match, openingCurlyBracketsOrParenthesis) =>
+      `query ${openingCurlyBracketsOrParenthesis}`,
+  );
+
+const getQuery = (arg, spaceCount) => {
+  const { operationDataList } = arg;
+  const { query } = operationDataList[0];
+  const anonymousQuery = removeQueryName(query);
+  return (
+    ` `.repeat(spaceCount) +
+    anonymousQuery.replace(/\n/g, `\n` + ` `.repeat(spaceCount))
+  );
+};
+
+const exampleSnippetOne = {
+  name: `Example One`,
+  language: `JavaScript`,
+  codeMirrorMode: `jsx`,
+  options: [],
+  generate: arg => `export const query = graphql\`
+${getQuery(arg, 2)}
+\`
+`,
+};
+
+const exampleSnippetTwo = {
+  name: `Example Two`,
+  language: `JavaScript`,
+  codeMirrorMode: `jsx`,
+  options: [],
+  generate: arg => `import { graphql } from 'graphql'
+
+export const query = graphql\`
+${getQuery(arg, 2)}
+\`
+`,
+};
+
+const snippets = [exampleSnippetOne, exampleSnippetTwo];
 
 function GraphiQLWithExplorer() {
   const [query, setQuery] = useState(DEFAULT_QUERY);
