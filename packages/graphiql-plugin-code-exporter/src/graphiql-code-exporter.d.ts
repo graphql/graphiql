@@ -41,7 +41,7 @@ declare module 'graphiql-code-exporter' {
   export type GraphiQLCodeExporterProps = {
     query: string;
     snippets: Array<Snippet>;
-    codeMirrorTheme: string;
+    codeMirrorTheme?: string;
     variables?: string;
     context?: Record<string, any>;
     schema?: GraphQLSchema | null | undefined;

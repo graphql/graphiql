@@ -62,7 +62,6 @@ const App = () => {
   const exporterPlugin = useExporterPlugin({
     query,
     snippets,
-    codeMirrorTheme: 'graphiql',
   });
 
   return (

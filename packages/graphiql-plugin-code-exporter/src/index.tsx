@@ -28,7 +28,12 @@ export function useExporterPlugin(props: GraphiQLCodeExporterProps) {
           />
         </svg>
       ),
-      content: () => <GraphiQLCodeExporter {...propsRef.current} />,
+      content: () => (
+        <GraphiQLCodeExporter
+          codeMirrorTheme="graphiql"
+          {...propsRef.current}
+        />
+      ),
     }),
     [],
   );
