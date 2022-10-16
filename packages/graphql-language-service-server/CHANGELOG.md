@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.8.9
+
+### Patch Changes
+
+- [#2818](https://github.com/graphql/graphiql/pull/2818) [`929152f8`](https://github.com/graphql/graphiql/commit/929152f8ea076ffa3bf34b83445473331c3bdb67) Thanks [@acao](https://github.com/acao)! - Workspaces support introduced a regression for no-config scenario. Reverting to fix bugs with no graphql config crashing the server.
+
 ## 2.8.8
 
 ### Patch Changes
