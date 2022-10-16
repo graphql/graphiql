@@ -98,55 +98,48 @@
           "type": [
             "boolean"
           ],
-          "description": "Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Disabled by default.",
-          "scope": "resource"
+          "description": "Use a cached file output of your graphql-config schema result for definition lookups, symbols, outline, etc. Disabled by default."
         },
         "vscode-graphql.rejectUnauthorized": {
           "type": [
             "boolean"
           ],
           "description": "Fail the request on invalid certificate",
-          "default": true,
-          "scope": "resource"
+          "default": true
         },
         "graphql-config.load.rootDir": {
           "type": [
             "string"
           ],
-          "description": "Base dir for graphql config loadConfig()",
-          "scope": "resource"
+          "description": "Base dir for graphql config loadConfig()"
         },
         "graphql-config.load.filePath": {
           "type": [
             "string"
           ],
           "description": "filePath for graphql config loadConfig()",
-          "default": null,
-          "scope": "resource"
+          "default": null
         },
         "graphql-config.load.legacy": {
           "type": [
             "boolean"
           ],
           "description": "legacy mode for graphql config v2 config",
-          "default": null,
-          "scope": "resource"
+          "default": null
         },
         "graphql-config.load.configName": {
           "type": [
             "string"
           ],
           "description": "optional <configName>.config.js instead of default `graphql`",
-          "default": null,
-          "scope": "resource"
+          "default": null
         },
         "graphql-config.dotEnvPath": {
           "type": [
             "string"
           ],
           "description": "optional .env load path, if not the default",
-          "default": null,
-          "scope": "resource"
+          "default": null
         }
       }
     },
