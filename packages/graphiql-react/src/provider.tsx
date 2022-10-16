@@ -28,6 +28,7 @@ export function GraphiQLProvider({
   fetcher,
   getDefaultFieldNames,
   headers,
+  initialTabs,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -54,6 +55,7 @@ export function GraphiQLProvider({
           defaultQuery={defaultQuery}
           externalFragments={externalFragments}
           headers={headers}
+          initialTabs={initialTabs}
           onEditOperationName={onEditOperationName}
           onTabChange={onTabChange}
           query={query}

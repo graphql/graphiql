@@ -98,6 +98,7 @@ export function GraphiQL({
   fetcher,
   getDefaultFieldNames,
   headers,
+  initialTabs,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -133,6 +134,7 @@ export function GraphiQL({
       externalFragments={externalFragments}
       fetcher={fetcher}
       headers={headers}
+      initialTabs={initialTabs}
       inputValueDeprecation={inputValueDeprecation}
       introspectionQueryName={introspectionQueryName}
       maxHistoryLength={maxHistoryLength}
