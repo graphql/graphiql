@@ -172,6 +172,16 @@ export type EditorContextProviderProps = {
   /**
    * This prop can be used to defined the initial set of tabs with their queries,
    * variables and headers.
+   *
+   * @example
+   * ```tsx
+   * <GraphiQL
+   *   initialTabs={[
+   *     { query: 'query myExampleQuery {}' },
+   *     { query: '{ id }' }
+   *   ]}
+   * />
+   *```
    */
   initialTabs?: TabDefinition[];
   /**

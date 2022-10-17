@@ -13,11 +13,11 @@ export type TabDefinition = {
   /**
    * The contents of the variable editor of this tab.
    */
-  variables: string | null;
+  variables?: string | null;
   /**
    * The contents of the headers editor of this tab.
    */
-  headers: string | null;
+  headers?: string | null;
 };
 
 /**
@@ -251,8 +251,8 @@ export function useSetEditorValues({
       response,
     }: {
       query: string | null;
-      variables: string | null;
-      headers: string | null;
+      variables?: string | null;
+      headers?: string | null;
       response: string | null;
     }) => {
       queryEditor?.setValue(query ?? '');
@@ -318,8 +318,8 @@ function guid(): string {
 
 function hashFromTabContents(args: {
   query: string | null;
-  variables: string | null;
-  headers: string | null;
+  variables?: string | null;
+  headers?: string | null;
 }): string {
   return [args.query ?? '', args.variables ?? '', args.headers ?? ''].join('|');
 }
