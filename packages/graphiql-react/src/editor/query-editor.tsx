@@ -148,6 +148,8 @@ export function useQueryEditor(
         return;
       }
 
+      let showingHints = false;
+
       const newEditor = CodeMirror(container, {
         value: initialQuery,
         lineNumbers: true,
@@ -220,6 +222,23 @@ export function useQueryEditor(
       newEditor.on('keyup', (editorInstance, event) => {
         if (AUTO_COMPLETE_AFTER_KEY.test(event.key)) {
           editorInstance.execCommand('autocomplete');
+        }
+      });
+
+      // fired whenever a hint dialog opens
+      newEditor.on('startCompletion', () => {
+        showingHints = true;
+      });
+
+      // the codemirror hint extension fires this anytime the dialog is closed
+      // via any method (e.g. focus blur, escape key, ...)
+      newEditor.on('endCompletion', () => {
+        showingHints = false;
+      });
+
+      newEditor.on('keydown', (editorInstance, event) => {
+        if (event.key === 'Escape' && showingHints) {
+          event.stopPropagation();
         }
       });
 
