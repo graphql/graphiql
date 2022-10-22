@@ -1,5 +1,4 @@
 ---
-'graphql-language-service-server': patch
 'vscode-graphql': patch
 'graphql-language-service-server': patch
 'graphql-language-service-cli': patch
