@@ -80,10 +80,12 @@ export class WorkerManager {
               schemas: this._defaults.schemas?.map(getStringSchema),
               externalFragmentDefinitions:
                 this._defaults.externalFragmentDefinitions,
-              // TODO: make this overrideable
+              // TODO: make this overridable
               // MonacoAPI possibly another configuration object for this I think?
               // all of this could be organized better
-              fillLeafsOnComplete: false,
+              fillLeafsOnComplete:
+                this._defaults.completionSettings
+                  ._experimental_fillLeafsOnComplete,
             },
           } as ICreateData,
         });
