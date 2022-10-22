@@ -1,5 +1,13 @@
 # graphql-language-service-server
 
+## 2.9.1
+
+### Patch Changes
+
+- [#2829](https://github.com/graphql/graphiql/pull/2829) [`c835ca87`](https://github.com/graphql/graphiql/commit/c835ca87e93e00713fbbbb2f4448db03f6b97b10) Thanks [@acao](https://github.com/acao)! - major bugfixes with `onDidChange` and `onDidChangeWatchedFiles` events
+
+* [#2829](https://github.com/graphql/graphiql/pull/2829) [`c835ca87`](https://github.com/graphql/graphiql/commit/c835ca87e93e00713fbbbb2f4448db03f6b97b10) Thanks [@acao](https://github.com/acao)! - svelte language support, using the vue sfc parser introduced for vue support
+
 ## 2.9.0
 
 ### Minor Changes
