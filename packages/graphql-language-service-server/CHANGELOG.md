@@ -1,5 +1,11 @@
 # graphql-language-service-server
 
+## 2.9.0
+
+### Minor Changes
+
+- [#2827](https://github.com/graphql/graphiql/pull/2827) [`b422003c`](https://github.com/graphql/graphiql/commit/b422003c2403072e96d14f920a3f0f1dc1f4f708) Thanks [@acao](https://github.com/acao)! - Introducing vue.js support for intellisense! Thanks @AumyF
+
 ## 2.8.9
 
 ### Patch Changes
