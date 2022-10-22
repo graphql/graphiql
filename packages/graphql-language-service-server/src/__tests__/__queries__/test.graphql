@@ -1,5 +1,5 @@
 {
   hero(episode: NEWHOPE){
-
+    secretBackstory
   }
 }
