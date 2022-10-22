@@ -37,7 +37,7 @@
     "@babel/parser": "^7.17.3",
     "@babel/types": "^7.17.0",
     "@graphql-tools/load": "^7.5.3",
-    "@vue/compiler-sfc": "^3.2.33",
+    "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
