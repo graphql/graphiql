@@ -168,7 +168,7 @@
     "@types/capitalize": "2.0.0",
     "@types/vscode": "1.62.0",
     "esbuild": "0.15.10",
-    "ovsx": "0.3.0",
+    "ovsx": "0.5.1",
     "vsce": "^2.13.0"
   },
   "dependencies": {

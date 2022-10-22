@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.63.0"
   },
-  "main": "./dist/extension",
+  "main": "./dist/extension.js",
   "icon": "assets/images/logo.png",
   "contributors": [
     {
@@ -98,7 +98,7 @@
     "@types/vscode": "1.62.0",
     "@types/ws": "8.2.2",
     "esbuild": "0.15.10",
-    "ovsx": "0.3.0",
+    "ovsx": "0.5.1",
     "vsce": "^2.13.0"
   },
   "dependencies": {

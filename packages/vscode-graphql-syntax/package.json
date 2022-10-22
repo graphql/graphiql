@@ -9,6 +9,15 @@
   "engines": {
     "vscode": "^1.63.0"
   },
+  "files": [
+    "assets",
+    "grammars",
+    "language",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
+  ],
   "icon": "assets/images/logo.png",
   "contributors": [
     {
