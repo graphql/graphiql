@@ -264,35 +264,34 @@ export class MessageProcessor {
       this._isGraphQLConfigMissing = true;
 
       this._logConfigError(err.message);
-      return;
     } else if (err instanceof ProjectNotFoundError) {
+      // this is the only case where we don't invalidate config;
+      // TODO: per-project schema initialization status (PR is almost ready)
       this._logConfigError(
         'Project not found for this file - make sure that a schema is present',
       );
     } else if (err instanceof ConfigInvalidError) {
+      this._isGraphQLConfigMissing = true;
       this._logConfigError(`Invalid configuration\n${err.message}`);
     } else if (err instanceof ConfigEmptyError) {
+      this._isGraphQLConfigMissing = true;
       this._logConfigError(err.message);
     } else if (err instanceof LoaderNoResultError) {
+      this._isGraphQLConfigMissing = true;
       this._logConfigError(err.message);
+      return;
     } else {
+      // if it's another kind of error,
+      // lets just assume the config is missing and
+      // disable language features
+      this._isGraphQLConfigMissing = true;
       this._logConfigError(
         // @ts-expect-error
         err?.message ?? err?.toString(),
       );
     }
 
-    // force a no-op for all other language feature requests.
-    //
-    // TODO: contextually disable language features based on whether config is present
-    // Ideally could do this when sending initialization message, but extension settings are not available
-    // then, which are needed in order to initialize the language server (graphql-config loadConfig settings, for example)
-    this._isInitialized = false;
-
-    // set this to false here so that if we don't have a missing config file issue anymore
-    // we can keep re-trying to load the config, so that on the next add or save event,
-    // it can keep retrying the language service
-    this._isGraphQLConfigMissing = false;
+    return;
   }
 
   _logConfigError(errorMessage: string) {
@@ -350,21 +349,27 @@ export class MessageProcessor {
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
-      const configMatchers = [
-        'graphql.config',
-        'graphqlrc',
-        'package.json',
-        this._settings.load?.fileName,
-      ].filter(Boolean);
-      if (configMatchers.some(v => uri.match(v)?.length)) {
+      const configMatchers = ['graphql.config', 'graphqlrc'].filter(Boolean);
+      if (this._settings?.load?.fileName) {
+        configMatchers.push(this._settings.load.fileName);
+      }
+
+      const hasGraphQLConfigFile = configMatchers.some(
+        v => uri.match(v)?.length,
+      );
+      const hasPackageGraphQLConfig =
+        uri.match('package.json')?.length && require(uri)?.graphql;
+      if (hasGraphQLConfigFile || hasPackageGraphQLConfig) {
         this._logger.info('updating graphql config');
         this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
-      }
-      // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(textDocument.uri);
-      if (cachedDocument) {
-        contents = cachedDocument.contents;
+      } else {
+        // update graphql config only when graphql config is saved!
+        const cachedDocument = this._getCachedDocument(textDocument.uri);
+        if (cachedDocument) {
+          contents = cachedDocument.contents;
+        }
+        return null;
       }
     }
     if (!this._graphQLCache) {
@@ -411,7 +416,11 @@ export class MessageProcessor {
   async handleDidChangeNotification(
     params: DidChangeTextDocumentParams,
   ): Promise<PublishDiagnosticsParams | null> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (
+      this._isGraphQLConfigMissing ||
+      !this._isInitialized ||
+      !this._graphQLCache
+    ) {
       return null;
     }
     // For every `textDocument/didChange` event, keep a cache of textDocuments
@@ -428,61 +437,65 @@ export class MessageProcessor {
         '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
       );
     }
-
     const textDocument = params.textDocument;
-    const contentChanges = params.contentChanges;
-    const contentChange = contentChanges[contentChanges.length - 1];
-
-    // As `contentChanges` is an array and we just want the
-    // latest update to the text, grab the last entry from the array.
     const uri = textDocument.uri;
-
-    // If it's a .js file, try parsing the contents to see if GraphQL queries
-    // exist. If not found, delete from the cache.
-    const contents = this._parser(contentChange.text, uri);
-    // If it's a .graphql file, proceed normally and invalidate the cache.
-    await this._invalidateCache(textDocument, uri, contents);
-
-    const cachedDocument = this._getCachedDocument(uri);
-
-    if (!cachedDocument) {
-      return null;
-    }
-
-    await this._updateFragmentDefinition(uri, contents);
-    await this._updateObjectTypeDefinition(uri, contents);
-
     const project = this._graphQLCache.getProjectForFile(uri);
-    const diagnostics: Diagnostic[] = [];
+    try {
+      const contentChanges = params.contentChanges;
+      const contentChange = contentChanges[contentChanges.length - 1];
 
-    if (project?.extensions?.languageService?.enableValidation !== false) {
-      // Send the diagnostics onChange as well
-      await Promise.all(
-        contents.map(async ({ query, range }) => {
-          const results = await this._languageService.getDiagnostics(
-            query,
-            uri,
-            this._isRelayCompatMode(query),
-          );
-          if (results && results.length > 0) {
-            diagnostics.push(
-              ...processDiagnosticsMessage(results, query, range),
+      // As `contentChanges` is an array and we just want the
+      // latest update to the text, grab the last entry from the array.
+
+      // If it's a .js file, try parsing the contents to see if GraphQL queries
+      // exist. If not found, delete from the cache.
+      const contents = this._parser(contentChange.text, uri);
+      // If it's a .graphql file, proceed normally and invalidate the cache.
+      await this._invalidateCache(textDocument, uri, contents);
+
+      const cachedDocument = this._getCachedDocument(uri);
+
+      if (!cachedDocument) {
+        return null;
+      }
+
+      await this._updateFragmentDefinition(uri, contents);
+      await this._updateObjectTypeDefinition(uri, contents);
+
+      const diagnostics: Diagnostic[] = [];
+
+      if (project?.extensions?.languageService?.enableValidation !== false) {
+        // Send the diagnostics onChange as well
+        await Promise.all(
+          contents.map(async ({ query, range }) => {
+            const results = await this._languageService.getDiagnostics(
+              query,
+              uri,
+              this._isRelayCompatMode(query),
             );
-          }
+            if (results && results.length > 0) {
+              diagnostics.push(
+                ...processDiagnosticsMessage(results, query, range),
+              );
+            }
+          }),
+        );
+      }
+
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'textDocument/didChange',
+          projectName: project?.name,
+          fileName: uri,
         }),
       );
+
+      return { uri, diagnostics };
+    } catch (err) {
+      this._handleConfigError({ err, uri });
+      return { uri, diagnostics: [] };
     }
-
-    this._logger.log(
-      JSON.stringify({
-        type: 'usage',
-        messageType: 'textDocument/didChange',
-        projectName: project?.name,
-        fileName: uri,
-      }),
-    );
-
-    return { uri, diagnostics };
   }
   async handleDidChangeConfiguration(
     _params: DidChangeConfigurationParams,
@@ -653,14 +666,23 @@ export class MessageProcessor {
   async handleWatchedFilesChangedNotification(
     params: DidChangeWatchedFilesParams,
   ): Promise<Array<PublishDiagnosticsParams | undefined> | null> {
-    if (!this._isInitialized || !this._graphQLCache) {
+    if (
+      this._isGraphQLConfigMissing ||
+      !this._isInitialized ||
+      !this._graphQLCache
+    ) {
       return null;
     }
 
     return Promise.all(
       params.changes.map(async (change: FileEvent) => {
-        if (!this._isInitialized || !this._graphQLCache) {
-          throw Error('No cache available for handleWatchedFilesChanged');
+        if (
+          this._isGraphQLConfigMissing ||
+          !this._isInitialized ||
+          !this._graphQLCache
+        ) {
+          this._logger.warn('No cache available for handleWatchedFilesChanged');
+          return;
         } else if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed

@@ -3,7 +3,7 @@
 Adds full GraphQL syntax highlighting and language support such as bracket matching.
 
 - Supports `.graphql`/`.gql`/`.graphqls` highlighting
-- [Javascript, Typescript & JSX/TSX](#ts) & Vue
+- [Javascript, Typescript & JSX/TSX](#ts) & Vue & Svelte
 - ReasonML/ReScript (`%graphql()` )
 - Python
 - PHP
