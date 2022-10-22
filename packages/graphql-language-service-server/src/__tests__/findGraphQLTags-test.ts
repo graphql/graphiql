@@ -213,6 +213,19 @@ export default defineComponent({
 query {id}`);
   });
 
+  it('finds queries in tagged templates in Svelte using normal <script>', async () => {
+    const text = `
+<script>
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.svelte');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
   it('finds multiple queries in a single file', async () => {
     const text = `something({
   else: () => gql\` query {} \`

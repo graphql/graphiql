@@ -738,4 +738,49 @@ query Test {
       expect(messageProcessor._updateGraphQLConfig).not.toHaveBeenCalled();
     });
   });
+
+  describe('handleWatchedFilesChangedNotification without graphql config', () => {
+    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._graphQLConfig = undefined;
+      messageProcessor._isGraphQLConfigMissing = true;
+      messageProcessor._parser = jest.fn();
+    });
+
+    it('skips config updates for normal file changes', async () => {
+      await messageProcessor.handleWatchedFilesChangedNotification({
+        changes: [
+          {
+            uri: `${pathToFileURL('.')}/foo.js`,
+            type: FileChangeType.Changed,
+          },
+        ],
+      });
+      expect(messageProcessor._parser).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleDidChangedNotification without graphql config', () => {
+    const mockReadFileSync: jest.Mock = jest.requireMock('fs').readFileSync;
+
+    beforeEach(() => {
+      mockReadFileSync.mockReturnValue('');
+      messageProcessor._graphQLConfig = undefined;
+      messageProcessor._isGraphQLConfigMissing = true;
+      messageProcessor._parser = jest.fn();
+    });
+
+    it('skips config updates for normal file changes', async () => {
+      await messageProcessor.handleDidChangeNotification({
+        textDocument: {
+          uri: `${pathToFileURL('.')}/foo.js`,
+          version: 1,
+        },
+        contentChanges: [{ text: 'var something' }],
+      });
+      expect(messageProcessor._parser).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -25,7 +25,10 @@
   "keywords": [
     "graphql",
     "language server",
-    "LSP"
+    "LSP",
+    "vue",
+    "svelte",
+    "typescript"
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",

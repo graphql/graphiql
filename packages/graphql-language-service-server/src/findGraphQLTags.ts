@@ -101,11 +101,11 @@ export function findGraphQLTags(
 
   const plugins = BABEL_PLUGINS.slice(0, BABEL_PLUGINS.length);
 
-  const isVue = ext === '.vue';
+  const isVueLike = ext === '.vue' || ext === '.svelte';
 
   let parsedASTs: { [key: string]: any }[] = [];
 
-  if (isVue) {
+  if (isVueLike) {
     const parseVueSFCResult = parseVueSFC(text);
     if (parseVueSFCResult.type === 'error') {
       logger.error(
