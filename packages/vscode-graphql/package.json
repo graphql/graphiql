@@ -169,7 +169,7 @@
     "@types/vscode": "1.62.0",
     "esbuild": "0.15.10",
     "ovsx": "0.3.0",
-    "vsce": "^2.11.0"
+    "vsce": "^2.13.0"
   },
   "dependencies": {
     "graphql": "^16.4.0",
