@@ -49,7 +49,7 @@
     "workspaceContains:**/graphql.config.{json,yaml,yml,js,ts,toml}",
     "workspaceContains:**/package.json"
   ],
-  "main": "./out/extension",
+  "main": "./out/extension.js",
   "extensionDependencies": [
     "GraphQL.vscode-graphql-syntax"
   ],
