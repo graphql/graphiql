@@ -1,3 +1,7 @@
 {
-  "npm.packageManager": "yarn"
+  "sonarlint.connectedMode.project": {
+    "connectionId": "GraphiQL",
+    "projectKey": "hinogi_graphiql"
+  },
+  "conventionalCommits.scopes": ["sonar-lint"]
 }
