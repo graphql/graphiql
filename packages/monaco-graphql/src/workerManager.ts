@@ -85,7 +85,7 @@ export class WorkerManager {
               // all of this could be organized better
               fillLeafsOnComplete:
                 this._defaults.completionSettings
-                  ._experimental_fillLeafsOnComplete,
+                  .__experimental__fillLeafsOnComplete,
             },
           } as ICreateData,
         });

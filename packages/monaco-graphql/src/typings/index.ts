@@ -227,7 +227,7 @@ export type CompletionSettings = {
    *        that appears when all required arguments are supplied, the argument
    *        selection closes `)` and the leaf field expands again `{ \n| }`
    */
-  _experimental_fillLeafsOnComplete?: boolean;
+  __experimental__fillLeafsOnComplete?: boolean;
 };
 
 /**

@@ -214,5 +214,5 @@ export const diagnosticSettingDefault: DiagnosticSettings = {
 };
 
 export const completionSettingDefault: CompletionSettings = {
-  _experimental_fillLeafsOnComplete: false,
+  __experimental__fillLeafsOnComplete: false,
 };
