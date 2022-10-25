@@ -148,8 +148,6 @@ export function useQueryEditor(
         return;
       }
 
-      let showingHints = false;
-
       const newEditor = CodeMirror(container, {
         value: initialQuery,
         lineNumbers: true,
@@ -224,6 +222,8 @@ export function useQueryEditor(
           editorInstance.execCommand('autocomplete');
         }
       });
+
+      let showingHints = false;
 
       // fired whenever a hint dialog opens
       newEditor.on('startCompletion', () => {
