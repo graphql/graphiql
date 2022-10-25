@@ -1,5 +1,4 @@
 ---
-'graphiql': patch
 '@graphiql/react': patch
 ---
 
