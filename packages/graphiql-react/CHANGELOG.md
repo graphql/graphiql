@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.13.4
+
+### Patch Changes
+
+- [#2824](https://github.com/graphql/graphiql/pull/2824) [`4e2f7ff9`](https://github.com/graphql/graphiql/commit/4e2f7ff99c578ceae54a1ae17c02088bd91b89c3) Thanks [@TheMightyPenguin](https://github.com/TheMightyPenguin)! - fix: prevent key down events when pressing escape to close autocomplete dialogs
+
 ## 0.13.3
 
 ### Patch Changes
