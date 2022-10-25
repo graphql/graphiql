@@ -165,6 +165,67 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
+  it('finds queries in tagged templates in Vue SFC using <script setup>', async () => {
+    const text = `
+<script setup lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using normal <script>', async () => {
+    const text = `
+<script lang="ts">
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
+  it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', async () => {
+    const text = `
+<script lang="tsx">
+import { defineComponent } from 'vue';
+
+gql\`
+query {id}
+\`;
+
+export default defineComponent({
+  setup() {
+    return () => <div>Hello</div>
+  }
+});
+</script>
+`;
+
+    const contents = findGraphQLTags(text, '.vue');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
+  it('finds queries in tagged templates in Svelte using normal <script>', async () => {
+    const text = `
+<script>
+gql\`
+query {id}
+\`;
+</script>
+`;
+    const contents = findGraphQLTags(text, '.svelte');
+    expect(contents[0].template).toEqual(`
+query {id}`);
+  });
+
   it('finds multiple queries in a single file', async () => {
     const text = `something({
   else: () => gql\` query {} \`

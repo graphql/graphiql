@@ -88,7 +88,7 @@ describe('GraphQLCache', () => {
       expect(schema instanceof GraphQLSchema).toEqual(true);
     });
 
-    it.skip('generates the schema correctly from endpoint', async () => {
+    it('generates the schema correctly from endpoint', async () => {
       const introspectionResult = {
         data: introspectionFromSchema(
           await graphQLRC.getProject('testWithSchema').getSchema(),

@@ -20,7 +20,7 @@ Supported features include:
 - Autocomplete suggestions (**spec-compliant**)
 - Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
 - Outline view support for queries
-- Support for `gql` `graphql` and other template tags inside javascript, typescript, jsx and tsx files, and an interface to allow custom parsing of all files.
+- Support for `gql` `graphql` and other template tags inside javascript, typescript, jsx, ts, vue and svelte files, and an interface to allow custom parsing of all files.
 
 ## Installation and Usage
 

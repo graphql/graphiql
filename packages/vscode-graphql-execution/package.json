@@ -100,7 +100,7 @@
     "@types/ws": "8.2.2",
     "esbuild": "0.15.10",
     "ovsx": "0.3.0",
-    "vsce": "^2.11.0"
+    "vsce": "^2.13.0"
   },
   "dependencies": {
     "@urql/core": "2.6.1",

@@ -1,6 +1,6 @@
 {
   "name": "graphql-language-service-server",
-  "version": "2.8.9",
+  "version": "2.9.1",
   "description": "Server process backing the GraphQL Language Service",
   "contributors": [
     "Greg Hurrell <greg@hurrell.net> (https://greg.hurrell.net/)",
@@ -25,7 +25,10 @@
   "keywords": [
     "graphql",
     "language server",
-    "LSP"
+    "LSP",
+    "vue",
+    "svelte",
+    "typescript"
   ],
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -37,6 +40,7 @@
     "@babel/parser": "^7.17.3",
     "@babel/types": "^7.17.0",
     "@graphql-tools/load": "^7.5.3",
+    "@vue/compiler-sfc": "^3.2.41",
     "dotenv": "8.2.0",
     "fast-glob": "^3.2.7",
     "glob": "^7.2.0",
