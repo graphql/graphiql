@@ -13,6 +13,8 @@ import { languages } from 'monaco-editor';
 
 export const LANGUAGE_ID = 'graphql';
 
+let api: MonacoGraphQLAPI;
+
 /**
  * Initialize the mode & worker synchronously with provided configuration
  *
@@ -22,12 +24,12 @@ export const LANGUAGE_ID = 'graphql';
 export function initializeMode(
   config?: MonacoGraphQLInitializeConfig,
 ): MonacoGraphQLAPI {
-  const api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
-
-  // export to the global monaco API
-  (<any>languages).graphql = { api };
-
-  getMode().then(mode => mode.setupMode(api));
+  if (!api) {
+    api = createMonacoGraphQLAPI(LANGUAGE_ID, config);
+    (<any>languages).graphql = { api };
+    // export to the global monaco API
+    getMode().then(mode => mode.setupMode(api));
+  }
 
   return api;
 }
