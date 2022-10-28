@@ -75,7 +75,7 @@
     & > div {
       position: relative;
       min-height: 600px;
-      width: calc(100% - 2 * var(--px-16));
+      width: 100%;
     }
   }
   & .toolbar-menu.toolbar-button {
