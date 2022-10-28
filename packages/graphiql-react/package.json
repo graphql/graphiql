@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/react",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -44,7 +44,7 @@
     "@reach/tooltip": "^0.17.0",
     "@reach/visually-hidden": "^0.17.0",
     "codemirror": "^5.65.3",
-    "codemirror-graphql": "^2.0.0",
+    "codemirror-graphql": "^2.0.1",
     "copy-to-clipboard": "^3.2.0",
     "graphql-language-service": "^5.1.0",
     "markdown-it": "^12.2.0",

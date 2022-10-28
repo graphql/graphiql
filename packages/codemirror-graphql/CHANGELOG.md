@@ -1,5 +1,11 @@
 # Change Log
 
+## 2.0.1
+
+### Patch Changes
+
+- [#2847](https://github.com/graphql/graphiql/pull/2847) [`353f434e`](https://github.com/graphql/graphiql/commit/353f434e5f6bfd1bf6f8ee97d4ae8ce4f897085f) Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Don't show error in variable editor linting for missing input objects that have a default value
+
 ## 2.0.0
 
 ### Major Changes
