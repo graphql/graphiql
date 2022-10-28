@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.11
+
+### Patch Changes
+
+- Updated dependencies [[`682ad06e`](https://github.com/graphql/graphiql/commit/682ad06e58ded2f82fa973e8e6613dd654417fe2)]:
+  - @graphiql/react@0.13.5
+
 ## 2.0.10
 
 ### Patch Changes
