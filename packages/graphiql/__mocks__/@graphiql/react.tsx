@@ -62,7 +62,7 @@ export {
   PenIcon,
   PlayIcon,
   PluginContext,
-  PluginContextProfider,
+  PluginContextProvider,
   PlusIcon,
   PrettifyIcon,
   ReloadIcon,
