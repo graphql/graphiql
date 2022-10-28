@@ -1,5 +1,11 @@
 # @graphiql/react
 
+## 0.13.5
+
+### Patch Changes
+
+- [#2839](https://github.com/graphql/graphiql/pull/2839) [`682ad06e`](https://github.com/graphql/graphiql/commit/682ad06e58ded2f82fa973e8e6613dd654417fe2) Thanks [@ClemensSahs](https://github.com/ClemensSahs)! - Export the `PluginContextProvider` component
+
 ## 0.13.4
 
 ### Patch Changes

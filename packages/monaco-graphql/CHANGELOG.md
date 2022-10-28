@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.1.4
+
+### Patch Changes
+
+- [#2834](https://github.com/graphql/graphiql/pull/2834) [`0a950ea3`](https://github.com/graphql/graphiql/commit/0a950ea374504b13d39c042db1d495a79dff4d0d) Thanks [@acao](https://github.com/acao)! - prevent the mode from instantiating more than once in the main process. it should never need to!
+
+  you can supply multiple `schemas` with uri path resolution rules that resolve globs in the browser even!
+
 ## 1.1.3
 
 ### Patch Changes
