@@ -1,5 +1,14 @@
 # Change Log
 
+## 2.0.12
+
+### Patch Changes
+
+- [#2758](https://github.com/graphql/graphiql/pull/2758) [`d63801fa`](https://github.com/graphql/graphiql/commit/d63801fad08e840eff7ff26f55694c6d18769466) Thanks [@LekoArts](https://github.com/LekoArts)! - Fix the width of the plugin pane
+
+- Updated dependencies []:
+  - @graphiql/react@0.13.6
+
 ## 2.0.11
 
 ### Patch Changes

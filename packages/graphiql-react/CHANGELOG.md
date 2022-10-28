@@ -1,5 +1,12 @@
 # @graphiql/react
 
+## 0.13.6
+
+### Patch Changes
+
+- Updated dependencies [[`353f434e`](https://github.com/graphql/graphiql/commit/353f434e5f6bfd1bf6f8ee97d4ae8ce4f897085f)]:
+  - codemirror-graphql@2.0.1
+
 ## 0.13.5
 
 ### Patch Changes
