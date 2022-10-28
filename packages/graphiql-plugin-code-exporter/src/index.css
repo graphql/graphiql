@@ -1,3 +1,22 @@
+.docExplorerWrap {
+  height: unset !important;
+  min-width: unset !important;
+  width: unset !important;
+}
+
+.doc-explorer-title {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+}
+
+.doc-explorer-rhs {
+  display: none;
+}
+
+.doc-explorer-contents {
+  border-top: none !important;
+}
+
 .graphiql-code-exporter {
   min-width: unset !important;
   position: relative;
