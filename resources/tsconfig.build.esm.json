@@ -9,6 +9,9 @@
       "path": "../packages/graphiql-toolkit/tsconfig.esm.json"
     },
     {
+      "path": "../packages/cm6-graphql/tsconfig.esm.json"
+    },
+    {
       "path": "../packages/codemirror-graphql/tsconfig.esm.json"
     },
     {
