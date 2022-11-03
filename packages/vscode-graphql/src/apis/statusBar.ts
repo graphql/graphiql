@@ -61,6 +61,7 @@ const statusBarActivationLanguageIds = [
   'typescript',
   'typescriptreact',
   'vue',
+  'svelte',
 ];
 
 export const createStatusBar = () => {
