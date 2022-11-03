@@ -85,7 +85,7 @@ Note, inline `""` and `''` string literals could also be delimited if needed, bu
 #### Comment-Delimited patterns
 
 ```ts
-/* GraphiQL */
+/* GraphQL */
 const query = `
  { id }
 `;
