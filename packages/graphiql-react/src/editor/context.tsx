@@ -18,6 +18,7 @@ import {
   createTab,
   getDefaultTabState,
   setPropertiesInActiveTab,
+  TabDefinition,
   TabsState,
   TabState,
   useSetEditorValues,
@@ -169,6 +170,21 @@ export type EditorContextProviderProps = {
    */
   headers?: string;
   /**
+   * This prop can be used to defined the initial set of tabs with their queries,
+   * variables and headers.
+   *
+   * @example
+   * ```tsx
+   * <GraphiQL
+   *   initialTabs={[
+   *     { query: 'query myExampleQuery {}' },
+   *     { query: '{ id }' }
+   *   ]}
+   * />
+   *```
+   */
+  initialTabs?: TabDefinition[];
+  /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
    * - Selecting a operation for execution in a document that contains multiple
@@ -257,6 +273,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
+      initialTabs: props.initialTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       storage,
     });

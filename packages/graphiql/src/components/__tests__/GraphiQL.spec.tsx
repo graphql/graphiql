@@ -651,6 +651,7 @@ describe('GraphiQL', () => {
         container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
       ).toHaveLength(3);
     });
+
     it('each tab has a close button when multiple tabs are open', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -668,6 +669,7 @@ describe('GraphiQL', () => {
         container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
       ).toHaveLength(3);
     });
+
     it('close button removes a tab', () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);
 
@@ -686,6 +688,26 @@ describe('GraphiQL', () => {
       expect(
         container.querySelectorAll('.graphiql-tab .graphiql-tab-close'),
       ).toHaveLength(0);
+    });
+
+    it('shows initial tabs', () => {
+      const { container } = render(
+        <GraphiQL
+          fetcher={noOpFetcher}
+          initialTabs={[
+            {
+              query: 'query Person { person { name } }',
+            },
+            {
+              query: 'query Image { image }',
+            },
+          ]}
+        />,
+      );
+
+      expect(
+        container.querySelectorAll('.graphiql-tabs .graphiql-tab'),
+      ).toHaveLength(2);
     });
   });
 });
