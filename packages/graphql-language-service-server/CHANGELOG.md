@@ -1,5 +1,26 @@
 # graphql-language-service-server
 
+## 2.9.2
+
+### Patch Changes
+
+- [#2861](https://github.com/graphql/graphiql/pull/2861) [`bdd1bd04`](https://github.com/graphql/graphiql/commit/bdd1bd045fc6610ccaae4745b8ecc10004594274) Thanks [@aloker](https://github.com/aloker)! - add missing pieces for svelte language support
+
+* [#2488](https://github.com/graphql/graphiql/pull/2488) [`967006a6`](https://github.com/graphql/graphiql/commit/967006a68e56f8f3a605c69fee5f920afdb6d8cf) Thanks [@acao](https://github.com/acao)! - Disable`fillLeafsOnComplete` by default
+
+  Users found this generally annoying by default, especially when there are required arguments
+
+  Without automatically prompting autocompletion of required arguments as well as lead expansion, it makes the extension harder to use
+
+  You can now supply this in your graphql config:
+
+  `config.extensions.languageService.fillLeafsOnComplete`
+
+  Setting it to to `true` will enable this feature.
+  Will soon add the ability to manually enable this in `monaco-graphql` as well.
+
+  For both, this kind of behavior would be better as a keyboard command, context menu item &/or codelens prompt
+
 ## 2.9.1
 
 ### Patch Changes
