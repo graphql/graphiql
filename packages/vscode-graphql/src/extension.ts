@@ -57,6 +57,7 @@ export async function activate(context: ExtensionContext) {
       { scheme: 'file', language: 'typescript' },
       { scheme: 'file', language: 'typescriptreact' },
       { scheme: 'file', language: 'vue' },
+      { scheme: 'file', language: 'svelte' },
     ],
     synchronize: {
       // TODO: This should include any referenced graphql files inside the graphql-config
