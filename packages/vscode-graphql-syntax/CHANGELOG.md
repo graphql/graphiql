@@ -1,5 +1,11 @@
 # vscode-graphql-syntax
 
+## 1.0.5
+
+### Patch Changes
+
+- [#2849](https://github.com/graphql/graphiql/pull/2849) [`9b98c1b6`](https://github.com/graphql/graphiql/commit/9b98c1b63a184385d22a8457cfdfebf01387697f) Thanks [@acao](https://github.com/acao)! - docs typo bug - `/* GraphQL */` (not `/* GraphiQL */`) is the delimiter for `vscode-graphql-syntax` & `vscode-graphql` language support
+
 ## 1.0.4
 
 ### Patch Changes
