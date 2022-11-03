@@ -16,6 +16,7 @@ export const DEFAULT_SUPPORTED_EXTENSIONS = [
   '.jsx',
   '.tsx',
   '.vue',
+  '.svelte'
 ];
 
 /**
