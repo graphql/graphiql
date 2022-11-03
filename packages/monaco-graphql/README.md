@@ -208,7 +208,14 @@ MonacoGraphQLAPI.setDiagnosticSettings({
     allowComments: true, // allow json, parse with a jsonc parser to make requests
   },
 });
-// TODO: document manual alternative approach
+
+MonacoGraphQL.setCompletionSettings({
+  // this auto-fills NonNull leaf fields
+  // it used to be on by default, but is annoying when
+  // fields contain required argument.
+  // hoping to fix that soon!
+  __experimental__fillLeafsOnComplete: true,
+});
 ```
 
 You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish syntax, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes for completion of other types of variable input. you can also experiment with editor methods to parse detected input into different formats, etc (`yaml` pastes as `json`, etc.)
@@ -470,6 +477,11 @@ If you are familiar with Codemirror/Atom-era terminology and features, here's so
 - you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
 - [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 - [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples) repository is great for tips on implementing with different bundlers, runtimes, etc.
+
+## Inspiration
+
+`microsoft/monaco-json` was our inspiration from the outset, when it was still a standalone repository. @acao actually wholesale copied many files, you could
+almost say it was a fork!
 
 ## TODO
 

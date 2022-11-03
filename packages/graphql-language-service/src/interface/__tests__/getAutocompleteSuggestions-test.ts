@@ -7,7 +7,10 @@
  *
  */
 
-import { CompletionItem } from 'graphql-language-service';
+import {
+  AutocompleteSuggestionOptions,
+  CompletionItem,
+} from 'graphql-language-service';
 
 import fs from 'fs';
 import {
@@ -20,50 +23,32 @@ import {
 import { Position } from '../../utils';
 import path from 'path';
 
-import {
-  getAutocompleteSuggestions,
-  SuggestionCommand,
-} from '../getAutocompleteSuggestions';
-
-const commonInsert = {
-  insertTextFormat: 2,
-  command: SuggestionCommand,
-};
+import { getAutocompleteSuggestions } from '../getAutocompleteSuggestions';
 
 const expectedResults = {
   droid: {
-    ...commonInsert,
     label: 'droid',
     detail: 'Droid',
-    insertText: `droid {\n  $1\n}`,
   },
   hero: {
-    ...commonInsert,
     label: 'hero',
     detail: 'Character',
-    insertText: `hero {\n  $1\n}`,
   },
   human: {
-    ...commonInsert,
     label: 'human',
     detail: 'Human',
-    insertText: `human {\n  $1\n}`,
   },
   inputTypeTest: {
-    ...commonInsert,
     label: 'inputTypeTest',
     detail: 'TestType',
-    insertText: `inputTypeTest {\n  $1\n}`,
   },
   appearsIn: {
     label: 'appearsIn',
     detail: '[Episode]',
   },
   friends: {
-    ...commonInsert,
     label: 'friends',
     detail: '[Character]',
-    insertText: `friends {\n  $1\n}`,
   },
 };
 
@@ -89,7 +74,7 @@ describe('getAutocompleteSuggestions', () => {
     query: string,
     point: Position,
     externalFragments?: FragmentDefinitionNode[],
-    uri?: string,
+    options?: AutocompleteSuggestionOptions,
   ): Array<CompletionItem> {
     return getAutocompleteSuggestions(
       schema,
@@ -97,7 +82,7 @@ describe('getAutocompleteSuggestions', () => {
       point,
       undefined,
       externalFragments,
-      { uri },
+      options,
     )
       .filter(
         field => !['__schema', '__type'].some(name => name === field.label),
@@ -520,7 +505,7 @@ describe('getAutocompleteSuggestions', () => {
   describe('with SDL types', () => {
     it('provides correct initial keywords', () => {
       expect(
-        testSuggestions('', new Position(0, 0), [], 'schema.graphqls'),
+        testSuggestions('', new Position(0, 0), [], { uri: 'schema.graphqls' }),
       ).toEqual([
         { label: 'extend' },
         { label: 'input' },
@@ -614,12 +599,9 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on object fields', () =>
       expect(
-        testSuggestions(
-          `type Type {\n  aField: s`,
-          new Position(0, 23),
-          [],
-          'schema.graphqls',
-        ),
+        testSuggestions(`type Type {\n  aField: s`, new Position(0, 23), [], {
+          uri: 'schema.graphqls',
+        }),
       ).toEqual([
         { label: 'Episode' },
         { label: 'String' },
@@ -629,12 +611,9 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on object fields that are arrays', () =>
       expect(
-        testSuggestions(
-          `type Type {\n  aField: []`,
-          new Position(0, 25),
-          [],
-          'schema.graphqls',
-        ),
+        testSuggestions(`type Type {\n  aField: []`, new Position(0, 25), [], {
+          uri: 'schema.graphqls',
+        }),
       ).toEqual([
         { label: 'AnotherInterface' },
         { label: 'Boolean' },
@@ -651,12 +630,9 @@ describe('getAutocompleteSuggestions', () => {
       ]));
     it('provides correct suggestions on input object fields', () =>
       expect(
-        testSuggestions(
-          `input Type {\n  aField: s`,
-          new Position(0, 23),
-          [],
-          'schema.graphqls',
-        ),
+        testSuggestions(`input Type {\n  aField: s`, new Position(0, 23), [], {
+          uri: 'schema.graphqls',
+        }),
       ).toEqual([{ label: 'Episode' }, { label: 'String' }]));
     it('provides correct directive suggestions on args definitions', () =>
       expect(

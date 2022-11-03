@@ -222,6 +222,9 @@ qlapi
 qlid
 qlide
 
+// cspell en-us/en-gb edgecases?
+behaviour
+
 // other
 architecting
 codebases

@@ -115,6 +115,12 @@ export type GraphQLLanguageConfig = {
    * Custom validation rules following `graphql` `ValidationRule` signature
    */
   customValidationRules?: ValidationRule[];
+  /**
+   * Should field leafs be automatically expanded & filled on autocomplete?
+   *
+   * NOTE: this can be annoying with required arguments
+   */
+  fillLeafsOnComplete?: boolean;
 };
 
 export interface IDisposable {
@@ -206,17 +212,34 @@ export type DiagnosticSettings = {
   jsonDiagnosticSettings?: languages.json.DiagnosticsOptions;
 };
 
+export type CompletionSettings = {
+  /**
+   * EXPERIMENTAL: Automatically fill required leaf nodes recursively
+   * upon triggering code completion events.
+   *
+   *
+   * - [x] fills required nodes
+   * - [x] automatically expands relay-style node/edge fields
+   * - [ ] automatically jumps to first required argument field
+   *      - then, continues to prompt for required argument fields
+   *      - (fixing this will make it non-experimental)
+   *      - when it runs out of arguments, or you choose `{` as a completion option
+   *        that appears when all required arguments are supplied, the argument
+   *        selection closes `)` and the leaf field expands again `{ \n| }`
+   */
+  __experimental__fillLeafsOnComplete?: boolean;
+};
+
 /**
  * Configuration to initialize the editor with
  */
 export type MonacoGraphQLInitializeConfig = {
   /**
-   * Specify array of `SchemaConfig` items used to initialize the `GraphQLWorker` if available.
-   * You can also `api.setSchemaConfig()` after instantiating the mode.
+   * custom (experimental) settings for autocompletion behaviour
    */
-  schemas?: SchemaConfig[];
+  completionSettings?: CompletionSettings;
   /**
-   *
+   * custom settings for diagnostics (validation)
    */
   diagnosticSettings?: DiagnosticSettings;
   /**
@@ -229,7 +252,15 @@ export type MonacoGraphQLInitializeConfig = {
    * ```
    */
   formattingOptions?: FormattingOptions;
+  /**
+   * Generic monaco language mode options, same as for the official monaco json mode
+   */
   modeConfiguration?: ModeConfiguration;
+  /**
+   * Specify array of `SchemaConfig` items used to initialize the `GraphQLWorker` if available.
+   * You can also `api.setSchemaConfig()` after instantiating the mode.
+   */
+  schemas?: SchemaConfig[];
 };
 
 export interface ICreateData {

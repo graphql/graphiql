@@ -50,12 +50,14 @@ export class LanguageService {
   private _externalFragmentDefinitionNodes: FragmentDefinitionNode[] | null =
     null;
   private _externalFragmentDefinitionsString: string | null = null;
+  private _fillLeafsOnComplete?: boolean = false;
   constructor({
     parser,
     schemas,
     parseOptions,
     externalFragmentDefinitions,
     customValidationRules,
+    fillLeafsOnComplete,
   }: GraphQLLanguageConfig) {
     this._schemaLoader = defaultSchemaLoader;
     if (schemas) {
@@ -65,6 +67,7 @@ export class LanguageService {
     if (parser) {
       this._parser = parser;
     }
+    this._fillLeafsOnComplete = fillLeafsOnComplete;
 
     if (parseOptions) {
       this._parseOptions = parseOptions;
@@ -213,7 +216,7 @@ export class LanguageService {
       position,
       undefined,
       this.getExternalFragmentDefinitions(),
-      { uri },
+      { uri, fillLeafsOnComplete: this._fillLeafsOnComplete },
     );
   };
   /**
