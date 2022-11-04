@@ -21,7 +21,7 @@ npm i -S react react-dom graphql
 See [GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter) for all details on available `props` and how to [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
 
 ```jsx
-import { useCodeExporterPlugin } from '@graphiql/plugin-code-exporter';
+import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import { useState } from 'react';
@@ -82,7 +82,7 @@ const snippets = [exampleSnippetOne, exampleSnippetTwo];
 
 function GraphiQLWithExplorer() {
   const [query, setQuery] = useState(DEFAULT_QUERY);
-  const exporterPlugin = useCodeExporterPlugin({
+  const exporterPlugin = useExporterPlugin({
     query,
     snippets,
     codeMirrorTheme: 'graphiql',
