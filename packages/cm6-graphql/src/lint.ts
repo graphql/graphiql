@@ -18,15 +18,22 @@ export const lint = linter(view => {
         return null;
       }
 
+      const calculatedFrom = posToOffset(
+        view.state.doc,
+        new Position(item.range.start.line, item.range.start.character),
+      );
+      const from = Math.max(0, Math.min(calculatedFrom, view.state.doc.length));
+      const calculatedRo = posToOffset(
+        view.state.doc,
+        new Position(item.range.end.line, item.range.end.character - 1),
+      );
+      const to = Math.min(
+        Math.max(from + 1, calculatedRo),
+        view.state.doc.length,
+      );
       return {
-        from: posToOffset(
-          view.state.doc,
-          new Position(item.range.start.line, item.range.start.character),
-        ),
-        to: posToOffset(
-          view.state.doc,
-          new Position(item.range.end.line, item.range.end.character - 1),
-        ),
+        from,
+        to: from !== to ? to : to + 1,
         severity: SEVERITY[item.severity - 1],
         // source: item.source, // TODO:
         message: item.message,
