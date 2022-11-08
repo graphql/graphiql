@@ -1,4 +1,3 @@
-/* eslint-disable no-redeclare */
 /**
  *  Copyright (c) 2021 GraphQL Contributors.
  *
