@@ -1,4 +1,3 @@
-/* eslint-disable jest/expect-expect, jest/no-export */
 import OnlineParser from '../onlineParser';
 import CharacterStream from '../CharacterStream';
 import { RuleKind } from '../types';
@@ -133,7 +132,7 @@ export const performForEachType = (source, test) => {
     const utils = getUtils(
       source.replace(/__VALUE__/g, value).replace(/__TYPE__/g, type),
     );
-    test(utils, { type, value, kind, valueType }); // eslint-disable-line
+    test(utils, { type, value, kind, valueType });
   });
 };
 
