@@ -234,10 +234,7 @@ module.exports = {
     // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
     'import/no-extraneous-dependencies': 1,
-
-    // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
-    'prefer-object-spread/prefer-object-spread': 1,
-
+    'prefer-object-spread': 'error',
     // react rules
     'react/no-unused-state': 'error',
     'react/jsx-curly-brace-presence': 'error',
@@ -266,7 +263,7 @@ module.exports = {
     'jest/no-conditional-expect': 0,
   },
 
-  plugins: ['import', 'prefer-object-spread', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
