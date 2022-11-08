@@ -230,11 +230,6 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
-    // Babel (https://github.com/babel/eslint-plugin-babel)
-    'babel/new-cap': 0,
-    'babel/no-invalid-this': 0,
-    'babel/object-curly-spacing': 0,
-
     // import (https://github.com/benmosher/eslint-plugin-import)
     // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
