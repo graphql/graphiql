@@ -10335,11 +10335,6 @@ eslint-plugin-jest@^26.4.5:
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
-eslint-plugin-prefer-object-spread@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-prefer-object-spread/-/eslint-plugin-prefer-object-spread-1.2.1.tgz#27fb91853690cceb3ae6101d9c8aecc6a67a402c"
-  integrity sha1-J/uRhTaQzOs65hAdnIrsxqZ6QCw=
-
 eslint-plugin-react-hooks@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.5.0.tgz#5f762dfedf8b2cf431c689f533c9d3fa5dcf25ad"

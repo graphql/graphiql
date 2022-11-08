@@ -124,7 +124,6 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.4.5",
-    "eslint-plugin-prefer-object-spread": "1.2.1",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "execa": "^6.0.0",
