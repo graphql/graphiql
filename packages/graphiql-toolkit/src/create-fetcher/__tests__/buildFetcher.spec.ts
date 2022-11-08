@@ -38,7 +38,7 @@ describe('createGraphiQLFetcher', () => {
   });
 
   it('returns simple fetcher for introspection', async () => {
-    createSimpleFetcher.mockReturnValue(async () => 'hey!');
+    createSimpleFetcher.mockReturnValue(() => 'hey!');
     const fetcher = createGraphiQLFetcher({ url: serverURL });
     expect(createWebsocketsFetcherFromUrl.mock.calls).toEqual([]);
     expect(createMultipartFetcher.mock.calls).toEqual([

@@ -155,7 +155,7 @@ export class LanguageService {
    * override `schemas` config entirely
    * @param schema {schemaString}
    */
-  public async updateSchemas(schemas: SchemaConfig[]): Promise<void> {
+  public updateSchemas(schemas: SchemaConfig[]): void {
     this._schemas = schemas;
     this._cacheSchemas();
   }

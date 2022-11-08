@@ -237,10 +237,10 @@ export interface ExtractedTemplateLiteral {
   definition: OperationDefinitionNode;
 }
 
-export const getFragmentDependencies = async (
+export const getFragmentDependencies = (
   query: string,
   fragmentDefinitions?: Map<string, FragmentInfo> | null,
-): Promise<FragmentInfo[]> => {
+): FragmentInfo[] => {
   // If there isn't context for fragment references,
   // return an empty array.
   if (!fragmentDefinitions) {
@@ -257,10 +257,10 @@ export const getFragmentDependencies = async (
   return getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
 };
 
-export const getFragmentDependenciesForAST = async (
+export const getFragmentDependenciesForAST = (
   parsedQuery: ASTNode,
   fragmentDefinitions: Map<string, FragmentInfo>,
-): Promise<FragmentInfo[]> => {
+): FragmentInfo[] => {
   if (!fragmentDefinitions) {
     return [];
   }

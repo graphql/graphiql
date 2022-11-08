@@ -28,7 +28,7 @@ import {
 
 describe('getDiagnostics', () => {
   let schema: GraphQLSchema;
-  beforeEach(async () => {
+  beforeEach(() => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),
       'utf8',

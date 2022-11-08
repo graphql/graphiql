@@ -128,10 +128,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
   };
 
-  getFragmentDependencies = async (
+  getFragmentDependencies = (
     query: string,
     fragmentDefinitions?: Map<string, FragmentInfo> | null,
-  ): Promise<FragmentInfo[]> => {
+  ): FragmentInfo[] => {
     // If there isn't context for fragment references,
     // return an empty array.
     if (!fragmentDefinitions) {
@@ -148,10 +148,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return this.getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
   };
 
-  getFragmentDependenciesForAST = async (
+  getFragmentDependenciesForAST = (
     parsedQuery: ASTNode,
     fragmentDefinitions: Map<string, FragmentInfo>,
-  ): Promise<FragmentInfo[]> => {
+  ): FragmentInfo[] => {
     if (!fragmentDefinitions) {
       return [];
     }
@@ -220,10 +220,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return fragmentDefinitions;
   };
 
-  getObjectTypeDependencies = async (
+  getObjectTypeDependencies = (
     query: string,
     objectTypeDefinitions?: Map<string, ObjectTypeInfo>,
-  ): Promise<Array<ObjectTypeInfo>> => {
+  ): Array<ObjectTypeInfo> => {
     // If there isn't context for object type references,
     // return an empty array.
     if (!objectTypeDefinitions) {
@@ -243,10 +243,10 @@ export class GraphQLCache implements GraphQLCacheInterface {
     );
   };
 
-  getObjectTypeDependenciesForAST = async (
+  getObjectTypeDependenciesForAST = (
     parsedQuery: ASTNode,
     objectTypeDefinitions: Map<string, ObjectTypeInfo>,
-  ): Promise<Array<ObjectTypeInfo>> => {
+  ): Array<ObjectTypeInfo> => {
     if (!objectTypeDefinitions) {
       return [];
     }
@@ -414,11 +414,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
     return graphQLFileMap;
   }
 
-  async updateFragmentDefinition(
+  updateFragmentDefinition(
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ): Promise<void> {
+  ): void {
     const cache = this._fragmentDefinitionsCache.get(rootDir);
     const asts = contents.map(({ query }) => {
       try {
@@ -476,11 +476,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
   }
 
-  async updateObjectTypeDefinition(
+  updateObjectTypeDefinition(
     rootDir: Uri,
     filePath: Uri,
     contents: Array<CachedContent>,
-  ): Promise<void> {
+  ): void {
     const cache = this._typeDefinitionsCache.get(rootDir);
     const asts = contents.map(({ query }) => {
       try {

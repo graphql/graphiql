@@ -14,7 +14,7 @@ describe('Logger', () => {
   let mockedStdoutWrite: jest.SpyInstance = null;
   let mockedStderrWrite: jest.SpyInstance = null;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     mockedStdoutWrite = jest
       .spyOn(process.stdout, 'write')
       .mockImplementation(() => true);

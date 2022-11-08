@@ -67,7 +67,7 @@ describe('MessageProcessor', () => {
       getDiagnostics: (_query, _uri) => {
         return [];
       },
-      getDocumentSymbols: async (_query: string, uri: string) => {
+      getDocumentSymbols: (_query: string, uri: string) => {
         return [
           {
             name: 'item',
@@ -82,7 +82,7 @@ describe('MessageProcessor', () => {
           },
         ];
       },
-      getOutline: async (_query: string): Promise<Outline> => {
+      getOutline: (_query: string): Outline => {
         return {
           outlineTrees: [
             {
@@ -95,11 +95,7 @@ describe('MessageProcessor', () => {
           ],
         };
       },
-      getDefinition: async (
-        _query,
-        position,
-        uri,
-      ): Promise<DefinitionQueryResult> => {
+      getDefinition: (_query, position, uri): DefinitionQueryResult => {
         return {
           queryRange: [new Range(position, position)],
           definitions: [
@@ -119,7 +115,7 @@ describe('MessageProcessor', () => {
     // @ts-ignore
     get workspace() {
       return {
-        getConfiguration: async () => {
+        getConfiguration: () => {
           return [getConfigurationReturnValue];
         },
       };
@@ -373,7 +369,7 @@ describe('MessageProcessor', () => {
     });
   });
 
-  it('parseDocument finds queries in tagged templates', async () => {
+  it('parseDocument finds queries in tagged templates', () => {
     const text = `
 // @flow
 import {gql} from 'react-apollo';
@@ -403,7 +399,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in tagged templates using typescript', async () => {
+  it('parseDocument finds queries in tagged templates using typescript', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -432,7 +428,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in tagged templates using tsx', async () => {
+  it('parseDocument finds queries in tagged templates using tsx', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -463,7 +459,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in multi-expression tagged templates using tsx', async () => {
+  it('parseDocument finds queries in multi-expression tagged templates using tsx', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -495,7 +491,7 @@ query Test {
 }`);
   });
   // TODO: why an extra line here?
-  it('parseDocument finds queries in multi-expression tagged template with declarations with using tsx', async () => {
+  it('parseDocument finds queries in multi-expression tagged template with declarations with using tsx', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -528,7 +524,7 @@ query Test {
 }`);
   });
 
-  it('parseDocument finds queries in multi-expression template strings using tsx', async () => {
+  it('parseDocument finds queries in multi-expression template strings using tsx', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -563,7 +559,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in call expressions with template literals', async () => {
+  it('parseDocument finds queries in call expressions with template literals', () => {
     const text = `
 // @flow
 import {gql} from 'react-apollo';
@@ -593,7 +589,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in #graphql-annotated templates', async () => {
+  it('parseDocument finds queries in #graphql-annotated templates', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -622,7 +618,7 @@ query Test {
 `);
   });
 
-  it('parseDocument finds queries in /*GraphQL*/-annotated templates', async () => {
+  it('parseDocument finds queries in /*GraphQL*/-annotated templates', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -651,7 +647,7 @@ query Test {
 `);
   });
 
-  it('parseDocument ignores non gql tagged templates', async () => {
+  it('parseDocument ignores non gql tagged templates', () => {
     const text = `
 // @flow
 import randomThing from 'package';
@@ -674,7 +670,7 @@ export function Example(arg: string) {}`;
     expect(contents.length).toEqual(0);
   });
 
-  it('parseDocument ignores non gql call expressions with template literals', async () => {
+  it('parseDocument ignores non gql call expressions with template literals', () => {
     const text = `
 // @flow
 import randomthing from 'package';
@@ -697,7 +693,7 @@ export function Example(arg: string) {}`;
     expect(contents.length).toEqual(0);
   });
 
-  it('an unparsable JS/TS file does not throw and bring down the server', async () => {
+  it('an unparsable JS/TS file does not throw and bring down the server', () => {
     const text = `
 // @flow
 import type randomThing fro 'package';

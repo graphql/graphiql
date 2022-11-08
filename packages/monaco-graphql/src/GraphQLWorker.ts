@@ -35,7 +35,7 @@ export class GraphQLWorker {
     this._formattingOptions = createData.formattingOptions;
   }
 
-  public async doValidation(uri: string) {
+  public doValidation(uri: string) {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
@@ -53,10 +53,10 @@ export class GraphQLWorker {
     }
   }
 
-  public async doComplete(
+  public doComplete(
     uri: string,
     position: Position,
-  ): Promise<GraphQLWorkerCompletionItem[]> {
+  ): GraphQLWorkerCompletionItem[] {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
@@ -76,7 +76,7 @@ export class GraphQLWorker {
     }
   }
 
-  public async doHover(uri: string, position: Position) {
+  public doHover(uri: string, position: Position) {
     try {
       const documentModel = this._getTextModel(uri);
       const document = documentModel?.getValue();
@@ -109,7 +109,7 @@ export class GraphQLWorker {
     }
   }
 
-  public async doGetVariablesJSONSchema(uri: string): Promise<unknown> {
+  public doGetVariablesJSONSchema(uri: string): unknown {
     const documentModel = this._getTextModel(uri);
     const document = documentModel?.getValue();
     if (!documentModel || !document) {

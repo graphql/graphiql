@@ -25,7 +25,7 @@ const MOCK_CONFIG = {
 
 describe('GraphQLLanguageService', () => {
   const mockCache = {
-    async getSchema() {
+    getSchema() {
       const config = this.getGraphQLConfig();
       return config.getDefault()!.getSchema();
     },

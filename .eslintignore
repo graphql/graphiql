@@ -66,3 +66,8 @@ working-group/
 
 .changeset
 storybook-static/
+
+# Followed are located in .gitignore
+packages/graphiql-react/types/
+packages/graphiql-plugin-explorer/types/
+packages/graphiql-plugin-code-exporter/types/

@@ -64,7 +64,7 @@ class MySchemaFetcher {
     }
     return this.loadSchema();
   }
-  async setApiToken(token: string) {
+  setApiToken(token: string) {
     this._currentSchema.headers.authorization = `Bearer ${token}`;
     localStorage.setItem(localStorageKey, token);
   }

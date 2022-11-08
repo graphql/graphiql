@@ -270,7 +270,7 @@ type HandlerOptions = {
  *
  * @param options {HandlerOptions}
  */
-async function addHandlers({
+function addHandlers({
   connection,
   logger,
   config,
@@ -279,7 +279,7 @@ async function addHandlers({
   graphqlFileExtensions,
   tmpDir,
   loadConfigOptions,
-}: HandlerOptions): Promise<void> {
+}: HandlerOptions): void {
   const messageProcessor = new MessageProcessor({
     logger,
     config,

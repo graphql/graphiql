@@ -48,11 +48,11 @@ function getPosition(text: string, node: ASTNode): Position {
   return offsetToPosition(text, location.start);
 }
 
-export async function getDefinitionQueryResultForNamedType(
+export function getDefinitionQueryResultForNamedType(
   text: string,
   node: NamedTypeNode,
   dependencies: Array<ObjectTypeInfo>,
-): Promise<DefinitionQueryResult> {
+): DefinitionQueryResult {
   const name = node.name.value;
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === name,
@@ -72,11 +72,11 @@ export async function getDefinitionQueryResultForNamedType(
   };
 }
 
-export async function getDefinitionQueryResultForField(
+export function getDefinitionQueryResultForField(
   fieldName: string,
   typeName: string,
   dependencies: Array<ObjectTypeInfo>,
-): Promise<DefinitionQueryResult> {
+): DefinitionQueryResult {
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name && definition.name.value === typeName,
   );
@@ -108,11 +108,11 @@ export async function getDefinitionQueryResultForField(
   };
 }
 
-export async function getDefinitionQueryResultForFragmentSpread(
+export function getDefinitionQueryResultForFragmentSpread(
   text: string,
   fragment: FragmentSpreadNode,
   dependencies: Array<FragmentInfo>,
-): Promise<DefinitionQueryResult> {
+): DefinitionQueryResult {
   const name = fragment.name.value;
   const defNodes = dependencies.filter(
     ({ definition }) => definition.name.value === name,

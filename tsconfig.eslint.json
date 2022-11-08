@@ -1,0 +1,44 @@
+{
+  // https://typescript-eslint.io/docs/linting/typed-linting/monorepos/#one-root-tsconfigjson
+  // extend your base config to share compilerOptions, etc
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // ensure that nobody can accidentally use this config for a build
+    "noEmit": true
+  },
+  "include": [
+    "scripts/*.js",
+    "resources/*.js",
+    "packages/*/esbuild.js",
+    "packages/*/jest.config.js",
+    "packages/*/babel.config.js",
+    "packages/*/vite.config.ts",
+    "packages/graphql-language-service/benchmark/index.ts",
+    "packages/graphql-language-service-cli/bin/graphql.js",
+    "packages/graphiql/test/*.js",
+    "packages/graphiql/src/components/__tests__/GraphiQL.spec.tsx",
+    "packages/graphiql/resources/webpack.config.js",
+    "packages/graphiql/postcss.config.js",
+    "packages/graphiql/cypress/support/*.js",
+    "packages/graphiql/cypress/plugins/*.js",
+    "packages/cm6-graphql/rollup.config.js",
+    "packages/graphiql-plugin-code-exporter/postcss.config.js",
+    "packages/graphiql-react/mocks/svg.js",
+    "packages/graphiql-react/postcss.config.js",
+    "packages/graphql-language-service/src/utils/__tests__/__fixtures__/file.js",
+    "packages/graphiql/__mocks__/codemirror.ts",
+    "packages/graphiql/__mocks__/@graphiql/react.tsx",
+    "examples/*/babel.config.js",
+    "examples/*/webpack.config.js",
+    "examples/graphiql-explorer/src/vite-env.d.ts",
+    "examples/graphiql-webpack/src/index.jsx",
+    "examples/monaco-graphql-react-vite/vite.config.ts",
+    "functions/schema-demo.js",
+    "**/__test__/**/*.ts",
+    "**/__tests__/*.ts",
+    "**/*.spec.ts",
+    ".eslintrc.js",
+    "babel.config.js",
+    "jest.config.js"
+  ]
+}

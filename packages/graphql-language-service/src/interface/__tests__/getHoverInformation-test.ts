@@ -19,7 +19,7 @@ import { getHoverInformation } from '../getHoverInformation';
 
 describe('getHoverInformation', () => {
   let schema: GraphQLSchema;
-  beforeEach(async () => {
+  beforeEach(() => {
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/HoverTestSchema.graphql'),
       'utf8',

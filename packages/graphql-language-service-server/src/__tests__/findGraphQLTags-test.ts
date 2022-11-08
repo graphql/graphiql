@@ -19,7 +19,7 @@ describe('findGraphQLTags', () => {
   const findGraphQLTags = (text: string, ext: string) =>
     baseFindGraphQLTags(text, ext, '', logger);
 
-  it('finds queries in tagged templates', async () => {
+  it('finds queries in tagged templates', () => {
     const text = `
 // @flow
 import {gql} from 'react-apollo';
@@ -49,7 +49,7 @@ query Test {
 `);
   });
 
-  it('finds queries in call expressions with template literals', async () => {
+  it('finds queries in call expressions with template literals', () => {
     const text = `
     // @flow
     import {gql} from 'react-apollo';
@@ -79,7 +79,7 @@ query Test {
     `);
   });
 
-  it('finds queries in #graphql-annotated templates', async () => {
+  it('finds queries in #graphql-annotated templates', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -108,7 +108,7 @@ query Test {
 `);
   });
 
-  it('finds queries in /* GraphQL */ prefixed templates', async () => {
+  it('finds queries in /* GraphQL */ prefixed templates', () => {
     const text = `
 import {gql} from 'react-apollo';
 import {B} from 'B';
@@ -140,14 +140,14 @@ query Test {
 `);
   });
 
-  it('finds queries with nested graphql.experimental template tag expression', async () => {
+  it('finds queries with nested graphql.experimental template tag expression', () => {
     const text = `const query = graphql.experimental\` query {} \``;
 
     const contents = findGraphQLTags(text, '.ts');
     expect(contents[0].template).toEqual(` query {} `);
   });
 
-  it('finds queries with nested template tag expressions', async () => {
+  it('finds queries with nested template tag expressions', () => {
     const text = `export default {
   else: () => gql\` query {} \`
 }`;
@@ -156,7 +156,7 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
-  it('finds queries with template tags inside call expressions', async () => {
+  it('finds queries with template tags inside call expressions', () => {
     const text = `something({
   else: () => graphql\` query {} \`
 })`;
@@ -165,7 +165,7 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
-  it('finds queries in tagged templates in Vue SFC using <script setup>', async () => {
+  it('finds queries in tagged templates in Vue SFC using <script setup>', () => {
     const text = `
 <script setup lang="ts">
 gql\`
@@ -178,7 +178,7 @@ query {id}
 query {id}`);
   });
 
-  it('finds queries in tagged templates in Vue SFC using normal <script>', async () => {
+  it('finds queries in tagged templates in Vue SFC using normal <script>', () => {
     const text = `
 <script lang="ts">
 gql\`
@@ -191,7 +191,7 @@ query {id}
 query {id}`);
   });
 
-  it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', async () => {
+  it('finds queries in tagged templates in Vue SFC using <script lang="tsx">', () => {
     const text = `
 <script lang="tsx">
 import { defineComponent } from 'vue';
@@ -213,7 +213,7 @@ export default defineComponent({
 query {id}`);
   });
 
-  it('finds queries in tagged templates in Svelte using normal <script>', async () => {
+  it('finds queries in tagged templates in Svelte using normal <script>', () => {
     const text = `
 <script>
 gql\`
@@ -226,7 +226,7 @@ query {id}
 query {id}`);
   });
 
-  it('finds multiple queries in a single file', async () => {
+  it('finds multiple queries in a single file', () => {
     const text = `something({
   else: () => gql\` query {} \`
 })
@@ -252,7 +252,7 @@ const query = graphql\`query myQuery {}\``;
     expect(contents[1].template).toEqual(`query myQuery {}`);
   });
 
-  it('ignores non gql tagged templates', async () => {
+  it('ignores non gql tagged templates', () => {
     const text = `
 // @flow
 import randomthing from 'package';
@@ -275,7 +275,7 @@ export function Example(arg: string) {}`;
     expect(contents.length).toEqual(0);
   });
 
-  it('ignores non gql call expressions with template literals', async () => {
+  it('ignores non gql call expressions with template literals', () => {
     const text = `
 // @flow
 import randomthing from 'package';

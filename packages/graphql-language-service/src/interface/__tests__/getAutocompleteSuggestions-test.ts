@@ -59,7 +59,7 @@ const suggestionCommand = {
 
 describe('getAutocompleteSuggestions', () => {
   let schema: GraphQLSchema;
-  beforeEach(async () => {
+  beforeEach(() => {
     // graphQLVersion = pkg.version;
     const schemaIDL = fs.readFileSync(
       path.join(__dirname, '__schema__/StarWarsSchema.graphql'),

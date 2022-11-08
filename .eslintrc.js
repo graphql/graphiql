@@ -17,6 +17,11 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
+    project: [
+      'packages/*/tsconfig.json',
+      'examples/*/tsconfig.json',
+      'tsconfig.eslint.json',
+    ],
   },
   settings: {
     react: {
@@ -118,8 +123,10 @@ module.exports = {
     'no-warning-comments': 0,
     radix: 1,
     '@typescript-eslint/prefer-as-const': 'error',
-    'require-await': 0,
-    // 'require-await': 1,
+    'require-await': 'off',
+    // Disallow async functions which have no await expression
+    // https://typescript-eslint.io/rules/require-await/
+    '@typescript-eslint/require-await': 'error',
     'vars-on-top': 0,
     yoda: 1,
     '@typescript-eslint/no-inferrable-types': 'error',

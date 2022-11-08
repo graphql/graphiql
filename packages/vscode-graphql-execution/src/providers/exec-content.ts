@@ -61,7 +61,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
           (await window.showInputBox({
             ignoreFocusOut: true,
             placeHolder: `Please enter the value for ${node.variable.name.value}`,
-            validateInput: async (value: string) =>
+            validateInput: (value: string) =>
               this.sourceHelper.validate(value, variableType),
           })) as string,
           variableType,

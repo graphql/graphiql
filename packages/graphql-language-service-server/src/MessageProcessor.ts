@@ -161,11 +161,11 @@ export class MessageProcessor {
     this._connection = connection;
   }
 
-  async handleInitializeRequest(
+  handleInitializeRequest(
     params: InitializeParams,
     _token?: CancellationToken,
     configDir?: string,
-  ): Promise<InitializeResult> {
+  ): InitializeResult {
     if (!params) {
       throw new Error('`params` argument is required to initialize.');
     }
@@ -935,7 +935,7 @@ export class MessageProcessor {
       this._logger.error(String(err));
     }
   }
-  async _cacheSchemaFile(
+  _cacheSchemaFile(
     uri: UnnormalizedTypeDefPointer,
     project: GraphQLProjectConfig,
   ) {
@@ -1195,11 +1195,11 @@ export class MessageProcessor {
 
     return null;
   }
-  async _invalidateCache(
+  _invalidateCache(
     textDocument: VersionedTextDocumentIdentifier,
     uri: Uri,
     contents: CachedContent[],
-  ): Promise<Map<string, CachedDocumentType> | null> {
+  ): Map<string, CachedDocumentType> | null {
     if (this._textDocumentCache.has(uri)) {
       const cachedDocument = this._textDocumentCache.get(uri);
       if (

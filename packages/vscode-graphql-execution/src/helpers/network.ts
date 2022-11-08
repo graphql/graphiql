@@ -135,7 +135,7 @@ export class NetworkHelper {
       ${literal.content}
     `;
     return Promise.all(
-      operationTypes.map(async operation => {
+      operationTypes.map(operation => {
         const subscriber = this.buildSubscribeConsumer(
           updateCallback,
           operation,
