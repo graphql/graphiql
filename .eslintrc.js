@@ -260,6 +260,10 @@ module.exports = {
     'react/self-closing-comp': 'error',
     'react/display-name': 'warn',
     'react/jsx-no-useless-fragment': 'error',
+    'react/jsx-filename-extension': [
+      'error',
+      { extensions: ['.tsx', '.jsx'], allow: 'as-needed' },
+    ],
     // Jest rules
     'jest/no-conditional-expect': 0,
   },
