@@ -75,7 +75,7 @@ their implementations.
 - `yarn test --watch` will run jest with --watch
 - `yarn e2e` at the root will run the end to end suite
 - `yarn start-monaco` will launch webpack dev server for the monaco editor
-  example with github API from the root. this is the fastest way to test changes
+  example with GitHub API from the root. this is the fastest way to test changes
   to `graphql-language-service-interface`, parser, etc.
 
 if you want these commands to watch for changes to dependent packages in the
@@ -97,6 +97,6 @@ Then, you can run these commands:
 ### Developing Monaco GraphQL
 
 Follow the
-[`monaco-graphql` example readme](examples/monaco-graphql-webpack-example/README.md)
-to set it up, and then you can run `yarn start-monaco` from anywhere in the
+[`monaco-graphql` example readme](examples/monaco-graphql-webpack/README.md) to
+set it up, and then you can run `yarn start-monaco` from anywhere in the
 repository!
