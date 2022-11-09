@@ -57,7 +57,7 @@ export class SourceHelper {
     try {
       switch (type) {
         case 'Int':
-          if (parseInt(value)) {
+          if (parseInt(value, 10)) {
             return null;
           }
           break;
@@ -102,7 +102,7 @@ export class SourceHelper {
 
   typeCast(value: string, type: GraphQLScalarType) {
     if (type === 'Int') {
-      return parseInt(value);
+      return parseInt(value, 10);
     }
     if (type === 'Float') {
       return parseFloat(value);
