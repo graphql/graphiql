@@ -74,7 +74,10 @@ export class Logger implements VSCodeLogger {
     // @TODO: enable with debugging
     if (severityKey !== SEVERITY.Hint) {
       this._getOutputStream(severity).write(logMessage, err => {
-        err && console.error(err);
+        if (err) {
+          // eslint-disable-next-line no-console
+          console.error(err);
+        }
       });
     }
   }

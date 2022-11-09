@@ -696,6 +696,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
       const promises = chunk.map(fileInfo =>
         this.promiseToReadGraphQLFile(fileInfo.filePath)
           .catch(error => {
+            // eslint-disable-next-line no-console
             console.log('pro', error);
             /**
              * fs emits `EMFILE | ENFILE` error when there are too many

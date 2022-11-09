@@ -167,6 +167,7 @@ export class LanguageService {
   public updateSchema(schema: SchemaConfig): void {
     const schemaIndex = this._schemas.findIndex(c => c.uri === schema.uri);
     if (schemaIndex < 0) {
+      // eslint-disable-next-line no-console
       console.warn(
         'updateSchema could not find a schema in your config by that URI',
         schema.uri,

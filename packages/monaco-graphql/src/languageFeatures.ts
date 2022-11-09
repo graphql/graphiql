@@ -250,7 +250,8 @@ export class CompletionAdapter
         suggestions: completionItems.map(toCompletion),
       };
     } catch (err) {
-      console.error(`Error fetching completion items\n\n${err}`);
+      // eslint-disable-next-line no-console
+      console.error('Error fetching completion items', err);
       return { suggestions: [] };
     }
   }

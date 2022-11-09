@@ -61,6 +61,7 @@ async function render() {
 
     const schema = await schemaFetcher.loadSchema();
     if (schema) {
+      // eslint-disable-next-line no-console
       console.log('loaded schema', schema);
       monacoGraphQLAPI.setSchemaConfig([
         { ...schema, fileMatch: [operationUri, schemaModel.uri.toString()] },
@@ -320,7 +321,8 @@ export function renderGithubLoginButton() {
       { provider: 'github', scope: ['user'] },
       async (err: Error, data: { token: string }) => {
         if (err) {
-          console.error('Error Authenticating with GitHub: ' + err);
+          // eslint-disable-next-line no-console
+          console.error('Error authenticating with GitHub:', err);
         } else {
           schemaFetcher.setApiToken(data.token);
           await render();

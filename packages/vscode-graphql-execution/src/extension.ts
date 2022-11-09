@@ -23,7 +23,6 @@ function getConfig() {
 }
 
 export function activate(context: ExtensionContext) {
-  console.log('activated!');
   const outputChannel: OutputChannel = window.createOutputChannel(
     'GraphQL Operation Execution',
   );
@@ -31,6 +30,7 @@ export function activate(context: ExtensionContext) {
   const { debug } = config;
 
   if (debug) {
+    // eslint-disable-next-line no-console
     console.log('Extension "vscode-graphql" is now active!');
   }
 
@@ -102,5 +102,6 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
+  // eslint-disable-next-line no-console
   console.log('Extension "vscode-graphql-execution" is now de-active!');
 }

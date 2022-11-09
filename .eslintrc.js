@@ -53,7 +53,7 @@ module.exports = {
 
   rules: {
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
-    'no-console': 1,
+    'no-console': 'error',
     'no-constant-binary-expression': 2,
     'no-empty': [1, { allowEmptyCatch: true }],
     'no-extra-parens': 0,
@@ -304,10 +304,9 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/*.js', '**/resources/*.js'],
+      files: ['resources/**', 'scripts/**'],
       rules: {
-        'no-console': 0,
-        'no-await-in-loop': 0,
+        'no-console': 'off',
       },
     },
     {

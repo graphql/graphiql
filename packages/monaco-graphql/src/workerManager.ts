@@ -91,6 +91,7 @@ export class WorkerManager {
         });
         this._client = await this._worker.getProxy();
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('error loading worker', error);
       }
     }

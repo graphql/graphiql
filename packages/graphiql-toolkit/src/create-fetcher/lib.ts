@@ -94,7 +94,8 @@ export const createWebsocketsFetcherFromUrl = (
         );
       }
     }
-    console.error(`Error creating websocket client for:\n${url}\n\n${err}`);
+    // eslint-disable-next-line no-console
+    console.error(`Error creating websocket client for ${url}`, err);
   }
 };
 
