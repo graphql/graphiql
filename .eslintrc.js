@@ -317,5 +317,12 @@ module.exports = {
         'no-undef': 'off', // ts(2304)
       },
     },
+    {
+      // Disable rules for examples folder
+      files: ['examples/**'],
+      rules: {
+        'no-console': 'off',
+      },
+    }
   ],
 };
