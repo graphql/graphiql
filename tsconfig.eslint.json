@@ -23,7 +23,7 @@
     "packages/graphiql/cypress/plugins/*.js",
     "packages/cm6-graphql/rollup.config.js",
     "packages/graphiql-plugin-code-exporter/postcss.config.js",
-    "packages/graphiql-react/mocks/svg.js",
+    "packages/graphiql-react/mocks/svg.jsx",
     "packages/graphiql-react/postcss.config.js",
     "packages/graphql-language-service/src/utils/__tests__/__fixtures__/file.js",
     "packages/graphiql/__mocks__/codemirror.ts",
