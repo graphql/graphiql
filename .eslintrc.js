@@ -304,7 +304,7 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/**', 'scripts/**'],
+      files: ['resources/**', '**/resources/**', 'scripts/**'],
       rules: {
         'no-console': 'off',
       },
@@ -323,6 +323,6 @@ module.exports = {
       rules: {
         'no-console': 'off',
       },
-    }
+    },
   ],
 };
