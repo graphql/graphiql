@@ -48,6 +48,7 @@ export class GraphQLWorker {
       );
       return graphqlDiagnostics.map(toMarkerData);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
       return [];
     }
@@ -71,6 +72,7 @@ export class GraphQLWorker {
       );
       return suggestions.map(suggestion => toCompletion(suggestion));
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
       return [];
     }
@@ -104,6 +106,7 @@ export class GraphQLWorker {
         ),
       };
     } catch (err) {
+      // eslint-disable-next-line
       console.error(err);
       return null;
     }

@@ -27,6 +27,7 @@ export async function activate(context: ExtensionContext) {
   const config = getConfig();
   const { debug } = config;
   if (debug) {
+    // eslint-disable-next-line no-console
     console.log('Extension "vscode-graphql" is now active!');
   }
 
@@ -127,9 +128,10 @@ export async function activate(context: ExtensionContext) {
 
 export function deactivate() {
   if (!client) {
-    return undefined;
+    return;
   }
-  console.log('Extension "vscode-graphql" will be de-activated!!');
+  // eslint-disable-next-line no-console
+  console.log('Extension "vscode-graphql" will be de-activated!');
   return client.stop();
 }
 

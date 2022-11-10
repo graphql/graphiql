@@ -7,13 +7,10 @@ import { startServer } from 'graphql-language-service-server';
 // watching the extension, so please restart the extension debugger for changes!
 
 const start = () => {
-  startServer({
-    method: 'node',
-  })
-    .then(() => {})
-    .catch(err => {
-      console.error(err);
-    });
+  startServer({ method: 'node' }).catch(err => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  });
 };
 
 start();
