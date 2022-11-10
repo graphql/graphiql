@@ -1,7 +1,7 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 ## [1.1.1-alpha.8](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.1.1-alpha.7...example-graphiql-webpack@1.1.1-alpha.8) (2021-01-07)
 
@@ -43,7 +43,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- [RFC] GraphiQL rewrite for monaco editor, react context and redesign, i18n ([#1523](https://github.com/graphql/graphiql/issues/1523)) ([ad730cd](https://github.com/graphql/graphiql/commit/ad730cdc2e3cb7216d821a01725c60475989ee20))
+- [RFC] GraphiQL rewrite for monaco editor, react context and redesign, i18n
+  ([#1523](https://github.com/graphql/graphiql/issues/1523))
+  ([ad730cd](https://github.com/graphql/graphiql/commit/ad730cdc2e3cb7216d821a01725c60475989ee20))
 
 # [1.0.0](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.13...example-graphiql-webpack@1.0.0) (2020-06-11)
 
@@ -69,7 +71,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- introduce proper vscode completion kinds ([#1488](https://github.com/graphql/graphiql/issues/1488)) ([f19aa0d](https://github.com/graphql/graphiql/commit/f19aa0ddde6109526c101c8a487f43bbb8238394))
+- introduce proper vscode completion kinds
+  ([#1488](https://github.com/graphql/graphiql/issues/1488))
+  ([f19aa0d](https://github.com/graphql/graphiql/commit/f19aa0ddde6109526c101c8a487f43bbb8238394))
 
 # [1.0.0-alpha.8](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.7...example-graphiql-webpack@1.0.0-alpha.8) (2020-04-10)
 
@@ -87,7 +91,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- upgrade to graphql@15.0.0 for [#1191](https://github.com/graphql/graphiql/issues/1191) ([#1204](https://github.com/graphql/graphiql/issues/1204)) ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
+- upgrade to graphql@15.0.0 for
+  [#1191](https://github.com/graphql/graphiql/issues/1191)
+  ([#1204](https://github.com/graphql/graphiql/issues/1204))
+  ([f13c8e9](https://github.com/graphql/graphiql/commit/f13c8e9d0e66df4b051b332c7d02f4bb83e07ffd))
 
 # [1.0.0-alpha.4](https://github.com/graphql/graphiql/compare/example-graphiql-webpack@1.0.0-alpha.3...example-graphiql-webpack@1.0.0-alpha.4) (2020-04-03)
 
@@ -105,13 +112,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
-- deprecate support for 15, support react 16 features ([#1107](https://github.com/graphql/graphiql/issues/1107)) ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
+- deprecate support for 15, support react 16 features
+  ([#1107](https://github.com/graphql/graphiql/issues/1107))
+  ([bc4b6fc](https://github.com/graphql/graphiql/commit/bc4b6fc))
 
 ### BREAKING CHANGES
 
-- Deprecate support for React 15. Please use React 16.8 or greater for hooks support.
-  Co-authored-by: @ryan-m-walker, @acao
-  Reviewed-by: @benjie
+- Deprecate support for React 15. Please use React 16.8 or greater for hooks
+  support. Co-authored-by: @ryan-m-walker, @acao Reviewed-by: @benjie
 
 ## [0.0.10](https://github.com/graphql/graphiql/compare/graphiql-example-webpack@0.0.9...graphiql-example-webpack@0.0.10) (2019-12-09)
 
@@ -129,16 +137,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-- ensure css files move with babel dist ([ca95547](https://github.com/graphql/graphiql/commit/ca95547))
+- ensure css files move with babel dist
+  ([ca95547](https://github.com/graphql/graphiql/commit/ca95547))
 
 ## [0.0.6](https://github.com/graphql/graphiql/compare/graphiql-example-webpack@0.0.5...graphiql-example-webpack@0.0.6) (2019-12-03)
 
 ### Bug Fixes
 
-- convert browserify build to webpack, fixes [#976](https://github.com/graphql/graphiql/issues/976) ([#1001](https://github.com/graphql/graphiql/issues/1001)) ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
+- convert browserify build to webpack, fixes
+  [#976](https://github.com/graphql/graphiql/issues/976)
+  ([#1001](https://github.com/graphql/graphiql/issues/1001))
+  ([3caf041](https://github.com/graphql/graphiql/commit/3caf041))
 
 ## 0.0.5 (2019-11-26)
 
 ### Bug Fixes
 
-- webpack resolutions for [#882](https://github.com/graphql/graphiql/issues/882), add webpack example ([ea9df3e](https://github.com/graphql/graphiql/commit/ea9df3e))
+- webpack resolutions for
+  [#882](https://github.com/graphql/graphiql/issues/882), add webpack example
+  ([ea9df3e](https://github.com/graphql/graphiql/commit/ea9df3e))

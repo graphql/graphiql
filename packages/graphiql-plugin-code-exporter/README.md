@@ -1,6 +1,8 @@
 # GraphiQL Code Exporter Plugin
 
-This package provides a plugin that integrates the [GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter) into the GraphiQL UI.
+This package provides a plugin that integrates the
+[GraphiQL Code Exporter](https://github.com/OneGraph/graphiql-code-exporter)
+into the GraphiQL UI.
 
 ## Install
 
@@ -10,7 +12,8 @@ Use your favorite package manager to install the package:
 npm i -S @graphiql/plugin-code-exporter
 ```
 
-The following packages are peer dependencies, so make sure you have them installed as well:
+The following packages are peer dependencies, so make sure you have them
+installed as well:
 
 ```sh
 npm i -S react react-dom graphql
@@ -18,7 +21,10 @@ npm i -S react react-dom graphql
 
 ## Usage
 
-See [GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter) for all details on available `props` and how to [create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
+See
+[GraphiQL Code Exporter README](https://github.com/OneGraph/graphiql-code-exporter)
+for all details on available `props` and how to
+[create snippets](https://github.com/OneGraph/graphiql-code-exporter#snippets).
 
 ```jsx
 import { useCodeExporterPlugin } from '@graphiql/plugin-code-exporter';
@@ -100,4 +106,6 @@ function GraphiQLWithExplorer() {
 
 ## CDN bundles
 
-You can also use this plugin when using the [CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the [example HTML file](examples/index.html) that shows how you can do this.
+You can also use this plugin when using the
+[CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the
+[example HTML file](examples/index.html) that shows how you can do this.

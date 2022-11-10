@@ -16,8 +16,8 @@ typeahead hinter powered by your GraphQL Schema.
 npm install --save codemirror-graphql
 ```
 
-CodeMirror helpers install themselves to the global CodeMirror when they
-are imported.
+CodeMirror helpers install themselves to the global CodeMirror when they are
+imported.
 
 ```js
 import type { ValidationContext, SDLValidationContext } from 'graphql';
@@ -43,7 +43,8 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ## External Fragments Example
 
-If you want to have autocompletion for external fragment definitions, there's a new configuration setting available
+If you want to have autocompletion for external fragment definitions, there's a
+new configuration setting available
 
 ```ts
 import CodeMirror from 'codemirror';
@@ -80,7 +81,8 @@ CodeMirror.fromTextArea(myTextarea, {
 
 ### Custom Validation Rules
 
-If you want to show custom validation, you can do that too! It uses the `ValidationRule` interface.
+If you want to show custom validation, you can do that too! It uses the
+`ValidationRule` interface.
 
 ```js
 import type { ValidationRule } from 'graphql';
