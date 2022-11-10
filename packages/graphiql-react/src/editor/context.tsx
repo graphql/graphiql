@@ -234,6 +234,11 @@ export type EditorContextProviderProps = {
    * typing in the editor.
    */
   variables?: string;
+
+  /**
+   * Headers to be set when opening a new tab
+   */
+  defaultHeaders?: string;
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
@@ -275,6 +280,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       headers,
       initialTabs: props.initialTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
+      defaultHeaders: props.defaultHeaders,
       storage,
     });
     storeTabs(tabState);
@@ -285,7 +291,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
         '',
       variables: variables ?? '',
-      headers: headers ?? '',
+      headers: headers ?? props.defaultHeaders ?? '',
       response,
       tabState,
     };
@@ -312,7 +318,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [...updatedValues.tabs, createTab()],
+        tabs: [
+          ...updatedValues.tabs,
+          createTab({ headers: props.defaultHeaders }),
+        ],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);

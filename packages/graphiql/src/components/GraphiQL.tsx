@@ -117,6 +117,7 @@ export function GraphiQL({
   validationRules,
   variables,
   visiblePlugin,
+  defaultHeaders,
   ...props
 }: GraphiQLProps) {
   // Ensure props are correct
@@ -131,6 +132,7 @@ export function GraphiQL({
       getDefaultFieldNames={getDefaultFieldNames}
       dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
+      defaultHeaders={defaultHeaders}
       externalFragments={externalFragments}
       fetcher={fetcher}
       headers={headers}

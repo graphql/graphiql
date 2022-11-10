@@ -97,6 +97,7 @@ ReactDOM.render(
     query: parameters.query,
     variables: parameters.variables,
     headers: parameters.headers,
+    defaultHeaders: parameters.defaultHeaders,
     onEditQuery: onEditQuery,
     onEditVariables: onEditVariables,
     onEditHeaders: onEditHeaders,

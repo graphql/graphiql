@@ -66,6 +66,7 @@ export type TabsState = {
 
 export function getDefaultTabState({
   defaultQuery,
+  defaultHeaders,
   headers,
   initialTabs,
   query,
@@ -73,6 +74,7 @@ export function getDefaultTabState({
   storage,
 }: {
   defaultQuery: string;
+  defaultHeaders?: string;
   headers: string | null;
   initialTabs?: TabDefinition[];
   query: string | null;
@@ -126,7 +128,13 @@ export function getDefaultTabState({
     return {
       activeTabIndex: 0,
       tabs: (
-        initialTabs || [{ query: query ?? defaultQuery, variables, headers }]
+        initialTabs || [
+          {
+            query: query ?? defaultQuery,
+            variables,
+            headers: headers ?? defaultHeaders,
+          },
+        ]
       ).map(createTab),
     };
   }
