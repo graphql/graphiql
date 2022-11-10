@@ -116,7 +116,7 @@ module.exports = {
     'no-void': 1,
     '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
-    radix: 1,
+    radix: 'error',
     '@typescript-eslint/prefer-as-const': 'error',
     'require-await': 0,
     // 'require-await': 1,
