@@ -1,6 +1,8 @@
 # graphql-language-service-cli
 
-> Note: As of 3.0.0, this package has been renamed from `graphql-language-service` to `graphql-language-service-cli`. please now use the `graphql-lsp` bin, instead of the `graphql` binary.
+> Note: As of 3.0.0, this package has been renamed from
+> `graphql-language-service` to `graphql-language-service-cli`. please now use
+> the `graphql-lsp` bin, instead of the `graphql` binary.
 
 [![NPM](https://img.shields.io/npm/v/graphql-language-service-cli.svg)](https://npmjs.com/graphql-language-service-cli)
 ![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-vli?label=npm%20downloads)
@@ -9,27 +11,34 @@
 
 _We welcome your feedback and suggestions._
 
-GraphQL Language Service provides an interface for building GraphQL language services for IDEs.
+GraphQL Language Service provides an interface for building GraphQL language
+services for IDEs.
 
-Almost 100% for [Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol) is in place
+Almost 100% for
+[Microsoft's Language Server Protocol](https://github.com/Microsoft/language-server-protocol)
+is in place
 
 Supported features include:
 
 - Diagnostics (GraphQL syntax linting/validations) (**spec-compliant**)
 - Autocomplete suggestions (**spec-compliant**)
-- Hyperlink to fragment definitions and named types (type, input, enum) definitions (**spec-compliant**)
+- Hyperlink to fragment definitions and named types (type, input, enum)
+  definitions (**spec-compliant**)
 - Outline view support for queries and SDL
 - Symbols support across the workspace
 
-see more information at [`graphql-language-service-server`](https://npmjs.com/graphql-language-service-server)
+see more information at
+[`graphql-language-service-server`](https://npmjs.com/graphql-language-service-server)
 
 ## Installation and Usage
 
 ### Dependencies
 
-An LSP-compatible client with a file watcher that sends watch notifications to the server.
+An LSP-compatible client with a file watcher that sends watch notifications to
+the server.
 
-**DROPPED**: GraphQL Language Service no longer depends on [Watchman](https://facebook.github.io/watchman/)
+**DROPPED**: GraphQL Language Service no longer depends on
+[Watchman](https://facebook.github.io/watchman/)
 
 Only node 9 or greater, and npm or yarn are required dependencies.
 
@@ -56,11 +65,13 @@ Check out [graphql-config](https://graphql-config.com/docs)
 The custom graphql language configurations are:
 
 - `customDirectives` - `['@myExampleDirective']`
-- `customValidationRules` - returns rules array with parameter `ValidationContext` from `graphql/validation`
+- `customValidationRules` - returns rules array with parameter
+  `ValidationContext` from `graphql/validation`
 
 ### LSP Workspace Configuration
 
-When running `server`, your LSP-compatible client can [provide additional workspace configuration](https://npmjs.com/graphql-language-service-server#workspace-configuration).
+When running `server`, your LSP-compatible client can
+[provide additional workspace configuration](https://npmjs.com/graphql-language-service-server#workspace-configuration).
 
 For example, `coc.nvim` allows for providing custom `settings`
 
@@ -78,7 +89,8 @@ For example, `coc.nvim` allows for providing custom `settings`
 }
 ```
 
-this would allow for legacy `graphql-config` file formats like `.graphqlconfig`, useful on projects maintaining compatibility with the intellij plugin
+this would allow for legacy `graphql-config` file formats like `.graphqlconfig`,
+useful on projects maintaining compatibility with the intellij plugin
 
 ### Using the command-line interface
 
@@ -86,7 +98,8 @@ this would allow for legacy `graphql-config` file formats like `.graphqlconfig`,
 graphql-lsp server --schema=localhost:3000
 ```
 
-The node executable contains several commands: `server` and the command-line language service methods (`validate`, `autocomplete`, `outline`).
+The node executable contains several commands: `server` and the command-line
+language service methods (`validate`, `autocomplete`, `outline`).
 
 ### CLI Options
 

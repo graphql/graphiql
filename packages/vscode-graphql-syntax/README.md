@@ -1,6 +1,7 @@
 # GraphQL Syntax Support
 
-Adds full GraphQL syntax highlighting and language support such as bracket matching.
+Adds full GraphQL syntax highlighting and language support such as bracket
+matching.
 
 - Supports `.graphql`/`.gql`/`.graphqls` highlighting
 - [Javascript, Typescript & JSX/TSX](#ts) & Vue & Svelte
@@ -9,14 +10,16 @@ Adds full GraphQL syntax highlighting and language support such as bracket match
 - PHP
 - [Markdown](#markdown)
 
-You'll want to install this if you do not use `graphql-config`, or want to use the highlighting with other extensions than `vscode-graphql`
+You'll want to install this if you do not use `graphql-config`, or want to use
+the highlighting with other extensions than `vscode-graphql`
 
 ## Embedded Language Usage
 
 <span id="ts">
 ### Javascript & Typescript
 
-The following delimiters are accepted for syntax highlighting. If you are using any of these patterns and they do not work, please open an issue!
+The following delimiters are accepted for syntax highlighting. If you are using
+any of these patterns and they do not work, please open an issue!
 
 #### Template Literal Expressions
 
@@ -74,13 +77,15 @@ graphql(
 );
 ```
 
-there is a bug with function expressions with type arguments like these that we need to fix:
+there is a bug with function expressions with type arguments like these that we
+need to fix:
 
 ```ts
 gql<MyType>(`{ id }`);
 ```
 
-Note, inline `""` and `''` string literals could also be delimited if needed, but we currently only delimit graphql template strings for obvious reasons
+Note, inline `""` and `''` string literals could also be delimited if needed,
+but we currently only delimit graphql template strings for obvious reasons
 
 #### Comment-Delimited patterns
 
@@ -97,7 +102,8 @@ const query = `#graphql
 `;
 ```
 
-For full autocompletion, validation and other features, you can install `GraphQL.vscode-graphql`, which depends on this extension
+For full autocompletion, validation and other features, you can install
+`GraphQL.vscode-graphql`, which depends on this extension
 
 <span id="markdown">
 
@@ -115,7 +121,8 @@ For full autocompletion, validation and other features, you can install `GraphQL
 
 #### embedded graphql in js & ts codeblocks
 
-simple js/ts`gql` & `graphql` template tag expression support inside any backtick codeblocks.
+simple js/ts`gql` & `graphql` template tag expression support inside any
+backtick codeblocks.
 
 ````markdown
 # Hello Jan
@@ -133,11 +140,13 @@ string : X = gql`
 
 ## Other languages
 
-We actually support other languages than this! just need to extend this readme even further! 🥵
+We actually support other languages than this! just need to extend this readme
+even further! 🥵
 
 ## Contributing
 
-Feel free to open a PR to fix, enhance any language support, or even add new languages 😍
+Feel free to open a PR to fix, enhance any language support, or even add new
+languages 😍
 
 see:
 
@@ -146,7 +155,10 @@ see:
 
 ## Usage Note
 
-We would love for the other graphql extension authors to freely use this syntax extension as well! Even if your extension is designed to replace `vscode-graphql`, or if it's designed for other other purposes. It uses an MIT license, but attribution is always a nice gesture to the original authors :)
+We would love for the other graphql extension authors to freely use this syntax
+extension as well! Even if your extension is designed to replace
+`vscode-graphql`, or if it's designed for other other purposes. It uses an MIT
+license, but attribution is always a nice gesture to the original authors :)
 
 ## License
 
