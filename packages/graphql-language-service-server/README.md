@@ -147,6 +147,8 @@ module.exports = {
       cacheSchemaFileForLookup: true,
       // undefined by default which has the same effect as `true`, set to `false` if you are already using // `graphql-eslint` or some other tool for validating graphql in your IDE. Must be explicitly `false` to disable this feature, not just "falsy"
       enableValidation: true,
+      // opt-in for allowing legacy decorators, which will set the `decorators-legacy` option in the Babel parser configuration. Must be explicitly `true` to enable, not just "truthy".
+      enableLegacyDecorators: true,
     },
   },
 };
@@ -188,6 +190,7 @@ export default {
     languageService: {
       cacheSchemaFileForLookup: false,
       enableValidation: true,
+      enableLegacyDecorators: false,
     },
   },
 };

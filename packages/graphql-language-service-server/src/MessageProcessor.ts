@@ -128,7 +128,7 @@ export class MessageProcessor {
     parser?: typeof parseDocument;
     tmpDir?: string;
     connection: Connection;
-    enableLegacyDecorators?: boolean
+    enableLegacyDecorators?: boolean;
   }) {
     this._connection = connection;
     this._textDocumentCache = new Map();
@@ -138,7 +138,16 @@ export class MessageProcessor {
     this._graphQLConfig = config;
     this._parser = (text, uri) => {
       const p = parser ?? parseDocument;
-      return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger, enableLegacyDecorators);
+      return p(
+        text,
+        uri,
+        fileExtensions,
+        graphqlFileExtensions,
+        this._logger,
+        enableLegacyDecorators ||
+          this._graphQLCache.getProjectForFile(uri).extensions?.languageService
+            ?.enableLegacyDecorators === true,
+      );
     };
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
