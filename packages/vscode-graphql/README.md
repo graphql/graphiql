@@ -137,6 +137,12 @@ module.exports = {
 Notice that `documents` key supports glob pattern and hence `["**/*.graphql"]`
 is also valid.
 
+## VSCode settings
+
+[These documented settings](https://www.npmjs.com/package/graphql-language-service-server#user-content-workspace-configuration)
+are applicable to VSCode and any other IDE extension/plugin that uses the
+`graphql-language-service-server`/cli
+
 ## Frequently Asked Questions
 
 <span id="legacy" />

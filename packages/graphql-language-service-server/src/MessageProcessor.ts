@@ -134,10 +134,20 @@ export class MessageProcessor {
     this._willShutdown = false;
     this._logger = logger;
     this._graphQLConfig = config;
+
     this._parser = (text, uri) => {
       const p = parser ?? parseDocument;
-      return p(text, uri, fileExtensions, graphqlFileExtensions, this._logger);
+      return p(
+        text,
+        uri,
+        fileExtensions,
+        graphqlFileExtensions,
+        this._logger,
+        // this will be updated below on config
+        this._settings,
+      );
     };
+
     this._tmpDir = tmpDir || tmpdir();
     this._tmpDirBase = path.join(this._tmpDir, 'graphql-language-service');
     this._tmpUriBase = URI.file(this._tmpDirBase).toString();
@@ -461,10 +471,17 @@ export class MessageProcessor {
 
       await this._updateFragmentDefinition(uri, contents);
       await this._updateObjectTypeDefinition(uri, contents);
+      const { enableValidation } =
+        await this._connection.workspace.getConfiguration({
+          section: 'vscode-graphql',
+        });
 
       const diagnostics: Diagnostic[] = [];
 
-      if (project?.extensions?.languageService?.enableValidation !== false) {
+      if (
+        enableValidation ??
+        project?.extensions?.languageService?.enableValidation !== false
+      ) {
         // Send the diagnostics onChange as well
         await Promise.all(
           contents.map(async ({ query, range }) => {

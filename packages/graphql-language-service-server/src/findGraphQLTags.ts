@@ -18,6 +18,7 @@ import { Position, Range } from 'graphql-language-service';
 import { parse, ParserOptions, ParserPlugin } from '@babel/parser';
 import * as VueParser from '@vue/compiler-sfc';
 import { Logger } from './Logger';
+import { ParseDocumentOptions } from './parseDocument';
 
 // Attempt to be as inclusive as possible of source text.
 const PARSER_OPTIONS: ParserOptions = {
@@ -38,29 +39,37 @@ interface TagVisitors {
 }
 
 const BABEL_PLUGINS: ParserPlugin[] = [
-  'jsx',
-  'doExpressions',
-  'objectRestSpread',
-  ['decorators', { decoratorsBeforeExport: false }],
+  'asyncDoExpressions',
+  'asyncGenerators',
+  'bigInt',
   'classProperties',
   'classPrivateProperties',
   'classPrivateMethods',
+  'classStaticBlock',
+  'doExpressions',
+  'decimal',
+  'destructuringPrivate',
+  'dynamicImport',
   'exportDefaultFrom',
   'exportNamespaceFrom',
-  'asyncGenerators',
   'functionBind',
   'functionSent',
-  'dynamicImport',
-  'numericSeparator',
-  'optionalChaining',
   'importMeta',
-  'bigInt',
-  'optionalCatchBinding',
-  'throwExpressions',
-  ['pipelineOperator', { proposal: 'minimal' }],
-  'nullishCoalescingOperator',
-  'topLevelAwait',
+  'importAssertions',
+  'jsx',
   'logicalAssignment',
+  'moduleBlocks',
+  'moduleStringNames',
+  'nullishCoalescingOperator',
+  'numericSeparator',
+  'objectRestSpread',
+  'optionalCatchBinding',
+  'optionalChaining',
+  ['pipelineOperator', { proposal: 'minimal' }],
+  'privateIn',
+  'regexpUnicodeSets',
+  'throwExpressions',
+  'topLevelAwait',
 ];
 
 type ParseVueSFCResult =
@@ -96,6 +105,7 @@ export function findGraphQLTags(
   ext: string,
   uri: string,
   logger: Logger,
+  options: ParseDocumentOptions,
 ): TagResult[] {
   const result: TagResult[] = [];
 
@@ -130,6 +140,12 @@ export function findGraphQLTags(
     } else {
       plugins?.push('flow', 'flowComments');
     }
+    if (options?.enableLegacyDecorators) {
+      plugins.push('decorators-legacy');
+    } else {
+      plugins.push(['decorators', { decoratorsBeforeExport: false }]);
+    }
+
     PARSER_OPTIONS.plugins = plugins;
 
     try {

@@ -31,10 +31,20 @@ jest.mock('fs', () => ({
 }));
 
 describe('MessageProcessor', () => {
+  let getConfigurationReturnValue = {};
   const logger = new Logger(tmpdir());
   const messageProcessor = new MessageProcessor({
-    // @ts-ignore
-    connection: {},
+    connection: {
+      workspace: {
+        // @ts-expect-error
+        getConfiguration: async () => {
+          return {
+            enableLegacyDecorators: false,
+            enableValidation: true,
+          };
+        },
+      },
+    },
     logger,
     fileExtensions: ['js'],
     graphqlFileExtensions: ['graphql'],
@@ -58,6 +68,18 @@ describe('MessageProcessor', () => {
       config: gqlConfig,
       parser: parseDocument,
     });
+    // @ts-ignore
+    messageProcessor._connection = {
+      // @ts-expect-error
+      get workspace() {
+        return {
+          getConfiguration: async () => {
+            return [];
+          },
+        };
+      },
+    };
+
     messageProcessor._languageService = {
       // @ts-ignore
       getAutocompleteSuggestions: (query, position, uri) => {
@@ -112,19 +134,6 @@ describe('MessageProcessor', () => {
       },
     };
   });
-
-  let getConfigurationReturnValue = {};
-  // @ts-ignore
-  messageProcessor._connection = {
-    // @ts-ignore
-    get workspace() {
-      return {
-        getConfiguration: async () => {
-          return [getConfigurationReturnValue];
-        },
-      };
-    },
-  };
 
   const initialDocument = {
     textDocument: {

@@ -71,15 +71,17 @@ your extension's `ServerOptions.run.module`, for example.
 
 `startServer` function takes the following parameters:
 
-| Parameter      | Required                                             | Description                                                                       |
-| -------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| port           | `true` when method is `socket`, `false` otherwise    | port for the LSP server to run on                                                 |
-| method         | `false`                                              | `socket`, `streams`, or `node` (ipc)                                              |
-| config         | `false`                                              | custom `graphql-config` instance from `loadConfig` (see example above)            |
-| configDir      | `false`                                              | the directory where graphql-config is found                                       |
-| extensions     | `false`                                              | array of functions to transform the graphql-config and add extensions dynamically |
-| parser         | `false`                                              | Customize _all_ file parsing by overriding the default `parseDocument` function   |
-| fileExtensions | `false`. defaults to `['.js', '.ts', '.tsx, '.jsx']` | Customize file extensions used by the default LSP parser                          |
+| Parameter              | Required                                             | Description                                                                                                                                                                       |
+| ---------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| port                   | `true` when method is `socket`, `false` otherwise    | port for the LSP server to run on                                                                                                                                                 |
+| method                 | `false`                                              | `socket`, `streams`, or `node` (ipc)                                                                                                                                              |
+| config                 | `false`                                              | custom `graphql-config` instance from `loadConfig` (see example above)                                                                                                            |
+| configDir              | `false`                                              | the directory where graphql-config is found                                                                                                                                       |
+| extensions             | `false`                                              | array of functions to transform the graphql-config and add extensions dynamically                                                                                                 |
+| parser                 | `false`                                              | Customize _all_ file parsing by overriding the default `parseDocument` function                                                                                                   |
+| fileExtensions         | `false`. defaults to `['.js', '.ts', '.tsx, '.jsx']` | Customize file extensions used by the default LSP parser                                                                                                                          |
+| enableValidation       | `true`. defaults to `true`                           | Disable default graphql-js document validation                                                                                                                                    |
+| enableLegacyDecorators | `true`. defaults to `false`                          | / opt-in for allowing legacy decorators, which will set the `decorators-legacy` option in the Babel parser configuration. Must be explicitly `true` to enable, not just "truthy". |
 
 ### GraphQL configuration file
 
@@ -148,8 +150,8 @@ await startServer({
 
 The graphql-config features we support are:
 
-```js
-module.exports = {
+```ts
+export default {
   extensions: {
     // add customDirectives (legacy). you can now provide multiple schema pointers to config.schema/project.schema, including inline strings. same with scalars or any SDL type that you'd like to append to the schema
     customDirectives: ['@myExampleDirective'],
@@ -160,7 +162,9 @@ module.exports = {
       // should the language service read schema for definition lookups from a cached file based on graphql config output?
       // NOTE: this will disable all definition lookup for local SDL files
       cacheSchemaFileForLookup: true,
-      // undefined by default which has the same effect as `true`, set to `false` if you are already using // `graphql-eslint` or some other tool for validating graphql in your IDE. Must be explicitly `false` to disable this feature, not just "falsy"
+      // undefined by default which has the same effect as `true`, set to `false` if you are already using
+      // `graphql-eslint` or some other tool for validating graphql in your IDE.
+      // Must be explicitly `false` to disable this feature, not just "falsy"
       enableValidation: true,
     },
   },
@@ -245,11 +249,11 @@ with graphql config. The final option can be set in `graphql-config` as well
 | `graphql-config.load.legacy`              | `true`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
 | `graphql-config.dotEnvPath`               | `null`                          | backwards compatibility with `graphql-config@2`                                                                                                                   |
 | `vscode-graphql.cacheSchemaFileForLookup` | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls |
+| `vscode-graphql.validateSchema`           | `false`                         | generate an SDL file based on your graphql-config schema configuration for schema definition lookup and other features. useful when your `schema` config are urls |
+| `vscode-graphql.enableLegacyDecorators`   | `false`                         | opt-in for allowing legacy decorators, which will set the `decorators-legacy` option in the Babel parser configuration. Must be explicitly `true` to enable.      |
 
-all the `graphql-config.load.*` configuration values come from static
-`loadConfig()` options in graphql config.
-
-(more coming soon!)
+all the `graphql-config.load.*` configuration values come from the static
+`loadConfig()` options in graphql-config.
 
 ### Architectural Overview
 
