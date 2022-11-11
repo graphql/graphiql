@@ -12,10 +12,7 @@
   "exclude": [
     "**/__tests__/**",
     "**/dist/**.*",
-    "**/*.spec.ts",
-    "**/*.spec.js",
-    "**/*-test.ts",
-    "**/*-test.js",
+    "cypress/**",
     "**/*.stories.js",
     "**/*.stories.ts",
     "**/*.stories.tsx"
