@@ -751,6 +751,44 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             }}
           />
         </div>
+        {editorContext.userControlledShouldPersistHeaders ? (
+          <div className="graphiql-dialog-section">
+            <div>
+              <div className="graphiql-dialog-section-title">
+                Persist headers
+              </div>
+              <div className="graphiql-dialog-section-caption">
+                Save headers upon reloading.
+              </div>
+            </div>
+            <ButtonGroup>
+              <Button
+                type="button"
+                id="enable-persist-headers"
+                className={
+                  editorContext.shouldPersistHeaders ? 'active' : undefined
+                }
+                onClick={() => {
+                  editorContext.setShouldPersistHeaders(true);
+                }}
+              >
+                On
+              </Button>
+              <Button
+                type="button"
+                id="disable-persist-headers"
+                className={
+                  !editorContext.shouldPersistHeaders ? 'active' : undefined
+                }
+                onClick={() => {
+                  editorContext.setShouldPersistHeaders(false);
+                }}
+              >
+                Off
+              </Button>
+            </ButtonGroup>
+          </div>
+        ) : null}
         <div className="graphiql-dialog-section">
           <div>
             <div className="graphiql-dialog-section-title">Theme</div>

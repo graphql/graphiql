@@ -139,6 +139,14 @@ export type EditorContextType = TabsState & {
    * If the contents of the headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
+  /**
+   * Changes if headers should be persisted.
+   */
+  setShouldPersistHeaders(persist: boolean): void;
+  /**
+   * Indicates if the user can control `shouldPersistHeaders` value.
+   */
+  userControlledShouldPersistHeaders: boolean;
 };
 
 export const EditorContext =
@@ -260,6 +268,26 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     null,
   );
 
+  const [persistHeadersInternal, setShouldPersistHeadersInternal] = useState(
+    props.shouldPersistHeaders ??
+      storage?.get('shouldPersistHeaders') === 'true',
+  );
+  const userControlledShouldPersistHeaders =
+    props.shouldPersistHeaders === undefined;
+  const shouldPersistHeaders = userControlledShouldPersistHeaders
+    ? persistHeadersInternal
+    : (props.shouldPersistHeaders as boolean);
+  const setShouldPersistHeaders = useCallback(
+    (persist: boolean) => {
+      if (!persist) {
+        storage?.set(STORAGE_KEY_HEADERS, '');
+      }
+      setShouldPersistHeadersInternal(persist);
+      storage?.set('shouldPersistHeaders', persist.toString());
+    },
+    [storage],
+  );
+
   useSynchronizeValue(headerEditor, props.headers);
   useSynchronizeValue(queryEditor, props.query);
   useSynchronizeValue(responseEditor, props.response);
@@ -267,7 +295,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const storeTabs = useStoreTabs({
     storage,
-    shouldPersistHeaders: props.shouldPersistHeaders,
+    shouldPersistHeaders,
   });
 
   // We store this in state but never update it. By passing a function we only
@@ -454,7 +482,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      shouldPersistHeaders: props.shouldPersistHeaders || false,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
+      userControlledShouldPersistHeaders,
     }),
     [
       tabState,
@@ -475,7 +505,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      props.shouldPersistHeaders,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
+      userControlledShouldPersistHeaders,
     ],
   );
 
