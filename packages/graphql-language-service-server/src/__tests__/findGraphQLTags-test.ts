@@ -159,10 +159,30 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
-  it('finds queries with modern & legacy decorators', async () => {
+  it('finds queries with es7 decorators', async () => {
     const text = `
-    import { Module } from 'example/common';
-    import { GraphQLModule } from 'example/graphql';
+   
+    class C {
+      state = {isLoading: true}
+      @enumerable(false)
+      method() {}
+      @something
+      onChange() {}
+    }
+
+    // 'legacy-decorators' does'nt like this this. thus why the modes are incompatible
+    class MyClass1 extends Component {
+      state = {isLoading: true}
+      
+      @something
+      onChange() {}
+      
+      @something()
+      handleSubmit() {}
+    }
+    
+    @isTestable(true)
+    class MyClass {}
     
     @Module({
       imports: [
@@ -173,10 +193,17 @@ query Test {
       ],
     })
 
-    @a
-      export class AppModule {}
-      const query = graphql\` query {} \` 
+    class A {}
     
+@Decorator.a.b()
+class Todo {}
+
+@Decorator.d().e
+class Todo2{}
+
+    @a
+   class AppModule {}
+      const query = graphql\` query {} \` 
     `;
     const contents = findGraphQLTags(text, '.ts');
 
