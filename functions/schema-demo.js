@@ -41,7 +41,7 @@ exports.handler = (event, context) =>
 // // Server
 // app.post('/graphql', graphqlHTTP({ schema }));
 
-// // app.get('/graphql', graphQLMiddleware);
+// app.get('/graphql', graphQLMiddleware);
 // // Export Lambda handler
 
 // exports.handler = serverless(app, {

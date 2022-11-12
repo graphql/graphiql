@@ -64,5 +64,10 @@ working-group/
 # Vendored files
 /packages/graphiql/test/vendor
 
-.changeset
+.changeset/*.md
 storybook-static/
+
+# Followed are located in .gitignore
+packages/graphiql-react/types/
+packages/graphiql-plugin-explorer/types/
+packages/graphiql-plugin-code-exporter/types/
