@@ -8,7 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
-// / <reference types="cypress" />
+/// <reference types="cypress" />
 
 type Op = {
   query: string;
