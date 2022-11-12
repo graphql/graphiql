@@ -1,5 +1,14 @@
 # vscode-graphql-execution
 
+## 0.1.6
+
+### Patch Changes
+
+- [#2884](https://github.com/graphql/graphiql/pull/2884)
+  [`74ea4ce1`](https://github.com/graphql/graphiql/commit/74ea4ce1cd1209b86cbf08bbece658c2b800617f)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - change severity of `radix` rule
+  to `error` to clean up eslint output
+
 ## 0.1.5
 
 ### Patch Changes

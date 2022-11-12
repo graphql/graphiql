@@ -28,7 +28,7 @@
     "@codemirror/state": "6.1.0",
     "@codemirror/theme-one-dark": "6.0.0",
     "@codemirror/view": "6.1.2",
-    "cm6-graphql": "0.0.0",
+    "cm6-graphql": "0.0.1",
     "graphql": "^16.4.0",
     "typescript": "^4.6.3"
   },

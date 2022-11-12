@@ -1,5 +1,30 @@
 # Change Log
 
+## 2.1.0
+
+### Minor Changes
+
+- [#2821](https://github.com/graphql/graphiql/pull/2821)
+  [`29630c22`](https://github.com/graphql/graphiql/commit/29630c2219bca8b825ab0897840864364a9de2e8)
+  Thanks [@avaly](https://github.com/avaly)! - Initial tabs support
+
+### Patch Changes
+
+- [#2885](https://github.com/graphql/graphiql/pull/2885)
+  [`8f926489`](https://github.com/graphql/graphiql/commit/8f9264896e9971951853463a283a90ba3d1310ef)
+  Thanks [@simhnna](https://github.com/simhnna)! - Fix stop execution button
+  showing a dropdown
+
+- [#2886](https://github.com/graphql/graphiql/pull/2886)
+  [`2ba2f620`](https://github.com/graphql/graphiql/commit/2ba2f620b6e7de3ae6b5ea641f33e600f7f44e08)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - feat: add `defaultHeaders` prop
+
+- Updated dependencies
+  [[`29630c22`](https://github.com/graphql/graphiql/commit/29630c2219bca8b825ab0897840864364a9de2e8),
+  [`8f926489`](https://github.com/graphql/graphiql/commit/8f9264896e9971951853463a283a90ba3d1310ef),
+  [`2ba2f620`](https://github.com/graphql/graphiql/commit/2ba2f620b6e7de3ae6b5ea641f33e600f7f44e08)]:
+  - @graphiql/react@0.14.0
+
 ## 2.0.13
 
 ### Patch Changes
