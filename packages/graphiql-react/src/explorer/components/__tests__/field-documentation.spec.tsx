@@ -1,7 +1,4 @@
-import {
-  fireEvent,
-  render,
-} from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { GraphQLString, GraphQLObjectType, Kind } from 'graphql';
 
 import { ExplorerContext, ExplorerFieldDef } from '../../context';

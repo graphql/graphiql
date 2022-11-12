@@ -1,7 +1,4 @@
-import {
-  fireEvent,
-  render,
-} from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import { ComponentProps } from 'react';
 import { formatQuery, HistoryItem } from '../components';
 import { HistoryContextProvider } from '../context';
