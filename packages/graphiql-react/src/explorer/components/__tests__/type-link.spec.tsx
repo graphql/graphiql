@@ -1,5 +1,4 @@
 import {
-  // @ts-expect-error
   fireEvent,
   render,
 } from '@testing-library/react';
