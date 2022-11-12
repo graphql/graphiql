@@ -147,6 +147,42 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
+  it('finds queries with spec decorators', async () => {
+    const text = `
+    
+      @a class A {}
+      const query = graphql\` query {} \` 
+    
+    `;
+    const contents = findGraphQLTags(text, '.ts');
+
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
+  it('finds queries with modern & legacy decorators', async () => {
+    const text = `
+    import { Module } from 'example/common';
+    import { GraphQLModule } from 'example/graphql';
+    
+    @Module({
+      imports: [
+        GraphQLModule.forRoot({
+          debug: false,
+          playground: false,
+        }),
+      ],
+    })
+
+    @a
+      export class AppModule {}
+      const query = graphql\` query {} \` 
+    
+    `;
+    const contents = findGraphQLTags(text, '.ts');
+
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
   it('finds queries with nested template tag expressions', async () => {
     const text = `export default {
   else: () => gql\` query {} \`
