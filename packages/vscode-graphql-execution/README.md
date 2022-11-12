@@ -1,6 +1,7 @@
 ## `graphql.vscode-graphql-execution`
 
-This extension provides standalone support for executing graphql operations inline in your code for:
+This extension provides standalone support for executing graphql operations
+inline in your code for:
 
 - .ts/.tsx
 - .js/.jsx
@@ -8,16 +9,20 @@ This extension provides standalone support for executing graphql operations inli
 
 ## How it works
 
-1. A codelens will appear above all operations - clicking will begin executing the operation.
-2. (If variables are specified in the operation), a dialog will prompt for these variables
+1. A codelens will appear above all operations - clicking will begin executing
+   the operation.
+2. (If variables are specified in the operation), a dialog will prompt for these
+   variables
 3. Then, the results or network error should appear, voila!
-4. If no endpoints are configured, it will exit early and tell you to define them.
+4. If no endpoints are configured, it will exit early and tell you to define
+   them.
 
 ## Configuring the extension
 
 ### `graphql-config`
 
-Your graphql config file will need to contain either a schema-as-url OR an endpoints configuration. Either of the following are valid:
+Your graphql config file will need to contain either a schema-as-url OR an
+endpoints configuration. Either of the following are valid:
 
 ```yaml
 schema: https://localhost:3000/graphql
@@ -43,7 +48,8 @@ projects:
 
 ### Disable codelens
 
-To disable the codelens, please specify this setting in `settings.json` or `user.json`:
+To disable the codelens, please specify this setting in `settings.json` or
+`user.json`:
 
 ```json
 {
@@ -54,7 +60,8 @@ To disable the codelens, please specify this setting in `settings.json` or `user
 
 ### Self Signed Certificates
 
-Enable this (`false` by default) to allow node to use non-authorized SSL certificates.
+Enable this (`false` by default) to allow node to use non-authorized SSL
+certificates.
 
 ```json
 {

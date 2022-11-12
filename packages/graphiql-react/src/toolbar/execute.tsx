@@ -26,7 +26,7 @@ export function ExecuteButton() {
     'aria-label': label,
   };
 
-  return hasOptions ? (
+  return hasOptions && !isFetching ? (
     <Menu>
       <Tooltip label={label}>
         <Menu.Button {...buttonProps} />

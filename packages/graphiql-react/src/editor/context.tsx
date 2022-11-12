@@ -18,6 +18,7 @@ import {
   createTab,
   getDefaultTabState,
   setPropertiesInActiveTab,
+  TabDefinition,
   TabsState,
   TabState,
   useSetEditorValues,
@@ -169,6 +170,21 @@ export type EditorContextProviderProps = {
    */
   headers?: string;
   /**
+   * This prop can be used to defined the initial set of tabs with their queries,
+   * variables and headers.
+   *
+   * @example
+   * ```tsx
+   * <GraphiQL
+   *   initialTabs={[
+   *     { query: 'query myExampleQuery {}' },
+   *     { query: '{ id }' }
+   *   ]}
+   * />
+   *```
+   */
+  initialTabs?: TabDefinition[];
+  /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
    * - Selecting a operation for execution in a document that contains multiple
@@ -218,6 +234,11 @@ export type EditorContextProviderProps = {
    * typing in the editor.
    */
   variables?: string;
+
+  /**
+   * Headers to be set when opening a new tab
+   */
+  defaultHeaders?: string;
 };
 
 export function EditorContextProvider(props: EditorContextProviderProps) {
@@ -257,7 +278,9 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
+      initialTabs: props.initialTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
+      defaultHeaders: props.defaultHeaders,
       storage,
     });
     storeTabs(tabState);
@@ -268,7 +291,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
         (tabState.activeTabIndex === 0 ? tabState.tabs[0].query : null) ??
         '',
       variables: variables ?? '',
-      headers: headers ?? '',
+      headers: headers ?? props.defaultHeaders ?? '',
       response,
       tabState,
     };
@@ -295,7 +318,10 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [...updatedValues.tabs, createTab()],
+        tabs: [
+          ...updatedValues.tabs,
+          createTab({ headers: props.defaultHeaders }),
+        ],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);

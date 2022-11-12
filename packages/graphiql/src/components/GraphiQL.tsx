@@ -98,6 +98,7 @@ export function GraphiQL({
   fetcher,
   getDefaultFieldNames,
   headers,
+  initialTabs,
   inputValueDeprecation,
   introspectionQueryName,
   maxHistoryLength,
@@ -116,6 +117,7 @@ export function GraphiQL({
   validationRules,
   variables,
   visiblePlugin,
+  defaultHeaders,
   ...props
 }: GraphiQLProps) {
   // Ensure props are correct
@@ -130,9 +132,11 @@ export function GraphiQL({
       getDefaultFieldNames={getDefaultFieldNames}
       dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
+      defaultHeaders={defaultHeaders}
       externalFragments={externalFragments}
       fetcher={fetcher}
       headers={headers}
+      initialTabs={initialTabs}
       inputValueDeprecation={inputValueDeprecation}
       introspectionQueryName={introspectionQueryName}
       maxHistoryLength={maxHistoryLength}
@@ -324,33 +328,31 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
     <div data-testid="graphiql-container" className="graphiql-container">
       <div className="graphiql-sidebar">
         <div className="graphiql-sidebar-section">
-          {pluginContext
-            ? pluginContext?.plugins.map(plugin => {
-                const isVisible = plugin === pluginContext.visiblePlugin;
-                const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
-                const Icon = plugin.icon;
-                return (
-                  <Tooltip key={plugin.title} label={label}>
-                    <UnStyledButton
-                      type="button"
-                      className={isVisible ? 'active' : ''}
-                      onClick={() => {
-                        if (isVisible) {
-                          pluginContext.setVisiblePlugin(null);
-                          pluginResize.setHiddenElement('first');
-                        } else {
-                          pluginContext.setVisiblePlugin(plugin);
-                          pluginResize.setHiddenElement(null);
-                        }
-                      }}
-                      aria-label={label}
-                    >
-                      <Icon aria-hidden="true" />
-                    </UnStyledButton>
-                  </Tooltip>
-                );
-              })
-            : null}
+          {pluginContext?.plugins.map(plugin => {
+            const isVisible = plugin === pluginContext.visiblePlugin;
+            const label = `${isVisible ? 'Hide' : 'Show'} ${plugin.title}`;
+            const Icon = plugin.icon;
+            return (
+              <Tooltip key={plugin.title} label={label}>
+                <UnStyledButton
+                  type="button"
+                  className={isVisible ? 'active' : ''}
+                  onClick={() => {
+                    if (isVisible) {
+                      pluginContext.setVisiblePlugin(null);
+                      pluginResize.setHiddenElement('first');
+                    } else {
+                      pluginContext.setVisiblePlugin(plugin);
+                      pluginResize.setHiddenElement(null);
+                    }
+                  }}
+                  aria-label={label}
+                >
+                  <Icon aria-hidden="true" />
+                </UnStyledButton>
+              </Tooltip>
+            );
+          })}
         </div>
         <div className="graphiql-sidebar-section">
           <Tooltip label="Re-fetch GraphQL schema">

@@ -8,7 +8,8 @@
       "packages/*",
       "examples/graphiql-webpack",
       "examples/monaco-graphql-webpack",
-      "examples/monaco-graphql-react-vite"
+      "examples/monaco-graphql-react-vite",
+      "examples/cm6-graphql-parcel"
     ]
   },
   "lint-staged": {
@@ -32,7 +33,7 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn build:clean && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql",
+    "build": "yarn build:clean && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql-plugin-code-exporter && yarn build:graphiql",
     "build-bundles": "yarn prebuild-bundles && wsrun -p -m -s build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun -m build-clean ",
@@ -41,6 +42,7 @@
     "build:clean": "yarn tsc --clean && yarn tsc --clean resources/tsconfig.graphiql.json",
     "build:graphiql": "yarn tsc resources/tsconfig.graphiql.json",
     "build:graphiql-plugin-explorer": "yarn workspace @graphiql/plugin-explorer run build",
+    "build:graphiql-plugin-code-exporter": "yarn workspace @graphiql/plugin-code-exporter run build",
     "build:graphiql-react": "yarn workspace @graphiql/react run build",
     "build:packages": "yarn tsc",
     "build:watch": "yarn tsc --watch",
@@ -73,7 +75,7 @@
     "start-graphiql": "yarn workspace graphiql dev",
     "start-monaco": "yarn workspace example-monaco-graphql-webpack start",
     "t": "yarn run testonly",
-    "test": "yarn jest",
+    "test": "yarn jest --noStackTrace",
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch",
     "testonly": "jest && yarn workspace codemirror-graphql run test",
@@ -118,11 +120,9 @@
     "cypress": "^4.7.0",
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.4.5",
-    "eslint-plugin-prefer-object-spread": "1.2.1",
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "execa": "^6.0.0",

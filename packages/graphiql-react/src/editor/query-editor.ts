@@ -223,6 +223,25 @@ export function useQueryEditor(
         }
       });
 
+      let showingHints = false;
+
+      // fired whenever a hint dialog opens
+      newEditor.on('startCompletion', () => {
+        showingHints = true;
+      });
+
+      // the codemirror hint extension fires this anytime the dialog is closed
+      // via any method (e.g. focus blur, escape key, ...)
+      newEditor.on('endCompletion', () => {
+        showingHints = false;
+      });
+
+      newEditor.on('keydown', (editorInstance, event) => {
+        if (event.key === 'Escape' && showingHints) {
+          event.stopPropagation();
+        }
+      });
+
       newEditor.on('beforeChange', (editorInstance, change) => {
         // The update function is only present on non-redo, non-undo events.
         if (change.origin === 'paste') {

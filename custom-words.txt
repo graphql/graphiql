@@ -59,6 +59,8 @@ timsuchanek
 urigo
 wincent
 yoshiakis
+Leko
+LekoArts
 
 
 // packages and tools
@@ -105,6 +107,8 @@ vite
 vitejs
 wonka
 wsrun
+lezer
+buildhelper
 
 
 // identifiers used in code and configs
@@ -217,6 +221,9 @@ paas
 qlapi
 qlid
 qlide
+
+// cspell en-us/en-gb edgecases?
+behaviour
 
 // other
 architecting

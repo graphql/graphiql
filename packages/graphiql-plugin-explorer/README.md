@@ -1,6 +1,8 @@
 # GraphiQL Explorer Plugin
 
-This package provides a plugin that integrated the [`GraphiQL Explorer`](https://github.com/OneGraph/graphiql-explorer) into the GraphiQL UI.
+This package provides a plugin that integrated the
+[`GraphiQL Explorer`](https://github.com/OneGraph/graphiql-explorer) into the
+GraphiQL UI.
 
 ## Install
 
@@ -10,7 +12,8 @@ Use your favorite package manager to install the package:
 npm i -S @graphiql/plugin-explorer
 ```
 
-The following packages are peer dependencies, so make sure you have them installed as well:
+The following packages are peer dependencies, so make sure you have them
+installed as well:
 
 ```sh
 npm i -S react react-dom graphql
@@ -50,4 +53,6 @@ function GraphiQLWithExplorer() {
 
 ## CDN bundles
 
-You can also use add this plugin when using the [CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the [example HTML file](examples/index.html) that shows how you can do this.
+You can also use add this plugin when using the
+[CDN bundle](../../examples/graphiql-cdn) to render GraphiQL. Check out the
+[example HTML file](examples/index.html) that shows how you can do this.

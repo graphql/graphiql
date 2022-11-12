@@ -9,6 +9,7 @@
 
 module.exports = {
   root: true,
+  reportUnusedDisableDirectives: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 6,
@@ -52,7 +53,7 @@ module.exports = {
 
   rules: {
     // Possible Errors (http://eslint.org/docs/rules/#possible-errors)
-    'no-console': 1,
+    'no-console': 'error',
     'no-constant-binary-expression': 2,
     'no-empty': [1, { allowEmptyCatch: true }],
     'no-extra-parens': 0,
@@ -71,7 +72,7 @@ module.exports = {
     'dot-notation': 1,
     eqeqeq: [1, 'allow-null'],
     'guard-for-in': 0,
-    'no-alert': 1,
+    'no-alert': 'error',
     'no-await-in-loop': 1,
     'no-caller': 1,
     'no-case-declarations': 0,
@@ -96,7 +97,7 @@ module.exports = {
     'no-multi-str': 0,
     'no-new-func': 1,
     'no-new-wrappers': 1,
-    'no-new': 1,
+    'no-new': 'error',
     'no-octal-escape': 1,
     'no-param-reassign': 1,
     'no-proto': 1,
@@ -115,7 +116,7 @@ module.exports = {
     'no-void': 1,
     '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
-    radix: 1,
+    radix: 'error',
     '@typescript-eslint/prefer-as-const': 'error',
     'require-await': 0,
     // 'require-await': 1,
@@ -230,19 +231,11 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
-    // Babel (https://github.com/babel/eslint-plugin-babel)
-    'babel/new-cap': 0,
-    'babel/no-invalid-this': 0,
-    'babel/object-curly-spacing': 0,
-
     // import (https://github.com/benmosher/eslint-plugin-import)
     // 'import/no-unresolved': [2, { modules: 'es6' }],
     'import/no-cycle': 0,
     'import/no-extraneous-dependencies': 1,
-
-    // prefer-object-spread (https://github.com/bryanrsmith/eslint-plugin-prefer-object-spread)
-    'prefer-object-spread/prefer-object-spread': 1,
-
+    'prefer-object-spread': 'error',
     // react rules
     'react/no-unused-state': 'error',
     'react/jsx-curly-brace-presence': 'error',
@@ -267,11 +260,15 @@ module.exports = {
     'react/self-closing-comp': 'error',
     'react/display-name': 'warn',
     'react/jsx-no-useless-fragment': 'error',
+    'react/jsx-filename-extension': [
+      'error',
+      { extensions: ['.tsx', '.jsx'], allow: 'as-needed' },
+    ],
     // Jest rules
     'jest/no-conditional-expect': 0,
   },
 
-  plugins: ['import', 'prefer-object-spread', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory
@@ -307,10 +304,9 @@ module.exports = {
     },
     {
       // Resources are typically our helper scripts; make life easier there
-      files: ['resources/*.js', '**/resources/*.js'],
+      files: ['resources/**', '**/resources/**', 'scripts/**'],
       rules: {
-        'no-console': 0,
-        'no-await-in-loop': 0,
+        'no-console': 'off',
       },
     },
     {
@@ -319,6 +315,15 @@ module.exports = {
       rules: {
         'no-redeclare': 'off', // ts(2451)
         'no-undef': 'off', // ts(2304)
+      },
+    },
+    {
+      // Disable rules for examples folder
+      files: ['examples/**'],
+      rules: {
+        'no-console': 'off',
+        'no-new': 'off',
+        'no-alert': 'off',
       },
     },
   ],

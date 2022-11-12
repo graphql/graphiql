@@ -5,10 +5,25 @@ import debounce from '../utility/debounce';
 import { CodeMirrorEditorWithOperationFacts } from './context';
 import { CodeMirrorEditor } from './types';
 
+export type TabDefinition = {
+  /**
+   * The contents of the query editor of this tab.
+   */
+  query: string | null;
+  /**
+   * The contents of the variable editor of this tab.
+   */
+  variables?: string | null;
+  /**
+   * The contents of the headers editor of this tab.
+   */
+  headers?: string | null;
+};
+
 /**
  * This object describes the state of a single tab.
  */
-export type TabState = {
+export type TabState = TabDefinition & {
   /**
    * A GUID value generated when the tab was created.
    */
@@ -23,18 +38,6 @@ export type TabState = {
    * The title of the tab shown in the tab element.
    */
   title: string;
-  /**
-   * The contents of the query editor of this tab.
-   */
-  query: string | null;
-  /**
-   * The contents of the variable editor of this tab.
-   */
-  variables: string | null;
-  /**
-   * The contents of the headers editor of this tab.
-   */
-  headers: string | null;
   /**
    * The operation name derived from the contents of the query editor of this
    * tab.
@@ -63,13 +66,17 @@ export type TabsState = {
 
 export function getDefaultTabState({
   defaultQuery,
+  defaultHeaders,
   headers,
+  initialTabs,
   query,
   variables,
   storage,
 }: {
   defaultQuery: string;
+  defaultHeaders?: string;
   headers: string | null;
+  initialTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
   storage: StorageAPI | null;
@@ -120,7 +127,15 @@ export function getDefaultTabState({
   } catch (err) {
     return {
       activeTabIndex: 0,
-      tabs: [createTab({ query: query ?? defaultQuery, variables, headers })],
+      tabs: (
+        initialTabs || [
+          {
+            query: query ?? defaultQuery,
+            variables,
+            headers: headers ?? defaultHeaders,
+          },
+        ]
+      ).map(createTab),
     };
   }
 }
@@ -244,8 +259,8 @@ export function useSetEditorValues({
       response,
     }: {
       query: string | null;
-      variables: string | null;
-      headers: string | null;
+      variables?: string | null;
+      headers?: string | null;
       response: string | null;
     }) => {
       queryEditor?.setValue(query ?? '');
@@ -261,11 +276,11 @@ export function createTab({
   query = null,
   variables = null,
   headers = null,
-}: Partial<Pick<TabState, 'query' | 'variables' | 'headers'>> = {}): TabState {
+}: Partial<TabDefinition> = {}): TabState {
   return {
     id: guid(),
     hash: hashFromTabContents({ query, variables, headers }),
-    title: DEFAULT_TITLE,
+    title: (query && fuzzyExtractOperationName(query)) || DEFAULT_TITLE,
     query,
     variables,
     headers,
@@ -311,8 +326,8 @@ function guid(): string {
 
 function hashFromTabContents(args: {
   query: string | null;
-  variables: string | null;
-  headers: string | null;
+  variables?: string | null;
+  headers?: string | null;
 }): string {
   return [args.query ?? '', args.variables ?? '', args.headers ?? ''].join('|');
 }

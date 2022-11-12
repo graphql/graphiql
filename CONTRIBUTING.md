@@ -1,8 +1,12 @@
 # Contributing
 
-We welcome contributions and assistance! If you want to know where to start, check out our [Github Projects sorted by name](https://github.com/graphql/graphiql/projects?query=is%3Aopen+sort%3Aname-asc).
+We welcome contributions and assistance! If you want to know where to start,
+check out our
+[Github Projects sorted by name](https://github.com/graphql/graphiql/projects?query=is%3Aopen+sort%3Aname-asc).
 
-If you want to add a new feature, note that GraphiQL is eventually going to support its own extension system, and we are rarely adding new features, so make sure you submit feature requests with that in mind.
+If you want to add a new feature, note that GraphiQL is eventually going to
+support its own extension system, and we are rarely adding new features, so make
+sure you submit feature requests with that in mind.
 
 ## Development
 
@@ -21,7 +25,10 @@ your [pull requests](https://help.github.com/articles/creating-a-pull-request).
 
 ## Commit Message Conventions
 
-Our commit messages are linted by `commitlint` following the angular changelog convention. You may end up losing a commit message or two if you don't follow this rule. We can add a prompt if people ask for it. This was designed for compatibility with various git clients in mind.
+Our commit messages are linted by `commitlint` following the angular changelog
+convention. You may end up losing a commit message or two if you don't follow
+this rule. We can add a prompt if people ask for it. This was designed for
+compatibility with various git clients in mind.
 
 You will need to include a type prefix for all commit messages. For example:
 
@@ -29,7 +36,8 @@ You will need to include a type prefix for all commit messages. For example:
 
 ### Type Prefixes
 
-[a list of type prefixes](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#type-enum) is available:
+[a list of type prefixes](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#type-enum)
+is available:
 
 ```js
 [
@@ -47,7 +55,8 @@ You will need to include a type prefix for all commit messages. For example:
 ];
 ```
 
-of these, `fix` and `feat` can trigger patch and minor version releases, reflexively. the rest are useful to help track activity.
+of these, `fix` and `feat` can trigger patch and minor version releases,
+reflexively. the rest are useful to help track activity.
 
 another commit message that can trigger a major version bump is this:
 
@@ -67,5 +76,5 @@ Please see [the RELEASING.md document](./RELEASING.md).
 
 ## License
 
-By contributing to GraphiQL, you agree that your contributions will be
-licensed under the LICENSE file in the project root directory.
+By contributing to GraphiQL, you agree that your contributions will be licensed
+under the LICENSE file in the project root directory.

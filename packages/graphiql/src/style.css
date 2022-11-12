@@ -228,7 +228,6 @@ button.graphiql-tab-add > svg {
   border-left: 1px solid
     hsla(var(--color-neutral), var(--alpha-background-heavy));
   flex: 1;
-  max-width: calc(100% - 2 * var(--px-16));
   overflow-y: auto;
   padding: var(--px-16);
 }

@@ -320,7 +320,7 @@ export function renderGithubLoginButton() {
       { provider: 'github', scope: ['user'] },
       async (err: Error, data: { token: string }) => {
         if (err) {
-          console.error('Error Authenticating with GitHub: ' + err);
+          console.error('Error authenticating with GitHub:', err);
         } else {
           schemaFetcher.setApiToken(data.token);
           await render();

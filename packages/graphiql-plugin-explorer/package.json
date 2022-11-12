@@ -1,6 +1,6 @@
 {
   "name": "@graphiql/plugin-explorer",
-  "version": "0.1.6",
+  "version": "0.1.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/graphql/graphiql",
@@ -28,7 +28,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@graphiql/react": "^0.13.3",
+    "@graphiql/react": "^0.13.7",
     "graphiql-explorer": "^0.9.0"
   },
   "peerDependencies": {

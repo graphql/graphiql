@@ -73,7 +73,6 @@ describe('getDiagnostics', () => {
       schema,
     )[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'The field Query.deprecatedField is deprecated. Use test instead.',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Warning);
@@ -106,7 +105,6 @@ describe('getDiagnostics', () => {
     expect(errors.length).toEqual(1);
     const error = errors[0];
     expect(error.message).toEqual(
-      // eslint-disable-next-line no-useless-escape
       'Syntax Error: Expected ":", found Name "id".',
     );
     expect(error.severity).toEqual(DIAGNOSTIC_SEVERITY.Error);

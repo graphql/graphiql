@@ -1,34 +1,46 @@
-[Changelog](https://github.com/graphql/graphiql/blob/main/packages/monaco-graphql/CHANGELOG.md) |
-[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html) |
-[Discord Channel](https://discord.gg/r4BxrAG6fN)
+[Changelog](https://github.com/graphql/graphiql/blob/main/packages/monaco-graphql/CHANGELOG.md)
+|
+[API Docs](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service_server.html)
+| [Discord Channel](https://discord.gg/r4BxrAG6fN)
 
-GraphQL language plugin for the Monaco Editor. You can use it to build vscode/codespaces-like web or desktop IDEs using whatever frontend javascript libraries or frameworks you want, or none!
+GraphQL language plugin for the Monaco Editor. You can use it to build
+vscode/codespaces-like web or desktop IDEs using whatever frontend javascript
+libraries or frameworks you want, or none!
 
-- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) using plain javascript, shows how to change schemas
-- [vite + react example](https://stackblitz.com/edit/monaco-graphql-react-vite?file=src%2FApp.tsx&terminal=dev) - minimal example with variables (C)JSON support using react
-- [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example (prompts for GitHub access token!)
+- [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/)
+  using plain javascript, shows how to change schemas
+- [vite + react example](https://stackblitz.com/edit/monaco-graphql-react-vite?file=src%2FApp.tsx&terminal=dev) -
+  minimal example with variables (C)JSON support using react
+- [live demo](https://monaco-graphql.netlify.com) of the monaco webpack example
+  (prompts for GitHub access token!)
 
-> **NOTE:** This is in pre-release state as we build towards GraphiQL 2.0.x. [`codemirror-graphql`](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql) has more features (such as JSON variables validation) and is more stable.
+> **NOTE:** This is in pre-release state as we build towards GraphiQL 2.0.x.
+> [`codemirror-graphql`](https://github.com/graphql/graphiql/tree/main/packages/codemirror-graphql)
+> has more features (such as JSON variables validation) and is more stable.
 
 ## Features
 
 It provides the following features while editing GraphQL files:
 
-- Configurable multi-model, multi-schema language worker with `fileMatch` expressions
+- Configurable multi-model, multi-schema language worker with `fileMatch`
+  expressions
 - Code completion (schema driven) for Operation and SDL types
   - Automatic expansion & completion on leaf type completion
 - Hover (schema driven) with markdown support
 - Validation (schema driven)
 - JSON Variables validation and language features (schema driven)
 - Formatting - using prettier
-- Syntax Highlighting & Basic Languages provided by `monaco-editor` basic languages support
+- Syntax Highlighting & Basic Languages provided by `monaco-editor` basic
+  languages support
 - Configurable formatting options
 - Providing external fragments
-- create custom workers for custom language service options - parser, validation rules, schemaBuilder, etc
+- create custom workers for custom language service options - parser, validation
+  rules, schemaBuilder, etc
 
 ## Usage
 
-For now, we use `language` id of `graphql` until we can ensure we can dovetail nicely with the official `graphql` language ID.
+For now, we use `language` id of `graphql` until we can ensure we can dovetail
+nicely with the official `graphql` language ID.
 
 To use with webpack, here is an example to get you started:
 
@@ -121,13 +133,18 @@ monaco.editor.create(document.getElementById('someElementId'), {
 });
 ```
 
-This will cover the basics, making an HTTP POST with the default `introspectionQuery()` operation. To customize the entire fetcher, see [advanced customization]() below. For more customization options, see the [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
+This will cover the basics, making an HTTP POST with the default
+`introspectionQuery()` operation. To customize the entire fetcher, see
+[advanced customization]() below. For more customization options, see the
+[Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
 
 ## Advanced Usage
 
 ### Variables JSON Support!
 
-In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that allows you to retrieve a `JSONSchema` description for the declared variables for any given set of operations
+In `monaco-graphql@0.5.0` we introduced a method `getVariablesJSONSchema` that
+allows you to retrieve a `JSONSchema` description for the declared variables for
+any given set of operations
 
 ## Full Sync Demo with Variables JSON
 
@@ -208,18 +225,33 @@ MonacoGraphQLAPI.setDiagnosticSettings({
     allowComments: true, // allow json, parse with a jsonc parser to make requests
   },
 });
-// TODO: document manual alternative approach
+
+MonacoGraphQL.setCompletionSettings({
+  // this auto-fills NonNull leaf fields
+  // it used to be on by default, but is annoying when
+  // fields contain required argument.
+  // hoping to fix that soon!
+  __experimental__fillLeafsOnComplete: true,
+});
 ```
 
-You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish syntax, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes for completion of other types of variable input. you can also experiment with editor methods to parse detected input into different formats, etc (`yaml` pastes as `json`, etc.)
+You can also experiment with the built-in I think `jsonc`? (MSFT json5-ish
+syntax, for `tsconfig.json` etc.) and the 3rd party `monaco-yaml` language modes
+for completion of other types of variable input. you can also experiment with
+editor methods to parse detected input into different formats, etc (`yaml`
+pastes as `json`, etc.)
 
-You could of course prefer to generate a `jsonschema` form for variables input using a framework of your choice, instead of an editor. Enjoy!
+You could of course prefer to generate a `jsonschema` form for variables input
+using a framework of your choice, instead of an editor. Enjoy!
 
 ## `MonacoGraphQLAPI` ([typedoc](https://graphiql-test.netlify.app/typedoc/classes/monaco_graphql.monacoMonacoGraphQLAPI.html))
 
-If you call any of these API methods to modify the language service configuration at any point at runtime, the webworker will reload relevant language features.
+If you call any of these API methods to modify the language service
+configuration at any point at runtime, the webworker will reload relevant
+language features.
 
-If you `import 'monaco-graphql'` synchronously, you can access the api via `monaco.languages.graphql.api`.
+If you `import 'monaco-graphql'` synchronously, you can access the api via
+`monaco.languages.graphql.api`.
 
 ```ts
 import 'monaco-graphql';
@@ -247,8 +279,8 @@ const api = initializeMode(config);
 
 same as the above, except it overwrites the entire schema config.
 
-you can provide multiple, and use `fileMatch` to map to various uri "directory" globs or specific files.
-`uri` can be an url or file path, anything parsable
+you can provide multiple, and use `fileMatch` to map to various uri "directory"
+globs or specific files. `uri` can be an url or file path, anything parsable
 
 ```ts
 // you can load it lazily
@@ -287,7 +319,8 @@ api.setSchemaConfig([
 ]);
 ```
 
-or if you want, replace the entire configuration with a single schema. this will cause the worker to be entirely re-created and language services reset
+or if you want, replace the entire configuration with a single schema. this will
+cause the worker to be entirely re-created and language services reset
 
 ```ts
 api.setSchemaConfig([
@@ -301,7 +334,8 @@ api.setSchemaConfig([
 
 ### `monaco.languages.graphql.api.setModeConfiguration()`
 
-This is where you can toggle monaco language features. all are enabled by default.
+This is where you can toggle monaco language features. all are enabled by
+default.
 
 ```ts
 monaco.languages.graphql.api.setModeConfiguration({
@@ -315,10 +349,13 @@ monaco.languages.graphql.api.setModeConfiguration({
 
 ### `monaco.languages.graphql.api.setFormattingOptions()`
 
-this accepts an object `{ prettierConfig: prettier.Options }`, which accepts [any prettier option](https://prettier.io/docs/en/options.html).
-it will not re-load the schema or language features, however the new prettier options will take effect.
+this accepts an object `{ prettierConfig: prettier.Options }`, which accepts
+[any prettier option](https://prettier.io/docs/en/options.html). it will not
+re-load the schema or language features, however the new prettier options will
+take effect.
 
-this method overwrites the previous configuration, and will only accept static values that can be passed between the main/worker process boundary.
+this method overwrites the previous configuration, and will only accept static
+values that can be passed between the main/worker process boundary.
 
 ```ts
 monaco.languages.graphql.api.setFormattingOptions({
@@ -329,9 +366,11 @@ monaco.languages.graphql.api.setFormattingOptions({
 
 ### `monaco.languages.graphql.api.setExternalFragmentDefinitions()`
 
-Append external fragments to be used by autocomplete and other language features.
+Append external fragments to be used by autocomplete and other language
+features.
 
-This accepts either a string that contains fragment definitions, or `TypeDefinitionNode[]`
+This accepts either a string that contains fragment definitions, or
+`TypeDefinitionNode[]`
 
 ### `monaco.languages.graphql.api.getDiagnosticOptions`
 
@@ -356,31 +395,50 @@ monaco.languages.graphql.api.setDiagnosticSettings({
 
 ### Webpack
 
-you'll can refer to the webpack configuration in the [full monaco webpack example](/examples/monaco-graphql-webpack#readme) to see how it works with webpack and the official `monaco-editor-webpack-plugin`. there is probably an easier way to configure webpack `worker-loader` for this.
+you'll can refer to the webpack configuration in the
+[full monaco webpack example](/examples/monaco-graphql-webpack#readme) to see
+how it works with webpack and the official `monaco-editor-webpack-plugin`. there
+is probably an easier way to configure webpack `worker-loader` for this.
 
 ### Vite
 
-You can configure vite to load `monaco-editor` json mode and even the language editor worker using [the example for our mode](https://github.com/vdesjs/vite-plugin-monaco-editor#options)
+You can configure vite to load `monaco-editor` json mode and even the language
+editor worker using
+[the example for our mode](https://github.com/vdesjs/vite-plugin-monaco-editor#options)
 
 ## Web Frameworks
 
-the plain javascript [webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/) should give you a starting point to see how to implement it with
+the plain javascript
+[webpack example](https://github.com/graphql/graphiql/tree/main/examples/monaco-graphql-webpack/)
+should give you a starting point to see how to implement it with
 
 ### React
 
-- [`use-monaco`](https://www.npmjs.com/package/use-monaco) seems to support the custom language worker configuration we want, and seems to be well built! we hope to help them build their
-- when loading it yourself, either dynamic import the mode and/or instantiate it yourself using `useEffect` on `didMount` to prevent breaking SSR.
-- it may work with other libraries by using a similar strategy to [this](https://github.com/graphql/graphiql/blob/9df315b44896efa313ed6744445fc8f9e702ebc3/examples/monaco-graphql-webpack/src/editors.ts#L15). you can also provide `MonacoEnvironment.getWorkerUrl` which works better as an async import of your pre-build worker files
+- [`use-monaco`](https://www.npmjs.com/package/use-monaco) seems to support the
+  custom language worker configuration we want, and seems to be well built! we
+  hope to help them build their
+- when loading it yourself, either dynamic import the mode and/or instantiate it
+  yourself using `useEffect` on `didMount` to prevent breaking SSR.
+- it may work with other libraries by using a similar strategy to
+  [this](https://github.com/graphql/graphiql/blob/9df315b44896efa313ed6744445fc8f9e702ebc3/examples/monaco-graphql-webpack/src/editors.ts#L15).
+  you can also provide `MonacoEnvironment.getWorkerUrl` which works better as an
+  async import of your pre-build worker files
 
 ## Custom Webworker (for passing non-static config to worker)
 
-If you want to pass a custom parser and/or validation rules, it is supported, however the setup is a bit more complicated.
+If you want to pass a custom parser and/or validation rules, it is supported,
+however the setup is a bit more complicated.
 
-You can add any `LanguageServiceConfig` ([typedoc](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#graphqllanguageconfig-1)) configuration options you like here to `languageConfig` as below.
+You can add any `LanguageServiceConfig`
+([typedoc](https://graphiql-test.netlify.app/typedoc/modules/graphql_language_service.html#graphqllanguageconfig-1))
+configuration options you like here to `languageConfig` as below.
 
-This is because we can't pass non-static configuration to the existing worker programmatically, so you must import these and build the worker custom with those functions. Part of the (worthwhile) cost of crossing runtimes!
+This is because we can't pass non-static configuration to the existing worker
+programmatically, so you must import these and build the worker custom with
+those functions. Part of the (worthwhile) cost of crossing runtimes!
 
-you'll want to create your own `my-graphql.worker.ts` file, and add your custom config such as `schemaLoader` to `createData`:
+you'll want to create your own `my-graphql.worker.ts` file, and add your custom
+config such as `schemaLoader` to `createData`:
 
 ```ts
 import type { worker as WorkerNamespace } from 'monaco-editor';
@@ -461,15 +519,25 @@ export default defineConfig({
 
 ## Monaco Editor Tips
 
-If you are familiar with Codemirror/Atom-era terminology and features, here's some gotchas:
+If you are familiar with Codemirror/Atom-era terminology and features, here's
+some gotchas:
 
 - "hinting" => "code completion" in LSP terminology
 - "linting" => "diagnostics" in lsp terminology
 - the default keymap is different, more vscode like
 - command palette and right click context menu are important
-- you can extend the standard completion/linting/etc provided. for example, `editor.setModelMarkers()`
+- you can extend the standard completion/linting/etc provided. for example,
+  `editor.setModelMarkers()`
 - [Monaco Editor API Docs](https://microsoft.github.io/monaco-editor/api/index.html)
-- [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples) repository is great for tips on implementing with different bundlers, runtimes, etc.
+- [Monaco Editor Samples](https://github.com/Microsoft/monaco-editor-samples)
+  repository is great for tips on implementing with different bundlers,
+  runtimes, etc.
+
+## Inspiration
+
+`microsoft/monaco-json` was our inspiration from the outset, when it was still a
+standalone repository. @acao actually wholesale copied many files, you could
+almost say it was a fork!
 
 ## TODO
 
