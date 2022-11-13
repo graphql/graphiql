@@ -349,7 +349,11 @@ export class MessageProcessor {
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
-      const configMatchers = ['graphql.config', 'graphqlrc'].filter(Boolean);
+      const configMatchers = [
+        'graphql.config',
+        'graphqlrc',
+        'graphqlconfig',
+      ].filter(Boolean);
       if (this._settings?.load?.fileName) {
         configMatchers.push(this._settings.load.fileName);
       }

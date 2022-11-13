@@ -206,11 +206,7 @@ module.exports = {
     'require-jsdoc': 0,
     'sort-keys': 0,
     'sort-vars': 0,
-    'spaced-comment': [
-      1,
-      'always',
-      { line: { exceptions: ['-'] }, block: { balanced: true } },
-    ],
+    'spaced-comment': ['error', 'always', { markers: ['/'] }],
     'wrap-regex': 0,
 
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
