@@ -102,6 +102,7 @@ templayed
 typedoc
 twing
 undici
+zustand
 velocityjs
 vite
 vitejs
