@@ -1,10 +1,10 @@
+import React from 'react';
 import type { GlobalProvider } from '@ladle/react';
 
-import React from 'react';
+// styles
+import '../../packages/graphiql-react/dist/style.css';
+import '../../packages/graphiql/graphiql.min.css';
 
-// styles | this is a simple override of ladle-main styles
-import './styles.css';
-
-export const Provider: GlobalProvider = ({ children, globalState }) => {
-  return <div className="ladle-container">{children}</div>;
+export const Provider: GlobalProvider = ({ children }) => {
+  return <div className="graphiql-container">{children}</div>;
 };

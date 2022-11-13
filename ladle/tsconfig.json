@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,    
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "jsx":"react-jsx",
+    "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "Node",
-    "noImplicitAny": false,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ESNext",    
-    "types": ["vite/client"]
+    "target": "ESNext"
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts"]
 }
