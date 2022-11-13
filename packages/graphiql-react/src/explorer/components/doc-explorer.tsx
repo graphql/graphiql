@@ -70,8 +70,8 @@ export function DocExplorer() {
               href="#"
               className="graphiql-doc-explorer-back"
               onClick={event => {
-                  event.preventDefault();
-                  pop();
+                event.preventDefault();
+                pop();
               }}
               aria-label={`Go back to ${prevName}`}
             >
