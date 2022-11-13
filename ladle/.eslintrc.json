@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "plugin:prettier/recommended", 
+    "plugin:jsx-a11y/strict"
+  ],
+  "plugins": [
+    "jsx-a11y"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "consistent-return": ["error"],
+    "no-unused-vars": "off",
+    "no-unneeded-ternary": "error",
+    "object-shorthand": ["error", "always"],
+    "prefer-const": ["warn"],    
+    "@typescript-eslint/no-unused-vars": ["warn"]
+  },
+  "ignorePatterns": [
+    "!.ladle"
+  ]
+}
