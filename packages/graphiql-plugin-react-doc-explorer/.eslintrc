@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "plugin:prettier/recommended", 
+    "plugin:react-hooks/recommended",    
+    "plugin:jsx-a11y/strict",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "jsx-a11y"
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": 0,    
+    "consistent-return": ["error"],
+    "no-unused-vars": "off",
+    "no-unneeded-ternary": "error",
+    "object-shorthand": ["error", "always"],
+    "prefer-const": ["warn"],    
+    "@typescript-eslint/no-unused-vars": ["warn"]
+  }
+}

@@ -2,6 +2,7 @@ import {
   Button,
   UnStyledButton,
   KeyboardShortcutIcon,
+  Spinner,
 } from '../../../../packages/graphiql-react';
 
 export const UnstyledButtonStory = () => {
@@ -29,3 +30,9 @@ export const ButtonStory = () => {
 };
 
 ButtonStory.storyName = 'Button';
+
+export const SpinnerStory = () => {
+  return <Spinner />;
+};
+
+SpinnerStory.storyName = 'Spinner';

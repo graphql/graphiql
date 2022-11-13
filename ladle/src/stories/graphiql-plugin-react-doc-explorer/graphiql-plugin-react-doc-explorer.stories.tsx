@@ -2,6 +2,7 @@ import { SchemaContext, SchemaContextType } from '@graphiql/react';
 
 // components
 import { DocExplorer } from '@graphiql/plugin-react-doc-explorer';
+import '../../../../packages/graphiql-plugin-react-doc-explorer/dist/style.css';
 
 // utils
 import { testSchema } from '../../utils/testSchema';
