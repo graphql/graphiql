@@ -3,9 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "serve": "NODE_ENV=development ladle serve",
-    "build": "NODE_ENV=production ladle build",
-    "tsc": "tsc --noEmit"
+    "serve": "ladle serve",
+    "build": "ladle build"
   },
   "dependencies": {
     "@graphiql/plugin-react-doc-explorer": "0.0.1",
@@ -15,6 +14,7 @@
   "devDependencies": {
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-prettier": "^4.0.0",
+    "graphql": "^16.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "vite": "3.0.2"

@@ -22,7 +22,7 @@ import {
 } from 'graphql';
 
 // Test Schema
-const TestEnum = new GraphQLEnumType({
+const TestEnum: GraphQLEnumType = new GraphQLEnumType({
   name: 'TestEnum',
   description: 'An enum of super cool colors.',
   values: {
@@ -36,7 +36,7 @@ const TestEnum = new GraphQLEnumType({
   },
 });
 
-const TestInputObject = new GraphQLInputObjectType({
+const TestInputObject: GraphQLInputObjectType = new GraphQLInputObjectType({
   name: 'TestInput',
   description: 'Test all sorts of inputs in this input object type.',
   fields: () => ({
@@ -73,7 +73,7 @@ const TestInputObject = new GraphQLInputObjectType({
   }),
 });
 
-const TestInterface = new GraphQLInterfaceType({
+const TestInterface: GraphQLInterfaceType = new GraphQLInterfaceType({
   name: 'TestInterface',
   description: 'Test interface.',
   fields: () => ({
@@ -82,6 +82,7 @@ const TestInterface = new GraphQLInterfaceType({
       description: 'Common name string.',
     },
   }),
+  // @ts-ignore
   resolveType: check => {
     return check ? UnionFirst : UnionSecond;
   },
@@ -124,6 +125,7 @@ const UnionSecond = new GraphQLObjectType({
 const TestUnion = new GraphQLUnionType({
   name: 'TestUnion',
   types: [UnionFirst, UnionSecond],
+  // @ts-ignore
   resolveType() {
     return UnionFirst;
   },
@@ -166,7 +168,7 @@ const DeferrableObject = new GraphQLObjectType({
   },
 });
 
-const Person = new GraphQLObjectType({
+const Person: GraphQLObjectType = new GraphQLObjectType({
   name: 'Person',
   fields: () => ({
     name: {
@@ -196,7 +198,8 @@ const Person = new GraphQLObjectType({
   }),
 });
 
-const sleep = async timeout => new Promise(res => setTimeout(res, timeout));
+const sleep = async (timeout: number) =>
+  new Promise(res => setTimeout(res, timeout));
 
 const longDescription = `
 The \`longDescriptionType\` field on the \`Test\` type has a long, verbose, description to test inline field docs.
@@ -234,7 +237,7 @@ And we have a cool logo:
 ![](/images/logo.svg)
 `.trim();
 
-const TestType = new GraphQLObjectType({
+const TestType: GraphQLObjectType = new GraphQLObjectType({
   name: 'Test',
   description: 'Test type for testing\n New line works',
   fields: () => ({
