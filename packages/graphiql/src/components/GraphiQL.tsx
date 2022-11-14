@@ -94,6 +94,7 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
+  defaultTabs,
   externalFragments,
   fetcher,
   getDefaultFieldNames,
@@ -133,6 +134,7 @@ export function GraphiQL({
       dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
       defaultHeaders={defaultHeaders}
+      defaultTabs={defaultTabs}
       externalFragments={externalFragments}
       fetcher={fetcher}
       headers={headers}

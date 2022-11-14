@@ -170,20 +170,24 @@ export type EditorContextProviderProps = {
    */
   headers?: string;
   /**
+   * @deprecated Use `defaultTabs` instead.
+   */
+  initialTabs?: TabDefinition[];
+  /**
    * This prop can be used to defined the initial set of tabs with their queries,
    * variables and headers.
    *
    * @example
    * ```tsx
    * <GraphiQL
-   *   initialTabs={[
+   *   defaultTabs={[
    *     { query: 'query myExampleQuery {}' },
    *     { query: '{ id }' }
    *   ]}
    * />
    *```
    */
-  initialTabs?: TabDefinition[];
+  defaultTabs?: TabDefinition[];
   /**
    * Invoked when the operation name changes. Possible triggers are:
    * - Editing the contents of the query editor
@@ -278,7 +282,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       query,
       variables,
       headers,
-      initialTabs: props.initialTabs,
+      defaultTabs: props.defaultTabs || props.initialTabs,
       defaultQuery: props.defaultQuery || DEFAULT_QUERY,
       defaultHeaders: props.defaultHeaders,
       storage,
