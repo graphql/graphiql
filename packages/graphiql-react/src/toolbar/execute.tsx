@@ -10,23 +10,25 @@ export function ExecuteButton() {
     nonNull: true,
     caller: ExecuteButton,
   });
-  const { isFetching, operationName, run, stop } = useExecutionContext({
-    nonNull: true,
-    caller: ExecuteButton,
-  });
+  const { isFetching, isSubscribed, operationName, run, stop } =
+    useExecutionContext({
+      nonNull: true,
+      caller: ExecuteButton,
+    });
 
   const operations = queryEditor?.operations || [];
   const hasOptions = operations.length > 1 && typeof operationName !== 'string';
+  const isRunning = isFetching || isSubscribed;
 
-  const label = `${isFetching ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
+  const label = `${isRunning ? 'Stop' : 'Execute'} query (Ctrl-Enter)`;
   const buttonProps = {
     type: 'button' as const,
     className: 'graphiql-execute-button',
-    children: isFetching ? <StopIcon /> : <PlayIcon />,
+    children: isRunning ? <StopIcon /> : <PlayIcon />,
     'aria-label': label,
   };
 
-  return hasOptions && !isFetching ? (
+  return hasOptions && !isRunning ? (
     <Menu>
       <Tooltip label={label}>
         <Menu.Button {...buttonProps} />
@@ -63,7 +65,7 @@ export function ExecuteButton() {
       <button
         {...buttonProps}
         onClick={() => {
-          if (isFetching) {
+          if (isRunning) {
             stop();
           } else {
             run();
