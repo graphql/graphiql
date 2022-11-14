@@ -12,7 +12,6 @@
   "ignorePaths": [
     "examples/graphiql-2-rfc-context",
     "packages/graphiql/src/css",
-    "**/CHANGELOG.md",
-    "**.stories.tsx"
+    "**/CHANGELOG.md"
   ]
 }
