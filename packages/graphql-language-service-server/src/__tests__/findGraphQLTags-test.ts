@@ -147,6 +147,69 @@ query Test {
     expect(contents[0].template).toEqual(` query {} `);
   });
 
+  it('finds queries with spec decorators', async () => {
+    const text = `
+    
+      @a class A {}
+      const query = graphql\` query {} \` 
+    
+    `;
+    const contents = findGraphQLTags(text, '.ts');
+
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
+  it('finds queries with es7 decorators', async () => {
+    const text = `
+   
+    class C {
+      state = {isLoading: true}
+      @enumerable(false)
+      method() {}
+      @something
+      onChange() {}
+    }
+
+    // 'legacy-decorators' does'nt like this this. thus why the modes are incompatible
+    class MyClass1 extends Component {
+      state = {isLoading: true}
+      
+      @something
+      onChange() {}
+      
+      @something()
+      handleSubmit() {}
+    }
+    
+    @isTestable(true)
+    class MyClass {}
+    
+    @Module({
+      imports: [
+        GraphQLModule.forRoot({
+          debug: false,
+          playground: false,
+        }),
+      ],
+    })
+
+    class A {}
+    
+@Decorator.a.b()
+class Todo {}
+
+@Decorator.d().e
+class Todo2{}
+
+    @a
+   class AppModule {}
+      const query = graphql\` query {} \` 
+    `;
+    const contents = findGraphQLTags(text, '.ts');
+
+    expect(contents[0].template).toEqual(` query {} `);
+  });
+
   it('finds queries with nested template tag expressions', async () => {
     const text = `export default {
   else: () => gql\` query {} \`

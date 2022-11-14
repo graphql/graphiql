@@ -60,10 +60,13 @@ If you see `typescript` build issues, do a `yarn build` locally, and make sure t
 
 ### Run tests for GraphiQL:
 
-- `yarn test graphiql` will run all tests for graphiql. You can also run tests from a workspace, but most tooling is at the root.
+- `yarn test graphiql` will run all tests for graphiql. You can also run tests
+  from a workspace, but most tooling is at the root.
 - `yarn test --watch` will run `jest` with `--watch`
 - `yarn e2e` at the root will run the end-to-end suite
-- `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor example with github API from the root. This is the fastest way to test changes to `graphql-language-service-interface`, parser, etc.
+- `yarn start-monaco` will launch `webpack` dev server for the `monaco` editor
+  example with GitHub API from the root. This is the fastest way to test changes
+  to `graphql-language-service-interface`, parser, etc.
 
 If you want these commands to watch for changes to dependent packages in the repo, then run `yarn build --watch` alongside either of these.
 
@@ -79,4 +82,7 @@ Then, you can run these commands:
 
 ### Developing Monaco GraphQL
 
-Follow the [`monaco-graphql` example readme](examples/monaco-graphql-webpack-example/README.md) to set it up, and then you can run `yarn start-monaco` from anywhere in the repository!
+Follow the
+[`monaco-graphql` example readme](examples/monaco-graphql-webpack/README.md)
+to set it up, and then you can run `yarn start-monaco` from anywhere in the
+repository!

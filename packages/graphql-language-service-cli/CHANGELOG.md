@@ -1,5 +1,17 @@
 # graphql-language-service-cli
 
+## 3.3.13
+
+### Patch Changes
+
+- [#2900](https://github.com/graphql/graphiql/pull/2900)
+  [`8989ffce`](https://github.com/graphql/graphiql/commit/8989ffce7d6beca874e70f5a1ff066102580173a)
+  Thanks [@acao](https://github.com/acao)! - use decorators-legacy @babel/parser
+  plugin so that all styles of decorator usage are supported
+- Updated dependencies
+  [[`8989ffce`](https://github.com/graphql/graphiql/commit/8989ffce7d6beca874e70f5a1ff066102580173a)]:
+  - graphql-language-service-server@2.9.3
+
 ## 3.3.12
 
 ### Patch Changes

@@ -72,7 +72,7 @@ module.exports = {
     'dot-notation': 1,
     eqeqeq: [1, 'allow-null'],
     'guard-for-in': 0,
-    'no-alert': 1,
+    'no-alert': 'error',
     'no-await-in-loop': 1,
     'no-caller': 1,
     'no-case-declarations': 0,
@@ -97,7 +97,7 @@ module.exports = {
     'no-multi-str': 0,
     'no-new-func': 1,
     'no-new-wrappers': 1,
-    'no-new': 1,
+    'no-new': 'error',
     'no-octal-escape': 1,
     'no-param-reassign': 1,
     'no-proto': 1,
@@ -206,11 +206,7 @@ module.exports = {
     'require-jsdoc': 0,
     'sort-keys': 0,
     'sort-vars': 0,
-    'spaced-comment': [
-      1,
-      'always',
-      { line: { exceptions: ['-'] }, block: { balanced: true } },
-    ],
+    'spaced-comment': ['error', 'always', { markers: ['/'] }],
     'wrap-regex': 0,
 
     // ECMAScript 6 (http://eslint.org/docs/rules/#ecmascript-6)
@@ -322,6 +318,8 @@ module.exports = {
       files: ['examples/**'],
       rules: {
         'no-console': 'off',
+        'no-new': 'off',
+        'no-alert': 'off',
       },
     },
   ],

@@ -1,8 +1,4 @@
-import {
-  // @ts-expect-error
-  fireEvent,
-  render,
-} from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
 import {
   GraphQLBoolean,
   GraphQLEnumType,
@@ -89,7 +85,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title.removeChild(title.childNodes[0]);
+    title?.removeChild(title?.childNodes[0]);
     expect(title).toHaveTextContent('Possible Types');
   });
 
@@ -100,7 +96,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title.removeChild(title.childNodes[0]);
+    title?.removeChild(title?.childNodes[0]);
     expect(title).toHaveTextContent('Enum Values');
     const enums = container.querySelectorAll(
       '.graphiql-doc-explorer-enum-value',
@@ -119,7 +115,7 @@ describe('TypeDocumentation', () => {
     const title = container.querySelector(
       '.graphiql-doc-explorer-section-title',
     );
-    title.removeChild(title.childNodes[0]);
+    title?.removeChild(title?.childNodes[0]);
     expect(title).toHaveTextContent('Enum Values');
 
     let enums = container.querySelectorAll('.graphiql-doc-explorer-enum-value');
