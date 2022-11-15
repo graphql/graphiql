@@ -329,7 +329,13 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       onTabChange?.(updated);
       return updated;
     });
-  }, [onTabChange, setEditorValues, storeTabs, synchronizeActiveTabValues]);
+  }, [
+    props.defaultHeaders,
+    onTabChange,
+    setEditorValues,
+    storeTabs,
+    synchronizeActiveTabValues,
+  ]);
 
   const changeTab = useCallback<EditorContextType['changeTab']>(
     index => {
