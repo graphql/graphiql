@@ -20,7 +20,7 @@ import { createContextHook, createNullableContext } from './utility/context';
 export type ExecutionContextType = {
   /**
    * If there is currently a GraphQL request in-flight. For multi-part
-   * requests like subscriptions this will be `true` while fetching the
+   * requests like subscriptions, this will be `true` while fetching the
    * first partial response and `false` while fetching subsequent batches.
    */
   isFetching: boolean;
