@@ -513,7 +513,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                         <UnStyledButton
                           type="button"
                           className={
-                            activeSecondaryEditor === 'variables'
+                            activeSecondaryEditor === 'variables' &&
+                            editorToolsResize.hiddenElement !== 'second'
                               ? 'active'
                               : ''
                           }
@@ -530,7 +531,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                           <UnStyledButton
                             type="button"
                             className={
-                              activeSecondaryEditor === 'headers'
+                              activeSecondaryEditor === 'headers' &&
+                              editorToolsResize.hiddenElement !== 'second'
                                 ? 'active'
                                 : ''
                             }

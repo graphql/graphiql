@@ -251,12 +251,11 @@ button.graphiql-tab-add > svg {
   width: 0;
 }
 
-/* Generic icon style */
 .graphiql-container .graphiql-chevron-icon {
   color: hsla(var(--color-neutral), var(--alpha-tertiary));
   display: block;
   height: var(--px-12);
-  padding: var(--px-12);
+  margin: var(--px-12);
   width: var(--px-12);
 }
 
