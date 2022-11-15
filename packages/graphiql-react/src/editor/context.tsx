@@ -174,8 +174,9 @@ export type EditorContextProviderProps = {
    */
   initialTabs?: TabDefinition[];
   /**
-   * This prop can be used to defined the initial set of tabs with their queries,
-   * variables and headers.
+   * This prop can be used to define the default set of tabs, with their
+   * queries, variables, and headers. It will be used as default only if
+   * there is no tab state persisted in storage.
    *
    * @example
    * ```tsx
