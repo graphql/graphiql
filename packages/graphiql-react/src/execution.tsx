@@ -26,7 +26,7 @@ export type ExecutionContextType = {
   isFetching: boolean;
   /**
    * If there is currently a GraphQL request in-flight. For multi-part
-   * requests like subscriptions this will be `true` until the last batch
+   * requests like subscriptions, this will be `true` until the last batch
    * has been fetched or the connection is closed from the client.
    */
   isSubscribed: boolean;
