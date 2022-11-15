@@ -39,8 +39,8 @@ li.CodeMirror-hint-active {
     hsla(var(--color-neutral), var(--alpha-background-heavy));
   grid-column: 2 / 3;
   grid-row: 1 / 99999;
-  /* Same as the popup as a whole minus padding */
-  max-height: calc(264px - 2 * var(--px-12));
+  /* Same as the popup */
+  max-height: 264px;
   overflow: auto;
   padding: var(--px-12);
 }

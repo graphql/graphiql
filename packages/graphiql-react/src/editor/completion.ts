@@ -119,15 +119,19 @@ export function onHasCompletion(
            * is already positioned absolutely.
            *
            * There are two things to the solution here:
-           * - We add another `overflow: auto` to the `information` element.
-           *   This makes it scrollable on its own if the description or
-           *   deprecation reason is higher that the container element.
+           * - We add a `max-height` and another `overflow: auto` to the
+           *   `information` element. This makes it scrollable on its own
+           *   if the description or deprecation reason is higher that the
+           *   container element.
            * - We add an `onscroll` handler to the container element. When the
-           *   user scrolls here we dynamically adjust the top padding of the
-           *   information element such that it looks like it's sticking to
-           *   the top. (Since the `information` element has some padding by
-           *   default we also have to make sure to use this as baseline for
-           *   the total padding.)
+           *   user scrolls here we dynamically adjust the top padding and the
+           *   max-height of the information element such that it looks like
+           *   it's sticking to the top. (Since the `information` element has
+           *   some padding by default we also have to make sure to use this
+           *   as baseline for the total padding.)
+           *   Note that we need to also adjust the max-height because we
+           *   default to using `border-box` for box sizing. When using
+           *   `content-box` this would not be necessary.
            */
           const defaultInformationPadding =
             parseInt(
@@ -136,10 +140,17 @@ export function onHasCompletion(
                 .paddingBottom.replace(/px$/, ''),
               10,
             ) || 0;
+          const defaultInformationMaxHeight =
+            parseInt(
+              window.getComputedStyle(information).maxHeight.replace(/px$/, ''),
+              10,
+            ) || 0;
           const handleScroll = () => {
             if (information) {
               information.style.paddingTop =
                 hintsUl.scrollTop + defaultInformationPadding + 'px';
+              information.style.maxHeight =
+                hintsUl.scrollTop + defaultInformationMaxHeight + 'px';
             }
           };
           hintsUl.addEventListener('scroll', handleScroll);
