@@ -46,6 +46,35 @@ describe('getDiagnostics', () => {
     expect(error.source).toEqual('GraphQL: Validation');
   });
 
+  it('validates undefined variables', () => {
+    const errors = validateQuery(
+      parse('{ hero(episode: $ep) { name } }'),
+      schema,
+    );
+    expect(errors).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "message": "Variable \\"$ep\\" is not defined.",
+          "range": Range {
+            "containsPosition": [Function],
+            "end": Position {
+              "character": 20,
+              "lessThanOrEqualTo": [Function],
+              "line": 0,
+            },
+            "start": Position {
+              "character": 16,
+              "lessThanOrEqualTo": [Function],
+              "line": 0,
+            },
+          },
+          "severity": 1,
+          "source": "GraphQL: Validation",
+        },
+      ]
+    `);
+  });
+
   it('catches multi root validation errors without breaking (with a custom validation function that always throws errors)', () => {
     const error = validateQuery(parse('{ hero { name } } { seq }'), schema, [
       validationContext => {
