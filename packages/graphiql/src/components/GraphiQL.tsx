@@ -758,7 +758,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 Persist headers
               </div>
               <div className="graphiql-dialog-section-caption">
-                Save headers upon reloading.
+                Save headers upon reloading.{' '}
+                <span className="graphiql-warning-text">
+                  Only enable if you trust this device.
+                </span>
               </div>
             </div>
             <ButtonGroup>
