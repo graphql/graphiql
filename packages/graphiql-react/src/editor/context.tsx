@@ -273,7 +273,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       storage?.get('shouldPersistHeaders') === 'true',
   );
   const userControlledShouldPersistHeaders =
-    props.shouldPersistHeaders === undefined;
+    props.shouldPersistHeaders !== false;
   const shouldPersistHeaders = userControlledShouldPersistHeaders
     ? persistHeadersInternal
     : (props.shouldPersistHeaders as boolean);
