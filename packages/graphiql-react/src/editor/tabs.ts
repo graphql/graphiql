@@ -346,7 +346,7 @@ export function clearHeadersFromTabs(storage: StorageAPI | null) {
     storage?.set(
       STORAGE_KEY,
       JSON.stringify(parsedTabs, (key, value) =>
-        key === 'headers' ? undefined : value,
+        key === 'headers' ? null : value,
       ),
     );
   }

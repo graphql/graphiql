@@ -167,6 +167,9 @@ describe('clearHeadersFromTabs', () => {
 
     clearHeadersFromTabs(storage);
 
-    expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual(stateWithoutHeaders);
+    expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual({
+      ...stateWithoutHeaders,
+      headers: null,
+    });
   });
 });

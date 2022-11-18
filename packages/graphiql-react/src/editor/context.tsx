@@ -269,15 +269,17 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     null,
   );
 
-  const [persistHeadersInternal, setShouldPersistHeadersInternal] = useState(
-    props.shouldPersistHeaders ??
-      storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true',
-  );
   const userControlledShouldPersistHeaders =
     props.shouldPersistHeaders !== false;
-  const shouldPersistHeaders = userControlledShouldPersistHeaders
-    ? persistHeadersInternal
-    : (props.shouldPersistHeaders as boolean);
+  const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
+    () => {
+      const propValue = Boolean(props.shouldPersistHeaders);
+      return userControlledShouldPersistHeaders
+        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true' || propValue
+        : propValue;
+    },
+  );
+
   const setShouldPersistHeaders = useCallback(
     (persist: boolean) => {
       // clean up when setting to false
