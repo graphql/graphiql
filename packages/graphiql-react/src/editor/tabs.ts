@@ -339,6 +339,19 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
+export function clearHeadersFromTabs(storage: StorageAPI | null) {
+  const persistedTabs = storage?.get(STORAGE_KEY);
+  if (persistedTabs) {
+    const parsedTabs = JSON.parse(persistedTabs);
+    storage?.set(
+      STORAGE_KEY,
+      JSON.stringify(parsedTabs, (key, value) =>
+        key === 'headers' ? undefined : value,
+      ),
+    );
+  }
+}
+
 const DEFAULT_TITLE = '<untitled>';
 
-const STORAGE_KEY = 'tabState';
+export const STORAGE_KEY = 'tabState';

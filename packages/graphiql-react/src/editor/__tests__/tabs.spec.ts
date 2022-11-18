@@ -1,7 +1,10 @@
+import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
   fuzzyExtractOperationName,
   getDefaultTabState,
+  clearHeadersFromTabs,
+  STORAGE_KEY,
 } from '../tabs';
 
 describe('createTab', () => {
@@ -139,5 +142,31 @@ describe('getDefaultTabState', () => {
         }),
       ],
     });
+  });
+});
+
+describe('clearHeadersFromTabs', () => {
+  const createMockStorage = () => {
+    const mockStorage = new Map();
+    return mockStorage as unknown as StorageAPI;
+  };
+
+  it('preserves tab state except for headers', () => {
+    const storage = createMockStorage();
+    const stateWithoutHeaders = {
+      hash: 123,
+      response: {
+        a: 'test',
+      },
+    };
+    const stateWithHeaders = {
+      ...stateWithoutHeaders,
+      headers: `{ "authorization": "secret" }`,
+    };
+    storage.set(STORAGE_KEY, JSON.stringify(stateWithHeaders));
+
+    clearHeadersFromTabs(storage);
+
+    expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual(stateWithoutHeaders);
   });
 });

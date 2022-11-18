@@ -24,6 +24,7 @@ import {
   useSetEditorValues,
   useStoreTabs,
   useSynchronizeActiveTabValues,
+  clearHeadersFromTabs,
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
@@ -270,7 +271,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const [persistHeadersInternal, setShouldPersistHeadersInternal] = useState(
     props.shouldPersistHeaders ??
-      storage?.get('shouldPersistHeaders') === 'true',
+      storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true',
   );
   const userControlledShouldPersistHeaders =
     props.shouldPersistHeaders !== false;
@@ -279,11 +280,13 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     : (props.shouldPersistHeaders as boolean);
   const setShouldPersistHeaders = useCallback(
     (persist: boolean) => {
+      // clean up when setting to false
       if (!persist) {
         storage?.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs(storage);
       }
       setShouldPersistHeadersInternal(persist);
-      storage?.set('shouldPersistHeaders', persist.toString());
+      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
     },
     [storage],
   );
@@ -519,6 +522,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 }
 
 export const useEditorContext = createContextHook(EditorContext);
+
+const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
 
 const DEFAULT_QUERY = `# Welcome to GraphiQL
 #
