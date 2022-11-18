@@ -210,6 +210,19 @@ export function useSynchronizeActiveTabValues({
   );
 }
 
+export function serializeTabState(
+  tabState: TabsState,
+  shouldPersistHeaders = false,
+) {
+  return JSON.stringify(tabState, (key, value) =>
+    key === 'hash' ||
+    key === 'response' ||
+    (!shouldPersistHeaders && key === 'headers')
+      ? null
+      : value,
+  );
+}
+
 export function useStoreTabs({
   storage,
   shouldPersistHeaders,
@@ -226,15 +239,7 @@ export function useStoreTabs({
   );
   return useCallback(
     (currentState: TabsState) => {
-      store(
-        JSON.stringify(currentState, (key, value) =>
-          key === 'hash' ||
-          key === 'response' ||
-          (!shouldPersistHeaders && key === 'headers')
-            ? null
-            : value,
-        ),
-      );
+      store(serializeTabState(currentState, shouldPersistHeaders));
     },
     [shouldPersistHeaders, store],
   );

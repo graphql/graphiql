@@ -25,6 +25,8 @@ import {
   useStoreTabs,
   useSynchronizeActiveTabValues,
   clearHeadersFromTabs,
+  serializeTabState,
+  STORAGE_KEY as STORAGE_KEY_TABS,
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
@@ -274,23 +276,11 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
       const propValue = Boolean(props.shouldPersistHeaders);
-      return userControlledShouldPersistHeaders
-        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true' || propValue
+      const isStored = storage?.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      return userControlledShouldPersistHeaders && isStored
+        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
         : propValue;
     },
-  );
-
-  const setShouldPersistHeaders = useCallback(
-    (persist: boolean) => {
-      // clean up when setting to false
-      if (!persist) {
-        storage?.set(STORAGE_KEY_HEADERS, '');
-        clearHeadersFromTabs(storage);
-      }
-      setShouldPersistHeadersInternal(persist);
-      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
-    },
-    [storage],
   );
 
   useSynchronizeValue(headerEditor, props.headers);
@@ -336,6 +326,22 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
   });
 
   const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
+
+  const setShouldPersistHeaders = useCallback(
+    (persist: boolean) => {
+      if (persist) {
+        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(tabState, true);
+        storage?.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage?.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs(storage);
+      }
+      setShouldPersistHeadersInternal(persist);
+      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    },
+    [storage, tabState, headerEditor],
+  );
 
   const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
     queryEditor,

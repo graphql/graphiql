@@ -154,8 +154,9 @@ describe('clearHeadersFromTabs', () => {
   it('preserves tab state except for headers', () => {
     const storage = createMockStorage();
     const stateWithoutHeaders = {
-      hash: 123,
-      response: {
+      operationName: 'test',
+      query: 'query test {\n  test {\n    id\n  }\n}',
+      test: {
         a: 'test',
       },
     };
