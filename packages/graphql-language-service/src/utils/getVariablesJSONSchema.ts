@@ -106,14 +106,29 @@ const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
   DateTime: 'string',
 };
 
+class Marker {
+  private set = new Set<string>()
+  mark(name: string): boolean {
+    if (this.set.has(name)) {
+      return false
+    } else {
+      this.set.add(name)
+      return true
+    }
+  }
+}
+
 /**
  *
  * @param type {GraphQLInputType}
+ * @param options
+ * @param definitionMarker
  * @returns {DefinitionResult}
  */
 function getJSONSchemaFromGraphQLType(
   type: GraphQLInputType | GraphQLInputField,
   options?: JSONSchemaOptions,
+  definitionMarker: Marker = new Marker(),
 ): DefinitionResult {
   let required = false;
   let definition: CombinedSchema = Object.create(null);
@@ -137,6 +152,7 @@ function getJSONSchemaFromGraphQLType(
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
+      definitionMarker,
     );
     if (def.$ref) {
       definition.items = { $ref: def.$ref };
@@ -154,6 +170,7 @@ function getJSONSchemaFromGraphQLType(
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
+      definitionMarker,
     );
     definition = def;
     if (defs) {
@@ -162,7 +179,7 @@ function getJSONSchemaFromGraphQLType(
       });
     }
   }
-  if (isInputObjectType(type)) {
+  if (isInputObjectType(type) && definitionMarker.mark(type.name)) {
     definition.$ref = `#/definitions/${type.name}`;
     const fields = type.getFields();
 
@@ -192,12 +209,12 @@ function getJSONSchemaFromGraphQLType(
         required: fieldRequired,
         definition: typeDefinition,
         definitions: typeDefinitions,
-      } = getJSONSchemaFromGraphQLType(field.type, options);
+      } = getJSONSchemaFromGraphQLType(field.type, options, definitionMarker);
 
       const {
         definition: fieldDefinition,
         // definitions: fieldDefinitions,
-      } = getJSONSchemaFromGraphQLType(field, options);
+      } = getJSONSchemaFromGraphQLType(field, options, definitionMarker);
 
       fieldDef.properties[fieldName] = {
         ...typeDefinition,
