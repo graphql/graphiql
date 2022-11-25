@@ -1,5 +1,35 @@
 # Change Log
 
+## 2.2.0
+
+### Minor Changes
+
+- [#2908](https://github.com/graphql/graphiql/pull/2908)
+  [`3340fd74`](https://github.com/graphql/graphiql/commit/3340fd745e181ba8f1f5a6ed002a04d253a78d4a)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate
+  the `initialTabs` prop and add a `defaultTabs` props that supersedes it
+
+### Patch Changes
+
+- [#2911](https://github.com/graphql/graphiql/pull/2911)
+  [`118db402`](https://github.com/graphql/graphiql/commit/118db402eb1f5569e29f8f9bffef86d941dd2634)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix styles
+  of secondary editor buttons
+
+- [#2919](https://github.com/graphql/graphiql/pull/2919)
+  [`f6cae4ea`](https://github.com/graphql/graphiql/commit/f6cae4eaa0258ea7fcde97ba6368830955f0abf4)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix
+  overflow when there are lots of tabs that don't fit into the tab bar at once
+
+- Updated dependencies
+  [[`16174a05`](https://github.com/graphql/graphiql/commit/16174a053ed89fb9554d096395ab7bf69c8f6911),
+  [`f6cae4ea`](https://github.com/graphql/graphiql/commit/f6cae4eaa0258ea7fcde97ba6368830955f0abf4),
+  [`3340fd74`](https://github.com/graphql/graphiql/commit/3340fd745e181ba8f1f5a6ed002a04d253a78d4a),
+  [`0851d5f9`](https://github.com/graphql/graphiql/commit/0851d5f9ecf709597d0a698609d88f99c4395665),
+  [`83364b28`](https://github.com/graphql/graphiql/commit/83364b28020b5946ed58908d6d977f1de766e75d),
+  [`3a7d0007`](https://github.com/graphql/graphiql/commit/3a7d00071922e2005777c92daf6ad0c1ce3e2816)]:
+  - @graphiql/react@0.15.0
+
 ## 2.1.0
 
 ### Minor Changes

@@ -1,5 +1,18 @@
 # graphql-language-service-cli
 
+## 3.3.14
+
+### Patch Changes
+
+- [#2901](https://github.com/graphql/graphiql/pull/2901)
+  [`eff4fd6b`](https://github.com/graphql/graphiql/commit/eff4fd6b9087c2d9cdb260ee2502a31d23769c3f)
+  Thanks [@acao](https://github.com/acao)! - Reload the language service when a
+  legacy format .graphqlconfig file has changed
+
+- Updated dependencies
+  [[`eff4fd6b`](https://github.com/graphql/graphiql/commit/eff4fd6b9087c2d9cdb260ee2502a31d23769c3f)]:
+  - graphql-language-service-server@2.9.4
+
 ## 3.3.13
 
 ### Patch Changes
