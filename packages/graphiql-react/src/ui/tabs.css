@@ -1,6 +1,6 @@
 .graphiql-tabs {
   display: flex;
-  overflow-y: auto;
+  overflow-x: auto;
   padding: var(--px-12);
 
   & > :not(:first-child) {

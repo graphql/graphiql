@@ -408,7 +408,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             <div className="graphiql-horizontal-drag-bar" />
           ) : null}
         </div>
-        <div ref={pluginResize.secondRef}>
+        <div ref={pluginResize.secondRef} style={{ minWidth: 0 }}>
           <div className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs aria-label="Select active operation">
