@@ -1,6 +1,6 @@
 ---
-'graphiql': patch
-'@graphiql/react': patch
+'graphiql': minor
+'@graphiql/react': minor
 ---
 
 Add user facing setting for persisting headers
