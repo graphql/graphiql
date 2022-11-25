@@ -1,5 +1,43 @@
 # @graphiql/react
 
+## 0.15.0
+
+### Minor Changes
+
+- [#2908](https://github.com/graphql/graphiql/pull/2908)
+  [`3340fd74`](https://github.com/graphql/graphiql/commit/3340fd745e181ba8f1f5a6ed002a04d253a78d4a)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Deprecate
+  the `initialTabs` prop and add a `defaultTabs` props that supersedes it
+
+- [#2907](https://github.com/graphql/graphiql/pull/2907)
+  [`3a7d0007`](https://github.com/graphql/graphiql/commit/3a7d00071922e2005777c92daf6ad0c1ce3e2816)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Clearly
+  separate the fetching and subscription states for multipart requests (like
+  subscriptions) and show the stop-button as long as the subscription is running
+
+### Patch Changes
+
+- [#2910](https://github.com/graphql/graphiql/pull/2910)
+  [`16174a05`](https://github.com/graphql/graphiql/commit/16174a053ed89fb9554d096395ab7bf69c8f6911)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix
+  autocomplete styles for field type and description on the right
+
+- [#2919](https://github.com/graphql/graphiql/pull/2919)
+  [`f6cae4ea`](https://github.com/graphql/graphiql/commit/f6cae4eaa0258ea7fcde97ba6368830955f0abf4)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Fix
+  overflow when there are lots of tabs that don't fit into the tab bar at once
+
+- [#2905](https://github.com/graphql/graphiql/pull/2905)
+  [`0851d5f9`](https://github.com/graphql/graphiql/commit/0851d5f9ecf709597d0a698609d88f99c4395665)
+  Thanks [@ccbrown](https://github.com/ccbrown)! - Fix: prevent default event
+  for graphiql-doc-explorer-back link
+
+- [#2912](https://github.com/graphql/graphiql/pull/2912)
+  [`83364b28`](https://github.com/graphql/graphiql/commit/83364b28020b5946ed58908d6d977f1de766e75d)
+  Thanks [@thomasheyenbrock](https://github.com/thomasheyenbrock)! - Add missing
+  effect dependency to make sure updates to the `defaultHeaders` prop have the
+  desired effect
+
 ## 0.14.0
 
 ### Minor Changes
