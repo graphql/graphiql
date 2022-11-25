@@ -19,11 +19,17 @@ import { createContextHook, createNullableContext } from './utility/context';
 
 export type ExecutionContextType = {
   /**
-   * If there is currently a GraphQL request in-flight. For long-running
-   * requests like subscriptions this will be `true` until the request is
-   * stopped manually.
+   * If there is currently a GraphQL request in-flight. For multi-part
+   * requests like subscriptions, this will be `true` while fetching the
+   * first partial response and `false` while fetching subsequent batches.
    */
   isFetching: boolean;
+  /**
+   * If there is currently a GraphQL request in-flight. For multi-part
+   * requests like subscriptions, this will be `true` until the last batch
+   * has been fetched or the connection is closed from the client.
+   */
+  isSubscribed: boolean;
   /**
    * The operation name that will be sent with all GraphQL requests.
    */
@@ -315,14 +321,16 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     variableEditor,
   ]);
 
+  const isSubscribed = Boolean(subscription);
   const value = useMemo<ExecutionContextType>(
     () => ({
       isFetching,
+      isSubscribed,
       operationName: props.operationName ?? null,
       run,
       stop,
     }),
-    [isFetching, props.operationName, run, stop],
+    [isFetching, isSubscribed, props.operationName, run, stop],
   );
 
   return (
