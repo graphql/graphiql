@@ -108,7 +108,7 @@ describe('getDefaultTabState', () => {
       getDefaultTabState({
         defaultQuery: '# Default',
         headers: null,
-        initialTabs: [
+        defaultTabs: [
           {
             headers: null,
             query: 'query Person { person { name } }',

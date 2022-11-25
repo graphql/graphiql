@@ -482,11 +482,11 @@ describe('GraphiQL', () => {
       });
     });
 
-    it('shows initial tabs', async () => {
+    it('shows default tabs', async () => {
       const { container } = render(
         <GraphiQL
           fetcher={noOpFetcher}
-          initialTabs={[
+          defaultTabs={[
             {
               query: 'query Person { person { name } }',
             },

@@ -68,7 +68,7 @@ export function getDefaultTabState({
   defaultQuery,
   defaultHeaders,
   headers,
-  initialTabs,
+  defaultTabs,
   query,
   variables,
   storage,
@@ -76,7 +76,7 @@ export function getDefaultTabState({
   defaultQuery: string;
   defaultHeaders?: string;
   headers: string | null;
-  initialTabs?: TabDefinition[];
+  defaultTabs?: TabDefinition[];
   query: string | null;
   variables: string | null;
   storage: StorageAPI | null;
@@ -128,7 +128,7 @@ export function getDefaultTabState({
     return {
       activeTabIndex: 0,
       tabs: (
-        initialTabs || [
+        defaultTabs || [
           {
             query: query ?? defaultQuery,
             variables,

@@ -25,6 +25,7 @@ export function GraphiQLProvider({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
   defaultHeaders,
+  defaultTabs,
   externalFragments,
   fetcher,
   getDefaultFieldNames,
@@ -55,6 +56,7 @@ export function GraphiQLProvider({
         <EditorContextProvider
           defaultQuery={defaultQuery}
           defaultHeaders={defaultHeaders}
+          defaultTabs={defaultTabs}
           externalFragments={externalFragments}
           headers={headers}
           initialTabs={initialTabs}
