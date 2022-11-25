@@ -47,6 +47,7 @@
 .graphiql-container .graphiql-main {
   display: flex;
   flex: 1;
+  min-width: 0;
 }
 
 /* The current session and tabs */
@@ -60,6 +61,7 @@
   max-height: 100%;
   margin: var(--px-16);
   margin-left: 0;
+  min-width: 0;
 }
 
 /* The session header containing tabs and the logo */
