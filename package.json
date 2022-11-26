@@ -9,7 +9,8 @@
       "examples/graphiql-webpack",
       "examples/monaco-graphql-webpack",
       "examples/monaco-graphql-react-vite",
-      "examples/cm6-graphql-parcel"
+      "examples/cm6-graphql-parcel",
+      "ladle"
     ]
   },
   "lint-staged": {
