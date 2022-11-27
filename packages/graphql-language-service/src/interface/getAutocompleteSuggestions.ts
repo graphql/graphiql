@@ -31,17 +31,6 @@ import {
   isEnumType,
   isInputObjectType,
   isOutputType,
-} from 'graphql';
-
-import {
-  CompletionItem,
-  AllTypeInfo,
-  IPosition,
-  CompletionItemKind,
-  InsertTextFormat,
-} from '../types';
-
-import {
   GraphQLBoolean,
   GraphQLEnumType,
   GraphQLInputObjectType,
@@ -60,6 +49,14 @@ import {
   BREAK,
   parse,
 } from 'graphql';
+
+import {
+  CompletionItem,
+  AllTypeInfo,
+  IPosition,
+  CompletionItemKind,
+  InsertTextFormat,
+} from '../types';
 
 import {
   CharacterStream,

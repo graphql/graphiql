@@ -4,6 +4,7 @@ import { history } from '@codemirror/commands';
 import { autocompletion, closeBrackets } from '@codemirror/autocomplete';
 import { bracketMatching, syntaxHighlighting } from '@codemirror/language';
 import { oneDarkHighlightStyle, oneDark } from '@codemirror/theme-one-dark';
+// eslint-disable-next-line import/no-unresolved
 import { graphql } from 'cm6-graphql';
 import query from './sample-query';
 import { TestSchema } from './testSchema';

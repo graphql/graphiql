@@ -2,10 +2,11 @@ import 'regenerator-runtime/runtime.js';
 
 import * as React from 'react';
 import { render } from 'react-dom';
-import GraphiQL from 'graphiql';
+import { GraphiQL } from 'graphiql';
 import { useExplorerPlugin } from '@graphiql/plugin-explorer';
 import { useExporterPlugin } from '@graphiql/plugin-code-exporter';
 
+// eslint-disable-next-line import/no-unresolved
 import 'graphiql/graphiql.css';
 import '@graphiql/plugin-explorer/dist/style.css';
 import '@graphiql/plugin-code-exporter/dist/style.css';

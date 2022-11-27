@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { graphqlLanguage } from '../dist/index.js';
 import { fileTests } from '@lezer/generator/dist/test';
 

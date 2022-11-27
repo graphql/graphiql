@@ -6,10 +6,7 @@
   "workspaces": {
     "packages": [
       "packages/*",
-      "examples/graphiql-webpack",
-      "examples/monaco-graphql-webpack",
-      "examples/monaco-graphql-react-vite",
-      "examples/cm6-graphql-parcel"
+      "examples/*"
     ]
   },
   "lint-staged": {
@@ -120,6 +117,7 @@
     "cypress": "^4.7.0",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^27.1.6",

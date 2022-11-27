@@ -7,11 +7,10 @@
  *
  */
 
-import { GraphQLSchema } from 'graphql';
+import { GraphQLSchema, buildSchema, buildClientSchema } from 'graphql';
 
 import invariant from 'assert';
 import fs from 'fs';
-import { buildSchema, buildClientSchema } from 'graphql';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,

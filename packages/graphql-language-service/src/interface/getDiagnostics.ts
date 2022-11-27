@@ -19,9 +19,8 @@ import {
   print,
   validate,
   NoDeprecatedCustomRule,
+  parse,
 } from 'graphql';
-
-import { parse } from 'graphql';
 
 import { CharacterStream, onlineParser } from '../parser';
 
