@@ -1,71 +1,70 @@
-import { 
-  PenIcon, 
-  CopyIcon, 
+import {
+  PenIcon,
+  CopyIcon,
   DocsIcon,
-  PlayIcon, 
-  PlusIcon, 
+  PlayIcon,
+  PlusIcon,
   StarIcon,
   StopIcon,
-  TypeIcon, 
-  CloseIcon, 
-  FieldIcon, 
-  MergeIcon, 
-  ReloadIcon, 
-  HistoryIcon, 
-  ArgumentIcon, 
-  PrettifyIcon, 
-  RootTypeIcon, 
-  SettingsIcon, 
+  TypeIcon,
+  CloseIcon,
+  FieldIcon,
+  MergeIcon,
+  ReloadIcon,
+  HistoryIcon,
+  ArgumentIcon,
+  PrettifyIcon,
+  RootTypeIcon,
+  SettingsIcon,
   ChevronUpIcon,
-  DirectiveIcon, 
-  EnumValueIcon, 
-  DocsFilledIcon, 
-  ImplementsIcon, 
-  StarFilledIcon, 
-  ChevronDownIcon, 
-  ChevronLeftIcon, 
-  DeprecatedFieldIcon, 
-  MagnifyingGlassIcon, 
-  KeyboardShortcutIcon, 
-  DeprecatedArgumentIcon, 
-  DeprecatedEnumValueIcon
+  DirectiveIcon,
+  EnumValueIcon,
+  DocsFilledIcon,
+  ImplementsIcon,
+  StarFilledIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  DeprecatedFieldIcon,
+  MagnifyingGlassIcon,
+  KeyboardShortcutIcon,
+  DeprecatedArgumentIcon,
+  DeprecatedEnumValueIcon,
 } from '../../../packages/graphiql-react';
 import '../../../packages/graphiql-react//dist/style.css';
 
 export const Icons = () => {
   return (
-    <>
-    <PenIcon/> 
-    <CopyIcon/> 
-    <DocsIcon/>
-    <PlayIcon/> 
-    <PlusIcon/> 
-    <StarIcon/>
-    <StopIcon/>
-    <TypeIcon/> 
-    <CloseIcon/> 
-    <FieldIcon/> 
-    <MergeIcon/> 
-    <ReloadIcon/> 
-    <HistoryIcon/> 
-    <ArgumentIcon/> 
-    <PrettifyIcon/> 
-    <RootTypeIcon/> 
-    <SettingsIcon/> 
-    <ChevronUpIcon/>
-    <DirectiveIcon/> 
-    <EnumValueIcon/> 
-    <DocsFilledIcon/> 
-    <ImplementsIcon/> 
-    <StarFilledIcon/> 
-    <ChevronDownIcon/> 
-    <ChevronLeftIcon/> 
-    <DeprecatedFieldIcon/> 
-    <MagnifyingGlassIcon/> 
-    <KeyboardShortcutIcon/> 
-    <DeprecatedArgumentIcon/> 
-    <DeprecatedEnumValueIcon/>   
-    </>
+    <div className="graphiql-container">
+      <PenIcon />
+      <CopyIcon />
+      <DocsIcon />
+      <PlayIcon />
+      <PlusIcon />
+      <StarIcon />
+      <StopIcon />
+      <TypeIcon />
+      <CloseIcon />
+      <FieldIcon />
+      <MergeIcon />
+      <ReloadIcon />
+      <HistoryIcon />
+      <ArgumentIcon />
+      <PrettifyIcon />
+      <RootTypeIcon />
+      <SettingsIcon />
+      <ChevronUpIcon />
+      <DirectiveIcon />
+      <EnumValueIcon />
+      <DocsFilledIcon />
+      <ImplementsIcon />
+      <StarFilledIcon />
+      <ChevronDownIcon />
+      <ChevronLeftIcon />
+      <DeprecatedFieldIcon />
+      <MagnifyingGlassIcon />
+      <KeyboardShortcutIcon />
+      <DeprecatedArgumentIcon />
+      <DeprecatedEnumValueIcon />
+    </div>
   );
 };
-

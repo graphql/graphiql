@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 // graphiql
 import { GraphiQL } from '../../../packages/graphiql/src/index';
-import '../../../packages/graphiql/vite_test/graphiql.css';
+import '../../../packages/graphiql/build/graphiql.css';
 
 // graphiql-plugin-explorer
 import { useExplorerPlugin } from '../../../packages/graphiql-plugin-explorer/src/index';
