@@ -67,7 +67,7 @@ function updateURL() {
 }
 
 function getSchemaUrl() {
-  const isDev = window.location.hostname.match(/localhost$/);
+  const isDev = window.location.hostname.match(/127.0.0.1$/);
 
   if (isDev) {
     // This supports an e2e test which ensures that invalid schemas do not load.
