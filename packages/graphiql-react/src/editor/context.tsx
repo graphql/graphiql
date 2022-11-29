@@ -7,7 +7,14 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -335,6 +342,15 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     },
     [storage, tabState, headerEditor],
   );
+
+  const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
+  useEffect(() => {
+    const propValue = Boolean(props.shouldPersistHeaders);
+    if (lastShouldPersistHeadersProp.current !== propValue) {
+      setShouldPersistHeaders(propValue);
+      lastShouldPersistHeadersProp.current = propValue;
+    }
+  }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
 
   const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
     queryEditor,
