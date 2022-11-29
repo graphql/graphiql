@@ -146,10 +146,6 @@ export type EditorContextType = TabsState & {
    * Changes if headers should be persisted.
    */
   setShouldPersistHeaders(persist: boolean): void;
-  /**
-   * Indicates if the user can control `shouldPersistHeaders` value.
-   */
-  userControlledShouldPersistHeaders: boolean;
 };
 
 export const EditorContext =
@@ -271,15 +267,12 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     null,
   );
 
-  const userControlledShouldPersistHeaders =
-    props.shouldPersistHeaders !== false;
   const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
     () => {
-      const propValue = Boolean(props.shouldPersistHeaders);
       const isStored = storage?.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
-      return userControlledShouldPersistHeaders && isStored
+      return props.shouldPersistHeaders !== false && isStored
         ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
-        : propValue;
+        : Boolean(props.shouldPersistHeaders);
     },
   );
 
@@ -495,7 +488,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
       shouldPersistHeaders,
       setShouldPersistHeaders,
-      userControlledShouldPersistHeaders,
     }),
     [
       tabState,
@@ -518,7 +510,6 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
       shouldPersistHeaders,
       setShouldPersistHeaders,
-      userControlledShouldPersistHeaders,
     ],
   );
 

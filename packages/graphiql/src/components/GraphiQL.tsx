@@ -158,7 +158,10 @@ export function GraphiQL({
       validationRules={validationRules}
       variables={variables}
     >
-      <GraphiQLInterface {...props} />
+      <GraphiQLInterface
+        showPersistHeadersSettings={shouldPersistHeaders !== false}
+        {...props}
+      />
     </GraphiQLProvider>
   );
 }
@@ -198,6 +201,11 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * editor.
      */
     toolbar?: GraphiQLToolbarConfig;
+    /**
+     * Indicates if settings for persisting headers should appear in the
+     * settings modal.
+     */
+    showPersistHeadersSettings?: boolean;
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
@@ -751,7 +759,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             }}
           />
         </div>
-        {editorContext.userControlledShouldPersistHeaders ? (
+        {props.showPersistHeadersSettings ? (
           <div className="graphiql-dialog-section">
             <div>
               <div className="graphiql-dialog-section-title">
