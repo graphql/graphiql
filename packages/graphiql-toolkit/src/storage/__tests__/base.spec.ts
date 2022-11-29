@@ -1,7 +1,11 @@
 import { StorageAPI } from '../base';
 
 describe('StorageAPI', () => {
-  const storage = new StorageAPI();
+  let storage = new StorageAPI();
+
+  beforeEach(() => {
+    storage = new StorageAPI();
+  });
 
   it('returns nothing if no value set', () => {
     const result = storage.get('key1');
