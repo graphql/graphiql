@@ -133,7 +133,7 @@ export function findGraphQLTags(
       parsedASTs.push(...parseVueSFCResult.scriptSetupAst);
     }
   } else {
-    const isTypeScript = ext === '.ts' || ext === '.tsx';
+    const isTypeScript = ['.ts', '.tsx', '.cts', '.mts'].includes(ext);
     if (isTypeScript) {
       plugins?.push('typescript');
     } else {
