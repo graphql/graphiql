@@ -198,10 +198,53 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * editor.
      */
     toolbar?: GraphiQLToolbarConfig;
+    /**
+     * Toggle if the second panel should be shown.
+     * @default false
+     */
+    hideSecondPanel?: boolean;
+    /**
+     * Toggle if the editor panel should be shown.
+     * @default false
+     */
+    hideEditorPanel?: boolean;
+    /**
+     * Toggle if the results panel should be shown.
+     * @default false
+     */
+    hideResultsPanel?: boolean;
+    /**
+     * Styles to be applied to the second panel.
+     * @default ''
+     */
+    secondPanelClassName?: String;
+    /**
+     * Styles to be applied to the editor panel.
+     * @default ''
+     */
+    editorPanelClassName?: String;
+    /**
+     * Styles to be applied to the results panel.
+     * @default ''
+     */
+    resultsPanelClassName?: String;
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
   const isHeadersEditorEnabled = props.isHeadersEditorEnabled ?? true;
+  const hideSecondPanel = props.hideSecondPanel ?? false;
+  const hideEditorPanel = props.hideEditorPanel ?? false;
+  const hideResultsPanel = props.hideResultsPanel ?? false;
+
+  const secondPanelClassName = hideSecondPanel
+    ? 'graphiql-panel-hidden'
+    : `${props.secondPanelClassName} graphiql-panel-visible`;
+  const editorPanelClassName = hideEditorPanel
+    ? 'graphiql-panel-hidden'
+    : `${props.editorPanelClassName} graphiql-panel-visible`;
+  const resultsPanelClassName = hideResultsPanel
+    ? 'graphiql-panel-hidden'
+    : `${props.resultsPanelClassName} graphiql-panel-visible`;
 
   const editorContext = useEditorContext({ nonNull: true });
   const executionContext = useExecutionContext({ nonNull: true });
@@ -404,11 +447,19 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           </div>
         </div>
         <div ref={pluginResize.dragBarRef}>
-          {pluginContext?.visiblePlugin ? (
-            <div className="graphiql-horizontal-drag-bar" />
+          {!hideSecondPanel && pluginContext?.visiblePlugin ? (
+            <div
+              className="graphiql-horizontal-drag-bar"
+              data-testid="panels-separator-drag-bar"
+            />
           ) : null}
         </div>
-        <div ref={pluginResize.secondRef} style={{ minWidth: 0 }}>
+        <div
+          ref={pluginResize.secondRef}
+          style={{ minWidth: 0 }}
+          data-testid="second-panel-container"
+          className={secondPanelClassName}
+        >
           <div className="graphiql-sessions">
             <div className="graphiql-session-header">
               <Tabs aria-label="Select active operation">
@@ -478,7 +529,11 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
               className="graphiql-session"
               aria-labelledby={`graphiql-session-tab-${editorContext.activeTabIndex}`}
             >
-              <div ref={editorResize.firstRef}>
+              <div
+                ref={editorResize.firstRef}
+                data-testid="editor-panel"
+                className={editorPanelClassName}
+              >
                 <div
                   className={`graphiql-editors${
                     editorContext.tabs.length === 1 ? ' full-height' : ''
@@ -619,9 +674,18 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 </div>
               </div>
               <div ref={editorResize.dragBarRef}>
-                <div className="graphiql-horizontal-drag-bar" />
+                {hideEditorPanel && hideResultsPanel ? null : (
+                  <div
+                    className="graphiql-horizontal-drag-bar"
+                    data-testid="editor-results-drag-bar"
+                  />
+                )}
               </div>
-              <div ref={editorResize.secondRef}>
+              <div
+                ref={editorResize.secondRef}
+                data-testid="results-panel"
+                className={resultsPanelClassName}
+              >
                 <div className="graphiql-response">
                   {executionContext.isFetching ? <Spinner /> : null}
                   <ResponseEditor

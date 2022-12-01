@@ -983,4 +983,134 @@ describe('GraphiQL', () => {
       });
     });
   }); // history
+
+  describe('second panel (and children) visibility', () => {
+    it('hides the second panel', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} hideSecondPanel />,
+      );
+
+      const dragBar = container.querySelector(
+        '[data-testid="panels-separator-drag-bar"]',
+      ) as HTMLElement;
+
+      const secondPanel = container.querySelector(
+        '[data-testid="second-panel-container"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        expect(dragBar).toBeNull();
+
+        // get the react props of second panel
+        const hiddenSecondPanelObj = Object.values(secondPanel).find(
+          prop => prop?.className === 'graphiql-panel-hidden',
+        );
+        expect(hiddenSecondPanelObj.className).toBe('graphiql-panel-hidden');
+      });
+    });
+
+    it('hides the editor panel', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} hideEditorPanel />,
+      );
+
+      const dragBar = container.querySelector(
+        '[data-testid="editor-results-drag-bar"]',
+      ) as HTMLElement;
+
+      const editorPanel = container.querySelector(
+        '[data-testid="editor-panel"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        expect(dragBar).not.toBe(null);
+
+        // get the react props of the editor panel
+        const hiddenEditorPanelObj = Object.values(editorPanel).find(
+          prop => prop?.className === 'graphiql-panel-hidden',
+        );
+        expect(hiddenEditorPanelObj.className).toBe('graphiql-panel-hidden');
+      });
+    });
+
+    it('hides the results panel', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} hideResultsPanel />,
+      );
+
+      const dragBar = container.querySelector(
+        '[data-testid="editor-results-drag-bar"]',
+      ) as HTMLElement;
+
+      const resultsPanel = container.querySelector(
+        '[data-testid="results-panel"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        expect(dragBar).not.toBe(null);
+
+        // get the react props of the results panel
+        const hiddenResultsPanelObj = Object.values(resultsPanel).find(
+          prop => prop?.className === 'graphiql-panel-hidden',
+        );
+        expect(hiddenResultsPanelObj.className).toBe('graphiql-panel-hidden');
+      });
+    });
+  });
+
+  describe('second panel (and children) custom class names', () => {
+    it('second panel with test class', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} secondPanelClassName="test" />,
+      );
+
+      const secondPanel = container.querySelector(
+        '[data-testid="second-panel-container"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        // get the react props of second panel
+        const secondPanelObj = Object.values(secondPanel).find(
+          prop => prop?.className === 'test graphiql-panel-visible',
+        );
+        expect(secondPanelObj.className).toBe('test graphiql-panel-visible');
+      });
+    });
+
+    it('editor panel with test class', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} editorPanelClassName="test" />,
+      );
+
+      const editorPanel = container.querySelector(
+        '[data-testid="editor-panel"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        // get the react props of the editor panel
+        const editorPanelObj = Object.values(editorPanel).find(
+          prop => prop?.className === 'test graphiql-panel-visible',
+        );
+        expect(editorPanelObj.className).toBe('test graphiql-panel-visible');
+      });
+    });
+
+    it('results panel with test class', async () => {
+      const { container } = render(
+        <GraphiQL fetcher={noOpFetcher} resultsPanelClassName="test" />,
+      );
+
+      const resultsPanel = container.querySelector(
+        '[data-testid="results-panel"]',
+      ) as HTMLElement;
+
+      await waitFor(() => {
+        // get the react props of the results panel
+        const resultsPanelObj = Object.values(resultsPanel).find(
+          prop => prop?.className === 'test graphiql-panel-visible',
+        );
+        expect(resultsPanelObj.className).toBe('test graphiql-panel-visible');
+      });
+    });
+  });
 });

@@ -332,3 +332,11 @@ reach-portal .graphiql-key {
 .graphiql-container svg {
   pointer-events: none;
 }
+
+.graphiql-panel-hidden {
+  display: none !important;
+}
+
+.graphiql-panel-visible {
+  display: flex;
+}
