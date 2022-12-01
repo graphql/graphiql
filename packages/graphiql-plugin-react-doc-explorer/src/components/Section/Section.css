@@ -1,0 +1,22 @@
+.graphiql-doc-explorer-section-title {
+  align-items: center;
+  display: flex;
+  font-size: var(--font-size-hint);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+
+  & > svg {
+    height: var(--px-16);
+    margin-right: var(--px-8);
+    width: var(--px-16);
+  }
+}
+
+.graphiql-doc-explorer-section-content {
+  margin-left: var(--px-8);
+  margin-top: var(--px-16);
+
+  & > * + * {
+    margin-top: var(--px-16);
+  }
+}

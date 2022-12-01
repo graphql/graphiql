@@ -1,0 +1,1 @@
+export { TypeDocumentation } from './TypeDocumentation';

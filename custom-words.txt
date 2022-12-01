@@ -74,6 +74,7 @@ codesandbox
 combobox
 commitlint
 cosmicconfig
+cssnano
 dompurify
 dustjs
 dset
@@ -102,9 +103,11 @@ templayed
 typedoc
 twing
 undici
+zustand
 velocityjs
 vite
 vitejs
+whatwg
 wonka
 wsrun
 lezer
@@ -132,6 +135,7 @@ graphqlconfig
 graphqlrc
 graphqls
 invalidchar
+keymap
 languageservice
 linenumber
 linenumbers
@@ -176,6 +180,7 @@ urql
 unnormalized
 unsubscribable
 websockets
+webworker
 vash
 
 
@@ -226,6 +231,9 @@ qlide
 behaviour
 
 // other
+QLSWAPI 
+SWAPI
+Unstyled
 architecting
 codebases
 codespaces
