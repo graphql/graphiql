@@ -31,11 +31,9 @@ function printLintErrors(queryString: string, configOverrides = {}) {
 
   return new Promise<any[]>(resolve => {
     editor.state.lint.options.onUpdateLinting = (errors: any[]) => {
-      if (errors?.[0]) {
-        if (!errors[0].message.match('Unexpected EOF')) {
-          resolve(errors);
-          return;
-        }
+      if (errors?.[0] && !errors[0].message.match('Unexpected EOF')) {
+        resolve(errors);
+        return;
       }
       resolve([]);
     };

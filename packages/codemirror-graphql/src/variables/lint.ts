@@ -171,13 +171,15 @@ function validateValue(
     // Look for missing non-nullable fields.
     Object.keys(type.getFields()).forEach(fieldName => {
       const field = type.getFields()[fieldName];
-      if (!providedFields[fieldName]) {
-        if (field.type instanceof GraphQLNonNull && !field.defaultValue) {
-          fieldErrors.push([
-            valueAST,
-            `Object of type "${type}" is missing required field "${fieldName}".`,
-          ]);
-        }
+      if (
+        !providedFields[fieldName] &&
+        field.type instanceof GraphQLNonNull &&
+        !field.defaultValue
+      ) {
+        fieldErrors.push([
+          valueAST,
+          `Object of type "${type}" is missing required field "${fieldName}".`,
+        ]);
       }
     });
 
@@ -200,16 +202,15 @@ function validateValue(
   }
 
   // Validate enums and custom scalars.
-  if (type instanceof GraphQLEnumType || type instanceof GraphQLScalarType) {
-    if (
-      (valueAST.kind !== 'String' &&
-        valueAST.kind !== 'Number' &&
-        valueAST.kind !== 'Boolean' &&
-        valueAST.kind !== 'Null') ||
-      isNullish(type.parseValue(valueAST.value))
-    ) {
-      return [[valueAST, `Expected value of type "${type}".`]];
-    }
+  if (
+    (type instanceof GraphQLEnumType || type instanceof GraphQLScalarType) &&
+    ((valueAST.kind !== 'String' &&
+      valueAST.kind !== 'Number' &&
+      valueAST.kind !== 'Boolean' &&
+      valueAST.kind !== 'Null') ||
+      isNullish(type.parseValue(valueAST.value)))
+  ) {
+    return [[valueAST, `Expected value of type "${type}".`]];
   }
 
   return [];

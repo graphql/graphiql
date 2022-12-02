@@ -330,26 +330,25 @@ export function getAutocompleteSuggestions(
 
   // Input Object fields
   if (
-    kind === RuleKinds.OBJECT_VALUE ||
-    (kind === RuleKinds.OBJECT_FIELD && step === 0)
+    (kind === RuleKinds.OBJECT_VALUE ||
+      (kind === RuleKinds.OBJECT_FIELD && step === 0)) &&
+    typeInfo.objectFieldDefs
   ) {
-    if (typeInfo.objectFieldDefs) {
-      const objectFields = objectValues(typeInfo.objectFieldDefs);
-      const completionKind =
-        kind === RuleKinds.OBJECT_VALUE
-          ? CompletionItemKind.Value
-          : CompletionItemKind.Field;
-      return hintList(
-        token,
-        objectFields.map(field => ({
-          label: field.name,
-          detail: String(field.type),
-          documentation: field.description ?? undefined,
-          kind: completionKind,
-          type: field.type,
-        })),
-      );
-    }
+    const objectFields = objectValues(typeInfo.objectFieldDefs);
+    const completionKind =
+      kind === RuleKinds.OBJECT_VALUE
+        ? CompletionItemKind.Value
+        : CompletionItemKind.Field;
+    return hintList(
+      token,
+      objectFields.map(field => ({
+        label: field.name,
+        detail: String(field.type),
+        documentation: field.description ?? undefined,
+        kind: completionKind,
+        type: field.type,
+      })),
+    );
   }
 
   // Input values: Enum and Boolean
@@ -871,21 +870,19 @@ export function getVariableCompletions(
       }
     }
 
-    if (variableName && variableType) {
-      if (!definitions[variableName]) {
-        // append `$` if the `token.string` is not already `$`
+    if (variableName && variableType && !definitions[variableName]) {
+      // append `$` if the `token.string` is not already `$`
 
-        definitions[variableName] = {
-          detail: variableType.toString(),
-          insertText: token.string === '$' ? variableName : '$' + variableName,
-          label: variableName, // keep label the same for `codemirror-graphql`
-          type: variableType,
-          kind: CompletionItemKind.Variable,
-        } as CompletionItem;
+      definitions[variableName] = {
+        detail: variableType.toString(),
+        insertText: token.string === '$' ? variableName : '$' + variableName,
+        label: variableName, // keep label the same for `codemirror-graphql`
+        type: variableType,
+        kind: CompletionItemKind.Variable,
+      } as CompletionItem;
 
-        variableName = null;
-        variableType = null;
-      }
+      variableName = null;
+      variableType = null;
     }
   });
 
@@ -976,13 +973,14 @@ export function getTokenAtPosition(
   let stateAtCursor = null;
   let stringAtCursor = null;
   const token = runOnlineParser(queryText, (stream, state, style, index) => {
-    if (index === cursor.line) {
-      if (stream.getCurrentPosition() >= cursor.character) {
-        styleAtCursor = style;
-        stateAtCursor = { ...state };
-        stringAtCursor = stream.current();
-        return 'BREAK';
-      }
+    if (
+      index === cursor.line &&
+      stream.getCurrentPosition() >= cursor.character
+    ) {
+      styleAtCursor = style;
+      stateAtCursor = { ...state };
+      stringAtCursor = stream.current();
+      return 'BREAK';
     }
   });
 

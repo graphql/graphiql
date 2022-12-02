@@ -37,10 +37,8 @@ export const isSubscriptionWithName = (
   let isSubscription = false;
   visit(document, {
     OperationDefinition(node) {
-      if (name === node.name?.value) {
-        if (node.operation === 'subscription') {
-          isSubscription = true;
-        }
+      if (name === node.name?.value && node.operation === 'subscription') {
+        isSubscription = true;
       }
     },
   });
@@ -87,12 +85,10 @@ export const createWebsocketsFetcherFromUrl = (
     });
     return createWebsocketsFetcherFromClient(wsClient);
   } catch (err) {
-    if (errorHasCode(err)) {
-      if (err.code === 'MODULE_NOT_FOUND') {
-        throw new Error(
-          "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
-        );
-      }
+    if (errorHasCode(err) && err.code === 'MODULE_NOT_FOUND') {
+      throw new Error(
+        "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
+      );
     }
     // eslint-disable-next-line no-console
     console.error(`Error creating websocket client for ${url}`, err);

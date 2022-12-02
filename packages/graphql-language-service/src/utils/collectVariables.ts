@@ -37,11 +37,12 @@ export function collectVariables(
           ) as GraphQLInputType;
           if (inputType) {
             variableToType[variable.name.value] = inputType;
-          } else if (type.kind === Kind.NAMED_TYPE) {
+          } else if (
+            type.kind === Kind.NAMED_TYPE &&
             // in the experimental stream defer branch we are using, it seems typeFromAST() doesn't recognize Floats?
-            if (type.name.value === 'Float') {
-              variableToType[variable.name.value] = GraphQLFloat;
-            }
+            type.name.value === 'Float'
+          ) {
+            variableToType[variable.name.value] = GraphQLFloat;
           }
         });
       }
