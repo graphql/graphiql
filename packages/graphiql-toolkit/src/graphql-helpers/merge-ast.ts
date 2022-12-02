@@ -56,7 +56,7 @@ function inlineRelevantFragmentSpreads(
     ? getNamedType(selectionSetType).name
     : null;
   const outputSelections = [];
-  const seenSpreads = [];
+  const seenSpreads: string[] = [];
   for (let selection of selections) {
     if (selection.kind === 'FragmentSpread') {
       const fragmentName = selection.name.value;
