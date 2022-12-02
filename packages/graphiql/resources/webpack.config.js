@@ -1,11 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const graphql = require('graphql');
+// const graphql = require('graphql');
 
 const isDev = process.env.NODE_ENV === 'development';
 const isHMR = Boolean(isDev && process.env.WEBPACK_DEV_SERVER);
@@ -85,12 +85,13 @@ const resultConfig = {
       maxChunks: 1,
     }),
 
-    new HtmlWebpackPlugin({
-      template: relPath('index.html.ejs'),
-      inject: 'head',
-      filename: isDev && !isHMR ? 'dev.html' : 'index.html',
-      graphqlVersion: JSON.stringify(graphql.version),
-    }),
+    // 👇 running this will wipe our fancy new vite-required index.html!
+    // new HtmlWebpackPlugin({
+    //   template: relPath('index.html.ejs'),
+    //   inject: 'head',
+    //   filename: isDev && !isHMR ? 'dev.html' : 'index.html',
+    //   graphqlVersion: JSON.stringify(graphql.version),
+    // }),
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // both options are optional
