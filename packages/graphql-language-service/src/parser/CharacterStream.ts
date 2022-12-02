@@ -53,9 +53,7 @@ export default class CharacterStream implements CharacterStreamInterface {
   public sol = (): boolean => this._pos === 0;
 
   public peek = (): string | null => {
-    return this._sourceText.charAt(this._pos)
-      ? this._sourceText.charAt(this._pos)
-      : null;
+    return this._sourceText.charAt(this._pos) || null;
   };
 
   public next = (): string => {

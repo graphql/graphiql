@@ -232,7 +232,7 @@ function renderDeprecation(
     return;
   }
 
-  const reason = def.deprecationReason ? def.deprecationReason : null;
+  const reason = def.deprecationReason || null;
   if (!reason) {
     return;
   }

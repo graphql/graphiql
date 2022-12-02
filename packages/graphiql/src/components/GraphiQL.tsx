@@ -303,9 +303,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
       <ToolbarButton onClick={() => copy()} label="Copy query (Shift-Ctrl-C)">
         <CopyIcon className="graphiql-toolbar-icon" aria-hidden="true" />
       </ToolbarButton>
-      {props.toolbar?.additionalContent
-        ? props.toolbar.additionalContent
-        : null}
+      {props.toolbar?.additionalContent || null}
     </>
   );
 

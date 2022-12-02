@@ -19,7 +19,7 @@ import { TestSchema } from './testSchema';
 function createEditorWithLint(lintConfig?: any) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql',
-    lint: lintConfig ? lintConfig : true,
+    lint: lintConfig || true,
   });
 }
 
