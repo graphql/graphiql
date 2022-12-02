@@ -1061,51 +1061,47 @@ export function canUseDirective(
   const locations = directive.locations;
   switch (kind) {
     case RuleKinds.QUERY:
-      return locations.indexOf(DirectiveLocation.QUERY) !== -1;
+      return locations.includes(DirectiveLocation.QUERY);
     case RuleKinds.MUTATION:
-      return locations.indexOf(DirectiveLocation.MUTATION) !== -1;
+      return locations.includes(DirectiveLocation.MUTATION);
     case RuleKinds.SUBSCRIPTION:
-      return locations.indexOf(DirectiveLocation.SUBSCRIPTION) !== -1;
+      return locations.includes(DirectiveLocation.SUBSCRIPTION);
     case RuleKinds.FIELD:
     case RuleKinds.ALIASED_FIELD:
-      return locations.indexOf(DirectiveLocation.FIELD) !== -1;
+      return locations.includes(DirectiveLocation.FIELD);
     case RuleKinds.FRAGMENT_DEFINITION:
-      return locations.indexOf(DirectiveLocation.FRAGMENT_DEFINITION) !== -1;
+      return locations.includes(DirectiveLocation.FRAGMENT_DEFINITION);
     case RuleKinds.FRAGMENT_SPREAD:
-      return locations.indexOf(DirectiveLocation.FRAGMENT_SPREAD) !== -1;
+      return locations.includes(DirectiveLocation.FRAGMENT_SPREAD);
     case RuleKinds.INLINE_FRAGMENT:
-      return locations.indexOf(DirectiveLocation.INLINE_FRAGMENT) !== -1;
+      return locations.includes(DirectiveLocation.INLINE_FRAGMENT);
 
     // Schema Definitions
     case RuleKinds.SCHEMA_DEF:
-      return locations.indexOf(DirectiveLocation.SCHEMA) !== -1;
+      return locations.includes(DirectiveLocation.SCHEMA);
     case RuleKinds.SCALAR_DEF:
-      return locations.indexOf(DirectiveLocation.SCALAR) !== -1;
+      return locations.includes(DirectiveLocation.SCALAR);
     case RuleKinds.OBJECT_TYPE_DEF:
-      return locations.indexOf(DirectiveLocation.OBJECT) !== -1;
+      return locations.includes(DirectiveLocation.OBJECT);
     case RuleKinds.FIELD_DEF:
-      return locations.indexOf(DirectiveLocation.FIELD_DEFINITION) !== -1;
+      return locations.includes(DirectiveLocation.FIELD_DEFINITION);
     case RuleKinds.INTERFACE_DEF:
-      return locations.indexOf(DirectiveLocation.INTERFACE) !== -1;
+      return locations.includes(DirectiveLocation.INTERFACE);
     case RuleKinds.UNION_DEF:
-      return locations.indexOf(DirectiveLocation.UNION) !== -1;
+      return locations.includes(DirectiveLocation.UNION);
     case RuleKinds.ENUM_DEF:
-      return locations.indexOf(DirectiveLocation.ENUM) !== -1;
+      return locations.includes(DirectiveLocation.ENUM);
     case RuleKinds.ENUM_VALUE:
-      return locations.indexOf(DirectiveLocation.ENUM_VALUE) !== -1;
+      return locations.includes(DirectiveLocation.ENUM_VALUE);
     case RuleKinds.INPUT_DEF:
-      return locations.indexOf(DirectiveLocation.INPUT_OBJECT) !== -1;
+      return locations.includes(DirectiveLocation.INPUT_OBJECT);
     case RuleKinds.INPUT_VALUE_DEF:
       const prevStateKind = state.prevState?.kind;
       switch (prevStateKind) {
         case RuleKinds.ARGUMENTS_DEF:
-          return (
-            locations.indexOf(DirectiveLocation.ARGUMENT_DEFINITION) !== -1
-          );
+          return locations.includes(DirectiveLocation.ARGUMENT_DEFINITION);
         case RuleKinds.INPUT_DEF:
-          return (
-            locations.indexOf(DirectiveLocation.INPUT_FIELD_DEFINITION) !== -1
-          );
+          return locations.includes(DirectiveLocation.INPUT_FIELD_DEFINITION);
       }
   }
 

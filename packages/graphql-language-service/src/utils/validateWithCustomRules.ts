@@ -83,7 +83,7 @@ export function validateWithCustomRules(
   }
   const errors = validate(schema, ast, rules);
   return errors.filter(error => {
-    if (error.message.indexOf('Unknown directive') !== -1 && error.nodes) {
+    if (error.message.includes('Unknown directive') && error.nodes) {
       const node = error.nodes[0];
       if (node && node.kind === Kind.DIRECTIVE) {
         const name = node.name.value;

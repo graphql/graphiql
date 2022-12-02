@@ -261,10 +261,7 @@ const IGNORED_KEYS: { [key: string]: boolean } = {
 };
 
 function getGraphQLTagName(tag: Expression): string | null {
-  if (
-    tag.type === 'Identifier' &&
-    DEFAULT_STABLE_TAGS.some(t => t === tag.name)
-  ) {
+  if (tag.type === 'Identifier' && DEFAULT_STABLE_TAGS.includes(tag.name)) {
     return tag.name;
   }
   if (

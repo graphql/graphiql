@@ -61,7 +61,7 @@ function inlineRelevantFragmentSpreads(
     if (selection.kind === 'FragmentSpread') {
       const fragmentName = selection.name.value;
       if (!selection.directives || selection.directives.length === 0) {
-        if (seenSpreads.indexOf(fragmentName) >= 0) {
+        if (seenSpreads.includes(fragmentName)) {
           /* It's a duplicate - skip it! */
           continue;
         } else {

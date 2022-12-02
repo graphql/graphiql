@@ -84,9 +84,7 @@ describe('getAutocompleteSuggestions', () => {
       externalFragments,
       options,
     )
-      .filter(
-        field => !['__schema', '__type'].some(name => name === field.label),
-      )
+      .filter(field => !['__schema', '__type'].includes(field.label))
       .sort((a, b) => a.label.localeCompare(b.label))
       .map(suggestion => {
         // TODO: A PR where we do `const { type, ..rest} = suggestion; return rest;`

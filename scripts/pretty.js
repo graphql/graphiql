@@ -25,7 +25,7 @@ const executable = join(
   os.platform() === 'win32' ? 'prettier.cmd' : 'prettier',
 );
 const ignorePath = ['--ignore-path', '.eslintignore'];
-const check = process.argv.indexOf('--check') !== -1;
+const check = process.argv.includes('--check');
 const mode = check ? '--list-different' : '--write';
 process.chdir(root);
 

@@ -1163,8 +1163,7 @@ export class MessageProcessor {
   }
   _isRelayCompatMode(query: string): boolean {
     return (
-      query.indexOf('RelayCompat') !== -1 ||
-      query.indexOf('react-relay/compat') !== -1
+      query.includes('RelayCompat') || query.includes('react-relay/compat')
     );
   }
 

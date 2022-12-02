@@ -139,7 +139,7 @@ function updateStatusBar(
 
   if (
     editor &&
-    statusBarActivationLanguageIds.indexOf(editor.document.languageId) > -1
+    statusBarActivationLanguageIds.includes(editor.document.languageId)
   ) {
     statusBarItem.show();
   } else {

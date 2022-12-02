@@ -53,14 +53,14 @@ export function parseDocument(
   // Check if the text content includes a GraphQLV query.
   // If the text doesn't include GraphQL queries, do not proceed.
   const ext = extname(uri);
-  if (fileExtensions.some(e => e === ext)) {
-    if (DEFAULT_TAGS.some(t => t === text)) {
+  if (fileExtensions.includes(ext)) {
+    if (DEFAULT_TAGS.includes(text)) {
       return [];
     }
     const templates = findGraphQLTags(text, ext, uri, logger);
     return templates.map(({ template, range }) => ({ query: template, range }));
   }
-  if (graphQLFileExtensions.some(e => e === ext)) {
+  if (graphQLFileExtensions.includes(ext)) {
     const query = text;
     if (!query && query !== '') {
       return [];
