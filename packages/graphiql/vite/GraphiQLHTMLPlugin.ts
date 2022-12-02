@@ -4,7 +4,8 @@ import type { Plugin } from 'vite';
 import { BUILD_DIR } from './constants';
 
 // utils
-import fs from 'fs';
+// import fs from 'fs';
+import { writeFile } from 'fs/promises';
 import pkg from '../package.json';
 
 export const GraphiQLHTMLPlugin = ({ mode }:{ mode: string }): Plugin => {
@@ -47,17 +48,13 @@ export const GraphiQLHTMLPlugin = ({ mode }:{ mode: string }): Plugin => {
         // this "dev.html" is used for the uncompressed netlify deployment
         // i wonder if this might not be relevant any longer...?
         const dev = doReplace({min: false});
-        
-        fs.writeFile(`${BUILD_DIR}/dev.html`, dev, err => {
-          if (err) {
-            // eslint-disable-next-line no-console
-            console.error(err);
-          }
-        });        
+
+        writeFile(`${BUILD_DIR}/dev.html`, dev)
+        // eslint-disable-next-line no-console
+        .catch((e) => console.log(e));
       }
 
       return index;
     }  
   }
-}
-
+};
