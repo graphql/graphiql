@@ -56,9 +56,7 @@ describe('createWebsocketsFetcherFromUrl', () => {
 
   it('creates a websockets client using provided url that fails', async () => {
     createClient.mockReturnValue(false);
-    expect(
-      await createWebsocketsFetcherFromUrl('wss://example.com'),
-    ).toThrowError();
+    expect(await createWebsocketsFetcherFromUrl('wss://example.com')).toThrow();
     // @ts-ignore
     expect(createClient.mock.calls[0][0]).toEqual({ url: 'wss://example.com' });
   });
@@ -110,9 +108,7 @@ describe('missing graphql-ws dependency', () => {
       throw { code: 'MODULE_NOT_FOUND' };
     });
 
-    expect(() =>
-      createWebsocketsFetcherFromUrl('wss://example.com'),
-    ).toThrowError(
+    expect(() => createWebsocketsFetcherFromUrl('wss://example.com')).toThrow(
       /You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'/,
     );
   });
