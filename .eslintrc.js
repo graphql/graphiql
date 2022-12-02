@@ -314,6 +314,7 @@ module.exports = {
         'no-console': 'off',
         'no-new': 'off',
         'no-alert': 'off',
+        'import/no-unresolved': 'off',
       },
     },
     // Ignore imported dependencies from tests files

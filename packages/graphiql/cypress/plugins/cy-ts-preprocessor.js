@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 const wp = require('@cypress/webpack-preprocessor');
 
 const webpackOptions = {
