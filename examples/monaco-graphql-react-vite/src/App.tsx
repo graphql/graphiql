@@ -108,7 +108,7 @@ export default function App() {
     const variablesModel = getOrCreateModel('variables.json', defaultVariables);
     const resultsModel = getOrCreateModel('results.json', '{}');
 
-    queryEditor ??
+    if (!queryEditor) {
       setQueryEditor(
         createEditor(opsRef, {
           theme: 'vs-dark',
@@ -116,14 +116,16 @@ export default function App() {
           language: 'graphql',
         }),
       );
-    variablesEditor ??
+    }
+    if (!variablesEditor) {
       setVariablesEditor(
         createEditor(varsRef, {
           theme: 'vs-dark',
           model: variablesModel,
         }),
       );
-    resultsViewer ??
+    }
+    if (!resultsViewer) {
       setResultsViewer(
         createEditor(resultsRef, {
           theme: 'vs-dark',
@@ -132,7 +134,7 @@ export default function App() {
           smoothScrolling: true,
         }),
       );
-
+    }
     queryModel.onDidChangeContent(
       debounce(300, () => {
         localStorage.setItem('operations', queryModel.getValue());

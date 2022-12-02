@@ -155,7 +155,6 @@ export function useDragResize({
       if (!Number.isFinite(flex) || flex < 1) {
         firstRef.current.style.flex = '1';
       }
-      firstRef.current.style.flex;
     }
   }, []);
 
