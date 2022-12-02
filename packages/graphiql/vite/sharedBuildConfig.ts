@@ -4,8 +4,8 @@ import type { BuildOptions } from 'vite'
 import { BUILD_DIR } from './constants'
 
 export const sharedBuildConfig: BuildOptions =  {
-  sourcemap: process.env.MIN ? true : false,
-  minify: process.env.MIN ? true : false,
+  sourcemap: !!process.env.MIN,
+  minify: !!process.env.MIN,
   outDir: BUILD_DIR,
   emptyOutDir: false,
   lib: {
