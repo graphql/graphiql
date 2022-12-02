@@ -113,25 +113,22 @@ export function validateQuery(
     return [];
   }
 
-  const validationErrorAnnotations = mapCat(
-    validateWithCustomRules(schema, ast, customRules, isRelayCompatMode),
-    error => annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
+  const validationErrorAnnotations = validateWithCustomRules(
+    schema,
+    ast,
+    customRules,
+    isRelayCompatMode,
+  ).flatMap(error =>
+    annotations(error, DIAGNOSTIC_SEVERITY.Error, 'Validation'),
   );
 
   // TODO: detect if > graphql@15.2.0, and use the new rule for this.
-  const deprecationWarningAnnotations = mapCat(
-    validate(schema, ast, [NoDeprecatedCustomRule]),
-    error => annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
+  const deprecationWarningAnnotations = validate(schema, ast, [
+    NoDeprecatedCustomRule,
+  ]).flatMap(error =>
+    annotations(error, DIAGNOSTIC_SEVERITY.Warning, 'Deprecation'),
   );
   return validationErrorAnnotations.concat(deprecationWarningAnnotations);
-}
-
-// General utility for mapping-and-concatenating (aka flat-mapping).
-function mapCat<T>(
-  array: ReadonlyArray<T>,
-  mapper: (item: T) => Array<any>,
-): Array<any> {
-  return Array.prototype.concat.apply([], array.map(mapper));
 }
 
 function annotations(
