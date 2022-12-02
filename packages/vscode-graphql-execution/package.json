@@ -110,7 +110,6 @@
     "graphql-tag": "2.12.6",
     "graphql-ws": "5.10.0",
     "@whatwg-node/fetch": "0.2.8",
-    "wonka": "4.0.15",
     "ws": "8.8.1",
     "graphql": "16.6.0",
     "nullthrows": "1.1.1"
