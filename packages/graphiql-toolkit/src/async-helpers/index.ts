@@ -84,7 +84,8 @@ export function fetcherReturnToPromise(
   return Promise.resolve(fetcherResult).then(result => {
     if (isAsyncIterable(result)) {
       return asyncIterableToPromise(result);
-    } else if (isObservable(result)) {
+    }
+    if (isObservable(result)) {
       return observableToPromise(result);
     }
     return result;

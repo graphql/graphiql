@@ -60,21 +60,24 @@ export function getHoverInformation(
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.fieldDef);
     return into.join('').trim();
-  } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+  }
+  if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderDirective(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.directiveDef);
     return into.join('').trim();
-  } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+  }
+  if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderArg(into, typeInfo, options);
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.argDef);
     return into.join('').trim();
-  } else if (
+  }
+  if (
     kind === 'EnumValue' &&
     typeInfo.enumValue &&
     'description' in typeInfo.enumValue
@@ -85,11 +88,8 @@ export function getHoverInformation(
     renderMdCodeEnd(into, options);
     renderDescription(into, options, typeInfo.enumValue);
     return into.join('').trim();
-  } else if (
-    kind === 'NamedType' &&
-    typeInfo.type &&
-    'description' in typeInfo.type
-  ) {
+  }
+  if (kind === 'NamedType' && typeInfo.type && 'description' in typeInfo.type) {
     const into: string[] = [];
     renderMdCodeStart(into, options);
     renderType(into, typeInfo, options, typeInfo.type);

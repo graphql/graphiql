@@ -137,7 +137,8 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
       );
       if (pluginForStoredValue) {
         return pluginForStoredValue;
-      } else if (storedValue) {
+      }
+      if (storedValue) {
         storage?.set(STORAGE_KEY, '');
       }
 

@@ -86,10 +86,9 @@ function getToken(
     if (stream.match(/.*"""/)) {
       state.inBlockstring = false;
       return 'string';
-    } else {
-      stream.skipToEnd();
-      return 'string';
     }
+    stream.skipToEnd();
+    return 'string';
   }
 
   const { lexRules, parseRules, eatWhitespace, editorConfig } = options;

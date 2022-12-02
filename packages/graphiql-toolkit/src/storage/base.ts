@@ -60,7 +60,9 @@ export class StorageAPI {
     } else if (storage === null) {
       // Passing `null` creates a noop storage
       this.storage = null;
-    } else if (typeof window !== 'undefined') {
+    } else if (typeof window === 'undefined') {
+      this.storage = null;
+    } else {
       this.storage = {
         getItem: window.localStorage.getItem.bind(window.localStorage),
         setItem: window.localStorage.setItem.bind(window.localStorage),
@@ -85,8 +87,6 @@ export class StorageAPI {
           }
         },
       };
-    } else {
-      this.storage = null;
     }
   }
 

@@ -63,13 +63,17 @@ CodeMirror.registerHelper(
       (kind === 'AliasedField' && step === 2 && typeInfo.fieldDef)
     ) {
       return getFieldReference(typeInfo);
-    } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+    }
+    if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
       return getDirectiveReference(typeInfo);
-    } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+    }
+    if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
       return getArgumentReference(typeInfo);
-    } else if (kind === 'EnumValue' && typeInfo.enumValue) {
+    }
+    if (kind === 'EnumValue' && typeInfo.enumValue) {
       return getEnumValueReference(typeInfo);
-    } else if (kind === 'NamedType' && typeInfo.type) {
+    }
+    if (kind === 'NamedType' && typeInfo.type) {
       return getTypeReference(typeInfo);
     }
   },

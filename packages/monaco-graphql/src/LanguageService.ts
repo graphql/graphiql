@@ -107,24 +107,23 @@ export class LanguageService {
     }
     if (this._schemas.length === 1) {
       return this._schemaCache.get(this._schemas[0].uri);
-    } else {
-      const schema = this._schemas.find(schemaConfig => {
-        if (!schemaConfig.fileMatch) {
-          return false;
-        }
-        return schemaConfig.fileMatch.some(glob => {
-          const isMatch = picomatch(glob);
-          return isMatch(uri);
-        });
-      });
-      if (schema) {
-        const cacheEntry = this._schemaCache.get(schema.uri);
-        if (cacheEntry) {
-          return cacheEntry;
-        }
-        const cache = this._cacheSchema(schema);
-        return cache.get(schema.uri);
+    }
+    const schema = this._schemas.find(schemaConfig => {
+      if (!schemaConfig.fileMatch) {
+        return false;
       }
+      return schemaConfig.fileMatch.some(glob => {
+        const isMatch = picomatch(glob);
+        return isMatch(uri);
+      });
+    });
+    if (schema) {
+      const cacheEntry = this._schemaCache.get(schema.uri);
+      if (cacheEntry) {
+        return cacheEntry;
+      }
+      const cache = this._cacheSchema(schema);
+      return cache.get(schema.uri);
     }
   }
 

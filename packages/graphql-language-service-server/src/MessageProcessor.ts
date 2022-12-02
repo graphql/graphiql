@@ -313,12 +313,11 @@ export class MessageProcessor {
       if (!this._isInitialized || !this._graphQLCache) {
         // don't try to initialize again if we've already tried
         // and the graphql config file or package.json entry isn't even there
-        if (this._isGraphQLConfigMissing !== true) {
-          // then initial call to update graphql config
-          await this._updateGraphQLConfig();
-        } else {
+        if (this._isGraphQLConfigMissing === true) {
           return null;
         }
+        // then initial call to update graphql config
+        await this._updateGraphQLConfig();
       }
     } catch (err) {
       this._logger.error(String(err));
@@ -367,51 +366,49 @@ export class MessageProcessor {
         this._logger.info('updating graphql config');
         this._updateGraphQLConfig();
         return { uri, diagnostics: [] };
-      } else {
-        // update graphql config only when graphql config is saved!
-        const cachedDocument = this._getCachedDocument(textDocument.uri);
-        if (cachedDocument) {
-          contents = cachedDocument.contents;
-        }
-        return null;
       }
+      // update graphql config only when graphql config is saved!
+      const cachedDocument = this._getCachedDocument(textDocument.uri);
+      if (cachedDocument) {
+        contents = cachedDocument.contents;
+      }
+      return null;
     }
     if (!this._graphQLCache) {
       return { uri, diagnostics };
-    } else {
-      try {
-        const project = this._graphQLCache.getProjectForFile(uri);
-        if (
-          this._isInitialized &&
-          project?.extensions?.languageService?.enableValidation !== false
-        ) {
-          await Promise.all(
-            contents.map(async ({ query, range }) => {
-              const results = await this._languageService.getDiagnostics(
-                query,
-                uri,
-                this._isRelayCompatMode(query),
+    }
+    try {
+      const project = this._graphQLCache.getProjectForFile(uri);
+      if (
+        this._isInitialized &&
+        project?.extensions?.languageService?.enableValidation !== false
+      ) {
+        await Promise.all(
+          contents.map(async ({ query, range }) => {
+            const results = await this._languageService.getDiagnostics(
+              query,
+              uri,
+              this._isRelayCompatMode(query),
+            );
+            if (results && results.length > 0) {
+              diagnostics.push(
+                ...processDiagnosticsMessage(results, query, range),
               );
-              if (results && results.length > 0) {
-                diagnostics.push(
-                  ...processDiagnosticsMessage(results, query, range),
-                );
-              }
-            }),
-          );
-        }
-
-        this._logger.log(
-          JSON.stringify({
-            type: 'usage',
-            messageType: 'textDocument/didOpenOrSave',
-            projectName: project?.name,
-            fileName: uri,
+            }
           }),
         );
-      } catch (err) {
-        this._handleConfigError({ err, uri });
       }
+
+      this._logger.log(
+        JSON.stringify({
+          type: 'usage',
+          messageType: 'textDocument/didOpenOrSave',
+          projectName: project?.name,
+          fileName: uri,
+        }),
+      );
+    } catch (err) {
+      this._handleConfigError({ err, uri });
     }
 
     return { uri, diagnostics };
@@ -687,7 +684,8 @@ export class MessageProcessor {
         ) {
           this._logger.warn('No cache available for handleWatchedFilesChanged');
           return;
-        } else if (
+        }
+        if (
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
         ) {
@@ -715,9 +713,8 @@ export class MessageProcessor {
                   );
                   if (results && results.length > 0) {
                     return processDiagnosticsMessage(results, query, range);
-                  } else {
-                    return [];
                   }
+                  return [];
                 }),
               )
             ).reduce((left, right) => left.concat(right), diagnostics);
@@ -732,7 +729,8 @@ export class MessageProcessor {
             }),
           );
           return { uri, diagnostics };
-        } else if (change.type === FileChangeTypeKind.Deleted) {
+        }
+        if (change.type === FileChangeTypeKind.Deleted) {
           this._graphQLCache.updateFragmentDefinitionCache(
             this._graphQLCache.getGraphQLConfig().dirpath,
             change.uri,
@@ -975,9 +973,8 @@ export class MessageProcessor {
     }
     if (prependWithProtocol) {
       return URI.file(path.resolve(projectTmpPath)).toString();
-    } else {
-      return path.resolve(projectTmpPath);
     }
+    return path.resolve(projectTmpPath);
   }
   /**
    * Safely attempts to cache schema files based on a glob or path

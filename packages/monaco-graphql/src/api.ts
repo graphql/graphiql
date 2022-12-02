@@ -151,39 +151,38 @@ export function create(
       diagnosticSettings: diagnosticSettingDefault,
       completionSettings: completionSettingDefault,
     });
-  } else {
-    const {
-      schemas,
-      formattingOptions,
-      modeConfiguration,
-      diagnosticSettings,
-      completionSettings,
-    } = config;
-    return new MonacoGraphQLAPI({
-      languageId,
-      schemas,
-      formattingOptions: {
-        ...formattingDefaults,
-        ...formattingOptions,
-        prettierConfig: {
-          ...formattingDefaults.prettierConfig,
-          ...formattingOptions?.prettierConfig,
-        },
-      },
-      modeConfiguration: {
-        ...modeConfigurationDefault,
-        ...modeConfiguration,
-      },
-      diagnosticSettings: {
-        ...diagnosticSettingDefault,
-        ...diagnosticSettings,
-      },
-      completionSettings: {
-        ...completionSettingDefault,
-        ...completionSettings,
-      },
-    });
   }
+  const {
+    schemas,
+    formattingOptions,
+    modeConfiguration,
+    diagnosticSettings,
+    completionSettings,
+  } = config;
+  return new MonacoGraphQLAPI({
+    languageId,
+    schemas,
+    formattingOptions: {
+      ...formattingDefaults,
+      ...formattingOptions,
+      prettierConfig: {
+        ...formattingDefaults.prettierConfig,
+        ...formattingOptions?.prettierConfig,
+      },
+    },
+    modeConfiguration: {
+      ...modeConfigurationDefault,
+      ...modeConfiguration,
+    },
+    diagnosticSettings: {
+      ...diagnosticSettingDefault,
+      ...diagnosticSettings,
+    },
+    completionSettings: {
+      ...completionSettingDefault,
+      ...completionSettings,
+    },
+  });
 }
 
 export const modeConfigurationDefault: Required<ModeConfiguration> = {

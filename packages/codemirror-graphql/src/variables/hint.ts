@@ -150,7 +150,8 @@ function getVariablesHint(
       : undefined;
     if (namedInputType instanceof GraphQLInputObjectType) {
       return hintList(cur, token, [{ text: '{' }]);
-    } else if (namedInputType instanceof GraphQLEnumType) {
+    }
+    if (namedInputType instanceof GraphQLEnumType) {
       const values = namedInputType.getValues();
       // const values = Object.keys(valueMap).map(name => valueMap[name]); // TODO: Previously added
       return hintList(
@@ -162,7 +163,8 @@ function getVariablesHint(
           description: value.description,
         })),
       );
-    } else if (namedInputType === GraphQLBoolean) {
+    }
+    if (namedInputType === GraphQLBoolean) {
       return hintList(cur, token, [
         { text: 'true', type: GraphQLBoolean, description: 'Not false.' }, // TODO: type and description don't seem to be used. Added them as optional anyway.
         { text: 'false', type: GraphQLBoolean, description: 'Not true.' },

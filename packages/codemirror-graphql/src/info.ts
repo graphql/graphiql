@@ -81,7 +81,8 @@ CodeMirror.registerHelper(
       into.appendChild(header);
       renderDescription(into, options, typeInfo.fieldDef as any);
       return into;
-    } else if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
+    }
+    if (kind === 'Directive' && step === 1 && typeInfo.directiveDef) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
       renderDirective(header, typeInfo, options);
@@ -89,7 +90,8 @@ CodeMirror.registerHelper(
       into.appendChild(header);
       renderDescription(into, options, typeInfo.directiveDef);
       return into;
-    } else if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
+    }
+    if (kind === 'Argument' && step === 0 && typeInfo.argDef) {
       const header = document.createElement('div');
       header.className = 'CodeMirror-info-header';
       renderArg(header, typeInfo, options);
@@ -97,7 +99,8 @@ CodeMirror.registerHelper(
       into.appendChild(header);
       renderDescription(into, options, typeInfo.argDef);
       return into;
-    } else if (
+    }
+    if (
       kind === 'EnumValue' &&
       typeInfo.enumValue &&
       typeInfo.enumValue.description
@@ -109,7 +112,8 @@ CodeMirror.registerHelper(
       into.appendChild(header);
       renderDescription(into, options, typeInfo.enumValue);
       return into;
-    } else if (
+    }
+    if (
       kind === 'NamedType' &&
       typeInfo.type &&
       (typeInfo.type as GraphQLObjectType).description
