@@ -5,6 +5,6 @@ import path from 'path';
 
 export const sharedCSSConfig: CSSOptions =  {
     postcss: {
-      file: path.resolve(__dirname, 'src/css'),
+      file: path.resolve(__dirname, 'src', 'css'),
     } as any,    
 }; 
