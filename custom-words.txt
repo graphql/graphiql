@@ -74,6 +74,7 @@ codesandbox
 combobox
 commitlint
 cosmicconfig
+clsx
 dompurify
 dustjs
 dset
