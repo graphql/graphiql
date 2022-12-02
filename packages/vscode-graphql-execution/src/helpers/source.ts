@@ -48,10 +48,9 @@ export class SourceHelper {
     if (namedTypeNode) {
       // TODO: Handle this for object types/ enums/ custom scalars
       return (namedTypeNode as NamedTypeNode).name.value as GraphQLScalarType;
-    } else {
-      // TODO: Is handling all via string a correct fallback?
-      return 'String';
     }
+    // TODO: Is handling all via string a correct fallback?
+    return 'String';
   }
   validate(value: string, type: GraphQLScalarType) {
     try {

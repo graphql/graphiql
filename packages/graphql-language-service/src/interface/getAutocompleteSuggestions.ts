@@ -601,7 +601,8 @@ function getSuggestionsForInputValues(
         }))
         .concat(queryVariables),
     );
-  } else if (namedInputType === GraphQLBoolean) {
+  }
+  if (namedInputType === GraphQLBoolean) {
     return hintList(
       token,
       queryVariables.concat([
@@ -1189,9 +1190,7 @@ export function getTypeInfo(
 
         break;
       case RuleKinds.ARGUMENTS: {
-        if (!state.prevState) {
-          argDefs = null;
-        } else {
+        if (state.prevState) {
           switch (state.prevState.kind) {
             case RuleKinds.FIELD:
               argDefs = fieldDef && (fieldDef.args as GraphQLArgument[]);
@@ -1221,6 +1220,8 @@ export function getTypeInfo(
               argDefs = null;
               break;
           }
+        } else {
+          argDefs = null;
         }
         break;
       }

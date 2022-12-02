@@ -42,7 +42,7 @@ export function ImagePreview(props: ImagePreviewProps) {
     dimensions.width !== null && dimensions.height !== null ? (
       <div>
         {dimensions.width}x{dimensions.height}
-        {mime !== null ? ' ' + mime : null}
+        {mime === null ? null : ' ' + mime}
       </div>
     ) : null;
 

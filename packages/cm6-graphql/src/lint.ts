@@ -33,7 +33,7 @@ export const lint = linter(view => {
       );
       return {
         from,
-        to: from !== to ? to : to + 1,
+        to: from === to ? to + 1 : to,
         severity: SEVERITY[item.severity - 1],
         // source: item.source, // TODO:
         message: item.message,

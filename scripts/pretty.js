@@ -22,7 +22,7 @@ const executable = join(
   root,
   'node_modules',
   '.bin',
-  os.platform() !== 'win32' ? 'prettier' : 'prettier.cmd',
+  os.platform() === 'win32' ? 'prettier.cmd' : 'prettier',
 );
 const ignorePath = ['--ignore-path', '.eslintignore'];
 const check = process.argv.indexOf('--check') !== -1;
@@ -64,4 +64,4 @@ if (status) {
 if (error) {
   print(error);
 }
-process.exit(status != null ? status : 1);
+process.exit(status == null ? 1 : status);

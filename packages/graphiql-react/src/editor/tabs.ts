@@ -121,9 +121,8 @@ export function getDefaultTabState({
       }
 
       return parsed;
-    } else {
-      throw new Error('Storage for tabs is invalid');
     }
+    throw new Error('Storage for tabs is invalid');
   } catch (err) {
     return {
       activeTabIndex: 0,

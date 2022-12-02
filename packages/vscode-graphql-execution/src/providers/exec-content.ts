@@ -152,15 +152,15 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         } else if (schema && this.validUrlFromSchema(schema as string)) {
           endpoints.default.url = schema.toString();
         }
-      } else if (!endpoints?.default?.url) {
+      } else if (endpoints?.default?.url) {
+        this.outputChannel.appendLine(
+          `Warning: No Endpoints configured. Attempting to execute operation with 'config.schema' value '${endpoints.default.url}'`,
+        );
+      } else {
         this.reportError(
           'Warning: No Endpoints configured. Config schema contains no URLs',
         );
         return null;
-      } else {
-        this.outputChannel.appendLine(
-          `Warning: No Endpoints configured. Attempting to execute operation with 'config.schema' value '${endpoints.default.url}'`,
-        );
       }
     }
     const endpointNames = Object.keys(endpoints);
@@ -180,60 +180,59 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
       if (!rootDir) {
         this.reportError('Error: this file is outside the workspace.');
         return;
-      } else {
-        const config = await loadConfig({
-          rootDir: rootDir!.uri.fsPath,
-          legacy: true,
+      }
+      const config = await loadConfig({
+        rootDir: rootDir!.uri.fsPath,
+        legacy: true,
+      });
+      const projectConfig = config?.getProjectForFile(this.literal.uri);
+      if (!projectConfig) {
+        return;
+      }
+
+      const endpoint = await this.loadEndpoint(projectConfig);
+      if (endpoint?.url) {
+        const variableDefinitionNodes: VariableDefinitionNode[] = [];
+        visit(this.literal.ast, {
+          VariableDefinition(node: VariableDefinitionNode) {
+            variableDefinitionNodes.push(node);
+          },
         });
-        const projectConfig = config?.getProjectForFile(this.literal.uri);
-        if (!projectConfig) {
-          return;
-        }
 
-        const endpoint = await this.loadEndpoint(projectConfig);
-        if (endpoint?.url) {
-          const variableDefinitionNodes: VariableDefinitionNode[] = [];
-          visit(this.literal.ast, {
-            VariableDefinition(node: VariableDefinitionNode) {
-              variableDefinitionNodes.push(node);
-            },
-          });
-
-          const updateCallback = (data: string, operation: string) => {
-            if (operation === 'subscription') {
-              this.html = `<pre>${data}</pre>` + this.html;
-            } else {
-              this.html += `<pre>${data}</pre>`;
-            }
-            this.update(this.uri);
-            this.updatePanel();
-          };
-
-          if (variableDefinitionNodes.length > 0) {
-            const variables = await this.getVariablesFromUser(
-              variableDefinitionNodes,
-            );
-
-            await this.networkHelper.executeOperation({
-              endpoint,
-              literal: this.literal,
-              variables,
-              updateCallback,
-              projectConfig,
-            });
+        const updateCallback = (data: string, operation: string) => {
+          if (operation === 'subscription') {
+            this.html = `<pre>${data}</pre>` + this.html;
           } else {
-            await this.networkHelper.executeOperation({
-              endpoint,
-              literal: this.literal,
-              variables: {},
-              updateCallback,
-              projectConfig,
-            });
+            this.html += `<pre>${data}</pre>`;
           }
+          this.update(this.uri);
+          this.updatePanel();
+        };
+
+        if (variableDefinitionNodes.length > 0) {
+          const variables = await this.getVariablesFromUser(
+            variableDefinitionNodes,
+          );
+
+          await this.networkHelper.executeOperation({
+            endpoint,
+            literal: this.literal,
+            variables,
+            updateCallback,
+            projectConfig,
+          });
         } else {
-          this.reportError(`Error: no endpoint url provided`);
-          return;
+          await this.networkHelper.executeOperation({
+            endpoint,
+            literal: this.literal,
+            variables: {},
+            updateCallback,
+            projectConfig,
+          });
         }
+      } else {
+        this.reportError(`Error: no endpoint url provided`);
+        return;
       }
     } catch (err: unknown) {
       // @ts-expect-error
@@ -246,16 +245,15 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     if (!rootDir) {
       this.reportError(`Error: this file is outside the workspace.`);
       return;
-    } else {
-      const config = await loadConfig({ rootDir: rootDir!.uri.fsPath });
-      const projectConfig = config?.getProjectForFile(this.literal.uri);
-
-      if (!projectConfig!.schema) {
-        this.reportError(`Error: schema from graphql config`);
-        return;
-      }
-      return projectConfig;
     }
+    const config = await loadConfig({ rootDir: rootDir!.uri.fsPath });
+    const projectConfig = config?.getProjectForFile(this.literal.uri);
+
+    if (!projectConfig!.schema) {
+      this.reportError(`Error: schema from graphql config`);
+      return;
+    }
+    return projectConfig;
   }
 
   get onDidChange(): Event<Uri> {

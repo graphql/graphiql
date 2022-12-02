@@ -89,7 +89,11 @@ function validateVariables(
     if (member) {
       const variableName = member.key?.value;
       const type = variableToType[variableName];
-      if (!type) {
+      if (type) {
+        validateValue(type, member.value).forEach(([node, message]) => {
+          errors.push(lintError(editor, node, message));
+        });
+      } else {
         errors.push(
           lintError(
             editor,
@@ -97,10 +101,6 @@ function validateVariables(
             `Variable "$${variableName}" does not appear in any GraphQL query.`,
           ),
         );
-      } else {
-        validateValue(type, member.value).forEach(([node, message]) => {
-          errors.push(lintError(editor, node, message));
-        });
       }
     }
   });

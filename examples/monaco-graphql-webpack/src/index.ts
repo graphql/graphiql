@@ -22,209 +22,206 @@ async function render() {
     renderGithubLoginButton();
 
     return;
-  } else {
-    if (!monacoGraphQLAPI) {
-      monacoGraphQLAPI = initializeMode({
-        formattingOptions: {
-          prettierConfig: {
-            printWidth: 120,
-          },
+  }
+  if (!monacoGraphQLAPI) {
+    monacoGraphQLAPI = initializeMode({
+      formattingOptions: {
+        prettierConfig: {
+          printWidth: 120,
         },
-      });
-    }
-
-    document.getElementById('github-login-wrapper')?.remove();
-    document
-      .getElementById('session-editor')
-      ?.setAttribute('style', 'display: flex');
-    document
-      .getElementById('toolbar')
-      ?.setAttribute('style', 'display: inline-flex');
-
-    const toolbar = document.getElementById('toolbar')!;
-    const editors = createEditors();
-    const {
-      operationModel,
-      operationEditor,
-      variablesEditor,
-      schemaEditor,
-      resultsEditor,
-      variablesModel,
-      schemaModel,
-    } = editors;
-    const { schemaReloadButton, executeOpButton, schemaPicker } =
-      renderToolbar(toolbar);
-
-    renderGithubLoginButton();
-
-    const operationUri = operationModel.uri.toString();
-
-    const schema = await schemaFetcher.loadSchema();
-    if (schema) {
-      console.log('loaded schema', schema);
-      monacoGraphQLAPI.setSchemaConfig([
-        { ...schema, fileMatch: [operationUri, schemaModel.uri.toString()] },
-      ]);
-
-      schemaEditor.setValue(schema.documentString || '');
-    }
-
-    monacoGraphQLAPI.setDiagnosticSettings({
-      validateVariablesJSON: {
-        [operationUri]: [variablesModel.uri.toString()],
-      },
-      jsonDiagnosticSettings: {
-        // jsonc tip!
-        allowComments: true,
-        schemaValidation: 'error',
-        // this is nice too
-        trailingCommas: 'warning',
       },
     });
-    operationModel.onDidChangeContent(() => {
-      setTimeout(() => {
-        localStorage.setItem('operations', operationModel.getValue());
-      }, 200);
-    });
-    variablesModel.onDidChangeContent(() => {
-      setTimeout(() => {
-        localStorage.setItem('variables', variablesModel.getValue());
-      }, 200);
-    });
-    schemaModel.onDidChangeContent(() => {
-      setTimeout(async () => {
-        const value = schemaModel.getValue();
-        localStorage.setItem('schema-sdl', value);
+  }
 
-        const nextSchema = await schemaFetcher.overrideSchema(value);
+  document.getElementById('github-login-wrapper')?.remove();
+  document
+    .getElementById('session-editor')
+    ?.setAttribute('style', 'display: flex');
+  document
+    .getElementById('toolbar')
+    ?.setAttribute('style', 'display: inline-flex');
 
-        if (nextSchema) {
-          monacoGraphQLAPI?.setSchemaConfig([
+  const toolbar = document.getElementById('toolbar')!;
+  const editors = createEditors();
+  const {
+    operationModel,
+    operationEditor,
+    variablesEditor,
+    schemaEditor,
+    resultsEditor,
+    variablesModel,
+    schemaModel,
+  } = editors;
+  const { schemaReloadButton, executeOpButton, schemaPicker } =
+    renderToolbar(toolbar);
+
+  renderGithubLoginButton();
+
+  const operationUri = operationModel.uri.toString();
+
+  const schema = await schemaFetcher.loadSchema();
+  if (schema) {
+    console.log('loaded schema', schema);
+    monacoGraphQLAPI.setSchemaConfig([
+      { ...schema, fileMatch: [operationUri, schemaModel.uri.toString()] },
+    ]);
+
+    schemaEditor.setValue(schema.documentString || '');
+  }
+
+  monacoGraphQLAPI.setDiagnosticSettings({
+    validateVariablesJSON: {
+      [operationUri]: [variablesModel.uri.toString()],
+    },
+    jsonDiagnosticSettings: {
+      // jsonc tip!
+      allowComments: true,
+      schemaValidation: 'error',
+      // this is nice too
+      trailingCommas: 'warning',
+    },
+  });
+  operationModel.onDidChangeContent(() => {
+    setTimeout(() => {
+      localStorage.setItem('operations', operationModel.getValue());
+    }, 200);
+  });
+  variablesModel.onDidChangeContent(() => {
+    setTimeout(() => {
+      localStorage.setItem('variables', variablesModel.getValue());
+    }, 200);
+  });
+  schemaModel.onDidChangeContent(() => {
+    setTimeout(async () => {
+      const value = schemaModel.getValue();
+      localStorage.setItem('schema-sdl', value);
+
+      const nextSchema = await schemaFetcher.overrideSchema(value);
+
+      if (nextSchema) {
+        monacoGraphQLAPI?.setSchemaConfig([
+          {
+            ...nextSchema,
+            fileMatch: [operationUri, schemaModel.uri.toString()],
+          },
+        ]);
+      }
+    }, 200);
+  });
+
+  /**
+   * Choosing a new schema
+   */
+  schemaPicker.addEventListener(
+    'input',
+    async function SchemaSelectionHandler(_ev: Event) {
+      if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
+        const schemaResult = await schemaFetcher.changeSchema(
+          schemaPicker.value,
+        );
+        if (schemaResult && monacoGraphQLAPI) {
+          monacoGraphQLAPI.setSchemaConfig([
             {
-              ...nextSchema,
-              fileMatch: [operationUri, schemaModel.uri.toString()],
+              ...schemaResult,
+              fileMatch: [operationModel.uri.toString()],
             },
           ]);
+          schemaEditor.setValue(schemaResult.documentString || '');
         }
-      }, 200);
-    });
-
-    /**
-     * Choosing a new schema
-     */
-    schemaPicker.addEventListener(
-      'input',
-      async function SchemaSelectionHandler(_ev: Event) {
-        if (schemaPicker.value !== schemaFetcher.currentSchema.value) {
-          const schemaResult = await schemaFetcher.changeSchema(
-            schemaPicker.value,
-          );
-          if (schemaResult && monacoGraphQLAPI) {
-            monacoGraphQLAPI.setSchemaConfig([
-              {
-                ...schemaResult,
-                fileMatch: [operationModel.uri.toString()],
-              },
-            ]);
-            schemaEditor.setValue(schemaResult.documentString || '');
-          }
-        }
-      },
-    );
-
-    /**
-     * Reloading your schema
-     */
-    schemaReloadButton.addEventListener('click', async () => {
-      const schemaResult = await schemaFetcher.loadSchema();
-      if (schemaResult) {
-        schemaEditor.setValue(schemaResult.documentString || '');
       }
-    });
+    },
+  );
 
-    /**
-     * Execute GraphQL operations, for reference!
-     * monaco-graphql itself doesn't do anything with handling operations yet, but it may soon!
-     */
+  /**
+   * Reloading your schema
+   */
+  schemaReloadButton.addEventListener('click', async () => {
+    const schemaResult = await schemaFetcher.loadSchema();
+    if (schemaResult) {
+      schemaEditor.setValue(schemaResult.documentString || '');
+    }
+  });
 
-    const getOperationHandler = () => {
-      return async () => {
-        try {
-          const operation = operationEditor.getValue();
-          const variables = variablesEditor.getValue();
-          const body: { variables?: string; query: string } = {
-            query: operation,
-          };
-          // parse the variables with JSONC so we can have comments!
-          const parsedVariables = JSONC.parse(variables);
-          if (parsedVariables && Object.keys(parsedVariables).length) {
-            body.variables = JSON.stringify(parsedVariables, null, 2);
-          }
-          const result = await fetch(
-            schemaFetcher.currentSchema.value as string,
-            {
-              method: 'POST',
-              headers: {
-                'content-type': 'application/json',
-                ...schemaFetcher.currentSchema?.headers,
-              },
-              body: JSON.stringify(body, null, 2),
-            },
-          );
+  /**
+   * Execute GraphQL operations, for reference!
+   * monaco-graphql itself doesn't do anything with handling operations yet, but it may soon!
+   */
 
-          const resultText = await result.text();
-          resultsEditor.setValue(
-            JSON.stringify(JSON.parse(resultText), null, 2),
-          );
-        } catch (err) {
-          if (err instanceof Error) {
-            resultsEditor.setValue(err.toString());
-          }
+  const getOperationHandler = () => {
+    return async () => {
+      try {
+        const operation = operationEditor.getValue();
+        const variables = variablesEditor.getValue();
+        const body: { variables?: string; query: string } = {
+          query: operation,
+        };
+        // parse the variables with JSONC so we can have comments!
+        const parsedVariables = JSONC.parse(variables);
+        if (parsedVariables && Object.keys(parsedVariables).length) {
+          body.variables = JSON.stringify(parsedVariables, null, 2);
         }
-      };
+        const result = await fetch(
+          schemaFetcher.currentSchema.value as string,
+          {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              ...schemaFetcher.currentSchema?.headers,
+            },
+            body: JSON.stringify(body, null, 2),
+          },
+        );
+
+        const resultText = await result.text();
+        resultsEditor.setValue(JSON.stringify(JSON.parse(resultText), null, 2));
+      } catch (err) {
+        if (err instanceof Error) {
+          resultsEditor.setValue(err.toString());
+        }
+      }
     };
+  };
 
-    const operationHandler = getOperationHandler();
+  const operationHandler = getOperationHandler();
 
-    executeOpButton.addEventListener('click', operationHandler);
-    executeOpButton.addEventListener('touchend', operationHandler);
+  executeOpButton.addEventListener('click', operationHandler);
+  executeOpButton.addEventListener('touchend', operationHandler);
 
-    /**
-     * Add an editor operation to the command palette & keyboard shortcuts
-     */
-    const opAction: monaco.editor.IActionDescriptor = {
-      id: 'graphql-run',
-      label: 'Run Operation',
-      contextMenuOrder: 0,
-      contextMenuGroupId: 'graphql',
-      keybindings: [
-        // eslint-disable-next-line no-bitwise
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-      ],
-      run: operationHandler,
-    };
+  /**
+   * Add an editor operation to the command palette & keyboard shortcuts
+   */
+  const opAction: monaco.editor.IActionDescriptor = {
+    id: 'graphql-run',
+    label: 'Run Operation',
+    contextMenuOrder: 0,
+    contextMenuGroupId: 'graphql',
+    keybindings: [
+      // eslint-disable-next-line no-bitwise
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+    ],
+    run: operationHandler,
+  };
 
-    /**
-     * Add an reload operation to the command palette & keyboard shortcuts
-     */
-    const reloadAction: monaco.editor.IActionDescriptor = {
-      id: 'graphql-reload',
-      label: 'Reload Schema',
-      contextMenuOrder: 0,
-      contextMenuGroupId: 'graphql',
-      keybindings: [
-        monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
-      ],
-      run: async () => {
-        await schemaFetcher.loadSchema();
-      },
-    };
+  /**
+   * Add an reload operation to the command palette & keyboard shortcuts
+   */
+  const reloadAction: monaco.editor.IActionDescriptor = {
+    id: 'graphql-reload',
+    label: 'Reload Schema',
+    contextMenuOrder: 0,
+    contextMenuGroupId: 'graphql',
+    keybindings: [
+      monaco.KeyMod.CtrlCmd | monaco.KeyCode?.KeyR, // eslint-disable-line no-bitwise
+    ],
+    run: async () => {
+      await schemaFetcher.loadSchema();
+    },
+  };
 
-    operationEditor.addAction(opAction);
-    variablesEditor.addAction(opAction);
-    resultsEditor.addAction(opAction);
-    operationEditor.addAction(reloadAction);
-  }
+  operationEditor.addAction(opAction);
+  variablesEditor.addAction(opAction);
+  resultsEditor.addAction(opAction);
+  operationEditor.addAction(reloadAction);
 }
 
 function renderToolbar(toolbar: HTMLElement) {

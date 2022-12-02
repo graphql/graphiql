@@ -266,7 +266,8 @@ function getGraphQLTagName(tag: Expression): string | null {
     DEFAULT_STABLE_TAGS.some(t => t === tag.name)
   ) {
     return tag.name;
-  } else if (
+  }
+  if (
     tag.type === 'MemberExpression' &&
     tag.object.type === 'Identifier' &&
     tag.object.name === 'graphql' &&
