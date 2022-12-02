@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { SymbolKind } from 'vscode-languageserver';
 import { FileChangeType } from 'vscode-languageserver-protocol';
 import { Position, Range } from 'graphql-language-service';
@@ -23,7 +23,7 @@ import { loadConfig } from 'graphql-config';
 import type { DefinitionQueryResult, Outline } from 'graphql-language-service';
 
 import { Logger } from '../Logger';
-import { pathToFileURL } from 'url';
+import { pathToFileURL } from 'node:url';
 
 jest.mock('fs', () => ({
   ...jest.requireActual<typeof import('fs')>('fs'),

@@ -6,10 +6,10 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { buildSchema, GraphQLSchema, parse } from 'graphql';
 
-import { join } from 'path';
+import { join } from 'node:path';
 import { collectVariables } from '../collectVariables';
 
 import { getVariablesJSONSchema } from '../getVariablesJSONSchema';

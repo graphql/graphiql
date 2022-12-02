@@ -7,7 +7,7 @@
 
 /* eslint-disable no-console */
 const express = require('express');
-const path = require('path');
+const path = require('node:path');
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLError } = require('graphql');
 const schema = require('./schema');

@@ -7,7 +7,7 @@
  *
  */
 
-import { tmpdir } from 'os';
+import { tmpdir } from 'node:os';
 import { Logger } from '../Logger';
 
 describe('Logger', () => {

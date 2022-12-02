@@ -18,7 +18,7 @@ import type {
   Uri,
 } from 'graphql-language-service';
 
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import { GraphQLSchema, Kind, extendSchema, parse, visit } from 'graphql';
 import nullthrows from 'nullthrows';
 

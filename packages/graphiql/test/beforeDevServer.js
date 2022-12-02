@@ -6,7 +6,7 @@
  */
 
 const express = require('express');
-const path = require('path');
+const path = require('node:path');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema');
 const { schema: badSchema } = require('./bad-schema');

@@ -6,7 +6,7 @@
  *  LICENSE file in the root directory of this source tree.
  *
  */
-import * as net from 'net';
+import * as net from 'node:net';
 import { MessageProcessor } from './MessageProcessor';
 import { GraphQLConfig, GraphQLExtensionDeclaration } from 'graphql-config';
 import {

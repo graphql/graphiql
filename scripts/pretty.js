@@ -7,9 +7,9 @@
  *  LICENSE file in the root directory of this source tree.
  */
 
-const { spawnSync } = require('child_process');
-const { join } = require('path');
-const os = require('os');
+const { spawnSync } = require('node:child_process');
+const { join } = require('node:path');
+const os = require('node:os');
 
 const INVERSE = '\x1b[7m';
 const RESET = '\x1b[0m';

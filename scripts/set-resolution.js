@@ -1,5 +1,5 @@
-const { readFile, writeFile } = require('fs/promises');
-const path = require('path');
+const { readFile, writeFile } = require('node:fs/promises');
+const path = require('node:path');
 
 async function setResolution() {
   const [, , tag] = process.argv;

@@ -9,8 +9,8 @@
 
 import { GraphQLSchema, buildSchema, buildClientSchema } from 'graphql';
 
-import invariant from 'assert';
-import fs from 'fs';
+import invariant from 'node:assert';
+import fs from 'node:fs';
 import {
   getAutocompleteSuggestions,
   getDiagnostics,
@@ -18,7 +18,7 @@ import {
   Position,
 } from 'graphql-language-service';
 
-import path from 'path';
+import path from 'node:path';
 
 import type { CompletionItem, Diagnostic } from 'graphql-language-service';
 
