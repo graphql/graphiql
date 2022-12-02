@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { compose } from '../utility/compose';
+import { clsx } from 'clsx';
 
 import './spinner.css';
 
@@ -8,7 +8,7 @@ export const Spinner = forwardRef<HTMLDivElement, JSX.IntrinsicElements['div']>(
     <div
       {...props}
       ref={ref}
-      className={compose('graphiql-spinner', props.className)}
+      className={clsx('graphiql-spinner', props.className)}
     />
   ),
 );

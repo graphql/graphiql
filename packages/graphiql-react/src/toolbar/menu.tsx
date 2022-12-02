@@ -1,7 +1,7 @@
 import { forwardRef, ReactNode } from 'react';
+import { clsx } from 'clsx';
 import { Menu, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 
 import './menu.css';
 
@@ -17,7 +17,7 @@ const ToolbarMenuRoot = forwardRef<
   <Menu {...props} ref={ref}>
     <Tooltip label={label}>
       <Menu.Button
-        className={compose(
+        className={clsx(
           'graphiql-un-styled graphiql-toolbar-menu',
           props.className,
         )}

@@ -1,7 +1,7 @@
 import { ComponentProps, forwardRef, ReactNode } from 'react';
+import { clsx } from 'clsx';
 import { Listbox, Tooltip } from '../ui';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 
 import './listbox.css';
 
@@ -19,7 +19,7 @@ const ToolbarListboxRoot = forwardRef<
     <Listbox.Input
       {...props}
       ref={ref}
-      className={compose('graphiql-toolbar-listbox', props.className)}
+      className={clsx('graphiql-toolbar-listbox', props.className)}
       aria-label={labelWithValue}
     >
       <Tooltip label={labelWithValue}>

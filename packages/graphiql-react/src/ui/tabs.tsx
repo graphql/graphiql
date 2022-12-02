@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
+import { clsx } from 'clsx';
 import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 import { UnStyledButton } from './button';
 import { Tooltip } from './tooltip';
 
@@ -20,9 +20,9 @@ const TabRoot = forwardRef<
     ref={ref}
     role="tab"
     aria-selected={isActive}
-    className={compose(
+    className={clsx(
       'graphiql-tab',
-      isActive ? 'graphiql-tab-active' : '',
+      isActive && 'graphiql-tab-active',
       props.className,
     )}
   >
@@ -39,7 +39,7 @@ const TabButton = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={compose('graphiql-tab-button', props.className)}
+    className={clsx('graphiql-tab-button', props.className)}
   >
     {props.children}
   </UnStyledButton>
@@ -54,7 +54,7 @@ const TabClose = forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(
         {...props}
         ref={ref}
         type="button"
-        className={compose('graphiql-tab-close', props.className)}
+        className={clsx('graphiql-tab-close', props.className)}
       >
         <CloseIcon />
       </UnStyledButton>
@@ -74,7 +74,7 @@ export const Tabs = forwardRef<HTMLDivElement, JSX.IntrinsicElements['div']>(
       {...props}
       ref={ref}
       role="tablist"
-      className={compose('graphiql-tabs', props.className)}
+      className={clsx('graphiql-tabs', props.className)}
     >
       {props.children}
     </div>

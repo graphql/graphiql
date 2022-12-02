@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react';
+import { clsx } from 'clsx';
 import { Tooltip, UnStyledButton } from '../ui';
-import { compose } from '../utility/compose';
 
 import './button.css';
 
@@ -19,9 +19,9 @@ export const ToolbarButton = forwardRef<
         {...props}
         ref={ref}
         type="button"
-        className={compose(
+        className={clsx(
           'graphiql-toolbar-button',
-          error ? 'error' : '',
+          error && 'error',
           props.className,
         )}
         onClick={event => {

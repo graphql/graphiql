@@ -1,9 +1,9 @@
+import { clsx } from 'clsx';
 import { Dialog as ReachDialog } from '@reach/dialog';
 import { VisuallyHidden } from '@reach/visually-hidden';
 import { ComponentProps, forwardRef } from 'react';
 import { CloseIcon } from '../icons';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 import { UnStyledButton } from './button';
 
 import './dialog.css';
@@ -22,7 +22,7 @@ const DialogClose = forwardRef<
     {...props}
     ref={ref}
     type="button"
-    className={compose('graphiql-dialog-close', props.className)}
+    className={clsx('graphiql-dialog-close', props.className)}
   >
     <VisuallyHidden>Close dialog</VisuallyHidden>
     <CloseIcon />

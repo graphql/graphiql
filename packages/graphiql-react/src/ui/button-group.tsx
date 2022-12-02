@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { clsx } from 'clsx';
 
 import './button-group.css';
 
@@ -9,7 +10,7 @@ export const ButtonGroup = forwardRef<
   <div
     {...props}
     ref={ref}
-    className={`graphiql-button-group ${props.className || ''}`.trim()}
+    className={clsx('graphiql-button-group', props.className)}
   />
 ));
 ButtonGroup.displayName = 'ButtonGroup';

@@ -43,6 +43,7 @@
     "@reach/menu-button": "^0.17.0",
     "@reach/tooltip": "^0.17.0",
     "@reach/visually-hidden": "^0.17.0",
+    "clsx": "^1.2.1",
     "codemirror": "^5.65.3",
     "codemirror-graphql": "^2.0.2",
     "copy-to-clipboard": "^3.2.0",

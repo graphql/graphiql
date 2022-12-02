@@ -1,5 +1,6 @@
 import { QueryStoreItem } from '@graphiql/toolkit';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { clsx } from 'clsx';
 
 import { useEditorContext } from '../editor';
 import { CloseIcon, PenIcon, StarFilledIcon, StarIcon } from '../icons';
@@ -66,7 +67,7 @@ export function HistoryItem(props: QueryHistoryItemProps) {
     formatQuery(props.item.query);
 
   return (
-    <li className={'graphiql-history-item' + (isEditable ? ' editable' : '')}>
+    <li className={clsx('graphiql-history-item', isEditable && 'editable')}>
       {isEditable ? (
         <>
           <input
