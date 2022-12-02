@@ -30,7 +30,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
     httpFetch = options.fetch;
   }
   if (!httpFetch) {
-    throw Error('No valid fetcher implementation available');
+    throw new Error('No valid fetcher implementation available');
   }
   // simpler fetcher for schema requests
   const simpleFetcher = createSimpleFetcher(options, httpFetch);
@@ -56,7 +56,7 @@ export function createGraphiQLFetcher(options: CreateFetcherOptions): Fetcher {
       const wsFetcher = getWsFetcher(options, fetcherOpts);
 
       if (!wsFetcher) {
-        throw Error(
+        throw new Error(
           `Your GraphiQL createFetcher is not properly configured for websocket subscriptions yet. ${
             options.subscriptionUrl
               ? `Provided URL ${options.subscriptionUrl} failed`

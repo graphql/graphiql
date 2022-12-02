@@ -140,7 +140,7 @@ export class LanguageService {
           },
         });
       } catch (err) {
-        throw Error(
+        throw new Error(
           `Failed parsing externalFragmentDefinitions string:\n${this._externalFragmentDefinitionsString}`,
         );
       }

@@ -59,7 +59,7 @@ export async function getDefinitionQueryResultForNamedType(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL type ${name}`);
+    throw new Error(`Definition not found for GraphQL type ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
@@ -82,7 +82,7 @@ export async function getDefinitionQueryResultForField(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL type ${typeName}`);
+    throw new Error(`Definition not found for GraphQL type ${typeName}`);
   }
 
   const definitions: Array<Definition> = [];
@@ -119,7 +119,7 @@ export async function getDefinitionQueryResultForFragmentSpread(
   );
 
   if (defNodes.length === 0) {
-    throw Error(`Definition not found for GraphQL fragment ${name}`);
+    throw new Error(`Definition not found for GraphQL fragment ${name}`);
   }
   const definitions: Array<Definition> = defNodes.map(
     ({ filePath, content, definition }) =>
@@ -150,7 +150,7 @@ function getDefinitionForFragmentDefinition(
 ): Definition {
   const name = definition.name;
   if (!name) {
-    throw Error('Expected ASTNode to have a Name.');
+    throw new Error('Expected ASTNode to have a Name.');
   }
 
   return {

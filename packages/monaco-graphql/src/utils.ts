@@ -163,5 +163,5 @@ export const getStringSchema = (schemaConfig: SchemaConfig) => {
       documentString: printSchema(schema),
     };
   }
-  throw Error('no schema supplied');
+  throw new Error('no schema supplied');
 };

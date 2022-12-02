@@ -58,7 +58,7 @@ import {
 const majorVersion = parseInt(React.version.slice(0, 2), 10);
 
 if (majorVersion < 16) {
-  throw Error(
+  throw new Error(
     [
       'GraphiQL 0.18.0 and after is not compatible with React 15 or below.',
       'If you are using a CDN source (jsdelivr, unpkg, etc), follow this example:',

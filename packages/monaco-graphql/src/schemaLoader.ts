@@ -28,5 +28,5 @@ export const defaultSchemaLoader: SchemaLoader = (schemaConfig, parser) => {
   if (documentAST) {
     return buildASTSchema(documentAST, buildSchemaOptions);
   }
-  throw Error('no schema supplied');
+  throw new Error('no schema supplied');
 };

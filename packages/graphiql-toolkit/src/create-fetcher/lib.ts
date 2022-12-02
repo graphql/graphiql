@@ -89,7 +89,7 @@ export const createWebsocketsFetcherFromUrl = (
   } catch (err) {
     if (errorHasCode(err)) {
       if (err.code === 'MODULE_NOT_FOUND') {
-        throw Error(
+        throw new Error(
           "You need to install the 'graphql-ws' package to use websockets when passing a 'subscriptionUrl'",
         );
       }
