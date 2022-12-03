@@ -35,7 +35,7 @@ function printLintErrors(query: Maybe<string>, variables: string) {
       if (errors?.[0]) {
         if (!errors[0].message?.match('Unexpected EOF')) {
           resolve(errors);
-          return
+          return;
         }
       }
       resolve([]);
