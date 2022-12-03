@@ -198,7 +198,6 @@ export function findGraphQLTags(
         }
 
         traverse(node, visitors);
-        return;
       }
     },
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
