@@ -8,7 +8,8 @@
  */
 
 import mkdirp from 'mkdirp';
-import { readFileSync, existsSync, writeFileSync, writeFile } from 'node:fs';
+// can't use node:fs since we mock in jest `fs` module
+import { readFileSync, existsSync, writeFileSync, writeFile } from 'fs';
 import * as path from 'node:path';
 import glob from 'fast-glob';
 import { URI } from 'vscode-uri';
