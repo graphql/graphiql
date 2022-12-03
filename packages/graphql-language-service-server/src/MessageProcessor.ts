@@ -290,8 +290,6 @@ export class MessageProcessor {
         err?.message ?? err?.toString(),
       );
     }
-
-    return;
   }
 
   _logConfigError(errorMessage: string) {
@@ -541,7 +539,6 @@ export class MessageProcessor {
 
   handleShutdownRequest(): void {
     this._willShutdown = true;
-    return;
   }
 
   handleExitNotification(): void {
