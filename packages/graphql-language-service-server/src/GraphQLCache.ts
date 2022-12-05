@@ -31,7 +31,7 @@ import {
 import type { UnnormalizedTypeDefPointer } from '@graphql-tools/load';
 
 import { parseDocument } from './parseDocument';
-import stringToHash from './stringToHash';
+// import stringToHash from './stringToHash';
 import glob from 'glob';
 import { LoadConfigOptions } from './types';
 import { URI } from 'vscode-uri';
@@ -549,7 +549,6 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _extendSchema(
     schema: GraphQLSchema,
     schemaPath: string | null,
-    schemaCacheKey: string | null,
   ): GraphQLSchema {
     const graphQLFileMap = this._graphQLFileListCache.get(this._configDir);
     const typeExtensions: DefinitionNode[] = [];
@@ -584,27 +583,31 @@ export class GraphQLCache implements GraphQLCacheInterface {
       });
     });
 
-    if (schemaCacheKey) {
-      const sorted = typeExtensions.sort((a: any, b: any) => {
-        const aName = a.definition ? a.definition.name.value : a.name.value;
-        const bName = b.definition ? b.definition.name.value : b.name.value;
-        return aName > bName ? 1 : -1;
-      });
-      const hash = stringToHash(JSON.stringify(sorted));
+    // if (schemaCacheKey) {
+    //   const sorted = typeExtensions.sort((a: any, b: any) => {
+    //     const aName = a.definition ? a.definition.name.value : a.name.value;
+    //     const bName = b.definition ? b.definition.name.value : b.name.value;
+    //     return aName > bName ? 1 : -1;
+    //   });
+    //   const hash = stringToHash(JSON.stringify(sorted));
 
-      if (
-        this._typeExtensionMap.has(schemaCacheKey) &&
-        this._typeExtensionMap.get(schemaCacheKey) === hash
-      ) {
-        return schema;
-      }
+    //   if (
+    //     this._typeExtensionMap.has(schemaCacheKey) &&
+    //     this._typeExtensionMap.get(schemaCacheKey) === hash
+    //   ) {
+    //     return schema;
+    //   }
 
-      this._typeExtensionMap.set(schemaCacheKey, hash);
-    }
+    //   this._typeExtensionMap.set(schemaCacheKey, hash);
+    // }
 
     return extendSchema(schema, {
       kind: DOCUMENT,
-      definitions: typeExtensions,
+      definitions: typeExtensions.sort((a: any, b: any) => {
+        const aName = a.definition ? a.definition.name.value : a.name.value;
+        const bName = b.definition ? b.definition.name.value : b.name.value;
+        return aName > bName ? 1 : -1;
+      }),
     });
   }
 
@@ -619,26 +622,31 @@ export class GraphQLCache implements GraphQLCacheInterface {
     }
 
     const schemaPath = projectConfig.schema as string;
-    const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
+    // const schemaKey = this._getSchemaCacheKeyForProject(projectConfig);
 
-    let schemaCacheKey = null;
+    // let schemaCacheKey = null;
     let schema = null;
 
-    if (!schema && schemaPath && schemaKey) {
-      schemaCacheKey = schemaKey as string;
+    // if (!schema && schemaPath && schemaKey) {
+    //   // schemaCacheKey = schemaKey as string;
 
-      // Maybe use cache
-      if (this._schemaMap.has(schemaCacheKey)) {
-        schema = this._schemaMap.get(schemaCacheKey);
-        if (schema) {
-          return queryHasExtensions
-            ? this._extendSchema(schema, schemaPath, schemaCacheKey)
-            : schema;
-        }
-      }
+    //   // Maybe use cache
+    //   // if (this._schemaMap.has(schemaCacheKey)) {
+    //   //   schema = this._schemaMap.get(schemaCacheKey);
+    //   //   if (schema) {
+    //   //     return queryHasExtensions
+    //   //       ? this._extendSchema(schema, schemaPath, schemaCacheKey)
+    //   //       : schema;
+    //   //   }
+    //   // }
 
-      // Read from disk
-      schema = await projectConfig.getSchema();
+    //   // Read from disk
+
+    // }
+    schema = await projectConfig.getSchema();
+
+    if (!schema) {
+      return null;
     }
 
     const customDirectives = projectConfig?.extensions?.customDirectives;
@@ -647,18 +655,12 @@ export class GraphQLCache implements GraphQLCacheInterface {
       schema = extendSchema(schema, parse(directivesSDL));
     }
 
-    if (!schema) {
-      return null;
-    }
+    schema = this._extendSchema(schema, schemaPath);
 
-    if (this._graphQLFileListCache.has(this._configDir)) {
-      schema = this._extendSchema(schema, schemaPath, schemaCacheKey);
-    }
-
-    if (schemaCacheKey) {
-      this._schemaMap.set(schemaCacheKey, schema);
-    }
-    return schema;
+    // if (schemaCacheKey) {
+    //   this._schemaMap.set(schemaCacheKey, schema);
+    // }
+    return queryHasExtensions ? this._extendSchema(schema, schemaPath) : schema;
   };
 
   _invalidateSchemaCacheForProject(projectConfig: GraphQLProjectConfig) {
@@ -671,11 +673,11 @@ export class GraphQLCache implements GraphQLCacheInterface {
   _getSchemaCacheKeyForProject(
     projectConfig: GraphQLProjectConfig,
   ): UnnormalizedTypeDefPointer {
-    return projectConfig.schema;
+    return this._configDir + this._getProjectName(projectConfig);
   }
 
   _getProjectName(projectConfig: GraphQLProjectConfig) {
-    return projectConfig || 'default';
+    return projectConfig.name || 'default';
   }
 
   /**
