@@ -9,8 +9,12 @@
  * GraphiQL
  */
 
-import { GraphiQL, GraphiQLInterface } from './components/GraphiQL';
-export { GraphiQL, GraphiQLInterface };
+import {
+  GraphiQL,
+  GraphiQLInterface,
+  useInterfaceContext,
+} from './components/GraphiQL';
+export { GraphiQL, GraphiQLInterface, useInterfaceContext };
 export { GraphiQLProvider } from '@graphiql/react';
 export default GraphiQL;
 
@@ -20,5 +24,6 @@ export default GraphiQL;
 export type {
   GraphiQLProps,
   GraphiQLInterfaceProps,
+  InterfaceContextType,
 } from './components/GraphiQL';
 export type { GraphiQLProviderProps } from '@graphiql/react';
