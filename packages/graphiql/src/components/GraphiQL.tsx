@@ -569,7 +569,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                                 : ''
                             }
                             onClick={() => {
-                              if (editorToolsResize.hiddenElement === 'second') {
+                              if (
+                                editorToolsResize.hiddenElement === 'second'
+                              ) {
                                 editorToolsResize.setHiddenElement(null);
                               }
                               setActiveSecondaryEditor('variables');
@@ -744,7 +746,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                       {' + '}
                       <code className="graphiql-key">M</code>
                     </td>
-                    <td>Merge fragments definitions into operation definition</td>
+                    <td>
+                      Merge fragments definitions into operation definition
+                    </td>
                   </tr>
                   <tr>
                     <td>
@@ -777,8 +781,8 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 >
                   CodeMirror Key Maps
                 </a>{' '}
-                that add more short keys. This instance of Graph<em>i</em>QL uses{' '}
-                <code>{props.keyMap || 'sublime'}</code>.
+                that add more short keys. This instance of Graph<em>i</em>QL
+                uses <code>{props.keyMap || 'sublime'}</code>.
               </p>
             </div>
           </div>
@@ -835,7 +839,9 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
           {storageContext ? (
             <div className="graphiql-dialog-section">
               <div>
-                <div className="graphiql-dialog-section-title">Clear storage</div>
+                <div className="graphiql-dialog-section-title">
+                  Clear storage
+                </div>
                 <div className="graphiql-dialog-section-caption">
                   Remove all locally stored data and start fresh.
                 </div>
