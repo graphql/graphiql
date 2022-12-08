@@ -16,4 +16,3 @@ export { Logger } from './Logger';
 export * from './GraphQLCache';
 export * from './parseDocument';
 export * from './findGraphQLTags';
-export * from './stringToHash';

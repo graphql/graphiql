@@ -190,8 +190,6 @@ export default function App() {
           });
 
           setSchema(data.data);
-
-          return;
         })
         .then(() => setLoading(false));
     }

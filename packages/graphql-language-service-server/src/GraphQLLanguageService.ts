@@ -16,6 +16,9 @@ import {
   ValidationRule,
   FieldNode,
   GraphQLError,
+  Kind,
+  parse,
+  print,
 } from 'graphql';
 
 import {
@@ -51,7 +54,6 @@ import {
   SymbolKind,
 } from 'vscode-languageserver-types';
 
-import { Kind, parse, print } from 'graphql';
 import { Logger } from './Logger';
 
 const {

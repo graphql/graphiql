@@ -22,7 +22,6 @@ module.exports = {
     react: {
       version: 'detect',
     },
-    'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
   },
   // https://github.com/sindresorhus/globals/blob/master/globals.json
   env: {
@@ -36,6 +35,7 @@ module.exports = {
 
   extends: [
     'eslint:recommended',
+    'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
@@ -109,7 +109,6 @@ module.exports = {
     'no-sequences': 1,
     'no-throw-literal': 1,
     'no-unmodified-loop-condition': 0,
-    'no-unused-expressions': 0,
     'no-useless-call': 1,
     'no-useless-concat': 1,
     'no-useless-return': 0,
@@ -142,7 +141,6 @@ module.exports = {
       'error',
       { argsIgnorePattern: '^_', ignoreRestSiblings: true },
     ],
-    '@typescript-eslint/no-unused-expressions': 'error',
 
     'no-use-before-define': 0,
 
@@ -188,8 +186,6 @@ module.exports = {
     'no-bitwise': 1,
     'no-continue': 0,
     'no-inline-comments': 0,
-    'no-lonely-if': 'error',
-    'unicorn/no-lonely-if': 'error',
     'no-mixed-operators': 0,
     'no-negated-condition': 'error',
     'no-nested-ternary': 0,
@@ -229,10 +225,9 @@ module.exports = {
     'sort-imports': 0,
     'symbol-description': 1,
 
-    // import (https://github.com/benmosher/eslint-plugin-import)
-    // 'import/no-unresolved': [2, { modules: 'es6' }],
-    'import/no-cycle': 0,
-    'import/no-extraneous-dependencies': 1,
+    'import/no-extraneous-dependencies': 'error',
+    'import/no-duplicates': 'error',
+    'import/no-named-as-default': 'error',
     'prefer-object-spread': 'error',
     // react rules
     'react/no-unused-state': 'error',
@@ -264,12 +259,22 @@ module.exports = {
     ],
     // Jest rules
     'jest/no-conditional-expect': 0,
+
+    'promise/no-multiple-resolved': 'error',
+    'sonarjs/no-redundant-jump': 'error',
+    'unicorn/prefer-logical-operator-over-ternary': 'error',
+    'unicorn/throw-new-error': 'error',
+    'unicorn/prefer-includes': 'error',
+    'no-lonely-if': 'error',
+    'unicorn/no-lonely-if': 'error',
+    'no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-expressions': 'error',
   },
 
-  plugins: ['import', '@typescript-eslint', 'unicorn'],
+  plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
 
   overrides: [
-    // Cypress plugin, global, etc only for cypress directory
+    // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
     // cypress clashes with jest expect()
     {
@@ -294,13 +299,6 @@ module.exports = {
       },
     },
     {
-      // Converted from 'dependencies' options in ancient config
-      files: ['**/spec/**', '**/sample-*/**'],
-      rules: {
-        'import/no-cycle': 0,
-      },
-    },
-    {
       // Resources are typically our helper scripts; make life easier there
       files: ['resources/**', '**/resources/**', 'scripts/**'],
       rules: {
@@ -322,6 +320,24 @@ module.exports = {
         'no-console': 'off',
         'no-new': 'off',
         'no-alert': 'off',
+        'import/no-unresolved': 'off',
+      },
+    },
+    // Ignore imported dependencies from tests files
+    {
+      files: ['**/__tests__/**', 'webpack.config.js'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+    // Allow import `vscode` package
+    {
+      files: [
+        'packages/vscode-graphql/**',
+        'packages/vscode-graphql-execution/**',
+      ],
+      rules: {
+        'import/no-unresolved': ['error', { ignore: ['vscode'] }],
       },
     },
   ],

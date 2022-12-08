@@ -10,6 +10,4 @@ This workspace could be used to help us prototype components & hooks for
 
 ## Setup
 
-First, `yarn` in the root, and then `yarn build` in the root
-
-Then, in this directory, you can just run `yarn start`
+In this directory, you can just run `yarn` and `yarn start`

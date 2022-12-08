@@ -7,8 +7,12 @@
  *
  */
 
-import { GraphQLField, GraphQLSchema, GraphQLType } from 'graphql';
-import { isCompositeType } from 'graphql';
+import {
+  GraphQLField,
+  GraphQLSchema,
+  GraphQLType,
+  isCompositeType,
+} from 'graphql';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,

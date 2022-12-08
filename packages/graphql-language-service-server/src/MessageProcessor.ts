@@ -32,9 +32,6 @@ import type {
   DidSaveTextDocumentParams,
   DidOpenTextDocumentParams,
   DidChangeConfigurationParams,
-} from 'vscode-languageserver/node';
-
-import type {
   Diagnostic,
   CompletionItem,
   CompletionList,

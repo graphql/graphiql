@@ -3,7 +3,7 @@
   "version": "0.1.11-alpha.8",
   "private": true,
   "dependencies": {
-    "graphiql": "file:../../packages/graphiql",
+    "graphiql": "^2.2.0",
     "graphql": "^16.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

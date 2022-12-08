@@ -106,7 +106,7 @@ export class GraphQLWorker {
         ),
       };
     } catch (err) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-console
       console.error(err);
       return null;
     }

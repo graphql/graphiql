@@ -62,6 +62,7 @@
     "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.5.0",
     "@testing-library/jest-dom": "5.16.5",
     "@testing-library/react": "12.1.5",
     "@types/codemirror": "^5.60.5",
@@ -73,6 +74,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.1",
     "cssnano": "^4.1.10",
+    "cypress": "^4.7.0",
     "express": "^4.17.3",
     "express-graphql": "experimental-stream-defer",
     "fork-ts-checker-webpack-plugin": "4.1.3",

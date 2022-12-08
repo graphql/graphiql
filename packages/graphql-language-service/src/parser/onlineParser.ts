@@ -27,10 +27,6 @@
  *
  */
 
-import {
-  LexRules as LexRulesType,
-  ParseRules as ParseRulesType,
-} from './Rules';
 import CharacterStream from './CharacterStream';
 import { State, Token, Rule, RuleKind } from './types';
 
@@ -39,8 +35,8 @@ import { Kind } from 'graphql';
 
 export type ParserOptions = {
   eatWhitespace: (stream: CharacterStream) => boolean;
-  lexRules: Partial<typeof LexRulesType>;
-  parseRules: typeof ParseRulesType;
+  lexRules: Partial<typeof LexRules>;
+  parseRules: typeof ParseRules;
   editorConfig: { [name: string]: any };
 };
 
@@ -232,7 +228,7 @@ const SpecialParseRules = {
 
 // Push a new rule onto the state.
 function pushRule(
-  rules: typeof ParseRulesType,
+  rules: typeof ParseRules,
   state: State,
   ruleKind: RuleKind,
 ): void {
@@ -344,7 +340,7 @@ function unsuccessful(state: State): void {
 
 // Given a stream, returns a { kind, value } pair, or null.
 function lex(
-  lexRules: Partial<typeof LexRulesType>,
+  lexRules: Partial<typeof LexRules>,
   stream: CharacterStream,
 ): Token | null | undefined {
   const kinds = Object.keys(lexRules);

@@ -1,4 +1,5 @@
 import esbuild from 'rollup-plugin-esbuild';
+// eslint-disable-next-line import/no-unresolved
 import { lezer } from '@lezer/generator/rollup';
 
 export default {

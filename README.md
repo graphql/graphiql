@@ -238,7 +238,7 @@ this purpose.
 
 - **Discord**
   [![Discord](https://img.shields.io/discord/625400653321076807.svg)](https://discord.gg/NP5vbPeUFp) -
-  Most discussion outside of github happens on the GraphQL
+  Most discussion outside of GitHub happens on the GraphQL
   [Discord Server](https://discord.gg/NP5vbPeUFp)
 - **Twitter** - [@GraphiQL](https://twitter.com/@GraphiQL) and
   [#GraphiQL](https://twitter.com/hashtag/GraphiQL)

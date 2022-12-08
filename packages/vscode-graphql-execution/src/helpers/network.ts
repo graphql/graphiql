@@ -1,10 +1,12 @@
 import { visit, OperationTypeNode, GraphQLError } from 'graphql';
-import gql from 'graphql-tag';
+import { gql } from 'graphql-tag';
 import { fetch } from '@whatwg-node/fetch';
 import { Agent } from 'https';
 import * as ws from 'ws';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { pipe, subscribe } from 'wonka';
 
+// eslint-disable-next-line import/no-unresolved
 import { Endpoint } from 'graphql-config/extensions/endpoints';
 import { OutputChannel, workspace } from 'vscode';
 import { GraphQLProjectConfig } from 'graphql-config';

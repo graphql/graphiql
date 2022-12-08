@@ -21,7 +21,7 @@ import {
   __Type,
 } from 'graphql';
 import '../hint';
-import { GraphQLHintOptions, IHint, IHints } from '../hint';
+import type { GraphQLHintOptions, IHint, IHints } from '../hint';
 import '../mode';
 import {
   TestEnum,

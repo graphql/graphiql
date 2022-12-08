@@ -110,6 +110,7 @@ wonka
 wsrun
 lezer
 buildhelper
+sonarjs
 
 
 // identifiers used in code and configs
