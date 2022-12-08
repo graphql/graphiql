@@ -71,15 +71,7 @@ export class SourceHelper {
           }
           break;
         case 'String':
-          if (value.length && !Array.isArray(value)) {
-            return null;
-          }
-          break;
         case 'ID':
-          if (value.length && !Array.isArray(value)) {
-            return null;
-          }
-          break;
         case 'Enum':
           if (value.length && !Array.isArray(value)) {
             return null;
@@ -140,13 +132,7 @@ export class SourceHelper {
         FragmentDefinition(node) {
           const existingDef = fragmentDefinitions.get(node.name.value);
           const newVal = print(node);
-          if (existingDef && existingDef.content !== newVal) {
-            fragmentDefinitions.set(node.name.value, {
-              definition: node,
-              content: newVal,
-              filePath: source.location,
-            });
-          } else if (!existingDef) {
+          if ((existingDef && existingDef.content !== newVal) || !existingDef) {
             fragmentDefinitions.set(node.name.value, {
               definition: node,
               content: newVal,

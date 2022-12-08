@@ -269,6 +269,8 @@ module.exports = {
     'unicorn/no-lonely-if': 'error',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'error',
+    'sonarjs/no-small-switch': 'error',
+    'sonarjs/no-duplicated-branches': 'error',
   },
 
   plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
