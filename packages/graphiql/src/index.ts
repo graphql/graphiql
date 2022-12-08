@@ -9,10 +9,7 @@
  * GraphiQL
  */
 
-import { GraphiQL, GraphiQLInterface } from './components/GraphiQL';
-export { GraphiQL, GraphiQLInterface };
 export { GraphiQLProvider } from '@graphiql/react';
-export default GraphiQL;
 
 /**
  * Definitions
@@ -22,3 +19,9 @@ export type {
   GraphiQLInterfaceProps,
 } from './components/GraphiQL';
 export type { GraphiQLProviderProps } from '@graphiql/react';
+
+export {
+  GraphiQLInterface,
+  GraphiQL,
+  GraphiQL as default,
+} from './components/GraphiQL';

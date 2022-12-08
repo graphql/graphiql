@@ -263,6 +263,7 @@ module.exports = {
     'promise/no-multiple-resolved': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',
+    'unicorn/prefer-export-from': ['error', { ignoreUsedVariables: true }],
     'unicorn/throw-new-error': 'error',
     'unicorn/prefer-includes': 'error',
     'no-lonely-if': 'error',
