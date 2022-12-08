@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { clsx } from 'clsx';
 
 import { useEditorContext } from '../context';
 import { useVariableEditor, UseVariableEditorArgs } from '../variable-editor';
@@ -31,6 +32,6 @@ export function VariableEditor({ isHidden, ...hookArgs }: VariableEditorProps) {
   }, [variableEditor, isHidden]);
 
   return (
-    <div className={`graphiql-editor${isHidden ? ' hidden' : ''}`} ref={ref} />
+    <div className={clsx('graphiql-editor', isHidden && 'hidden')} ref={ref} />
   );
 }

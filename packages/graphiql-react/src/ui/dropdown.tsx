@@ -12,8 +12,8 @@ import {
   MenuList,
 } from '@reach/menu-button';
 import { ComponentProps, forwardRef } from 'react';
+import { clsx } from 'clsx';
 import { createComponentGroup } from '../utility/component-group';
-import { compose } from '../utility/compose';
 
 import './dropdown.css';
 
@@ -24,7 +24,7 @@ const MenuButton = forwardRef<
   <ReachMenuButton
     {...props}
     ref={ref}
-    className={compose('graphiql-un-styled', props.className)}
+    className={clsx('graphiql-un-styled', props.className)}
   />
 ));
 MenuButton.displayName = 'MenuButton';
@@ -42,7 +42,7 @@ const ListboxButton = forwardRef<
   <ReachListboxButton
     {...props}
     ref={ref}
-    className={compose('graphiql-un-styled', props.className)}
+    className={clsx('graphiql-un-styled', props.className)}
   />
 ));
 ListboxButton.displayName = 'ListboxButton';
