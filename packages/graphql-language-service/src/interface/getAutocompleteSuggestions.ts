@@ -660,7 +660,7 @@ function getSuggestionsForImplements(
             return;
           }
           const type = schema.getType(state.name);
-          const interfaceConfig = typeInfo.interfaceDef?.toConfig()!;
+          const interfaceConfig = typeInfo.interfaceDef?.toConfig();
           typeInfo.interfaceDef = new GraphQLInterfaceType({
             ...interfaceConfig,
             interfaces: [
@@ -677,7 +677,7 @@ function getSuggestionsForImplements(
             return;
           }
           const type = schema.getType(state.name);
-          const objectTypeConfig = typeInfo.objectTypeDef?.toConfig()!;
+          const objectTypeConfig = typeInfo.objectTypeDef?.toConfig();
           typeInfo.objectTypeDef = new GraphQLObjectType({
             ...objectTypeConfig,
             interfaces: [

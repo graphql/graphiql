@@ -10,10 +10,8 @@
 module.exports = {
   root: true,
   reportUnusedDisableDirectives: true,
-  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 6,
-    sourceType: 'module',
   },
   settings: {
     react: {
@@ -29,6 +27,7 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript',
     'plugin:react/recommended',
@@ -72,7 +71,6 @@ module.exports = {
     'no-case-declarations': 0,
     'no-div-regex': 1,
     'no-else-return': ['error', { allowElseIf: false }],
-    'no-empty-function': 0,
     'no-eq-null': 0,
     'no-eval': 1,
     'no-extend-native': 1,
@@ -110,12 +108,9 @@ module.exports = {
     '@typescript-eslint/prefer-optional-chain': 'error',
     'no-warning-comments': 0,
     radix: 'error',
-    '@typescript-eslint/prefer-as-const': 'error',
     'require-await': 0,
-    // 'require-await': 1,
     'vars-on-top': 0,
     yoda: 1,
-    '@typescript-eslint/no-inferrable-types': 'error',
 
     // Strict Mode (http://eslint.org/docs/rules/#strict-mode)
     strict: 0,
@@ -130,7 +125,6 @@ module.exports = {
     'no-undef-init': 0,
     'no-undefined': 0,
 
-    'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       { argsIgnorePattern: '^_', ignoreRestSiblings: true },
@@ -176,7 +170,6 @@ module.exports = {
     'newline-after-var': 0,
     'newline-before-return': 0,
     'newline-per-chained-call': 0,
-    'no-array-constructor': 1,
     'no-bitwise': 1,
     'no-continue': 0,
     'no-inline-comments': 0,
@@ -209,13 +202,9 @@ module.exports = {
     'no-useless-computed-key': 1,
     'no-useless-constructor': 0,
     'no-useless-rename': 1,
-    'no-var': 'error',
     'object-shorthand': 1,
     'prefer-arrow-callback': [0, { allowNamedFunctions: true }], // prettier --list-different
-    'prefer-const': 1,
     'prefer-numeric-literals': 0,
-    'prefer-rest-params': 0,
-    'prefer-spread': 1,
     'prefer-template': 0,
     'sort-imports': 0,
     'symbol-description': 1,
@@ -270,9 +259,19 @@ module.exports = {
     'sonarjs/no-duplicated-branches': 'error',
     'unicorn/prefer-node-protocol': 'error',
     'import/no-unresolved': ['error', { ignore: ['^node:'] }],
+
+    // TODO: Fix all errors for the following rules included in recommended config
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/ban-types': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/triple-slash-reference': 'off',
+    '@typescript-eslint/no-namespace': 'off',
   },
 
-  plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
+  plugins: ['promise', 'sonarjs', 'unicorn'],
 
   overrides: [
     // Cypress plugin, global, etc., only for cypress directory
@@ -302,14 +301,6 @@ module.exports = {
       files: ['resources/**', '**/resources/**', 'scripts/**'],
       rules: {
         'no-console': 'off',
-      },
-    },
-    {
-      // TODO: Remove this overrides after extending `plugin:@typescript-eslint/recommended` config
-      files: ['*.ts', '*.tsx'],
-      rules: {
-        'no-redeclare': 'off', // ts(2451)
-        'no-undef': 'off', // ts(2304)
       },
     },
     {
