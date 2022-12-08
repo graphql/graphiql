@@ -332,7 +332,8 @@ function hashFromTabContents(args: {
 }
 
 export function fuzzyExtractOperationName(str: string): string | null {
-  const regex = /^(?!.*#).*(query|subscription|mutation)\s+([a-zA-Z0-9_]+)/;
+  const regex = /^(?!#).*(query|subscription|mutation)\s+([a-zA-Z0-9_]+)/m;
+
   const match = regex.exec(str);
 
   return match?.[2] ?? null;
