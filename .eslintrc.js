@@ -142,6 +142,7 @@ module.exports = {
       'error',
       { argsIgnorePattern: '^_', ignoreRestSiblings: true },
     ],
+    '@typescript-eslint/no-unused-expressions': 'error',
 
     'no-use-before-define': 0,
 

@@ -665,7 +665,9 @@ export class GraphQLCache implements GraphQLCacheInterface {
     const schemaKey = this._getSchemaCacheKeyForProject(
       projectConfig,
     ) as string;
-    schemaKey && this._schemaMap.delete(schemaKey);
+    if (schemaKey) {
+      this._schemaMap.delete(schemaKey);
+    }
   }
 
   _getSchemaCacheKeyForProject(
