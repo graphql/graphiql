@@ -787,7 +787,7 @@ export class MessageProcessor {
         toPosition(position),
         textDocument.uri,
       );
-    } catch (err) {
+    } catch {
       // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
     }
 
@@ -987,11 +987,11 @@ export class MessageProcessor {
       } else {
         try {
           this._cacheSchemaFile(uri, project);
-        } catch (err) {
+        } catch {
           // this string may be an SDL string even, how do we even evaluate this?
         }
       }
-    } catch (err) {}
+    } catch {}
   }
   async _cacheObjectSchema(
     pointer: { [key: string]: any },

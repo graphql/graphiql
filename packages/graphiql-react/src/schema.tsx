@@ -417,7 +417,7 @@ function parseHeaderString(headersString: string | undefined) {
     if (headersString) {
       headers = JSON.parse(headersString);
     }
-  } catch (err) {
+  } catch {
     isValidJSON = false;
   }
   return { headers, isValidJSON };

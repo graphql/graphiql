@@ -139,7 +139,7 @@ export class LanguageService {
             definitionNodes.push(node);
           },
         });
-      } catch (err) {
+      } catch {
         throw new Error(
           `Failed parsing externalFragmentDefinitions string:\n${this._externalFragmentDefinitionsString}`,
         );
@@ -278,7 +278,7 @@ export class LanguageService {
         if (operationFacts?.variableToType) {
           return getVariablesJSONSchema(operationFacts.variableToType, options);
         }
-      } catch (err) {}
+      } catch {}
     }
     return null;
   };

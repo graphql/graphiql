@@ -267,6 +267,7 @@ module.exports = {
     'unicorn/prefer-includes': 'error',
     'no-lonely-if': 'error',
     'unicorn/no-lonely-if': 'error',
+    'unicorn/prefer-optional-catch-binding': 'error',
     'no-unused-expressions': 'off',
     '@typescript-eslint/no-unused-expressions': 'error',
   },

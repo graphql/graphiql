@@ -44,7 +44,7 @@ export function fillLeafs(
   let ast: DocumentNode;
   try {
     ast = parse(docString);
-  } catch (error) {
+  } catch {
     return { insertions, result: docString };
   }
 

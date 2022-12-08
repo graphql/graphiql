@@ -31,7 +31,7 @@ export class Logger implements VSCodeLogger {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
       }
-    } catch (_) {
+    } catch {
       // intentionally no-op. Don't block the language server even if
       // the necessary setup cannot be completed for logger.
     }
