@@ -73,7 +73,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
 
   async getEndpointName(endpointNames: string[]) {
     // Endpoints extensions docs say that at least "default" will be there
-    let endpointName = endpointNames[0];
+    let [endpointName] = endpointNames;
     if (endpointNames.length > 1) {
       const pickedValue = await window.showQuickPick(endpointNames, {
         canPickMany: false,
@@ -142,7 +142,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
         this.outputChannel.appendLine(
           `Warning: endpoints missing from graphql config. will try 'schema' value(s) instead`,
         );
-        const schema = projectConfig.schema;
+        const { schema } = projectConfig;
         if (schema && Array.isArray(schema)) {
           schema.map(s => {
             if (this.validUrlFromSchema(s as string)) {
@@ -241,7 +241,7 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     }
   }
   async loadConfig() {
-    const rootDir = this.rootDir;
+    const { rootDir } = this;
     if (!rootDir) {
       this.reportError(`Error: this file is outside the workspace.`);
       return;

@@ -42,7 +42,7 @@ CodeMirror.registerHelper(
   'lint',
   'graphql',
   (text: string, options: GraphQLLintOptions): CodeMirror.Annotation[] => {
-    const schema = options.schema;
+    const { schema } = options;
     const rawResults = getDiagnostics(
       text,
       schema,

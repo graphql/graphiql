@@ -24,7 +24,7 @@ export default function collectVariables(
   const variableToType = Object.create(null);
   documentAST.definitions.forEach(definition => {
     if (definition.kind === 'OperationDefinition') {
-      const variableDefinitions = definition.variableDefinitions;
+      const { variableDefinitions } = definition;
       if (variableDefinitions) {
         variableDefinitions.forEach(({ variable, type }) => {
           const inputType = typeFromAST(schema, type as NamedTypeNode);

@@ -156,7 +156,7 @@ export function findGraphQLTags(
   const asts = parsedASTs;
 
   const parseTemplateLiteral = (node: TemplateLiteral) => {
-    const loc = node.quasis[0].loc;
+    const { loc } = node.quasis[0];
     if (loc) {
       if (node.quasis.length > 1) {
         const last = node.quasis.pop();
@@ -183,7 +183,7 @@ export function findGraphQLTags(
   const visitors = {
     CallExpression: (node: Expression) => {
       if ('callee' in node) {
-        const callee = node.callee;
+        const { callee } = node;
 
         if (
           callee.type === 'Identifier' &&
@@ -203,7 +203,7 @@ export function findGraphQLTags(
     TaggedTemplateExpression: (node: TaggedTemplateExpression) => {
       const tagName = getGraphQLTagName(node.tag);
       if (tagName) {
-        const loc = node.quasi.quasis[0].loc;
+        const { loc } = node.quasi.quasis[0];
         const template =
           node.quasi.quasis.length > 1
             ? node.quasi.quasis.map(quasi => quasi.value.raw).join('')

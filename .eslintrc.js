@@ -260,6 +260,7 @@ module.exports = {
     // Jest rules
     'jest/no-conditional-expect': 0,
 
+    'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
     'promise/no-multiple-resolved': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',

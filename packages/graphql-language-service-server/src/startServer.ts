@@ -168,8 +168,7 @@ export default async function startServer(
           process.exit(1);
         }
 
-        const port = options.port;
-        const hostname = options.hostname;
+        const { port, hostname } = options;
         const socket = net
           .createServer(client => {
             client.setEncoding('utf8');

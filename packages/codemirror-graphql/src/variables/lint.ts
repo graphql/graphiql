@@ -66,7 +66,7 @@ CodeMirror.registerHelper(
     }
 
     // If there are not yet known variables, do nothing.
-    const variableToType = options.variableToType;
+    const { variableToType } = options;
     if (!variableToType) {
       return [];
     }

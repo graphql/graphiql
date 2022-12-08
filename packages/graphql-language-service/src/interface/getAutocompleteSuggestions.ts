@@ -177,8 +177,7 @@ export function getAutocompleteSuggestions(
     return [];
   }
 
-  const kind = state.kind;
-  const step = state.step;
+  const { kind, step } = state;
   const typeInfo = getTypeInfo(schema, token.state);
 
   // Definition kinds
@@ -306,7 +305,7 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.ARGUMENTS ||
     (kind === RuleKinds.ARGUMENT && step === 0)
   ) {
-    const argDefs = typeInfo.argDefs;
+    const { argDefs } = typeInfo;
     if (argDefs) {
       return hintList(
         token,
@@ -460,7 +459,7 @@ const insertSuffix = ` {\n  $1\n}`;
  * @returns
  */
 const getInsertText = (field: GraphQLField<null, null>) => {
-  const type = field.type;
+  const { type } = field;
   if (isCompositeType(type)) {
     return insertSuffix;
   }
@@ -518,7 +517,7 @@ function getSuggestionsForFieldNames(
   options?: AutocompleteSuggestionOptions,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
-    const parentType = typeInfo.parentType;
+    const { parentType } = typeInfo;
     let fields: GraphQLField<null, null>[] = [];
     if ('getFields' in parentType) {
       fields = objectValues<GraphQLField<null, null>>(
@@ -1052,8 +1051,8 @@ export function canUseDirective(
   if (!state || !state.kind) {
     return false;
   }
-  const kind = state.kind;
-  const locations = directive.locations;
+  const { kind } = state;
+  const { locations } = directive;
   switch (kind) {
     case RuleKinds.QUERY:
       return locations.includes(DirectiveLocation.QUERY);
