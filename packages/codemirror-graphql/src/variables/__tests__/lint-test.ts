@@ -19,7 +19,7 @@ import '../mode';
 function createEditorWithLint(lintConfig?: any) {
   return CodeMirror(document.createElement('div'), {
     mode: 'graphql-variables',
-    lint: lintConfig ? lintConfig : true,
+    lint: lintConfig || true,
   });
 }
 
