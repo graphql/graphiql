@@ -152,7 +152,7 @@ function _getOutline(queryText: string): EXIT_CODE {
     if (outline) {
       process.stdout.write(JSON.stringify(outline, null, 2));
     } else {
-      throw Error('Error parsing or no outline tree found');
+      throw new Error('Error parsing or no outline tree found');
     }
   } catch (error) {
     process.stderr.write(formatUnknownError(error) + '\n');

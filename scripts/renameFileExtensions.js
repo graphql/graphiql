@@ -51,5 +51,5 @@ if (tempPath) {
     rimraf.sync(tempRenamePath);
   });
 } else {
-  throw Error(`Could not generate temporary path\n${tempRenamePath}`);
+  throw new Error(`Could not generate temporary path\n${tempRenamePath}`);
 }

@@ -132,7 +132,7 @@ export class DiagnosticsAdapter {
 
     if (variablesUris) {
       if (variablesUris.length < 1) {
-        throw Error('no variables URI strings provided to validate');
+        throw new Error('no variables URI strings provided to validate');
       }
       const jsonSchema = await worker.doGetVariablesJSONSchema(
         resource.toString(),

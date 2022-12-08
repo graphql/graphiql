@@ -160,7 +160,7 @@ export default function App() {
       getSchema()
         .then(data => {
           if (!('data' in data)) {
-            throw Error(
+            throw new Error(
               'this demo does not support subscriptions or http multipart yet',
             );
           }
