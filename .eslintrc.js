@@ -263,12 +263,17 @@ module.exports = {
     ],
     // Jest rules
     'jest/no-conditional-expect': 0,
+
+    'promise/no-multiple-resolved': 'error',
+    'sonarjs/no-redundant-jump': 'error',
+    'unicorn/prefer-logical-operator-over-ternary': 'error',
+    'unicorn/throw-new-error': 'error',
   },
 
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
 
   overrides: [
-    // Cypress plugin, global, etc. only for cypress directory
+    // Cypress plugin, global, etc., only for cypress directory
     // https://github.com/cypress-io/eslint-plugin-cypress
     // cypress clashes with jest expect()
     {
