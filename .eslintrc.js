@@ -109,7 +109,6 @@ module.exports = {
     'no-sequences': 1,
     'no-throw-literal': 1,
     'no-unmodified-loop-condition': 0,
-    'no-unused-expressions': 0,
     'no-useless-call': 1,
     'no-useless-concat': 1,
     'no-useless-return': 0,
@@ -142,7 +141,6 @@ module.exports = {
       'error',
       { argsIgnorePattern: '^_', ignoreRestSiblings: true },
     ],
-    '@typescript-eslint/no-unused-expressions': 'error',
 
     'no-use-before-define': 0,
 
@@ -188,8 +186,6 @@ module.exports = {
     'no-bitwise': 1,
     'no-continue': 0,
     'no-inline-comments': 0,
-    'no-lonely-if': 'error',
-    'unicorn/no-lonely-if': 'error',
     'no-mixed-operators': 0,
     'no-negated-condition': 'error',
     'no-nested-ternary': 0,
@@ -268,6 +264,11 @@ module.exports = {
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',
     'unicorn/throw-new-error': 'error',
+    'unicorn/prefer-includes': 'error',
+    'no-lonely-if': 'error',
+    'unicorn/no-lonely-if': 'error',
+    'no-unused-expressions': 'off',
+    '@typescript-eslint/no-unused-expressions': 'error',
   },
 
   plugins: ['@typescript-eslint', 'promise', 'sonarjs', 'unicorn'],
