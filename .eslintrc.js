@@ -294,10 +294,7 @@ module.exports = {
       extends: ['plugin:jest/recommended'],
       rules: {
         'jest/no-conditional-expect': 'off',
-        'jest/expect-expect': [
-          'error',
-          { assertFunctionNames: ['expect*'] },
-        ],
+        'jest/expect-expect': ['error', { assertFunctionNames: ['expect*'] }],
       },
     },
     {
