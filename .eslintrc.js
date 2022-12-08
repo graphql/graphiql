@@ -188,7 +188,8 @@ module.exports = {
     'no-bitwise': 1,
     'no-continue': 0,
     'no-inline-comments': 0,
-    'no-lonely-if': 0,
+    'no-lonely-if': 'error',
+    'unicorn/no-lonely-if': 'error',
     'no-mixed-operators': 0,
     'no-negated-condition': 'error',
     'no-nested-ternary': 0,
@@ -265,7 +266,7 @@ module.exports = {
     'jest/no-conditional-expect': 0,
   },
 
-  plugins: ['import', '@typescript-eslint'],
+  plugins: ['import', '@typescript-eslint', 'unicorn'],
 
   overrides: [
     // Cypress plugin, global, etc only for cypress directory

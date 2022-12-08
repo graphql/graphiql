@@ -118,21 +118,22 @@ function getVariablesHint(
   }
 
   // Input Object fields
-  if (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) {
-    if (typeInfo.fields) {
-      const inputFields = Object.keys(typeInfo.fields).map(
-        fieldName => typeInfo.fields![fieldName],
-      );
-      return hintList(
-        cur,
-        token,
-        inputFields.map(field => ({
-          text: `"${field.name}": `,
-          type: field.type,
-          description: field.description,
-        })),
-      );
-    }
+  if (
+    (kind === 'ObjectValue' || (kind === 'ObjectField' && step === 0)) &&
+    typeInfo.fields
+  ) {
+    const inputFields = Object.keys(typeInfo.fields).map(
+      fieldName => typeInfo.fields![fieldName],
+    );
+    return hintList(
+      cur,
+      token,
+      inputFields.map(field => ({
+        text: `"${field.name}": `,
+        type: field.type,
+        description: field.description,
+      })),
+    );
   }
 
   // Input values.

@@ -118,24 +118,23 @@ export default class CharacterStream implements CharacterStreamInterface {
       token = match?.[0];
     }
 
-    if (match != null) {
-      if (
-        typeof pattern === 'string' ||
+    if (
+      match != null &&
+      (typeof pattern === 'string' ||
         (match instanceof Array &&
           // String.match returns 'index' property, which flow fails to detect
           // for some reason. The below is a workaround, but an easier solution
           // is just checking if `match.index === 0`
-          this._sourceText.startsWith(match[0], this._pos))
-      ) {
-        if (consume) {
-          this._start = this._pos;
-          // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
-          if (token && token.length) {
-            this._pos += token.length;
-          }
+          this._sourceText.startsWith(match[0], this._pos)))
+    ) {
+      if (consume) {
+        this._start = this._pos;
+        // eslint-disable-next-line @typescript-eslint/prefer-optional-chain -- otherwise has type issue
+        if (token && token.length) {
+          this._pos += token.length;
         }
-        return match;
       }
+      return match;
     }
 
     // No match available.

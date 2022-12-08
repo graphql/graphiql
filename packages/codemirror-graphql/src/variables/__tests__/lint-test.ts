@@ -32,11 +32,9 @@ function printLintErrors(query: Maybe<string>, variables: string) {
     editor.state.lint.options.onUpdateLinting = (
       errors: CodeMirror.Annotation[],
     ) => {
-      if (errors?.[0]) {
-        if (!errors[0].message?.match('Unexpected EOF')) {
-          resolve(errors);
-          return;
-        }
+      if (errors?.[0] && !errors[0].message?.match('Unexpected EOF')) {
+        resolve(errors);
+        return;
       }
       resolve([]);
     };

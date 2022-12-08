@@ -125,6 +125,7 @@
     "eslint-plugin-jest": "^27.1.6",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-unicorn": "^45.0.1",
     "execa": "^6.0.0",
     "express": "^4.17.3",
     "fetch-mock": "6.5.2",

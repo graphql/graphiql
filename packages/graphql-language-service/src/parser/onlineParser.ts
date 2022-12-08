@@ -149,13 +149,12 @@ function getToken(
       const levels = (state.levels = (state.levels || []).slice(0, -1));
       // FIXME
       // what if state.indentLevel === 0?
-      if (state.indentLevel) {
-        if (
-          levels.length > 0 &&
-          levels[levels.length - 1] < state.indentLevel
-        ) {
-          state.indentLevel = levels[levels.length - 1];
-        }
+      if (
+        state.indentLevel &&
+        levels.length > 0 &&
+        levels[levels.length - 1] < state.indentLevel
+      ) {
+        state.indentLevel = levels[levels.length - 1];
       }
     }
   }

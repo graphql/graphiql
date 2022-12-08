@@ -155,18 +155,16 @@ export class NetworkHelper {
               urqlClient.subscription(parsedOperation, variables),
               subscribe(subscriber),
             );
+          } else if (operation === 'query') {
+            pipe(
+              urqlClient.query(parsedOperation, variables),
+              subscribe(subscriber),
+            );
           } else {
-            if (operation === 'query') {
-              pipe(
-                urqlClient.query(parsedOperation, variables),
-                subscribe(subscriber),
-              );
-            } else {
-              pipe(
-                urqlClient.mutation(parsedOperation, variables),
-                subscribe(subscriber),
-              );
-            }
+            pipe(
+              urqlClient.mutation(parsedOperation, variables),
+              subscribe(subscriber),
+            );
           }
         } catch (err) {
           this.outputChannel.appendLine(`error executing operation:\n${err}`);
