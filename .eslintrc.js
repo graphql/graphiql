@@ -14,9 +14,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module',
-    ecmaFeatures: {
-      jsx: true,
-    },
   },
   settings: {
     react: {
@@ -29,10 +26,7 @@ module.exports = {
     es6: true,
     node: true,
     browser: true,
-    jest: true,
-    'jest/globals': true,
   },
-
   extends: [
     'eslint:recommended',
     'plugin:import/recommended',
@@ -107,7 +101,7 @@ module.exports = {
     'no-script-url': 1,
     'no-self-compare': 1,
     'no-sequences': 1,
-    'no-throw-literal': 1,
+    'no-throw-literal': 'error',
     'no-unmodified-loop-condition': 0,
     'no-useless-call': 1,
     'no-useless-concat': 1,
@@ -215,7 +209,7 @@ module.exports = {
     'no-useless-computed-key': 1,
     'no-useless-constructor': 0,
     'no-useless-rename': 1,
-    'no-var': 1,
+    'no-var': 'error',
     'object-shorthand': 1,
     'prefer-arrow-callback': [0, { allowNamedFunctions: true }], // prettier --list-different
     'prefer-const': 1,
@@ -230,7 +224,7 @@ module.exports = {
     'import/no-duplicates': 'error',
     'import/no-named-as-default': 'error',
     'prefer-object-spread': 'error',
-    // react rules
+    // React rules
     'react/no-unused-state': 'error',
     'react/jsx-curly-brace-presence': 'error',
     'react/jsx-boolean-value': 'error',
@@ -258,8 +252,6 @@ module.exports = {
       'error',
       { extensions: ['.tsx', '.jsx'], allow: 'as-needed' },
     ],
-    // Jest rules
-    'jest/no-conditional-expect': 0,
 
     'unicorn/consistent-destructuring': 'error',
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
@@ -300,11 +292,12 @@ module.exports = {
         '**/*.spec.{ts,js.jsx.tsx}',
       ],
       extends: ['plugin:jest/recommended'],
-      env: {
-        'jest/globals': true,
-      },
       rules: {
-        'jest/no-conditional-expect': 0,
+        'jest/no-conditional-expect': 'off',
+        'jest/expect-expect': [
+          'error',
+          { assertFunctionNames: ['expect*'] },
+        ],
       },
     },
     {

@@ -64,26 +64,25 @@ export function getDiagnostics(
   externalFragments?: FragmentDefinitionNode[] | string,
 ): Array<Diagnostic> {
   let ast = null;
+  let fragments = '';
   if (externalFragments) {
-    if (typeof externalFragments === 'string') {
-      query += '\n\n' + externalFragments;
-    } else {
-      query +=
-        '\n\n' +
-        externalFragments.reduce((agg, node) => {
-          agg += print(node) + '\n\n';
-          return agg;
-        }, '');
-    }
+    fragments =
+      typeof externalFragments === 'string'
+        ? externalFragments
+        : externalFragments.reduce(
+            (acc, node) => acc + print(node) + '\n\n',
+            '',
+          );
   }
+  const enhancedQuery = fragments ? `${query}\n\n${fragments}` : query;
 
   try {
-    ast = parse(query);
+    ast = parse(enhancedQuery);
   } catch (error) {
     if (error instanceof GraphQLError) {
       const range = getRange(
         error.locations?.[0] ?? { line: 0, column: 0 },
-        query,
+        enhancedQuery,
       );
 
       return [

@@ -1,7 +1,7 @@
 import 'codemirror/addon/hint/show-hint';
 
 declare module 'codemirror' {
-  var Init: any;
+  let Init: any;
 
   interface Editor {
     doc: CodeMirror.Doc;

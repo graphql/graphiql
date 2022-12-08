@@ -145,14 +145,13 @@ export default function App() {
         localStorage.setItem('variables', variablesModel.getValue());
       }),
     );
-
-    // only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only run once on mount
   }, []);
 
   useEffect(() => {
     queryEditor?.addAction(queryAction);
     variablesEditor?.addAction(queryAction);
-  }, [variablesEditor]);
+  }, [queryEditor, variablesEditor]);
   /**
    * Handle the initial schema load
    */
