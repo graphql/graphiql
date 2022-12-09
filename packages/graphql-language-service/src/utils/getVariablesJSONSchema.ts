@@ -125,13 +125,11 @@ class Marker {
  *
  * @param type {GraphQLInputType}
  * @param options
- * @param definitionMarker
  * @returns {DefinitionResult}
  */
 function getJSONSchemaFromGraphQLType(
   type: GraphQLInputType | GraphQLInputField,
   options?: JSONSchemaRunningOptions,
-  definitionMarker: Marker = new Marker(),
 ): DefinitionResult {
   let required = false;
   let definition: CombinedSchema = Object.create(null);
@@ -155,7 +153,6 @@ function getJSONSchemaFromGraphQLType(
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
-      definitionMarker,
     );
     if (def.$ref) {
       definition.items = { $ref: def.$ref };
@@ -173,7 +170,6 @@ function getJSONSchemaFromGraphQLType(
     const { definition: def, definitions: defs } = getJSONSchemaFromGraphQLType(
       type.ofType,
       options,
-      definitionMarker,
     );
     definition = def;
     if (defs) {
@@ -214,12 +210,12 @@ function getJSONSchemaFromGraphQLType(
           required: fieldRequired,
           definition: typeDefinition,
           definitions: typeDefinitions,
-        } = getJSONSchemaFromGraphQLType(field.type, options, definitionMarker);
+        } = getJSONSchemaFromGraphQLType(field.type, options);
 
         const {
           definition: fieldDefinition,
           // definitions: fieldDefinitions,
-        } = getJSONSchemaFromGraphQLType(field, options, definitionMarker);
+        } = getJSONSchemaFromGraphQLType(field, options);
 
         fieldDef.properties[fieldName] = {
           ...typeDefinition,
