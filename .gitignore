@@ -33,3 +33,4 @@ yarn-1.18.0.js
 
 examples/*/yarn.lock
 .eslintcache
+packages/graphiql-plugin-copy-as/types/*
