@@ -128,9 +128,8 @@ function getJSONSchemaFromGraphQLType(
     definition.enum = type.getValues().map(val => val.name);
   }
 
-  if (isScalarType(type)) {
-    // I think this makes sense for custom scalars?
-    definition.type = scalarTypesMap[type.name] ?? 'any';
+  if (isScalarType(type) && scalarTypesMap[type.name]) {
+    definition.type = scalarTypesMap[type.name];
   }
   if (isListType(type)) {
     definition.type = 'array';
