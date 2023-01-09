@@ -1,13 +1,5 @@
-import { HeaderEditor } from './header-editor';
-import { ImagePreview } from './image-preview';
-import { QueryEditor } from './query-editor';
-import { ResponseEditor } from './response-editor';
-import { VariableEditor } from './variable-editor';
-
-export {
-  HeaderEditor,
-  ImagePreview,
-  QueryEditor,
-  ResponseEditor,
-  VariableEditor,
-};
+export { HeaderEditor } from './header-editor';
+export { ImagePreview } from './image-preview';
+export { QueryEditor } from './query-editor';
+export { ResponseEditor } from './response-editor';
+export { VariableEditor } from './variable-editor';
