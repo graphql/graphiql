@@ -209,6 +209,19 @@ export function useSynchronizeActiveTabValues({
   );
 }
 
+export function serializeTabState(
+  tabState: TabsState,
+  shouldPersistHeaders = false,
+) {
+  return JSON.stringify(tabState, (key, value) =>
+    key === 'hash' ||
+    key === 'response' ||
+    (!shouldPersistHeaders && key === 'headers')
+      ? null
+      : value,
+  );
+}
+
 export function useStoreTabs({
   storage,
   shouldPersistHeaders,
@@ -225,15 +238,7 @@ export function useStoreTabs({
   );
   return useCallback(
     (currentState: TabsState) => {
-      store(
-        JSON.stringify(currentState, (key, value) =>
-          key === 'hash' ||
-          key === 'response' ||
-          (!shouldPersistHeaders && key === 'headers')
-            ? null
-            : value,
-        ),
-      );
+      store(serializeTabState(currentState, shouldPersistHeaders));
     },
     [shouldPersistHeaders, store],
   );
@@ -338,6 +343,19 @@ export function fuzzyExtractOperationName(str: string): string | null {
   return match?.[2] ?? null;
 }
 
+export function clearHeadersFromTabs(storage: StorageAPI | null) {
+  const persistedTabs = storage?.get(STORAGE_KEY);
+  if (persistedTabs) {
+    const parsedTabs = JSON.parse(persistedTabs);
+    storage?.set(
+      STORAGE_KEY,
+      JSON.stringify(parsedTabs, (key, value) =>
+        key === 'headers' ? null : value,
+      ),
+    );
+  }
+}
+
 const DEFAULT_TITLE = '<untitled>';
 
-const STORAGE_KEY = 'tabState';
+export const STORAGE_KEY = 'tabState';
