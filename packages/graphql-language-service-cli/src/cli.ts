@@ -107,37 +107,33 @@ if (!command) {
   process.exit(0);
 }
 
-switch (command) {
-  case 'server':
-    process.on('uncaughtException', error => {
-      process.stderr.write(
-        'An error was thrown from GraphQL language service: ' + String(error),
-      );
-      // don't exit at all if there is an uncaughtException
-      // process.exit(0);
-    });
+if (command === 'server') {
+  process.on('uncaughtException', error => {
+    process.stderr.write(
+      'An error was thrown from GraphQL language service: ' + String(error),
+    );
+    // don't exit at all if there is an uncaughtException
+    // process.exit(0);
+  });
 
-    const options: { [key: string]: any } = {};
-    if (argv?.port) {
-      options.port = argv.port;
-    }
-    if (argv?.method) {
-      options.method = argv.method;
-    }
-    if (argv?.configDir) {
-      options.configDir = argv.configDir;
-    }
-    try {
-      startServer(options);
-    } catch (error) {
-      const logger = new Logger();
-      logger.error(String(error));
-    }
-    break;
-  default: {
-    client(command as string, argv as { [key: string]: string });
-    break;
+  const options: { [key: string]: any } = {};
+  if (argv?.port) {
+    options.port = argv.port;
   }
+  if (argv?.method) {
+    options.method = argv.method;
+  }
+  if (argv?.configDir) {
+    options.configDir = argv.configDir;
+  }
+  try {
+    startServer(options);
+  } catch (error) {
+    const logger = new Logger();
+    logger.error(String(error));
+  }
+} else {
+  client(command as string, argv as { [key: string]: string });
 }
 
 // Exit the process when stream closes from remote end.

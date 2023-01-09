@@ -255,11 +255,10 @@ export class MessageProcessor {
     }
   }
   _handleConfigError({ err }: { err: unknown; uri?: string }) {
-    if (err instanceof ConfigNotFoundError) {
+    if (err instanceof ConfigNotFoundError || err instanceof ConfigEmptyError) {
       // TODO: obviously this needs to become a map by workspace from uri
       // for workspaces support
       this._isGraphQLConfigMissing = true;
-
       this._logConfigError(err.message);
     } else if (err instanceof ProjectNotFoundError) {
       // this is the only case where we don't invalidate config;
@@ -270,9 +269,6 @@ export class MessageProcessor {
     } else if (err instanceof ConfigInvalidError) {
       this._isGraphQLConfigMissing = true;
       this._logConfigError(`Invalid configuration\n${err.message}`);
-    } else if (err instanceof ConfigEmptyError) {
-      this._isGraphQLConfigMissing = true;
-      this._logConfigError(err.message);
     } else if (err instanceof LoaderNoResultError) {
       this._isGraphQLConfigMissing = true;
       this._logConfigError(err.message);
