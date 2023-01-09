@@ -204,7 +204,7 @@ export class GraphQLLanguageService {
     let validationAst = null;
     try {
       validationAst = parse(source);
-    } catch (error) {
+    } catch {
       // the query string is already checked to be parsed properly - errors
       // from this parse must be from corrupted fragment dependencies.
       // For IDEs we don't care for errors outside of the currently edited
@@ -306,7 +306,7 @@ export class GraphQLLanguageService {
     let ast;
     try {
       ast = parse(query);
-    } catch (error) {
+    } catch {
       return null;
     }
 

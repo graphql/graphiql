@@ -78,7 +78,7 @@ function tokenToURL(token: Token) {
   try {
     const location = window.location;
     return new URL(value, location.protocol + '//' + location.host);
-  } catch (err) {
+  } catch {
     return;
   }
 }

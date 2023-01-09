@@ -142,7 +142,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let parsedQuery;
     try {
       parsedQuery = parse(query);
-    } catch (error) {
+    } catch {
       return [];
     }
     return this.getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);
@@ -234,7 +234,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
     let parsedQuery;
     try {
       parsedQuery = parse(query);
-    } catch (error) {
+    } catch {
       return [];
     }
     return this.getObjectTypeDependenciesForAST(
@@ -426,7 +426,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           ast: parse(query),
           query,
         };
-      } catch (error) {
+      } catch {
         return { ast: null, query };
       }
     });
@@ -488,7 +488,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
           ast: parse(query),
           query,
         };
-      } catch (error) {
+      } catch {
         return { ast: null, query };
       }
     });
@@ -827,7 +827,7 @@ export class GraphQLCache implements GraphQLCacheInterface {
               mtime: 0,
               size: 0,
             });
-          } catch (_) {
+          } catch {
             // If query has syntax errors, go ahead and still resolve
             // the filePath and the content, but leave ast empty.
             resolve({

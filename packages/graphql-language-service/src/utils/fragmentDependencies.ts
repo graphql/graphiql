@@ -22,7 +22,7 @@ export const getFragmentDependencies = (
   let parsedOperation;
   try {
     parsedOperation = parse(operationString);
-  } catch (error) {
+  } catch {
     return [];
   }
   return getFragmentDependenciesForAST(parsedOperation, fragmentDefinitions);
