@@ -787,7 +787,7 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 type="button"
                 id="disable-persist-headers"
                 className={
-                  !editorContext.shouldPersistHeaders ? 'active' : undefined
+                  editorContext.shouldPersistHeaders ? undefined : 'active'
                 }
                 onClick={() => {
                   editorContext.setShouldPersistHeaders(false);

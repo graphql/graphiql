@@ -61,9 +61,7 @@ CodeMirror.registerHelper(
     if (!options.schema || !token.state) {
       return;
     }
-
-    const { state } = token;
-    const { kind, step } = state;
+    const { kind, step } = token.state;
     const typeInfo = getTypeInfo(options.schema, token.state);
 
     // Given a Schema and a Token, produce the contents of an info tooltip.
