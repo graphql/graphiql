@@ -279,8 +279,7 @@ export function getAutocompleteSuggestions(
 
   if (
     kind === RuleKinds.IMPLEMENTS ||
-    (kind === RuleKinds.NAMED_TYPE &&
-      prevState?.kind === RuleKinds.IMPLEMENTS)
+    (kind === RuleKinds.NAMED_TYPE && prevState?.kind === RuleKinds.IMPLEMENTS)
   ) {
     return getSuggestionsForImplements(
       token,
@@ -403,8 +402,8 @@ export function getAutocompleteSuggestions(
   if (
     (mode === GraphQLDocumentMode.TYPE_SYSTEM &&
       !unwrappedState.needsAdvance &&
-      state.kind === RuleKinds.NAMED_TYPE) ||
-    state.kind === RuleKinds.LIST_TYPE
+      kind === RuleKinds.NAMED_TYPE) ||
+    kind === RuleKinds.LIST_TYPE
   ) {
     if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
       return hintList(
@@ -435,10 +434,10 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
     (kind === RuleKinds.LIST_TYPE && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState &&
-      (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
-        state.prevState.kind === RuleKinds.LIST_TYPE ||
-        state.prevState.kind === RuleKinds.NON_NULL_TYPE))
+      prevState &&
+      (prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
+        prevState.kind === RuleKinds.LIST_TYPE ||
+        prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
@@ -1051,7 +1050,7 @@ export function canUseDirective(
   if (!state || !state.kind) {
     return false;
   }
-  const { kind } = state;
+  const { kind, prevState } = state;
   const { locations } = directive;
   switch (kind) {
     case RuleKinds.QUERY:
@@ -1090,7 +1089,7 @@ export function canUseDirective(
     case RuleKinds.INPUT_DEF:
       return locations.includes(DirectiveLocation.INPUT_OBJECT);
     case RuleKinds.INPUT_VALUE_DEF:
-      const prevStateKind = state.prevState?.kind;
+      const prevStateKind = prevState?.kind;
       switch (prevStateKind) {
         case RuleKinds.ARGUMENTS_DEF:
           return locations.includes(DirectiveLocation.ARGUMENT_DEFINITION);
