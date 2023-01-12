@@ -177,7 +177,7 @@ export function getAutocompleteSuggestions(
     return [];
   }
 
-  const { kind, step } = state;
+  const { kind, step, prevState } = state;
   const typeInfo = getTypeInfo(schema, token.state);
 
   // Definition kinds
@@ -193,14 +193,14 @@ export function getAutocompleteSuggestions(
   }
 
   if (
-    state.prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
+    prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
     state.name
   ) {
     return hintList(token, []);
   }
 
   // extend scalar
-  if (state.prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -213,7 +213,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend object type
-  if (state.prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -226,7 +226,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend interface type
-  if (state.prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -239,7 +239,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend union type
-  if (state.prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -252,7 +252,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend enum type
-  if (state.prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -265,7 +265,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend input object type
-  if (state.prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -280,7 +280,7 @@ export function getAutocompleteSuggestions(
   if (
     kind === RuleKinds.IMPLEMENTS ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState?.kind === RuleKinds.IMPLEMENTS)
+      prevState?.kind === RuleKinds.IMPLEMENTS)
   ) {
     return getSuggestionsForImplements(
       token,
@@ -374,8 +374,8 @@ export function getAutocompleteSuggestions(
   if (
     (kind === RuleKinds.TYPE_CONDITION && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState != null &&
-      state.prevState.kind === RuleKinds.TYPE_CONDITION)
+      prevState != null &&
+      prevState.kind === RuleKinds.TYPE_CONDITION)
   ) {
     return getSuggestionsForFragmentTypeConditions(
       token,

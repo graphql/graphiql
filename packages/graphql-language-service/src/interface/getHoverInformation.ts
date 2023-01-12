@@ -41,8 +41,7 @@ export function getHoverInformation(
     return '';
   }
 
-  const { state } = token;
-  const { kind, step } = state;
+  const { kind, step } = token.state;
   const typeInfo = getTypeInfo(schema, token.state);
   const options = { ...config, schema };
 

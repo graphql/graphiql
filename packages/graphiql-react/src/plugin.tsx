@@ -156,7 +156,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
       );
     });
 
-  const { onTogglePluginVisibility } = props;
+  const { onTogglePluginVisibility, children } = props;
   const setVisiblePlugin = useCallback<PluginContextType['setVisiblePlugin']>(
     plugin => {
       const newVisiblePlugin = plugin
@@ -187,9 +187,7 @@ export function PluginContextProvider(props: PluginContextProviderProps) {
   );
 
   return (
-    <PluginContext.Provider value={value}>
-      {props.children}
-    </PluginContext.Provider>
+    <PluginContext.Provider value={value}>{children}</PluginContext.Provider>
   );
 }
 

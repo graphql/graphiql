@@ -261,6 +261,7 @@ module.exports = {
     // Jest rules
     'jest/no-conditional-expect': 0,
 
+    'unicorn/consistent-destructuring': 'error',
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
     'promise/no-multiple-resolved': 'error',
     'sonarjs/no-redundant-jump': 'error',

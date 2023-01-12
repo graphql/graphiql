@@ -56,27 +56,6 @@ import {
 
 import { Logger } from './Logger';
 
-const {
-  FRAGMENT_DEFINITION,
-  OBJECT_TYPE_DEFINITION,
-  INTERFACE_TYPE_DEFINITION,
-  ENUM_TYPE_DEFINITION,
-  UNION_TYPE_DEFINITION,
-  SCALAR_TYPE_DEFINITION,
-  INPUT_OBJECT_TYPE_DEFINITION,
-  SCALAR_TYPE_EXTENSION,
-  OBJECT_TYPE_EXTENSION,
-  INTERFACE_TYPE_EXTENSION,
-  UNION_TYPE_EXTENSION,
-  ENUM_TYPE_EXTENSION,
-  INPUT_OBJECT_TYPE_EXTENSION,
-  DIRECTIVE_DEFINITION,
-  FRAGMENT_SPREAD,
-  OPERATION_DEFINITION,
-  NAMED_TYPE,
-  FIELD,
-} = Kind;
-
 const KIND_TO_SYMBOL_KIND: { [key: string]: SymbolKind } = {
   [Kind.FIELD]: SymbolKind.Field,
   [Kind.OPERATION_DEFINITION]: SymbolKind.Class,
@@ -144,19 +123,19 @@ export class GraphQLLanguageService {
       if (!schemaPath || uri !== schemaPath) {
         documentHasExtensions = documentAST.definitions.some(definition => {
           switch (definition.kind) {
-            case OBJECT_TYPE_DEFINITION:
-            case INTERFACE_TYPE_DEFINITION:
-            case ENUM_TYPE_DEFINITION:
-            case UNION_TYPE_DEFINITION:
-            case SCALAR_TYPE_DEFINITION:
-            case INPUT_OBJECT_TYPE_DEFINITION:
-            case SCALAR_TYPE_EXTENSION:
-            case OBJECT_TYPE_EXTENSION:
-            case INTERFACE_TYPE_EXTENSION:
-            case UNION_TYPE_EXTENSION:
-            case ENUM_TYPE_EXTENSION:
-            case INPUT_OBJECT_TYPE_EXTENSION:
-            case DIRECTIVE_DEFINITION:
+            case Kind.OBJECT_TYPE_DEFINITION:
+            case Kind.INTERFACE_TYPE_DEFINITION:
+            case Kind.ENUM_TYPE_DEFINITION:
+            case Kind.UNION_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_DEFINITION:
+            case Kind.INPUT_OBJECT_TYPE_DEFINITION:
+            case Kind.SCALAR_TYPE_EXTENSION:
+            case Kind.OBJECT_TYPE_EXTENSION:
+            case Kind.INTERFACE_TYPE_EXTENSION:
+            case Kind.UNION_TYPE_EXTENSION:
+            case Kind.ENUM_TYPE_EXTENSION:
+            case Kind.INPUT_OBJECT_TYPE_EXTENSION:
+            case Kind.DIRECTIVE_DEFINITION:
               return true;
           }
 
@@ -313,7 +292,7 @@ export class GraphQLLanguageService {
     const node = getASTNodeAtPosition(query, ast, position);
     if (node) {
       switch (node.kind) {
-        case FRAGMENT_SPREAD:
+        case Kind.FRAGMENT_SPREAD:
           return this._getDefinitionForFragmentSpread(
             query,
             ast,
@@ -322,15 +301,15 @@ export class GraphQLLanguageService {
             projectConfig,
           );
 
-        case FRAGMENT_DEFINITION:
-        case OPERATION_DEFINITION:
+        case Kind.FRAGMENT_DEFINITION:
+        case Kind.OPERATION_DEFINITION:
           return getDefinitionQueryResultForDefinitionNode(
             filePath,
             query,
             node,
           );
 
-        case NAMED_TYPE:
+        case Kind.NAMED_TYPE:
           return this._getDefinitionForNamedType(
             query,
             ast,
@@ -339,7 +318,7 @@ export class GraphQLLanguageService {
             projectConfig,
           );
 
-        case FIELD:
+        case Kind.FIELD:
           return this._getDefinitionForField(
             query,
             ast,
@@ -420,11 +399,11 @@ export class GraphQLLanguageService {
 
     const localObjectTypeDefinitions = ast.definitions.filter(
       definition =>
-        definition.kind === OBJECT_TYPE_DEFINITION ||
-        definition.kind === INPUT_OBJECT_TYPE_DEFINITION ||
-        definition.kind === ENUM_TYPE_DEFINITION ||
-        definition.kind === SCALAR_TYPE_DEFINITION ||
-        definition.kind === INTERFACE_TYPE_DEFINITION,
+        definition.kind === Kind.OBJECT_TYPE_DEFINITION ||
+        definition.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION ||
+        definition.kind === Kind.ENUM_TYPE_DEFINITION ||
+        definition.kind === Kind.SCALAR_TYPE_DEFINITION ||
+        definition.kind === Kind.INTERFACE_TYPE_DEFINITION,
     );
 
     const typeCastedDefs =
@@ -499,7 +478,7 @@ export class GraphQLLanguageService {
     );
 
     const localFragDefinitions = ast.definitions.filter(
-      definition => definition.kind === FRAGMENT_DEFINITION,
+      definition => definition.kind === Kind.FRAGMENT_DEFINITION,
     );
 
     const typeCastedDefs =
