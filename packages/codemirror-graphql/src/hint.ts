@@ -70,7 +70,7 @@ CodeMirror.registerHelper(
     editor: CodeMirror.Editor,
     options: GraphQLHintOptions,
   ): IHints | undefined => {
-    const schema = options.schema;
+    const { schema } = options;
     if (!schema) {
       return;
     }

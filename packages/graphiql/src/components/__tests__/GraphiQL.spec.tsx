@@ -424,7 +424,7 @@ describe('GraphiQL', () => {
     const callback = async () => {
       try {
         await findByText('Persist headers');
-      } catch (e) {
+      } catch {
         // eslint-disable-next-line no-throw-literal
         throw 'failed';
       }

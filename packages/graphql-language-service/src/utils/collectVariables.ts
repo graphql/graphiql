@@ -28,7 +28,7 @@ export function collectVariables(
   // it would be more ideal to use visitWithTypeInfo here but it's very simple
   documentAST.definitions.forEach(definition => {
     if (definition.kind === 'OperationDefinition') {
-      const variableDefinitions = definition.variableDefinitions;
+      const { variableDefinitions } = definition;
       if (variableDefinitions) {
         variableDefinitions.forEach(({ variable, type }) => {
           const inputType = typeFromAST(

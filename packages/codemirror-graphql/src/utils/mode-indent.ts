@@ -19,7 +19,7 @@ export default function indent(
   state: State,
   textAfter: string,
 ) {
-  const levels = state.levels;
+  const { levels } = state;
   // If there is no stack of levels, use the current level.
   // Otherwise, use the top level, preemptively dedenting for close braces.
   const level =

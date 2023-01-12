@@ -45,7 +45,7 @@ function createState(options: GraphQLInfoOptions) {
 }
 
 function getHoverTime(cm: CodeMirror.Editor) {
-  const options = cm.state.info.options;
+  const { options } = cm.state.info;
   return options?.hoverTime || 500;
 }
 
@@ -96,7 +96,7 @@ function onMouseHover(cm: CodeMirror.Editor, box: DOMRect) {
   });
 
   const state = cm.state.info;
-  const options = state.options;
+  const { options } = state;
   const render = options.render || cm.getHelper(pos, 'info');
   if (render) {
     const token = cm.getTokenAt(pos, true);

@@ -125,7 +125,7 @@ export class SourceHelper {
     projectConfig: GraphQLProjectConfig,
   ): Promise<Map<string, FragmentInfo>> {
     const sources = await projectConfig.getDocuments();
-    const fragmentDefinitions = this.fragmentDefinitions;
+    const { fragmentDefinitions } = this;
 
     sources.forEach(source => {
       visit(source.document as DocumentNode, {

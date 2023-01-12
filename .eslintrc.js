@@ -187,7 +187,8 @@ module.exports = {
     'no-continue': 0,
     'no-inline-comments': 0,
     'no-mixed-operators': 0,
-    'no-negated-condition': 'error',
+    'no-negated-condition': 'off',
+    'unicorn/no-negated-condition': 'error',
     'no-nested-ternary': 0,
     'no-new-object': 1,
     'no-plusplus': 0,
@@ -260,6 +261,7 @@ module.exports = {
     // Jest rules
     'jest/no-conditional-expect': 0,
 
+    'prefer-destructuring': ['error', { VariableDeclarator: { object: true } }],
     'promise/no-multiple-resolved': 'error',
     'sonarjs/no-redundant-jump': 'error',
     'unicorn/prefer-logical-operator-over-ternary': 'error',

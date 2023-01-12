@@ -53,9 +53,8 @@ CodeMirror.registerHelper(
     // Given a Schema and a Token, produce a "SchemaReference" which refers to
     // the particular artifact from the schema (such as a type, field, argument,
     // or directive) that token references.
-    const state = token.state;
-    const kind = state.kind;
-    const step = state.step;
+    const { state } = token;
+    const { kind, step } = state;
     const typeInfo = getTypeInfo(options.schema, state);
 
     if (

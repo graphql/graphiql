@@ -61,10 +61,7 @@ CodeMirror.registerHelper(
     if (!options.schema || !token.state) {
       return;
     }
-
-    const state = token.state;
-    const kind = state.kind;
-    const step = state.step;
+    const { kind, step } = token.state;
     const typeInfo = getTypeInfo(options.schema, token.state);
 
     // Given a Schema and a Token, produce the contents of an info tooltip.
@@ -238,7 +235,7 @@ function renderDescription(
     | GraphQLEnumValue
     | GraphQLType,
 ) {
-  const description = (def as GraphQLInputField).description;
+  const { description } = def as GraphQLInputField;
   if (description) {
     const descriptionDiv = document.createElement('div');
     descriptionDiv.className = 'info-description';
@@ -293,7 +290,7 @@ function text(
   ref: Maybe<SchemaReference> = null,
 ) {
   if (className) {
-    const onClick = options.onClick;
+    const { onClick } = options;
     let node;
     if (onClick) {
       node = document.createElement('a');

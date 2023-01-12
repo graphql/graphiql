@@ -65,7 +65,7 @@ export class Logger implements VSCodeLogger {
   _log(message: string, severityKey: SeverityEnum): void {
     const timestamp = new Date().toLocaleString(undefined);
     const severity = DIAGNOSTIC_SEVERITY[severityKey];
-    const pid = process.pid;
+    const { pid } = process;
 
     const stringMessage = String(message).trim();
     const logMessage = `${timestamp} [${severity}] (pid: ${pid}) graphql-language-service-usage-logs: ${stringMessage}\n`;

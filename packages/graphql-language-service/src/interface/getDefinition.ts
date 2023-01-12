@@ -148,7 +148,7 @@ function getDefinitionForFragmentDefinition(
   text: string,
   definition: FragmentDefinitionNode | OperationDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   if (!name) {
     throw new Error('Expected ASTNode to have a Name.');
   }
@@ -171,7 +171,7 @@ function getDefinitionForNodeDefinition(
   text: string,
   definition: TypeDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   assert(name, 'Expected ASTNode to have a Name.');
   return {
     path,
@@ -189,7 +189,7 @@ function getDefinitionForFieldDefinition(
   text: string,
   definition: FieldDefinitionNode,
 ): Definition {
-  const name = definition.name;
+  const { name } = definition;
   assert(name, 'Expected ASTNode to have a Name.');
   return {
     path,
