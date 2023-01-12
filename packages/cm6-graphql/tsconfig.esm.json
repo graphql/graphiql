@@ -5,5 +5,12 @@
     "newLine": "lf",
     "outDir": "dist"
   },
-  "include": ["src/*.ts"]
+  "include": [
+    "src/*.ts"
+  ],
+  "references": [
+    {
+      "path": "../graphql-language-service"
+    }
+  ]
 }
