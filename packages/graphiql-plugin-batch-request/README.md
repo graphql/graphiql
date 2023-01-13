@@ -1,0 +1,1 @@
+# GraphiQL Batch Request Plugin

@@ -1,0 +1,72 @@
+<!--
+ *  Copyright (c) 2021 GraphQL Contributors
+ *  All rights reserved.
+ *
+ *  This source code is licensed under the license found in the
+ *  LICENSE file in the root directory of this source tree.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <style>
+      body {
+        height: 100%;
+        margin: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      #graphiql {
+        height: 100vh;
+      }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/graphiql/graphiql.min.css" />
+  </head>
+
+  <body>
+    <div id="graphiql">Loading...</div>
+
+    <script
+      src="https://unpkg.com/react@17/umd/react.development.js"
+      integrity="sha512-Vf2xGDzpqUOEIKO+X2rgTLWPY+65++WPwCHkX2nFMu9IcstumPsf/uKKRd5prX3wOu8Q0GBylRpsDB26R6ExOg=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+      integrity="sha512-Wr9OKCTtq1anK0hq5bY3X/AvDI5EflDSAh0mE9gma+4hl+kXdTJPKZ3TwLMBcrgUeoY0s3dq9JjhCQc7vddtFg=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://unpkg.com/graphiql/graphiql.min.js"
+      integrity="sha512-FVCV2//UVo1qJ3Kg6kkHLe0Hg+IJhjrGa+aYHh8xD4KmwbbjthIzvaAcCJsQgA43+k+6u7HqORKXMyMt82Srfw=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      var fetcher = GraphiQL.createFetcher({
+        url: 'https://swapi-graphql.netlify.app/.netlify/functions/index',
+      });
+
+      function GraphiQLWithBatchRequest() {
+        var [query, setQuery] = React.useState(
+          'query AllFilms {\n  allFilms {\n    films {\n      title\n    }\n  }\n}',
+        );
+        return React.createElement(GraphiQL, {
+          fetcher: fetcher,
+          defaultEditorToolsVisibility: true,
+          plugins: [],
+          query: query,
+          onEditQuery: setQuery,
+        });
+      }
+
+      ReactDOM.render(
+        React.createElement(GraphiQLWithBatchRequest),
+        document.getElementById('graphiql'),
+      );
+    </script>
+  </body>
+</html>

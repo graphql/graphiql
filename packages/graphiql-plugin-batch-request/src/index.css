@@ -1,0 +1,51 @@
+/*.cm-invalidchar {
+  color: hsla(var(--color-neutral),var(--alpha-tertiary))!important;
+}*/
+
+.graphiql-batch-request-header {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.graphiql-batch-request-header-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.graphiql-batch-request-title {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-h2);
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.graphiql-batch-request-send {
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.graphiql-batch-request-content {
+  margin: var(--px-16) 0 0;
+}
+
+.graphiql-batch-request-content>* {
+  color: hsla(var(--color-neutral),var(--alpha-secondary));
+  margin-top: var(--px-20);
+}
+
+.graphiql-batch-request-content .rct-node-leaf .rct-title {
+  color: hsl(var(--color-tertiary));
+}
+
+.graphiql-execute-button:disabled {
+  background-color: hsl(var(--color-neutral));
+}
+
+.graphiql-execute-button:disabled:hover {
+  background-color: hsl(var(--color-neutral));
+}
