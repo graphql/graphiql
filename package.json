@@ -29,7 +29,7 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn build:clean && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql-plugin-code-exporter && yarn build:graphiql && yarn build:cm6-graphql",
+    "build": "yarn build:clean && yarn build:cm6-graphql && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql-plugin-code-exporter && yarn build:graphiql",
     "build-bundles": "yarn prebuild-bundles && wsrun -p -m -s build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun -m build-clean ",
