@@ -24,6 +24,9 @@
       "path": "../codemirror-graphql"
     },
     {
+      "path": "../cm6-graphql"
+    },
+    {
       "path": "../graphiql-toolkit"
     },
     {

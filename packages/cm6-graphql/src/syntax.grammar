@@ -433,7 +433,7 @@ scopedBraces<expr> { !vDef "{" expr "}" }
 // keywords
 kw<term> { @specialize[@name={term}]<name, term> }
 
-operation<term> { @specialize<name, term> }
+operation<term> { @extend<name, term> }
 
 ScalarKeyword { kw<"scalar"> }
 TypeKeyword { kw<"type"> }
