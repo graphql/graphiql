@@ -2,6 +2,7 @@ import {
   GraphiQLPlugin, PlayIcon, Spinner,
   StopIcon, useEditorContext
 } from '@graphiql/react';
+import { FetcherParams } from '@graphiql/toolkit';
 import { useMemo, useRef, useState } from 'react';
 import { parse, print } from 'graphql';
 import { Kind } from 'graphql/language';
@@ -18,8 +19,8 @@ function BatchRequestPlugin({
   useAllOperations = false
 }: GraphiQLBatchRequestProps) {
   const { tabs, responseEditor } = useEditorContext({ nonNull: true });
+  
   let parsingError = '';
-
   let tabsWithOperations: TabsWithOperations = {};
   try {
     tabsWithOperations = tabs
@@ -85,7 +86,7 @@ function BatchRequestPlugin({
   }
 
   const sendBatchRequest = () => {
-    const operations: any[] = [];
+    const operations: FetcherParams[] = [];
     let headers = {};
     for (const selectedOperation of selectedOperations) {
       const [tabId, selectedOperationName] = selectedOperation.split('|');
