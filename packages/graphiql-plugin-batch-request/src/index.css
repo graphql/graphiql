@@ -1,7 +1,3 @@
-/*.cm-invalidchar {
-  color: hsla(var(--color-neutral),var(--alpha-tertiary))!important;
-}*/
-
 .graphiql-batch-request-header {
   display: flex;
   justify-content: space-between;

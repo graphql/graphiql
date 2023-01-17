@@ -6,6 +6,6 @@ const __filename = fileURLToPath(import.meta.url);
 const base = path.resolve(path.dirname(__filename), '..');
 
 fs.copyFileSync(
-  path.resolve(base, 'src', 'graphiql-explorer.d.ts'),
-  path.resolve(base, 'types', 'graphiql-explorer.d.ts'),
+  path.resolve(base, 'src', 'graphiql-batch-request.d.ts'),
+  path.resolve(base, 'types', 'graphiql-batch-request.d.ts'),
 );

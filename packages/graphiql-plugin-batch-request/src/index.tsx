@@ -1,30 +1,17 @@
-import { parse, print } from 'graphql';
-import { Kind, OperationDefinitionNode } from 'graphql/language';
 import {
-  GraphiQLPlugin,
-  useEditorContext,
-  Spinner,
-  StopIcon,
-  PlayIcon
+  GraphiQLPlugin, PlayIcon, Spinner,
+  StopIcon, useEditorContext
 } from '@graphiql/react';
 import { useMemo, useRef, useState } from 'react';
+import { parse, print } from 'graphql';
+import { Kind } from 'graphql/language';
 import CheckboxTree from 'react-checkbox-tree';
+import { GraphiQLBatchRequestProps, TabsWithOperations } from 'graphiql-batch-request';
 
-import 'react-checkbox-tree/lib/react-checkbox-tree.css';
 import "@fortawesome/fontawesome-free/css/all.css";
+import 'react-checkbox-tree/lib/react-checkbox-tree.css';
+import './graphiql-batch-request.d.ts';
 import './index.css';
-
-export type GraphiQLBatchRequestProps = {
-  url: string,
-  useAllOperations?: boolean
-}
-
-type TabWithOperation = {
-  id: string,
-  operations: OperationDefinitionNode[],
-  variables: any,
-  headers: any
-}
 
 function BatchRequestPlugin({
   url,
@@ -33,18 +20,24 @@ function BatchRequestPlugin({
   const { tabs, responseEditor } = useEditorContext({ nonNull: true });
   let parsingError = '';
 
-  let tabsWithOperations: {[tabId: string]: TabWithOperation } = {};
+  let tabsWithOperations: TabsWithOperations = {};
   try {
     tabsWithOperations = tabs
     .filter(tab => tab.query !== '' && tab.query !== null)
     .map(tab => ({
       id: tab.id,
-      operations: parse(tab.query as string).definitions.filter(definition => definition.kind === Kind.OPERATION_DEFINITION),
-      variables: tab.variables && tab.variables.trim() !== '' ? JSON.parse(tab.variables) : undefined,
-      headers: tab.headers && tab.headers.trim() !== '' ? JSON.parse(tab.headers) : undefined
+      operations: parse(tab.query as string).definitions.filter(
+        definition => definition.kind === Kind.OPERATION_DEFINITION
+      ),
+      variables: tab.variables && tab.variables.trim() !== '' 
+        ? JSON.parse(tab.variables) : 
+        undefined,
+      headers: tab.headers && tab.headers.trim() !== '' 
+        ? JSON.parse(tab.headers) : 
+        undefined
     }))
-    .reduce((acc, tabWithOperation) => {
-      acc[tabWithOperation.id] = tabWithOperation;
+    .reduce((acc, tabWithOperations) => {
+      acc[tabWithOperations.id] = tabWithOperations;
       return acc;
     }, {} as any);
   } catch(e: any) {
@@ -52,23 +45,34 @@ function BatchRequestPlugin({
   }
 
   const operationValues: string[] = [];
-  const nodes = Object.values(tabsWithOperations).map((tabWithOperation, i) => ({
-    value: tabWithOperation.id,
-    label: `Tab ${i + 1}`,
-    children: tabWithOperation.operations.map((operation, j) => {
-      const operationValue = operation.name?.value ? `${tabWithOperation.id}|${operation.name.value}` : `${tabWithOperation.id}|${j}`;
-      operationValues.push(operationValue);
-      return {
-        value: operationValue,
-        label: operation.name?.value ?? 'Unnamed operation'
-      }
+  const nodes = Object.values(tabsWithOperations).map(
+    (tabWithOperations, i) => ({
+      value: tabWithOperations.id,
+      label: `Tab ${i + 1}`,
+      children: tabWithOperations.operations.map((operation, j) => {
+        const operationValue = operation.name?.value 
+          ? `${tabWithOperations.id}|${operation.name.value}` 
+          : `${tabWithOperations.id}|${j}`;
+        operationValues.push(operationValue);
+
+        return {
+          value: operationValue,
+          label: operation.name?.value ?? 'Unnamed operation'
+        }
+      })
     })
-  }));
+  );
 
   const [batchResponseLoading, setBatchResponseLoading] = useState(false);
-  const [executeButtonDisabled, setExecuteButtonDisabled] = useState(useAllOperations === false);
-  const [selectedOperations, setSelectedOperations] = useState(useAllOperations ? operationValues : []);
-  const [expandedOperations, setExpandedOperations] = useState(Object.keys(tabsWithOperations));
+  const [executeButtonDisabled, setExecuteButtonDisabled] = useState(
+    useAllOperations === false
+  );
+  const [selectedOperations, setSelectedOperations] = useState(
+    useAllOperations ? operationValues : []
+  );
+  const [expandedOperations, setExpandedOperations] = useState(
+    Object.keys(tabsWithOperations)
+  );
   
 
   if (parsingError !== '') {
@@ -87,17 +91,19 @@ function BatchRequestPlugin({
       const [tabId, selectedOperationName] = selectedOperation.split('|');
       const tab = tabsWithOperations[tabId]
       if (tab) {
-        const selectedOperationDefinition = tab.operations.find((operation, i) => 
-          operation.name?.value === selectedOperationName || `${tab.id}|${i}` ===  selectedOperation
+        const selectedOperationDefinition = tab.operations.find(
+          (operation, i) => 
+            operation.name?.value === selectedOperationName || 
+            `${tab.id}|${i}` ===  selectedOperation
         )
-          if (selectedOperationDefinition) {
-            headers = {...headers, ...tab.headers};
-            operations.push({
-              operationName: selectedOperationDefinition.name?.value,
-              query: print(selectedOperationDefinition),
-              variables: tab.variables
-            })
-          };
+        if (selectedOperationDefinition) {
+          headers = {...headers, ...tab.headers};
+          operations.push({
+            operationName: selectedOperationDefinition.name?.value,
+            query: print(selectedOperationDefinition),
+            variables: tab.variables
+          })
+        };
       }
     }
     
@@ -154,6 +160,8 @@ function BatchRequestPlugin({
         </div>
         <CheckboxTree
           icons={{
+            expandClose: <i className="fa-solid fa-angle-right" />,
+            expandOpen: <i className="fa-solid fa-angle-down" />,
             parentClose: null,
             parentOpen: null,
             leaf: null
