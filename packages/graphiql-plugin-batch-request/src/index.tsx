@@ -4,7 +4,7 @@ import {
 } from '@graphiql/react';
 import { FetcherParams } from '@graphiql/toolkit';
 import { useMemo, useRef, useState } from 'react';
-import { parse, print } from 'graphql';
+import { GraphQLError, parse, print } from 'graphql';
 import { Kind } from 'graphql/language';
 import CheckboxTree from 'react-checkbox-tree';
 import { GraphiQLBatchRequestProps, TabsWithOperations } from 'graphiql-batch-request';
@@ -41,8 +41,10 @@ function BatchRequestPlugin({
       acc[tabWithOperations.id] = tabWithOperations;
       return acc;
     }, {} as any);
-  } catch(e: any) {
-    parsingError = e.message;
+  } catch(e: unknown) {
+    if (e instanceof GraphQLError || e instanceof SyntaxError) {
+      parsingError = e.message;
+    }
   }
 
   const operationValues: string[] = [];
