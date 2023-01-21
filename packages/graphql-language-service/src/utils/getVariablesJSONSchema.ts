@@ -44,6 +44,9 @@ export type JSONSchemaOptions = {
    */
   useMarkdownDescription?: boolean;
 };
+type JSONSchemaRunningOptions = JSONSchemaOptions & {
+  definitionMarker: Marker;
+};
 
 export const defaultJSONSchemaOptions = {
   useMarkdownDescription: false,
@@ -106,14 +109,27 @@ const scalarTypesMap: { [key: string]: JSONSchema6TypeName } = {
   DateTime: 'string',
 };
 
+class Marker {
+  private set = new Set<string>();
+  mark(name: string): boolean {
+    if (this.set.has(name)) {
+      return false;
+    } else {
+      this.set.add(name);
+      return true;
+    }
+  }
+}
+
 /**
  *
  * @param type {GraphQLInputType}
+ * @param options
  * @returns {DefinitionResult}
  */
 function getJSONSchemaFromGraphQLType(
   type: GraphQLInputType | GraphQLInputField,
-  options?: JSONSchemaOptions,
+  options?: JSONSchemaRunningOptions,
 ): DefinitionResult {
   let required = false;
   let definition: CombinedSchema = Object.create(null);
@@ -164,70 +180,73 @@ function getJSONSchemaFromGraphQLType(
   }
   if (isInputObjectType(type)) {
     definition.$ref = `#/definitions/${type.name}`;
-    const fields = type.getFields();
+    if (options?.definitionMarker.mark(type.name)) {
+      const fields = type.getFields();
 
-    const fieldDef: PropertiedJSON6 = {
-      type: 'object',
-      properties: {},
-      required: [],
-    };
-    if (type.description) {
-      fieldDef.description = type.description + `\n` + renderTypeToString(type);
-      if (options?.useMarkdownDescription) {
-        // @ts-expect-error
-        fieldDef.markdownDescription =
-          type.description + `\n` + renderTypeToString(type, true);
-      }
-    } else {
-      fieldDef.description = renderTypeToString(type);
-      if (options?.useMarkdownDescription) {
-        // @ts-expect-error
-        fieldDef.markdownDescription = renderTypeToString(type, true);
-      }
-    }
-
-    Object.keys(fields).forEach(fieldName => {
-      const field = fields[fieldName];
-      const {
-        required: fieldRequired,
-        definition: typeDefinition,
-        definitions: typeDefinitions,
-      } = getJSONSchemaFromGraphQLType(field.type, options);
-
-      const {
-        definition: fieldDefinition,
-        // definitions: fieldDefinitions,
-      } = getJSONSchemaFromGraphQLType(field, options);
-
-      fieldDef.properties[fieldName] = {
-        ...typeDefinition,
-        ...fieldDefinition,
-      } as JSONSchema6;
-
-      const renderedField = renderTypeToString(field.type);
-      fieldDef.properties[fieldName].description = field.description
-        ? field.description + '\n' + renderedField
-        : renderedField;
-      if (options?.useMarkdownDescription) {
-        const renderedFieldMarkdown = renderTypeToString(field.type, true);
-        fieldDef.properties[
-          fieldName
+      const fieldDef: PropertiedJSON6 = {
+        type: 'object',
+        properties: {},
+        required: [],
+      };
+      if (type.description) {
+        fieldDef.description =
+          type.description + `\n` + renderTypeToString(type);
+        if (options?.useMarkdownDescription) {
           // @ts-expect-error
-        ].markdownDescription = field.description
-          ? field.description + '\n' + renderedFieldMarkdown
-          : renderedFieldMarkdown;
+          fieldDef.markdownDescription =
+            type.description + `\n` + renderTypeToString(type, true);
+        }
+      } else {
+        fieldDef.description = renderTypeToString(type);
+        if (options?.useMarkdownDescription) {
+          // @ts-expect-error
+          fieldDef.markdownDescription = renderTypeToString(type, true);
+        }
       }
 
-      if (fieldRequired) {
-        fieldDef.required!.push(fieldName);
-      }
-      if (typeDefinitions) {
-        Object.keys(typeDefinitions).map(defName => {
-          definitions[defName] = typeDefinitions[defName];
-        });
-      }
-    });
-    definitions![type.name] = fieldDef;
+      Object.keys(fields).forEach(fieldName => {
+        const field = fields[fieldName];
+        const {
+          required: fieldRequired,
+          definition: typeDefinition,
+          definitions: typeDefinitions,
+        } = getJSONSchemaFromGraphQLType(field.type, options);
+
+        const {
+          definition: fieldDefinition,
+          // definitions: fieldDefinitions,
+        } = getJSONSchemaFromGraphQLType(field, options);
+
+        fieldDef.properties[fieldName] = {
+          ...typeDefinition,
+          ...fieldDefinition,
+        } as JSONSchema6;
+
+        const renderedField = renderTypeToString(field.type);
+        fieldDef.properties[fieldName].description = field.description
+          ? field.description + '\n' + renderedField
+          : renderedField;
+        if (options?.useMarkdownDescription) {
+          const renderedFieldMarkdown = renderTypeToString(field.type, true);
+          fieldDef.properties[
+            fieldName
+            // @ts-expect-error
+          ].markdownDescription = field.description
+            ? field.description + '\n' + renderedFieldMarkdown
+            : renderedFieldMarkdown;
+        }
+
+        if (fieldRequired) {
+          fieldDef.required!.push(fieldName);
+        }
+        if (typeDefinitions) {
+          Object.keys(typeDefinitions).map(defName => {
+            definitions[defName] = typeDefinitions[defName];
+          });
+        }
+      });
+      definitions![type.name] = fieldDef;
+    }
   }
   // append descriptions
   if (
@@ -300,11 +319,16 @@ export function getVariablesJSONSchema(
     required: [],
   };
 
+  const runtimeOptions: JSONSchemaRunningOptions = {
+    ...options,
+    definitionMarker: new Marker(),
+  };
+
   if (variableToType) {
     // I would use a reduce here, but I wanted it to be readable.
     Object.entries(variableToType).forEach(([variableName, type]) => {
       const { definition, required, definitions } =
-        getJSONSchemaFromGraphQLType(type, options);
+        getJSONSchemaFromGraphQLType(type, runtimeOptions);
       jsonSchema.properties[variableName] = definition;
       if (required) {
         jsonSchema.required?.push(variableName);
