@@ -241,13 +241,13 @@ export class GraphQLContentProvider implements TextDocumentContentProvider {
     }
   }
   async loadConfig() {
-    const { rootDir } = this;
+    const { rootDir, literal } = this;
     if (!rootDir) {
       this.reportError(`Error: this file is outside the workspace.`);
       return;
     }
     const config = await loadConfig({ rootDir: rootDir!.uri.fsPath });
-    const projectConfig = config?.getProjectForFile(this.literal.uri);
+    const projectConfig = config?.getProjectForFile(literal.uri);
 
     if (!projectConfig!.schema) {
       this.reportError(`Error: schema from graphql config`);

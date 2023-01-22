@@ -117,8 +117,8 @@ export type MappedServerOptions = Omit<ServerOptions, 'loadConfigOptions'> & {
 const buildOptions = (options: ServerOptions): MappedServerOptions => {
   const serverOptions = { ...options } as MappedServerOptions;
   if (serverOptions.loadConfigOptions) {
-    const { extensions } = serverOptions.loadConfigOptions;
-    if (!serverOptions.loadConfigOptions.rootDir) {
+    const { extensions, rootDir } = serverOptions.loadConfigOptions;
+    if (!rootDir) {
       if (serverOptions.configDir) {
         serverOptions.loadConfigOptions.rootDir = serverOptions.configDir;
       } else {

@@ -99,7 +99,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setSubscription(null);
   }, [subscription]);
 
-  const { fetcher } = props;
+  const { fetcher, children, operationName } = props;
   const run = useCallback<ExecutionContextType['run']>(async () => {
     if (!queryEditor || !responseEditor) {
       return;
@@ -169,14 +169,13 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     setResponse('');
     setIsFetching(true);
 
-    const operationName =
-      props.operationName ?? queryEditor.operationName ?? undefined;
+    const opName = operationName ?? queryEditor.operationName ?? undefined;
 
     history?.addToHistory({
       query,
       variables: variablesString,
       headers: headersString,
-      operationName,
+      operationName: opName,
     });
 
     try {
@@ -228,7 +227,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
             } else if (data) {
               // If there is no path, we don't know what to do with the payload,
               // so we just set it.
-              payload.data = part.data;
+              payload.data = data;
             }
 
             // Ensures we also bring extensions and alike along for the ride
@@ -251,7 +250,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
         {
           query,
           variables,
-          operationName,
+          operationName: opName,
         },
         {
           headers: headers ?? undefined,
@@ -312,7 +311,7 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     fetcher,
     headerEditor,
     history,
-    props.operationName,
+    operationName,
     queryEditor,
     responseEditor,
     stop,
@@ -326,16 +325,16 @@ export function ExecutionContextProvider(props: ExecutionContextProviderProps) {
     () => ({
       isFetching,
       isSubscribed,
-      operationName: props.operationName ?? null,
+      operationName: operationName ?? null,
       run,
       stop,
     }),
-    [isFetching, isSubscribed, props.operationName, run, stop],
+    [isFetching, isSubscribed, operationName, run, stop],
   );
 
   return (
     <ExecutionContext.Provider value={value}>
-      {props.children}
+      {children}
     </ExecutionContext.Provider>
   );
 }

@@ -329,13 +329,13 @@ export class MessageProcessor {
     const diagnostics: Diagnostic[] = [];
 
     let contents: CachedContent[] = [];
-
+    const text = 'text' in textDocument && textDocument.text;
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
-    if ('text' in textDocument && textDocument.text) {
+    if (text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = this._parser(textDocument.text, uri);
+      contents = this._parser(text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
@@ -359,7 +359,7 @@ export class MessageProcessor {
         return { uri, diagnostics: [] };
       }
       // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(textDocument.uri);
+      const cachedDocument = this._getCachedDocument(uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
       }

@@ -103,9 +103,9 @@ function onKeyDown(cm: CodeMirror.Editor, event: KeyboardEvent) {
   };
 
   const onClick = (clickEvent: MouseEvent) => {
-    const { destination } = cm.state.jump;
+    const { destination, options } = cm.state.jump;
     if (destination) {
-      cm.state.jump.options.onClick(destination, clickEvent);
+      options.onClick(destination, clickEvent);
     }
   };
 
