@@ -50,8 +50,8 @@
     "webpack": "webpack --config resources/webpack.config.js"
   },
   "dependencies": {
-    "@graphiql/react": "^0.16.0",
-    "@graphiql/toolkit": "^0.8.1",
+    "@graphiql/react": "^0.14.0",
+    "@graphiql/toolkit": "^0.7.3",
     "entities": "^2.0.0",
     "graphql-language-service": "^5.1.1",
     "markdown-it": "^12.2.0"

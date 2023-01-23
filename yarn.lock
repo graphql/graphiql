@@ -2307,6 +2307,33 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@graphiql/react@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@graphiql/react/-/react-0.14.0.tgz#a3beb5bf2967d5085f306c8fcb953a1a95b4e41b"
+  integrity sha512-BBkbl35akar4/+4P6ggZ99jSmU0D1qV70A2OegkuJ4t/knAis/R713faOs9xKyjkUj8hv6+KcAqBOp48LnP6lA==
+  dependencies:
+    "@graphiql/toolkit" "^0.8.0"
+    "@reach/combobox" "^0.17.0"
+    "@reach/dialog" "^0.17.0"
+    "@reach/listbox" "^0.17.0"
+    "@reach/menu-button" "^0.17.0"
+    "@reach/tooltip" "^0.17.0"
+    "@reach/visually-hidden" "^0.17.0"
+    codemirror "^5.65.3"
+    codemirror-graphql "^2.0.2"
+    copy-to-clipboard "^3.2.0"
+    graphql-language-service "^5.1.0"
+    markdown-it "^12.2.0"
+    set-value "^4.1.0"
+
+"@graphiql/toolkit@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@graphiql/toolkit/-/toolkit-0.7.3.tgz#0f8009a26eef01c0bb2168bb2c2421ee8b6d987a"
+  integrity sha512-Scr0fVcwN7Hb+9L315xMuI2NyWynY9ENMy6VEREF6x02XZNSOguG0uK9lzC2/RnIuFy7eA/ejMfgdaX9GGcZKQ==
+  dependencies:
+    "@n1ru4l/push-pull-async-iterable-iterator" "^3.1.0"
+    meros "^1.1.4"
+
 "@graphql-tools/batch-execute@8.5.1":
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/@graphql-tools/batch-execute/-/batch-execute-8.5.1.tgz#fa3321d58c64041650be44250b1ebc3aab0ba7a9"

@@ -94,7 +94,9 @@ export type GraphiQLProps = Omit<GraphiQLProviderProps, 'children'> &
 export function GraphiQL({
   dangerouslyAssumeSchemaIsValid,
   defaultQuery,
-  defaultTabs,
+  // TODO: @graphiql org version fix
+
+  // defaultTabs,
   externalFragments,
   fetcher,
   getDefaultFieldNames,
@@ -134,7 +136,8 @@ export function GraphiQL({
       dangerouslyAssumeSchemaIsValid={dangerouslyAssumeSchemaIsValid}
       defaultQuery={defaultQuery}
       defaultHeaders={defaultHeaders}
-      defaultTabs={defaultTabs}
+      // TODO: @graphiql org version fix
+      // defaultTabs={defaultTabs}
       externalFragments={externalFragments}
       fetcher={fetcher}
       headers={headers}
@@ -777,9 +780,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 className={
                   editorContext.shouldPersistHeaders ? 'active' : undefined
                 }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(true);
-                }}
+                // TODO: @graphiql org version fix
+                // onClick={() => {
+                //   editorContext.setShouldPersistHeaders(true);
+                // }}
               >
                 On
               </Button>
@@ -789,9 +793,10 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
                 className={
                   editorContext.shouldPersistHeaders ? undefined : 'active'
                 }
-                onClick={() => {
-                  editorContext.setShouldPersistHeaders(false);
-                }}
+                // TODO: @graphiql org version fix
+                // onClick={() => {
+                //   editorContext.setShouldPersistHeaders(false);
+                // }}
               >
                 Off
               </Button>
