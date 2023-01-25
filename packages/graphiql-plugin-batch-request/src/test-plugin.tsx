@@ -5,7 +5,8 @@ import * as React from 'react';
 import { useBatchRequestPlugin } from './index';
 
 // const url = 'https://swapi-graphql.netlify.app/.netlify/functions/index'
-const url = 'https://api.spacex.land/graphql'
+// const url = 'https://api.spacex.land/graphql'
+const url = 'https://countries.trevorblades.com/graphql';
 const fetcher = createGraphiQLFetcher({ url });
 
 const App = () => {

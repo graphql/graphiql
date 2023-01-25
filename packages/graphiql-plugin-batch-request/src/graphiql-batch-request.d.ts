@@ -1,9 +1,10 @@
 declare module 'graphiql-batch-request' {
   import { ComponentType } from 'react';
-  import { OperationDefinitionNode } from 'graphql/language';
+  import { DocumentNode, OperationDefinitionNode } from 'graphql/language';
 
   type TabWithOperations = {
     id: string,
+    document: DocumentNode,
     operations: OperationDefinitionNode[],
     variables: Record<string, any>,
     headers: Record<string, string>

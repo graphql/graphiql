@@ -45,3 +45,7 @@
 .graphiql-execute-button:disabled:hover {
   background-color: hsl(var(--color-neutral));
 }
+
+.react-checkbox-tree {
+  overflow-y: auto;
+}
