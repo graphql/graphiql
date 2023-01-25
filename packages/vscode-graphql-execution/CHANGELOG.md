@@ -1,5 +1,43 @@
 # vscode-graphql-execution
 
+## 0.1.7
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931)
+  [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and
+  `no-else-return` rules
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922)
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - extends
+  `plugin:import/recommended` and fix warnings
+
+- [#2966](https://github.com/graphql/graphiql/pull/2966)
+  [`f9aa87dc`](https://github.com/graphql/graphiql/commit/f9aa87dc6a88ed8a8a0a94de520c7a41fff8ffde)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `sonarjs/no-small-switch`
+  and `sonarjs/no-duplicated-branches` rules
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937)
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965)
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-optional-catch-binding` rule
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936)
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963)
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring`
+  rule
+
 ## 0.1.6
 
 ### Patch Changes

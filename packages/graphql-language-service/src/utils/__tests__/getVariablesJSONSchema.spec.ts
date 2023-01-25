@@ -257,4 +257,23 @@ describe('getVariablesJSONSchema', () => {
       },
     });
   });
+
+  it('should handle recursive schema properly', () => {
+    const schemaPath = join(__dirname, '__schema__', 'RecursiveSchema.graphql');
+    schema = buildSchema(readFileSync(schemaPath, 'utf8'));
+
+    const variableToType = collectVariables(
+      schema,
+      parse(`query Example(
+      $where: issues_where_input! = {}
+    ) {
+      issues(where: $where) {
+        name
+      }
+    }`),
+    );
+
+    getVariablesJSONSchema(variableToType, { useMarkdownDescription: true });
+    expect(true).toEqual(true);
+  });
 });

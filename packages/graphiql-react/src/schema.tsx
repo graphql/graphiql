@@ -179,7 +179,8 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   /**
    * Fetch the schema
    */
-  const { fetcher, onSchemaChange } = props;
+  const { fetcher, onSchemaChange, dangerouslyAssumeSchemaIsValid, children } =
+    props;
   const introspect = useCallback(() => {
     /**
      * Only introspect if there is no schema provided via props. If the
@@ -330,11 +331,11 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
    * Derive validation errors from the schema
    */
   const validationErrors = useMemo(() => {
-    if (!schema || props.dangerouslyAssumeSchemaIsValid) {
+    if (!schema || dangerouslyAssumeSchemaIsValid) {
       return [];
     }
     return validateSchema(schema);
-  }, [schema, props.dangerouslyAssumeSchemaIsValid]);
+  }, [schema, dangerouslyAssumeSchemaIsValid]);
 
   /**
    * Memoize context value
@@ -351,9 +352,7 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
   );
 
   return (
-    <SchemaContext.Provider value={value}>
-      {props.children}
-    </SchemaContext.Provider>
+    <SchemaContext.Provider value={value}>{children}</SchemaContext.Provider>
   );
 }
 
@@ -417,7 +416,7 @@ function parseHeaderString(headersString: string | undefined) {
     if (headersString) {
       headers = JSON.parse(headersString);
     }
-  } catch (err) {
+  } catch {
     isValidJSON = false;
   }
   return { headers, isValidJSON };

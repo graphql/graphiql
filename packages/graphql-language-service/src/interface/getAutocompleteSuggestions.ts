@@ -177,8 +177,7 @@ export function getAutocompleteSuggestions(
     return [];
   }
 
-  const kind = state.kind;
-  const step = state.step;
+  const { kind, step, prevState } = state;
   const typeInfo = getTypeInfo(schema, token.state);
 
   // Definition kinds
@@ -194,14 +193,14 @@ export function getAutocompleteSuggestions(
   }
 
   if (
-    state.prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
+    prevState?.prevState?.kind === RuleKinds.EXTENSION_DEFINITION &&
     state.name
   ) {
     return hintList(token, []);
   }
 
   // extend scalar
-  if (state.prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.SCALAR_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -214,7 +213,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend object type
-  if (state.prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -227,7 +226,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend interface type
-  if (state.prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INTERFACE_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -240,7 +239,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend union type
-  if (state.prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.UNION_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -253,7 +252,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend enum type
-  if (state.prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.ENUM_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -266,7 +265,7 @@ export function getAutocompleteSuggestions(
   }
 
   // extend input object type
-  if (state.prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
+  if (prevState?.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION) {
     return hintList(
       token,
       Object.values(schema.getTypeMap())
@@ -280,8 +279,7 @@ export function getAutocompleteSuggestions(
 
   if (
     kind === RuleKinds.IMPLEMENTS ||
-    (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState?.kind === RuleKinds.IMPLEMENTS)
+    (kind === RuleKinds.NAMED_TYPE && prevState?.kind === RuleKinds.IMPLEMENTS)
   ) {
     return getSuggestionsForImplements(
       token,
@@ -306,7 +304,7 @@ export function getAutocompleteSuggestions(
     kind === RuleKinds.ARGUMENTS ||
     (kind === RuleKinds.ARGUMENT && step === 0)
   ) {
-    const argDefs = typeInfo.argDefs;
+    const { argDefs } = typeInfo;
     if (argDefs) {
       return hintList(
         token,
@@ -375,8 +373,8 @@ export function getAutocompleteSuggestions(
   if (
     (kind === RuleKinds.TYPE_CONDITION && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState != null &&
-      state.prevState.kind === RuleKinds.TYPE_CONDITION)
+      prevState != null &&
+      prevState.kind === RuleKinds.TYPE_CONDITION)
   ) {
     return getSuggestionsForFragmentTypeConditions(
       token,
@@ -404,8 +402,8 @@ export function getAutocompleteSuggestions(
   if (
     (mode === GraphQLDocumentMode.TYPE_SYSTEM &&
       !unwrappedState.needsAdvance &&
-      state.kind === RuleKinds.NAMED_TYPE) ||
-    state.kind === RuleKinds.LIST_TYPE
+      kind === RuleKinds.NAMED_TYPE) ||
+    kind === RuleKinds.LIST_TYPE
   ) {
     if (unwrappedState.kind === RuleKinds.FIELD_DEF) {
       return hintList(
@@ -436,10 +434,10 @@ export function getAutocompleteSuggestions(
     (kind === RuleKinds.VARIABLE_DEFINITION && step === 2) ||
     (kind === RuleKinds.LIST_TYPE && step === 1) ||
     (kind === RuleKinds.NAMED_TYPE &&
-      state.prevState &&
-      (state.prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
-        state.prevState.kind === RuleKinds.LIST_TYPE ||
-        state.prevState.kind === RuleKinds.NON_NULL_TYPE))
+      prevState &&
+      (prevState.kind === RuleKinds.VARIABLE_DEFINITION ||
+        prevState.kind === RuleKinds.LIST_TYPE ||
+        prevState.kind === RuleKinds.NON_NULL_TYPE))
   ) {
     return getSuggestionsForVariableDefinition(token, schema, kind);
   }
@@ -460,7 +458,7 @@ const insertSuffix = ` {\n  $1\n}`;
  * @returns
  */
 const getInsertText = (field: GraphQLField<null, null>) => {
-  const type = field.type;
+  const { type } = field;
   if (isCompositeType(type)) {
     return insertSuffix;
   }
@@ -518,7 +516,7 @@ function getSuggestionsForFieldNames(
   options?: AutocompleteSuggestionOptions,
 ): Array<CompletionItem> {
   if (typeInfo.parentType) {
-    const parentType = typeInfo.parentType;
+    const { parentType } = typeInfo;
     let fields: GraphQLField<null, null>[] = [];
     if ('getFields' in parentType) {
       fields = objectValues<GraphQLField<null, null>>(
@@ -1052,8 +1050,8 @@ export function canUseDirective(
   if (!state || !state.kind) {
     return false;
   }
-  const kind = state.kind;
-  const locations = directive.locations;
+  const { kind, prevState } = state;
+  const { locations } = directive;
   switch (kind) {
     case RuleKinds.QUERY:
       return locations.includes(DirectiveLocation.QUERY);
@@ -1091,7 +1089,7 @@ export function canUseDirective(
     case RuleKinds.INPUT_DEF:
       return locations.includes(DirectiveLocation.INPUT_OBJECT);
     case RuleKinds.INPUT_VALUE_DEF:
-      const prevStateKind = state.prevState?.kind;
+      const prevStateKind = prevState?.kind;
       switch (prevStateKind) {
         case RuleKinds.ARGUMENTS_DEF:
           return locations.includes(DirectiveLocation.ARGUMENT_DEFINITION);

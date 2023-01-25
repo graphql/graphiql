@@ -4,7 +4,7 @@
 
 ==>
 
-Document(OperationDefinition(SelectionSet(Selection(Field(Name)))))
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName)),"}")))
 
 # Named query
 
@@ -12,7 +12,7 @@ query a { hello }
 
 ==>
 
-Document(OperationDefinition(OperationType,Name,SelectionSet(Selection(Field(Name)))))
+Document(OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")))
 
 # Nested query
 
@@ -24,7 +24,7 @@ query {
 
 ==>
 
-Document(OperationDefinition(OperationType,SelectionSet(Selection(Field(Name,SelectionSet(Selection(Field(Name))))))))
+Document(OperationDefinition(OperationType,SelectionSet("{",Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}")))
 
 # Query with argument
 
@@ -39,7 +39,7 @@ Document(OperationDefinition(OperationType,SelectionSet(Selection(Field(Name,Sel
 
 Document(
   OperationDefinition(
-    SelectionSet(Selection(Field(Name,Arguments(Argument(Name,IntValue)),SelectionSet(Selection(Field(Name)),Selection(Field(Name))))))
+    SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,IntValue),")"),SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName)),"}"))),"}")
   )
 )
 
@@ -61,23 +61,7 @@ Document(
 
 ==>
 
-Document(
-  OperationDefinition(
-    SelectionSet(
-      Selection(Field(Name,Arguments(Argument(Name,StringValue)),SelectionSet(
-        Selection(Field(Name)),
-        Selection(Field(Name,SelectionSet(
-          Selection(Field(Name)),
-          Selection(Field(Name,SelectionSet(
-            Selection(Field(Name,SelectionSet(
-              Selection(Field(Name)),
-            ))),
-          ))),
-        ))),
-      ))),
-    )
-  )
-)
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,StringValue),")"),SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))),"}"))),"}"))),"}")))
 
 # Query of fields with arguments
 
@@ -95,21 +79,7 @@ Document(
 
 ==>
 
-Document(
-  OperationDefinition(
-    SelectionSet(
-      Selection(Field(Name,Arguments(Argument(Name,StringValue)),SelectionSet(
-        Selection(Field(Name)),
-      ))),
-      Selection(Field(Name,Arguments(Argument(Name,FloatValue)),SelectionSet(
-        Selection(Field(Name)),
-      ))),
-      Selection(Field(Name,Arguments(Argument(Name,EnumValue)),SelectionSet(
-        Selection(Field(Name)),
-      ))),
-    )
-  )
-)
+Document(OperationDefinition(SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,StringValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,FloatValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,EnumValue),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),"}")))
 
 # Multiple named queries
 
@@ -124,21 +94,22 @@ mutation c($val: String!) {
 ==>
 
 Document(
-  OperationDefinition(
-    OperationType,Name,SelectionSet(
-      Selection(Field(Name)),
-    )
-  ),
-  OperationDefinition(
-    OperationType,Name,SelectionSet(
-      Selection(Field(Name)),
-    )
-  ),
-  OperationDefinition(
-    OperationType,Name,VariableDefinitions(VariableDefinition(Variable,NonNullType(NamedType(Name)))),SelectionSet(
-      Selection(Field(Name,Arguments(Argument(Name,Variable)),SelectionSet(
-        Selection(Field(Name)),
-      ))),
-    )
-  )
+  OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")),
+  OperationDefinition(OperationType,Name,SelectionSet("{",Selection(Field(FieldName)),"}")),
+  OperationDefinition(OperationType,Name,VariableDefinitions("(",VariableDefinition(Variable,NonNullType(NamedType(Name))),")"),SelectionSet("{",Selection(Field(FieldName,Arguments("(",Argument(ArgumentAttributeName,Variable),")"),SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))
+)
+
+# Query with a `query` field
+
+{
+  other
+  query {
+    inner
+  }
+}
+
+==>
+
+Document(
+  OperationDefinition(SelectionSet("{",Selection(Field(FieldName)),Selection(Field(FieldName,SelectionSet("{",Selection(Field(FieldName)),"}"))),"}"))
 )

@@ -43,7 +43,7 @@ app.post('/graphql-error/graphql', (_req, res, next) => {
 app.use(express.static(path.resolve(__dirname, '../')));
 
 app.listen(process.env.PORT || 0, function () {
-  const port = this.address().port;
+  const { port } = this.address();
 
   console.log(`Started on http://localhost:${port}/`);
   console.log('PID', process.pid);

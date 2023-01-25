@@ -255,11 +255,10 @@ export class MessageProcessor {
     }
   }
   _handleConfigError({ err }: { err: unknown; uri?: string }) {
-    if (err instanceof ConfigNotFoundError) {
+    if (err instanceof ConfigNotFoundError || err instanceof ConfigEmptyError) {
       // TODO: obviously this needs to become a map by workspace from uri
       // for workspaces support
       this._isGraphQLConfigMissing = true;
-
       this._logConfigError(err.message);
     } else if (err instanceof ProjectNotFoundError) {
       // this is the only case where we don't invalidate config;
@@ -270,9 +269,6 @@ export class MessageProcessor {
     } else if (err instanceof ConfigInvalidError) {
       this._isGraphQLConfigMissing = true;
       this._logConfigError(`Invalid configuration\n${err.message}`);
-    } else if (err instanceof ConfigEmptyError) {
-      this._isGraphQLConfigMissing = true;
-      this._logConfigError(err.message);
     } else if (err instanceof LoaderNoResultError) {
       this._isGraphQLConfigMissing = true;
       this._logConfigError(err.message);
@@ -333,13 +329,13 @@ export class MessageProcessor {
     const diagnostics: Diagnostic[] = [];
 
     let contents: CachedContent[] = [];
-
+    const text = 'text' in textDocument && textDocument.text;
     // Create/modify the cached entry if text is provided.
     // Otherwise, try searching the cache to perform diagnostics.
-    if ('text' in textDocument && textDocument.text) {
+    if (text) {
       // textDocument/didSave does not pass in the text content.
       // Only run the below function if text is passed in.
-      contents = this._parser(textDocument.text, uri);
+      contents = this._parser(text, uri);
 
       await this._invalidateCache(textDocument, uri, contents);
     } else {
@@ -363,7 +359,7 @@ export class MessageProcessor {
         return { uri, diagnostics: [] };
       }
       // update graphql config only when graphql config is saved!
-      const cachedDocument = this._getCachedDocument(textDocument.uri);
+      const cachedDocument = this._getCachedDocument(uri);
       if (cachedDocument) {
         contents = cachedDocument.contents;
       }
@@ -433,14 +429,14 @@ export class MessageProcessor {
         '`textDocument`, `textDocument.uri`, and `contentChanges` arguments are required.',
       );
     }
-    const textDocument = params.textDocument;
-    const uri = textDocument.uri;
+    const { textDocument } = params;
+    const { uri } = textDocument;
     const project = this._graphQLCache.getProjectForFile(uri);
     try {
-      const contentChanges = params.contentChanges;
+      const { contentChanges } = params;
       const contentChange = contentChanges[contentChanges.length - 1];
 
-      // As `contentChanges` is an array and we just want the
+      // As `contentChanges` is an array, and we just want the
       // latest update to the text, grab the last entry from the array.
 
       // If it's a .js file, try parsing the contents to see if GraphQL queries
@@ -516,8 +512,8 @@ export class MessageProcessor {
     if (!params || !params.textDocument) {
       throw new Error('`textDocument` is required.');
     }
-    const textDocument = params.textDocument;
-    const uri = textDocument.uri;
+    const { textDocument } = params;
+    const { uri } = textDocument;
 
     if (this._textDocumentCache.has(uri)) {
       this._textDocumentCache.delete(uri);
@@ -564,8 +560,7 @@ export class MessageProcessor {
 
     this.validateDocumentAndPosition(params);
 
-    const textDocument = params.textDocument;
-    const position = params.position;
+    const { textDocument, position } = params;
 
     // `textDocument/completion` event takes advantage of the fact that
     // `textDocument/didChange` event always fires before, which would have
@@ -621,8 +616,7 @@ export class MessageProcessor {
 
     this.validateDocumentAndPosition(params);
 
-    const textDocument = params.textDocument;
-    const position = params.position;
+    const { textDocument, position } = params;
 
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument) {
@@ -683,7 +677,7 @@ export class MessageProcessor {
           change.type === FileChangeTypeKind.Created ||
           change.type === FileChangeTypeKind.Changed
         ) {
-          const uri = change.uri;
+          const { uri } = change;
 
           const text = readFileSync(URI.parse(uri).fsPath, 'utf-8');
           const contents = this._parser(text, uri);
@@ -751,8 +745,7 @@ export class MessageProcessor {
     if (!params || !params.textDocument || !params.position) {
       throw new Error('`textDocument` and `position` arguments are required.');
     }
-    const textDocument = params.textDocument;
-    const position = params.position;
+    const { textDocument, position } = params;
     const project = this._graphQLCache.getProjectForFile(textDocument.uri);
     if (project) {
       await this._cacheSchemaFilesForProject(project);
@@ -787,7 +780,7 @@ export class MessageProcessor {
         toPosition(position),
         textDocument.uri,
       );
-    } catch (err) {
+    } catch {
       // these thrown errors end up getting fired before the service is initialized, so lets cool down on that
     }
 
@@ -850,7 +843,7 @@ export class MessageProcessor {
       throw new Error('`textDocument` argument is required.');
     }
 
-    const textDocument = params.textDocument;
+    const { textDocument } = params;
     const cachedDocument = this._getCachedDocument(textDocument.uri);
     if (!cachedDocument || !cachedDocument.contents[0]) {
       return [];
@@ -987,11 +980,11 @@ export class MessageProcessor {
       } else {
         try {
           this._cacheSchemaFile(uri, project);
-        } catch (err) {
+        } catch {
           // this string may be an SDL string even, how do we even evaluate this?
         }
       }
-    } catch (err) {}
+    } catch {}
   }
   async _cacheObjectSchema(
     pointer: { [key: string]: any },

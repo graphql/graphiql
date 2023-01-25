@@ -1,5 +1,14 @@
 # vscode-graphql-syntax
 
+## 1.0.6
+
+### Patch Changes
+
+- [#2926](https://github.com/graphql/graphiql/pull/2926)
+  [`10e97bbe`](https://github.com/graphql/graphiql/commit/10e97bbe6c9ff81bae73b11ba81ac2b69eca2772)
+  Thanks [@elijaholmos](https://github.com/elijaholmos)! - support cts and mts
+  file extensions
+
 ## 1.0.5
 
 ### Patch Changes

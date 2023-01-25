@@ -117,8 +117,8 @@ export type MappedServerOptions = Omit<ServerOptions, 'loadConfigOptions'> & {
 const buildOptions = (options: ServerOptions): MappedServerOptions => {
   const serverOptions = { ...options } as MappedServerOptions;
   if (serverOptions.loadConfigOptions) {
-    const { extensions } = serverOptions.loadConfigOptions;
-    if (!serverOptions.loadConfigOptions.rootDir) {
+    const { extensions, rootDir } = serverOptions.loadConfigOptions;
+    if (!rootDir) {
       if (serverOptions.configDir) {
         serverOptions.loadConfigOptions.rootDir = serverOptions.configDir;
       } else {
@@ -168,8 +168,7 @@ export default async function startServer(
           process.exit(1);
         }
 
-        const port = options.port;
-        const hostname = options.hostname;
+        const { port, hostname } = options;
         const socket = net
           .createServer(client => {
             client.setEncoding('utf8');

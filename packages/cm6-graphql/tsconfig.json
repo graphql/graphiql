@@ -9,7 +9,8 @@
     "moduleResolution": "node",
     "outDir": "dist"
   },
-  "include": ["src/*.ts"],
+  "include": ["src", "__tests__"],
+  "exclude": ["**/__tests__/**", "**/dist/**.*"],
   "references": [
     {
       "path": "../graphql-language-service"

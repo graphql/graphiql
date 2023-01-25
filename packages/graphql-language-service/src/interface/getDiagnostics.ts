@@ -139,7 +139,7 @@ function annotations(
     return [];
   }
   const highlightedNodes: Diagnostic[] = [];
-  error.nodes.forEach(node => {
+  error.nodes.forEach((node, i) => {
     const highlightNode =
       node.kind !== 'Variable' && 'name' in node && node.name !== undefined
         ? node.name
@@ -154,7 +154,7 @@ function annotations(
 
       // @ts-ignore
       // https://github.com/microsoft/TypeScript/pull/32695
-      const loc = error.locations[0];
+      const loc = error.locations[i];
       const highlightLoc = getLocation(highlightNode);
       const end = loc.column + (highlightLoc.end - highlightLoc.start);
       highlightedNodes.push({

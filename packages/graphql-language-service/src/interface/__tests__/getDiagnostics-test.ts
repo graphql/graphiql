@@ -46,6 +46,39 @@ describe('getDiagnostics', () => {
     expect(error.source).toEqual('GraphQL: Validation');
   });
 
+  it('catches with multiple highlighted nodes', () => {
+    const errors = validateQuery(
+      parse('{ hero(episode: $ep) { name } }'),
+      schema,
+    );
+    expect(errors).toMatchObject([
+      {
+        range: {
+          end: {
+            character: 20,
+            line: 0,
+          },
+          start: {
+            character: 16,
+            line: 0,
+          },
+        },
+      },
+      {
+        range: {
+          end: {
+            character: 32,
+            line: 0,
+          },
+          start: {
+            character: 0,
+            line: 0,
+          },
+        },
+      },
+    ]);
+  });
+
   it('catches multi root validation errors without breaking (with a custom validation function that always throws errors)', () => {
     const error = validateQuery(parse('{ hero { name } } { seq }'), schema, [
       validationContext => {

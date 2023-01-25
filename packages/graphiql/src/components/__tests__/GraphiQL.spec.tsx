@@ -380,6 +380,58 @@ describe('GraphiQL', () => {
     });
   }); // panel resizing
 
+  it('allows the user to control persisting headers if it is true', async () => {
+    const { container, findByText } = render(
+      <GraphiQL shouldPersistHeaders fetcher={noOpFetcher} />,
+    );
+
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
+    });
+
+    const element = await findByText('Persist headers');
+    expect(element).toBeInTheDocument();
+  });
+
+  it('allows the user to control persisting headers if it is not passed in', async () => {
+    const { container, findByText } = render(
+      <GraphiQL fetcher={noOpFetcher} />,
+    );
+
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
+    });
+
+    const element = await findByText('Persist headers');
+    expect(element).toBeInTheDocument();
+  });
+
+  it('does not allow the user to control persisting headers is false', async () => {
+    const { container, findByText } = render(
+      <GraphiQL shouldPersistHeaders={false} fetcher={noOpFetcher} />,
+    );
+
+    act(() => {
+      fireEvent.click(
+        container.querySelector('[aria-label="Open settings dialog"]')!,
+      );
+    });
+
+    const callback = async () => {
+      try {
+        await findByText('Persist headers');
+      } catch {
+        // eslint-disable-next-line no-throw-literal
+        throw 'failed';
+      }
+    };
+    await expect(callback).rejects.toEqual('failed');
+  });
+
   describe('Tabs', () => {
     it('show tabs if there are more than one', async () => {
       const { container } = render(<GraphiQL fetcher={noOpFetcher} />);

@@ -158,7 +158,10 @@ export function GraphiQL({
       validationRules={validationRules}
       variables={variables}
     >
-      <GraphiQLInterface {...props} />
+      <GraphiQLInterface
+        showPersistHeadersSettings={shouldPersistHeaders !== false}
+        {...props}
+      />
     </GraphiQLProvider>
   );
 }
@@ -198,6 +201,11 @@ export type GraphiQLInterfaceProps = WriteableEditorProps &
      * editor.
      */
     toolbar?: GraphiQLToolbarConfig;
+    /**
+     * Indicates if settings for persisting headers should appear in the
+     * settings modal.
+     */
+    showPersistHeadersSettings?: boolean;
   };
 
 export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
@@ -749,6 +757,47 @@ export function GraphiQLInterface(props: GraphiQLInterfaceProps) {
             }}
           />
         </div>
+        {props.showPersistHeadersSettings ? (
+          <div className="graphiql-dialog-section">
+            <div>
+              <div className="graphiql-dialog-section-title">
+                Persist headers
+              </div>
+              <div className="graphiql-dialog-section-caption">
+                Save headers upon reloading.{' '}
+                <span className="graphiql-warning-text">
+                  Only enable if you trust this device.
+                </span>
+              </div>
+            </div>
+            <ButtonGroup>
+              <Button
+                type="button"
+                id="enable-persist-headers"
+                className={
+                  editorContext.shouldPersistHeaders ? 'active' : undefined
+                }
+                onClick={() => {
+                  editorContext.setShouldPersistHeaders(true);
+                }}
+              >
+                On
+              </Button>
+              <Button
+                type="button"
+                id="disable-persist-headers"
+                className={
+                  editorContext.shouldPersistHeaders ? undefined : 'active'
+                }
+                onClick={() => {
+                  editorContext.setShouldPersistHeaders(false);
+                }}
+              >
+                Off
+              </Button>
+            </ButtonGroup>
+          </div>
+        ) : null}
         <div className="graphiql-dialog-section">
           <div>
             <div className="graphiql-dialog-section-title">Theme</div>

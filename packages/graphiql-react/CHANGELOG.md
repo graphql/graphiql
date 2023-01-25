@@ -1,5 +1,70 @@
 # @graphiql/react
 
+## 0.16.0
+
+### Minor Changes
+
+- [#2895](https://github.com/graphql/graphiql/pull/2895)
+  [`ccba2f33`](https://github.com/graphql/graphiql/commit/ccba2f33b67a03f492222f7afde1354cfd033b42)
+  Thanks [@TheMightyPenguin](https://github.com/TheMightyPenguin)! - Add user
+  facing setting for persisting headers
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931)
+  [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and
+  `no-else-return` rules
+
+- [#2964](https://github.com/graphql/graphiql/pull/2964)
+  [`cec3fb2a`](https://github.com/graphql/graphiql/commit/cec3fb2a493c4a0c40df7dfad04e1a95ed35e786)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-export-from` rule
+
+- [#2932](https://github.com/graphql/graphiql/pull/2932)
+  [`11e6ad11`](https://github.com/graphql/graphiql/commit/11e6ad11e745c671eb320731697887bb8d7177b7)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - replace `compose.ts` with `clsx`
+  for class concatenation
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937)
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2933](https://github.com/graphql/graphiql/pull/2933)
+  [`d502a33b`](https://github.com/graphql/graphiql/commit/d502a33b4332f1025e947c02d7cfdc5799365c8d)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  @typescript-eslint/no-unused-expressions
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965)
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-optional-catch-binding` rule
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963)
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring`
+  rule
+
+- [#2942](https://github.com/graphql/graphiql/pull/2942)
+  [`4ff2794c`](https://github.com/graphql/graphiql/commit/4ff2794c8b6032168e27252096cb276ce712878e)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `sonarjs/no-redundant-jump` rule
+
+- Updated dependencies
+  [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147),
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b),
+  [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de),
+  [`695100bd`](https://github.com/graphql/graphiql/commit/695100bd317940ff3ffd8f56b54248c1dba1ac04),
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9),
+  [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9),
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913),
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49),
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215),
+  [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)]:
+  - codemirror-graphql@2.0.3
+  - @graphiql/toolkit@0.8.1
+  - graphql-language-service@5.1.1
+
 ## 0.15.0
 
 ### Minor Changes

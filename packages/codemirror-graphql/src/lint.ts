@@ -42,13 +42,13 @@ CodeMirror.registerHelper(
   'lint',
   'graphql',
   (text: string, options: GraphQLLintOptions): CodeMirror.Annotation[] => {
-    const schema = options.schema;
+    const { schema, validationRules, externalFragments } = options;
     const rawResults = getDiagnostics(
       text,
       schema,
-      options.validationRules,
+      validationRules,
       undefined,
-      options.externalFragments,
+      externalFragments,
     );
 
     const results = rawResults.map(error => ({

@@ -76,9 +76,9 @@ function tokenToURL(token: Token) {
   const value = token.string.slice(1).slice(0, -1).trim();
 
   try {
-    const location = window.location;
+    const { location } = window;
     return new URL(value, location.protocol + '//' + location.host);
-  } catch (err) {
+  } catch {
     return;
   }
 }

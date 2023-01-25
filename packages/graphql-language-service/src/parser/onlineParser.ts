@@ -268,7 +268,7 @@ function advanceRule(state: State, successful: boolean): undefined {
     // TODO: ParseRules as numerical index
     const step = state.rule[state.step];
     if (step.separator) {
-      const separator = step.separator;
+      const { separator } = step;
       state.needsSeparator = !state.needsSeparator;
       // If the separator was optional, then give it an opportunity to repeat.
       if (!state.needsSeparator && separator.ofRule) {

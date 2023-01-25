@@ -7,7 +7,14 @@ import {
   visit,
 } from 'graphql';
 import { VariableToType } from 'graphql-language-service';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { useStorageContext } from '../storage';
 import { createContextHook, createNullableContext } from '../utility/context';
@@ -24,6 +31,9 @@ import {
   useSetEditorValues,
   useStoreTabs,
   useSynchronizeActiveTabValues,
+  clearHeadersFromTabs,
+  serializeTabState,
+  STORAGE_KEY as STORAGE_KEY_TABS,
 } from './tabs';
 import { CodeMirrorEditor } from './types';
 import { STORAGE_KEY as STORAGE_KEY_VARIABLES } from './variable-editor';
@@ -139,6 +149,10 @@ export type EditorContextType = TabsState & {
    * If the contents of the headers editor are persisted in storage.
    */
   shouldPersistHeaders: boolean;
+  /**
+   * Changes if headers should be persisted.
+   */
+  setShouldPersistHeaders(persist: boolean): void;
 };
 
 export const EditorContext =
@@ -260,6 +274,15 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     null,
   );
 
+  const [shouldPersistHeaders, setShouldPersistHeadersInternal] = useState(
+    () => {
+      const isStored = storage?.get(PERSIST_HEADERS_STORAGE_KEY) !== null;
+      return props.shouldPersistHeaders !== false && isStored
+        ? storage?.get(PERSIST_HEADERS_STORAGE_KEY) === 'true'
+        : Boolean(props.shouldPersistHeaders);
+    },
+  );
+
   useSynchronizeValue(headerEditor, props.headers);
   useSynchronizeValue(queryEditor, props.query);
   useSynchronizeValue(responseEditor, props.response);
@@ -267,7 +290,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const storeTabs = useStoreTabs({
     storage,
-    shouldPersistHeaders: props.shouldPersistHeaders,
+    shouldPersistHeaders,
   });
 
   // We store this in state but never update it. By passing a function we only
@@ -304,6 +327,31 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
 
   const [tabState, setTabState] = useState<TabsState>(initialState.tabState);
 
+  const setShouldPersistHeaders = useCallback(
+    (persist: boolean) => {
+      if (persist) {
+        storage?.set(STORAGE_KEY_HEADERS, headerEditor?.getValue() ?? '');
+        const serializedTabs = serializeTabState(tabState, true);
+        storage?.set(STORAGE_KEY_TABS, serializedTabs);
+      } else {
+        storage?.set(STORAGE_KEY_HEADERS, '');
+        clearHeadersFromTabs(storage);
+      }
+      setShouldPersistHeadersInternal(persist);
+      storage?.set(PERSIST_HEADERS_STORAGE_KEY, persist.toString());
+    },
+    [storage, tabState, headerEditor],
+  );
+
+  const lastShouldPersistHeadersProp = useRef<boolean | undefined>(undefined);
+  useEffect(() => {
+    const propValue = Boolean(props.shouldPersistHeaders);
+    if (lastShouldPersistHeadersProp.current !== propValue) {
+      setShouldPersistHeaders(propValue);
+      lastShouldPersistHeadersProp.current = propValue;
+    }
+  }, [props.shouldPersistHeaders, setShouldPersistHeaders]);
+
   const synchronizeActiveTabValues = useSynchronizeActiveTabValues({
     queryEditor,
     variableEditor,
@@ -316,17 +364,14 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
     headerEditor,
     responseEditor,
   });
-  const { onTabChange } = props;
+  const { onTabChange, defaultHeaders, children } = props;
 
   const addTab = useCallback<EditorContextType['addTab']>(() => {
     setTabState(current => {
       // Make sure the current tab stores the latest values
       const updatedValues = synchronizeActiveTabValues(current);
       const updated = {
-        tabs: [
-          ...updatedValues.tabs,
-          createTab({ headers: props.defaultHeaders }),
-        ],
+        tabs: [...updatedValues.tabs, createTab({ headers: defaultHeaders })],
         activeTabIndex: updatedValues.tabs.length,
       };
       storeTabs(updated);
@@ -335,7 +380,7 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       return updated;
     });
   }, [
-    props.defaultHeaders,
+    defaultHeaders,
     onTabChange,
     setEditorValues,
     storeTabs,
@@ -454,7 +499,8 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      shouldPersistHeaders: props.shouldPersistHeaders || false,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
     }),
     [
       tabState,
@@ -475,18 +521,19 @@ export function EditorContextProvider(props: EditorContextProviderProps) {
       externalFragments,
       validationRules,
 
-      props.shouldPersistHeaders,
+      shouldPersistHeaders,
+      setShouldPersistHeaders,
     ],
   );
 
   return (
-    <EditorContext.Provider value={value}>
-      {props.children}
-    </EditorContext.Provider>
+    <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
   );
 }
 
 export const useEditorContext = createContextHook(EditorContext);
+
+const PERSIST_HEADERS_STORAGE_KEY = 'shouldPersistHeaders';
 
 const DEFAULT_QUERY = `# Welcome to GraphiQL
 #

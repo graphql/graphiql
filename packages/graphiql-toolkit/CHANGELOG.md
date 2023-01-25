@@ -1,5 +1,38 @@
 # @graphiql/toolkit
 
+## 0.8.1
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931)
+  [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and
+  `no-else-return` rules
+
+- [#2923](https://github.com/graphql/graphiql/pull/2923)
+  [`695100bd`](https://github.com/graphql/graphiql/commit/695100bd317940ff3ffd8f56b54248c1dba1ac04)
+  Thanks [@TheMightyPenguin](https://github.com/TheMightyPenguin)! - Remove
+  side-effect in StorageAPI that overrides localStorage.clear
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937)
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2965](https://github.com/graphql/graphiql/pull/2965)
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-optional-catch-binding` rule
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936)
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938)
+  [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error`
+  rule
+
 ## 0.8.0
 
 ### Minor Changes

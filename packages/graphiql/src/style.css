@@ -312,6 +312,11 @@ reach-portal .graphiql-dialog-section-caption {
   color: hsla(var(--color-neutral), var(--alpha-secondary));
 }
 
+reach-portal .graphiql-warning-text {
+  color: hsl(var(--color-warning));
+  font-weight: var(--font-weight-medium);
+}
+
 reach-portal .graphiql-table {
   border-collapse: collapse;
   width: 100%;

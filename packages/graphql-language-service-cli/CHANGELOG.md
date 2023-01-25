@@ -1,5 +1,41 @@
 # graphql-language-service-cli
 
+## 3.3.15
+
+### Patch Changes
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922)
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - extends
+  `plugin:import/recommended` and fix warnings
+
+- [#2966](https://github.com/graphql/graphiql/pull/2966)
+  [`f9aa87dc`](https://github.com/graphql/graphiql/commit/f9aa87dc6a88ed8a8a0a94de520c7a41fff8ffde)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `sonarjs/no-small-switch`
+  and `sonarjs/no-duplicated-branches` rules
+
+- [#2938](https://github.com/graphql/graphiql/pull/2938)
+  [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/throw-new-error`
+  rule
+
+- Updated dependencies
+  [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147),
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b),
+  [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de),
+  [`f9aa87dc`](https://github.com/graphql/graphiql/commit/f9aa87dc6a88ed8a8a0a94de520c7a41fff8ffde),
+  [`10e97bbe`](https://github.com/graphql/graphiql/commit/10e97bbe6c9ff81bae73b11ba81ac2b69eca2772),
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9),
+  [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9),
+  [`d502a33b`](https://github.com/graphql/graphiql/commit/d502a33b4332f1025e947c02d7cfdc5799365c8d),
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913),
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49),
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215),
+  [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171),
+  [`4ff2794c`](https://github.com/graphql/graphiql/commit/4ff2794c8b6032168e27252096cb276ce712878e)]:
+  - graphql-language-service@5.1.1
+  - graphql-language-service-server@2.9.5
+
 ## 3.3.14
 
 ### Patch Changes

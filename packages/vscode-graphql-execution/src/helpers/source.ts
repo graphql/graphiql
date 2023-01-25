@@ -71,15 +71,7 @@ export class SourceHelper {
           }
           break;
         case 'String':
-          if (value.length && !Array.isArray(value)) {
-            return null;
-          }
-          break;
         case 'ID':
-          if (value.length && !Array.isArray(value)) {
-            return null;
-          }
-          break;
         case 'Enum':
           if (value.length && !Array.isArray(value)) {
             return null;
@@ -122,7 +114,7 @@ export class SourceHelper {
     // Object type
     try {
       return JSON.parse(value);
-    } catch (e) {
+    } catch {
       this.outputChannel.appendLine(
         `Failed to parse user input as JSON, please use double quotes.`,
       );
@@ -133,20 +125,14 @@ export class SourceHelper {
     projectConfig: GraphQLProjectConfig,
   ): Promise<Map<string, FragmentInfo>> {
     const sources = await projectConfig.getDocuments();
-    const fragmentDefinitions = this.fragmentDefinitions;
+    const { fragmentDefinitions } = this;
 
     sources.forEach(source => {
       visit(source.document as DocumentNode, {
         FragmentDefinition(node) {
           const existingDef = fragmentDefinitions.get(node.name.value);
           const newVal = print(node);
-          if (existingDef && existingDef.content !== newVal) {
-            fragmentDefinitions.set(node.name.value, {
-              definition: node,
-              content: newVal,
-              filePath: source.location,
-            });
-          } else if (!existingDef) {
+          if ((existingDef && existingDef.content !== newVal) || !existingDef) {
             fragmentDefinitions.set(node.name.value, {
               definition: node,
               content: newVal,
@@ -171,7 +157,7 @@ export class SourceHelper {
         const documentText = document.getText();
         processGraphQLString(documentText, 0);
         return documents;
-      } catch (err) {}
+      } catch {}
     }
 
     tags.forEach(tag => {
@@ -191,7 +177,7 @@ export class SourceHelper {
           processGraphQLString(contents, result.index + tag.length + 1);
           // no-op on exception, so that non-parse-able source files
           // don't break the extension while editing
-        } catch (e) {}
+        } catch {}
       }
     });
     return documents;
@@ -250,7 +236,7 @@ export const getFragmentDependencies = async (
   let parsedQuery;
   try {
     parsedQuery = parse(query);
-  } catch (error) {
+  } catch {
     return [];
   }
   return getFragmentDependenciesForAST(parsedQuery, fragmentDefinitions);

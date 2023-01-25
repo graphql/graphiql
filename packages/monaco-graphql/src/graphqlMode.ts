@@ -25,17 +25,17 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   ): Promise<GraphQLWorker> => {
     try {
       return client!.getLanguageServiceWorker(...uris);
-    } catch (err) {
+    } catch {
       throw new Error('Error fetching graphql language service worker');
     }
   };
 
   function registerSchemaLessProviders(): void {
-    const { modeConfiguration } = defaults;
+    const { modeConfiguration, languageId } = defaults;
     if (modeConfiguration.documentFormattingEdits) {
       providers.push(
         monaco.languages.registerDocumentFormattingEditProvider(
-          defaults.languageId,
+          languageId,
           new languageFeatures.DocumentFormattingAdapter(worker),
         ),
       );
@@ -43,13 +43,13 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
   }
 
   function registerAllProviders(api: MonacoGraphQLAPI): void {
-    const { modeConfiguration } = defaults;
+    const { modeConfiguration, languageId } = defaults;
     disposeAll(providers);
 
     if (modeConfiguration.completionItems) {
       providers.push(
         monaco.languages.registerCompletionItemProvider(
-          defaults.languageId,
+          languageId,
           new languageFeatures.CompletionAdapter(worker),
         ),
       );
@@ -60,7 +60,7 @@ export function setupMode(defaults: MonacoGraphQLAPI): IDisposable {
     if (modeConfiguration.hovers) {
       providers.push(
         monaco.languages.registerHoverProvider(
-          defaults.languageId,
+          languageId,
           new languageFeatures.HoverAdapter(worker),
         ),
       );

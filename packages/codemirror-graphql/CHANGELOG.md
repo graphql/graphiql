@@ -1,5 +1,50 @@
 # Change Log
 
+## 2.0.3
+
+### Patch Changes
+
+- [#2931](https://github.com/graphql/graphiql/pull/2931)
+  [`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `no-negated-condition` and
+  `no-else-return` rules
+
+- [#2922](https://github.com/graphql/graphiql/pull/2922)
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - extends
+  `plugin:import/recommended` and fix warnings
+
+- [#2941](https://github.com/graphql/graphiql/pull/2941)
+  [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `unicorn/prefer-logical-operator-over-ternary` rule
+
+- [#2937](https://github.com/graphql/graphiql/pull/2937)
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `unicorn/prefer-includes`
+
+- [#2936](https://github.com/graphql/graphiql/pull/2936)
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable
+  `lonely-if`/`unicorn/lonely-if` rules
+
+- [#2963](https://github.com/graphql/graphiql/pull/2963)
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215)
+  Thanks [@B2o5T](https://github.com/B2o5T)! - enable `prefer-destructuring`
+  rule
+
+- Updated dependencies
+  [[`f7addb20`](https://github.com/graphql/graphiql/commit/f7addb20c4a558fbfb4112c8ff095bbc8f9d9147),
+  [`d1fcad72`](https://github.com/graphql/graphiql/commit/d1fcad72607e2789517dfe4936b5ec604e46762b),
+  [`4a8b2e17`](https://github.com/graphql/graphiql/commit/4a8b2e1766a38eb4828cf9a81bf9d767070041de),
+  [`c70d9165`](https://github.com/graphql/graphiql/commit/c70d9165cc1ef8eb1cd0d6b506ced98c626597f9),
+  [`c44ea4f1`](https://github.com/graphql/graphiql/commit/c44ea4f1917b97daac815c08299b934c8ca57ed9),
+  [`0669767e`](https://github.com/graphql/graphiql/commit/0669767e1e2196a78cbefe3679a52bcbb341e913),
+  [`18f8e80a`](https://github.com/graphql/graphiql/commit/18f8e80ae12edfd0c36adcb300cf9e06ac27ea49),
+  [`f263f778`](https://github.com/graphql/graphiql/commit/f263f778cb95b9f413bd09ca56a43f5b9c2f6215),
+  [`6a9d913f`](https://github.com/graphql/graphiql/commit/6a9d913f0d1b847124286b3fa1f3a2649d315171)]:
+  - graphql-language-service@5.1.1
+
 ## 2.0.2
 
 ### Patch Changes

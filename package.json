@@ -29,13 +29,14 @@
     "npm": "please_use_yarn_instead"
   },
   "scripts": {
-    "build": "yarn build:clean && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql-plugin-code-exporter && yarn build:graphiql-plugin-batch-request && yarn build:graphiql",
+    "build": "yarn build:clean && yarn build:cm6-graphql && yarn build:packages && yarn build:graphiql-react && yarn build:graphiql-plugin-explorer && yarn build:graphiql-plugin-code-exporter && yarn build:graphiql-plugin-batch-request && yarn build:graphiql",
     "build-bundles": "yarn prebuild-bundles && wsrun -p -m -s build-bundles",
     "build-bundles-clean": "rimraf '{packages,examples,plugins}/**/{bundle,cdn,webpack}' && yarn workspace graphiql run build-bundles-clean",
     "build-clean": "wsrun -m build-clean ",
     "build-demo": "wsrun -m -s build-demo",
     "build-docs": "rimraf 'packages/graphiql/typedoc' && typedoc 'packages'",
     "build:clean": "yarn tsc --clean && yarn tsc --clean resources/tsconfig.graphiql.json",
+    "build:cm6-graphql": "yarn workspace cm6-graphql run build",
     "build:graphiql": "yarn tsc resources/tsconfig.graphiql.json",
     "build:graphiql-plugin-explorer": "yarn workspace @graphiql/plugin-explorer run build",
     "build:graphiql-plugin-code-exporter": "yarn workspace @graphiql/plugin-code-exporter run build",

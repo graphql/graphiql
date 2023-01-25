@@ -41,9 +41,7 @@ export function getHoverInformation(
     return '';
   }
 
-  const state = token.state;
-  const kind = state.kind;
-  const step = state.step;
+  const { kind, step } = token.state;
   const typeInfo = getTypeInfo(schema, token.state);
   const options = { ...config, schema };
 
@@ -151,7 +149,7 @@ function renderArg(into: string[], typeInfo: AllTypeInfo, options: any) {
     return;
   }
 
-  const name = typeInfo.argDef.name;
+  const { name } = typeInfo.argDef;
   text(into, '(');
   text(into, name);
   renderTypeAnnotation(
@@ -177,7 +175,7 @@ function renderEnumValue(into: string[], typeInfo: AllTypeInfo, options: any) {
   if (!typeInfo.enumValue) {
     return;
   }
-  const name = typeInfo.enumValue.name;
+  const { name } = typeInfo.enumValue;
   renderType(into, typeInfo, options, typeInfo.inputType as GraphQLType);
   text(into, '.');
   text(into, name);

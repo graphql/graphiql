@@ -1,7 +1,10 @@
+import { StorageAPI } from '@graphiql/toolkit';
 import {
   createTab,
   fuzzyExtractOperationName,
   getDefaultTabState,
+  clearHeadersFromTabs,
+  STORAGE_KEY,
 } from '../tabs';
 
 describe('createTab', () => {
@@ -75,10 +78,27 @@ describe('fuzzyExtractionOperationTitle', () => {
   it('should return null for anonymous queries', () => {
     expect(fuzzyExtractOperationName('{}')).toBeNull();
   });
-  it('should not extract query names with comments', () => {
-    expect(
-      fuzzyExtractOperationName('# query My_3ExampleQuery() {}'),
-    ).toBeNull();
+
+  describe('comment line handling', () => {
+    it('should not extract query names within commented out lines', () => {
+      expect(
+        fuzzyExtractOperationName('# query My_3ExampleQuery() {}'),
+      ).toBeNull();
+    });
+    it('should extract query names when there is a single leading comment line', () => {
+      expect(
+        fuzzyExtractOperationName(
+          '# comment line 1 \n query MyExampleQueryWithSingleCommentLine() {}',
+        ),
+      ).toEqual('MyExampleQueryWithSingleCommentLine');
+    });
+    it('should extract query names when there are more than one leading comment lines', () => {
+      expect(
+        fuzzyExtractOperationName(
+          '# comment line 1 \n # comment line 2 \n query MyExampleQueryWithMultipleCommentLines() {}',
+        ),
+      ).toEqual('MyExampleQueryWithMultipleCommentLines');
+    });
   });
 });
 
@@ -138,6 +158,36 @@ describe('getDefaultTabState', () => {
           title: 'Image',
         }),
       ],
+    });
+  });
+});
+
+describe('clearHeadersFromTabs', () => {
+  const createMockStorage = () => {
+    const mockStorage = new Map();
+    return mockStorage as unknown as StorageAPI;
+  };
+
+  it('preserves tab state except for headers', () => {
+    const storage = createMockStorage();
+    const stateWithoutHeaders = {
+      operationName: 'test',
+      query: 'query test {\n  test {\n    id\n  }\n}',
+      test: {
+        a: 'test',
+      },
+    };
+    const stateWithHeaders = {
+      ...stateWithoutHeaders,
+      headers: `{ "authorization": "secret" }`,
+    };
+    storage.set(STORAGE_KEY, JSON.stringify(stateWithHeaders));
+
+    clearHeadersFromTabs(storage);
+
+    expect(JSON.parse(storage.get(STORAGE_KEY)!)).toEqual({
+      ...stateWithoutHeaders,
+      headers: null,
     });
   });
 });

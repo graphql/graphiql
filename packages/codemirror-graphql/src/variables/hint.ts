@@ -89,15 +89,13 @@ function getVariablesHint(
   const state =
     token.state.kind === 'Invalid' ? token.state.prevState : token.state;
 
-  const kind = state.kind;
-  const step = state.step;
-
+  const { kind, step } = state;
   // Variables can only be an object literal.
   if (kind === 'Document' && step === 0) {
     return hintList(cur, token, [{ text: '{' }]);
   }
 
-  const variableToType = options.variableToType;
+  const { variableToType } = options;
   if (!variableToType) {
     return;
   }
