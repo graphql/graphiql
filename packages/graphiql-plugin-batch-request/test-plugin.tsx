@@ -2,7 +2,7 @@ import { render } from 'react-dom';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
 import * as React from 'react';
-import { useBatchRequestPlugin } from './index';
+import { useBatchRequestPlugin } from './src/index';
 
 // const url = 'https://swapi-graphql.netlify.app/.netlify/functions/index'
 // const url = 'https://api.spacex.land/graphql'
