@@ -53,4 +53,6 @@ function GraphiQLWithExplorer() {
 
 ### Example 
 
-![sending a batch request to spacex GraphQL server](https://user-images.githubusercontent.com/6611331/212411159-336abe77-5f0a-4453-9de3-62abe039168f.mov)
+Sending a batch request to spacex GraphQL server: 
+
+https://user-images.githubusercontent.com/6611331/212411159-336abe77-5f0a-4453-9de3-62abe039168f.mov
