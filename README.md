@@ -17,8 +17,6 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/graphql/graphiql)
 ![GitHub language count](https://img.shields.io/github/languages/count/graphql/graphiql)
 [![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/graphql/graphiql)](https://snyk.io/test/github/graphql/graphiql)
-![LGTM Grade](https://img.shields.io/lgtm/grade/javascript/github/graphql/graphiql)
-![LGTM Alerts](https://img.shields.io/lgtm/alerts/github/graphql/graphiql)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3887/badge)](https://bestpractices.coreinfrastructure.org/projects/3887)
 
 ## Overview
