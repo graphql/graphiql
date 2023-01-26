@@ -109,11 +109,11 @@ the now-retired `graphql-language-service-interface`,
 
 Provides language services for LSP-based IDE extensions
 
-## [`graphql-language-service-server-cli`](packages/graphql-language-service-server-cli#readme)
+## [`graphql-language-service-cli`](packages/graphql-language-service-cli#readme)
 
-[![NPM](https://img.shields.io/npm/v/graphql-language-service-server-cli.svg)](https://npmjs.com/graphql-language-service-server-cli)
-![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-server-cli?label=npm%20downloads)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-server-cli)
+[![NPM](https://img.shields.io/npm/v/graphql-language-service-cli.svg)](https://npmjs.com/graphql-language-service-cli)
+![npm downloads](https://img.shields.io/npm/dm/graphql-language-service-cli?label=npm%20downloads)
+![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/graphql-language-service-cli)
 
 Provides a CLI for the language service server
 
