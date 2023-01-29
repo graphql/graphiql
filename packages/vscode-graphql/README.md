@@ -270,7 +270,7 @@ or
 
 ```ts
 const myQuery =
-  /* GraphiQL */
+  /* GraphQL */
 
   `
   query {
