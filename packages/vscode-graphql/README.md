@@ -270,13 +270,13 @@ or
 
 ```ts
 const myQuery =
-  /* GraphiQL */
+  /* GraphQL */
 
   `
-  query {
-    something
-  }
-`;
+    query {
+      something
+    }
+  `;
 ```
 
 ## Known Issues
