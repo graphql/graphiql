@@ -273,10 +273,10 @@ const myQuery =
   /* GraphQL */
 
   `
-  query {
-    something
-  }
-`;
+    query {
+      something
+    }
+  `;
 ```
 
 ## Known Issues
