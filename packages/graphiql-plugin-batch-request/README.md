@@ -1,6 +1,6 @@
 # GraphiQL Batch Request Plugin
 
-This package provides a plugin that allows sending a batch request to a GraphQL Server into the GraphiQI UI.
+This package provides a plugin that allows sending a batch request to a GraphQL Server and thence into the GraphiQI UI.
 
 ## Install
 
@@ -18,8 +18,7 @@ npm i -S react react-dom graphql
 
 ## Usage
 
-The plugin scope is for sending multiple GraphQL operations as an array, so GraphQL server requires to be configured to allow
-arrays.
+The plugin scope is for sending multiple GraphQL operations as an array, so the GraphQL server must be configured to allow arrays.
 
 ```jsx
 import { useBatchRequestPlugin } from '@graphiql/plugin-batch-request';
