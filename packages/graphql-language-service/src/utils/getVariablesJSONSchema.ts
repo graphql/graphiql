@@ -114,10 +114,9 @@ class Marker {
   mark(name: string): boolean {
     if (this.set.has(name)) {
       return false;
-    } else {
-      this.set.add(name);
-      return true;
     }
+    this.set.add(name);
+    return true;
   }
 }
 
