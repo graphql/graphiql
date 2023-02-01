@@ -1,15 +1,35 @@
 import { render } from '@testing-library/react';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLInt, GraphQLObjectType, GraphQLSchema } from 'graphql';
+import { useContext, useEffect } from 'react';
 
 import { SchemaContext, SchemaContextType } from '../../../schema';
-import { ExplorerContextProvider } from '../../context';
+import { ExplorerContext, ExplorerContextProvider } from '../../context';
 import { DocExplorer } from '../doc-explorer';
+
+function makeSchema(fieldName = 'field') {
+  return new GraphQLSchema({
+    description: 'GraphQL Schema for testing',
+    query: new GraphQLObjectType({
+      name: 'Query',
+      fields: {
+        [fieldName]: {
+          type: GraphQLInt,
+          args: {
+            arg: {
+              type: GraphQLInt,
+            },
+          },
+        },
+      },
+    }),
+  });
+}
 
 const defaultSchemaContext: SchemaContextType = {
   fetchError: null,
   introspect() {},
   isFetching: false,
-  schema: new GraphQLSchema({ description: 'GraphQL Schema for testing' }),
+  schema: makeSchema(),
   validationErrors: [],
 };
 
@@ -86,5 +106,135 @@ describe('DocExplorer', () => {
 
     const errors = container.querySelectorAll('.graphiql-doc-explorer-error');
     expect(errors).toHaveLength(0);
+  });
+  it('maintains nav stack when possible', () => {
+    const initialSchema = makeSchema();
+    const Query = initialSchema.getType('Query');
+    const { field } = (Query as GraphQLObjectType).getFields();
+
+    // A hacky component to set the initial explorer nav stack
+    const SetInitialStack: React.FC = () => {
+      const context = useContext(ExplorerContext)!;
+      useEffect(() => {
+        if (context.explorerNavStack.length === 1) {
+          context.push({ name: 'Query', def: Query });
+          context.push({ name: 'field', def: field });
+        }
+      }, []);
+      return null;
+    };
+
+    // Initial render, set initial state
+    const { container, rerender } = render(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: initialSchema,
+        }}
+      >
+        <ExplorerContextProvider>
+          <SetInitialStack />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+
+    // First proper render of doc explorer
+    rerender(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: initialSchema,
+        }}
+      >
+        <ExplorerContextProvider>
+          <DocExplorer />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+
+    const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    expect(title.textContent).toEqual('field');
+
+    // Second render of doc explorer, this time with a new schema, with _same_ field name
+    rerender(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: makeSchema(), // <<< New, but equivalent, schema
+        }}
+      >
+        <ExplorerContextProvider>
+          <DocExplorer />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+    const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    // Because `Query.field` still exists in the new schema, we can still render it
+    expect(title2.textContent).toEqual('field');
+  });
+  it('trims nav stack when necessary', () => {
+    const initialSchema = makeSchema();
+    const Query = initialSchema.getType('Query');
+    const { field } = (Query as GraphQLObjectType).getFields();
+
+    // A hacky component to set the initial explorer nav stack
+    const SetInitialStack: React.FC = () => {
+      const context = useContext(ExplorerContext)!;
+      useEffect(() => {
+        if (context.explorerNavStack.length === 1) {
+          context.push({ name: 'Query', def: Query });
+          context.push({ name: 'field', def: field });
+        }
+      }, []);
+      return null;
+    };
+
+    // Initial render, set initial state
+    const { container, rerender } = render(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: initialSchema,
+        }}
+      >
+        <ExplorerContextProvider>
+          <SetInitialStack />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+
+    // First proper render of doc explorer
+    rerender(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: initialSchema,
+        }}
+      >
+        <ExplorerContextProvider>
+          <DocExplorer />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+
+    const [title] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    expect(title.textContent).toEqual('field');
+
+    // Second render of doc explorer, this time with a new schema, with different field name
+    rerender(
+      <SchemaContext.Provider
+        value={{
+          ...defaultSchemaContext,
+          schema: makeSchema('field2'), // <<< New schema with new field name
+        }}
+      >
+        <ExplorerContextProvider>
+          <DocExplorer />
+        </ExplorerContextProvider>
+      </SchemaContext.Provider>,
+    );
+    const [title2] = container.querySelectorAll('.graphiql-doc-explorer-title');
+    // Because `Query.field` doesn't exist any more, the top-most item we can render is `Query`
+    expect(title2.textContent).toEqual('Query');
   });
 });
