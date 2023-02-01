@@ -193,8 +193,6 @@ export function SchemaContextProvider(props: SchemaContextProviderProps) {
 
     const counter = ++counterRef.current;
 
-    setSchema(undefined);
-
     const maybeIntrospectionData = props.schema;
     async function fetchIntrospectionData() {
       if (maybeIntrospectionData) {
