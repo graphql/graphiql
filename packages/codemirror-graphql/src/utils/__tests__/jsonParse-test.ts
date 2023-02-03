@@ -9,7 +9,7 @@
 import jsonParse, { ParseTokenOutput } from '../jsonParse';
 
 describe('jsonParse', () => {
-  function checkEscapedString(
+  function expectEscapedString(
     str: string,
     key: ParseTokenOutput,
     value: ParseTokenOutput,
@@ -21,17 +21,17 @@ describe('jsonParse', () => {
   }
 
   it('correctly parses escaped strings', () => {
-    checkEscapedString(
+    expectEscapedString(
       '{ "test": "\\"" }',
       { kind: 'String', start: 2, end: 8, value: 'test' },
       { kind: 'String', start: 10, end: 14, value: '"' },
     );
-    checkEscapedString(
+    expectEscapedString(
       '{ "test": "\\\\" }',
       { kind: 'String', start: 2, end: 8, value: 'test' },
       { kind: 'String', start: 10, end: 14, value: '\\' },
     );
-    checkEscapedString(
+    expectEscapedString(
       '{ "slash": "\\/" }',
       { kind: 'String', start: 2, end: 9, value: 'slash' },
       { kind: 'String', start: 11, end: 15, value: '/' },

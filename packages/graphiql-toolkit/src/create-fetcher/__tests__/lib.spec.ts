@@ -105,6 +105,7 @@ describe('missing graphql-ws dependency', () => {
   it('should throw a nice error', () => {
     jest.resetModules();
     jest.doMock('graphql-ws', () => {
+      // eslint-disable-next-line no-throw-literal
       throw { code: 'MODULE_NOT_FOUND' };
     });
 

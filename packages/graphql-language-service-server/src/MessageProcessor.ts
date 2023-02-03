@@ -925,10 +925,10 @@ export class MessageProcessor {
     }
   }
   async _cacheSchemaFile(
-    uri: UnnormalizedTypeDefPointer,
+    _uri: UnnormalizedTypeDefPointer,
     project: GraphQLProjectConfig,
   ) {
-    uri = uri.toString();
+    const uri = _uri.toString();
 
     const isFileUri = existsSync(uri);
     let version = 1;
@@ -939,7 +939,7 @@ export class MessageProcessor {
       if (schemaDocument) {
         version = schemaDocument.version++;
       }
-      const schemaText = readFileSync(uri, { encoding: 'utf-8' });
+      const schemaText = readFileSync(uri, 'utf8');
       this._cacheSchemaText(schemaUri, schemaText, version);
     }
   }

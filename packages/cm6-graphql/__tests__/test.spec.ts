@@ -1,3 +1,4 @@
+/* eslint-disable jest/expect-expect */
 import { graphqlLanguage } from '../dist/index.js';
 import { fileTests } from '@lezer/generator/dist/test';
 

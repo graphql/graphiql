@@ -48,7 +48,7 @@ function getHintSuggestions(
   });
 }
 
-function checkSuggestions(source: string[], suggestions?: IHint[]) {
+function expectSuggestions(source: string[], suggestions?: IHint[]) {
   const titles = suggestions?.map(suggestion => suggestion.text);
   expect(titles).toEqual(source);
 }
@@ -62,7 +62,7 @@ describe('graphql-variables-hint', () => {
   it('provides correct initial token', async () => {
     const suggestions = await getHintSuggestions('', '', { line: 0, ch: 0 });
     const initialKeywords = ['{'];
-    checkSuggestions(initialKeywords, suggestions?.list);
+    expectSuggestions(initialKeywords, suggestions?.list);
   });
 
   it('provides correct field name suggestions', async () => {
@@ -71,7 +71,7 @@ describe('graphql-variables-hint', () => {
       '{ ',
       { line: 0, ch: 2 },
     );
-    checkSuggestions(['"foo": ', '"bar": '], suggestions?.list);
+    expectSuggestions(['"foo": ', '"bar": '], suggestions?.list);
   });
 
   it('provides correct variable suggestion indentation', async () => {
@@ -90,7 +90,7 @@ describe('graphql-variables-hint', () => {
       '{\n  ba',
       { line: 1, ch: 4 },
     );
-    checkSuggestions(['"bar": '], suggestions?.list);
+    expectSuggestions(['"bar": '], suggestions?.list);
     expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
     expect(suggestions?.to).toEqual({ line: 1, ch: 4, sticky: null });
   });
@@ -101,7 +101,7 @@ describe('graphql-variables-hint', () => {
       '{\n  "',
       { line: 1, ch: 4 },
     );
-    checkSuggestions(['"foo": ', '"bar": '], suggestions?.list);
+    expectSuggestions(['"foo": ', '"bar": '], suggestions?.list);
     expect(suggestions?.from).toEqual({ line: 1, ch: 2, sticky: null });
     expect(suggestions?.to).toEqual({ line: 1, ch: 3, sticky: null });
   });
@@ -113,7 +113,7 @@ describe('graphql-variables-hint', () => {
       { line: 1, ch: 12 },
     );
     const TestEnum = TestSchema.getType('TestEnum');
-    checkSuggestions(
+    expectSuggestions(
       (TestEnum as GraphQLEnumType)
         ?.getValues()
         .map(value => `"${value.name}"`),
@@ -127,7 +127,7 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": ',
       { line: 1, ch: 13 },
     );
-    checkSuggestions(['{'], suggestions?.list);
+    expectSuggestions(['{'], suggestions?.list);
   });
 
   it('provides Input Object fields', async () => {
@@ -137,7 +137,7 @@ describe('graphql-variables-hint', () => {
       { line: 2, ch: 4 },
     );
     const TestInput = TestSchema.getType('TestInput');
-    checkSuggestions(
+    expectSuggestions(
       Object.keys((TestInput as GraphQLInputObjectType).getFields()).map(
         name => `"${name}": `,
       ),
@@ -153,7 +153,7 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": {\n    bool',
       { line: 2, ch: 8 },
     );
-    checkSuggestions(['"boolean": ', '"listBoolean": '], suggestions?.list);
+    expectSuggestions(['"boolean": ', '"listBoolean": '], suggestions?.list);
     expect(suggestions?.from).toEqual({ line: 2, ch: 4, sticky: null });
     expect(suggestions?.to).toEqual({ line: 2, ch: 8, sticky: null });
   });
@@ -164,6 +164,6 @@ describe('graphql-variables-hint', () => {
       '{\n  "myInput": {\n    "boolean": ',
       { line: 2, ch: 15 },
     );
-    checkSuggestions(['true', 'false'], suggestions?.list);
+    expectSuggestions(['true', 'false'], suggestions?.list);
   });
 });
